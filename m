@@ -2,72 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375D12CFDED
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AA02CFD8C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLESsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:48:14 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:40432 "EHLO vps0.lunn.ch"
+        id S1726263AbgLESho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:37:44 -0500
+Received: from mga01.intel.com ([192.55.52.88]:30676 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726250AbgLESsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:48:10 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1klYjB-00AMn1-ND; Sat, 05 Dec 2020 15:40:01 +0100
-Date:   Sat, 5 Dec 2020 15:40:01 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201205144001.GK2420376@lunn.ch>
-References: <20201204145624.11713-1-o.rempel@pengutronix.de>
- <20201204145624.11713-3-o.rempel@pengutronix.de>
+        id S1726061AbgLEShl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:37:41 -0500
+IronPort-SDR: H8BQQ1+mhM7d55BXRhAhDh3aCGd4opVJYhSuKis3CgmU7lMRCMb994vEo6EDJXGCKGgnq0vAy2
+ klqdG7tD4mHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="191774459"
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="191774459"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:56 -0800
+IronPort-SDR: RYoMDGFFTE6jxc6pGLX2RQcbEpvcChRMU2DhisSbvvl+p0aMw7PNIZxacFcm8U16RJ6X5brham
+ vKsXrkEViP1Q==
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="436104270"
+Received: from schamb2-mobl2.amr.corp.intel.com (HELO [10.212.89.161]) ([10.212.89.161])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:55 -0800
+Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
+ initializing a device
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+ <20201205074508.GQ8403@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
+Date:   Sat, 5 Dec 2020 08:59:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204145624.11713-3-o.rempel@pengutronix.de>
+In-Reply-To: <20201205074508.GQ8403@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void ar9331_stats_update(struct ar9331_sw_port *port,
-> +				struct rtnl_link_stats64 *stats)
-> +{
-> +	struct ar9331_sw_stats *s = &port->stats;
-> +
-> +	stats->rx_packets = s->rxbroad + s->rxmulti + s->rx64byte +
-> +		s->rx128byte + s->rx256byte + s->rx512byte + s->rx1024byte +
-> +		s->rx1518byte + s->rxmaxbyte;
-> +	stats->tx_packets = s->txbroad + s->txmulti + s->tx64byte +
-> +		s->tx128byte + s->tx256byte + s->tx512byte + s->tx1024byte +
-> +		s->tx1518byte + s->txmaxbyte;
-> +	stats->rx_bytes = s->rxgoodbyte;
-> +	stats->tx_bytes = s->txbyte;
-> +	stats->rx_errors = s->rxfcserr + s->rxalignerr + s->rxrunt +
-> +		s->rxfragment + s->rxoverflow;
-> +	stats->tx_errors = s->txoversize;
-> +	stats->multicast = s->rxmulti;
-> +	stats->collisions = s->txcollision;
-> +	stats->rx_length_errors = s->rxrunt + s->rxfragment + s->rxtoolong;
-> +	stats->rx_crc_errors = s->rxfcserr + s->rxalignerr + s->rxfragment;
-> +	stats->rx_frame_errors = s->rxalignerr;
-> +	stats->rx_missed_errors = s->rxoverflow;
-> +	stats->tx_aborted_errors = s->txabortcol;
-> +	stats->tx_fifo_errors = s->txunderrun;
-> +	stats->tx_window_errors = s->txlatecol;
-> +	stats->rx_nohandler = s->filtered;
-> +}
-> +
+Thanks for the review Vinod.
 
-Since these are u64 and you cannot take the mutex, you need to using
-include/linux/u64_stats_sync.h
+On 12/5/20 1:45 AM, Vinod Koul wrote:
+> On 03-12-20, 04:46, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> When a Slave device is resumed, it may resume the bus and restart the
+>> enumeration. During that process, we absolutely don't want to call
+>> regular read/write routines which will wait for the resume to
+>> complete, otherwise a deadlock occurs.
+>>
+>> Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+> 
+> Change looks okay, but not sure why this is a fix for adding no pm
+> version?
 
-	Andrew
+when we added the no_pm version, we missed the two cases below where 
+sdw_update() was used and that creates a deadlock. To me that's a 
+conceptual bug, we didn't fully use the no_pm versions, hence the Fixes tag.
+
+It's ok to remove the tag if you don't think it's useful/relevant, what 
+matters is that we agree on the content.
+
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> ---
+>>   drivers/soundwire/bus.c | 16 ++++++++++++++--
+>>   1 file changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+>> index d1e8c3a54976..60c42508c6c6 100644
+>> --- a/drivers/soundwire/bus.c
+>> +++ b/drivers/soundwire/bus.c
+>> @@ -489,6 +489,18 @@ sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
+>>   		return buf;
+>>   }
+>>   
+>> +static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
+>> +{
+>> +	int tmp;
+>> +
+>> +	tmp = sdw_read_no_pm(slave, addr);
+>> +	if (tmp < 0)
+>> +		return tmp;
+>> +
+>> +	tmp = (tmp & ~mask) | val;
+>> +	return sdw_write_no_pm(slave, addr, tmp);
+>> +}
+>> +
+>>   /**
+>>    * sdw_nread() - Read "n" contiguous SDW Slave registers
+>>    * @slave: SDW Slave
+>> @@ -1256,7 +1268,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+>>   	val = slave->prop.scp_int1_mask;
+>>   
+>>   	/* Enable SCP interrupts */
+>> -	ret = sdw_update(slave, SDW_SCP_INTMASK1, val, val);
+>> +	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
+>>   	if (ret < 0) {
+>>   		dev_err(slave->bus->dev,
+>>   			"SDW_SCP_INTMASK1 write failed:%d\n", ret);
+>> @@ -1271,7 +1283,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+>>   	val = prop->dp0_prop->imp_def_interrupts;
+>>   	val |= SDW_DP0_INT_PORT_READY | SDW_DP0_INT_BRA_FAILURE;
+>>   
+>> -	ret = sdw_update(slave, SDW_DP0_INTMASK, val, val);
+>> +	ret = sdw_update_no_pm(slave, SDW_DP0_INTMASK, val, val);
+>>   	if (ret < 0)
+>>   		dev_err(slave->bus->dev,
+>>   			"SDW_DP0_INTMASK read failed:%d\n", ret);
+>> -- 
+>> 2.17.1
+> 
