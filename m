@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBCD2CFD2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6F22CFD6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgLESTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:36 -0500
-Received: from ns2.chip.baikal.ru ([94.125.187.42]:53298 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727605AbgLERoE (ORCPT
+        id S1729347AbgLEScg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728436AbgLES2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:44:04 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
-Date:   Sat, 5 Dec 2020 18:24:26 +0300
-Message-ID: <20201205152427.29537-20-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Sat, 5 Dec 2020 13:28:53 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4158C02B8F2;
+        Sat,  5 Dec 2020 07:28:20 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id 19so867944qkm.8;
+        Sat, 05 Dec 2020 07:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iFNYyDl4TzsszoMYxpRS/KovZey20VoWKlMzk2erbcM=;
+        b=YsGh/kmM7LdA9HrH3dSSIed39/M5ywSZYIP1RQ/cdSj1Qy0/IB3WuwiId2UTclUCab
+         LND+JdKO66XFi7dSZFi4kwWPg5Q02VW7p/NPTjq6bNWp3Q+eWVSE65fQ4NV7HtHps7il
+         iVcCe+Rhq6/lLdSRCz/+hf3APq8EUHCdfWXsjkavYQeZkjcCLiK10fv1ZsdgxNYWI+6P
+         gb545KQA1urYD9FcvA7JdefgWnGPR62k994Q6JQ8yJisimlExiM1VG+wf69OJ2Duha30
+         DqfElhL54mcrXrg/KW2l632U9eG9u9oLc9bdzfdpbdWgMqliHCyIdIPt43aZb4bEGQCS
+         dCFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iFNYyDl4TzsszoMYxpRS/KovZey20VoWKlMzk2erbcM=;
+        b=FXnAysbHwy4zYzkqKNG4tGRctulJKOfiv3lDPZ5dukfw8OmNn97Zw/XzLcO2m69/vc
+         7CnlJSnNFpU71URMxJAp80s6SWBr1Fz3Cb78XvT/YVpp5NZKSjGPQ/8htFXsc5CgiabD
+         b0JYt9fMSSA3h7al037v7NAxQ8sW22LFbGxp97KxrYX2yDxKhPi3MytDYjhL6neWynyW
+         F5nHO8I8tHfcyrBz22/YvH/eNwfDo+mLAAR1fYaB1z3Nq0Kd74LhLozQG6tsen2LdXpw
+         B2B5yNiBB5RR92SoHmnGd42UF7Q8BB1zJvB47WhZ8Re8qp/kjx7ktfI02iwM5oksSdw9
+         HHaA==
+X-Gm-Message-State: AOAM533rqVFd3jkCX9EJ7FOyX0CprTrOWSrkhvPZ6t5UOEaFOHPIGRgP
+        MLGyvqO9c3VhYanc0z64eV8=
+X-Google-Smtp-Source: ABdhPJzfAXYnOGRnHpEA1wSP5JhgNduzs+F25shU9hLOFXSyVVEHzOZk+mtQN5f7EfvK+SwxAQR+AA==
+X-Received: by 2002:a37:6697:: with SMTP id a145mr15028425qkc.296.1607182098832;
+        Sat, 05 Dec 2020 07:28:18 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id o16sm9008554qkg.27.2020.12.05.07.28.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 07:28:18 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v1 1/2] net: dsa: microchip: fix devicetree parsing of cpu node
+Date:   Sat,  5 Dec 2020 10:28:13 -0500
+Message-Id: <20201205152814.7867-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Keem Bay DWC3 compatible DT nodes are supposed to have a DWC USB3
-compatible sub-node to describe a fully functioning USB interface. Let's
-use the available DWC USB3 DT schema to validate the Qualcomm DWC3
-sub-nodes.
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-Note since the generic DWC USB3 DT node is supposed to be named as generic
-USB HCD ("^usb(@.*)?") one we have to accordingly fix the sub-nodes name
-regexp and fix the DT node example.
+On the ksz8795, if the devicetree contains a cpu node,
+devicetree parsing fails and the whole driver errors out.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Fix the devicetree parsing code by making it use the
+correct number of ports.
 
+Fixes: 912aae27c6af ("net: dsa: microchip: really look for phy-mode in port nodes")
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # ksz8795
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 ---
 
-Changelog v5:
-- This is a new patch created for the new Intel Keem Bay bindings file,
-  which has been added just recently.
----
- .../devicetree/bindings/usb/intel,keembay-dwc3.yaml      | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 905b2032fa42
 
-diff --git a/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml b/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-index dd32c10ce6c7..43b91ab62004 100644
---- a/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-@@ -34,11 +34,8 @@ properties:
- # Required child node:
- 
- patternProperties:
--  "^dwc3@[0-9a-f]+$":
--    type: object
--    description:
--      A child node must exist to represent the core DWC3 IP block.
--      The content of the node is defined in dwc3.txt.
-+  "^usb@[0-9a-f]+$":
-+    $ref: snps,dwc3.yaml#
- 
- required:
-   - compatible
-@@ -68,7 +65,7 @@ examples:
-           #address-cells = <1>;
-           #size-cells = <1>;
- 
--          dwc3@34000000 {
-+          usb@34000000 {
-                 compatible = "snps,dwc3";
-                 reg = <0x34000000 0x10000>;
-                 interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+To: Woojung Huh <woojung.huh@microchip.com>
+To: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+To: Andrew Lunn <andrew@lunn.ch>
+To: Vivien Didelot <vivien.didelot@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+To: Vladimir Oltean <olteanv@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Helmut Grohne <helmut.grohne@intenta.de>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/net/dsa/microchip/ksz_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index e5f047129b15..17b804c44c53 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -431,7 +431,7 @@ int ksz_switch_register(struct ksz_device *dev,
+ 				if (of_property_read_u32(port, "reg",
+ 							 &port_num))
+ 					continue;
+-				if (port_num >= dev->port_cnt)
++				if (port_num >= dev->ds->num_ports)
+ 					return -EINVAL;
+ 				of_get_phy_mode(port,
+ 						&dev->ports[port_num].interface);
 -- 
-2.29.2
+2.17.1
 
