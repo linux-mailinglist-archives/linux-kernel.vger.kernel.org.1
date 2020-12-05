@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6804F2CFE63
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DB02CFE58
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgLETaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:30:25 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:44830 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgLETaY (ORCPT
+        id S1727178AbgLETYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:24:40 -0500
+Received: from mx.baikalchip.ru ([94.125.187.42]:53454 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725730AbgLETYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:30:24 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id 1acd33b1d947bb61; Sat, 5 Dec 2020 16:29:41 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        David Box <david.e.box@linux.intel.com>
-Subject: [PATCH] ACPI: scan: Add PNP0D80 to the _DEP exceptions list
-Date:   Sat, 05 Dec 2020 16:29:41 +0100
-Message-ID: <3849919.JfvvSOo2yN@kreacher>
+        Sat, 5 Dec 2020 14:24:37 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 01/10] arm: dts: keystone: Correct DWC USB3 compatible string
+Date:   Sat, 5 Dec 2020 18:56:12 +0300
+Message-ID: <20201205155621.3045-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
+References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Syonpsys IP cores are supposed to be defined with "snps" vendor-prefix.
+Use it instead of the deprecated "synopsys" one.
 
-The PNP0D80 ("Windows-compatible System Power Management Controller")
-device ID is used for identifying the special device object providing
-the LPI (Low-power S0 Idle) _DSM interface [1].  That device object
-does not supply any operation regions, but it appears in _DEP lists
-for other devices in the ACPI tables on some systems to enforce
-specific enumeration ordering that does not matter in Linux.
-
-For this reason, _DEP list entries pointing to the device object whose
-_CID returns PNP0D80 need not be taken into account as real operation
-region dependencies, so add that device ID to the list of device IDs
-for which the matching _DEP list entries should be ignored.
-
-Accordingly, update the function used for matching device IDs in that
-list to allow it to check _CID as well as _HID and rename it to
-acpi_info_matches_ids().
-
-Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf # [1]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/acpi/scan.c |   27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/keystone-k2e.dtsi | 2 +-
+ arch/arm/boot/dts/keystone.dtsi     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -719,25 +719,40 @@ int acpi_device_add(struct acpi_device *
- /* --------------------------------------------------------------------------
-                                  Device Enumeration
-    -------------------------------------------------------------------------- */
--static bool acpi_info_matches_hids(struct acpi_device_info *info,
--				   const char * const hids[])
-+static bool acpi_info_matches_ids(struct acpi_device_info *info,
-+				  const char * const ids[])
- {
-+	struct acpi_pnp_device_id_list *cid_list = NULL;
- 	int i;
+diff --git a/arch/arm/boot/dts/keystone-k2e.dtsi b/arch/arm/boot/dts/keystone-k2e.dtsi
+index 2d94faf31fab..fa1b8499c5a7 100644
+--- a/arch/arm/boot/dts/keystone-k2e.dtsi
++++ b/arch/arm/boot/dts/keystone-k2e.dtsi
+@@ -79,7 +79,7 @@ keystone_usb1: usb@25000000 {
+ 			status = "disabled";
  
- 	if (!(info->valid & ACPI_VALID_HID))
- 		return false;
+ 			usb1: dwc3@25010000 {
+-				compatible = "synopsys,dwc3";
++				compatible = "snps,dwc3";
+ 				reg = <0x25010000 0x70000>;
+ 				interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
+ 				usb-phy = <&usb1_phy>, <&usb1_phy>;
+diff --git a/arch/arm/boot/dts/keystone.dtsi b/arch/arm/boot/dts/keystone.dtsi
+index c298675a29a5..8d046a1b690c 100644
+--- a/arch/arm/boot/dts/keystone.dtsi
++++ b/arch/arm/boot/dts/keystone.dtsi
+@@ -218,7 +218,7 @@ keystone_usb0: usb@2680000 {
+ 			status = "disabled";
  
--	for (i = 0; hids[i]; i++) {
--		if (!strcmp(info->hardware_id.string, hids[i]))
-+	if (info->valid & ACPI_VALID_CID)
-+		cid_list = &info->compatible_id_list;
-+
-+	for (i = 0; ids[i]; i++) {
-+		int j;
-+
-+		if (!strcmp(info->hardware_id.string, ids[i]))
- 			return true;
-+
-+		if (!cid_list)
-+			continue;
-+
-+		for (j = 0; j < cid_list->count; j++) {
-+			if (!strcmp(cid_list->ids[j].string, ids[i]))
-+				return true;
-+		}
- 	}
- 
- 	return false;
- }
- 
- /* List of HIDs for which we ignore matching ACPI devices, when checking _DEP lists. */
--static const char * const acpi_ignore_dep_hids[] = {
-+static const char * const acpi_ignore_dep_ids[] = {
- 	"INT3396", /* Windows System Power Management Controller */
-+	"PNP0D80", /* Windows-compatible System Power Management Controller */
- 	NULL
- };
- 
-@@ -1857,7 +1872,7 @@ static void acpi_device_dep_initialize(s
- 			continue;
- 		}
- 
--		skip = acpi_info_matches_hids(info, acpi_ignore_dep_hids);
-+		skip = acpi_info_matches_ids(info, acpi_ignore_dep_ids);
- 		kfree(info);
- 
- 		if (skip)
-
-
+ 			usb0: dwc3@2690000 {
+-				compatible = "synopsys,dwc3";
++				compatible = "snps,dwc3";
+ 				reg = <0x2690000 0x70000>;
+ 				interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
+ 				usb-phy = <&usb_phy>, <&usb_phy>;
+-- 
+2.29.2
 
