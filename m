@@ -2,216 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B19C2CFDCB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C605A2CFDE4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgLESoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:44:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgLEQtq (ORCPT
+        id S1728310AbgLESpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:45:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726798AbgLEQrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:49:46 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D0AC02B8F7;
-        Sat,  5 Dec 2020 08:09:21 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id w206so6629982wma.0;
-        Sat, 05 Dec 2020 08:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fIdqtYGUc/O3zuqryXPvn60vNDtb1cQ64k7t/DJ+pB8=;
-        b=kR4bV2meb6LES9uLZV8rVWd/WreERg1nAsY1JUUFBMkK7+o1F8WiNImkRwjxSPMYa9
-         Pw4jpPqCRt35i08ldfEDjXZcaKTFSkC0jg0OYAn1yM1TdPV6jgzDZyasA4fVw8myRvEs
-         Q7vriLdzybjFOj9Icc+94Y9IGvfAroeshvhiAIDnC1D19YXFsdmB27V6r8nlpKQj+06T
-         DU6qZL/hpnOSS16AVRKfsuAbMKnJP+aGtYMh3wfBL51jDQMvgPE+gu6z9+uwmtMCPWiZ
-         rnDaoV9rd5VaDQDa+FW6uHfeDrM7ybgkwQle60DEGI/1OVFL2SoCTjdgcfUYh/lRGK5R
-         NVgQ==
+        Sat, 5 Dec 2020 11:47:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607186761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YrtBHn1LjYKXSExOc2Ie11/hAw2WMlJB5mkp17GAe1M=;
+        b=fjlMEOxPJKtcAwhIcz/MYmpdqRK6AhjCP9Sm1KB3mIZy9Zi0a4IgQBxsmXnpzoTXqfT39f
+        5+3g+jqnGTqFhyd7e06WHIHhUhT6aGMLSaQddkqgMT16N11XHr3gg8Q570gyztC7v67H6P
+        SyfaLWJSM8qHUknJoG6lB3TUFIVgb/w=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-fGG7ktpnNVGORd_fpceiMg-1; Sat, 05 Dec 2020 11:13:55 -0500
+X-MC-Unique: fGG7ktpnNVGORd_fpceiMg-1
+Received: by mail-oi1-f197.google.com with SMTP id x4so2368888oia.8
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 08:13:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fIdqtYGUc/O3zuqryXPvn60vNDtb1cQ64k7t/DJ+pB8=;
-        b=RjuBeqAQ6ZrlhPF+jNfW04gRvR6p3NDVsXz8HIhOTeUjuE/b0BsqlyWuwvJcaQaCWP
-         6cT9n1/S9xr71/Hhw3YfXT/8v5tMfFfaPjL6m3k9bJnJMMGoE//4gZYGIHP7y2d9t9sx
-         88ao4q5wJULeVM/BXlza9iO/qltg73X3g7WFgWsxk64OMX74x+GJrRiy1ofLTLmttdju
-         oNHZ+sDau7ROl+8Z0Au7a5/OOkOPR3FSHNsLeutNETB5DsHJsYE2Un3HMlGAbOqiJUie
-         xNlqpy3GlC4dUL7VRY9HfgpyoOMpIXmVjx/ZE/ET+PsIvHWp46089gJHxhXdui7cKzkW
-         SLDQ==
-X-Gm-Message-State: AOAM532mHAfkKWOl9mq8VJ2bR0aFHUVkQtMkAXDOQyEbRwI1jaMyPTtG
-        gCSMX+Fg8LuOuJ0hh4ulMnWr8hCepQ==
-X-Google-Smtp-Source: ABdhPJw7ZyMmN76jsgrTsrBvcCVPiexgv03RsTqsne+IoNWslPVVZc7erE5/o4vHtvgYHTgjVdBFEw==
-X-Received: by 2002:a7b:cf09:: with SMTP id l9mr9897145wmg.54.1607184560362;
-        Sat, 05 Dec 2020 08:09:20 -0800 (PST)
-Received: from localhost.localdomain ([46.53.253.193])
-        by smtp.gmail.com with ESMTPSA id u66sm7692362wmg.2.2020.12.05.08.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 08:09:19 -0800 (PST)
-Date:   Sat, 5 Dec 2020 19:09:16 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tommi.t.rantala@nokia.com
-Subject: [PATCH] proc: fix lookup in /proc/net subdirectories after setns(2)
-Message-ID: <20201205160916.GA109739@localhost.localdomain>
-References: <6de04554b27e9573e0a65170916d6acf11285dba.camel@nokia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YrtBHn1LjYKXSExOc2Ie11/hAw2WMlJB5mkp17GAe1M=;
+        b=RX/KHCa/1u2J+Ua43jNuV0G3PhFSZg1s2DetT5ZayDpLH7kI3FiyhC+sgUVByQfAfw
+         mqvYBmnqs+nB8ybNqO8RBM5IVYSM+hy9Lw1xhFDi+PR+DeabsrDZmUUWgPTc9+Ugwo8v
+         4XsFit8zqNdnoaFWmbzF7jO0r4EelBTp15dLysw3EkoIqDUCyRvtYuBk/+KN3ptkCKdY
+         e8PM8lgybA2x0GdZiR6wY/NXc0tYom5Ub0C2Hx9frs7/ylOKdlyE9Uq7RBSG53NPURPN
+         wgzpM3DiakXyyT02RTwNpsw8/XyAVdiRK4nt8EZuuIYguD69Pk5Dm90F9uKoqtumS9Yf
+         XpAA==
+X-Gm-Message-State: AOAM532bPQYCBszh8uM8LUuJuqoEfsllLWIeqBijTI/VYgFAAm3antUB
+        1hMyaKx0lSWZMaqCk1foWFLWbvKZCjFSQmljqIG4KRp8B6jHLQ7Q0QUCV3DPlC1cuneJYnP8pNI
+        BtVmYud3nAmO/aalbmjhXGv+BqQPnKqDVgkQQUAB0
+X-Received: by 2002:a9d:4788:: with SMTP id b8mr7438690otf.172.1607184834912;
+        Sat, 05 Dec 2020 08:13:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzc8cYc7H87HUf+4XQz9+YFAods9n+maBIW2DnAtya/G39bBE8eQkAoHwnqQfNfSdqtbf9UHRFH4GtdVCGc26U=
+X-Received: by 2002:a9d:4788:: with SMTP id b8mr7438669otf.172.1607184834697;
+ Sat, 05 Dec 2020 08:13:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6de04554b27e9573e0a65170916d6acf11285dba.camel@nokia.com>
+References: <20201202173053.13800-1-jarod@redhat.com> <20201203004357.3125-1-jarod@redhat.com>
+ <20201203084525.7f1a8e93@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201203084525.7f1a8e93@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Sat, 5 Dec 2020 11:13:45 -0500
+Message-ID: <CAKfmpSdrG9x24TZQ2M2xV_e7CFedE9WWUmtD2Vz8c2H5roneOA@mail.gmail.com>
+Subject: Re: [PATCH net v3] bonding: fix feature flag setting at init time
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	commit 1fde6f21d90f8ba5da3cb9c54ca991ed72696c43
-	proc: fix /proc/net/* after setns(2)
+On Thu, Dec 3, 2020 at 11:45 AM Jakub Kicinski <kuba@kernel.org> wrote:
+...
+> nit: let's narrow down the ifdef-enery
+>
+> no need for the ifdef here, if the helper looks like this:
+>
+> +static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
+> +{
+> +#ifdef CONFIG_XFRM_OFFLOAD
+> +       if (mode == BOND_MODE_ACTIVEBACKUP)
+> +               bond_dev->wanted_features |= BOND_XFRM_FEATURES;
+> +       else
+> +               bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
+> +
+> +       netdev_update_features(bond_dev);
+> +#endif /* CONFIG_XFRM_OFFLOAD */
+> +}
+>
+> Even better:
+>
+> +static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
+> +{
+> +       if (!IS_ENABLED(CONFIG_XFRM_OFFLOAD))
+> +               return;
+> +
+> +       if (mode == BOND_MODE_ACTIVEBACKUP)
+> +               bond_dev->wanted_features |= BOND_XFRM_FEATURES;
+> +       else
+> +               bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
+> +
+> +       netdev_update_features(bond_dev);
+> +}
+>
+> (Assuming BOND_XFRM_FEATURES doesn't itself hide under an ifdef.)
 
-only forced revalidation of regular files under /proc/net/
+It is, but doesn't need to be. I can mix these changes in as well.
 
-However, /proc/net/ is unusual in the sense of /proc/net/foo handlers
-take netns pointer from parent directory which is old netns.
+-- 
+Jarod Wilson
+jarod@redhat.com
 
-Steps to reproduce:
-
-	(void)open("/proc/net/sctp/snmp", O_RDONLY);
-	unshare(CLONE_NEWNET);
-
-	int fd = open("/proc/net/sctp/snmp", O_RDONLY);
-	read(fd, &c, 1);
-
-Read will read wrong data from original netns.
-
-Patch forces lookup on every directory under /proc/net .
-
-Fixes: 1da4d377f943 ("proc: revalidate misc dentries")
-Reported-by: "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
- fs/proc/generic.c       |   24 ++++++++++++++++++++++--
- fs/proc/internal.h      |    7 +++++++
- fs/proc/proc_net.c      |   16 ----------------
- include/linux/proc_fs.h |    8 +++++++-
- 4 files changed, 36 insertions(+), 19 deletions(-)
-
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -349,6 +349,16 @@ static const struct file_operations proc_dir_operations = {
- 	.iterate_shared		= proc_readdir,
- };
- 
-+static int proc_net_d_revalidate(struct dentry *dentry, unsigned int flags)
-+{
-+	return 0;
-+}
-+
-+const struct dentry_operations proc_net_dentry_ops = {
-+	.d_revalidate	= proc_net_d_revalidate,
-+	.d_delete	= always_delete_dentry,
-+};
-+
- /*
-  * proc directories can do almost nothing..
-  */
-@@ -471,8 +481,8 @@ struct proc_dir_entry *proc_symlink(const char *name,
- }
- EXPORT_SYMBOL(proc_symlink);
- 
--struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
--		struct proc_dir_entry *parent, void *data)
-+struct proc_dir_entry *_proc_mkdir(const char *name, umode_t mode,
-+		struct proc_dir_entry *parent, void *data, bool force_lookup)
- {
- 	struct proc_dir_entry *ent;
- 
-@@ -484,10 +494,20 @@ struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
- 		ent->data = data;
- 		ent->proc_dir_ops = &proc_dir_operations;
- 		ent->proc_iops = &proc_dir_inode_operations;
-+		if (force_lookup) {
-+			pde_force_lookup(ent);
-+		}
- 		ent = proc_register(parent, ent);
- 	}
- 	return ent;
- }
-+EXPORT_SYMBOL_GPL(_proc_mkdir);
-+
-+struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
-+		struct proc_dir_entry *parent, void *data)
-+{
-+	return _proc_mkdir(name, mode, parent, data, false);
-+}
- EXPORT_SYMBOL_GPL(proc_mkdir_data);
- 
- struct proc_dir_entry *proc_mkdir_mode(const char *name, umode_t mode,
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -310,3 +310,10 @@ extern unsigned long task_statm(struct mm_struct *,
- 				unsigned long *, unsigned long *,
- 				unsigned long *, unsigned long *);
- extern void task_mem(struct seq_file *, struct mm_struct *);
-+
-+extern const struct dentry_operations proc_net_dentry_ops;
-+static inline void pde_force_lookup(struct proc_dir_entry *pde)
-+{
-+	/* /proc/net/ entries can be changed under us by setns(CLONE_NEWNET) */
-+	pde->proc_dops = &proc_net_dentry_ops;
-+}
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -39,22 +39,6 @@ static struct net *get_proc_net(const struct inode *inode)
- 	return maybe_get_net(PDE_NET(PDE(inode)));
- }
- 
--static int proc_net_d_revalidate(struct dentry *dentry, unsigned int flags)
--{
--	return 0;
--}
--
--static const struct dentry_operations proc_net_dentry_ops = {
--	.d_revalidate	= proc_net_d_revalidate,
--	.d_delete	= always_delete_dentry,
--};
--
--static void pde_force_lookup(struct proc_dir_entry *pde)
--{
--	/* /proc/net/ entries can be changed under us by setns(CLONE_NEWNET) */
--	pde->proc_dops = &proc_net_dentry_ops;
--}
--
- static int seq_open_net(struct inode *inode, struct file *file)
- {
- 	unsigned int state_size = PDE(inode)->state_size;
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -80,6 +80,7 @@ extern void proc_flush_pid(struct pid *);
- 
- extern struct proc_dir_entry *proc_symlink(const char *,
- 		struct proc_dir_entry *, const char *);
-+struct proc_dir_entry *_proc_mkdir(const char *, umode_t, struct proc_dir_entry *, void *, bool);
- extern struct proc_dir_entry *proc_mkdir(const char *, struct proc_dir_entry *);
- extern struct proc_dir_entry *proc_mkdir_data(const char *, umode_t,
- 					      struct proc_dir_entry *, void *);
-@@ -162,6 +163,11 @@ static inline struct proc_dir_entry *proc_symlink(const char *name,
- static inline struct proc_dir_entry *proc_mkdir(const char *name,
- 	struct proc_dir_entry *parent) {return NULL;}
- static inline struct proc_dir_entry *proc_create_mount_point(const char *name) { return NULL; }
-+static inline struct proc_dir_entry *_proc_mkdir(const char *name, umode_t mode,
-+		struct proc_dir_entry *parent, void *data, bool force_lookup)
-+{
-+	return NULL;
-+}
- static inline struct proc_dir_entry *proc_mkdir_data(const char *name,
- 	umode_t mode, struct proc_dir_entry *parent, void *data) { return NULL; }
- static inline struct proc_dir_entry *proc_mkdir_mode(const char *name,
-@@ -199,7 +205,7 @@ struct net;
- static inline struct proc_dir_entry *proc_net_mkdir(
- 	struct net *net, const char *name, struct proc_dir_entry *parent)
- {
--	return proc_mkdir_data(name, 0, parent, net);
-+	return _proc_mkdir(name, 0, parent, net, true);
- }
- 
- struct ns_common;
