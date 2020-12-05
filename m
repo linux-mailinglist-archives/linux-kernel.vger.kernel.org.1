@@ -2,77 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034D92CFC40
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5442CFC43
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgLERMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 12:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbgLEQqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:46:05 -0500
-Date:   Sat, 5 Dec 2020 15:10:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607177337;
-        bh=P1OAQzjzb92ixjbZ+fh5aSjtOuIA5uuYe7ki0Xt9Smc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N32DbcbQir7H1bIDpZtsweicTNtvRFyu0xcpE4CND5b8lXSqKUhEvaNF4ZGqzzn9E
-         8U88Dm42AX2RSfg5bp+eWBC1e6s6IW/1KOhl4n9lgaEYLc4De1aMO2iXjx5Xqi18ao
-         aqGqvJLRTEG2+wW4pXPOUdmYdH6CNzxbEA1Vki0Q=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     rafael@kernel.org, adobriyan@gmail.com, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        hughd@google.com, will@kernel.org, guro@fb.com, rppt@kernel.org,
-        tglx@linutronix.de, esyr@redhat.com, peterx@redhat.com,
-        krisman@collabora.com, surenb@google.com, avagin@openvz.org,
-        elver@google.com, rdunlap@infradead.org, iamjoonsoo.kim@lge.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 3/9] mm: memcontrol: convert kernel stack account to
- byte-sized
-Message-ID: <X8uUv2TJ7CQ/mijD@kroah.com>
-References: <20201205130224.81607-1-songmuchun@bytedance.com>
- <20201205130224.81607-4-songmuchun@bytedance.com>
+        id S1727809AbgLERXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 12:23:44 -0500
+Received: from ns2.chip.baikal.ru ([94.125.187.42]:53194 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726755AbgLEQzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 11:55:54 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 00/19] dt-bindings: usb: Add generic USB HCD, xHCI, DWC USB3 DT schema
+Date:   Sat, 5 Dec 2020 18:24:07 +0300
+Message-ID: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205130224.81607-4-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 09:02:18PM +0800, Muchun Song wrote:
-> The kernel stack account is the only one that counts in KiB.
-> This patch convert it from KiB to byte.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  drivers/base/node.c    | 2 +-
->  fs/proc/meminfo.c      | 2 +-
->  include/linux/mmzone.h | 2 +-
->  kernel/fork.c          | 8 ++++----
->  mm/memcontrol.c        | 2 +-
->  mm/page_alloc.c        | 2 +-
->  mm/vmstat.c            | 4 ++--
->  7 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 6ffa470e2984..855886a6ba0e 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -446,7 +446,7 @@ static ssize_t node_read_meminfo(struct device *dev,
->  			     nid, K(node_page_state(pgdat, NR_FILE_MAPPED)),
->  			     nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
->  			     nid, K(i.sharedram),
-> -			     nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
-> +			     nid, node_page_state(pgdat, NR_KERNEL_STACK_B) / 1024,
+We've performed some work on the Generic USB HCD, xHCI and DWC USB3 DT
+bindings in the framework of the Baikal-T1 SoC support integration into
+the kernel. This patchset is a result of that work.
 
-Did you just change the units of a userspace-visable file without
-updating the documentation?
+First of all we moved the generic USB properties from the legacy text
+bindings to the USB DT schema. The properties have been distributed
+between three DT schemas dedicated for particular types of USB
+controllers: Generic USB controller properties (like node-naming, phys,
+maximum-speed, etc), Generic USB Host Controller bindings (companion and
+TPL support), Dual-Role USB Controller (OTG revision, DR mode,
+HNP/SRP/ADP protocols, etc). So the USB controllers DT bindings from now
+can validate the nodes against a generic USB-controller schema suitable
+for the controller functionality.
 
-If not, how is this working?
+Secondly we converted generic USB xHCI text bindings file into the DT
+schema. It had to be split up into two bindings: DT schema with generic
+xHCI properties and a generic xHCI device DT schema. The later will be
+used to validate the pure xHCI-based nodes, while the former can be
+utilized by some vendor-specific versions of xHCI.
 
-thanks,
+Thirdly, what was primarily intended to be done for Baikal-T1 SoC USB we
+converted the legacy text-based DWC USB3 bindings to DT schema and altered
+the result a bit so it would be more coherent with what actually
+controller and its driver support. Since we've now got the DWC USB3 DT
+schema, we made it used to validate the sub-nodes of the Qualcom, TI and
+Amlogic DWC3 DT nodes.
 
-greg k-h
+Link: https://lore.kernel.org/linux-usb/20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v2:
+- Thanks to Sergei Shtylyov for suggesting the commit logs grammar fixes:
+  [PATCH 04/18] dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
+  [PATCH 05/18] dt-bindings: usb: usb-hcd: Add "tpl-support" property
+  [PATCH 11/18] dt-bindings: usb: dwc3: Add interrupt-names property support
+  [PATCH 13/18] dt-bindings: usb: dwc3: Add Tx De-emphasis restrictions
+  [PATCH 17/18] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
+- Set FL-adj of the amlogiv,meson-g12a-usb controller with value 0x20 instead
+  of completely removing the property.
+- Drop the patch:
+  [PATCH 02/18] dt-bindings: usb: usb-hcd: Add "wireless" maximum-speed
+                property value
+  since "wireless" speed type is depracated due to lack of the device
+  supporting it.
+- Drop quotes from around the compat string constant.
+- Discard '|' from the property descriptions, since we don't need to preserve
+  the text formatting.
+- Convert abbreviated form of the "maximum-speed" enum constraint into
+  the multi-lined version of the list.
+- Fix the DW USB3 "clock-names" prop description to be refererring to the
+  enumerated clock-names instead of the ones from the Databook.
+- Add explicit "additionalProperties: true" to the usb-xhci.yaml schema,
+  since additionalProperties/unevaluatedProperties are going to be mandary
+  for each binding.
+- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
+  properties: compatibe: ..." statement.
+- Discard the "^dwc3@[0-9a-f]+$" nodes from being acceptable as sub-nodes
+  of the Qualcomm DWC3 DT nodes.
+- Add new patches:
+  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
+  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+
+Link: https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Drop the patches:
+  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
+  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+  as they are going to be submitted in the framework of a dedicated patchset.
+- Drop the patch:
+  [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  since it's going to be replaced with the driver/dts fixup and moved to a
+  dedicated patchset.
+- Apply usb-xhci.yaml# schema for the DWC USB3 node only if the controller is
+  supposed to work as either host or otg.
+
+Link: https://lore.kernel.org/linux-usb/20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Get the patch
+  [PATCH 11/17] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  back, since we can't discard the deprecated prefix from the driver.
+- Discard the block scalar style modifier "|" from the interrupts property
+  description.
+- Split the generic USB controller properties into three schemas: Generic USB
+  controllers, USB Host controllers and USB OTG controllers.
+
+Link: https://lore.kernel.org/linux-usb/20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru
+Changelog v5:
+- Add "snps,dis-split-quirk" property to the DWC USB3 DT schema.
+- Add a text to the
+  [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to DT schema
+  patch log about the small change in the clock-related properties bindings
+  with respect to the original binding file.
+- Discard duplicated "additionalProperties" from the usb-hcd.yaml schema.
+- Make sure dr_mode exist in DW USB3 node to apply the USB-gadget-only schema.
+- Add a new patch:
+  [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
+  since the Intel Keem Bay DWC3 bindings has been just added.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Manu Gautam <mgautam@codeaurora.org>
+Cc: Roger Quadros <rogerq@ti.com>
+Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-mips@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-usb@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (19):
+  dt-bindings: usb: usb-hcd: Detach generic USB controller properties
+  dt-bindings: usb: Convert generic USB properties to DT schemas
+  dt-bindings: usb: usb-drd: Add "otg-rev" property constraints
+  dt-bindings: usb: Add "ulpi/serial/hsic" PHY types
+  dt-bindings: usb: usb-hcd: Add "tpl-support" property
+  dt-bindings: usb: Add generic "usb-phy" property
+  dt-bindings: usb: Convert xHCI bindings to DT schema
+  dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
+  dt-bindings: usb: renesas-xhci: Refer to the usb-xhci.yaml file
+  dt-bindings: usb: Convert DWC USB3 bindings to DT schema
+  dt-bindings: usb: dwc3: Add interrupt-names property support
+  dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+  dt-bindings: usb: dwc3: Add Tx De-emphasis constraints
+  dt-bindings: usb: dwc3: Add Frame Length Adj constraints
+  dt-bindings: usb: meson-g12a-usb: Fix FL-adj property value
+  dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
+  dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
+  dt-bindings: usb: qcom,dwc3: Validate DWC3 sub-node
+  dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
+
+ .../usb/amlogic,meson-g12a-usb-ctrl.yaml      |   6 +-
+ .../devicetree/bindings/usb/dwc3.txt          | 128 -------
+ .../devicetree/bindings/usb/generic-xhci.yaml |  65 ++++
+ .../devicetree/bindings/usb/generic.txt       |  57 ---
+ .../bindings/usb/intel,keembay-dwc3.yaml      |   9 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |   9 +-
+ .../bindings/usb/renesas,usb-xhci.yaml        |   4 +-
+ .../devicetree/bindings/usb/snps,dwc3.yaml    | 332 ++++++++++++++++++
+ .../bindings/usb/ti,keystone-dwc3.yaml        |   4 +-
+ .../devicetree/bindings/usb/usb-drd.yaml      |  78 ++++
+ .../devicetree/bindings/usb/usb-hcd.yaml      |  19 +-
+ .../devicetree/bindings/usb/usb-xhci.txt      |  41 ---
+ .../devicetree/bindings/usb/usb-xhci.yaml     |  42 +++
+ .../devicetree/bindings/usb/usb.yaml          |  60 ++++
+ 14 files changed, 600 insertions(+), 254 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/generic-xhci.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/generic.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-drd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/usb.yaml
+
+-- 
+2.29.2
+
