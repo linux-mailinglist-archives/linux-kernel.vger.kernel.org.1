@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF4E2CF7FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B852CF801
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730855AbgLEA3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:29:14 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:57664 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726868AbgLEA3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:29:14 -0500
-Received: from zn.tnic (p200300ec2f12b10072f1dc97378a5926.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:b100:72f1:dc97:378a:5926])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 501551EC03E3;
-        Sat,  5 Dec 2020 01:28:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607128113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=xJP6JmlgBydA88wi424lhafFwoggVfh+3OdHkD+Ot7I=;
-        b=QLRw1KXWbWGJmB16R7x3Y6YyDc9i67W+U5Ro6m85VfIZ3HOu/wbt+Kzcq1WtJ8uz0kSa17
-        U+AJro8Yp+e1oq6wDQj3ZUEsQceo/KHdv8QD6f/vQQ+dlvtMPgmRwa5nf/ZHxKvsFcshgC
-        wAON3a/+0YQTJsLbaJh6GkrSBA79mZU=
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/msr: Add a pointer to an URL which contains further details
-Date:   Sat,  5 Dec 2020 01:28:25 +0100
-Message-Id: <20201205002825.19107-1-bp@alien8.de>
-X-Mailer: git-send-email 2.21.0
+        id S1730241AbgLEAbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:31:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLEAbU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:31:20 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0CCC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:30:40 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id t6so10067258lfl.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:30:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E9QS9qfs/1bvx0i2KB4LSQ3IXWtT2XtucCEqs+Kaono=;
+        b=uEawDuMSMsk/yBiwcAwVtKev4O5OWoFVZ7AWNMBf1EXLXXokDrZ1oL6GkVtEMB6auj
+         NOORGTFb9PWt6zVVb9CPRIlCZCuFyuuudOcNkgIabxDyZQo+OwaRyN6RXm9Oe6S0hGJX
+         o0xakniiOgHiU2Yac5fAX2V44euHJGEj98uQ32mdzAfOXw2SBxSOKNGRH5DQiRsjr2mx
+         rM6/5w3KOx9wUYX9Yu4LERy4RBKMPfLJPAZqtMP7tS3LJn8jLbaKyNAOs+eW605brW7J
+         B0NlpJK7iFrV3PUn4I780CD1WjLilrKbQdUlAoWmitEweMHHVU+ve7ejOkyagOhY4jDV
+         E7yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E9QS9qfs/1bvx0i2KB4LSQ3IXWtT2XtucCEqs+Kaono=;
+        b=LatodYK3wxNayhp5LBCvhAAh0Q8rh7fpZUmpIuyxcJxENkZ1EgzhEWuiDG/pED2wwI
+         gWBv/zvN4KVwIb8aj7ySMO3c1VWI2xwBsmRvYslGR9y7z1pi7J5901zHD5pkiH7p3lnn
+         ZItR0hw7CacoXRtTgY90kwXHNyJsoUDMVvef2ZveapfWXiQD81YDm4MrnX0aUABeTbGJ
+         VpYU4F8vA0oYc4nGwUmOE73uYACIqWGxaB5jje2uFfr/DZTh36jWRHKItlQhSB9dEdHI
+         JnhtbHChlGwL9ErrFbWtLX+QE2phEw0q2F5uF2s6spSPo8Oy36cvxoA3FU4kTw4Lu4Bk
+         VdPg==
+X-Gm-Message-State: AOAM530NV2zVODE0+n9RRhILOpi15j20POBLUILjpFkgVewfHzlObU5v
+        +o1ah8+9OgOnkcouFyJ/ZJOstKH6LrlrPqw5yaclXw==
+X-Google-Smtp-Source: ABdhPJx0N+HOYViM6evD1FHdgraY055CEVgYpEZxsobEqvQDNJKInZXEkAfboTUSuJs6V1Sk4egSbPj2zUdBG6psTy0=
+X-Received: by 2002:ac2:4308:: with SMTP id l8mr4057940lfh.260.1607128238907;
+ Fri, 04 Dec 2020 16:30:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201204140342.1640941-1-linus.walleij@linaro.org>
+ <20201204140342.1640941-2-linus.walleij@linaro.org> <20201204223008.GH4558@sirena.org.uk>
+In-Reply-To: <20201204223008.GH4558@sirena.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 5 Dec 2020 01:30:28 +0100
+Message-ID: <CACRpkda1AC2Mv6CdoB7O9vrvJVCR7dj6pAYNvSe9Z7+YhgK_cg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] regulator: ab8500: Decomission platform data header
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+On Fri, Dec 4, 2020 at 11:30 PM Mark Brown <broonie@kernel.org> wrote:
+> On Fri, Dec 04, 2020 at 03:03:42PM +0100, Linus Walleij wrote:
+> > ---
+> >  drivers/regulator/ab8500-ext.c   |  13 ++-
+> >  drivers/regulator/ab8500.c       | 116 ++++++++++++++++++++++-
+> >  include/linux/regulator/ab8500.h | 156 -------------------------------
+> >  3 files changed, 127 insertions(+), 158 deletions(-)
+> >  delete mode 100644 include/linux/regulator/ab8500.h
+>
+> There's also an include of the header in ab8500-core.c which isn't
+> removed by either this or the previous patch and needs to be handled
+> somehow.
 
-After having collected the majority of reports about MSRs being written
-by userspace tools and what tools those are, and all newer reports
-mostly repeating, add an URL where detailed information is gathered and
-kept up-to-date.
+Weird since I built it and booted it!
+I wonder what I did wrong this time :(
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/msr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+OK I'll fix it up and test again. Build a clean
+tree etc.
 
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 95e6b97b7d8b..8a67d1fa8dc5 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -99,8 +99,9 @@ static int filter_write(u32 reg)
- 	if (!__ratelimit(&fw_rs))
- 		return 0;
- 
--	pr_warn("Write to unrecognized MSR 0x%x by %s (pid: %d). Please report to x86@kernel.org.\n",
-+	pr_warn("Write to unrecognized MSR 0x%x by %s (pid: %d).\n",
- 	        reg, current->comm, current->pid);
-+	pr_warn("See https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/about for details.\n");
- 
- 	return 0;
- }
--- 
-2.21.0
-
+Thanks!
+Linus Walleij
