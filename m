@@ -2,95 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FA22CFC8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441812CFC58
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgLESYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLESYE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:24:04 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9CAC094264;
-        Sat,  5 Dec 2020 05:04:25 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id v22so8745126edt.9;
-        Sat, 05 Dec 2020 05:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C0+StnkqPn0FaAVFCZ/bxC2Ra36MF1dYPlwQRpPH+bg=;
-        b=CLthCZ+pBvNWkqEvKMCfFA5VvP7eqiRCZ/KPvbXYyk5Z8sqHZ1gvoybUnysll0JMkE
-         upGyKe5ML91Y9fIgQliof/bk6nwo2H3Z8Z6B8iI2i0LhENGog3W6IJ0mxoAJMHEYOFWx
-         8XNgrTTIPebZD8RRBeh4dRvd/+YOaHzXRt3Q5OdpZ1+4rri/XegtkeDjZG04BSk0TMJ8
-         kPOtfYiibQxG5E3M2bI6UV4v+p5StlEWUxr9QEquuX0rw05znX+u7pIICqrLIrqNLJIC
-         +P2rbBV4WEWEFE0fBrq0/QYPU2qkooWR5dJptaYoC1W4jhoTwvpOiluteQ02s/xBtz/s
-         tOYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C0+StnkqPn0FaAVFCZ/bxC2Ra36MF1dYPlwQRpPH+bg=;
-        b=YvMKaYAeTN1X0Wgy5g4+HGR/1htAUXcGjhuI8kSgrBok+KXVd1Bap6rGkJiAxwA7L4
-         FSt5AxyvmBss9dV4mfxxmPoyaOqiFVHL7i6nozZeESUsAZMsWEsaTrwHBNZZUTw9OXt9
-         VPY1pX2LoED4IRSa8N1N2iAaEzDnwlk4ooguIqRuBfZMNZJfNuAbAEcrEFiJ+G1nDmAk
-         np/6x2zqr5onw3Ia3sxsFsY53lYJlsMDT9zBSsc7q/t6LP6Ep3WxLAUPjpn4toA4S/ZM
-         inGgiDU2eyzm7/cP1WTyxJXuNuMGA+Nf4Pcz1KhN/IHX1ndI7VUjr5kTPUq8cnZQrq2F
-         6Lcg==
-X-Gm-Message-State: AOAM533HzY9QbFvuK0We6AMcid7A3+WbK3KXiinSueW2DtDUvcYKHRq4
-        qFzm6X/iyy+6T75YgDVkwsoG9Wx76aB9TieGxPo=
-X-Google-Smtp-Source: ABdhPJwg/aVelRzEkx8ct1h8p95ANrqs0EaGaYdA0P0CRPct189vE0MddExzvw8TCa/hBR2COLD3V7MnfUUo7l13fuA=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr5747824edw.52.1607173464726;
- Sat, 05 Dec 2020 05:04:24 -0800 (PST)
+        id S1727758AbgLESEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:04:16 -0500
+Received: from mail-eopbgr140139.outbound.protection.outlook.com ([40.107.14.139]:16707
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727832AbgLERqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:46:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FztR2/l+RBYyMjjhgqQFtjAeZk2tVkPa0kwqwfEUrBm6/YqlxrUSsWjlEjgYNJEhnfVcJQCAqNvcG2jw4Yd95XmA2IICDaDXADvhkJPV4yv7uXEcs2ycf0ERqXFlWvWxuecoT2i0KEe++CV3njdkyWA0rMsFBz29J5npsZmCSQ/pGhX+Ht2YmlTtnC2tsxsYz8ZZZILZZuFIYXOAa4cH19yGEiNvlkEO/QxhYlwbf+ItvF7o+/2HRlWnmkK5+0SGFw6XwWum6BxbOGKl15WrSQxumLorXijQGJL12ixM2FT5GEU3s2d6QVJzKOI8nQKnnBjmQ6ckXCZ0++NpVZgNBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RZYWq8Fm6YrOQ6IIZfqfOrzJRI88MfnjtpZWKWOzuX8=;
+ b=IUjsq+W5um3VUgVwpLquA1GDUsK5n8eY6wF/Z02eP8O8W35Na/DYs2HK0k49x4h8lNclp/bIPJpW6AhW/h33tNrYSo/uwRuNzAhjmUKTMto++USx7vgOvE2ZmjhQBdw7Pwfq0lBO4ORtbnBezCf9eimms9PfXNvftxDjEQHDdfZSRI6ZOn7+5JCVMYmo5IJL5ghZ898gTQD1bVUFTzLbfEkHd4PGJvLq8YB1kJ+fFzNxLrt4cnnhdqciTREjVvsKBQ53OYs57HDvQhryfqUGkvwJqUZYA+9XYAnWTbx11Furr/ydjpVE/6qPsTu8+yva9heokqnZ6lqO3GzdUNCZsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RZYWq8Fm6YrOQ6IIZfqfOrzJRI88MfnjtpZWKWOzuX8=;
+ b=iYyelW2mqZhNOWkUN6dZamK2UjEGQ6FRG6VrKq8dPJs3xYmLanxGFKMK94HWb8tkKrKaG0OdaAEnoMCkh4B+qJs4ne/U8Y+laMpDmRi75UScYNdpLx0ElwBXUrbt1ZVQcNFHu+3WFA+bZk0gKAIj+IZXEKjDZ7LykpdjAd0lSX4=
+Authentication-Results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM8PR10MB4084.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e3::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Sat, 5 Dec
+ 2020 13:39:55 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
+ 13:39:55 +0000
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: dsa: print the MTU value that could not be set
+Date:   Sat,  5 Dec 2020 14:39:44 +0100
+Message-Id: <20201205133944.10182-1-rasmus.villemoes@prevas.dk>
+X-Mailer: git-send-email 2.23.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: BE0P281CA0022.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:14::9) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-References: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
- <6bfe17d86ead62c20d236e2ebbc7b7fe3354829d.1606828668.git.stefan@agner.ch>
-In-Reply-To: <6bfe17d86ead62c20d236e2ebbc7b7fe3354829d.1606828668.git.stefan@agner.ch>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 5 Dec 2020 14:04:13 +0100
-Message-ID: <CAFBinCA_eaJHv7e+8ZM=z=zUZ9uQY_JZ=618=LwJYM-Gi+OO+g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] ARM: dts: meson: fix PHY deassert timing requirements
-To:     Stefan Agner <stefan@agner.ch>
-Cc:     khilman@baylibre.com, robh+dt@kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        christianshewitt@gmail.com, jian.hu@amlogic.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from prevas-ravi.prevas.se (5.186.115.188) by BE0P281CA0022.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:14::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Sat, 5 Dec 2020 13:39:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 50d42de4-35f4-431a-b42b-08d899234061
+X-MS-TrafficTypeDiagnostic: AM8PR10MB4084:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM8PR10MB40846C411DF5053A7A6E449D93F00@AM8PR10MB4084.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ddSWhzp8kkPvxGLk+U/6TtwK+K3Y0qjmvQy3cmVO5drPADnWz9xNdO0Ck2QwwH4A89n3eCE2wDPbr1MjCyxn0EInhmt2UQRiFG7EraXiJgTBM7p4/+s0j++Dzcec44oFiR8LfAC3Gq16jTdSQ/RE1EbKDEKfNkTk3W3y7UVHmaYHrETqsaIjBA4HalG5nrDZKMZAdQbdMc3fZ5AcYW8otrrMJDqqFFzre8KZpv5OCI119bKesaPHsHRe5Sz5TeS25RocJt+kEGHu2Kx7J/IQNYmC5lKM1JSgn+0+v7GSqGNBlhVAC7EvfIGbdL8nhJyr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(136003)(346002)(376002)(366004)(396003)(16526019)(52116002)(478600001)(8976002)(66946007)(86362001)(8936002)(6486002)(8676002)(2906002)(186003)(316002)(6666004)(66556008)(6506007)(44832011)(26005)(4326008)(36756003)(66476007)(83380400001)(110136005)(1076003)(5660300002)(956004)(2616005)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hKlphJTWs00hYqrqGPwv/x53q60hRYrpEv0fDXdBIJq8GdV8NiopSgShVW48?=
+ =?us-ascii?Q?UN9E8sbg2QSR9KFPqzJGoL31upj9PPMbOyvDZ7w9KCBLJsHfxVEHdtCQhgiU?=
+ =?us-ascii?Q?+oRWfB2uG7Ay1Y8iIJFVJyMi1RtuAycpmggDhvdnEiYvXiYtCusTtI5Ddu4q?=
+ =?us-ascii?Q?zGTUDH/CJQpYzj0c6XP9vMuJfkHj8pa8529bMXwdxvZmJ7qZJd46rQnOKhuL?=
+ =?us-ascii?Q?uAZI1q+LXKFXEga+fJO4t9fAI+lmHoz1C1mqyyi7UNLzXIwCOOd1B3CxhJcQ?=
+ =?us-ascii?Q?fLYzqg4dbj3NKrtm1laacAiDJgby3L2ZzwjoWXZhvzo36QbFyhXiUwrJKQem?=
+ =?us-ascii?Q?I+wBQK60DhyLPFKvKL4Yfggn70sM6qOWjEvVdyrAAgjOKFZTQrXQAbY4U0XQ?=
+ =?us-ascii?Q?e7KBMcQYdS7598gv29ZPrLbxcZjbYX77dOupfSLMGdlOxlUUkgCPLZWF3MPw?=
+ =?us-ascii?Q?neNAnNWXrXNPgSFHUOcLUM03oS6K/F/bGIRdvaO9JKJ8AzumjDvVvUfQaAcp?=
+ =?us-ascii?Q?iK79k0uvqv/h3CkMs0G/8dqqCRwQwD4TrGwY9l21B3lW2lmFz+F9h5747lEV?=
+ =?us-ascii?Q?fuyDfPcO26DBvgxfLvjKdwQac4j6a67QiX1N8Z3o729kYGlzNShqKLrUCLhZ?=
+ =?us-ascii?Q?Jr62xk9ist/P+Anc1TAGOnO7cuiNki3ikzGMqr70glpDzXCTx2y3BF+x0EFd?=
+ =?us-ascii?Q?i5HkxuZqy65WU3W02yOPTyJwN8b7JOY1Jz/19q8tCo+GCNDsKdc2W5MYWobE?=
+ =?us-ascii?Q?+voNF/Kzx0Ujbr6afK4bZ1n3VVQ+mpopQj6KXci5JCyzrfN70BdAJgp/SVs1?=
+ =?us-ascii?Q?hD7oLVV5Q6+IiNHq0LarJRglj0M0f03PRlB2XwHq3cU8nVC+d+38EP/c+Uth?=
+ =?us-ascii?Q?B7+zVE9W6Oyc2YJXZO5Iz8GWHlh9UrmotQsYipDFjToJ/FMNoqCJs27wEQPB?=
+ =?us-ascii?Q?V+HxjK7eYyCFxLjYDlQTnq2FS92w+WfywAS3BDS9oEY6O94kkYNec1/Wxw49?=
+ =?us-ascii?Q?eppI?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50d42de4-35f4-431a-b42b-08d899234061
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2020 13:39:55.7374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E0pq3qkQ7IqRkMjGd4kko6DsOmaDzuHIGM2h3fGdWFirWfghDPzWcIIe7q7iZ768Lp3gerxHOZtdBV8XOlFtIQGdIYaSfGR/uGjSyG8u/u0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+These warnings become somewhat more informative when they include the
+MTU value that could not be set and not just the errno.
 
-On Tue, Dec 1, 2020 at 2:21 PM Stefan Agner <stefan@agner.ch> wrote:
->
-> According to the datasheet (Rev. 1.9) the RTL8211F requires at least
-> 72ms "for internal circuits settling time" before accessing the PHY
-> egisters. On similar boards with the same PHY this fixes an issue where
-there's a typo here: it should be "registers"
-this is the same for the other four patches also
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+---
+ net/dsa/master.c | 7 ++++---
+ net/dsa/slave.c  | 4 ++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-> Ethernet link would not come up when using ip link set down/up.
-I have never experienced that myself but gotten a few reports about this.
-thank you very much for coming up with info from the datasheet!
+diff --git a/net/dsa/master.c b/net/dsa/master.c
+index c91de041a91d..5a0f6fec4271 100644
+--- a/net/dsa/master.c
++++ b/net/dsa/master.c
+@@ -308,14 +308,15 @@ static struct lock_class_key dsa_master_addr_list_lock_key;
+ 
+ int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
+ {
++	int mtu = ETH_DATA_LEN + cpu_dp->tag_ops->overhead;
+ 	int ret;
+ 
+ 	rtnl_lock();
+-	ret = dev_set_mtu(dev, ETH_DATA_LEN + cpu_dp->tag_ops->overhead);
++	ret = dev_set_mtu(dev, mtu);
+ 	rtnl_unlock();
+ 	if (ret)
+-		netdev_warn(dev, "error %d setting MTU to include DSA overhead\n",
+-			    ret);
++		netdev_warn(dev, "error %d setting MTU to %d to include DSA overhead\n",
++			    ret, mtu);
+ 
+ 	/* If we use a tagging format that doesn't have an ethertype
+ 	 * field, make sure that all packets from this point on get
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 3bc5ca40c9fb..b4a813b8a828 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -1820,8 +1820,8 @@ int dsa_slave_create(struct dsa_port *port)
+ 	ret = dsa_slave_change_mtu(slave_dev, ETH_DATA_LEN);
+ 	rtnl_unlock();
+ 	if (ret && ret != -EOPNOTSUPP)
+-		dev_warn(ds->dev, "nonfatal error %d setting MTU on port %d\n",
+-			 ret, port->index);
++		dev_warn(ds->dev, "nonfatal error %d setting MTU to %d on port %d\n",
++			 ret, ETH_DATA_LEN, port->index);
+ 
+ 	netif_carrier_off(slave_dev);
+ 
+-- 
+2.23.0
 
-the following stmmac patch [0] has been added recently which may - or
-may not - have any impact also.
-
-> Fixes: a2c6e82e5341 ("ARM: dts: meson: switch to the generic Ethernet PHY reset bindings")
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-with above typo fixed:
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-and also:
-Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> #
-on Odroid-C1+
-
-
-Best regards,
-Martin
-
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/net/ethernet/stmicro/stmmac?id=56311a315da7ebc668dbcc2f1c99689cc10796c4
