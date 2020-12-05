@@ -2,168 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462B82CFAC3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 10:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C235F2CFAD1
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 10:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgLEJIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 04:08:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        id S1727967AbgLEJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 04:23:51 -0500
+Received: from mga18.intel.com ([134.134.136.126]:48754 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728683AbgLEJFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 04:05:14 -0500
-Date:   Sat, 5 Dec 2020 10:02:57 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607158981;
-        bh=T5Cy5S4whTm2De325zOYyTTOScgEl0eEOxiRme4fAt4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ThqA6ZHs93cJhMXVhm6lP/UVNH1bEFBeiauWQWCLZDHo+ztT2v6xyko9bTObCSj9L
-         tFQhFd9SHvy+zEKSTHRPdE/Di18QjTlnhPhtfMnPDV44l4I309A3OUVGmK0Qwe+Yoh
-         tpPIepcKOSD37oM42KwfNC4MpJu5Kt78/VAc/x54=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Martin Habets <mhabets@solarflare.com>, lgirdwood@gmail.com,
-        Fred Oh <fred.oh@linux.intel.com>, broonie@kernel.org,
-        jgg@nvidia.com, Dave Ertman <david.m.ertman@intel.com>,
-        kuba@kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, Parav Pandit <parav@mellanox.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <X8tMweitgZDaYU0a@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com>
- <20201204123207.GH16543@unreal>
- <X8oyqpxDQ4JV31tj@kroah.com>
- <f8371c36608084144fe6e8ca089901d330a7191f.camel@linux.intel.com>
+        id S1725924AbgLEJVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 04:21:51 -0500
+IronPort-SDR: OPVXnpWIJoVQeNo1PIND1t9h7X9ta/kbtuz3eD8GfmmCfG5RVNP+QZJ2sb6tIh04sd7j4yP6QN
+ Xm2KOUOrWibg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="161268522"
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="161268522"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 01:17:36 -0800
+IronPort-SDR: qzJKc1Gpfm1Vf650BDLsiahKjAjAFpZLCaXgaFQ5Z/VrG696NituubOXMH08zHSINPdOPdDUgH
+ 05HRktc/bd6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="336646307"
+Received: from lkp-server01.sh.intel.com (HELO 47754f1311fc) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 05 Dec 2020 01:17:35 -0800
+Received: from kbuild by 47754f1311fc with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1klTh8-0000EO-Jl; Sat, 05 Dec 2020 09:17:34 +0000
+Date:   Sat, 05 Dec 2020 17:16:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 2c05cc5920504514a39df422145c68306f030a60
+Message-ID: <5fcb5001.Fj3Z4wqBkHuaycPn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8371c36608084144fe6e8ca089901d330a7191f.camel@linux.intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 09:10:34AM -0800, Ranjani Sridharan wrote:
-> On Fri, 2020-12-04 at 13:59 +0100, Greg KH wrote:
-> > On Fri, Dec 04, 2020 at 02:32:07PM +0200, Leon Romanovsky wrote:
-> > > On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
-> > > > On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> > > > > From: Dave Ertman <david.m.ertman@intel.com>
-> > > > > 
-> > > > > Add support for the Auxiliary Bus, auxiliary_device and
-> > > > > auxiliary_driver.
-> > > > > It enables drivers to create an auxiliary_device and bind an
-> > > > > auxiliary_driver to it.
-> > > > > 
-> > > > > The bus supports probe/remove shutdown and suspend/resume
-> > > > > callbacks.
-> > > > > Each auxiliary_device has a unique string based id; driver
-> > > > > binds to
-> > > > > an auxiliary_device based on this id through the bus.
-> > > > > 
-> > > > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > > > Co-developed-by: Ranjani Sridharan <
-> > > > > ranjani.sridharan@linux.intel.com>
-> > > > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > > > Signed-off-by: Ranjani Sridharan <
-> > > > > ranjani.sridharan@linux.intel.com>
-> > > > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > > > Reviewed-by: Pierre-Louis Bossart <
-> > > > > pierre-louis.bossart@linux.intel.com>
-> > > > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > > > Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> > > > > Link: 
-> > > > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > > > ---
-> > > > > This patch is "To:" the maintainers that have a pending backlog
-> > > > > of
-> > > > > driver updates dependent on this facility, and "Cc:" Greg.
-> > > > > Greg, I
-> > > > > understand you have asked for more time to fully review this
-> > > > > and apply
-> > > > > it to driver-core.git, likely for v5.12, but please consider
-> > > > > Acking it
-> > > > > for v5.11 instead. It looks good to me and several other
-> > > > > stakeholders.
-> > > > > Namely, stakeholders that have pressure building up behind this
-> > > > > facility
-> > > > > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and
-> > > > > later on
-> > > > > Compute Express Link.
-> > > > > 
-> > > > > I will take the blame for the 2 months of silence that made
-> > > > > this awkward
-> > > > > to take through driver-core.git, but at the same time I do not
-> > > > > want to
-> > > > > see that communication mistake inconvenience other parties that
-> > > > > reasonably thought this was shaping up to land in v5.11.
-> > > > > 
-> > > > > I am willing to host this version at:
-> > > > > 
-> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux
-> > > > > tags/auxiliary-bus-for-5.11
-> > > > > 
-> > > > > ...for all the independent drivers to have a common commit
-> > > > > baseline. It
-> > > > > is not there yet pending Greg's Ack.
-> > > > > 
-> > > > > For example implementations incorporating this patch, see Dave
-> > > > > Ertman's
-> > > > > SOF series:
-> > > > > 
-> > > > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > > > 
-> > > > > ...and Leon's mlx5 series:
-> > > > > 
-> > > > > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
-> > > > > 
-> > > > > PS: Greg I know I promised some review on newcomer patches to
-> > > > > help with
-> > > > > your queue, unfortunately Intel-internal review is keeping my
-> > > > > plate
-> > > > > full. Again, I do not want other stakeholder to be waiting on
-> > > > > me to
-> > > > > resolve that backlog.
-> > > > 
-> > > > Ok, I spent some hours today playing around with this.  I wrote
-> > > > up a
-> > > > small test-patch for this (how did anyone test this thing???).
-> > > 
-> > > We are running all verifications tests that we have over our
-> > > mlx5 driver. It includes devices reloads, power failures, FW
-> > > reconfiguration to emulate different devices with and without error
-> > > injections and many more. Up till now, no new bugs that are not
-> > > known
-> > > to us were found.
-> > 
-> > Yes, sorry, I was implying that the authors here had to create _some_
-> > code to test this with, it would have been nice to include that as
-> > well
-> > here.  We are collecting more and more in-kernel tests, having one
-> > for
-> > this code would be nice to also have so we make sure not to break any
-> > functionality in the future.
-> 
-> Hi Greg,
-> 
-> Thanks for your patience with this series. The v4 version submitted by
-> Dave included the SOF usage code to demonstrate the usage. We have run
-> all tests for device registration, module reload, PM etc and have not
-> observed any regressions in the SOF audio driver.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 2c05cc5920504514a39df422145c68306f030a60  percpu_ref: Print stack trace upon reference-count underflow
 
-Yes, that works great if you have that specific hardware to test with.
-If you don't, then it's kind of impossible to test this code :(
+elapsed time: 720m
 
-thanks,
+configs tested: 143
+configs skipped: 3
 
-greg k-h
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                        vdk_hs38_defconfig
+powerpc                      cm5200_defconfig
+arm                          tango4_defconfig
+mips                 decstation_r4k_defconfig
+nios2                            alldefconfig
+m68k                          amiga_defconfig
+sh                          r7785rp_defconfig
+sh                         microdev_defconfig
+m68k                       m5275evb_defconfig
+c6x                        evmc6457_defconfig
+mips                     loongson1c_defconfig
+powerpc                         wii_defconfig
+mips                  decstation_64_defconfig
+xtensa                  cadence_csp_defconfig
+arm                        shmobile_defconfig
+um                           x86_64_defconfig
+ia64                          tiger_defconfig
+arm                         mv78xx0_defconfig
+ia64                            zx1_defconfig
+powerpc                      ep88xc_defconfig
+arm                         bcm2835_defconfig
+powerpc                      acadia_defconfig
+arm                         assabet_defconfig
+powerpc                     skiroot_defconfig
+powerpc                   motionpro_defconfig
+mips                           jazz_defconfig
+powerpc                        cell_defconfig
+ia64                             alldefconfig
+nds32                               defconfig
+powerpc                     redwood_defconfig
+powerpc                          g5_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                      jornada720_defconfig
+arm                          pxa3xx_defconfig
+openrisc                         alldefconfig
+powerpc                      mgcoge_defconfig
+arm                         s3c2410_defconfig
+openrisc                    or1ksim_defconfig
+nds32                            alldefconfig
+powerpc                        fsp2_defconfig
+arm                          ep93xx_defconfig
+xtensa                  audio_kc705_defconfig
+sh                            hp6xx_defconfig
+powerpc                    amigaone_defconfig
+powerpc               mpc834x_itxgp_defconfig
+sparc                               defconfig
+arm                        spear3xx_defconfig
+arm                         at91_dt_defconfig
+powerpc                       ebony_defconfig
+mips                         tb0226_defconfig
+powerpc                 mpc8272_ads_defconfig
+sh                             espt_defconfig
+arm                         vf610m4_defconfig
+arm                        multi_v5_defconfig
+arm                         nhk8815_defconfig
+m68k                            q40_defconfig
+sparc64                             defconfig
+m68k                        m5307c3_defconfig
+arm                      tct_hammer_defconfig
+m68k                       bvme6000_defconfig
+arm                        keystone_defconfig
+arm                           efm32_defconfig
+mips                           xway_defconfig
+sh                   secureedge5410_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201204
+x86_64               randconfig-a006-20201204
+x86_64               randconfig-a002-20201204
+x86_64               randconfig-a001-20201204
+x86_64               randconfig-a005-20201204
+x86_64               randconfig-a003-20201204
+i386                 randconfig-a005-20201204
+i386                 randconfig-a004-20201204
+i386                 randconfig-a001-20201204
+i386                 randconfig-a002-20201204
+i386                 randconfig-a006-20201204
+i386                 randconfig-a003-20201204
+i386                 randconfig-a005-20201205
+i386                 randconfig-a004-20201205
+i386                 randconfig-a001-20201205
+i386                 randconfig-a002-20201205
+i386                 randconfig-a006-20201205
+i386                 randconfig-a003-20201205
+i386                 randconfig-a014-20201204
+i386                 randconfig-a013-20201204
+i386                 randconfig-a011-20201204
+i386                 randconfig-a015-20201204
+i386                 randconfig-a012-20201204
+i386                 randconfig-a016-20201204
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a012-20201204
+x86_64               randconfig-a014-20201204
+x86_64               randconfig-a013-20201204
+x86_64               randconfig-a015-20201204
+x86_64               randconfig-a011-20201204
+x86_64               randconfig-a016-20201204
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
