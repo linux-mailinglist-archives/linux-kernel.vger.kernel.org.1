@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086802CF806
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 225782CF809
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbgLEAh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:37:59 -0500
-Received: from www62.your-server.de ([213.133.104.62]:40872 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLEAh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:37:59 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klLZc-0002yZ-00; Sat, 05 Dec 2020 01:37:16 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klLZb-0009Y1-OG; Sat, 05 Dec 2020 01:37:15 +0100
-Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory
- accounting
-To:     Roman Gushchin <guro@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20201201215900.3569844-1-guro@fb.com>
- <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
- <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6abdd146-c584-9c66-261d-d7d39ff3f499@iogearbox.net>
-Date:   Sat, 5 Dec 2020 01:37:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727245AbgLEAlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:41:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgLEAlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:41:02 -0500
+Date:   Fri, 4 Dec 2020 16:40:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607128822;
+        bh=sTrddOHUARRjPrBPOmL3jLG/F+XsHep/EkJCIjlSO0M=;
+        h=From:To:Cc:Subject:Reply-To:From;
+        b=YskyC6KTk5Poxto+IqKhV4eBvLGw58/MhuVoRaD8iXdON0i56dDZkhBdzGN0qbVn8
+         QuznYc5THyRkb4pm3qTjdGwdujTP11Stc0B+pZnIpN7Y76vBviKUz+LlO2oZ6f0rXf
+         zYbqFF/JjrPNdyO3P93LonABYae3uy6J3MiH2PI5oEa0IUPJ9bLiQ/2MpIud5ja3Tm
+         9+2ptiVmbi/wc3eQcyxkePcJd1IT8TMjlR6R9/QRtLB1+Y8tUYSTF1/bSTdn5ZdQ15
+         VaM6LR9B6SzupaVKpJHM2VRqPOLIfCc79PCpeQK70nj7z2GotKLyIx3tGSroICfbtg
+         Bf0RiQb+/ztNA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH RFC sl-b] Export return addresses for better diagnostics
+Message-ID: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26008/Fri Dec  4 23:08:33 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/20 4:26 AM, Roman Gushchin wrote:
-> On Wed, Dec 02, 2020 at 06:54:46PM -0800, Alexei Starovoitov wrote:
->> On Tue, Dec 1, 2020 at 1:59 PM Roman Gushchin <guro@fb.com> wrote:
->>>
->>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
->>>     a function to "explain" this case for users.
->> ...
->>> v9:
->>>    - always charge the saved memory cgroup, by Daniel, Toke and Alexei
->>>    - added bpf_map_kzalloc()
->>>    - rebase and minor fixes
->>
->> This looks great. Applied.
-> 
-> Thanks!
-> 
->> Please follow up with a change to libbpf's pr_perm_msg().
->> That helpful warning should stay for old kernels, but it would be
->> misleading for new kernels.
->> libbpf probably needs a feature check to make this warning conditional.
-> 
-> I think we've discussed it several months ago and at that time we didn't
-> find a good way to check this feature. I'll think again, but if somebody
-> has any ideas here, I'll appreciate a lot.
+Hello!
 
-Hm, bit tricky, agree .. given we only throw the warning in pr_perm_msg() for
-non-root and thus probing options are also limited, otherwise just probing for
-a helper that was added in this same cycle would have been good enough as a
-simple heuristic. I wonder if it would make sense to add some hint inside the
-bpf_{prog,map}_show_fdinfo() to indicate that accounting with memcg is enabled
-for the prog/map one way or another? Not just for the sake of pr_perm_msg(), but
-in general for apps to stop messing with rlimit at this point. Maybe also bpftool
-feature probe could be extended to indicate that as well (e.g. the json output
-can be fed into Go natively).
+This series improves diagnostics by providing access to return addresses
+and stack traces collected by the sl*b allocators.  If the allocator is
+not configured to collect this information, the diagnostics fall back
+to a reasonable approximation of their earlier state.
+
+One use case is the queue_rcu_work() function, which might be used
+by any number of kernel subsystems.  If the caller does back-to-back
+invocations of queue_rcu_work(), this constitutes a double-free bug,
+and (if so configured) the debug-objects system will flag this, printing
+the callback function.  In most cases, printing this function suffices.
+However, for double-free bugs involving queue_rcu_work(), the RCU callback
+function will always be rcu_work_rcufn(), which provides almost no help to
+the poor person trying to find this double-free bug.  The return address
+from the allocator of the memory containing the rcu_work structure can
+provide an additional valuable clue.
+
+Another use case is the percpu_ref_switch_to_atomic_rcu() function,
+which detects percpu_ref reference-count underflow.  Unfortunately,
+the only data that this function has access to doesn't have much in the
+way of identifying characteristics.  Yes, it might be possible to gain
+more information from a crash dump, but it is more convenient for the
+needed hints to be in the console log.
+
+Unfortunately, printing the return address in this case is of little help
+because this object is allocated from percpu_ref_init(), regardless of
+what part of the kernel is responsible for the reference-count underflow.
+However, CONFIG_STACKTRACE=y kernels (such as those enabling ftrace)
+using slub with debugging enabled also collect stack traces.  This series
+therefore also provides a way of extracting these stack traces to provide
+additional information to those debugging percpu_ref reference-count
+underflows.
+
+The patches are as follows:
+
+1.	Add kmem_last_alloc() to return last allocation for memory block.
+
+2.	Add kmem_last_alloc_errstring() to provide more kmem_last_alloc()
+	info.
+
+3.	Make call_rcu() print allocation address of double-freed callback.
+
+4.	Create kmem_last_alloc_stack() to provide stack trace in slub.
+
+5.	percpu_ref: Print allocator upon reference-count underflow.
+
+6.	percpu_ref: Print stack trace upon reference-count underflow.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/slab.h  |   15 ++++++++
+ kernel/rcu/tree.c     |   12 +++++-
+ lib/percpu-refcount.c |   39 ++++++++++++++++------
+ mm/slab.c             |   61 +++++++++++++++++++++++------------
+ mm/slab_common.c      |   87 ++++++++++++++++++++++++++++++++++++++++++++------
+ mm/slob.c             |   11 +++++-
+ mm/slub.c             |   44 +++++++++++++++++++++++--
+ 7 files changed, 222 insertions(+), 47 deletions(-)
