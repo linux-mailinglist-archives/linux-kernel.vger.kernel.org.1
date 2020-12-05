@@ -2,86 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDDB2CFC6A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE72A2CFC56
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbgLESTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:44 -0500
-Received: from mx.baikalchip.com ([94.125.187.42]:53294 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727824AbgLERqo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:46:44 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Roger Quadros <rogerq@ti.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 17/19] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
-Date:   Sat, 5 Dec 2020 18:24:24 +0300
-Message-ID: <20201205152427.29537-18-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
+        id S1728024AbgLER6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 12:58:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48368 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727758AbgLERoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:44:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7FCBAC55;
+        Sat,  5 Dec 2020 15:34:27 +0000 (UTC)
+Date:   Sat, 5 Dec 2020 16:34:23 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH 3/7] mm,madvise: call soft_offline_page() without
+ MF_COUNT_INCREASED
+Message-ID: <20201205153423.GA4108@localhost.localdomain>
+References: <20201119105716.5962-1-osalvador@suse.de>
+ <20201119105716.5962-4-osalvador@suse.de>
+ <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz>
+ <20201201113511.GA22242@linux>
+ <840d4669-ae3f-b7c4-6132-e20d1bf9e952@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <840d4669-ae3f-b7c4-6132-e20d1bf9e952@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI Keystone DWC3 compatible DT node is supposed to have a DWC USB3
-compatible sub-node to describe a fully functioning USB interface.
-Since DWC USB3 has now got a DT schema describing its DT node, let's make
-sure the TI Keystone DWC3 sub-node passes validation against it.
+On Fri, Dec 04, 2020 at 06:25:31PM +0100, Vlastimil Babka wrote:
+> OK, so that means we don't introduce this race for MADV_SOFT_OFFLINE, but it's
+> already (and still) there for MADV_HWPOISON since Dan's 23e7b5c2e271 ("mm,
+> madvise_inject_error: Let memory_failure() optionally take a page reference") no?
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Rob Herring <robh@kernel.org>
+What about the following?
+CCing Dan as well.
 
+From: Oscar Salvador <osalvador@suse.de>
+Date: Sat, 5 Dec 2020 16:14:40 +0100
+Subject: [PATCH] mm,memory_failure: Always pin the page in
+ madvise_inject_error
+
+madvise_inject_error() uses get_user_pages_fast to get the page
+from the addr we specified.
+After [1], we drop such extra reference for memory_failure() path.
+That commit says that memory_failure wanted to keep the pin in order
+to take the page out of circulation.
+
+The truth is that we need to keep the page pinned, otherwise the
+page might be re-used after the put_page(), and we can end up messing
+with someone else's memory.
+E.g:
+
+CPU0
+process X					CPU1
+ madvise_inject_error
+  get_user_pages
+   put_page
+					page gets reclaimed
+					process Y allocates the page
+  memory_failure
+   // We mess with process Y memory
+
+madvise() is meant to operate on a self address space, so messing with
+pages that do not belong to us seems the wrong thing to do.
+To avoid that, let us keep the page pinned for memory_failure as well.
+
+Pages for DAX mappings will release this extra refcount in
+memory_failure_dev_pagemap.
+
+[1] ("23e7b5c2e271: mm, madvise_inject_error:
+      Let memory_failure() optionally take a page reference")
+
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Fixes: 23e7b5c2e271 ("mm, madvise_inject_error: Let memory_failure() optionally take a page reference")
 ---
+ mm/madvise.c        | 9 +--------
+ mm/memory-failure.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-Changelog v2:
-- Grammar fix: "s/it'/its"
----
- Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+diff --git a/mm/madvise.c b/mm/madvise.c
+index c6b5524add58..19edddba196d 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -907,14 +907,7 @@ static int madvise_inject_error(int behavior,
+ 		} else {
+ 			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
+ 				 pfn, start);
+-			/*
+-			 * Drop the page reference taken by get_user_pages_fast(). In
+-			 * the absence of MF_COUNT_INCREASED the memory_failure()
+-			 * routine is responsible for pinning the page to prevent it
+-			 * from being released back to the page allocator.
+-			 */
+-			put_page(page);
+-			ret = memory_failure(pfn, 0);
++			ret = memory_failure(pfn, MF_COUNT_INCREASED);
+ 		}
+ 
+ 		if (ret)
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 869ece2a1de2..ba861169c9ae 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1269,6 +1269,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 	if (!cookie)
+ 		goto out;
+ 
++	if (flags & MF_COUNT_INCREASED)
++		/*
++		 * Drop the extra refcount in case we come from madvise().
++		 */
++		put_page(page);
++
+ 	if (hwpoison_filter(page)) {
+ 		rc = 0;
+ 		goto unlock;
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-index c1b19fc5d0a2..ca7fbe3ed22e 100644
---- a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-@@ -64,9 +64,7 @@ properties:
- 
- patternProperties:
-   "usb@[a-f0-9]+$":
--    type: object
--    description: This is the node representing the DWC3 controller instance
--      Documentation/devicetree/bindings/usb/dwc3.txt
-+    $ref: snps,dwc3.yaml#
- 
- required:
-   - compatible
+
 -- 
-2.29.2
-
+Oscar Salvador
+SUSE L3
