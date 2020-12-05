@@ -2,91 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A106E2CFB0C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89CB2CFB12
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgLEKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:49:16 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9017 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729142AbgLEKpo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:45:44 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cp5lW4gbWzhkcy;
-        Sat,  5 Dec 2020 18:43:35 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 5 Dec 2020 18:44:01 +0800
-Subject: Re: [PATCH] staging: greybus: audio: Add missing unlock in
- gbaudio_dapm_free_controls()
-To:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-CC:     Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        <aibhav.sr@gmail.com>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        <devel@driverdev.osuosl.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201204021350.28182-1-wanghai38@huawei.com>
- <X8n2CL58pQ/077rQ@localhost>
- <CAAs3649kGerXZqgffwethn-JNOiiFSif1COM3no4Az4Ah220VA@mail.gmail.com>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <5614008b-69b8-c37f-ddb9-7497862eb8bc@huawei.com>
-Date:   Sat, 5 Dec 2020 18:44:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727726AbgLEKzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 05:55:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728781AbgLEKxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:53:38 -0500
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     daniel.lezcano@linaro.org
+Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, Jisheng.Zhang@synaptics.com, arnd@arndb.de
+Subject: [PATCHv3] clocksource: dw_apb_timer_of: add error handling if no clock available
+Date:   Sat,  5 Dec 2020 04:52:23 -0600
+Message-Id: <20201205105223.208604-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAAs3649kGerXZqgffwethn-JNOiiFSif1COM3no4Az4Ah220VA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit ("b0fc70ce1f02 arm64: berlin: Select DW_APB_TIMER_OF") added the
+support for the dw_apb_timer into the arm64 defconfig. However, for some
+platforms like the Intel Stratix10 and Agilex, the clock manager doesn't
+get loaded until after the timer driver get loaded. Thus, the driver hits
+the panic "No clock nor clock-frequency property for" because it cannot
+properly get the clock.
 
-在 2020/12/5 2:02, Vaibhav Agarwal 写道:
-> On Fri, Dec 4, 2020 at 2:10 PM Johan Hovold <johan@kernel.org> wrote:
->> On Fri, Dec 04, 2020 at 10:13:50AM +0800, Wang Hai wrote:
->>> Add the missing unlock before return from function
->>> gbaudio_dapm_free_controls() in the error handling case.
->>>
->>> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->>> ---
->>>   drivers/staging/greybus/audio_helper.c | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
->>> index 237531ba60f3..293675dbea10 100644
->>> --- a/drivers/staging/greybus/audio_helper.c
->>> +++ b/drivers/staging/greybus/audio_helper.c
->>> @@ -135,6 +135,7 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
->>>                if (!w) {
->>>                        dev_err(dapm->dev, "%s: widget not found\n",
->>>                                widget->name);
->>> +                     mutex_unlock(&dapm->card->dapm_mutex);
->>>                        return -EINVAL;
->>>                }
->>>                widget++;
->> This superficially looks correct, but there seems to be another bug in
->> this function. It can be used free an array of widgets, but if one of
->> them isn't found we just leak the rest. Perhaps that return should
->> rather be "widget++; continue;".
->>
->> Vaibhav?
-> Thanks Wang for sharing the patch. As already pointed by Johan, this
-> function indeed has another bug as well.
-> Pls feel free to share the patch as suggested above.
-I just sent another patch
+This patch adds the error handling needed for the timer driver so that
+the kernel can continue booting instead of just hitting the panic.
 
-"[PATCH] staging: greybus: audio: Fix possible leak free widgets in 
-gbaudio_dapm_free_controls"
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+---
+v3: check for IS_ERR(timer_clk) in timer_get_base_and_rate
+v2: address comments from Daniel Lezcano
+    update commit message
+---
+ drivers/clocksource/dw_apb_timer_of.c | 57 ++++++++++++++++++---------
+ 1 file changed, 39 insertions(+), 18 deletions(-)
 
-> Johan
-> .
->
+diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
+index ab3ddebe8344..42e7e43b8fcd 100644
+--- a/drivers/clocksource/dw_apb_timer_of.c
++++ b/drivers/clocksource/dw_apb_timer_of.c
+@@ -14,12 +14,13 @@
+ #include <linux/reset.h>
+ #include <linux/sched_clock.h>
+ 
+-static void __init timer_get_base_and_rate(struct device_node *np,
++static int __init timer_get_base_and_rate(struct device_node *np,
+ 				    void __iomem **base, u32 *rate)
+ {
+ 	struct clk *timer_clk;
+ 	struct clk *pclk;
+ 	struct reset_control *rstc;
++	int ret;
+ 
+ 	*base = of_iomap(np, 0);
+ 
+@@ -46,55 +47,67 @@ static void __init timer_get_base_and_rate(struct device_node *np,
+ 			pr_warn("pclk for %pOFn is present, but could not be activated\n",
+ 				np);
+ 
++	if (!of_property_read_u32(np, "clock-freq", rate) &&
++	    !of_property_read_u32(np, "clock-frequency", rate))
++		return 0;
++
+ 	timer_clk = of_clk_get_by_name(np, "timer");
+ 	if (IS_ERR(timer_clk))
+-		goto try_clock_freq;
++		return PTR_ERR(timer_clk);
+ 
+-	if (!clk_prepare_enable(timer_clk)) {
+-		*rate = clk_get_rate(timer_clk);
+-		return;
+-	}
++	ret = clk_prepare_enable(timer_clk);
++	if (ret)
++		return ret;
++
++	*rate = clk_get_rate(timer_clk);
++	if (!(*rate))
++		return -EINVAL;
+ 
+-try_clock_freq:
+-	if (of_property_read_u32(np, "clock-freq", rate) &&
+-	    of_property_read_u32(np, "clock-frequency", rate))
+-		panic("No clock nor clock-frequency property for %pOFn", np);
++	return 0;
+ }
+ 
+-static void __init add_clockevent(struct device_node *event_timer)
++static int __init add_clockevent(struct device_node *event_timer)
+ {
+ 	void __iomem *iobase;
+ 	struct dw_apb_clock_event_device *ced;
+ 	u32 irq, rate;
++	int ret = 0;
+ 
+ 	irq = irq_of_parse_and_map(event_timer, 0);
+ 	if (irq == 0)
+ 		panic("No IRQ for clock event timer");
+ 
+-	timer_get_base_and_rate(event_timer, &iobase, &rate);
++	ret = timer_get_base_and_rate(event_timer, &iobase, &rate);
++	if (ret)
++		return ret;
+ 
+ 	ced = dw_apb_clockevent_init(-1, event_timer->name, 300, iobase, irq,
+ 				     rate);
+ 	if (!ced)
+-		panic("Unable to initialise clockevent device");
++		return -EINVAL;
+ 
+ 	dw_apb_clockevent_register(ced);
++
++	return 0;
+ }
+ 
+ static void __iomem *sched_io_base;
+ static u32 sched_rate;
+ 
+-static void __init add_clocksource(struct device_node *source_timer)
++static int __init add_clocksource(struct device_node *source_timer)
+ {
+ 	void __iomem *iobase;
+ 	struct dw_apb_clocksource *cs;
+ 	u32 rate;
++	int ret;
+ 
+-	timer_get_base_and_rate(source_timer, &iobase, &rate);
++	ret = timer_get_base_and_rate(source_timer, &iobase, &rate);
++	if (ret)
++		return ret;
+ 
+ 	cs = dw_apb_clocksource_init(300, source_timer->name, iobase, rate);
+ 	if (!cs)
+-		panic("Unable to initialise clocksource device");
++		return -EINVAL;
+ 
+ 	dw_apb_clocksource_start(cs);
+ 	dw_apb_clocksource_register(cs);
+@@ -106,6 +119,8 @@ static void __init add_clocksource(struct device_node *source_timer)
+ 	 */
+ 	sched_io_base = iobase + 0x04;
+ 	sched_rate = rate;
++
++	return 0;
+ }
+ 
+ static u64 notrace read_sched_clock(void)
+@@ -146,10 +161,14 @@ static struct delay_timer dw_apb_delay_timer = {
+ static int num_called;
+ static int __init dw_apb_timer_init(struct device_node *timer)
+ {
++	int ret = 0;
++
+ 	switch (num_called) {
+ 	case 1:
+ 		pr_debug("%s: found clocksource timer\n", __func__);
+-		add_clocksource(timer);
++		ret = add_clocksource(timer);
++		if (ret)
++			return ret;
+ 		init_sched_clock();
+ #ifdef CONFIG_ARM
+ 		dw_apb_delay_timer.freq = sched_rate;
+@@ -158,7 +177,9 @@ static int __init dw_apb_timer_init(struct device_node *timer)
+ 		break;
+ 	default:
+ 		pr_debug("%s: found clockevent timer\n", __func__);
+-		add_clockevent(timer);
++		ret = add_clockevent(timer);
++		if (ret)
++			return ret;
+ 		break;
+ 	}
+ 
+-- 
+2.25.1
+
