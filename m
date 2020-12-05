@@ -2,199 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4771F2CF7E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7DB2CF7EA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbgLEARi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:17:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17392 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726508AbgLEARi (ORCPT
+        id S1730759AbgLEARm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgLEARl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:17:38 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B501PBj128630;
-        Fri, 4 Dec 2020 19:16:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8wxorAXIC7ZiFl4r0LxfUGzOj9+G63ZI658uKzqhNR4=;
- b=nj0m7RQ8rE9GR6YV8/sMOATJ+yVslergRPrhizAhDoFUliJApbC8Icq2GNvXgfFlpvVk
- cWtf2Dh98UXyGhuH+8nKAXC1bF+AAR2p8AqPybKbriHi2M3uYsEM3hPIJU7rhPtR0MZj
- l/0MoSxqEqADNkjEhkvpa+EJG4TaQQsoDaTBAl2KzaVFyUvkIdctPgV1dvQJCyG3LSof
- AjECUx51kefpFsM7qzkX+nqFf1Vu335Jitx5knBm22jN+to11o9ddCm0bCJVUW5JHy7W
- XhXy8HFPv+CAl9RiXPcJ77hIRFj1YqERViEoD2TwElluXn1NklRjc4zNLaL0KIhDwEee Ug== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 357m8gbma2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 19:16:50 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B507gq0015623;
-        Sat, 5 Dec 2020 00:16:50 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04wdc.us.ibm.com with ESMTP id 354ysv5rjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 00:16:50 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B50Gncp4850412
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 5 Dec 2020 00:16:50 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E22E2112062;
-        Sat,  5 Dec 2020 00:16:49 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF613112067;
-        Sat,  5 Dec 2020 00:16:48 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sat,  5 Dec 2020 00:16:48 +0000 (GMT)
-Subject: Re: [PATCH v3 06/18] ibmvfc: add handlers to drain and complete
- Sub-CRQ responses
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201203020806.14747-1-tyreld@linux.ibm.com>
- <20201203020806.14747-7-tyreld@linux.ibm.com>
- <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <1961b4e3-0732-ac5c-e691-2fa02218ac35@linux.ibm.com>
-Date:   Fri, 4 Dec 2020 16:16:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 4 Dec 2020 19:17:41 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27358C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:17:01 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id d27so665709oic.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:17:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=utTeGzYjnre0QYpGB+o+Kx5Eh/EBZWte4MIpGCS97Mk=;
+        b=RnvGMIvVG6Xy37R27w0nFCZsfL8SMYfr1j2g6qflxujBDijVLd19buyf8rD4Nict9a
+         JYI9wOCh94Yhtz+hVW/NRKrwlNM+VygZrGeFtpzetbkMWcE5xrE1uJs0fURBEjLdGEui
+         gTaC9pGyXUYKYc7lv0jypQ9tygpmh/+h2bZyVq9Qo0t+CK4AFnm23uuxcSb0XBfs2OHs
+         RTXC5sWfQ0v5CQdk+RSPcRB8EOhoPcuQmj3c75PJoclm9PeOr2dHU81165ghKLCK+ETT
+         veCpidLi8ww6qq92kNe7xD9dhB+lWUoxD2BfNKKoJf9Ndc1NMSoAANI6yofqqiaR1n04
+         LFYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=utTeGzYjnre0QYpGB+o+Kx5Eh/EBZWte4MIpGCS97Mk=;
+        b=YNTtFATTngTezONRHyna7k7FBqAJb4smD+aAntdfGt2dNUJiszibDZR+4u8t541kp+
+         LewBPuv35BKtWvWqIfKpkX0u0ST0a5Eh/hYEBZu9yDNe/uED4FS7IuFp8xVGxexHwluR
+         ZIC8O0ROwmfUkM+5XWeHiPYHWjI7qWtfuc+H2b1jCfYbRBVrXZpLRVm8UKQ31cCNGu/2
+         Z4HvZ/COttoq8RaG0yJTBrcLvtzT6fhxCX6eRXLd2q8BVmX7cT5nR3gwFPs2TSHhqcQU
+         SkSuL0L+4H6sIECiV5NWT8/CUuFfI9impLqkAjHSTtNl6ZPpPJnPfFi3yBzHNbNqzgrs
+         KvYA==
+X-Gm-Message-State: AOAM533HVd7YU0/A9SFkm2zdPcx5k9bErACU7amvDyXeap8K8Q60sWLA
+        SojFMOxxUBbIuGYLk3Wz502yCg==
+X-Google-Smtp-Source: ABdhPJxfhocvHXizIEP4tvs8LbPR8A8BuVXu9GscgqkwyR3FWCBYfhdQFs9rxANMhBsPduJ4JO39rQ==
+X-Received: by 2002:aca:6106:: with SMTP id v6mr5106782oib.158.1607127420378;
+        Fri, 04 Dec 2020 16:17:00 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r7sm1013171oih.21.2020.12.04.16.16.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 16:16:59 -0800 (PST)
+Date:   Fri, 4 Dec 2020 18:16:57 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>, Richard Zhu <hongxing.zhu@nxp.com>
+Subject: Re: [PATCH V3 1/7] remoteproc: elf: support platform specific memory
+ hook
+Message-ID: <X8rRedNHet9gm5lJ@builder.lan>
+References: <20201204074036.23870-1-peng.fan@oss.nxp.com>
+ <20201204074036.23870-2-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 clxscore=1015
- adultscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040134
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204074036.23870-2-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/20 6:51 AM, Brian King wrote:
-> On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
->> The logic for iterating over the Sub-CRQ responses is similiar to that
->> of the primary CRQ. Add the necessary handlers for processing those
->> responses.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvfc.c | 80 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 80 insertions(+)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->> index e082935f56cf..b61ae1df21e5 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->> @@ -3381,6 +3381,86 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
->>  	return rc;
->>  }
->>  
->> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->> +{
->> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
->> +	unsigned long flags;
->> +
->> +	switch (crq->valid) {
->> +	case IBMVFC_CRQ_CMD_RSP:
->> +		break;
->> +	case IBMVFC_CRQ_XPORT_EVENT:
->> +		return;
->> +	default:
->> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
->> +		return;
->> +	}
->> +
->> +	/* The only kind of payload CRQs we should get are responses to
->> +	 * things we send. Make sure this response is to something we
->> +	 * actually sent
->> +	 */
->> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
->> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
->> +			crq->ioba);
->> +		return;
->> +	}
->> +
->> +	if (unlikely(atomic_read(&evt->free))) {
->> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
->> +			crq->ioba);
->> +		return;
->> +	}
->> +
->> +	del_timer(&evt->timer);
->> +	list_del(&evt->queue);
->> +	ibmvfc_trc_end(evt);> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
-> 
-> You can't do this here... You are grabbing the host lock in ibmvfc_drain_sub_crq
-> and saving the irqflags to a local in that function, then doing a spin_unlock_irqrestore
-> and restoring irqflags using an uninitialized local in this function...
-> 
-> I'm assuming this will get sorted out with the locking changes we've been discussing off-list...
+On Fri 04 Dec 01:40 CST 2020, Peng Fan (OSS) wrote:
 
-Correct, moving to per-queue locks and flags stored in the queue struct.
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> To arm64, "dc      zva, dst" is used in memset.
+> Per ARM DDI 0487A.j, chapter C5.3.8 DC ZVA, Data Cache Zero by VA,
+> 
+> "If the memory region being zeroed is any type of Device memory,
+> this instruction can give an alignment fault which is prioritized
+> in the same way as other alignment faults that are determined
+> by the memory type."
+> 
+> On i.MX platforms, when elf is loaded to onchip TCM area, the region
+> is ioremapped, so "dc zva, dst" will trigger abort. And ioremap_wc()
+> on i.MX not able to write correct data to TCM area.
+> 
+> So we need to use io helpers, and extend the elf loader to support
+> platform specific memory functions.
+> 
+> Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_elf_loader.c | 20 ++++++++++++++++++--
+>  include/linux/remoteproc.h                 |  4 ++++
+>  2 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index df68d87752e4..6cb71fe47261 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -129,6 +129,22 @@ u64 rproc_elf_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
+>  }
+>  EXPORT_SYMBOL(rproc_elf_get_boot_addr);
+>  
+> +static void rproc_elf_memcpy(struct rproc *rproc, void *dest, const void *src, size_t count)
+> +{
+> +	if (!rproc->ops->elf_memcpy)
+> +		memcpy(dest, src, count);
+> +
+> +	rproc->ops->elf_memcpy(rproc, dest, src, count);
 
--Tyrel
+Looking at the current set of remoteproc drivers I get a feeling that
+we'll end up with a while bunch of functions that all just wraps
+memcpy_toio(). And the reason for this is that we are we're "abusing" the
+carveout to carry the __iomem pointer without keeping track of it.
 
-> 
-> 
->> +	evt->done(evt);
->> +	spin_lock_irqsave(vhost->host->host_lock, flags);
->> +}
->> +
->> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
->> +{
->> +	struct ibmvfc_crq *crq;
->> +
->> +	crq = &scrq->msgs[scrq->cur].crq;
->> +	if (crq->valid & 0x80) {
->> +		if (++scrq->cur == scrq->size)
->> +			scrq->cur = 0;
->> +		rmb();
->> +	} else
->> +		crq = NULL;
->> +
->> +	return crq;
->> +}
->> +
->> +static void ibmvfc_drain_sub_crq(struct ibmvfc_sub_queue *scrq)
->> +{
->> +	struct ibmvfc_crq *crq;
->> +	unsigned long flags;
->> +	int done = 0;
->> +
->> +	spin_lock_irqsave(scrq->vhost->host->host_lock, flags);
->> +	while (!done) {
->> +		while ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
->> +			ibmvfc_handle_scrq(crq, scrq->vhost);
->> +			crq->valid = 0;
->> +			wmb();
->> +		}
->> +
->> +		ibmvfc_toggle_scrq_irq(scrq, 1);
->> +		if ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
->> +			ibmvfc_toggle_scrq_irq(scrq, 0);
->> +			ibmvfc_handle_scrq(crq, scrq->vhost);
->> +			crq->valid = 0;
->> +			wmb();
->> +		} else
->> +			done = 1;
->> +	}
->> +	spin_unlock_irqrestore(scrq->vhost->host->host_lock, flags);
->> +}
->> +
->>  /**
->>   * ibmvfc_init_tgt - Set the next init job step for the target
->>   * @tgt:		ibmvfc target struct
->>
-> 
-> 
+And this is not the only time we're supposed to use an io-accessor,
+another example is rproc_copy_segment() in rproc_coredump.c
 
+It also means that if a platform driver for some reason where to support
+both ioremap and normal carveouts the elf_memcpy op would be quite
+quirky.
+
+
+So I would prefer if we track the knowledge about void *va being a
+__iomem or not in the struct rproc_mem_entry and make rproc_da_to_va()
+return this information as well.
+
+Then instead of extending the ops we can make this simply call memcpy or
+memcpy_toio() depending on this.
+
+Regards,
+Bjorn
+
+> +}
+> +
+> +static void rproc_elf_memset(struct rproc *rproc, void *s, int c, size_t count)
+> +{
+> +	if (!rproc->ops->elf_memset)
+> +		memset(s, c, count);
+> +
+> +	rproc->ops->elf_memset(rproc, s, c, count);
+> +}
+> +
+>  /**
+>   * rproc_elf_load_segments() - load firmware segments to memory
+>   * @rproc: remote processor which will be booted using these fw segments
+> @@ -214,7 +230,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  
+>  		/* put the segment where the remote processor expects it */
+>  		if (filesz)
+> -			memcpy(ptr, elf_data + offset, filesz);
+> +			rproc_elf_memcpy(rproc, ptr, elf_data + offset, filesz);
+>  
+>  		/*
+>  		 * Zero out remaining memory for this segment.
+> @@ -224,7 +240,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  		 * this.
+>  		 */
+>  		if (memsz > filesz)
+> -			memset(ptr + filesz, 0, memsz - filesz);
+> +			rproc_elf_memset(rproc, ptr + filesz, 0, memsz - filesz);
+>  	}
+>  
+>  	return ret;
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e8ac041c64d9..06c52f88a3fd 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -373,6 +373,8 @@ enum rsc_handling_status {
+>   *			expects to find it
+>   * @sanity_check:	sanity check the fw image
+>   * @get_boot_addr:	get boot address to entry point specified in firmware
+> + * @elf_memcpy:		platform specific elf loader memcpy
+> + * @elf_memset:		platform specific elf loader memset
+>   * @panic:	optional callback to react to system panic, core will delay
+>   *		panic at least the returned number of milliseconds
+>   */
+> @@ -392,6 +394,8 @@ struct rproc_ops {
+>  	int (*load)(struct rproc *rproc, const struct firmware *fw);
+>  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+>  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+> +	void (*elf_memcpy)(struct rproc *rproc, void *dest, const void *src, size_t count);
+> +	void (*elf_memset)(struct rproc *rproc, void *s, int c, size_t count);
+>  	unsigned long (*panic)(struct rproc *rproc);
+>  };
+>  
+> -- 
+> 2.28.0
+> 
