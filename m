@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3D42CFF88
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1802CFF89
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 23:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgLEWdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 17:33:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59964 "EHLO mail.kernel.org"
+        id S1726415AbgLEWfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 17:35:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgLEWdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 17:33:32 -0500
-Date:   Sat, 5 Dec 2020 14:32:50 -0800
+        id S1725270AbgLEWfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 17:35:20 -0500
+Date:   Sat, 5 Dec 2020 14:34:39 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607207572;
-        bh=YZrn1IlbhlQAWy/qDP82GR67nZ5d803g393MCcPsdm0=;
-        h=From:To:Cc:Subject:From;
-        b=twsk11/9zewfQGMp7lYWqYVhZoy4/KRwjuLf0RSixLZfecN1zel/wVGotAM9CmPey
-         Gk/tTHNkAqEHZMWXL0te3VsBLAs8puHlskNXm0oz5cZAB3gh1D50OSOO7qWAZf3G8C
-         y2b2rA6Imfu+XJsHgwn1pv1par5Vgbx9FVjdQyBUAn3Urxayg252b6BIGETxX0CKX8
-         PbnvDiP8xtN1KcZ1JFInrWoqiZWgIO0tcEw3b2eXxBCSDIc4QTAwF8i/pUITV1ZiCQ
-         6sQtKmZ8LaD/QkqtiB/0HWMg4HPdf9pSpZ4uS7Da5trS1WlJ9LUKk/Os2rNZIXRpp/
-         MWmSzdVfgy1yg==
+        s=k20201202; t=1607207680;
+        bh=cMgJ5FN4yoxLMb7kikcjkva9GbT8haiAgzoG3+ezn8Y=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fnGchznoa4sX0dD4vrAJT80RD++JmFEZjOPbDmnN97fen+bfpd9qsLcwwCPZrWp59
+         YplD++KkSVxZMVa4tOpWRDKf6gXt4dP2l80EX4/hPlb0uH43r1YEKL3p948f/ukIl9
+         2ibnBK7GXMozDGK9YQsnGIfxTyvXyxULRG/uJb1yH+YhuF4/8k89XKxPzoG53LFCrf
+         YQMWarxaMqOYwVRkvulI7O9iFyuwyJfrQLPiWAmgH5QwkzwLSYipaYs7E6iPEU5dhd
+         4UROZLNdpkLRaa7jPSEFVk9bEIBjXhEjmrywx5n0PjVlyuN4YT57dompUp2hWWpbU5
+         VIIFJ3ydApdmw==
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     linux-sparse@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, edwin.peer@broadcom.com,
-        Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: sparse annotation for error types?
-Message-ID: <20201205143250.2378b9f9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: marvell: prestera: Fix error return code in
+ prestera_port_create()
+Message-ID: <20201205143439.3b3eb07f@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1607071782-34006-1-git-send-email-zhangchangzhong@huawei.com>
+References: <1607071782-34006-1-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -35,54 +42,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Fri, 4 Dec 2020 16:49:42 +0800 Zhang Changzhong wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: 501ef3066c89 ("net: marvell: prestera: Add driver for Prestera family ASIC devices")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-Recently we've been getting a steady stream of patches from Changzhong
-to fix missing assignment to error variables before jumping to error
-cases.
-
-I wonder if for new code it'd make sense to add an annotation for a type
-which has to be returned non-zero?
-
-What I have in mind is the following common flow:
-
-int do_a_thing(struct my_obj *obj, int param)
-{
-	int err;
-
-	err = first_step(obj, 1);
-	if (err)
-		return err;
-
-	if (some_check(obj)) {
-		err = -EINVAL; /* need explicit error set! */
-		goto err_undo_1s;
-	}
-
-	err = second_step(obj, param);
-	if (err)
-		goto err_undo_1s;
-
-	err = third_step(obj, 0);
-	if (err)
-		goto err_undo_2s;
-
-	return 0;
-
-err_undo_2s:
-	second_undo(obj);
-err_undo_1s:
-	first_undo(obj);
-	return err;
-}
-
-
-The variable err should never be returned when it's equal to 0.
-So if we annotate it, let's say as:
-
-	int __nzret err;
-
-could sparse then warn if we forgot to assign it after
-"if (some_check(obj))"? 
-
-Am I the only one who thinks this would be a good idea?
+Applied, thanks!
