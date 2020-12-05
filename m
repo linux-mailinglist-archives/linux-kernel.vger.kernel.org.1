@@ -2,186 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE182CFC86
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C22CFC91
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgLESXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgLESXU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:23:20 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72653C09426B
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 09:12:54 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id t6so12063496lfl.13
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 09:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mxdC9nJ3E8UgLvs3Rk9lCytw5k8wmjBa4iF3dwQ+Rt4=;
-        b=sHK3k8AdCX6k4jiRY6SdoiiARh2Zojtn832+mXeJ0+ISh9pUUjMpkCuFFfaNYYM2Af
-         qyzhEmxNaXqeRXtsVHpYi+mSQqzbqjnTMK1BnWij1R7l+fAuk9LCDMqFwG2BZK9mPItX
-         AZcJ7Mc9a5EYpaXbyoxZeT6dd6h3FFLqRycuh40c1iPF9/6E1p7nyP2RSpamNpd2dUaY
-         RmfdzuVIaLDHdkbIGuhM8Fw1NQiEf3r9WOcJGJe2e4k7ysH5+YXPylXelFet7SAn4VAH
-         +GEQRXVItSkJug/v1RnpvsxyD04y99sgVPJALAGyxu4FWHy6vlP1ZKgy9JbeN9ldKlcK
-         hZZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mxdC9nJ3E8UgLvs3Rk9lCytw5k8wmjBa4iF3dwQ+Rt4=;
-        b=JZA2yHtyrwUYTUaGdA9GLGOTRBK5Ov+bWEn211v3+ZyP5XDEFfDy5ctIXUQvYm/qmY
-         fkZVHtGWaTA4ilQ3iD2v8e5/JQ8/TkgSacd1R8cFrGgdR8RhGsBkqTX+C1D4PfXNb4WC
-         zT0Cctz16lrojt8vxPmJ/3VJOZ0yXoxql0YGevws4AoylATnOSu7L0r78LjKR33GUqHH
-         r96l8KHR14eAMh3PclWgFxmqZct+HAXBNQBDh90549KbadEP/ofXBRScuJUPhINRVHkI
-         YlN0xgG6KUmFv2B7B+K5YkHanGjT9TtCdK6G6Dl+uva6uJSheB7vAcPPxDv+lIHUAELw
-         dtUg==
-X-Gm-Message-State: AOAM532Y8PcpRJ50j34neEkZabqgIGibB4wm0NUx1u0+h9GDHmQBRlYc
-        oKBy35hTnzWnS1MhSmrkumgeYLUuxusDt8Mp52WGdA==
-X-Google-Smtp-Source: ABdhPJwHyBZ83Wft1RikDbPvXssq7kSbQwSzdhcpRDcjx19c6pe0HapIIBpSbImoJIVYmIj/THSx9nQyFBYoAl2g8Vw=
-X-Received: by 2002:ac2:530b:: with SMTP id c11mr5092734lfh.185.1607188372824;
- Sat, 05 Dec 2020 09:12:52 -0800 (PST)
+        id S1730097AbgLESTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727787AbgLERyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:54:32 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F6F92311C;
+        Sat,  5 Dec 2020 17:17:11 +0000 (UTC)
+Date:   Sat, 5 Dec 2020 17:17:08 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 3/8] Documentation: HID: hiddev editing & corrections
+Message-ID: <20201205171708.55251bb7@archlinux>
+In-Reply-To: <20201204062022.5095-4-rdunlap@infradead.org>
+References: <20201204062022.5095-1-rdunlap@infradead.org>
+        <20201204062022.5095-4-rdunlap@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201203152311.5272-1-carver4lio@163.com> <a5bc444ec40a2248009d0894fda61b822d030235.camel@redhat.com>
- <CGME20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c@eucas1p1.samsung.com>
- <adc36428-05eb-f885-9394-080cc805818f@samsung.com> <3d709122-0364-5bca-9247-3f212096b389@nvidia.com>
- <CADYN=9+nE=n4cXb6gDKmQqfkn97HoFShKGSpqVise=XR-aGtVw@mail.gmail.com>
-In-Reply-To: <CADYN=9+nE=n4cXb6gDKmQqfkn97HoFShKGSpqVise=XR-aGtVw@mail.gmail.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Sat, 5 Dec 2020 18:12:42 +0100
-Message-ID: <CADYN=9KDbLq5Xbvr-ZtbF2ZMEjatLab8wqzN1hTijGWnddD8-A@mail.gmail.com>
-Subject: Re: [PATCH] mm/memblock:use a more appropriate order calculation when
- free memblock pages
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Qian Cai <qcai@redhat.com>, carver4lio@163.com,
-        rppt@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hailong Liu <liu.hailong6@zte.com.cn>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Dec 2020 at 18:09, Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> On Fri, 4 Dec 2020 at 18:44, Jon Hunter <jonathanh@nvidia.com> wrote:
-> >
-> >
-> > On 04/12/2020 16:07, Marek Szyprowski wrote:
-> > > Hi All,
-> > >
-> > > On 04.12.2020 14:42, Qian Cai wrote:
-> > >> On Thu, 2020-12-03 at 23:23 +0800, carver4lio@163.com wrote:
-> > >>> From: Hailong Liu <liu.hailong6@zte.com.cn>
-> > >>>
-> > >>> When system in the booting stage, pages span from [start, end] of a memblock
-> > >>> are freed to buddy in a order as large as possible (less than MAX_ORDER) at
-> > >>> first, then decrease gradually to a proper order(less than end) in a loop.
-> > >>>
-> > >>> However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
-> > >>> in some cases.
-> > >>> Instead, *__ffs(end - start)* may be more appropriate and meaningful.
-> > >>>
-> > >>> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
-> > >> Reverting this commit on the top of today's linux-next fixed boot crashes on
-> > >> multiple NUMA systems.
-> > >
-> > > I confirm. Reverting commit 4df001639c84 ("mm/memblock: use a more
-> > > appropriate order calculation when free memblock pages") on top of linux
-> > > next-20201204 fixed booting of my ARM32bit test systems.
-> >
-> >
-> > FWIW, I also confirm that this is causing several 32-bit Tegra platforms
-> > to crash on boot and reverting this fixes the problem.
->
-> I had the same experience on an arm64 system.
+On Thu,  3 Dec 2020 22:20:17 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-This is the log that I see:
+> Do basic editing & correction to hiddev.rst:
+> - use HID instead of hid consistently
 
-[    0.000000][    T0] percpu: Embedded 507 pages/cpu s2036568 r8192
-d31912 u2076672
-[    0.000000][    T0] Detected VIPT I-cache on CPU0
-[    0.000000][    T0] CPU features: detected: ARM erratum 845719
-[    0.000000][    T0] CPU features: GIC system register CPU interface
-present but disabled by higher exception level
-[    0.000000][    T0] CPU features: kernel page table isolation
-forced OFF by kpti command line option
-[    0.000000][    T0] Built 1 zonelists, mobility grouping on.  Total
-pages: 516096
-[    0.000000][    T0] Policy zone: DMA
-[    0.000000][    T0] Kernel command line: root=/dev/root
-rootfstype=9p rootflags=trans=virtio console=ttyAMA0,38400n8
-earlycon=pl011,0x9000000 initcall_debug softlockup_panic=0
-security=none kpti=no
-[    0.000000][    T0] Dentry cache hash table entries: 262144 (order:
-9, 2097152 bytes, linear)
-[    0.000000][    T0] Inode-cache hash table entries: 131072 (order:
-8, 1048576 bytes, linear)
-[    0.000000][    T0] mem auto-init: stack:off, heap alloc:on, heap free:on
-[    0.000000][    T0] mem auto-init: clearing system memory may take
-some time...
-[    0.000000][    T0] page:(____ptrval____) refcount:0 mapcount:0
-mapping:0000000000000000 index:0x0 pfn:0x40010
-[    0.000000][    T0] flags: 0x1fffe0000000000()
-[    0.000000][    T0] raw: 01fffe0000000000 fffffc0000000408
-fffffc0000000408 0000000000000000
-[    0.000000][    T0] raw: 0000000000000000 0000000000000000
-00000000ffffffff 0000000000000000
-[    0.000000][    T0] page dumped because: VM_BUG_ON_PAGE(pfn & ((1
-<< order) - 1))
-[    0.000000][    T0] ------------[ cut here ]------------
-[    0.000000][    T0] kernel BUG at mm/page_alloc.c:1015!
-[    0.000000][    T0] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-[    0.000000][    T0] Modules linked in:
-[    0.000000][    T0] CPU: 0 PID: 0 Comm: swapper Not tainted
-5.10.0-rc6-next-20201204-00010-g7f8e9106f747-dirty #1
-[    0.000000][    T0] Hardware name: linux,dummy-virt (DT)
-[    0.000000][    T0] pstate: 40400085 (nZcv daIf +PAN -UAO -TCO BTYPE=--)
-[    0.000000][    T0] pc : __free_one_page+0x14c/0x700
-[    0.000000][    T0] lr : __free_one_page+0x14c/0x700
-[    0.000000][    T0] sp : ffff800013fd7c10
-[    0.000000][    T0] x29: ffff800013fd7c10 x28: 0000000000000000
-[    0.000000][    T0] x27: 0000000000000200 x26: 0000000000000001
-[    0.000000][    T0] x25: 0000000000000000 x24: 0000000000000009
-[    0.000000][    T0] x23: ffff00007dbfbd40 x22: fffffc0000000400
-[    0.000000][    T0] x21: 0000000000040010 x20: 0000000000000009
-[    0.000000][    T0] x19: 00000000000001ff x18: 0000000000000000
-[    0.000000][    T0] x17: 0000000000000000 x16: 0000000000000000
-[    0.000000][    T0] x15: 0000000000000000 x14: 0000000000000000
-[    0.000000][    T0] x13: 0000000000000000 x12: ffff70000281852d
-[    0.000000][    T0] x11: 1ffff0000281852c x10: ffff70000281852c
-[    0.000000][    T0] x9 : dfff800000000000 x8 : ffff8000140c2960
-[    0.000000][    T0] x7 : 0000000000000001 x6 : 00008ffffd7e7ad4
-[    0.000000][    T0] x5 : 0000000000000000 x4 : 0000000000000000
-[    0.000000][    T0] x3 : ffff80001400ab00 x2 : 0000000000000000
-[    0.000000][    T0] x1 : 0000000000000000 x0 : 0000000000000000
-[    0.000000][    T0] Call trace:
-[    0.000000][    T0]  __free_one_page+0x14c/0x700
-[    0.000000][    T0]  free_one_page+0xf0/0x120
-[    0.000000][    T0]  __free_pages_ok+0x720/0x780
-[    0.000000][    T0]  __free_pages_core+0x240/0x280
-[    0.000000][    T0]  memblock_free_pages+0x40/0x50
-[    0.000000][    T0]  free_low_memory_core_early+0x230/0x2f0
-[    0.000000][    T0]  memblock_free_all+0x28/0x58
-[    0.000000][    T0]  mem_init+0xf0/0x10c
-[    0.000000][    T0]  mm_init+0xb4/0xe8
-[    0.000000][    T0]  start_kernel+0x1e0/0x520
-[    0.000000][    T0] Code: 913a8021 aa1603e0 91030021 97fe7ec6 (d4210000)
-[    0.000000][    T0] random: get_random_bytes called from
-oops_exit+0x50/0xa0 with crng_init=0
-[    0.000000][    T0] ---[ end trace 0000000000000000 ]---
-[    0.000000][    T0] Kernel panic - not syncing: Oops - BUG: Fatal exception
-[    0.000000][    T0] ---[ end Kernel panic - not syncing: Oops -
-BUG: Fatal exception ]---
+One case inline, where I think the usage of hid-core
+might have been deliberate.
 
-Cheers,
-Anders
+> - add hyphenation of multi-word adjectives
+> - drop a duplicate word
+> - unhyphenate "a priori"
+> 
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> ---
+>  Documentation/hid/hiddev.rst |   12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> --- linux-next-20201201.orig/Documentation/hid/hiddev.rst
+> +++ linux-next-20201201/Documentation/hid/hiddev.rst
+> @@ -27,7 +27,7 @@ the following::
+>                            --> hiddev.c ----> POWER / MONITOR CONTROL  
+>  
+>  In addition, other subsystems (apart from USB) can potentially feed
+> -events into the input subsystem, but these have no effect on the hid
+> +events into the input subsystem, but these have no effect on the HID
+>  device interface.
+>  
+>  Using the HID Device Interface
+> @@ -72,8 +72,8 @@ The hiddev API uses a read() interface,
+>  
+>  HID devices exchange data with the host computer using data
+>  bundles called "reports".  Each report is divided into "fields",
+> -each of which can have one or more "usages".  In the hid-core,
+> -each one of these usages has a single signed 32 bit value.
+> +each of which can have one or more "usages".  In the HID core,
+
+Hmm. hid-core is (I think) kind of referring to the code in hid-core.c
+Whereas a Human Interface Device core (HID core) sounds like
+something different.  Not my doc though!
+
+> +each one of these usages has a single signed 32-bit value.
+>  
+>  read():
+>  -------
+> @@ -113,7 +113,7 @@ HIDIOCAPPLICATION
+>    - (none)
+>  
+>  This ioctl call returns the HID application usage associated with the
+> -hid device. The third argument to ioctl() specifies which application
+> +HID device. The third argument to ioctl() specifies which application
+>  index to get. This is useful when the device has more than one
+>  application collection. If the index is invalid (greater or equal to
+>  the number of application collections this device has) the ioctl
+> @@ -181,7 +181,7 @@ looked up by type (input, output or feat
+>  must be filled in by the user. The ID can be absolute -- the actual
+>  report id as reported by the device -- or relative --
+>  HID_REPORT_ID_FIRST for the first report, and (HID_REPORT_ID_NEXT |
+> -report_id) for the next report after report_id. Without a-priori
+> +report_id) for the next report after report_id. Without a priori
+>  information about report ids, the right way to use this ioctl is to
+>  use the relative IDs above to enumerate the valid IDs. The ioctl
+>  returns non-zero when there is no more next ID. The real report ID is
+> @@ -200,7 +200,7 @@ HIDIOCGUCODE
+>    - struct hiddev_usage_ref (read/write)
+>  
+>  Returns the usage_code in a hiddev_usage_ref structure, given that
+> -given its report type, report id, field index, and index within the
+> +its report type, report id, field index, and index within the
+>  field have already been filled into the structure.
+>  
+>  HIDIOCGUSAGE
+
