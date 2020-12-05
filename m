@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4242E2CFC44
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499C62CFC41
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgLERZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 12:25:49 -0500
-Received: from mx.baikalchip.ru ([94.125.187.42]:53200 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727099AbgLEQzv (ORCPT
+        id S1727434AbgLERRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 12:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgLEQtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:55:51 -0500
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 03/19] dt-bindings: usb: usb-drd: Add "otg-rev" property constraints
-Date:   Sat, 5 Dec 2020 18:24:10 +0300
-Message-ID: <20201205152427.29537-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Sat, 5 Dec 2020 11:49:05 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16BCC02B8FA
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 08:11:57 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id lb18so2340947pjb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 08:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=Mz/7Yi61thJ88HE692aK3MZiSQS4EROkVabvy/8vXTw=;
+        b=DhL2umoxMynanfmyKr00u4At2reQZYap7bLysS7iO2w5j378kBnpkqTo925b1AMXV9
+         GfnmqNtET9W86zssaaOutcBbaatQqvIuT0cFpK/81Z7C+e8JNbfIu0fT5XUcH3GNcfdc
+         TB+RF64MfXALrRuW3BwDZoBwlIBtNKpXrKm5Y0/qTBIU331wiDfW9P9m9Ss4s+Q3hmKj
+         IbLQSoUJ7xJOh7w9Sws/9AcCKZ+1eQgOt1ThRR6L9HNeFOZO+EVk2vhjr0XajH5/mYrN
+         BMTdOzYSYOvXdJvjmZaBKKSwrzDg8IwR22EhWuj7sLHF1rrlBKjTfwBTm4b8Mzs0E+Hn
+         xxiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=Mz/7Yi61thJ88HE692aK3MZiSQS4EROkVabvy/8vXTw=;
+        b=lVAwLaErU1Wa/fW4+K1gmf70qIj6dkTOGRVSAY++HXKG1b2btuQcrOXh3hGUcc27wZ
+         pxTBeoPzhyGSsTd+2zBxWT2qjmHUwFZf5tRMujoFApxTJOAuF8dZzlx1n1zYSQE6UZjj
+         /wMqyKOseVeUYJacdcmtr6RVd1K5tZ+uVBA6t1VufjaWtRij9j13SdT/QqAn2ajLL+fr
+         sOwZuqdaVuLYe0ioa7aWOQMrEQq6Q7Ur+uu2LPsorCOFq2XLdg7yILO0FbjYyA2ft8JM
+         2iFnaGRI9+L8+Xk+KXjOHnl0pQM8SFMKSs6zgWD17FXpWfjMEHHVX2qfuIxqXJI0WTqA
+         o3XA==
+X-Gm-Message-State: AOAM530/ZtwKew9l5NFD7z7erUqlyN9YaVNB/bZHFWtmNnGad1uv8/G/
+        vuL/K3WuuxcAUjS69o9/IeLp3w==
+X-Google-Smtp-Source: ABdhPJwZpG0woeNrtDGe9OhzFE0RR6dieb9MhtJVWcHQn4MXBKdlSYP/d9e6WoDZV96QQKI0PbKqlA==
+X-Received: by 2002:a17:902:bd4c:b029:d8:fd6a:6ca2 with SMTP id b12-20020a170902bd4cb02900d8fd6a6ca2mr8830175plx.53.1607184717112;
+        Sat, 05 Dec 2020 08:11:57 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:c541:6c6c:97fe:790? ([2601:646:c200:1ef2:c541:6c6c:97fe:790])
+        by smtp.gmail.com with ESMTPSA id mr7sm5466394pjb.31.2020.12.05.08.11.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Dec 2020 08:11:56 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 2/8] x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+Date:   Sat, 5 Dec 2020 08:11:54 -0800
+Message-Id: <116A6B40-C77B-4B6A-897B-18342CD62CEC@amacapital.net>
+References: <1607152918.fkgmomgfw9.astroid@bobo.none>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+In-Reply-To: <1607152918.fkgmomgfw9.astroid@bobo.none>
+To:     Nicholas Piggin <npiggin@gmail.com>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only four OTG revisions are currently supported by the kernel:
-0x0100, 0x0120, 0x0130, 0x0200. Any another value is considered as
-invalid.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Rob Herring <robh@kernel.org>
+> On Dec 5, 2020, at 12:00 AM, Nicholas Piggin <npiggin@gmail.com> wrote:
+>=20
+>=20
+> I disagree. Until now nobody following it noticed that the mm gets
+> un-lazied in other cases, because that was not too clear from the
+> code (only indirectly using non-standard terminology in the arch
+> support document).
 
----
+> In other words, membarrier needs a special sync to deal with the case=20
+> when a kthread takes the mm.
 
-Changelog v4:
-- Move the constraints to the usb-drd.yaml schema where the otg-rev
-  property is now defined.
----
- Documentation/devicetree/bindings/usb/usb-drd.yaml | 1 +
- 1 file changed, 1 insertion(+)
+I don=E2=80=99t think this is actually true. Somehow the x86 oddities about C=
+R3 writes leaked too much into the membarrier core code and comments. (I dou=
+bt this is x86 specific.  The actual x86 specific part seems to be that we c=
+an return to user mode without syncing the instruction stream.)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-drd.yaml b/Documentation/devicetree/bindings/usb/usb-drd.yaml
-index f3a64c46dcd0..f229fc8068d9 100644
---- a/Documentation/devicetree/bindings/usb/usb-drd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-drd.yaml
-@@ -18,6 +18,7 @@ properties:
-       features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
-       0x0200 or above.
-     $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0x0100, 0x0120, 0x0130, 0x0200]
- 
-   dr_mode:
-     description:
--- 
-2.29.2
+As far as I can tell, membarrier doesn=E2=80=99t care at all about laziness.=
+ Membarrier cares about rq->curr->mm.  The fact that a cpu can switch its ac=
+tual loaded mm without scheduling at all (on x86 at least) is entirely besid=
+e the point except insofar as it has an effect on whether a subsequent switc=
+h_mm() call serializes.  If we notify membarrier about x86=E2=80=99s asynchr=
+onous CR3 writes, then membarrier needs to understand what to do with them, w=
+hich results in an unmaintainable mess in membarrier *and* in the x86 code.
 
+I=E2=80=99m currently trying to document how membarrier actually works, and h=
+opefully this will result in untangling membarrier from mmdrop() and such.
+
+A silly part of this is that x86 already has a high quality implementation o=
+f most of membarrier(): flush_tlb_mm().  If you flush an mm=E2=80=99s TLB, w=
+e carefully propagate the flush to all threads, with attention to memory ord=
+ering.  We can=E2=80=99t use this directly as an arch-specific implementatio=
+n of membarrier because it has the annoying side affect of flushing the TLB a=
+nd because upcoming hardware might be able to flush without guaranteeing a c=
+ore sync.  (Upcoming means Zen 3, but the Zen 3 implementation is sadly not u=
+sable by Linux.)
