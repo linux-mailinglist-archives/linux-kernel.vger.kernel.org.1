@@ -2,138 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7E82CFC50
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3539A2CFC93
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgLERul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 12:50:41 -0500
-Received: from mail.hallyn.com ([178.63.66.53]:60704 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727466AbgLERlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:41:21 -0500
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id AF1396A6; Sat,  5 Dec 2020 11:40:00 -0600 (CST)
-Date:   Sat, 5 Dec 2020 11:40:00 -0600
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Andrew G. Morgan" <morgan@kernel.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        =?iso-8859-1?Q?Herv=E9?= Guillemet <herve@guillemet.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [PATCH] fix namespaced fscaps when !CONFIG_SECURITY
-Message-ID: <20201205174000.GA3290@mail.hallyn.com>
-References: <20201117150856.GA12240@mail.hallyn.com>
- <CALQRfL6q8ppuWi3ygY6iqh6SX9pnkVnvJDynTD61K2wUqerahg@mail.gmail.com>
- <20201129211542.GA5227@mail.hallyn.com>
- <alpine.LRH.2.21.2012011358200.28022@namei.org>
- <CALQRfL6OQKuBqbUoC7_yH7W4qabYSamRYUqjM-HE1gj2r_CaHQ@mail.gmail.com>
+        id S1728714AbgLES3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727495AbgLES3J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:29:09 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7033AC061A51;
+        Sat,  5 Dec 2020 03:51:45 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id c7so8622119edv.6;
+        Sat, 05 Dec 2020 03:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9hd3HS1nRGiOdMm5T7QTs9bBnrJ+T0eTd0OHKFt9TJM=;
+        b=OQYNEf2uJdfHMQnh+CsubPaAu5uKQx4mJCqeL4MCG4CUH8i1yrmV0z6Be7aYVqBOHT
+         63m+s4TsGqrrLl0xK0yoOmLqIzkrubm22Lj2NxzlpB+WrY6uXT9d/frREYJX8ZdMrDPC
+         zWQ3dbYiLDoOnKkHh3DvLHteJEhV+PP6s7qSS8mGAImzxqchIEuwE7cmxEXEiINZdQDx
+         sCZXMoivvH0VqZKWWgU5C8neJ09AU3ICwf/y2mXGe31fsI1KKCzDqrrxdMTRYQwfoHb0
+         U1saovH2q/Zinm5jumRt10HNk7zj40nPWYhyi14EStWuQy+PCyusQZzkMSb3QWth9uAO
+         UJHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9hd3HS1nRGiOdMm5T7QTs9bBnrJ+T0eTd0OHKFt9TJM=;
+        b=oQUbGXFoXdw+s6dNgFBboISAFWv1GTV2UcL9LjfqALZBNp0eAbf+vUPwMR7tLdoPvD
+         lciLZjeQiFvou4GjgINTgOodui+TS4fmN3WAAqnj64eLP08fAIAgp5bhtL0g9BEXx/gt
+         x6TsILpf4wnFGx+yCYQzsoAoOcxl8mNpGepNfjxWAvBncsY7xBZLkLvQsrh/Wmz8a2hU
+         G+lRyjMSQAJQsyW69Ew1AneiclbDJRhQC62TmmkL7FayG9GpXvrBuNpe+QwOvxBq6O7T
+         xYS6qmy295N3MXw6/E/Yeiyg7AhYwlEWMbiEFsyflACsQY/1QCSTHUDe/3IoABbic5hT
+         nK2Q==
+X-Gm-Message-State: AOAM532loyJKDSMb/066+EdI4jHjE0zaMC8+O8vAOtlbEgrPbMWGJlU5
+        MY3jn4930cGR0THzSPOpeK4Ll6J3BxHbmPa6vHM=
+X-Google-Smtp-Source: ABdhPJyTmxH/J6AxpvkQV8Zl0g2e2O5aFVksrEY/jFlL2+JuuumDaJabPFMHoTqSD0/L1it3ad9vJWHnKSwlWMxNXGs=
+X-Received: by 2002:a05:6402:949:: with SMTP id h9mr11596537edz.301.1607169103997;
+ Sat, 05 Dec 2020 03:51:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALQRfL6OQKuBqbUoC7_yH7W4qabYSamRYUqjM-HE1gj2r_CaHQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201126050440.6273-1-christianshewitt@gmail.com>
+In-Reply-To: <20201126050440.6273-1-christianshewitt@gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sat, 5 Dec 2020 12:51:33 +0100
+Message-ID: <CAFBinCAUede5uaqnkSHqmwmMuTnZpdhbJAUE11q32y60SW0D2Q@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: add KHAMSIN IR remote node to SML5442TW
+To:     Christian Hewitt <christianshewitt@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How odd - where did that come from?
-
-James, I force-pushed that with corrected bugzilla link to
-2020-11-29/fix-nscaps.  Sorry about that.
-
-On Fri, Dec 04, 2020 at 07:58:14AM -0800, Andrew G. Morgan wrote:
-> The correct bug reference for this patch is:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=209689
-> 
-> Reviewed-by: Andrew G. Morgan <morgan@kernel.org>
-> 
-> On Mon, Nov 30, 2020 at 6:58 PM James Morris <jmorris@namei.org> wrote:
-> >
-> > On Sun, 29 Nov 2020, Serge E. Hallyn wrote:
-> >
-> > > Hi James,
-> > >
-> > > would you mind adding this to the security tree?  (You can cherrypick
-> > > from https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/commit/?h=2020-11-29/fix-nscaps )
-> >
-> > Sure.
-> >
-> > >
-> > > thanks,
-> > > -serge
-> > >
-> > > On Tue, Nov 17, 2020 at 08:09:59AM -0800, Andrew G. Morgan wrote:
-> > > > Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
-> > > >
-> > > >
-> > > > On Tue, Nov 17, 2020 at 7:09 AM Serge E. Hallyn <serge@hallyn.com> wrote:
-> > > >
-> > > > > Namespaced file capabilities were introduced in 8db6c34f1dbc .
-> > > > > When userspace reads an xattr for a namespaced capability, a
-> > > > > virtualized representation of it is returned if the caller is
-> > > > > in a user namespace owned by the capability's owning rootid.
-> > > > > The function which performs this virtualization was not hooked
-> > > > > up if CONFIG_SECURITY=n.  Therefore in that case the original
-> > > > > xattr was shown instead of the virtualized one.
-> > > > >
-> > > > > To test this using libcap-bin (*1),
-> > > > >
-> > > > > $ v=$(mktemp)
-> > > > > $ unshare -Ur setcap cap_sys_admin-eip $v
-> > > > > $ unshare -Ur setcap -v cap_sys_admin-eip $v
-> > > > > /tmp/tmp.lSiIFRvt8Y: OK
-> > > > >
-> > > > > "setcap -v" verifies the values instead of setting them, and
-> > > > > will check whether the rootid value is set.  Therefore, with
-> > > > > this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
-> > > > > fail:
-> > > > >
-> > > > > $ v=$(mktemp)
-> > > > > $ unshare -Ur setcap cap_sys_admin=eip $v
-> > > > > $ unshare -Ur setcap -v cap_sys_admin=eip $v
-> > > > > nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
-> > > > >
-> > > > > Fix this bug by calling cap_inode_getsecurity() in
-> > > > > security_inode_getsecurity() instead of returning
-> > > > > -EOPNOTSUPP, when CONFIG_SECURITY=n.
-> > > > >
-> > > > > *1 - note, if libcap is too old for getcap to have the '-n'
-> > > > > option, then use verify-caps instead.
-> > > > >
-> > > > > Signed-off-by: Serge Hallyn <serge@hallyn.com>
-> > > > > Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1593431
-> > > > > Cc: Hervé Guillemet <herve@guillemet.org>
-> > > > > Cc: Andrew G. Morgan <morgan@kernel.org>
-> > > > > Cc: Casey Schaufler <casey@schaufler-ca.com>
-> > > > > ---
-> > > > >  include/linux/security.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/include/linux/security.h b/include/linux/security.h
-> > > > > index bc2725491560..39642626a707 100644
-> > > > > --- a/include/linux/security.h
-> > > > > +++ b/include/linux/security.h
-> > > > > @@ -869,7 +869,7 @@ static inline int security_inode_killpriv(struct
-> > > > > dentry *dentry)
-> > > > >
-> > > > >  static inline int security_inode_getsecurity(struct inode *inode, const
-> > > > > char *name, void **buffer, bool alloc)
-> > > > >  {
-> > > > > -       return -EOPNOTSUPP;
-> > > > > +       return cap_inode_getsecurity(inode, name, buffer, alloc);
-> > > > >  }
-> > > > >
-> > > > >  static inline int security_inode_setsecurity(struct inode *inode, const
-> > > > > char *name, const void *value, size_t size, int flags)
-> > > > > --
-> > > > > 2.25.1
-> > > > >
-> > > > >
-> > >
-> >
-> > --
-> > James Morris
-> > <jmorris@namei.org>
+On Thu, Nov 26, 2020 at 6:05 AM Christian Hewitt
+<christianshewitt@gmail.com> wrote:
+>
+> Set the IR keymap to the KHAMSIN remote shipped with the SML5442TW.
+>
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
