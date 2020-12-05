@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9D52CFC60
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762E42CFC6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbgLERsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 12:48:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726600AbgLERmW (ORCPT
+        id S1730191AbgLESTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbgLERzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:42:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607190015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=i4l8pC0ZVpmyeGoUVE05XOBDw9b0P2zcxvMhFLJB3uQ=;
-        b=ZE8LGgzB1jDjgS4dOSQurCKUDeuW9fYPh5rVTQkSdKqBYXMy8i0wRynVy5mD6DWUSqFMma
-        2wofJ1OMs3m5EVecOoflMwoyh9ygGP6dl0H7UOZfnvHRYYBe9shLxFyv9/8oMRrrfnD/0c
-        fPdduXUlEehUKQncxqkL3r0VPhU3QJ0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-jRk5ZDi5OsSD9uHoc9ZX7g-1; Sat, 05 Dec 2020 12:40:14 -0500
-X-MC-Unique: jRk5ZDi5OsSD9uHoc9ZX7g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FA575189;
-        Sat,  5 Dec 2020 17:40:12 +0000 (UTC)
-Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 23AD919C59;
-        Sat,  5 Dec 2020 17:40:08 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: [PATCH net-next] bonding: set xfrm feature flags more sanely
-Date:   Sat,  5 Dec 2020 12:40:03 -0500
-Message-Id: <20201205174003.578267-1-jarod@redhat.com>
+        Sat, 5 Dec 2020 12:55:07 -0500
+X-Greylist: delayed 492 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Dec 2020 09:53:47 PST
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4242DC0613D1
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 09:53:47 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 8B19D28005309;
+        Sat,  5 Dec 2020 18:41:52 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 84F3590A8; Sat,  5 Dec 2020 18:42:07 +0100 (CET)
+Date:   Sat, 5 Dec 2020 18:42:07 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     yangerkun <yangerkun@huawei.com>, sashal@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, chenwenyong2@huawei.com,
+        stable@vger.kernel.org, "zhangyi (F)" <yi.zhang@huawei.com>
+Subject: Re: Patch "spi: Fix controller unregister order" has been added to
+ the 4.4-stable tree
+Message-ID: <20201205174207.GA4028@wunner.de>
+References: <20200616015646.AC54E2074D@mail.kernel.org>
+ <8c7683cc-ca73-6883-8e45-613de68fa665@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c7683cc-ca73-6883-8e45-613de68fa665@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can remove one of the ifdef blocks here, and instead of setting both
-the xfrm hw_features and features flags, then unsetting the the features
-flags if not in AB, wait to set the features flags if we're actually in AB
-mode.
+On Sat, Oct 10, 2020 at 04:41:09PM +0800, yangerkun wrote:
+> ?? 2020/6/16 9:56, Sasha Levin ????:
+> > This is a note to let you know that I've just added the patch titled
+> > 
+> >      spi: Fix controller unregister order
+> > 
+> > to the 4.4-stable tree which can be found at:
+[...]
+> > --- a/drivers/spi/spi.c
+> > +++ b/drivers/spi/spi.c
+> > @@ -1922,11 +1922,12 @@ void spi_unregister_master(struct spi_master *master)
+> >   			dev_err(&master->dev, "queue remove failed\n");
+> >   	}
+> > +	device_for_each_child(&master->dev, NULL, __unregister);
+> > +
+> 
+> This is a wrong patch. We should move this line before
+> spi_destroy_queue, but we didn't. 4.9 stable exists this
+> problem too.
 
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Cc: Veaceslav Falico <vfalico@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Thomas Davis <tadavis@lbl.gov>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
+Hi Sasha, Hi Greg,
+
+below please find a patch for the 4.9-stable tree to fix the backporting
+issue reported above.
+
+Thanks!
+
+-- >8 --
+Subject: [PATCH] spi: Fix controller unregister order harder
+
+Commit c7e41e1caa71 sought to backport upstream commit 84855678add8 to
+the 4.9-stable tree but erroneously inserted a line at the wrong place.
+Fix it.
+
+Fixes: c7e41e1caa71 ("spi: Fix controller unregister order")
+Reported-by: yangerkun <yangerkun@huawei.com>
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 ---
- drivers/net/bonding/bond_main.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/spi/spi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index e0880a3840d7..5fe5232cc3f3 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4746,15 +4746,13 @@ void bond_setup(struct net_device *bond_dev)
- 				NETIF_F_HW_VLAN_CTAG_FILTER;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index c7c9ca3178ad..e0632ee1723b 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2070,13 +2070,13 @@ static int __unregister(struct device *dev, void *null)
+  */
+ void spi_unregister_master(struct spi_master *master)
+ {
++	device_for_each_child(&master->dev, NULL, __unregister);
++
+ 	if (master->queued) {
+ 		if (spi_destroy_queue(master))
+ 			dev_err(&master->dev, "queue remove failed\n");
+ 	}
  
- 	bond_dev->hw_features |= NETIF_F_GSO_ENCAP_ALL;
--#ifdef CONFIG_XFRM_OFFLOAD
--	bond_dev->hw_features |= BOND_XFRM_FEATURES;
--#endif /* CONFIG_XFRM_OFFLOAD */
- 	bond_dev->features |= bond_dev->hw_features;
- 	bond_dev->features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_STAG_TX;
- #ifdef CONFIG_XFRM_OFFLOAD
--	/* Disable XFRM features if this isn't an active-backup config */
--	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
--		bond_dev->features &= ~BOND_XFRM_FEATURES;
-+	bond_dev->hw_features |= BOND_XFRM_FEATURES;
-+	/* Only enable XFRM features if this is an active-backup config */
-+	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
-+		bond_dev->features |= BOND_XFRM_FEATURES;
- #endif /* CONFIG_XFRM_OFFLOAD */
- }
- 
+-	device_for_each_child(&master->dev, NULL, __unregister);
+-
+ 	mutex_lock(&board_lock);
+ 	list_del(&master->list);
+ 	mutex_unlock(&board_lock);
 -- 
-2.28.0
+2.29.2
 
