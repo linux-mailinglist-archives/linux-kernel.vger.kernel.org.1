@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780252CF985
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A46B2CF9BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgLEFUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:20:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgLEFUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:20:04 -0500
-Date:   Fri, 4 Dec 2020 21:19:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607145563;
-        bh=g89QweBKoaMnhghk9FmJWAmYTP2xcaWTmqJqp57zI50=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1erlj0fzZ9Wo45XoIkw1uOxPGJy+kcVeO9NmXmai/qVA9E9mqn2xjLv0CGieGavfh
-         DBo9dfdViMzs8DIgqXZ+xqcxMA2JR7Yxbg+3vVsXjQp/XZ4XsBtTcK10j9bg/vHT7O
-         6v9tURcEfXIGij3HXI0zD/HPEi04Qt16sw2olUWA=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Victor Chibotaru <tchibo@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-Message-Id: <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
-In-Reply-To: <20201204210000.660293c6@canb.auug.org.au>
-References: <20201204210000.660293c6@canb.auug.org.au>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727218AbgLEFew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgLEFev (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 00:34:51 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36072C0613D1;
+        Fri,  4 Dec 2020 21:34:11 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id b4so3027823lfo.6;
+        Fri, 04 Dec 2020 21:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yCU3SOeU9zl2SpHdAZLen/M5fwqT/Vu4q8FtTqROekE=;
+        b=i/YmjZFwpHP4RPHfHa8QHNlcL88SaGOoHajjZJRI1wNISakosonxxjgzP4+V5GdnZF
+         iU0mlhEtC7Dpi/k9ZyG/KeXSSR/EOR9JUhLBM/A01TuFX/ghZ9thzHuw1KXjOpvggqx8
+         KklD36y9nZA26FdD3daLz3PGb57WX50IdYjrG9dE8l4US1ZG0z0zA8JYuIE2HlQS4b6o
+         A4rF+1W97NYX+UsBMZ3cYcXLMpYt/fzBkshxTIwDQLZKn13yFQQBrKVTCjCo3lkrcGKu
+         lnhyXq7XMOA4GL0j9+K1kIUWLEMV3OJnS2E+mDIBx8MyjG2HFE/kPj8rwEsxrE3tKTT2
+         I70Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yCU3SOeU9zl2SpHdAZLen/M5fwqT/Vu4q8FtTqROekE=;
+        b=niVKNLdJDcE8PqmszRRDm2/mO5Tex/7Vdq3L6cG45eEqsMDBC1Ltnql1lDfyCrOJ6R
+         1uL4uQRrsYmyVXwzW13AAC+tUm/jrYFV6X1pyUrv3ezqWnbGRseOZJzpnJpS/282aUDy
+         sRwdOUOzhiqM+DyAPpx9DxgzbgMyIblNa/Z0d7TMuErBVyjGBcuDX42CizS2zcUo04EP
+         tKEDU2gUQgEWW6FedzEriFDpfQiep4wac7K4aDAHHHQQ4YY3oTfxa/BCyw3lfbCKxNWT
+         2oFdSJ9lJOWlylYL0zCO3dvANVAjNlOGYpN0TLgeX9I3tjiWNBR58QKczysbnt2avZsc
+         lUEg==
+X-Gm-Message-State: AOAM533O0HlsoVbz40XcCdCYMH0sD7VquJv2aBD9X0HinRFAMK/EvbB9
+        x13K5py24VNPJ1LLAvifpRGEycC9OOY=
+X-Google-Smtp-Source: ABdhPJyRaWFPkhqshOs/XY2SinuybxtX/EaVrF7L3jIURRRtL1am1yhtDDRH8XXU01K1Qs2mmvKvNQ==
+X-Received: by 2002:a19:5f1d:: with SMTP id t29mr4946607lfb.85.1607146449649;
+        Fri, 04 Dec 2020 21:34:09 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-53.dynamic.spd-mgts.ru. [109.252.192.53])
+        by smtp.gmail.com with ESMTPSA id d25sm2289861lja.40.2020.12.04.21.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 21:34:08 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] Support wakeup methods of Atmel maXTouch controllers
+Date:   Sat,  5 Dec 2020 08:33:25 +0300
+Message-Id: <20201205053328.9535-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
+have a WAKE line that needs to be asserted in order to wake controller
+from a deep sleep, otherwise it will be unusable. This series implements
+support for the wakeup methods in accordance to the mXT1386 datasheet [1],
+see page 29 (chapter "5.8 WAKE Line").
 
-> Hi all,
-> 
-> After merging the akpm tree, today's linux-next build (powerpc
-> allyesconfig) produced warnings like this:
-> 
-> kernel/kcov.c:296:14: warning: conflicting types for built-in function '__sanitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)' [-Wbuiltin-declaration-mismatch]
->   296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
->       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The mXT1386 is a widely used controller found on many older Android tablet
+devices. Touchscreen on Acer A500 tablet now works properly after this
+series.
 
-Odd.  clang wants that signature, according to
-https://clang.llvm.org/docs/SanitizerCoverage.html.  But gcc seems to
-want a different signature.  Beats me - best I can do is to cc various
-likely culprits ;)
+This patchset is a continuation of the work originally started by
+Jiada Wang [2].
 
-Which gcc version?  Did you recently update gcc?
+[1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
+[2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
 
-> ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
-> 
-> (lots of these latter ones)
-> 
-> I don't know what produced these, but it is in the akpm-current or
-> akpm trees.
+Dmitry Osipenko (3):
+  dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and
+    wake-GPIO
+  Input: atmel_mxt_ts - support wakeup methods
+  ARM: tegra: acer-a500: Add atmel,wakeup-method property
+
+ .../bindings/input/atmel,maxtouch.yaml        | 26 +++++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |  3 +
+ drivers/input/touchscreen/atmel_mxt_ts.c      | 55 +++++++++++++++++++
+ include/dt-bindings/input/atmel-maxtouch.h    | 10 ++++
+ 4 files changed, 94 insertions(+)
+ create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
+
+-- 
+2.29.2
 
