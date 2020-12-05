@@ -2,53 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FB12CFCAA
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6E62CFDAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbgLESTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:19 -0500
-Received: from in01-tec.fasttelco.net ([78.159.162.5]:50978 "EHLO
-        in01-tec.fasttelco.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbgLERjL (ORCPT
+        id S1727470AbgLESmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:42:43 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:58357 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727347AbgLEQ5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:39:11 -0500
-Received: from psxr9bd.com ([62.215.195.91])
-        by in01-tec.fasttelco.net (8.14.3/8.14.3/Debian-9.4) with ESMTP id 0B5FpiSA028418
-        for <linux-kernel@vger.kernel.org>; Sat, 5 Dec 2020 18:51:46 +0300
-Message-Id: <202012051551.0B5FpiSA028418@in01-tec.fasttelco.net>
-From:   "United Nations Organization" <Office6@un.com>
-Subject: {United Nations for Strategic Coordination}
-To:     linux-kernel@vger.kernel.org
+        Sat, 5 Dec 2020 11:57:20 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 8DDBE60E;
+        Sat,  5 Dec 2020 10:51:54 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 05 Dec 2020 10:51:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=9zd5YnVW5m9n74ywBM5+lZcIQmt
+        S/W44ACx+gdsMPgw=; b=Dcdf5/aRZt5/spe1Wli8o9Qi0aEugAOjfXF4CWPyFUW
+        zvF8iOwYdP97wv37BATxsHTgr/UJelUV6EifUFUQ/wE1yuyDo1bJiNNZUAGf+ytO
+        DCAw7f6OOu0Rjn8GCHUfs7rP/6Zo1Kqx/9zO8vqUzDOTN2Q9e0npCIUhgN+8eNDO
+        utWliybb9XhFH/lrnRKZBy1ajXU7SqCGZp2z5sGI9L8qVj3obBCyu8/Vdudb3Cly
+        PGkKNlQ0bp6RhWBo1eaiWIgA4Gh3bZF9a8DxhZfTS7OCRxj8BrRQgUqqZT9Q2qex
+        pWk8yNVgODQj9j0Lro8+W5/MK5XFzCgp+So2t7CyatQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9zd5Yn
+        VW5m9n74ywBM5+lZcIQmtS/W44ACx+gdsMPgw=; b=cuqxtYqiHDIiw4w8QuYQz2
+        JLA9e4vScA2joFZ8V9b42FjRPH3abofGkkbkV66axYjVRYSjZ21iR+/3z1oVGTBC
+        4+8fqj3kLQgORj+NRZxW3nc0wVUJa6gUTLwX3WqwF8N0LRQjf1GMpuBxlR33W/+5
+        N01Fd7NeY8rThZX6QGUuQBUu8u/byUt+l6om44QJuuqks8Kqz7jzn66+AoDKhSoP
+        EnrxHbhAkb7fjUWiguoF7Q5OWHanOBmddGZh+6UMBo44BX9jxATb4+fLCok76/lz
+        5P5/8Wy6vpZUZsHcOkVynkQK+YtqS/qnmjTfdxJnU6Wepf6orwKV9idpYxq2LmwQ
+        ==
+X-ME-Sender: <xms:l6zLX9W2Iefkq3KbTfpbKO14GeWL2dT03qVvJxF8ayJnPEl6wtWE9A>
+    <xme:l6zLX9lS8D3dzyXAfsWiOXvE7G4MtWkIRPDqZndhXMlT3uqs6UmhV3FS11Qh4KUS7
+    r24ueP7j-tbFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejtddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:l6zLX5aULs9Vjcs0JV9_TZXJSvd_m8-n7zJbhfZcq3-D81SNrjc29w>
+    <xmx:l6zLXwV0f2PHaMCNVx8ARTjv_svXGJmJzJtYFM102xYDw_vGLj_H7Q>
+    <xmx:l6zLX3moYGa1jCk1Vntn_TdSTFbb0NHKH2StAJ9OItgNCdLSzGXg3A>
+    <xmx:mqzLX3NgSqG2bmzPJyssWD9f4cKL_QspmNo_5SIiSuIVO8BQUKEPQRqWY_k>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id ECAB5108005F;
+        Sat,  5 Dec 2020 10:51:50 -0500 (EST)
+Date:   Sat, 5 Dec 2020 16:53:06 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
+        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
+        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
+        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
+Message-ID: <X8us4vsLCh/tXFLh@kroah.com>
+References: <20201202124959.29209-1-info@metux.net>
+ <20201205112018.zrddte4hu6kr5bxg@skbuf>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Reply-To: "United Nations Organization" <mariamalmeer786@outlook.com>,
-          mariamalmeer786@outlook.com
-Date:   Sat, 5 Dec 2020 16:51:46 +0100
-X-Priority: 3
-X-Bayes-Prob: 0.0001 (Score 0, tokens from: corp_smtp, base:default, @@RPTN)
-X-Spam-Score: 2.91 (**) [Hold at 5.00] COMPENSATION:1.499,MISSING_MID:0.14,RDNS_NONE:1.274
-X-CanIt-Geo: ip=62.215.195.91; country=KW; latitude=29.3375; longitude=47.6581; http://maps.google.com/maps?q=29.3375,47.6581&z=6
-X-CanItPRO-Stream: base:corp_smtp (inherits from base:makc.com.kw,base:default)
-X-Canit-Stats-ID: 0440DPJML - 7f4563546b1f - 20201205
-X-Antispam-Training-Forget: https://spam.fasttelco.com/canit/b.php?c=f&i=0440DPJML&m=7f4563546b1f&rlm=base&t=20201205
-X-Antispam-Training-Nonspam: https://spam.fasttelco.com/canit/b.php?c=n&i=0440DPJML&m=7f4563546b1f&rlm=base&t=20201205
-X-Antispam-Training-Phish: https://spam.fasttelco.com/canit/b.php?c=p&i=0440DPJML&m=7f4563546b1f&rlm=base&t=20201205
-X-Antispam-Training-Spam: https://spam.fasttelco.com/canit/b.php?c=s&i=0440DPJML&m=7f4563546b1f&rlm=base&t=20201205
-X-Scanned-By: CanIt (www . roaringpenguin . com) on 78.159.162.5
+Content-Disposition: inline
+In-Reply-To: <20201205112018.zrddte4hu6kr5bxg@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-United Nations Assistant Secretary-General for Development Coordination.
+On Sat, Dec 05, 2020 at 01:20:18PM +0200, Vladimir Oltean wrote:
+> On Wed, Dec 02, 2020 at 01:49:53PM +0100, Enrico Weigelt, metux IT consult wrote:
+> > Remove MODULE_VERSION(), as it isn't needed at all: the only version
+> > making sense is the kernel version.
+> >
+> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> > ---
+> >  net/8021q/vlan.c | 8 +-------
+> >  1 file changed, 1 insertion(+), 7 deletions(-)
+> >
+> > diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> > index f292e0267bb9..683e9e825b9e 100644
+> > --- a/net/8021q/vlan.c
+> > +++ b/net/8021q/vlan.c
+> > @@ -36,15 +36,10 @@
+> >  #include "vlan.h"
+> >  #include "vlanproc.h"
+> >
+> > -#define DRV_VERSION "1.8"
+> > -
+> >  /* Global VLAN variables */
+> >
+> >  unsigned int vlan_net_id __read_mostly;
+> >
+> > -const char vlan_fullname[] = "802.1Q VLAN Support";
+> > -const char vlan_version[] = DRV_VERSION;
+> > -
+> >  /* End of global variables definitions. */
+> >
+> >  static int vlan_group_prealloc_vid(struct vlan_group *vg,
+> > @@ -687,7 +682,7 @@ static int __init vlan_proto_init(void)
+> >  {
+> >  	int err;
+> >
+> > -	pr_info("%s v%s\n", vlan_fullname, vlan_version);
+> > +	pr_info("802.1Q VLAN Support\n");
+> 
+> How do we feel about deleting this not really informative message
+> altogether in a future patch?
 
-
-Congratulations,
-
-
-Your email was randomly selected for the 2020 Relief Compensation of $1.5M Package for Third Quarter Reimbursement via certified ATM CARD. Please reach Mrs. Mariam AlMeer for more information.
-
-Name: Mrs. Mariam AlMeer
-Email:  mariamalmeer786@outlook.com
-
-
-Assistant Secretary General- Volker Turk
-United Nations for Strategic Coordination
+It too should be removed.  If drivers are working properly, they are
+quiet.
