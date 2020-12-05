@@ -2,73 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89612CFA01
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023C32CFA12
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 07:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgLEGYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 01:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726999AbgLEGYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 01:24:48 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607149448;
-        bh=r8vnqMmsHnbgwMXfSQZu84loY6DvrmHia8Sx1hc/RJQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=T4bFniftvCd2jeC6yESokQyOHoTMxC9vK6miqN2mi2XZsBNpieVpWrZWJ4/ROoVau
-         zIweZB3ouv+2OYfFYhW50zG34k1z/GoAAlXVdYhFfPpHAER9uNSy+ACWR4QnDhGuRN
-         uF3ewwCPsC0jNHoOsylZXbRo6pbi2K8WY92Dbcw+L49AQqk8J0jnR3fXB3D8pc9QKD
-         HkId29E+OBrSUtnds5+Pr4+rygtaP4uF6TpHP1UUg/g/s/MIu62pjr25Y6h887D3mo
-         0ABFaab5sm2/qsL/H6aOQgE5NCXBPsqOngGLlOeALbEVA6UTuZ/AUtHNc8K05eNVem
-         BV/WPUFP1yU7w==
+        id S1727977AbgLEG6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 01:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726031AbgLEG6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 01:58:17 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3E4C0613D1;
+        Fri,  4 Dec 2020 22:57:37 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id l11so4397364plt.1;
+        Fri, 04 Dec 2020 22:57:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=074wL6ZBgABmXkOs/NT61EJN0HBh0dhkxvXZ++X/yaI=;
+        b=J39tLhFdiM/eYZNAhg85XVZeU7vlVYLTE2YpuzmX6S36rV2NljZYLQse33dtlTfU+D
+         P0A9XxiD/TRZFku3U3uZmRO+9sMfVlrPdOrUY0ub9mOfSoaFbGi7KBycRjIRZ1I1f7G3
+         AOg0CwR2kDU4wX7GGBTPPl2qINMfeDZC+MT4uWns92NjqsKo/IZwtBmm7faHE4YvF91k
+         XkzZVlYRiLabOUV2ZGcN1Y2QhSwfLCZwb3ldvzRkdexCD//G76XOV0MFbsjUrZ5g0ov+
+         SorgGaftGRsp0BWTZImGOqW1L2K+kHrJOBP8qwt2V6kfphRegH2pVENoKPosU6WKDL5u
+         S8eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=074wL6ZBgABmXkOs/NT61EJN0HBh0dhkxvXZ++X/yaI=;
+        b=m0l4Tce9thPx0yR5gvewkITlMy2FHzvBfhx7Uk3GTM9ZNDcDBJCsOe/pXxt56ReIgQ
+         RlHrLhTqqiGKlLfKmi/flIiOY13zMYMXMMTX9Xs6p6abaGiJMKhmfZ4gShtaF9SalMBY
+         PUMoaQs/JMRSqo0E8fUtdJJu7g/vAaYLI9McF5IA3VDPeQ1DmXer9USrLqIIs71GyQ1s
+         X+mJK/lncUL96MYv4OoQgDEJohbJGWqBAEDPwJeUSLn13oVexZoTMCROdybvj/j2U4Xm
+         RLwmwJrPmh6HORblSnv7Hmgq4KvBAqPhj7Ps7LIIGhDX+/fF+daKePslywiM577r7hkF
+         X0ZA==
+X-Gm-Message-State: AOAM533T8j3aRH1iAcpsF02WCDOn/R6SSwUZIxOnn/Q/Pc1ATYcvT1fO
+        8DWYHl0GOxbmgNKSH8tjpEHBBd0Ssq4=
+X-Google-Smtp-Source: ABdhPJwD8LBysVSEMi9XYXVOROVfRZw/7sF9SVYYn1E01iFvQoYVyH6bH0o2iaHCD6/K8Gh1B/sbWQ==
+X-Received: by 2002:a17:902:9b85:b029:da:1684:cc82 with SMTP id y5-20020a1709029b85b02900da1684cc82mr7368955plp.41.1607151456568;
+        Fri, 04 Dec 2020 22:57:36 -0800 (PST)
+Received: from bobo.ozlabs.ibm.com ([1.129.145.238])
+        by smtp.gmail.com with ESMTPSA id a14sm1110848pfl.141.2020.12.04.22.57.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 22:57:35 -0800 (PST)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: [PATCH v9 00/12] huge vmalloc mappings
+Date:   Sat,  5 Dec 2020 16:57:13 +1000
+Message-Id: <20201205065725.1286370-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201130085743.1656317-1-geert+renesas@glider.be>
-References: <20201130085743.1656317-1-geert+renesas@glider.be>
-Subject: Re: [PATCH v2] clk: renesas: r9a06g032: Drop __packed for portability
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Gareth Williams <gareth.williams.jx@renesas.com>,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Fri, 04 Dec 2020 22:24:06 -0800
-Message-ID: <160714944657.1580929.4595234852977229885@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Geert Uytterhoeven (2020-11-30 00:57:43)
-> The R9A06G032 clock driver uses an array of packed structures to reduce
-> kernel size.  However, this array contains pointers, which are no longer
-> aligned naturally, and cannot be relocated on PPC64.  Hence when
-> compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=3Dy (e.g.
-> PowerPC allyesconfig), the following warnings are produced:
->=20
->     WARNING: 136 bad relocations
->     c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
->     c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
->     ...
->=20
-> Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
-> definition, trading a small size increase for portability.
->=20
-> This increases the 156-entry clock table by 1 byte per entry, but due to
-> the compiler generating more efficient code for unpacked accesses, the
-> net size increase is only 76 bytes (gcc 9.3.0 on arm32).
->=20
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
+Hi Andrew,
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+A couple of things Rick noticed, he's working on huge module mappings
+to help iTLB pressure and seems to think this series will be useful
+infrastructure for his work.
 
-Unless you want me to pick this up for clk-fixes?
+I think it finally should be just about ready.
+
+Thanks,
+Nick
+
+Since v8:
+- Fixed nommu compile.
+- Added Kconfig option help text
+- Added VM_NOHUGE which should help archs implement it [suggested by Rick]
+
+Since v7:
+- Rebase, added some acks, compile fix
+- Removed "order=" from vmallocinfo, it's a bit confusing (nr_pages
+  is in small page size for compatibility).
+- Added arch_vmap_pmd_supported() test before starting to allocate
+  the large page, rather than only testing it when doing the map, to
+  avoid unsupported configs trying to allocate huge pages for no
+  reason.
+
+Since v6:
+- Fixed a false positive warning introduced in patch 2, found by
+  kbuild test robot.
+
+Since v5:
+- Split arch changes out better and make the constant folding work
+- Avoid most of the 80 column wrap, fix a reference to lib/ioremap.c
+- Fix compile error on some archs
+
+Since v4:
+- Fixed an off-by-page-order bug in v4
+- Several minor cleanups.
+- Added page order to /proc/vmallocinfo
+- Added hugepage to alloc_large_system_hage output.
+- Made an architecture config option, powerpc only for now.
+
+Since v3:
+- Fixed an off-by-one bug in a loop
+- Fix !CONFIG_HAVE_ARCH_HUGE_VMAP build fail
+- Hopefully this time fix the arm64 vmap stack bug, thanks Jonathan
+  Cameron for debugging the cause of this (hopefully).
+
+Since v2:
+- Rebased on vmalloc cleanups, split series into simpler pieces.
+- Fixed several compile errors and warnings
+- Keep the page array and accounting in small page units because
+  struct vm_struct is an interface (this should fix x86 vmap stack debug
+  assert). [Thanks Zefan]
+
+Nicholas Piggin (12):
+  mm/vmalloc: fix vmalloc_to_page for huge vmap mappings
+  mm: apply_to_pte_range warn and fail if a large pte is encountered
+  mm/vmalloc: rename vmap_*_range vmap_pages_*_range
+  mm/ioremap: rename ioremap_*_range to vmap_*_range
+  mm: HUGE_VMAP arch support cleanup
+  powerpc: inline huge vmap supported functions
+  arm64: inline huge vmap supported functions
+  x86: inline huge vmap supported functions
+  mm: Move vmap_range from mm/ioremap.c to mm/vmalloc.c
+  mm/vmalloc: add vmap_range_noflush variant
+  mm/vmalloc: Hugepage vmalloc mappings
+  powerpc/64s/radix: Enable huge vmalloc mappings
+
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ arch/Kconfig                                  |  10 +
+ arch/arm64/include/asm/vmalloc.h              |  25 +
+ arch/arm64/mm/mmu.c                           |  26 -
+ arch/powerpc/Kconfig                          |   1 +
+ arch/powerpc/include/asm/vmalloc.h            |  21 +
+ arch/powerpc/kernel/module.c                  |  13 +-
+ arch/powerpc/mm/book3s64/radix_pgtable.c      |  21 -
+ arch/x86/include/asm/vmalloc.h                |  23 +
+ arch/x86/mm/ioremap.c                         |  19 -
+ arch/x86/mm/pgtable.c                         |  13 -
+ include/linux/io.h                            |   9 -
+ include/linux/vmalloc.h                       |  27 ++
+ init/main.c                                   |   1 -
+ mm/ioremap.c                                  | 225 +--------
+ mm/memory.c                                   |  66 ++-
+ mm/page_alloc.c                               |   5 +-
+ mm/vmalloc.c                                  | 454 +++++++++++++++---
+ 18 files changed, 564 insertions(+), 397 deletions(-)
+
+-- 
+2.23.0
+
