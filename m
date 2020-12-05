@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A632CFDA5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E10D2CFD37
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgLESmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726653AbgLERic (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:38:32 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53A4C09425C
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 09:09:26 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id a1so8921009ljq.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 09:09:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/nONXOe+JWtgC2NEmkR8xcycTkJWCy3WRXYAibxk+2U=;
-        b=yAzk/g0i/6/Y6AzhoKNkjYDk3qK4szrD6DsIQ4UoHDW1oA3d0TSHuu5PWZvw7Zsmlv
-         1dnq22xAK7TqogoAxD6fqNwYqONi097hVb9LoEARvuMt/0Hdoe+Et+w/PaHRsDWLYjyq
-         2HFuCynV7L5JahwqLLzju7RNQlxDwk+5z3oRFxN6EBtFtiid9xL2u27p45hrERqs8QJH
-         C9NE1OMzdCnWWRlY75T8FanAYscof8A/ico/yDns8su9phtpAPbixulYBvCbbTEEde1q
-         exfqh89UjkxEKfyw/cBlueCkcqxz1w1Np9sYMUzD7DNfFRUsHisFsxBQ9otWK3rjZQZk
-         UzLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/nONXOe+JWtgC2NEmkR8xcycTkJWCy3WRXYAibxk+2U=;
-        b=Rvz1R+rS/RWqTEXg+M6P3OfiHIdmBy74jF2eSG2RQCexi3YOFcPXaOS9EC5uePoZop
-         LL5npXP/CJad7DCY+Q1NDNDFSx/WO5OdGIjPJugEFwA8/o2vHJxY/1LGqHTRGAPEzQWi
-         dEIoL3DobfWaO5H6Vujit0oBC9zNLXjgIPpUVjMCmTvhoLEM7NUZUMK/BiKsFnUjN4QT
-         V1hIFfFTblcPrQqdIRVKtle8V/Yt8/jFJWgFWhJgxl6ZtfwwqanWlg9mjbkPspbZ3nhB
-         XclbR/1af9WLp5tSalbE6RWOEVZqnFj448VxUj7qd/LSKl94m/pLSDwTOp9/jcM1rgep
-         wDrg==
-X-Gm-Message-State: AOAM531tOA5Bz3Kr+4PhqeQ+9k+Jqg8t+Y3WHb7xPBx9LT8E/T1ehXlA
-        0kMBHXhC2Q8ERWOANGgEUHjG2IjXBP0msMYLMYj74w==
-X-Google-Smtp-Source: ABdhPJxoqecW7LxgD0r1nAG22AfBGr3ZG5mFYrc/nZRyjVvcls3d0uOXjvm1Adw1hkBjXMOIspeSVTJhjTpxwyiPGp8=
-X-Received: by 2002:a05:651c:112e:: with SMTP id e14mr5724965ljo.388.1607188164947;
- Sat, 05 Dec 2020 09:09:24 -0800 (PST)
+        id S1730026AbgLESTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727878AbgLERte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:49:34 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6106230FF;
+        Sat,  5 Dec 2020 17:12:50 +0000 (UTC)
+Date:   Sat, 5 Dec 2020 17:12:47 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/8] Documentation: HID: amd-sfh-hid editing &
+ corrections
+Message-ID: <20201205171247.5225d844@archlinux>
+In-Reply-To: <20201204062022.5095-3-rdunlap@infradead.org>
+References: <20201204062022.5095-1-rdunlap@infradead.org>
+        <20201204062022.5095-3-rdunlap@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201203152311.5272-1-carver4lio@163.com> <a5bc444ec40a2248009d0894fda61b822d030235.camel@redhat.com>
- <CGME20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c@eucas1p1.samsung.com>
- <adc36428-05eb-f885-9394-080cc805818f@samsung.com> <3d709122-0364-5bca-9247-3f212096b389@nvidia.com>
-In-Reply-To: <3d709122-0364-5bca-9247-3f212096b389@nvidia.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Sat, 5 Dec 2020 18:09:14 +0100
-Message-ID: <CADYN=9+nE=n4cXb6gDKmQqfkn97HoFShKGSpqVise=XR-aGtVw@mail.gmail.com>
-Subject: Re: [PATCH] mm/memblock:use a more appropriate order calculation when
- free memblock pages
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Qian Cai <qcai@redhat.com>, carver4lio@163.com,
-        rppt@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hailong Liu <liu.hailong6@zte.com.cn>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 18:44, Jon Hunter <jonathanh@nvidia.com> wrote:
->
->
-> On 04/12/2020 16:07, Marek Szyprowski wrote:
-> > Hi All,
-> >
-> > On 04.12.2020 14:42, Qian Cai wrote:
-> >> On Thu, 2020-12-03 at 23:23 +0800, carver4lio@163.com wrote:
-> >>> From: Hailong Liu <liu.hailong6@zte.com.cn>
-> >>>
-> >>> When system in the booting stage, pages span from [start, end] of a memblock
-> >>> are freed to buddy in a order as large as possible (less than MAX_ORDER) at
-> >>> first, then decrease gradually to a proper order(less than end) in a loop.
-> >>>
-> >>> However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
-> >>> in some cases.
-> >>> Instead, *__ffs(end - start)* may be more appropriate and meaningful.
-> >>>
-> >>> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
-> >> Reverting this commit on the top of today's linux-next fixed boot crashes on
-> >> multiple NUMA systems.
-> >
-> > I confirm. Reverting commit 4df001639c84 ("mm/memblock: use a more
-> > appropriate order calculation when free memblock pages") on top of linux
-> > next-20201204 fixed booting of my ARM32bit test systems.
->
->
-> FWIW, I also confirm that this is causing several 32-bit Tegra platforms
-> to crash on boot and reverting this fixes the problem.
+On Thu,  3 Dec 2020 22:20:16 -0800
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-I had the same experience on an arm64 system.
+> Do basic editing & correction to amd-sfh-hid.rst:
+> - fix punctuation
+> - use HID instead of hid consistently
+> - fix grammar, verb tense
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
 
-Cheers,
-Anders
+Trivial suggested addition inline.
+
+> ---
+>  Documentation/hid/amd-sfh-hid.rst |   16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> --- linux-next-20201201.orig/Documentation/hid/amd-sfh-hid.rst
+> +++ linux-next-20201201/Documentation/hid/amd-sfh-hid.rst
+> @@ -3,7 +3,7 @@
+>  
+>  AMD Sensor Fusion Hub
+>  =====================
+> -AMD Sensor Fusion Hub (SFH) is part of an SOC starting from Ryzen based platforms.
+> +AMD Sensor Fusion Hub (SFH) is part of an SOC starting from Ryzen-based platforms.
+>  The solution is working well on several OEM products. AMD SFH uses HID over PCIe bus.
+>  In terms of architecture it resembles ISH, however the major difference is all
+>  the HID reports are generated as part of the kernel driver.
+> @@ -45,20 +45,20 @@ the HID reports are generated as part of
+>  AMD HID Transport Layer
+>  -----------------------
+>  AMD SFH transport is also implemented as a bus. Each client application executing in the AMD MP2 is
+> -registered as a device on this bus. Here: MP2 which is an ARM core connected to x86 for processing
+> +registered as a device on this bus. Here, MP2 is an ARM core connected to x86 for processing
+>  sensor data. The layer, which binds each device (AMD SFH HID driver) identifies the device type and
+> -registers with the hid core. Transport layer attach a constant "struct hid_ll_driver" object with
+> +registers with the HID core. Transport layer attaches a constant "struct hid_ll_driver" object with
+>  each device. Once a device is registered with HID core, the callbacks provided via this struct are
+>  used by HID core to communicate with the device. AMD HID Transport layer implements the synchronous calls.
+>  
+>  AMD HID Client Layer
+>  --------------------
+> -This layer is responsible to implement HID request and descriptors. As firmware is OS agnostic, HID
+> +This layer is responsible to implement HID requests and descriptors. As firmware is OS agnostic, HID
+>  client layer fills the HID request structure and descriptors. HID client layer is complex as it is
+> -interface between MP2 PCIe layer and HID. HID client layer initialized the MP2 PCIe layer and holds
+> +interface between MP2 PCIe layer and HID. HID client layer initializes the MP2 PCIe layer and holds
+>  the instance of MP2 layer. It identifies the number of sensors connected using MP2-PCIe layer. Base
+
+Based ? (maybe)
+
+> -on that allocates the DRAM address for each and every sensor and pass it to MP2-PCIe driver.On
+> -enumeration of each the sensor, client layer fills the HID Descriptor structure and HID input repor
+> +on that allocates the DRAM address for each and every sensor and passes it to MP2-PCIe driver. On
+> +enumeration of each sensor, client layer fills the HID Descriptor structure and HID input report
+>  structure. HID Feature report structure is optional. The report descriptor structure varies from
+>  sensor to sensor.
+>  
+> @@ -72,7 +72,7 @@ The communication between X86 and MP2 is
+>  2. Data transfer via DRAM.
+>  3. Supported sensor info via P2C registers.
+>  
+> -Commands are sent to MP2 using C2P Mailbox registers. Writing into C2P Message registers generate
+> +Commands are sent to MP2 using C2P Mailbox registers. Writing into C2P Message registers generates
+>  interrupt to MP2. The client layer allocates the physical memory and the same is sent to MP2 via
+>  the PCI layer. MP2 firmware writes the command output to the access DRAM memory which the client
+>  layer has allocated. Firmware always writes minimum of 32 bytes into DRAM. So as a protocol driver
+
