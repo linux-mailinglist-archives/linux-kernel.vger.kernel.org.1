@@ -2,377 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5F52CFBD3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 16:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07782CFBF5
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbgLEPqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 10:46:46 -0500
-Received: from out28-122.mail.aliyun.com ([115.124.28.122]:53592 "EHLO
-        out28-122.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgLEP2T (ORCPT
+        id S1726721AbgLEQIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 11:08:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727162AbgLEP3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 10:28:19 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.120381-0.000385329-0.879234;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.J3J73c7_1607181087;
-Received: from 192.168.10.153(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J3J73c7_1607181087)
-          by smtp.aliyun-inc.com(10.147.43.230);
-          Sat, 05 Dec 2020 23:11:28 +0800
-Subject: Re: [PATCH 3/4] clk: Ingenic: Add missing clocks for Ingenic SoCs.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-References: <20201125172618.112707-1-zhouyanjie@wanyeetech.com>
- <20201125172618.112707-4-zhouyanjie@wanyeetech.com>
- <1MGQKQ.5HYB5MK5YO192@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <5ba28790-4ed7-b40d-47e2-3e03f5a4f901@wanyeetech.com>
-Date:   Sat, 5 Dec 2020 23:11:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sat, 5 Dec 2020 10:29:14 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1833C08E862
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 04:19:50 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cp7tV6n1xz9sWK;
+        Sat,  5 Dec 2020 23:19:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1607170788;
+        bh=r2GPVWow3KSvjd0XpMzh2cxCWEa0UVNX7n4Ic8UTw28=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Qgmo0bCA18H0FSteGOwWtaUCQQn1Uv4Yq0/7daWhn7UjKZQLqGofo++7RuVpHj0P+
+         Mgj8Wb4jCQNK5vAyyHutT5dJ5Ij4xtK4sxXVu8h+UDr+ZH/vB7V7gbxz1B5g4z22dS
+         j6AeV+yTn9zKljsnzb/THMRu1bdOXEjfbq3VRtCi5iwd2c5aHzQI3hgu0folM2vYae
+         5QzYPW6uNR++lqMz7W9bva7nR4yWTJjLy9cPVsA8pSLTq0SojySOm2HnYE9jwh6H4D
+         ZnCSlLrIz0BM90F7i9Vll7VYVU891GzQQwad9exD/DcLYZrC02ZAYq1VpP5tp76qi9
+         dRfy7B/ga/IPQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     groug@kaod.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com,
+        npiggin@gmail.com, peterz@infradead.org, srikar@linux.vnet.ibm.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-5 tag
+Date:   Sat, 05 Dec 2020 23:19:45 +1100
+Message-ID: <87im9gtpge.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <1MGQKQ.5HYB5MK5YO192@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-On 2020/12/3 上午6:18, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le jeu. 26 nov. 2020 à 1:26, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Add CIM, AIC, DMIC clocks for the X1000 SoC, and CIM, AIC, DMIC, I2S
->> clocks for the X1830 SoC from Ingenic.
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>  drivers/clk/ingenic/x1000-cgu.c |  19 ++++
->>  drivers/clk/ingenic/x1830-cgu.c | 189 
->> +++++++++++++++++++++++++++++++++++++++-
->>  2 files changed, 207 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
->> b/drivers/clk/ingenic/x1000-cgu.c
->> index 9aa20b5..d340bcd 100644
->> --- a/drivers/clk/ingenic/x1000-cgu.c
->> +++ b/drivers/clk/ingenic/x1000-cgu.c
->> @@ -360,6 +360,13 @@ static const struct ingenic_cgu_clk_info 
->> x1000_cgu_clocks[] = {
->>          .mux = { CGU_REG_SSICDR, 30, 1 },
->>      },
->>
->> +    [X1000_CLK_CIM] = {
->> +        "cim", CGU_CLK_MUX | CGU_CLK_DIV,
->> +        .parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
->> +        .mux = { CGU_REG_CIMCDR, 31, 1 },
->> +        .div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
->> +    },
->> +
->>      [X1000_CLK_EXCLK_DIV512] = {
->>          "exclk_div512", CGU_CLK_FIXDIV,
->>          .parents = { X1000_CLK_EXCLK },
->> @@ -411,6 +418,12 @@ static const struct ingenic_cgu_clk_info 
->> x1000_cgu_clocks[] = {
->>          .gate = { CGU_REG_CLKGR, 9 },
->>      },
->>
->> +    [X1000_CLK_AIC] = {
->> +        "aic", CGU_CLK_GATE,
->> +        .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
->> +        .gate = { CGU_REG_CLKGR, 11 },
->> +    },
->> +
->>      [X1000_CLK_UART0] = {
->>          "uart0", CGU_CLK_GATE,
->>          .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
->> @@ -429,6 +442,12 @@ static const struct ingenic_cgu_clk_info 
->> x1000_cgu_clocks[] = {
->>          .gate = { CGU_REG_CLKGR, 16 },
->>      },
->>
->> +    [X1000_CLK_DMIC] = {
->> +        "dmic", CGU_CLK_GATE,
->> +        .parents = { X1000_CLK_PCLK, -1, -1, -1 },
->> +        .gate = { CGU_REG_CLKGR, 17 },
->> +    },
->> +
->>      [X1000_CLK_TCU] = {
->>          "tcu", CGU_CLK_GATE,
->>          .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
->> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
->> b/drivers/clk/ingenic/x1830-cgu.c
->> index 950aee2..e76e82c 100644
->> --- a/drivers/clk/ingenic/x1830-cgu.c
->> +++ b/drivers/clk/ingenic/x1830-cgu.c
->> @@ -52,6 +52,15 @@
->>  #define USBPCR_SIDDQ        BIT(21)
->>  #define USBPCR_OTG_DISABLE    BIT(20)
->>
->> +/* bits within the I2SCDR register */
->> +#define I2SCDR_I2PCS_SHIFT    30
->> +#define I2SCDR_I2PCS_MASK    (0x3 << I2SCDR_I2PCS_SHIFT)
->> +#define I2SCDR_I2SDIV_M_SHIFT    20
->> +#define I2SCDR_I2SDIV_M_MASK    (0x1ff << I2SCDR_I2SDIV_M_SHIFT)
->> +#define I2SCDR_I2SDIV_N_SHIFT    0
->> +#define I2SCDR_I2SDIV_N_MASK    (0xfffff << I2SCDR_I2SDIV_N_SHIFT)
->> +#define I2SCDR_CE_I2S        BIT(29)
->> +
->>  static struct ingenic_cgu *cgu;
->>
->>  static int x1830_usb_phy_enable(struct clk_hw *hw)
->> @@ -89,6 +98,157 @@ static const struct clk_ops x1830_otg_phy_ops = {
->>      .is_enabled    = x1830_usb_phy_is_enabled,
->>  };
->>
->> +static u8 x1830_i2s_get_parent(struct clk_hw *hw)
->> +{
->> +    u32 i2scdr;
->> +
->> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
->> +
->> +    return (i2scdr & I2SCDR_I2PCS_MASK) >> I2SCDR_I2PCS_SHIFT;
->> +}
->> +
->> +static int x1830_i2s_set_parent(struct clk_hw *hw, u8 idx)
->> +{
->> +    writel(idx << I2SCDR_I2PCS_SHIFT, cgu->base + CGU_REG_I2SCDR);
->> +
->> +    return 0;
->> +}
->> +
->> +static unsigned long x1830_i2s_recalc_rate(struct clk_hw *hw,
->> +                        unsigned long parent_rate)
->> +{
->> +    unsigned m, n;
->> +    u32 i2scdr;
->> +
->> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
->> +
->> +    m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
->> +    n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
->> +
->> +    return div_u64((u64)parent_rate * m, n);
->
-> From what I can see here, your i2s clock is a PLL. You can probably 
-> use CGU_CLK_PLL, with od_bits = od_max = 0 (you'll need to remove the 
-> second BUG_ON() in ingenic_pll_recalc_rate).
->
+Hi Linus,
 
-Unfortunately, due to constraints, we cannot use it for i2s with only 
-minor changes to the code related to CGU_CLK_PLL. Because in main PLLs 
-such as APLL and MPLL, the value of M is often much larger than the 
-value of N, but in i2s, the value of N must not be less than twice the 
-value of M. So there is no way to achieve these two constraints at the 
-same time, which leads us to use CGU_CLK_PLL, so I chose to use 
-CGU_CLK_CUSTOM as a last resort. I haven't figured out a better way yet. 
-Do you have any good ideas?
+Please pull some more powerpc fixes for 5.10.
+
+The change to kernel/cpu.c is just adding an optional arch override, and has
+Peter's ack.
+
+cheers
 
 
-Thanks and best regards!
+The following changes since commit b6b79dd53082db11070b4368d85dd6699ff0b063:
+
+  powerpc/64s: Fix allnoconfig build since uaccess flush (2020-11-23 21:16:=
+42 +1100)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.10-5
+
+for you to fetch changes up to a1ee28117077c3bf24e5ab6324c835eaab629c45:
+
+  powerpc/64s/powernv: Fix memory corruption when saving SLB entries on MCE=
+ (2020-12-02 23:16:40 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.10 #5
+
+Three commits fixing possible missed TLB invalidations for multi-threaded
+processes when CPUs are hotplugged in and out.
+
+A fix for a host crash triggerable by host userspace (qemu) in KVM on Power=
+9.
+
+A fix for a host crash in machine check handling when running HPT guests on=
+ a
+HPT host.
+
+One commit fixing potential missed TLB invalidations when using the hash MM=
+U on
+Power9 or later.
+
+A regression fix for machines with CPUs on node 0 but no memory.
+
+Thanks to:
+  Aneesh Kumar K.V, C=C3=A9dric Le Goater, Greg Kurz, Milan Mohanty, Milton=
+ Miller,
+  Nicholas Piggin, Paul Mackerras, Srikar Dronamraju.
+
+- ------------------------------------------------------------------
+Greg Kurz (1):
+      KVM: PPC: Book3S HV: XIVE: Fix vCPU id sanity check
+
+Nicholas Piggin (5):
+      powerpc/64s: Fix hash ISA v3.0 TLBIEL instruction generation
+      powerpc/64s/pseries: Fix hash tlbiel_all_isa300 for guest kernels
+      kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
+      powerpc/64s: Trim offlined CPUs from mm_cpumasks
+      powerpc/64s/powernv: Fix memory corruption when saving SLB entries on=
+ MCE
+
+Srikar Dronamraju (1):
+      powerpc/numa: Fix a regression on memoryless node 0
 
 
-> Cheers,
-> -Paul
->
->> +}
->> +
->> +static unsigned long x1830_i2s_calc(unsigned long rate, unsigned 
->> long parent_rate,
->> +                        unsigned *pm, unsigned *pn)
->> +{
->> +    u64 curr_delta, curr_m, curr_n, delta, m, n;
->> +
->> +    if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
->> +        m = 1;
->> +        n = parent_rate / rate;
->> +        goto out;
->> +    }
->> +
->> +    delta = rate;
->> +
->> +    /*
->> +     * The length of M is 9 bits, its value must be between 1 and 511.
->> +     * The length of N is 20 bits, its value must be between 2 and 
->> 1048575,
->> +     * and must not be less than 2 times of the value of M.
->> +     */
->> +    for (curr_m = 511; curr_m >= 1; curr_m--) {
->> +        curr_n = parent_rate * curr_m;
->> +        curr_delta = do_div(curr_n, rate);
->> +
->> +        if (curr_n < 2 * curr_m || curr_n > 1048575)
->> +            continue;
->> +
->> +        if (curr_delta == 0)
->> +            break;
->> +
->> +        if (curr_delta < delta) {
->> +            m = curr_m;
->> +            n = curr_n;
->> +            delta = curr_delta;
->> +        }
->> +    }
->> +
->> +out:
->> +    if (pm)
->> +        *pm = m;
->> +    if (pn)
->> +        *pn = n;
->> +
->> +    return div_u64((u64)parent_rate * m, n);
->> +}
->> +
->> +static long x1830_i2s_round_rate(struct clk_hw *hw, unsigned long 
->> req_rate,
->> +                        unsigned long *prate)
->> +{
->> +    return x1830_i2s_calc(req_rate, *prate, NULL, NULL);
->> +}
->> +
->> +static int x1830_i2s_set_rate(struct clk_hw *hw, unsigned long 
->> req_rate,
->> +                        unsigned long parent_rate)
->> +{
->> +    unsigned long rate;
->> +    unsigned m, n;
->> +    u32 ctl;
->> +
->> +    /*
->> +     * The parent clock rate of I2S must not be lower than 2 times
->> +     * of the target clock rate.
->> +     */
->> +    if (parent_rate < 2 * req_rate)
->> +        return -EINVAL;
->> +
->> +    rate = x1830_i2s_calc(req_rate, parent_rate, &m, &n);
->> +    if (rate != req_rate)
->> +        pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
->> +            req_rate, rate);
->> +
->> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
->> +    ctl &= ~I2SCDR_I2SDIV_M_MASK;
->> +    ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
->> +    ctl &= ~I2SCDR_I2SDIV_N_MASK;
->> +    ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
->> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
->> +
->> +    return 0;
->> +}
->> +
->> +static int x1830_i2s_enable(struct clk_hw *hw)
->> +{
->> +    u32 ctl;
->> +
->> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
->> +    ctl |= I2SCDR_CE_I2S;
->> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
->> +
->> +    return 0;
->> +}
->> +
->> +static void x1830_i2s_disable(struct clk_hw *hw)
->> +{
->> +    u32 ctl;
->> +
->> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
->> +    ctl &= ~I2SCDR_CE_I2S;
->> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
->> +}
->> +
->> +static int x1830_i2s_is_enabled(struct clk_hw *hw)
->> +{
->> +    u32 ctl;
->> +
->> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
->> +
->> +    return !!(ctl & I2SCDR_CE_I2S);
->> +}
->> +
->> +static const struct clk_ops x1830_i2s_ops = {
->> +    .get_parent = x1830_i2s_get_parent,
->> +    .set_parent = x1830_i2s_set_parent,
->> +
->> +    .recalc_rate = x1830_i2s_recalc_rate,
->> +    .round_rate = x1830_i2s_round_rate,
->> +    .set_rate = x1830_i2s_set_rate,
->> +
->> +    .enable = x1830_i2s_enable,
->> +    .disable = x1830_i2s_disable,
->> +    .is_enabled = x1830_i2s_is_enabled,
->> +};
->> +
->>  static const s8 pll_od_encoding[64] = {
->>      0x0, 0x1,  -1, 0x2,  -1,  -1,  -1, 0x3,
->>       -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x4,
->> @@ -201,7 +361,7 @@ static const struct ingenic_cgu_clk_info 
->> x1830_cgu_clocks[] = {
->>          },
->>      },
->>
->> -    /* Custom (SoC-specific) OTG PHY */
->> +    /* Custom (SoC-specific) */
->>
->>      [X1830_CLK_OTGPHY] = {
->>          "otg_phy", CGU_CLK_CUSTOM,
->> @@ -209,6 +369,13 @@ static const struct ingenic_cgu_clk_info 
->> x1830_cgu_clocks[] = {
->>          .custom = { &x1830_otg_phy_ops },
->>      },
->>
->> +    [X1830_CLK_I2S] = {
->> +        "i2s", CGU_CLK_CUSTOM,
->> +        .parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
->> +                     X1830_CLK_VPLL, X1830_CLK_EPLL },
->> +        .custom = { &x1830_i2s_ops },
->> +    },
->> +
->>      /* Muxes & dividers */
->>
->>      [X1830_CLK_SCLKA] = {
->> @@ -329,6 +496,14 @@ static const struct ingenic_cgu_clk_info 
->> x1830_cgu_clocks[] = {
->>          .mux = { CGU_REG_SSICDR, 29, 1 },
->>      },
->>
->> +    [X1830_CLK_CIM] = {
->> +        "cim", CGU_CLK_MUX | CGU_CLK_DIV,
->> +        .parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
->> +                     X1830_CLK_VPLL, X1830_CLK_EPLL },
->> +        .mux = { CGU_REG_CIMCDR, 30, 2 },
->> +        .div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
->> +    },
->> +
->>      [X1830_CLK_EXCLK_DIV512] = {
->>          "exclk_div512", CGU_CLK_FIXDIV,
->>          .parents = { X1830_CLK_EXCLK },
->> @@ -386,6 +561,18 @@ static const struct ingenic_cgu_clk_info 
->> x1830_cgu_clocks[] = {
->>          .gate = { CGU_REG_CLKGR0, 9 },
->>      },
->>
->> +    [X1830_CLK_AIC] = {
->> +        "aic", CGU_CLK_GATE,
->> +        .parents = { X1830_CLK_EXCLK, -1, -1, -1 },
->> +        .gate = { CGU_REG_CLKGR0, 11 },
->> +    },
->> +
->> +    [X1830_CLK_DMIC] = {
->> +        "dmic", CGU_CLK_GATE,
->> +        .parents = { X1830_CLK_PCLK, -1, -1, -1 },
->> +        .gate = { CGU_REG_CLKGR0, 12 },
->> +    },
->> +
->>      [X1830_CLK_UART0] = {
->>          "uart0", CGU_CLK_GATE,
->>          .parents = { X1830_CLK_EXCLK, -1, -1, -1 },
->> -- 
->> 2.7.4
->>
->
+ arch/powerpc/include/asm/book3s/64/mmu.h     | 12 ++++++++++
+ arch/powerpc/kvm/book3s_xive.c               |  7 ++----
+ arch/powerpc/mm/book3s64/hash_native.c       | 23 +++++++++++++-------
+ arch/powerpc/mm/book3s64/mmu_context.c       | 20 +++++++++++++++++
+ arch/powerpc/mm/numa.c                       |  3 +--
+ arch/powerpc/platforms/powermac/smp.c        |  2 ++
+ arch/powerpc/platforms/powernv/setup.c       |  9 ++++++--
+ arch/powerpc/platforms/powernv/smp.c         |  3 +++
+ arch/powerpc/platforms/pseries/hotplug-cpu.c |  3 +++
+ kernel/cpu.c                                 |  6 ++++-
+ 10 files changed, 70 insertions(+), 18 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl/Ler0ACgkQUevqPMjh
+pYBdSg//YL+3GipNsfXCyKfCXxlVn3/v6e+tAa4EYrJc7BxHWq2rr4tCO5ycsZPg
+yGPRNFDKPlN8jP/qX29LjKF4k1D9uQ7Z/FL1MM7Z3Xrwu5lOZJn2AYbKUrLIN1jX
+IfddqmH5FuGXC+9GPXDo8OT0IZzzp4HNvqUAFMfgulH4IHkFCmBx3+bjQxRbprmA
+c3bikk4GR/qEP97RIVga8MZOnnt8LccS86iH81/d5jT8zMgL61FGCqGdkinTDSIt
+4Qo4jrSj2zhbZs8gsff7ZbDvKfe/tNUClzvyFoi40hbSQogPE+r/Ik1ol9snxSdv
+YYWwX1Yov2n10FOoqVsK4m5EWfx988+uyJ6on9pOYR0IJIZQ0GkaQ+5HptgGsTR6
+5sRW6uiHxpaABhSZPaBcgH09G2ppjBlFC2Hz2g9NZuCCckdHx+FdrG+MGHMq+KRT
+hSZafOosPSPLyqDlUDo9RuksBEk/oOkO2beizVfGo2ETx6AQO3zzrhQcA/kU9Gxy
+opFfBP5sikmesAXxP0fxd0tg20EkRlWZzEDu/dFNhbNW+T0/KwzYuZaGsf7l65GO
+XpyiLScm4a0vSIt481eqMd4oazrYFIPGZgTU10ws6lI7DM9q360Zhn5VOf80i4Lw
+fYorXpe7KILB6PveChkJ+DiR/2UPRrzWSKoZ4SfQfJwzQKp4Td8=3D
+=3DN1fr
+-----END PGP SIGNATURE-----
