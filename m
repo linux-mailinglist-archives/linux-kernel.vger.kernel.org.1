@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD452CFEE4
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8C82CFEE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgLEUld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 15:41:33 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36658 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgLEUlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 15:41:32 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 506DF1C0B7C; Sat,  5 Dec 2020 21:40:50 +0100 (CET)
-Date:   Sat, 5 Dec 2020 21:40:49 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     "nitesh@redhat.com" <nitesh@redhat.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 0/9] "Task_isolation" mode
-Message-ID: <20201205204049.GA8578@amd>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
+        id S1727046AbgLEUn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 15:43:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgLEUn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 15:43:29 -0500
+Date:   Sat, 5 Dec 2020 12:42:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607200968;
+        bh=x7rofouDQwKdeiKgyOhN+pS04UY3hUFno5zmc3XEp/M=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BSwp5oHxvRnU8AvzY71q/6TaPmFzAoz7cc+JBdhBHrVpHwV7K5lpf5geXcVR/3HVZ
+         lVy7fctqxxWna3ecKA9hfPF+/xAFXbcj9DQbYnQ/IiHSuZEXZWuEil3xMiIKNaGbls
+         pMyGXF5fDyJ3mAXndkox84Iogk8xxxVWjLuAvs1Zgl42IDkgYaXe1oCfuYA82BnUfl
+         qlAWKyhOol094Rb9TB8cOLkV0DJBv+EqPRiBxgeVNgJzyHVqtCgCcv0HmUWuCJNYwF
+         PAgaKmcD/6Ly61VLNqrCKnWFR6bxg5lplbaRDT1BGD87DAGJ0upT2EFvzD3Voy8aQA
+         0iXtpasLtLXEA==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] f2fs: introduce a new per-sb directory in sysfs
+Message-ID: <X8vwxtBuFGCD/IS/@google.com>
+References: <20201127090118.84235-1-yuchao0@huawei.com>
+ <af26ca56-1dbf-e59b-b7b0-63ce817fd94d@huawei.com>
+ <X8p+rK6wQsXdcG33@google.com>
+ <e35d3dde-db71-27dc-88fd-fd6e2cd2b02f@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <e35d3dde-db71-27dc-88fd-fd6e2cd2b02f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/05, Chao Yu wrote:
+> On 2020/12/5 2:23, Jaegeuk Kim wrote:
+> > On 12/03, Chao Yu wrote:
+> > > Jaegeuk,
+> > > 
+> > > Can you comment on this patch?
+> > 
+> > Waiting for use-case? :)
+> 
+> How do you think of duplicating below stats into /sys/fs/f2fs/<devname>/stat/
 
---u3/rZRmxL6MmkK24
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We can't move them to /stat, since it requires lots of mess. Let's think
+about new ones only.
 
-Hi!
-
-> General description
->=20
-> This is the result of development and maintenance of task isolation
-> functionality that originally started based on task isolation patch
-> v15 and was later updated to include v16. It provided predictable
-> environment for userspace tasks running on arm64 processors alongside
-> with full-featured Linux environment. It is intended to provide
-> reliable interruption-free environment from the point when a userspace
-> task enters isolation and until the moment it leaves isolation or
-> receives a signal intentionally sent to it, and was successfully used
-> for this purpose. While CPU isolation with nohz provides an
-> environment that is close to this requirement, the remaining IPIs and
-> other disturbances keep it from being usable for tasks that require
-> complete predictability of CPU timing.
-
-So... what kind of guarantees does this aim to provide / what tasks it
-is useful for?
-
-For real time response, we have other approaches.
-
-If you want to guarantee performnace of the "isolated" task... I don't
-see how that works. Other tasks on the system still compete for DRAM
-bandwidth, caches, etc...
-
-So... what is the usecase?
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---u3/rZRmxL6MmkK24
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/L8FEACgkQMOfwapXb+vJE3wCfYs+cxM/a7TO3oAUetWlr1POn
-XBIAn3IURI08m9SC3Yh05MPaBjmvFyYq
-=Y8jH
------END PGP SIGNATURE-----
-
---u3/rZRmxL6MmkK24--
+> 
+> F2FS_GENERAL_RO_ATTR(dirty_segments);
+> F2FS_GENERAL_RO_ATTR(free_segments);
+> F2FS_GENERAL_RO_ATTR(lifetime_write_kbytes);
+> F2FS_GENERAL_RO_ATTR(features);
+> F2FS_GENERAL_RO_ATTR(current_reserved_blocks);
+> F2FS_GENERAL_RO_ATTR(unusable);
+> F2FS_GENERAL_RO_ATTR(encoding);
+> F2FS_GENERAL_RO_ATTR(mounted_time_sec);
+> F2FS_GENERAL_RO_ATTR(main_blkaddr);
+> #ifdef CONFIG_F2FS_STAT_FS
+> F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, cp_foreground_calls, cp_count);
+> F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, cp_background_calls, bg_cp_count);
+> F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, gc_foreground_calls, call_count);
+> F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, gc_background_calls, bg_gc);
+> F2FS_GENERAL_RO_ATTR(moved_blocks_background);
+> F2FS_GENERAL_RO_ATTR(moved_blocks_foreground);
+> F2FS_GENERAL_RO_ATTR(avg_vblocks);
+> #endif
+> 
+> Thanks,
