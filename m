@@ -2,56 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11822CF804
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086802CF806
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgLEAfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:35:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726241AbgLEAfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:35:40 -0500
-Date:   Fri, 4 Dec 2020 16:34:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607128500;
-        bh=5MBLk0zEnrM8cZb9QfLi08ejcxL0qjNVh5Q0Cgf0U/0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ArMxRUdQVR0pAb62C92p4l45bXjbYri26k4y22yxxsUNmYQpXUvSo09GkZesXFrKO
-         1Z64Livwz2FOmtIEauvMlqbkpe7lMOo0pkirI6xFqtGJiF1+WAF0hUYnpZCQ0B/6FO
-         CMv2O9cH99IXAmfC9Yfs8c9HM+E5f6pnQ+IyUAQw=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Barret Rhoden <brho@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 1/2] initramfs: fix clang build failure
-Message-Id: <20201204163459.7e95c5a1b24cf5c84f779766@linux-foundation.org>
-In-Reply-To: <20201204165742.3815221-1-arnd@kernel.org>
-References: <20201204165742.3815221-1-arnd@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727315AbgLEAh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:37:59 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40872 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgLEAh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:37:59 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klLZc-0002yZ-00; Sat, 05 Dec 2020 01:37:16 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klLZb-0009Y1-OG; Sat, 05 Dec 2020 01:37:15 +0100
+Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory
+ accounting
+To:     Roman Gushchin <guro@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20201201215900.3569844-1-guro@fb.com>
+ <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
+ <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6abdd146-c584-9c66-261d-d7d39ff3f499@iogearbox.net>
+Date:   Sat, 5 Dec 2020 01:37:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26008/Fri Dec  4 23:08:33 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Dec 2020 17:57:33 +0100 Arnd Bergmann <arnd@kernel.org> wrote:
-
-> There is only one function in init/initramfs.c that is in the .text
-> section, and it is marked __weak. When building with clang-12 and
-> the integrated assembler, this leads to a bug with recordmcount:
+On 12/3/20 4:26 AM, Roman Gushchin wrote:
+> On Wed, Dec 02, 2020 at 06:54:46PM -0800, Alexei Starovoitov wrote:
+>> On Tue, Dec 1, 2020 at 1:59 PM Roman Gushchin <guro@fb.com> wrote:
+>>>
+>>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>>>     a function to "explain" this case for users.
+>> ...
+>>> v9:
+>>>    - always charge the saved memory cgroup, by Daniel, Toke and Alexei
+>>>    - added bpf_map_kzalloc()
+>>>    - rebase and minor fixes
+>>
+>> This looks great. Applied.
 > 
-> ./scripts/recordmcount  "init/initramfs.o"
-> Cannot find symbol for section 2: .text.
-> init/initramfs.o: failed
+> Thanks!
+> 
+>> Please follow up with a change to libbpf's pr_perm_msg().
+>> That helpful warning should stay for old kernels, but it would be
+>> misleading for new kernels.
+>> libbpf probably needs a feature check to make this warning conditional.
+> 
+> I think we've discussed it several months ago and at that time we didn't
+> find a good way to check this feature. I'll think again, but if somebody
+> has any ideas here, I'll appreciate a lot.
 
-That looks like recordmcount is being silly?
-
-> I'm not quite sure what exactly goes wrong, but I notice that this
-> function is only ever called from an __init function, and normally
-> inlined. Marking it __init as well is clearly correct and it
-> leads to recordmcount no longer complaining.
-
-That works, too.
+Hm, bit tricky, agree .. given we only throw the warning in pr_perm_msg() for
+non-root and thus probing options are also limited, otherwise just probing for
+a helper that was added in this same cycle would have been good enough as a
+simple heuristic. I wonder if it would make sense to add some hint inside the
+bpf_{prog,map}_show_fdinfo() to indicate that accounting with memcg is enabled
+for the prog/map one way or another? Not just for the sake of pr_perm_msg(), but
+in general for apps to stop messing with rlimit at this point. Maybe also bpftool
+feature probe could be extended to indicate that as well (e.g. the json output
+can be fed into Go natively).
