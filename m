@@ -2,252 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89862CF870
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E918F2CF889
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731305AbgLEBA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 20:00:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S1726291AbgLEBKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 20:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgLEBA0 (ORCPT
+        with ESMTP id S1725300AbgLEBKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 20:00:26 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3766C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:59:45 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id b9so6281593qvj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:59:45 -0800 (PST)
+        Fri, 4 Dec 2020 20:10:11 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4836C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 17:09:30 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id h20so7358672qkk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 17:09:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Pm8syhfGiv4iiicEYPxhpPRu6lRKP+oBUveOWCh0Kxc=;
-        b=TDVfs/dB0T/gJJqhAUgXH4OubDmuhWhpQbsr2+5uqV8bzpoIAvQl9ZOh9du31NTEoj
-         33RU2NuVwDMl6v9JGbx5HpTL6t7PjfXE5QufkABHXEa3l5qLG5IlaCm5kWVyR3I4Wi0U
-         9Q5eobaD5OK4LALEF6pRNWW6pRFCz0KWFjZXr8Ry9g3JTyweTbSOqYxPxWakCYNmfPmZ
-         VAatQmVGoqbUr267yhwu169XDPY2bes4YqN0U09l9UjYT7TevruAUVwB17iZojpL8P3e
-         bTx4Tc74MIvXaka845Hmpx1cJ+ej0VpZxgJwcgg+Y2TH/4vF6MCLrGZqavQTZafouuAp
-         HEIw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ldmvOFahKnoMmHYAh2zrzpTIHwKJiY0W59JNYPPaME=;
+        b=b/G3GAmTQtMhBQhE2fmvDPJq8Wy6Z4UvIng6ZRzqolM4x5oZYPLJ2ndMIyakeEIGD6
+         h2BAiuNBkfeibeJiowPQwOHCDTDe0IsZO/sDvp7KSbxLnYFWkHhgsMNn649yd+Rs9/QU
+         LiA9ETbH9X47SjAdQe9gILcI3opUEZlqudZ5Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Pm8syhfGiv4iiicEYPxhpPRu6lRKP+oBUveOWCh0Kxc=;
-        b=HIAcyNWuNfxMyRmPSsukN86JM9WjLX4MNPK0QHqt0g8JULkc33ZJ8gC/I4ZY3HhaSB
-         h/grFZI7GhfxOlNR5+49Fh1Bj6aq0lqByvdG9Zby82PF9ho+ETxpTVlDcl/yeZHvamzB
-         ivKIhWDhZVvuBzWu4YVDu7UxUYrSYc7QfTZ7AhNo3WOx0iFoPBqGN5Ak8fyLCKxWlQxU
-         xW93Z4jr/jQeymAZLCgMEVmN9CrPehHv2gbxxmTijioQzg8fWu8A0SEGzQ9oa0D4e53L
-         Djk8o6ZC1x+9uhkbaZbvdCC/4TpXMDkt2P+41n0azwGHzfXww/qMv4a8xJK/0Mw+O62A
-         KmIA==
-X-Gm-Message-State: AOAM530WN5lg3z5lpVNNqJidK5Fks+oSRRt2WtNZIlxEd2Y54GjgtruO
-        V4Xx56x2ynS2tBRVKBvoS7ZQXETCXeR3
-X-Google-Smtp-Source: ABdhPJzrFFb6XIWUXNQHQv8FFOAGDuk4ZRVPla3ARIEd0aVgg7RjNFvvqAvS8ubMDtKCzmIpf9Ny0M+dnMav
-Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
-X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
- (user=furquan job=sendgmr) by 2002:a0c:e9c7:: with SMTP id
- q7mr8757037qvo.9.1607129984904; Fri, 04 Dec 2020 16:59:44 -0800 (PST)
-Date:   Fri,  4 Dec 2020 16:59:41 -0800
-In-Reply-To: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
-Message-Id: <20201205005941.1427643-1-furquan@google.com>
-Mime-Version: 1.0
-References: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v2] input: raydium_ts_i2c: Do not split tx transactions
-From:   Furquan Shaikh <furquan@google.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Furquan Shaikh <furquan@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ldmvOFahKnoMmHYAh2zrzpTIHwKJiY0W59JNYPPaME=;
+        b=PTo5ztkr/T/aSMRM26gfgxd9AcFlXkXmX7TEbzIOPlnNoUclkUy/Byt0HaqKkj8W3m
+         8r11Qz+Wgilp1MwDYqE/RMftgSymObKF/gX35Ls9E8EWAKQbXEYx8gR5r51EMm31uzoI
+         X6IyugEozyu6jlD8OawMmTd+1enUXlrp3KtAGFZ3xYvIVG16GYouQPAgRl1Rl+EI6N2G
+         Pw0GiaoFZ4X0AQrIFvxsASpmkULb9/xiSafM11/m/lqPR6yBg55BKlxfBeIN7KkF4Lnk
+         WjdG7jbovpEb+ftlU8k75Rp8tHyOkdMtnqxKco8PVZbkClXdCY+pDxf2WOtXfRkNh+nq
+         QLQw==
+X-Gm-Message-State: AOAM5339xIxaDDLXp6DeLyHN8w9UZaRVUtdXimx8MwpahYZqiHNddZ6H
+        HMOvDGdH//54SQRCVKTp1bEDzZXkLyA8J+ZcwvciBg==
+X-Google-Smtp-Source: ABdhPJx84SfjHWTrRKsdW0Ob5tt1TnuLlE7ykm0c6CxciJ2pJW1FV+nmxh8vH+y+AZrBklppkOu6WE5/WBPSftYSM+Y=
+X-Received: by 2002:a37:ad17:: with SMTP id f23mr12618844qkm.121.1607130570021;
+ Fri, 04 Dec 2020 17:09:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20201106020305.767202-1-pmalani@chromium.org> <20201120073201.GA4120550@kuha.fi.intel.com>
+In-Reply-To: <20201120073201.GA4120550@kuha.fi.intel.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Fri, 4 Dec 2020 17:09:19 -0800
+Message-ID: <CACeCKadt_=4+Xc+8OojSg7isXgL2dhfnaUHCMKhtDe_HwPQwdQ@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Tolerate unrecognized mux flags
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Short <keithshort@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Raydium device does not like splitting of tx transactions into
-multiple messages - one for the register address and one for the
-actual data. This results in incorrect behavior on the device side.
+Friendly ping. If there are not other reservations, can we pick this
+patch? It doesn't depend on any other patch series.
 
-This change updates raydium_i2c_read and raydium_i2c_write to create
-i2c_msg arrays separately and passes those arrays into
-raydium_i2c_xfer which decides based on the address whether the bank
-switch command should be sent. The bank switch header is still added
-by raydium_i2c_read and raydium_i2c_write to ensure that all these
-operations are performed as part of a single I2C transfer. It
-guarantees that no other transactions are initiated to any other
-device on the same bus after the bank switch command is sent.
+Thanks,
 
-Signed-off-by: Furquan Shaikh <furquan@google.com>
----
-v2: Added comment in raydium_i2c_{send|read} about why regmap infrastructure
-cannot be used for this driver as it splits bank switch and i2c read/write
-into separate i2c_transfer calls which is known to create problems with
-Raydium device.
-
- drivers/input/touchscreen/raydium_i2c_ts.c | 126 ++++++++++++++-------
- 1 file changed, 88 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
-index e694a9b2b1e5..603a948460d6 100644
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -137,45 +137,25 @@ struct raydium_data {
- 	bool wake_irq_enabled;
- };
- 
--static int raydium_i2c_xfer(struct i2c_client *client,
--			    u32 addr, void *data, size_t len, bool is_read)
--{
--	struct raydium_bank_switch_header {
--		u8 cmd;
--		__be32 be_addr;
--	} __packed header = {
--		.cmd = RM_CMD_BANK_SWITCH,
--		.be_addr = cpu_to_be32(addr),
--	};
--
--	u8 reg_addr = addr & 0xff;
--
--	struct i2c_msg xfer[] = {
--		{
--			.addr = client->addr,
--			.len = sizeof(header),
--			.buf = (u8 *)&header,
--		},
--		{
--			.addr = client->addr,
--			.len = 1,
--			.buf = &reg_addr,
--		},
--		{
--			.addr = client->addr,
--			.len = len,
--			.buf = data,
--			.flags = is_read ? I2C_M_RD : 0,
--		}
--	};
-+/*
-+ * Header to be sent for RM_CMD_BANK_SWITCH command. This is used by
-+ * raydium_i2c_{read|send} below.
-+ */
-+struct __packed raydium_bank_switch_header {
-+	u8 cmd;
-+	__be32 be_addr;
-+};
- 
-+static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
-+			    struct i2c_msg *xfer, size_t xfer_count)
-+{
-+	int ret;
- 	/*
- 	 * If address is greater than 255, then RM_CMD_BANK_SWITCH needs to be
- 	 * sent first. Else, skip the header i.e. xfer[0].
- 	 */
- 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
--	size_t xfer_count = ARRAY_SIZE(xfer) - xfer_start_idx;
--	int ret;
-+	xfer_count -= xfer_start_idx;
- 
- 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
- 	if (likely(ret == xfer_count))
-@@ -189,10 +169,46 @@ static int raydium_i2c_send(struct i2c_client *client,
- {
- 	int tries = 0;
- 	int error;
-+	u8 *tx_buf;
-+	u8 reg_addr = addr & 0xff;
-+
-+	tx_buf = kmalloc(len + 1, GFP_KERNEL);
-+	if (!tx_buf)
-+		return -ENOMEM;
-+
-+	tx_buf[0] = reg_addr;
-+	memcpy(tx_buf + 1, data, len);
- 
- 	do {
--		error = raydium_i2c_xfer(client, addr, (void *)data, len,
--					 false);
-+		struct raydium_bank_switch_header header = {
-+			.cmd = RM_CMD_BANK_SWITCH,
-+			.be_addr = cpu_to_be32(addr),
-+		};
-+
-+		/*
-+		 * Perform as a single i2c_transfer transaction to ensure that
-+		 * no other I2C transactions are initiated on the bus to any
-+		 * other device in between. Initiating transacations to other
-+		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
-+		 * issues. This is also why regmap infrastructure cannot be used
-+		 * for this driver. Regmap handles page(bank) switch and reads
-+		 * as separate i2c_transfer() operations. This can result in
-+		 * problems if the Raydium device is on a shared I2C bus.
-+		 */
-+		struct i2c_msg xfer[] = {
-+			{
-+				.addr = client->addr,
-+				.len = sizeof(header),
-+				.buf = (u8 *)&header,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = len + 1,
-+				.buf = tx_buf,
-+			},
-+		};
-+
-+		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
- 		if (likely(!error))
- 			return 0;
- 
-@@ -206,12 +222,46 @@ static int raydium_i2c_send(struct i2c_client *client,
- static int raydium_i2c_read(struct i2c_client *client,
- 			    u32 addr, void *data, size_t len)
- {
--	size_t xfer_len;
- 	int error;
- 
- 	while (len) {
--		xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
--		error = raydium_i2c_xfer(client, addr, data, xfer_len, true);
-+		u8 reg_addr = addr & 0xff;
-+		struct raydium_bank_switch_header header = {
-+			.cmd = RM_CMD_BANK_SWITCH,
-+			.be_addr = cpu_to_be32(addr),
-+		};
-+		size_t xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
-+
-+		/*
-+		 * Perform as a single i2c_transfer transaction to ensure that
-+		 * no other I2C transactions are initiated on the bus to any
-+		 * other device in between. Initiating transacations to other
-+		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
-+		 * issues. This is also why regmap infrastructure cannot be used
-+		 * for this driver. Regmap handles page(bank) switch and writes
-+		 * as separate i2c_transfer() operations. This can result in
-+		 * problems if the Raydium device is on a shared I2C bus.
-+		 */
-+		struct i2c_msg xfer[] = {
-+			{
-+				.addr = client->addr,
-+				.len = sizeof(header),
-+				.buf = (u8 *)&header,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = 1,
-+				.buf = &reg_addr,
-+			},
-+			{
-+				.addr = client->addr,
-+				.len = xfer_len,
-+				.buf = data,
-+				.flags = I2C_M_RD,
-+			}
-+		};
-+
-+		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
- 		if (unlikely(error))
- 			return error;
- 
--- 
-2.29.2.576.ga3fc446d84-goog
-
+On Thu, Nov 19, 2020 at 11:32 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Thu, Nov 05, 2020 at 06:03:05PM -0800, Prashant Malani wrote:
+> > On occasion, the Chrome Embedded Controller (EC) can send a mux
+> > configuration which doesn't map to a particular data mode. For instance,
+> > dedicated Type C chargers, when connected, may cause only
+> > USB_PD_MUX_POLARITY_INVERTED to be set. This is a valid flag combination
+> > and should not lead to a driver abort.
+> >
+> > Modify the mux configuration handling to not return an error when an
+> > unrecognized mux flag combination is encountered. Concordantly, make the
+> > ensuing print a debug level print so as to not pollute the kernel logs.
+> >
+> > Cc: Keith Short <keithshort@chromium.org>
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+>
+> FWIW:
+>
+> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>
+> > ---
+> >  drivers/platform/chrome/cros_ec_typec.c | 7 +++----
+> >  1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> > index ce031a10eb1b..5b8db02ab84a 100644
+> > --- a/drivers/platform/chrome/cros_ec_typec.c
+> > +++ b/drivers/platform/chrome/cros_ec_typec.c
+> > @@ -537,10 +537,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+> >               port->state.mode = TYPEC_STATE_USB;
+> >               ret = typec_mux_set(port->mux, &port->state);
+> >       } else {
+> > -             dev_info(typec->dev,
+> > -                      "Unsupported mode requested, mux flags: %x\n",
+> > -                      mux_flags);
+> > -             ret = -ENOTSUPP;
+> > +             dev_dbg(typec->dev,
+> > +                     "Unrecognized mode requested, mux flags: %x\n",
+> > +                     mux_flags);
+> >       }
+> >
+> >       return ret;
+> > --
+> > 2.29.1.341.ge80a0c044ae-goog
+>
+> thanks,
+>
+> --
+> heikki
