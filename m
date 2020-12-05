@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A592CFB70
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 14:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BBF2CFB71
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 14:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgLENMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 08:12:51 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39357 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726202AbgLEM4S (ORCPT
+        id S1728276AbgLENSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 08:18:20 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:41504 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726629AbgLENA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 07:56:18 -0500
-X-UUID: da8f3f2d60814d0ab26d1b8fa922d178-20201205
-X-UUID: da8f3f2d60814d0ab26d1b8fa922d178-20201205
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        Sat, 5 Dec 2020 08:00:58 -0500
+X-UUID: 942fc7abcd90455580c70505bf17a18f-20201205
+X-UUID: 942fc7abcd90455580c70505bf17a18f-20201205
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
         (envelope-from <stanley.chu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2007648271; Sat, 05 Dec 2020 19:59:25 +0800
+        with ESMTP id 630460112; Sat, 05 Dec 2020 20:01:05 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
  mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 5 Dec 2020 19:59:00 +0800
+ 15.0.1497.2; Sat, 5 Dec 2020 20:00:39 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 5 Dec 2020 19:59:02 +0800
+ Transport; Sat, 5 Dec 2020 20:00:41 +0800
 From:   Stanley Chu <stanley.chu@mediatek.com>
 To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
         <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
@@ -36,14 +36,11 @@ CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
         <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
         <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
         <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, <huadian.liu@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v5 1/4] scsi: ufs: Add error history for abort event in UFS Device W-LUN
-Date:   Sat, 5 Dec 2020 19:58:58 +0800
-Message-ID: <20201205115901.26815-2-stanley.chu@mediatek.com>
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1 0/4] scsi: ufs: Cleanup phy_initialization vop
+Date:   Sat, 5 Dec 2020 20:00:37 +0800
+Message-ID: <20201205120041.26869-1-stanley.chu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201205115901.26815-1-stanley.chu@mediatek.com>
-References: <20201205115901.26815-1-stanley.chu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -51,42 +48,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add error history for abort event in UFS Device W-LUN.
-Besides, use specified value as parameter of ufshcd_update_reg_hist()
-to identify the aborted tag or LUNs.
+Hi,
+This series simply cleans up UFS vops and shall not change any functionality.
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Stanley Chu (4):
+  scsi: ufs: Remove unused setup_regulators variant function
+  scsi: ufs: Introduce phy_initialization helper
+  scsi: ufs-cdns: Use phy_initialization helper
+  scsi: ufs-dwc: Use phy_initialization helper
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index c2f611516ea7..922d68bca345 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6738,8 +6738,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 	 * To avoid these unnecessary/illegal step we skip to the last error
- 	 * handling stage: reset and restore.
- 	 */
--	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN)
-+	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
-+		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, lrbp->lun);
- 		return ufshcd_eh_host_reset_handler(cmd);
-+	}
- 
- 	ufshcd_hold(hba, false);
- 	reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
-@@ -6763,7 +6765,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 	 */
- 	scsi_print_command(hba->lrb[tag].cmd);
- 	if (!hba->req_abort_count) {
--		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, 0);
-+		ufshcd_update_reg_hist(&hba->ufs_stats.task_abort, tag);
- 		ufshcd_print_host_regs(hba);
- 		ufshcd_print_host_state(hba);
- 		ufshcd_print_pwr_info(hba);
+ drivers/scsi/ufs/cdns-pltfrm.c |  3 +--
+ drivers/scsi/ufs/ufshcd-dwc.c  | 11 ++++-------
+ drivers/scsi/ufs/ufshcd.c      | 10 +---------
+ drivers/scsi/ufs/ufshcd.h      | 18 ++++++++----------
+ 4 files changed, 14 insertions(+), 28 deletions(-)
+
 -- 
 2.18.0
 
