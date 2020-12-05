@@ -2,74 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE89D2CFAFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747A92CFAFF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 11:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgLEKYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:24:12 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:48698 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgLEKPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:15:33 -0500
-Received: from zn.tnic (p200300ec2f21ef0015054ed9185c317a.dip0.t-ipconnect.de [IPv6:2003:ec:2f21:ef00:1505:4ed9:185c:317a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E3C81EC043F;
-        Sat,  5 Dec 2020 11:14:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607163280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=0+RQceyNN3YTSvBdh4T4cQY4hNuuvTh0TJrn8lauovA=;
-        b=GdD+8aKXku1fx/hd4C2RKl3LK/5ChSJS2Y7xqcmpuBKrkqK8IhBnentoB8p9FqbYrhQHFy
-        2VZMC47fscpPiNJg962Dz7pYVtmIIZUTaFslvTuzQC2cZ4KOheaGfX7Sx8dehHmRdLir+i
-        /GsMoZk3INraEKi/sZRv+drHijE1Lpw=
-Date:   Sat, 5 Dec 2020 11:14:35 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] x86/uprobes: Fix not using prefixes.nbytes for
- loop over prefixes.bytes
-Message-ID: <20201205101435.GA26409@zn.tnic>
-References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
- <160707931985.3296595.4852247459424743502.stgit@devnote2>
- <20201204150522.GG31534@zn.tnic>
- <20201205091032.6956a5bad9330ec7b9b84dc5@kernel.org>
+        id S1727660AbgLEK0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 05:26:09 -0500
+Received: from isilmar-4.linta.de ([136.243.71.142]:48220 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729108AbgLEKSN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:18:13 -0500
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 08A3D20110C;
+        Sat,  5 Dec 2020 09:05:30 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id 58E7020EC8; Sat,  5 Dec 2020 09:56:14 +0100 (CET)
+Date:   Sat, 5 Dec 2020 09:56:14 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yoichi Yuasa <yuasa@linux-mips.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH REPOST] pcmcia: Remove NEC VRC4173 CARDU
+Message-ID: <X8tLLluXHhrI7SKT@light.dominikbrodowski.net>
+References: <20201113213408.2244169-1-bigeasy@linutronix.de>
+ <20201119170622.yan5bt2chxvoxqgn@linutronix.de>
+ <20201204192009.46w4doqoqqvhgrnh@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201205091032.6956a5bad9330ec7b9b84dc5@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201204192009.46w4doqoqqvhgrnh@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 09:10:32AM +0900, Masami Hiramatsu wrote:
-> In the future, if x86 ISA is expanded and add a legacy prefix
-> groups,
+Am Fri, Dec 04, 2020 at 08:20:09PM +0100 schrieb Sebastian Andrzej Siewior:
+> On 2020-11-19 18:06:24 [+0100], To linux-kernel@vger.kernel.org wrote:
+> > On 2020-11-13 22:34:08 [+0100], To linux-kernel@vger.kernel.org wrote:
+> > > This driver is the very definition of bitrotting:
+> > > - Introduced in commit
+> > >   79a140932c776 ("[PATCH] mips: vR41xx updates")
+> > >   which is 2.6.11-rc3.
+> > > 
+> > > - Provides ->register_callback which was removed in commit
+> > >   7f316b033b36a ("[PATCH] pcmcia: remove socket register_callback")
+> > >   which is v2.6.14-rc3
+> > > 
+> > > - Uses INIT_WORK() with three arguments which was removed in commit
+> > >   65f27f38446e1 ("WorkStruct: Pass the work_struct pointer instead of context data")
+> > >   which is v2.6.20-rc1
+> > > 
+> > > - Provides ->inquire_socket and uses socket_cap_t which was removed in
+> > >   commit
+> > >   b7949fdacbe00 ("[PCMCIA] Remove inquire_socket")
+> > >   which is 2.5.72
+> > > 
+> > > - Provides ->get_io_map which was removed in commit
+> > >   d7de1b64a23b9 ("[PCMCIA] pcmcia-2: Remove get_io_map and get_mem_map socket methods.")
+> > >   which is 2.5.66
+> > > 
+> > > Remove VRC4173 CARDU from the tree because it never had the luck to be
+> > > successfully compiled. Let it finally find peace in byte heaven.
+> > …
+> > > This is a repost of
+> > > 	https://lkml.kernel.org/r/20201001193234.gi6fp4vk3dypwifv@linutronix.de
+> > > 
+> > > which was a repost of
+> > > 	https://lkml.kernel.org/r/20200916081629.cfi6svr3yjvzimqs@linutronix.de
+> > 
+> > Andrew, are you okay with routing this via your tree?
+> > Nobody responded to this and as I documented in the patch description it
+> > never compiled so.
+> 
+> Andrew, any chance?
 
-Very unlikely.
+It's in pcmcia-next now.
 
-> then we have to add new insn_prefix_field data structure, which
-> size will not depend on NUM_INSN_FIELD_BYTES, but still depend on
-> MAX_LEGACY_PREFIX_GROUPS (and that will be 5).
-
-Isn't that what I'm saying too?
-
-Bottomline is, legacy prefixes should not use insn_field but a separate
-element which array size is independent of insn_byte_t bytes[4].
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+	Dominik
