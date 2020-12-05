@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DB92CFE10
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0272CFE15
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgLETKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:10:31 -0500
-Received: from [198.167.222.108] ([198.167.222.108]:40979 "EHLO
-        devianza.investici.org" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgLETKa (ORCPT
+        id S1726055AbgLETP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:15:58 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:53550 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbgLETPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:10:30 -0500
-Received: from mx2.investici.org (unknown [127.0.0.1])
-        by devianza.investici.org (Postfix) with ESMTP id 4CpJyb073Xz6vZP;
-        Sat,  5 Dec 2020 19:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
-        s=stigmate; t=1607195335;
-        bh=Enxbl35bWgW2k4CXkeFg1MrWekQN+UnByDQFI9Ki+mA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IN0WugIkKjzuabyrLtCIqrR5Dz9NmwNdrJ2PDOHkbzu+mx7X50hjdtiNjCESr/O4T
-         9G1STvvilcWHw6XLRChWJvAaKHumeLDAxPFyBlKW+m++YelIpnAUKL4YKuaKgjMXg/
-         WJBQXXLzio/SQvLNIV5MvwVfnuiJ24euv3+PB+h8=
-Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4CpJyZ5dyqz6vZL;
-        Sat,  5 Dec 2020 19:08:54 +0000 (UTC)
-From:   Francis Laniel <laniel_francis@privacyrequired.com>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 07/12] efi: Replace strstarts() by str_has_prefix().
-Date:   Sat, 05 Dec 2020 20:08:53 +0100
-Message-ID: <2156854.ibmmEGdOxF@machine>
-In-Reply-To: <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
-References: <20201204170319.20383-1-laniel_francis@privacyrequired.com> <CAMj1kXEQhT_LF5FDBO3-S7pBn55wG59bQUVr2q58A4FhqodY8Q@mail.gmail.com> <ab769a5188394cd3379cc627d14a0222050a1367.camel@HansenPartnership.com>
+        Sat, 5 Dec 2020 14:15:53 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 44A8A804C8;
+        Sat,  5 Dec 2020 20:15:04 +0100 (CET)
+Date:   Sat, 5 Dec 2020 20:15:02 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 2/2] drm: panel: add Khadas TS050 panel driver
+Message-ID: <20201205191502.GB332836@ravnborg.org>
+References: <20201204081949.38418-1-narmstrong@baylibre.com>
+ <20201204081949.38418-3-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204081949.38418-3-narmstrong@baylibre.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=-T1gHi2C1pDd2DPyCjwA:9
+        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 4 d=E9cembre 2020, 19:02:09 CET James Bottomley a =E9crit :
-> On Fri, 2020-12-04 at 18:07 +0100, Ard Biesheuvel wrote:
-> > On Fri, 4 Dec 2020 at 18:06, <laniel_francis@privacyrequired.com>
-> >=20
-> > wrote:
-> > > From: Francis Laniel <laniel_francis@privacyrequired.com>
-> > >=20
-> > > The two functions indicates if a string begins with a given prefix.
-> > > The only difference is that strstarts() returns a bool while
-> > > str_has_prefix()
-> > > returns the length of the prefix if the string begins with it or 0
-> > > otherwise.
-> >=20
-> > Why?
->=20
-> I think I can answer that.  If the conversion were done properly (which
-> it's not) you could get rid of the double strings in the code which are
-> error prone if you update one and forget another.  This gives a good
-> example: 3d739c1f6156 ("tracing: Use the return of str_has_prefix() to
-> remove open coded numbers"). so in your code you'd replace things like
->=20
->     if (strstarts(option, "rgb")) {
->         option +=3D strlen("rgb");
->         ...
->=20
-> with
->=20
->     len =3D str_has_prefix(option, "rgb");
->     if (len) {
->         option +=3D len
->         ...
+Hi Neil,
 
-The proposed changes were a bit mechanical and I did not think about using =
-the=20
-returned value in the way you proposed.
-This a good idea though, so I can modify my patches to include this and sen=
-d a=20
-v2!
-=20
-> Obviously you also have cases where strstart is used as a boolean with
-> no need to know the length ... I think there's no value to converting
-> those.
+> +
+> +static int khadas_ts050_panel_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct khadas_ts050_panel *khadas_ts050;
+> +	int err;
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +
+> +	khadas_ts050 = devm_kzalloc(&dsi->dev, sizeof(*khadas_ts050),
+> +				    GFP_KERNEL);
+> +	if (!khadas_ts050)
+> +		return -ENOMEM;
+> +
+> +	mipi_dsi_set_drvdata(dsi, khadas_ts050);
+> +	khadas_ts050->link = dsi;
+> +
+> +	err = khadas_ts050_panel_add(khadas_ts050);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	return mipi_dsi_attach(dsi);
+> +}
 
-=46or the v2, should I only change cases where using str_has_prefix() bring=
-s a=20
-benefit over strstarts() or all the cases?
+If mipi_dsi_attach() failes then da a drm_panel_remove() like this:
 
-> James
+	ret = mipi_dsi_attach(dsi);
+	if (ret)
+		drm_panel_remove(&khadas_ts050->base);
 
+	return ret;
 
+This is again something several panels gets wrong.
+
+With this fixed:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+
+I assume you will fix it while applying.
+
+	Sam
