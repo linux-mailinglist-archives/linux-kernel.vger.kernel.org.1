@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368172CFBFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9679D2CFBE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgLEQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 11:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgLEOvX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 09:51:23 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68FCC02B8E7;
-        Sat,  5 Dec 2020 06:50:33 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id b73so8911036edf.13;
-        Sat, 05 Dec 2020 06:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fE7hhQCsZ0dxRQftIk4H5MLE1LJWvrYc+nxt72jtj2c=;
-        b=caEhGBt0PVlv8f9SxJ5d09x8H7ZVsXon9H7vfQMlQ4gZbfnZf+SMX4spPtf5O/FxaD
-         SmuhzaqwR+zz5zKXtodJcoQfFiXwxx2Bdwbmx02XPsrPK2m0oCxG4QdHbHTNW5L+KtSF
-         Idn9zHfayVE1PkzSI6U8y2081E9BEvIs+oXRGfNqPa5lN6AI2dV4Ec7eAKXH/ibQlskI
-         kYVwVStaTIgeHbmzR9PKaVg8k2rRKNBvaHlZ/+b1JXjczClZORn4AemTQ2AABbjELFEN
-         N6KRUTSsuG9mYBne36UTPYwqa9IHw8esXnkATEWDH+gYbVJXm4sFhXv5cC6WeTuQJPMO
-         m55Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fE7hhQCsZ0dxRQftIk4H5MLE1LJWvrYc+nxt72jtj2c=;
-        b=hxTXQeYECoh3DwNBqslj64f3yvPylFNtRCrYytYHq0TlPOoc9RjWPN1NmXD+WMnDc/
-         LGkUVoAQswIMxj3GfwONOsbPA4BiNAXUDRGR8wzkmKolgsT6XSliOBE+9ZcsiL1VOLzO
-         4I74VwLj1W+Bgzaq0YYpoWPDjFj+Nrv586WhmTt8RUtyDySCeDLvOAmoN8p1pHabz2mk
-         OCtnAU8eAUhjwltmrM30dQk++4ldI5QVBBvJos1jhyjEk5aAucRxm5y18xz1itb3soDl
-         xizXycO/zpC1cmH+9gU0IAxqHu780d5Ff/s0doxlx7fgAOBhVstZFG0ohHPRcxcp6+tv
-         Ggvw==
-X-Gm-Message-State: AOAM532gJfD5tUElxV/OHF0QZSfdV3bgPpgnnB9Xd8c4j/zioftceR81
-        kICL/REQ/cPBWtlqIU48ybap8z6BY2c90KGl8SE=
-X-Google-Smtp-Source: ABdhPJwO6r2XwZQ4VgYoSwl6u3ZpXZ2lwSq6bLqK1/RkxaWHcw0xhvmV1lhhrnS+B+KwuEarPyXhgSt6sihPxLJJKZQ=
-X-Received: by 2002:aa7:c0d6:: with SMTP id j22mr9178723edp.31.1607179832552;
- Sat, 05 Dec 2020 06:50:32 -0800 (PST)
+        id S1726932AbgLEPzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 10:55:23 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27973 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727126AbgLEP2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 10:28:44 -0500
+IronPort-SDR: 0ddb7lgdrBPLS74HJb3lALgcnQltBkG0ZWEyksYbbOCHk/hHZBAINcL5rZHicI4BdwtSu/xrNR
+ a14hqQ9Noxsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="191774457"
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="191774457"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:54 -0800
+IronPort-SDR: 8AWgwzUhEEs3eyeszZBytfK8vf8IHarISd5ixf6hqDSjMJ/oF0NPBiziNSPRVk7Aiic8dOKM2O
+ g0oX0LMLnd7g==
+X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
+   d="scan'208";a="436104267"
+Received: from schamb2-mobl2.amr.corp.intel.com (HELO [10.212.89.161]) ([10.212.89.161])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:53 -0800
+Subject: Re: [PATCH 5/7] regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
+To:     Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-6-yung-chuan.liao@linux.intel.com>
+ <20201205074630.GS8403@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <e4e3d7ea-0825-2c8c-4182-6d1b578200a3@linux.intel.com>
+Date:   Sat, 5 Dec 2020 08:52:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201204070901.24592-1-huangshuosheng@allwinnertech.com>
-In-Reply-To: <20201204070901.24592-1-huangshuosheng@allwinnertech.com>
-From:   Frank Lee <tiny.windzz@gmail.com>
-Date:   Sat, 5 Dec 2020 22:50:18 +0800
-Message-ID: <CAEExFWvbNBg4hFZAHwh2X8mM+rMHrCN_gy5Vhh4z5rQyt512qQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cpufreq: sun50i: add a100 cpufreq support
-To:     Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, jernej.skrabec@siol.net,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201205074630.GS8403@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Maxime,
 
-Any comment?
+>>   MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
+>> -MODULE_LICENSE("GPL v2");
+>> +MODULE_LICENSE("GPL");
+> 
+> Why do you want to change this ?
 
-BR / Yangtao
+We only use MODULE_LICENSE("GPL") for new contributions since 'GPL v2' 
+does not bring any information on the license, is equivalent to 'GPL' 
+and only exists for 'historical reasons', see
+
+https://www.kernel.org/doc/html/latest/process/license-rules.html
+
+
+“GPL”	Module is licensed under GPL version 2. This does not express any 
+distinction between GPL-2.0-only or GPL-2.0-or-later. The exact license 
+information can only be determined via the license information in the 
+corresponding source files.
+
+“GPL v2”	Same as “GPL”. It exists for historic reasons.
+
+We should have used 'GPL' in the initial regmap MBQ patch but didn't for 
+some reason, this change just realigns with what we intended.
+
+That said, this is unrelated to this no_pm patch so could be in a 
+separate one if you preferred it that way.
