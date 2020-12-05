@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798CA2CFE9D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D294C2CFEC4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgLET4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:56:15 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:55748 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLET4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:56:14 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 7BB35804C8;
-        Sat,  5 Dec 2020 20:55:26 +0100 (CET)
-Date:   Sat, 5 Dec 2020 20:55:25 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        od@zcrc.me, linux-kernel@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Christophe Branchereau <cbranchereau@gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: display: Add ABT Y030XX067A panel
- bindings
-Message-ID: <20201205195525.GI332836@ravnborg.org>
-References: <20201101093150.8071-1-paul@crapouillou.net>
- <20201101093150.8071-3-paul@crapouillou.net>
- <20201101122900.GB1269759@ravnborg.org>
- <9CZ5JQ.CWYPSJ8EDOW4@crapouillou.net>
- <CAL_JsqLSGMFibm8tVKqNe1SFBzXTU2=M2jZmpfrHeGUqS3foRg@mail.gmail.com>
- <1XJMKQ.YER47WG3D7R41@crapouillou.net>
- <CAL_JsqJDQMzHjtYa6ZCOxXW_U5nWrS+DhBj-w2myn-SkGB+KCA@mail.gmail.com>
- <MXPMKQ.PSU8COVVM0IV2@crapouillou.net>
+        id S1726827AbgLEUVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 15:21:44 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:58575 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725270AbgLEUVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 15:21:43 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Cp8N95t0Tz9v0WS;
+        Sat,  5 Dec 2020 13:42:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Aetkluoxj2BP; Sat,  5 Dec 2020 13:42:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cp8N94zy2z9v0KH;
+        Sat,  5 Dec 2020 13:42:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7AE4A8B77F;
+        Sat,  5 Dec 2020 13:41:58 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id LW1N9ujtEu1S; Sat,  5 Dec 2020 13:41:58 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DDB928B75B;
+        Sat,  5 Dec 2020 13:41:57 +0100 (CET)
+Subject: Re: [PATCH] powerpc/mm: Fix KUAP warning by providing
+ copy_from_kernel_nofault_allowed()
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <e559e60c43f679195bfe4c7b0a301431c6f02c7a.1607157766.git.christophe.leroy@csgroup.eu>
+ <20201205084804.GA25452@lst.de>
+ <0ede82c3-d4e9-6ce6-0590-6254272c3ae2@csgroup.eu>
+Message-ID: <d7a9c47a-d539-d83e-7707-6b72cbcdfe93@csgroup.eu>
+Date:   Sat, 5 Dec 2020 13:38:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MXPMKQ.PSU8COVVM0IV2@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=aP72JqY-3imoCIW2L10A:9
-        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
+In-Reply-To: <0ede82c3-d4e9-6ce6-0590-6254272c3ae2@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul
 
-> > >  >>  >>  +
-> > >  >>  >>  +maintainers:
-> > >  >>  >>  +  - Paul Cercueil <paul@crapouillou.net>
-> > >  >>  >>  +
-> > >  >>  >>  +allOf:
-> > >  >>  >>  +  - $ref: panel-common.yaml#
-> > >  >>  >>  +
-> > >  >>  >>  +properties:
-> > >  >>  >>  +  compatible:
-> > >  >>  >>  +    const: abt,y030xx067a
-> > >  >>  >>  +
-> > >  >>  >>  +  backlight: true
-> > >  >>  >>  +  port: true
-> > >  >>  >>  +  power-supply: true
-> > >  >>  >>  +  reg: true
-> > >  >>  >>  +  reset-gpios: true
-> > >  >>  >
-> > >  >>  > The binding is missing:
-> > >  >>  > required:
-> > >  >>  >   - compatible
-> > >  >>  >   - reg
-> > >  >>  >   - power-supply
-> > >  >>  >   - reset-gpios
-> > >  >>  >   - ...
-> > >  >>  >
-> > >  >>  > additionalProperties: false
-> > >  >>  >
-> > >  >>  > So r-b only with these added.
-> > >  >>
-> > >  >>  Stupid mistake, sorry about that.
-> > >  >>
-> > >  >>  I'll V2.
-> > >  >
-> > >  > I don't have any V2 in my inbox, but looks like it is in
-> > > linux-next
-> > >  > now:
-> > > 
-> > >  Yes, Sam told me on IRC I could fix it while applying and avoid the
-> > > V2.
-> > > 
-> > >  > /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.example.dt.yaml:
-> > >  > panel@0: 'spi-max-frequency' does not match any of the regexes:
-> > >  > 'pinctrl-[0-9]+'
-> > >  >  From schema:
-> > >  > /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml
-> > > 
-> > >  "make dt_binding_check
-> > > DT_SCHEMA_FILES=Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml"
-> > >  doesn't complain here :(
-> > 
-> > Even if you do 'touch
-> > Documentation/devicetree/bindings/display/panel/abt,y030xx067a.yaml'
-> > or do a clean build?
-> > 
-> > I can't think of any kernel or dt-schema changes which would explain
-> > the difference. This is purely related to 'additionalProperties:
-> > false'.
+
+Le 05/12/2020 à 10:56, Christophe Leroy a écrit :
 > 
-> Ok, I see it now.
-> Should I use 'unevaluatedProperties: false' instead?
+> 
+> Le 05/12/2020 à 09:48, Christoph Hellwig a écrit :
+>> On Sat, Dec 05, 2020 at 08:43:06AM +0000, Christophe Leroy wrote:
+>>> Since commit c33165253492 ("powerpc: use non-set_fs based maccess
+>>> routines"), userspace access is not granted anymore when using
+>>> copy_from_kernel_nofault()
+>>>
+>>> However, kthread_probe_data() uses copy_from_kernel_nofault()
+>>> to check validity of pointers. When the pointer is NULL,
+>>> it points to userspace, leading to a KUAP fault and triggering
+>>> the following big hammer warning many times when you request
+>>> a sysrq "show task":
+>>
+>>
+>>
+>>> To avoid that, copy_from_kernel_nofault_allowed() is used to check
+>>> whether the address is a valid kernel address. But the default
+>>> version of it returns true for any address.
+>>>
+>>> Provide a powerpc version of copy_from_kernel_nofault_allowed()
+>>> that returns false when the address is below TASK_USER_MAX,
+>>> so that copy_from_kernel_nofault() will return -ERANGE.
+>>
+>> Looks good.  I wonder if we should just default to the TASK_SIZE_MAX
+>> check in  copy_from_kernel_nofault_allowed for architectures that select
+>> CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE?
+> 
+> Yes maybe that would be better.
+> 
+> Can you cook a patch an get it into 5.10 ?
+> 
 
-Yes, the issue here is that you add a number of spi properties to the
-binding. And you cannot or at least shall not, list them all in this
-binding.
-So when evaluating the binding the spi-max-frequency should be allowed,
-and when a full DT file is checked the tools will catch it there is a
-binding that is not known - as you tell it with "unevaluatedProperties:
-false" that all prperties must be known.
+In fact it doesn't seem so easy because only s390, powerpc and x86 have TASK_SIZE_MAX while 
+CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE is selected by arm, arm64, powerpc and x86
 
-	Sam
+So maybe for 5.10 we take the powerpc fix ?
+
+Christophe
