@@ -2,207 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B402CFFD3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 00:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC812CFFCF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 00:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727375AbgLEXtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 18:49:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35197 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726811AbgLEXtw (ORCPT
+        id S1727240AbgLEXr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 18:47:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgLEXr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 18:49:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607212105;
+        Sat, 5 Dec 2020 18:47:56 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59BDC0613CF;
+        Sat,  5 Dec 2020 15:47:16 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607212034;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=a1PudfXRCgPMhbqFZGLxWf1rDDLL53Jdzs7mpITq/dY=;
-        b=f2m05gobShKyplQXap4m6ha/VOPEhQpdHy4CfLfQ22vSNCLsIb7WgCoombIYFvQFI5YVph
-        TQ88bdikfgj06v6XXnYg2+Ld1dzH9wJ7L3mg0VuDBDdXgHD5IRHVPtr9x58U/2g/DCTJmU
-        vpHiY1K5j5DPeLZcgkoMcRH8ajTjn+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-kyyuhHobNEG5Q9Wz7ZQPUA-1; Sat, 05 Dec 2020 18:48:21 -0500
-X-MC-Unique: kyyuhHobNEG5Q9Wz7ZQPUA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C95B45185;
-        Sat,  5 Dec 2020 23:48:19 +0000 (UTC)
-Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6FBAD5D6D5;
-        Sat,  5 Dec 2020 23:48:15 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: [PATCH net] bonding: reduce rtnl lock contention in mii monitor thread
-Date:   Sat,  5 Dec 2020 18:43:54 -0500
-Message-Id: <20201205234354.1710-1-jarod@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cCD+MM2ELmrBKfWFSQdz97hYPn7ejqug1YoM2ZlKSVU=;
+        b=VyPbPWrI1bxz1ctAMcXAteyGb/wjM2BQkNGgg26A8YU/N9ribTwowxtdSbsLnaHsYgPoGB
+        Wo6d+5hBRxmaJMUtpgIrvoEfRVwdSjzy0N2kO9JetY/CjyizlnyR8dukzAd55+3VrU00ZM
+        AVkdTrzoIlMF0DoLsFFWQDYr9UCD7eLkBZUYDyLdy38EervQy3MlCzP7Tg9wyUYMlochiO
+        UPFQwel5WVfpY6oiwvi+xS9xsALi4LlD9BrWA2ZYj6WzzKkFbvPRZJMnb5pO5vhUtYEE7B
+        bmg9qrK3uiJoJBay2+KSBNTM9gg7nKnax+4wqOp3zqIhvD5H5xckKVyKkafbgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607212034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cCD+MM2ELmrBKfWFSQdz97hYPn7ejqug1YoM2ZlKSVU=;
+        b=05aQoE1F9U/F18I37fUGznt/ZaaLvFTUNj0MvApH+5DQGoIvUTh4Mut1AjkJabBY6Pg91k
+        ADR9Cy9L2HozUqBg==
+To:     Marco Elver <elver@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, fweisbec@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
+In-Reply-To: <87wnxw86bv.fsf@nanos.tec.linutronix.de>
+References: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com> <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com> <87wnxw86bv.fsf@nanos.tec.linutronix.de>
+Date:   Sun, 06 Dec 2020 00:47:13 +0100
+Message-ID: <87eek395oe.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm seeing a system get stuck unable to bring a downed interface back up
-when it's got an updelay value set, behavior which ceased when logging
-spew was removed from bond_miimon_inspect(). I'm monitoring logs on this
-system over another network connection, and it seems that the act of
-spewing logs at all there increases rtnl lock contention, because
-instrumented code showed bond_mii_monitor() never able to succeed in it's
-attempts to call rtnl_trylock() to actually commit link state changes,
-leaving the downed link stuck in BOND_LINK_DOWN. The system in question
-appears to be fine with the log spew being moved to
-bond_commit_link_state(), which is called after the successful
-rtnl_trylock(). I'm actually wondering if perhaps we ultimately need/want
-some bond-specific lock here to prevent racing with bond_close() instead
-of using rtnl, but this shift of the output appears to work. I believe
-this started happening when de77ecd4ef02 ("bonding: improve link-status
-update in mii-monitoring") went in, but I'm not 100% on that.
+On Sat, Dec 05 2020 at 19:18, Thomas Gleixner wrote:
+> On Fri, Dec 04 2020 at 20:53, Marco Elver wrote:
+> It might be useful to find the actual variable, data member or whatever
+> which is involved in the various reports and if there is a match then
+> the reports could be aggregated. The 3 patterns here are not even the
+> complete possible picture.
+>
+> So if you sum them up: 58 + 148 + 205 instances then their weight
+> becomes more significant as well.
 
-The addition of a case BOND_LINK_BACK in bond_miimon_inspect() is somewhat
-separate from the fix for the actual hang, but it eliminates a constant
-"invalid new link 3 on slave" message seen related to this issue, and it's
-not actually an invalid state here, so we shouldn't be reporting it as an
-error.
+I just looked into the moderation queue and picked stuff which I'm
+familiar with from the subject line.
 
-CC: Mahesh Bandewar <maheshb@google.com>
-CC: Jay Vosburgh <j.vosburgh@gmail.com>
-CC: Veaceslav Falico <vfalico@gmail.com>
-CC: Andy Gospodarek <andy@greyhouse.net>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Thomas Davis <tadavis@lbl.gov>
-CC: netdev@vger.kernel.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
----
- drivers/net/bonding/bond_main.c | 26 ++++++----------------
- include/net/bonding.h           | 38 +++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 20 deletions(-)
+There are quite some reports which have a different trigger scenario,
+but are all related to the same issue.
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 47afc5938c26..cdb6c64f16b6 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2292,23 +2292,13 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			bond_propose_link_state(slave, BOND_LINK_FAIL);
- 			commit++;
- 			slave->delay = bond->params.downdelay;
--			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
--					   (BOND_MODE(bond) ==
--					    BOND_MODE_ACTIVEBACKUP) ?
--					    (bond_is_active_slave(slave) ?
--					     "active " : "backup ") : "",
--					   bond->params.downdelay * bond->params.miimon);
--			}
-+
- 			fallthrough;
- 		case BOND_LINK_FAIL:
- 			if (link_state) {
- 				/* recovered before downdelay expired */
- 				bond_propose_link_state(slave, BOND_LINK_UP);
- 				slave->last_link_up = jiffies;
--				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
--					   (bond->params.downdelay - slave->delay) *
--					   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-@@ -2330,19 +2320,10 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			commit++;
- 			slave->delay = bond->params.updelay;
- 
--			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
--					   ignore_updelay ? 0 :
--					   bond->params.updelay *
--					   bond->params.miimon);
--			}
- 			fallthrough;
- 		case BOND_LINK_BACK:
- 			if (!link_state) {
- 				bond_propose_link_state(slave, BOND_LINK_DOWN);
--				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
--					   (bond->params.updelay - slave->delay) *
--					   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-@@ -2456,6 +2437,11 @@ static void bond_miimon_commit(struct bonding *bond)
- 
- 			continue;
- 
-+		case BOND_LINK_BACK:
-+			bond_propose_link_state(slave, BOND_LINK_NOCHANGE);
-+
-+			continue;
-+
- 		default:
- 			slave_err(bond->dev, slave->dev, "invalid new link %d on slave\n",
- 				  slave->link_new_state);
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index adc3da776970..6a09de9a3f03 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -558,10 +558,48 @@ static inline void bond_propose_link_state(struct slave *slave, int state)
- 
- static inline void bond_commit_link_state(struct slave *slave, bool notify)
- {
-+	struct bonding *bond = slave->bond;
-+
- 	if (slave->link_new_state == BOND_LINK_NOCHANGE)
- 		return;
- 
-+	if (slave->link == slave->link_new_state)
-+		return;
-+
- 	slave->link = slave->link_new_state;
-+
-+	switch(slave->link) {
-+	case BOND_LINK_UP:
-+		slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
-+			   (bond->params.downdelay - slave->delay) *
-+			   bond->params.miimon);
-+		break;
-+
-+	case BOND_LINK_FAIL:
-+		if (slave->delay) {
-+			slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
-+				   (BOND_MODE(bond) ==
-+				    BOND_MODE_ACTIVEBACKUP) ?
-+				    (bond_is_active_slave(slave) ?
-+				     "active " : "backup ") : "",
-+				   bond->params.downdelay * bond->params.miimon);
-+		}
-+		break;
-+
-+	case BOND_LINK_DOWN:
-+		slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
-+			   (bond->params.updelay - slave->delay) *
-+			   bond->params.miimon);
-+		break;
-+
-+	case BOND_LINK_BACK:
-+		if (slave->delay) {
-+			slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
-+				   bond->params.updelay * bond->params.miimon);
-+		}
-+		break;
-+	}
-+
- 	if (notify) {
- 		bond_queue_slave_event(slave);
- 		bond_lower_state_changed(slave);
--- 
-2.28.0
+  https://syzkaller.appspot.com/bug?id=f5a5ed5b2b6c3e92bc1a9dadc934c44ee3ba4ec5
+  https://syzkaller.appspot.com/bug?id=36fc4ad4cac8b8fc8a40713f38818488faa9e9f4
+
+are just variations of the same problem timer_base->running_timer being
+set to NULL without holding the base lock. Safe, but insanely hard to
+explain why :)
+
+Next:
+
+  https://syzkaller.appspot.com/bug?id=e613fc2458de1c8a544738baf46286a99e8e7460
+  https://syzkaller.appspot.com/bug?id=55bc81ed3b2f620f64fa6209000f40ace4469bc0
+  https://syzkaller.appspot.com/bug?id=972894de81731fc8f62b8220e7cd5153d3e0d383
+  .....
+
+That's just the ones which caught my eye and all are related to
+task->flags usage. There are tons more judging from the subject
+lines.
+
+So you really want to look at them as classes of problems and not as
+individual scenarios.
+
+Thanks,
+
+        tglx
+
 
