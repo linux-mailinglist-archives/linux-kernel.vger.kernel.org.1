@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6C22CFC91
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086492CFC6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgLESTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727787AbgLERyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:54:32 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729986AbgLESTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57960 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727868AbgLERra (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:47:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607190361;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f/gLGPmePhuO2f+EARH9bT98ZpjrYraDFm24BynZYug=;
+        b=Z2k7rQmlQZN5GfKq1fMxsOExRscmOPMzn59gKZ1uVAPioSxq9OdBnAEUb4zI4dHeV1WiIP
+        LB9akMCltOAkBEKDv2WD7dG9WeHfIqGQ/buVCX4X2uCR+U+ofVwhtnwqwgeZVw8eoKnhYo
+        czGOehuv+qCbbCzaQ3NqN7+vJatFGZ8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-7Uinrg3KOaSUE9_ZDuhMHQ-1; Sat, 05 Dec 2020 12:22:42 -0500
+X-MC-Unique: 7Uinrg3KOaSUE9_ZDuhMHQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F6F92311C;
-        Sat,  5 Dec 2020 17:17:11 +0000 (UTC)
-Date:   Sat, 5 Dec 2020 17:17:08 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 3/8] Documentation: HID: hiddev editing & corrections
-Message-ID: <20201205171708.55251bb7@archlinux>
-In-Reply-To: <20201204062022.5095-4-rdunlap@infradead.org>
-References: <20201204062022.5095-1-rdunlap@infradead.org>
-        <20201204062022.5095-4-rdunlap@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10EA1107ACE4;
+        Sat,  5 Dec 2020 17:22:41 +0000 (UTC)
+Received: from f33vm.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46DE35D6D5;
+        Sat,  5 Dec 2020 17:22:36 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>, Ivan Vecera <ivecera@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: [PATCH net v4] bonding: fix feature flag setting at init time
+Date:   Sat,  5 Dec 2020 12:22:29 -0500
+Message-Id: <20201205172229.576587-1-jarod@redhat.com>
+In-Reply-To: <20201203004357.3125-1-jarod@redhat.com>
+References: <20201203004357.3125-1-jarod@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Dec 2020 22:20:17 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
+Don't try to adjust XFRM support flags if the bond device isn't yet
+registered. Bad things can currently happen when netdev_change_features()
+is called without having wanted_features fully filled in yet. This code
+runs both on post-module-load mode changes, as well as at module init
+time, and when run at module init time, it is before register_netdevice()
+has been called and filled in wanted_features. The empty wanted_features
+led to features also getting emptied out, which was definitely not the
+intended behavior, so prevent that from happening.
 
-> Do basic editing & correction to hiddev.rst:
-> - use HID instead of hid consistently
+Originally, I'd hoped to stop adjusting wanted_features at all in the
+bonding driver, as it's documented as being something only the network
+core should touch, but we actually do need to do this to properly update
+both the features and wanted_features fields when changing the bond type,
+or we get to a situation where ethtool sees:
 
-One case inline, where I think the usage of hid-core
-might have been deliberate.
+    esp-hw-offload: off [requested on]
 
-> - add hyphenation of multi-word adjectives
-> - drop a duplicate word
-> - unhyphenate "a priori"
-> 
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: linux-input@vger.kernel.org
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> ---
->  Documentation/hid/hiddev.rst |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> --- linux-next-20201201.orig/Documentation/hid/hiddev.rst
-> +++ linux-next-20201201/Documentation/hid/hiddev.rst
-> @@ -27,7 +27,7 @@ the following::
->                            --> hiddev.c ----> POWER / MONITOR CONTROL  
->  
->  In addition, other subsystems (apart from USB) can potentially feed
-> -events into the input subsystem, but these have no effect on the hid
-> +events into the input subsystem, but these have no effect on the HID
->  device interface.
->  
->  Using the HID Device Interface
-> @@ -72,8 +72,8 @@ The hiddev API uses a read() interface,
->  
->  HID devices exchange data with the host computer using data
->  bundles called "reports".  Each report is divided into "fields",
-> -each of which can have one or more "usages".  In the hid-core,
-> -each one of these usages has a single signed 32 bit value.
-> +each of which can have one or more "usages".  In the HID core,
+I do think we should be using netdev_update_features instead of
+netdev_change_features here though, so we only send notifiers when the
+features actually changed.
 
-Hmm. hid-core is (I think) kind of referring to the code in hid-core.c
-Whereas a Human Interface Device core (HID core) sounds like
-something different.  Not my doc though!
+Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
+Reported-by: Ivan Vecera <ivecera@redhat.com>
+Suggested-by: Ivan Vecera <ivecera@redhat.com>
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Davis <tadavis@lbl.gov>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
+v2: rework based on further testing and suggestions from ivecera
+v3: add helper function, remove goto
+v4: drop hunk not directly related to fix, clean up ifdeffery
 
-> +each one of these usages has a single signed 32-bit value.
->  
->  read():
->  -------
-> @@ -113,7 +113,7 @@ HIDIOCAPPLICATION
->    - (none)
->  
->  This ioctl call returns the HID application usage associated with the
-> -hid device. The third argument to ioctl() specifies which application
-> +HID device. The third argument to ioctl() specifies which application
->  index to get. This is useful when the device has more than one
->  application collection. If the index is invalid (greater or equal to
->  the number of application collections this device has) the ioctl
-> @@ -181,7 +181,7 @@ looked up by type (input, output or feat
->  must be filled in by the user. The ID can be absolute -- the actual
->  report id as reported by the device -- or relative --
->  HID_REPORT_ID_FIRST for the first report, and (HID_REPORT_ID_NEXT |
-> -report_id) for the next report after report_id. Without a-priori
-> +report_id) for the next report after report_id. Without a priori
->  information about report ids, the right way to use this ioctl is to
->  use the relative IDs above to enumerate the valid IDs. The ioctl
->  returns non-zero when there is no more next ID. The real report ID is
-> @@ -200,7 +200,7 @@ HIDIOCGUCODE
->    - struct hiddev_usage_ref (read/write)
->  
->  Returns the usage_code in a hiddev_usage_ref structure, given that
-> -given its report type, report id, field index, and index within the
-> +its report type, report id, field index, and index within the
->  field have already been filled into the structure.
->  
->  HIDIOCGUSAGE
+ drivers/net/bonding/bond_options.c | 22 +++++++++++++++-------
+ include/net/bonding.h              |  2 --
+ 2 files changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
+index 9abfaae1c6f7..a4e4e15f574d 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -745,6 +745,19 @@ const struct bond_option *bond_opt_get(unsigned int option)
+ 	return &bond_opts[option];
+ }
+ 
++static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
++{
++	if (!IS_ENABLED(CONFIG_XFRM_OFFLOAD))
++		return;
++
++	if (mode == BOND_MODE_ACTIVEBACKUP)
++		bond_dev->wanted_features |= BOND_XFRM_FEATURES;
++	else
++		bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
++
++	netdev_update_features(bond_dev);
++}
++
+ static int bond_option_mode_set(struct bonding *bond,
+ 				const struct bond_opt_value *newval)
+ {
+@@ -767,13 +780,8 @@ static int bond_option_mode_set(struct bonding *bond,
+ 	if (newval->value == BOND_MODE_ALB)
+ 		bond->params.tlb_dynamic_lb = 1;
+ 
+-#ifdef CONFIG_XFRM_OFFLOAD
+-	if (newval->value == BOND_MODE_ACTIVEBACKUP)
+-		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
+-	else
+-		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
+-	netdev_change_features(bond->dev);
+-#endif /* CONFIG_XFRM_OFFLOAD */
++	if (bond->dev->reg_state == NETREG_REGISTERED)
++		bond_set_xfrm_features(bond->dev, newval->value);
+ 
+ 	/* don't cache arp_validate between modes */
+ 	bond->params.arp_validate = BOND_ARP_VALIDATE_NONE;
+diff --git a/include/net/bonding.h b/include/net/bonding.h
+index d9d0ff3b0ad3..adc3da776970 100644
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -86,10 +86,8 @@
+ #define bond_for_each_slave_rcu(bond, pos, iter) \
+ 	netdev_for_each_lower_private_rcu((bond)->dev, pos, iter)
+ 
+-#ifdef CONFIG_XFRM_OFFLOAD
+ #define BOND_XFRM_FEATURES (NETIF_F_HW_ESP | NETIF_F_HW_ESP_TX_CSUM | \
+ 			    NETIF_F_GSO_ESP)
+-#endif /* CONFIG_XFRM_OFFLOAD */
+ 
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+ extern atomic_t netpoll_block_tx;
+-- 
+2.28.0
 
