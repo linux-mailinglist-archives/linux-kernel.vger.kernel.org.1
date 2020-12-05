@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41A52CFC4E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7E82CFC50
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 18:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgLERoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 12:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbgLERk2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:40:28 -0500
-Received: from faui03.informatik.uni-erlangen.de (faui03.informatik.uni-erlangen.de [IPv6:2001:638:a000:4130:131:188:30:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A48C09425C;
-        Sat,  5 Dec 2020 09:39:48 -0800 (PST)
-Received: from cip4d0.informatik.uni-erlangen.de (cip4d0.cip.cs.fau.de [IPv6:2001:638:a000:4160:131:188:60:59])
-        by faui03.informatik.uni-erlangen.de (Postfix) with ESMTP id 22147241036;
-        Sat,  5 Dec 2020 18:27:57 +0100 (CET)
-Received: by cip4d0.informatik.uni-erlangen.de (Postfix, from userid 68457)
-        id 13663D8049E; Sat,  5 Dec 2020 18:27:57 +0100 (CET)
-From:   Stefan Eschenbacher <stefan.eschenbacher@fau.de>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Cc:     Stefan Eschenbacher <stefan.eschenbacher@fau.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel@i4.cs.fau.de, Max Stolze <max.stolze@fau.de>
-Subject: [PATCH 0/3] drivers/hv: make max_num_channels_supported configurable
-Date:   Sat,  5 Dec 2020 18:26:47 +0100
-Message-Id: <20201205172650.2290-1-stefan.eschenbacher@fau.de>
-X-Mailer: git-send-email 2.20.1
+        id S1727979AbgLERul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 12:50:41 -0500
+Received: from mail.hallyn.com ([178.63.66.53]:60704 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727466AbgLERlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:41:21 -0500
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id AF1396A6; Sat,  5 Dec 2020 11:40:00 -0600 (CST)
+Date:   Sat, 5 Dec 2020 11:40:00 -0600
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Andrew G. Morgan" <morgan@kernel.org>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        =?iso-8859-1?Q?Herv=E9?= Guillemet <herve@guillemet.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH] fix namespaced fscaps when !CONFIG_SECURITY
+Message-ID: <20201205174000.GA3290@mail.hallyn.com>
+References: <20201117150856.GA12240@mail.hallyn.com>
+ <CALQRfL6q8ppuWi3ygY6iqh6SX9pnkVnvJDynTD61K2wUqerahg@mail.gmail.com>
+ <20201129211542.GA5227@mail.hallyn.com>
+ <alpine.LRH.2.21.2012011358200.28022@namei.org>
+ <CALQRfL6OQKuBqbUoC7_yH7W4qabYSamRYUqjM-HE1gj2r_CaHQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALQRfL6OQKuBqbUoC7_yH7W4qabYSamRYUqjM-HE1gj2r_CaHQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the TODO comment in hyperv_vmbus.h the value in macro
-MAX_NUM_CHANNELS_SUPPORTED should be configurable. The first patch
-accomplishes that by introducting uint max_num_channels_supported as
-module parameter.
-Also macro MAX_NUM_CHANNELS_SUPPORTED_DEFAULT is introduced with
-value 256, which is the currently used macro value.
-MAX_NUM_CHANNELS_SUPPORTED was found and replaced in two locations.
+How odd - where did that come from?
 
-During module initialization sanity checks are applied which will result
-in EINVAL or ERANGE if the given value is no multiple of 32 or larger than
-MAX_NUM_CHANNELS.
+James, I force-pushed that with corrected bugzilla link to
+2020-11-29/fix-nscaps.  Sorry about that.
 
-While testing, we found a misleading typo in the comment for the macro
-MAX_NUM_CHANNELS which is fixed by the second patch.
-
-The third patch makes the added default macro configurable by 
-introduction and use of Kconfig parameter HYPERV_VMBUS_DEFAULT_CHANNELS. 
-Default value remains at 256.
-
-Two notes on these patches:
-1) With above patches it is valid to configure max_num_channels_supported
-and MAX_NUM_CHANNELS_SUPPORTED_DEFAULT as 0. We simply don't know if that
-is a valid value. Doing so while testing still left us with a working
-Debian VM in Hyper-V on Windows 10.
-2) To set the Kconfig parameter the user currently has to divide the
-desired default number of channels by 32 and enter the result of that
-calculation. This way both known constraints we got from the comments in
-the code are enforced. It feels a bit unintuitive though. We haven't found
-Kconfig options to ensure that the value is a multiple of 32. So if you'd
-like us to fix that we'd be happy for some input on how to settle it with
-Kconfig.
-
-Signed-off-by: Stefan Eschenbacher <stefan.eschenbacher@fau.de>
-Co-developed-by: Max Stolze <max.stolze@fau.de>
-Signed-off-by: Max Stolze <max.stolze@fau.de>
-
-Stefan Eschenbacher (3):
-  drivers/hv: make max_num_channels_supported configurable
-  drivers/hv: fix misleading typo in comment
-  drivers/hv: add default number of vmbus channels to Kconfig
-
- drivers/hv/Kconfig        | 13 +++++++++++++
- drivers/hv/hyperv_vmbus.h |  8 ++++----
- drivers/hv/vmbus_drv.c    | 20 +++++++++++++++++++-
- 3 files changed, 36 insertions(+), 5 deletions(-)
-
--- 
-2.20.1
-
+On Fri, Dec 04, 2020 at 07:58:14AM -0800, Andrew G. Morgan wrote:
+> The correct bug reference for this patch is:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=209689
+> 
+> Reviewed-by: Andrew G. Morgan <morgan@kernel.org>
+> 
+> On Mon, Nov 30, 2020 at 6:58 PM James Morris <jmorris@namei.org> wrote:
+> >
+> > On Sun, 29 Nov 2020, Serge E. Hallyn wrote:
+> >
+> > > Hi James,
+> > >
+> > > would you mind adding this to the security tree?  (You can cherrypick
+> > > from https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/commit/?h=2020-11-29/fix-nscaps )
+> >
+> > Sure.
+> >
+> > >
+> > > thanks,
+> > > -serge
+> > >
+> > > On Tue, Nov 17, 2020 at 08:09:59AM -0800, Andrew G. Morgan wrote:
+> > > > Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
+> > > >
+> > > >
+> > > > On Tue, Nov 17, 2020 at 7:09 AM Serge E. Hallyn <serge@hallyn.com> wrote:
+> > > >
+> > > > > Namespaced file capabilities were introduced in 8db6c34f1dbc .
+> > > > > When userspace reads an xattr for a namespaced capability, a
+> > > > > virtualized representation of it is returned if the caller is
+> > > > > in a user namespace owned by the capability's owning rootid.
+> > > > > The function which performs this virtualization was not hooked
+> > > > > up if CONFIG_SECURITY=n.  Therefore in that case the original
+> > > > > xattr was shown instead of the virtualized one.
+> > > > >
+> > > > > To test this using libcap-bin (*1),
+> > > > >
+> > > > > $ v=$(mktemp)
+> > > > > $ unshare -Ur setcap cap_sys_admin-eip $v
+> > > > > $ unshare -Ur setcap -v cap_sys_admin-eip $v
+> > > > > /tmp/tmp.lSiIFRvt8Y: OK
+> > > > >
+> > > > > "setcap -v" verifies the values instead of setting them, and
+> > > > > will check whether the rootid value is set.  Therefore, with
+> > > > > this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
+> > > > > fail:
+> > > > >
+> > > > > $ v=$(mktemp)
+> > > > > $ unshare -Ur setcap cap_sys_admin=eip $v
+> > > > > $ unshare -Ur setcap -v cap_sys_admin=eip $v
+> > > > > nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
+> > > > >
+> > > > > Fix this bug by calling cap_inode_getsecurity() in
+> > > > > security_inode_getsecurity() instead of returning
+> > > > > -EOPNOTSUPP, when CONFIG_SECURITY=n.
+> > > > >
+> > > > > *1 - note, if libcap is too old for getcap to have the '-n'
+> > > > > option, then use verify-caps instead.
+> > > > >
+> > > > > Signed-off-by: Serge Hallyn <serge@hallyn.com>
+> > > > > Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1593431
+> > > > > Cc: Hervé Guillemet <herve@guillemet.org>
+> > > > > Cc: Andrew G. Morgan <morgan@kernel.org>
+> > > > > Cc: Casey Schaufler <casey@schaufler-ca.com>
+> > > > > ---
+> > > > >  include/linux/security.h | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/include/linux/security.h b/include/linux/security.h
+> > > > > index bc2725491560..39642626a707 100644
+> > > > > --- a/include/linux/security.h
+> > > > > +++ b/include/linux/security.h
+> > > > > @@ -869,7 +869,7 @@ static inline int security_inode_killpriv(struct
+> > > > > dentry *dentry)
+> > > > >
+> > > > >  static inline int security_inode_getsecurity(struct inode *inode, const
+> > > > > char *name, void **buffer, bool alloc)
+> > > > >  {
+> > > > > -       return -EOPNOTSUPP;
+> > > > > +       return cap_inode_getsecurity(inode, name, buffer, alloc);
+> > > > >  }
+> > > > >
+> > > > >  static inline int security_inode_setsecurity(struct inode *inode, const
+> > > > > char *name, const void *value, size_t size, int flags)
+> > > > > --
+> > > > > 2.25.1
+> > > > >
+> > > > >
+> > >
+> >
+> > --
+> > James Morris
+> > <jmorris@namei.org>
