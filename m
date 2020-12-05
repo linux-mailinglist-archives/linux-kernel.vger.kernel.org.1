@@ -2,136 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D11B2CFD51
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300862CFD8D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387399AbgLESbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgLESbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:31:04 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19044C0613D1
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 10:30:24 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 91so4595189wrj.7
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 10:30:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WWqB20MHAs7UMnoS0Q6wgVRoNx/aV34/MkacRhfSd2g=;
-        b=FqjMFY35Kb8fRgveJIbmJSEnngdTQVOSCs+4B3cuDi3ZkfsNiNGumRrAf8+yrzjVGy
-         arUYkhjkyxJdWdkV4eZluhd419jR1LaVgbv4cS0hX2RkpkMXAjWqYk0JG4mHEffhBcPv
-         GjYH3w169U7ENGBN2eXElYELND23Ow+AuFRmtwQaIH5PXytG4F/RRe4lCukoJuiDcN3S
-         64qRm68NomRD6Cg+1HvMAxjzf6ilu+0vxQropPGcSU8CGHbeu3RBkyQwGpquWbJlBlm7
-         5Se6Yw5x3tKgErPatWIsYmWdJeGWIa9MA5a0iqjkHprgq5FMYHWi6sh73m2QQ+If625c
-         47VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WWqB20MHAs7UMnoS0Q6wgVRoNx/aV34/MkacRhfSd2g=;
-        b=ou7yANYYsZ7T2rB4XS0+Giy31tp03s41U5E2ZsvN9P9e3ZshijjdasqxA4WnwNwl1S
-         x+rT9InoJ8/LgBNhMeY9FrpMh3ryj83VTt/t4Q/mh5pSMDDvLYr1lkmb+bp3Tuq1SpNr
-         Y4iOZwupqwWi7lM16y70qEQa9NAfPLK27MkooER91fNR58JZD3MsqYVz7DYdq2B6J4vF
-         ktUQW3IyjWYLEu3TJpRn8jkFEyC1P4X1cTe90YLL5Q+D6M+reNCNTvAZnr/GNXRjNcRz
-         rNfutm0+AYWZqN7TH40KWYRFyDd9vMm9HWP8T+u5VncSWvpwIf7nUOPZ4CVpChsmmVO8
-         5bhg==
-X-Gm-Message-State: AOAM530DgW6xPCjvZ4ngJuxAGlHYjLMd1+6O9KAGqQciDCbd7/xzvokj
-        7P8WaMWOheCcrQJdeIHqAhnk0w==
-X-Google-Smtp-Source: ABdhPJx/HpX8LbNHK0WAMgBXImoLA/JSSutGQfKGJfblyYzGcfa5RRxbrXAYyzeokwA/L1EWySoLug==
-X-Received: by 2002:adf:fdc7:: with SMTP id i7mr9400942wrs.398.1607193022694;
-        Sat, 05 Dec 2020 10:30:22 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8165:c1cc:d736:b53f? ([2a01:e34:ed2f:f020:8165:c1cc:d736:b53f])
-        by smtp.googlemail.com with ESMTPSA id h20sm7581744wmb.29.2020.12.05.10.30.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Dec 2020 10:30:21 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] clocksource: arm_arch_timer: Correct fault
- programming of CNTKCTL_EL1.EVNTI
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com
-References: <20201204073126.6920-1-zhukeqian1@huawei.com>
- <20201204073126.6920-3-zhukeqian1@huawei.com>
- <a82cf9ff-f18d-ce0a-f7a2-82a56cbbec40@linaro.org>
- <ef43679b6710fc4320203975bc2bde98@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <1ff86943-3f58-b57c-b3db-c3a92af79d2b@linaro.org>
-Date:   Sat, 5 Dec 2020 19:30:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726452AbgLESiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:38:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:44454 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgLESiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:38:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE886D6E;
+        Sat,  5 Dec 2020 10:37:13 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BF5B3F575;
+        Sat,  5 Dec 2020 10:37:11 -0800 (PST)
+References: <20201023101158.088940906@infradead.org> <20201023102347.067278757@infradead.org> <ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com> <jhjpn4bwznx.mognet@arm.com> <c2c013282faf278ee6e0fc66deefbab165ff4e88.camel@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qian Cai <qcai@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU hotplug cooperative
+In-reply-to: <c2c013282faf278ee6e0fc66deefbab165ff4e88.camel@redhat.com>
+Date:   Sat, 05 Dec 2020 18:37:06 +0000
+Message-ID: <jhjwnxwt7zh.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <ef43679b6710fc4320203975bc2bde98@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Marc,
-
-On 05/12/2020 19:22, Marc Zyngier wrote:
-> Hi Daniel,
-> 
-> On 2020-12-05 11:15, Daniel Lezcano wrote:
->> Hi Marc,
+On 04/12/20 21:19, Qian Cai wrote:
+> On Tue, 2020-11-17 at 19:28 +0000, Valentin Schneider wrote:
+>> We did have some breakage in that area, but all the holes I was aware of
+>> have been plugged. What would help here is to see which tasks are still
+>> queued on that outgoing CPU, and their recent activity.
 >>
->> are you fine with this patch ?
-> 
-> I am, although there still isn't any justification for the pos/lsb
-> rework in the commit message (and calling that variable lsb is somewhat
-> confusing). If you are going to apply it, please consider adding
-> the additional comment below.
+>> Something like
+>> - ftrace_dump_on_oops on your kernel cmdline
+>> - trace-cmd start -e 'sched:*'
+>>  <start the test here>
+>>
+>> ought to do it. Then you can paste the (tail of the) ftrace dump.
+>>
+>> I also had this laying around, which may or may not be of some help:
+>
+> Okay, your patch did not help, since it can still be reproduced using this,
+>
 
-Ok, I will do that.
+It wasn't meant to fix this, only add some more debug prints :)
 
-Thanks for the additional comment
+> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+>
+> # while :; do cpuhotplug04.sh -l 1; done
+>
+> The ftrace dump has too much output on this 256-CPU system, so I have not had
+> the patient to wait for it to finish after 15-min. But here is the log capturing
+> so far (search for "kernel BUG" there).
+>
+> http://people.redhat.com/qcai/console.log
+>
 
-  -- Daniel
+From there I see:
 
+[20798.166987][  T650] CPU127 nr_running=2
+[20798.171185][  T650]  p=migration/127
+[20798.175161][  T650]  p=kworker/127:1
 
->> On 04/12/2020 08:31, Keqian Zhu wrote:
->>> ARM virtual counter supports event stream, it can only trigger an event
->>> when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0
->>> changes,
->>> so the actual period of event stream is 2^(cntkctl_evnti + 1). For
->>> example,
->>> when the trigger bit is 0, then virtual counter trigger an event for
->>> every
->>> two cycles.
-> 
-> "While we're at it, rework the way we compute the trigger bit position by
->  making it more obvious that when bits [n:n-1] are both set (with n being
->  the most significant bit), we pick bit (n + 1)."
-> 
-> With that:
-> 
-> Acked-by: Marc Zyngier <maz@kernel.org>
-> 
-> Thanks,
-> 
->         M.
+so this might be another workqueue hurdle. This should be prevented by:
 
+  06249738a41a ("workqueue: Manually break affinity on hotplug")
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+In any case, I'll give this a try on a TX2 next week and see where it gets
+me.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Note that much earlier in your log, you have a softlockup on CPU127:
+
+[   74.278367][  C127] watchdog: BUG: soft lockup - CPU#127 stuck for 23s! [swapper/0:1]
