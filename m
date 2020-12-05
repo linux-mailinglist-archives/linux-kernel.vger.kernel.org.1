@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C605A2CFDE4
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166352CFDD8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgLESpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:45:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726798AbgLEQrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 11:47:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607186761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YrtBHn1LjYKXSExOc2Ie11/hAw2WMlJB5mkp17GAe1M=;
-        b=fjlMEOxPJKtcAwhIcz/MYmpdqRK6AhjCP9Sm1KB3mIZy9Zi0a4IgQBxsmXnpzoTXqfT39f
-        5+3g+jqnGTqFhyd7e06WHIHhUhT6aGMLSaQddkqgMT16N11XHr3gg8Q570gyztC7v67H6P
-        SyfaLWJSM8qHUknJoG6lB3TUFIVgb/w=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-fGG7ktpnNVGORd_fpceiMg-1; Sat, 05 Dec 2020 11:13:55 -0500
-X-MC-Unique: fGG7ktpnNVGORd_fpceiMg-1
-Received: by mail-oi1-f197.google.com with SMTP id x4so2368888oia.8
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 08:13:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YrtBHn1LjYKXSExOc2Ie11/hAw2WMlJB5mkp17GAe1M=;
-        b=RX/KHCa/1u2J+Ua43jNuV0G3PhFSZg1s2DetT5ZayDpLH7kI3FiyhC+sgUVByQfAfw
-         mqvYBmnqs+nB8ybNqO8RBM5IVYSM+hy9Lw1xhFDi+PR+DeabsrDZmUUWgPTc9+Ugwo8v
-         4XsFit8zqNdnoaFWmbzF7jO0r4EelBTp15dLysw3EkoIqDUCyRvtYuBk/+KN3ptkCKdY
-         e8PM8lgybA2x0GdZiR6wY/NXc0tYom5Ub0C2Hx9frs7/ylOKdlyE9Uq7RBSG53NPURPN
-         wgzpM3DiakXyyT02RTwNpsw8/XyAVdiRK4nt8EZuuIYguD69Pk5Dm90F9uKoqtumS9Yf
-         XpAA==
-X-Gm-Message-State: AOAM532bPQYCBszh8uM8LUuJuqoEfsllLWIeqBijTI/VYgFAAm3antUB
-        1hMyaKx0lSWZMaqCk1foWFLWbvKZCjFSQmljqIG4KRp8B6jHLQ7Q0QUCV3DPlC1cuneJYnP8pNI
-        BtVmYud3nAmO/aalbmjhXGv+BqQPnKqDVgkQQUAB0
-X-Received: by 2002:a9d:4788:: with SMTP id b8mr7438690otf.172.1607184834912;
-        Sat, 05 Dec 2020 08:13:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzc8cYc7H87HUf+4XQz9+YFAods9n+maBIW2DnAtya/G39bBE8eQkAoHwnqQfNfSdqtbf9UHRFH4GtdVCGc26U=
-X-Received: by 2002:a9d:4788:: with SMTP id b8mr7438669otf.172.1607184834697;
- Sat, 05 Dec 2020 08:13:54 -0800 (PST)
+        id S1728189AbgLESpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:45:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726893AbgLEQtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 11:49:31 -0500
+X-Gm-Message-State: AOAM530gkKG+y7EsAalN42kEKi7L4/mwXKCiRh+Pe0R61V5d1tb7HQeP
+        M5UVM4M9XShJM5DdqtHxIXK99wkcoqf4l7pBXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607185321;
+        bh=HqCL0C0fBHGxybJAYvYG5qc36iWdza1r3+6oQ7q/QYk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TtJl9McoDTm4OO627Yqz78MaeEc4lov2ZnYQKkmPATAcFuvhKtxucO2BDITPFuftx
+         hVTzsMORaModcamthtXy46dRtD0/1iZ0ZY0RywfehXS/fFmj/pUpNrupP7/vKUxEV7
+         EcxMLfUuEEfN4GGPYcfTlCHkjyf9NsEeaGT6EI8TgcOphkCDEl19PltzMSXEsnTM9O
+         XkhXjSYZFlYQCOpNJTPKDjTOsTEUIGKPFUiKJYMuv+YRXhGnNNpz7RRdR5qZ+VM4nA
+         5Bapll5WHjlNyxm62RiT+sdWeNOpNh++dzGKIGIlTnT+HZYtb3zluT0K6C/MOYLkoE
+         XsSNjBsuzhKTQ==
+X-Google-Smtp-Source: ABdhPJxwRKEQCMgyly92qJS7B2s5xnqRdBYASutdDp1ipsbSBixu6U9DGAGmsD6yZUvGOAiiKhKjffVVI+kTdkQiO3c=
+X-Received: by 2002:a1c:790f:: with SMTP id l15mr10033938wme.188.1607185320277;
+ Sat, 05 Dec 2020 08:22:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202173053.13800-1-jarod@redhat.com> <20201203004357.3125-1-jarod@redhat.com>
- <20201203084525.7f1a8e93@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201203084525.7f1a8e93@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Sat, 5 Dec 2020 11:13:45 -0500
-Message-ID: <CAKfmpSdrG9x24TZQ2M2xV_e7CFedE9WWUmtD2Vz8c2H5roneOA@mail.gmail.com>
-Subject: Re: [PATCH net v3] bonding: fix feature flag setting at init time
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+References: <20201205091146.3184305-1-vkoul@kernel.org>
+In-Reply-To: <20201205091146.3184305-1-vkoul@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 6 Dec 2020 00:21:48 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-_X98x=DeGLnSRDcZ+9wfpW2-EzpqJLQxDJ-UGoYaONw@mail.gmail.com>
+Message-ID: <CAAOTY_-_X98x=DeGLnSRDcZ+9wfpW2-EzpqJLQxDJ-UGoYaONw@mail.gmail.com>
+Subject: Re: [PATCH] phy: mediatek: statify mtk_hdmi_phy_driver
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 11:45 AM Jakub Kicinski <kuba@kernel.org> wrote:
-...
-> nit: let's narrow down the ifdef-enery
->
-> no need for the ifdef here, if the helper looks like this:
->
-> +static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
-> +{
-> +#ifdef CONFIG_XFRM_OFFLOAD
-> +       if (mode == BOND_MODE_ACTIVEBACKUP)
-> +               bond_dev->wanted_features |= BOND_XFRM_FEATURES;
-> +       else
-> +               bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
-> +
-> +       netdev_update_features(bond_dev);
-> +#endif /* CONFIG_XFRM_OFFLOAD */
-> +}
->
-> Even better:
->
-> +static void bond_set_xfrm_features(struct net_device *bond_dev, u64 mode)
-> +{
-> +       if (!IS_ENABLED(CONFIG_XFRM_OFFLOAD))
-> +               return;
-> +
-> +       if (mode == BOND_MODE_ACTIVEBACKUP)
-> +               bond_dev->wanted_features |= BOND_XFRM_FEATURES;
-> +       else
-> +               bond_dev->wanted_features &= ~BOND_XFRM_FEATURES;
-> +
-> +       netdev_update_features(bond_dev);
-> +}
->
-> (Assuming BOND_XFRM_FEATURES doesn't itself hide under an ifdef.)
+Hi, Vinod:
 
-It is, but doesn't need to be. I can mix these changes in as well.
+Vinod Koul <vkoul@kernel.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=885=E6=97=A5 =
+=E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=885:11=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> mtk_hdmi_phy_driver is not declared as static, so statify it.
+>
+> drivers/phy/mediatek/phy-mtk-hdmi.c:204:24: warning: symbol 'mtk_hdmi_phy=
+_driver' was not declared. Should it be static?
+>
 
--- 
-Jarod Wilson
-jarod@redhat.com
+Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/phy/mediatek/phy-mtk-hdmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/phy/mediatek/phy-mtk-hdmi.c b/drivers/phy/mediatek/p=
+hy-mtk-hdmi.c
+> index 47c029d4b270..c5c61f5a9ea0 100644
+> --- a/drivers/phy/mediatek/phy-mtk-hdmi.c
+> +++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
+> @@ -201,7 +201,7 @@ static const struct of_device_id mtk_hdmi_phy_match[]=
+ =3D {
+>         {},
+>  };
+>
+> -struct platform_driver mtk_hdmi_phy_driver =3D {
+> +static struct platform_driver mtk_hdmi_phy_driver =3D {
+>         .probe =3D mtk_hdmi_phy_probe,
+>         .driver =3D {
+>                 .name =3D "mediatek-hdmi-phy",
+> --
+> 2.26.2
+>
