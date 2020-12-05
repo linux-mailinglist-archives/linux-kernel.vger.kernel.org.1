@@ -2,163 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E682CF951
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 05:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3372CF953
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 05:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgLEE2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 23:28:39 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40920 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLEE2j (ORCPT
+        id S1727233AbgLEEki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 23:40:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbgLEEki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 23:28:39 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 3177D2B6DE;
-        Fri,  4 Dec 2020 23:27:55 -0500 (EST)
-Date:   Sat, 5 Dec 2020 15:28:02 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Fri, 4 Dec 2020 23:40:38 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6234CC0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 20:39:57 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id h7so4733943pjk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 20:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dDsaAUqDcV3mkLWcdIvqwiC9jKLLEexcbhVFGjFuSCM=;
+        b=TBa7hXSvL00GfYL1BJGGOgLClR65+euQ//6xwJHIXI2zw1mYaTHIAPTVhfxNJdYhxt
+         PlzS4wUcik1uA7Hh0pcFMLmOAVRxmrBeZ0K5UET92VBOZI6q6gUckbmzRhxewIhoeBVW
+         osPsrfLXkzLFHUMmJlEOon3+FImzaZ5dISCbSvD0D8V7Uk9T+6yGHg597Spg82bhb5X+
+         FL8J9nXA9uX7bEt8OyXyUREfhtoyIDgR9nNqhYTReShQHgNWdPGkTiIP+9ONu0dR2nDV
+         qjKcJcb6BcRplTOtzGEbYn/D6A/cvRj2uJWUgNsfV6k0PaXN7AXKYzsVpDM8gw9BZNfj
+         iyvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dDsaAUqDcV3mkLWcdIvqwiC9jKLLEexcbhVFGjFuSCM=;
+        b=XA6Bn5HJAR2Zwu9YOQe4w28E0q7CImAq/IMO/uv6s1x3VNtL8aCa8teNzhy4Finoxw
+         THDiHTusym1jyCeU+sOvNQ1lVi296tHI/MrOdJAUzvUSygw7fnhnC53Nwk2EqBsqKYh9
+         0pkQ3K2cVOuVbR45z1le29f34ClWA6q074Sm70c3QYpJrYVmB6BCzP9zgAatAQQwC0tV
+         F68eMQNFodbqjG03U9cPhih7DiauGJvxbQwGvTgOna2uM9iea88z2EFHVCYpA3la7k35
+         rZ8gUwSEk46UyePMFz6YCN1ht8wkFi1G2g/A6W5P/5v04XXIDRXV54fQ0FuEQHtNblwX
+         Z1Ng==
+X-Gm-Message-State: AOAM5308P1ZkfuLQRlGhExbmMj7MRaCdJgNbifW/Gj+62zWBrYGN8IrL
+        XFMgduIwiDtxXuM0MB/bYWo=
+X-Google-Smtp-Source: ABdhPJwZIgLcHEgOOAwIBaNkKYU8hih+hV8/z2jf5A/E4T9mOkJ47zDlEduMIjMNywDBWBCyOdxD1Q==
+X-Received: by 2002:a17:90a:1bc7:: with SMTP id r7mr3093003pjr.33.1607143196801;
+        Fri, 04 Dec 2020 20:39:56 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id s30sm5462196pgl.39.2020.12.04.20.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 20:39:55 -0800 (PST)
+Date:   Sat, 5 Dec 2020 13:39:53 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: NCR5380: Remove context check
-In-Reply-To: <20201204153248.198159-1-a.darwish@linutronix.de>
-Message-ID: <alpine.LNX.2.23.453.2012051512300.6@nippy.intranet>
-References: <58cf6feeaf5dae1ee0c78c1b25c00c73de15b087.1606805196.git.fthain@telegraphics.com.au> <20201204153248.198159-1-a.darwish@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: Re: consoles: was: [PATCH next v2 3/3] printk: remove logbuf_lock,
+ add syslog_lock
+Message-ID: <X8sPGfe2kWkAqsl1@jagdpanzerIV.localdomain>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
+ <X8phf/jITFd7nV38@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8phf/jITFd7nV38@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (20/12/04 17:19), Petr Mladek wrote:
+[..]
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -2432,7 +2490,6 @@ void console_unlock(void)
+> >  		size_t len;
+> >  
+> >  		printk_safe_enter_irqsave(flags);
+> 
+> Why do we actually need to use the printk_safe context here?
+> There is not longer a risk of deadlock caused by logbuf_lock.
+> All other recursions should be prevented by console_trylock()
+> in printk().
 
-On Fri, 4 Dec 2020, Ahmed S. Darwish wrote:
+All semaphore functions, including down_trylock(), acquire
+semaphore spin_lock; and then some call into the scheduler
+(or other kernel core functions) under semaphore's spin_lock.
+For instance
 
-> NCR5380_poll_politely2() uses in_interrupt() and irqs_disabled() to
-> check if it is safe to sleep.
-> 
-> Such usage in drivers is phased out and Linus clearly requested that
-> code which changes behaviour depending on context should either be
-> separated, or the context be explicitly conveyed in an argument passed
-> by the caller.
-> 
-> Below is a context analysis of NCR5380_poll_politely2() uppermost
-> callers:
-> 
->   - NCR5380_maybe_reset_bus(), task, invoked during device probe.
->     -> NCR5380_poll_politely()
->     -> do_abort()
-> 
->   - NCR5380_select(), task, but can only sleep in the "release, then
->     re-acquire" regions of the spinlock held by its caller.
->     Sleeping invocations (lock released):
->     -> NCR5380_poll_politely2()
-> 
->     Atomic invocations (lock acquired):
->     -> NCR5380_reselect()
->        -> NCR5380_poll_politely()
->        -> do_abort()
->        -> NCR5380_transfer_pio()
-> 
->   - NCR5380_intr(), interrupt handler
->     -> NCR5380_dma_complete()
->        -> NCR5380_transfer_pio()
-> 	  -> NCR5380_poll_politely()
->     -> NCR5380_reselect() (see above)
-> 
->   - NCR5380_information_transfer(), task, but can only sleep in the
->     "release, then re-acquire" regions of the caller-held spinlock.
->     Sleeping invocations (lock released):
->       - NCR5380_transfer_pio() -> NCR5380_poll_politely()
->       - NCR5380_poll_politely()
-> 
->     Atomic invocations (lock acquired):
->       - NCR5380_transfer_dma()
-> 	-> NCR5380_dma_recv_setup()
->            => generic_NCR5380_precv() -> NCR5380_poll_politely()
-> 	   => macscsi_pread() -> NCR5380_poll_politely()
-> 
-> 	-> NCR5380_dma_send_setup()
->  	   => generic_NCR5380_psend -> NCR5380_poll_politely2()
-> 	   => macscsi_pwrite() -> NCR5380_poll_politely()
-> 
-> 	-> NCR5380_poll_politely2()
->         -> NCR5380_dma_complete()
->            -> NCR5380_transfer_pio()
-> 	      -> NCR5380_poll_politely()
->       - NCR5380_transfer_pio() -> NCR5380_poll_politely
-> 
->   - NCR5380_reselect(), atomic, always called with hostdata spinlock
->     held.
-> 
-> Since NCR5380_poll_politely2() already takes a "wait" argument in
-> jiffies, use it to determine if the function can sleep. Modify atomic
-> callers, which passed an unused wait value in terms of HZ, to pass zero.
-> 
-> Suggested-by: Finn Thain <fthain@telegraphics.com.au>
-> Co-developed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: <linux-m68k@lists.linux-m68k.org>
-> ---
->  drivers/scsi/NCR5380.c   | 77 ++++++++++++++++++++++------------------
->  drivers/scsi/NCR5380.h   |  3 +-
->  drivers/scsi/g_NCR5380.c | 12 +++----
->  drivers/scsi/mac_scsi.c  | 10 +++---
->  4 files changed, 55 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
-> index d654a6cc4162..60200f61592e 100644
-> --- a/drivers/scsi/NCR5380.c
-> +++ b/drivers/scsi/NCR5380.c
-> @@ -132,7 +132,7 @@
->  static unsigned int disconnect_mask = ~0;
->  module_param(disconnect_mask, int, 0444);
->  
-> -static int do_abort(struct Scsi_Host *);
-> +static int do_abort(struct Scsi_Host *, unsigned int);
->  static void do_reset(struct Scsi_Host *);
->  static void bus_reset_cleanup(struct Scsi_Host *);
->  
-> @@ -197,7 +197,7 @@ static inline void set_resid_from_SCp(struct scsi_cmnd *cmd)
->   * @reg2: Second 5380 register to poll
->   * @bit2: Second bitmask to check
->   * @val2: Second expected value
-> - * @wait: Time-out in jiffies
-> + * @wait: Time-out in jiffies, 0 if sleeping is not allowed
->   *
->   * Polls the chip in a reasonably efficient manner waiting for an
->   * event to occur. After a short quick poll we begin to yield the CPU
-> @@ -213,7 +213,7 @@ static int NCR5380_poll_politely2(struct NCR5380_hostdata *hostdata,
->                                    unsigned long wait)
->  {
->  	unsigned long n = hostdata->poll_loops;
-> -	unsigned long deadline = jiffies + wait;
-> +	unsigned long deadline;
->  
->  	do {
->  		if ((NCR5380_read(reg1) & bit1) == val1)
-> @@ -223,10 +223,11 @@ static int NCR5380_poll_politely2(struct NCR5380_hostdata *hostdata,
->  		cpu_relax();
->  	} while (n--);
->  
-> -	if (irqs_disabled() || in_interrupt())
-> +	if (!wait)
->  		return -ETIMEDOUT;
->  
->  	/* Repeatedly sleep for 1 ms until deadline */
-> +	deadline = jiffies + wait;
->  	while (time_is_after_jiffies(deadline)) {
->  		schedule_timeout_uninterruptible(1);
->  		if ((NCR5380_read(reg1) & bit1) == val1)
+	up()
+	 raw_spin_lock_irqsave(&sem->lock)
+	   __up()
+	     wake_up_process()
+	       try_to_wake_up()
 
-The deadline assignment shouldn't be moved. That's a behavioural change 
-and doesn't fit under the stated aim of this patch. Also, it isn't 
-actually a desirable change: the argument to this function is the overall 
-wait time, not just the sleep limit.
-
-The rest looks ok.
+	-ss
