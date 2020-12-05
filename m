@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5862CFD55
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B6B2CFD5D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgLESbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:31:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
+        id S1729009AbgLEScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729042AbgLES3e (ORCPT
+        with ESMTP id S1728726AbgLES3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:34 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B279C061A52;
-        Sat,  5 Dec 2020 04:00:48 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id lt17so12633523ejb.3;
-        Sat, 05 Dec 2020 04:00:48 -0800 (PST)
+        Sat, 5 Dec 2020 13:29:17 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA75BC08C5F2;
+        Sat,  5 Dec 2020 04:03:07 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id jx16so12575001ejb.10;
+        Sat, 05 Dec 2020 04:03:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EWSMmsvdVxKuhpolz3WcT+qZQ+fgvXEXAvPTAffLCug=;
-        b=JGTwmA59uEWRI9bUaJeGOFF+xIu95XoNUPVI/CLOTHAYfP1PlV2PcstarnBgaw+uqq
-         0BFRwsas+fer8FycAZykr/aPOLgwXk7o7EPyl/MIzK79L6h2rzmK9bu38Fz58FbUO/fp
-         p+PyeH8eEewFfQST55Vi/wcHH7WVCRb4x7Xnik4gZED+pVgjKAzjCuy6w6s8nqAYihcU
-         bHZrdqeJYRmqINi+tf947SaiT7mW9PZO5wbtZer9kbznpSNZ0M/QGmMZwjaUd+/BFpuF
-         ckwwqgGRs8XFHrp0/kHZy4Su22zDpzBDzs0QKqAmHPnxQcsfJ65xNKtHhhnsWVzI4KuR
-         dWBA==
+        bh=P+Nd8+nofEfkgv7RY5TiH0dbaZKmUKFTlo9WVvygj7I=;
+        b=UEiEDDbjRr3k5Oif/EZAaZRuWvrt1nF60+g2LS3O8Y/ZmgLdv00tsKhe++ekrPHDsT
+         HkEKWp8WE0dyyicxhKGuXTpBen5g7PR95/FVtFhbxTybBkEs6oCxqmXCcSAygRbOSJwv
+         nAXY18W5ilEja8BnNfRaaWvh7TSGWwlBeaSfCGEjcI/0AFSGy4Fqw5nSYug4h15ihpuI
+         aGigkZYyagIvyU5WBGz22ZIRHoUA9m7qEiYrgKiz3WbWJsX7GCAEca9nq45wrZO26vNA
+         tmfMXDYudEVzOlwIQ3cTNOD5oegmYGrsWgtQwTq42PdR4jn0cfrhcJm/fYvUJa8ZxWwF
+         Gn3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EWSMmsvdVxKuhpolz3WcT+qZQ+fgvXEXAvPTAffLCug=;
-        b=gXaUgjzM4Dz4eUcHE8ONlhnBU6I5n4QkfUb0mI6B+sMCB3gpnyVAFvVY2Nbt2mT2ZY
-         YhDmRy7EI9lGscYd57j5JfgYFq2b+sY81u1eSmp2ApXdNdJO9e/WlDtwcWVYfkUsRYu4
-         VYa3V21P0ohwyg9Pi+JcddFW29+luKPa+7z8EQTe4+J2COIr8ruAIJVakzvok9WdfhOb
-         6o7MNnHzC/AJ/pja1MHCJICjhdU1Rt4tfDLtwPL9MEhCdnz3NX/VGnuqPXhZLUq9nQol
-         S0GQ1Cb8diqg8wG++GlbW7lhz5INrNdHiHfNGu5FKGz4ND25BU6oiLtvtUFNgNwQPb9F
-         yWPQ==
-X-Gm-Message-State: AOAM531E70M+flhWl/nwC0Qulb2NdR4cDkgLbaHSv1M2BygBkFknDNZW
-        aw3gfsBom6xVLaevrlWnwICKFRk4DEggPfmNU28=
-X-Google-Smtp-Source: ABdhPJzi9TxnxflMPPIdMv5ysTacLOy22Wk29jrF7FMrEzCTyuy6RWv3UxhJOkFjmXv+gVQ1YbCviUMBuPaxRPujetg=
-X-Received: by 2002:a17:906:a415:: with SMTP id l21mr11055133ejz.2.1607169645914;
- Sat, 05 Dec 2020 04:00:45 -0800 (PST)
+        bh=P+Nd8+nofEfkgv7RY5TiH0dbaZKmUKFTlo9WVvygj7I=;
+        b=NMi5bKgmJDYlrnTA4CcGXZrS153njscpy9rP7PyDA0CA6AKN+CevQLMVmBItBZGzYi
+         fi4qC7nn7l1qXu1wRvH1RTtVBcYXVQc7+M5Nqns1+XGDeioBGk2bTSug1voEjzBobaVy
+         2fLSdboQiMdfxG+Ww2vG1YChMJ/QuIu2+dWf+rN48pXipx0nLuKDuh0XgRwz1cM19aCv
+         tiHfpJM7NZGRQauMlURMUazm8aGute4SRV3RoU1jsVC2psmTuBLa37JnaNA4V4NN4+IR
+         xWtT7EeESkza1i4TYHGthHuDmcaNIige7ep20AWExrM+Qs0WIBgj2c2at43NdEYLifdy
+         ziQw==
+X-Gm-Message-State: AOAM53255NgpIiAjiyTrQoJzecGXx8hQY0e14Fo5c7oOWNMMr0DHGO4b
+        KkUq4glsaCkoY++1RD3DPPGoSOnfaXEejHQFLDpHMfgWtZ8=
+X-Google-Smtp-Source: ABdhPJxEeR4LSHPCH3FbOfM5VPpQQVWklnI1NwWuK8bcagmOklydL7dULL4rnPTjYLP1j3hih01YhQvHjd+mbNPZa6E=
+X-Received: by 2002:a17:906:3081:: with SMTP id 1mr11751630ejv.162.1607169786456;
+ Sat, 05 Dec 2020 04:03:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130060320.GA30098@anyang-linuxfactory-or-kr>
-In-Reply-To: <20201130060320.GA30098@anyang-linuxfactory-or-kr>
+References: <20201125024001.19036-1-christianshewitt@gmail.com>
+In-Reply-To: <20201125024001.19036-1-christianshewitt@gmail.com>
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 5 Dec 2020 13:00:35 +0100
-Message-ID: <CAFBinCA=A+M0dgebTRF3y6chd205HN5ORgqBxw1gpu++7QC8Rw@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: meson-sm1: fix typo in opp table
-To:     Dongjin Kim <tobetter@gmail.com>
+Date:   Sat, 5 Dec 2020 13:02:55 +0100
+Message-ID: <CAFBinCCQ0Zw=FB9Oy0ZnP7V-n7jvO6q9sgfV_51sC88Kq5iUpg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: fix spi-max-frequency on Khadas VIM2
+To:     Christian Hewitt <christianshewitt@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Kevin Hilman <khilman@baylibre.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Artem Lapkin <art@khadas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 7:04 AM Dongjin Kim <tobetter@gmail.com> wrote:
+On Wed, Nov 25, 2020 at 3:40 AM Christian Hewitt
+<christianshewitt@gmail.com> wrote:
 >
-> The freqency 1512000000 should be 1500000000.
-there's a typo in "frequency". I hope that Kevin can fix this up while
-applying the patch
-
+> From: Artem Lapkin <art@khadas.com>
 >
-> Signed-off-by: Dongjin Kim <tobetter@gmail.com>
-apart from the typo above:
+> The max frequency for the w25q32 (VIM v1.2) and w25q128 (VIM v1.4) spifc
+> chip should be 104Mhz not 30MHz.
+>
+> Fixes: b8b74dda3908 ("ARM64: dts: meson-gxm: Add support for Khadas VIM2")
+> Signed-off-by: Artem Lapkin <art@khadas.com>
 Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-(while reviewing I noticed that we generally use 0.3V less for each
-OPP table step than the downstream kvim3l.dts - that's a discussion we
-need to have elsewhere though)
