@@ -2,266 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE672CF8A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8155A2CF8AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgLEBeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 20:34:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgLEBeO (ORCPT
+        id S1728331AbgLEBkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 20:40:16 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5554 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgLEBkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 20:34:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607131965;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1jTvUFrxQWiUqEfxknBb6PlyyYdhO6u0npV1PbbB3Ds=;
-        b=gfXBR9Xq4N1IrWS0QHGxURHVGy2OiFm6lLZHyEypO3HvR3FUUE+ZwZdgic8AugjIifXZxp
-        88pzAS0aY9JCuOimwMSjQN83DD0i5WUoTkpkbZDonzcbm2a2Sj+GStY4zLDBolto5c7ze8
-        W+IB469I9PT4pbAXATfK5MunFbb6jl4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-U2eZw9SqNVqdS8MJp723pA-1; Fri, 04 Dec 2020 20:32:44 -0500
-X-MC-Unique: U2eZw9SqNVqdS8MJp723pA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52E4B809DC9;
-        Sat,  5 Dec 2020 01:32:42 +0000 (UTC)
-Received: from mail (ovpn-112-148.rdu2.redhat.com [10.10.112.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A743F5B4A0;
-        Sat,  5 Dec 2020 01:32:38 +0000 (UTC)
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     Mike Rapoport Baoquan He <"rppt@kernel.orgbhe"@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Qian Cai <cai@lca.pw>, Vlastimil Babka <vbabka@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] mm: initialize struct pages in reserved regions outside of the zone ranges
-Date:   Fri,  4 Dec 2020 20:32:38 -0500
-Message-Id: <20201205013238.21663-2-aarcange@redhat.com>
-In-Reply-To: <20201205013238.21663-1-aarcange@redhat.com>
-References: <20201201181502.2340-1-rppt@kernel.org>
- <20201205013238.21663-1-aarcange@redhat.com>
+        Fri, 4 Dec 2020 20:40:15 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fcae4d70000>; Fri, 04 Dec 2020 17:39:35 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 5 Dec
+ 2020 01:39:34 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Sat, 5 Dec 2020 01:39:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=li9A9YcH2vSUdESibIDsO1HNr/GTobLHDwqLN7MspIasTfjKqsRSJhky9QShOllDLy8Z2npJiNyVYPYFiGLc53MytpaVV73XJ2P2Ea4ZPMi11ToYUdX+iXfWrNYEZlHlvxKuIeCCUEXDiwx4DywkWDfle18h5q7+3PSGdudcFZ6TZ5g5PjBXjmfRepD7OvTXTqHI7c/4iV7pbQU5SfEBMDNAoW/tvpncn3tYqGtNLrSxX96ID36eOZTQt65sPdAzZWWiBQyAp8LJMyk0h5vI9BF3KhLzeopxtqtMYmNxEpdeQeq+bObGPSdKH6GpoQ7WqN17mneXOaOg6iUsowLBCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gHfriSMyGW5dJnTsGlLgqkETO+igvkQ2qXFVRyHDE/M=;
+ b=kHySNNX+Lf+O3AQTkfytNFOND6mNzejFZYfQ3PLEVCdYjT43YpOa6ugoK17Xy1JHq4JoKq18viQarcEvWsOOCimdn0+sQdV9atOx2gaqK+H/BBRug1zOrb3Kv8IgMzONqE3Aak05GrU7GSQOoJ9Ep1N7SNoBduWz5heVapZIFVX37dV7s2SHkLsb5SQFQWlbZ6ouKWDSlSdatGnmuOjVsZ//6UzFyrwMnCsvSwKIIXiIxjhz64wrL5+aI5A+HeF8m8Kj7HT1qFwJ39KCdr00/Khm3aZhDvZwzAcubxBmLb5wiXLJQ7uHUdURbp9P38cwEqN6grHnZbRj1GfGnoVfEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from MN2PR12MB3616.namprd12.prod.outlook.com (2603:10b6:208:cc::25)
+ by MN2PR12MB3519.namprd12.prod.outlook.com (2603:10b6:208:107::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Sat, 5 Dec
+ 2020 01:39:32 +0000
+Received: from MN2PR12MB3616.namprd12.prod.outlook.com
+ ([fe80::9d:422b:e41e:7c47]) by MN2PR12MB3616.namprd12.prod.outlook.com
+ ([fe80::9d:422b:e41e:7c47%5]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
+ 01:39:32 +0000
+From:   Khalil Blaiech <kblaiech@nvidia.com>
+To:     Xu Wang <vulab@iscas.ac.cn>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] i2c: mlxbf: Fix an error pointer vs NULL check
+Thread-Topic: [PATCH] i2c: mlxbf: Fix an error pointer vs NULL check
+Thread-Index: AQHWyhDoj0ka6v+8ck2WlhCtrpC+eannubJw
+Date:   Sat, 5 Dec 2020 01:39:32 +0000
+Message-ID: <MN2PR12MB361677235F0526AC99E0B3C2ABF00@MN2PR12MB3616.namprd12.prod.outlook.com>
+References: <20201204074111.1359-1-vulab@iscas.ac.cn>
+In-Reply-To: <20201204074111.1359-1-vulab@iscas.ac.cn>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: iscas.ac.cn; dkim=none (message not signed)
+ header.d=none;iscas.ac.cn; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [108.20.133.69]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 21743907-df07-4d2d-282f-08d898be9d40
+x-ms-traffictypediagnostic: MN2PR12MB3519:
+x-microsoft-antispam-prvs: <MN2PR12MB3519179CDABAC58279543244ABF00@MN2PR12MB3519.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EiUP+t6l+wpR0oDnaNRNuh4RWlZ2N5wygebb9c+3kVyZWY+5fwhXqqH9Svx500hz/gbKPFwXoyq4ZVT4IDW0KHLDDo6AQANt/kyMBY5wk7ymK+DQjtSyg1IQDvU5ftyfKukaP+ylUvnQlbv6vII2wJ/XGAMcDfhJchcLvn8hE6O3AU8CCe5p4fQB+NXkJFcPTHDCUxLqVI8ZC9Q6f2E3PSjFAZ4BNzTqVo9OJL2ze7DNmFrTB/QlxK68/z8luKctK6RybgCiOet8JmutN9hrupFJRpUCOMJr/pEIGXqbitQnBBixkyT32AOoAD4ImU6zIY5Nt8jTrLaYyA9BjAwT3Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3616.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(54906003)(76116006)(52536014)(66476007)(66946007)(83380400001)(478600001)(66446008)(4326008)(66556008)(9686003)(6506007)(186003)(64756008)(6916009)(7696005)(26005)(8936002)(2906002)(33656002)(8676002)(55016002)(86362001)(316002)(71200400001)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cmbxm/4O+ICNa7sIV+1qiIqGsVJZboSIaIrqvL9arE3qBPppphwdBqVo+qRZ?=
+ =?us-ascii?Q?FJeNcR7VtVEm/RkOkXo8pGabPLM85PXBya+q1Dd5BBnI/9FcsTqWF0I6C+i9?=
+ =?us-ascii?Q?ZndVQe+eLW/GaHjnA43Njk2PB+aMdNX2h5CXYAhTnjMUjPcrVXsDb53f04O4?=
+ =?us-ascii?Q?AT6dDb8QWZ1p+NiF/N0BfZ7F6njYL5y1itKAz0Myz5YRRO55YxtohDsqJgpa?=
+ =?us-ascii?Q?KV42aqARvFS9kYcw0SwSqR6XC0tJbZuUojIBubqjUG6s8t9bVBAjOQvU/puP?=
+ =?us-ascii?Q?z4LvPYyrLVWwY8he1tHkvp6OehZTYa6IfXeuaZ+W43AVA9viSvB6TGuTw73Q?=
+ =?us-ascii?Q?+EoEcqO/XPWmSyAJOIuUoR2FpA571CL0dhva3fjSUUaPYFoDx81dsdBvNiMa?=
+ =?us-ascii?Q?JmHaP5VkpqGpB0kH4xbYtIlx9MkAzH4ekPEvaVTvZiIcNQ+zieI4kI1YgxRx?=
+ =?us-ascii?Q?h/24IWDfA2wM1KR5M6ARa7HMS93M1qQG5Dw/NXr/epEb9hkGJpp27uP/xxBm?=
+ =?us-ascii?Q?bAkV0EC9IW3soiREWr6sdUZs2IUjYI79SCuTaHNuwKsSVugDBtAYgkozZTEF?=
+ =?us-ascii?Q?C1yRA0+bcPekeRyGUhPNuwz5M0zJqsGmBExdtDh+O1TEq90RNyNhK6CsNmE9?=
+ =?us-ascii?Q?cvno8G2oiZZUSKI7OA/XVmuHSO71vY8UXRmNmf2oFkclzxwX4poZ5s7GwTgS?=
+ =?us-ascii?Q?OuwkqiNroeV1DHXG5tAfXTJAJWqWd4s+DP5qI4jrhnZFmnrkPKrpIT4WabdN?=
+ =?us-ascii?Q?+FC6zX43FEDLPfO85o0WBGjxln+zDnIzc5FequC9fvZX0EgbjeJskMNkpnor?=
+ =?us-ascii?Q?xDt5BQSa34Pycr772z/NU8uQMZNtGhS4xcXkRXcszxneJMR/skSbMyFRKmxG?=
+ =?us-ascii?Q?LcIolWmOvKs9w+IfdIu3PT7PEI3JkywXOQo7BX0LDBVYi0Po+33x08i8Pncc?=
+ =?us-ascii?Q?XH5IbUrsunDFb4iziVW1geoSRCMFH5e/PmtmQMVnfmM=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3616.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21743907-df07-4d2d-282f-08d898be9d40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2020 01:39:32.1321
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 836CczZhdVzEPF6Y3KnMbvrlpqemEVGeTtBRawSQYm6m/8BagKa/am85ow5UdHQqDdCNGK/8eAGhMh4YUlENvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3519
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607132375; bh=gHfriSMyGW5dJnTsGlLgqkETO+igvkQ2qXFVRyHDE/M=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         x-ms-exchange-transport-forked:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=Cnl/OnjxkLVSp7brxzcczMRmpCLb+J9aDqy2EYr3vMm1wj9K++SQKoNPQoH3PJZ0+
+         dYg++1jnrtgDnWF+qcJ3Y/yuMdmtDP5av1ROPOHcYt66CcW4RYK4Z6iH3ZhmkifbVk
+         u39uT8GJewruf2UnqjKkOprg/DZ5ThRVKZMO419Cal6DGeD7HDjKHBWKagsKM93W4+
+         5G3YY5UWtYDFby7f1t+ToiFGBxZO1vmYE4mR25BQQreKFGVZ9be6Lk8HhEmFb2gBVW
+         lzdKcV3QQO0SJ6kiE3ZfwTyQI5LPI6DpmcSFBRI6u37K6fDL1zl6JMV8LqNRem3uxV
+         OFW9RZuYngHIw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without this change, the pfn 0 isn't in any zone spanned range, and
-it's also not in any memory.memblock range, so the struct page of pfn
-0 wasn't initialized and the PagePoison remained set when
-reserve_bootmem_region called __SetPageReserved, inducing a silent
-boot failure with DEBUG_VM (and correctly so, because the crash
-signaled the nodeid/nid of pfn 0 would be again wrong).
 
-There's no enforcement that all memblock.reserved ranges must overlap
-memblock.memory ranges, so the memblock.reserved ranges also require
-an explicit initialization and the zones ranges need to be extended to
-include all memblock.reserved ranges with struct pages too or they'll
-be left uninitialized with PagePoison as it happened to pfn 0.
 
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
----
- include/linux/memblock.h | 17 +++++++++---
- mm/debug.c               |  3 ++-
- mm/memblock.c            |  4 +--
- mm/page_alloc.c          | 57 ++++++++++++++++++++++++++++++++--------
- 4 files changed, 63 insertions(+), 18 deletions(-)
+> In case of error, the function devm_ioremap() returns NULL pointer not
+> ERR_PTR(). The IS_ERR() test in the return value check should be
+> replaced with NULL test.
+>=20
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index ef131255cedc..c8e30cd69564 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -251,7 +251,8 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
- int memblock_search_pfn_nid(unsigned long pfn, unsigned long *start_pfn,
- 			    unsigned long  *end_pfn);
- void __next_mem_pfn_range(int *idx, int nid, unsigned long *out_start_pfn,
--			  unsigned long *out_end_pfn, int *out_nid);
-+			  unsigned long *out_end_pfn, int *out_nid,
-+			  struct memblock_type *type);
- 
- /**
-  * for_each_mem_pfn_range - early memory pfn range iterator
-@@ -263,9 +264,17 @@ void __next_mem_pfn_range(int *idx, int nid, unsigned long *out_start_pfn,
-  *
-  * Walks over configured memory ranges.
-  */
--#define for_each_mem_pfn_range(i, nid, p_start, p_end, p_nid)		\
--	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid); \
--	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid))
-+#define for_each_mem_pfn_range(i, nid, p_start, p_end, p_nid)		  \
-+	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.memory);		  \
-+	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.memory))
-+
-+#define for_each_res_pfn_range(i, nid, p_start, p_end, p_nid)		  \
-+	for (i = -1, __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.reserved);		  \
-+	     i >= 0; __next_mem_pfn_range(&i, nid, p_start, p_end, p_nid, \
-+					  &memblock.reserved))
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
- void __next_mem_pfn_range_in_zone(u64 *idx, struct zone *zone,
-diff --git a/mm/debug.c b/mm/debug.c
-index ccca576b2899..6a1d534f5ffc 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -64,7 +64,8 @@ void __dump_page(struct page *page, const char *reason)
- 	 * dump_page() when detected.
- 	 */
- 	if (page_poisoned) {
--		pr_warn("page:%px is uninitialized and poisoned", page);
-+		pr_warn("page:%px pfn:%ld is uninitialized and poisoned",
-+			page, page_to_pfn(page));
- 		goto hex_only;
- 	}
- 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index b68ee86788af..3964a5e8914f 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1198,9 +1198,9 @@ void __init_memblock __next_mem_range_rev(u64 *idx, int nid,
-  */
- void __init_memblock __next_mem_pfn_range(int *idx, int nid,
- 				unsigned long *out_start_pfn,
--				unsigned long *out_end_pfn, int *out_nid)
-+				unsigned long *out_end_pfn, int *out_nid,
-+				struct memblock_type *type)
- {
--	struct memblock_type *type = &memblock.memory;
- 	struct memblock_region *r;
- 	int r_nid;
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ce2bdaabdf96..3eed49598d66 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1458,6 +1458,7 @@ static void __meminit init_reserved_page(unsigned long pfn)
- {
- 	pg_data_t *pgdat;
- 	int nid, zid;
-+	bool found = false;
- 
- 	if (!early_page_uninitialised(pfn))
- 		return;
-@@ -1468,10 +1469,15 @@ static void __meminit init_reserved_page(unsigned long pfn)
- 	for (zid = 0; zid < MAX_NR_ZONES; zid++) {
- 		struct zone *zone = &pgdat->node_zones[zid];
- 
--		if (pfn >= zone->zone_start_pfn && pfn < zone_end_pfn(zone))
-+		if (pfn >= zone->zone_start_pfn && pfn < zone_end_pfn(zone)) {
-+			found = true;
- 			break;
-+		}
- 	}
--	__init_single_page(pfn_to_page(pfn), pfn, zid, nid);
-+	if (likely(found))
-+		__init_single_page(pfn_to_page(pfn), pfn, zid, nid);
-+	else
-+		WARN_ON_ONCE(1);
- }
- #else
- static inline void init_reserved_page(unsigned long pfn)
-@@ -6227,7 +6233,7 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 			       unsigned long zone,
- 			       unsigned long range_start_pfn)
- {
--	unsigned long start_pfn, end_pfn, next_pfn = 0;
-+	unsigned long start_pfn, end_pfn, prev_pfn = 0;
- 	unsigned long range_end_pfn = range_start_pfn + size;
- 	u64 pgcnt = 0;
- 	int i;
-@@ -6235,7 +6241,7 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
- 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
--		next_pfn = clamp(next_pfn, range_start_pfn, range_end_pfn);
-+		prev_pfn = clamp(prev_pfn, range_start_pfn, range_end_pfn);
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
-@@ -6243,10 +6249,10 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 
--		if (next_pfn < start_pfn)
--			pgcnt += init_unavailable_range(next_pfn, start_pfn,
-+		if (prev_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(prev_pfn, start_pfn,
- 							zone, nid);
--		next_pfn = end_pfn;
-+		prev_pfn = end_pfn;
- 	}
- 
- 	/*
-@@ -6256,12 +6262,31 @@ void __init __weak memmap_init(unsigned long size, int nid,
- 	 * considered initialized. Make sure that memmap has a well defined
- 	 * state.
- 	 */
--	if (next_pfn < range_end_pfn)
--		pgcnt += init_unavailable_range(next_pfn, range_end_pfn,
-+	if (prev_pfn < range_end_pfn)
-+		pgcnt += init_unavailable_range(prev_pfn, range_end_pfn,
- 						zone, nid);
- 
-+	/*
-+	 * memblock.reserved isn't enforced to overlap with
-+	 * memblock.memory so initialize the struct pages for
-+	 * memblock.reserved too in case it wasn't overlapping.
-+	 *
-+	 * If any struct page associated with a memblock.reserved
-+	 * range isn't overlapping with a zone range, it'll be left
-+	 * uninitialized, ideally with PagePoison, and it'll be a more
-+	 * easily detectable error.
-+	 */
-+	for_each_res_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
-+		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
-+		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+
-+		if (end_pfn > start_pfn)
-+			pgcnt += init_unavailable_range(start_pfn, end_pfn,
-+							zone, nid);
-+	}
-+
- 	if (pgcnt)
--		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
-+		pr_info("%s: pages in unavailable ranges: %lld\n",
- 			zone_names[zone], pgcnt);
- }
- 
-@@ -6499,6 +6524,10 @@ void __init get_pfn_range_for_nid(unsigned int nid,
- 		*start_pfn = min(*start_pfn, this_start_pfn);
- 		*end_pfn = max(*end_pfn, this_end_pfn);
- 	}
-+	for_each_res_pfn_range(i, nid, &this_start_pfn, &this_end_pfn, NULL) {
-+		*start_pfn = min(*start_pfn, this_start_pfn);
-+		*end_pfn = max(*end_pfn, this_end_pfn);
-+	}
- 
- 	if (*start_pfn == -1UL)
- 		*start_pfn = 0;
-@@ -7126,7 +7155,13 @@ unsigned long __init node_map_pfn_alignment(void)
-  */
- unsigned long __init find_min_pfn_with_active_regions(void)
- {
--	return PHYS_PFN(memblock_start_of_DRAM());
-+	/*
-+	 * reserved regions must be included so that their page
-+	 * structure can be part of a zone and obtain a valid zoneid
-+	 * before __SetPageReserved().
-+	 */
-+	return min(PHYS_PFN(memblock_start_of_DRAM()),
-+		   PHYS_PFN(memblock.reserved.regions[0].base));
- }
- 
- /*
+Thank you very much for your patch. Please note that previous patch
+has been posted to address this issue.
+
+> ---
+>  drivers/i2c/busses/i2c-mlxbf.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-mlxbf.c b/drivers/i2c/busses/i2c-mlxb=
+f.c
+> index 33574d40ea9c..73a58beb7b82 100644
+> --- a/drivers/i2c/busses/i2c-mlxbf.c
+> +++ b/drivers/i2c/busses/i2c-mlxbf.c
+> @@ -1258,9 +1258,9 @@ static int mlxbf_i2c_get_gpio(struct
+> platform_device *pdev,
+>  		return -EFAULT;
+>=20
+>  	gpio_res->io =3D devm_ioremap(dev, params->start, size);
+> -	if (IS_ERR(gpio_res->io)) {
+> +	if (!gpio_res->io) {
+>  		devm_release_mem_region(dev, params->start, size);
+> -		return PTR_ERR(gpio_res->io);
+> +		return -ENOMEM;
+>  	}
+>=20
+>  	return 0;
+> @@ -1323,9 +1323,9 @@ static int mlxbf_i2c_get_corepll(struct
+> platform_device *pdev,
+>  		return -EFAULT;
+>=20
+>  	corepll_res->io =3D devm_ioremap(dev, params->start, size);
+> -	if (IS_ERR(corepll_res->io)) {
+> +	if (!corepll_res->io) {
+>  		devm_release_mem_region(dev, params->start, size);
+> -		return PTR_ERR(corepll_res->io);
+> +		return -ENOMEM;
+>  	}
+>=20
+>  	return 0;
+> --
+> 2.17.1
 
