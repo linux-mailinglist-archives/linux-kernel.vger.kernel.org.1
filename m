@@ -2,198 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5DE2CF96D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BE92CF970
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgLEFFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgLEFFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:05:45 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E298C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 21:05:04 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id x23so1932245lji.7
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 21:05:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8GPzNiXTeDi+bMPrvuEGLCjoNV1U5qwCjKDFW1FW9/I=;
-        b=pbeyE35YhCAkocdBFeyGNPlIeS5QlOZsNLNTliesLneA+kSFVpq1c4pdULRCjXu3Xv
-         Y67Y2kDHQmqosl/fQNNYOZ2Kf2OtOGuvzuQmyLWwSwmqZ1ZxWcCkzdRZTGIYSCT8V+nz
-         4GSDXlWJbu5JHXf4yUOg/dJwwbGmYMIQHV32AzIyGn8Yxqk9kFRsHtYRa41CB/8a0a+j
-         O/iMQTSdpoxw5OduJFBFa9LxMDxD10MMdjnLAhtWWg9exn/NQPUNw2x6KVtqWmcsfpp5
-         9EV6X1poBoUuF5LOmpllDkIcv/ijQHlvkMqW9YqaFAg5ABiH0jEee9IAkvFFD2KCxZaK
-         XTdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GPzNiXTeDi+bMPrvuEGLCjoNV1U5qwCjKDFW1FW9/I=;
-        b=DtcD+sQa59uEsTsJEcJ2/XQhM+2emJ5pN5P9xujSVmwyvRPUE/1TDg/roIFxDi+tKS
-         0OIl7jJu/Uy51/yWRQo1h54FKOR6vjWl2ZJ2hIQD0Q8z9T2czfhwEQhkZr6n1CbF/jEH
-         oXA1EREi55/WzAUpjdZ5WXdgveR3sRvWVFZvSUjTHufyFPLdSA9Vl8kPHAnj06bG8Q5g
-         bN2tle9iFAv8VdI9SXlnpKaoeN1bHU+X693ohtIaPVnI+Juz8oROqMMeXSBGynRZBfQJ
-         7tGK6etlTMkqJJQMi8WLgN1zpr+7Bx5exGZ1uxJEOddPCVToIapayOQz2SLbYHLeQ4Dd
-         LHMA==
-X-Gm-Message-State: AOAM5304BH2BpHVayFZoxE0fb7uHH/lp5h7CsgxIW9a+Gtp7ymH3u2Ed
-        OYV+HEK0sr7cVdTbI1GZN3CCUvv4n1olO/1x3fTXtw==
-X-Google-Smtp-Source: ABdhPJxW10tViFoXPII7m7v1BTnHEAJ92qL38girRJEdYUsUryqce5lCypsOgo6b9UYSubwQGJ59rS6TVPOPprYrhY0=
-X-Received: by 2002:a2e:9746:: with SMTP id f6mr4393792ljj.270.1607144702740;
- Fri, 04 Dec 2020 21:05:02 -0800 (PST)
+        id S1727666AbgLEFGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:06:06 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33558 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725770AbgLEFGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 00:06:05 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutACFctfM90ZAA--.42419S3;
+        Sat, 05 Dec 2020 13:05:06 +0800 (CST)
+Subject: Re: [PATCH 2/2] MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs
+ memblock debug
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
+ <1606965544-22611-3-git-send-email-yangtiezhu@loongson.cn>
+ <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
+ <20201204120816.GC10011@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <727e9b94-0a22-189f-4c65-4a6e8504013f@loongson.cn>
+Date:   Sat, 5 Dec 2020 13:05:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20201203194127.1813731-1-dlatypov@google.com> <20201203194127.1813731-3-dlatypov@google.com>
- <CABVgOS=YfJdqmmU22XR4e84YyHudhksQc8X2rR1mz=6ukN=emA@mail.gmail.com> <CAGS_qxriVvSn5GXtAHdCjh+Y6k8+tNpVJ-Qm=kVOEOEXQJ4ACQ@mail.gmail.com>
-In-Reply-To: <CAGS_qxriVvSn5GXtAHdCjh+Y6k8+tNpVJ-Qm=kVOEOEXQJ4ACQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 5 Dec 2020 13:04:50 +0800
-Message-ID: <CABVgOSnQKGDJSs6V5xeqLS-ZOPRWCoPMxdq9K3DnfD8-nQZbDw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] kunit: tool: move kunitconfig parsing into __init__
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201204120816.GC10011@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxutACFctfM90ZAA--.42419S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr43AFWxCw1xZF13KFWUtwb_yoWktFb_Wr
+        4jkFnrK3WrJFWqka1vqw4fZFn0g3y0qFy8ury3Wr4Svw18JFW3Gw1kKa93Xrn5Way8Grsx
+        Xr90vr13Krn8KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
+        Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUhdbbUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 2:18 AM Daniel Latypov <dlatypov@google.com> wrote:
+On 12/04/2020 08:08 PM, Thomas Bogendoerfer wrote:
+> On Thu, Dec 03, 2020 at 11:58:51AM +0800, Jiaxun Yang wrote:
+>>
+>> 在 2020/12/3 上午11:19, Tiezhu Yang 写道:
+>>> In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+>>> memblock_discard() will discard memory and reserved arrays if they were
+>>> allocated, select ARCH_KEEP_MEMBLOCK to give a chance to track "memory"
+>>> and "reserved" memblocks after early boot, with this patch, we can see
+>>> the following two sysfs interfaces under DEBUG_FS.
+>>>
+>>> /sys/kernel/debug/memblock/memory
+>>> /sys/kernel/debug/memblock/reserved
+>> Is this really necessary?
+>> memblock data is not really necessary after boot for non-debug purpose.
+>>
+>> Given that MIPS is widely used in embedded systems which doesn't have much
+>> memory, keeping unused data after boot is kinda unconvincing.
+> about how much memory are talking here ?
 >
-> On Thu, Dec 3, 2020 at 7:57 PM David Gow <davidgow@google.com> wrote:
-> >
-> > On Fri, Dec 4, 2020 at 3:41 AM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > LinuxSourceTree will unceremoniously crash if the user doesn't call
-> > > read_kunitconfig() first in a number of functions.
-> >
-> > This patch seems to partly be reverting the changes here, right:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/tools/testing/kunit?h=kunit&id=fcdb0bc08ced274078f371e1e0fe6421a97fa9f2
-> > (That patch moved the reading of kunitconfig out of __init__)
+>> If you intend to debug that please do it locally.
+> maybe we can add a
 >
-> Yes.
+> if DEBUG_KERNEL
 >
-> >
-> > My overall concern is that, really, there are some operations that
-> > shouldn't need a kunitconfig (even if they do at the moment), so we'd
-> > ideally want at least some of the operations currently under
-> > LinuxSourceTree to be able to be run without first reading a
-> > kunitconfig. Most notably, it'd be nice if kunit.py exec (and hence
-> > LinuxSourceTree::run_kernel()) didn't need a kunitconfig, as the
-> > kernel ought to already be built at this point.
-> >
-> > Now, this is all a little bit hypothetical, as we haven't bothered to
-> > make kunit.py exec work without a kunitconfig thus far, but I'm a
-> > touch hesitant to make it harder to bypass the kunitconfig reading
-> > anyway.
->
-> Fair point.
->
-> So one alternative to this to make type-checkers happy is to declare
-> _config instead of sneakily setting it in some random later method.
-> Then in all the places that rely on _config, we'd need to add in
-> checks that it's in fact set to give a better error message (so it's
-> clear to the user that it's an internal tool bug and has nothing to do
-> with them).
+> since enabling DEBUG_KERNEL will cost already some memory...
 
-This seems plausible, if a bit verbose.
+Yes, that makes sense.
+
+If nobody has any objections, I will send v2 in the next week.
+
+Thanks,
+Tiezhu
 
 >
-> The copy-paste of create+read_kunitconfig() is annoying, which is why
-> I went with this.
-
-Personally, the duplication of calls to {create,read}_kunitconfig()
-doesn't bother me, but I definitely can see the advantage of having
-the type system pick up when we've missed one.
-
-> How about __init__ takes an optional argument that can disable this parsing?
-
-This would be okay: I'm starting to feel that really, the ultimate
-solution is either to split LinuxSourceTree up (and have separate
-things for configuring, building, and running the kernel), or to pass
-the kconfig stuff into just the functions that require it. But that is
-a much more serious refactor, which I haven't fully thought through,
-and I don't want to let the perfect be the enemy of the good here.
->
-> E.g.
->
-> def __init__(kconfig = None):
->    if kconfig is not None:
->      self._config = kconfig
->    else:
->      // create and read
+> Thomas.
 >
 
-What would the kconfig argument here be? Just an empty Kconfig()?
-I'm not a huge fan of passing a "None" kconfig object when we want to
-load a config, and a non-None one when we want an empty one: that
-seems confusingly backwards.
-Maybe it'd be possible to move the loading of the kunitconfig outside
-LinuxSourceTree, and pass that (or an empty one) as needed?
-
-
-> Or if we don't like the idea of requiring users who don't want a
-> kconfig to pass in a dummy,
->
-> def __init__(load_kconfig=True):
->    if not load_kconfig:
->      self._config = None
->    ...
->
-
-I slightly prefer this, for the reasons above: True/False makes more
-sense than None/Kconfig().
-
-> >
-> > >
-> > > Adn currently every place we create an instance, the caller also calls
-> > > create_kunitconfig() and read_kunitconfig().
-> > >
-> > > Move these instead into __init__() so they can't be forgotten and to
-> > > reduce copy-paste.
-> >
-> > This seems to now be missing the create_kunitconfig() stuff (see below).
->
-> Ah good catch. Completely unintentional.
-> I'm sure I had the create_kunitconfig() stuff in __init__() at some
-> point but must have inadvertently removed it somehow later on.
->
-> > >
-> > > The https://github.com/google/pytype type-checker complained that
-> > > _config wasn't initialized. With this, kunit_tool now type checks
-> > > under both pytype and mypy.
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-
-Okay, so it looks like there are a few options with _kconfig:
-1. Check for None everywhere (after explicitly setting it in the
-constructor). Pros: Nicer error messages, doesn't require other
-changes, Cons: verbose, still somewhat prone to error (could forget
-{create,read}_kunitconfig())
-
-2. Pass a Kconfig object into the constructor. Pros: a kconfig must
-exist, so less error prone, Cons: if we allow passing None to load it,
-that's confusing.
-
-3. Pass a bool into the constructor. Pros: similarly less error prone.
-Cons: True/False is not very descriptive.
-
-4. Refactor and (e.g.) pass the kconfig only into functions which
-require it. Pros: removes a "false dependency" on a kconfig for things
-which don't need it. Cons: more work, more verbose.
-
-Of these, I probably like them in this order 4, 2 (without None), 3, 2
-(with None), 1. But, to be honest, I'd be happy enough with any of
-them.
-
-So, if we can get a v2 that fixes the missing create_kunitconfig(),
-and does any of the above things, that sounds good to me.
-
-Cheers,
--- David
