@@ -2,239 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A7C2CFF0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5846E2CFF0D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgLEVDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 16:03:37 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14076 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725270AbgLEVDg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 16:03:36 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B5KZinU172460;
-        Sat, 5 Dec 2020 16:02:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=RtedBLX2+TsYnSc7y8UU7YZr7ycYL7nIEyY97NlbG/c=;
- b=sMTf1Nzxsy1ckClRq3LhFCEiu2fSrzCr1y3nHjwGHmLwVwOPRLaro9Pa+7ZoFLK4INDD
- ghcYy1RKMlijB2HeZWV5aZ+jN3amFPi4eSIDJSOc7O3V5mzx+uoLTBnbntxmJDNSD6mx
- DWL0P3KmEoV/HTiZwWIMbChuoKDmPkAtl+04cHa1rievXywNxyhOWaUfxcBUxpoyF47K
- kx/BIXhn03GQnB6V0Z5dTUPFrTpmp4pFEAmDgM/tAEA6jfDtCJ9wi9TTXdXiZU0SXbX1
- fsdDoEcFpx3EKzEz+hKlle+tsWY7GEdu5+2aV7BRgptYoJBsExi7swG6kGi680teA+1K xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3587ks1be7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 16:02:19 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B5KqwDk051522;
-        Sat, 5 Dec 2020 16:02:18 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3587ks1bdt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 16:02:18 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B5Kup16026541;
-        Sat, 5 Dec 2020 21:02:17 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04dal.us.ibm.com with ESMTP id 3581u8nq9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 21:02:17 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B5L2Gns11141856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 5 Dec 2020 21:02:16 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 669ADAC05E;
-        Sat,  5 Dec 2020 21:02:16 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A455AC059;
-        Sat,  5 Dec 2020 21:02:09 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.177.236])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Sat,  5 Dec 2020 21:02:09 +0000 (GMT)
-References: <20201204195149.611-1-nramas@linux.microsoft.com>
- <20201204195149.611-7-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
-        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-Subject: Re: [PATCH v10 6/8] powerpc: Move ima_get_kexec_buffer() and
- ima_free_kexec_buffer() to ima
-In-reply-to: <20201204195149.611-7-nramas@linux.microsoft.com>
-Date:   Sat, 05 Dec 2020 18:02:07 -0300
-Message-ID: <87mtysm0fk.fsf@manicouagan.localdomain>
+        id S1727046AbgLEVFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 16:05:19 -0500
+Received: from mail-eopbgr30133.outbound.protection.outlook.com ([40.107.3.133]:42967
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725270AbgLEVFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 16:05:18 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T4VKsxTez0ahwiJWT8n1EJ7QbDLny7Wtrn8FNMKXfRauJHTS8OY8eC+j8sAcGRqu15g0rgNc0icfomdqNL1zPMtoRFDU8vuCpgejIoFyOGV0LSAH4wWfm/VMgoTZKfA3U6C27di4jDOoTBaMr4i9jIvwD+VaooUilansKOkHOVwRkrbNyREDOFeep/9u84sOFBq7lXTmYNvUt56l4/jXZqwoOvY6rt/aVDeddb+BSv0RaAQwa+8FznxeakR1GVPWgVmZ76/Eayjv2k2ZcNV+iEVj5WFycdazCW0Og5cIcY51kROwRWWnjW950OiFtQIO/zHIUe2SWiBnoWlRVh+7xQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+zSmnppYM72OQiJR8CHbFiXXNBwHH9lQdWrvMuGHSpk=;
+ b=ZRmX9Q5Bvy+129oY4EO60QnaTTCegs+RllUTKkRmrqMhoaDksBWvrUBeljli+OngXFOVnqb1HpwoAfUNcNLprZb4LoVzFkaF0/Rd6zSDJxswVRqX/HypCn4SN4w3qS/f0MkCupcvBVPAxRCvKs7nLSR6KX/Py9i04KQMDiRo/2hvOYV+HMLodxaafU61wnB2eAT6D40YgxUXWFFptkKby9nWgptRQEc0woJji+6eE8eMS7MErV1VqnYrbbYFKvCyyeLRKImUZK1lJkbrg2b2P6XWRdhqAnT65yJnffINunhdyOF3FcSCyNL2EokH9oOmOUZQFSew03B5PILydIfvIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+zSmnppYM72OQiJR8CHbFiXXNBwHH9lQdWrvMuGHSpk=;
+ b=cX28HdP4wo9Y3g04sLx3/56yCfP7p0MOiANSsLVGBc/05jTHgYIXQoVHpNLqvrcYd13cbXy26yqxhV87hRHF080uICo5CTPFPTmwGex5FfsFtGbeJuvVAeQ41igxAeulxYImpXmEXKd7xOkM+QwGtSrjKNIBWsCapeIGfq3ipNk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM0PR10MB3252.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Sat, 5 Dec
+ 2020 21:04:29 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
+ 21:04:29 +0000
+Subject: Re: [PATCH 11/20] ethernet: ucc_geth: fix use-after-free in
+ ucc_geth_remove()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Li Yang <leoyang.li@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Zhao Qiang <qiang.zhao@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20201205191744.7847-1-rasmus.villemoes@prevas.dk>
+ <20201205191744.7847-12-rasmus.villemoes@prevas.dk>
+ <20201205124859.60d045e6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Message-ID: <4d35ef11-b1eb-c450-2937-94e20fa9a213@prevas.dk>
+Date:   Sat, 5 Dec 2020 22:04:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201205124859.60d045e6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6PR08CA0040.eurprd08.prod.outlook.com
+ (2603:10a6:20b:c0::28) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-05_18:2020-12-04,2020-12-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=2
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
- phishscore=0 bulkscore=0 mlxscore=0 mlxlogscore=814 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012050138
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.149] (5.186.115.188) by AM6PR08CA0040.eurprd08.prod.outlook.com (2603:10a6:20b:c0::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Sat, 5 Dec 2020 21:04:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f20a8062-042b-41cf-3633-08d899615b2c
+X-MS-TrafficTypeDiagnostic: AM0PR10MB3252:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB32525A074C9EB579EAD89E7393F00@AM0PR10MB3252.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ThGVKxw7q0fHdfvIoOEy1N8A2xsVc+bGjIBW6hnkv8uPk7qYpHqaWwLaXcw2D3XltqfTNKdAQCa2XxTyZMC57KCgoFmgo+vxFXYDb/g1+n6qDfOI/TC8B0OdEkJnLhXW+gOrYyZfF9fnr2398nfsjZLtKyvycLxxvW+emQPDY7qzuTb9gK8tNxhKpDI2bl9m89m8PRUjIm7P1hvKb5VFAyQ7owlKybLl6sVeekdGi65tuCJcIjddBDTrlz7zkzG5FaIwVvnvmO8g3Xkf+rI3d5FgKX00hUYHPI5Nnk1BuNGEXEI6xrCJhd6wAtkQ8NoUCnNW+vJCsalJqPDK2Sko3xOTN4+NmqxHIMK7aPvQSdKfDGqW73wkUg96GMpHXNzgxULQng5DOBwr5GX1raJ0VuPNVyDcl4attZ1cWIVA17Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(346002)(376002)(366004)(136003)(396003)(31696002)(86362001)(956004)(4326008)(66946007)(66476007)(66556008)(8976002)(8936002)(478600001)(26005)(2906002)(16526019)(83380400001)(186003)(8676002)(36756003)(2616005)(44832011)(5660300002)(52116002)(6486002)(316002)(6916009)(31686004)(4744005)(16576012)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?m3xvaT5DLp0q5NIjuF2jkgfFnsTGktuarDorCjYeakITWmBe+rzPzH8b?=
+ =?Windows-1252?Q?7wOOQ9n1xqCsprb7rrhhMd9aquOCLiZPko2MOhv3GsBqJLF+FWoXzUiX?=
+ =?Windows-1252?Q?UsythqI8lXA+DWknbudTu7Omthu8KUYXRhPM/fdAeyrBnwH4Vp72Uv43?=
+ =?Windows-1252?Q?T2yZlKbKR8UL4Gx/6ElrbDNZrLlYaAYEepdkeFH5mvQBJLxGFO+zMGv/?=
+ =?Windows-1252?Q?MzoYjOpf2Vyxtqbf53O5mljyCjSj3Tnn+zHbz376q10obXDRhZn9KcP9?=
+ =?Windows-1252?Q?4GbfSu1GwWxC/bcBOgo6I2o3pS5CoYd3biI08CiWsBuk5w5uHqqeS6GF?=
+ =?Windows-1252?Q?VWvGos3kM6nJsSeSNkDVpjJlhZxBWUB0aqXpVK8kA04hNjNy3xMPTSoE?=
+ =?Windows-1252?Q?OH0d3XDuirktkzg/c5niiMieEXkuuvVAhSKBRXL9vL6xDy5AliYNwoJ3?=
+ =?Windows-1252?Q?HaLxKvjkzQMIcubMZwcSd2gpXroh221aRJFjyvORr+Di8VMNba3uIBjS?=
+ =?Windows-1252?Q?R8WFGpWynmdwQcPDa7VZVl4Ks1P6zi5R44pYmOTExnXjrc/+yZOKzMKZ?=
+ =?Windows-1252?Q?+dDv6WtI1lTo/tBp0yXO2S7lAYJMl1xUoynE8bZztnwXjNuOPLXfXxHQ?=
+ =?Windows-1252?Q?DsJZ5hWMDue9GhTU5FZQrqUkWJp1rM67NzOA1XVz8WPHj6QZGFSx0n6W?=
+ =?Windows-1252?Q?/ycKqhQyUiP2l2Fc76E7ZY9l7gyuCLUwQ0c92d/JQqc1AWDW8kcXWkAO?=
+ =?Windows-1252?Q?K4sT7CbqXjexdOYevltpDWWWUSfDI/cPUU1VI1n44Lp7jhUy5qcZhPh4?=
+ =?Windows-1252?Q?8nGgcybGi0uG8uTIeL8Mo3Yqizj3LazskgMZ0AzGyobQk3TelscT66ZU?=
+ =?Windows-1252?Q?PyH3/CH+rPzNfv8Q8b7Lj52Mu3QyHU3/611uztNrYQBSQKhQf+0a8OLA?=
+ =?Windows-1252?Q?b9gd6YKXr8qszBl5KXDNIEyfZCbFXroqjwE9lQiDb6iuN6O6/9q/pi8J?=
+ =?Windows-1252?Q?1qf5aWUmRR9D3I3w2e3NN8deyRkrpUStRIoE7/X2kirQtdmbx/pqoV/b?=
+ =?Windows-1252?Q?JoM6JbShJ/wNM+m9?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: f20a8062-042b-41cf-3633-08d899615b2c
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2020 21:04:29.5865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1ctVCqGfUEPFM8kHoZ3pbLSYdY238uoiahMhPR4Fokvm1wpp01pnX0ckV6MEzfzRVbu4KpYfX7HqQPoSSW1od1BVpFjwI/ILVrLsHGkuZhY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/12/2020 21.48, Jakub Kicinski wrote:
+> On Sat,  5 Dec 2020 20:17:34 +0100 Rasmus Villemoes wrote:
+>> -	unregister_netdev(dev);
+>> -	free_netdev(dev);
+>>  	ucc_geth_memclean(ugeth);
+>>  	if (of_phy_is_fixed_link(np))
+>>  		of_phy_deregister_fixed_link(np);
+>>  	of_node_put(ugeth->ug_info->tbi_node);
+>>  	of_node_put(ugeth->ug_info->phy_node);
+>> +	unregister_netdev(dev);
+>> +	free_netdev(dev);
+> 
+> Are you sure you want to move the unregister_netdev() as well as the
+> free?
+> 
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+Hm, dunno, I don't think it's needed per se, but it also shouldn't hurt
+from what I can tell. It seems more natural that they go together, but
+if you prefer a minimal patch that's of course also possible.
 
-> ima_get_kexec_buffer() retrieves the address and size of the buffer
-> used for carrying forward the IMA measurement logs on kexec from
-> the device tree.
->
-> ima_free_kexec_buffer() removes the chosen node
-> "linux,ima-kexec-buffer" from the device tree, and frees the buffer
-> used for carrying forward the IMA measurement logs on kexec.
->
-> These functions do not have architecture specific code, but are
-> currently limited to powerpc. Move ima_get_kexec_buffer() and
-> ima_free_kexec_buffer() to ima_kexec.c in IMA so that they are
-> accessible for other architectures as well.
->
-> With the above change the functions in arch/powerpc/kexec/ima.c are
-> defined only when the kernel config CONFIG_IMA_KEXEC is enabled.
-> Update the Makefile to build arch/powerpc/kexec/ima.c only when
-> CONFIG_IMA_KEXEC is enabled and remove "#ifdef CONFIG_IMA_KEXEC"
-> in arch/powerpc/kexec/ima.c.
+I only noticed because I needed to add a free of the ug_info in a later
+patch.
 
-Nice.
-
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-
-Just a small nit below:
-
-> ---
->  arch/powerpc/include/asm/ima.h     |  3 --
->  arch/powerpc/kexec/Makefile        |  7 +---
->  arch/powerpc/kexec/ima.c           | 50 -----------------------------
->  security/integrity/ima/ima_kexec.c | 51 ++++++++++++++++++++++++++++++
->  4 files changed, 52 insertions(+), 59 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/ima.h b/arch/powerpc/include/asm/ima.h
-> index a2fc71bc3b23..d8444d27f0d8 100644
-> --- a/arch/powerpc/include/asm/ima.h
-> +++ b/arch/powerpc/include/asm/ima.h
-> @@ -6,9 +6,6 @@
->  
->  struct kimage;
->  
-> -int ima_get_kexec_buffer(void **addr, size_t *size);
-> -int ima_free_kexec_buffer(void);
-> -
->  #ifdef CONFIG_IMA_KEXEC
->  int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
->  			      size_t size);
-> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
-> index 4aff6846c772..f54a9dbff4c8 100644
-> --- a/arch/powerpc/kexec/Makefile
-> +++ b/arch/powerpc/kexec/Makefile
-> @@ -9,12 +9,7 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
->  
->  obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
->  
-> -ifdef CONFIG_HAVE_IMA_KEXEC
-> -ifdef CONFIG_IMA
-> -obj-y				+= ima.o
-> -endif
-> -endif
-> -
-> +obj-$(CONFIG_IMA_KEXEC)		+= ima.o
->  
->  # Disable GCOV, KCOV & sanitizers in odd or sensitive code
->  GCOV_PROFILE_core_$(BITS).o := n
-> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
-> index 68017123b07d..bf7084c0c4da 100644
-> --- a/arch/powerpc/kexec/ima.c
-> +++ b/arch/powerpc/kexec/ima.c
-> @@ -13,55 +13,6 @@
->  #include <linux/libfdt.h>
->  #include <asm/ima.h>
-
-With this patch, the following includes become unnecessary and can be
-removed from this file:
-
-#include <linux/of.h>
-#include <linux/memblock.h>
-
-> -/**
-> - * ima_get_kexec_buffer - get IMA buffer from the previous kernel
-> - * @addr:	On successful return, set to point to the buffer contents.
-> - * @size:	On successful return, set to the buffer size.
-> - *
-> - * Return: 0 on success, negative errno on error.
-> - */
-> -int ima_get_kexec_buffer(void **addr, size_t *size)
-> -{
-> -	int ret;
-> -	unsigned long tmp_addr;
-> -	size_t tmp_size;
-> -
-> -	ret = get_ima_kexec_buffer(NULL, 0, &tmp_addr, &tmp_size);
-> -	if (ret)
-> -		return ret;
-> -
-> -	*addr = __va(tmp_addr);
-> -	*size = tmp_size;
-> -
-> -	return 0;
-> -}
-> -
-> -/**
-> - * ima_free_kexec_buffer - free memory used by the IMA buffer
-> - */
-> -int ima_free_kexec_buffer(void)
-> -{
-> -	int ret;
-> -	unsigned long addr;
-> -	size_t size;
-> -	struct property *prop;
-> -
-> -	prop = of_find_property(of_chosen, "linux,ima-kexec-buffer", NULL);
-> -	if (!prop)
-> -		return -ENOENT;
-> -
-> -	ret = get_ima_kexec_buffer(NULL, 0, &addr, &size);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = of_remove_property(of_chosen, prop);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return memblock_free(addr, size);
-> -}
-> -
-> -#ifdef CONFIG_IMA_KEXEC
->  /**
->   * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
->   *
-> @@ -154,4 +105,3 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
->  
->  	return 0;
->  }
-> -#endif /* CONFIG_IMA_KEXEC */
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Rasmus
