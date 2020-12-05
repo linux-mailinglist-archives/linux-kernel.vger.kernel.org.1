@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391C82CFB89
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 15:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB30B2CFB93
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 15:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgLEOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 09:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgLEM6x (ORCPT
+        id S1726366AbgLEOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 09:43:40 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39357 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726043AbgLEMzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 07:58:53 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB28DC09424E;
-        Sat,  5 Dec 2020 04:47:11 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id z5so8649901iob.11;
-        Sat, 05 Dec 2020 04:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/XpRQ3Q0ad+Q2MHPv+UdGhls3f1Aa2YKOEanYedPdIk=;
-        b=egBmuZj9si4XcjX7hbuUrl90XqzQXy6ONSDPwnubdJFkNY/KxL8tQlLFtE6yQh+Q1z
-         kiRIqpGw27Inc3+YPNWvfKxzE95d/O4RJ5dP/9jwZS4NLBZRXKZW82aAM2LjuwIoWzl+
-         uojW88o+rW24I544Gc6FgQXpFYf+XUSkWQKoXJRkFqefa5wN8J5CbNP9UItPiRXRCKtd
-         LSiQ2OQN+T8V048oM7Y+eirAixi7/mXhQSCuUcb73tPmdhD8ll+vEokBfvVdgbDtf3hv
-         2Afswj2FDWL+iavY7+76Rj5Q5FcwRbt5fsXkw98m6vnmfWQ/vem9MofoRcIyJpM5NFX5
-         Vr6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/XpRQ3Q0ad+Q2MHPv+UdGhls3f1Aa2YKOEanYedPdIk=;
-        b=uTIEiPgoTduBd4KvVi3A96LNRe05CftafIZsepJMKsWbL+BhJ2aJKqphYIbf/0vFu8
-         yi3W3KOb5eNaeaW0ZQzdFOhA5tN0785IMYFTV45m0L0lEfctOg5lz/71OZEnxIYSBo9r
-         4e+6Z8TmTSdU1Bba97gDR3zw8eKtp/nlDehuDwHq5RRpIAtn3Q2CWOGGRwGdPV/88PL0
-         QoLX476WVaptp9qgLGq8AqpuJxcVyukfrZA1QxXSjvlrpGmMksiF7rYeLKT84gpM4SLg
-         a9O39rqgqLxjvN1GxmMVkMoaLD6X9B7OBSHKOEodNXJN2jtO17EJcZBFzxw0tXHgUQoZ
-         b33g==
-X-Gm-Message-State: AOAM531p5UOdtS+hHejavH6zaN22NH202LPN115vsgpKnd30SS/jiQE/
-        67pWFEb11THwp7JMcbowf1LgdLkirDMZsL72MAk=
-X-Google-Smtp-Source: ABdhPJybJZKeM2jBJZXvPwqinwg7SiIw9A482TPoAQbPUhShWdncpaKiViV/Yh0v1/8UU1YtvF3IUVI8LrUW6/uPJL0=
-X-Received: by 2002:a5d:8e06:: with SMTP id e6mr10819023iod.27.1607172431223;
- Sat, 05 Dec 2020 04:47:11 -0800 (PST)
+        Sat, 5 Dec 2020 07:55:00 -0500
+X-UUID: ff7dfe36ced54eb1a799d4fc0f518aa1-20201205
+X-UUID: ff7dfe36ced54eb1a799d4fc0f518aa1-20201205
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 356616503; Sat, 05 Dec 2020 19:59:25 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 5 Dec 2020 19:59:00 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 5 Dec 2020 19:59:02 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, <huadian.liu@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v5 0/4] scsi: ufs: Refine error history and introduce event_notify vop
+Date:   Sat, 5 Dec 2020 19:58:57 +0800
+Message-ID: <20201205115901.26815-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <1607063090-3426-1-git-send-email-minhquangbui99@gmail.com> <20201204161249.GA1141609@rowland.harvard.edu>
-In-Reply-To: <20201204161249.GA1141609@rowland.harvard.edu>
-From:   =?UTF-8?Q?Minh_B=C3=B9i_Quang?= <minhquangbui99@gmail.com>
-Date:   Sat, 5 Dec 2020 19:47:01 +0700
-Message-ID: <CACtPs=Gg3C0KxdFnETHujAyis4hhKnCdV4_ZWqprHkXCXahFvw@mail.gmail.com>
-Subject: Re: [PATCH] USB: dummy-hcd: Fix uninitialized array use in init()
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Jules Irenge <jbi.octave@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V=C3=A0o Th 6, 4 thg 12, 2020 va=CC=80o lu=CC=81c 23:12 Alan Stern
-<stern@rowland.harvard.edu> =C4=91=C3=A3 vi=E1=BA=BFt:
-> Does this initialization end up using less memory than an explicit
-> memset() call?
+Hi,
+This series refines error history functions and introduces a new event_notify vop to allow vendor to get notification of important events.
 
-You mean speed? In my opinion, there is no difference in speed between 2 wa=
-ys.
-When I compile this array initialization using gcc 5.4.0,  this
-initialization becomes
-mov instructions when MAX_NUM_UDC=3D2 and becomes rep stos when
-MAX_NUM_UDC=3D32. I think it makes no difference when comparing with memset=
-()
+Changes since v4:
+  - Seperate patch sets according to Avri's suggestion
 
-Thanks,
-Quang Minh
+Changes since v3:
+  - Fix build warning in patch [8/8]
+
+Changes since v2:
+  - Add patches for vop cleanups
+  - Introduce phy_initialization helper and replace direct invoking in ufs-cdns and ufs-dwc by the helper
+  - Introduce event_notify vop implemntation in ufs-mediatek
+
+Changes since v1:
+  - Change notify_event() to event_notify() to follow vop naming covention
+
+Stanley Chu (4):
+  scsi: ufs: Add error history for abort event in UFS Device W-LUN
+  scsi: ufs: Refine error history functions
+  scsi: ufs: Introduce event_notify variant function
+  scsi: ufs-mediatek: Introduce event_notify implementation
+
+ drivers/scsi/ufs/ufs-mediatek-trace.h |  37 ++++++++
+ drivers/scsi/ufs/ufs-mediatek.c       |  12 +++
+ drivers/scsi/ufs/ufshcd.c             | 122 +++++++++++++++-----------
+ drivers/scsi/ufs/ufshcd.h             |  82 ++++++++---------
+ 4 files changed, 161 insertions(+), 92 deletions(-)
+ create mode 100644 drivers/scsi/ufs/ufs-mediatek-trace.h
+
+-- 
+2.18.0
+
