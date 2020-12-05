@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995EE2CFF54
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DB02CFF56
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgLEVnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 16:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        id S1727330AbgLEVns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 16:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgLEVnX (ORCPT
+        with ESMTP id S1726152AbgLEVnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 16:43:23 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC91C0613D1;
-        Sat,  5 Dec 2020 13:42:42 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id m19so13879826ejj.11;
-        Sat, 05 Dec 2020 13:42:42 -0800 (PST)
+        Sat, 5 Dec 2020 16:43:47 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAFEC061A51
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 13:43:07 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id t22so10766012ljk.0
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 13:43:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BcFwvccBZsNRXg6tthMMYxCZiveruOlpyGXOybgngvQ=;
-        b=jiOiKlaZJLpwxmeKjTWxcVGZCEkUHCWFjES5nFUbk1CJYTGVEBHGjg29kLi2I3rTP4
-         m9uZo8fJZqILlx2qptuTXKjm8L3+xYj0ur8Il1W4lB787lPdbAJBSoBcbQDDNpwq8utp
-         B9n8Qaa0mIJMAnY9riPCBaVcPSeTQc6u7VB8OWzVTPBk4QT9ecKg857smbCm4YoTwDJ1
-         UkHuSfQPCQ1y4sKVFAnCgb9Ms/9dFyvn1N57jUS/WTHmsLxa6JCRlLCvd7YlKffUIsXl
-         xPNVSYDHhQKZQJDOkaMPjS7RteEZNrFy7lY63xLz9S7MaWT8F9cXKDpLPWTQD5+SIa54
-         FdDg==
+        bh=700HkyTVIFp9nZiWIVsyfYqFVm65sXEMC2ghItegDYE=;
+        b=YafReqCUo5/xizSfSIS3eP6fIPD2UUW2x4UkHHsy1SSLo8OE8qcD9agG/wfCEVdrAG
+         SxObFlizYVZ3nb6EqQyXyKNsVjQF6A/GwwsFLTbqirAR4miX3Em8ffTq7XUGZiIe5uT0
+         uxqUeG/gaUj+pmjrQsHQrtxKVaeZHzld9tPg4ZGin61fb166k92rwaWcNR4o1rN1tnwV
+         7hJj3ivRoqBOwgfqvdyGFgaNMIoFzKCXO2FgHx9F7hF28iGduKGjHT7llzihQF+/dF54
+         T8D/ADXwaIOUnrxzXrz3RNTCbpux8yUVY+6aXwNRnEtMGuWBO0ZcoLRT1WZE5XacEm1L
+         8c/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BcFwvccBZsNRXg6tthMMYxCZiveruOlpyGXOybgngvQ=;
-        b=djEJQuhbewQm5RAT58W317kLG/mcuZ6nc8s6jBipWemUIBqWBLsu+LHzbeIAw7ICJ+
-         I/uUt/FYBCcMsAJTR1zfoNsyj9DWExMe/yWGdV0wuCAIow0hjoVdOC56r8GOindL/kWG
-         CCvq6kWLROVA5ZDbyskG/NXiaQzm61ClhHqtu+xhi94BHaNiP6WwZY5/Pc5K1+IfprON
-         Ml5MOyKlU/vOtLKeX/9hQnLAPK2dD33ExHMfiALOM+ddsgcqVo0NEjGsm05/3sSQxW9m
-         JTmAF0Tc0KFt4brxZO0gTdkDTxm2tHwx0bOg/X3iVZthS3x1ZtyCzQViZ5ce8KD6Arsz
-         vMtA==
-X-Gm-Message-State: AOAM531yKfQXbmBu5CVJb6OkorPlnyNrStHBatAf4gcrMn0sz2nYJs7E
-        fppzhPAW7jIdVRhP/zBf+55gnWwW9kjD3K2t1Bw=
-X-Google-Smtp-Source: ABdhPJxdspMQ0M3QTYFFajPX5yAwsG+t5ziDkySCbO6inXMBWhcmZmm1k/Sy3ZAXbtQ06tz5Fln037XnGixiih6SJP8=
-X-Received: by 2002:a17:906:447:: with SMTP id e7mr5694784eja.172.1607204561424;
- Sat, 05 Dec 2020 13:42:41 -0800 (PST)
+        bh=700HkyTVIFp9nZiWIVsyfYqFVm65sXEMC2ghItegDYE=;
+        b=obs/t1DIqYVuEWA9ZbQEJqt1XDh2p3l1KznIc9NME3rAK71pQbuZAkBej64QtOWJgs
+         VH4ZswnHZqac2PokhhpgLfKvReZ0/UPZq4ZMu/mvlx2YCgvN2mt43Ia0dh5IWvXCS01/
+         bShC8I6T5YLKgDNhPq6ecLPkz7j8j+gGP7TxgZMiFzlQjvhgrITDD2XW2mwMjskx6zzU
+         0WQrK9TOfiZBETX0UZGOZujbghf5ohylHGmY+zK1iEo5K+ls5orKEugYvKXPReXEJfv6
+         61dKZHh6zeDGYpKtKF4mtgaFtECOHraye6eJNYzbM+m3Z+ZxuBu5eoipmSCgH7tHo+uc
+         u76Q==
+X-Gm-Message-State: AOAM531FUzhHBk0OSBpCAcKrWp3ivefXqwNIcU6xpDu/5gqYbrydTCZQ
+        e/o4Srs1bk2Dl4NQbOBkuhZMmFw1VmksqxdW8E9WE4aYDI0+HA==
+X-Google-Smtp-Source: ABdhPJxOBXULP7OBc7vXFcwbfQDybB9Vs66oJlYkEGsjHLd3VRw9w9OMx28IXZxfzQVww4oMJ5ir7VUoAimLdzmSMDU=
+X-Received: by 2002:a2e:998e:: with SMTP id w14mr6262208lji.100.1607204585830;
+ Sat, 05 Dec 2020 13:43:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201190100.17831-1-aouledameur@baylibre.com> <20201201190100.17831-3-aouledameur@baylibre.com>
-In-Reply-To: <20201201190100.17831-3-aouledameur@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 5 Dec 2020 22:42:30 +0100
-Message-ID: <CAFBinCCovB9e1_AwXv0Jcn3p69LN5KAdzttfZcY+=_TEZTCn6Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] usb: dwc3: meson-g12a: fix shared reset control use
-To:     Amjad Ouled-Ameur <aouledameur@baylibre.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-amlogic@lists.infradead.org,
-        Jerome Brunet <jbrunet@baylibre.com>
+References: <20201129110803.2461700-1-daniel@0x0f.com>
+In-Reply-To: <20201129110803.2461700-1-daniel@0x0f.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 5 Dec 2020 22:42:54 +0100
+Message-ID: <CACRpkdYEzFYw=CbBFCs9=DfarsCQKD0zA2WvE95nF8ehA_2i1g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Add GPIO support for MStar/SigmaStar ARMv7
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     SoC Team <soc@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>, Willy Tarreau <w@1wt.eu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Amjad,
+On Sun, Nov 29, 2020 at 12:08 PM Daniel Palmer <daniel@0x0f.com> wrote:
 
-On Tue, Dec 1, 2020 at 8:01 PM Amjad Ouled-Ameur
-<aouledameur@baylibre.com> wrote:
+> At the moment the MStar/SigmaStar support is only really
+> capable of shell from an initramfs and not much else.
 >
-> reset_control_(de)assert() calls are called on a shared reset line when
-> reset_control_reset has been used. This is not allowed by the reset
-> framework.
+> Most of the interesting drivers are blocked on clock and pinctrl
+> drivers and those are going to take me a little while to get cleaned
+> up.
 >
-> Use reset_control_rearm() call in suspend() and remove() as a way to state
-> that the resource is no longer used, hence the shared reset line
-> may be triggered again by other devices. Use reset_control_rearm() also in
-> case probe fails after reset() has been called.
+> Clock and pinctrl aren't needed for basic GPIO to work (all pins
+> start off as GPIOs..) and it makes it possible to actually do something
+> so this series adds everything that is needed for the main GPIO
+> block in these chips.
 >
-> reset_control_rearm() keeps use of triggered_count sane in the reset
-> framework, use of reset_control_reset() on shared reset line should be
-> balanced with reset_control_rearm().
-I think this should be updated after [0] is applied
-The goto from that patch needs to use err_rearm from this patch.
+> Changes since v3:
+> - Remove unneeded "gpio-ranges-group-names" property from binding yaml.
 
+OK finished!
+Patches 1, 2 & 3 applied to the GPIO tree for v5.11.
 
-Best regards,
-Martin
+Thanks for the good work!
 
-
-[0] https://patchwork.kernel.org/project/linux-usb/patch/20201111095256.10477-1-zhengzengkai@huawei.com/
+Yours,
+Linus Walleij
