@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996CB2CFE89
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AC82CFE8C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726241AbgLETp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:45:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725270AbgLETpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:45:55 -0500
-Date:   Sat, 5 Dec 2020 11:45:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607197515;
-        bh=waY9/Lv9f7z230WTpMxBq86+oBITP8tsVVKJVz/83Ig=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GYT7M0x2SJfwFvRNCB97xzPZmcO5TWdUUAwrcaKRNh5cfsc8JbXY0l98Ws2NviVta
-         htXJbEGwJt8vCE/0qsn5KFCwRFrXdQeAjrddOH51gofAyrKLn3aUzezWcJ4BUtle3p
-         hunomva0QZAvfrAZgsLWiCnK95Ql2YSNlkpmY/gCnYLPzdi/3DcWF4+Tj8o4VMDRc/
-         kbDYjHRdRZcRMl5SxzVmZ4VJr0gKs2wGTqIIOJNM1t/3gu5Kc0N/WREGtBplJ946X+
-         KTGORioc3K0XggAGtUHUkTYAK1Ecc/YrNeNaZYMga1GG0lkRujVCAu8LZHOoqZBAqt
-         ASu5F+gKrqZqQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lars Everbrand <lars.everbrand@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] bonding: correct rr balancing during link
- failure
-Message-ID: <20201205114513.4886d15e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <X8f/WKR6/j9k+vMz@black-debian>
-References: <X8f/WKR6/j9k+vMz@black-debian>
+        id S1726312AbgLETtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgLETtA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 14:49:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D10FC0613D1;
+        Sat,  5 Dec 2020 11:48:18 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607197695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5V64cHoDauQUIjehmXNdE3d+yc6rEovliqZd890tZyc=;
+        b=2dZo+Tgpz46/CvuMRAaMBs6LBghauRtHEJYgcpKvgHaboX1eRha21sywPs90/boVHgePPW
+        4BQ4o7Qf70lN6yBLyI0a2okxXCsi1LIIq4E8VeZIp3fLI/SVaERVtQpJzVF5xsZkSpezWG
+        n9tbwfrwuJakp/IDyFWh4UIY5T+8p2K4znYOZGgg2g5bxFPaUSUN/69DeneBxLzMbi5I2y
+        phdHLVyRJZEH8+KKgcMNBeMh37Jn33RIshbPbIanUhyyEmwf8tU1vrFbsRngNE00Hfc/u0
+        dmGy0w1lKccZ+gk0KbHg/4WM1Ve0y1j1wWskzFuXOCXotUS8naIKBp1BcusgSg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607197695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5V64cHoDauQUIjehmXNdE3d+yc6rEovliqZd890tZyc=;
+        b=yo8evh+GXBHbspAYbEKASwVyNqiH9vfFd2JG9cthkSOM+YN9oopdlp3N2ZhOvsUAXW4mFt
+        KJ+wK35XaaclkPAw==
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>,
+        Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <20201205184334.GA8034@Red>
+References: <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red> <874kl1bod0.fsf@nanos.tec.linutronix.de> <20201204192753.GA19782@Red> <87wnxx9tle.fsf@nanos.tec.linutronix.de> <20201205184334.GA8034@Red>
+Date:   Sat, 05 Dec 2020 20:48:15 +0100
+Message-ID: <87mtys8268.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Dec 2020 20:55:57 +0000 Lars Everbrand wrote:
-> This patch updates the sending algorithm for roundrobin to avoid
-> over-subscribing interface(s) when one or more interfaces in the bond is
-> not able to send packets. This happened when order was not random and
-> more than 2 interfaces were used.
-> 
-> Previously the algorithm would find the next available interface
-> when an interface failed to send by, this means that most often it is
-> current_interface + 1. The problem is that when the next packet is to be
-> sent and the "normal" algorithm then continues with interface++ which
-> then hits that same interface again.
-> 
-> This patch updates the resending algorithm to update the global counter
-> of the next interface to use.
-> 
-> Example (prior to patch):
-> 
-> Consider 6 x 100 Mbit/s interfaces in a rr bond. The normal order of links
-> being used to send would look like:
-> 1 2 3 4 5 6  1 2 3 4 5 6  1 2 3 4 5 6 ...
-> 
-> If, for instance, interface 2 where unable to send the order would have been:
-> 1 3 3 4 5 6  1 3 3 4 5 6  1 3 3 4 5 6 ...
-> 
-> The resulting speed (for TCP) would then become:
-> 50 + 0 + 100 + 50 + 50 + 50 = 300 Mbit/s
-> instead of the expected 500 Mbit/s.
-> 
-> If interface 3 also would fail the resulting speed would be half of the
-> expected 400 Mbit/s (33 + 0 + 0 + 100 + 33 + 33).
-> 
-> Signed-off-by: Lars Everbrand <lars.everbrand@protonmail.com>
+Corentin,
 
-Thanks for the patch!
+On Sat, Dec 05 2020 at 19:43, Corentin Labbe wrote:
+> On Fri, Dec 04, 2020 at 09:58:21PM +0100, Thomas Gleixner wrote:
+>> Can you please replace the debug patch with the one below and try again?
+>> That stops the trace right on the condition.
+>
+> Hello, the result could be found at http://kernel.montjoie.ovh/130739.log
 
-Looking at the code in question it feels a little like we're breaking
-abstractions if we bump the counter directly in get_slave_by_id.
+Thanks for providing this. This is clearly showing where stuff goes
+wrong. It starts here at 729.550001. I removed the uninteresting parts:
 
-For one thing when the function is called for IGMP packets the counter
-should not be incremented at all. But also if packets_per_slave is not
-1 we'd still be hitting the same leg multiple times (packets_per_slave
-/ 2). So it seems like we should round the counter up somehow?
+0d..2 147103293us : __kmap_local_page_prot <-sg_miter_next
+0d..3 147103308us :__kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
 
-For IGMP maybe we don't have to call bond_get_slave_by_id() at all,
-IMHO, just find first leg that can TX. Then we can restructure
-bond_get_slave_by_id() appropriately for the non-IGMP case.
+0d..3 147103311us : __kmap_local_page_prot <-sg_miter_next
+0d..4 147103325us : __kmap_local_pfn_prot: kmap_local_pfn: 3 ffefb000
 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index e0880a3840d7..e02d9c6d40ee 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -4107,6 +4107,7 @@ static struct slave *bond_get_slave_by_id(struct bonding *bond,
->  		if (--i < 0) {
->  			if (bond_slave_can_tx(slave))
->  				return slave;
-> +			bond->rr_tx_counter++;
->  		}
->  	}
->  
-> @@ -4117,6 +4118,7 @@ static struct slave *bond_get_slave_by_id(struct bonding *bond,
->  			break;
->  		if (bond_slave_can_tx(slave))
->  			return slave;
-> +		bond->rr_tx_counter++;
->  	}
->  	/* no slave that can tx has been found */
->  	return NULL;
+0d..3 147103429us : kunmap_local_indexed <-sg_miter_stop
+0d..4 147103433us : kunmap_local_indexed: kunmap_local: 3 ffefd000
+
+So this maps two pages and unmaps the first one. That's all called from
+sun4i_ss_opti_poll() and the bug is clearly visible there:
+
+	sg_miter_next(&mi);
+	sg_miter_next(&mo);
+
+release_ss:
+	sg_miter_stop(&mi);
+	sg_miter_stop(&mo);
+
+Written by yourself :) Same issue in sun4i_ss_cipher_poll()
+
+Fix below.
+
+Julia, it might be worth to have a coccinelle check for that. It's the
+only place which got it wrong, but this goes unnoticed when code is
+e.g. only fully tested on 64bit or as in this case never tested with
+full debugging enabled. The whole kmap_atomic and kmap_local (new in
+next) family and all users like the sg_miter stuff are affected by this.
+
+Thanks,
+
+        tglx
+---
+Subject: crypto: sun4i-ss - Fix sg_miter_stop() ordering
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Sat, 05 Dec 2020 20:17:28 +0100
+
+sun4i_ss_opti_poll() and sun4i_ss_cipher_poll() do:
+
+        sg_miter_next(&mi);
+        sg_miter_next(&mo);
+	...
+        sg_miter_stop(&mi);
+        sg_miter_stop(&mo);
+
+which is the wrong order because sg_miter_next() maps a page with
+kmap_atomic() and sg_miter_stop() unmaps it. kmap_atomic() uses a stack
+internaly which requires that the nested map is unmapped first. As this
+uses the wrong order it triggers the warning in kunmap_local_indexed()
+which checks the to be unmapped address and subsequently crashes.
+
+This went unnoticed for 5 years because the ARM kmap_atomic()
+implementation had the warning conditional on CONFIG_DEBUG_HIGHMEM which
+was obviously never enabled when testing that driver.
+
+Flip the order to cure it.
+
+Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+@@ -109,8 +109,8 @@ static int noinline_for_stack sun4i_ss_o
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mi);
+ 	sg_miter_stop(&mo);
++	sg_miter_stop(&mi);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
+ 	return err;
+@@ -333,8 +333,8 @@ static int sun4i_ss_cipher_poll(struct s
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mi);
+ 	sg_miter_stop(&mo);
++	sg_miter_stop(&mi);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
+ 
+
 
