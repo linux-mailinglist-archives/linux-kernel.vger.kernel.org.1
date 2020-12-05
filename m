@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBE02CFF5C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8230F2CFF60
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgLEVrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 16:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
+        id S1727272AbgLEVta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 16:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgLEVrB (ORCPT
+        with ESMTP id S1725270AbgLEVta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 16:47:01 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACC0C0613CF;
-        Sat,  5 Dec 2020 13:46:21 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id y7so10731457lji.8;
-        Sat, 05 Dec 2020 13:46:21 -0800 (PST)
+        Sat, 5 Dec 2020 16:49:30 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B89C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 13:48:43 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id l11so12686647lfg.0
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 13:48:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+        h=date:from:to:subject:message-id:mime-version:content-disposition
          :user-agent;
         bh=QF69uECAamzOWlaEn481WwcLAj1MiwOW4Kz1BWJF03c=;
-        b=VmrnzKCVo3a8w78uIJDkDsQBWOkeb9zbMnNqo8ytJZqpdp7foEcjCNE0zxFjb62u52
-         b6DCnWXRAz2C7IQ3Fpe4SZe6+H0CyfJu/1aptYpbF4xLy8q308Ax0RLc8+3QkZ7F7tT8
-         n+L+GBDdLKwLo79CXNRlVJRaWm3dXqtJDnUx6cFO2pZTlVG2xkg0ZUg44p2o00PBPA6m
-         4mIIZA2mmVobw+gBYQUZ1W2+WZWWxfJIdN0vJWh/taDnl5Kuyok6bEtlN8FzlpZWWnFa
-         c4v6vtGEgcHgw1TPA1N88qxPgJnbPRv++wf0lJs5hjFGtHw0GLw/VpCESww16F6YXrFW
-         dROQ==
+        b=NgOYFB3w2ozT15c6KTWZv0enLaAd1y6aEFLAwu8sfZEhVJFQT3YDSsf8mh5inygnTD
+         qSEvHemuLDsMP1d+lO21AxXB5E09EAmFX+E8C7V0CHtZ4ISusoDLTZ5/5bjnps4/kTbp
+         53dzA5TZwK1A1KAm0beZnK6xYAAHycukTYYETy01fzPtJ2Snupc4IEj3qaF1zH6pCJsW
+         rl3cSKd2571TkecKI7QQMjSMiZF7qQqhWcSZFLomEfmnVDx2PPA6HVS1tAvxUVdMnkQ1
+         YODu8L8KwkVvsKOPBqoytw6Vj8VJ7WAJFQLTEoYKbiJUyxK2BWu2kogHzj4ztIozJttr
+         eZ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
          :content-disposition:user-agent;
         bh=QF69uECAamzOWlaEn481WwcLAj1MiwOW4Kz1BWJF03c=;
-        b=Waj1HA8sJ+KoKNEMNk1gUR5jpxZX5seheq4bSxXK5Hk3MUkcoD7m9DeSosor6z02bg
-         NsyvjdfGsjB6969CA5z92YvYtsL7Riy26f9Ocmu1fz666ikWxFbzijhTtBYEzs/hZqit
-         0tOa5OdWK42Hou8LUVmDpgm/OmdcRqWiqAlfYeRsLTcx6SyGsIsUCri77wFCxDE7cP1n
-         mL+bU8pMTwvppKdjY+sTV4UC42Jg49Ptl8tcXJ6mTR1cgSJTN9C/bHNL/JfnoN2SY1yl
-         UeuuPE30e2RiAH2qIY2zXgOjaQoxUsuoqvLoBJErrCMg8KosIcSgOUOUFuMGs+eSYic2
-         N8mw==
-X-Gm-Message-State: AOAM532sjXuwEXmPHnX/1zMNgnu02s5S2lriKDF0qbxs8UM/LusmRotE
-        k+BcGQWfU/mR5II4EaMg4SG0IrDQwYNpeg==
-X-Google-Smtp-Source: ABdhPJwFNfvkxCte0G5xa3BJHWUYiT4H5ucp/GJRsvk9KMUb/O+NiZ/DQAd7ENCNi73FkE3rwR5zqA==
-X-Received: by 2002:a2e:91cd:: with SMTP id u13mr6018600ljg.239.1607204779667;
-        Sat, 05 Dec 2020 13:46:19 -0800 (PST)
+        b=rlOuJFid0c+7sEbnmyrMCudffLM9WpemjtF4Ajbt79uef5O4Fl+Oze8M99XcivD+Zy
+         MmwYJD4jkLZCKYGm7NoDxCCmkTZlqezxfHee6ju50d09TOTBf701JjKJ6ZwTeqjkuDQM
+         55u9urWMrD9Mfb6S6AKrHo+cjP6LPLPIsF6HMEj+6g8l+OFtM1VJRVq4uqm1jpe6GnuI
+         j3z/TvTEsTiTXg0WCDHve1ChNoGU6Ap+yZvY5+pFWm6GUNLca16fDDjIOn14cBbbhNMO
+         b50u4dW2Omd9n4C9TXzfZ2svyyJop5NGkbhToKJw8QZRNBGlOrNRtAobZqCwCgtyhps7
+         0gng==
+X-Gm-Message-State: AOAM5329jg5inDYF6rSXPGREDGL7swf31dLUqYio0iuOKqVqVj4Ao+eX
+        ssr7e5YDrVQ/SjuJLurQKT2Tesn1zYbbzg==
+X-Google-Smtp-Source: ABdhPJzzmN9BeQ6HC000oiVBIsk9acuP5zbfCPA2STIhoA3y45LjhD0Ms0+rHmyKEoUN1MQKKq5Ntw==
+X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr1802088lfs.529.1607204922207;
+        Sat, 05 Dec 2020 13:48:42 -0800 (PST)
 Received: from einstein.dilieto.eu (einstein.dilieto.eu. [188.68.43.228])
-        by smtp.gmail.com with ESMTPSA id o12sm110933ljp.123.2020.12.05.13.46.18
+        by smtp.gmail.com with ESMTPSA id d25sm2551221lja.40.2020.12.05.13.48.41
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 05 Dec 2020 13:46:19 -0800 (PST)
-Date:   Sat, 5 Dec 2020 22:46:16 +0100
+        Sat, 05 Dec 2020 13:48:41 -0800 (PST)
+Date:   Sat, 5 Dec 2020 22:48:38 +0100
 From:   Nicola Di Lieto <nicola.dilieto@gmail.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
+To:     linux-kernel@vger.kernel.org
 Subject: [PATCH 2/2] pwm: pwm-gpio: Add DT bindings
-Message-ID: <20201205214616.e4one25o3oz5dhrp@einstein.dilieto.eu>
+Message-ID: <20201205214838.zgdh5txvtmlpk7hd@einstein.dilieto.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
