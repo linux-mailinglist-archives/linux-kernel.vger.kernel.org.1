@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680F02CFB7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 15:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391C82CFB89
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 15:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgLEN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 08:57:50 -0500
-Received: from smtprelay0243.hostedemail.com ([216.40.44.243]:33810 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726042AbgLEM7s (ORCPT
+        id S1726017AbgLEOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 09:19:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgLEM6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 07:59:48 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 1B3DB183531D3
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 12:05:07 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4F88A100E7B42;
-        Sat,  5 Dec 2020 12:03:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:3874:4321:5007:7903:10004:10400:11026:11232:11473:11658:11914:12109:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14181:14659:14721:21067:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: wash17_2807e12273cc
-X-Filterd-Recvd-Size: 1809
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  5 Dec 2020 12:03:24 +0000 (UTC)
-Message-ID: <7b8289150f47b1fe32fc85f2082a4b727f2b1664.camel@perches.com>
-Subject: Re: [PATCH v6] checkpatch: add fix for non-standard signature -
- co-authored-by
-From:   Joe Perches <joe@perches.com>
-To:     Aditya <yashsri421@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, daniel@iogearbox.net,
-        peterz@infradead.org, gregkh@linuxfoundation.org
-Date:   Sat, 05 Dec 2020 04:03:23 -0800
-In-Reply-To: <b9048b9c-22cb-fc47-8e87-1c091a9cc822@gmail.com>
-References: <a2c74693-93ae-cd5a-7836-4ffff643fc09@gmail.com>
-         <20201204144000.21734-1-yashsri421@gmail.com>
-         <b9048b9c-22cb-fc47-8e87-1c091a9cc822@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 5 Dec 2020 07:58:53 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB28DC09424E;
+        Sat,  5 Dec 2020 04:47:11 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id z5so8649901iob.11;
+        Sat, 05 Dec 2020 04:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/XpRQ3Q0ad+Q2MHPv+UdGhls3f1Aa2YKOEanYedPdIk=;
+        b=egBmuZj9si4XcjX7hbuUrl90XqzQXy6ONSDPwnubdJFkNY/KxL8tQlLFtE6yQh+Q1z
+         kiRIqpGw27Inc3+YPNWvfKxzE95d/O4RJ5dP/9jwZS4NLBZRXKZW82aAM2LjuwIoWzl+
+         uojW88o+rW24I544Gc6FgQXpFYf+XUSkWQKoXJRkFqefa5wN8J5CbNP9UItPiRXRCKtd
+         LSiQ2OQN+T8V048oM7Y+eirAixi7/mXhQSCuUcb73tPmdhD8ll+vEokBfvVdgbDtf3hv
+         2Afswj2FDWL+iavY7+76Rj5Q5FcwRbt5fsXkw98m6vnmfWQ/vem9MofoRcIyJpM5NFX5
+         Vr6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/XpRQ3Q0ad+Q2MHPv+UdGhls3f1Aa2YKOEanYedPdIk=;
+        b=uTIEiPgoTduBd4KvVi3A96LNRe05CftafIZsepJMKsWbL+BhJ2aJKqphYIbf/0vFu8
+         yi3W3KOb5eNaeaW0ZQzdFOhA5tN0785IMYFTV45m0L0lEfctOg5lz/71OZEnxIYSBo9r
+         4e+6Z8TmTSdU1Bba97gDR3zw8eKtp/nlDehuDwHq5RRpIAtn3Q2CWOGGRwGdPV/88PL0
+         QoLX476WVaptp9qgLGq8AqpuJxcVyukfrZA1QxXSjvlrpGmMksiF7rYeLKT84gpM4SLg
+         a9O39rqgqLxjvN1GxmMVkMoaLD6X9B7OBSHKOEodNXJN2jtO17EJcZBFzxw0tXHgUQoZ
+         b33g==
+X-Gm-Message-State: AOAM531p5UOdtS+hHejavH6zaN22NH202LPN115vsgpKnd30SS/jiQE/
+        67pWFEb11THwp7JMcbowf1LgdLkirDMZsL72MAk=
+X-Google-Smtp-Source: ABdhPJybJZKeM2jBJZXvPwqinwg7SiIw9A482TPoAQbPUhShWdncpaKiViV/Yh0v1/8UU1YtvF3IUVI8LrUW6/uPJL0=
+X-Received: by 2002:a5d:8e06:: with SMTP id e6mr10819023iod.27.1607172431223;
+ Sat, 05 Dec 2020 04:47:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <1607063090-3426-1-git-send-email-minhquangbui99@gmail.com> <20201204161249.GA1141609@rowland.harvard.edu>
+In-Reply-To: <20201204161249.GA1141609@rowland.harvard.edu>
+From:   =?UTF-8?Q?Minh_B=C3=B9i_Quang?= <minhquangbui99@gmail.com>
+Date:   Sat, 5 Dec 2020 19:47:01 +0700
+Message-ID: <CACtPs=Gg3C0KxdFnETHujAyis4hhKnCdV4_ZWqprHkXCXahFvw@mail.gmail.com>
+Subject: Re: [PATCH] USB: dummy-hcd: Fix uninitialized array use in init()
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Jules Irenge <jbi.octave@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-12-05 at 15:52 +0530, Aditya wrote:
-> On 4/12/20 8:10 pm, Aditya Srivastava wrote:
-> > Currently, checkpatch.pl warns us for BAD_SIGN_OFF on the usage of
-> > non-standard signatures.
-[]
-> > The standard signature equivalent for 'Co-authored-by' is
-> > 'Co-developed-by'.
-> > 
-> > Provide a fix by suggesting users with this signature alternative and
-> > replacing.
+V=C3=A0o Th 6, 4 thg 12, 2020 va=CC=80o lu=CC=81c 23:12 Alan Stern
+<stern@rowland.harvard.edu> =C4=91=C3=A3 vi=E1=BA=BFt:
+> Does this initialization end up using less memory than an explicit
+> memset() call?
 
-> we were planning to introduce a fix for
-> suggesting users to use "Co-developed-by" tag over "Co-authored-by"
-> and I noticed that you have earlier used "Co-authored-by" tag.
-> 
-> We feel that users perhaps use this tag as they are unaware of its
-> standard equivalent tag, "Co-developed-by"
+You mean speed? In my opinion, there is no difference in speed between 2 wa=
+ys.
+When I compile this array initialization using gcc 5.4.0,  this
+initialization becomes
+mov instructions when MAX_NUM_UDC=3D2 and becomes rep stos when
+MAX_NUM_UDC=3D32. I think it makes no difference when comparing with memset=
+()
 
-As I do not particularly approve of this patch,
-"we" does not include "me", nor is it I presume
-the royal usage.
-
-Please specify who the "we" is here.
-
+Thanks,
+Quang Minh
