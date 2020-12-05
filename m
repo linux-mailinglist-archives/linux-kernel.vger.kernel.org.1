@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AA02CFD8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761152CFDBC
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgLESho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:37:44 -0500
-Received: from mga01.intel.com ([192.55.52.88]:30676 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726061AbgLEShl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:37:41 -0500
-IronPort-SDR: H8BQQ1+mhM7d55BXRhAhDh3aCGd4opVJYhSuKis3CgmU7lMRCMb994vEo6EDJXGCKGgnq0vAy2
- klqdG7tD4mHw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="191774459"
-X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
-   d="scan'208";a="191774459"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:56 -0800
-IronPort-SDR: RYoMDGFFTE6jxc6pGLX2RQcbEpvcChRMU2DhisSbvvl+p0aMw7PNIZxacFcm8U16RJ6X5brham
- vKsXrkEViP1Q==
-X-IronPort-AV: E=Sophos;i="5.78,395,1599548400"; 
-   d="scan'208";a="436104270"
-Received: from schamb2-mobl2.amr.corp.intel.com (HELO [10.212.89.161]) ([10.212.89.161])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 06:59:55 -0800
-Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
- initializing a device
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
- <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
- <20201205074508.GQ8403@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
-Date:   Sat, 5 Dec 2020 08:59:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727953AbgLESnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:43:11 -0500
+Received: from ns2.baikalelectronics.ru ([94.125.187.42]:53190 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727088AbgLEQzv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 11:55:51 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 04/19] dt-bindings: usb: Add "ulpi/serial/hsic" PHY types
+Date:   Sat, 5 Dec 2020 18:24:11 +0300
+Message-ID: <20201205152427.29537-5-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
+References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20201205074508.GQ8403@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review Vinod.
+Aside from the UTMI+ there are also ULPI, Serial and HSIC PHY types
+that can be specified in the phy_type HCD property. Add them to the
+enumeration of the acceptable values.
 
-On 12/5/20 1:45 AM, Vinod Koul wrote:
-> On 03-12-20, 04:46, Bard Liao wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> When a Slave device is resumed, it may resume the bus and restart the
->> enumeration. During that process, we absolutely don't want to call
->> regular read/write routines which will wait for the resume to
->> complete, otherwise a deadlock occurs.
->>
->> Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
-> 
-> Change looks okay, but not sure why this is a fix for adding no pm
-> version?
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-when we added the no_pm version, we missed the two cases below where 
-sdw_update() was used and that creates a deadlock. To me that's a 
-conceptual bug, we didn't fully use the no_pm versions, hence the Fixes tag.
+---
 
-It's ok to remove the tag if you don't think it's useful/relevant, what 
-matters is that we agree on the content.
+Changelog v2:
+- Grammar fix: "s/PHY types can be/PHY types that can be"
+- Drop quotes from around the string constants.
 
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>   drivers/soundwire/bus.c | 16 ++++++++++++++--
->>   1 file changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
->> index d1e8c3a54976..60c42508c6c6 100644
->> --- a/drivers/soundwire/bus.c
->> +++ b/drivers/soundwire/bus.c
->> @@ -489,6 +489,18 @@ sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
->>   		return buf;
->>   }
->>   
->> +static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
->> +{
->> +	int tmp;
->> +
->> +	tmp = sdw_read_no_pm(slave, addr);
->> +	if (tmp < 0)
->> +		return tmp;
->> +
->> +	tmp = (tmp & ~mask) | val;
->> +	return sdw_write_no_pm(slave, addr, tmp);
->> +}
->> +
->>   /**
->>    * sdw_nread() - Read "n" contiguous SDW Slave registers
->>    * @slave: SDW Slave
->> @@ -1256,7 +1268,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
->>   	val = slave->prop.scp_int1_mask;
->>   
->>   	/* Enable SCP interrupts */
->> -	ret = sdw_update(slave, SDW_SCP_INTMASK1, val, val);
->> +	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
->>   	if (ret < 0) {
->>   		dev_err(slave->bus->dev,
->>   			"SDW_SCP_INTMASK1 write failed:%d\n", ret);
->> @@ -1271,7 +1283,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
->>   	val = prop->dp0_prop->imp_def_interrupts;
->>   	val |= SDW_DP0_INT_PORT_READY | SDW_DP0_INT_BRA_FAILURE;
->>   
->> -	ret = sdw_update(slave, SDW_DP0_INTMASK, val, val);
->> +	ret = sdw_update_no_pm(slave, SDW_DP0_INTMASK, val, val);
->>   	if (ret < 0)
->>   		dev_err(slave->bus->dev,
->>   			"SDW_DP0_INTMASK read failed:%d\n", ret);
->> -- 
->> 2.17.1
-> 
+Changelog v4:
+- Move the new PHY types definitions into the usb.yaml schema where the
+  phy_type property is now defined.
+---
+ Documentation/devicetree/bindings/usb/usb.yaml | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
+index 991c02725e2b..6dc4821e63c3 100644
+--- a/Documentation/devicetree/bindings/usb/usb.yaml
++++ b/Documentation/devicetree/bindings/usb/usb.yaml
+@@ -27,11 +27,13 @@ properties:
+   phy_type:
+     description:
+       Tells USB controllers that we want to configure the core to support a
+-      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected. In case
+-      this isn't passed via DT, USB controllers should default to HW
+-      capability.
++      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected, UTMI+ low
++      pin interface if ULPI is specified, Serial core/PHY interconnect if
++      serial is specified and High-Speed Inter-Chip feature if HSIC is
++      selected. In case this isn't passed via DT, USB controllers should
++      default to HW capability.
+     $ref: /schemas/types.yaml#/definitions/string
+-    enum: [utmi, utmi_wide]
++    enum: [utmi, utmi_wide, ulpi, serial, hsic]
+ 
+   maximum-speed:
+    description:
+-- 
+2.29.2
+
