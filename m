@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E918F2CF889
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914FB2CF890
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgLEBKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 20:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLEBKL (ORCPT
+        id S1726598AbgLEBWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 20:22:15 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64866 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgLEBWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 20:10:11 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4836C0613D1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 17:09:30 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id h20so7358672qkk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 17:09:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ldmvOFahKnoMmHYAh2zrzpTIHwKJiY0W59JNYPPaME=;
-        b=b/G3GAmTQtMhBQhE2fmvDPJq8Wy6Z4UvIng6ZRzqolM4x5oZYPLJ2ndMIyakeEIGD6
-         h2BAiuNBkfeibeJiowPQwOHCDTDe0IsZO/sDvp7KSbxLnYFWkHhgsMNn649yd+Rs9/QU
-         LiA9ETbH9X47SjAdQe9gILcI3opUEZlqudZ5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ldmvOFahKnoMmHYAh2zrzpTIHwKJiY0W59JNYPPaME=;
-        b=PTo5ztkr/T/aSMRM26gfgxd9AcFlXkXmX7TEbzIOPlnNoUclkUy/Byt0HaqKkj8W3m
-         8r11Qz+Wgilp1MwDYqE/RMftgSymObKF/gX35Ls9E8EWAKQbXEYx8gR5r51EMm31uzoI
-         X6IyugEozyu6jlD8OawMmTd+1enUXlrp3KtAGFZ3xYvIVG16GYouQPAgRl1Rl+EI6N2G
-         Pw0GiaoFZ4X0AQrIFvxsASpmkULb9/xiSafM11/m/lqPR6yBg55BKlxfBeIN7KkF4Lnk
-         WjdG7jbovpEb+ftlU8k75Rp8tHyOkdMtnqxKco8PVZbkClXdCY+pDxf2WOtXfRkNh+nq
-         QLQw==
-X-Gm-Message-State: AOAM5339xIxaDDLXp6DeLyHN8w9UZaRVUtdXimx8MwpahYZqiHNddZ6H
-        HMOvDGdH//54SQRCVKTp1bEDzZXkLyA8J+ZcwvciBg==
-X-Google-Smtp-Source: ABdhPJx84SfjHWTrRKsdW0Ob5tt1TnuLlE7ykm0c6CxciJ2pJW1FV+nmxh8vH+y+AZrBklppkOu6WE5/WBPSftYSM+Y=
-X-Received: by 2002:a37:ad17:: with SMTP id f23mr12618844qkm.121.1607130570021;
- Fri, 04 Dec 2020 17:09:30 -0800 (PST)
+        Fri, 4 Dec 2020 20:22:15 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B50XVas000872;
+        Fri, 4 Dec 2020 20:20:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=xNnZ/ZkntbjED8A3awgVAApqgSCj5zVZ3LoHd65+kEA=;
+ b=dlx58ryIncl/0bicYIpwkY7DRs1Uzoy5EGOn1XQtEigrPlfG5vFICpnicIRhQPoYKNro
+ LFueyisOnXsD6g2KYYCyi5YLyzenpCHWkqYFej5SGYfPCLApriMoaSCcgesARkWdeGn9
+ WY8QckvLz+ZhZOgq0futsGVj5R4Y0MCN2dnnfaUENY25xTDEzObqC7yVrG6TYg2T3Y7l
+ bIkjyB0tL4AZDnXjS3zqrSUKkSx3xGdumZE82Z1VcXL7PkuakcVGLE1IFFrndbjIjiJn
+ eQau1ec/Wmci2x27P1IHKLWeWbzWffHRAQbd9ALpPkq8UTDEiTPSFhXCVVtFYzNOHzLn Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 357yjc914v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 20:20:40 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B50oe75061768;
+        Fri, 4 Dec 2020 20:20:40 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 357yjc914a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 20:20:39 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B51Fa1Q030816;
+        Sat, 5 Dec 2020 01:20:38 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02wdc.us.ibm.com with ESMTP id 356cbf44j4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 01:20:38 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B51Kb7C18547190
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Dec 2020 01:20:37 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A675BE054;
+        Sat,  5 Dec 2020 01:20:37 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4125BE04F;
+        Sat,  5 Dec 2020 01:20:27 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.203.141])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Sat,  5 Dec 2020 01:20:27 +0000 (GMT)
+References: <20201204195149.611-1-nramas@linux.microsoft.com>
+ <20201204195149.611-2-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v10 1/8] powerpc: fix compiler warnings and errors
+In-reply-to: <20201204195149.611-2-nramas@linux.microsoft.com>
+Date:   Fri, 04 Dec 2020 22:20:24 -0300
+Message-ID: <87mtytoxpj.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <20201106020305.767202-1-pmalani@chromium.org> <20201120073201.GA4120550@kuha.fi.intel.com>
-In-Reply-To: <20201120073201.GA4120550@kuha.fi.intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Fri, 4 Dec 2020 17:09:19 -0800
-Message-ID: <CACeCKadt_=4+Xc+8OojSg7isXgL2dhfnaUHCMKhtDe_HwPQwdQ@mail.gmail.com>
-Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Tolerate unrecognized mux flags
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Short <keithshort@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ mlxscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=776 lowpriorityscore=0 spamscore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012050000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping. If there are not other reservations, can we pick this
-patch? It doesn't depend on any other patch series.
 
-Thanks,
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-On Thu, Nov 19, 2020 at 11:32 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
+> The function prototype for the functions defined in ima.c for powerpc
+> are given in the header file ima.h. But this header file is not
+> included in ima.c resulting in compilation errors such as given below.
 >
-> On Thu, Nov 05, 2020 at 06:03:05PM -0800, Prashant Malani wrote:
-> > On occasion, the Chrome Embedded Controller (EC) can send a mux
-> > configuration which doesn't map to a particular data mode. For instance,
-> > dedicated Type C chargers, when connected, may cause only
-> > USB_PD_MUX_POLARITY_INVERTED to be set. This is a valid flag combination
-> > and should not lead to a driver abort.
-> >
-> > Modify the mux configuration handling to not return an error when an
-> > unrecognized mux flag combination is encountered. Concordantly, make the
-> > ensuing print a debug level print so as to not pollute the kernel logs.
-> >
-> > Cc: Keith Short <keithshort@chromium.org>
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> arch/powerpc/kexec/ima.c:56:5: error: no previous prototype for 'ima_get_kexec_buffer' [-Werror=missing-prototypes]
+>    56 | int ima_get_kexec_buffer(void **addr, size_t *size)
+>       |     ^~~~~~~~~~~~~~~~~~~~
 >
-> FWIW:
+> The function parameters for remove_ima_buffer() and
+> arch_ima_add_kexec_buffer() are not described in the function header
+> resulting in warnings such as given below.
 >
-> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> arch/powerpc/kexec/ima.c:111: warning: Function parameter or member 'fdt' not described in 'remove_ima_buffer'
 >
-> > ---
-> >  drivers/platform/chrome/cros_ec_typec.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> > index ce031a10eb1b..5b8db02ab84a 100644
-> > --- a/drivers/platform/chrome/cros_ec_typec.c
-> > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> > @@ -537,10 +537,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
-> >               port->state.mode = TYPEC_STATE_USB;
-> >               ret = typec_mux_set(port->mux, &port->state);
-> >       } else {
-> > -             dev_info(typec->dev,
-> > -                      "Unsupported mode requested, mux flags: %x\n",
-> > -                      mux_flags);
-> > -             ret = -ENOTSUPP;
-> > +             dev_dbg(typec->dev,
-> > +                     "Unrecognized mode requested, mux flags: %x\n",
-> > +                     mux_flags);
-> >       }
-> >
-> >       return ret;
-> > --
-> > 2.29.1.341.ge80a0c044ae-goog
+> Include ima.h in ima.c for powerpc. Describe the function parameters for
+> remove_ima_buffer() and arch_ima_add_kexec_buffer().
 >
-> thanks,
->
-> --
-> heikki
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
+These warnings showed up when using `make W=1`, and this patch fixes
+them. Thanks!
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
