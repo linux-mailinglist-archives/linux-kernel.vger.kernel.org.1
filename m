@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8302CFE4E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE862CFE4B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 20:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728058AbgLETWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 14:22:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
+        id S1727995AbgLETW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 14:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727858AbgLETWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 14:22:17 -0500
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-5 tag
+        id S1727973AbgLETWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 14:22:24 -0500
+Subject: Re: [GIT PULL] SMB3 Fixes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607196096;
-        bh=6eyBkcMPMeqlM83jdEBCrZVIfNyg0S8EsBP2WDZLCZs=;
+        s=k20201202; t=1607196104;
+        bh=KD51PfZl61UK/kr/fSJ/Xa5owIIMr0P200dmV6RACsY=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=G4+DE28OPk3cylqUnozlGeypcjMv3H97I+cm1FMGOo3mV5/HioKTbkZTfObtjpBAP
-         5ux/Iz8ZA6E7tLDuL5Tnk/+GJ/DCJOx7pZXoLofTrdEo7Z7rvCE2sCaGyATmHc7JxN
-         EFsNozCWNSUDde4/Z+txgMtv4VIh/Sl22ht7ri3rQiIg5i8no6t0OvVwEvr0cG5AgY
-         mFcuqsCBsz3z1wutIcCJs0sDCyEhr8VP8YXDDxd//dW68bZP3x70yHlWQHYSvMUzin
-         y+v+5czEWEp0qir4N5o/SFVbXCyViMILrS6Pa+ieuC0G7rfBJdjbgWRH7abtW5ml3H
-         nSb9QRdmp6fNw==
+        b=f4G9mPepP2bn6vGIRHMqxQkuG5mH37wp6H2DyIzaVvNwh7Gm/DThXozOC1lF+FzLz
+         QcLBG0UHcgcl5icC3xdpowndJZOgwI0ORF61A9pxS3sQye+KopMwSEUyOe/xEJjZXl
+         It98J7FDZvKri/e0bASmkI39anW5XgSxNWbr+2oIbIIZtCxqetBffQ0HaYvB5XsI81
+         uLKL4aoNDZbJbTpit3to/UcOYQkFz0bAkdfbApar3B//iozzu6EHKq1QXLv5x/wpHv
+         8ysK9TYvq7GH2ToiSCHLI+6iZueB1UlejpSug3TUzoyX44e/18b3P9+OA9HBU060E4
+         kzr+AAPBLEbnA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87im9gtpge.fsf@mpe.ellerman.id.au>
-References: <87im9gtpge.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <87im9gtpge.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-5
-X-PR-Tracked-Commit-Id: a1ee28117077c3bf24e5ab6324c835eaab629c45
+In-Reply-To: <CAH2r5mso+e44kRcGVf4aQ6qc5iwLp4gr6AsQGpLA06phqRA+ew@mail.gmail.com>
+References: <CAH2r5mso+e44kRcGVf4aQ6qc5iwLp4gr6AsQGpLA06phqRA+ew@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mso+e44kRcGVf4aQ6qc5iwLp4gr6AsQGpLA06phqRA+ew@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.10-rc6-smb3-fixes-part2
+X-PR-Tracked-Commit-Id: ea64370bcae126a88cd26a16f1abcc23ab2b9a55
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 32f741b02f1a84dd15cdaf74ea3c8d724f812318
-Message-Id: <160719609666.18711.2227466213357171756.pr-tracker-bot@kernel.org>
-Date:   Sat, 05 Dec 2020 19:21:36 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
+X-PR-Merge-Commit-Id: d4e904198c5b46c140fdd04492df6ec31f1f03a5
+Message-Id: <160719610403.18711.6860857102463324084.pr-tracker-bot@kernel.org>
+Date:   Sat, 05 Dec 2020 19:21:44 +0000
+To:     Steve French <smfrench@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        srikar@linux.vnet.ibm.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, mahesh@linux.ibm.com,
-        npiggin@gmail.com, groug@kaod.org, linuxppc-dev@lists.ozlabs.org
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 05 Dec 2020 23:19:45 +1100:
+The pull request you sent on Fri, 4 Dec 2020 19:23:07 -0600:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-5
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.10-rc6-smb3-fixes-part2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/32f741b02f1a84dd15cdaf74ea3c8d724f812318
+https://git.kernel.org/torvalds/c/d4e904198c5b46c140fdd04492df6ec31f1f03a5
 
 Thank you!
 
