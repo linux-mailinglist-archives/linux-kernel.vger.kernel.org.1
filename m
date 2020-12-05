@@ -2,150 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8D62CFBE3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121EC2CFBF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgLEQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 11:06:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727288AbgLEP3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 10:29:14 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A642C09425C
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 05:03:43 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id s21so5734307pfu.13
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 05:03:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
-        b=neYDpg4r2y9kA8bSIzVIJ2XJBnhDklsaXMPeNsZUDajIujwhGMeEFhY+XngVY5qv8u
-         IYh5151ZcZtLBQsFRPs2SNjyK1NhJq+NVy4gswyaAdkA94CsNPNg/atj6y+aNTBSlYD6
-         gNQrw6rGfg8uRBsZgcdDNhrcRCWvx5RjKJVD3sAabpSf3vnHCWmmGbHI3pywzLcmNDOZ
-         sP2YEZeBeHFVXYlVwSw1cKnhg4GAgCFJVxmzFgOOwCzgTMcu7CxRdpdjfhnn+IkHGoqI
-         P/Z7nXl9EfZYolJ9/kaAWPLl8ZUvmXv3zGIY+9XoTHJKnfUatUnrDe/8gBSjCCnvGYaM
-         MxqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
-        b=IFLuK5UjKHHM1t0e94Fo/1QPvV+rDkqyPgPjYx1wwdH3MiG6EEks1UD96pAxnRzVHN
-         6bkvCjXUV/0GdExCXezQWWocB6Dnnu7VmLYnvfViX5B46QxzInaKEpr//iyP/mD55IYw
-         D90rjR0YbeZB3Z+mm4bhnkoKWVSNjiUso5+j5agSJN5WWg317ktxg4A2/JKFIQkvqH2A
-         7KmW5KkEBe5I5nAtUDNe3ATEQCDpUR7NR5y5ryYNBy6l1moCnEQPOGVCKCs3iSwFUTLP
-         axfi1BWZghzW8kUcr92jkJ6RajLmAuFTDLIdMcv/fDxoKjvXHp2tXiQJfSOFbuir7H6y
-         YSuA==
-X-Gm-Message-State: AOAM530Rj2mailRHR59aUmb4xJF+Ryj9R4NSJErJTkDcVKKOXwWPjhcF
-        UJF+EtY7NrtfJ+/SNNbEbnhBSw==
-X-Google-Smtp-Source: ABdhPJwqvYfk7WrXCeek5zIgmaL6JHMd+SCgDfry5zzeu3DJFq3BmX1JwmtE9dLTcxi/BJFMeSUD5A==
-X-Received: by 2002:a62:1b06:0:b029:19d:d05d:f67a with SMTP id b6-20020a621b060000b029019dd05df67amr2471401pfb.78.1607173423110;
-        Sat, 05 Dec 2020 05:03:43 -0800 (PST)
-Received: from localhost.bytedance.net ([103.136.220.120])
-        by smtp.gmail.com with ESMTPSA id kb12sm5047790pjb.2.2020.12.05.05.03.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 05 Dec 2020 05:03:42 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 7/9] mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
-Date:   Sat,  5 Dec 2020 21:02:22 +0800
-Message-Id: <20201205130224.81607-8-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201205130224.81607-1-songmuchun@bytedance.com>
-References: <20201205130224.81607-1-songmuchun@bytedance.com>
+        id S1727185AbgLEQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 11:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbgLEOy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 09:54:28 -0500
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-samsung-soc@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: Re: [PATCH 1/2] soc: samsung: exynos-chipid: order list of SoCs by name
+Date:   Sat,  5 Dec 2020 15:12:48 +0100
+Message-Id: <160717754142.10331.18160954059931033105.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201202195955.128633-1-krzk@kernel.org>
+References: <20201202195955.128633-1-krzk@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert NR_SHMEM_PMDMAPPED account to pages.
+On Wed, 2 Dec 2020 21:59:54 +0200, Krzysztof Kozlowski wrote:
+> Bring some order to the list of SoCs.  No functional change.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- drivers/base/node.c | 3 +--
- fs/proc/meminfo.c   | 2 +-
- mm/page_alloc.c     | 3 +--
- mm/rmap.c           | 6 ++++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Applied, thanks!
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index a64f9c5484a0..fe90888f90a8 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -463,8 +463,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     ,
- 			     nid, K(node_page_state(pgdat, NR_ANON_THPS)),
- 			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS)),
--			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
--				    HPAGE_PMD_NR),
-+			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
- 			     nid, K(node_page_state(pgdat, NR_FILE_THPS)),
- 			     nid, K(node_page_state(pgdat, NR_FILE_PMDMAPPED) *
- 				    HPAGE_PMD_NR)
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 574779b6e48c..b2bff8359497 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -133,7 +133,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "ShmemHugePages: ",
- 		    global_node_page_state(NR_SHMEM_THPS));
- 	show_val_kb(m, "ShmemPmdMapped: ",
--		    global_node_page_state(NR_SHMEM_PMDMAPPED) * HPAGE_PMD_NR);
-+		    global_node_page_state(NR_SHMEM_PMDMAPPED));
- 	show_val_kb(m, "FileHugePages:  ",
- 		    global_node_page_state(NR_FILE_THPS));
- 	show_val_kb(m, "FilePmdMapped:  ",
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 8fb9f3d38b67..ddaa1dcd6e38 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5568,8 +5568,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- 			K(node_page_state(pgdat, NR_SHMEM)),
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 			K(node_page_state(pgdat, NR_SHMEM_THPS)),
--			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
--					* HPAGE_PMD_NR),
-+			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
- 			K(node_page_state(pgdat, NR_ANON_THPS)),
- #endif
- 			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
-diff --git a/mm/rmap.c b/mm/rmap.c
-index f59e92e26b61..3089ad6bf468 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1219,7 +1219,8 @@ void page_add_file_rmap(struct page *page, bool compound)
- 		if (!atomic_inc_and_test(compound_mapcount_ptr(page)))
- 			goto out;
- 		if (PageSwapBacked(page))
--			__inc_node_page_state(page, NR_SHMEM_PMDMAPPED);
-+			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
-+						HPAGE_PMD_NR);
- 		else
- 			__inc_node_page_state(page, NR_FILE_PMDMAPPED);
- 	} else {
-@@ -1260,7 +1261,8 @@ static void page_remove_file_rmap(struct page *page, bool compound)
- 		if (!atomic_add_negative(-1, compound_mapcount_ptr(page)))
- 			return;
- 		if (PageSwapBacked(page))
--			__dec_node_page_state(page, NR_SHMEM_PMDMAPPED);
-+			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
-+						-HPAGE_PMD_NR);
- 		else
- 			__dec_node_page_state(page, NR_FILE_PMDMAPPED);
- 	} else {
+[1/2] soc: samsung: exynos-chipid: order list of SoCs by name
+[2/2] soc: samsung: exynos-chipid: initialize later - with arch_initcall
+      commit: 3b4c362e5ef102ca2d70d33f4e8cf0780053a7db
+
+Best regards,
 -- 
-2.11.0
-
+Krzysztof Kozlowski <krzk@kernel.org>
