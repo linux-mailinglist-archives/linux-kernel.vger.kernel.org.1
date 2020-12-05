@@ -2,154 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441812CFC58
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EB22CFC6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbgLESEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:04:16 -0500
-Received: from mail-eopbgr140139.outbound.protection.outlook.com ([40.107.14.139]:16707
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727832AbgLERqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:46:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FztR2/l+RBYyMjjhgqQFtjAeZk2tVkPa0kwqwfEUrBm6/YqlxrUSsWjlEjgYNJEhnfVcJQCAqNvcG2jw4Yd95XmA2IICDaDXADvhkJPV4yv7uXEcs2ycf0ERqXFlWvWxuecoT2i0KEe++CV3njdkyWA0rMsFBz29J5npsZmCSQ/pGhX+Ht2YmlTtnC2tsxsYz8ZZZILZZuFIYXOAa4cH19yGEiNvlkEO/QxhYlwbf+ItvF7o+/2HRlWnmkK5+0SGFw6XwWum6BxbOGKl15WrSQxumLorXijQGJL12ixM2FT5GEU3s2d6QVJzKOI8nQKnnBjmQ6ckXCZ0++NpVZgNBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RZYWq8Fm6YrOQ6IIZfqfOrzJRI88MfnjtpZWKWOzuX8=;
- b=IUjsq+W5um3VUgVwpLquA1GDUsK5n8eY6wF/Z02eP8O8W35Na/DYs2HK0k49x4h8lNclp/bIPJpW6AhW/h33tNrYSo/uwRuNzAhjmUKTMto++USx7vgOvE2ZmjhQBdw7Pwfq0lBO4ORtbnBezCf9eimms9PfXNvftxDjEQHDdfZSRI6ZOn7+5JCVMYmo5IJL5ghZ898gTQD1bVUFTzLbfEkHd4PGJvLq8YB1kJ+fFzNxLrt4cnnhdqciTREjVvsKBQ53OYs57HDvQhryfqUGkvwJqUZYA+9XYAnWTbx11Furr/ydjpVE/6qPsTu8+yva9heokqnZ6lqO3GzdUNCZsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RZYWq8Fm6YrOQ6IIZfqfOrzJRI88MfnjtpZWKWOzuX8=;
- b=iYyelW2mqZhNOWkUN6dZamK2UjEGQ6FRG6VrKq8dPJs3xYmLanxGFKMK94HWb8tkKrKaG0OdaAEnoMCkh4B+qJs4ne/U8Y+laMpDmRi75UScYNdpLx0ElwBXUrbt1ZVQcNFHu+3WFA+bZk0gKAIj+IZXEKjDZ7LykpdjAd0lSX4=
-Authentication-Results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM8PR10MB4084.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e3::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Sat, 5 Dec
- 2020 13:39:55 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
- 13:39:55 +0000
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: dsa: print the MTU value that could not be set
-Date:   Sat,  5 Dec 2020 14:39:44 +0100
-Message-Id: <20201205133944.10182-1-rasmus.villemoes@prevas.dk>
-X-Mailer: git-send-email 2.23.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: BE0P281CA0022.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:14::9) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S1730413AbgLESUB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 5 Dec 2020 13:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbgLESSU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:18:20 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C13FC0613D1;
+        Sat,  5 Dec 2020 10:11:09 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id y19so106117lfa.13;
+        Sat, 05 Dec 2020 10:11:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uKWCtmFWH2D6PgdPDqZ6SwqxYHLfJimrQ5ADIJZYjvM=;
+        b=bXFp09I66lb1RWbMF8/53Taud/7q2BNevsH1z5RzuwlvxP10zIPE3Wyh6joGUrQ5Vu
+         b9wKPDkfrzRe9iw6wtXxw4Bfms40wohZHEHfoDY3SeqnhlhPuperT/DrKyfJ05arZy0R
+         FKQowNsx/wVBNXpUqjsHFssUyFPDZdSdYoPfI6xRFQLkqlJB/PkYsehdRg/D2DdzThR9
+         I57DXzIOgkeBg+00dbb6jEWD17b5K0cNQGOmQacTylocJvMELGWvW86ZyZDv1IS9jg3l
+         lPnpkG1HS49RcR5wRBGG279jsCr79/ceSGuOiphGjQuDJeLkNWfijgUp56BVDf0rmXd5
+         OqtQ==
+X-Gm-Message-State: AOAM530thbLaG2xTk5CGHdJHKeZ1rgNnr7UXUfo5eU0MF15R1pDLemKx
+        Dv3i0eEAhR1qxoLuECp03gF3c6AGQIFZKA==
+X-Google-Smtp-Source: ABdhPJxIyKieWZJ9VxW5tLvdRrottnwtiJyqsBd6MJRYZ1ZeKbA2NYxoVKNProO+IDV8ruhVa4XFdw==
+X-Received: by 2002:a17:906:4a47:: with SMTP id a7mr11831799ejv.345.1607176366602;
+        Sat, 05 Dec 2020 05:52:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l19sm5584565edq.14.2020.12.05.05.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 05:52:44 -0800 (PST)
+Date:   Sat, 5 Dec 2020 14:52:42 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v10 17/19] ARM: tegra: Add EMC OPP properties to Tegra20
+ device-trees
+Message-ID: <20201205135242.GA1978@kozik-lap>
+References: <20201123002723.28463-1-digetx@gmail.com>
+ <20201123002723.28463-18-digetx@gmail.com>
+ <60657f5e-bd30-094e-f8df-6ba69e0d6a3e@nvidia.com>
+ <1ed05baf-3a01-3a2b-cd79-98b356c846cf@gmail.com>
+ <X8pbz2FsuJ5XGXCi@ulmo>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from prevas-ravi.prevas.se (5.186.115.188) by BE0P281CA0022.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:14::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Sat, 5 Dec 2020 13:39:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 50d42de4-35f4-431a-b42b-08d899234061
-X-MS-TrafficTypeDiagnostic: AM8PR10MB4084:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR10MB40846C411DF5053A7A6E449D93F00@AM8PR10MB4084.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ddSWhzp8kkPvxGLk+U/6TtwK+K3Y0qjmvQy3cmVO5drPADnWz9xNdO0Ck2QwwH4A89n3eCE2wDPbr1MjCyxn0EInhmt2UQRiFG7EraXiJgTBM7p4/+s0j++Dzcec44oFiR8LfAC3Gq16jTdSQ/RE1EbKDEKfNkTk3W3y7UVHmaYHrETqsaIjBA4HalG5nrDZKMZAdQbdMc3fZ5AcYW8otrrMJDqqFFzre8KZpv5OCI119bKesaPHsHRe5Sz5TeS25RocJt+kEGHu2Kx7J/IQNYmC5lKM1JSgn+0+v7GSqGNBlhVAC7EvfIGbdL8nhJyr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(136003)(346002)(376002)(366004)(396003)(16526019)(52116002)(478600001)(8976002)(66946007)(86362001)(8936002)(6486002)(8676002)(2906002)(186003)(316002)(6666004)(66556008)(6506007)(44832011)(26005)(4326008)(36756003)(66476007)(83380400001)(110136005)(1076003)(5660300002)(956004)(2616005)(6512007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hKlphJTWs00hYqrqGPwv/x53q60hRYrpEv0fDXdBIJq8GdV8NiopSgShVW48?=
- =?us-ascii?Q?UN9E8sbg2QSR9KFPqzJGoL31upj9PPMbOyvDZ7w9KCBLJsHfxVEHdtCQhgiU?=
- =?us-ascii?Q?+oRWfB2uG7Ay1Y8iIJFVJyMi1RtuAycpmggDhvdnEiYvXiYtCusTtI5Ddu4q?=
- =?us-ascii?Q?zGTUDH/CJQpYzj0c6XP9vMuJfkHj8pa8529bMXwdxvZmJ7qZJd46rQnOKhuL?=
- =?us-ascii?Q?uAZI1q+LXKFXEga+fJO4t9fAI+lmHoz1C1mqyyi7UNLzXIwCOOd1B3CxhJcQ?=
- =?us-ascii?Q?fLYzqg4dbj3NKrtm1laacAiDJgby3L2ZzwjoWXZhvzo36QbFyhXiUwrJKQem?=
- =?us-ascii?Q?I+wBQK60DhyLPFKvKL4Yfggn70sM6qOWjEvVdyrAAgjOKFZTQrXQAbY4U0XQ?=
- =?us-ascii?Q?e7KBMcQYdS7598gv29ZPrLbxcZjbYX77dOupfSLMGdlOxlUUkgCPLZWF3MPw?=
- =?us-ascii?Q?neNAnNWXrXNPgSFHUOcLUM03oS6K/F/bGIRdvaO9JKJ8AzumjDvVvUfQaAcp?=
- =?us-ascii?Q?iK79k0uvqv/h3CkMs0G/8dqqCRwQwD4TrGwY9l21B3lW2lmFz+F9h5747lEV?=
- =?us-ascii?Q?fuyDfPcO26DBvgxfLvjKdwQac4j6a67QiX1N8Z3o729kYGlzNShqKLrUCLhZ?=
- =?us-ascii?Q?Jr62xk9ist/P+Anc1TAGOnO7cuiNki3ikzGMqr70glpDzXCTx2y3BF+x0EFd?=
- =?us-ascii?Q?i5HkxuZqy65WU3W02yOPTyJwN8b7JOY1Jz/19q8tCo+GCNDsKdc2W5MYWobE?=
- =?us-ascii?Q?+voNF/Kzx0Ujbr6afK4bZ1n3VVQ+mpopQj6KXci5JCyzrfN70BdAJgp/SVs1?=
- =?us-ascii?Q?hD7oLVV5Q6+IiNHq0LarJRglj0M0f03PRlB2XwHq3cU8nVC+d+38EP/c+Uth?=
- =?us-ascii?Q?B7+zVE9W6Oyc2YJXZO5Iz8GWHlh9UrmotQsYipDFjToJ/FMNoqCJs27wEQPB?=
- =?us-ascii?Q?V+HxjK7eYyCFxLjYDlQTnq2FS92w+WfywAS3BDS9oEY6O94kkYNec1/Wxw49?=
- =?us-ascii?Q?eppI?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50d42de4-35f4-431a-b42b-08d899234061
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2020 13:39:55.7374
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E0pq3qkQ7IqRkMjGd4kko6DsOmaDzuHIGM2h3fGdWFirWfghDPzWcIIe7q7iZ768Lp3gerxHOZtdBV8XOlFtIQGdIYaSfGR/uGjSyG8u/u0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4084
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <X8pbz2FsuJ5XGXCi@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These warnings become somewhat more informative when they include the
-MTU value that could not be set and not just the errno.
+On Fri, Dec 04, 2020 at 04:54:55PM +0100, Thierry Reding wrote:
+> On Tue, Dec 01, 2020 at 01:57:44AM +0300, Dmitry Osipenko wrote:
+> > 01.12.2020 00:17, Jon Hunter пишет:
+> > > Hi Dmitry,
+> > > 
+> > > On 23/11/2020 00:27, Dmitry Osipenko wrote:
+> > >> Add EMC OPP DVFS tables and update board device-trees by removing
+> > >> unsupported OPPs.
+> > >>
+> > >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > This change is generating the following warning on Tegra20 Ventana
+> > > and prevents the EMC from probing ...
+> > > 
+> > > [    2.485711] tegra20-emc 7000f400.memory-controller: device-tree doesn't have memory timings
+> > > [    2.499386] tegra20-emc 7000f400.memory-controller: 32bit DRAM bus
+> > > [    2.505810] ------------[ cut here ]------------
+> > > [    2.510511] WARNING: CPU: 0 PID: 1 at /local/workdir/tegra/mlt-linux_next/kernel/drivers/opp/of.c:875 _of_add_opp_table_v2+0x598/0x61c
+> > > [    2.529746] Modules linked in:
+> > > [    2.540140] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc5-next-20201130 #1
+> > > [    2.554606] Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+> > > [    2.560892] [<c011136c>] (unwind_backtrace) from [<c010bb60>] (show_stack+0x10/0x14)
+> > > [    2.568640] [<c010bb60>] (show_stack) from [<c0bcee54>] (dump_stack+0xc8/0xdc)
+> > > [    2.575866] [<c0bcee54>] (dump_stack) from [<c01235dc>] (__warn+0x104/0x108)
+> > > [    2.582912] [<c01235dc>] (__warn) from [<c0123690>] (warn_slowpath_fmt+0xb0/0xb8)
+> > > [    2.590397] [<c0123690>] (warn_slowpath_fmt) from [<c0825ad0>] (_of_add_opp_table_v2+0x598/0x61c)
+> > > [    2.599269] [<c0825ad0>] (_of_add_opp_table_v2) from [<c0825b90>] (dev_pm_opp_of_add_table+0x3c/0x1a0)
+> > > [    2.608582] [<c0825b90>] (dev_pm_opp_of_add_table) from [<c087b774>] (tegra_emc_probe+0x478/0x940)
+> > > [    2.617548] [<c087b774>] (tegra_emc_probe) from [<c0654398>] (platform_drv_probe+0x48/0x98)
+> > > [    2.625899] [<c0654398>] (platform_drv_probe) from [<c0652238>] (really_probe+0x218/0x3b8)
+> > > [    2.634162] [<c0652238>] (really_probe) from [<c0652540>] (driver_probe_device+0x5c/0xb4)
+> > > [    2.642338] [<c0652540>] (driver_probe_device) from [<c0652740>] (device_driver_attach+0x58/0x60)
+> > > [    2.651208] [<c0652740>] (device_driver_attach) from [<c06527c8>] (__driver_attach+0x80/0xbc)
+> > > [    2.659730] [<c06527c8>] (__driver_attach) from [<c0650610>] (bus_for_each_dev+0x74/0xb4)
+> > > [    2.667905] [<c0650610>] (bus_for_each_dev) from [<c06515f8>] (bus_add_driver+0x164/0x1e8)
+> > > [    2.676168] [<c06515f8>] (bus_add_driver) from [<c06532a8>] (driver_register+0x7c/0x114)
+> > > [    2.684259] [<c06532a8>] (driver_register) from [<c0102208>] (do_one_initcall+0x54/0x2b0)
+> > > [    2.692441] [<c0102208>] (do_one_initcall) from [<c10010cc>] (kernel_init_freeable+0x1a4/0x1f4)
+> > > [    2.701145] [<c10010cc>] (kernel_init_freeable) from [<c0bd4510>] (kernel_init+0x8/0x118)
+> > > [    2.709321] [<c0bd4510>] (kernel_init) from [<c01001b0>] (ret_from_fork+0x14/0x24)
+> > > [    2.716885] Exception stack(0xc1501fb0 to 0xc1501ff8)
+> > > [    2.721933] 1fa0:                                     00000000 00000000 00000000 00000000
+> > > [    2.730106] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> > > [    2.738278] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> > > [    2.751940] ---[ end trace 61e3b76deca27ef3 ]---
+> > > 
+> > > 
+> > > Cheers
+> > > Jon
+> > > 
+> > 
+> > Hello Jon,
+> > 
+> > That is harmless and expected to happen because the patch "memory:
+> > tegra20: Support hardware versioning and clean up OPP table
+> > initialization" isn't applied yet, while Thierry already applied the DT
+> > patches from this v10.
+> 
+> Hmm... that's new. Since when are device tree additions expected to
+> cause these kinds of splats?
 
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
----
- net/dsa/master.c | 7 ++++---
- net/dsa/slave.c  | 4 ++--
- 2 files changed, 6 insertions(+), 5 deletions(-)
+It looks rather as inaccurate message, but except the message itself,
+no functionality was lost.
 
-diff --git a/net/dsa/master.c b/net/dsa/master.c
-index c91de041a91d..5a0f6fec4271 100644
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -308,14 +308,15 @@ static struct lock_class_key dsa_master_addr_list_lock_key;
- 
- int dsa_master_setup(struct net_device *dev, struct dsa_port *cpu_dp)
- {
-+	int mtu = ETH_DATA_LEN + cpu_dp->tag_ops->overhead;
- 	int ret;
- 
- 	rtnl_lock();
--	ret = dev_set_mtu(dev, ETH_DATA_LEN + cpu_dp->tag_ops->overhead);
-+	ret = dev_set_mtu(dev, mtu);
- 	rtnl_unlock();
- 	if (ret)
--		netdev_warn(dev, "error %d setting MTU to include DSA overhead\n",
--			    ret);
-+		netdev_warn(dev, "error %d setting MTU to %d to include DSA overhead\n",
-+			    ret, mtu);
- 
- 	/* If we use a tagging format that doesn't have an ethertype
- 	 * field, make sure that all packets from this point on get
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 3bc5ca40c9fb..b4a813b8a828 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1820,8 +1820,8 @@ int dsa_slave_create(struct dsa_port *port)
- 	ret = dsa_slave_change_mtu(slave_dev, ETH_DATA_LEN);
- 	rtnl_unlock();
- 	if (ret && ret != -EOPNOTSUPP)
--		dev_warn(ds->dev, "nonfatal error %d setting MTU on port %d\n",
--			 ret, port->index);
-+		dev_warn(ds->dev, "nonfatal error %d setting MTU to %d on port %d\n",
-+			 ret, ETH_DATA_LEN, port->index);
- 
- 	netif_carrier_off(slave_dev);
- 
--- 
-2.23.0
+> Anyway, I did apply these because I had seen at least some of the memory
+> controller driver patches appear in linux-next and hence had assumed
+> that the whole series had gone in, not realizing there was anything left
+> to do.
+> 
+> Krzysztof, what's your schedule for the memory controller tree? My
+> recollection is that this will feed into ARM SoC, so if the -rc6 dead-
+> line applies like it does for platforms, then I may need to revert the
+> DT patch that causes this so that we don't have to drag this along
+> through all of the release cycle. If there's still time for you to send
+> that PR, perhaps we can get the remainder of the Tegra interconnect
+> series merged for v5.11 as well?
+
+I was waiting for last acks from Rob and you and actually planned to
+merge everything this week (weekend at the latest). Indeed it slightly
+slipped away... the v11 was reposted late.
+
+It could still make till v5.11, if I send the PR now (still around 3
+weeks before merge window).
+
+However I saw now your comments for the patch 4/10 from v11. I'll take
+patches 1-3 for now.
+
+Best regards,
+Krzysztof
 
