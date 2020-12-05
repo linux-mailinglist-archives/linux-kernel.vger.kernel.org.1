@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC4D2CFB13
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17ED82CFB16
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729433AbgLEK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:58:37 -0500
-Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:44106 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728406AbgLEKxv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:53:51 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6C27B18224D86;
-        Sat,  5 Dec 2020 10:51:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:4250:4321:5007:6691:6742:6743:10004:10400:10848:10967:11232:11658:11914:12297:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:14777:14913:21080:21433:21451:21627:21819:30022:30029:30054:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: edge87_1a0a959273cc
-X-Filterd-Recvd-Size: 2215
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  5 Dec 2020 10:51:44 +0000 (UTC)
-Message-ID: <7779f4de8d70653fe0d92fd4821c32a71b6df436.camel@perches.com>
-Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
-        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
-        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
-        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
-        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Date:   Sat, 05 Dec 2020 02:51:43 -0800
-In-Reply-To: <20201204160924.2e170514@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-References: <20201202124959.29209-1-info@metux.net>
-         <20201204160924.2e170514@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1729471AbgLELCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 06:02:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729325AbgLEKzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 05:55:43 -0500
+Subject: Re: [PATCHv2] clocksource: dw_apb_timer_of: add error handling if no
+ clock available
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607165702;
+        bh=/B6Ul/TD0pyA/kagpFHQO4cwl5phYr6g0Xftl3a8dJY=;
+        h=To:Cc:References:From:Date:In-Reply-To:From;
+        b=QMqT5EtYeizyPOZF3woeqSuqpbUvdszeQONJF3NOZ5xhHblJj8GtHpjgAtSjsHSDO
+         DqXzQjMY0MP6wAaOIykXkLl4TEuawlyR4rEJFeSb2TiCh8fevuxzn75yaVrV1KfWjU
+         hqkzMIywVD9GwRh+8TgfsBMT7MeJa3ry8Ypz3hfzWpibvxZKGjLTKIa6d0uLZ6eFEK
+         Tua1esjAdbziguQXrBaXW0Ao2GQdjX9j47vWj4nnCwCL7wJVq0QQ1XoRfzeyktaTKP
+         XzPefyBZsQ14EMZEWzJDz1ivS1Nf8MG028TlETUEvZKP6f9whbeo2W5VsKl0sYWBrf
+         /zpp9hhMZF87g==
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Jisheng.Zhang@synaptics.com, arnd@arndb.de
+References: <20201204153643.129897-1-dinguyen@kernel.org>
+ <b24fb09b-62ab-4459-8154-c9bccd3e48fc@linaro.org>
+ <5cd3bdf7-e514-267c-2243-d6f98f1b328a@kernel.org>
+ <47497181-2776-5000-c514-7612e1a05f2c@linaro.org>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+Message-ID: <1caca7e5-1c2b-3333-53ea-73b980620b36@kernel.org>
+Date:   Sat, 5 Dec 2020 04:55:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <47497181-2776-5000-c514-7612e1a05f2c@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 16:09 -0800, Jakub Kicinski wrote:
-> On Wed,  2 Dec 2020 13:49:53 +0100 Enrico Weigelt, metux IT consult
-> wrote:
-> > Remove MODULE_VERSION(), as it isn't needed at all: the only version
-> > making sense is the kernel version.
-> > 
-> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+Hi Daniel,
+
+On 12/5/20 2:50 AM, Daniel Lezcano wrote:
+> On 04/12/2020 23:39, Dinh Nguyen wrote:
+>>
+>>
+>> On 12/4/20 2:00 PM, Daniel Lezcano wrote:
+>>> On 04/12/2020 16:36, Dinh Nguyen wrote:
+>>>> commit ("b0fc70ce1f02 arm64: berlin: Select DW_APB_TIMER_OF") added the
+>>>> support for the dw_apb_timer into the arm64 defconfig. However, for some
+>>>> platforms like the Intel Stratix10 and Agilex, the clock manager doesn't
+>>>> get loaded until after the timer driver get loaded. Thus, the driver
+>>>> hits
+>>>> the panic "No clock nor clock-frequency property for" because it cannot
+>>>> properly get the clock.
+>>>>
+>>>> This patch adds the error handling needed for the timer driver so that
+>>>> the kernel can continue booting instead of just hitting the panic.
+>>>>
+>>>> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+>>>
+>>> Did you have time to test the different combinations ?
+>>
+>> I did test both versions and did not see any difference between the two.
+>> On both versions, the kernel was able to continue to boot after trying
+>> to probe the timer driver.
 > 
-> Thanks for the patches. Please drop the "metux IT consult" from the
-> addresses. The from space is supposed to be for your name.
+> Great, thanks!
+> 
 
-If you _really_ want this superfluous 'metux IT consult' content in your
-signature, and I don't think you should, use parentheses around it.
+I forgot to test this on ARM 32-bit system that actually uses one of 
+these timers as a clocksource. The v2 patch would fail. The return of 
+PTR_ERR(timer_clk) needs an IS_ERR(timer_clk) check.
 
-Enrico Weigelt (metux IT consult) <info@metux.net>
+I have sent a v3.
 
-Using a comma makes copy/paste into an email client think it's two addresses.
+Sorry about that.
 
-
-
+Dinh
