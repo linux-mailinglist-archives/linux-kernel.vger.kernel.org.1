@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A762CF969
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:01:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B720F2CF96C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgLEFAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S1726319AbgLEFCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLEFAg (ORCPT
+        with ESMTP id S1725730AbgLEFCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:00:36 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B519C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 20:59:56 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 11so7394139oty.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 20:59:56 -0800 (PST)
+        Sat, 5 Dec 2020 00:02:45 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A86DC0613D1;
+        Fri,  4 Dec 2020 21:02:05 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id b5so499652pjl.0;
+        Fri, 04 Dec 2020 21:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wSgUGUXnFDKhHhb8WtgZMF/PzYufjbjvE9QiZ+cHEwU=;
-        b=wNe+86mm6puGFc4cLUdEco/Xg9dylu4KR3rHFgk/5vH/fN/B2WDFuN1yI8Q0gzhA+m
-         EXDCccbDopJF8zmUciXtRO9A97qjI2q+D/TpwlGtQAfR1tAOvT62SkT+q9GbPT7FmOIt
-         BUjHulnXCu6Hsia4155jBq8j9VeaNDQzjNGyb4tlrBUEZtW6fNoY2H8A+tJ+XrY/lrBz
-         rkyfEi4ZG+1s2GDI1k2UvvS9mKJAPBB8O9EcQX0etgEGCvVPlFkHKqhGlOlMo+72TZAI
-         4HTkHETvC7CZowht4H9tcc5fgWajbcU8VuvDT84H1L9choH2nqZfT7WXGmsuvj0O6Phx
-         kYPg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=YCKTyFzGWQzeG8F5871ZshFHNgeYjCwjk1SIyTgC11I=;
+        b=eq16rucFzScxn8GzYn77vYCBpTykfUf+O4hYsPPoKBsUq5nFP6LmiN0yTE8HJFyEEU
+         yiItJGJaGDA6eaHyTUuu4t9ERnZzR+2cgDfqchbrvCi7urRz2zT5kM5M8aEsfoVDkg35
+         fuqL4mH7gjXpZpvNUpg3FzSXe8Ba/ootIGqcQNkQSWRqmSUpAknFF7TqB+TOum8hBOZK
+         sOk3JfqsjIRZDn13E3DHOa/gBBvDR6J1cQDm2oJt0vsHbI3b2ur9zL78jb4snJP5ow4v
+         qIeqLAE6nzsaVrQ1QHQ1Jb1UkR43/9AgLA4Vfm+YAEK4WXr0d0855FqpABkeREZRtLYh
+         rzxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wSgUGUXnFDKhHhb8WtgZMF/PzYufjbjvE9QiZ+cHEwU=;
-        b=tMIVY18ToY0bny4GPkC7Opu9oJv4cI4v81WnEP2mgismd4UrhmXJ1MLGedInEv3QHR
-         LBTmXX5zY+7R3xG/bgUz3MEy5ZRs6S+IxoLZvhoxwAS5Bf31i62QOcJE4hCJsAbNbwRi
-         2+o3LyMVFvARgqNHzDvLeDaaDLCWBos+CH3Q6tPBkiEAFRF8fSHJRNPLMujbJZ99f5TP
-         bbRscIXOm8/fzTfCEYprUsusok4M+6iG/uFESnywDFHJ2U+zBYYSB8M8kArpF6gNKN78
-         Bq4NRdb441IFrs0AxdhoxcUUCKK4YdfzUF8s8SB7v9ItlLeYfSKpcZo2rIRyY4Y6yIAl
-         e++A==
-X-Gm-Message-State: AOAM530NpKQdXHHxV6NiIIFERvtEAX+LpUWLwUIbTauX2NqnHJMEbcyt
-        PT/QUMRUhxZltLbfjpSHEanQhA==
-X-Google-Smtp-Source: ABdhPJwstogV1jeXnSfg4AfmH0pdZThD9cHD4d9HCGJkiYftNyN/ePerd0utakaOsDm0rmg+t10Ymw==
-X-Received: by 2002:a9d:3435:: with SMTP id v50mr6044996otb.292.1607144395452;
-        Fri, 04 Dec 2020 20:59:55 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h17sm1136458oor.1.2020.12.04.20.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 20:59:54 -0800 (PST)
-Date:   Fri, 4 Dec 2020 22:59:52 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     kholk11@gmail.com
-Cc:     agross@kernel.org, sboyd@kernel.org, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] clk: qcom: Add SDM660 Multimedia Clock Controller
- (MMCC) driver
-Message-ID: <X8sTyHGhYeCpqQ/B@builder.lan>
-References: <20200926130306.13843-1-kholk11@gmail.com>
- <20200926130306.13843-2-kholk11@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926130306.13843-2-kholk11@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YCKTyFzGWQzeG8F5871ZshFHNgeYjCwjk1SIyTgC11I=;
+        b=J0vXg1z2ptlhP6D1bL9AI2OFvM6B3OVVRAI9EjiO7VtgRV9jtLzgvnFwNXmhdeiXaN
+         /tqr/ZYM4gElthRkyZHUZnYJB/NOFHJzEkHA4/fEkcJyaPafCR3uP+xPl6UFQGsjJQQf
+         NODksA1OQnSPytAzstGCvQyAYXfGW8KOH7hyNVcnVeQ9QXqXlbZSvXLB6di0bItDj6FK
+         HZndxZ/VY4nO1ZTNGIRamlAL734N6VdyrXxUVDCRKUHPIgRAE59x6K6eD931+vjmkkYz
+         3SYf0CErz3ytYTbmiGFWEcueWyRwD/wLgW8YigccNTEPQMd1ENRXbkYtpSbFu2q6TQDt
+         Q6RA==
+X-Gm-Message-State: AOAM532HtMkP29fhO5qfWk5SPo437NdcNTdhSyRYo+2FotME3bFOs6Tp
+        6i4LI6ICz+/uBSrGF2ooFyY=
+X-Google-Smtp-Source: ABdhPJxgsN/0/42E6/xL2IvNL5t20vqK49omNAJMc6BVnqjO7aNbjhTA9Ag3+6LykIGWYlajB7Hkgg==
+X-Received: by 2002:a17:902:c215:b029:da:b079:b9a3 with SMTP id 21-20020a170902c215b02900dab079b9a3mr6763811pll.67.1607144524517;
+        Fri, 04 Dec 2020 21:02:04 -0800 (PST)
+Received: from localhost.localdomain.localdomain ([39.182.0.228])
+        by smtp.gmail.com with ESMTPSA id d8sm3596888pjv.3.2020.12.04.21.01.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Dec 2020 21:02:03 -0800 (PST)
+From:   Mingzhe Yang <cainiao666999@gmail.com>
+To:     tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, hpa@zytor.com, corbet@lwn.net,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, David.Laight@aculab.com,
+        Mingzhe Yang <cainiao666999@gmail.com>
+Subject: [PATCH] Documentation: x86: update the thread_info's position
+Date:   Sat,  5 Dec 2020 13:01:36 +0800
+Message-Id: <1607144496-10635-1-git-send-email-cainiao666999@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 26 Sep 08:03 CDT 2020, kholk11@gmail.com wrote:
-> diff --git a/drivers/clk/qcom/mmcc-sdm660.c b/drivers/clk/qcom/mmcc-sdm660.c
-[..]
-> +static int mmcc_660_probe(struct platform_device *pdev)
-> +{
-> +	struct regmap *regmap;
-> +	bool is_sdm630 = 0;
+Prior to kernel 4.9 the thread_info structure was at the bottom of
+the kernel stack. kernel 4.9 moved it into the task_struct.
 
-This shouldn't be 0, but there's no need for initializing it either, as
-the first reference is an assignment. On the other hand, you could
-without loss of clarity just move the of_device_is_compatible() into the
-if statement directly.
+See commits c65eacb ("sched/core: Allow putting thread_info into
+task_struct"), 15f4eae ("x86: Move thread_info into task_struct")
+and 883d50f ("scripts/gdb: fix get_thread_info").
 
-> +
-> +	regmap = qcom_cc_map(pdev, &mmcc_660_desc);
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	is_sdm630 = of_device_is_compatible(pdev->dev.of_node,
-> +					    "qcom,mmcc-sdm630");
-> +
-> +	clk_alpha_pll_configure(&mmpll3, regmap, &mmpll3_config);
-> +	clk_alpha_pll_configure(&mmpll4, regmap, &mmpll4_config);
-> +	clk_alpha_pll_configure(&mmpll5, regmap, &mmpll5_config);
-> +	clk_alpha_pll_configure(&mmpll7, regmap, &mmpll7_config);
-> +	clk_alpha_pll_configure(&mmpll8, regmap, &mmpll8_config);
-> +	clk_alpha_pll_configure(&mmpll10, regmap, &mmpll10_config);
-> +
-> +	if (is_sdm630) {
-> +		mmcc_660_desc.clks[BYTE1_CLK_SRC] = 0;
-> +		mmcc_660_desc.clks[MDSS_BYTE1_CLK] = 0;
-> +		mmcc_660_desc.clks[MDSS_BYTE1_INTF_DIV_CLK] = 0;
-> +		mmcc_660_desc.clks[MDSS_BYTE1_INTF_CLK] = 0;
-> +		mmcc_660_desc.clks[ESC1_CLK_SRC] = 0;
-> +		mmcc_660_desc.clks[MDSS_ESC1_CLK] = 0;
-> +		mmcc_660_desc.clks[PCLK1_CLK_SRC] = 0;
-> +		mmcc_660_desc.clks[MDSS_PCLK1_CLK] = 0;
-> +	}
-> +
-> +	return qcom_cc_really_probe(pdev, &mmcc_660_desc, regmap);
-> +}
-> +
-> +static struct platform_driver mmcc_660_driver = {
-> +	.probe		= mmcc_660_probe,
-> +	.driver		= {
-> +		.name	= "mmcc-sdm660",
-> +		.of_match_table = mmcc_660_match_table,
-> +	},
-> +};
-> +
-> +static int __init mmcc_660_init(void)
-> +{
-> +	return platform_driver_register(&mmcc_660_driver);
-> +}
-> +core_initcall_sync(mmcc_660_init);
-> +
-> +static void __exit mmcc_660_exit(void)
-> +{
-> +	platform_driver_unregister(&mmcc_660_driver);
-> +}
-> +module_exit(mmcc_660_exit);
-> +
+Signed-off-by: Mingzhe Yang <cainiao666999@gmail.com>
+---
+ Documentation/x86/kernel-stacks.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The driver is tristate (which is correct), but for that you need a
-MODULE_LICENSE at least.
+diff --git a/Documentation/x86/kernel-stacks.rst b/Documentation/x86/kernel-stacks.rst
+index 6b0bcf0..e9097f3 100644
+--- a/Documentation/x86/kernel-stacks.rst
++++ b/Documentation/x86/kernel-stacks.rst
+@@ -15,7 +15,8 @@ Like all other architectures, x86_64 has a kernel stack for every
+ active thread.  These thread stacks are THREAD_SIZE (2*PAGE_SIZE) big.
+ These stacks contain useful data as long as a thread is alive or a
+ zombie. While the thread is in user space the kernel stack is empty
+-except for the thread_info structure at the bottom.
++except for the thread_info structure at the bottom (since kernel 4.9,
++the thread_info structure has been moved into task_struct).
+ 
+ In addition to the per thread stacks, there are specialized stacks
+ associated with each CPU.  These stacks are only used while the kernel
+-- 
+1.8.3.1
 
-> diff --git a/include/dt-bindings/clock/qcom,mmcc-sdm660.h b/include/dt-bindings/clock/qcom,mmcc-sdm660.h
-
-Please move this to the dt-binding patch, and reorder the two.
-
-> new file mode 100644
-> index 000000000000..f9dbc21cb5c7
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/qcom,mmcc-sdm660.h
-> @@ -0,0 +1,162 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-
-And please make this "GPL-2.0-only OR BSD-2-Clause".
-
-Regards,
-Bjorn
