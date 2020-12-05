@@ -2,138 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FBB2CF7F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F692CF7F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgLEAV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:21:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28094 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgLEAV2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:21:28 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B50AgwA039437;
-        Fri, 4 Dec 2020 19:20:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GVFvtLr0wQfIy6BAmpv+kOkZFtywXygsijhet2zqiy4=;
- b=FCb54TgWrODArCywRQc5tU6shVvdLY14OgkIWLePvbwP5fnTppuvfJFX2fdQYOdyELD+
- Q+nY+HC5I02vQeFYOO2p3jJAOFgmHw0b+S+7scxdWSKXVsu9rAKOjAZ/UZFdyPWsPd71
- keg26qmaawKQFBn64vKIM9yN2gx1zJhyAFut84PqtgJJk9rL/pf06eRE44Ze4SUFzf5q
- iB3WXusvcg4di3WKN5fxDr0dXEkwGTfnUZIpJOtP3M7hvCC37hRYHbVLkoTuOHFbNalq
- sBF6Wq90RFM77lnHqNOVmL6cPSpwc0NYt0jzOFD8BW/hqeGZbAscIbyEg2Kz8MnCK7Qj XA== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 357uq6ncq9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Dec 2020 19:20:40 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B507b4K017876;
-        Sat, 5 Dec 2020 00:20:39 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma02dal.us.ibm.com with ESMTP id 3569xv299d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 05 Dec 2020 00:20:39 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B50Kcb710682980
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 5 Dec 2020 00:20:38 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60068112062;
-        Sat,  5 Dec 2020 00:20:38 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72F61112061;
-        Sat,  5 Dec 2020 00:20:36 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sat,  5 Dec 2020 00:20:36 +0000 (GMT)
-Subject: Re: [PATCH v3 18/18] ibmvfc: drop host lock when completing commands
- in CRQ
-To:     Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201203020806.14747-1-tyreld@linux.ibm.com>
- <20201203020806.14747-19-tyreld@linux.ibm.com>
- <b048ede5-e673-4ba9-3c28-df077aa4467a@linux.vnet.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <6cd6b923-4231-fed2-f691-5ff5d55bc64a@linux.ibm.com>
-Date:   Fri, 4 Dec 2020 16:20:35 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <b048ede5-e673-4ba9-3c28-df077aa4467a@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1726982AbgLEAXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:23:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgLEAXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:23:12 -0500
+Date:   Sat, 5 Dec 2020 09:22:27 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607127752;
+        bh=fvvM57VimHlgWhhvg/wYV2Ot6coK7U8L/nEeVqSiGoc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IAvalkYEavOyonorgGTq7aWZRiz/OjuFS2KL2T5P75PWaR5ZHXIfRcae1ztglPQKz
+         TNseLBhEphDDGePky2PC9F8GZmFHys4vZa43Hg3+Tn+BPP1DHIozndHDZcX+ZIZ0Ph
+         HAgYiObJi/3t1rlLHUQ7zbudKGE0oA/I59WxArPZVM2wkA0EB47ygvA4xq/KIjnIlX
+         4e/44A8FtM91StG/UFiFr7zHqmmrH3Bs7wj/fRf7pVFGhb8fKPc+J4GOfDSOaWWT9F
+         bKixWJThxHOynRJGxtrCY+eolEvao0IUfiFlZgqpz7WpBI0+OKxY7iHZZylR87jAKv
+         JhKtDXmcq1G2Q==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] x86/insn: Fix not using prefixes.nbytes for loop
+ over prefixes.bytes
+Message-Id: <20201205092227.7ea8d8af08c22ae219a8fbba@kernel.org>
+In-Reply-To: <20201204150221.GF31534@zn.tnic>
+References: <160707930875.3296595.12884856538916078988.stgit@devnote2>
+        <20201204150221.GF31534@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 adultscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/20 1:35 PM, Brian King wrote:
-> On 12/2/20 8:08 PM, Tyrel Datwyler wrote:
->> The legacy CRQ holds the host lock the even while completing commands.
->> This presents a problem when in legacy single queue mode and
->> nr_hw_queues is greater than one since calling scsi_done() introduces
->> the potential for deadlock.
->>
->> If nr_hw_queues is greater than one drop the hostlock in the legacy CRQ
->> path when completing a command.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvfc.c | 8 +++++++-
->>  1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->> index e499599662ec..e2200bdff2be 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->> @@ -2969,6 +2969,7 @@ static void ibmvfc_handle_crq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->>  {
->>  	long rc;
->>  	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
->> +	unsigned long flags;
->>  
->>  	switch (crq->valid) {
->>  	case IBMVFC_CRQ_INIT_RSP:
->> @@ -3039,7 +3040,12 @@ static void ibmvfc_handle_crq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
->>  	del_timer(&evt->timer);
->>  	list_del(&evt->queue);
->>  	ibmvfc_trc_end(evt);
->> -	evt->done(evt);
->> +	if (nr_scsi_hw_queues > 1) {
->> +		spin_unlock_irqrestore(vhost->host->host_lock, flags);
->> +		evt->done(evt);
->> +		spin_lock_irqsave(vhost->host->host_lock, flags);
->> +	} else
->> +		evt->done(evt);
-> 
-> Similar comment here as previously. The flags parameter is an output for
-> spin_lock_irqsave but an input for spin_unlock_irqrestore. You'll need
-> to rethink the locking here. You could just do a spin_unlock_irq / spin_lock_irq
-> here and that would probably be OK, but probably isn't the best. 
-> 
+On Fri, 4 Dec 2020 16:02:21 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-Yeah, this will also get its own lock and flags saved in the per-queue struct in
-the next spin.
-
--Tyrel
-
->>  }
->>  
->>  /**
->>
+> On Fri, Dec 04, 2020 at 07:55:09PM +0900, Masami Hiramatsu wrote:
+> > Hi,
+> > 
+> > Here are the 3rd version of patches to fix the wrong loop boundary
+> > check on insn.prefixes.bytes[] array.
 > 
-> 
+> Ok, so I've committed the version with ARRAY_SIZE to keep it as small
+> as possible for stable. Let's discuss the new changes here ontop, once
+> those urgent fixes go up.
 
+Agreed. BTW, please fix to keep the #include "inat.h" for tools build.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
