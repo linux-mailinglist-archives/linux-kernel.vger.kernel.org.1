@@ -2,161 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896BC2CFC77
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DE92CFC68
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbgLESTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        id S1729546AbgLESTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:19:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgLERzF (ORCPT
+        with ESMTP id S1727652AbgLERoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:55:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558D2C02B8FC;
-        Sat,  5 Dec 2020 08:25:03 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607185158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FFJXTlgaPHPlq6JWR5jS6UY7uzh0dgGC/bjFp+gbqs=;
-        b=nNQoqrajM4mtTtRcF4zjUNShWLzosjUuF6Dq5zJws3xqTuorL0/J5XmBRONWGCs0HkMshG
-        QucEVw6SpX+2R4I3BcxcwOdtywz/FteHm0+FmriPyLOHLyWhufgRILYpWWyfDcN1fx9TPC
-        AtM9vLxfx/tnHZ4HwuDkaNb9i6mlUcfUDgOF7tTVylSjE1qW+t2Ld8UupZNmLXwVZ7EyjR
-        1ODR/p+NvYzrHI8FbI1c72BAFsQU4qTenwqmzQfRdIVPlM8m24OhTTuYa4ate441pnR/3h
-        u+K0bg8duDCOHGDKDUaqrZbZnZkfZ9ruCX75CzLPPYRKsapY9zmW7qZ2RCer4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607185158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FFJXTlgaPHPlq6JWR5jS6UY7uzh0dgGC/bjFp+gbqs=;
-        b=YGJ7VAeVnR3FO93VpAq1Z2Jq1Qn7TDFMCAN/z+cTtrHFilQiMFhSsX0w4Qo8oNz5+eO9Kh
-        2Fq+x4fOajQ+E1BA==
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        bugzilla-daemon@bugzilla.kernel.org
-Cc:     jdelvare@suse.de, wsa@kernel.org, benjamin.tissoires@redhat.com,
-        rui.zhang@intel.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Carlos Jimenez <javashin1986@gmail.com>
-Subject: Re: [Bug 202453] TRACE irq/18-i801_smb Tainted when enabled threadirqs in kernel commandline.
-In-Reply-To: <20201204201930.vtvitsq6xcftjj3o@spock.localdomain>
-References: <bug-202453-19117@https.bugzilla.kernel.org/> <bug-202453-19117-0k1QQBMPTi@https.bugzilla.kernel.org/> <20201204201930.vtvitsq6xcftjj3o@spock.localdomain>
-Date:   Sat, 05 Dec 2020 17:19:18 +0100
-Message-ID: <87zh2s8buh.fsf@nanos.tec.linutronix.de>
+        Sat, 5 Dec 2020 12:44:03 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2B6C02B8FD;
+        Sat,  5 Dec 2020 08:25:29 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id o24so10176270ljj.6;
+        Sat, 05 Dec 2020 08:25:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W9duhZaGLGup/Gcg7smZusGoOzvqsEs/5CXT1xRoRr8=;
+        b=bcZx2skoObx/49S8PQE7YpjkenciUZdo63+1ky8xS01KtpfKH07o5ZYWfpk52c4mIV
+         /jncACoGO6ps+0DpMYZKtBMuQKfCtTtwtkmkcOmUT6xAXaEMxDz/DrsK3DY74KFdpcQ7
+         bpeqdIkY9W98k0H/LJhaoUuinlXKPTvwcdbMgtgE6x2HWK+xROOQwUA4hYNaBAAOshBW
+         +TqOKohLbRRoNLl9ljCsKlvTXB7/VYBNm23DvifQw46is7lSXiOk7B58a6HWTJZtNcqI
+         GDlsCOkEUbKCAWJk9MraQH0liCazJoBktI9pOUXfQiU3hzyTqCSavGDnOFXNe1dKTy/1
+         AeFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W9duhZaGLGup/Gcg7smZusGoOzvqsEs/5CXT1xRoRr8=;
+        b=AHzRxPkaChg3i4h++J8mEpF+0V95MfiATxrtjc3kSUknxBVWQbGYU7j13aQqaXl1qJ
+         RINMCdSKFvaHDtOzsxCM/C4Z8bqT6qql+jwUzzF2PnSRd845KIZVkat/Hz5mP4HiqGZj
+         Yrn2WihP5W0zVVWLDRfkwd1WoEe/RkTjo7YsjiekJPtTkQhtddBjMM4bA6smKoSFFtQH
+         x3eD4y2eRrF7jE8fyoLLHY7lhlznasHWk5T2DAxMN50J4LJpqK29YDC/5aD9k3wTieIp
+         u+1zUe4gZJJhBD/oS1JQtBOYwiswWcUi6gOa+x4IRw7Pxefl3z5N9BnOSzLVlF6SckdG
+         5BWA==
+X-Gm-Message-State: AOAM531WHmiFvoU78WymO8JSo3ucCw8EpHEyigRhJ9F1NedS3OKp1x33
+        T4ilAUNypBZLeQ2v5irnO37FxXwZK6k=
+X-Google-Smtp-Source: ABdhPJwZvClhmY7HYHgJ4x98bsfedJ+Ru75ADlNFHKOOteqppE2sTMs7UFz0Mh/WQX/kMI3MmaaQxg==
+X-Received: by 2002:a2e:5018:: with SMTP id e24mr1783018ljb.425.1607185528390;
+        Sat, 05 Dec 2020 08:25:28 -0800 (PST)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id y63sm2324381lff.196.2020.12.05.08.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 08:25:27 -0800 (PST)
+Date:   Sat, 5 Dec 2020 19:25:25 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: dw: Fix error return code in dw_spi_bt1_probe()
+Message-ID: <20201205162525.5k35z3b4brdnfjxh@mobilestation>
+References: <1607071357-33378-1-git-send-email-zhangchangzhong@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607071357-33378-1-git-send-email-zhangchangzhong@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04 2020 at 21:19, Oleksandr Natalenko wrote:
-> On Thu, Dec 03, 2020 at 07:04:00PM +0000, bugzilla-daemon@bugzilla.kernel.org wrote:
->>    2) Have a wrapper around handle_generic_irq() which ensures that
->>       interrupts are disabled before invoking it.
+Hello Zhang
 
-> The question is whether it's guaranteed under all circumstances
-> including forced irq threading. The i801 driver has assumptions about
-> this, so I wouldn't be surprised if there are more.
+On Fri, Dec 04, 2020 at 04:42:37PM +0800, Zhang Changzhong wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-Assuming that a final answer might take some time, the below which
-implements #2 will make it at least work for now.
+Thanks for the patch. Definitely
 
-Thanks,
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-        tglx
----
-Subject: genirq, i2c: Provide and use generic_dispatch_irq()
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 03 Dec 2020 19:12:24 +0100
+-Sergey
 
-Carlos reported that on his system booting with 'threadirqs' on the command
-line result in the following warning:
-
-irq 31 handler irq_default_primary_handler+0x0/0x10 enabled interrupts
-WARNING: CPU: 2 PID: 989 at kernel/irq/handle.c:153 __handle_irq_event_percpu+0x19f/0x1b0
-
-The reason is in the i2c stack:
-
-    i801_isr()
-      i801_host_notify_isr()
-        i2c_handle_smbus_host_notify()
-          generic_handle_irq()
-
-and that explodes with forced interrupt threading because it's called with
-interrupts enabled.
-
-It would be possible to set IRQF_NO_THREAD on the i801 interrupt to exclude
-it from force threading, but that would break on RT and require a larger
-update.
-
-It's also unclear whether there are other drivers which can reach that code
-path via i2c_slave_host_notify_cb(). As there are enough i2c drivers which
-use threaded interrupt handlers by default it seems not completely
-impossible that this can happen even without force threaded interrupts.
-
-For a quick fix provide a wrapper around generic_handle_irq() which has a
-local_irq_save/restore() around the invocation and use it in the i2c code.
-
-Reported-by: Carlos Jimenez <javashin1986@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202453
----
- drivers/i2c/i2c-core-base.c |    2 +-
- include/linux/irqdesc.h     |    1 +
- kernel/irq/irqdesc.c        |   20 ++++++++++++++++++++
- 3 files changed, 22 insertions(+), 1 deletion(-)
-
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -1385,7 +1385,7 @@ int i2c_handle_smbus_host_notify(struct
- 	if (irq <= 0)
- 		return -ENXIO;
- 
--	generic_handle_irq(irq);
-+	generic_dispatch_irq(irq);
- 
- 	return 0;
- }
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -153,6 +153,7 @@ static inline void generic_handle_irq_de
- }
- 
- int generic_handle_irq(unsigned int irq);
-+int generic_dispatch_irq(unsigned int irq);
- 
- #ifdef CONFIG_HANDLE_DOMAIN_IRQ
- /*
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -652,6 +652,26 @@ int generic_handle_irq(unsigned int irq)
- }
- EXPORT_SYMBOL_GPL(generic_handle_irq);
- 
-+/**
-+ * generic_dispatch_irq - Dispatch an interrupt from an interrupt handler
-+ * @irq:	The irq number to handle
-+ *
-+ * A wrapper around generic_handle_irq() which ensures that interrupts are
-+ * disabled when the primary handler of the dispatched irq is invoked.
-+ * This is useful for interrupt handlers with dispatching to be safe for
-+ * the forced threaded case.
-+ */
-+int generic_dispatch_irq(unsigned int irq)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	local_irq_save(&flags);
-+	ret = generic_handle_irq(irq);
-+	local_irq_restore(&flags);
-+	return ret;
-+}
-+
- #ifdef CONFIG_HANDLE_DOMAIN_IRQ
- /**
-  * __handle_domain_irq - Invoke the handler for a HW irq belonging to a domain
+> ---
+>  drivers/spi/spi-dw-bt1.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
+> index f382dfad..c279b78 100644
+> --- a/drivers/spi/spi-dw-bt1.c
+> +++ b/drivers/spi/spi-dw-bt1.c
+> @@ -280,8 +280,10 @@ static int dw_spi_bt1_probe(struct platform_device *pdev)
+>  	dws->bus_num = pdev->id;
+>  	dws->reg_io_width = 4;
+>  	dws->max_freq = clk_get_rate(dwsbt1->clk);
+> -	if (!dws->max_freq)
+> +	if (!dws->max_freq) {
+> +		ret = -EINVAL;
+>  		goto err_disable_clk;
+> +	}
+>  
+>  	init_func = device_get_match_data(&pdev->dev);
+>  	ret = init_func(pdev, dwsbt1);
+> -- 
+> 2.9.5
+> 
