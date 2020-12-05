@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51E02CFD2F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A632CFDA5
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729745AbgLESTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:19:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727770AbgLERqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 12:46:43 -0500
-Date:   Sat, 5 Dec 2020 18:06:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607187923;
-        bh=QoAsKvgcDhNEf5ZBcV7XkQBY/tLIaKFd5wEz9eLB4GU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iagokjvsrN2Cus+BfUVBo5hbo3jo4yiNW7xQsh3KNZKBENJmoG7CMUacm1drIjycF
-         PLIE7FgFbRv6njH0dCSY9PnNRbugbAIMm+xluHx2nghsJrkhW/Q0xcmHIrgi8+IqNW
-         vWYvVSk/LWPv0ILs58oxogfc0PT5T8UdF6u2MNno=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     rafael@kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH 5/9] mm: memcontrol: convert NR_FILE_THPS
- account to pages
-Message-ID: <X8u+HVXGWFMSWBpJ@kroah.com>
-References: <20201205130224.81607-1-songmuchun@bytedance.com>
- <20201205130224.81607-6-songmuchun@bytedance.com>
- <X8uU6ODzteuBY9pf@kroah.com>
- <CAMZfGtWjumNV4hu-Qv8Z+WoS-EmyhvQd1qsaoS1quvQCyczT=g@mail.gmail.com>
- <X8uoITGcfvZ/EA74@kroah.com>
- <CAMZfGtWmoPjuxfwYFUACRBCBgk3q77Sfv0kE2ysoX-9LJ8s2Zw@mail.gmail.com>
- <X8u2TavrUAnnhq+M@kroah.com>
- <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
+        id S1726614AbgLESmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726653AbgLERic (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 12:38:32 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53A4C09425C
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 09:09:26 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id a1so8921009ljq.3
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 09:09:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/nONXOe+JWtgC2NEmkR8xcycTkJWCy3WRXYAibxk+2U=;
+        b=yAzk/g0i/6/Y6AzhoKNkjYDk3qK4szrD6DsIQ4UoHDW1oA3d0TSHuu5PWZvw7Zsmlv
+         1dnq22xAK7TqogoAxD6fqNwYqONi097hVb9LoEARvuMt/0Hdoe+Et+w/PaHRsDWLYjyq
+         2HFuCynV7L5JahwqLLzju7RNQlxDwk+5z3oRFxN6EBtFtiid9xL2u27p45hrERqs8QJH
+         C9NE1OMzdCnWWRlY75T8FanAYscof8A/ico/yDns8su9phtpAPbixulYBvCbbTEEde1q
+         exfqh89UjkxEKfyw/cBlueCkcqxz1w1Np9sYMUzD7DNfFRUsHisFsxBQ9otWK3rjZQZk
+         UzLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/nONXOe+JWtgC2NEmkR8xcycTkJWCy3WRXYAibxk+2U=;
+        b=Rvz1R+rS/RWqTEXg+M6P3OfiHIdmBy74jF2eSG2RQCexi3YOFcPXaOS9EC5uePoZop
+         LL5npXP/CJad7DCY+Q1NDNDFSx/WO5OdGIjPJugEFwA8/o2vHJxY/1LGqHTRGAPEzQWi
+         dEIoL3DobfWaO5H6Vujit0oBC9zNLXjgIPpUVjMCmTvhoLEM7NUZUMK/BiKsFnUjN4QT
+         V1hIFfFTblcPrQqdIRVKtle8V/Yt8/jFJWgFWhJgxl6ZtfwwqanWlg9mjbkPspbZ3nhB
+         XclbR/1af9WLp5tSalbE6RWOEVZqnFj448VxUj7qd/LSKl94m/pLSDwTOp9/jcM1rgep
+         wDrg==
+X-Gm-Message-State: AOAM531tOA5Bz3Kr+4PhqeQ+9k+Jqg8t+Y3WHb7xPBx9LT8E/T1ehXlA
+        0kMBHXhC2Q8ERWOANGgEUHjG2IjXBP0msMYLMYj74w==
+X-Google-Smtp-Source: ABdhPJxoqecW7LxgD0r1nAG22AfBGr3ZG5mFYrc/nZRyjVvcls3d0uOXjvm1Adw1hkBjXMOIspeSVTJhjTpxwyiPGp8=
+X-Received: by 2002:a05:651c:112e:: with SMTP id e14mr5724965ljo.388.1607188164947;
+ Sat, 05 Dec 2020 09:09:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtUTotdRbGEE85SD_6B7_X=L1hU_8JAWbwPN7ztWCTD-Sg@mail.gmail.com>
+References: <20201203152311.5272-1-carver4lio@163.com> <a5bc444ec40a2248009d0894fda61b822d030235.camel@redhat.com>
+ <CGME20201204160751eucas1p13cc7aad8c68dd2a495c4bbf422c4228c@eucas1p1.samsung.com>
+ <adc36428-05eb-f885-9394-080cc805818f@samsung.com> <3d709122-0364-5bca-9247-3f212096b389@nvidia.com>
+In-Reply-To: <3d709122-0364-5bca-9247-3f212096b389@nvidia.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Sat, 5 Dec 2020 18:09:14 +0100
+Message-ID: <CADYN=9+nE=n4cXb6gDKmQqfkn97HoFShKGSpqVise=XR-aGtVw@mail.gmail.com>
+Subject: Re: [PATCH] mm/memblock:use a more appropriate order calculation when
+ free memblock pages
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Qian Cai <qcai@redhat.com>, carver4lio@163.com,
+        rppt@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hailong Liu <liu.hailong6@zte.com.cn>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 12:52:34AM +0800, Muchun Song wrote:
-> On Sun, Dec 6, 2020 at 12:32 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Fri, 4 Dec 2020 at 18:44, Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+>
+> On 04/12/2020 16:07, Marek Szyprowski wrote:
+> > Hi All,
 > >
-> > On Sat, Dec 05, 2020 at 11:39:24PM +0800, Muchun Song wrote:
-> > > On Sat, Dec 5, 2020 at 11:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Sat, Dec 05, 2020 at 11:29:26PM +0800, Muchun Song wrote:
-> > > > > On Sat, Dec 5, 2020 at 10:09 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Sat, Dec 05, 2020 at 09:02:20PM +0800, Muchun Song wrote:
-> > > > > > > Converrt NR_FILE_THPS account to pages.
-> > > > > > >
-> > > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > > > ---
-> > > > > > >  drivers/base/node.c | 3 +--
-> > > > > > >  fs/proc/meminfo.c   | 2 +-
-> > > > > > >  mm/filemap.c        | 2 +-
-> > > > > > >  mm/huge_memory.c    | 3 ++-
-> > > > > > >  mm/khugepaged.c     | 2 +-
-> > > > > > >  mm/memcontrol.c     | 5 ++---
-> > > > > > >  6 files changed, 8 insertions(+), 9 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/base/node.c b/drivers/base/node.c
-> > > > > > > index 05c369e93e16..f6a9521bbcf8 100644
-> > > > > > > --- a/drivers/base/node.c
-> > > > > > > +++ b/drivers/base/node.c
-> > > > > > > @@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
-> > > > > > >                                   HPAGE_PMD_NR),
-> > > > > > >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
-> > > > > > >                                   HPAGE_PMD_NR),
-> > > > > > > -                          nid, K(node_page_state(pgdat, NR_FILE_THPS) *
-> > > > > > > -                                 HPAGE_PMD_NR),
-> > > > > > > +                          nid, K(node_page_state(pgdat, NR_FILE_THPS)),
-> > > > > >
-> > > > > > Again, is this changing a user-visable value?
-> > > > > >
-> > > > >
-> > > > > Of course not.
-> > > > >
-> > > > > In the previous, the NR_FILE_THPS account is like below:
-> > > > >
-> > > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, 1);
-> > > > >
-> > > > > With this patch, it is:
-> > > > >
-> > > > >     __mod_lruvec_page_state(page, NR_FILE_THPS, HPAGE_PMD_NR);
-> > > > >
-> > > > > So the result is not changed from the view of user space.
-> > > >
-> > > > So you "broke" it on the previous patch and "fixed" it on this one?  Why
-> > > > not just do it all in one patch?
-> > >
-> > > Sorry for the confusion. I mean that the "previous" is without all of this patch
-> > > series. So this series is aimed to convert the unit of all different THP vmstat
-> > > counters from HPAGE_PMD_NR to pages. Thanks.
+> > On 04.12.2020 14:42, Qian Cai wrote:
+> >> On Thu, 2020-12-03 at 23:23 +0800, carver4lio@163.com wrote:
+> >>> From: Hailong Liu <liu.hailong6@zte.com.cn>
+> >>>
+> >>> When system in the booting stage, pages span from [start, end] of a memblock
+> >>> are freed to buddy in a order as large as possible (less than MAX_ORDER) at
+> >>> first, then decrease gradually to a proper order(less than end) in a loop.
+> >>>
+> >>> However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
+> >>> in some cases.
+> >>> Instead, *__ffs(end - start)* may be more appropriate and meaningful.
+> >>>
+> >>> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+> >> Reverting this commit on the top of today's linux-next fixed boot crashes on
+> >> multiple NUMA systems.
 > >
-> > I'm sorry, I still do not understand.  It looks to me that you are
-> > changing the number printed to userspace here.  Where is the
-> > corrisponding change that changed the units for this function?  Is it in
-> > this patch?  If so, sorry, I did not see that at all...
-> 
-> Sorry, actually, this patch does not change the number printed to
-> userspace. It only changes the unit of the vmstat counter.
-> 
-> Without this patch, every counter of NR_FILE_THPS represents
-> NR_FILE_THPS pages. However, with this patch, every counter
-> represents only one page. And why do I want to do this? Can
-> reference to the cover letter. Thanks very much.
+> > I confirm. Reverting commit 4df001639c84 ("mm/memblock: use a more
+> > appropriate order calculation when free memblock pages") on top of linux
+> > next-20201204 fixed booting of my ARM32bit test systems.
+>
+>
+> FWIW, I also confirm that this is causing several 32-bit Tegra platforms
+> to crash on boot and reverting this fixes the problem.
 
-Ah, I missed the change of the "ratio" value in the memory_stats[]
-array.  That wasn't obvious at all, ugh.  Sorry for the noise,
+I had the same experience on an arm64 system.
 
-greg k-h
+Cheers,
+Anders
