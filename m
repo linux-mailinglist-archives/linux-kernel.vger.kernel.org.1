@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D1B2CF983
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780252CF985
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 06:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727759AbgLEFTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 00:19:38 -0500
-Received: from baldur.buserror.net ([165.227.176.147]:33700 "EHLO
-        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLEFTh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 00:19:37 -0500
-Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
-        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <oss@buserror.net>)
-        id 1klPwU-0005xK-RW; Fri, 04 Dec 2020 23:17:11 -0600
-Message-ID: <d99b6d7dee253d7e2d85d863d96b8702bb1aa389.camel@buserror.net>
-From:   Scott Wood <oss@buserror.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 04 Dec 2020 23:17:09 -0600
-In-Reply-To: <34ebc3ba2c768d97f363bd5f2deea2356e9ae127.1605589460.git.christophe.leroy@csgroup.eu>
-References: <34ebc3ba2c768d97f363bd5f2deea2356e9ae127.1605589460.git.christophe.leroy@csgroup.eu>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S1728080AbgLEFUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 00:20:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgLEFUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 00:20:04 -0500
+Date:   Fri, 4 Dec 2020 21:19:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1607145563;
+        bh=g89QweBKoaMnhghk9FmJWAmYTP2xcaWTmqJqp57zI50=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1erlj0fzZ9Wo45XoIkw1uOxPGJy+kcVeO9NmXmai/qVA9E9mqn2xjLv0CGieGavfh
+         DBo9dfdViMzs8DIgqXZ+xqcxMA2JR7Yxbg+3vVsXjQp/XZ4XsBtTcK10j9bg/vHT7O
+         6v9tURcEfXIGij3HXI0zD/HPEi04Qt16sw2olUWA=
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Victor Chibotaru <tchibo@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+Message-Id: <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
+In-Reply-To: <20201204210000.660293c6@canb.auug.org.au>
+References: <20201204210000.660293c6@canb.auug.org.au>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
-X-SA-Exim-Rcpt-To: christophe.leroy@csgroup.eu, benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: oss@buserror.net
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
-X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-Subject: Re: [PATCH 1/2] powerpc: Retire e200 core (mpc555x processor)
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 05:07 +0000, Christophe Leroy wrote:
-> There is no defconfig selecting CONFIG_E200, and no platform.
-> 
-> e200 is an earlier version of booke, a predecessor of e500,
-> with some particularities like an unified cache instead of both an
-> instruction cache and a data cache.
-> 
-> Remove it.	
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/Makefile                     |  1 -
->  arch/powerpc/include/asm/cputable.h       | 11 -----
->  arch/powerpc/include/asm/mmu.h            |  2 +-
->  arch/powerpc/include/asm/reg.h            |  5 --
->  arch/powerpc/include/asm/reg_booke.h      | 12 -----
->  arch/powerpc/kernel/cpu_setup_fsl_booke.S |  9 ----
->  arch/powerpc/kernel/cputable.c            | 46 ------------------
->  arch/powerpc/kernel/head_booke.h          |  3 +-
->  arch/powerpc/kernel/head_fsl_booke.S      | 57 +----------------------
->  arch/powerpc/kernel/setup_32.c            |  2 -
->  arch/powerpc/kernel/traps.c               | 25 ----------
->  arch/powerpc/mm/nohash/fsl_booke.c        | 12 ++---
->  arch/powerpc/platforms/Kconfig.cputype    | 13 ++----
->  13 files changed, 11 insertions(+), 187 deletions(-)
+On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Acked-by: Scott Wood <oss@buserror.net>
+> Hi all,
+> 
+> After merging the akpm tree, today's linux-next build (powerpc
+> allyesconfig) produced warnings like this:
+> 
+> kernel/kcov.c:296:14: warning: conflicting types for built-in function '__sanitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)' [-Wbuiltin-declaration-mismatch]
+>   296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
+>       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--Scott
+Odd.  clang wants that signature, according to
+https://clang.llvm.org/docs/SanitizerCoverage.html.  But gcc seems to
+want a different signature.  Beats me - best I can do is to cc various
+likely culprits ;)
 
+Which gcc version?  Did you recently update gcc?
+
+> ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
+> 
+> (lots of these latter ones)
+> 
+> I don't know what produced these, but it is in the akpm-current or
+> akpm trees.
 
