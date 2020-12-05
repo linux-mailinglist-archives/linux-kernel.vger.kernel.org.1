@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269952CFF3D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C072CFF3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 22:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726991AbgLEVbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 16:31:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgLEVbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 16:31:20 -0500
-Date:   Sat, 5 Dec 2020 15:30:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607203839;
-        bh=08ajMu/SVS32zG1XETlIFJODw1n6pbDvQdzFGcZLX94=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=AFKy+nRBJTlczOp+IAcz3vgMUPmqk2kycHBY4czn/Dr+JVDs8jjYp51+s1tRsBK5X
-         WJ6anBCgcMFafy+NvQ0mIOB/9c1V1fB08NE3mEv0gQGhWHwHhLRypDP1kCQtAHvB6q
-         jKcZVZRF5xFZJXb/9dUVkd6BlFRMyn7U/yF+edvE2rPunYknBv3bg3DCI6diYrJ2Sv
-         EiP9FfC626HNlM0DhIKGWRu33ItA0KBD1JiXO8A5Grfs/XcqB87yuZUCxz9owi4OB5
-         FaahramUZ6aIvEAhUdbjMOgnLtNTSUxVTzfY1B6uu0HLwvaAEzlVnXduHh9WYBcz6t
-         mjQgVlN11OeFg==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kelley, Sean V" <sean.v.kelley@intel.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "xerces.zhao@gmail.com" <xerces.zhao@gmail.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>,
-        "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-Message-ID: <20201205213038.GA2093063@bjorn-Precision-5520>
+        id S1727169AbgLEVdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 16:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgLEVdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 16:33:09 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02C9C0613CF;
+        Sat,  5 Dec 2020 13:32:28 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id qw4so13867022ejb.12;
+        Sat, 05 Dec 2020 13:32:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=768hUwf7RIx859JFI/Ccnti1I5MLKPZtvOJEmoM469s=;
+        b=aSFvGdOuicYAbmart/NUe+EXb25VcEXMR3LQh1MsDktoFQE+ArJnGaXSak7srOkMUD
+         UP3SjEawoork/pRLFqUQYSFhGcxK9YZn3ns27EulCQWxoFZ0ej/YHM9d2WF5U4KeiVKI
+         F5xXEHEJtyCboF3BvqFRogeqyt2OkhpFNVXqFNzhUH/tYj5Vw2bo9S/97zSCDegY2B9J
+         3odTLUsX9wHzmGeE4Yy2ZkcMZ7rU6H6+1dXbExTFctx/MyBmw4EBYbbqS715AcgmQpMF
+         QnOOmvcnUrb9X4fgHW05BrLQOzXqb3Qdi+l57fJqK03mnoRA0xINGbuXQBgaXWqVIr2X
+         QFHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=768hUwf7RIx859JFI/Ccnti1I5MLKPZtvOJEmoM469s=;
+        b=LupMbtq6nc5NHgTBThhTJbgdBmxr2/4sf8qQT1s0G4vpRZhop5lrcDH5OjuDlrZ0Qs
+         z+d8dCdT+5+PHerOye1bM/KcoFnuDD4NzblfXWPLAMKN3jvJDdMx5oXw1cJLARwwxZ6H
+         HNV4h9Iuef39nGPfbXkXV3at3MWrQ7CdZLh4jvQIOo17Hvt8cwUtDwRBCZohIYo24zSb
+         Mq5MkCLEnI5knOqjjlRHrM0eDcAGtWfp+jjfM6ca5ryMmxf9jbP0HkmG5r1tkF2pHXzA
+         zNJ4jlt6Cyc0vtWEkY5K7LGmhsoOb3I5t0P7auZfY3IAAVpFHa4ySnWjTjX7fLw982j7
+         fGOA==
+X-Gm-Message-State: AOAM530JpDcTCwZxKTz0ZaHkstg8/CwSv4RS6IagikYReP6SIvO/1piu
+        9hhHEgxzMYa/08p9ow7VNgo=
+X-Google-Smtp-Source: ABdhPJxsHoEh0SvQhHnb0vF6LgkmxnQALnCbO52raQQhcCfrUMmFXSeapOZ/UNbY2Vvq7HWJk8eEJw==
+X-Received: by 2002:a17:906:1955:: with SMTP id b21mr12849375eje.236.1607203947393;
+        Sat, 05 Dec 2020 13:32:27 -0800 (PST)
+Received: from localhost.localdomain (p200300f13728d200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3728:d200:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id m7sm6390133eds.73.2020.12.05.13.32.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 13:32:26 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] net: stmmac: dwmac-meson8b: fix mask definition of the m250_sel mux
+Date:   Sat,  5 Dec 2020 22:32:07 +0100
+Message-Id: <20201205213207.519341-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4FD8E577-2F6A-4829-B92F-45D5E13BF9A4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 05:17:58PM +0000, Kelley, Sean V wrote:
-> > On Dec 3, 2020, at 4:01 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Dec 03, 2020 at 12:51:40AM +0000, Kelley, Sean V wrote:
-> >>> On Dec 2, 2020, at 3:44 PM, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >>> On Fri, Nov 20, 2020 at 04:10:33PM -0800, Sean V Kelley wrote:
-> >>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> >>>> 
-> >>>> When attempting error recovery for an RCiEP associated with an RCEC device,
-> >>>> there needs to be a way to update the Root Error Status, the Uncorrectable
-> >>>> Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
-> >>>> some non-native cases in which there is no OS-visible device associated
-> >>>> with the RCiEP, there is nothing to act upon as the firmware is acting
-> >>>> before the OS.
-> >>>> 
-> >>>> Add handling for the linked RCEC in AER/ERR while taking into account
-> >>>> non-native cases.
-> >>>> 
-> >>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> >>>> Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
-> >>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> >>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> >>>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> >>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >>>> ---
-> >>>> drivers/pci/pcie/aer.c | 46 +++++++++++++++++++++++++++++++-----------
-> >>>> drivers/pci/pcie/err.c | 20 +++++++++---------
-> >>>> 2 files changed, 44 insertions(+), 22 deletions(-)
-> >>>> 
-> >>>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> >>>> index 0ba0b47ae751..51389a6ee4ca 100644
-> >>>> --- a/drivers/pci/pcie/aer.c
-> >>>> +++ b/drivers/pci/pcie/aer.c
-> >>>> @@ -1358,29 +1358,51 @@ static int aer_probe(struct pcie_device *dev)
-> >>>> */
-> >>>> static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
-> >>>> {
-> >>>> -	int aer = dev->aer_cap;
-> >>>> +	int type = pci_pcie_type(dev);
-> >>>> +	struct pci_dev *root;
-> >>>> +	int aer = 0;
-> >>>> +	int rc = 0;
-> >>>> 	u32 reg32;
-> >>>> -	int rc;
-> >>>> 
-> >>>> -	if (pcie_aer_is_native(dev)) {
-> >>>> +	if (type == PCI_EXP_TYPE_RC_END)
-> >>>> +		/*
-> >>>> +		 * The reset should only clear the Root Error Status
-> >>>> +		 * of the RCEC. Only perform this for the
-> >>>> +		 * native case, i.e., an RCEC is present.
-> >>>> +		 */
-> >>>> +		root = dev->rcec;
-> >>>> +	else
-> >>>> +		root = dev;
-> >>>> +
-> >>>> +	if (root)
-> >>>> +		aer = dev->aer_cap;
-> >>>> +
-> >>>> +	if ((aer) && pcie_aer_is_native(dev)) {
-> >>>> 		/* Disable Root's interrupt in response to error messages */
-> >>>> -		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >>>> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> >>>> 		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> >>>> -		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >>>> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >>>> 	}
-> >>>> 
-> >>>> -	rc = pci_bus_error_reset(dev);
-> >>>> -	pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> >>>> +	if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-> >>>> +		if (pcie_has_flr(dev)) {
-> >>>> +			rc = pcie_flr(dev);
-> >>>> +			pci_info(dev, "has been reset (%d)\n", rc);
-> >>> 
-> >>> Maybe:
-> >>> 
-> >>> +             } else {
-> >>> +                     rc = -ENOTTY;
-> >>> +                     pci_info(dev, "not reset (no FLR support)\n");
-> >>> 
-> >>> Or do we want to pretend the device was reset and return
-> >>> PCI_ERS_RESULT_RECOVERED?
-> >> 
-> >> We are currently doing the latter now with the default of rc = 0
-> >> above and so  I’m not sure the extra detail here on the absence of
-> >> FLR support is of value.
-> > 
-> > So to make sure I understand the proposal here, for RCECs and RCiEPs
-> > that don't support FLR, you're saying you want to continue silently
-> > and return PCI_ERS_RESULT_RECOVERED and let the drivers assume their
-> > device was reset when it was not?
-> 
-> The setting of the ‘rc’ on the FLR support is fine to add to the
-> else condition.  I had simply recalled in earlier discussion that
-> pcie_has_flr() was needed due to quirky behavior in some hardware
-> and so was not sure that detail of having or not having flr was in
-> fact consitent/accurate.
+The m250_sel mux clock uses bit 4 in the PRG_ETH0 register. Fix this by
+shifting the PRG_ETH0_CLK_M250_SEL_MASK accordingly as the "mask" in
+struct clk_mux expects the mask relative to the "shift" field in the
+same struct.
 
-I think we should do the following, unless you object:
+While here, get rid of the PRG_ETH0_CLK_M250_SEL_SHIFT macro and use
+__ffs() to determine it from the existing PRG_ETH0_CLK_M250_SEL_MASK
+macro.
 
-    if (type == PCI_EXP_TYPE_RC_EC || type == PCI_EXP_TYPE_RC_END) {
-	    if (pcie_has_flr(dev)) {
-		    rc = pcie_flr(dev);
-		    pci_info(dev, "has been reset (%d)\n", rc);
-	    } else {
-		    pci_info(dev, "not reset (no FLR support)\n");
-		    rc = -ENOTTY;
-	    }
-    } else {
-	    rc = pci_bus_error_reset(dev);
-	    pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-    }
-    ...
-    return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
+Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Sorry, I should have done that in the proposed patch earlier; it's
-what I was *thinking* but didn't get it transcribed into the code.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+index dc0b8b6d180d..459ae715b33d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -30,7 +30,6 @@
+ #define PRG_ETH0_EXT_RMII_MODE		4
+ 
+ /* mux to choose between fclk_div2 (bit unset) and mpll2 (bit set) */
+-#define PRG_ETH0_CLK_M250_SEL_SHIFT	4
+ #define PRG_ETH0_CLK_M250_SEL_MASK	GENMASK(4, 4)
+ 
+ /* TX clock delay in ns = "8ns / 4 * tx_dly_val" (where 8ns are exactly one
+@@ -155,8 +154,9 @@ static int meson8b_init_rgmii_tx_clk(struct meson8b_dwmac *dwmac)
+ 		return -ENOMEM;
+ 
+ 	clk_configs->m250_mux.reg = dwmac->regs + PRG_ETH0;
+-	clk_configs->m250_mux.shift = PRG_ETH0_CLK_M250_SEL_SHIFT;
+-	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK;
++	clk_configs->m250_mux.shift = __ffs(PRG_ETH0_CLK_M250_SEL_MASK);
++	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK >>
++				     clk_configs->m250_mux.shift;
+ 	clk = meson8b_dwmac_register_clk(dwmac, "m250_sel", mux_parents,
+ 					 ARRAY_SIZE(mux_parents), &clk_mux_ops,
+ 					 &clk_configs->m250_mux.hw);
+-- 
+2.29.2
 
-Bjorn
