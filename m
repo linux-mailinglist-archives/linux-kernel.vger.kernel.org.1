@@ -2,218 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E762D2CF86C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89862CF870
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbgLEA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S1731305AbgLEBA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 20:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731039AbgLEA5v (ORCPT
+        with ESMTP id S1726242AbgLEBA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:57:51 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB08C061A4F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:57:25 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id n62so9128982ybf.19
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:57:25 -0800 (PST)
+        Fri, 4 Dec 2020 20:00:26 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3766C0613D1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Dec 2020 16:59:45 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id b9so6281593qvj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Dec 2020 16:59:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=A1Lj5wdBwhWI3/NZis+5wQtu4fgI0QHg2XLOYoA+ZsE=;
-        b=rK5FtNbGTrbXsv8crucJEXOPV/qReOPYclBy+WD02NPNCuuw5oLe6P+Wz9xAmkUPPD
-         iIwrWE8QtrSMSHR9w4J1sdBIoHQI2ZO5v34Xw8XMAUFEWygBJT2rnooV50NYrOAljyFH
-         gfTmCelZkE+DSBF7gvguZVAdc6sujGMBs25l3UmKHI8VgoxTjVEZtEHCL/Uel0XpL+Yn
-         xk4Fvm1lU+YPPUEx+uXFidDFB69mwfxwTUrtfqaQGZXuygQ3dVDbtHRln78x/jT73CD8
-         SgBuBghOV4o/ZXfQuGz80WfDIcxXlc1CP50R3M9uQYztqAhsuXmP4u1pvYPsds7ZTZPA
-         2oLw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Pm8syhfGiv4iiicEYPxhpPRu6lRKP+oBUveOWCh0Kxc=;
+        b=TDVfs/dB0T/gJJqhAUgXH4OubDmuhWhpQbsr2+5uqV8bzpoIAvQl9ZOh9du31NTEoj
+         33RU2NuVwDMl6v9JGbx5HpTL6t7PjfXE5QufkABHXEa3l5qLG5IlaCm5kWVyR3I4Wi0U
+         9Q5eobaD5OK4LALEF6pRNWW6pRFCz0KWFjZXr8Ry9g3JTyweTbSOqYxPxWakCYNmfPmZ
+         VAatQmVGoqbUr267yhwu169XDPY2bes4YqN0U09l9UjYT7TevruAUVwB17iZojpL8P3e
+         bTx4Tc74MIvXaka845Hmpx1cJ+ej0VpZxgJwcgg+Y2TH/4vF6MCLrGZqavQTZafouuAp
+         HEIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=A1Lj5wdBwhWI3/NZis+5wQtu4fgI0QHg2XLOYoA+ZsE=;
-        b=Rv3alzYgTA3fQ2Mvnt19uxP0Ue0wxGFHR988AROq8DihVffVsdeLez25lIyX/yQaUn
-         JLUngAt1Ld9SJj1n16dyjG3VaDnz7GGQ+5hs/ulebeQjQZgtWRvfcqBPCzFnluIRwsm2
-         Qf90t1/PlOh82KQT0ZZJmMy10clRssEKc9BcI7SjEyEVLicpned0z6I1cHynP0d0+kEV
-         1aSgKyHqgr0PynrSW7V5OQ960WsWrhzOyG7Y73KBx1R78gkIQYc5riYZxz4DdxM+2nQ3
-         IByLTb0a8lbJC8ZJtJEKJUUTeOjgx8pwb9rp6u6xOUgw/1au7Pi622yfrdimTkzc45l8
-         vhCw==
-X-Gm-Message-State: AOAM532M7krzRvnk2+9R8k9j2bboy7A6mc48EWp3gVDLtQEM/ITgx+uu
-        KxzspELSHXlcmjMi2J54i3iZZD2NVcK7GQ==
-X-Google-Smtp-Source: ABdhPJxWC6wr6nJXVhJeawUoOdYJCvQp3PG0vNPu9Uinib12RLi2quurO+thENLVMhq8ulgNd1vh5L4lge37RA==
-Sender: "tstrudel via sendgmr" <tstrudel@legoland2.mtv.corp.google.com>
-X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:7220:84ff:fe09:fd20])
- (user=tstrudel job=sendgmr) by 2002:a25:16c4:: with SMTP id
- 187mr8772467ybw.39.1607129844956; Fri, 04 Dec 2020 16:57:24 -0800 (PST)
-Date:   Fri,  4 Dec 2020 16:57:16 -0800
-Message-Id: <20201205005716.307137-1-tstrudel@google.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Pm8syhfGiv4iiicEYPxhpPRu6lRKP+oBUveOWCh0Kxc=;
+        b=HIAcyNWuNfxMyRmPSsukN86JM9WjLX4MNPK0QHqt0g8JULkc33ZJ8gC/I4ZY3HhaSB
+         h/grFZI7GhfxOlNR5+49Fh1Bj6aq0lqByvdG9Zby82PF9ho+ETxpTVlDcl/yeZHvamzB
+         ivKIhWDhZVvuBzWu4YVDu7UxUYrSYc7QfTZ7AhNo3WOx0iFoPBqGN5Ak8fyLCKxWlQxU
+         xW93Z4jr/jQeymAZLCgMEVmN9CrPehHv2gbxxmTijioQzg8fWu8A0SEGzQ9oa0D4e53L
+         Djk8o6ZC1x+9uhkbaZbvdCC/4TpXMDkt2P+41n0azwGHzfXww/qMv4a8xJK/0Mw+O62A
+         KmIA==
+X-Gm-Message-State: AOAM530WN5lg3z5lpVNNqJidK5Fks+oSRRt2WtNZIlxEd2Y54GjgtruO
+        V4Xx56x2ynS2tBRVKBvoS7ZQXETCXeR3
+X-Google-Smtp-Source: ABdhPJzrFFb6XIWUXNQHQv8FFOAGDuk4ZRVPla3ARIEd0aVgg7RjNFvvqAvS8ubMDtKCzmIpf9Ny0M+dnMav
+Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
+X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
+ (user=furquan job=sendgmr) by 2002:a0c:e9c7:: with SMTP id
+ q7mr8757037qvo.9.1607129984904; Fri, 04 Dec 2020 16:59:44 -0800 (PST)
+Date:   Fri,  4 Dec 2020 16:59:41 -0800
+In-Reply-To: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
+Message-Id: <20201205005941.1427643-1-furquan@google.com>
 Mime-Version: 1.0
+References: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v3] PM: domains: create debugfs nodes when adding power domains
-From:   Thierry Strudel <tstrudel@google.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thierry Strudel <tstrudel@google.com>
+Subject: [PATCH v2] input: raydium_ts_i2c: Do not split tx transactions
+From:   Furquan Shaikh <furquan@google.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Furquan Shaikh <furquan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs nodes were created in genpd_debug_init alled in late_initcall
-preventing power domains registered though loadable modules to have
-a debugfs entry.
+Raydium device does not like splitting of tx transactions into
+multiple messages - one for the register address and one for the
+actual data. This results in incorrect behavior on the device side.
 
-Create/remove debugfs nodes when the power domain is added/removed
-to/from the internal gpd_list.
+This change updates raydium_i2c_read and raydium_i2c_write to create
+i2c_msg arrays separately and passes those arrays into
+raydium_i2c_xfer which decides based on the address whether the bank
+switch command should be sent. The bank switch header is still added
+by raydium_i2c_read and raydium_i2c_write to ensure that all these
+operations are performed as part of a single I2C transfer. It
+guarantees that no other transactions are initiated to any other
+device on the same bus after the bank switch command is sent.
 
-Signed-off-by: Thierry Strudel <tstrudel@google.com>
+Signed-off-by: Furquan Shaikh <furquan@google.com>
 ---
-v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
-v3: remove extra trailing char added by mistake in v2 - kernel test robot 
- drivers/base/power/domain.c | 83 ++++++++++++++++++++++++-------------
- 1 file changed, 55 insertions(+), 28 deletions(-)
+v2: Added comment in raydium_i2c_{send|read} about why regmap infrastructure
+cannot be used for this driver as it splits bank switch and i2c read/write
+into separate i2c_transfer calls which is known to create problems with
+Raydium device.
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 743268996336..3e40ef5cd9ab 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -24,6 +24,16 @@
+ drivers/input/touchscreen/raydium_i2c_ts.c | 126 ++++++++++++++-------
+ 1 file changed, 88 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index e694a9b2b1e5..603a948460d6 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -137,45 +137,25 @@ struct raydium_data {
+ 	bool wake_irq_enabled;
+ };
  
- #include "power.h"
- 
-+#ifdef CONFIG_DEBUG_FS
-+#include <linux/pm.h>
-+#include <linux/device.h>
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+#include <linux/init.h>
-+#include <linux/kobject.h>
-+static struct dentry *genpd_debugfs_dir;
-+#endif
-+
- #define GENPD_RETRY_MAX_MS	250		/* Approximate */
- 
- #define GENPD_DEV_CALLBACK(genpd, type, callback, dev)		\
-@@ -1880,6 +1890,21 @@ static void genpd_lock_init(struct generic_pm_domain *genpd)
- 	}
- }
- 
-+#ifdef CONFIG_DEBUG_FS
-+static void genpd_debug_add(struct generic_pm_domain *genpd);
-+
-+static void genpd_debug_remove(struct generic_pm_domain *genpd)
-+{
-+	struct dentry *d;
-+
-+	d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
-+	debugfs_remove(d);
-+}
-+#else
-+static void genpd_debug_add(struct generic_pm_domain *genpd) {}
-+static void genpd_debug_remove(struct generic_pm_domain *genpd) {}
-+#endif
-+
- /**
-  * pm_genpd_init - Initialize a generic I/O PM domain object.
-  * @genpd: PM domain object to initialize.
-@@ -1954,6 +1979,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 
- 	mutex_lock(&gpd_list_lock);
- 	list_add(&genpd->gpd_list_node, &gpd_list);
-+	genpd_debug_add(genpd);
- 	mutex_unlock(&gpd_list_lock);
- 
- 	return 0;
-@@ -1987,6 +2013,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
- 		kfree(link);
- 	}
- 
-+	genpd_debug_remove(genpd);
- 	list_del(&genpd->gpd_list_node);
- 	genpd_unlock(genpd);
- 	cancel_work_sync(&genpd->power_off_work);
-@@ -2893,14 +2920,6 @@ core_initcall(genpd_bus_init);
- /***        debugfs support        ***/
- 
- #ifdef CONFIG_DEBUG_FS
--#include <linux/pm.h>
--#include <linux/device.h>
--#include <linux/debugfs.h>
--#include <linux/seq_file.h>
--#include <linux/init.h>
--#include <linux/kobject.h>
--static struct dentry *genpd_debugfs_dir;
+-static int raydium_i2c_xfer(struct i2c_client *client,
+-			    u32 addr, void *data, size_t len, bool is_read)
+-{
+-	struct raydium_bank_switch_header {
+-		u8 cmd;
+-		__be32 be_addr;
+-	} __packed header = {
+-		.cmd = RM_CMD_BANK_SWITCH,
+-		.be_addr = cpu_to_be32(addr),
+-	};
 -
- /*
-  * TODO: This function is a slightly modified version of rtpm_status_show
-  * from sysfs.c, so generalize it.
-@@ -3177,9 +3196,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
- DEFINE_SHOW_ATTRIBUTE(devices);
- DEFINE_SHOW_ATTRIBUTE(perf_state);
+-	u8 reg_addr = addr & 0xff;
+-
+-	struct i2c_msg xfer[] = {
+-		{
+-			.addr = client->addr,
+-			.len = sizeof(header),
+-			.buf = (u8 *)&header,
+-		},
+-		{
+-			.addr = client->addr,
+-			.len = 1,
+-			.buf = &reg_addr,
+-		},
+-		{
+-			.addr = client->addr,
+-			.len = len,
+-			.buf = data,
+-			.flags = is_read ? I2C_M_RD : 0,
+-		}
+-	};
++/*
++ * Header to be sent for RM_CMD_BANK_SWITCH command. This is used by
++ * raydium_i2c_{read|send} below.
++ */
++struct __packed raydium_bank_switch_header {
++	u8 cmd;
++	__be32 be_addr;
++};
  
--static int __init genpd_debug_init(void)
-+static void genpd_debug_add(struct generic_pm_domain *genpd)
++static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
++			    struct i2c_msg *xfer, size_t xfer_count)
++{
++	int ret;
+ 	/*
+ 	 * If address is greater than 255, then RM_CMD_BANK_SWITCH needs to be
+ 	 * sent first. Else, skip the header i.e. xfer[0].
+ 	 */
+ 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
+-	size_t xfer_count = ARRAY_SIZE(xfer) - xfer_start_idx;
+-	int ret;
++	xfer_count -= xfer_start_idx;
+ 
+ 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
+ 	if (likely(ret == xfer_count))
+@@ -189,10 +169,46 @@ static int raydium_i2c_send(struct i2c_client *client,
  {
- 	struct dentry *d;
+ 	int tries = 0;
+ 	int error;
++	u8 *tx_buf;
++	u8 reg_addr = addr & 0xff;
 +
-+	if (!genpd_debugfs_dir)
-+		return;
++	tx_buf = kmalloc(len + 1, GFP_KERNEL);
++	if (!tx_buf)
++		return -ENOMEM;
 +
-+	d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
-+
-+	debugfs_create_file("current_state", 0444,
-+			    d, genpd, &status_fops);
-+	debugfs_create_file("sub_domains", 0444,
-+			    d, genpd, &sub_domains_fops);
-+	debugfs_create_file("idle_states", 0444,
-+			    d, genpd, &idle_states_fops);
-+	debugfs_create_file("active_time", 0444,
-+			    d, genpd, &active_time_fops);
-+	debugfs_create_file("total_idle_time", 0444,
-+			    d, genpd, &total_idle_time_fops);
-+	debugfs_create_file("devices", 0444,
-+			    d, genpd, &devices_fops);
-+	if (genpd->set_performance_state)
-+		debugfs_create_file("perf_state", 0444,
-+				    d, genpd, &perf_state_fops);
-+}
-+
-+static int __init genpd_debug_init(void)
-+{
- 	struct generic_pm_domain *genpd;
++	tx_buf[0] = reg_addr;
++	memcpy(tx_buf + 1, data, len);
  
- 	genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
-@@ -3187,25 +3231,8 @@ static int __init genpd_debug_init(void)
- 	debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
- 			    NULL, &summary_fops);
+ 	do {
+-		error = raydium_i2c_xfer(client, addr, (void *)data, len,
+-					 false);
++		struct raydium_bank_switch_header header = {
++			.cmd = RM_CMD_BANK_SWITCH,
++			.be_addr = cpu_to_be32(addr),
++		};
++
++		/*
++		 * Perform as a single i2c_transfer transaction to ensure that
++		 * no other I2C transactions are initiated on the bus to any
++		 * other device in between. Initiating transacations to other
++		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
++		 * issues. This is also why regmap infrastructure cannot be used
++		 * for this driver. Regmap handles page(bank) switch and reads
++		 * as separate i2c_transfer() operations. This can result in
++		 * problems if the Raydium device is on a shared I2C bus.
++		 */
++		struct i2c_msg xfer[] = {
++			{
++				.addr = client->addr,
++				.len = sizeof(header),
++				.buf = (u8 *)&header,
++			},
++			{
++				.addr = client->addr,
++				.len = len + 1,
++				.buf = tx_buf,
++			},
++		};
++
++		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
+ 		if (likely(!error))
+ 			return 0;
  
--	list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
--		d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
--
--		debugfs_create_file("current_state", 0444,
--				d, genpd, &status_fops);
--		debugfs_create_file("sub_domains", 0444,
--				d, genpd, &sub_domains_fops);
--		debugfs_create_file("idle_states", 0444,
--				d, genpd, &idle_states_fops);
--		debugfs_create_file("active_time", 0444,
--				d, genpd, &active_time_fops);
--		debugfs_create_file("total_idle_time", 0444,
--				d, genpd, &total_idle_time_fops);
--		debugfs_create_file("devices", 0444,
--				d, genpd, &devices_fops);
--		if (genpd->set_performance_state)
--			debugfs_create_file("perf_state", 0444,
--					    d, genpd, &perf_state_fops);
--	}
-+	list_for_each_entry(genpd, &gpd_list, gpd_list_node)
-+		genpd_debug_add(genpd);
+@@ -206,12 +222,46 @@ static int raydium_i2c_send(struct i2c_client *client,
+ static int raydium_i2c_read(struct i2c_client *client,
+ 			    u32 addr, void *data, size_t len)
+ {
+-	size_t xfer_len;
+ 	int error;
  
- 	return 0;
- }
+ 	while (len) {
+-		xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
+-		error = raydium_i2c_xfer(client, addr, data, xfer_len, true);
++		u8 reg_addr = addr & 0xff;
++		struct raydium_bank_switch_header header = {
++			.cmd = RM_CMD_BANK_SWITCH,
++			.be_addr = cpu_to_be32(addr),
++		};
++		size_t xfer_len = min_t(size_t, len, RM_MAX_READ_SIZE);
++
++		/*
++		 * Perform as a single i2c_transfer transaction to ensure that
++		 * no other I2C transactions are initiated on the bus to any
++		 * other device in between. Initiating transacations to other
++		 * devices after RM_CMD_BANK_SWITCH is sent is known to cause
++		 * issues. This is also why regmap infrastructure cannot be used
++		 * for this driver. Regmap handles page(bank) switch and writes
++		 * as separate i2c_transfer() operations. This can result in
++		 * problems if the Raydium device is on a shared I2C bus.
++		 */
++		struct i2c_msg xfer[] = {
++			{
++				.addr = client->addr,
++				.len = sizeof(header),
++				.buf = (u8 *)&header,
++			},
++			{
++				.addr = client->addr,
++				.len = 1,
++				.buf = &reg_addr,
++			},
++			{
++				.addr = client->addr,
++				.len = xfer_len,
++				.buf = data,
++				.flags = I2C_M_RD,
++			}
++		};
++
++		error = raydium_i2c_xfer(client, addr, xfer, ARRAY_SIZE(xfer));
+ 		if (unlikely(error))
+ 			return error;
+ 
 -- 
 2.29.2.576.ga3fc446d84-goog
 
