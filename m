@@ -2,221 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E765C2CF7E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5C62CF7DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729972AbgLEARU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:17:20 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:49085 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727686AbgLEART (ORCPT
+        id S1727821AbgLEAQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:16:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41140 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726730AbgLEAQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:17:19 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 1C725FF804;
-        Sat,  5 Dec 2020 00:16:37 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 2/2] ASoC: add simple-mux
-Date:   Sat,  5 Dec 2020 01:15:08 +0100
-Message-Id: <20201205001508.346439-2-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
-References: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
+        Fri, 4 Dec 2020 19:16:04 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B508H2h104220;
+        Fri, 4 Dec 2020 19:15:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=WgM17G/SUjkBI+KP1DQtZj0n82LAcN9MHV72Ex2/3bs=;
+ b=gJiJGbRJBZqonN2zy7rGQV+66+pBuTGaidQPzcxAisbAbxB7cmklxVhv4l0exZmoXQhe
+ NmuRvDCv1z1b4HwTo1I2+4burOiS6Agd/mq2VICoxtM8QT4poHSxHSXw2qUuYDGio2tK
+ g7m06dKTWRge21nsvXCaJOxwPYcIQrDctye7s72KvUS9s/Nz1bTcMZ0kLVz6rGA1MYIQ
+ XHYGcE2YLWtr3b8WGLeG71IrFSyUrxQKk+7RTmwaeTEFQsVveQz9iNPy4S493v7B50i8
+ DFlDpAJSqOlOgY1WgmqXLHTLlZkp1vQ2HnFLI2weaCCZXpANZ4aGA84x80cOGVkF76NB 9A== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 357h7gm53t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 19:15:12 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B507ctY015599;
+        Sat, 5 Dec 2020 00:15:11 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysv5r6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 00:15:11 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B50FB3262783756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Dec 2020 00:15:11 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20949112066;
+        Sat,  5 Dec 2020 00:15:11 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3B1E112063;
+        Sat,  5 Dec 2020 00:15:08 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sat,  5 Dec 2020 00:15:08 +0000 (GMT)
+Subject: Re: [PATCH v3 04/18] ibmvfc: add alloc/dealloc routines for SCSI
+ Sub-CRQ Channels
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201203020806.14747-1-tyreld@linux.ibm.com>
+ <20201203020806.14747-5-tyreld@linux.ibm.com>
+ <b372b257-49d8-16ae-2390-9617222e4cd9@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <42213f04-a971-add5-1295-e3df95e2530a@linux.ibm.com>
+Date:   Fri, 4 Dec 2020 16:15:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b372b257-49d8-16ae-2390-9617222e4cd9@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ suspectscore=2 spamscore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for simple mux driven by gpios. It currently only supports one
-gpio, muxing one of two inputs to a single output.
+On 12/4/20 6:47 AM, Brian King wrote:
+> On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
+>> @@ -4983,6 +4993,118 @@ static int ibmvfc_init_crq(struct ibmvfc_host *vhost)
+>>  	return retrc;
+>>  }
+>>  
+>> +static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+>> +				  int index)
+>> +{
+>> +	struct device *dev = vhost->dev;
+>> +	struct vio_dev *vdev = to_vio_dev(dev);
+>> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+>> +	int rc = -ENOMEM;
+>> +
+>> +	ENTER;
+>> +
+>> +	scrq->msgs = (struct ibmvfc_sub_crq *)get_zeroed_page(GFP_KERNEL);
+>> +	if (!scrq->msgs)
+>> +		return rc;
+>> +
+>> +	scrq->size = PAGE_SIZE / sizeof(*scrq->msgs);
+>> +	scrq->msg_token = dma_map_single(dev, scrq->msgs, PAGE_SIZE,
+>> +					 DMA_BIDIRECTIONAL);
+>> +
+>> +	if (dma_mapping_error(dev, scrq->msg_token))
+>> +		goto dma_map_failed;
+>> +
+>> +	rc = h_reg_sub_crq(vdev->unit_address, scrq->msg_token, PAGE_SIZE,
+>> +			   &scrq->cookie, &scrq->hw_irq);
+>> +
+>> +	if (rc) {
+>> +		dev_warn(dev, "Error registering sub-crq: %d\n", rc);
+>> +		if (rc == H_PARAMETER)
+>> +			dev_warn_once(dev, "Firmware may not support MQ\n");
+>> +		goto reg_failed;
+>> +	}
+>> +
+>> +	scrq->hwq_id = index;
+>> +	scrq->vhost = vhost;
+>> +
+>> +	LEAVE;
+>> +	return 0;
+>> +
+>> +reg_failed:
+>> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+>> +dma_map_failed:
+>> +	free_page((unsigned long)scrq->msgs);
+>> +	LEAVE;
+>> +	return rc;
+>> +}
+>> +
+>> +static void ibmvfc_deregister_scsi_channel(struct ibmvfc_host *vhost, int index)
+>> +{
+>> +	struct device *dev = vhost->dev;
+>> +	struct vio_dev *vdev = to_vio_dev(dev);
+>> +	struct ibmvfc_sub_queue *scrq = &vhost->scsi_scrqs.scrqs[index];
+>> +	long rc;
+>> +
+>> +	ENTER;
+>> +
+>> +	do {
+>> +		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address,
+>> +					scrq->cookie);
+>> +	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+>> +
+>> +	if (rc)
+>> +		dev_err(dev, "Failed to free sub-crq[%d]: rc=%ld\n", index, rc);
+>> +
+>> +	dma_unmap_single(dev, scrq->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
+>> +	free_page((unsigned long)scrq->msgs);
+>> +	LEAVE;
+>> +}
+>> +
+>> +static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
+>> +{
+>> +	int i, j;
+>> +
+>> +	ENTER;
+>> +
+>> +	vhost->scsi_scrqs.scrqs = kcalloc(IBMVFC_SCSI_HW_QUEUES,
+>> +					  sizeof(*vhost->scsi_scrqs.scrqs),
+>> +					  GFP_KERNEL);
+>> +	if (!vhost->scsi_scrqs.scrqs)
+>> +		return -1;
+>> +
+>> +	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
+>> +		if (ibmvfc_register_scsi_channel(vhost, i)) {
+>> +			for (j = i; j > 0; j--)
+>> +				ibmvfc_deregister_scsi_channel(vhost, j - 1);
+>> +			kfree(vhost->scsi_scrqs.scrqs);
+>> +			vhost->scsi_scrqs.scrqs = NULL;
+>> +			vhost->scsi_scrqs.active_queues = 0;
+>> +			LEAVE;
+>> +			return -1;
+>> +		}
+>> +	}
+>> +
+>> +	LEAVE;
+>> +	return 0;
+>> +}
+>> +
+>> +static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
+>> +{
+>> +	int i;
+>> +
+>> +	ENTER;
+>> +	if (!vhost->scsi_scrqs.scrqs)
+>> +		return;
+>> +
+>> +	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++)
+>> +		ibmvfc_deregister_scsi_channel(vhost, i);
+>> +
+>> +	kfree(vhost->scsi_scrqs.scrqs);
+>> +	vhost->scsi_scrqs.scrqs = NULL;
+>> +	vhost->scsi_scrqs.active_queues = 0;
+>> +	LEAVE;
+>> +}
+>> +
+>>  /**
+>>   * ibmvfc_free_mem - Free memory for vhost
+>>   * @vhost:	ibmvfc host struct
+>> @@ -5239,6 +5361,12 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>>  		goto remove_shost;
+>>  	}
+>>  
+>> +	if (vhost->mq_enabled) {
+>> +		rc = ibmvfc_init_sub_crqs(vhost);
+>> +		if (rc)
+>> +			dev_warn(dev, "Failed to allocate Sub-CRQs. rc=%d\n", rc);
+> 
+> So, I think if you end up down this path, you will have:
+> 
+> vhost->scsi_scrqs.scrqs == NULL
+> vhost->scsi_scrqs.active_queues == 0
+> 
+> And you proceed with discovery. You will proceed with enquiry and channel setup.
+> Then, I think you could end up in queuecommand doing this
+> 
+> evt->hwq = hwq % vhost->scsi_scrqs.active_queues;
+> 
+> And that is a divide by zero...
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- sound/soc/codecs/Kconfig      |   5 ++
- sound/soc/codecs/Makefile     |   4 ++
- sound/soc/codecs/simple-mux.c | 124 ++++++++++++++++++++++++++++++++++
- 3 files changed, 133 insertions(+)
- create mode 100644 sound/soc/codecs/simple-mux.c
+Actually, we would bite the dust earlier than that but it requires the sub-crq
+allocation to fail for a reason other than lack of firmware support. In the no
+firmware support case the VIOS doesn't report channel support and we skip the
+enquiry and setup steps. However, in the case where there is support and
+allocation fails we would dereference a NULL pointer trying to write the channel
+sub-crq handles into the channel_setup MAD.
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 34c6dd04b85a..3847e490f795 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -181,6 +181,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_SGTL5000
- 	imply SND_SOC_SI476X
- 	imply SND_SOC_SIMPLE_AMPLIFIER
-+	imply SND_SOC_SIMPLE_MUX
- 	imply SND_SOC_SIRF_AUDIO_CODEC
- 	imply SND_SOC_SPDIF
- 	imply SND_SOC_SSM2305
-@@ -1240,6 +1241,10 @@ config SND_SOC_SIMPLE_AMPLIFIER
- 	tristate "Simple Audio Amplifier"
- 	select GPIOLIB
- 
-+config SND_SOC_SIMPLE_MUX
-+	tristate "Simple Audio Mux"
-+	select GPIOLIB
-+
- config SND_SOC_SIRF_AUDIO_CODEC
- 	tristate "SiRF SoC internal audio codec"
- 	select REGMAP_MMIO
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 11ce98c25d6c..90f1a2b7ade0 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -305,6 +305,8 @@ snd-soc-tpa6130a2-objs := tpa6130a2.o
- snd-soc-tas2552-objs := tas2552.o
- snd-soc-tas2562-objs := tas2562.o
- snd-soc-tas2764-objs := tas2764.o
-+# Mux
-+snd-soc-simple-mux-objs := simple-mux.o
- 
- obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
- obj-$(CONFIG_SND_SOC_AB8500_CODEC)	+= snd-soc-ab8500-codec.o
-@@ -613,3 +615,5 @@ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
- obj-$(CONFIG_SND_SOC_MAX98504)	+= snd-soc-max98504.o
- obj-$(CONFIG_SND_SOC_SIMPLE_AMPLIFIER)	+= snd-soc-simple-amplifier.o
- obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
-+# Mux
-+obj-$(CONFIG_SND_SOC_SIMPLE_MUX)	+= snd-soc-simple-mux.o
-diff --git a/sound/soc/codecs/simple-mux.c b/sound/soc/codecs/simple-mux.c
-new file mode 100644
-index 000000000000..e0a09dadfa7c
---- /dev/null
-+++ b/sound/soc/codecs/simple-mux.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2020 Bootlin SA
-+ * Author: Alexandre Belloni <alexandre.belloni@bootlin.com>
-+ */
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/regulator/consumer.h>
-+#include <sound/soc.h>
-+
-+struct simple_mux {
-+	struct gpio_desc *gpiod_mux;
-+	unsigned int mux;
-+};
-+
-+static const char * const simple_mux_texts[] = {
-+	"Input 1", "Input 2"
-+};
-+
-+static SOC_ENUM_SINGLE_EXT_DECL(simple_mux_enum, simple_mux_texts);
-+
-+static int simple_mux_control_get(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct snd_soc_component *c = snd_soc_dapm_to_component(dapm);
-+	struct simple_mux *priv = snd_soc_component_get_drvdata(c);
-+
-+	ucontrol->value.enumerated.item[0] = priv->mux;
-+
-+	return 0;
-+}
-+
-+static int simple_mux_control_put(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	struct snd_soc_component *c = snd_soc_dapm_to_component(dapm);
-+	struct simple_mux *priv = snd_soc_component_get_drvdata(c);
-+
-+	if (ucontrol->value.enumerated.item[0] > e->items)
-+		return -EINVAL;
-+
-+	if (priv->mux == ucontrol->value.enumerated.item[0])
-+		return 0;
-+
-+	priv->mux = ucontrol->value.enumerated.item[0];
-+
-+	gpiod_set_value_cansleep(priv->gpiod_mux, priv->mux);
-+
-+	return snd_soc_dapm_mux_update_power(dapm, kcontrol,
-+					     ucontrol->value.enumerated.item[0],
-+					     e, NULL);
-+}
-+
-+static const struct snd_kcontrol_new simple_mux_mux =
-+	SOC_DAPM_ENUM_EXT("Muxer", simple_mux_enum, simple_mux_control_get, simple_mux_control_put);
-+
-+static const struct snd_soc_dapm_widget simple_mux_dapm_widgets[] = {
-+	SND_SOC_DAPM_INPUT("IN1"),
-+	SND_SOC_DAPM_INPUT("IN2"),
-+	SND_SOC_DAPM_MUX("MUX", SND_SOC_NOPM, 0, 0, &simple_mux_mux),
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+};
-+
-+static const struct snd_soc_dapm_route simple_mux_dapm_routes[] = {
-+	{ "OUT", NULL, "MUX" },
-+	{ "MUX", "Input 1", "IN1" },
-+	{ "MUX", "Input 2", "IN2" },
-+};
-+
-+static const struct snd_soc_component_driver simple_mux_component_driver = {
-+	.dapm_widgets		= simple_mux_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(simple_mux_dapm_widgets),
-+	.dapm_routes		= simple_mux_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(simple_mux_dapm_routes),
-+};
-+
-+static int simple_mux_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct simple_mux *priv;
-+	int err;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(dev, priv);
-+
-+	priv->gpiod_mux = devm_gpiod_get(dev, "mux", GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->gpiod_mux)) {
-+		err = PTR_ERR(priv->gpiod_mux);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get 'mux' gpio: %d", err);
-+		return err;
-+	}
-+
-+	return devm_snd_soc_register_component(dev, &simple_mux_component_driver, NULL, 0);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id simple_mux_ids[] = {
-+	{ .compatible = "simple-audio-mux", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, simple_mux_ids);
-+#endif
-+
-+static struct platform_driver simple_mux_driver = {
-+	.driver = {
-+		.name = "simple-mux",
-+		.of_match_table = of_match_ptr(simple_mux_ids),
-+	},
-+	.probe = simple_mux_probe,
-+};
-+
-+module_platform_driver(simple_mux_driver);
-+
-+MODULE_DESCRIPTION("ASoC Simple Audio Mux driver");
-+MODULE_AUTHOR("Alexandre Belloni <alexandre.belloni@bootlin.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.28.0
+> 
+> I wonder if it would be better in this scenario where registering the sub crqs fails,
+> if you just did:
+> 
+> vhost->do_enquiry = 0;
+> vhost->mq_enabled = 0;
+> vhost->using_channels = 0;
+> 
+> It looks like you only try to allocate the subcrqs in probe, so if that fails, we'd
+> never end up using mq, so just disabling in this case seems reasonable.
+
+This breaks migration from legacy to a target with channel support. It appears
+that migration for that case is already broken anyways. Need to rethink sub-crq
+setup. Maybe best to actually do it during the negoation steps instead of in probe.
+
+-Tyrel
+
+> 
+> Thanks,
+> 
+> Brian
+> 
 
