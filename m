@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C89F2CFBE2
+	by mail.lfdr.de (Postfix) with ESMTP id CC8D62CFBE3
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 17:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgLEQDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 11:03:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42094 "EHLO
+        id S1727247AbgLEQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 11:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727223AbgLEP3O (ORCPT
+        with ESMTP id S1727288AbgLEP3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 5 Dec 2020 10:29:14 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5E3C09424B
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 05:03:00 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id j13so4775519pjz.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 05:03:00 -0800 (PST)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A642C09425C
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 05:03:43 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id s21so5734307pfu.13
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 05:03:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JLGZC7sv5nAUpuhCShqzZAhxLbvYoPKLszNPrb+RhvY=;
-        b=iXNSJ08wIZGakHjgbIcjXIwKHGYw6UmpSfo0Eb6nim+XGWMNO6A9YVj0zeZ0dYSQFb
-         VCVr64gPtj6hVu4sogDtwUSNROzxv6XvOqYT+pBJFDMLmdj3FCafR6WDEUGrUGpa/Gry
-         XXAUfe11y0QLCmPB2oAJqeUXRXxHhQFQISCUJ2uu0NDV/c2iML7Jx2DS5LxoZdVrz+Dt
-         JWQKZovT5QiiunDzry2OtZZ0K6Qd39WLeMyA2wk/HngpFlpKfv9fU/7JTGbFE+lpi8zb
-         9xP0mmYdGoGIHA3F9+ShWXuADJv7UxVumiQ3BAl7ffDiAPAwAgcfHt+lMzY/FNoFgLKl
-         JnvQ==
+        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
+        b=neYDpg4r2y9kA8bSIzVIJ2XJBnhDklsaXMPeNsZUDajIujwhGMeEFhY+XngVY5qv8u
+         IYh5151ZcZtLBQsFRPs2SNjyK1NhJq+NVy4gswyaAdkA94CsNPNg/atj6y+aNTBSlYD6
+         gNQrw6rGfg8uRBsZgcdDNhrcRCWvx5RjKJVD3sAabpSf3vnHCWmmGbHI3pywzLcmNDOZ
+         sP2YEZeBeHFVXYlVwSw1cKnhg4GAgCFJVxmzFgOOwCzgTMcu7CxRdpdjfhnn+IkHGoqI
+         P/Z7nXl9EfZYolJ9/kaAWPLl8ZUvmXv3zGIY+9XoTHJKnfUatUnrDe/8gBSjCCnvGYaM
+         MxqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JLGZC7sv5nAUpuhCShqzZAhxLbvYoPKLszNPrb+RhvY=;
-        b=ourG5mDcYBf1KF63YfcN/H2ApZAcIMl/jcuiHOwG9XpRj8NTwQWGhLgFY+8VpHi1AB
-         FL3YtCFaV8sTYhAHqFm0XLK8TbB8l026hFXcSYfx1FOvnepbJhze/SSwK5XvFisWbtv+
-         dZQNnY5CDt9rhwcn2fHIEuZ8bTVSMVDPhWpuPx9kBOthdcW0UcZ+jthyB5V6LKxWINLJ
-         J+yQBOwJ8GLKeCNMQ2I6IRrzX4/vgZzUhjCZRCQo30ZPZ0oLdx+MdgFp2+yuA4wqUz1J
-         C0CjQd6080ukCpuPDbqCmDKDaZ2/lo1Qvq5bJqiEdghM5EMiOo7KQWpwLTe2v+2OfDBN
-         6dDA==
-X-Gm-Message-State: AOAM533ddJDV4OvMLE0z8oADxio08WAA4YMEdjfWew29xb31JGKy7s4K
-        hBLWNcoJv53FTZxUtJYOY9EM6g==
-X-Google-Smtp-Source: ABdhPJw6o9CKoD5YBzWC7VW/NxM7IRg3JXfDBPySbZAj0r3+Q0HFX4zEhlsXQ8gE6TyP2+R2ML2Aow==
-X-Received: by 2002:a17:902:b58a:b029:d7:d45c:481c with SMTP id a10-20020a170902b58ab02900d7d45c481cmr8074051pls.55.1607173380527;
-        Sat, 05 Dec 2020 05:03:00 -0800 (PST)
+        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
+        b=IFLuK5UjKHHM1t0e94Fo/1QPvV+rDkqyPgPjYx1wwdH3MiG6EEks1UD96pAxnRzVHN
+         6bkvCjXUV/0GdExCXezQWWocB6Dnnu7VmLYnvfViX5B46QxzInaKEpr//iyP/mD55IYw
+         D90rjR0YbeZB3Z+mm4bhnkoKWVSNjiUso5+j5agSJN5WWg317ktxg4A2/JKFIQkvqH2A
+         7KmW5KkEBe5I5nAtUDNe3ATEQCDpUR7NR5y5ryYNBy6l1moCnEQPOGVCKCs3iSwFUTLP
+         axfi1BWZghzW8kUcr92jkJ6RajLmAuFTDLIdMcv/fDxoKjvXHp2tXiQJfSOFbuir7H6y
+         YSuA==
+X-Gm-Message-State: AOAM530Rj2mailRHR59aUmb4xJF+Ryj9R4NSJErJTkDcVKKOXwWPjhcF
+        UJF+EtY7NrtfJ+/SNNbEbnhBSw==
+X-Google-Smtp-Source: ABdhPJwqvYfk7WrXCeek5zIgmaL6JHMd+SCgDfry5zzeu3DJFq3BmX1JwmtE9dLTcxi/BJFMeSUD5A==
+X-Received: by 2002:a62:1b06:0:b029:19d:d05d:f67a with SMTP id b6-20020a621b060000b029019dd05df67amr2471401pfb.78.1607173423110;
+        Sat, 05 Dec 2020 05:03:43 -0800 (PST)
 Received: from localhost.bytedance.net ([103.136.220.120])
-        by smtp.gmail.com with ESMTPSA id kb12sm5047790pjb.2.2020.12.05.05.02.52
+        by smtp.gmail.com with ESMTPSA id kb12sm5047790pjb.2.2020.12.05.05.03.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 05 Dec 2020 05:02:59 -0800 (PST)
+        Sat, 05 Dec 2020 05:03:42 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -59,9 +59,9 @@ To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 2/9] mm: memcontrol: fix NR_ANON_THPS account
-Date:   Sat,  5 Dec 2020 21:02:17 +0800
-Message-Id: <20201205130224.81607-3-songmuchun@bytedance.com>
+Subject: [PATCH 7/9] mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
+Date:   Sat,  5 Dec 2020 21:02:22 +0800
+Message-Id: <20201205130224.81607-8-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20201205130224.81607-1-songmuchun@bytedance.com>
 References: <20201205130224.81607-1-songmuchun@bytedance.com>
@@ -71,32 +71,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
-by one rather than nr_pages.
+Convert NR_SHMEM_PMDMAPPED account to pages.
 
-Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- mm/memcontrol.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/base/node.c | 3 +--
+ fs/proc/meminfo.c   | 2 +-
+ mm/page_alloc.c     | 3 +--
+ mm/rmap.c           | 6 ++++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 22d9bd688d6d..695dedf8687a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5634,10 +5634,8 @@ static int mem_cgroup_move_account(struct page *page,
- 			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
- 			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
- 			if (PageTransHuge(page)) {
--				__mod_lruvec_state(from_vec, NR_ANON_THPS,
--						   -nr_pages);
--				__mod_lruvec_state(to_vec, NR_ANON_THPS,
--						   nr_pages);
-+				__dec_lruvec_state(from_vec, NR_ANON_THPS);
-+				__inc_lruvec_state(to_vec, NR_ANON_THPS);
- 			}
- 
- 		}
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index a64f9c5484a0..fe90888f90a8 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -463,8 +463,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 			     ,
+ 			     nid, K(node_page_state(pgdat, NR_ANON_THPS)),
+ 			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS)),
+-			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
+-				    HPAGE_PMD_NR),
++			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
+ 			     nid, K(node_page_state(pgdat, NR_FILE_THPS)),
+ 			     nid, K(node_page_state(pgdat, NR_FILE_PMDMAPPED) *
+ 				    HPAGE_PMD_NR)
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 574779b6e48c..b2bff8359497 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -133,7 +133,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "ShmemHugePages: ",
+ 		    global_node_page_state(NR_SHMEM_THPS));
+ 	show_val_kb(m, "ShmemPmdMapped: ",
+-		    global_node_page_state(NR_SHMEM_PMDMAPPED) * HPAGE_PMD_NR);
++		    global_node_page_state(NR_SHMEM_PMDMAPPED));
+ 	show_val_kb(m, "FileHugePages:  ",
+ 		    global_node_page_state(NR_FILE_THPS));
+ 	show_val_kb(m, "FilePmdMapped:  ",
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 8fb9f3d38b67..ddaa1dcd6e38 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5568,8 +5568,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 			K(node_page_state(pgdat, NR_SHMEM)),
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 			K(node_page_state(pgdat, NR_SHMEM_THPS)),
+-			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
+-					* HPAGE_PMD_NR),
++			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
+ 			K(node_page_state(pgdat, NR_ANON_THPS)),
+ #endif
+ 			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
+diff --git a/mm/rmap.c b/mm/rmap.c
+index f59e92e26b61..3089ad6bf468 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1219,7 +1219,8 @@ void page_add_file_rmap(struct page *page, bool compound)
+ 		if (!atomic_inc_and_test(compound_mapcount_ptr(page)))
+ 			goto out;
+ 		if (PageSwapBacked(page))
+-			__inc_node_page_state(page, NR_SHMEM_PMDMAPPED);
++			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
++						HPAGE_PMD_NR);
+ 		else
+ 			__inc_node_page_state(page, NR_FILE_PMDMAPPED);
+ 	} else {
+@@ -1260,7 +1261,8 @@ static void page_remove_file_rmap(struct page *page, bool compound)
+ 		if (!atomic_add_negative(-1, compound_mapcount_ptr(page)))
+ 			return;
+ 		if (PageSwapBacked(page))
+-			__dec_node_page_state(page, NR_SHMEM_PMDMAPPED);
++			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
++						-HPAGE_PMD_NR);
+ 		else
+ 			__dec_node_page_state(page, NR_FILE_PMDMAPPED);
+ 	} else {
 -- 
 2.11.0
 
