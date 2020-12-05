@@ -2,129 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA9B2CFFC1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 00:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4AA2CFFC6
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 00:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgLEX0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 18:26:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:55620 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbgLEX03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 18:26:29 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607210746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OF/yxcOl24sCZMNn4pFXh470oPoxUajiPWkLNQAbERU=;
-        b=qM/BWflaQxEXLQ8tIgzhYUuf1xoW7bdG4CvFJrmU0VDLsTE391cb0fqh1cULmil6JPkN5H
-        CjM9f71zxVI6Sk6dpZdpMv1/Dmw/Ki6KPTrX209JefSyxBKR9gikRtVtEd2SDYLG5WPI34
-        6CcwxqoVWHvlbSCVv7N6hjn1WunbYGvZ0LdHs9tCkU7kmNqqKPy+2SusNfTxHqzjDH8xHD
-        Y1qThnsAJvud0e+1SToR7En8O3qIzL05tGCeqq6uPq9qkX5Rgy3UCVdCx6Yovo0QV/UY4c
-        vLzoVpeqNJv/og+qJE/8OA0XGq+IVUZNcsbicbnWcoQYUKcC8m2Dk6fgKORH0Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607210746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OF/yxcOl24sCZMNn4pFXh470oPoxUajiPWkLNQAbERU=;
-        b=F0Wpl6o+XvAhNAela/BGvtsgKXboiTn2PGy6xEd0AhejBgQ9J5NvG+DtqLBW5WYakJVmng
-        7IXzd1Pi4pU5X8CQ==
-To:     Pavel Machek <pavel@ucw.cz>, Alex Belits <abelits@marvell.com>
-Cc:     "nitesh\@redhat.com" <nitesh@redhat.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "trix\@redhat.com" <trix@redhat.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterx\@redhat.com" <peterx@redhat.com>,
-        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti\@redhat.com" <mtosatti@redhat.com>,
-        "will\@kernel.org" <will@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "leon\@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld\@redhat.com" <pauld@redhat.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 0/9] "Task_isolation" mode
-In-Reply-To: <20201205204049.GA8578@amd>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com> <20201205204049.GA8578@amd>
-Date:   Sun, 06 Dec 2020 00:25:45 +0100
-Message-ID: <87h7oz96o6.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1726057AbgLEXeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 18:34:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725270AbgLEXeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 18:34:16 -0500
+Subject: Re: [PULL REQUEST] i2c for 5.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607211216;
+        bh=3XssecLcFa7MgOZUiYOINuudNR0yZjnyeJ6ScDefPXU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=NT1ck/DsOPuL1ox1QMSsEnjjmggs3roNy3nusGoY+u+J0vpQVmhoVK27ppqJuUGzT
+         fNW3R5iJYiOfCseysVO6Va/WutIgcPLPfPbGY8E4Yt0ptammF607C6tO6MIAEBdXDn
+         1F6qtKaX46V3GtlhconSF8kVSBaZzv9gdDrtU8vx1M/nAqN1NvvZ/m3yZzfHFgyagQ
+         /h0dpWZxRH7S2VvObBUrdz520ZXSvh3hr5peR4LeOQY+vQTPK1ypAtR2BQELBtiW5G
+         VQs/wdBVBFKRfKZt1BqJnKLcFjpdYZQ9nFBtxG/d8rzlb3/6MQiJ0AIUfcytCd4kHP
+         Izgj84nuehXmA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201205221143.GA19137@kunai>
+References: <20201205221143.GA19137@kunai>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201205221143.GA19137@kunai>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+X-PR-Tracked-Commit-Id: 2bf9545626f8d09f552ab86d0047a415fe9a07a0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 33256ce194110874d4bc90078b577c59f9076c59
+Message-Id: <160721121599.28754.18135648875618116594.pr-tracker-bot@kernel.org>
+Date:   Sat, 05 Dec 2020 23:33:35 +0000
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel,
+The pull request you sent on Sat, 5 Dec 2020 23:11:43 +0100:
 
-On Sat, Dec 05 2020 at 21:40, Pavel Machek wrote:
-> So... what kind of guarantees does this aim to provide / what tasks it
-> is useful for?
->
-> For real time response, we have other approaches.
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
 
-Depends on your requirements. Some problems are actually better solved
-with busy polling. See below.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/33256ce194110874d4bc90078b577c59f9076c59
 
-> If you want to guarantee performnace of the "isolated" task... I don't
-> see how that works. Other tasks on the system still compete for DRAM
-> bandwidth, caches, etc...
+Thank you!
 
-Applications which want to run as undisturbed as possible. There is
-quite a range of those:
-
-  - Hardware in the loop simulation is today often done with that crude
-    approach of "offlining" a CPU and then instead of playing dead
-    jumping to a preloaded bare metal executable. That's a horrible hack
-    and impossible to debug, but gives them the results they need to
-    achieve. These applications are well optimized vs. cache and memory
-    foot print, so they don't worry about these things too much and they
-    surely don't run on SMI and BIOS value add inflicted machines.
-
-    Don't even think about waiting for an interrupt to achieve what
-    these folks are doing. So no, there are problems which a general
-    purpose realtime OS cannot solve ever.
-
-  - HPC computations on large data sets. While the memory foot print is
-    large the access patterns are cache optimized. 
-
-    The problem there is that any unnecessary IPI, tick interrupt or
-    whatever nuisance is disturbing the carefully optimized cache usage
-    and alone getting rid of the timer interrupt gained them measurable
-    performance. Even very low single digit percentage of runtime saving
-    is valuable for these folks because the compute time on such beasts
-    is expensive.
-
-  - Realtime guests in KVM. With posted interrupts and a fully populated
-    host side page table there is no point in running host side
-    interrupts or IPIs for random accounting or whatever purposes as
-    they affect the latency in the guest. With all the side effects
-    mitigated and a properly set up guest and host it is possible to get
-    to a zero exit situation after the bootup phase which means pretty
-    much matching bare metal behaviour.
-
-    Yes, you can do that with e.g. Jailhouse as well, but you lose lots
-    of the fancy things KVM provides. And people care about these not
-    just because they are fancy. They care because their application
-    scenario needs them.
-
-There are more reasons why people want to be able to get as much
-isolation from the OS as possible but at the same time have a sane
-execution environment, debugging, performance monitoring and the OS
-provided protection mechanisms instead of horrible hacks.
-
-Isolation makes sense for a range of applications and there is no reason
-why Linux should not support them. 
-
-Thanks,
-
-        tglx
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
