@@ -2,52 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFAF2CF7E1
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4771F2CF7E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgLEARM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 19:17:12 -0500
-Received: from smtprelay0108.hostedemail.com ([216.40.44.108]:43710 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726151AbgLEARL (ORCPT
+        id S1730598AbgLEARi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 19:17:38 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17392 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726508AbgLEARi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:17:11 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id D82A1837F24A;
-        Sat,  5 Dec 2020 00:16:30 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1559:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3866:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:9025:9391:10004:10400:10848:11658:11914:12043:12048:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14181:14659:14721:14777:21080:21433:21627:21660:21811:21819:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: bone03_630ff5d273c8
-X-Filterd-Recvd-Size: 1253
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  5 Dec 2020 00:16:29 +0000 (UTC)
-Message-ID: <8b81eed584f971b1dd61132ca4d04c0853653b31.camel@perches.com>
-Subject: Re: [PATCH] staging:rkvdec: Fixed "replace comma with semicolon"
- Warning:
-From:   Joe Perches <joe@perches.com>
-To:     Travis Carter <traviscarter2@gmail.com>, ezequiel@collabora.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Date:   Fri, 04 Dec 2020 16:16:28 -0800
-In-Reply-To: <20201204233743.GA8530@linuxmint-midtower-pc>
-References: <20201204233743.GA8530@linuxmint-midtower-pc>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 4 Dec 2020 19:17:38 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B501PBj128630;
+        Fri, 4 Dec 2020 19:16:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8wxorAXIC7ZiFl4r0LxfUGzOj9+G63ZI658uKzqhNR4=;
+ b=nj0m7RQ8rE9GR6YV8/sMOATJ+yVslergRPrhizAhDoFUliJApbC8Icq2GNvXgfFlpvVk
+ cWtf2Dh98UXyGhuH+8nKAXC1bF+AAR2p8AqPybKbriHi2M3uYsEM3hPIJU7rhPtR0MZj
+ l/0MoSxqEqADNkjEhkvpa+EJG4TaQQsoDaTBAl2KzaVFyUvkIdctPgV1dvQJCyG3LSof
+ AjECUx51kefpFsM7qzkX+nqFf1Vu335Jitx5knBm22jN+to11o9ddCm0bCJVUW5JHy7W
+ XhXy8HFPv+CAl9RiXPcJ77hIRFj1YqERViEoD2TwElluXn1NklRjc4zNLaL0KIhDwEee Ug== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 357m8gbma2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Dec 2020 19:16:50 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B507gq0015623;
+        Sat, 5 Dec 2020 00:16:50 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 354ysv5rjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Dec 2020 00:16:50 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B50Gncp4850412
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Dec 2020 00:16:50 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E22E2112062;
+        Sat,  5 Dec 2020 00:16:49 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF613112067;
+        Sat,  5 Dec 2020 00:16:48 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sat,  5 Dec 2020 00:16:48 +0000 (GMT)
+Subject: Re: [PATCH v3 06/18] ibmvfc: add handlers to drain and complete
+ Sub-CRQ responses
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201203020806.14747-1-tyreld@linux.ibm.com>
+ <20201203020806.14747-7-tyreld@linux.ibm.com>
+ <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <1961b4e3-0732-ac5c-e691-2fa02218ac35@linux.ibm.com>
+Date:   Fri, 4 Dec 2020 16:16:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <3fe8683a-47f6-8713-762a-02c57c2e4ec2@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 clxscore=1015
+ adultscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012040134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-04 at 17:37 -0600, Travis Carter wrote:
-> drivers/staging/media/rkvdec/rkvdec.c
+On 12/4/20 6:51 AM, Brian King wrote:
+> On 12/2/20 8:07 PM, Tyrel Datwyler wrote:
+>> The logic for iterating over the Sub-CRQ responses is similiar to that
+>> of the primary CRQ. Add the necessary handlers for processing those
+>> responses.
+>>
+>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> ---
+>>  drivers/scsi/ibmvscsi/ibmvfc.c | 80 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 80 insertions(+)
+>>
+>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> index e082935f56cf..b61ae1df21e5 100644
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> @@ -3381,6 +3381,86 @@ static int ibmvfc_toggle_scrq_irq(struct ibmvfc_sub_queue *scrq, int enable)
+>>  	return rc;
+>>  }
+>>  
+>> +static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost)
+>> +{
+>> +	struct ibmvfc_event *evt = (struct ibmvfc_event *)be64_to_cpu(crq->ioba);
+>> +	unsigned long flags;
+>> +
+>> +	switch (crq->valid) {
+>> +	case IBMVFC_CRQ_CMD_RSP:
+>> +		break;
+>> +	case IBMVFC_CRQ_XPORT_EVENT:
+>> +		return;
+>> +	default:
+>> +		dev_err(vhost->dev, "Got and invalid message type 0x%02x\n", crq->valid);
+>> +		return;
+>> +	}
+>> +
+>> +	/* The only kind of payload CRQs we should get are responses to
+>> +	 * things we send. Make sure this response is to something we
+>> +	 * actually sent
+>> +	 */
+>> +	if (unlikely(!ibmvfc_valid_event(&vhost->pool, evt))) {
+>> +		dev_err(vhost->dev, "Returned correlation_token 0x%08llx is invalid!\n",
+>> +			crq->ioba);
+>> +		return;
+>> +	}
+>> +
+>> +	if (unlikely(atomic_read(&evt->free))) {
+>> +		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
+>> +			crq->ioba);
+>> +		return;
+>> +	}
+>> +
+>> +	del_timer(&evt->timer);
+>> +	list_del(&evt->queue);
+>> +	ibmvfc_trc_end(evt);> +	spin_unlock_irqrestore(vhost->host->host_lock, flags);
+> 
+> You can't do this here... You are grabbing the host lock in ibmvfc_drain_sub_crq
+> and saving the irqflags to a local in that function, then doing a spin_unlock_irqrestore
+> and restoring irqflags using an uninitialized local in this function...
+> 
+> I'm assuming this will get sorted out with the locking changes we've been discussing off-list...
 
-You might consider using Julia Lawall's cocci script for all of
-drivers/staging or subsets of staging like drivers/staging/media/
+Correct, moving to per-queue locks and flags stored in the queue struct.
 
-https://lore.kernel.org/lkml/1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr/
+-Tyrel
 
+> 
+> 
+>> +	evt->done(evt);
+>> +	spin_lock_irqsave(vhost->host->host_lock, flags);
+>> +}
+>> +
+>> +static struct ibmvfc_crq *ibmvfc_next_scrq(struct ibmvfc_sub_queue *scrq)
+>> +{
+>> +	struct ibmvfc_crq *crq;
+>> +
+>> +	crq = &scrq->msgs[scrq->cur].crq;
+>> +	if (crq->valid & 0x80) {
+>> +		if (++scrq->cur == scrq->size)
+>> +			scrq->cur = 0;
+>> +		rmb();
+>> +	} else
+>> +		crq = NULL;
+>> +
+>> +	return crq;
+>> +}
+>> +
+>> +static void ibmvfc_drain_sub_crq(struct ibmvfc_sub_queue *scrq)
+>> +{
+>> +	struct ibmvfc_crq *crq;
+>> +	unsigned long flags;
+>> +	int done = 0;
+>> +
+>> +	spin_lock_irqsave(scrq->vhost->host->host_lock, flags);
+>> +	while (!done) {
+>> +		while ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
+>> +			ibmvfc_handle_scrq(crq, scrq->vhost);
+>> +			crq->valid = 0;
+>> +			wmb();
+>> +		}
+>> +
+>> +		ibmvfc_toggle_scrq_irq(scrq, 1);
+>> +		if ((crq = ibmvfc_next_scrq(scrq)) != NULL) {
+>> +			ibmvfc_toggle_scrq_irq(scrq, 0);
+>> +			ibmvfc_handle_scrq(crq, scrq->vhost);
+>> +			crq->valid = 0;
+>> +			wmb();
+>> +		} else
+>> +			done = 1;
+>> +	}
+>> +	spin_unlock_irqrestore(scrq->vhost->host->host_lock, flags);
+>> +}
+>> +
+>>  /**
+>>   * ibmvfc_init_tgt - Set the next init job step for the target
+>>   * @tgt:		ibmvfc target struct
+>>
+> 
+> 
 
