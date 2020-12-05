@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF7D2CFEBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BB82CFEB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 21:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgLEUSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 15:18:17 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:47905 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgLEUSQ (ORCPT
+        id S1726298AbgLEURM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 15:17:12 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:53822 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725270AbgLEURM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 15:18:16 -0500
-Received: from [192.168.1.155] ([95.117.6.188]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MbRwP-1k9pJD3wRl-00bwGo; Sat, 05 Dec 2020 21:15:31 +0100
-Subject: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     corbet@lwn.net, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, mst@redhat.com, jasowang@redhat.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net>
-Date:   Sat, 5 Dec 2020 21:15:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sat, 5 Dec 2020 15:17:12 -0500
+X-IronPort-AV: E=Sophos;i="5.78,395,1599516000"; 
+   d="scan'208";a="481316044"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Dec 2020 21:16:04 +0100
+Date:   Sat, 5 Dec 2020 21:16:04 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+In-Reply-To: <87mtys8268.fsf@nanos.tec.linutronix.de>
+Message-ID: <alpine.DEB.2.22.394.2012052115430.2754@hadrien>
+References: <20201201144529.GA6786@Red> <87v9dlfthf.fsf@nanos.tec.linutronix.de> <20201202195501.GA29296@Red> <877dpzexfr.fsf@nanos.tec.linutronix.de> <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red>
+ <874kl1bod0.fsf@nanos.tec.linutronix.de> <20201204192753.GA19782@Red> <87wnxx9tle.fsf@nanos.tec.linutronix.de> <20201205184334.GA8034@Red> <87mtys8268.fsf@nanos.tec.linutronix.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20201203191135.21576-2-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:6Us/Eccm2b+8uFxw1F3t+QrfFkxImB2I2ty+Sf0QMFWg/I08C+0
- l/putPEzoIZdUH7OratR6bhG5Wy5rbrzir2gcr2T83PhcZL3s+tN+LfQ0QpaonL4C2Nu5/I
- baDn5qVWWroBU8pOeaRhpPy9tmeBMVkzlfmhLKOxlsZCYIiEIxKjJMl57Kc88zmH7OFxMy5
- x+dpS83a3PhirR79mANbQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TmIGK7FxUCU=:yAJyBYcomdQV3KBUpDYeoh
- 7Ge9qY1V8TDxnX8V6yve7wUof8n/FkUM9wClbl4yh6qUcL5r3mNwZRDoNPECQQjpoDTUHMytG
- rYjGRCAbBatBR7IYgg9wiBYMHqUMHlbwByVqAdq0Wwn7PxImKXp+bSiXl69HnKUwFkeZ/ZXqk
- h7QYanonsFRUq1z+CNJS2v0F5n2uJAOZL+4iqVYbpHSrq2O/IZHcrZ2uNiwnzBJ/1mQecCdlW
- +3AIO9ESFYwOJe+Z6nzDzhW1+/cKJsiNBhb9EaNDCxmetXm5oNpXhXtkKr0UsoGSrYe7hxNzM
- 3PmuVvz/ILrxFzD4ElD91NMu4TjHDRZjD/L29ni5LEktB3rSDvAHDnxTveECZjzMYejJ7H9/I
- miRi2KQ5May5m3yoPoMC9K+c0UhmWEUFlPN95YJidQg0YPEgQQTmIRibVZDLs
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 20:11, Enrico Weigelt, metux IT consult wrote:
-
-Friends,
-
-I've still got a problem w/ signal/irq handling:
-
-The virtio-gpio device/host can raise a signal on line state change.
-Kinda IRQ, but not actually running through real IRQs, instead by a
-message running though queue. (hmm, kida MSI ? :o).
-
-I've tried allocating an IRQ range and calling generic_handle_irq(),
-but then I'm getting unhanled IRQ trap.
-
-My hope was some gpio lib function for calling in when an line state
-changes, that does all the magic (somebody listening on some gpio,
-or gpio used as interrupt source), but the only thing I could find
-was some helpers for gpio chips that have their own builtin
-interrupt controller (VIRTIO_GPIO_EV_HOST_LEVEL).
-
-Somehow feels that's not quite what I'm looking for.
-
-Could anybody please give me more insights ?
 
 
---mtx
+On Sat, 5 Dec 2020, Thomas Gleixner wrote:
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+> Corentin,
+>
+> On Sat, Dec 05 2020 at 19:43, Corentin Labbe wrote:
+> > On Fri, Dec 04, 2020 at 09:58:21PM +0100, Thomas Gleixner wrote:
+> >> Can you please replace the debug patch with the one below and try again?
+> >> That stops the trace right on the condition.
+> >
+> > Hello, the result could be found at http://kernel.montjoie.ovh/130739.log
+>
+> Thanks for providing this. This is clearly showing where stuff goes
+> wrong. It starts here at 729.550001. I removed the uninteresting parts:
+>
+> 0d..2 147103293us : __kmap_local_page_prot <-sg_miter_next
+> 0d..3 147103308us :__kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
+>
+> 0d..3 147103311us : __kmap_local_page_prot <-sg_miter_next
+> 0d..4 147103325us : __kmap_local_pfn_prot: kmap_local_pfn: 3 ffefb000
+>
+> 0d..3 147103429us : kunmap_local_indexed <-sg_miter_stop
+> 0d..4 147103433us : kunmap_local_indexed: kunmap_local: 3 ffefd000
+>
+> So this maps two pages and unmaps the first one. That's all called from
+> sun4i_ss_opti_poll() and the bug is clearly visible there:
+>
+> 	sg_miter_next(&mi);
+> 	sg_miter_next(&mo);
+>
+> release_ss:
+> 	sg_miter_stop(&mi);
+> 	sg_miter_stop(&mo);
+>
+> Written by yourself :) Same issue in sun4i_ss_cipher_poll()
+>
+> Fix below.
+>
+> Julia, it might be worth to have a coccinelle check for that. It's the
+> only place which got it wrong, but this goes unnoticed when code is
+> e.g. only fully tested on 64bit or as in this case never tested with
+> full debugging enabled. The whole kmap_atomic and kmap_local (new in
+> next) family and all users like the sg_miter stuff are affected by this.
+
+OK, thanks for the suggestion.  I will look into it.
+
+julia
+
+>
+> Thanks,
+>
+>         tglx
+> ---
+> Subject: crypto: sun4i-ss - Fix sg_miter_stop() ordering
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Sat, 05 Dec 2020 20:17:28 +0100
+>
+> sun4i_ss_opti_poll() and sun4i_ss_cipher_poll() do:
+>
+>         sg_miter_next(&mi);
+>         sg_miter_next(&mo);
+> 	...
+>         sg_miter_stop(&mi);
+>         sg_miter_stop(&mo);
+>
+> which is the wrong order because sg_miter_next() maps a page with
+> kmap_atomic() and sg_miter_stop() unmaps it. kmap_atomic() uses a stack
+> internaly which requires that the nested map is unmapped first. As this
+> uses the wrong order it triggers the warning in kunmap_local_indexed()
+> which checks the to be unmapped address and subsequently crashes.
+>
+> This went unnoticed for 5 years because the ARM kmap_atomic()
+> implementation had the warning conditional on CONFIG_DEBUG_HIGHMEM which
+> was obviously never enabled when testing that driver.
+>
+> Flip the order to cure it.
+>
+> Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> @@ -109,8 +109,8 @@ static int noinline_for_stack sun4i_ss_o
+>  	}
+>
+>  release_ss:
+> -	sg_miter_stop(&mi);
+>  	sg_miter_stop(&mo);
+> +	sg_miter_stop(&mi);
+>  	writel(0, ss->base + SS_CTL);
+>  	spin_unlock_irqrestore(&ss->slock, flags);
+>  	return err;
+> @@ -333,8 +333,8 @@ static int sun4i_ss_cipher_poll(struct s
+>  	}
+>
+>  release_ss:
+> -	sg_miter_stop(&mi);
+>  	sg_miter_stop(&mo);
+> +	sg_miter_stop(&mi);
+>  	writel(0, ss->base + SS_CTL);
+>  	spin_unlock_irqrestore(&ss->slock, flags);
+>
+>
+>
+>
