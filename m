@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AA32CF80B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03A32CF80A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 01:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgLEAll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728895AbgLEAll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Dec 2020 19:41:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48738 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgLEAlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:41:40 -0500
+        id S1726080AbgLEAll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:41:41 -0500
 From:   paulmck@kernel.org
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     rcu@vger.kernel.org
@@ -25,9 +25,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org
-Subject: [PATCH sl-b 1/6] mm: Add kmem_last_alloc() to return last allocation for memory block
-Date:   Fri,  4 Dec 2020 16:40:52 -0800
-Message-Id: <20201205004057.32199-1-paulmck@kernel.org>
+Subject: [PATCH sl-b 2/6] mm: Add kmem_last_alloc_errstring() to provide more kmem_last_alloc() info
+Date:   Fri,  4 Dec 2020 16:40:53 -0800
+Message-Id: <20201205004057.32199-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20201205004022.GA31166@paulmck-ThinkPad-P72>
 References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
@@ -37,29 +37,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-There are kernel facilities such as per-CPU reference counts that give
-error messages in generic handlers or callbacks, whose messages are
-unenlightening.  In the case of per-CPU reference-count underflow, this
-is not a problem when creating a new use of this facility because in that
-case the bug is almost certainly in the code implementing that new use.
-However, trouble arises when deploying across many systems, which might
-exercise corner cases that were not seen during development and testing.
-Here, it would be really nice to get some kind of hint as to which of
-several uses the underflow was caused by.
-
-This commit therefore exposes a new kmem_last_alloc() function that
-takes a pointer to dynamically allocated memory and returns the return
-address of the call that allocated it.  This pointer can reference the
-middle of the block as well as the beginning of the block, as needed
-by things like RCU callback functions and timer handlers that might not
-know where the beginning of the memory block is.  These functions and
-handlers can use the return value from kmem_last_alloc() to give the
-kernel hacker a better hint as to where the problem might lie.
-
-This kmem_last_alloc() function returns NULL for slob and when the
-necessary debug has not been enabled for slab and slub.  For slub,
-build with CONFIG_SLUB_DEBUG=y and boot with slub_debug=U, or pass
-SLAB_STORE_USER to kmem_cache_create() if more focused use is desired.
+NULL pointers can be useful, but the NULL pointers from kmem_last_alloc()
+might be caused by any number of things: A not-to-a-slab pointer,
+failure to enable all the needed debugging, and bogus slob block-address
+computations.  This commit therefore introduces error codes to the
+kmem_last_alloc() function using the ERR_PTR() facility, and also
+introduces kmem_last_alloc_errstring(), which translates the error codes
+into strings.
 
 Cc: Christoph Lameter <cl@linux.com>
 Cc: Pekka Enberg <penberg@kernel.org>
@@ -70,140 +54,137 @@ Cc: <linux-mm@kvack.org>
 Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/slab.h |  2 ++
- mm/slab.c            | 19 +++++++++++++++++++
- mm/slab_common.c     | 20 ++++++++++++++++++++
- mm/slob.c            |  5 +++++
- mm/slub.c            | 26 ++++++++++++++++++++++++++
- 5 files changed, 72 insertions(+)
+ include/linux/slab.h | 10 ++++++++++
+ mm/slab.c            |  2 +-
+ mm/slab_common.c     | 28 ++++++++++++++++++++++++++--
+ mm/slob.c            |  2 +-
+ mm/slub.c            |  4 ++--
+ 5 files changed, 40 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/slab.h b/include/linux/slab.h
-index dd6897f..06dd56b 100644
+index 06dd56b..031e630 100644
 --- a/include/linux/slab.h
 +++ b/include/linux/slab.h
-@@ -186,6 +186,8 @@ void kfree(const void *);
- void kfree_sensitive(const void *);
- size_t __ksize(const void *);
+@@ -133,6 +133,15 @@
+ #define ZERO_OR_NULL_PTR(x) ((unsigned long)(x) <= \
+ 				(unsigned long)ZERO_SIZE_PTR)
+ 
++/*
++ * kmem_last_alloc error codes.
++ */
++#define KMEM_LA_NO_PAGE		1  /* No page structure for pointer. */
++#define KMEM_LA_NO_SLAB		2  /* Pointer not from slab allocator. */
++#define KMEM_LA_SLOB		3  /* No debugging info for slob. */
++#define KMEM_LA_NO_DEBUG	4  /* Debugging not enabled for slab/slub. */
++#define KMEM_LA_INCONSISTENT	5  /* Bogus block within slub page. */
++
+ #include <linux/kasan.h>
+ 
+ struct mem_cgroup;
+@@ -188,6 +197,7 @@ size_t __ksize(const void *);
  size_t ksize(const void *);
-+void *kmem_cache_last_alloc(struct kmem_cache *s, void *object);
-+void *kmem_last_alloc(void *object);
+ void *kmem_cache_last_alloc(struct kmem_cache *s, void *object);
+ void *kmem_last_alloc(void *object);
++const char *kmem_last_alloc_errstring(void *lastalloc);
  
  #ifdef CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR
  void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
 diff --git a/mm/slab.c b/mm/slab.c
-index b111356..2ab93b8 100644
+index 2ab93b8..1f3b263 100644
 --- a/mm/slab.c
 +++ b/mm/slab.c
-@@ -3602,6 +3602,25 @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,
- EXPORT_SYMBOL(kmem_cache_alloc_node_trace);
- #endif
+@@ -3610,7 +3610,7 @@ void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object)
+ 	struct page *page;
  
-+void *kmem_cache_last_alloc(struct kmem_cache *cachep, void *object)
-+{
-+#ifdef DEBUG
-+	unsigned int objnr;
-+	void *objp;
-+	struct page *page;
-+
-+	if (!(cachep->flags & SLAB_STORE_USER))
-+		return NULL;
-+	objp = object - obj_offset(cachep);
-+	page = virt_to_head_page(objp);
-+	objnr = obj_to_index(cachep, page, objp);
-+	objp = index_to_obj(cachep, page, objnr);
-+	return *dbg_userword(cachep, objp);
-+#else
-+	return NULL;
-+#endif
-+}
-+
- static __always_inline void *
- __do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
- {
+ 	if (!(cachep->flags & SLAB_STORE_USER))
+-		return NULL;
++		return ERR_PTR(-KMEM_LA_NO_DEBUG);
+ 	objp = object - obj_offset(cachep);
+ 	page = virt_to_head_page(objp);
+ 	objnr = obj_to_index(cachep, page, objp);
 diff --git a/mm/slab_common.c b/mm/slab_common.c
-index f9ccd5d..3f647982 100644
+index 3f647982..8430a14 100644
 --- a/mm/slab_common.c
 +++ b/mm/slab_common.c
-@@ -536,6 +536,26 @@ bool slab_is_available(void)
- 	return slab_state >= UP;
+@@ -537,6 +537,30 @@ bool slab_is_available(void)
  }
  
-+/*
-+ * If the pointer references a slab-allocated object and if sufficient
-+ * debugging is enabled, return the returrn address for the corresponding
-+ * allocation.  Otherwise, return NULL.  Note that passing random pointers
-+ * to this function (including addresses of on-stack variables) is likely
-+ * to result in panics.
+ /*
++ * If the pointer corresponds to a kmem_last_alloc() error, return
++ * a pointer to the corresponding string, otherwise NULL.
 + */
-+void *kmem_last_alloc(void *object)
++const char *kmem_last_alloc_errstring(void *lastalloc)
 +{
-+	struct page *page;
++	long klaerrno;
++	static const char * const es[] = {
++		"local memory",			/* KMEM_LA_NO_PAGE - 1 */
++		"non-slab memory",		/* KMEM_LA_NO_SLAB - 1 */
++		"slob doesn't do debug",	/* KMEM_LA_SLOB - 1 */
++		"debugging disabled",		/* KMEM_LA_NO_DEBUG - 1 */
++		"bogus slub block",		/* KMEM_LA_INCONSISTENT - 1 */
++	};
 +
-+	if (!virt_addr_valid(object))
++	if (!IS_ERR(lastalloc))
 +		return NULL;
-+	page = virt_to_head_page(object);
-+	if (!PageSlab(page))
-+		return NULL;
-+	return kmem_cache_last_alloc(page->slab_cache, object);
++	klaerrno = -PTR_ERR(lastalloc) - 1;
++	if (WARN_ON_ONCE(klaerrno >= ARRAY_SIZE(es)))
++		return "kmem_last_alloc error out of range";
++	return es[klaerrno];
 +}
-+EXPORT_SYMBOL_GPL(kmem_last_alloc);
++EXPORT_SYMBOL_GPL(kmem_last_alloc_errstring);
 +
- #ifndef CONFIG_SLOB
- /* Create a cache during boot when no slab services are available yet */
- void __init create_boot_cache(struct kmem_cache *s, const char *name,
++/*
+  * If the pointer references a slab-allocated object and if sufficient
+  * debugging is enabled, return the returrn address for the corresponding
+  * allocation.  Otherwise, return NULL.  Note that passing random pointers
+@@ -548,10 +572,10 @@ void *kmem_last_alloc(void *object)
+ 	struct page *page;
+ 
+ 	if (!virt_addr_valid(object))
+-		return NULL;
++		return ERR_PTR(-KMEM_LA_NO_PAGE);
+ 	page = virt_to_head_page(object);
+ 	if (!PageSlab(page))
+-		return NULL;
++		return ERR_PTR(-KMEM_LA_NO_SLAB);
+ 	return kmem_cache_last_alloc(page->slab_cache, object);
+ }
+ EXPORT_SYMBOL_GPL(kmem_last_alloc);
 diff --git a/mm/slob.c b/mm/slob.c
-index 7cc9805..c1f8ed7 100644
+index c1f8ed7..e7d6b90 100644
 --- a/mm/slob.c
 +++ b/mm/slob.c
-@@ -461,6 +461,11 @@ static void slob_free(void *block, int size)
- 	spin_unlock_irqrestore(&slob_lock, flags);
+@@ -463,7 +463,7 @@ static void slob_free(void *block, int size)
+ 
+ void *kmem_cache_last_alloc(struct kmem_cache *s, void *object)
+ {
+-	return NULL;
++	return ERR_PTR(-KMEM_LA_SLOB);
  }
  
-+void *kmem_cache_last_alloc(struct kmem_cache *s, void *object)
-+{
-+	return NULL;
-+}
-+
  /*
-  * End of slob allocator proper. Begin kmem_cache_alloc and kmalloc frontend.
-  */
 diff --git a/mm/slub.c b/mm/slub.c
-index b30be23..8ed3ba2 100644
+index 8ed3ba2..3ddf16a 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -3918,6 +3918,32 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
- 	return 0;
- }
+@@ -3928,7 +3928,7 @@ void *kmem_cache_last_alloc(struct kmem_cache *s, void *object)
+ 	struct track *trackp;
  
-+void *kmem_cache_last_alloc(struct kmem_cache *s, void *object)
-+{
-+#ifdef CONFIG_SLUB_DEBUG
-+	void *base;
-+	unsigned int objnr;
-+	void *objp;
-+	struct page *page;
-+	struct track *trackp;
-+
-+	if (!(s->flags & SLAB_STORE_USER))
-+		return NULL;
-+	page = virt_to_head_page(object);
-+	base = page_address(page);
-+	objp = kasan_reset_tag(object);
-+	objp = restore_red_left(s, objp);
-+	objnr = obj_to_index(s, page, objp);
-+	objp = base + s->size * objnr;
-+	if (objp < base || objp >= base + page->objects * s->size || (objp - base) % s->size)
-+		return NULL;
-+	trackp = get_track(s, objp, TRACK_ALLOC);
-+	return (void *)trackp->addr;
-+#else
-+	return NULL;
-+#endif
-+}
-+
- /********************************************************************
-  *		Kmalloc subsystem
-  *******************************************************************/
+ 	if (!(s->flags & SLAB_STORE_USER))
+-		return NULL;
++		return ERR_PTR(-KMEM_LA_NO_DEBUG);
+ 	page = virt_to_head_page(object);
+ 	base = page_address(page);
+ 	objp = kasan_reset_tag(object);
+@@ -3936,7 +3936,7 @@ void *kmem_cache_last_alloc(struct kmem_cache *s, void *object)
+ 	objnr = obj_to_index(s, page, objp);
+ 	objp = base + s->size * objnr;
+ 	if (objp < base || objp >= base + page->objects * s->size || (objp - base) % s->size)
+-		return NULL;
++		return ERR_PTR(-KMEM_LA_INCONSISTENT);
+ 	trackp = get_track(s, objp, TRACK_ALLOC);
+ 	return (void *)trackp->addr;
+ #else
 -- 
 2.9.5
 
