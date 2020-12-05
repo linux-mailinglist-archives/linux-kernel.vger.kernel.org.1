@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B6B2CFD5D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5B42CFD90
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 19:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgLEScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 13:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728726AbgLES3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:29:17 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA75BC08C5F2;
-        Sat,  5 Dec 2020 04:03:07 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id jx16so12575001ejb.10;
-        Sat, 05 Dec 2020 04:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P+Nd8+nofEfkgv7RY5TiH0dbaZKmUKFTlo9WVvygj7I=;
-        b=UEiEDDbjRr3k5Oif/EZAaZRuWvrt1nF60+g2LS3O8Y/ZmgLdv00tsKhe++ekrPHDsT
-         HkEKWp8WE0dyyicxhKGuXTpBen5g7PR95/FVtFhbxTybBkEs6oCxqmXCcSAygRbOSJwv
-         nAXY18W5ilEja8BnNfRaaWvh7TSGWwlBeaSfCGEjcI/0AFSGy4Fqw5nSYug4h15ihpuI
-         aGigkZYyagIvyU5WBGz22ZIRHoUA9m7qEiYrgKiz3WbWJsX7GCAEca9nq45wrZO26vNA
-         tmfMXDYudEVzOlwIQ3cTNOD5oegmYGrsWgtQwTq42PdR4jn0cfrhcJm/fYvUJa8ZxWwF
-         Gn3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P+Nd8+nofEfkgv7RY5TiH0dbaZKmUKFTlo9WVvygj7I=;
-        b=NMi5bKgmJDYlrnTA4CcGXZrS153njscpy9rP7PyDA0CA6AKN+CevQLMVmBItBZGzYi
-         fi4qC7nn7l1qXu1wRvH1RTtVBcYXVQc7+M5Nqns1+XGDeioBGk2bTSug1voEjzBobaVy
-         2fLSdboQiMdfxG+Ww2vG1YChMJ/QuIu2+dWf+rN48pXipx0nLuKDuh0XgRwz1cM19aCv
-         tiHfpJM7NZGRQauMlURMUazm8aGute4SRV3RoU1jsVC2psmTuBLa37JnaNA4V4NN4+IR
-         xWtT7EeESkza1i4TYHGthHuDmcaNIige7ep20AWExrM+Qs0WIBgj2c2at43NdEYLifdy
-         ziQw==
-X-Gm-Message-State: AOAM53255NgpIiAjiyTrQoJzecGXx8hQY0e14Fo5c7oOWNMMr0DHGO4b
-        KkUq4glsaCkoY++1RD3DPPGoSOnfaXEejHQFLDpHMfgWtZ8=
-X-Google-Smtp-Source: ABdhPJxEeR4LSHPCH3FbOfM5VPpQQVWklnI1NwWuK8bcagmOklydL7dULL4rnPTjYLP1j3hih01YhQvHjd+mbNPZa6E=
-X-Received: by 2002:a17:906:3081:: with SMTP id 1mr11751630ejv.162.1607169786456;
- Sat, 05 Dec 2020 04:03:06 -0800 (PST)
+        id S1726534AbgLESjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 13:39:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729060AbgLEST0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 13:19:26 -0500
+X-Gm-Message-State: AOAM530rZvufIYDMZt26gNUG5RApapqZ8Y2cP44Unvq+L5DuhIBfaW27
+        U9TU/9RADUs/Kfq22fh8C9NRNNahT2VNZFvQKUw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607169800;
+        bh=seGZVZkmbRbAGNfBaEwnHNJz6yAmsoeRn++CrRNw8OA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=r/m6oqK22Erl2MqrnLg9eD3zf5UZc624z12peBhOxMCoQSHvq565ABgL4KeUGqMCy
+         ygRbYLZmmSysPgbITLaEWVvQHbe6mtpPYf4uQCAV7b5/XxsKP5XQGHSiwUNYpSHT5R
+         YxRViUUjMyuUmZzJAlT/OAog8jqGUmOPa1hk84r1ZLOjYrQ5eq2rChijzsOd9NFU60
+         QSi5t0K15s+8dfBk+yikh2S0qiGu2duVPD99RY7mu2T9YSGClka9hKLnUzASWeNkPk
+         tkJRvlFvtQbefPdwgx5i5c9RBHnUV8fS9IH8pOBNPfJw4d6GxiythCGuwrld5Zkwl4
+         CqKxhhRHk03ZA==
+X-Google-Smtp-Source: ABdhPJwAH/kp4eaHl02pSf3B6JIRqxzOHZ8IjG0Ih32p0Z4u2qbz20IUOtVxN383FyxVTPjMQLENzpJ5tq9ps+LN6Mc=
+X-Received: by 2002:a05:6808:9a9:: with SMTP id e9mr6349307oig.4.1607169800015;
+ Sat, 05 Dec 2020 04:03:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20201125024001.19036-1-christianshewitt@gmail.com>
-In-Reply-To: <20201125024001.19036-1-christianshewitt@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 5 Dec 2020 13:02:55 +0100
-Message-ID: <CAFBinCCQ0Zw=FB9Oy0ZnP7V-n7jvO6q9sgfV_51sC88Kq5iUpg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: meson: fix spi-max-frequency on Khadas VIM2
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Artem Lapkin <art@khadas.com>
+References: <20201204165030.3747484-1-arnd@kernel.org> <X8rFzqURIVHeH4SL@builder.lan>
+In-Reply-To: <X8rFzqURIVHeH4SL@builder.lan>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 5 Dec 2020 13:03:03 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2BSN7sUvRLgbpJTFws-=-Va30LNLvLEXbN46KewOy2dQ@mail.gmail.com>
+Message-ID: <CAK8P3a2BSN7sUvRLgbpJTFws-=-Va30LNLvLEXbN46KewOy2dQ@mail.gmail.com>
+Subject: Re: [PATCH] interconnect: qcom: fix rpmh link failures
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Evan Green <evgreen@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Dai <daidavid1@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 3:40 AM Christian Hewitt
-<christianshewitt@gmail.com> wrote:
+On Sat, Dec 5, 2020 at 12:27 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Fri 04 Dec 10:50 CST 2020, Arnd Bergmann wrote:
+
 >
-> From: Artem Lapkin <art@khadas.com>
+> Your patch looks correct to me, so:
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 >
-> The max frequency for the w25q32 (VIM v1.2) and w25q128 (VIM v1.4) spifc
-> chip should be 104Mhz not 30MHz.
 >
-> Fixes: b8b74dda3908 ("ARM64: dts: meson-gxm: Add support for Khadas VIM2")
-> Signed-off-by: Artem Lapkin <art@khadas.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> But we're going to have to sprinkle a handful of these throughout the
+> tree and we're not a lot of people who "understand" what it does (and at
+> least I keep getting them wrong...)
+
+Right, I already ran into another one.
+
+> Perhaps it would be more reasonable to maintain this long term if we
+> drop the possibility of compile testing these drivers independently of
+> rpmh and command db? (I.e. drop the function stubs and rely on
+> RPMH/COMMAND_DB to enable building under COMPILE_TEST)?
+
+Agreed, I think that would be best. As long as RPMH and COMMAND_DB
+can individually be enabled for CONFIG_COMPILE_TEST, all the
+drivers will get enabled in an allmodconfig build, and we can just
+list the dependencies.
+
+I don't really like the headers too much that have an
+#ifdef CONFIG_SUBSYSTEM with an alternative set of
+inline functions, unless there is a reasonable expectations that
+drivers work fine if that subsystem is disabled.
+
+E.g. having the option to disable IPv6 makes sense despite
+the complexity that adds, but compile-testing a driver without
+a required subsystem that can also be enabled for compile-testing
+hurts more than it helps.
+
+> And just to make it clear, I think we should merge your patch to fix
+> v5.11; then consider to simplify this past that.
+
+Yes, sounds good.
+
+       Arnd
