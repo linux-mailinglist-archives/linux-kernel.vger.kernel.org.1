@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51092CF898
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48412CF89A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 02:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgLEB0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Dec 2020 20:26:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgLEB0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Dec 2020 20:26:03 -0500
-Date:   Fri, 4 Dec 2020 17:25:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607131522;
-        bh=GjUSlecWxBxHbnsCJmgbVCyqlcg2RO9TS2Mad7tkdB0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yg33d0k0YWAbij4DhLtRIMLjs+i8EZqXOsyEVltAzBNjw5EGsvOlonYgvki8qVIyW
-         U7xCaU51IaUJAZQIwOvq+3sCbzFC7rLANXrzEy6aF94x9+2OKhab8IDx/geiwlYie8
-         t9Orxy/sIjWNmB07TegVDFCJSwNrdqzZ1dd7YdSY=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "andreyknvl@google.com" <andreyknvl@google.com>,
-        "qcai@redhat.com" <qcai@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <walter-zh.wu@mediatek.com>
-Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
-Message-Id: <20201204172521.ed9f77164ff9f9fc91f35ee0@linux-foundation.org>
-In-Reply-To: <1607083295.22062.15.camel@mtksdccf07>
-References: <20201204102206.20237-1-qiang.zhang@windriver.com>
-        <1607083295.22062.15.camel@mtksdccf07>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729433AbgLEB0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Dec 2020 20:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728628AbgLEB0T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Dec 2020 20:26:19 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7210C0613D1;
+        Fri,  4 Dec 2020 17:25:38 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so4596066pjv.0;
+        Fri, 04 Dec 2020 17:25:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r/qs0KrUGn0HCwSUP9qTJw2ZweL4QHDPihwqXZL4hgU=;
+        b=AVcstja1ZuPPKucB5nij/cu4ed/ZhaXc/1wddhL0KbZoaRbunSLvhgtGGjf/S41IR8
+         Zip0xONb3cYPZhuN/oApgsGTNvhkoOtm/LVaD+KvGQ7ES/R8aM/JqzcZSDH7RLLvJ9ED
+         Un3a30B1qd7JhaIhD0PZJ2aIgAdFh7CU4rSqIiQbq7/uKRla0wBVKRB7V8tac4xAgm3P
+         CenahyNoRbyvNlJTVNshIXp1NkIWMVukDdqqVX0rObR7OwlOoM8W3JTJgvACTyxdWmis
+         oDZhqUMpJp++oQaKR4zIrCjjC0JMXzxL17YAiPcMzu9ZT6WkQNcQS2DUUDWLbFExoGGV
+         9b7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r/qs0KrUGn0HCwSUP9qTJw2ZweL4QHDPihwqXZL4hgU=;
+        b=GN14X3WZldbINsniHtNkvDhUUJrk6QJJ5b+ypAiq+Aee/gb4yvAuKwsjYcU8b4ToI4
+         l1sPelHIM8J0CnM+QwjblLtasoXnSMSx/VUsTbVK3QfzY7L/aQbnKa110fAvz5A0+BU6
+         U70DtEYa9F/6jrorZ+gm5Yiow4Iw3HJPBJWNv0VSDHf5Ozv26bMfFIhcbhmvoeg18KVc
+         P5kVTKkfUMPZqeeIqRPxS5wzYpI8OqWTRdheuuBAQyQ/bLoY1bmT57wwzXukGW4FcJM2
+         f1ZHX9CKFmP8YIFB3NmEkzqJlRt15M5In6wUN8sIH0nl8lm8nwR7beYrFpt48Bdhww+h
+         X14A==
+X-Gm-Message-State: AOAM531DXXHUIACc4/z2cGxRNAyAV08+ek7lyBzqAFk3b7x0HlJpqfyS
+        2GczdeP8go9Mjh3U5TnJ+z8=
+X-Google-Smtp-Source: ABdhPJxZLHd2KbqVbaEFUxWXsulEuMvZwa02EPeBAZx1L8JLJHE5/37+gO+iI7XlFw9eb8eEOXdT2Q==
+X-Received: by 2002:a17:90a:d586:: with SMTP id v6mr6627717pju.103.1607131538460;
+        Fri, 04 Dec 2020 17:25:38 -0800 (PST)
+Received: from masabert (oki-109-236-4-100.jptransit.net. [109.236.4.100])
+        by smtp.gmail.com with ESMTPSA id q23sm6207399pfg.18.2020.12.04.17.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 17:25:37 -0800 (PST)
+Received: by masabert (Postfix, from userid 1000)
+        id 4910023603B2; Sat,  5 Dec 2020 10:25:36 +0900 (JST)
+From:   Masanari Iida <standby24x7@gmail.com>
+To:     linux-kernel@vger.kernel.org, sre@kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] power: supply: Fix a typo in warning message
+Date:   Sat,  5 Dec 2020 10:25:32 +0900
+Message-Id: <20201205012532.1196962-1-standby24x7@gmail.com>
+X-Mailer: git-send-email 2.25.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 20:01:35 +0800 Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+This patch fix a warning messages in power_supply_sysfs.c
 
-> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> > index d98b516f372f..55783125a767 100644
-> > --- a/mm/kasan/quarantine.c
-> > +++ b/mm/kasan/quarantine.c
-> > @@ -194,7 +194,6 @@ bool quarantine_put(struct kmem_cache *cache, void *object)
-> >  
-> >  	q = this_cpu_ptr(&cpu_quarantine);
-> >  	if (q->offline) {
-> > -		qlink_free(&meta->quarantine_link, cache);
-> >  		local_irq_restore(flags);
-> >  		return false;
-> >  	}
-> 
-> Hi Qiang,
-> 
-> Thanks for fixing this.
-> Due to that issue, my commit has been removed by Stephen from
-> linux-next.
-> 
-> 
-> Hi Stephen, Andrew,
-> 
-> Should I directly upload the v4 or Stephen can pick the commit which 
-> has been removed back to the linux-next.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ drivers/power/supply/power_supply_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I took care of it.  Restored the original patch and added this one as a
--fix.
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
+index a616b9d8f43c..92dd63171193 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -402,7 +402,7 @@ void power_supply_init_attrs(struct device_type *dev_type)
+ 		struct device_attribute *attr;
+ 
+ 		if (!power_supply_attrs[i].prop_name) {
+-			pr_warn("%s: Property %d skipped because is is missing from power_supply_attrs\n",
++			pr_warn("%s: Property %d skipped because it is missing from power_supply_attrs\n",
+ 				__func__, i);
+ 			sprintf(power_supply_attrs[i].attr_name, "_err_%d", i);
+ 		} else {
+-- 
+2.25.0
+
