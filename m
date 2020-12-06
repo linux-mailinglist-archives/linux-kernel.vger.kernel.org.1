@@ -2,95 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546022D0577
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 15:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A522D0578
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 15:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgLFOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 09:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgLFOU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 09:20:26 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD6DC0613D0;
-        Sun,  6 Dec 2020 06:19:45 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 4F998C63D6; Sun,  6 Dec 2020 14:19:41 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1607264381; bh=b+lxpFhX380M587pcy0Ld+WRWVJiMOZQGdYfRe41wBs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8uuCqeoDREUaHCJN3yn3zDTKf/wo6N1A+IrTAKE6hbJLJOzZ3DEo9p75zG8ETNeI
-         4YVLKwSK2Hjqpt/5faOEo27UhLxgiuRC8eRtPpzOO9660HPqc+vDt9H82WFGdhbDsx
-         3zUyV6uOpWty/QYKtdwdF0lXsococi/+bkEv5ahUjBVrQmdvYmD9eTcpBrir4RRU5r
-         k9ZeATD6ZWJ2r1F2eMSlOxn/JssRLcbhAiVhrrCpOza9vzeBfrslqcExrpHkauwcfg
-         RHRXXxJjguTLg6oJ5Tdnu+C5zf+5URo0Hd5Z0kYBeRk7AdlVyW4iEE0R8loE1Wonam
-         18h1BZGYAoI1g==
-Date:   Sun, 6 Dec 2020 14:19:41 +0000
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201206141941.GA24807@gofer.mess.org>
-References: <202011281128.54eLfMWr-lkp@intel.com>
- <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
+        id S1728108AbgLFOXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 09:23:50 -0500
+Received: from m12-12.163.com ([220.181.12.12]:44845 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727845AbgLFOXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 09:23:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=9cAxU
+        htoE5Qpump3E5/vxi8l0YodYgsXLG/mkoXZ9bI=; b=nU6O+SK2UZkrzZMDwg169
+        n59yVwz+g3MrXyPed/ors2f5a6L74RKCn5x2RevxgRG4/eTGcPIjjRFxyllwGC91
+        XugIZj4NupwcSvLl7bw7xwCGOgyRfrk6lD6iRfjsXY9ouP1EQSwduAaWqPvSjyv1
+        vpaYNbBvAX1fI726Ey1gZs=
+Received: from [192.168.31.187] (unknown [223.87.230.17])
+        by smtp8 (Coremail) with SMTP id DMCowABnqeTQ6Mxf9oywFg--.23021S2;
+        Sun, 06 Dec 2020 22:21:05 +0800 (CST)
+Subject: Re: [PATCH] mm/memblock:use a more appropriate order calculation when
+ free memblock pages
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
+References: <20201203152311.5272-1-carver4lio@163.com>
+ <20201206115517.GL751215@kernel.org>
+From:   carver4lio@163.com
+Message-ID: <adfe7852-b390-b8c1-cd9f-36de00e5d882@163.com>
+Date:   Sun, 6 Dec 2020 22:21:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201206115517.GL751215@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: DMCowABnqeTQ6Mxf9oywFg--.23021S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCr1UWryxGF4kCFyUtFWUArb_yoW5CF4fpF
+        y8Xw1Skrs3Ww1kXa1xJ3WYk348JwnYka4FyFy8Xr42kay3Kr1avrW2gr1IvryDJ3yxXw4Y
+        vFZ8trWjganrZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jWuWLUUUUU=
+X-Originating-IP: [223.87.230.17]
+X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/1tbiWA3ynVuHulEzYgABsd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Uwe,
-
-On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-König wrote:
-> On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
-> > What real life uses-cases are there for round down? If you want to round
-> > down, is there any need for round up?
+On 12/6/20 7:55 PM, Mike Rapoport wrote:
+> On Thu, Dec 03, 2020 at 11:23:10PM +0800, carver4lio@163.com wrote:
+>> From: Hailong Liu <liu.hailong6@zte.com.cn>
+>>
+>> When system in the booting stage, pages span from [start, end] of a memblock
+>> are freed to buddy in a order as large as possible (less than MAX_ORDER) at
+>> first, then decrease gradually to a proper order(less than end) in a loop.
+>>
+>> However, *min(MAX_ORDER - 1UL, __ffs(start))* can not get the largest order
+>> in some cases.
 > 
-> The scenario I have in mind is for driving a motor. I have to admit
-> however that usually the period doesn't matter much and it's the
-> duty_cycle that defines the motor's speed. So for this case the
-> conservative behaviour is round-down to not make the motor run faster
-> than expected.
+> Do you have examples?
+> What is the memory configration that casues suboptimal order selection
+> and what is the order in this case?
+> 
+I'm sorry for my careless and inadequate testing(I just test it on my x86
+machine with 8 cores).
 
-I am reading here that for driving motors, only the duty cycle matters,
-not the period.
+On my x86_64 machine, the layout of RAM looks like:
+/ # cat /proc/iomem
+00000100-00000fff : reserved
+00001000-0009c7ff : System RAM
+0009c800-0009ffff : reserved
+.....
+100000000-22dffffff : System RAM
+  22c600000-22d0e01c0 : Kernel code
+  22d0e01c1-22d96af3f : Kernel data
+  22dae5000-22dbdcfff : Kernel bss
+22e000000-22fffffff : RAM buffer
 
-> For other usecases (fan, backlight, LED) exactness typically doesn't
-> matter that much.
+On my machine, I noticed that when the order of an start pfn in is less than
+MAX_ORDER, e.g: the start phy_addr 0x00001000, then the return value *order*
+of *min(MAX_ORDER - 1UL, __ffs(start))* will be 1, but the free pages span
+of the memblock is more than order 1, it's should be (end - start), I guess.
 
-So, the use-cases you have are driving motor, fan, backlight, and led.
-And in all these cases the exact Hz does not matter.
+I tested my ideas with some record code like this:
+diff --git a/mm/memblock.c b/mm/memblock.c
+index b68ee86788af..b0143e3f75db 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1928,18 +1928,23 @@ early_param("memblock", early_memblock);
 
-The only uses case where the exact Hz does matter is pwm-ir-tx. 
+ static void __init __free_pages_memory(unsigned long start, unsigned long end)
+ {
+-       int order;
++       int order, loop_cnt, adjust_cnt;
++
 
-So, I gather there are no use-cases for round-down. Yes, should round-down
-be needed, then this is more difficult to implement if the driver always
-does a round-closest. But, since there is no reason to have round-down,
-this is all academic.
+        while (start < end) {
+                order = min(MAX_ORDER - 1UL, __ffs(start));
 
-Your policy of forcing new pwm drivers to use round-down is breaking
-pwm-ir-tx.
+-               while (start + (1UL << order) > end)
++               while (start + (1UL << order) > end) {
+                        order--;
+-
++                       adjust_cnt++;
++               }
+                memblock_free_pages(pfn_to_page(start), start, order);
 
-Thanks,
+                start += (1UL << order);
++               loop_cnt++;
+        }
++       pr_info("TST:[start %lu, end %lu]: loop cnt %d, adjust cnt %d\n",
++               loop_cnt++, adjust_cnt++);
+ }
 
-Sean
+If I change __ffs(start) to __ffs(end - start), the print info show less
+loop_cnt and adjust_cnt  on my machine.
+ 
+>> Instead, *__ffs(end - start)* may be more appropriate and meaningful.
+> 
+> As several people reported using __ffs(end - start) is not correct.
+> If the order selection is indeed suboptimal we'd need some better
+> formula ;-)
+> 
+>> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+>> ---
+>>  mm/memblock.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/memblock.c b/mm/memblock.c
+>> index b68ee8678..7c6d0dde7 100644
+>> --- a/mm/memblock.c
+>> +++ b/mm/memblock.c
+>> @@ -1931,7 +1931,7 @@ static void __init __free_pages_memory(unsigned long start, unsigned long end)
+>>  	int order;
+>>  
+>>  	while (start < end) {
+>> -		order = min(MAX_ORDER - 1UL, __ffs(start));
+>> +		order = min(MAX_ORDER - 1UL, __ffs(end - start));
+>>  
+>>  		while (start + (1UL << order) > end)
+>>  			order--;
+>> -- 
+>> 2.17.1
+>>
+>>
+> 
+
+
