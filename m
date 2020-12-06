@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19F32D0602
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1428B2D0605
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgLFQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:37:51 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:53116 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLFQhv (ORCPT
+        id S1727076AbgLFQj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:39:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58988 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgLFQj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:37:51 -0500
-Received: by mail-il1-f197.google.com with SMTP id h4so8289398ilq.19
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 08:37:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=zsuPNydmjozr39AAHZE2NJ8iaBaXXZJv+6EgpqpR/Ss=;
-        b=mfKXdaMQUfz8hB1Uz2kQ/NGF7W+POzwxxxSOPB5i8NU30H4MjspEPtvxrtmGoFvAyn
-         /gYTTq1MSwixXbYmynK7hXtMzyjwV/Q5BZ3X65/cNCPBTct6RrmSkFK1HfJIdeC+GlUe
-         adbV4ttJUfbrT7HRBh1aYOPnpGANy6IplmAAO4+WCpTa+Ojk+DltVmno+Mya10WT2ezB
-         BHDJN29iBxKHOa5sxGkcqY8QViwxRXDVAAaQalpbU0f0naWPwE+/WoddY22TT5p7Y5br
-         nWw5jxwvtJ8MShMnGK54qQm66rVTdqsPH7yaOQxTX5KDr12gAeigFKUyNZLlFz7kM8vX
-         cPNQ==
-X-Gm-Message-State: AOAM531FmAgF0i4QGevGT094HBT9faiVm9iNwZN97F66iu15wsf3GOnY
-        mi3PItEDnTsTj16EDlVccZs7PLgNPi7tRXbR0AuUDEaO1dI5
-X-Google-Smtp-Source: ABdhPJw4x0qTJTBP9Ao5DDJQGmdUohkdbhUzfFIIX0Wd9yFEyjhWnvpimS6oha06lxJeO8KzWGTQoaAVjroY7Sz50Il1BY1X5mtV
+        Sun, 6 Dec 2020 11:39:26 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607272724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=orscdnWsxTjeOjrX4mZ7RlgaGlM/iHr3hxGeVG/5B5o=;
+        b=S9U+yLW+RMD4XJ+DVjlUuG1Ta3scM6aUrIt7ysUfUnpo2Lk9yrcK1AlcgrZWgFWCtYoJTF
+        VExnxFo/ryb4R7eRQEVwMsDGha92iA0oI81k+3gGLFB1nonwAisjC3/jKTSUf/nGy1d64W
+        /i1uYHhHy/jPj6waERlxa7GsrP6eM2yH0numGnZwlG3dEBTbqM59AhAzaFX9Pkk1y9qak3
+        dhXHo9nnSGnB608LNXSZ0BSANnW+ESKfmIzwLrnY3Zp+ef11yigXhYhPrhNWafb4cMW6lM
+        JyoZkKlnRO1jdjGoihuwGfLZqyXfJAFPDlho62hQLrm5QKAPcdCuOpSMM3JdkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607272724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=orscdnWsxTjeOjrX4mZ7RlgaGlM/iHr3hxGeVG/5B5o=;
+        b=AksEazRjmD+yqQmgK8+KYrxZfIF8IEb97GXwe2YdDqzKrwXlC8Rc+QhlrKd/lk5AZdXYm6
+        zdJsYoIctUvQBdCw==
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-integrity@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 2/4] drm/i915/pmu: Use kstat_irqs to get interrupt count
+In-Reply-To: <20201205014340.148235-3-jsnitsel@redhat.com>
+References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-3-jsnitsel@redhat.com>
+Date:   Sun, 06 Dec 2020 17:38:44 +0100
+Message-ID: <875z5e99ez.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:926:: with SMTP id o6mr15660312ilt.65.1607272629912;
- Sun, 06 Dec 2020 08:37:09 -0800 (PST)
-Date:   Sun, 06 Dec 2020 08:37:09 -0800
-In-Reply-To: <00000000000088b1f405b00bcbb8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029c89c05b5ce5237@google.com>
-Subject: Re: WARNING in __cfg80211_ibss_joined (2)
-From:   syzbot <syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
 
-HEAD commit:    7059c2c0 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a1199b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e49433cfed49b7d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146ff2ef500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105d68df500000
+> Now that kstat_irqs is exported, get rid of count_interrupts in
+> i915_pmu.c
+> --- a/drivers/gpu/drm/i915/i915_pmu.c
+> +++ b/drivers/gpu/drm/i915/i915_pmu.c
+> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(struct hrtimer *hrtimer)
+>  	return HRTIMER_RESTART;
+>  }
+>  
+> -static u64 count_interrupts(struct drm_i915_private *i915)
+> -{
+> -	/* open-coded kstat_irqs() */
+> -	struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
+> -	u64 sum = 0;
+> -	int cpu;
+> -
+> -	if (!desc || !desc->kstat_irqs)
+> -		return 0;
+> -
+> -	for_each_possible_cpu(cpu)
+> -		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
+> -
+> -	return sum;
+> -}
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com
+May I ask why this has been merged in the first place?
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 9804 at net/wireless/ibss.c:36 __cfg80211_ibss_joined+0x487/0x520 net/wireless/ibss.c:36
-Modules linked in:
-CPU: 1 PID: 9804 Comm: kworker/u4:6 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: cfg80211 cfg80211_event_work
-RIP: 0010:__cfg80211_ibss_joined+0x487/0x520 net/wireless/ibss.c:36
-Code: 0f 0b e9 0c fe ff ff e8 b7 55 7a f9 e9 41 fc ff ff e8 8d 55 7a f9 e9 7d fc ff ff e8 a3 55 7a f9 e9 0d ff ff ff e8 29 d7 38 f9 <0f> 0b e9 7e fc ff ff e8 1d d7 38 f9 0f 0b e8 96 55 7a f9 e9 e4 fb
-RSP: 0018:ffffc9000a85fbd8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888014edcc10 RCX: ffffffff8155a937
-RDX: ffff88802295b480 RSI: ffffffff88372d57 RDI: 0000000000000000
-RBP: ffff888014edc000 R08: 0000000000000001 R09: ffffffff8ebaf6bf
-R10: fffffbfff1d75ed7 R11: 0000000000000000 R12: 1ffff9200150bf7d
-R13: ffff88803471e818 R14: 0000000000000000 R15: 0000000000000006
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020e0a000 CR3: 0000000025d73000 CR4: 0000000000350ee0
-Call Trace:
- cfg80211_process_wdev_events+0x3de/0x5b0 net/wireless/util.c:942
- cfg80211_process_rdev_events+0x6e/0x100 net/wireless/util.c:968
- cfg80211_event_work+0x1a/0x20 net/wireless/core.c:322
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Nothing in a driver has ever to fiddle with the internals of an irq
+descriptor. We have functions for properly accessing them. Just because
+C allows to fiddle with everything is not a justification. If the
+required function is not exported then adding the export with a proper
+explanation is not asked too much.
+
+Also this lacks protection or at least a comment why this can be called
+safely and is not subject to a concurrent removal of the irq descriptor.
+The same problem exists when calling kstat_irqs(). It's even documented
+at the top of the function.
+
+Thanks,
+
+        tglx
+
 
