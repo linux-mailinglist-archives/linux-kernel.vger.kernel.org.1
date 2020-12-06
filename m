@@ -2,113 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0122D05A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 16:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9742D05A8
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 16:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgLFPVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 10:21:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
+        id S1726653AbgLFPYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 10:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgLFPVV (ORCPT
+        with ESMTP id S1726410AbgLFPYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 10:21:21 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50AAC0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 07:20:40 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id x23so5257316lji.7
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 07:20:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P2jMJwesYEXerkWw0MU6aVmUBHRRKSZdzK4M16yygf0=;
-        b=trqlRO+RUgL6oM2i+qz8n57YuG8b3zo5dQODxU9+BWmqK2K3YjygtCfmMfCcO1nlmt
-         ZnZ2qSg1VGt3u6UZLGy56VJmIxubCYh39sN6LFx6j4FlmCFBC1KTWLu2SLb/AMrm5Waq
-         5vfMkMw7+08PCfqsfCdO9rbW6LcBD63qZroCTGQa4c4p3/UBYfYZxoutMrbIdPcDTO/g
-         peS3elfKb6M7QiHk1OZcJ+HQ7MFdS8+9wim4R/S5i7PiOtplFKZA7FyiYjwQcQUvoHqm
-         86qJ537/dlxHZ0u2rJgEE9iQoWr0ICFhsWcv5ueA2b4XAHYWvQCDMXNSIY8ozmJHalLD
-         XwVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P2jMJwesYEXerkWw0MU6aVmUBHRRKSZdzK4M16yygf0=;
-        b=nvj+ZvpGQYMg0F1IfVn23y3afD9pvpBwc4EWl9IpezozeOo1smyl6kYwVZT6lefjvq
-         xe6uIFgIm9MHyK4MUM4nE2Hg+WT7kKVBG6IOtOu3KGGA7Il7ShKwvrq0xd9RkX/9b4mQ
-         U4pvUj3ooWVoQ5dHh0y3GS9Uf+bavF1AtdBQw58SqsFI0j3Bqr+wXtOLvIKDRQJo4k2X
-         WEi3NfnyVDX7hl/C7bXXxJEdv6XNnbB8vMhdQ4q1Qe0uSo9hOXg5gvos8M49COdLdl2G
-         6BuOVwQhBs2BJjPLb7vA2rQKsX4glsEoA3BmCbsy3Iw1S4vsMnJlYhClbBDFlfvqOLfY
-         SRjg==
-X-Gm-Message-State: AOAM530TtAaDAMYXls68lhlyQxaN7J45IMiIVgxzALTTqdq3cnpuwGDW
-        nhYlKmcIfDLmivKxjLbMoqm73WwDdevETKsT5OqVnnH7+xRjo54h
-X-Google-Smtp-Source: ABdhPJyzUPomIjJYXfFaqoDPfewszugEjgkBqy17YgWyc6uo0N691jeA252Ulgf8kt7Ye3tK0ZNQijAby1yx6tBHGK4=
-X-Received: by 2002:a2e:780d:: with SMTP id t13mr3229946ljc.144.1607268039459;
- Sun, 06 Dec 2020 07:20:39 -0800 (PST)
+        Sun, 6 Dec 2020 10:24:33 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FE9C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 07:23:32 -0800 (PST)
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=56645)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
+        id 1klvsm-0002oX-VD
+        for linux-kernel@vger.kernel.org; Sun, 06 Dec 2020 16:23:28 +0100
+Subject: Re: Fair Pay: Some interesting observations of symboldevelopment, Uni
+ / I-T
+References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
+ <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
+ <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
+ <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
+To:     linux-kernel@vger.kernel.org
+Message-ID: <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
+Date:   Sun, 6 Dec 2020 16:23:21 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201205054749.26487-1-digetx@gmail.com> <20201205054749.26487-3-digetx@gmail.com>
-In-Reply-To: <20201205054749.26487-3-digetx@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 6 Dec 2020 16:20:28 +0100
-Message-ID: <CACRpkdZoxsamwCpckeMOVSkK_DQOqakmZ3fHzYb8CeSGZ1V_NA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] Input: atmel_mxt_ts - support wakeup methods
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        Linux Input <linux-input@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 6:48 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+I also suggest the singular form La Dyas, for related languages.
 
-> According to datasheets, chips like mXT1386 have a WAKE line, it is used
-> to wake the chip up from deep sleep mode before communicating with it via
-> the I2C-compatible interface.
->
-> If the WAKE line is connected to a GPIO line, the line must be asserted
-> 25 ms before the host attempts to communicate with the controller. If the
-> WAKE line is connected to the SCL pin, the controller will send a NACK on
-> the first attempt to address it, the host must then retry 25 ms later.
->
-> Implement the wake-up methods in the driver. Touchscreen now works
-> properly on devices like Acer A500 tablet, fixing problems like this:
->
->  atmel_mxt_ts 0-004c: __mxt_read_reg: i2c transfer failed (-121)
->  atmel_mxt_ts 0-004c: mxt_bootloader_read: i2c recv failed (-121)
->  atmel_mxt_ts 0-004c: Trying alternate bootloader address
->  atmel_mxt_ts 0-004c: mxt_bootloader_read: i2c recv failed (-121)
->  atmel_mxt_ts: probe of 0-004c failed with error -121
->
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+https://youtu.be/V4HVLWoUnl4
 
-OK looks interesting!
-
-> +       /* Request the WAKE line as asserted so controller won't sleep */
-> +       data->wake_gpio = devm_gpiod_get_optional(&client->dev,
-> +                                                 "wake", GPIOD_OUT_HIGH);
-> +       if (IS_ERR(data->wake_gpio)) {
-> +               error = PTR_ERR(data->wake_gpio);
-> +               dev_err(&client->dev, "Failed to get wake gpio: %d\n", error);
-> +               return error;
-> +       }
-
-That is a bit brutal, don't you think? Now you force the controller
-to be on at all times. Even across suspend/resume.
-
-Shouldn't the same patch drive this low in mxt_suspend()
-and driver it high + wait 25 ms in mxt_resume()?
-Waiting 25ms in mxt_resume() is chill, it is anyway on the
-slowpath.
-
-Yours,
-Linus Walleij
+Den 03.12.2020 21:37, skrev Ywe Cærlyn:
+> For people interested in subconscious interaction and symboldevelopment 
+> (which is a great part of business and related psychology), one should 
+> know that Uni is a minimal state zén symbol, compatible with Islam and 
+> science, and is idolaterous culture, corrected as school. Basically 
+> stating there is no christian god, and that is what being educated means.
+> 
+> The later symbol I-T, is also a minimal state zén symbol, compatible 
+> with Islam, and science, and is idolaterous culture rejected. And the 
+> christian god, almost conquered, stating it should be corrected to a 
+> general term, such as one Guad. And that again needs to point to the 
+> correct one.
+> 
+> Zén is a general teaching stating that egolessness is to be obtained. 
+> One has discussed egocults, and if "Linux" is an undesired cultic symbol.
+> 
+> The best here might ofcourse be I-T Clan X, referring all developers 
+> instead. Which also is a symbol stating a full philosophy is needed. Not 
+> just the Batin (subconscious / deep zén), but also the Zahir 
+> (conscious), and thus Islam.
+> 
+> And also that the left-to-right "Allah" symbol in arabic script, may be 
+> SINO in latin script.
+> 
+> Indeed an interesting development, and hope for fair pay political unity 
+> in east and west.
+> 
+> Serenity!
+> Ywe Cærlyn
+> Fair Pay Initiativetaker.
+> https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
