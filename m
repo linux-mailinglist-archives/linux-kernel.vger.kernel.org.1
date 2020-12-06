@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B5A2D03FF
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4336E2D0478
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgLFLmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:42:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
+        id S1729117AbgLFLpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:45:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728937AbgLFLmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:42:11 -0500
+        id S1727936AbgLFLpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:45:49 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 19/39] ibmvnic: Ensure that SCRQ entry reads are correctly ordered
+        stable@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 15/46] net/packet: fix packet receive on L3 devices without visible hard header
 Date:   Sun,  6 Dec 2020 12:17:23 +0100
-Message-Id: <20201206111555.604022136@linuxfoundation.org>
+Message-Id: <20201206111557.197220214@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-References: <20201206111554.677764505@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,66 +33,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Eyal Birger <eyal.birger@gmail.com>
 
-[ Upstream commit b71ec952234610b4f90ef17a2fdcb124d5320070 ]
+[ Upstream commit d549699048b4b5c22dd710455bcdb76966e55aa3 ]
 
-Ensure that received Subordinate Command-Response Queue (SCRQ)
-entries are properly read in order by the driver. These queues
-are used in the ibmvnic device to process RX buffer and TX completion
-descriptors. dma_rmb barriers have been added after checking for a
-pending descriptor to ensure the correct descriptor entry is checked
-and after reading the SCRQ descriptor to ensure the entire
-descriptor is read before processing.
+In the patchset merged by commit b9fcf0a0d826
+("Merge branch 'support-AF_PACKET-for-layer-3-devices'") L3 devices which
+did not have header_ops were given one for the purpose of protocol parsing
+on af_packet transmit path.
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+That change made af_packet receive path regard these devices as having a
+visible L3 header and therefore aligned incoming skb->data to point to the
+skb's mac_header. Some devices, such as ipip, xfrmi, and others, do not
+reset their mac_header prior to ingress and therefore their incoming
+packets became malformed.
+
+Ideally these devices would reset their mac headers, or af_packet would be
+able to rely on dev->hard_header_len being 0 for such cases, but it seems
+this is not the case.
+
+Fix by changing af_packet RX ll visibility criteria to include the
+existence of a '.create()' header operation, which is used when creating
+a device hard header - via dev_hard_header() - by upper layers, and does
+not exist in these L3 devices.
+
+As this predicate may be useful in other situations, add it as a common
+dev_has_header() helper in netdevice.h.
+
+Fixes: b9fcf0a0d826 ("Merge branch 'support-AF_PACKET-for-layer-3-devices'")
+Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Link: https://lore.kernel.org/r/20201121062817.3178900-1-eyal.birger@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ include/linux/netdevice.h |    5 +++++
+ net/packet/af_packet.c    |   38 +++++++++++++++++++++-----------------
+ 2 files changed, 26 insertions(+), 17 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2307,6 +2307,12 @@ restart_poll:
- 
- 		if (!pending_scrq(adapter, adapter->rx_scrq[scrq_num]))
- 			break;
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
- 		next = ibmvnic_next_scrq(adapter, adapter->rx_scrq[scrq_num]);
- 		rx_buff =
- 		    (struct ibmvnic_rx_buff *)be64_to_cpu(next->
-@@ -2988,6 +2994,13 @@ restart_loop:
- 		unsigned int pool = scrq->pool_index;
- 		int num_entries = 0;
- 
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
-+
- 		next = ibmvnic_next_scrq(adapter, scrq);
- 		for (i = 0; i < next->tx_comp.num_comps; i++) {
- 			if (next->tx_comp.rcs[i]) {
-@@ -3388,6 +3401,11 @@ static union sub_crq *ibmvnic_next_scrq(
- 	}
- 	spin_unlock_irqrestore(&scrq->lock, flags);
- 
-+	/* Ensure that the entire buffer descriptor has been
-+	 * loaded before reading its contents
-+	 */
-+	dma_rmb();
-+
- 	return entry;
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3103,6 +3103,11 @@ static inline bool dev_validate_header(c
+ 	return false;
  }
  
++static inline bool dev_has_header(const struct net_device *dev)
++{
++	return dev->header_ops && dev->header_ops->create;
++}
++
+ typedef int gifconf_func_t(struct net_device * dev, char __user * bufptr,
+ 			   int len, int size);
+ int register_gifconf(unsigned int family, gifconf_func_t *gifconf);
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -93,38 +93,42 @@
+ 
+ /*
+    Assumptions:
+-   - if device has no dev->hard_header routine, it adds and removes ll header
+-     inside itself. In this case ll header is invisible outside of device,
+-     but higher levels still should reserve dev->hard_header_len.
+-     Some devices are enough clever to reallocate skb, when header
+-     will not fit to reserved space (tunnel), another ones are silly
+-     (PPP).
++   - If the device has no dev->header_ops->create, there is no LL header
++     visible above the device. In this case, its hard_header_len should be 0.
++     The device may prepend its own header internally. In this case, its
++     needed_headroom should be set to the space needed for it to add its
++     internal header.
++     For example, a WiFi driver pretending to be an Ethernet driver should
++     set its hard_header_len to be the Ethernet header length, and set its
++     needed_headroom to be (the real WiFi header length - the fake Ethernet
++     header length).
+    - packet socket receives packets with pulled ll header,
+      so that SOCK_RAW should push it back.
+ 
+ On receive:
+ -----------
+ 
+-Incoming, dev->hard_header!=NULL
++Incoming, dev_has_header(dev) == true
+    mac_header -> ll header
+    data       -> data
+ 
+-Outgoing, dev->hard_header!=NULL
++Outgoing, dev_has_header(dev) == true
+    mac_header -> ll header
+    data       -> ll header
+ 
+-Incoming, dev->hard_header==NULL
+-   mac_header -> UNKNOWN position. It is very likely, that it points to ll
+-		 header.  PPP makes it, that is wrong, because introduce
+-		 assymetry between rx and tx paths.
++Incoming, dev_has_header(dev) == false
++   mac_header -> data
++     However drivers often make it point to the ll header.
++     This is incorrect because the ll header should be invisible to us.
+    data       -> data
+ 
+-Outgoing, dev->hard_header==NULL
+-   mac_header -> data. ll header is still not built!
++Outgoing, dev_has_header(dev) == false
++   mac_header -> data. ll header is invisible to us.
+    data       -> data
+ 
+ Resume
+-  If dev->hard_header==NULL we are unlikely to restore sensible ll header.
++  If dev_has_header(dev) == false we are unable to restore the ll header,
++    because it is invisible to us.
+ 
+ 
+ On transmit:
+@@ -2066,7 +2070,7 @@ static int packet_rcv(struct sk_buff *sk
+ 
+ 	skb->dev = dev;
+ 
+-	if (dev->header_ops) {
++	if (dev_has_header(dev)) {
+ 		/* The device has an explicit notion of ll header,
+ 		 * exported to higher levels.
+ 		 *
+@@ -2195,7 +2199,7 @@ static int tpacket_rcv(struct sk_buff *s
+ 	if (!net_eq(dev_net(dev), sock_net(sk)))
+ 		goto drop;
+ 
+-	if (dev->header_ops) {
++	if (dev_has_header(dev)) {
+ 		if (sk->sk_type != SOCK_DGRAM)
+ 			skb_push(skb, skb->data - skb_mac_header(skb));
+ 		else if (skb->pkt_type == PACKET_OUTGOING) {
 
 
