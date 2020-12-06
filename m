@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4336E2D0478
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5AE2D046A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgLFLpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:45:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46206 "EHLO mail.kernel.org"
+        id S1729525AbgLFLpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:45:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727936AbgLFLpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:45:49 -0500
+        id S1728001AbgLFLp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:45:27 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Willem de Bruijn <willemb@google.com>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 15/46] net/packet: fix packet receive on L3 devices without visible hard header
-Date:   Sun,  6 Dec 2020 12:17:23 +0100
-Message-Id: <20201206111557.197220214@linuxfoundation.org>
+Subject: [PATCH 5.9 16/46] netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
+Date:   Sun,  6 Dec 2020 12:17:24 +0100
+Message-Id: <20201206111557.249275111@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
 References: <20201206111556.455533723@linuxfoundation.org>
@@ -33,136 +32,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eyal Birger <eyal.birger@gmail.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit d549699048b4b5c22dd710455bcdb76966e55aa3 ]
+[ Upstream commit 44f64f23bae2f0fad25503bc7ab86cd08d04cd47 ]
 
-In the patchset merged by commit b9fcf0a0d826
-("Merge branch 'support-AF_PACKET-for-layer-3-devices'") L3 devices which
-did not have header_ops were given one for the purpose of protocol parsing
-on af_packet transmit path.
+Netfilter changes PACKET_OTHERHOST to PACKET_HOST before invoking the
+hooks as, while it's an expected value for a bridge, routing expects
+PACKET_HOST. The change is undone later on after hook traversal. This
+can be seen with pairs of functions updating skb>pkt_type and then
+reverting it to its original value:
 
-That change made af_packet receive path regard these devices as having a
-visible L3 header and therefore aligned incoming skb->data to point to the
-skb's mac_header. Some devices, such as ipip, xfrmi, and others, do not
-reset their mac_header prior to ingress and therefore their incoming
-packets became malformed.
+For hook NF_INET_PRE_ROUTING:
+  setup_pre_routing / br_nf_pre_routing_finish
 
-Ideally these devices would reset their mac headers, or af_packet would be
-able to rely on dev->hard_header_len being 0 for such cases, but it seems
-this is not the case.
+For hook NF_INET_FORWARD:
+  br_nf_forward_ip / br_nf_forward_finish
 
-Fix by changing af_packet RX ll visibility criteria to include the
-existence of a '.create()' header operation, which is used when creating
-a device hard header - via dev_hard_header() - by upper layers, and does
-not exist in these L3 devices.
+But the third case where netfilter does this, for hook
+NF_INET_POST_ROUTING, the packet type is changed in br_nf_post_routing
+but never reverted. A comment says:
 
-As this predicate may be useful in other situations, add it as a common
-dev_has_header() helper in netdevice.h.
+  /* We assume any code from br_dev_queue_push_xmit onwards doesn't care
+   * about the value of skb->pkt_type. */
 
-Fixes: b9fcf0a0d826 ("Merge branch 'support-AF_PACKET-for-layer-3-devices'")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Link: https://lore.kernel.org/r/20201121062817.3178900-1-eyal.birger@gmail.com
+But when having a tunnel (say vxlan) attached to a bridge we have the
+following call trace:
+
+  br_nf_pre_routing
+  br_nf_pre_routing_ipv6
+     br_nf_pre_routing_finish
+  br_nf_forward_ip
+     br_nf_forward_finish
+  br_nf_post_routing           <- pkt_type is updated to PACKET_HOST
+     br_nf_dev_queue_xmit      <- but not reverted to its original value
+  vxlan_xmit
+     vxlan_xmit_one
+        skb_tunnel_check_pmtu  <- a check on pkt_type is performed
+
+In this specific case, this creates issues such as when an ICMPv6 PTB
+should be sent back. When CONFIG_BRIDGE_NETFILTER is enabled, the PTB
+isn't sent (as skb_tunnel_check_pmtu checks if pkt_type is PACKET_HOST
+and returns early).
+
+If the comment is right and no one cares about the value of
+skb->pkt_type after br_dev_queue_push_xmit (which isn't true), resetting
+it to its original value should be safe.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Link: https://lore.kernel.org/r/20201123174902.622102-1-atenart@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netdevice.h |    5 +++++
- net/packet/af_packet.c    |   38 +++++++++++++++++++++-----------------
- 2 files changed, 26 insertions(+), 17 deletions(-)
+ net/bridge/br_netfilter_hooks.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3103,6 +3103,11 @@ static inline bool dev_validate_header(c
- 	return false;
- }
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -735,6 +735,11 @@ static int br_nf_dev_queue_xmit(struct n
+ 	mtu_reserved = nf_bridge_mtu_reduction(skb);
+ 	mtu = skb->dev->mtu;
  
-+static inline bool dev_has_header(const struct net_device *dev)
-+{
-+	return dev->header_ops && dev->header_ops->create;
-+}
++	if (nf_bridge->pkt_otherhost) {
++		skb->pkt_type = PACKET_OTHERHOST;
++		nf_bridge->pkt_otherhost = false;
++	}
 +
- typedef int gifconf_func_t(struct net_device * dev, char __user * bufptr,
- 			   int len, int size);
- int register_gifconf(unsigned int family, gifconf_func_t *gifconf);
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -93,38 +93,42 @@
+ 	if (nf_bridge->frag_max_size && nf_bridge->frag_max_size < mtu)
+ 		mtu = nf_bridge->frag_max_size;
  
- /*
-    Assumptions:
--   - if device has no dev->hard_header routine, it adds and removes ll header
--     inside itself. In this case ll header is invisible outside of device,
--     but higher levels still should reserve dev->hard_header_len.
--     Some devices are enough clever to reallocate skb, when header
--     will not fit to reserved space (tunnel), another ones are silly
--     (PPP).
-+   - If the device has no dev->header_ops->create, there is no LL header
-+     visible above the device. In this case, its hard_header_len should be 0.
-+     The device may prepend its own header internally. In this case, its
-+     needed_headroom should be set to the space needed for it to add its
-+     internal header.
-+     For example, a WiFi driver pretending to be an Ethernet driver should
-+     set its hard_header_len to be the Ethernet header length, and set its
-+     needed_headroom to be (the real WiFi header length - the fake Ethernet
-+     header length).
-    - packet socket receives packets with pulled ll header,
-      so that SOCK_RAW should push it back.
+@@ -835,8 +840,6 @@ static unsigned int br_nf_post_routing(v
+ 	else
+ 		return NF_ACCEPT;
  
- On receive:
- -----------
- 
--Incoming, dev->hard_header!=NULL
-+Incoming, dev_has_header(dev) == true
-    mac_header -> ll header
-    data       -> data
- 
--Outgoing, dev->hard_header!=NULL
-+Outgoing, dev_has_header(dev) == true
-    mac_header -> ll header
-    data       -> ll header
- 
--Incoming, dev->hard_header==NULL
--   mac_header -> UNKNOWN position. It is very likely, that it points to ll
--		 header.  PPP makes it, that is wrong, because introduce
--		 assymetry between rx and tx paths.
-+Incoming, dev_has_header(dev) == false
-+   mac_header -> data
-+     However drivers often make it point to the ll header.
-+     This is incorrect because the ll header should be invisible to us.
-    data       -> data
- 
--Outgoing, dev->hard_header==NULL
--   mac_header -> data. ll header is still not built!
-+Outgoing, dev_has_header(dev) == false
-+   mac_header -> data. ll header is invisible to us.
-    data       -> data
- 
- Resume
--  If dev->hard_header==NULL we are unlikely to restore sensible ll header.
-+  If dev_has_header(dev) == false we are unable to restore the ll header,
-+    because it is invisible to us.
- 
- 
- On transmit:
-@@ -2066,7 +2070,7 @@ static int packet_rcv(struct sk_buff *sk
- 
- 	skb->dev = dev;
- 
--	if (dev->header_ops) {
-+	if (dev_has_header(dev)) {
- 		/* The device has an explicit notion of ll header,
- 		 * exported to higher levels.
- 		 *
-@@ -2195,7 +2199,7 @@ static int tpacket_rcv(struct sk_buff *s
- 	if (!net_eq(dev_net(dev), sock_net(sk)))
- 		goto drop;
- 
--	if (dev->header_ops) {
-+	if (dev_has_header(dev)) {
- 		if (sk->sk_type != SOCK_DGRAM)
- 			skb_push(skb, skb->data - skb_mac_header(skb));
- 		else if (skb->pkt_type == PACKET_OUTGOING) {
+-	/* We assume any code from br_dev_queue_push_xmit onwards doesn't care
+-	 * about the value of skb->pkt_type. */
+ 	if (skb->pkt_type == PACKET_OTHERHOST) {
+ 		skb->pkt_type = PACKET_HOST;
+ 		nf_bridge->pkt_otherhost = true;
 
 
