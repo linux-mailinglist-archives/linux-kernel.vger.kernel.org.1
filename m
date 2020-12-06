@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F532D03D1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E3D2D0499
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgLFLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:40:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37932 "EHLO mail.kernel.org"
+        id S1729076AbgLFLrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:47:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728588AbgLFLkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:40:33 -0500
+        id S1729083AbgLFLnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:06 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 31/32] tracing: Remove WARN_ON in start_thread()
-Date:   Sun,  6 Dec 2020 12:17:31 +0100
-Message-Id: <20201206111557.264012863@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 28/39] chelsio/chtls: fix a double free in chtls_setkey()
+Date:   Sun,  6 Dec 2020 12:17:32 +0100
+Message-Id: <20201206111556.034502192@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
-References: <20201206111555.787862631@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,56 +31,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 310e3a4b5a4fc718a72201c1e4cf5c64ac6f5442 upstream.
+[ Upstream commit 391119fb5c5c4bdb4d57c7ffeb5e8d18560783d1 ]
 
-This patch reverts commit 978defee11a5 ("tracing: Do a WARN_ON()
- if start_thread() in hwlat is called when thread exists")
+The "skb" is freed by the transmit code in cxgb4_ofld_send() and we
+shouldn't use it again.  But in the current code, if we hit an error
+later on in the function then the clean up code will call kfree_skb(skb)
+and so it causes a double free.
 
-.start hook can be legally called several times if according
-tracer is stopped
+Set the "skb" to NULL and that makes the kfree_skb() a no-op.
 
-screen window 1
-[root@localhost ~]# echo 1 > /sys/kernel/tracing/events/kmem/kfree/enable
-[root@localhost ~]# echo 1 > /sys/kernel/tracing/options/pause-on-trace
-[root@localhost ~]# less -F /sys/kernel/tracing/trace
-
-screen window 2
-[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
-0
-[root@localhost ~]# echo hwlat >  /sys/kernel/debug/tracing/current_tracer
-[root@localhost ~]# echo 1 > /sys/kernel/debug/tracing/tracing_on
-[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
-0
-[root@localhost ~]# echo 2 > /sys/kernel/debug/tracing/tracing_on
-
-triggers warning in dmesg:
-WARNING: CPU: 3 PID: 1403 at kernel/trace/trace_hwlat.c:371 hwlat_tracer_start+0xc9/0xd0
-
-Link: https://lkml.kernel.org/r/bd4d3e70-400d-9c82-7b73-a2d695e86b58@virtuozzo.com
-
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: stable@vger.kernel.org
-Fixes: 978defee11a5 ("tracing: Do a WARN_ON() if start_thread() in hwlat is called when thread exists")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: d25f2f71f653 ("crypto: chtls - Program the TLS session Key")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X8ilb6PtBRLWiSHp@mwanda
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/trace/trace_hwlat.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/chelsio/chtls/chtls_hw.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -355,7 +355,7 @@ static int start_kthread(struct trace_ar
- 	struct task_struct *kthread;
- 	int next_cpu;
+--- a/drivers/crypto/chelsio/chtls/chtls_hw.c
++++ b/drivers/crypto/chelsio/chtls/chtls_hw.c
+@@ -365,6 +365,7 @@ int chtls_setkey(struct chtls_sock *csk,
+ 	csk->wr_unacked += DIV_ROUND_UP(len, 16);
+ 	enqueue_wr(csk, skb);
+ 	cxgb4_ofld_send(csk->egress_dev, skb);
++	skb = NULL;
  
--	if (WARN_ON(hwlat_kthread))
-+	if (hwlat_kthread)
- 		return 0;
- 
- 	/* Just pick the first CPU on first iteration */
+ 	chtls_set_scmd(csk);
+ 	/* Clear quiesce for Rx key */
 
 
