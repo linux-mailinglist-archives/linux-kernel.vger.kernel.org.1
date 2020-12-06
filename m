@@ -2,131 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850122D022E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEED72D0236
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgLFJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 04:10:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57322 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgLFJKO (ORCPT
+        id S1726089AbgLFJQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 04:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgLFJQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 04:10:14 -0500
-Date:   Sun, 06 Dec 2020 09:09:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607245771;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7NZzFHvvG3Z44Zmp07YaDC+CpeUesGmzpFQ7cGNXwMA=;
-        b=Jzqj1AL0I3o5DAgai/EFxT+42mU3dNHtLqDzOfetedseeEr7VEdixGWPxCjCDAlVK5WtoO
-        NHO9RIqBld9XAgF2vwy1mNp7XPmN4ZZwyVWa2la1RthG461v3JSYzHCW28LEpNi3toGGPx
-        atwcIf160Ki5w0eWJcvGY9tT7emUDF283+v44gYGlEGlgER1oMq987nbdnazeP0yuY09nY
-        KZL8xhsJyIM/hhNNtPu6bDMhjUR/5QTHwlr/6/c+OkMXeEA6UK9bbvCOqEEjkLdiG3yVpx
-        i96NvEJ7ZbJ9d1UGtk5F8hv09d2ioYVVG7ghmPiYPng9c6gf0ThGM+VGe5DBBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607245771;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7NZzFHvvG3Z44Zmp07YaDC+CpeUesGmzpFQ7cGNXwMA=;
-        b=3r++y7WkEsHYKdLsY8zkmZCiD0MXAnHijoPCbAcj1O0Awl1ca97fquFj/KNY6u1hA3yb/r
-        roIgVueEiCVpFzCw==
-From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/insn-eval: Use new for_each_insn_prefix() macro
- to loop over prefixes bytes
-Cc:     syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <160697104969.3146288.16329307586428270032.stgit@devnote2>
-References: <160697104969.3146288.16329307586428270032.stgit@devnote2>
+        Sun, 6 Dec 2020 04:16:28 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E3C0613D0;
+        Sun,  6 Dec 2020 01:15:47 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id x6so5698121wro.11;
+        Sun, 06 Dec 2020 01:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uWk/ZRFS7dLbnP3Icptxi63b/iAaHBAe2xX/prVRC2A=;
+        b=MxvysfcbhTOE4RIcvS3qS2OJk1Fgl/BhBQaxSm7UWjZz3ysBvXMOSAiV1fQKEaOVuL
+         aDNAJxI9uHerhcvjWtdkd3bOyJztzaW11B4siaY5kYTzxmSTsq9ZCLIcmLfpIr5av2N5
+         DmdbbFUu7FvYRj2sDIBnK4sEt+YQStNNdhASmHA+02dAk6dAVcTFtloScu+FwT2p3IIA
+         EPh1XpBCRLlE0Mo8bzUIrJNwdvtqRMFiaFrurkZErtgbmRrapN4jn+BJ8p8+3dhqR86J
+         1b6FFSPAVoULwr1vlWKIyxxo0KUXlSbcTkHLRQV894VdJ3LSnWTt6nEUBv9rrnJMIfZs
+         5DVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uWk/ZRFS7dLbnP3Icptxi63b/iAaHBAe2xX/prVRC2A=;
+        b=gTtydRUcXQwDHSSzdIc/wVynu5/UD+Jt6Tn7SYNQVeqQPLQohRwQ2h8ObIeMH8WMvM
+         iRlYEjBRiDqoTEgjoo6xl6/ewDn4shJFjquBmFUolIjRc8ZeNiiV4aGP10lHq/9SRXr7
+         X7CCkwtz0tCBLMFaNFrqZzrgl1cMy5+HsJ7nnZOPbV3jqnyoZALpMlnh7KMFBKkR4B/b
+         TPdNe0wRSC7ODf3avHUVjnebCNg668AesnEVo+Ln0YcQ3nWLVXfGZQZQ0wBNZnIag/84
+         YKAQCwVWm8jqQPVHN56I67DSJUovdcb2Nig305XsGDNySnCFu/Bfv2fOBy6eKdKQwRAD
+         KeFg==
+X-Gm-Message-State: AOAM531HQ7ORlszDu2/azzjwZPYnN9M9zjxQr6rSsLidMJWwclujHeIZ
+        jNAkKuTDlkJP10CDG4e6rBv5hGEXLwFdsEkU2fU=
+X-Google-Smtp-Source: ABdhPJwQbJzPlTDsXYiB3k6eKX0CYvEclRLMe3MKl91cGQ7RKUqHdp44t3pqwREgZhP2ot07uZLeoy7Z2QC50kT+/Vk=
+X-Received: by 2002:adf:f602:: with SMTP id t2mr14246671wrp.40.1607246146193;
+ Sun, 06 Dec 2020 01:15:46 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160724577056.3364.12183431793717178640.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
+ <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
+ <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com> <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+In-Reply-To: <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Sun, 6 Dec 2020 18:15:32 +0900
+Message-ID: <CAM7-yPRirVPsFDa37HC8shSwXhk=Bmb490z8=Bs2g0w=A9BhCw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
+        masahiroy@kernel.org, peterz@infradead.org,
+        peter.enderborg@sony.com, krzk@kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
+        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
+        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
+        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
+        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        dushistov@mail.ru,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature.
 
-Commit-ID:     12cb908a11b2544b5f53e9af856e6b6a90ed5533
-Gitweb:        https://git.kernel.org/tip/12cb908a11b2544b5f53e9af856e6b6a90ed5533
-Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Thu, 03 Dec 2020 13:50:50 +09:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sun, 06 Dec 2020 10:03:08 +01:00
+Sorry, I don't know about this fact Thanks..
 
-x86/insn-eval: Use new for_each_insn_prefix() macro to loop over prefixes bytes
+> Also do you have measurements showing it indeed improves
+> performances?
 
-Since insn.prefixes.nbytes can be bigger than the size of
-insn.prefixes.bytes[] when a prefix is repeated, the proper check must
-be
+I'm not test btrfs' free space cache directly, But I used find_bit_benchmar=
+k.c.
 
-  insn.prefixes.bytes[i] != 0 and i < 4
+here is the result of find_bit_benchmark.
 
-instead of using insn.prefixes.nbytes. Use the new
-for_each_insn_prefix() macro which does it correctly.
+              Start testing find_bit() with random-filled bitmap
+[  +0.001874] find_next_bit:                      816326 ns, 163323 iterati=
+ons
+[  +0.000822] find_next_zero_bit:             808977 ns, 164357 iterations
+[  +0.000571] find_last_bit:                       561444 ns, 163323 iterat=
+ions
+[  +0.000619] find_last_zero_bit:              609533 ns, 164357 iterations
+[  +0.002043] find_first_bit:                       2011390 ns,  16204
+iterations
+[  +0.000003] find_next_and_bit:                  59 ns,      0 iterations
+[  +0.000001]
+              Start testing find_bit() with sparse bitmap
+[  +0.000068] find_next_bit:                      34573 ns,    653 iteratio=
+ns
+[  +0.001691] find_next_zero_bit:            1663556 ns, 327027 iterations
+[  +0.000010] find_last_bit:                       7864 ns,    653 iteratio=
+ns
+[  +0.001235] find_last_zero_bit:             1216449 ns, 327027 iterations
+[  +0.000664] find_first_bit:                 653148 ns,    653 iterations
+[  +0.000002] find_next_and_bit:                  44 ns,      0 iterations
 
-Debugged by Kees Cook <keescook@chromium.org>.
+as this result, the find_last_zero_bit is a little fast, and logically,
+because find_each_clear_bit is iterate till the specified index (i) times,
+But find_last_zero_bit in that case call one time
+(find_each_clear_bit call i times but find_last_zero_bit call only one time=
+)
 
- [ bp: Massage commit message. ]
+So, i think it has a slight improvement.
 
-Fixes: 32d0b95300db ("x86/insn-eval: Add utility functions to get segment selector")
-Reported-by: syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160697104969.3146288.16329307586428270032.stgit@devnote2
----
- arch/x86/lib/insn-eval.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Thanks.
+Levi.
 
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index 58f7fb9..4229950 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -63,13 +63,12 @@ static bool is_string_insn(struct insn *insn)
-  */
- bool insn_has_rep_prefix(struct insn *insn)
- {
-+	insn_byte_t p;
- 	int i;
- 
- 	insn_get_prefixes(insn);
- 
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
--		insn_byte_t p = insn->prefixes.bytes[i];
--
-+	for_each_insn_prefix(insn, i, p) {
- 		if (p == 0xf2 || p == 0xf3)
- 			return true;
- 	}
-@@ -95,14 +94,15 @@ static int get_seg_reg_override_idx(struct insn *insn)
- {
- 	int idx = INAT_SEG_REG_DEFAULT;
- 	int num_overrides = 0, i;
-+	insn_byte_t p;
- 
- 	insn_get_prefixes(insn);
- 
- 	/* Look for any segment override prefixes. */
--	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+	for_each_insn_prefix(insn, i, p) {
- 		insn_attr_t attr;
- 
--		attr = inat_get_opcode_attribute(insn->prefixes.bytes[i]);
-+		attr = inat_get_opcode_attribute(p);
- 		switch (attr) {
- 		case INAT_MAKE_PREFIX(INAT_PFX_CS):
- 			idx = INAT_SEG_REG_CS;
+On Sun, Dec 6, 2020 at 6:01 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 6.12.20 =D0=B3. 10:56 =D1=87., Yun Levi wrote:
+> >> This, and the change above this, are not related to this patch so you
+> >> might not want to include them.
+> >
+> >> Also, why is this patch series even needed?  I don't see a justificati=
+on
+> >> for it anywhere, only "what" this patch is, not "why".
+> >
+> > I think the find_last_zero_bit will help to improve in
+> > 7th patch's change and It can be used in the future.
+> > But if my thinking is bad.. Please let me know..
+> >
+> > Thanks.
+> > Levi.
+> >
+>
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature. Also do you have measurements showing it indeed improves
+> performances?
