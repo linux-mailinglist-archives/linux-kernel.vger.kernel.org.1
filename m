@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A5D2D03BB
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B5F2D03DF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgLFLkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:40:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36900 "EHLO mail.kernel.org"
+        id S1728725AbgLFLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:41:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728315AbgLFLkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:40:04 -0500
+        id S1728076AbgLFLjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:39:40 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        stable@vger.kernel.org, Vadim Fedorenko <vfedorenko@novek.ru>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 02/32] net/af_iucv: set correct sk_protocol for child sockets
-Date:   Sun,  6 Dec 2020 12:17:02 +0100
-Message-Id: <20201206111555.899493354@linuxfoundation.org>
+Subject: [PATCH 4.19 03/32] net/tls: missing received data after fast remote close
+Date:   Sun,  6 Dec 2020 12:17:03 +0100
+Message-Id: <20201206111555.945020205@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
 References: <20201206111555.787862631@linuxfoundation.org>
@@ -31,45 +31,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Vadim Fedorenko <vfedorenko@novek.ru>
 
-[ Upstream commit c5dab0941fcdc9664eb0ec0d4d51433216d91336 ]
+[ Upstream commit 20ffc7adf53a5fd3d19751fbff7895bcca66686e ]
 
-Child sockets erroneously inherit their parent's sk_type (ie. SOCK_*),
-instead of the PF_IUCV protocol that the parent was created with in
-iucv_sock_create().
+In case when tcp socket received FIN after some data and the
+parser haven't started before reading data caller will receive
+an empty buffer. This behavior differs from plain TCP socket and
+leads to special treating in user-space.
+The flow that triggers the race is simple. Server sends small
+amount of data right after the connection is configured to use TLS
+and closes the connection. In this case receiver sees TLS Handshake
+data, configures TLS socket right after Change Cipher Spec record.
+While the configuration is in process, TCP socket receives small
+Application Data record, Encrypted Alert record and FIN packet. So
+the TCP socket changes sk_shutdown to RCV_SHUTDOWN and sk_flag with
+SK_DONE bit set. The received data is not parsed upon arrival and is
+never sent to user-space.
 
-We're currently not using sk->sk_protocol ourselves, so this shouldn't
-have much impact (except eg. getting the output in skb_dump() right).
+Patch unpauses parser directly if we have unparsed data in tcp
+receive queue.
 
-Fixes: eac3731bd04c ("[S390]: Add AF_IUCV socket support")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Link: https://lore.kernel.org/r/20201120100657.34407-1-jwi@linux.ibm.com
+Fixes: fcf4793e278e ("tls: check RCV_SHUTDOWN in tls_wait_data")
+Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Link: https://lore.kernel.org/r/1605801588-12236-1-git-send-email-vfedorenko@novek.ru
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/iucv/af_iucv.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/tls/tls_sw.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/iucv/af_iucv.c
-+++ b/net/iucv/af_iucv.c
-@@ -1782,7 +1782,7 @@ static int iucv_callback_connreq(struct
- 	}
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -630,6 +630,12 @@ static struct sk_buff *tls_wait_data(str
+ 			return NULL;
+ 		}
  
- 	/* Create the new socket */
--	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
-+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
- 	if (!nsk) {
- 		err = pr_iucv->path_sever(path, user_data);
- 		iucv_path_free(path);
-@@ -1992,7 +1992,7 @@ static int afiucv_hs_callback_syn(struct
- 		goto out;
- 	}
++		if (!skb_queue_empty(&sk->sk_receive_queue)) {
++			__strp_unpause(&ctx->strp);
++			if (ctx->recv_pkt)
++				return ctx->recv_pkt;
++		}
++
+ 		if (sk->sk_shutdown & RCV_SHUTDOWN)
+ 			return NULL;
  
--	nsk = iucv_sock_alloc(NULL, sk->sk_type, GFP_ATOMIC, 0);
-+	nsk = iucv_sock_alloc(NULL, sk->sk_protocol, GFP_ATOMIC, 0);
- 	bh_lock_sock(sk);
- 	if ((sk->sk_state != IUCV_LISTEN) ||
- 	    sk_acceptq_is_full(sk) ||
 
 
