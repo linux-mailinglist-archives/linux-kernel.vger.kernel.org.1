@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968052D0688
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B812D0684
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgLFSlQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Dec 2020 13:41:16 -0500
-Received: from 95.0.154.203.static.ttnet.com.tr ([95.0.154.203]:40325 "EHLO
-        mailgw.kartepe.bel.tr" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgLFSlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 13:41:12 -0500
-Received: (korumail 24731 invoked from network); 6 Dec 2020 18:12:23 -0000
-Received: from unknown (HELO mail.kartepe.bel.tr) ()  by 0
-        with ESMTPS (DHE-RSA-AES256-GCM-SHA384 encrypted); 6 Dec 2020 18:12:00 -0000
-Received: from localhost (localhost [127.0.0.1])
-        by mail.kartepe.bel.tr (Postfix) with ESMTP id B9E4A2E15EA4;
-        Sun,  6 Dec 2020 20:48:32 +0300 (+03)
-Received: from mail.kartepe.bel.tr ([127.0.0.1])
-        by localhost (mail.kartepe.bel.tr [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wulaFfum5g-H; Sun,  6 Dec 2020 20:48:32 +0300 (+03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.kartepe.bel.tr (Postfix) with ESMTP id 8731D2E0C424;
-        Sun,  6 Dec 2020 20:48:32 +0300 (+03)
-X-Virus-Scanned: amavisd-new at mail.kartepe.bel.tr
-Received: from mail.kartepe.bel.tr ([127.0.0.1])
-        by localhost (mail.kartepe.bel.tr [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6kriho3wVuVg; Sun,  6 Dec 2020 20:48:32 +0300 (+03)
-Received: from [10.5.0.2] (unknown [217.146.82.189])
-        by mail.kartepe.bel.tr (Postfix) with ESMTPSA id 018072E15EA4;
-        Sun,  6 Dec 2020 20:48:26 +0300 (+03)
-MIME-Version: 1.0
-Subject: Investment Partnership
-To:     Recipients <neli.souza@ac.gov.br>
-From:   Fawaz Khe Saleh <neli.souza@ac.gov.br>
-Date:   Sun, 06 Dec 2020 10:48:49 -0700
-Reply-To: fawaz.khe.saleh@zohomail.eu
-Message-Id: <20201206174827.018072E15EA4@mail.kartepe.bel.tr>
-X-Envelope-Sender: neli.souza@ac.gov.br
-X-KORUMAIL-QueueId: 23904-1607278320-883078
-X-SMTP-Filter: Korumail SMTP Filter Engine Korumail 6.7.8
-X-KORUMAIL-Result: Clean (Content eval: 31.000000 points)
-X-KORUMAIL-Reason: 
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
+        id S1727148AbgLFSjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 13:39:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726440AbgLFSjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 13:39:18 -0500
+Subject: Re: [GIT PULL] Kbuild fixes for v5.10-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607279918;
+        bh=9kz/T5VNGKZat3jcXKOkLQBr62dtPjhQN46YU5TFzgI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=gr65CecgT2I3B5+mWRsI3MQzioUcbOHXaE6nanAJhCgvP2NaRQ5vqsNoDohoF7s/o
+         6uOmER3Mos1UW1Nq4dr38aF1U8hGruEiOep5PGQg7hZO5CDn8w5WwkiTgBhFolax7+
+         xl9lFATwQee38jihdGdlFNVM7gLoa87kA1WBs9pS408PoZ2PHyynfQYupfk0J7+aOD
+         OH6zZ8Vla16NzwdsqAthvKBUECO89WXFdsweL4Qs4DiRmIGruo1mPsU/iTjIzwzoJ6
+         4qnd0oX38yhhn13E4t5Y2GLQ8nUz95r6z3TB4pcE4KmgvtB1kcVWOnKYcDBKbpb7hz
+         ZqUktvi8hdeCw==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNASVM_r0q6vQzjzTivu-bhOxgDwm4rsJzT5j7TFJmwOViA@mail.gmail.com>
+References: <CAK7LNASVM_r0q6vQzjzTivu-bhOxgDwm4rsJzT5j7TFJmwOViA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNASVM_r0q6vQzjzTivu-bhOxgDwm4rsJzT5j7TFJmwOViA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.10-2
+X-PR-Tracked-Commit-Id: 7d32358be8acb119dcfe39b6cf67ec6d94bf1fe7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e6585a493921991653be1fd65c3aa3fb90b000ae
+Message-Id: <160727991780.20057.18241976319057303872.pr-tracker-bot@kernel.org>
+Date:   Sun, 06 Dec 2020 18:38:37 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The pull request you sent on Sun, 6 Dec 2020 21:47:13 +0900:
 
-I hope this email find you well.
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.10-2
 
-My name is Fawaz KHE Al SALEH, Member of the Board of Directors at Kuveyt Turk Participation Bankasi & CEO and Chairman Turkapital Holding B.S.C.C
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e6585a493921991653be1fd65c3aa3fb90b000ae
 
-I am reaching out to you because I am looking to confidentially invest my asset sum USD $47,500,000.00 overseas into a profitable business project over a period of 10 years.
+Thank you!
 
-I am reached out to you to see if you are capable to receive and manage the funds on a well-done package and profitable business that can generate 6% annually
-
-NOTE: That any valid and secured investment that will meet up to the expected ROI will be acceptable.
-
-I await your swift response on this subject matter
-
-Best Regards
-Mr Fawaz Khe Saleh
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
