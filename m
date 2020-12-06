@@ -2,180 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17A12D052C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A92242D052E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgLFN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 08:29:28 -0500
-Received: from mx3.wp.pl ([212.77.101.10]:17041 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728178AbgLFN3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 08:29:23 -0500
-Received: (wp-smtpd smtp.wp.pl 31589 invoked from network); 6 Dec 2020 14:28:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1607261310; bh=1v7Ikvo5U6Dc6D8OwUMg28BDg5V8SVqWfPaZSgUddhQ=;
-          h=From:To:Cc:Subject;
-          b=Y843vYs710uQiIQuWLq3xLRw7amrx+cQJHL/iVkrejyQEJL6dXLTKuZJCw52NS38G
-           sx0fpX+6FQpHV0Var0xCny3xR0NL9Yw/q9VR+dfznMJehlXkV9ka68EDc1ILdhZnG9
-           KKzK7wOP5rKOuVY6gWfKhXuPzVcqQ3PPU1x6X1kw=
-Received: from riviera.nat.student.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <hauke@hauke-m.de>; 6 Dec 2020 14:28:30 +0100
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH v2 2/2] dt-bindings: net: dsa: lantiq, lantiq-gswip: add example for xRX330
-Date:   Sun,  6 Dec 2020 14:27:13 +0100
-Message-Id: <20201206132713.13452-3-olek2@wp.pl>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201206132713.13452-1-olek2@wp.pl>
-References: <20201206132713.13452-1-olek2@wp.pl>
+        id S1728356AbgLFNbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 08:31:06 -0500
+Received: from relay5.mymailcheap.com ([159.100.241.64]:38133 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727696AbgLFNbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 08:31:05 -0500
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 55FA32008F;
+        Sun,  6 Dec 2020 13:30:11 +0000 (UTC)
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 9F1903F201;
+        Sun,  6 Dec 2020 13:28:38 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id E34602A916;
+        Sun,  6 Dec 2020 14:28:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1607261317;
+        bh=Ly9UGq+bI+N0Y21Mnayo4gBWQr7v4a8tlzKDl/MPtZo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rS2KLn9W92nP/sMfCz9QoHh4sw6IS6TzbKpB7TV29BvU/GCxvdmrcJXgLnjlER4L4
+         P0GyLz5BmxDGKJZBaG4MEV+I4oN69OLypp+muoPU3E7RokmVG23AZXSSNFNtD2LAlq
+         7zy5mRoVRAFdFo78HJKbD+IxX/pHoh8WWMEaIGFA=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LUCSz8kkQbED; Sun,  6 Dec 2020 14:28:36 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Sun,  6 Dec 2020 14:28:36 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id D6372400B4;
+        Sun,  6 Dec 2020 13:28:33 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="c4g6g56e";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from localhost.localdomain (unknown [112.65.61.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id A4097400B4;
+        Sun,  6 Dec 2020 13:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1607261307;
+        bh=Ly9UGq+bI+N0Y21Mnayo4gBWQr7v4a8tlzKDl/MPtZo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c4g6g56eOmefP5IklL7Kec2uX0vLM3PQwpq1XoL+Y4+sFch5fDio1JJmtdxFgP+5q
+         k+CUT4MfvWkPqX/CrraeBjsWxfAO7rv8H7JYTWnzp2WeIF5ZMqP1AFY3INyyZsgKHF
+         53X9ym/AFV6WQOeFIo9ppnhnsackwS8Y4mcQjVEA=
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        WANG Xuerui <git@xen0n.name>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>, Paul Cercueil <paul@crapouillou.net>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhc@lemote.com>, YunQiang Su <syq@debian.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] MIPS: Add vulnerabilities
+Date:   Sun,  6 Dec 2020 21:27:36 +0800
+Message-Id: <20201206132748.6646-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: d071ba2a14f55086f348850311d986d1
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000002 [ERHV]                               
+X-Rspamd-Queue-Id: D6372400B4
+X-Spamd-Result: default: False [4.90 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[112.65.61.233:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         MID_CONTAINS_FROM(1.00)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string and example for xRX300 and xRX330.
+Add vulnerabilities display for MIPS.
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- .../bindings/net/dsa/lantiq-gswip.txt         | 110 +++++++++++++++++-
- 1 file changed, 109 insertions(+), 1 deletion(-)
+Jiaxun Yang (3):
+  MIPS: Add vulnerabilities infrastructure
+  MIPS: cpu-probe: Vulnerabilities for MIPS cores
+  MIPS: cpu-probe: Vulnerabilities for Loongson cores
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/lantiq-gswip.txt b/Documentation/devicetree/bindings/net/dsa/lantiq-gswip.txt
-index 886cbe8ffb38..7a90a6a1b065 100644
---- a/Documentation/devicetree/bindings/net/dsa/lantiq-gswip.txt
-+++ b/Documentation/devicetree/bindings/net/dsa/lantiq-gswip.txt
-@@ -3,7 +3,8 @@ Lantiq GSWIP Ethernet switches
- 
- Required properties for GSWIP core:
- 
--- compatible	: "lantiq,xrx200-gswip" for the embedded GSWIP in the
-+- compatible	: "lantiq,xrx200-gswip", "lantiq,xrx300-gswip" or
-+		  "lantiq,xrx330-gswip" for the embedded GSWIP in the
- 		  xRX200 SoC
- - reg		: memory range of the GSWIP core registers
- 		: memory range of the GSWIP MDIO registers
-@@ -141,3 +142,110 @@ switch@e108000 {
- 		};
- 	};
- };
-+
-+Ethernet switch on the GRX330 SoC:
-+
-+switch@e108000 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	compatible = "lantiq,xrx300-gswip";
-+	reg = <	0xe108000 0x3100	/* switch */
-+		0xe10b100 0xd8		/* mdio */
-+		0xe10b1d8 0x130		/* mii */
-+		>;
-+	dsa,member = <0 0>;
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@1 {
-+			reg = <1>;
-+			label = "lan1";
-+			phy-mode = "internal";
-+			phy-handle = <&phy1>;
-+		};
-+
-+		port@2 {
-+			reg = <2>;
-+			label = "lan2";
-+			phy-mode = "internal";
-+			phy-handle = <&phy2>;
-+		};
-+
-+		port@3 {
-+			reg = <3>;
-+			label = "lan3";
-+			phy-mode = "internal";
-+			phy-handle = <&phy3>;
-+		};
-+
-+		port@4 {
-+			reg = <4>;
-+			label = "lan4";
-+			phy-mode = "internal";
-+			phy-handle = <&phy4>;
-+		};
-+
-+		port@6 {
-+			reg = <0x6>;
-+			label = "cpu";
-+			ethernet = <&eth0>;
-+		};
-+	};
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		compatible = "lantiq,xrx200-mdio";
-+		reg = <0>;
-+
-+		phy1: ethernet-phy@1 {
-+			reg = <0x1>;
-+		};
-+		phy2: ethernet-phy@2 {
-+			reg = <0x2>;
-+		};
-+		phy3: ethernet-phy@3 {
-+			reg = <0x3>;
-+		};
-+		phy4: ethernet-phy@4 {
-+			reg = <0x4>;
-+		};
-+	};
-+
-+	gphy-fw {
-+		compatible = "lantiq,xrx330-gphy-fw", "lantiq,gphy-fw";
-+		lantiq,rcu = <&rcu0>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		gphy@20 {
-+			reg = <0x20>;
-+
-+			resets = <&reset0 31 30>;
-+			reset-names = "gphy";
-+		};
-+
-+		gphy@68 {
-+			reg = <0x68>;
-+
-+			resets = <&reset0 29 28>;
-+			reset-names = "gphy";
-+		};
-+
-+		gphy@ac {
-+			reg = <0xac>;
-+
-+			resets = <&reset0 28 13>;
-+			reset-names = "gphy";
-+		};
-+
-+		gphy@264 {
-+			reg = <0x264>;
-+
-+			resets = <&reset0 10 10>;
-+			reset-names = "gphy";
-+		};
-+	};
-+};
+ arch/mips/Kconfig                |  1 +
+ arch/mips/include/asm/cpu-info.h |  5 ++++
+ arch/mips/include/asm/cpu.h      |  7 +++++
+ arch/mips/kernel/Makefile        |  2 +-
+ arch/mips/kernel/cpu-probe.c     |  9 +++++++
+ arch/mips/kernel/vulnbl.c        | 46 ++++++++++++++++++++++++++++++++
+ 6 files changed, 69 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/kernel/vulnbl.c
+
 -- 
-2.20.1
-
+2.29.2
