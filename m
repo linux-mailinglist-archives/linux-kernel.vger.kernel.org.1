@@ -2,216 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0B42D07BD
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E49D92D07C3
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgLFWs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 17:48:59 -0500
-Received: from mail-dm6nam10on2121.outbound.protection.outlook.com ([40.107.93.121]:55169
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726046AbgLFWs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 17:48:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QrpCLh+A1xWmviN+k8KlkarXZEDPlZswvciDHhVztm+EDYQ/82iCPcDuaxV3i3HY78csLg3n3r9WYSHCd3HOewaYI6y9qMWtZibVz2D+y0TVpeUHuX1eI8BjNncTOgS+5THFk9BAzFF1cGW09ktyIElO+jhMzsedDCCsN/4FJdtZ8QtI3Ub3GoomkhFN0zpmOPhHtlv9KHZ6OBsOQqF/s2gLZ8g7S4joQU/fh4m/Q+CM35Gg2LP41SpF5TsHcwnE4QtARVltnZLU/MqzMivkhRgJgawxAoCFt2rX1ve6XZD6XB5AttARdpgSHTr89aoP5q+UTgszXvMkCJ/CJU13Xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=72BMP4SIlf5QxvcIulWooxTYhvs6thGUwBNnsq653N4=;
- b=lnWQY4/JDpNySBN73JLiawpohbx5o0EteXw6SyGRX/bR2be0ONXlqR2b4i5lNdoD1N+go2K7dTt7z0NCl1cVskZxKdkcIv/sOKZcLF5G8NCX2N2bQhCHQd3ZOZfAJk9i7hKNkxZfquPNNlLYW1yTsCjyor1DAaei3XENSvkwxfw4YBvPVPdIkeHgCqS3ISZ5I9w6z6di5hOWJ+W4l8lEhU8GHtbXiXYxHV7oq5gdv1Q5iNhdl3OWg1g1kHRs5LqEnj4l9wt7CErYH45UZuUMfUdFcbUxI+AdummxE8OpDCau6AdK2sw+ynlD3U0AiZvl7/5jdDRFcNZv05NQrZ+83w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=72BMP4SIlf5QxvcIulWooxTYhvs6thGUwBNnsq653N4=;
- b=FBVmL2I2nE7b0Lvk3yp9wCWNCLjcqk2gRhsaWFoEy1NVeRBDNkSNiAMuENvCfKlFVaK7rqGDEsnYS7cCO7rVomjOB6lVODapGIrm+AqQkXwP2JUEfLgYiY3VPab4BTXRQgoT6kdfNFiRkXiifBylf0wWBJoSR2/dMB55TrUIPDk=
-Received: from (2603:10b6:302:a::16) by
- MW4PR21MB1905.namprd21.prod.outlook.com (2603:10b6:303:7e::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.3; Sun, 6 Dec 2020 22:48:10 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3654.005; Sun, 6 Dec 2020
- 22:48:10 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: RE: [PATCH v2] Drivers: hv: vmbus: Copy packets sent by Hyper-V out
- of the ring buffer
-Thread-Topic: [PATCH v2] Drivers: hv: vmbus: Copy packets sent by Hyper-V out
- of the ring buffer
-Thread-Index: AQHWtoAsiafqnDwyfUGUOfgg02x7Nanq1NZQ
-Date:   Sun, 6 Dec 2020 22:48:10 +0000
-Message-ID: <MW2PR2101MB1052B7CBB14283AA066BF125D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20201109100727.9207-1-parri.andrea@gmail.com>
-In-Reply-To: <20201109100727.9207-1-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-06T22:48:08Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ac985768-ec28-4e48-9979-e5e314902878;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 704b5bb0-1b0a-4b6f-1397-08d89a3901b9
-x-ms-traffictypediagnostic: MW4PR21MB1905:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR21MB190544A6EBC7542A32F89CDCD7CF1@MW4PR21MB1905.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jkskURfgH6Zm9bNl4151JSyb/+5zy1LVGlML8tYyIREfAo5fthGV+DZnXQfrxdmtFPHbe+VmKYJyI1a8HKIFIBenIHZJucx6kreyUbrBGd6BscN20/zY2C4fr+BjVPRub99g5dHvMnID4iyLFLJs7fsc3wUrg11U64OxGapVoDKoo+ZGoeqhzoe4iizUVQYXwo8Xom/oZ58neSkrjKqtpKiWgQXqCCU27uROejXo7cebJ+FSP9uxrpnf6dLubLpZ4tv2yDL8vlPj1jdxvk7Q61cgRBX/1EuH0E5pe0pe1lpUZAlt1+1EE9cKA5R5wq+CnlabW5+e/wi4zDm3XfaMdQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(8990500004)(6506007)(2906002)(83380400001)(66446008)(9686003)(66946007)(66556008)(76116006)(82960400001)(82950400001)(8676002)(5660300002)(64756008)(66476007)(110136005)(54906003)(52536014)(8936002)(86362001)(55016002)(33656002)(7696005)(26005)(71200400001)(316002)(478600001)(4326008)(186003)(10290500003)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lTvRizhm9A/BKTyL3uLR7sEkma3EgcObHsu3E+xjUIiUcaWlqw4LXpnct2Nq?=
- =?us-ascii?Q?lI/Zo4nwp2XuL+8dpFnfV7J8WT4hlKzUKqhoO3EXJ45WxTtv06/ANHYGPWJA?=
- =?us-ascii?Q?jY0YdWkHLZ+neNSwIXqnhuO7HgI2Gdq56yjFfQPonOjb1yxq4J1G97uRsJOV?=
- =?us-ascii?Q?eWuyY/371Ki+lapxvJkIYnkRcCEt3IlP+Id4nb5iQuV80Wlt7RG8SA9OKLwQ?=
- =?us-ascii?Q?Fl7nCRaUhlBYF3IWh7FyKe6nZ+c8zajbtProkqhYIC1aa2iXhd5pO0rJIzH8?=
- =?us-ascii?Q?GGvVJnRxkxDNXsPaoHUHghrHKCEOJc3o04rQj4JZ0l5n4GJKBt90MB63njhz?=
- =?us-ascii?Q?lJMvjZiGrV3xF+3lH05ZDj8mJ1d9jvzYIOT6LXu4fx7prl/8NFsr7GLTxQnO?=
- =?us-ascii?Q?5Q2O5YucEkgVCTtG/2JNchupdFu/eVW3o24TR9UdQT6hE4HzX9uHuHapn+HX?=
- =?us-ascii?Q?C0AylWkoTKGm5KpOoMbfdrJqZwaJNtLAox+kPNZPO7HFZ8IKY5Kz29tGGy/n?=
- =?us-ascii?Q?0nEaFcORdPhc9NtLWdIYJ7P5wIUB/P9PKHEUJvklTEZfW+vx1zkbXKXTjnhK?=
- =?us-ascii?Q?jtfU5tlk9cCJTT3yqqV7WViGjlwcNK6KnTZqUlrM6psyAtHdhwHKiiR0XVbF?=
- =?us-ascii?Q?cB2lMaUUOCAzjoVuiiVTCcdQTbU4C6oAdtMEpJrNQGc5YSUhzj2rMv7B/E7r?=
- =?us-ascii?Q?3q13XfpMaG2TMFTloYbXh7SRsTlNDycQe/ZdXPOykXpc1oirBmQOAOHz/qxg?=
- =?us-ascii?Q?SilouGPoBNmcSKfwsBzWiOneAVz80MWXyQQ17UVLQe8vulvwu7zCC0JkvOhj?=
- =?us-ascii?Q?LsVZ8hUsOrpfY1ZnSoIO0D+ChR9QFgtnJb00pRLuzJVnP40LyiHuhv3Yb/Rw?=
- =?us-ascii?Q?qop9PstkizN1a8ExSKCh5cyjQHEWb3MjFk39WW8v4NJ9vsjKybaHFOWyzWAE?=
- =?us-ascii?Q?PE+P6DOHDGjQOjb9ko4J4AjFOonCe6zWyL2AHmNfAf4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728209AbgLFW4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 17:56:04 -0500
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:53337 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726046AbgLFW4E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 17:56:04 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 6D9241AC2B8;
+        Mon,  7 Dec 2020 09:55:19 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1km2w2-001FXH-Ks; Mon, 07 Dec 2020 09:55:18 +1100
+Date:   Mon, 7 Dec 2020 09:55:18 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com, hch@lst.de,
+        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
+        y-goto@fujitsu.com
+Subject: Re: [RFC PATCH v2 0/6] fsdax: introduce fs query to support reflink
+Message-ID: <20201206225518.GJ3913616@dread.disaster.area>
+References: <20201123004116.2453-1-ruansy.fnst@cn.fujitsu.com>
+ <20201129224723.GG2842436@dread.disaster.area>
+ <e0aa187f-e124-1ddc-0f5a-6a8c41a3dc66@cn.fujitsu.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 704b5bb0-1b0a-4b6f-1397-08d89a3901b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2020 22:48:10.4065
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iFIeQZLRwDH7l6DUenqCpPaZUH9rbVRHF/6UZCOFTB6wdS0z/3o55wTdbLpS4Oz166Pr5O0AueGwrUqwSfCWnfq2S30L4GTRhRYVE0YJajo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1905
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e0aa187f-e124-1ddc-0f5a-6a8c41a3dc66@cn.fujitsu.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=IkcTkHD0fZMA:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
+        a=HHWehwv_o5C9Q5xAZY4A:9 a=QEXdDO2ut3YA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Monday, Novem=
-ber 9, 2020 2:07 AM
->=20
-> From: Andres Beltran <lkmlabelt@gmail.com>
->=20
-> Pointers to ring-buffer packets sent by Hyper-V are used within the
-> guest VM. Hyper-V can send packets with erroneous values or modify
-> packet fields after they are processed by the guest. To defend
-> against these scenarios, return a copy of the incoming VMBus packet
-> after validating its length and offset fields in hv_pkt_iter_first().
-> In this way, the packet can no longer be modified by the host.
->=20
+On Wed, Dec 02, 2020 at 03:12:20PM +0800, Ruan Shiyang wrote:
+> Hi Dave,
+> 
+> On 2020/11/30 上午6:47, Dave Chinner wrote:
+> > On Mon, Nov 23, 2020 at 08:41:10AM +0800, Shiyang Ruan wrote:
+> > > 
+> > > The call trace is like this:
+> > >   memory_failure()
+> > >     pgmap->ops->memory_failure()   => pmem_pgmap_memory_failure()
+> > >      gendisk->fops->block_lost()   => pmem_block_lost() or
+> > >                                           md_blk_block_lost()
+> > >       sb->s_ops->storage_lost()    => xfs_fs_storage_lost()
+> > >        xfs_rmap_query_range()
+> > >         xfs_storage_lost_helper()
+> > >          mf_recover_controller->recover_fn => \
+> > >                              memory_failure_dev_pagemap_kill_procs()
+> > > 
+> > > The collect_procs() and kill_procs() are moved into a callback which
+> > > is passed from memory_failure() to xfs_storage_lost_helper().  So we
+> > > can call it when a file assocaited is found, instead of creating a
+> > > file list and iterate it.
+> > > 
+> > > The fsdax & reflink support for XFS is not contained in this patchset.
+> > 
+> > This looks promising - the overall architecture is a lot more
+> > generic and less dependent on knowing about memory, dax or memory
+> > failures. A few comments that I think would further improve
+> > understanding the patchset and the implementation:
+> 
+> Thanks for your kindly comment.  It gives me confidence.
+> 
+> > 
+> > - the order of the patches is inverted. It should start with a
+> >    single patch introducing the mf_recover_controller structure for
+> >    callbacks, then introduce pgmap->ops->memory_failure, then
+> >    ->block_lost, then the pmem and md implementations of ->block
+> >    list, then ->storage_lost and the XFS implementations of
+> >    ->storage_lost.
+> 
+> Yes, it will be easier to understand the patchset in this order.
+> 
+> But I have something unsure: for example, I introduce ->memory_failure()
+> firstly, but the implementation of ->memory_failure() needs to call
+> ->block_lost() which is supposed to be introduced in the next patch. So, I
+> am not sure the code is supposed to be what in the implementation of
+> ->memory_failure() in pmem?  To avoid this situation, I committed the
+> patches in the inverted order: lowest level first, then its caller, and then
+> caller's caller.
 
-[snip]
+Well, there's two things here. The first is the infrastructure, the
+second is the drivers that use the infrastructure. You can introduce
+a method in one patch, and then the driver that uses it in another.
+Or you can introduce a driver skeleton that doesn't nothing until
+more infrastructure is added. so...
 
-> @@ -419,17 +446,52 @@ static u32 hv_pkt_iter_avail(const struct hv_ring_b=
-uffer_info *rbi)
->  struct vmpacket_descriptor *hv_pkt_iter_first(struct vmbus_channel *chan=
-nel)
->  {
->  	struct hv_ring_buffer_info *rbi =3D &channel->inbound;
-> -	struct vmpacket_descriptor *desc;
-> +	struct vmpacket_descriptor *desc, *desc_copy;
-> +	u32 bytes_avail, pkt_len, pkt_offset;
->=20
-> -	hv_debug_delay_test(channel, MESSAGE_DELAY);
-> -	if (hv_pkt_iter_avail(rbi) < sizeof(struct vmpacket_descriptor))
-> +	desc =3D hv_pkt_iter_first_raw(channel);
-> +	if (!desc)
->  		return NULL;
->=20
-> -	desc =3D hv_get_ring_buffer(rbi) + rbi->priv_read_index;
-> -	if (desc)
-> -		prefetch((char *)desc + (desc->len8 << 3));
-> +	bytes_avail =3D hv_pkt_iter_avail(rbi);
-> +
-> +	/*
-> +	 * Ensure the compiler does not use references to incoming Hyper-V valu=
-es (which
-> +	 * could change at any moment) when reading local variables later in th=
-e code
-> +	 */
-> +	pkt_len =3D READ_ONCE(desc->len8) << 3;
-> +	pkt_offset =3D READ_ONCE(desc->offset8) << 3;
-> +
-> +	/*
-> +	 * If pkt_len is invalid, set it to the smaller of hv_pkt_iter_avail() =
-and
-> +	 * rbi->pkt_buffer_size
-> +	 */
-> +	if (rbi->pkt_buffer_size < bytes_avail)
-> +		bytes_avail =3D rbi->pkt_buffer_size;
+> 
+> I am trying to sort out the order.  How about this:
+>  Patch i.
+>    Introduce ->memory_failure()
+>       - just introduce interface, without implementation
+>  Patch i++.
+>    Introduce ->block_lost()
+>       - introduce interface and implement ->memory_failure()
+>          in pmem, so that it can call ->block_lost()
+>  Patch i++.
+>    (similar with above, skip...)
 
-I think the above could be combined with the earlier call to hv_pkt_iter_av=
-ail(),
-and more logically expressed as:
+So this is better, but you don't need to add the pmem driver use of
+"->block_lost" in the patch that adds the method. IOWs, something
+like:
 
-	bytes_avail =3D min(rbi->pkt_buffer_size, hv_pkt_iter_avail(rbi));
+P1: introduce ->memory_failure API, all the required documentation
+and add the call sites in the infrastructure that trigger it
 
+P2: introduce ->corrupted_range to the block device API, all the
+required documentation and any generic block infrastructure that
+needs to call it.
 
-This is a minor nit.  Everything else in this patch looks good to me.
+P3: introduce ->corrupted_range to the superblock ops API, all the
+required documentation
 
-Michael
+P4: add ->corrupted_range() API to the address space ops, all the
+required documentation
 
-> +
-> +	if (pkt_len < sizeof(struct vmpacket_descriptor) || pkt_len > bytes_ava=
-il)
-> +		pkt_len =3D bytes_avail;
-> +
-> +	/*
-> +	 * If pkt_offset is invalid, arbitrarily set it to
-> +	 * the size of vmpacket_descriptor
-> +	 */
-> +	if (pkt_offset < sizeof(struct vmpacket_descriptor) || pkt_offset > pkt=
-_len)
-> +		pkt_offset =3D sizeof(struct vmpacket_descriptor);
-> +
-> +	/* Copy the Hyper-V packet out of the ring buffer */
-> +	desc_copy =3D (struct vmpacket_descriptor *)rbi->pkt_buffer;
-> +	memcpy(desc_copy, desc, pkt_len);
-> +
-> +	/*
-> +	 * Hyper-V could still change len8 and offset8 after the earlier read.
-> +	 * Ensure that desc_copy has legal values for len8 and offset8 that
-> +	 * are consistent with the copy we just made
-> +	 */
-> +	desc_copy->len8 =3D pkt_len >> 3;
-> +	desc_copy->offset8 =3D pkt_offset >> 3;
->=20
-> -	return desc;
-> +	return desc_copy;
->  }
->  EXPORT_SYMBOL_GPL(hv_pkt_iter_first);
->=20
+P5: factor the existing kill procs stuff to be able to be called on
+via generic_mapping_kill_range()
+
+P5: add dax_mapping_kill_range()
+
+P6: add the pmem driver support for ->memory_failure
+
+P7: add the block device driver support for ->corrupted_range
+
+P8: add filesystem support for sb_ops->corrupted_range.
+
+P9: add filesystem support for aops->corrupted_range.
+
+> >    This gets rid of the mf_recover_controller altogether and allows
+> >    the interface to be used by any sort of block device for any sort
+> >    of bottom-up reporting of media/device failures.
+> 
+> Moving the recover function to the address_space ops looks a better idea.
+> But I think that the error handler for page cache mapping is finished well
+> in memory-failure.  The memory-failure is also reused to handles anonymous
+> page.
+
+Yes, anonymous page handling can remain there, we're only concerned
+about handling file mapped pages here right now. If we end up
+sharing page cache pages across reflink mappings, we'll have exactly
+the same issue we have now with DAX....
+
+> If we move the recover function to address_space ops, I think we also
+> need to refactor the existing handler for page cache mapping, which may
+> affect anonymous page handling.  This makes me confused...
+
+Make the handling of the page the error occurred in conditional on
+!PageAnon().
+
+> I rewrote the call trace:
+> memory_failure()
+>  * dax mapping case
+>  pgmap->ops->memory_failure()          =>
+>                                    pmem_pgmap_memory_failure()
+>   gendisk->fops->block_corrupt_range() =>
+>                                    - pmem_block_corrupt_range()
+>                                    - md_blk_block_corrupt_range()
+>    sb->s_ops->storage_currupt_range()  =>
+>                                    xfs_fs_storage_corrupt_range()
+
+No need for block/storage prefixes in these...
+
+>     xfs_rmap_query_range()
+>      xfs_storage_lost_helper()
+>       mapping->a_ops->corrupt_range()  =>
+>                                    xfs_dax_aops.xfs_dax_corrupt_range
+>        memory_failure_dev_pagemap_kill_procs()
+
+This assumes we find a user data mapping. We might find the
+corrupted storage contained metadata, in which case we'll be
+shutting down the filesystem, not trying to kill user procs...
+
+Also, we don't need aops->corrupt_range() here as we are already in
+the filesystem code and if we find a mapping in memory we can just
+do "if (IS_DAX(mapping->host))" to call the right kill procs
+implementation for the mapping we've found. aops->corrupt_range is
+for generic code working on a mapping to inform the filesystem that
+there is a bad range in the mapping (my apologies for getting that
+all mixed up in my last email).
+
+>  * page cache mapping case
+>  mapping->a_ops->corrupt_range()       =>
+>                                    xfs_address_space_operations.xfs_xxx
+>   memory_failure_generic_kill_procs()
+
+We need the aops->corrupted_range() to call into the filesystem so
+it can do a similar reverse mapping lookup to
+sb->s_ops->corrupted_range.  Yes, the page cache should already have
+a mapping attached to the page, but we do not know whether it is the
+only mapping that exists for that page. e.g. if/when we implement
+multiple-mapped shared read-only reflink pages in the page cache
+which results in the same problem we have with DAX pages right now.
+
+Overall, though, it seems like you're on the right path. :)
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
