@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AED12D0491
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F532D03D1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgLFLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:46:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44588 "EHLO mail.kernel.org"
+        id S1728628AbgLFLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:40:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729368AbgLFLoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:38 -0500
+        id S1728588AbgLFLkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:40:33 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Morton <chromatix99@gmail.com>,
-        Pete Heist <pete@heistp.net>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 23/46] inet_ecn: Fix endianness of checksum update when setting ECT(1)
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 31/32] tracing: Remove WARN_ON in start_thread()
 Date:   Sun,  6 Dec 2020 12:17:31 +0100
-Message-Id: <20201206111557.570807631@linuxfoundation.org>
+Message-Id: <20201206111557.264012863@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+References: <20201206111555.787862631@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,37 +32,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Toke Høiland-Jørgensen" <toke@redhat.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 2867e1eac61016f59b3d730e3f7aa488e186e917 ]
+commit 310e3a4b5a4fc718a72201c1e4cf5c64ac6f5442 upstream.
 
-When adding support for propagating ECT(1) marking in IP headers it seems I
-suffered from endianness-confusion in the checksum update calculation: In
-fact the ECN field is in the *lower* bits of the first 16-bit word of the
-IP header when calculating in network byte order. This means that the
-addition performed to update the checksum field was wrong; let's fix that.
+This patch reverts commit 978defee11a5 ("tracing: Do a WARN_ON()
+ if start_thread() in hwlat is called when thread exists")
 
-Fixes: b723748750ec ("tunnel: Propagate ECT(1) when decapsulating as recommended by RFC6040")
-Reported-by: Jonathan Morton <chromatix99@gmail.com>
-Tested-by: Pete Heist <pete@heistp.net>
-Signed-off-by: Toke HÃ¸iland-JÃ¸rgensen <toke@redhat.com>
-Link: https://lore.kernel.org/r/20201130183705.17540-1-toke@redhat.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+.start hook can be legally called several times if according
+tracer is stopped
+
+screen window 1
+[root@localhost ~]# echo 1 > /sys/kernel/tracing/events/kmem/kfree/enable
+[root@localhost ~]# echo 1 > /sys/kernel/tracing/options/pause-on-trace
+[root@localhost ~]# less -F /sys/kernel/tracing/trace
+
+screen window 2
+[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
+0
+[root@localhost ~]# echo hwlat >  /sys/kernel/debug/tracing/current_tracer
+[root@localhost ~]# echo 1 > /sys/kernel/debug/tracing/tracing_on
+[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
+0
+[root@localhost ~]# echo 2 > /sys/kernel/debug/tracing/tracing_on
+
+triggers warning in dmesg:
+WARNING: CPU: 3 PID: 1403 at kernel/trace/trace_hwlat.c:371 hwlat_tracer_start+0xc9/0xd0
+
+Link: https://lkml.kernel.org/r/bd4d3e70-400d-9c82-7b73-a2d695e86b58@virtuozzo.com
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 978defee11a5 ("tracing: Do a WARN_ON() if start_thread() in hwlat is called when thread exists")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/net/inet_ecn.h |    2 +-
+ kernel/trace/trace_hwlat.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/net/inet_ecn.h
-+++ b/include/net/inet_ecn.h
-@@ -107,7 +107,7 @@ static inline int IP_ECN_set_ect1(struct
- 	if ((iph->tos & INET_ECN_MASK) != INET_ECN_ECT_0)
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -355,7 +355,7 @@ static int start_kthread(struct trace_ar
+ 	struct task_struct *kthread;
+ 	int next_cpu;
+ 
+-	if (WARN_ON(hwlat_kthread))
++	if (hwlat_kthread)
  		return 0;
  
--	check += (__force u16)htons(0x100);
-+	check += (__force u16)htons(0x1);
- 
- 	iph->check = (__force __sum16)(check + (check>=0xFFFF));
- 	iph->tos ^= INET_ECN_MASK;
+ 	/* Just pick the first CPU on first iteration */
 
 
