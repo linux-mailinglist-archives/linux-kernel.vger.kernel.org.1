@@ -2,556 +2,705 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E4A2D04C7
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 13:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B77C2D04CB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 13:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727748AbgLFMas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 07:30:48 -0500
-Received: from mga14.intel.com ([192.55.52.115]:26156 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgLFMas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 07:30:48 -0500
-IronPort-SDR: qDa0WDEskUJYDyAwK0UgFqhewvkvIvjCOhxZOAf1CmvXbByNXP1i3KO8eEA/1gvSXXUiRgqIqF
- KcsT23rYSQmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9826"; a="172806797"
-X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
-   d="gz'50?scan'50,208,50";a="172806797"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 04:30:05 -0800
-IronPort-SDR: o8imszE5BFtSnR+A4f3NIBVmxHS3HdfQCpyETo2fP8oFTyg9tn+3dYoSPao7GiBdQQ512YtPfG
- cr0xdMFE+KwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
-   d="gz'50?scan'50,208,50";a="347141449"
-Received: from lkp-server01.sh.intel.com (HELO 47754f1311fc) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 06 Dec 2020 04:30:04 -0800
-Received: from kbuild by 47754f1311fc with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kltAx-0000jn-F8; Sun, 06 Dec 2020 12:30:03 +0000
-Date:   Sun, 6 Dec 2020 20:29:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: cc1: fatal error: opening output file
- arch/powerpc/boot/dts/fsl/.mpc8568mds.dtb.dts.tmp: No such file or directory
-Message-ID: <202012062022.syUBpu68-lkp@intel.com>
+        id S1727807AbgLFMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 07:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgLFMdo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 07:33:44 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB236C0613D0;
+        Sun,  6 Dec 2020 04:33:03 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id q137so10592516iod.9;
+        Sun, 06 Dec 2020 04:33:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pw5lajuRGnnu2MI60LUWLIfH3YfEHHln6WLWrOCRcjE=;
+        b=d3W3NCvrjIVsY0mrxSZY5tOxzu/YIHOZqA1cbrWgGIWhNfDQQOki+Um7WwBN7CMeBr
+         VaEq8jvWFNHehZxwarKuskB8sNRfN7tpnMuDbsRz9V2UQw/zqfBswNuSNvQ5umYFMqCH
+         Kltnn1o7RqqGNLx9eCfLWVgtQgOAKP4TPDejTezjPJFeuc3XumG6d2eOtgMZhDPFYdu6
+         CqepeoX7jlFS/hEEsULSZgIgmaf8ijJdon9/rxjGe+Oh4uHExCWIy/kt6Q1A287gakoa
+         G65pgFYIxS4jWRR2Acy/tAVhaPQGMpE/xvhFSjROU5kOor63DEv7zshzWadpl/TRqFf4
+         j0nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pw5lajuRGnnu2MI60LUWLIfH3YfEHHln6WLWrOCRcjE=;
+        b=biLi5tfFIRfL/wD57k363Mo0emslR1Jf4II5RztkpyA4FV8ZOe0PJthkBg0TRurwzU
+         xgIJJocQm5C/PnCL0622rcbxUTCHpuyxOHGEvPbnXz7GOomWd/nTTIGs13jBRYR/sNh6
+         ZNq60XD0nCITPKrR0dZMDNHqSn3U84MTlhqjOCXPP2TOIapabMHevE8Ac5WB4kG5ZKIQ
+         eTAGFYOtTLM8crYtJLRwKQMFGe7RBJfeBSEGtfo5neh1wSJKpBRyV3mr+7eq6EavPOg7
+         rltl9kvNObGkayNNVs5f6Uz60tj9bF6NL3CZwk4jr49DNGjTF29Otjh6yOxhxIWHRR+9
+         Uu5A==
+X-Gm-Message-State: AOAM533Hrpm8+ITvceQRxNgcYtEcXAcVt3ZYSiUs+XL2FX8BGmYdUEmb
+        Bk5h8Wq3Ecq5M6a+JHvVIb6hPfX4n5OCB6A1HEKRwmw7AldzQg==
+X-Google-Smtp-Source: ABdhPJyYiT/FnDAT8lf1Gdn0Qg8reqpZMAthpa4BDI5USLj/PjLGF0+sUKxAAHP4dsBwBbFR/VKmt1Ul4kKEBx3hK1s=
+X-Received: by 2002:a5d:9a8e:: with SMTP id c14mr15001568iom.178.1607257982774;
+ Sun, 06 Dec 2020 04:33:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="YiEDa0DAkWCtVeE4"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201202135409.13683-1-andre.przywara@arm.com> <20201202135409.13683-3-andre.przywara@arm.com>
+In-Reply-To: <20201202135409.13683-3-andre.przywara@arm.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Sun, 6 Dec 2020 13:32:49 +0100
+Message-ID: <CAJiuCcdkzipiCT1g8=qNgcawqRH6RpFXZEN9jfX+C2i1derREw@mail.gmail.com>
+Subject: Re: [linux-sunxi] [PATCH 2/8] pinctrl: sunxi: Add support for the
+ Allwinner H616 pin controller
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yangtao Li <frank@allwinnertech.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andre,
 
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 2 Dec 2020 at 14:54, Andre Przywara <andre.przywara@arm.com> wrote:
+>
+> Port A is used for an internal connection to some analogue circuitry
+> which looks like an AC200 IP (as in the H6), though this is not
+> mentioned in the manual.
+>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  drivers/pinctrl/sunxi/Kconfig               |   5 +
+>  drivers/pinctrl/sunxi/Makefile              |   1 +
+>  drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c | 549 ++++++++++++++++++++
+>  3 files changed, 555 insertions(+)
+>  create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
+>
+> diff --git a/drivers/pinctrl/sunxi/Kconfig b/drivers/pinctrl/sunxi/Kconfig
+> index 593293584ecc..73e88ce71a48 100644
+> --- a/drivers/pinctrl/sunxi/Kconfig
+> +++ b/drivers/pinctrl/sunxi/Kconfig
+> @@ -119,4 +119,9 @@ config PINCTRL_SUN50I_H6_R
+>         default ARM64 && ARCH_SUNXI
+>         select PINCTRL_SUNXI
+>
+> +config PINCTRL_SUN50I_H616
+> +       bool "Support for the Allwinner H616 PIO"
+> +       default ARM64 && ARCH_SUNXI
+> +       select PINCTRL_SUNXI
+> +
+>  endif
+> diff --git a/drivers/pinctrl/sunxi/Makefile b/drivers/pinctrl/sunxi/Makefile
+> index 8b7ff0dc3bdf..5359327a3c8f 100644
+> --- a/drivers/pinctrl/sunxi/Makefile
+> +++ b/drivers/pinctrl/sunxi/Makefile
+> @@ -23,5 +23,6 @@ obj-$(CONFIG_PINCTRL_SUN8I_V3S)               += pinctrl-sun8i-v3s.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_H5)                += pinctrl-sun50i-h5.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_H6)                += pinctrl-sun50i-h6.o
+>  obj-$(CONFIG_PINCTRL_SUN50I_H6_R)      += pinctrl-sun50i-h6-r.o
+> +obj-$(CONFIG_PINCTRL_SUN50I_H616)      += pinctrl-sun50i-h616.o
+>  obj-$(CONFIG_PINCTRL_SUN9I_A80)                += pinctrl-sun9i-a80.o
+>  obj-$(CONFIG_PINCTRL_SUN9I_A80_R)      += pinctrl-sun9i-a80-r.o
+> diff --git a/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c b/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
+> new file mode 100644
+> index 000000000000..734f63eb08dd
+> --- /dev/null
+> +++ b/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
+> @@ -0,0 +1,549 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Allwinner H616 SoC pinctrl driver.
+> + *
+> + * Copyright (C) 2020 Arm Ltd.
+> + * based on the H6 pinctrl driver
+> + *   Copyright (C) 2017 Icenowy Zheng <icenowy@aosc.io>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pinctrl/pinctrl.h>
+> +
+> +#include "pinctrl-sunxi.h"
+> +
+> +static const struct sunxi_desc_pin h616_pins[] = {
+> +       /* Internal connection to the AC200 part */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 0),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ERXD1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 1),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ERXD0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 2),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ECRS_DV */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 3),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ERXERR */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 4),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ETXD1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 5),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ETXD0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 6),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ETXCK */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 7),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* ETXEN */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 8),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* EMDC */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 9),
+> +               SUNXI_FUNCTION(0x2, "emac1")),          /* EMDIO */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 10),
+> +               SUNXI_FUNCTION(0x2, "i2c3")),           /* SCK */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 11),
+> +               SUNXI_FUNCTION(0x2, "i2c3")),           /* SDA */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 12),
+> +               SUNXI_FUNCTION(0x2, "pwm5")),
+> +       /* Hole */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 0),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* WE */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* DS */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* CLK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 0)),  /* PC_EINT0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 1),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* ALE */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* RST */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 1)),  /* PC_EINT1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 2),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* CLE */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* MOSI */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 2)),  /* PC_EINT2 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 3),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* CE1 */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* CS0 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 3)),  /* PC_EINT3 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 4),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* CE0 */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* MISO */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 4)),  /* PC_EINT4 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 5),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* RE */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* CLK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 5)),  /* PC_EINT5 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 6),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* RB0 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* CMD */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 6)),  /* PC_EINT6 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 7),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* RB1 */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* CS1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 7)),  /* PC_EINT7 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 8),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ7 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D3 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 8)),  /* PC_EINT8 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 9),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ6 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D4 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 9)),  /* PC_EINT9 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 10),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ5 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D0 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 10)), /* PC_EINT10 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 11),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ4 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D5 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 11)), /* PC_EINT11 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 12),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQS */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 12)), /* PC_EINT12 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 13),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ3 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 13)), /* PC_EINT13 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 14),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ2 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D6 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 14)), /* PC_EINT14 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 15),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ1 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D2 */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* WP */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 15)), /* PC_EINT15 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 16),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "nand0"),         /* DQ0 */
+> +                 SUNXI_FUNCTION(0x3, "mmc2"),          /* D7 */
+> +                 SUNXI_FUNCTION(0x4, "spi0"),          /* HOLD */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 16)), /* PC_EINT16 */
+> +       /* Hole */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 0),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* D1 */
+> +                 SUNXI_FUNCTION(0x3, "jtag"),          /* MS */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 0)),  /* PF_EINT0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 1),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* D0 */
+> +                 SUNXI_FUNCTION(0x3, "jtag"),          /* DI */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 1)),  /* PF_EINT1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 2),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* CLK */
+> +                 SUNXI_FUNCTION(0x3, "uart0"),         /* TX */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 2)),  /* PF_EINT2 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 3),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* CMD */
+> +                 SUNXI_FUNCTION(0x3, "jtag"),          /* DO */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 3)),  /* PF_EINT3 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 4),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* D3 */
+> +                 SUNXI_FUNCTION(0x3, "uart0"),         /* RX */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 4)),  /* PF_EINT4 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 5),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc0"),          /* D2 */
+> +                 SUNXI_FUNCTION(0x3, "jtag"),          /* CK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 5)),  /* PF_EINT5 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 6),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 6)),  /* PF_EINT6 */
+> +       /* Hole */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 0),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* CLK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 0)),  /* PG_EINT0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 1),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* CMD */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 1)),  /* PG_EINT1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 2),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* D0 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 2)),  /* PG_EINT2 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 3),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* D1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 3)),  /* PG_EINT3 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 4),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* D2 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 4)),  /* PG_EINT4 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 5),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "mmc1"),          /* D3 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 5)),  /* PG_EINT5 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 6),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart1"),         /* TX */
+> +                 SUNXI_FUNCTION(0x4, "jtag"),          /* MS */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 6)),  /* PG_EINT6 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 7),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart1"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "jtag"),          /* CK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 7)),  /* PG_EINT7 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 8),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart1"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x3, "clock"),         /* PLL_LOCK_DEBUG */
+> +                 SUNXI_FUNCTION(0x4, "jtag"),          /* DO */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 8)),  /* PG_EINT8 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 9),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart1"),         /* CTS */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 9)),  /* PG_EINT9 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 10),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "h_i2s2"),        /* MCLK */
+> +                 SUNXI_FUNCTION(0x3, "clock"),         /* X32KFOUT */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 10)), /* PG_EINT10 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 11),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "h_i2s2"),        /* BCLK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 11)), /* PG_EINT11 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 12),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "h_i2s2"),        /* SYNC */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 12)), /* PG_EINT12 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 13),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "h_i2s2"),        /* DOUT */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 13)), /* PG_EINT13 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 14),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "h_i2s2"),        /* DIN */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 14)), /* PG_EINT14 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 15),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* TX */
+> +                 SUNXI_FUNCTION(0x5, "i2c4"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 15)), /* PG_EINT15 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 16),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* TX */
+> +                 SUNXI_FUNCTION(0x5, "i2c4"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 16)), /* PG_EINT16 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 17),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x5, "i2c3"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 17)), /* PG_EINT17 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 18),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* CTS */
+> +                 SUNXI_FUNCTION(0x5, "i2c3"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 18)), /* PG_EINT18 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(G, 19),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x4, "pwm1"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 19)), /* PG_EINT19 */
+> +       /* Hole */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 0),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart0"),         /* TX */
+> +                 SUNXI_FUNCTION(0x4, "pwm3"),
+> +                 SUNXI_FUNCTION(0x5, "i2c1"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 0)),  /* PH_EINT0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 1),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart0"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "pwm4"),
+> +                 SUNXI_FUNCTION(0x5, "i2c1"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 1)),  /* PH_EINT1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 2),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart5"),         /* TX */
+> +                 SUNXI_FUNCTION(0x3, "spdif"),         /* MCLK */
+> +                 SUNXI_FUNCTION(0x4, "pwm2"),
+> +                 SUNXI_FUNCTION(0x5, "i2c2"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 2)),  /* PH_EINT2 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 3),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart5"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "pwm1"),
+> +                 SUNXI_FUNCTION(0x5, "i2c2"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 3)),  /* PH_EINT3 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 4),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x3, "spdif"),         /* OUT */
+> +                 SUNXI_FUNCTION(0x5, "i2c3"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 4)),  /* PH_EINT4 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 5),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* TX */
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* MCLK */
+> +                 SUNXI_FUNCTION(0x4, "spi1"),          /* CS0 */
+> +                 SUNXI_FUNCTION(0x5, "i2c3"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 5)),  /* PH_EINT5 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 6),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* RX */
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* BCLK */
+> +                 SUNXI_FUNCTION(0x4, "spi1"),          /* CLK */
+> +                 SUNXI_FUNCTION(0x5, "i2c4"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 6)),  /* PH_EINT6 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 7),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* SYNC */
+> +                 SUNXI_FUNCTION(0x4, "spi1"),          /* MOSI */
+> +                 SUNXI_FUNCTION(0x5, "i2c4"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 7)),  /* PH_EINT7 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 8),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "uart2"),         /* CTS */
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* DO0 */
+> +                 SUNXI_FUNCTION(0x4, "spi1"),          /* MISO */
+> +                 SUNXI_FUNCTION(0x5, "h_i2s3"),        /* DI1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 8)),  /* PH_EINT8 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 9),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* DI0 */
+> +                 SUNXI_FUNCTION(0x4, "spi1"),          /* CS1 */
+> +                 SUNXI_FUNCTION(0x3, "h_i2s3"),        /* DO1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 9)),  /* PH_EINT9 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(H, 10),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x3, "ir_rx"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 10)), /* PH_EINT10 */
+> +       /* Hole */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 0),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXD3 */
+> +                 SUNXI_FUNCTION(0x3, "dmic"),          /* CLK */
+> +                 SUNXI_FUNCTION(0x4, "h_i2s0"),        /* MCLK */
+> +                 SUNXI_FUNCTION(0x5, "hdmi"),          /* HSCL */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 0)),  /* PI_EINT0 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 1),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXD2 */
+> +                 SUNXI_FUNCTION(0x3, "dmic"),          /* DATA0 */
+> +                 SUNXI_FUNCTION(0x4, "h_i2s0"),        /* BCLK */
+> +                 SUNXI_FUNCTION(0x5, "hdmi"),          /* HSDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 1)),  /* PI_EINT1 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 2),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXD1 */
+> +                 SUNXI_FUNCTION(0x3, "dmic"),          /* DATA1 */
+> +                 SUNXI_FUNCTION(0x4, "h_i2s0"),        /* SYNC */
+> +                 SUNXI_FUNCTION(0x5, "hdmi"),          /* HCEC */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 2)),  /* PI_EINT2 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 3),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXD0 */
+> +                 SUNXI_FUNCTION(0x3, "dmic"),          /* DATA2 */
+> +                 SUNXI_FUNCTION(0x4, "h_i2s0"),        /* DO0 */
+> +                 SUNXI_FUNCTION(0x5, "h_i2s0"),        /* DI1 */
 
-Hi Masahiro,
+The same string is used for 2 muxes.
+I think we should drop one for the moment or introduce a new string.
 
-FYI, the error/warning still remains.
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 3)),  /* PI_EINT3 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 4),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXCK */
+> +                 SUNXI_FUNCTION(0x3, "dmic"),          /* DATA3 */
+> +                 SUNXI_FUNCTION(0x4, "h_i2s0"),        /* DI0 */
+> +                 SUNXI_FUNCTION(0x5, "h_i2s0"),        /* DO1 */
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7059c2c00a2196865c2139083cbef47cd18109b6
-commit: cc8a51ca6f05ade72f7dd2624bc5f9b948e216fc kbuild: always create directories of targets
-date:   4 months ago
-config: powerpc-randconfig-r032-20201206 (attached as .config)
-compiler: powerpc-linux-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cc8a51ca6f05ade72f7dd2624bc5f9b948e216fc
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout cc8a51ca6f05ade72f7dd2624bc5f9b948e216fc
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc 
+Same here
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 4)),  /* PI_EINT4 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 5),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ERXCTL */
+> +                 SUNXI_FUNCTION(0x3, "uart2"),         /* TX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* CLK */
+> +                 SUNXI_FUNCTION(0x5, "i2c0"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 5)),  /* PI_EINT5 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 6),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ENULL */
+> +                 SUNXI_FUNCTION(0x3, "uart2"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* ERR */
+> +                 SUNXI_FUNCTION(0x5, "i2c0"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 6)),  /* PI_EINT6 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 7),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXD3 */
+> +                 SUNXI_FUNCTION(0x3, "uart2"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* SYNC */
+> +                 SUNXI_FUNCTION(0x5, "i2c1"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 7)),  /* PI_EINT7 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 8),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXD2 */
+> +                 SUNXI_FUNCTION(0x3, "uart2"),         /* CTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* DVLD */
+> +                 SUNXI_FUNCTION(0x5, "i2c1"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 8)),  /* PI_EINT8 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 9),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXD1 */
+> +                 SUNXI_FUNCTION(0x3, "uart3"),         /* TX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D0 */
+> +                 SUNXI_FUNCTION(0x5, "i2c2"),          /* SCK */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 9)),  /* PI_EINT9 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 10),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXD0 */
+> +                 SUNXI_FUNCTION(0x3, "uart3"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D1 */
+> +                 SUNXI_FUNCTION(0x5, "i2c2"),          /* SDA */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 10)), /* PI_EINT10 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 11),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXCK */
+> +                 SUNXI_FUNCTION(0x3, "uart3"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D2 */
+> +                 SUNXI_FUNCTION(0x5, "pwm1"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 11)), /* PI_EINT11 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 12),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ETXCTL */
+> +                 SUNXI_FUNCTION(0x3, "uart3"),         /* CTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D3 */
+> +                 SUNXI_FUNCTION(0x5, "pwm2"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 12)), /* PI_EINT12 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 13),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* ECLKIN */
+> +                 SUNXI_FUNCTION(0x3, "uart4"),         /* TX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D4 */
+> +                 SUNXI_FUNCTION(0x5, "pwm3"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 13)), /* PI_EINT13 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 14),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* MDC */
+> +                 SUNXI_FUNCTION(0x3, "uart4"),         /* RX */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D5 */
+> +                 SUNXI_FUNCTION(0x5, "pwm4"),
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 14)), /* PI_EINT14 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 15),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* MDIO */
+> +                 SUNXI_FUNCTION(0x3, "uart4"),         /* RTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D6 */
+> +                 SUNXI_FUNCTION(0x5, "clock"),         /* CLK_FANOUT0 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 15)), /* PI_EINT15 */
+> +       SUNXI_PIN(SUNXI_PINCTRL_PIN(I, 16),
+> +                 SUNXI_FUNCTION(0x0, "gpio_in"),
+> +                 SUNXI_FUNCTION(0x1, "gpio_out"),
+> +                 SUNXI_FUNCTION(0x2, "emac0"),         /* EPHY_CLK */
+> +                 SUNXI_FUNCTION(0x3, "uart4"),         /* CTS */
+> +                 SUNXI_FUNCTION(0x4, "ts0"),           /* D7 */
+> +                 SUNXI_FUNCTION(0x5, "clock"),         /* CLK_FANOUT1 */
+> +                 SUNXI_FUNCTION_IRQ_BANK(0x6, 4, 16)), /* PI_EINT16 */
+> +};
+> +static const unsigned int h616_irq_bank_map[] = { 2, 5, 6, 7, 8 };
 
-All errors (new ones prefixed by >>):
+The BSP driver seems to have more than 5 IRQ Banks.
 
->> cc1: fatal error: opening output file arch/powerpc/boot/dts/fsl/.mpc8568mds.dtb.dts.tmp: No such file or directory
-   compilation terminated.
+static const unsigned sun50iw9p1_irq_bank_base[] = {
+SUNXI_PIO_BANK_BASE(PA_BASE, 0),
+SUNXI_PIO_BANK_BASE(PC_BASE, 1),
+SUNXI_PIO_BANK_BASE(PD_BASE, 2),
+SUNXI_PIO_BANK_BASE(PE_BASE, 3),
+SUNXI_PIO_BANK_BASE(PF_BASE, 4),
+SUNXI_PIO_BANK_BASE(PG_BASE, 5),
+SUNXI_PIO_BANK_BASE(PH_BASE, 6),
+SUNXI_PIO_BANK_BASE(PI_BASE, 7),
+};
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+So maybe it should be somethings like this:
+static const unsigned int h616_irq_bank_map[] = { 0, 2, 3, 4, 5, 6, 7, 8 };
 
---YiEDa0DAkWCtVeE4
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+> +
+> +static const struct sunxi_pinctrl_desc h616_pinctrl_data = {
+> +       .pins = h616_pins,
+> +       .npins = ARRAY_SIZE(h616_pins),
+> +       .irq_banks = 5,
 
-H4sICEDHzF8AAy5jb25maWcAjDxdc9u2su/9FZp25s45D2kl2U6TueMHEAQlRCRBE6Bk+wWj
-ykqqqS37Sk6b/Pu7C34BIOj0TE8b7S6+93uX+eWnXybk6+vz0/b1sNs+Pn6ffNkf96ft6/5h
-8vnwuP/fSSwmuVATFnP1KxCnh+PXb7+9PP+zP73sJle/fvh1+u60u5ys9qfj/nFCn4+fD1++
-wgSH5+NPv/xERZ7whaZUr1kpuci1Yrfq+udmgnePON27L7vd5D8LSv87+fjrxa/Tn61hXGpA
-XH9vQYt+quuP04vptEWkcQefX1xOzf+6eVKSLzr01Jp+SaQmMtMLoUS/iIXgecpz1qN4eaM3
-olz1kKjiaax4xrQiUcq0FKXqsWpZMhLDNImAfwGJxKFwM79MFuamHyfn/evXl/6ueM6VZvla
-kxJOxTOuri/mQN7uTWQFh2UUk2pyOE+Oz684Q3cNgpK0PenPP/fjbIQmlRKBweYoWpJU4dAG
-uCRrpleszFmqF/e86M9mY9L7jIxhrJt15+k2Z01ib2uID+06ZgmpUmUuztp3C14KqXKSseuf
-/3N8Pu7/a92J3JAiMKG8k2teWEzXAPC/VKU9fEMUXeqbilUWh9BSSKkzlonyThOlCF32yEqy
-lEfeRZESZiEVSBguQNK05RBgtsn56x/n7+fX/VPPIQuWs5JTw4tyKTaWdHgYnbI1S8P4jC9K
-opBNgmief2J0HE2XNicgJBYZ4bkLkzxzAYkoKYsbqeD5wrrjgpSSIVF4wZhF1SKRhmv2x4fJ
-82fvevxBRiTX/Y16aAoCsYLbyZXskeYlUPQVpysdlYLElEj15ug3yTIhdVXERLH2TdXhaX86
-h57VrClyBg9nTZULvbxHqc/MU3S8C8AC1hAxpwEWrkfxOGX2GAMNUC/5YqlLJs2dlc4dD7bb
-z1aUjGWFgllzFpTalmAt0ipXpLwLLN3Q9OdtB1EBYwbgmh/NRdKi+k1tz39NXmGLky1s9/y6
-fT1Ptrvd89fj6+H4xbtaGKAJNfPWnNdtdM1L5aF1DrKxZoEdIzMa3nLmsuVZ0iXwOFkvGm7u
-9Y1BqCUrM5LikaSsytAaheTW0SXvlFnMJRqZ2H6if3ERlvmAU3IpUiP59srmTktaTWSAM+Hy
-NeCGr1QDu9nhp2a3wJch0ySdGcycHgiMozRzNPITQA1AVextDcdLBTLfC42FyRm8gGQLGqXc
-SGx3je7Zu9de1X+4fupP2cLgFkRI+PhqCdoNBempN8toXRNQyjxR17PfbTg+SUZubfy8v2ee
-qxWY5IT5c1zUTyZ3f+4fvj7uT5PP++3r19P+bMDNoQLYzk4tSlEV0n4+MFp0EfIL0lVDbpk5
-87tm6R6aEF7qIIYmoClJHm94rJYOzyh7QFCRNGsVPJaB3TXYMjYeiD8oAT67Z2VoXAHW2Nb+
-+Jy4SIMJTBazNadhZddQwFDQCyH2bw/ByiQwc1Qk42OM7bOucsnoqhDAGai0lSgt76PRPeDf
-ee8FhhBeIGYguRTMUTyO0eu5JTMsJXeWswucAJdgfK3SmsP8JhnMI0UFJt5xPcvYOHyB8wEm
-Aszc4Yd43A8E3G3IgJkxlptpfl9a2xYCLYoRZPvuqRZgUzJ+z9AzMW8jQDfnNKSUfWoJf/A0
-P3jPMbr7VIBWAqtPNEMPPm/9rN4bf4sw7JI6nmf9G3QtZcYogjol1NoNsFP/o9bIjqCDLeHA
-42XwluWCqQy0q26cpzCR4ZoARasJliDsrvtRCMlvGx8j6AqgrrPF0ei+PLNsoSMHEQGHMals
-7y6pIL70foJIW3dRCJte8kVO0sTiZLM9G2C8PBsgl6An7XMRHgpLuNBV6TgHJF5z2HFzZ5bi
-gfkiUpaclVakhCR3mRxCtOPPdlBzGyiu6Lc4nKAHTjA+vXEo7HN1zm+/HY3DIkJXjpkAP/0m
-cGAYxeLY1ixGJlCodOdo98xAZ9PLgQPSpBGK/enz8+lpe9ztJ+zv/RG8GQIGjaI/A+5o75n4
-kzdm719O086yzuo5aqez9oDbx06raKB/IQQnCvz+lePcpSQKSS5M4JKJMBmJ4OLLBWt9PXsP
-gEM7hi6LLkGuROav3OOXpIzBfQpbUrmskiSFRyGwELytAI0vRrQAnhx9EwjMFCdhLQAmM+Ep
-cHngSEYlGTPlvI2b9ugesqAXjhkAwPshfxSn593+fH4+QUTy8vJ8eq1DgW4IavrVhdTvv30L
-79cimc5CSggIPlx9++ZtRX8YmfByOgK/DMPZfDoNLNsFjIXjT7Orq+kUgeG53gew3cjp1FKl
-cAKEZNSFJYXlOCcyRRk2MuX4zTaiFpS3cN7SeNvMpfdAZiMN+MI1GMs7eKfLiIf8KRyWZeDR
-C9BZS3e6Hq4v5i6qXgUpnJVggLFoIdHMLDcqL413eH1pzxkLUUbMKNiOzYec2mmbWAp7Vyhj
-ET5ZHnNiXfvFHA5uGYms8nR1lhFwe3PwobiSGEJYgUWIgOfXs1mYoFVpP5rIoXPmg4uBaFde
-X/XBC1huzW3jC2EZXRm1oGVVFG6i1IBhiiQlCznEY8IFfNQhohUdJIhKRlZD1HLD+GKpHEbw
-uKKxd7mQBbNwjJTp3dAzIXmTYBIVRGIfuoxy7X2LjCvQxyQDPYvqzzbr9XWSu8Y2AufH3laq
-OFro2XuQ/OFBVCTvcoveJA3NnENax2S1+YOKZ6D5fZvPI1bWrif6aJJHqU/S3LqsTaExH8Z6
-jJFVYBgiJt2Tgf/TjC/ZYhTHCZXX8zAufgu3Blz3EsWizsabBKg1BsxeUiyIq5AohFA5w2xG
-kbXppeJx+4rOg2VoukcWmZWOtOaRgvrKLZL04+xiBhGJ4wXQ+ccLeH0eijPqIXN9E9suYkE/
-XF1O4bw+8H0L7L17BH/7pmkwXG6x2WCmi/d6AAPC8ORwoJBSnk1nU/+wAJzPtbsZD1nGq1Hs
-hb9Wh1Wb0lB8C2ltQUuIZm3/WXK8LXtnt0y2BwpNoW71oriwdNRNho/gA2b2lDXoQ8gfQszV
-lTfa3ZCM6MjooiCIseVc86y4cHIe2Tpj8yvXw3DcmBsGho6NUbRy0KiQsTO43tEKvOdFFa5G
-sYIUJTqQBFOsrsSDWYU49Bb0pWMjssLk/Sx+a1Rt2Es16EwuQgkeXIV/mF99tI0ohGX5GnTz
-dZ9GniSn/f993R933yfn3faxzhw7GVNwrm/c5fvca2B0OzF/eNxPHk6Hv/cnAHXLIdhfAVP1
-oyvUAyyIPXHvRmRzVx1VKZ9d/W4xXK3eejuhS0Udn8XXeXZM9vyCNd2zvXGsG0CwGKoo3OvZ
-1OFsgABnBt8QUBcjHFnPE/KYl/fXs6lneJclJvqt1yZqCd5plQ7yLy7GJBFCqtKlWm50lYPM
-pSwDP7dJwrfbEapIq8WIN26MI8uNRWoqg80Az4AOaEr4kx3Or9it7Z9AvI8hHHEsdh0hYpoK
-cwLW85foEMdV5lXuTK4cnVp3L+CIKdhIsydrSJqyBdYvat9Gr0laMcvygtRdroyL4Nl4E3T6
-Ge6mQN4ltVuHBXNiPq2pHppc+b3ImYA4t0QPtBekLMZqPdrg0HM2aKtGzG7B7dSKQNgNQWoP
-L5z4umjMfUjFZJqmtmeYdf5XXQ91bOfmBi5tA1fGkoSD8YdgqXHMwlN7U2nhZI4lo+iOB7WG
-J7Pd00mi44xoYjSuEeXo69kSbc+HbOjdZ+QQp5SMKvRfBv6PC6gpuh0jKI1ocMf2ProAQuQQ
-MoBMNw0A7Z7Jw9+Y03nwWyfAGcTcbWzytMK9+1RskJmlEYswf1gk19NvF1O3iaTBUpLpvMrM
-HHZ0YiOvL/p147ucZGijWAZnCRbGjFyIJJFget1pLQzsaNfuyO+LMBOPncqmCU6CUTan5AfT
-uFQw0dS7n46ApHyRI8Glv5IySeU3XqAjcDfasIj37DZPpjzS5ZIRp6sEfY4KdnMfLna2iajt
-affn4XW/w/LYu4f9C6y2P74OhaJWn9Qptxh17MFMZCfqzJhN2oVE3QY/gSrWKYlY6C7MNL2i
-qHJzr1jcoZRJX1lXkpn2HcVzCCA2xFLxq5IpPxwzk3PYNgb2gFQeahUcMDpTQ67RlHqVCINP
-qtz0kmhWlqIM9ZYYMifV37fGmBmXEFcNg1x0ItF1asxIIJkNNkPx5K6tS7kEJsWCAqb9C8De
-r0zETcOUf16MXzVY2Tqj0bxIo1UdOsluPJBJlLnxbw/HvHwzp2um+8voecZJDekFwb6CpgcN
-k8FBNJbAf0BSW2mnttVcZv1CdTGaZsUtXfruy4aRFfokDGsRhN5UvPSn2RBgZm68Aez3aVvV
-Aidt7JsGMXJSKHWPBV4SMi4wkigds+hgxgQr0PLhS8cP+zyAP5qdFozyxO5XAFSVgkCgWLI0
-MXWZwPzsFtkvr3ulcN8BBjbDW48udE9Olu+tFKGVrTOjqSjuWv9LpT5DmvEmVAJlZiFpKtDF
-gs1uSGnnCwT2DvKFrOA68ngAJ57EN6nEWgTxor2t1zYc7EljwMrNbeB2pAI1oII0b6C64SbD
-rIT2egcwl2iXhOTQeFCxfvfH9gzW6K/a13o5PX8++MEjkjU7GAsLcBuGrLEYTXmvr5e8sZLz
-YNgaiyEFt9WVC7T21YI1vaPmLVJkxlCLlkULEYHJ8OeqBN4ZmRCZFe6+crsgBvWfH5jdLphR
-OsMqrm1zTKlTZnhRU0/inCDPgJqoIRUkDoV4NU2VI96X32Zoh7Rnbi1DOCtRD5cl7TpuR8ro
-LSVfvIXG98FusfEDYDZ2ozMuZd28ljFZmIR6ZhKy9uarHLQSiORdFok0vH+QnKylW2F1eXRh
-WTdypWCd7W6TCCXI/gluHZUc9OANpopcDDaURHIRBDrdsn33iWKLErj1DZRWMyf/0BJg5Biu
-jbYUoBGFUiNFTdMK1YSZxoKV7h42kfJXbZp4uDDSQ+9GF+8IqZBqlApW0NnNGyfAZHiwkGVe
-wURHJPU3Wfe5g2TT8q4IusvF9vR6QNmcqO8veycPZCrExr9rI7AQv8hYyJ60vzaWcAfcp6O8
-Fe1zZDdu+NnA0Kxz4YL7nD4XfUOc5djDOC7qDBI25bgN/xZydRfBc9uNgA0iSsLZQXe9TuvL
-fNbPX+XN1csCdCeqmoEX0FVViBIYSpaZ1fJtlGM9GO5fbHKbI8uNxIA2jDRGbgTXWaYccaDE
-UlIUqFlIHKMi0ka7tPfKvu13X1+3fzzuzUcjE9N08WrdcMTzJFPoyljPniZu3NQQSVryQvWt
-kw0YVBu17x7Hoo8cvPixDZndZvun59P3SbY9br/sn4KhXpP6spIZAIC7iE1qTmfEd80TIpVe
-2BrQ3OCKscK007ivKosUfJ5CmRdoysnOBx61rzSWKigZsoPXw9y18wdGGWcXvJzIzvHVNXKI
-jdy2I2mduq0aGi8y47l5/evL6cf31nbB2c8pATkIlxTcTr4Gel9gmqN74vuoiu23vb9IwGkM
-jTNG384ytZCu4JfVjGpfTUeDyaQ3mi/qYm8TFVv5zrhtmMFAdOXGARlwA8eg1uIVU/ldt4FJ
-+3KsxHADt2C7Z9j6CUp3mZEy5PwXitXRBXF8wnEW7k+ds9BZa8cfm8I+meYCIxHx/u/Dbj+J
-TUHBEoOmRm33ons/rCynBez7zax2L264FlgwXJwCPJFFqJaAKLiIzJsODAoPU2uMO92WNbNV
-P4frYMu6oN1m4Ee+kDKnU1XU8y5CsMVOVZF7Cc47I4BRkrkQLtYuoCi5v+uCSB4Shbbg4LyI
-BQS9MoaRS9P+UFt1yie75+Pr6fkRu8QfOhZwNpEo+PcsWIdBNH5i1XbbPw0QbTP/k/va+hYb
-x24Hfka8Px++HDfb095sjj7DH6TV7NWIwFtktZp//gPOcnhE9H50mjeo6kvYQlSy29fo/qLO
-w7YAcyZKYpBm5rxqB9WsGEEUYF58aXGQ5ibHZMMhZIWtKH68/c7ZCjNCxyTs+PDyfDi6B8ae
-JVMG8rm2hTdN10F31NCB6CjmfojhrNatf/7n8Lr781/wqtzAP1zRpWLhSsPbs/W7o8TucC9o
-BlrYZm/8bcJKTbmjbHCgp+eaY7zbbU8Pkz9Oh4cvrgd9ByF1yFAW8fvf5x/7VfmH+fTj3N4F
-LtYXSvz8Iyl4bPzhvnm3BoWz4YddYwQmYljtreqEyJKlxUgxHqInlRVJWMPDBvOYpN7HYu05
-ynryhINzS8o6lx23Sio5nJ7+QUl/fAZ+Pll+2sY8gO3AdCBjsmP8YsbyOU29r13EKvj1o0wK
-tj5jaFILDU5f3Rwdomsjdpux/WO0o0xKFCPP1qe1HAET1odxY1DTDFXyNXPSog2crWFXgQeo
-0SiKzVjdVZ7tOugNhHCrCr9Q9r8/7nMHOAfBPrV2JlMcCNLWU7Vkox81W92xxjCbCYfFAESv
-qxR+kAhsi+J2zqhkC8erq39rPqcDmLTz+A1sM+uFrgFhL8lwPvv7VSy1yiVwmmHDxOYoRCVG
-a7f1EjdBNpTErlr7YLw1O34Vt4rZ/eKmRwGfq3b4+xhhyfXAAbPqr+3M3cXmdp0pU3F/B/DD
-vBZ+4+alB162p7Onl5GalL+bMD+YSwK8lVUxszqDRTIc6xDAHZuPfAJUg2xCu0Gzwwr+CF4A
-xuj11wHqtD2eH81fYDBJt9/dTAGsFKUrkKLBDk2IN3I0g9OlsMckKpQRzgHcXzL+ghjeCkVc
-fJnE2gFIie2k1ioy8xdyr1UUY8/RZWSAeTOIbg3z1h+Jkuy3UmS/JY/bM5jQPw8vlim2HzTh
-Lr98YjGjtew6cOxECoBhvGnvDBTzW3QuRj7hbwkisCR3GENt3NJwi08t/OgtIeGCiYyp4CfM
-SIKiH5F8pc3njXrmSI2Pnb+JvXSxuDifBWBz/zzg4b9xE5gYTfHv3hjecRZLFfv8jBgw2SGn
-pEVXiqfudNhX5wKEByCRxO8Hnnq5fIOdaj9++/JyOH5pgZjLqam2O2yw93iuLmS0WQBXe5lq
-DxoB76gNuKlIjclDQySS4JymkAkemPvFm02wYBnPQxGrQ1RwUWdZ3EUoH2za+J+jPGueW6+x
-oz1UAzUzQLhQP1gfDf3grusvjvePn9+h57w9HPcPE5iqMRwhj9wslNGrq9noVrHVK0mJXI7J
-Fl0W84vV/Oq9y0pSqvmVx4AyHbBgsRyA4P8+DMucSijsb8Eyq8lxuVjwKmRTGJ/NPwSU/xxv
-YhDNHs5/vRPHdxRvcSzPYm5B0MWFlfWk2GoCXr3OrmeXQ6gyKcP2K+8fvoi9Uk7Mhxylp25B
-0yNmYHlrMPI3tlFsSq5CDrxNGgj4bbSnp4I081u0CAu493GLTzbmKCObASdON+cxD5EWIFWT
-/6n/O4dYLJs81Vm0Ea6tB4Q8iR9PNdiIKD0+rYGmP+ASqzKYLPS0VRV59hMAepOair1cCgiP
-PC41BBGLmr81aD51D4RYzFNnoxYTKRZpxaKBtjEzv+HhLO8gIEJvs9twrCzH2m1cBGcO/f4R
-Zx+wmG1XTn8KAOvsbBC1EtEnB9A03TmwpnLhwBxvXWCbBoR3a/R47OR/jRDp2l21LovcuQuD
-W99mzalYstL5WK5uycBPkbrPf8DNaj5nsqtpCHqrRjlQM/k6Y1Z6q/UfAeo1p7VFTkTZixpS
-81k4mMCQJjYEy43zYaCBJSQCYZc+lHqAusnW5isLjPXjEFPaJAm1HGMHjoNtK+ZcRu1DHM67
-YdxE4v/n7Oqe27aV/b/ix3bm9IQEvx/uAwVREhtSogVKovOicRP3xHOcOGO7c9P//u4C/ADA
-Bd25nUkT7W+Jz+ViF1gsIxZ113VzMNqlkdE9JOdB54F3md4NOdX1HYoYGU0JPv9Bk7G23NTW
-VElS0nW+ceTIRRYwEXr0egoeZXXApDJXFOSSk77+DtzUynBG8mYtstRjeUXxl6Jimedpq5Oi
-MO0mDFh1AjTYtQXEuLo2AKudnySe4Zv0iKw88zqqpTWPg4jpT62FH6eM7DyqhhK3WXkT9BuP
-1K0edfmD3q506CS1VX0V640efI9HkldwNzttP+7c4N3AicCZfL37RagoYFWr53vHin7NW6ZZ
-/xMx0gegJ2MMviOWoOeo8y5Ok4i6lqMYsoB3MVF0FnRdGLufAzflmma7ptB73mNF4XteqL+N
-Vp/HgVklvmeZIYpm37afiNdciFM9uoMqn9bDz/vXm/L769vLX9/kFf/Xr/cvYAW9oR+PVd48
-gVV08wVUwOMP/Ke+/f//eHramgOfOEcfqZkStn1/e3i6gZUHrIOXhyeZRpG4qH4+NM59mKUi
-tJniO+p4SkpkXnHMZcJ162GQVJO8y8HvzK+5tt2F2WuM3ShDdU4PYgDjWr8Usi7GnaCnh/vX
-B2gWWLrPn+Wwyt2UD49fHvDPv19e36Rn8fXh6ceHx+9/Pt88f7+BApT5pClooF27TXHEWCOz
-LgwYNP07JIIj0RgHaGNUEIDgnVHOLEJbw+pVlKvFTsAOva9Vyl1hOD0OZWjiL/uFEfDlwUj2
-gnSZm2gzSj2OFjpmUOwgHR/++Os/fz7+1MdvqAk9PUxso7kXUxvkJuVmox8IaqUTB13as7MQ
-HKQfNpvVwTg7GZDJMbAfgXc6Zr6zfdY9kgHNCx6zrluchRwvwXXBwjzk9ToJu25eOa/XcUjQ
-W/CEqoIAdk0bxPGc/ju8zkf9bHScmLIkiinb1E+MRU9DmB8sSx2yUGvpaPmJNAn9iGjMmjMP
-hhMDdqnKR3xfXBabIM6Xj0uCL0p1C33WAlGljPteRNUuKp55RUwtS9O81GCVUA+fyxxK7rql
-cWl5GnPPcwrh8IJgHOPgXhN3w0WJ2krbo81LVBatng0Oucxf5i0rSbHeeFltX9/N298/Hm5+
-gUXpv/+6ebv/8fCvG77+DVbZX+dvqTDmku+OikpmKBvALfkIp9wC2VQujx+NTJqSXh22WysW
-R9IFz/fqiGjmyMhutsPi+2qNLLrNxFiCbhdOelWu4C/D8BwgGZ4gajIHrOQ5NmOx02aL1UKr
-xxcr5Wop6fJsQiYYmYtXcLmCZHZSUmbN3DWCWrUkBg9mna64Bqrqr07M5WG2XXiec6zUVX5e
-8sQovyegYhQY0NTnw8P8xBYHOtJ4pgn+8bUW/xMZ18AGJmXTqYAbKjreYMOEZFO091SPPDtu
-2z5JhyWAyJbZPcje7UH2T3qQ/bMeZHYPZoXYfViYjiy0OoME22BWOuhMCb2kOi+zaixohlRm
-CsQePdXUHrbSYQ06zAdb9DAkGER/Ln1HXgtqc1qiBTSD6btm4O9IXQqrD9gRmhc2AHVNcNd5
-Wa0OnbGfNWBzF8rmIMcQFnmg0zEOPQOzGAylUufHtrm1F4DTRuz4miSaRvsAXNcXDouWfTZg
-PNfbfe62Yjkr4RSGHfpajVU3eC6g2M39XQnITXzpRzuF6+64slX0nigJiUuR7P2S2QV+5ttj
-tukTUZNUYii3mI/UbkDZLEwwJrskU/4NaI65D6xutoWtqMVdHQU8hReYORF5WVttXGL0tfSD
-fBdvv+/Y5uAX+bGDC2/PS444dHEYcQ0SvJUTfvVZavdrzYMs+mm/8lhUloSzYd2LJmCugbus
-Ez/rZs+4wzaVmVSnnmMzTOLqRoAbH1bspQM11Y6dienmgGUOajre4UTW1KLbb2hau4C8vpYq
-flwbGaTiZTFSDBFsehtz2hw7HBoMVuprofu5agi4Bzcn86Km+i2DZb7ZNN3+6Gkod2JrnZ31
-GHeEKPRwb0bObMWyKIobP8jCm182jy8PF/jz69wk35TH4qLuoU4F97TrYcep5WzEYUQMR2wE
-9gdxR8rDYqM0Acg56MkD5uOQ0U+UltufjY1K+HltwGicj8P3H3+9zV2Sacdi35za2VO7+5cv
-Mhqt/HC4sY1tzCy/eG5hccif1zL1Ql2XSSJo3EbMqGCVE9RjfjFMDknsN1+7Biw2Qe/8KsZ+
-R85iMhsjGB5y2PVCBxGy+5M3fSOtiuQpvastJ8lDRbHlddFvBlsU0ItRlOr1jEgVLpSEuWl8
-76NPPrkBxeiTIkrN/LT9SMiSEqav9y/3n98wVHY8SJn0UUtvReNY5JW6zHcizxaaGswMmSpY
-M/YkVYYzY3CA5kxJusy+N+ShnKR8wvDmL3l7T/Iok19GSBw3GHtnVqu75oogyo2xP4hE+emP
-9cFZiczzcthstM3Wy5C6VStrJKoUV+XBSqdEMC4saBMT5+2RHIG8aaqSH6Y0d2rV+7w0ueg7
-1uCxh54rb9jIEFJXBAQ/srDTfWhnrdo5T3F2jQVAH+m0Uyqzlza+GCSgFCwZ83q2clBy+KPn
-yJKEUgxLsrb8Sjq59qonjBhSjXjlR/10bEBKxq945ayioRIo+0LuINptkPj+dD605NUv5CIK
-PkM3cYepu5sEdGxlGwSfGnkSNatswOyDURebMPfjQZVXd66Tj7mC0edRvSTHk5AZaloVZj1f
-CqFZMwvAiPHF4ZLb0/hJJpOs4r8smkynfNZUAhDrUzccdtR/Pb09/nh6+AnNxsplnA+1BuME
-H1dq6YBCq6rYb8nPi6jyJaOhdUY6/J8+mOg5qpaHgUdtlA4cDc8zTFtIFK8gOnfxwHMsSLXX
-o3XV8abfQR7OkJYGySy/D613XL9CDlGrqOZxvvOn/zy/PL59/fZqTDmYA9uDyqBrzgKQG059
-bWFCc731Vh1jveMyiqHT05T3avUG2gn0r8+vb+9cWlHVln4UUGe1IxoHphD2BxumuOJZRhTb
-EwvU1PepdNdSuYCdYJZSCr4zK8ODitAudi/TI1DGlkTP5brMQV5PZuGiBGMni2bEOPBmtCzu
-7ErPDh+tx0Cn0UpBftbl5g+Mcu+DG3/5BnPz9PfNw7c/Hr58efhy86Hn+u35+294/PWrKU8c
-5G54LXWyvmAgYV3gVwXkLRZ73bBgUeX0J4ZMtvH4zlWNdTyGaFEXZ9fMyD78bVOuw1fUfp+l
-1EGWj0XdkHdy5XvfcJv/gH2nN1GkQPGc3J7SWI4fg84uVZS1da1LA5WjMMZa/ISl5Pv9E07/
-B/Uy3n+5//FmvISS8/D2VSmmnk0TEj1WwPnOW01sT3S2Wgkuzjjud5ne/0RHxTQXJUSckQTa
-WjiWF2hLIV/vBVKG+P4pdu+ik7Vr66XxY7bxDCTimT6YTh3vNOVNff+Kk8AnpbieK0V50iP9
-OdqvQLhTB0KwkJbkpTIEYQFY5fut5vChDTbe0jQKnN4oR2H7rrniye9sIEytgBSZ6lDPXTIQ
-DXUxEGcFyrT6M+oBM+Hu78yami5nxiHQSJttDQNyPPCP+O0+56gK7qegjD2Ho40c5Yb+Mpqc
-687azgVah1eDHfzjO2s88eluf1s31+2tK7ZOzn89D7eW8qVZG/MDWmzjZL4hf/Py/Pb8+fmp
-F8xXkxn+oP1nzMO0l4ZXV42Rb6siZp1nd8j13oumNlT3jr7T3mj7afBjfPGUrdGIm89Pjyp6
-ifoqBvgvlcwh+HGWR3nO04vyWHL/Pdjnl7mN0zZQ7/Pn/9pA8V1m3mh2d/AGyA/S7YsWP5qK
-1xykoyvavMb7GTdvzzJOCBQwKOcv8noWaGxZ6uu/deU7r0zrYbkHd5e6ToWdMd7CniDjoDHQ
-tQ+V1j5acNhY6+PwSHm8NT96qbRvzzztv+BS6vqUhARnH7eT1DrvksDrhkntMzx8u//xAywT
-5KBMR/kkBq/ITXvyTVE3SmaaVEdnl9YldX3Jm9WsZ33+fFdRmxb/8nzPKmy4oqmZMla5R9lH
-Zw921YUyPiQmDyfOswFdpbFINMWoqA2ecXQWr8jrPFozkKTD6mQ9IcqDXQjmt9DDeSSx12R2
-x0BLXTecPjtYmOTRcJXUh58/4DWiJj9fN1GUUgnje3jfWO3cXq5NtSalz7MHC6nM0M5q6xOd
-xIAKpunhTRol86Fom5Kz1Pec1orVV/UibNbzMTC6eCw/Hfa51aHVOvEils7asFpnUeLXl7Or
-8es88yJmDcTv+f7TtdVj8iRZ2cQWsWqCLAyIkUziyB7gI4/aKA1saWzrpiBGT0ABKeXXTzjz
-U6uKS50GfmdEdM5HdIz8WxzpVZt29qsg05is4R9+TIhJWSiQkbvYcgTWPGC+tTk4a8e4Vi+2
-DxShH4dzycZT4pkekALv28w8CNLUVl5NKQ7iOOted8z90KOj8VRp8l42fWo474sp1Nvtsdjm
-RgahvkyOifbGzlz8YcXwf/vfx94xmQyZsUEXvzfNMan98UDvIE1Ma8HClPIfdRb/YujxCbJV
-+YxBbEt9xomm610ST/dGWDCUI+0p9SVdfSx6ujCu74xk7JQXWU3WIEqLGhx+oAuB+TD1Xhoc
-LKCblHoR0QV8IvCc1QXUZo7J4agOgCs/cucoBKlLNEaeiLyroXMk+jtkAr5jFAp5a4BE/ERX
-X6ZQaFagzKyfn8lUMxKTIV1T9RrxmosgYYzGTHPQRuQnWHPrBpfGU7WcZRH1KulcdRsHUkDI
-MvoqyInR+ZRd8g/ZxiMqomnHQgYsmmH3/WM6ZlzIqunHVM2Yw7C6m3dQ0d3fV9CZrNtnzTpX
-uBYLlndpxqKePImTXANlzuKTkQagByQ7dZyBqUyssvBAYIuCBoaXF+vRwnkLqu3umvM2zcLI
-yCc8YPzCPD8iJ2hgwZckpk7RdIbUo0pX79d7j7J5k8XKCHMbughkKjgu3+c9Oi9pdcvMkFEL
-kGcx3+ZNH+Dd2pHZ1OJbt9cTzD9MEIreUpeVOUeNVp75jg/SDCwgTn5Cn2laLMSgSoTphscw
-rlJKPU0/D0DVpAlL9MYOiNM5msqUs0K0dCy8DeLIJ1vjh1GSzJF1oXKoK5Y4iqmWDZbtQs2y
-vxlRgQJSqliY6NCPqHXG4Mi8eakIsIioDoEkiChRByiCOVkcYlGvgjBZaFFvgSeUgG/zE7jO
-cjEIl17RYxt5QUA18diCVqF1x8By4sL3PGqtGfvZu0XzsVlnWRZpS7ClbOXP67k0P3okif2+
-tbWpqK4l37+BO0vtXIyXP9dJ4FPegcYQ+mYkoY5QNtvEUPse0wwOEzAsQROijDmTQ8vJZgCB
-TwO+/oJpQAamIwW0SecTt2gRCFxAaGa8NiFHiKTOE9NxUxpH4mhrqH9lbATApqL4BU9iclY6
-zE+wx9sk4KFUVIFNYXy4fqC3XUMM+1rEjKgfLxAzil2uFNAdTglbGX285jX55eaeY5NEQRKJ
-efO2VeSnelpdDWCeqKnqtmADkPc+JpwRBapjvP0c2ZW72A9I8ShXde4ItNFYmoLSxQPD79yM
-+1NUsJyOPqPmABN9qe+QzupSKpI6CTc5knkne8CM97BBI17VADPitcJYCj8ihBUBpt+iMwDG
-qEmV0HtdC1nsaAeLiXbg0gz/zduBQOzFpJKTmJ8tNERyxCldbJY4Cg3A4HEFaOpMARklNrHE
-Sj9QT8dx8E674zhkzodJO8XgWOqcw0AYmXgTwHqzUEPLY32NnVQo17ekx0mv44CUozpZ6gbA
-rscWZa+mliigplTLUjKVA9Cpm7YaHDkeo+yqCc4ctWXL0gYMy80BxzwISS2EEGmomRzEsrdv
-udqYKkWrp/0Zcd6C/0aoy33D66TrqJ7KHfWM/F59bSR1Hx+gyWiJMGqtXuEFiE1Brnyr+so3
-GzJR4MizF83piLdmGqLW8hhEjFrxAUi9mHghymMjotAjlUApqjj1g2WBYeCbxw49nxBqrQcw
-tA2/9qlvu2osQeoTY9drWtJGVXrUWxIkYGFeEpASrrDoncdBM6XESoRIGIbEaoJ+V5ympKR1
-BSwNS+oFvJwQHF5CgAGJgjjJqFk78XXmCh/WeRiZZHzg6NZN4dOL66cqphOUjz271LRtJHYt
-Na1ApsxEIAc/qR4CwJcmahb3NgBFzfEcgQSY7wBi3Ekim1ELHia1/45qFG0rlgVL1HVMmw+w
-XPksXafvOF8iSRnxqkkgoex/6FXKfFIH7XPmZcs26j53pYLQWAL2zvqchPOGtbuaUymN2ho/
-Pk68B0gnpk3SU2pEAQkXlQQy0DYRIJG/tMqdyzxO43zezHObsoCYh0saJEmwpYHUuG+pAZkT
-YITLJgFiiCSdtBEUgm+wHetBsVagER3Zgk2umLwlMfIMh6c9Xa7reTUjyM96wHpv5EEbsKIu
-jlv88NO44z5dK/dsZmvbZSDrWUcHGqZilN+qaI9lY6THHTiGG6HbA2Z8KJrrpRR0Im7qiU1e
-HlX6amprnHhAfb2yyc3IuoHzHxdptHbebYQxpE/+j4bphmB68J6L3kWTWZqXONbFGb8ET/HM
-5nz66LgFyeu145tyeziWt3O5ws2ImI10/RjQffFIiBWImBCl8bluoBo/8FheJr7QWKeXY8Lp
-lwfwPl2745B3xTFfD1H0yvoU0HR94s+/vn+W6bZnaWT7R+vN2oqLRYp20KJTRZD4/pzGDKew
-we9oydgZRtkM8qG8ZWnizWK4JYY3amQoKD9Qpw8Tz67iay3hEQIwEFHm6Q6fpA6BKSZz3jXM
-s1gVrd/mMNpV46UYOmJW9hjFiozbGdGImXX1u2JGKKpGJ9ogEcrRHMDYsN9GKrWG9aAfefYj
-27wtMKRQXLeCTtEox4P7AR4XucJIdR76RpPkaFjMMrP/uzKGBVmOm7ZnjukYclFybWVDGhRt
-xAlV+BV1vjMJxp0LrKK8FTHrTJoMROL1Ya0fSSMwhiIZfUtTeT3e2XeF04cKIx6Tx/1K3Maj
-I0sM8UzI+WZpwVDEY2aEE8GQ0SE3I0MaukRJHbwl5pD2Z8bmcA5HVgQxtYhtHOg7dgPN3EeS
-1GK/Yf6qpsW1+CQvX5GpeVH9IWbWcizakz2EDd+A5xu4BmCKttKJw5GTThsD04zijx9TMkpG
-Yvuojf3UfkT030d3PCXKMIm7IQ+k+WQdkTaxxD7epSB6bFZb7dAG+aqLPG+xJX3UnYo1a+vH
-zy/PD08Pn99enr8/fn69kbhMz/jy572RxXtaHZHFoUgUNtyHHMLA/nk1RlNV/KnV9xZD4oMg
-6q6t4OCjOfo5xicaD+PRMxlG2pdc1XNZy6uaTHOD56C+F+l2s4xd1M+tFCWxVrYhxtGuStEz
-l0KhDl6HdkO/Atot1Dii2LVgjVGV9mAjPY0XSkaGzA52nTMwZ45hg8lawUwWUPGB4Ry2lyr0
-grm46wyxFy6+D5fKZ0lAvplVHUSBWwu3PIjSbGFobuuOjGNF8NylUWSPNljmu32+zclPGaBF
-ZMcAa0TzOEgHjKMgqWRFmFTmxWc5EnXkk6fqA2ieuyoqLh/OEZAwHWjXwyG5l9WDhk860Shr
-rEeWDCBkibxFMZTtpU7ppeI/7GoMLPBT26YdEDsS23yKudSOaNG88mc6vq03lnDp94xd3sRQ
-MrHFO5LsG20TsCm7AoTzULXq3HLGgGkZTuDeASBOtR4xNvGgX6o+yz1yESWB0bUFzUJB6PKk
-sbE/YoLoD5GzqLGtoyCjhlxjUa6PPvAa2L891fpArc5zRphDDOAj+2M5ayZibvRqmPR/Fuse
-fSxiFmYxMAZkSrEOTf4Z0SbusN000bIuFphI7EKY75gHidFRHZrY5vsoiEh3bGIyA1wnuvJx
-6P4q7ByRR7kTWymqLPAcAosnOSzxqTiHiQnWmjjo6ALQlEmWhVCyOORIhtsty5E0DiJqaiq1
-yrmgOImpIaU8JhONyJXR4Jk5TwaaxiF1Qm7xxA6p6l2kdwswPCYL0vcQLCgJqAGbBQjaUOps
-LLh7jHYYNTbe+DBi9IGIxtZEof/O4DdpGpFzjgits+vmNsmYa77AUyQTM5gsLHA/Hi3r8t4X
-JZrcbE6fCiNToYad09SL3VDqhjIautTU4NzyQz27BDvBvRu62MHJ75xDYGOQdMvjnRDKr9TQ
-aguWIGmZaUy91UKVDoV7+lGMAaWYJIloLR6r+iADDsxytUyMBa4XXblUjLbibbZkWUtSbpuF
-+sF7r9/gxL1fE6NnW2EhueZrTtLccsMDJbrpynomWsT7XQ0tkBYo+0NbbkrdqkNqU+5nhGuB
-34z/P8aurUduW0m/768YnIc9CbCLo7vUC+SBLam7lZZaGlHdo/GLMHEmzuDYHsOxF8n++q0i
-JTUvxZ4AvszUV7wVb0WKVYXONhSNuUR/KciA6pLmmAqJuo8Bybww0mT0EDnoUWAXfFv0F+Fk
-h5d1mdvOAZvnX1+eFg0avY3r4bFkTVkjAmDIwuizg2BkJ1a3cOa8/A3eotpXGIXtbzH3DI0L
-CT69tUVvS1RCizmyghtFCBMQsiarDa8lqaWMS1WU7aR5j5ol14oXrvU1publ5dfn16h++fz9
-z7vXNfSyls8lqhUd8UrTz7cKHXsZwxuoV/cSxqiaxklHAvKU01QYmqxnp70aQFfk2ZRNgJY+
-WqMEIpz/TjUkz+EnbqIPJ2kvtMqNarEy9BSXSa9KKGpN6ASPOnh1Jy/FEtLw5eO3Z4zw8vQH
-dCRevOHP3+7+uRPA3Sc18T/tUS9CjDtHnBDj9rwLjNXhSie6UdBBqq3q5uGKoA9gHDHVnsyv
-wRjRuSsh32s9cR3xs9tRcwTkbAen07wyM6R8pmjAlPMq6Km10mYbRjP3+Wm3QZWOOjTS6i+E
-oMIqb4poQS5DrsthHci0GK7jXLiJrDU3kbigEHI0lwQtiKkgPX1+//Lx45MWc1DA7PuvL6+w
-iLx/RVPg/7r78vUV422i0w10n/Hp5U/te6is43Bh50LdE2ZywdIotJYKIG+ySFNDV8AH5Zu+
-rptZSpZEfkzdKCsM6kPvWYq8CyPPIuc8DL3MpsZhFFPUOgwYUe/6EgYeq/IgpJ7lS6YzNC6M
-LGHAvp6msZ0n0kP6ndG8sHZBypvOPcx5e3qctsMO1H7NqP3v9bCMr1zwlVGLGiULYCwxHD5c
-Q+mqKa/7ipqbuQ+kfmb1jySHFDnKRltqCCRedENsyJFFtAYoObZD5t8SPOAxfc5bcTI2jESP
-3POD1BqedZZAzZPUbhJIOfUdl/cqh3sgiOuBNLKkuNBRp7MX0+HSxX50I1fEY6vHgJx6nj3n
-H4LMi4ip87DZOBwXKAxucSLsE0vJpRvDQP/sq4xCHOdP2jQwx6OQaWqt7vkYxMvSpWoP5Fh/
-/nwj78DV1Rl1Q6bMhpRorQRuJwz1L20KQL5MX/BNmG221vw7ZplvCWc48CzwCOGsglCE8/IJ
-1p3/fcaQbDLAl72+nLsiieCkRN3KqRxZaBdpZ3/d3f4lWd6/Ag8sfHhBv9TAWt/SODhwa/V0
-5iC/2Bb93bfvn5+/mtnibo3vqP15wV8+vRr8a5zQZ9ihPz+/ou/O549f7PxWsaehR3RuEwcp
-+aFSwob989zmAXTurirMKyolBJ+jVnrmLaxmYqSu/lJuNWHP/WR+i6N4JdGzv+ouiDHpP5FQ
-xTVUP+wM55P4GiKH2vc/vr1+evm/57vhIsWvPvO68qOjx65WI1QrGGosWaCuggaaBZtboLrC
-2PmmvhPdZJn+jVmFSxanCfleweJyZtLwyhXMQmMbAo+MZWYyJQ4xCCx0YoFqO2Fgfui7an8/
-+B5pOqAyjRhELqOzH3MMs+TCIifWjDUkjLlTrAJP3VcEM1seRTzzXHLBNSSJbw0dP3PVYIeR
-5d4aHIIpoAsQmKNmc+GOlOUsN0e9YGt9q8uaLOt5ArlYF01z+We2kYHzyDLgwOfH1LWeylQN
-Gz90zMseNjhH0dCzoef3Oxq9b/zCB8FFDtEIfOsZAWvJNUpf7uyDnFjd9l+fvvyOj3gst5Ns
-r/hsuuwZ+gJXzpySIGKk7LuzGr2nUB0cwS9io5gKNTT8lcq1a3SkF93EzuPixZx+1IxswoSf
-l/XOEQAZmY4Nn91z62UjfbddoL/+w8oXKtHAFje0XVu3+8epL3dc59uJmyri0fQVxGjr8qbD
-9zwbrksm3Etyw/kTcqCv+Am6vcDwLQ36dyXElJNuhREcBqMLgCDuVjq2L6euVU3VEcYYBKSg
-MB1F35fNhK+mKQmicF3YxWgnzw/iDmX1HTirgHdzrF1bEcBU0ss9HB8SvVbS3XLtq/Z5Cx0d
-4eJ+uNGPgxZs+ldRfP256iY1xr6xw7ULcbQwfzXv7CqrytmzwgiYcKWKhxjdQMaEACbWFOi1
-/JNNm3ili3wm59WRpM/lkNie9YOcINcgnyzv7n6QVwX5a7dcEfyIvpJ/e/nw/auIo6xLBP1L
-QjL1/unv5SJvRV/++PLx6a+78vMHDHP9RjlFbrUEaNOhyDWvSnLWH8v+VNZTkZND4GbBahmn
-9nwpmfb4cCbN8fumfBhv3MguzPK+OybJixXLT6FdyBy7sTk7F8+FE91L1RgkyTGsLjDP9UF1
-gdltjlDmXH+bPdsHqgokBnTOevTXfSiaikDqS2GVcD9SliuIbNv8YLHLeDO4LzlSdexUrhHQ
-l37t4LTy0Zi8ghE2Osiz7Dms9KqCrzDwM5/egbYxDU3cxdNpCON4k1Cs27acDhW+EYBDV+Hi
-GC6glz6coadqMhdKSBKRp5Bb7Z7KuirYdCzCePB1xz1Xnl1ZjdVpOkI1pqoJtox8TajxP6KF
-0+7RS70gKqogYaFHtq+qq6E8wn+bUDXJJRgqOL34OclyOrU1xv7w0s27nFEsPxfVVA9Qm6b0
-dB39ynOsTvui4h2ath0Lb5MWXkSKu2QFVqkejpDXIfSj5OENPijyUICOu6H4OGv4GaRVFxsv
-ImtWA7j1wvjeI0WE8D6K1bcpV/CE33XrzIuyQ6362VA42gvDeopxql+LkUwbj3xlcuVt66op
-x6nOC/zxdIax01IFt33F0UXXYWoHNPPYkF3X8gL/wtgbQNdPpzgcOMUH/zLeYvisy2X0vZ0X
-RifP0Zqe8W5b9v0jejxvz7Bq5H1Z0p4H1VSPRQXTsG+S1N/Qx1ySOwscNiwKd5sfhSh+Pnhx
-ChXfkM801ASnbTv1WxjTRUiOmmVc8aTwk8IhiStTGR4YfcNNcifhz97oUZeADvbm7RpkGfNg
-U+ZRHJQ70naCTsaYK++yOrZTFD5cdj5lcahwwgmjm+p7GGa9z0f9NGixcS9ML2nx8FYdF+4o
-HPy6dGZaDdCbFWgBQ5q+laXKm20uZMfjNxyWj1EQsWN3iyNOYnZsKI6hwy9rXpANMCrJZWPm
-iMJmKJmjZYKn2/vkrYrC1p/rx3mfTKeH+3FPrgSXCsNptiNOqU2wIRdTWGu6EobF2HVeHOdB
-ql0QGru7pjv0VaG+jFa24AXRFISrhcv268uvH/QHJphYRCcpyHgIAj5APw6QPZ5d7I132YiA
-dBJODJ0zE3d/YCuc5z+MBo3e7dBpQtGJUO1w7ttmsXcJp52xdZ0e6uthXEfgUNQNpzBKrNUG
-TyVTx7PE3sJXyNzZ4GgGf6tM83EmgWrjqXaDCxFd3RhSkvrN3EOu4++hOqGr5TwJQVQ+6CNm
-LhjGtNqy+dNWQtkJEGzpG9nQ5hGCETadXRc5Ps/NHPyUxNAH5GvaJZOu8APuqV68hAYunivB
-EsFOY6J9kjbRVPOHrqGFsW6IMFzFJY1NHUIBJvk9/y8XLL8YqoOc0vtn4sQO28l4IKDCVcBv
-wVgWMfHtWasLvhxO7FK5L5pYn3d791GqGfmODp4kpnzV93A0uC8b6iiCkXGQ6zBmYZwqyvIC
-oAocBDENhJFPA1GW2EBTwcoe3g/qEF6wvuxYR7sTnjlg64mpXHFLCmPjckgecvV+H4qdMe56
-P8jM+dTsaVMQOfFp5xjywHcjHbsw50qxaqXlaRD3eNP9ueqPfLmS2n19+vR898v3337DmE/m
-9c5uO+VNgZ4Br40FmnhT+aiSri1frvPE5Z6WqlCN7jFn+Lur6rqHvcAC8rZ7hFyYBcDJcl9u
-4QClIfyR03khQOaFAJ3Xru3Lan+aylNRMc2iE8BtOxxmhJA4MsB/ZEooZoB1/VZa0QrtxRmK
-rdyBVl8Wk7oMIfNlzzCOjsrbMLRDL/UM1jsQnRX45htMruWLVwAoE5gBazgjbZT8vsRbs3xC
-YBeJ9UAd9kDsGupsjdyPcGIJjG8hKh0HDTnwgQnaTx7aAGpBXxKx7ox8uV8IxwJ0Khkd0Ugy
-h0x0WeJdOVzu0q8c147QR0ZfXejZjcM9jegtVfS2GTVCydO6al2Jt9oyc9y6NrtyGc9VAWDD
-o7HorcS38gQubXzC71M+mLmvQYvgIG5joyFYJJLFamOCfnSDiLWwaigZaxh7u2xhXan0xe74
-2LeGXMJi5+i8S9sWbetrGVwGUCtDjTSAiogBtzWx9Uft967R0+Ssb3A5N+abpMKOwUBfuJBu
-dDSe/MyHttF6AMPjFdVZKw39FO7HIYrV2ylsjDTM1BekEk+BbWPWDWNGBa4pyzlMaC81p3mT
-+vSzDXK7E0vc9un9vz++fPj9291/3sHgMsOtr2sc3gCJ19RzzHJ1yCFWRzsP9PFgIO8RBEfD
-QVHZ7/SwJwIZLmHs3VNxkBCWypJiV7IQw8DTiUPRBlGj0y77fRCFAYvMUqmQnxoDa3iYbHZ7
-j37sN7cp9vzjzvGCDVmkDuhoWjs0IeiByha9zltd2gS+xG4jILRwIsim2ecVWczoCEiYRT3U
-6ovoKzgbgBMIK9AKzXNCKQ3N1r4EJIwvPW2bMkDK1FBh6bI4Hunki6nVzQwUzw52vaXxMNVL
-RuxspUKXOPDSmrLUvTJti8T3UjoDOMCM+Ym+6VSKKQtySXhj4i9VAW0DHcqZ9gO0GiVOgOo0
-a/ctWbj1OmHJgbfnk+qjD3+dWm6HvdeRqQMNuGYVGdpTy/BUiKiPvU7q8sYiTGVd2MSqzDdx
-ptOLhsnAr3Y+GMcd9DE+tbsdfvvX0Z+hl3QKNAifHujEphrLHiFNAHOFgEw3WqBLW7Vkh94V
-fFO05vHE0AWXML3hRk3YiBtiwX8KAz3Pxc6rrQs083FVqW/zaWe141L225aXAt45XCVqbNVp
-ODrZLI1Ur2h5f0brD2fzTSsMQTw3zaM6C5HIMPaqs5xm6Bh9+SBr0Vesns5+EjsCv4g8unPk
-eIMnO1iTs9jPD8V/i8/t6rvIlaY26YAhi+B0iO9YQKl7V/6UREb2Ha0vi/q7guGexMuW8qFy
-eHuZB2ZekSEFMOc212UPhFX9vTHTkG2ZbTayPPgxRx5i87MFR32k7zyumjUtCZvq2Ldi1A6t
-jm7zJgmFIzc+PRwqPtTqQxs5SNeQ6cBkVksLqN5Yncxf89mK47fXr6DcPT//8f7p4/Nd3p1X
-O5789dOn188K62yXRiT5H81x1Nw41GsZ728MgZmJM/dQWDM6w85ARm1QM1KvqTWgK6odDZVQ
-ut3biMAStqtqO1XVjKI6qj2XGJToEBV934nxZ4h53qYM2eEE+eX16euvswSXp8u3ekctEkfH
-oUoC36PGgKzsjYUMR+BwnLZDfuFUQNqFibc7HP91eSlrW1aIyuDcBNASYke6fIkCA39bEpNN
-ckBpbVcS9q4q26kVnzvoUmaQsohV2TgcCHNQh7bVlB/K/OjaD7XK09WB80BeruXOwePIQqUE
-xv58gvJvbAM6/7KDVbeWVi2FrBHwoyPTCm8y/07rpvIk3PHOb7pgzwbJuDpK4V9vMYee5TcT
-YI1Ao2kLGXj8BmdfDqw6TQXvhOloOdLcy80s7YcuDO6Ab7bZUSOL3/ReR6aypT0bZsIcvCHb
-mUl8p8BeaUSULHvgznxyzbIaOg4YslpM9zXluxEOrg2xUuH3FrnXLiuS/DZIxbBa9rJ8kzq/
-IK5MBTtP56GquV0oYn7q+S5kdCKJbypIKuZyRWiy6TFxFFQYlVnyFIjvZ25kOjw4MkRQj8+z
-oMfI123VVMSnvwYqLBHpB0VhiOOIVESOUUL7T1cYooCuWByS3xcVhjjOCEnUeZyo8WAXYFsE
-WaLHAV0hODHnlMPlVQ/TPYSuZB7GdRhQWUqIvkXRecgAbRpHbLdSAgkFREEdEQNLAFq0JR0w
-HdxpcHqrE5FD95umInQ4HZXBdxWbvjXJZqbF8SeBjmP2dh6hrz5SUoGIllcYbSg6WlNTGWGc
-kWCkqliwNLg5QQr0gWwVJb8iz3qGlWnJU//mqAKGgGpZybPQT6h6IhJYknSx0f4016PP0CQe
-ubTiW8mpP4ZeSF9QrkoiGzeZR3pU1VjCOGVUawQYO4yqNaaEjISjcmyC1BakLN2IFKVhpBWj
-XrRHpuZNtvGT6QGvc8V7iNuNUNhn7y83yoWTmZ9kZNcglGabN+aS4NqMtkBmgN6dFpDcKRFE
-518uwDT6NOHbYxG4Qk+LCacDrkVxgW/dGix8IFL3Z0eL8c36xn7wJ1lfBJwCFiApYJhvYUDs
-o32d6BFMFvoQJ35C00NCl+L7oRavmm0dudo3DLRoIs2MzJ3rQvsSfuio3p/fXjH4VziNunXE
-qPrdrAS7Tm605st5E4QesTcjkFC63Qy49qsFvj3HgCuKk5QodmBhQEwUpMeU+PEhFyM05oHx
-IFY/q2hAQjQMgTQltj4ATN9lKpSSPh40joCoOQCgNUZEceiexd+Qxe3YJkvJ8IYLx9XnCVHk
-FaTnmMpAzrOVIfRHYoW8wsEYvQG/UQPBogWVsFlGUkYSLvLRJ+Nyr3w8ZEGQEsfpgUuly4HE
-RJ8JLzIh0eSHJpMv/gk61UWCThSA9IzcTNEjjSt2r8JC+lBWGUJyyxTILf0BGSg1DOnUhBV0
-8vwiXO64b91XllvnKWTIyKMYIJkXvbmFzWy3NzB0du3Rnbfx6M7bJPQg2KT0oNFjECr0jDyj
-vKsxTuKt4f5OXJJski4glj7U1VLVbekKoPtQYj+UbkVJekJpIid2zuLIAWTUBBEAVVcJUKtL
-xzCCMdPeo+tXM1oSubvid7P51uUvB2wOVrnP7nvWHQROSP3Mt1N7yCv9nZ2aEXLc8EvYKFt4
-99Dz8n4qKaLlBaPJpy2GqSJIy7fDTEXEPeF8yQe//4sX8Kdq7w6vf3xDo8vFf15hhVyCxMud
-7doqJPLikJOhCAB72PJCHb9IY3XueHwv6lftmom8SBdlaQ76ReF9lbfQL1yn59tUN7xC4kX4
-fmwaMhAG4GdoSpX0be3pmeH3OTTV0i7oRSn3B0HSSjnwe3fr5hftnVNizXDUMiwbDCJ3JLhP
-5QM+K1DGMf5mOlu80qRDRjVzgW17fKBwwq/jhwf0C3Da628VxFDB9wvEhafIgZ1CL4g31KdE
-ifMwidTXNZKK8SpDuzr4zY7cvK6wuhLJ9ombLjOrvPc8P/J9+sgsWMrajwMvpD34Cg4R2cKz
-8hZk2rhrwZOIesmyohtV7V2pnj9aZUl/z668zKctMisM6XKj3YiTD21mNI5HDMHTNOIVp4mp
-UVCvRLsvkZzcElKX0QF9FlR7uiSI0NEb+YCIoBp+61fIcBcv6EsYjIENZ+qDg2Ban2rpaQuW
-+0HEPdJHmCxVffolKNcgEzodL3hVI1TZ9CGMN6FBHHKGjpet2gx1Hm98R6RTOYBmD/Gu2l69
-rduDPP7Tleo4FAGMYqOWFQ/9XR36G7OPZiAQBjLGmiI+0f7y8eXzv3/wf7yDrfKu32/v5jdT
-3z+jVwj+5fn9y9PHu0O1LkR3P8Avwhpp3/xorUrbujodqZdIssn1CD1iVBGdMxgk2HCm7eNQ
-2lIXEZDmOeIqZXXGbabm+yY0jiurSIavLx8+UOvsACv1vuyp0cryvMQAi2jbrZhGlDBSJxh0
-+JCI5/15a0DWR+F+yCd81q8RMBpxkvmZjci9RiMdctjjHmni8ozyH1+/vff+cW0dsgA8gAZF
-tA1RMwoLkE4X6dZFesgcIOViiaQoLchYnYYdZr8zKiXo+NZJVWhWwOUcR9Smv0ymW5zVxQpW
-xbJNWFKx7TZ+V/LQLFJiZfuODNSwMoyZpzozX+hLMEuDXvD5dTJJn/LyNJz7RzpdGlFVlMj0
-UFA6rMKUpER1Do9wpk3IpsMClNDm2QqHHqhPA9Q3sxqgxubTASKrnsd5mAY2UPHaDzzNskCH
-Aocre52JjCQxs4zAEFOi6fLd/1N2ZMtpJMlfIeZpN8IeC4Qk9OCH6gva6kt9ANJLB0ZYJiyB
-AlDseL9+M6v6qCMLeR9mLDKz666srKw8UHNwtnxOQ+fLVEgury+pPnDcx19P6KkbD8sJfYtv
-SZr0OmfKd+4vR3dU6W2U/jPftokJzel0MQ3ErYkoQHS7vWDmyghi9VGtKwn23ZCGX02GVLvx
-ixGZY6ch8GOQmW/MJuTzSyUYXg+fKHHour54sJUnnalUFp7nPzhbt0QxHD62sIoRtWg45lwP
-kWBMLhmOIbM6SAS3xHhzNqG+9XXjc0v7+fcTMr6aDKkpvB6SU4u8YDyxMytKeJa2y2g4oreL
-m93c2oaNMDXBGcUwuR+eLF4BdwTLTCFG5BH/sNG2JXnrjshh5zizbN727GV1AsHu9XzD3Tgt
-LAtsZMn8KpFc2RJeSSRX51gbnlYTzCIfh9GDZbVek4K+QnBr+fRmNKGT6co04z+gmXzUhpsx
-cXJ5xWh8QR/l/GpzrkiegpngOOXd8KZk1ME6npSyF7MMv7yi6a/IgYuL+HpkiQ7enxnjydld
-mGdX7sXQrBaXLLHjdSeaFv74kNzHWXtn2e8+u1l1fkW3LkFGzW3GBGK1ByX8RcdK7QalzSGs
-9/Pm8oLgbK31j7BHh1tTsdkd4ZqlNr1riIeZwlE6L4x9DCinCswsJMVD4qLfs/yksuDQHiC+
-reN07huO2w2uDTKpRtwSuJnPMs0ToY0/oDaq/5JVyybUB6WnlaMbVPh6yk2aey0tgLJmDsOc
-1uMhjYepID6gYT799IA4uGi6qcX3k7fBDdtlZKVJ/JJ6iOSf55WsA0RQHFzL70zzAGBzaH7g
-qUB5NDhRkoZpTMZX4GhFJ9pC6jiWLc86MNysFIsijoi1q1aDg7bBzTtDxWXMEjaVr+bowVnL
-eTYaOFqcz+YtPdVkHrpOaYIIZhf7CdlFL1MTTcxSDM2tETeRwteH/XH/4zSY/X7bHD7PB8/v
-m+OJMpP9iLSvb5r7Dw6pnypKNhU+8h2xi6EwKb1yXhZXIzm/hvBSveoDg79tVr/e3zB/znH/
-shkc3zab9U/Fspem0FojYum2TOe4X9fr1evmsILGcN6jJznZPR322ye5nhYkvcA0RTup9vTS
-D1JRozmvk6a0m3WVhHD9LzJGvzoIFU7tRnf1MkqW+Mfi0VIV+j0H5AMOrgt0fEkTuFarcac5
-il7kHCe87fQvuIOf7RMvjOUIxghSrE6ycMwjIIkgxKvjr81JCp/aOwCqmPbrZRjVbBliUItA
-4pdB6EcerEY119MsxhcAXKVF7VQS10HHyAYj57dSPszyNAiBkcm9v8vc0YUlvNs0jbwgLGbE
-uMwYHDEwdz3bgR88EHCa3lUSN2oJ0e8K1oR0evUrgYL1eZb7pQPQWeFRrzPSd/jaOp5IKgoJ
-V4RXSqAZDXU11Da4hBxS1pIqyXhMdgQwavoKCed6rn9DZvrQiBSli4wreOgMN1Mmor5P8/De
-0plsQbt/SyRzlxJ/JYI2US/VpCaJWSw/DswWcLVK+Mtpa9X/sl//GhT798OaiC7CfTXRE+e3
-CuHeN0pXi9zV6opDN08xYBjsy/J67HyVQvOStXYfsjByUskwpUsyFc8qeTDxfTJndeyQETma
-YjQfEX6sN8nguoIEkHioFmrWzev+tMFMRYT068dp6Xf61DYBkfmFKOnt9fhMFJLFcn4y/lP4
-vk9RnW/HIEDHNoe9ZB2g1iqdMciBdWdJcTKm7uBfxe/jafM6SHcD9+f27d94+K23P7Zr6ZFc
-nGevL/tnAKPrmSxit2cbgRbf4Wn6ZP3MxIqYEYf96mm9f7V9R+I5QbLMvvQOcff7Q3hvFNKM
-zH0Vum4tvD1JOfyjsnhh27/jpa2ZBo4j799XL9B2a+dIfCeNoHVIp0JZbl+2u39sHWzTwbkV
-2T3q404m+qO10W1dniMxyP37tmHNz8F0D4S7vbwPGhScd/PWMiVNPB8EWznmr0SU+Tn3htIS
-8ikk6FpZwOFHcAiZrstJb6kJJHIQvPVOeObQ9j2u/TlIRUS9/rJ0+RMz/87/5wTyZRMZxbRA
-EcRa2tMGSKXR7lGXl1e0hqUnwScBawMxTKOaZauB5yVmsGZErUV8dUWqJxo82gPpT/eY8TF/
-IBsahpQsmJRSBC74UYeeIkohqFiEpTsrSVc0xMMpOAWpdaoWVGISAwWCK0wvu8xZUlhTss5j
-v6YvL0ruZ/jRPc/1a2cRn4kggFjhET6LQBaxChBIh3fCoKQeghEb3hfXIzWeCYK5/QSlNkQk
-NymQ5TnegzLOuk2BagFMXmAG8AEMCgJ97xm0LlSOTOPj7lvYlHeqjM0vRXUJd+uRmra78Es1
-qWyvceI4J3fjAmYQfrmqe4VGGPKQqtPFGRI0yX4oXEoDPHsYFO/fj5xH9oPQxhEAdD8QErCJ
-l6qgHRdzPSQMN86o+bKfMvimTSdapnlOMxuZihf+SmGK0M9zZiu9YNGc2olIgystjJeT+B4b
-qZaOwUMipV9K8dmS1aNJEsNtIqQ2qkKDI6CWnrp+lJaoVfJ8JfGoOgHdJ3gSCO1gz3tcx5y+
-zQH196sdcOPX/W57gis8oc44RyatFUaHFIHejI2aZc1Au1ESL09DOopOpzVozysmycytoYD8
-U7cHaIBZDEvZY51ZwWwxOB1W6+3u2dzJsOElvWcZiwAUtcOKUPW+6VBoAUGtS6QQoU20z0As
-RbdzgBRpZAnk0ZPNfJaXjs9oZiwRBtytnD5m+G4vZ+QoE6PRqQayqcJDm/tIlgPT4qGBiG5z
-F+x4mnfEhWreqePdeUYgO0dv6svQ9ccXFlzM3NkyHRHYJjy12R0QZfzHM8GRm7ZArz3fTatM
-UXfwonN/GsomdRjsgIJzoBdEJqQOYp+GYq8smK5HFNJWd82CioBmqsVrQMbjjquoDKH/yz7R
-X/z+ctq+vWz+2RwoOTyuljXzpje3I8qOtMEWw7GsxkSoIUMBDG/f5Aqm2iDJ52kmu0uH8sUb
-f+HRa9RXRGGsCTnKbspdEW/couCokMSi5ZNvrppMLOKiblERy1m7mraTYQaSEjZ6gfHCC7IC
-wMFdX9bSg2A60qJCNaB6yUoyNxLgL2uZjzYAHiUDZsyNtNI4svDdKg9L6n0GSMZ6geNzBY7/
-pEDDbJ1D76okLLlOhBJRvzme8uKNv+1RVos6drToHrkfwsgDJihkwawB8hApqljWYHhwrjAJ
-KClDKlPMCVkdPVgywZkB+9a2uO+5XCK5jL9ZilQIbGPHP8bo0GjnLs38UjRE+X1fpSVTQWRf
-EWG5lCAqTTCotLCIpNg4kCxYnugl2nowDYqR0lSnzNvGdwW0sA+GsiPjC4RzkKllpjpSHv2G
-wWJ+EKtZb4hmPCmAcIv31WA+fXl+gCFywoCqNQmjprvyITDiX9JPJmgvTQZQVSev25p4n9TZ
-kIA1bi2p/iTcFhhGfo0UcKOl6wMRPn/I1ISCChhO+qn2osiHwrKuPfGkbWH+HMfVKXRzmfl1
-g9LWOY+0J4B8YYp3P5lWn2MBLEFekafpPojLek6ZSQmMdKvgBbilNDGsKtOgGCvsTMAUUAD9
-VTaDCwDlCVU8uFpWCyZ1xCwdgWmG4K7WP5Xw8IXguK8agHMTbRIFAkPApdOc0cqClsqudmgp
-UucbnOh1FBaWYx2pcDXSpgtNR0SnvM95Gn/x5h4/zvvTvF1FRXp7fX2hjOi3NAp9SZH/CEQy
-vvKClvm0NdK1CAVeWnwJWPnFX+L/4eJMtgNwShviAr5TIHOdBH83afS4kzomx/w6vryh8GGK
-CUkL6NVf2+N+Mrm6/Tz8iyKsymAiMwu9UgEhin0//ZhIJudJSXCsVtY6NyLiYnzcvD/tBz+o
-kSKCa3LQnX4NUtHz2HJN4ljUr8ibkQN5ttE4Bcaf5hrKnYWRl/sSm8Pki/JAGRq3Ms4CShAS
-//TnWXvpN4dAEsLDQlgGoVW/H1PFJrIDJvzoMi4SCwDR7QqqYQXJzVZwmuuyheiG1gUrRBPS
-W0YjUcwtNRz1XKmR3KgD0GO4R62lYDKhuEYyshZ8acWM7X25/pPxuqaejDWSW2sdt5bgOSqR
-JUarVhKldFdJ5EBIahNVtwfEAW/F1VhT5uvKt8PRlX3aAGmbN1a4Yai2p61zSINHtjZSCmsZ
-b8xxi7At1hZ/TTfkhgbfWnojGZMq8LGF/kqlv0vDSZ3rXeBQOn8QomPm1nD0MTo+d0vh+lFJ
-6l17AhDEqzzVR57j8hRuLx/V8JCHUXS2jinzI9lqtIODFHendxsRITSbJZSrdEeRVGFJtZkP
-CZ0JpiUpq/wu5P7CEoIfv71dYRK6IjinCqgTfIqMwkeR86c18JRND+rFvXyaKKoM8fC+Wb8f
-tqffptnpnS+7l+EvuLHcVz5aWTVX8P5o9fMCpDSYPSQEMXpKi51lXgGVx0ujtAjigtAQKJXX
-3gwTvuS8qxqKy/eh26F6pVFzWUY70oI/o/DgqbTitqElD2duy8RTuSfQuIqblWYPNQ8nzRSx
-wCA6gwKJK4ocpiooTCrkbEVGpxOC+xpefoTGWdaTw2C4vAgM66rnMCfRUE85+/rXl+P37e7L
-+3FzeN0/bT6LFOGdiNBKfP3IMmkrRUX89S80tHna/2f36ffqdfXpZb96etvuPh1XPzbQ8O3T
-J/QffMYl9+n724+/xCq82xx2mxeedGizQ8W3sRqnLghiUTUNMQJtXoGU5rPOpCjevO4Pvwfb
-3fa0Xb1s/9tm0ZYuiWGJvYZbbZImlPhHli88VaXJoamcB7jK03Z0dnpcPP/HN00sXcqAF/vG
-r9QY27ydIPnq3VKgXl0l6DW29Ai2aPv8dEYaOh/ptDxpLvQJ8l0Vd3naGYQdfr+d9oP1/rDp
-k9L3My+IUWPA5LBFCnhkwn05/YAENEmLOzfMZvL+0BDmJzOM8EABTdJcViL0MJKwE86Nhltb
-wmyNv8syk/pO1ry3JaA5rUnaGoNb4IpwpKIwBSiPr2zofG0f+MsyZ1YVcUM8DYajiZItokEk
-VUQDqTZm/N9zjeL/UKd9O15VOfMTlyhb91VWscK4q1302fv3l+3686/N78Gar/9nTBLy21j2
-ecGMvnnm2vNdl4CRhLlHFAncfO6Prq64H6d4Gn4//dzsTtv16rR5Gvg73krY2YP/bE8/B+x4
-3K+3HOWtTiuZ17YlupQtSDuXcj6D9oMZSBVsdJGl0QP6PBK7dxoWQ9lrs92n/n04J+bDh/KA
-9ykG4cKkjxuD4vl2NAbcdcyRdAPHhJXm3nBLg8lBIxyiaVG+sI9OylMtmivXocTaBrskqgbZ
-aJEzc8cns26M9aFkGE+prGKifgx8YA7lbHX8aRtJEG+NCmYxM8d3SQ36XHze5C5+3hxPZg25
-ezkipgvBZiVLkms7EbvzR+b8Crg5qFB4ObxQgj62i5osX1rOBvvzSNPyFmnuAIBhnhJjUOMQ
-Vjq3e6HYUh57Q9ItXMLLAWB68OjqmlgIgLgcUWqbdjvO2NBoOgJ52wkEVkOAr4bEWT1jlyZQ
-Tn/XwlAp76RTYjzKaT68pZ0eG4pFdqWmlhP8bfv2UzGU7PhSQdQC0LqkA8C2FEnlWLLBthS5
-SwcX6tZourC4abSrlcU+3IcJhs+EI00sC4oSzmQNCDXnSclD2sAC/i8xJncz9sjOHK0Fiwom
-B/XUjgaiyML3zxXo5xkmTzRXzJhaGD5lE9EiF2mg3NNVeB/Fqc1H83bYHI/iHqIPWRApOcba
-M+ExNWATNQB+R3mGcQByRrGBx6I0443lq93T/nWQvL9+3xwG081uc2gvT/piLcLazXLZgLXt
-T+5Mua+euTgQQ3J8gRH8Um8ox7mkIYREYRT5LcQUFT7aYsq3bkk458/92q3jZfv9sIKbz2H/
-ftruiFMsCp1mh5vw5oyQPJGNmeqpzswYEIklbvo0GyQ0qhPfzESJJBmJ9izdbI8wEEYxc9bw
-HMm5Dlglu753kvhHtdByWMwWBF+a17MwSOqbWzmMGYVtrmjGMgQaNDV1GTsjySJVyaKwVKMr
-mFhKXS5RCTPrkJBmeqwQ8qk6mrRdOH7jMzwMSTvXXBNVsMBfur55mUKk64pXbqLyOEqnoVtP
-l5FlCCQKq3UHKx5izA4LZKjTKx8yRcMoobPKiRqqonKQ0DyqN4cTeofABUWkADtun3er0/th
-M1j/3Kx/bXfPSj4Z/nwmaydzzbZBJ4U9jSkni5Imbt+D/6AZbf+dMGH5g7BBCFomFVm5U85C
-77rOFFe/FlY7cD8FtptTDpNoksNyoE2m8nZHm3fF3sEJQYJCx29JrdjajoNwlbiov8zTuNWR
-ESSRn2hYN809mTlAb2Mf7uqxoyQhFFpeFpnFcu921Z4OBHJYnMD85cXpDq9VClNmd+uwrGpF
-NtCuDfBTVqpLK5tjYBH6zgOdH0chsclwnITlCxAGyD2LeCdUW6g+ILqagNiDpTcjYJzmRcmV
-nve7m5G0khIvjaXuE5WAaNKnIHyVoWiVq8MfkX3D+csln98KtJWH+gY/pkRyQ4RKJUtwkHdI
-+jFJj3IQQc7BFP3yEcHy6AhIvSRTEDXIJsEe8VnIrukF0eBZTh03PbKcwXYhykXHe0pB0KAd
-95vepzZIcQPsO187j6GsEpQwKKTS8LG5W4n3EceVRGj4wa3uS7SfZbE06Nykd84iYVvVgVlR
-pG4I3GHuw1DkTHld4Za2sguCAPFErQrHQLgXS5JUApeIuuDRUGpgWtNypuEQAUXUIjlw35wc
-OtCUVqOLTswKyacdoR5m6s3RuWDGhdMeWyzCtIyUmcQPGLquWM7IYhqJMZWGOkod9RfxDtjN
-Bw9ReS17q0ePIKBIJWA4EBDBJNYbZ6ESkBJ+BJ5UeBp63LYdOL40HQW6v6QRMVYZuoAoqvwO
-BZjcx3HGZcVK6Gs4TQi6SsThrIOoKmZ6tj985fH8LJWHGriosgLwHTCZqsy9ObONI1d9oGpl
-Bw59O2x3p188cNjT6+ZIPFuJ5L3ch12e6AbsMvQao42B0BUFU0rzRJbdw8CNleK+QmO1cTdr
-MD5oEWGU0FG0mY81k0YF3Cai7oSf2ElR9vLzHKgkjKCG/5p3KnlEraPU3ZS3L5vPp+1rIxUd
-OelawA/SmPb7RCRlpI23m+SOcYUKjsb8u0EFwGR8YXMMgvJEXg0Z8BZ0V5KZUO4zj5cFKIl7
-ABSkFagelpq8UUSrCt/lr/FxWMSsdCVOomN4Q9BIWnFIkhNhLvDlD59mMRYWKWD+6eCJACV4
-vd+u28Xsbb6/Pz/ja164O54O76+b3Un1FWEotIPEq0ZfUhsqJ0RnnC1Dz+6mnsQxml9dufjb
-+trDkXfK557TvVqKyf168c9QxsKfZZhUmFagZAUqAGYgZV6YfMMpWGPDDRfZWpk9jpNbKYjL
-nFG5kgXSwXgGhfkR2uVZPzpTvWB4sXJM4Dg1jZP8VP5oKtWZQstE31iu2NSv6jN6V5jExpCV
-+MvSTwrFqLvJjAvY9ljS1nGH6nO08omkDTSxlnSRWAy5OTpLwyJNbLezvtLa9iTfpGlNPVYy
-48VOoxIGyJYU7VHltGS0TRKn4EbSNouSZmLg2GusGdQJ+wCOxyU/ZEVC8+H1xcWFhVIX9BRk
-ZxEQBNaq0AK9LlxmzL0wqqjwrJE4HfBdr0H5iaez4V5sEmmCoRfTku9rrfB5bEL4u5B65Heo
-3CGA2RSuF9OCxGi16g0L87JikbmqG8SZlSNCDHDLi3MLVbB2FC0/WCN8LNFoP4jShdkgBW0r
-SXBmVsiTqCFwcFX50nX5gAisqdwT2EWao/KgTtKeuXlec43q2T6WQXF8XjbvwtehYZLScyNt
-4c1AVG05FycapPu346dBtF//en8T5+BstXuWpTFonYuWMGmaKboPCYxufZWk5ETTlSqDSktg
-BfJNpkiD0kT2bj5pWvJbjUzIa6J8jKzETXOkjY1V1bMKhrtUbxvNNu5QXOpMq/LrcHRhVtST
-8XqkG5qNRB+ZxT1IMCDHeOlUO65EB1S/ynMTJCwRQX55euc5ccwDSHAUPZc5BzZKfRnWe6a0
-1klE2foewtG68/3sg7MF7qNxZoZswk5Jx/C/jm/bHVoZQH9f30+bfzbwx+a0/vvvv//d94q7
-WfFyeeg9I01AlmM8z8bVSgfnbCEKSGDItRCFHI6jYJXb8E5clf7SNxijFK9LZWk0+WIhMHDc
-pQtuQqgR5IvCj43PeAs1XoMwuLmZ7K1BnJmWNvlC5J8la4aSX7K7eKiUkhRbBxu6rHJfOzz7
-/lKXx/9jFXQ7BqME4L1bO6Y4Q2wz03f94HcGGLe6SvDpE9a/0NWd6fSdEGOMJSv25C8hQT6t
-TqsBio5rVE8rIZL4wIWqCrTZDFbXrGYpUUoMgRI2u1pcUSFM1Vw0g5tnXnFnQdp56Fzj9Xa4
-OYwUXBHY/wq7st5GYSD8nl9hKX9gW62q3cfEgRYlHAXT4wlFrZuNtoIqoN2/vx6PgfFB9iVS
-mPHJeDwH/nzwj7uVvA5avLjGOElqOvIwB0t5rVF7lq1J4KClA7MCLGAKaJ9y0ty3N5TuCQM8
-jB4DJ2ZnJDZrdO68KA2OjmYZcDFtz16vCOUBQD4nPEiI4Wb8VeQhfynLC+x+6dgecZ2hV3yd
-irfCBXnGgEU8To9VAa6uVCMAKJ8AEhAOC5z50nMOnMq9yITr0nJTEGshAqG7A6hWjdM2tspt
-NapDTts6jukQNGKX5rdUPHi0MNuIKuUNnFSlleizYqTxLbNLQTAvOCyvvTFC6DZkGP2tKfaE
-EewGkNuxTOhz9aWX/Z/3vPSKp2Ia39QBYEL3A6sKfTZdPipbK57bIsE5PXmBonPd2vJYrPvh
-WS0Gf5AoFUbeKk+Oqky5AQ+5L2AjYfIX7JeN1W7VPqAkBWfCMQcsWrT0CfxI3mRKOW8gEYrl
-Il9wAhTThjvo7WGvU8BJ7q6RvYb0xAVgx1AoIWQsF/FcypEQ9/lSG1CH6QC4TWWyC0LnXNUe
-41zYkeXXTDx43YAT0dO9UrQf2AAqgSRzt2nKpJfwnNm1tgGiDa6lfsfGNgedzLAh5Ufp9JIH
-I0Fs1AZWNG4ydFZgNk9ojyP9XKqOaK5dBCfUF+oi8wzKy8FcpbJFyfMpG/pClvMtcEe4/XUf
-PqLvLYgaTrkw2G+B2VCyzmOFtQyyBew3h0GPll7WbZ6XkVgiGchpr61dCKnDEBHulR8SCFD6
-ZfHfAuCA4ZmQ6NUPfEAQao1EYTRcWFLhHhfZN8bqo1yGx7Pqvrq/8vL1FrTsCj6dUHhWS98+
-1A2LDHcO5XAoZ+buOy0XpXC5IMa2bIWiz+MV4A7TxFJYpwBQshJ9f6mlVdJgqipAhPZhWUCE
-QCcaXXf4Jc1tLBXAZb4Wb0UGNRWV8tC2hxBCBq2jKdWrs84houtqqftdYmwWu+PRpjy8uh12
-CBA049bhPmAwDxtlDhe1wFDn928/70I8STax3Nz+oByF2NVpYddsbOAXK1flyQ1N/wnZD+DX
-QeSCA5rs8STJgUkAOrICXhr5SDcTPFU4IyPN6xOfRS9GQwRo2lZ17/EY3alGC7TZSpLgRUST
-0eSw0p4bWIcrtUyLdM/zJy8gWClbIH8a9Z+VFwB+du5Z2w2sl8NqzXiexcl9U9aZSNKoEVEl
-kuy+SaOsZueetd3Aejms1oznWZzcN2mUiqgS7NyzthtYL4fVmsn2nXUfbC8vrfxkQvbDuT2x
-Y/vOePdHXo4nuVoz2b6z7oPt5aWVn+zX8e33uT2t/gEaXCwji38BAA==
+ .irq_banks = ARAY_SIZE(h616_irq_bank_map) is better no ?
 
---YiEDa0DAkWCtVeE4--
+> +       .irq_bank_map = h616_irq_bank_map,
+> +       .irq_read_needs_mux = true,
+> +       .io_bias_cfg_variant = BIAS_VOLTAGE_PIO_POW_MODE_SEL,
+> +};
+> +
+> +static int h616_pinctrl_probe(struct platform_device *pdev)
+> +{
+> +       return sunxi_pinctrl_init(pdev,
+> +                                 &h616_pinctrl_data);
+> +}
+> +
+> +static const struct of_device_id h616_pinctrl_match[] = {
+> +       { .compatible = "allwinner,sun50i-h616-pinctrl", },
+
+This is a new compatible and should be documented.
+
+Regards,
+Clement
+
+> +       {}
+> +};
+> +
+> +static struct platform_driver h616_pinctrl_driver = {
+> +       .probe  = h616_pinctrl_probe,
+> +       .driver = {
+> +               .name           = "sun50i-h616-pinctrl",
+> +               .of_match_table = h616_pinctrl_match,
+> +       },
+> +};
+> +builtin_platform_driver(h616_pinctrl_driver);
+> --
+> 2.17.5
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20201202135409.13683-3-andre.przywara%40arm.com.
