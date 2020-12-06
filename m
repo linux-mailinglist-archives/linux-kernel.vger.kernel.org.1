@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EEC2D0765
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C7F2D076C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgLFVdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:33:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
+        id S1727819AbgLFVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLFVdv (ORCPT
+        with ESMTP id S1725977AbgLFVkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:33:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E43C0613D0;
-        Sun,  6 Dec 2020 13:33:11 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607290389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i0kvt6ku7dAshK929r0L7tdGjX3+YC59SkyEOBkJSfw=;
-        b=ViQOkJ7y6DMyLlYw2pFNCVTsHYT9GQX+KFN7FN+6iKVQCrO3nwmjriqX669EFSMG5yd329
-        v3a0aGmc7aViLV60ceiXGva2d7J/MXBparmVZo+0UOOtHkGm6MHksfFAuZ7uvo/tq7WXwd
-        l+banRKjlAmprFfZDb8wu5DFOhVf/7wrK/7xjdmys22NF43KBmReMl0yw1qDBotj4lDcB6
-        syzd5dIGhzb1SQpegOTY4TBmxTLuAq/ocxhhaPDBae/XoqbSuSViXRmKYotaqdYZFrPpBR
-        zPmdc3AOy62qlpBZtmGzMga5lt2JAk15B4I+2Yo1WCxGnYphkC/oRDbHURsFNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607290389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i0kvt6ku7dAshK929r0L7tdGjX3+YC59SkyEOBkJSfw=;
-        b=qW6VGJay7Y1fRfpZcbDGnE0csxZUMMAVFl/445dozitpWgLzD9ZrsjtZhGTYRnXTNR7Y5U
-        O+a1wpKLG8xbaeAg==
-To:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v3 2/4] drm/i915/pmu: Use kstat_irqs to get interrupt count
-In-Reply-To: <875z5e99ez.fsf@nanos.tec.linutronix.de>
-References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-3-jsnitsel@redhat.com> <875z5e99ez.fsf@nanos.tec.linutronix.de>
-Date:   Sun, 06 Dec 2020 22:33:09 +0100
-Message-ID: <87o8j67h7u.fsf@nanos.tec.linutronix.de>
+        Sun, 6 Dec 2020 16:40:03 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D652C0613D0;
+        Sun,  6 Dec 2020 13:39:23 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cq0Fj12T7z9s0b;
+        Mon,  7 Dec 2020 08:39:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607290761;
+        bh=Rs0BgyK6iRiZjCnwfVYB84MTWnPpL5Ji5eHc2PDiwPc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cC1UEFIxUiddNISxIePHxsHDG+dGibvSyddR5FnTt3kDaax6OZj7KvVFwTlSMA16i
+         E12kPlZLb7yz9czL15i91iHakrI7NRKCMA45UQcHa+PZr7v75eqdLXNHtTgwPz4yDZ
+         nvLfQZ7YF7pJ4RvaSSBdoGzAUSeuXoaSm+fvWN9yRRqDt+oI6ZHU7mrS0b6MnfsKLk
+         H79i6jTD8/FVof3dAReVZn8jwYDtXALby2xMEqWZiOuBT2KVj/pMXAHDMX5pNxtGgK
+         EsoJNaalsyDBIbsQjmSPX1lvYvXKIEXh573GS5ShzHl23LXSF8j8SEToXg3VwYsRGY
+         +nXIt02Ia6BqA==
+Date:   Mon, 7 Dec 2020 08:39:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20201207083920.2f64f4dc@canb.auug.org.au>
+In-Reply-To: <20201204192032.GA1437@paulmck-ThinkPad-P72>
+References: <20201204192526.0b38fb02@canb.auug.org.au>
+        <20201204192032.GA1437@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/+w=skvRSarInYA9c=UDkO/4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06 2020 at 17:38, Thomas Gleixner wrote:
-> On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
->> Now that kstat_irqs is exported, get rid of count_interrupts in
->> i915_pmu.c
+--Sig_/+w=skvRSarInYA9c=UDkO/4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Paul,
+
+On Fri, 4 Dec 2020 11:20:32 -0800 "Paul E. McKenney" <paulmck@kernel.org> w=
+rote:
 >
-> May I ask why this has been merged in the first place?
->
-> Nothing in a driver has ever to fiddle with the internals of an irq
-> descriptor. We have functions for properly accessing them. Just because
-> C allows to fiddle with everything is not a justification. If the
-> required function is not exported then adding the export with a proper
-> explanation is not asked too much.
->
-> Also this lacks protection or at least a comment why this can be called
-> safely and is not subject to a concurrent removal of the irq descriptor.
-> The same problem exists when calling kstat_irqs(). It's even documented
-> at the top of the function.
+> Does the following patch fix things?  (Sigh.  It won't apply on the
+> rcu/next that you used.  Or even on this moment's dev branch.  I will
+> fold it in with attribution and update.  But just to show you what my
+> thought is.)
 
-And as pointed out vs. that TPM thing this really could have been a
-trivial
+Sorry I didn't get the chance to test your patch, but it seems to make
+sense.  I notice that you have added this to the rcu tree for today, so
+I guess we will see :-)
 
-    i915->irqs++;
+--=20
+Cheers,
+Stephen Rothwell
 
-in the interrupt handler and a read of that instead of iterating over
-all possible cpus and summing it up. Oh well...
+--Sig_/+w=skvRSarInYA9c=UDkO/4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
 
-        tglx
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NT4gACgkQAVBC80lX
+0Gxm1Qf/a/YWDMvY0CAnpbunpBiJZdnkFToLgQxMGbcQrqzN+nIEbxjNm9W5Bqzd
+2dF4oj3GjilQkDxLphqw4bLFYzkbGb/NCJiTPoRFlDDVKZNNNunxK5EPOQO4ZpVH
+uod7wnjLm9fxUaeFZNz3n1LTBs74nzJU91vbjz8f2kFSGXe5KDjuDdBOBJAElOc8
+nqGN9Beao0N+UQvUVTp0CTNdrFNPat72S3WT8UvlT8aJXaVuiCSL0USLmsE5beqH
+jmhDGZm6PiiwqBZfztjEBeao8VMIfdC0eJ7bjRdXQVWDaDGhDXMpjHaZBn7gBbUg
+fyhbRdtiaokLZ6xP1cS5yPMsfa/sKQ==
+=u58/
+-----END PGP SIGNATURE-----
+
+--Sig_/+w=skvRSarInYA9c=UDkO/4--
