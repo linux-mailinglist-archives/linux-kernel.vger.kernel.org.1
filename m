@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E6D2D04A1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956222D048F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgLFLrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39698 "EHLO mail.kernel.org"
+        id S1728827AbgLFLqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728950AbgLFLm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:42:26 -0500
+        id S1729378AbgLFLol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:44:41 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Raju Rangoju <rajur@chelsio.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 25/39] cxgb3: fix error return code in t3_sge_alloc_qset()
-Date:   Sun,  6 Dec 2020 12:17:29 +0100
-Message-Id: <20201206111555.884463752@linuxfoundation.org>
+Subject: [PATCH 5.9 22/46] tipc: fix incompatible mtu of transmission
+Date:   Sun,  6 Dec 2020 12:17:30 +0100
+Message-Id: <20201206111557.521963143@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-References: <20201206111554.677764505@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,33 +32,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit ff9924897f8bfed82e61894b373ab9d2dfea5b10 ]
+[ Upstream commit 0643334902fcdc770e2d9555811200213339a3f6 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+In commit 682cd3cf946b6
+("tipc: confgiure and apply UDP bearer MTU on running links"), we
+introduced a function to change UDP bearer MTU and applied this new value
+across existing per-link. However, we did not apply this new MTU value at
+node level. This lead to packet dropped at link level if its size is
+greater than new MTU value.
 
-Fixes: b1fb1f280d09 ("cxgb3 - Fix dma mapping error path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Acked-by: Raju Rangoju <rajur@chelsio.com>
-Link: https://lore.kernel.org/r/1606902965-1646-1-git-send-email-zhangchangzhong@huawei.com
+To fix this issue, we also apply this new MTU value for node level.
+
+Fixes: 682cd3cf946b6 ("tipc: confgiure and apply UDP bearer MTU on running links")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Link: https://lore.kernel.org/r/20201130025544.3602-1-hoang.h.le@dektech.com.au
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb3/sge.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/tipc/node.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
-@@ -3176,6 +3176,7 @@ int t3_sge_alloc_qset(struct adapter *ad
- 			  GFP_KERNEL | __GFP_COMP);
- 	if (!avail) {
- 		CH_ALERT(adapter, "free list queue 0 initialization failed\n");
-+		ret = -ENOMEM;
- 		goto err;
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -2171,6 +2171,8 @@ void tipc_node_apply_property(struct net
+ 			else if (prop == TIPC_NLA_PROP_MTU)
+ 				tipc_link_set_mtu(e->link, b->mtu);
+ 		}
++		/* Update MTU for node link entry */
++		e->mtu = tipc_link_mss(e->link);
+ 		tipc_node_write_unlock(n);
+ 		tipc_bearer_xmit(net, bearer_id, &xmitq, &e->maddr, NULL);
  	}
- 	if (avail < q->fl[0].size)
 
 
