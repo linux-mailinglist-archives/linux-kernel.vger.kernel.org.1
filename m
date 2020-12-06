@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956222D048F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023022D03D5
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgLFLqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:46:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
+        id S1728669AbgLFLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:40:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729378AbgLFLol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:41 -0500
+        id S1728588AbgLFLkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:40:36 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 22/46] tipc: fix incompatible mtu of transmission
+        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 30/32] Input: i8042 - add ByteSpeed touchpad to noloop table
 Date:   Sun,  6 Dec 2020 12:17:30 +0100
-Message-Id: <20201206111557.521963143@linuxfoundation.org>
+Message-Id: <20201206111557.214346364@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+References: <20201206111555.787862631@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,39 +31,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
 
-[ Upstream commit 0643334902fcdc770e2d9555811200213339a3f6 ]
+commit a48491c65b513e5cdc3e7a886a4db915f848a5f5 upstream.
 
-In commit 682cd3cf946b6
-("tipc: confgiure and apply UDP bearer MTU on running links"), we
-introduced a function to change UDP bearer MTU and applied this new value
-across existing per-link. However, we did not apply this new MTU value at
-node level. This lead to packet dropped at link level if its size is
-greater than new MTU value.
+It looks like the C15B laptop got another vendor: ByteSpeed LLC.
 
-To fix this issue, we also apply this new MTU value for node level.
+Avoid AUX loopback on this touchpad as well, thus input subsystem will
+be able to recognize a Synaptics touchpad in the AUX port.
 
-Fixes: 682cd3cf946b6 ("tipc: confgiure and apply UDP bearer MTU on running links")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Link: https://lore.kernel.org/r/20201130025544.3602-1-hoang.h.le@dektech.com.au
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+BugLink: https://bugs.launchpad.net/bugs/1906128
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Link: https://lore.kernel.org/r/20201201054723.5939-1-po-hsu.lin@canonical.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/tipc/node.c |    2 ++
- 1 file changed, 2 insertions(+)
 
---- a/net/tipc/node.c
-+++ b/net/tipc/node.c
-@@ -2171,6 +2171,8 @@ void tipc_node_apply_property(struct net
- 			else if (prop == TIPC_NLA_PROP_MTU)
- 				tipc_link_set_mtu(e->link, b->mtu);
- 		}
-+		/* Update MTU for node link entry */
-+		e->mtu = tipc_link_mss(e->link);
- 		tipc_node_write_unlock(n);
- 		tipc_bearer_xmit(net, bearer_id, &xmitq, &e->maddr, NULL);
- 	}
+---
+ drivers/input/serio/i8042-x86ia64io.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -223,6 +223,10 @@ static const struct dmi_system_id __init
+ 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
+ 		},
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
++		},
+ 	},
+ 	{ }
+ };
 
 
