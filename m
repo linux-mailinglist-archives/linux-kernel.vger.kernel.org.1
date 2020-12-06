@@ -2,144 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A35FD2D0565
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 15:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D322D0569
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 15:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgLFOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 09:10:16 -0500
-Received: from mail-mw2nam10on2047.outbound.protection.outlook.com ([40.107.94.47]:3041
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726757AbgLFOKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 09:10:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JSE0BveNEG5BLagGbN3cPJHMRVc9FrCVzLO3P+01HAlDzT/RD3gP1Y4lDiRlDaNwbmg6TbUe3dVKoOCoCpCNNTu4qv0M94I5ROdzXw1df/tbzWdrHBoc5N+ga7tWIxO/ycAynMMt/e/vCT88ay2hmjv36XCKYO8WnjlnOJe1qo0OXSL3rfAdULnCxJbaldyDVav6aaQUtWUQNbKX2EU9L7buNODUkE+7kvYHtAybSsDzzhL+XW7viHHOITM9IBxgYE9EP5RF4CzoytBoyhvJH+EFhGeGpqlKxqNobIdi+CHrngTh0VYma8FBk91+Cl3FTt5AyC4MMs0meG5QFmGLPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAajB+0DHLNGF6BhVNSxgOudLrYDNJIDBrPlgjc7m94=;
- b=HGnguoD2yzRG4AakHhBsroNTzVOraS6YBFsoHnESuytVIKiA5SJ7e6BuGfomilYjgz8pOcKSUNBwTR9FQ+gKrx67Mti9D2iWMID0Y9T0jct94apdTVWjlK7yvqfZ1ok95vzyXhzEJzCK3MZCf8i+TpdwxaluTXjp7vPDWOrwuTWF0KIXu4Ruq9QWGwF6vTmBeXrW4tBUaLYa7NN4z28vDUuvCW/Rgq+2lLea6mlrlgc0A7PL5unmsyZ5WnJLVjckiVvB3gYwLs55XIaCjeS6OmUKi2ix516pJjm2vsR99MbVyE5tBkRPWNLF3knXOfQn3gILGYiL+hNCzjz+A+n2Fg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728236AbgLFOLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 09:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728184AbgLFOLl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 09:11:41 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACACC0613D0;
+        Sun,  6 Dec 2020 06:11:01 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id m19so15625372ejj.11;
+        Sun, 06 Dec 2020 06:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAajB+0DHLNGF6BhVNSxgOudLrYDNJIDBrPlgjc7m94=;
- b=jnS3quq9N4he3C93r0ODNkXT7yokjreOy1HjfJJ+bBdL5txrtjyM0yZXCK5O7ZaG1wtEbQjgktaJ5gKBpyGSVxwysPUOhtViZzASxFNqPYM4NUdHqhOL/Mq9/EcxPTWQFU36ghCVJzZsFPr6SwJRMr7B3jbH2h7+wWp3CarLg4s=
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Sun, 6 Dec
- 2020 14:09:21 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Sun, 6 Dec 2020
- 14:09:21 +0000
-From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     Sean Christopherson <seanjc@google.com>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "bp@suse.de" <bp@suse.de>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "srutherford@google.com" <srutherford@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v8 13/18] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Thread-Topic: [PATCH v8 13/18] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Thread-Index: AQHWymAuO15yco/y+0qZupKZxhig2qnp6J/qgAA1anA=
-Date:   Sun, 6 Dec 2020 14:09:21 +0000
-Message-ID: <890C57FE-6B42-4AC5-BC4A-CB2FEAA0A674@amd.com>
-References: <X8pocPZzn6C5rtSC@google.com>
- <20201204170855.1131-1-Ashish.Kalra@amd.com>
- <X8pwmoQW6VSA2SZy@google.com>,<8fa0f11e-2737-5ecb-f2e6-4e5c21e68b9c@redhat.com>
-In-Reply-To: <8fa0f11e-2737-5ecb-f2e6-4e5c21e68b9c@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [136.49.12.8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e5033fda-8718-40f9-7a25-08d899f08765
-x-ms-traffictypediagnostic: SN1PR12MB2511:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN1PR12MB25113EB591AB7953E34774C38ECF0@SN1PR12MB2511.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IMjFpD8SUZ8+bejN7X0bXDEimulb5FTi2xT10+UsOvhOjIYfSzAXm5zX2VMLXHWB7g05qH077Tq01aaNw/MS26uzGcGnXsEkHbKlknwtLcXTh/vY/we2qqV0lvQ7ptowZTEUzUOTMbpubAM66ANRAKc4Lecn9H7KV2s2KPI70cVTKrMAitGanYxv/p7oxONfLggqjWMGGQbKAnM8xxotdpSA2XpE3A5YRXgp/dPTSFpJ7UzJr4WTupQ2soasoPlkqBbP9E0kPfGew7ZphvQ79AJ/pnqL6TryERGtWRYar+zoGY7sV8SrFOwExWWnOC15GlvvsXqxP3jjF9IxrounmDXHXrZQvMoyoAQbuXz0mPTvjJOzv6Gjo4mPOEya9Mr9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39850400004)(366004)(136003)(7416002)(76116006)(4326008)(66476007)(66556008)(36756003)(64756008)(66946007)(33656002)(86362001)(6916009)(54906003)(6486002)(6512007)(71200400001)(8676002)(2616005)(2906002)(8936002)(91956017)(66446008)(316002)(186003)(478600001)(26005)(53546011)(5660300002)(6506007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?M1Y0ZGxpcVZKRCt4R1ZkSHRQSElPb0xMNlJ3aCtQVkIyS1hUYkp1ZW94TUZh?=
- =?utf-8?B?c2RQZ05DY08rYnVZS3EzbHlDdHYwQjA2aitsWnJVdGx1SVl0VEk3QlNaVWVl?=
- =?utf-8?B?dllPVlVRamRyWjJxWmFRZE5YQ3lnZFo5Y3BLb2p0V0FZeFJpSEpwUGNZQnVv?=
- =?utf-8?B?K3ZFS0lqbkpxNkJ5Smp1bS9QWmFWOTQ3ZmFEQTF1Sm1YaWZGaGJ2aGVsbmNU?=
- =?utf-8?B?eVlNbWw0S3p6ZzBRWTdLWERrUHFCM2F4ejNUV1hMRTdQalBVeG81MGxBRnlj?=
- =?utf-8?B?azFvdmV4OTRINVVNd1BsQ3N1VTc3SGVxZHRpR3FpclJDeU1DcjNhbGtLemJV?=
- =?utf-8?B?ZExjWXdVekhYYVlRSEFyRjk5UXdrUjd1YUdXMmVxOVFLaVNRN0wvd1JHdHJD?=
- =?utf-8?B?K1ZDdktoQU9FeXdHbG44Nm5qQ3pRYyt1SDd1TmJFYlltQnVJTGVMOEg0OUxp?=
- =?utf-8?B?VTIrcVBIbjV0ZHVDMG11MjhRbGlNejg1N0J5VXJJM1B6YW5KMDYyVWlaZTdC?=
- =?utf-8?B?UVYrLytRbUJlZmhLenphVUYxTnlPMnhLR3hzR3VlUHFJOEp1cng3THpER21p?=
- =?utf-8?B?RHZ0Z3RxaytnSldMWHdUWEVtUi9ZVytTRkxhdmdIOXE4eXpJRWlndjNpeW9w?=
- =?utf-8?B?Q3hieG0zSnFtMFZ0MXFXOUZScEo1VStuSTF6Q1M0NzFxRmN5VkRWamR0bDZt?=
- =?utf-8?B?NlQ2UitZQXpRakJoUSszbmJtYTFSNE9jN0xUbGk1VFRmVjNrNTRvOExYL1FT?=
- =?utf-8?B?TnJQOXpMc2FabXJoSXVxQjBZTUdwM0hxeUwyTk1MeVRFUEMrQThJbGhXM0t5?=
- =?utf-8?B?Y0FkdDFzZmVCZTh6WWNtZEJiK2FBQys5ZG55bk9kR2RoSTdRL2JSYlZScEJB?=
- =?utf-8?B?N3FsK0lyT1lEU2RMaVNNNnkvUXVYaUo2VmVEaFdqWXlwd3FteWwyWlpvQTFC?=
- =?utf-8?B?WmlVN1FSRE9ZejVzcUViQUFreWhEUEZjRjRBMGZiQ1hYSkhjNVpZUHYyTEZv?=
- =?utf-8?B?VHNsUjQrZDhwVm1mbEZKSk5XS3V4Yk5TcUpFSmpLancwRmJyU3ZGSU9XemJn?=
- =?utf-8?B?aGsxcHorcmx6Nm1pVjYrb0NieGEzQ2l3cG5QSkw4YkhsYUNiRTAzMzduY2hR?=
- =?utf-8?B?MTNMTEtUUDE2WmVGd0ZlK1c5bHhoSFI4Q0N4amxGaWU4QmZmdXJFV2VUWXZ1?=
- =?utf-8?B?K3g3a2kxS3JhUVpWaFZKQnRLZVJMZmRXc0d1Z0JHTlhDcm9NQ0F6WXJLTEln?=
- =?utf-8?B?VmxmTjc0K29uYUp1RUpCZVhkM200aXZBZzZXTS95c21xZzFuQUNaSW9lWVlO?=
- =?utf-8?Q?yJszY+taFc2/Q=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/RgJjBEQoVIkABw7Jb2fNf8DyaI9+NUyzNSN0w5nfXA=;
+        b=WdjNSYh1Sto3FtBPYgC78hlN7/WclPuHaq+F5OqhcbFQrGfFrDCcWHl8mg5+K18yZz
+         LSxia3ycSp6Fg71qiBfk2SBf9IKrN265yG+GDXrkag8nzNa9AZIGIOUm1WnrGr5eYX9Y
+         8OziztcV0yVcdwKBSehcGyql82aDhRAt+mfsuf9ia7zuQNzX5YKPHkddMAqwXTQPK8Q6
+         zu82QhPozfh0cMP82GQxtusibLUtpoAgBoPuesN9H01igztfXWDDuRkEI5df0WgYYf+v
+         Ri+MIAwCeF7OCQbovDLCc9ZB+ymsHjfpwOHESeQbZa882ZJSSjbHi7Mwf3hlBXPNCvj+
+         N7Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/RgJjBEQoVIkABw7Jb2fNf8DyaI9+NUyzNSN0w5nfXA=;
+        b=gfByL1sBNb7L6NNptQ4XkG8jlQrwoh/GbParBUdSjtDDsVgI063O2XXdhkP/nHopTQ
+         e1Nc00wg22AHDlkWVuHUfukmdyYk6Mv9wOdzuOzWdcy+fS2dzDQJrOwzOiEGAuKHkDkO
+         K0ZI/1URigMDxbRgZdyv8YPEZbG+lF5dky8Sjg5Gq/UnOQ7Fc2B1TSWYUyV9V3FHLUqd
+         gqKWlF7e3UQRKKPqkWZzTr4m6ZYH5Zr5Xn5jQTqUfWBtyHzts7LuMm1lI2YrNfOiQsOa
+         rHOarMC/mV2eeBLCXPBlsFETCbSuFgUuknOAgef94+JnSnFHmYwvRTIfKIXMZQ4cofZJ
+         F27w==
+X-Gm-Message-State: AOAM531DDw/YsJMO3Yf3+zLfkrGCRWi0qqTgdMLDbl42oOjwnTeGIlKm
+        Cbl5ovbvuEzhCOSfyqLRoaI=
+X-Google-Smtp-Source: ABdhPJyU1tPKn/+7HnquyPAOFSe0G2xWs6loGWNz+59Qh9fmZk1mbrCYZGzF+/ILnh9Sw0CxJRLw0Q==
+X-Received: by 2002:a17:906:e212:: with SMTP id gf18mr15408859ejb.551.1607263859782;
+        Sun, 06 Dec 2020 06:10:59 -0800 (PST)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id q25sm3871452eds.85.2020.12.06.06.10.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 06:10:59 -0800 (PST)
+Subject: Re: [PATCH v15 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308,
+ RK2928 and others
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     Yifeng Zhao <yifeng.zhao@rock-chips.com>,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, heiko@sntech.de,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+References: <20201130100031.22083-1-yifeng.zhao@rock-chips.com>
+ <20201130100031.22083-3-yifeng.zhao@rock-chips.com>
+ <0abf1dbd-13bb-cd92-907c-849f05ea887c@gmail.com>
+Message-ID: <259fe1ce-6bcb-3a26-493d-87bbd2eaff5e@gmail.com>
+Date:   Sun, 6 Dec 2020 15:10:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5033fda-8718-40f9-7a25-08d899f08765
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2020 14:09:21.4731
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YzxkOU7MWUUFBHwluEqfhDRPUp4Mkj/EsBxhj+ls4nnLIigL3YS8+r76UW8e03oH5OUOWJUnnpTRfxEbuVA3Mw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
+In-Reply-To: <0abf1dbd-13bb-cd92-907c-849f05ea887c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IE9uIERlYyA2LCAyMDIwLCBhdCA0OjU4IEFNLCBQYW9sbyBCb256aW5pIDxwYm9uemluaUBy
-ZWRoYXQuY29tPiB3cm90ZToNCj4gDQo+IO+7v09uIDA0LzEyLzIwIDE4OjIzLCBTZWFuIENocmlz
-dG9waGVyc29uIHdyb3RlOg0KPj4+IE9uIEZyaSwgRGVjIDA0LCAyMDIwLCBBc2hpc2ggS2FscmEg
-d3JvdGU6DQo+Pj4gQW4gaW1tZWRpYXRlIHJlc3BvbnNlLCBhY3R1YWxseSB0aGUgU0VWIGxpdmUg
-bWlncmF0aW9uIHBhdGNoZXMgYXJlIHByZWZlcnJlZA0KPj4+IG92ZXIgdGhlIFBhZ2UgZW5jcnlw
-dGlvbiBiaXRtYXAgcGF0Y2hlcywgaW4gb3RoZXIgd29yZHMsIGlmIFNFViBsaXZlDQo+Pj4gbWln
-cmF0aW9uIHBhdGNoZXMgYXJlIGFwcGxpZWQgdGhlbiB3ZSBkb24ndCBuZWVkIHRoZSBQYWdlIGVu
-Y3J5cHRpb24gYml0bWFwDQo+Pj4gcGF0Y2hlcyBhbmQgd2UgcHJlZmVyIHRoZSBsaXZlIG1pZ3Jh
-dGlvbiBzZXJpZXMgdG8gYmUgYXBwbGllZC4NCj4+PiANCj4+PiBJdCBpcyBub3QgdGhhdCBwYWdl
-IGVuY3J5cHRpb24gYml0bWFwIHNlcmllcyBzdXBlcnNlZGUgdGhlIGxpdmUgbWlncmF0aW9uDQo+
-Pj4gcGF0Y2hlcywgdGhleSBhcmUganVzdCBjdXQgb2YgdGhlIGxpdmUgbWlncmF0aW9uIHBhdGNo
-ZXMuDQo+PiBJbiB0aGF0IGNhc2UsIGNhbiB5b3UgcG9zdCBhIGZyZXNoIHZlcnNpb24gb2YgdGhl
-IGxpdmUgbWlncmF0aW9uIHNlcmllcz8gIFBhb2xvDQo+PiBpcyBvYnZpb3VzbHkgd2lsbGluZyB0
-byB0YWtlIGEgYmlnIGNodW5rIG9mIHRoYXQgc2VyaWVzLCBhbmQgaXQgd2lsbCBsaWtlbHkgYmUN
-Cj4+IGVhc2llciB0byByZXZpZXcgd2l0aCB0aGUgZnVsbCBjb250ZXh0LCBlLmcuIG9uZSBvZiBt
-eSBjb21tZW50cyBvbiB0aGUgc3RhbmRhbG9uZQ0KPj4gZW5jcnlwdGlvbiBiaXRtYXAgc2VyaWVz
-IHdhcyBnb2luZyB0byBiZSB0aGF0IGl0J3MgaGFyZCB0byByZXZpZXcgd2l0aG91dCBzZWVpbmcN
-Cj4+IHRoZSBsaXZlIG1pZ3JhdGlvbiBhc3BlY3QuDQo+IA0KPiBJdCBzdGlsbCBhcHBsaWVzIHdp
-dGhvdXQgY2hhbmdlLiAgRm9yIG5vdyBJJ2xsIG9ubHkga2VlcCB0aGUgc2VyaWVzIHF1ZXVlZCBp
-biBteSAobilTVk0gYnJhbmNoLCBidXQgd2lsbCBob2xkIG9uIGFwcGx5aW5nIGl0IHRvIGt2bS5n
-aXQncyBxdWV1ZSBhbmQgbmV4dCBicmFuY2hlcy4NCj4gDQoNCk9rIHRoYW5rcyBQYW9sby4NCg==
+Hi Yifeng,
+
+Meanwhile, could you post a RFC version for Uboot based on this version
+plus comments, so people can test the whole process from programming,
+booting and kernel?
+
+On 11/30/20 1:49 PM, Johan Jonker wrote:
+> Hi,
+> 
+> Looks good to me.
+> Do the maintainers or someone else have any major issues?
+> Could Miquel indicate if a version 16 must be send for that 'ret'
+> variable alone or is it OK now?
+> 
+> 
+> On 11/30/20 11:00 AM, Yifeng Zhao wrote:
+>> This driver supports Rockchip NFC (NAND Flash Controller) found on RK3308,
+>> RK2928, RKPX30, RV1108 and other SOCs. The driver has been tested using
+>> 8-bit NAND interface on the ARM based RK3308 platform.
+
+[..]
+
+>> +/**
+>> + * struct rk_ecc_cnt_status: represent a ecc status data.
+
+represent the ECC status data.
+
+>> + * @err_flag_bit: error flag bit index at register.
+>> + * @low: ECC count low bit index at register.
+>> + * @low_mask: mask bit.
+>> + * @low_bn: ECC count low bit number.
+>> + * @high: ECC count high bit index at register.
+>> + * @high_mask: mask bit
+>> + */
