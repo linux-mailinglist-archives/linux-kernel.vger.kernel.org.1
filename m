@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717112D0609
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CC32D060B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbgLFQkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:40:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59016 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgLFQky (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:40:54 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607272812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UxNaH561nB/6wMCKxSCm/5bzqrWkopP59aHNwUEfXOY=;
-        b=irjdflqS5FY9QNzj8yWEc0CGDtedfGm3Fed9wbR37X8mUImXyniJAr95CnF8GzZQfXPL0X
-        PF8CaqXUSMNzdW0Pk5EjFxOefJpKJ3q3FteUSVIxsIh0Tc+r/DvdDXVXEekB7Piyhl2Y2/
-        Gt6wt90XA8kc70biQYfl8nJgw5azvWQAre113wb8dQ4k/leC2xHkd42Np/DB3pHQ8JwYjV
-        tKN3xbJJnA2QouLmBbFNOoNP9DVqPqs0g7GIv84jSvSfjBgHClBYSImwFnKBXNfnDoKkHT
-        3AfpN0IihmtNwDDfzVtbHgz0bMyHh9rNP9EjmiJ6abzZUKHhSANtj2DSe6AZvA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607272812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UxNaH561nB/6wMCKxSCm/5bzqrWkopP59aHNwUEfXOY=;
-        b=YoGEF3MW5EHD8I8tGxLjV2l9qtp6ZTGOjeT+9EUTRn+dmQaP6rZR+5yqYKsCV/sMsQA4cM
-        60KKUekD3ZhH0TBQ==
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com
-Subject: Re: [PATCH v3 1/4] irq: export kstat_irqs
-In-Reply-To: <20201205103954.GA17088@kernel.org>
-References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-2-jsnitsel@redhat.com> <20201205103954.GA17088@kernel.org>
-Date:   Sun, 06 Dec 2020 17:40:11 +0100
-Message-ID: <87360i99ck.fsf@nanos.tec.linutronix.de>
+        id S1727457AbgLFQmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:42:12 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:38194 "EHLO leonov.paulk.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbgLFQmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 11:42:12 -0500
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 1F990C0139;
+        Sun,  6 Dec 2020 17:41:30 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id 73CC7C1D2B; Sun,  6 Dec 2020 17:41:29 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (collins [192.168.1.129])
+        by gagarine.paulk.fr (Postfix) with ESMTP id E396AC1D27;
+        Sun,  6 Dec 2020 17:41:20 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH] dt-bindings: sram: Document Allwinner V3s bindings for system-control
+Date:   Sun,  6 Dec 2020 17:41:19 +0100
+Message-Id: <20201206164119.1040880-1-contact@paulk.fr>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05 2020 at 12:39, Jarkko Sakkinen wrote:
-> On Fri, Dec 04, 2020 at 06:43:37PM -0700, Jerry Snitselaar wrote:
->> To try and detect potential interrupt storms that
->> have been occurring with tpm_tis devices it was suggested
->> to use kstat_irqs() to get the number of interrupts.
->> Since tpm_tis can be built as a module it needs kstat_irqs
->> exported.
->
-> I think you should also have a paragraph explicitly stating that
-> i915_pmu.c contains a duplicate of kstat_irqs() because it is not
-> exported as of today. It adds a lot more weight to this given that
-> there is already existing mainline usage (kind of).
+Add documentation about the Allwinner system-control bindings used
+for the V3s SoC. The bindings are already in use in the device-tree
+files and produced warnings in dt bindings checks.
 
-It's abusage and just the fact that it exists is not an argument by
-itself.
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+---
+ .../bindings/sram/allwinner,sun4i-a10-system-control.yaml      | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
+diff --git a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
+index 6ebcbc153691..5c978cb96632 100644
+--- a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
++++ b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
+@@ -36,6 +36,9 @@ properties:
+       - items:
+           - const: allwinner,sun8i-r40-system-control
+           - const: allwinner,sun4i-a10-system-control
++      - items:
++          - const: allwinner,sun8i-v3s-system-control
++          - const: allwinner,sun8i-h3-system-control
+       - const: allwinner,sun50i-a64-sram-controller
+         deprecated: true
+       - const: allwinner,sun50i-a64-system-control
+-- 
+2.29.2
 
-        tglx
