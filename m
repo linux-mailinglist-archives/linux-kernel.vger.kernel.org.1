@@ -2,196 +2,569 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B509B2D0639
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431B32D0648
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgLFRPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 12:15:07 -0500
-Received: from mail-dm6nam10on2119.outbound.protection.outlook.com ([40.107.93.119]:8192
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726043AbgLFRPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 12:15:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nAaKg8zFaAuq50/RBN+P2MXVsVrGrZlWHfG8x1Kq8CXA0bMiW3qH1/SC1l1JAi+GdBzT0vBdOCY3ztucZHhpTtF/dpech7lNnbHUS/VqLr11PiXhcDhHBxAfoXxkk11zgh/lnHBg+gnZogVFn+bFgRBx71STxS61VIrQvhiSHYg4x+9tMbCgIUcd1sDLTQEjh7OCgljBdm/T7Kl/k5nHvYXnML7NYsfiareL6lPqx+4+smDCPkP8m6Nx85hIT3eNAU3TndP6xCLiqWyAwYPBFLBB/IkaJNtKlB+4ZSI3WnYK5+wyq3Bq6TTP0zVhSVfcgnk7KTJXxRp+FiQunc6w2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H9r9BnEKga8I/xIR8Tg93xX39b8ryfvESxF2BwO9xoM=;
- b=el5ezAjs+oNhteVTxczQpSI3oFMELVBR7BcDK4Y0ots0cY8qwMeN6kMQsdjND+S9E8Xaqcw7Dncs/4d+0mC+UF5nffMLaXDT42Vwq95g+tYLCK2CQGX9hH/vujqgshPdYngrwV9aR/yDmFS87BtpbDDRcncSRI3oXUqK13bojkZZK8LOmUBiNl5Vx+ieu8W1TMGjmHQCkbfC4TARIkn8zwCWLEevZLq6E9IQq1Od28w2CtEe9/j5nUcunfqiW7Nhsr0YLgCZOmuArW1Om77P+UPgp+zypj+iEYBjp81+2xjFpWVb2uCCoWGHbAAwF3BVum0Tam5gmZpvZw5zVe8dKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H9r9BnEKga8I/xIR8Tg93xX39b8ryfvESxF2BwO9xoM=;
- b=IEinIRZY8yteZKlWJw11hDxNxnllcQgQNBGPdH02IHbxRjxjwrfMTjnFvD/779Zb1L9eqpUjU9z3dIMTCJSGnZJdz7vdkJYd6rfEaZT097rOfA9KW9TAiDStXuwWuppXWhPJUsCTPS01jRS1sU6aBCKzy0fX5Fnyy2i6BOtFY2c=
-Received: from (2603:10b6:302:a::16) by
- MW2PR2101MB0889.namprd21.prod.outlook.com (2603:10b6:302:10::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2; Sun, 6 Dec
- 2020 17:14:19 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3654.005; Sun, 6 Dec 2020
- 17:14:19 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>
-Subject: RE: [PATCH 3/6] Drivers: hv: vmbus: Avoid double fetch of
- payload_size in vmbus_on_msg_dpc()
-Thread-Topic: [PATCH 3/6] Drivers: hv: vmbus: Avoid double fetch of
- payload_size in vmbus_on_msg_dpc()
-Thread-Index: AQHWvbhihoUWRx7T3UynAPxee94daanqak7w
-Date:   Sun, 6 Dec 2020 17:14:18 +0000
-Message-ID: <MW2PR2101MB1052C82219AB1CEDA949B4EAD7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20201118143649.108465-1-parri.andrea@gmail.com>
- <20201118143649.108465-4-parri.andrea@gmail.com>
-In-Reply-To: <20201118143649.108465-4-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-06T17:14:16Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ad9e405e-a518-47c9-9967-fa3e3a2e1a25;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d209bb85-fe4d-43c6-5ec6-08d89a0a5e0a
-x-ms-traffictypediagnostic: MW2PR2101MB0889:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB0889BC1D353E59BFEFB84883D7CF1@MW2PR2101MB0889.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:510;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VlqRTTj8S+Vis9ziq91n7CuiFi1oKi0EtKq4HxzD/3ZdP7bBew4gesSpyeLr7BM6VatV9MvrMg6saA2uTXLMUEyMuVEqzKTAxqbneyNpq6mTVqiozpmCnQTkGxC8dK+F8mU1R+x3Vyyx0e84xCcHmKU8oFR0UYTs2+aeV5vlNkH4S2ekl4YVL5qXmcczBnOMHQBx9HSMJykJRuDtoh6bExsl8+ok4BQQ/Po5kx+Phuth10OnrJH3rz16PMBzyKfDpLEOCJCC0ob4s7+T567vkcn0xWkddCdCSnECreczm3oVynu844837NGziBOoXoHhdXy9IQUwr9swDfdMY1BDOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(366004)(86362001)(26005)(71200400001)(10290500003)(9686003)(66446008)(66556008)(33656002)(66476007)(64756008)(66946007)(186003)(7696005)(54906003)(8936002)(316002)(8676002)(83380400001)(110136005)(6506007)(4326008)(2906002)(8990500004)(82950400001)(55016002)(52536014)(76116006)(5660300002)(107886003)(478600001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FPo/NPlp1AwGJvNeUaknyYSenkEt/3do2Df9FTkcZ1bq/xHzJ6tjLhnP5SYU?=
- =?us-ascii?Q?xUhA+4Y2Lpj7yUY5rfXZCfvGMUgBAsW7wiOkz7fO01TXBn1tFP3Qo7vDB5Fy?=
- =?us-ascii?Q?NCLRP3y38SfGWJFHBzqIZ9vQVjqtQtPjwVCNi2sYCL0sF17Jvqux8eIMmctl?=
- =?us-ascii?Q?t+5SwutZvwHZ1rfaGIP1jqrJTa/nONvovwAcPLs8uUBXjmt15LlOUFii6mDw?=
- =?us-ascii?Q?CZt8ep7rNsyxhey5XppZ2CRiZkH6yseUBGwKIQxHnv+cq1QszSsa53rXzTjn?=
- =?us-ascii?Q?PPbhDkseThYXY2+Wl/aGYUpyK1d7rCWoGsHgXa/KFVpR1qNYphCgRBDlejhu?=
- =?us-ascii?Q?srj22g8SGnrM1zwosAa469BSQkpOp682ibbh69bzu7vnPk1cHjD78JNaXwqz?=
- =?us-ascii?Q?xQP3GRiOAiD0Q4R1x6D9ySLGcyGg+AJifyo4wx5AcqRJ2Mj5gcPYBhujwYJZ?=
- =?us-ascii?Q?9Ix/zCKQVxeW52sFyH/+BO4b8Pt7HzVITFXaYRELKc9xEYlTeS3AecH+1+Qo?=
- =?us-ascii?Q?VqRusv/PcrvD9/oAMyX2fz4Y1vEK3VFXeSX8Lb6f7hdlIkS42CKzd3iMtY+L?=
- =?us-ascii?Q?TrO4VbgGK+BzC1ARRPZau3Hvb2Pg4GogvsxYx395lj0RnSR7q+voJow4403q?=
- =?us-ascii?Q?goVeDY5JOj2MiVsXt2YwkQIudTUucFHlmOk/umVJzpnTjk0uBWMuNDRW1bEf?=
- =?us-ascii?Q?X9gxonp6lhXB3A0ZE18U+t9XrVBw7toOTm83nbHTA3wabspT9k4NsVxQCabm?=
- =?us-ascii?Q?FJPi6kcZ5HefGolMaW2Rx+P16REGSh0mvU5Q9hG76p07QpobrJJE4eJjLcr5?=
- =?us-ascii?Q?fkRULBj+Ho3LoVcMSImMxi1GihQJLUO3VFL0B2C/2ollWk3mR4g5ErjZ2eXN?=
- =?us-ascii?Q?LZIA5eJnm1O0bxSif/zB5i3nNdQ4HJUfHCOBvvSEVaixZdNuslmichJMFmzz?=
- =?us-ascii?Q?rTTY3w3PgDqFPUG6i347joUXiuMOep4d2I6DKIshJts=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727076AbgLFRZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 12:25:00 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:57659 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726043AbgLFRY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 12:24:59 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id A2CAB837;
+        Sun,  6 Dec 2020 12:24:12 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 06 Dec 2020 12:24:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JItcwb
+        qleisdzutjtb6IffdEYYvbyCRFRbpwZ3ZqjOk=; b=c+VWyhEmYg/NEIse3CgHCB
+        hzKRwBBZxsq8QvB9uulVUVTBEp6AzNDBvkDABqbaqSTwSlI310tiSnSYpR3tsWQy
+        l9K/Id6W7nC/VR5tjG15yotcpk3oU7avgHuoP9T9R5TreLBvmjzs1CZodPAwa79G
+        SPfjf0eIZ2UD5BFitmIl5yt9iNlvSekmwiJ6DHVMIjvIkeaz4o4nhNg+ks6aHZhT
+        6MMdq5l0kflG2xVXpotAr7dD2hVSduWy5aJnObLEDdnl5diAzZecp/krH6MF9+kq
+        JQ7pHyi3zJQaJzm32aXz7mjVs/Bp3ZxkXmfmMYcR3zIQy8POK9CD2/LH+x+POjlQ
+        ==
+X-ME-Sender: <xms:uRPNX7U6w-bHOtfmjgHQwGZT9pP7n8E-EIsggLLqGJ0icKd8d9r2KA>
+    <xme:uRPNXzm5sATZO6h6F2BbJe6BIq60U9Bagi8NhkhE1cX9IJnk4G_234PwabaWy6LkM
+    SFwMwhZCfG3GQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejvddguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofggtghogfesthekredtredtjeenucfhrhhomhepofgrrhgv
+    khcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinh
+    hvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhephefh
+    feetueelvddvtedttdevieeluedtvedtfeejieelhedutdeuheduieejgfegnecuffhomh
+    grihhnpehkvghrnhgvlhdrohhrghenucfkphepledurdeigedrudejtddrkeelnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrghrvg
+    hksehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
+X-ME-Proxy: <xmx:uRPNX3ZrlOs3WgwCcd3ozP2QYvO35hombQMDFhsnUpx3ZmcZn5yT7w>
+    <xmx:uRPNX2UxaVDfZeXEtMGqgJ-42RexzbLXGvjua9CHGBgixkAd5Pxjjw>
+    <xmx:uRPNX1mKihq3nu_4A5bJfRz3II3CLERfZ_1yebF43JFPED1pDmyMSA>
+    <xmx:vBPNX7eIkEMfUc5lvOk3n_QeNAgXlimtA_Wv4u50zDK_al08hxCUGYFfpZo>
+Received: from localhost.localdomain (ip5b40aa59.dynamic.kabel-deutschland.de [91.64.170.89])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 81FE2108005B;
+        Sun,  6 Dec 2020 12:24:07 -0500 (EST)
+From:   =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     xen-devel@lists.xenproject.org
+Cc:     =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, stable@vger.kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Simon Leiner <simon@leiner.me>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org (open list),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR XEN)
+Subject: [PATCH] Revert "xen: add helpers to allocate unpopulated memory"
+Date:   Sun,  6 Dec 2020 18:22:36 +0100
+Message-Id: <20201206172242.1249689-1-marmarek@invisiblethingslab.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d209bb85-fe4d-43c6-5ec6-08d89a0a5e0a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2020 17:14:18.9834
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uNDjodI4ZkimvA5oaI7GvDBwVXADMhAXoD5RsEHmxdKXy55Y5nbfAJHBUCCSc53SZQrp5+r4Lwco/NdAw3/+MDQ9a/heVIZzX8h0dousyTM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0889
+Content-Type: text/plain; charset=UTF-8
+Organization: Invisible Things Lab
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Wednesday, No=
-vember 18, 2020 6:37 AM
->=20
-> vmbus_on_msg_dpc() double fetches from payload_size.  The double fetch
-> can lead to a buffer overflow when (mem)copying the hv_message object.
-> Avoid the double fetch by saving the value of payload_size into a local
-> variable.
+This reverts commit 9e2369c06c8a181478039258a4598c1ddd2cadfa.
 
-Similar comment here about providing some brief context in the commit
-message on the problem that we are guarding against by removing the
-double fetch.
+On a Xen PV dom0, with NVME disk, this makes the dom0 crash when starting
+a domain. This looks like some bad interaction between xen-blkback and
+NVME driver, both using ZONE_DEVICE. Since the author is on leave now,
+revert the change until proper solution is developed.
 
-I could see combining this patch with the previous one since the
-motivation and pattern of the changes are exactly the same, just for
-two different fields.
+The specific crash message is:
 
-Michael
+    general protection fault, probably for non-canonical address 0xdead000000000100: 0000 [#1] SMP NOPTI
+    CPU: 1 PID: 134 Comm: kworker/u12:2 Not tainted 5.9.9-1.qubes.x86_64 #1
+    Hardware name: LENOVO 20M9CTO1WW/20M9CTO1WW, BIOS N2CET50W (1.33 ) 01/15/2020
+    Workqueue: dm-thin do_worker [dm_thin_pool]
+    RIP: e030:nvme_map_data+0x300/0x3a0 [nvme]
+    Code: b8 fe ff ff e9 a8 fe ff ff 4c 8b 56 68 8b 5e 70 8b 76 74 49 8b 02 48 c1 e8 33 83 e0 07 83 f8 04 0f 85 f2 fe ff ff 49 8b 42 08 <83> b8 d0 00 00 00 04 0f 85 e1 fe ff ff e9 38 fd ff ff 8b 55 70 be
+    RSP: e02b:ffffc900010e7ad8 EFLAGS: 00010246
+    RAX: dead000000000100 RBX: 0000000000001000 RCX: ffff8881a58f5000
+    RDX: 0000000000001000 RSI: 0000000000000000 RDI: ffff8881a679e000
+    RBP: ffff8881a5ef4c80 R08: ffff8881a5ef4c80 R09: 0000000000000002
+    R10: ffffea0003dfff40 R11: 0000000000000008 R12: ffff8881a679e000
+    R13: ffffc900010e7b20 R14: ffff8881a70b5980 R15: ffff8881a679e000
+    FS:  0000000000000000(0000) GS:ffff8881b5440000(0000) knlGS:0000000000000000
+    CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: 0000000001d64408 CR3: 00000001aa2c0000 CR4: 0000000000050660
+    Call Trace:
+     nvme_queue_rq+0xa7/0x1a0 [nvme]
+     __blk_mq_try_issue_directly+0x11d/0x1e0
+     ? add_wait_queue_exclusive+0x70/0x70
+     blk_mq_try_issue_directly+0x35/0xc0l[
+     blk_mq_submit_bio+0x58f/0x660
+     __submit_bio_noacct+0x300/0x330
+     process_shared_bio+0x126/0x1b0 [dm_thin_pool]
+     process_cell+0x226/0x280 [dm_thin_pool]
+     process_thin_deferred_cells+0x185/0x320 [dm_thin_pool]
+     process_deferred_bios+0xa4/0x2a0 [dm_thin_pool]UX
+     do_worker+0xcc/0x130 [dm_thin_pool]
+     process_one_work+0x1b4/0x370
+     worker_thread+0x4c/0x310
+     ? process_one_work+0x370/0x370
+     kthread+0x11b/0x140
+     ? __kthread_bind_mask+0x60/0x60<
+     ret_from_fork+0x22/0x30
+    Modules linked in: loop snd_seq_dummy snd_hrtimer nf_tables nfnetlink vfat fat snd_sof_pci snd_sof_intel_byt snd_sof_intel_ipc snd_sof_intel_hda_common snd_soc_hdac_hda snd_sof_xtensa_dsp snd_sof_intel_hda snd_sof snd_soc_skl snd_soc_sst_
+    ipc snd_soc_sst_dsp snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi snd_soc_core snd_compress ac97_bus snd_pcm_dmaengine elan_i2c snd_hda_codec_hdmi mei_hdcp iTCO_wdt intel_powerclamp intel_pmc_bxt ee1004 intel_rapl_msr iTCO_vendor
+    _support joydev pcspkr intel_wmi_thunderbolt wmi_bmof thunderbolt ucsi_acpi idma64 typec_ucsi snd_hda_codec_realtek typec snd_hda_codec_generic snd_hda_intel snd_intel_dspcfg snd_hda_codec thinkpad_acpi snd_hda_core ledtrig_audio int3403_
+    thermal snd_hwdep snd_seq snd_seq_device snd_pcm iwlwifi snd_timer processor_thermal_device mei_me cfg80211 intel_rapl_common snd e1000e mei int3400_thermal int340x_thermal_zone i2c_i801 acpi_thermal_rel soundcore intel_soc_dts_iosf i2c_s
+    mbus rfkill intel_pch_thermal xenfs
+     ip_tables dm_thin_pool dm_persistent_data dm_bio_prison dm_crypt nouveau rtsx_pci_sdmmc mmc_core mxm_wmi crct10dif_pclmul ttm crc32_pclmul crc32c_intel i915 ghash_clmulni_intel i2c_algo_bit serio_raw nvme drm_kms_helper cec xhci_pci nvme
+    _core rtsx_pci xhci_pci_renesas drm xhci_hcd wmi video pinctrl_cannonlake pinctrl_intel xen_privcmd xen_pciback xen_blkback xen_gntalloc xen_gntdev xen_evtchn uinput
+    ---[ end trace f8d47e4aa6724df4 ]---
+    RIP: e030:nvme_map_data+0x300/0x3a0 [nvme]
+    Code: b8 fe ff ff e9 a8 fe ff ff 4c 8b 56 68 8b 5e 70 8b 76 74 49 8b 02 48 c1 e8 33 83 e0 07 83 f8 04 0f 85 f2 fe ff ff 49 8b 42 08 <83> b8 d0 00 00 00 04 0f 85 e1 fe ff ff e9 38 fd ff ff 8b 55 70 be
+    RSP: e02b:ffffc900010e7ad8 EFLAGS: 00010246
+    RAX: dead000000000100 RBX: 0000000000001000 RCX: ffff8881a58f5000
+    RDX: 0000000000001000 RSI: 0000000000000000 RDI: ffff8881a679e000
+    RBP: ffff8881a5ef4c80 R08: ffff8881a5ef4c80 R09: 0000000000000002
+    R10: ffffea0003dfff40 R11: 0000000000000008 R12: ffff8881a679e000
+    R13: ffffc900010e7b20 R14: ffff8881a70b5980 R15: ffff8881a679e000
+    FS:  0000000000000000(0000) GS:ffff8881b5440000(0000) knlGS:0000000000000000
+    CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: 0000000001d64408 CR3: 00000001aa2c0000 CR4: 0000000000050660
+    Kernel panic - not syncing: Fatal exception
+    Kernel Offset: disabled
 
->=20
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
->  drivers/hv/vmbus_drv.c | 17 +++++++----------
->  1 file changed, 7 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 82b23baa446d7..0e39f1d6182e9 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -1056,6 +1056,7 @@ void vmbus_on_msg_dpc(unsigned long data)
->  	void *page_addr =3D hv_cpu->synic_message_page;
->  	struct hv_message *msg =3D (struct hv_message *)page_addr +
->  				  VMBUS_MESSAGE_SINT;
-> +	__u8 payload_size =3D msg->header.payload_size;
->  	struct vmbus_channel_message_header *hdr;
->  	enum vmbus_channel_message_type msgtype;
->  	const struct vmbus_channel_message_table_entry *entry;
-> @@ -1089,9 +1090,8 @@ void vmbus_on_msg_dpc(unsigned long data)
->  		goto msg_handled;
->  	}
->=20
-> -	if (msg->header.payload_size > HV_MESSAGE_PAYLOAD_BYTE_COUNT) {
-> -		WARN_ONCE(1, "payload size is too large (%d)\n",
-> -			  msg->header.payload_size);
-> +	if (payload_size > HV_MESSAGE_PAYLOAD_BYTE_COUNT) {
-> +		WARN_ONCE(1, "payload size is too large (%d)\n", payload_size);
->  		goto msg_handled;
->  	}
->=20
-> @@ -1100,21 +1100,18 @@ void vmbus_on_msg_dpc(unsigned long data)
->  	if (!entry->message_handler)
->  		goto msg_handled;
->=20
-> -	if (msg->header.payload_size < entry->min_payload_len) {
-> -		WARN_ONCE(1, "message too short: msgtype=3D%d len=3D%d\n",
-> -			  msgtype, msg->header.payload_size);
-> +	if (payload_size < entry->min_payload_len) {
-> +		WARN_ONCE(1, "message too short: msgtype=3D%d len=3D%d\n", msgtype,
-> payload_size);
->  		goto msg_handled;
->  	}
->=20
->  	if (entry->handler_type	=3D=3D VMHT_BLOCKING) {
-> -		ctx =3D kmalloc(sizeof(*ctx) + msg->header.payload_size,
-> -			      GFP_ATOMIC);
-> +		ctx =3D kmalloc(sizeof(*ctx) + payload_size, GFP_ATOMIC);
->  		if (ctx =3D=3D NULL)
->  			return;
->=20
->  		INIT_WORK(&ctx->work, vmbus_onmessage_work);
-> -		memcpy(&ctx->msg, msg, sizeof(msg->header) +
-> -		       msg->header.payload_size);
-> +		memcpy(&ctx->msg, msg, sizeof(msg->header) + payload_size);
->=20
->  		/*
->  		 * The host can generate a rescind message while we
-> --
-> 2.25.1
+Discussion at https://lore.kernel.org/xen-devel/20201205082839.ts3ju6yta46cgwjn@Air-de-Roger/T
+
+Cc: stable@vger.kernel.org #v5.9+
+(for 5.9 it's easier to revert the original commit directly)
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+---
+ drivers/gpu/drm/xen/xen_drm_front_gem.c |   9 +-
+ drivers/xen/Kconfig                     |  10 --
+ drivers/xen/Makefile                    |   1 -
+ drivers/xen/balloon.c                   |   4 +-
+ drivers/xen/grant-table.c               |   4 +-
+ drivers/xen/privcmd.c                   |   4 +-
+ drivers/xen/unpopulated-alloc.c         | 200 ------------------------
+ drivers/xen/xenbus/xenbus_client.c      |   6 +-
+ drivers/xen/xlate_mmu.c                 |   4 +-
+ include/xen/xen.h                       |   9 --
+ 10 files changed, 15 insertions(+), 236 deletions(-)
+ delete mode 100644 drivers/xen/unpopulated-alloc.c
+
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index 2f464ef2d53e..90945344daae 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -18,7 +18,6 @@
+ #include <drm/drm_probe_helper.h>
+ 
+ #include <xen/balloon.h>
+-#include <xen/xen.h>
+ 
+ #include "xen_drm_front.h"
+ #include "xen_drm_front_gem.h"
+@@ -100,8 +99,8 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
+ 		 * allocate ballooned pages which will be used to map
+ 		 * grant references provided by the backend
+ 		 */
+-		ret = xen_alloc_unpopulated_pages(xen_obj->num_pages,
+-					          xen_obj->pages);
++		ret = alloc_xenballooned_pages(xen_obj->num_pages,
++					       xen_obj->pages);
+ 		if (ret < 0) {
+ 			DRM_ERROR("Cannot allocate %zu ballooned pages: %d\n",
+ 				  xen_obj->num_pages, ret);
+@@ -153,8 +152,8 @@ void xen_drm_front_gem_free_object_unlocked(struct drm_gem_object *gem_obj)
+ 	} else {
+ 		if (xen_obj->pages) {
+ 			if (xen_obj->be_alloc) {
+-				xen_free_unpopulated_pages(xen_obj->num_pages,
+-							   xen_obj->pages);
++				free_xenballooned_pages(xen_obj->num_pages,
++							xen_obj->pages);
+ 				gem_free_pages_array(xen_obj);
+ 			} else {
+ 				drm_gem_put_pages(&xen_obj->base,
+diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+index 41645fe6ad48..ea6c1e7e3e42 100644
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -325,14 +325,4 @@ config XEN_HAVE_VPMU
+ config XEN_FRONT_PGDIR_SHBUF
+ 	tristate
+ 
+-config XEN_UNPOPULATED_ALLOC
+-	bool "Use unpopulated memory ranges for guest mappings"
+-	depends on X86 && ZONE_DEVICE
+-	default XEN_BACKEND || XEN_GNTDEV || XEN_DOM0
+-	help
+-	  Use unpopulated memory ranges in order to create mappings for guest
+-	  memory regions, including grant maps and foreign pages. This avoids
+-	  having to balloon out RAM regions in order to obtain physical memory
+-	  space to create such mappings.
+-
+ endmenu
+diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
+index babdca808861..c25c9a699b48 100644
+--- a/drivers/xen/Makefile
++++ b/drivers/xen/Makefile
+@@ -41,4 +41,3 @@ xen-gntdev-$(CONFIG_XEN_GNTDEV_DMABUF)	+= gntdev-dmabuf.o
+ xen-gntalloc-y				:= gntalloc.o
+ xen-privcmd-y				:= privcmd.o privcmd-buf.o
+ obj-$(CONFIG_XEN_FRONT_PGDIR_SHBUF)	+= xen-front-pgdir-shbuf.o
+-obj-$(CONFIG_XEN_UNPOPULATED_ALLOC)	+= unpopulated-alloc.o
+diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+index b57b2067ecbf..12d3a95bfdb4 100644
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -653,7 +653,7 @@ void free_xenballooned_pages(int nr_pages, struct page **pages)
+ }
+ EXPORT_SYMBOL(free_xenballooned_pages);
+ 
+-#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
++#ifdef CONFIG_XEN_PV
+ static void __init balloon_add_region(unsigned long start_pfn,
+ 				      unsigned long pages)
+ {
+@@ -707,7 +707,7 @@ static int __init balloon_init(void)
+ 	register_sysctl_table(xen_root);
+ #endif
+ 
+-#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
++#ifdef CONFIG_XEN_PV
+ 	{
+ 		int i;
+ 
+diff --git a/drivers/xen/grant-table.c b/drivers/xen/grant-table.c
+index 523dcdf39cc9..8d06bf1cc347 100644
+--- a/drivers/xen/grant-table.c
++++ b/drivers/xen/grant-table.c
+@@ -801,7 +801,7 @@ int gnttab_alloc_pages(int nr_pages, struct page **pages)
+ {
+ 	int ret;
+ 
+-	ret = xen_alloc_unpopulated_pages(nr_pages, pages);
++	ret = alloc_xenballooned_pages(nr_pages, pages);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -836,7 +836,7 @@ EXPORT_SYMBOL_GPL(gnttab_pages_clear_private);
+ void gnttab_free_pages(int nr_pages, struct page **pages)
+ {
+ 	gnttab_pages_clear_private(nr_pages, pages);
+-	xen_free_unpopulated_pages(nr_pages, pages);
++	free_xenballooned_pages(nr_pages, pages);
+ }
+ EXPORT_SYMBOL_GPL(gnttab_free_pages);
+ 
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index b0c73c58f987..63abe6c3642b 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -424,7 +424,7 @@ static int alloc_empty_pages(struct vm_area_struct *vma, int numpgs)
+ 	if (pages == NULL)
+ 		return -ENOMEM;
+ 
+-	rc = xen_alloc_unpopulated_pages(numpgs, pages);
++	rc = alloc_xenballooned_pages(numpgs, pages);
+ 	if (rc != 0) {
+ 		pr_warn("%s Could not alloc %d pfns rc:%d\n", __func__,
+ 			numpgs, rc);
+@@ -895,7 +895,7 @@ static void privcmd_close(struct vm_area_struct *vma)
+ 
+ 	rc = xen_unmap_domain_gfn_range(vma, numgfns, pages);
+ 	if (rc == 0)
+-		xen_free_unpopulated_pages(numpgs, pages);
++		free_xenballooned_pages(numpgs, pages);
+ 	else
+ 		pr_crit("unable to unmap MFN range: leaking %d pages. rc=%d\n",
+ 			numpgs, rc);
+diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+deleted file mode 100644
+index 8c512ea550bb..000000000000
+--- a/drivers/xen/unpopulated-alloc.c
++++ /dev/null
+@@ -1,200 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/errno.h>
+-#include <linux/gfp.h>
+-#include <linux/kernel.h>
+-#include <linux/mm.h>
+-#include <linux/memremap.h>
+-#include <linux/slab.h>
+-
+-#include <asm/page.h>
+-
+-#include <xen/page.h>
+-#include <xen/xen.h>
+-
+-static DEFINE_MUTEX(list_lock);
+-static LIST_HEAD(page_list);
+-static unsigned int list_count;
+-
+-static int fill_list(unsigned int nr_pages)
+-{
+-	struct dev_pagemap *pgmap;
+-	struct resource *res;
+-	void *vaddr;
+-	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+-	int ret = -ENOMEM;
+-
+-	res = kzalloc(sizeof(*res), GFP_KERNEL);
+-	if (!res)
+-		return -ENOMEM;
+-
+-	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+-	if (!pgmap)
+-		goto err_pgmap;
+-
+-	pgmap->type = MEMORY_DEVICE_GENERIC;
+-	res->name = "Xen scratch";
+-	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+-
+-	ret = allocate_resource(&iomem_resource, res,
+-				alloc_pages * PAGE_SIZE, 0, -1,
+-				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+-	if (ret < 0) {
+-		pr_err("Cannot allocate new IOMEM resource\n");
+-		goto err_resource;
+-	}
+-
+-	pgmap->range = (struct range) {
+-		.start = res->start,
+-		.end = res->end,
+-	};
+-	pgmap->nr_range = 1;
+-	pgmap->owner = res;
+-
+-#ifdef CONFIG_XEN_HAVE_PVMMU
+-        /*
+-         * memremap will build page tables for the new memory so
+-         * the p2m must contain invalid entries so the correct
+-         * non-present PTEs will be written.
+-         *
+-         * If a failure occurs, the original (identity) p2m entries
+-         * are not restored since this region is now known not to
+-         * conflict with any devices.
+-         */
+-	if (!xen_feature(XENFEAT_auto_translated_physmap)) {
+-		xen_pfn_t pfn = PFN_DOWN(res->start);
+-
+-		for (i = 0; i < alloc_pages; i++) {
+-			if (!set_phys_to_machine(pfn + i, INVALID_P2M_ENTRY)) {
+-				pr_warn("set_phys_to_machine() failed, no memory added\n");
+-				ret = -ENOMEM;
+-				goto err_memremap;
+-			}
+-                }
+-	}
+-#endif
+-
+-	vaddr = memremap_pages(pgmap, NUMA_NO_NODE);
+-	if (IS_ERR(vaddr)) {
+-		pr_err("Cannot remap memory range\n");
+-		ret = PTR_ERR(vaddr);
+-		goto err_memremap;
+-	}
+-
+-	for (i = 0; i < alloc_pages; i++) {
+-		struct page *pg = virt_to_page(vaddr + PAGE_SIZE * i);
+-
+-		BUG_ON(!virt_addr_valid(vaddr + PAGE_SIZE * i));
+-		list_add(&pg->lru, &page_list);
+-		list_count++;
+-	}
+-
+-	return 0;
+-
+-err_memremap:
+-	release_resource(res);
+-err_resource:
+-	kfree(pgmap);
+-err_pgmap:
+-	kfree(res);
+-	return ret;
+-}
+-
+-/**
+- * xen_alloc_unpopulated_pages - alloc unpopulated pages
+- * @nr_pages: Number of pages
+- * @pages: pages returned
+- * @return 0 on success, error otherwise
+- */
+-int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+-{
+-	unsigned int i;
+-	int ret = 0;
+-
+-	mutex_lock(&list_lock);
+-	if (list_count < nr_pages) {
+-		ret = fill_list(nr_pages - list_count);
+-		if (ret)
+-			goto out;
+-	}
+-
+-	for (i = 0; i < nr_pages; i++) {
+-		struct page *pg = list_first_entry_or_null(&page_list,
+-							   struct page,
+-							   lru);
+-
+-		BUG_ON(!pg);
+-		list_del(&pg->lru);
+-		list_count--;
+-		pages[i] = pg;
+-
+-#ifdef CONFIG_XEN_HAVE_PVMMU
+-		if (!xen_feature(XENFEAT_auto_translated_physmap)) {
+-			ret = xen_alloc_p2m_entry(page_to_pfn(pg));
+-			if (ret < 0) {
+-				unsigned int j;
+-
+-				for (j = 0; j <= i; j++) {
+-					list_add(&pages[j]->lru, &page_list);
+-					list_count++;
+-				}
+-				goto out;
+-			}
+-		}
+-#endif
+-	}
+-
+-out:
+-	mutex_unlock(&list_lock);
+-	return ret;
+-}
+-EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
+-
+-/**
+- * xen_free_unpopulated_pages - return unpopulated pages
+- * @nr_pages: Number of pages
+- * @pages: pages to return
+- */
+-void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+-{
+-	unsigned int i;
+-
+-	mutex_lock(&list_lock);
+-	for (i = 0; i < nr_pages; i++) {
+-		list_add(&pages[i]->lru, &page_list);
+-		list_count++;
+-	}
+-	mutex_unlock(&list_lock);
+-}
+-EXPORT_SYMBOL(xen_free_unpopulated_pages);
+-
+-#ifdef CONFIG_XEN_PV
+-static int __init init(void)
+-{
+-	unsigned int i;
+-
+-	if (!xen_domain())
+-		return -ENODEV;
+-
+-	if (!xen_pv_domain())
+-		return 0;
+-
+-	/*
+-	 * Initialize with pages from the extra memory regions (see
+-	 * arch/x86/xen/setup.c).
+-	 */
+-	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
+-		unsigned int j;
+-
+-		for (j = 0; j < xen_extra_mem[i].n_pfns; j++) {
+-			struct page *pg =
+-				pfn_to_page(xen_extra_mem[i].start_pfn + j);
+-
+-			list_add(&pg->lru, &page_list);
+-			list_count++;
+-		}
+-	}
+-
+-	return 0;
+-}
+-subsys_initcall(init);
+-#endif
+diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
+index fd80e318b99c..ef8b6ea8ecca 100644
+--- a/drivers/xen/xenbus/xenbus_client.c
++++ b/drivers/xen/xenbus/xenbus_client.c
+@@ -618,7 +618,7 @@ static int xenbus_map_ring_hvm(struct xenbus_device *dev,
+ 	bool leaked = false;
+ 	unsigned int nr_pages = XENBUS_PAGES(nr_grefs);
+ 
+-	err = xen_alloc_unpopulated_pages(nr_pages, node->hvm.pages);
++	err = alloc_xenballooned_pages(nr_pages, node->hvm.pages);
+ 	if (err)
+ 		goto out_err;
+ 
+@@ -659,7 +659,7 @@ static int xenbus_map_ring_hvm(struct xenbus_device *dev,
+ 			 addr, nr_pages);
+  out_free_ballooned_pages:
+ 	if (!leaked)
+-		xen_free_unpopulated_pages(nr_pages, node->hvm.pages);
++		free_xenballooned_pages(nr_pages, node->hvm.pages);
+  out_err:
+ 	return err;
+ }
+@@ -860,7 +860,7 @@ static int xenbus_unmap_ring_hvm(struct xenbus_device *dev, void *vaddr)
+ 			       info.addrs);
+ 	if (!rv) {
+ 		vunmap(vaddr);
+-		xen_free_unpopulated_pages(nr_pages, node->hvm.pages);
++		free_xenballooned_pages(nr_pages, node->hvm.pages);
+ 	}
+ 	else
+ 		WARN(1, "Leaking %p, size %u page(s)\n", vaddr, nr_pages);
+diff --git a/drivers/xen/xlate_mmu.c b/drivers/xen/xlate_mmu.c
+index 34742c6e189e..7b1077f0abcb 100644
+--- a/drivers/xen/xlate_mmu.c
++++ b/drivers/xen/xlate_mmu.c
+@@ -232,7 +232,7 @@ int __init xen_xlate_map_ballooned_pages(xen_pfn_t **gfns, void **virt,
+ 		kfree(pages);
+ 		return -ENOMEM;
+ 	}
+-	rc = xen_alloc_unpopulated_pages(nr_pages, pages);
++	rc = alloc_xenballooned_pages(nr_pages, pages);
+ 	if (rc) {
+ 		pr_warn("%s Couldn't balloon alloc %ld pages rc:%d\n", __func__,
+ 			nr_pages, rc);
+@@ -249,7 +249,7 @@ int __init xen_xlate_map_ballooned_pages(xen_pfn_t **gfns, void **virt,
+ 	if (!vaddr) {
+ 		pr_warn("%s Couldn't map %ld pages rc:%d\n", __func__,
+ 			nr_pages, rc);
+-		xen_free_unpopulated_pages(nr_pages, pages);
++		free_xenballooned_pages(nr_pages, pages);
+ 		kfree(pages);
+ 		kfree(pfns);
+ 		return -ENOMEM;
+diff --git a/include/xen/xen.h b/include/xen/xen.h
+index 43efba045acc..19a72f591e2b 100644
+--- a/include/xen/xen.h
++++ b/include/xen/xen.h
+@@ -52,13 +52,4 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
+ extern u64 xen_saved_max_mem_size;
+ #endif
+ 
+-#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+-int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+-void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+-#else
+-#define xen_alloc_unpopulated_pages alloc_xenballooned_pages
+-#define xen_free_unpopulated_pages free_xenballooned_pages
+-#include <xen/balloon.h>
+-#endif
+-
+ #endif	/* _XEN_XEN_H */
+-- 
+2.25.4
 
