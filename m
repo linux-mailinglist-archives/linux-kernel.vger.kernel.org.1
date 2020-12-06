@@ -2,28 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652512D0465
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C392D0388
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgLFLpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:45:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
+        id S1727877AbgLFLjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:39:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729464AbgLFLpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:45:14 -0500
+        id S1725767AbgLFLjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:39:15 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        Yves-Alexis Perez <corsac@corsac.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 12/46] usbnet: ipheth: fix connectivity with iOS 14
-Date:   Sun,  6 Dec 2020 12:17:20 +0100
-Message-Id: <20201206111557.053456428@linuxfoundation.org>
+        stable@vger.kernel.org, Sanjay Govind <sanjay.govind9@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 18/20] Input: xpad - support Ardwiino Controllers
+Date:   Sun,  6 Dec 2020 12:17:21 +0100
+Message-Id: <20201206111556.401015142@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
+References: <20201206111555.569713359@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,49 +31,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yves-Alexis Perez <corsac@corsac.net>
+From: Sanjay Govind <sanjay.govind9@gmail.com>
 
-[ Upstream commit f33d9e2b48a34e1558b67a473a1fc1d6e793f93c ]
+commit 2aab1561439032be2e98811dd0ddbeb5b2ae4c61 upstream.
 
-Starting with iOS 14 released in September 2020, connectivity using the
-personal hotspot USB tethering function of iOS devices is broken.
+This commit adds support for Ardwiino Controllers
 
-Communication between the host and the device (for example ICMP traffic
-or DNS resolution using the DNS service running in the device itself)
-works fine, but communication to endpoints further away doesn't work.
-
-Investigation on the matter shows that no UDP and ICMP traffic from the
-tethered host is reaching the Internet at all. For TCP traffic there are
-exchanges between tethered host and server but packets are modified in
-transit leading to impossible communication.
-
-After some trials Matti Vuorela discovered that reducing the URB buffer
-size by two bytes restored the previous behavior. While a better
-solution might exist to fix the issue, since the protocol is not
-publicly documented and considering the small size of the fix, let's do
-that.
-
-Tested-by: Matti Vuorela <matti.vuorela@bitfactor.fi>
-Signed-off-by: Yves-Alexis Perez <corsac@corsac.net>
-Link: https://lore.kernel.org/linux-usb/CAAn0qaXmysJ9vx3ZEMkViv_B19ju-_ExN8Yn_uSefxpjS6g4Lw@mail.gmail.com/
-Link: https://github.com/libimobiledevice/libimobiledevice/issues/1038
-Link: https://lore.kernel.org/r/20201119172439.94988-1-corsac@corsac.net
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
+Link: https://lore.kernel.org/r/20201201071922.131666-1-sanjay.govind9@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/ipheth.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/ipheth.c
-+++ b/drivers/net/usb/ipheth.c
-@@ -59,7 +59,7 @@
- #define IPHETH_USBINTF_SUBCLASS 253
- #define IPHETH_USBINTF_PROTO    1
- 
--#define IPHETH_BUF_SIZE         1516
-+#define IPHETH_BUF_SIZE         1514
- #define IPHETH_IP_ALIGN		2	/* padding at front of URB */
- #define IPHETH_TX_TIMEOUT       (5 * HZ)
- 
+---
+ drivers/input/joystick/xpad.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -258,6 +258,7 @@ static const struct xpad_device {
+ 	{ 0x1038, 0x1430, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
+ 	{ 0x1038, 0x1431, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
+ 	{ 0x11c9, 0x55f0, "Nacon GC-100XF", 0, XTYPE_XBOX360 },
++	{ 0x1209, 0x2882, "Ardwiino Controller", 0, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0004, "Honey Bee Xbox360 dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0301, "PDP AFTERGLOW AX.1", 0, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0303, "Mortal Kombat Klassic FightStick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+@@ -435,6 +436,7 @@ static const struct usb_device_id xpad_t
+ 	XPAD_XBOXONE_VENDOR(0x0f0d),		/* Hori Controllers */
+ 	XPAD_XBOX360_VENDOR(0x1038),		/* SteelSeries Controllers */
+ 	XPAD_XBOX360_VENDOR(0x11c9),		/* Nacon GC100XF */
++	XPAD_XBOX360_VENDOR(0x1209),		/* Ardwiino Controllers */
+ 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
+ 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x146b),		/* BigBen Interactive Controllers */
 
 
