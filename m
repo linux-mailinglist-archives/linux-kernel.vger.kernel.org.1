@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1B82D0212
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DB52D0214
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgLFI6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgLFI6y (ORCPT
+        id S1726559AbgLFJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 04:00:07 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:55077 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726237AbgLFJAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:58:54 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D05C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 00:58:07 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id f14so5606892pju.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 00:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S6K7q1C4aJV74LX9XzVIffEohV+cRacrmIp1D6GqZ88=;
-        b=wbbdNcohGtl2TDgFPwVXnP/R+H6oQayEahb3/U42bl0C7LgjfwxjWQhZocOA7q6nF1
-         FmtvtIEcyBL9V+t39mbO4lzaK3D9oTeBvtaHdFlFz5TlDEYOB9DOU0g0r52AFuZaHxwI
-         rNZH7gI3CebsuonBrBQOiF4iPffZnK0CGnQx6yEn+aOC1vD6rAOzROGitnJm3cR9VnOl
-         gqkZAkaKqh8+KCdEtr403lAWfvLGFsCx7aTVag6VoJpSRcIBDj5fiHqADmh6SBeDTCPy
-         342drhgb5CF35xSJJ4tpvkbgw+y4UbM3sqdXlFOrxBuNhZZjGjtPYWqJpBpiUtqLJ9P7
-         vLYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S6K7q1C4aJV74LX9XzVIffEohV+cRacrmIp1D6GqZ88=;
-        b=B/l5rxyurNYHU2irGhAmguql5K8afBHzI4Z/535vkOCpZVMV7tntZc4hVtrVeMpxiI
-         UO/ueYrPGXExKk7heHdzPUC9FHwa4F+G6i55YGe5lGBygQ/IdKPZZZraIfqYarZpKnaX
-         hgXmB/XMQ62LlBe/OFYuMXHIqGtmHulGrQ0c/CqotWN49hd3j7NQxpfNUjAqIMnz5Ej1
-         HmMyC5pgwTn3C+KE9MN4zDD5OhShC6WtxTUa5aqODAj0vCGnc2H0GK33Yi4VOnRe/Ybj
-         QGdE8QXqGybjO/1czgSjK8XwB5/cuKru/Q0HtctBRyVffEW9zKWftf0X4LpSoxyUxLGy
-         19jg==
-X-Gm-Message-State: AOAM532DmNKL3+Hytfzr1Te6pmin7t7RMSksW6Qr5Z1MlX9wme2uytDe
-        2cX3N6yNFbxQVeFUbLTLb/0gug==
-X-Google-Smtp-Source: ABdhPJyfHVyh7hYzrbWUhvvlsa1DqXRvUHBK3jetmU5XqNrfzpGIhr/V2qq4qyQHKsD7jAzQVJK8mA==
-X-Received: by 2002:a17:90a:4fe5:: with SMTP id q92mr11474674pjh.188.1607245087541;
-        Sun, 06 Dec 2020 00:58:07 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id l8sm6915502pjq.22.2020.12.06.00.58.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 00:58:06 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        sfr@canb.auug.org.au, alexander.h.duyck@linux.intel.com,
-        chris@chrisdown.name, laoar.shao@gmail.com,
-        richard.weiyang@gmail.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: optimize per-lruvec stats counter memory usage
-Date:   Sun,  6 Dec 2020 16:56:39 +0800
-Message-Id: <20201206085639.12627-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 6 Dec 2020 04:00:06 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 43317580236;
+        Sun,  6 Dec 2020 03:59:00 -0500 (EST)
+Received: from imap22 ([10.202.2.72])
+  by compute2.internal (MEProxy); Sun, 06 Dec 2020 03:59:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mxxn.io; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=1YDfDVzlMf2IlCv8EmJK4ezcVHFDNQI
+        i/OgN+ecGc0E=; b=KSGhOM/+hgQmmx9aKdEQfVsqRXaxHLK5uEJUKffOxkIfO91
+        scf6kBSUoBB8qKCI4A/QAGZWVtaCjuBiXV+ShHRL5CXvcgmZu05r9ZTh8RUg8GSE
+        JUoyPCizQLgwCg49Cahypv8bPbV4NT7J2VP891nc7T/2CjU+5B5xyZiVeqHaMJZo
+        iycBgMmcEaqjh7fx8l1QSObaJW1q77e57lIeD5/dC6P0WbZ5HhPz7CgIKEwGHSdr
+        6Ge1JYyFFw/NB9ACzCTqrPQUowyPbAl1Vvw4wPi15fyGQDQgN7xxd6YTE7kt2u8R
+        X/MXid1rp41hBAOJx6Ub0wpeI9CE+lBqpZDLMXQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=1YDfDV
+        zlMf2IlCv8EmJK4ezcVHFDNQIi/OgN+ecGc0E=; b=OrxHyuD3fojaQi+d6Z3OuW
+        zeB30+tAsnkZEEorkrAKkZbzRBRm17BPgPfOvvVbdB3sHHD3pnpWs+5SAwN6Nju3
+        KUf6JP5gMy2MhU5Jqq3GwCl2zqibep4hsZXetKQR1ZolNJWN1pjZg5btpcfHBbz2
+        Mncd3lBqbGeyXhf57o2j6RIuB7TRzOaxfIgIlDvohczXJ3YT2OY1MsR7cokZsY9v
+        r2zoYE1hRBgrXac8RXeSYzGUxJh8PoCJ6xgNN0ccLh6N2vCvhW2xd/VrQDS+92WO
+        xjeThhmgIwRa5CvZwL44gw5WtshC3ugigD3qIrLdYNkUD6vY+wW8aYDC0IIpLqqA
+        ==
+X-ME-Sender: <xms:U53MX0OZvwLAlRVHW1APUza3olElXJL0pN85gAbduBWHKzur4slxjQ>
+    <xme:U53MX6-PAPuEceomsSNAMJ6Y2iPQasLtG86vqTgxNZQ2XyogCUtwwSpQJbnt0JDRY
+    9LZuEHGfn5EFcDigw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejuddguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpeeulhgr
+    kkgpjfhrrghsthhnihhkuceosghlrgiisehmgiignhdrihhoqeenucggtffrrghtthgvrh
+    hnpeejudekfffgjeeivdekveekgeetiefgvedvveekieefffelueffueffueejueevfeen
+    ucffohhmrghinheplhhkmhhlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepsghlrgiisehmgiignhdrihho
+X-ME-Proxy: <xmx:U53MX7S_CI9GWqlOiGWRrl-JyPDqRF3BTQQw9iIR595nbp9l0mFuAw>
+    <xmx:U53MX8vDyNlzM6X3IqK2dg8mwHO0yTWgERyweP6fyj8_filU78d1ug>
+    <xmx:U53MX8eDy98MiZUYnJVTJiOITjkK3ZEIZ8E4iggi3OJzSVdYDqUWhQ>
+    <xmx:VJ3MXwFUfIl3ycYCMgISGnzcDOrp4o5UNcG-P1HPTTPpTp3Dsu4iAA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D1A6E62A005E; Sun,  6 Dec 2020 03:58:48 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <1b4fe1fd-592d-4a88-b156-fbf6af2df428@www.fastmail.com>
+In-Reply-To: <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+Date:   Sun, 06 Dec 2020 17:58:32 +0900
+From:   =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>
+To:     "Hans de Goede" <hdegoede@redhat.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        "Maximilian Luz" <luzmaximilian@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        "Mark Gross" <mgross@linux.intel.com>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>, "Rob Herring" <robh@kernel.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        "Len Brown" <lenb@kernel.org>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        "Michal Marek" <michal.lkml@markovi.net>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Dorian Stoll" <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_0/9]_Add_support_for_Microsoft_Surface_System_Ag?=
+ =?UTF-8?Q?gregator_Module?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
-of lruvec_stat_cpu is enough. And introduce struct per_cpu_lruvec_stat
-to optimize memory usage.
+> 
+> > More on that, the whole purpose of proposed interface is to debug and
+> > not intended to be used by any user space code.
+> 
+> The purpose is to provide raw access to the Surface Serial Hub protocol,
+> just like we provide raw access to USB devices and have hidraw devices.
+> 
+> So this goes a litle beyond just debugging; and eventually the choice
+> may be made to implement some functionality with userspace drivers,
+> just like we do for some HID and USB devices.
+> 
+> Still I agree with you that adding new userspace API is something which
+> needs to be considered carefully. So I will look at this closely when
+> reviewing this set.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h | 6 +++++-
- mm/memcontrol.c            | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index f9a496c4eac7..34cf119976b1 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -92,6 +92,10 @@ struct lruvec_stat {
- 	long count[NR_VM_NODE_STAT_ITEMS];
- };
- 
-+struct per_cpu_lruvec_stat {
-+	s32 count[NR_VM_NODE_STAT_ITEMS];
-+};
-+
- /*
-  * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-  * which have elements charged to this memcg.
-@@ -111,7 +115,7 @@ struct mem_cgroup_per_node {
- 	struct lruvec_stat __percpu *lruvec_stat_local;
- 
- 	/* Subtree VM stats (batched updates) */
--	struct lruvec_stat __percpu *lruvec_stat_cpu;
-+	struct per_cpu_lruvec_stat __percpu *lruvec_stat_cpu;
- 	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
- 
- 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 49fbcf003bf5..c874ea37b05d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5184,7 +5184,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 		return 1;
- 	}
- 
--	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
-+	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct per_cpu_lruvec_stat,
- 					       GFP_KERNEL_ACCOUNT);
- 	if (!pn->lruvec_stat_cpu) {
- 		free_percpu(pn->lruvec_stat_local);
--- 
-2.11.0
-
+To add to that: this was previously a debugfs interface but was moved to misc after review on the initial RFC:
+https://lkml.org/lkml/2020/9/24/96
