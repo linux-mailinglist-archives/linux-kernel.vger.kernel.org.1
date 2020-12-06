@@ -2,148 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98202D02C8
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251312D02D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbgLFK3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 05:29:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727418AbgLFK3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 05:29:06 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AF9C08E860
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 02:27:48 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id n26so15181560eju.6
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 02:27:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pU/BEnvHNZor0iOPVM1/S+HqmPaJIMs/busMwuezIyY=;
-        b=b5a/HopZcTOmVh+DQlV7Q5Fplz2QY6DKujQjBu/qcTQfqIS3A/E1426hN3+2sazCXs
-         m+UP0HIXmKSjeZcnkQJvNKFhVWfNHnc3BErhnyimNiyV23vaWhxknn4s9qfVhKBlA2CG
-         Q2uPXXJ8OCZx76afynB+N5ckWJM0/TXlOaWgSirqVHS6zX84xdlgI94UesSS1UVd5Xpz
-         CX3RKbO98vx++VHGbFVGU3hK2S0kaRrD+AdUltTQU7CI1FB/kIO618i02k9bXfPvJYRh
-         yURxoekvQjwLYaSazatZo//nVYImDQ6AQSBrEakYDFHLK1D7k1pfKYFOyspK/rIDew0I
-         Lj0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pU/BEnvHNZor0iOPVM1/S+HqmPaJIMs/busMwuezIyY=;
-        b=Ub86VvBJTII0WFMDkqMuE6LdbeUOwqqc1t+47RsGAKlDVhJ9UolKDJTJxGEiXPjvbu
-         H1VtGQTVIz4mKgKAJafaaROFrE8rLMpk78YJRgMLfT2JCOVFglElXWTDfIZ/qCeFhms2
-         ORNU5QEiL16AArnxppqv6O/de79BfPkmDPCv76Sczheh1UQdpECAwMTqkPcNjrW3rg/t
-         3EohE1RPw9n0QJLMRqxKEM11k3fYgZ4PkaQHEWZPydmxRzoj1Iceulg0jThAJyGcQxqE
-         rUfbWUeqgbwhEeTYS+Thzlrf87lfQ7OHlnOKTDtOElvXNueABbwsuPAsS7B+gFX8JHP1
-         Hj1g==
-X-Gm-Message-State: AOAM53158hrE0fdqJ/Vfd81bs4BLoGNa7mFcqjIEVyUefjned6USFW4M
-        iB5TpBJWskIY4GdEqwD4upqanA==
-X-Google-Smtp-Source: ABdhPJzXuBijI/Qs1l+neDIo/NCCBqMc6zjMVX1WW4Sj311JbA8DINf9lAsCJ0idkex36y7FaU+4OQ==
-X-Received: by 2002:a17:906:7ac7:: with SMTP id k7mr14437474ejo.454.1607250466782;
-        Sun, 06 Dec 2020 02:27:46 -0800 (PST)
-Received: from localhost.localdomain (hst-221-17.medicom.bg. [84.238.221.17])
-        by smtp.gmail.com with ESMTPSA id d4sm8464736edq.36.2020.12.06.02.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 02:27:46 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v2 4/4] venus: venc: Add support for AUD NALU control
-Date:   Sun,  6 Dec 2020 12:27:17 +0200
-Message-Id: <20201206102717.19000-5-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
-References: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
+        id S1726746AbgLFKe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 05:34:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726077AbgLFKe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 05:34:27 -0500
+Date:   Sun, 6 Dec 2020 12:33:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607250825;
+        bh=FFP6fQBmDCHm8swKoWnJVTxbDk9GrPHUWUpo9tW5yY0=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ekmrj4KTjNC1cgofE0oq5OF0cOcTyXji6tWvq7WBdjH8hxRcasbbJPoF0emiydafR
+         zYtiK9R/KI1pj6KdZjei7X4VncEwZTkF0Vb3A6pms8fveA/XlYAMm28d+FxQQitnJl
+         gJ79AHy3i7JfE4SP2q56oYBQvDTzMfJmznQQUp70xO8XV9NPy0X8DDm09apDp6E9sE
+         94K207uVjdFifSOWFV7dNouJeKHBcd6uA0jSUnRKYBpCzdK6R5TKv3KariwC5J2Xfy
+         J87Pfu2p8EFtaNxTyc2mtzb46IJp11o3tbE8x51kHJCox8excX9K/YMY24xYPlXTvl
+         DNjPW7wmCDhRw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+Message-ID: <20201206103339.GB693271@unreal>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+ <20201206085631.GE210929@unreal>
+ <f76b329a-b6f5-486d-b06a-452ec4c51979@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f76b329a-b6f5-486d-b06a-452ec4c51979@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for Access Unit Delimiter control into encoder.
+On Sun, Dec 06, 2020 at 11:04:06AM +0100, Hans de Goede wrote:
+> Hi,
+>
+> On 12/6/20 9:56 AM, Leon Romanovsky wrote:
+> > On Sun, Dec 06, 2020 at 09:41:21AM +0100, Hans de Goede wrote:
+> >> Hi Leon,
+> >>
+> >> On 12/6/20 8:07 AM, Leon Romanovsky wrote:
+> >>> On Thu, Dec 03, 2020 at 10:26:31PM +0100, Maximilian Luz wrote:
+> >>>> Hello,
+> >>>>
+> >>>> Here is version two of the Surface System Aggregator Module (SAM/SSAM)
+> >>>> driver series, adding initial support for the embedded controller on 5th
+> >>>> and later generation Microsoft Surface devices. Initial support includes
+> >>>> the ACPI interface to the controller, via which battery and thermal
+> >>>> information is provided on some of these devices.
+> >>>>
+> >>>> The previous version and cover letter detailing what this series is
+> >>>> about can be found at
+> >>>>
+> >>>>   https://lore.kernel.org/platform-driver-x86/20201115192143.21571-1-luzmaximilian@gmail.com/
+> >>>>
+> >>>> This patch-set can also be found at the following repository and
+> >>>> reference, if you prefer to look at a kernel tree instead of these
+> >>>> emails:
+> >>>>
+> >>>>   https://github.com/linux-surface/kernel tags/s/surface-aggregator/v2
+> >>>>
+> >>>> Thank you all for the feedback to v1, I hope I have addressed all
+> >>>> comments.
+> >>>
+> >>>
+> >>> I think that it is too far fetched to attempt and expose UAPI headers
+> >>> for some obscure char device that we are all know won't be around in
+> >>> a couple of years from now due to the nature of how this embedded world
+> >>> works.
+> >>
+> >> This is not for an embedded device, but for the popular line of
+> >> Microsoft Surface laptops / 2-in-1s...
+> >
+> > It is the naming, we don't have char device for every "laptop" vendor.
+> > Why is Microsoft different here?
+>
+> Because their hardware department has invented a whole new way of dealing
+> with a bunch of things at the hardware level (for some reason).
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h       |  1 +
- drivers/media/platform/qcom/venus/venc.c       | 14 ++++++++++++++
- drivers/media/platform/qcom/venus/venc_ctrls.c |  8 +++++++-
- 3 files changed, 22 insertions(+), 1 deletion(-)
+They are not different from any other vendor, it is much cheaper and easier
+to do not follow standard implementations.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 097fca39eb79..f105a34ded5a 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -243,6 +243,7 @@ struct venc_controls {
- 
- 	u32 header_mode;
- 	u32 intra_refresh_period;
-+	bool aud_enable;
- 
- 	struct {
- 		u32 h264;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 615d90612ebc..99e0a82a31e0 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -745,6 +745,20 @@ static int venc_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
-+	    inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		struct hfi_enable en = {};
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_H264_GENERATE_AUDNAL;
-+
-+		if (ctr->aud_enable)
-+			en.enable = 1;
-+
-+		ret = hfi_session_set_property(inst, ptype, &en);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 801026fab89d..a1aa56c74bc5 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -211,6 +211,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:
- 		ctr->intra_refresh_period = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:
-+		ctr->aud_enable = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -226,7 +229,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 34);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 35);
- 	if (ret)
- 		return ret;
- 
-@@ -381,6 +384,9 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD, 0,
- 			  ((4096 * 2304) >> 8), 1, 0);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_AU_DELIMITER, 0, 1, 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.17.1
+>
+> Also almost all laptop vendors have a whole bunch of laptop vendor
+> specific userspace API in the form of sysfs files exported by
+> drivers/platform/x86/laptop-vendor.c drivers. E.g. do:
+>
+> ls /sys/bus/platform/devices/thinkpad_acpi/
 
+It is different from the proposed /dev/surface... char device.
+
+>
+> An any IBM/Lenovo Thinkpad (and only on a Thinkpad) to see a bunch
+> of laptop vendor specific UAPI.
+
+Yes, it is gross, IBM did it in early days of Linux. Other vendors don't
+have anything like that.
+
+>
+> Since I've become the pdx86 subsys maintainer I've actually been
+> pushing back against adding more of this, instead trying to
+> either use existing UAPIs, or defining new common UAPIs which can
+> be shared between vendors.
+>
+> So I agree very much with you that we need to be careful about
+> needlessly introducing new UAPI.
+>
+> But there is a difference between being careful and just nacking
+> it because no new UAPI may be added at all (also see GKH's response).
+
+I saw, the author misunderstood the Greg's comments.
+
+>
+> >>> More on that, the whole purpose of proposed interface is to debug and
+> >>> not intended to be used by any user space code.
+> >>
+> >> The purpose is to provide raw access to the Surface Serial Hub protocol,
+> >> just like we provide raw access to USB devices and have hidraw devices.
+> >
+> > USB devices implement standard protocol, this surface hub is nothing
+> > even close to that.
+>
+> The USB protocol just defines a transport layer, outside of the USB classes
+> there are plenty of proprietary protocols on top of that transport.
+>
+> And this chardev just offers access to the Surface Serial Hub transport
+> protocol. And if you want something even closer the i2cdev module offers
+> raw I2C transfer access and I2C defines no protocol other then
+> how to read or write a number of bytes.
+>
+> I do a lot of hw enablement work and being able to poke HID / USB / I2C
+> devices directly from userspace is very useful for this.
+
+Greg wrote how to do it.
+
+>
+> >> So this goes a litle beyond just debugging; and eventually the choice
+> >> may be made to implement some functionality with userspace drivers,
+> >> just like we do for some HID and USB devices.
+> >
+> > I don't know how it goes in device/platform area, but in other large
+> > subsystems, UAPI should be presented with working user-space part.
+> >
+> >>
+> >> Still I agree with you that adding new userspace API is something which
+> >> needs to be considered carefully. So I will look at this closely when
+> >> reviewing this set.
+>
+> So this ^^^ still stands, I agree with you that adding new UAPI needs
+> to be considered carefully and when I get around to reviewing this
+> that is exactly what I will do.
+>
+> Maximilian, can you perhaps explain a bit more of what you want / expect
+> to use the chardev for, and maybe provide pointers to the matching
+> userspace utilities (which I presume you have) ?
+>
+> >>> Also the idea that you are creating new bus just for this device doesn't
+> >>> really sound right. I recommend you to take a look on auxiliary bus and
+> >>> use it or come with very strong justifications why it is not fit yet.
+> >>
+> >> AFAIK the auxiliary bus is for sharing a single device between multiple
+> >> drivers, while the main device-driver also still offers functionality
+> >> (beyond the providing of access) itself.
+> >
+> > The idea behind auxiliary bus is to slice various functionalities into
+> > different sub-drivers, see it as a way to create subsystem inside one
+> > driver.
+>
+> AFAIK the idea is to be able to combine multiple physical devices, e.g.
+> a PCI device + an ACPI enumerated platform device and then slice the
+> combination of those 2 up in new devices which may use parts of both
+> parent devices, quoting from:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/tree/Documentation/driver-api/auxiliary_bus.rst?h=driver-core-next&id=7de3697e9cbd4bd3d62bafa249d57990e1b8f294
+>
+> "multiple devices might implement a common intersection of functionality"
+
+It is one way, another is to take one device and create many small
+devices out of it.
+https://lore.kernel.org/alsa-devel/20201026111849.1035786-1-leon@kernel.org/
+
+>
+> IOW this is for cases where the simpler bus + devices model does not
+> work well. AFAICT in this case the simpler bus + devices does work
+> well, so there is no need to use the auxiliary bus.
+
+It is designed to replace invention of custom buses.
+
+>
+> >> This is more akin to how the WMI driver also models different WMI
+> >> functions as a bus + devices on the bus.
+> >>
+> >> Or how the SDIO driver multiplex a single SDIO device into its
+> >> functions by again using a bus + devices on the bus model.
+> >>
+> >> Also this has been in the works for quite a while now, the Linux on
+> >> Microsoft Surface devices community has been working on this out of
+> >> tree for a long time, see:
+> >> https://github.com/linux-surface/
+> >
+> > It is not relevant, the code is merged than it is ready.
+>
+> It is relevant, you cannot expect drivers which were written during
+> the last 6 months to use functionality which is not even in the
+> mainline kernel yet (yes it is in -next, but not in mainline).
+>
+> Now if that new functionality where to provide major benefits to
+> the code making it much cleaner / better then yes asking to rewrite
+> it to use that new functionality would make sense.
+
+And who will rewrite it? My experience shows that right code should be
+written from the beginning otherwise the code has too many chances to be
+abandoned.
+
+Thanks
