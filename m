@@ -2,164 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728182D050D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3488E2D050F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgLFNLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 08:11:40 -0500
-Received: from mga11.intel.com ([192.55.52.93]:39732 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgLFNLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 08:11:39 -0500
-IronPort-SDR: QKDKgtsCPplZI3k++3k1BAcBNY4xVvGkOjvrUfCGIOTh6N4sLGnT2zHcJf2NpGd/f9uz1eLOWm
- 9eXBlF4gi7QA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9826"; a="170075281"
-X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
-   d="scan'208";a="170075281"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 05:10:59 -0800
-IronPort-SDR: slcHwJiz/mitijhJdZ/Xd8ynlgp6fPnJIxNegCNPB/axnemz6ixn4MKXT2GUNTpqrWqTMfZ1C6
- SXLTiZQyfFUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
-   d="scan'208";a="316745070"
-Received: from cvg-ubt08.iil.intel.com (HELO cvg-ubt08.me-corp.lan) ([10.185.176.12])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Dec 2020 05:10:52 -0800
-From:   Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] do_exit(): panic() when double fault detected
-Date:   Sun,  6 Dec 2020 15:10:36 +0200
-Message-Id: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        id S1727995AbgLFNOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 08:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727395AbgLFNOA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 08:14:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EACC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 05:13:20 -0800 (PST)
+Date:   Sun, 06 Dec 2020 13:11:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607260398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aB+eK15Hiy9x/n8aU60X2ERiiqgMNHsnMFEg4aS78SA=;
+        b=WBVQq5HeL7yeOmcXEySDKSL8JDBmd7pIu6pMd+7eZV4zBRK+aG2Z2ctdZe4cb0Q4etYTpy
+        PRoklC0JcgW2Mhs8PQC1iIYK9jauU1Ri6F8yn+8Hy2JYEDvF/luuZMvVShysNULQ8dVGP3
+        DM/J6e84UZyPNa/RNjFINTqeNr+9H3IgLS9aS1wOvBBXkaoK23saBtNbmNKmf6a1SAh7Wz
+        mBvfXtb4ybXiH00Y6zWknt7gs5DHw0J0ayRNqFhAj4ydxTarkiSKBCfQu13I1WC9USDjA+
+        Jm1driSdZ76Xu/pARnctXOEneBc81q+MUVp6UnffTeaXwpuRyVNgZbEEmgxL/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607260398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aB+eK15Hiy9x/n8aU60X2ERiiqgMNHsnMFEg4aS78SA=;
+        b=vXoe/k/TGkk4UVs79EbgOkbrTTCQpqWwC+InnBmzs4M6TyIOAxFCrzuYBtmSNp7l+oK5QQ
+        avXmBhIH13sPFUAg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] irq/urgent for v5.10-rc7
+Message-ID: <160726029814.10836.11636935433736940390.tglx@nanos>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Double fault detected in do_exit() is symptom of integrity
-compromised. For safety critical systems, it may be better to
-panic() in this case to minimize risk.
+Linus,
 
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- include/linux/kernel.h                          | 1 +
- kernel/exit.c                                   | 7 +++++++
- kernel/sysctl.c                                 | 9 +++++++++
- 4 files changed, 22 insertions(+)
+please pull the latest irq/urgent branch from:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 44fde25bb221..6cb2a63c47f3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3521,6 +3521,11 @@
- 			extra details on the taint flags that users can pick
- 			to compose the bitmask to assign to panic_on_taint.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2020-12-06
+
+up to:  9ea69a55b3b9: powerpc/pseries: Pass MSI affinity to irq_create_mapping()
+
+
+A set of updates for the interrupt subsystem:
+
+  - Make multiqueue devices which use the managed interrupt affinity
+    infrastructure work on PowerPC/Pseries. PowerPC does not use the
+    generic infrastructure for setting up PCI/MSI interrupts and the
+    multiqueue changes failed to update the legacy PCI/MSI infrastructure.
+    Make this work by passing the affinity setup information down to the
+    mapping and allocation functions.
+
+  - Move Jason Cooper from MAINTAINERS to CREDITS as his mail is bouncing
+    and he's not reachable. We hope all is well with him and say thanks
+    for his work over the years.
+
+Thanks,
+
+	tglx
+
+------------------>
+Laurent Vivier (2):
+      genirq/irqdomain: Add an irq_create_mapping_affinity() function
+      powerpc/pseries: Pass MSI affinity to irq_create_mapping()
+
+Marc Zyngier (1):
+      MAINTAINERS: Move Jason Cooper to CREDITS
+
+
+ CREDITS                              |  5 +++++
+ MAINTAINERS                          |  4 ----
+ arch/powerpc/platforms/pseries/msi.c |  3 ++-
+ include/linux/irqdomain.h            | 12 ++++++++++--
+ kernel/irq/irqdomain.c               | 13 ++++++++-----
+ 5 files changed, 25 insertions(+), 12 deletions(-)
+
+diff --git a/CREDITS b/CREDITS
+index 748301954ab7..e88d1a783a80 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -740,6 +740,11 @@ S: (ask for current address)
+ S: Portland, Oregon
+ S: USA
  
-+	panic_on_double_fault
-+			panic() when double fault detected in do_exit().
-+			Useful on safety critical systems; double fault is
-+			a symptom of kernel integrity compromised.
++N: Jason Cooper
++D: ARM/Marvell SOC co-maintainer
++D: irqchip co-maintainer
++D: MVEBU PCI DRIVER co-maintainer
 +
- 	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
- 			on a WARN().
+ N: Robin Cornelius
+ E: robincornelius@users.sourceforge.net
+ D: Ralink rt2x00 WLAN driver
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2daa6ee673f7..4f27f43b2e0c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2014,7 +2014,6 @@ M:	Philipp Zabel <philipp.zabel@gmail.com>
+ S:	Maintained
  
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2f05e9128201..0d8822259a36 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -539,6 +539,7 @@ extern int sysctl_panic_on_rcu_stall;
- extern int sysctl_panic_on_stackoverflow;
+ ARM/Marvell Dove/MV78xx0/Orion SOC support
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Andrew Lunn <andrew@lunn.ch>
+ M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+ M:	Gregory Clement <gregory.clement@bootlin.com>
+@@ -2031,7 +2030,6 @@ F:	arch/arm/plat-orion/
+ F:	drivers/soc/dove/
  
- extern bool crash_kexec_post_notifiers;
-+extern int panic_on_double_fault;
+ ARM/Marvell Kirkwood and Armada 370, 375, 38x, 39x, XP, 3700, 7K/8K, CN9130 SOC support
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Andrew Lunn <andrew@lunn.ch>
+ M:	Gregory Clement <gregory.clement@bootlin.com>
+ M:	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+@@ -9248,7 +9246,6 @@ F:	kernel/irq/
  
- /*
-  * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 1f236ed375f8..e67ae43644f9 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -68,6 +68,9 @@
- #include <asm/unistd.h>
- #include <asm/mmu_context.h>
+ IRQCHIP DRIVERS
+ M:	Thomas Gleixner <tglx@linutronix.de>
+-M:	Jason Cooper <jason@lakedaemon.net>
+ M:	Marc Zyngier <maz@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+@@ -13394,7 +13391,6 @@ F:	drivers/pci/controller/mobiveil/pcie-mobiveil*
  
-+int panic_on_double_fault __read_mostly;
-+core_param(panic_on_double_fault, panic_on_double_fault, int, 0644);
+ PCI DRIVER FOR MVEBU (Marvell Armada 370 and Armada XP SOC support)
+ M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+-M:	Jason Cooper <jason@lakedaemon.net>
+ L:	linux-pci@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
+index 133f6adcb39c..b3ac2455faad 100644
+--- a/arch/powerpc/platforms/pseries/msi.c
++++ b/arch/powerpc/platforms/pseries/msi.c
+@@ -458,7 +458,8 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
+ 			return hwirq;
+ 		}
+ 
+-		virq = irq_create_mapping(NULL, hwirq);
++		virq = irq_create_mapping_affinity(NULL, hwirq,
++						   entry->affinity);
+ 
+ 		if (!virq) {
+ 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 71535e87109f..ea5a337e0f8b 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -384,11 +384,19 @@ extern void irq_domain_associate_many(struct irq_domain *domain,
+ extern void irq_domain_disassociate(struct irq_domain *domain,
+ 				    unsigned int irq);
+ 
+-extern unsigned int irq_create_mapping(struct irq_domain *host,
+-				       irq_hw_number_t hwirq);
++extern unsigned int irq_create_mapping_affinity(struct irq_domain *host,
++				      irq_hw_number_t hwirq,
++				      const struct irq_affinity_desc *affinity);
+ extern unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec);
+ extern void irq_dispose_mapping(unsigned int virq);
+ 
++static inline unsigned int irq_create_mapping(struct irq_domain *host,
++					      irq_hw_number_t hwirq)
++{
++	return irq_create_mapping_affinity(host, hwirq, NULL);
++}
 +
- static void __unhash_process(struct task_struct *p, bool group_dead)
++
+ /**
+  * irq_linear_revmap() - Find a linux irq from a hw irq number.
+  * @domain: domain owning this hardware interrupt
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index cf8b374b892d..e4ca69608f3b 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -624,17 +624,19 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
+ EXPORT_SYMBOL_GPL(irq_create_direct_mapping);
+ 
+ /**
+- * irq_create_mapping() - Map a hardware interrupt into linux irq space
++ * irq_create_mapping_affinity() - Map a hardware interrupt into linux irq space
+  * @domain: domain owning this hardware interrupt or NULL for default domain
+  * @hwirq: hardware irq number in that domain space
++ * @affinity: irq affinity
+  *
+  * Only one mapping per hardware interrupt is permitted. Returns a linux
+  * irq number.
+  * If the sense/trigger is to be specified, set_irq_type() should be called
+  * on the number returned from that call.
+  */
+-unsigned int irq_create_mapping(struct irq_domain *domain,
+-				irq_hw_number_t hwirq)
++unsigned int irq_create_mapping_affinity(struct irq_domain *domain,
++				       irq_hw_number_t hwirq,
++				       const struct irq_affinity_desc *affinity)
  {
- 	nr_threads--;
-@@ -757,6 +760,10 @@ void __noreturn do_exit(long code)
- 	 */
- 	if (unlikely(tsk->flags & PF_EXITING)) {
- 		pr_alert("Fixing recursive fault but reboot is needed!\n");
-+		if (panic_on_double_fault)
-+			panic("Double fault detected in %s[%d]\n",
-+			      current->comm, task_pid_nr(current));
-+
- 		futex_exit_recursive(tsk);
- 		set_current_state(TASK_UNINTERRUPTIBLE);
- 		schedule();
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index afad085960b8..869a2ca41e8e 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2600,6 +2600,15 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= &one_thousand,
- 	},
- #endif
-+	{
-+		.procname	= "panic_on_double_fault",
-+		.data		= &panic_on_double_fault,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
- 	{
- 		.procname	= "panic_on_warn",
- 		.data		= &panic_on_warn,
--- 
-2.27.0
-
----------------------------------------------------------------------
-Intel Israel (74) Limited
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+ 	struct device_node *of_node;
+ 	int virq;
+@@ -660,7 +662,8 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
+ 	}
+ 
+ 	/* Allocate a virtual interrupt number */
+-	virq = irq_domain_alloc_descs(-1, 1, hwirq, of_node_to_nid(of_node), NULL);
++	virq = irq_domain_alloc_descs(-1, 1, hwirq, of_node_to_nid(of_node),
++				      affinity);
+ 	if (virq <= 0) {
+ 		pr_debug("-> virq allocation failed\n");
+ 		return 0;
+@@ -676,7 +679,7 @@ unsigned int irq_create_mapping(struct irq_domain *domain,
+ 
+ 	return virq;
+ }
+-EXPORT_SYMBOL_GPL(irq_create_mapping);
++EXPORT_SYMBOL_GPL(irq_create_mapping_affinity);
+ 
+ /**
+  * irq_create_strict_mappings() - Map a range of hw irqs to fixed linux irqs
 
