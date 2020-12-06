@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D532D05EE
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629B72D05EF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgLFQ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
+        id S1727264AbgLFQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726186AbgLFQ3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:29:22 -0500
+        id S1726186AbgLFQ3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 11:29:23 -0500
 From:   Oded Gabbay <ogabbay@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 1/2] habanalabs/gaudi: support CS with no completion
-Date:   Sun,  6 Dec 2020 18:28:31 +0200
-Message-Id: <20201206162835.4088-2-ogabbay@kernel.org>
+Subject: [PATCH] habanalabs: Init the VM module for kernel context
+Date:   Sun,  6 Dec 2020 18:28:32 +0200
+Message-Id: <20201206162835.4088-3-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201206162835.4088-1-ogabbay@kernel.org>
 References: <20201206162835.4088-1-ogabbay@kernel.org>
@@ -27,78 +27,162 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ofir Bitton <obitton@habana.ai>
 
-As part of the staged submission feature, we need Gaudi to support
-command submissions that will never get a completion.
+In order for reserving VA ranges for kernel memory, we need
+to allow the VM module to be initiated with kernel context.
 
 Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/command_submission.c |  1 +
- drivers/misc/habanalabs/common/habanalabs.h         |  2 ++
- drivers/misc/habanalabs/gaudi/gaudi.c               | 10 +++++++---
- 3 files changed, 10 insertions(+), 3 deletions(-)
+ drivers/misc/habanalabs/common/context.c | 16 +++++++++++++---
+ drivers/misc/habanalabs/common/device.c  | 15 ++++++++++-----
+ drivers/misc/habanalabs/common/memory.c  |  3 ++-
+ drivers/misc/habanalabs/gaudi/gaudi.c    | 10 ++++------
+ 4 files changed, 29 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 92c1c516b65f..ac527682cd8c 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -225,6 +225,7 @@ static int cs_parser(struct hl_fpriv *hpriv, struct hl_cs_job *job)
- 	parser.queue_type = job->queue_type;
- 	parser.is_kernel_allocated_cb = job->is_kernel_allocated_cb;
- 	job->patched_cb = NULL;
-+	parser.completion = true;
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index f65e6559149b..3d86b83f4ca6 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -56,6 +56,8 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+ 				idle_mask);
+ 	} else {
+ 		dev_dbg(hdev->dev, "closing kernel context\n");
++		hdev->asic_funcs->ctx_fini(ctx);
++		hl_vm_ctx_fini(ctx);
+ 		hl_mmu_ctx_fini(ctx);
+ 	}
+ }
+@@ -151,11 +153,18 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
  
- 	rc = hdev->asic_funcs->cs_parser(hdev, &parser);
+ 	if (is_kernel_ctx) {
+ 		ctx->asid = HL_KERNEL_ASID_ID; /* Kernel driver gets ASID 0 */
+-		rc = hl_mmu_ctx_init(ctx);
++		rc = hl_vm_ctx_init(ctx);
+ 		if (rc) {
+-			dev_err(hdev->dev, "Failed to init mmu ctx module\n");
++			dev_err(hdev->dev, "Failed to init mem ctx module\n");
++			rc = -ENOMEM;
+ 			goto err_free_cs_pending;
+ 		}
++
++		rc = hdev->asic_funcs->ctx_init(ctx);
++		if (rc) {
++			dev_err(hdev->dev, "ctx_init failed\n");
++			goto err_vm_ctx_fini;
++		}
+ 	} else {
+ 		ctx->asid = hl_asid_alloc(hdev);
+ 		if (!ctx->asid) {
+@@ -194,7 +203,8 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ err_vm_ctx_fini:
+ 	hl_vm_ctx_fini(ctx);
+ err_asid_free:
+-	hl_asid_free(hdev, ctx->asid);
++	if (ctx->asid != HL_KERNEL_ASID_ID)
++		hl_asid_free(hdev, ctx->asid);
+ err_free_cs_pending:
+ 	kfree(ctx->cs_pending);
  
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 270d342f7778..81a16d4f8cba 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1221,6 +1221,7 @@ struct hl_cs_job {
-  *                    MSG_PROT packets. Relevant only for GAUDI as GOYA doesn't
-  *                    have streams so the engine can't be busy by another
-  *                    stream.
-+ * @completion: true if we need completion for this CS.
-  */
- struct hl_cs_parser {
- 	struct hl_cb		*user_cb;
-@@ -1235,6 +1236,7 @@ struct hl_cs_parser {
- 	u8			job_id;
- 	u8			is_kernel_allocated_cb;
- 	u8			contains_dma_pkt;
-+	u8			completion;
- };
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 59212706a836..671d1eb41146 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -1310,11 +1310,16 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
  
- /*
+ 	hdev->compute_ctx = NULL;
+ 
++	hl_debugfs_add_device(hdev);
++
++	/* debugfs nodes are created in hl_ctx_init so it must be called after
++	 * hl_debugfs_add_device.
++	 */
+ 	rc = hl_ctx_init(hdev, hdev->kernel_ctx, true);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "failed to initialize kernel context\n");
+ 		kfree(hdev->kernel_ctx);
+-		goto mmu_fini;
++		goto remove_device_from_debugfs;
+ 	}
+ 
+ 	rc = hl_cb_pool_init(hdev);
+@@ -1323,8 +1328,6 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 		goto release_ctx;
+ 	}
+ 
+-	hl_debugfs_add_device(hdev);
+-
+ 	/*
+ 	 * From this point, in case of an error, add char devices and create
+ 	 * sysfs nodes as part of the error flow, to allow debugging.
+@@ -1413,6 +1416,8 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
+ 	if (hl_ctx_put(hdev->kernel_ctx) != 1)
+ 		dev_err(hdev->dev,
+ 			"kernel ctx is still alive on initialization failure\n");
++remove_device_from_debugfs:
++	hl_debugfs_remove_device(hdev);
+ mmu_fini:
+ 	hl_mmu_fini(hdev);
+ eq_fini:
+@@ -1502,8 +1507,6 @@ void hl_device_fini(struct hl_device *hdev)
+ 
+ 	device_late_fini(hdev);
+ 
+-	hl_debugfs_remove_device(hdev);
+-
+ 	/*
+ 	 * Halt the engines and disable interrupts so we won't get any more
+ 	 * completions from H/W and we won't have any accesses from the
+@@ -1535,6 +1538,8 @@ void hl_device_fini(struct hl_device *hdev)
+ 	if ((hdev->kernel_ctx) && (hl_ctx_put(hdev->kernel_ctx) != 1))
+ 		dev_err(hdev->dev, "kernel ctx is still alive\n");
+ 
++	hl_debugfs_remove_device(hdev);
++
+ 	hl_vm_fini(hdev);
+ 
+ 	hl_mmu_fini(hdev);
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index d4a94a1c3eef..c16c829bfbf2 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -1923,7 +1923,8 @@ void hl_vm_ctx_fini(struct hl_ctx *ctx)
+ 	 * because the user notifies us on allocations. If the user is no more,
+ 	 * all DRAM is available
+ 	 */
+-	if (!ctx->hdev->asic_prop.dram_supports_virtual_memory)
++	if (ctx->asid != HL_KERNEL_ASID_ID &&
++			!ctx->hdev->asic_prop.dram_supports_virtual_memory)
+ 		atomic64_set(&ctx->hdev->dram_used_mem, 0);
+ }
+ 
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 658d180d3d4d..076a55ebf357 100644
+index 4776dfed9098..658d180d3d4d 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -5041,7 +5041,8 @@ static int gaudi_validate_cb(struct hl_device *hdev,
- 	 * 1. A packet that will act as a completion packet
- 	 * 2. A packet that will generate MSI-X interrupt
- 	 */
--	parser->patched_cb_size += sizeof(struct packet_msg_prot) * 2;
-+	if (parser->completion)
-+		parser->patched_cb_size += sizeof(struct packet_msg_prot) * 2;
+@@ -7849,18 +7849,16 @@ static void gaudi_internal_cb_pool_fini(struct hl_device *hdev,
  
- 	return rc;
+ static int gaudi_ctx_init(struct hl_ctx *ctx)
+ {
++	if (ctx->asid == HL_KERNEL_ASID_ID)
++		return 0;
++
+ 	gaudi_mmu_prepare(ctx->hdev, ctx->asid);
+ 	return gaudi_internal_cb_pool_init(ctx->hdev, ctx);
  }
-@@ -5268,8 +5269,11 @@ static int gaudi_parse_cb_mmu(struct hl_device *hdev,
- 	 * 1. A packet that will act as a completion packet
- 	 * 2. A packet that will generate MSI interrupt
- 	 */
--	parser->patched_cb_size = parser->user_cb_size +
--			sizeof(struct packet_msg_prot) * 2;
-+	if (parser->completion)
-+		parser->patched_cb_size = parser->user_cb_size +
-+				sizeof(struct packet_msg_prot) * 2;
-+	else
-+		parser->patched_cb_size = parser->user_cb_size;
  
- 	rc = hl_cb_create(hdev, &hdev->kernel_cb_mgr, hdev->kernel_ctx,
- 				parser->patched_cb_size, false, false,
+ static void gaudi_ctx_fini(struct hl_ctx *ctx)
+ {
+-	struct hl_device *hdev = ctx->hdev;
+-
+-	/* Gaudi will NEVER support more then a single compute context.
+-	 * Therefore, don't clear anything unless it is the compute context
+-	 */
+-	if (hdev->compute_ctx != ctx)
++	if (ctx->asid == HL_KERNEL_ASID_ID)
+ 		return;
+ 
+ 	gaudi_internal_cb_pool_fini(ctx->hdev, ctx);
 -- 
 2.17.1
 
