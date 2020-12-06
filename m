@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572FA2D040F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684D52D0448
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgLFLmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41788 "EHLO mail.kernel.org"
+        id S1729190AbgLFLob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:44:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727918AbgLFLmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:42:45 -0500
+        id S1728086AbgLFLoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:44:20 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan Morton <chromatix99@gmail.com>,
-        Pete Heist <pete@heistp.net>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 21/39] inet_ecn: Fix endianness of checksum update when setting ECT(1)
+Subject: [PATCH 5.9 17/46] ipv4: Fix tos mask in inet_rtm_getroute()
 Date:   Sun,  6 Dec 2020 12:17:25 +0100
-Message-Id: <20201206111555.693217763@linuxfoundation.org>
+Message-Id: <20201206111557.290945505@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-References: <20201206111554.677764505@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,37 +32,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Toke Høiland-Jørgensen" <toke@redhat.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit 2867e1eac61016f59b3d730e3f7aa488e186e917 ]
+[ Upstream commit 1ebf179037cb46c19da3a9c1e2ca16e7a754b75e ]
 
-When adding support for propagating ECT(1) marking in IP headers it seems I
-suffered from endianness-confusion in the checksum update calculation: In
-fact the ECN field is in the *lower* bits of the first 16-bit word of the
-IP header when calculating in network byte order. This means that the
-addition performed to update the checksum field was wrong; let's fix that.
+When inet_rtm_getroute() was converted to use the RCU variants of
+ip_route_input() and ip_route_output_key(), the TOS parameters
+stopped being masked with IPTOS_RT_MASK before doing the route lookup.
 
-Fixes: b723748750ec ("tunnel: Propagate ECT(1) when decapsulating as recommended by RFC6040")
-Reported-by: Jonathan Morton <chromatix99@gmail.com>
-Tested-by: Pete Heist <pete@heistp.net>
-Signed-off-by: Toke HÃ¸iland-JÃ¸rgensen <toke@redhat.com>
-Link: https://lore.kernel.org/r/20201130183705.17540-1-toke@redhat.com
+As a result, "ip route get" can return a different route than what
+would be used when sending real packets.
+
+For example:
+
+    $ ip route add 192.0.2.11/32 dev eth0
+    $ ip route add unreachable 192.0.2.11/32 tos 2
+    $ ip route get 192.0.2.11 tos 2
+    RTNETLINK answers: No route to host
+
+But, packets with TOS 2 (ECT(0) if interpreted as an ECN bit) would
+actually be routed using the first route:
+
+    $ ping -c 1 -Q 2 192.0.2.11
+    PING 192.0.2.11 (192.0.2.11) 56(84) bytes of data.
+    64 bytes from 192.0.2.11: icmp_seq=1 ttl=64 time=0.173 ms
+
+    --- 192.0.2.11 ping statistics ---
+    1 packets transmitted, 1 received, 0% packet loss, time 0ms
+    rtt min/avg/max/mdev = 0.173/0.173/0.173/0.000 ms
+
+This patch re-applies IPTOS_RT_MASK in inet_rtm_getroute(), to
+return results consistent with real route lookups.
+
+Fixes: 3765d35ed8b9 ("net: ipv4: Convert inet_rtm_getroute to rcu versions of route lookup")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Link: https://lore.kernel.org/r/b2d237d08317ca55926add9654a48409ac1b8f5b.1606412894.git.gnault@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/inet_ecn.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/route.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/include/net/inet_ecn.h
-+++ b/include/net/inet_ecn.h
-@@ -107,7 +107,7 @@ static inline int IP_ECN_set_ect1(struct
- 	if ((iph->tos & INET_ECN_MASK) != INET_ECN_ECT_0)
- 		return 0;
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -3221,7 +3221,7 @@ static int inet_rtm_getroute(struct sk_b
  
--	check += (__force u16)htons(0x100);
-+	check += (__force u16)htons(0x1);
+ 	fl4.daddr = dst;
+ 	fl4.saddr = src;
+-	fl4.flowi4_tos = rtm->rtm_tos;
++	fl4.flowi4_tos = rtm->rtm_tos & IPTOS_RT_MASK;
+ 	fl4.flowi4_oif = tb[RTA_OIF] ? nla_get_u32(tb[RTA_OIF]) : 0;
+ 	fl4.flowi4_mark = mark;
+ 	fl4.flowi4_uid = uid;
+@@ -3245,8 +3245,9 @@ static int inet_rtm_getroute(struct sk_b
+ 		fl4.flowi4_iif = iif; /* for rt_fill_info */
+ 		skb->dev	= dev;
+ 		skb->mark	= mark;
+-		err = ip_route_input_rcu(skb, dst, src, rtm->rtm_tos,
+-					 dev, &res);
++		err = ip_route_input_rcu(skb, dst, src,
++					 rtm->rtm_tos & IPTOS_RT_MASK, dev,
++					 &res);
  
- 	iph->check = (__force __sum16)(check + (check>=0xFFFF));
- 	iph->tos ^= INET_ECN_MASK;
+ 		rt = skb_rtable(skb);
+ 		if (err == 0 && rt->dst.error)
 
 
