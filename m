@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869722D044F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFDA2D03CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgLFLom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:44:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44480 "EHLO mail.kernel.org"
+        id S1728612AbgLFLk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:40:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgLFLoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:32 -0500
+        id S1728600AbgLFLk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:40:27 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.9 21/46] ibmvnic: Fix TX completion error handling
+        stable@vger.kernel.org, Sanjay Govind <sanjay.govind9@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 29/32] Input: xpad - support Ardwiino Controllers
 Date:   Sun,  6 Dec 2020 12:17:29 +0100
-Message-Id: <20201206111557.482203444@linuxfoundation.org>
+Message-Id: <20201206111557.165750139@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+References: <20201206111555.787862631@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,37 +31,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Sanjay Govind <sanjay.govind9@gmail.com>
 
-[ Upstream commit ba246c175116e2e8fa4fdfa5f8e958e086a9a818 ]
+commit 2aab1561439032be2e98811dd0ddbeb5b2ae4c61 upstream.
 
-TX completions received with an error return code are not
-being processed properly. When an error code is seen, do not
-proceed to the next completion before cleaning up the existing
-entry's data structures.
+This commit adds support for Ardwiino Controllers
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sanjay Govind <sanjay.govind9@gmail.com>
+Link: https://lore.kernel.org/r/20201201071922.131666-1-sanjay.govind9@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/ibm/ibmvnic.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3122,11 +3122,9 @@ restart_loop:
- 
- 		next = ibmvnic_next_scrq(adapter, scrq);
- 		for (i = 0; i < next->tx_comp.num_comps; i++) {
--			if (next->tx_comp.rcs[i]) {
-+			if (next->tx_comp.rcs[i])
- 				dev_err(dev, "tx error %x\n",
- 					next->tx_comp.rcs[i]);
--				continue;
--			}
- 			index = be32_to_cpu(next->tx_comp.correlators[i]);
- 			if (index & IBMVNIC_TSO_POOL_MASK) {
- 				tx_pool = &adapter->tso_pool[pool];
+---
+ drivers/input/joystick/xpad.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -255,6 +255,7 @@ static const struct xpad_device {
+ 	{ 0x1038, 0x1430, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
+ 	{ 0x1038, 0x1431, "SteelSeries Stratus Duo", 0, XTYPE_XBOX360 },
+ 	{ 0x11c9, 0x55f0, "Nacon GC-100XF", 0, XTYPE_XBOX360 },
++	{ 0x1209, 0x2882, "Ardwiino Controller", 0, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0004, "Honey Bee Xbox360 dancepad", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0301, "PDP AFTERGLOW AX.1", 0, XTYPE_XBOX360 },
+ 	{ 0x12ab, 0x0303, "Mortal Kombat Klassic FightStick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+@@ -432,6 +433,7 @@ static const struct usb_device_id xpad_t
+ 	XPAD_XBOXONE_VENDOR(0x0f0d),		/* Hori Controllers */
+ 	XPAD_XBOX360_VENDOR(0x1038),		/* SteelSeries Controllers */
+ 	XPAD_XBOX360_VENDOR(0x11c9),		/* Nacon GC100XF */
++	XPAD_XBOX360_VENDOR(0x1209),		/* Ardwiino Controllers */
+ 	XPAD_XBOX360_VENDOR(0x12ab),		/* X-Box 360 dance pads */
+ 	XPAD_XBOX360_VENDOR(0x1430),		/* RedOctane X-Box 360 controllers */
+ 	XPAD_XBOX360_VENDOR(0x146b),		/* BigBen Interactive Controllers */
 
 
