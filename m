@@ -2,89 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC832D024B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F12D0245
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgLFJie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 04:38:34 -0500
-Received: from [157.25.102.26] ([157.25.102.26]:44596 "EHLO orcam.me.uk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726141AbgLFJid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 04:38:33 -0500
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id E168B2BE0ED;
-        Sun,  6 Dec 2020 09:37:59 +0000 (GMT)
-Date:   Sun, 6 Dec 2020 09:36:16 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] mips: lib: uncached: fix uninitialized variable 'sp'
-In-Reply-To: <20201127083938.2666770-1-anders.roxell@linaro.org>
-Message-ID: <alpine.LFD.2.21.2012060915460.656242@eddie.linux-mips.org>
-References: <20201127083938.2666770-1-anders.roxell@linaro.org>
+        id S1725945AbgLFJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 04:36:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgLFJgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 04:36:33 -0500
+Date:   Sun, 6 Dec 2020 10:36:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607247346;
+        bh=dnR5dwJKbsSPtTsm2TDWHrwzN1RLBDzrpTl/WUpJhfQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ijvKcuTqh/E0XKwrajrMzPh1pAYyHvet56O0QWxW38lxT4y99XLIk3oU4GW3ZVi9i
+         S2r3qkWCLO4kfeOo0Zr0nXgWZnqs7m/hj5G0Dqm3EWV1jZEJgmVaV6SM4gtq/Na6Bx
+         CR1RpfHY56Ihew6OPmd07SmJkq0N1WyrPrI8Vq4s=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Wang Yu <yu1.wang@intel.com>, Liu Shuo <shuo.a.liu@intel.com>
+Subject: Re: [PATCH] Revert "mei: virtio: virtualization frontend driver"
+Message-ID: <X8ymO1vqGdMo7Uj1@kroah.com>
+References: <20201205193625.469773-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205193625.469773-1-mst@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020, Anders Roxell wrote:
-
-> When building mips tinyconfig with clang the following warning show up:
+On Sat, Dec 05, 2020 at 02:38:46PM -0500, Michael S. Tsirkin wrote:
+> This reverts commit d162219c655c8cf8003128a13840d6c1e183fb80.
+> The device uses a VIRTIO device ID out of a not-for-production
+> range. Releasing Linux using an ID out of this range will make
+> it conflict with development setups. An official request to
+> reserve an ID for an MEI device is yet to be submitted
+> to the virtio TC, thus there's no chance it will be reserved
+> and fixed in time before the next release.
 > 
-> /tmp/arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
->         register long sp __asm__("$sp");
->                         ^
->                          = 0
+> Once requested it usually takes 2-3 weeks to land in the spec, which
+> means the device can be supported with the official ID in the next Linux
+> version if contributors act quickly.
 > 
-> Rework to make an explicit inline move.
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
- It's not uninitialised, because by definition $sp has been initialised.  
-This code wouldn't have worked for the last 15 years otherwise.
- 
- It is however non-standard usage (which may not have been clarified at 
-the time this piece was made; I recall extensive discussions around this 
-feature over the years):
+Now applied, thanks.
 
-"6.47.5.2 Specifying Registers for Local Variables
-.................................................
-[...]
-
-"The only supported use for this feature is to specify registers for
-input and output operands when calling Extended 'asm' (*note Extended
-Asm::).  [...]"
-
-so the change description should refer to that as the rationale rather 
-than an implementation-specific misleading warning (although that can be 
-quoted for a reference of course).
-
-> diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
-> index 09d5deea747f..21a4b94a0558 100644
-> --- a/arch/mips/lib/uncached.c
-> +++ b/arch/mips/lib/uncached.c
-> @@ -37,10 +37,11 @@
->   */
->  unsigned long run_uncached(void *func)
->  {
-> -	register long sp __asm__("$sp");
->  	register long ret __asm__("$2");
->  	long lfunc = (long)func, ufunc;
->  	long usp;
-> +	long sp;
-> +	asm ("move %0, $sp" : "=r" (sp));
-
- Missing newline between the variable block and code here; you may well 
-swap it with the empty line below you have left.  Also use `__asm__' for 
-consistency, and remove the extraneous space ahead of the parenthesis as 
-we don't use them in Linux.  Using a tab to separate the mnemonic from 
-operands is also preferable, i.e. "move\t%0, $sp" in this case (using 
-actual tabs works better with multi-line assembly, but this is not one).
-
- I think this should be OK once the issues I mentioned here have been 
-addressed.
-
-  Maciej
-
+greg k-h
