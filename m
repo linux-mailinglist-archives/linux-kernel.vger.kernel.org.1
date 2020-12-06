@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B902D074A
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C232D074B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbgLFVVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:21:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60218 "EHLO
+        id S1727974AbgLFVVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:21:53 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60238 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLFVVv (ORCPT
+        with ESMTP id S1727427AbgLFVVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:21:51 -0500
-Message-Id: <20201206211253.919834182@linutronix.de>
+        Sun, 6 Dec 2020 16:21:52 -0500
+Message-Id: <20201206212002.582579516@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607289669;
+        s=2020; t=1607289670;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=78N4YASvionDygjdJyxpH+khdroZX1Ca/lN2xuO3Y+M=;
-        b=r7sQkm/veKSNzQ6fxPvYm3vlaeWpCUtPTa5aRm10eaeGhHLMt+y4PAvPpz2OJnDCmxgPCC
-        CHNe+1Hl9MSBLIdTlj0x75orMs9r4swadUt8M8cVFQAgxXF12HkQ71pii6RF2mq790Hwi9
-        Niu5x6sN5uatbQinrOC/gyWbUpBeh4H8ivJFXsUTJz8IJw9ZIg+eX1qIRBMvkg7yfbvRUo
-        R6pdxXV64EGI6IP3jN5+f0rUilkaZGkthUFvtUJT8/u27V64IPJD5YV8AdwAnbqzu9ndSc
-        dB4zpHu8IXFTI3jLrvkJmwi0gZdYry/QrI+RKRIX8JJp3jEHgDKIaJgqm+FOCA==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=7uPPJRC0zT+/X3ZhoKFyc0cPV876f8SJt5Y3T/6tcvU=;
+        b=a0xqJ+XKxB0MShfWSI+yGNXLVnY+IeFUdqiUiO7Xn/BnUaBJrp1Lqy5CKqAHG3OR3qvSHP
+        2DdO8dpKDjBiNn0K3aFKliJmll0Jq4YSk5VPyrY3IMMzbNr+9lUfiRKOiFsLxKiH1MFOuR
+        1PTE+Y8JAUmE6eKxHTJwdYhYjPajVY6xvMig6HblZhm3zmbCtFy0L3IpmwWlLuOCU6nomk
+        1HKxWHA9VvQEHFAITOSbEEANxC+FJAMtk8kj/vT/Dywr/2fdRbe9HPdC3TwzZf9qORriDg
+        y5B7CRfAmTPWB2t0YuSdzgzjRQl1s1EIfPiLQfYYl3HY75nQ0RYEIRteO8VTdA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607289669;
+        s=2020e; t=1607289670;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=78N4YASvionDygjdJyxpH+khdroZX1Ca/lN2xuO3Y+M=;
-        b=fsGxexKcdre6NZN28kfKMYYZOFmprN0Cqj36djKUUjxh2OG1WOq52sGCGjyrJbxbXgWjVZ
-        GMVraCblJdmuMRCg==
-Date:   Sun, 06 Dec 2020 22:12:53 +0100
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=7uPPJRC0zT+/X3ZhoKFyc0cPV876f8SJt5Y3T/6tcvU=;
+        b=ofGJi84ZUQjM8oE6/OF4/1XP3QmgPOdyPw+FxFxePrwrEA6KinzZ/ye5xXyhJM3KYB1DCx
+        iP6qECgt9raezqCQ==
+Date:   Sun, 06 Dec 2020 22:12:54 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Marco Elver <elver@google.com>,
@@ -43,42 +43,53 @@ Cc:     Marco Elver <elver@google.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Will Deacon <will@kernel.org>,
         Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [patch 0/3] tick: Annotate and document the intentionaly racy
- tick_do_timer_cpu
+Subject: [patch 1/3] tick: Remove pointless cpu valid check in hotplug code
+References: <20201206211253.919834182@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlcmUgaGF2ZSBiZWVuIHNldmVyYWwgcmVwb3J0cyBhYm91dCBLQ1NBTiBjb21wbGFpbnRzIHZz
-LiB0aGUgcmFjeSBhY2Nlc3MKdG8gdGlja19kb190aW1lcl9jcHUuIFRoZSBzeXpib3QgbW9kZXJh
-dGlvbiBxdWV1ZSBoYXMgdGhyZWUgZGlmZmVyZW50CnBhdHRlcm5zIGFsbCByZWxhdGVkIHRvIHRo
-aXMuIFRoZXJlIGFyZSBhIGZldyBtb3JlLi4uCgpBcyBJIGtub3cgdGhhdCB0aGlzIGlzIGludGVu
-dGlvbmFsIGFuZCBzYWZlLCBJIGRpZCBub3QgcGF5IG11Y2ggYXR0ZW50aW9uCnRvIGl0LCBidXQg
-TWFyY28gYWN0dWFsbHkgbWFkZSBtZSBmZWVsIGJhZCBhIGZldyBkYXlzIGFnbyBhcyBoZSBleHBs
-YWluZWQKdGhhdCB0aGVzZSBpbnRlbnRpb25hbCByYWNlcyBnZW5lcmF0ZSB0b28gbXVjaCBub2lz
-ZSB0byBnZXQgdG8gdGhlCmRhbmdlcm91cyBvbmVzLgoKVGhlcmUgd2FzIGFuIGVhcmxpZXIgYXR0
-ZW1wdCB0byBqdXN0IHNpbGVuY2UgS0NTQU4gYnkgc2xhcHBpbmcgUkVBRC9XUklURQpvbmNlIGFs
-bCBvdmVyIHRoZSBwbGFjZSB3aXRob3V0IGV2ZW4gdGhlIGZhaW50aWVzdCBhdHRlbXB0IG9mIHJl
-YXNvbmluZywKd2hpY2ggaXMgZGVmaW5pdGVseSB0aGUgd3JvbmcgdGhpbmcgdG8gZG8uCgpUaGUg
-YmFkIHRoaW5nIGFib3V0IHRpY2tfZG9fdGltZXJfY3B1IGlzIHRoYXQgaXRzIG9ubHkgYmFyZWx5
-IGRvY3VtZW50ZWQKd2h5IGl0IGlzIHNhZmUgYW5kIHdvcmtzIGF0IGFsbCwgd2hpY2ggbWFrZXMg
-aXQgZXh0cmVtbHkgaGFyZCBmb3Igc29tZW9uZQpub3QgcmVhbGx5IGZhbWlsaWFyIHdpdGggdGhl
-IGNvZGUgdG8gY29tZSB1cCB3aXRoIHJlYXNvbmluZy4KClNvIE1hcmNvIG1hZGUgbWUgZmFzdCBm
-b3J3YXJkIHRoYXQgaXRlbSBpbiBteSB0b2RvIGxpc3QgYW5kIEkgaGF2ZSB0byBhZG1pdAp0aGF0
-IGl0IHdvdWxkIGhhdmUgYmVlbiBkYW1uZWQgaGVscGZ1bCBpZiB0aGF0IEdsZWl4bmVyIGR1ZGUg
-d291bGQgaGF2ZQphZGRlZCBwcm9wZXIgY29tbWVudHMgaW4gdGhlIGZpcnN0IHBsYWNlLiBXb3Vs
-ZCBoYXZlIHNwYXJlZCBhIGxvdCBvZiBicmFpbgp0d2lzdGluZy4gOikKClN0YXJpbmcgYXQgYWxs
-IHVzYWdlIHNpdGVzIHVuZWFydGhlZCBhIGZldyBzaWxseSB0aGluZ3Mgd2hpY2ggYXJlIGNsZWFu
-ZWQKdXAgdXBmcm9udC4gVGhlIGFjdHVhbCBhbm5vdGF0aW9uIHVzZXMgZGF0YV9yYWNlKCkgd2l0
-aCBwcm9wZXIgY29tbWVudHMgYXMKUkVBRC9XUklURV9PTkNFKCkgZG9lcyBub3QgcmVhbGx5IGJ1
-eSBhbnl0aGluZyB1bmRlciB0aGUgYXNzdW1wdGlvbiB0aGF0CnRoZSBjb21waWxlciBkb2VzIG5v
-dCBwbGF5IHNpbGx5IGJ1Z2dlcnMgYW5kIHRlYXJzIHRoZSAzMmJpdCBzdG9yZXMvbG9hZHMKaW50
-byBieXRlIHdpc2Ugb25lcy4gQnV0IGV2ZW4gdGhhdCB3b3VsZCBjYXVzZSBqdXN0IHBvdGVudGlh
-bGx5IHNob3J0ZXIKaWRsZSBzbGVlcHMgaW4gdGhlIHdvcnN0IGNhc2UgYW5kIG5vdCBhIGNvbXBs
-ZXRlIG1hbGZ1bmN0aW9uLgoKVGhhbmtzLAoKCXRnbHgKLS0tLQogdGljay1jb21tb24uYyB8ICAg
-NTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiB0aWNrLXNjaGVkLmMgIHwgICA5
-NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
-LS0tCiAyIGZpbGVzIGNoYW5nZWQsIDExNyBpbnNlcnRpb25zKCspLCAzNCBkZWxldGlvbnMoLSkK
+tick_handover_do_timer() which is invoked when a CPU is unplugged has a
+check for cpumask_first(cpu_online_mask) when it tries to hand over the
+tick update duty.
+
+Checking the result of cpumask_first() there is pointless because if the
+online mask is empty at this point, then this would be the last CPU in the
+system going offline, which is impossible. There is always at least one CPU
+remaining. If online mask would be really empty then the timer duty would
+be the least of the resulting problems.
+
+Remove the well meant check simply because it is pointless and confusing.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/tick-common.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+--- a/kernel/time/tick-common.c
++++ b/kernel/time/tick-common.c
+@@ -407,17 +407,13 @@ EXPORT_SYMBOL_GPL(tick_broadcast_oneshot
+ /*
+  * Transfer the do_timer job away from a dying cpu.
+  *
+- * Called with interrupts disabled. Not locking required. If
++ * Called with interrupts disabled. No locking required. If
+  * tick_do_timer_cpu is owned by this cpu, nothing can change it.
+  */
+ void tick_handover_do_timer(void)
+ {
+-	if (tick_do_timer_cpu == smp_processor_id()) {
+-		int cpu = cpumask_first(cpu_online_mask);
+-
+-		tick_do_timer_cpu = (cpu < nr_cpu_ids) ? cpu :
+-			TICK_DO_TIMER_NONE;
+-	}
++	if (tick_do_timer_cpu == smp_processor_id())
++		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
+ }
+ 
+ /*
+
