@@ -2,129 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E382D077B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0CA2D077E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgLFVtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:49:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43189 "EHLO
+        id S1727664AbgLFV5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:57:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28768 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725977AbgLFVtP (ORCPT
+        by vger.kernel.org with ESMTP id S1727040AbgLFV5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:49:15 -0500
+        Sun, 6 Dec 2020 16:57:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607291269;
+        s=mimecast20190719; t=1607291783;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OTK3a2EpgqcMFsmrPHPH78wqX4JkIQW5zqkRG3GIknw=;
-        b=Hj0gyByvgDu0Rq1YE5neEAyLLyFJ9SXYRtEusp6RezfuEcypIUlm/pX/rYommhUVMYC7Yp
-        +1g3x5Qxf8Srx7/o4IN8BAO7H8kndoatyrx7Wx4RIRqnfGJQpII0441YlDtdBmhoIyzog9
-        HT9mEOqAgK5OQy6rhseB94qg75+UgYA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-idRDD4a2MVi-hjJDwa4AKg-1; Sun, 06 Dec 2020 16:47:47 -0500
-X-MC-Unique: idRDD4a2MVi-hjJDwa4AKg-1
-Received: by mail-qk1-f200.google.com with SMTP id r124so10743792qkd.8
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 13:47:47 -0800 (PST)
+         to:to:cc:cc; bh=SZhDzfa4oT8NgJwqjzEIk/YInKN3ouejuHhyl5ZwFhY=;
+        b=ZfgMcmJQDr2gkoA50+7lnqkEdh/cgNRCK35JcA9pEupdYGXrEw32VkY7iA1g/tzOU64lZd
+        d+QR+JxZnJZEujvBHAyLIdLt9zwpLBVhXQph2ePK4/nXCMc2v3akEfJ7fcRwmYwiufr83K
+        vZemb2C1dQyINmlBu4vfR7gy/f72Xw8=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-Nkrn0_gMO-mvvsbG6pxoDw-1; Sun, 06 Dec 2020 16:56:19 -0500
+X-MC-Unique: Nkrn0_gMO-mvvsbG6pxoDw-1
+Received: by mail-qv1-f70.google.com with SMTP id o16so9813023qvq.4
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 13:56:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=OTK3a2EpgqcMFsmrPHPH78wqX4JkIQW5zqkRG3GIknw=;
-        b=giQ/UOmh4hnJshXEjrDTH/hHIZMY2QXKwRWOkcxLmDXg27ICQDyFGJiemCHfT6q/H0
-         ez9PpS04tTmvwPK0+w0uJ4flfXd070vfAmM6dcnffR7Inovobjkn/EwdAfCDPFxoQnqY
-         lNZiQaolCL3lezARGSJL/miK3Z5XvBMJoXJ8tfQz2pUubIKrtCRHJJuU3Tf7hfzmbasV
-         kRsp0sV+JZv9iP9OFoXW0vOAYpz1AkCvZevxFv836w4iNqu8bMqYzN0Ekn9hNf1zblOI
-         WY0ykJb2uCtApHMG8dNZ9BeHSkYo0IWnJaKneXTxAPGRsbZikqEPrJwnt8hK3hn21o2O
-         mB4w==
-X-Gm-Message-State: AOAM532x1njgoqqm9qmibz2+z6GYpKF+iI9i6K+Niz8olDB5X1b4vxXO
-        vUrwugFKy7cOy//CvDbB3ODmfRSuWrtOYE2Q8zUQpLqqwtDMatLUbHmCkBclD5YBgr0Get2ey4x
-        3/FboDPG7Znk7Pc6GY+UYCCf6
-X-Received: by 2002:a37:9301:: with SMTP id v1mr20962178qkd.419.1607291267447;
-        Sun, 06 Dec 2020 13:47:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxTSYUz8GprH7ZZQl7rfRTzOkUrvIm8134juk0lMfV/+12SIrmCKNfTzdhZMT6UYl2b500iiQ==
-X-Received: by 2002:a37:9301:: with SMTP id v1mr20962158qkd.419.1607291267253;
-        Sun, 06 Dec 2020 13:47:47 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id o5sm565190qti.47.2020.12.06.13.47.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SZhDzfa4oT8NgJwqjzEIk/YInKN3ouejuHhyl5ZwFhY=;
+        b=hX6p4lC1aP/LYf2kHHUggPtqcETvMnRxPmmtcutqB1rKJKLsd1AplMt3cuEb77BZIb
+         JKCwcl2U6OtcVd57XvXEcGYQisoiFp4QZJz7lqEO35m5C5JNK6pdJ/oXuh3uoJpkLajZ
+         DSDrKI28bH58z3ulAjbT2IVxPlTzqw6fGxpZUI8MPAg+/Y2OkCAqM2DC5iA72+g+PgKz
+         AtSmb0xK8FnSVy6Nm3qIg/AmCNLlx2XwmbWYPMN6y1Iq+BSwXcm4zGzChoIXpcFFD2Kk
+         gMe+whYYFUTTi/85zP52Md25NNmt88KOJJGNrv72JQQgSsl3SStREeaq9DPIkbsUsBtz
+         jLDQ==
+X-Gm-Message-State: AOAM532piqUU1y7AYRLePvWF2XkdK/Bj2tZnYKBs/X0QrAQ4s5cwtfQJ
+        0heO3yA/NxKaxIxRZ71zcRmOPCc2GLX1tf2IjBnM7MT5rUVSYZD00yvKXAu9D1u6hs8DaqUtCJQ
+        3jnEnfKi8+MAYKUvyM8xJWkOG
+X-Received: by 2002:ad4:4a87:: with SMTP id h7mr18153023qvx.14.1607291779205;
+        Sun, 06 Dec 2020 13:56:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwkIQdFj8xRKE+iz3KsZ+tydIZsIIzHdUR/CFFe8O2mbD4vu7m9qnqnPY0gyMWib+zVe+WUWw==
+X-Received: by 2002:ad4:4a87:: with SMTP id h7mr18152999qvx.14.1607291778915;
+        Sun, 06 Dec 2020 13:56:18 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b73sm11369174qkc.87.2020.12.06.13.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 13:47:46 -0800 (PST)
-References: <20201205014340.148235-1-jsnitsel@redhat.com>
- <20201205014340.148235-3-jsnitsel@redhat.com>
- <875z5e99ez.fsf@nanos.tec.linutronix.de>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v3 2/4] drm/i915/pmu: Use kstat_irqs to get interrupt count
-In-reply-to: <875z5e99ez.fsf@nanos.tec.linutronix.de>
-Date:   Sun, 06 Dec 2020 14:47:45 -0700
-Message-ID: <87im9ehaim.fsf@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 06 Dec 2020 13:56:18 -0800 (PST)
+From:   trix@redhat.com
+To:     yilun.xu@intel.com, gregkh@linuxfoundation.org, hao.wu@intel.com,
+        mdf@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [RFC] fpga: dfl: a prototype uio driver
+Date:   Sun,  6 Dec 2020 13:55:54 -0800
+Message-Id: <20201206215554.350230-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-Thomas Gleixner @ 2020-12-06 09:38 MST:
+From [PATCH 0/2] UIO support for dfl devices
+https://lore.kernel.org/linux-fpga/1602828151-24784-1-git-send-email-yilun.xu@intel.com/
 
-> On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
->
->> Now that kstat_irqs is exported, get rid of count_interrupts in
->> i915_pmu.c
->> --- a/drivers/gpu/drm/i915/i915_pmu.c
->> +++ b/drivers/gpu/drm/i915/i915_pmu.c
->> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(struct hrtimer *hrtimer)
->>  	return HRTIMER_RESTART;
->>  }
->>  
->> -static u64 count_interrupts(struct drm_i915_private *i915)
->> -{
->> -	/* open-coded kstat_irqs() */
->> -	struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
->> -	u64 sum = 0;
->> -	int cpu;
->> -
->> -	if (!desc || !desc->kstat_irqs)
->> -		return 0;
->> -
->> -	for_each_possible_cpu(cpu)
->> -		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
->> -
->> -	return sum;
->> -}
->
-> May I ask why this has been merged in the first place?
->
-> Nothing in a driver has ever to fiddle with the internals of an irq
-> descriptor. We have functions for properly accessing them. Just because
-> C allows to fiddle with everything is not a justification. If the
-> required function is not exported then adding the export with a proper
-> explanation is not asked too much.
->
-> Also this lacks protection or at least a comment why this can be called
-> safely and is not subject to a concurrent removal of the irq descriptor.
-> The same problem exists when calling kstat_irqs(). It's even documented
-> at the top of the function.
->
-> Thanks,
->
->         tglx
+Here is an idea to have uio support with no driver override.
 
-I don't know the history behind this bit. I stumbled across it in cscope
-when looking for places using kstat_irqs.
+This makes UIO the primary driver interface because every feature
+will have one and makes the existing platform driver interface
+secondary.  There will be a new burden for locking write access when
+they compete.
+
+Example shows finding the fpga's temperture.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/fpga/dfl-fme-main.c |  9 +++-
+ drivers/fpga/dfl-uio.c      | 96 +++++++++++++++++++++++++++++++++++++
+ drivers/fpga/dfl.c          | 44 ++++++++++++++++-
+ drivers/fpga/dfl.h          |  9 ++++
+ uio.c                       | 56 ++++++++++++++++++++++
+ 5 files changed, 212 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/fpga/dfl-uio.c
+ create mode 100644 uio.c
+
+diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
+index 037dc4f946f0..3323e90a18c4 100644
+--- a/drivers/fpga/dfl-fme-main.c
++++ b/drivers/fpga/dfl-fme-main.c
+@@ -709,12 +709,18 @@ static int fme_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto dev_destroy;
+ 
+-	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
++	ret = dfl_fpga_dev_feature_init_uio(pdev, DFH_TYPE_FIU);
+ 	if (ret)
+ 		goto feature_uinit;
+ 
++	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
++	if (ret)
++		goto feature_uinit_uio;
++
+ 	return 0;
+ 
++feature_uinit_uio:
++	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
+ feature_uinit:
+ 	dfl_fpga_dev_feature_uinit(pdev);
+ dev_destroy:
+@@ -726,6 +732,7 @@ exit:
+ static int fme_remove(struct platform_device *pdev)
+ {
+ 	dfl_fpga_dev_ops_unregister(pdev);
++	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
+ 	dfl_fpga_dev_feature_uinit(pdev);
+ 	fme_dev_destroy(pdev);
+ 
+diff --git a/drivers/fpga/dfl-uio.c b/drivers/fpga/dfl-uio.c
+new file mode 100644
+index 000000000000..7610ee0b19dc
+--- /dev/null
++++ b/drivers/fpga/dfl-uio.c
+@@ -0,0 +1,96 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * prototype dfl uio driver
++ *
++ * Copyright Tom Rix 2020
++ */
++#include <linux/module.h>
++#include "dfl.h"
++
++static irqreturn_t dfl_uio_handler(int irq, struct uio_info *info)
++{
++	return IRQ_HANDLED;
++}
++
++static int dfl_uio_mmap(struct uio_info *info, struct vm_area_struct *vma)
++{
++	int ret = -ENODEV;
++	return ret;
++}
++
++static int dfl_uio_open(struct uio_info *info, struct inode *inode)
++{
++	int ret = -ENODEV;
++	struct dfl_feature *feature = container_of(info, struct dfl_feature, uio);
++	if (feature->dev)
++		mutex_lock(&feature->lock);
++
++	ret = 0;
++	return ret;
++}
++
++static int dfl_uio_release(struct uio_info *info, struct inode *inode)
++{
++	int ret = -ENODEV;
++	struct dfl_feature *feature = container_of(info, struct dfl_feature, uio);
++	if (feature->dev)
++		mutex_unlock(&feature->lock);
++
++	ret = 0;
++	return ret;
++}
++
++static int dfl_uio_irqcontrol(struct uio_info *info, s32 irq_on)
++{
++	int ret = -ENODEV;
++	return ret;
++}
++
++int dfl_uio_add(struct dfl_feature *feature)
++{
++	struct uio_info *uio = &feature->uio;
++	struct resource *res =
++		&feature->dev->resource[feature->resource_index];
++	int ret = 0;
++
++	uio->name = kasprintf(GFP_KERNEL, "dfl-uio-%llx", feature->id);
++	if (!uio->name) {
++		ret = -ENOMEM;
++		goto exit;
++	}
++
++	uio->version = "0.1";
++	uio->mem[0].memtype = UIO_MEM_PHYS;
++	uio->mem[0].addr = res->start & PAGE_MASK;
++	uio->mem[0].offs = res->start & ~PAGE_MASK;
++	uio->mem[0].size = (uio->mem[0].offs + resource_size(res)
++			    + PAGE_SIZE - 1) & PAGE_MASK;
++	/* How are nr_irqs > 1 handled ??? */
++	if (feature->nr_irqs == 1)
++		uio->irq = feature->irq_ctx[0].irq;
++	uio->handler = dfl_uio_handler;
++	//uio->mmap = dfl_uio_mmap;
++	uio->open = dfl_uio_open;
++	uio->release = dfl_uio_release;
++	uio->irqcontrol = dfl_uio_irqcontrol;
++
++	ret = uio_register_device(&feature->dev->dev, uio);
++	if (ret)
++		goto err_register;
++
++exit:
++	return ret;
++err_register:
++	kfree(uio->name);
++	goto exit;
++}
++EXPORT_SYMBOL_GPL(dfl_uio_add);
++
++int dfl_uio_remove(struct dfl_feature *feature)
++{
++	uio_unregister_device(&feature->uio);
++	kfree(feature->uio.name);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(dfl_uio_remove);
++
+diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+index 1305be48037d..af2cd3d1b5f6 100644
+--- a/drivers/fpga/dfl.c
++++ b/drivers/fpga/dfl.c
+@@ -603,6 +603,7 @@ static int dfl_feature_instance_init(struct platform_device *pdev,
+ 	}
+ 
+ 	feature->ops = drv->ops;
++	mutex_init(&feature->lock);
+ 
+ 	return ret;
+ }
+@@ -663,10 +664,51 @@ exit:
+ }
+ EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init);
+ 
++int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type) {
++	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature *feature;
++	int ret;
++
++	dfl_fpga_dev_for_each_feature(pdata, feature) {
++		if (dfh_type == DFH_TYPE_FIU) {
++			if (feature->id == FEATURE_ID_FIU_HEADER ||
++			    feature->id == FEATURE_ID_AFU)
++			    continue;
++
++			ret = dfl_uio_add(feature);
++			if (ret)
++				goto exit;
++		}
++	}
++
++	return 0;
++exit:
++	dfl_fpga_dev_feature_uinit_uio(pdev, dfh_type);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init_uio);
++
++int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type) {
++	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct dfl_feature *feature;
++	int ret = 0;
++
++	dfl_fpga_dev_for_each_feature(pdata, feature) {
++		if (dfh_type == DFH_TYPE_FIU) {
++			if (feature->id == FEATURE_ID_FIU_HEADER ||
++			    feature->id == FEATURE_ID_AFU)
++				continue;
++
++			ret |= dfl_uio_remove(feature);
++		}
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_uinit_uio);
++
+ static void dfl_chardev_uinit(void)
+ {
+ 	int i;
+-
+ 	for (i = 0; i < DFL_FPGA_DEVT_MAX; i++)
+ 		if (MAJOR(dfl_chrdevs[i].devt)) {
+ 			unregister_chrdev_region(dfl_chrdevs[i].devt,
+diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+index a85d1cd7a130..fde0fc902d4d 100644
+--- a/drivers/fpga/dfl.h
++++ b/drivers/fpga/dfl.h
+@@ -26,6 +26,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/uuid.h>
++#include <linux/uio_driver.h>
+ #include <linux/fpga/fpga-region.h>
+ 
+ /* maximum supported number of ports */
+@@ -232,6 +233,7 @@ struct dfl_feature_irq_ctx {
+  * struct dfl_feature - sub feature of the feature devices
+  *
+  * @dev: ptr to pdev of the feature device which has the sub feature.
++ * @uio: uio interface for feature.
+  * @id: sub feature id.
+  * @index: unique identifier for an sub feature within the feature device.
+  *	   It is possible that multiply sub features with same feature id are
+@@ -248,6 +250,8 @@ struct dfl_feature_irq_ctx {
+  */
+ struct dfl_feature {
+ 	struct platform_device *dev;
++	struct uio_info uio;
++	struct mutex lock; /* serialize dev and uio */
+ 	u64 id;
+ 	int index;
+ 	int resource_index;
+@@ -360,6 +364,11 @@ void dfl_fpga_dev_feature_uinit(struct platform_device *pdev);
+ int dfl_fpga_dev_feature_init(struct platform_device *pdev,
+ 			      struct dfl_feature_driver *feature_drvs);
+ 
++int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type);
++int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type);
++int dfl_uio_add(struct dfl_feature *feature);
++int dfl_uio_remove(struct dfl_feature *feature);
++
+ int dfl_fpga_dev_ops_register(struct platform_device *pdev,
+ 			      const struct file_operations *fops,
+ 			      struct module *owner);
+diff --git a/uio.c b/uio.c
+new file mode 100644
+index 000000000000..50210aab4822
+--- /dev/null
++++ b/uio.c
+@@ -0,0 +1,56 @@
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <stdint.h>
++
++int main()
++{
++	int fd;
++	uint64_t *ptr;
++	unsigned page_size=sysconf(_SC_PAGESIZE);
++	struct stat sb;
++
++	/*
++	 * this is fid 1, thermal mgt
++	 * ex/ 
++	 * # cat /sys/class/hwmon/hwmon3/temp1_input
++	 * 39000
++	 */
++	fd = open("/dev/uio0", O_RDONLY|O_SYNC);
++	if (fd < 0) {
++		perror("uio open:");
++		return errno;
++	}
++
++	ptr = (uint64_t *) mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
++	if (!ptr) {
++		perror("uio mmap:");
++	} else {
++
++		/* from dfl-fme-main.c :
++		 * 
++		 * #define FME_THERM_RDSENSOR_FMT1	0x10
++		 * #define FPGA_TEMPERATURE	GENMASK_ULL(6, 0)
++		 *
++		 * case hwmon_temp_input:
++		 * v = readq(feature->ioaddr + FME_THERM_RDSENSOR_FMT1);
++		 * *val = (long)(FIELD_GET(FPGA_TEMPERATURE, v) * 1000);
++		 * break;
++		 */
++		uint64_t v = ptr[2];
++		v &= (1 << 6) -1;
++		v *= 1000;
++		printf("Temperature %d\n", v);
++	    
++		munmap(ptr, page_size);
++	}
++	if (close(fd))
++		perror("uio close:");
++
++	return errno;
++}
+-- 
+2.18.4
 
