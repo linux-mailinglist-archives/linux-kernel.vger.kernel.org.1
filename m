@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DDF2D053D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355D92D0559
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgLFNfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 08:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728240AbgLFNfM (ORCPT
+        id S1728160AbgLFNxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 08:53:49 -0500
+Received: from mail-m971.mail.163.com ([123.126.97.1]:40282 "EHLO
+        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgLFNxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 08:35:12 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B05C061A51;
-        Sun,  6 Dec 2020 05:34:12 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id jx16so15550350ejb.10;
-        Sun, 06 Dec 2020 05:34:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=JOVXuy3e6JymxKOPEoHBdkzfQUhgnoR1msgkoaiMxH70fRYib/t+qYr+VQpo7JKMln
-         F91whwe0wS6E4TTblt2ayRevdquO+k5v8NBiIGfJfJ6kCo75D+I0zR/Vp3M9iOTClr+y
-         RCD4WdS3002o8Co4VHrBS/SLNuFuYVhfulYpaFxC/YwFdKNT4An0K8Wd/1+AdipNSVDq
-         DmHl6hIzKsAopuPY3pE8J0vQW+3Q5+kXiYphccbg7W1ZVI6bX+A6IWPSUqr82lBEhjME
-         zxPxH0zFGmboVpKVBFPb3LvGF83sSP9eqfPZsKkrNaa7ufXKT5erD+NMFSrNFe0jGx/r
-         fRdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
-        b=q0FlCsPRfidfdGSxeSC8N7dtdlCr974g8WjLO4/BOYXYdSh2+127MhbgJAKz7eLyU1
-         G/m5WqMwsKl1tQy+WQ1ZO0sqJXEZxUQ/ca09uHrfnURLg4roo9U3Fbq95WUtr3AhKJMX
-         HthPYX0ki3eW1Er61jq5dS8jft83O8QbMM8pvDIYqcjNhLpydXhAYvG7EDmQc+g1JJCj
-         /E04k0Kh4fOPqEhK3GchcAcH3N8I6I7trQCGtH6xVRujjYBFqTkGopRDodKTQVRllRAU
-         HMh7OUwP/FC8ZdAoXHEBq46LS2fwkXDLXZQNJfnA27zD1sKMWDzAEFSOTVCTXIiv2s0w
-         lRlw==
-X-Gm-Message-State: AOAM533naJC/E145vW9ZIbxu9hz9j0KzlpFGGCjkSUg/V1OFUd3tvUpx
-        7EFkQ1pCRqC6S5vPF3MU3Xo=
-X-Google-Smtp-Source: ABdhPJztME1AEa+6AzKHTpyb9Y+omIXYUc5Z2Uz2KCJGA5tPM3cmuLgOt76RoEEmj6mHLL05lTnjBQ==
-X-Received: by 2002:a17:906:f05:: with SMTP id z5mr15442015eji.8.1607261651143;
-        Sun, 06 Dec 2020 05:34:11 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id qh23sm7770129ejb.71.2020.12.06.05.34.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 05:34:10 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        Sun, 6 Dec 2020 08:53:48 -0500
+X-Greylist: delayed 986 seconds by postgrey-1.27 at vger.kernel.org; Sun, 06 Dec 2020 08:53:43 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=uDWX3GQBDhMg1X3HJI
+        Olbdz5D5Bs5i6dSzmMCE8ONSg=; b=K+gPg3B3pRR6j6XbXreaMY8IP5w7ZZ1kql
+        S5Rup4WT0ANHJJEQQDnUpmZJWnZ9AryRFNYSPzKvFS7uAt4cJ0GlVtZ8j5qU6Csz
+        GblrE/FJvH5NgL9LMH4wCDvS/ilr+1sZ70m/IACkUMHGOZROUgkSnU9ovV0ubL98
+        6OQbOwW2Q=
+Received: from localhost.localdomain (unknown [202.112.113.212])
+        by smtp1 (Coremail) with SMTP id GdxpCgBXNkEu3sxfE1UBAQ--.322S4;
+        Sun, 06 Dec 2020 21:35:45 +0800 (CST)
+From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 5/5] ARM: dts: rockchip: enable hdmi_sound and i2s0 for rk3066a-mk808
-Date:   Sun,  6 Dec 2020 14:33:55 +0100
-Message-Id: <20201206133355.16007-6-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201206133355.16007-1-jbx6244@gmail.com>
-References: <20201206133355.16007-1-jbx6244@gmail.com>
+Subject: [PATCH 1/1] ionic: fix array overflow on receiving too many fragments for a packet
+Date:   Sun,  6 Dec 2020 21:35:37 +0800
+Message-Id: <20201206133537.30135-1-ruc_zhangxiaohui@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: GdxpCgBXNkEu3sxfE1UBAQ--.322S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZFykuFyfGF48Kw4ftF17Awb_yoW8JF47pF
+        WUGFyUur4kXr4q9a1vyr4kuFW5Aw4rWrWSgr9a934rWw17tFZ7W3Z8tFyfAr95trW8Cr10
+        qrsIywn5X3Z8WwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UkcTQUUUUU=
+X-Originating-IP: [202.112.113.212]
+X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/xtbBRRHyMFPAIsMQXwAAsr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make some noise with mk808. Enable the hdmi_sound node and
-add i2s0 as sound source for hdmi.
+From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+If the hardware receives an oversized packet with too many rx fragments,
+skb_shinfo(skb)->frags can overflow and corrupt memory of adjacent pages.
+This becomes especially visible if it corrupts the freelist pointer of
+a slab page.
+
+Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 ---
- arch/arm/boot/dts/rk3066a-mk808.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/pensando/ionic/ionic_txrx.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
-index eed9e60cf..5fe74c097 100644
---- a/arch/arm/boot/dts/rk3066a-mk808.dts
-+++ b/arch/arm/boot/dts/rk3066a-mk808.dts
-@@ -116,6 +116,14 @@
- 	};
- };
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+index 169ac4f54..a3e274c65 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
+@@ -102,8 +102,12 @@ static struct sk_buff *ionic_rx_frags(struct ionic_queue *q,
  
-+&hdmi_sound {
-+	status = "okay";
-+};
+ 		dma_unmap_page(dev, dma_unmap_addr(page_info, dma_addr),
+ 			       PAGE_SIZE, DMA_FROM_DEVICE);
+-		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
++		struct skb_shared_info *shinfo = skb_shinfo(skb);
 +
-+&i2s0 {
-+	status = "okay";
-+};
-+
- &mmc0 {
- 	bus-width = <4>;
- 	cap-mmc-highspeed;
++		if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
++			skb_add_rx_frag(skb, shinfo->nr_frags,
+ 				page_info->page, 0, frag_len, PAGE_SIZE);
++		}
+ 		page_info->page = NULL;
+ 		page_info++;
+ 		i--;
 -- 
-2.11.0
+2.17.1
 
