@@ -2,131 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AB82D05E9
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7812D05ED
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgLFQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:22:40 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58914 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLFQWk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:22:40 -0500
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607271718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aU0kdttfnudUEJiKpFCgtr9uIFUJ/R19T/3hCU2kwXc=;
-        b=I5UtT+4OPdtq5fyJ9N8nsHEHGzcZ/sQnwD/I8fDsVlLTjbBoARYNPJubCuFAM/o5lEN1oR
-        vmFkegRJnhBzP16R7ix80S73Muja8EsK9xj46kgUXmbchxMqYAQcMfP9Ag9ZSZQ+cWdEUD
-        2mw46ynhvZX+fDC1sJfCkPbwv2lvLwlnbaRKRmwHB5SXTs/qyWWJK9m5N2H7ayn7iYmmlc
-        q/Qc1o8wMPzQVz236ecDLit6Mqvk98NuNKB8iWKhDZNNoG6TeAdhaldlvG1Hmu+fT+l+BO
-        NnI1rAWMv1p1G8t9oR8K+3UNoWbtGo4CMtqO/ZugPp+t2oWBAeKWg35kDM1jOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607271718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aU0kdttfnudUEJiKpFCgtr9uIFUJ/R19T/3hCU2kwXc=;
-        b=joAAR5eD6RptGGKR669ENDAGXOyCS3fm0Rz6f/V8dTVVtgWAc94rZiADRFbpdWkETlVCja
-        S7UcOGcLlyg0NUBQ==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH -tip v1 3/3] seqlock: kernel-doc: Specify when preemption is automatically altered
-Date:   Sun,  6 Dec 2020 17:21:43 +0100
-Message-Id: <20201206162143.14387-4-a.darwish@linutronix.de>
-In-Reply-To: <20201206162143.14387-1-a.darwish@linutronix.de>
-References: <20201206162143.14387-1-a.darwish@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726861AbgLFQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:29:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726186AbgLFQ3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 11:29:20 -0500
+From:   Oded Gabbay <ogabbay@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH] habanalabs/gaudi: remove duplicated gaudi packets masks
+Date:   Sun,  6 Dec 2020 18:28:30 +0200
+Message-Id: <20201206162835.4088-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel-doc annotations for sequence counters write side functions
-are incomplete: they do not specify when preemption is automatically
-disabled and re-enabled.
+From: Ofir Bitton <obitton@habana.ai>
 
-This has confused a number of call-site developers. Fix it.
+As all packets use the same CTL register masks, we remove duplicated
+masks and use common masks instead.
 
-Link: https://lkml.kernel.org/r/20201030235121.GQ2620339@nvidia.com
-Link: https://lkml.kernel.org/r/CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- include/linux/seqlock.h | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/misc/habanalabs/gaudi/gaudi.c         | 32 +++++++++----------
+ .../habanalabs/include/gaudi/gaudi_packets.h  | 24 --------------
+ 2 files changed, 16 insertions(+), 40 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 235cbc65fd71..2f7bb92b4c9e 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -456,6 +456,8 @@ static inline int do_read_seqcount_retry(const seqcount_t *s, unsigned start)
- /**
-  * raw_write_seqcount_begin() - start a seqcount_t write section w/o lockdep
-  * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-+ *
-+ * Context: check write_seqcount_begin()
-  */
- #define raw_write_seqcount_begin(s)					\
- do {									\
-@@ -475,6 +477,8 @@ static inline void do_raw_write_seqcount_begin(seqcount_t *s)
- /**
-  * raw_write_seqcount_end() - end a seqcount_t write section w/o lockdep
-  * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-+ *
-+ * Context: check write_seqcount_end()
-  */
- #define raw_write_seqcount_end(s)					\
- do {									\
-@@ -498,6 +502,7 @@ static inline void do_raw_write_seqcount_end(seqcount_t *s)
-  * @subclass: lockdep nesting level
-  *
-  * See Documentation/locking/lockdep-design.rst
-+ * Context: check write_seqcount_begin()
-  */
- #define write_seqcount_begin_nested(s, subclass)			\
- do {									\
-@@ -519,11 +524,10 @@ static inline void do_write_seqcount_begin_nested(seqcount_t *s, int subclass)
-  * write_seqcount_begin() - start a seqcount_t write side critical section
-  * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-  *
-- * write_seqcount_begin opens a write side critical section of the given
-- * seqcount_t.
-- *
-- * Context: seqcount_t write side critical sections must be serialized and
-- * non-preemptible. If readers can be invoked from hardirq or softirq
-+ * Context: sequence counter write side sections must be serialized and
-+ * non-preemptible. Preemption will be automatically disabled if and
-+ * only if the seqcount write serialization lock is associated, and
-+ * preemptible.  If readers can be invoked from hardirq or softirq
-  * context, interrupts or bottom halves must be respectively disabled.
-  */
- #define write_seqcount_begin(s)						\
-@@ -545,7 +549,8 @@ static inline void do_write_seqcount_begin(seqcount_t *s)
-  * write_seqcount_end() - end a seqcount_t write side critical section
-  * @s: Pointer to seqcount_t or any of the seqcount_LOCKNAME_t variants
-  *
-- * The write section must've been opened with write_seqcount_begin().
-+ * Context: Preemption will be automatically re-enabled if and only if
-+ * the seqcount write serialization lock is associated, and preemptible.
-  */
- #define write_seqcount_end(s)						\
- do {									\
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 076a55ebf357..9ddf39deb692 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -7903,10 +7903,10 @@ static u32 gaudi_gen_signal_cb(struct hl_device *hdev, void *data, u16 sob_id,
+ 	ctl = FIELD_PREP(GAUDI_PKT_SHORT_CTL_ADDR_MASK, sob_id * 4);
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OP_MASK, 0); /* write the value */
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_BASE_MASK, 3); /* W_S SOB base */
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, eb);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_RB_MASK, 1);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_MB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, eb);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 1);
+ 
+ 	pkt->value = cpu_to_le32(value);
+ 	pkt->ctl = cpu_to_le32(ctl);
+@@ -7923,10 +7923,10 @@ static u32 gaudi_add_mon_msg_short(struct packet_msg_short *pkt, u32 value,
+ 
+ 	ctl = FIELD_PREP(GAUDI_PKT_SHORT_CTL_ADDR_MASK, addr);
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_BASE_MASK, 2);  /* W_S MON base */
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, 0);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_RB_MASK, 1);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_MB_MASK, 0); /* last pkt MB */
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, 0);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 0); /* last pkt MB */
+ 
+ 	pkt->value = cpu_to_le32(value);
+ 	pkt->ctl = cpu_to_le32(ctl);
+@@ -7972,10 +7972,10 @@ static u32 gaudi_add_arm_monitor_pkt(struct hl_device *hdev,
+ 	ctl = FIELD_PREP(GAUDI_PKT_SHORT_CTL_ADDR_MASK, msg_addr_offset);
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OP_MASK, 0); /* write the value */
+ 	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_BASE_MASK, 2); /* W_S MON base */
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, 0);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_RB_MASK, 1);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_MB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_MSG_SHORT);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, 0);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 1);
+ 
+ 	pkt->value = cpu_to_le32(value);
+ 	pkt->ctl = cpu_to_le32(ctl);
+@@ -7993,10 +7993,10 @@ static u32 gaudi_add_fence_pkt(struct packet_fence *pkt)
+ 	cfg |= FIELD_PREP(GAUDI_PKT_FENCE_CFG_TARGET_VAL_MASK, 1);
+ 	cfg |= FIELD_PREP(GAUDI_PKT_FENCE_CFG_ID_MASK, 2);
+ 
+-	ctl = FIELD_PREP(GAUDI_PKT_FENCE_CTL_OPCODE_MASK, PACKET_FENCE);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_EB_MASK, 0);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_RB_MASK, 1);
+-	ctl |= FIELD_PREP(GAUDI_PKT_SHORT_CTL_MB_MASK, 1);
++	ctl = FIELD_PREP(GAUDI_PKT_CTL_OPCODE_MASK, PACKET_FENCE);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_EB_MASK, 0);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_RB_MASK, 1);
++	ctl |= FIELD_PREP(GAUDI_PKT_CTL_MB_MASK, 1);
+ 
+ 	pkt->cfg = cpu_to_le32(cfg);
+ 	pkt->ctl = cpu_to_le32(ctl);
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h b/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
+index f30f2c0458d7..784b5bc8d0ba 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_packets.h
+@@ -111,18 +111,6 @@ struct packet_msg_long {
+ #define GAUDI_PKT_SHORT_CTL_BASE_SHIFT		22
+ #define GAUDI_PKT_SHORT_CTL_BASE_MASK		0x00C00000
+ 
+-#define GAUDI_PKT_SHORT_CTL_OPCODE_SHIFT	24
+-#define GAUDI_PKT_SHORT_CTL_OPCODE_MASK		0x1F000000
+-
+-#define GAUDI_PKT_SHORT_CTL_EB_SHIFT		29
+-#define GAUDI_PKT_SHORT_CTL_EB_MASK		0x20000000
+-
+-#define GAUDI_PKT_SHORT_CTL_RB_SHIFT		30
+-#define GAUDI_PKT_SHORT_CTL_RB_MASK		0x40000000
+-
+-#define GAUDI_PKT_SHORT_CTL_MB_SHIFT		31
+-#define GAUDI_PKT_SHORT_CTL_MB_MASK		0x80000000
+-
+ struct packet_msg_short {
+ 	__le32 value;
+ 	__le32 ctl;
+@@ -146,18 +134,6 @@ struct packet_msg_prot {
+ #define GAUDI_PKT_FENCE_CTL_PRED_SHIFT		0
+ #define GAUDI_PKT_FENCE_CTL_PRED_MASK		0x0000001F
+ 
+-#define GAUDI_PKT_FENCE_CTL_OPCODE_SHIFT	24
+-#define GAUDI_PKT_FENCE_CTL_OPCODE_MASK		0x1F000000
+-
+-#define GAUDI_PKT_FENCE_CTL_EB_SHIFT		29
+-#define GAUDI_PKT_FENCE_CTL_EB_MASK		0x20000000
+-
+-#define GAUDI_PKT_FENCE_CTL_RB_SHIFT		30
+-#define GAUDI_PKT_FENCE_CTL_RB_MASK		0x40000000
+-
+-#define GAUDI_PKT_FENCE_CTL_MB_SHIFT		31
+-#define GAUDI_PKT_FENCE_CTL_MB_MASK		0x80000000
+-
+ struct packet_fence {
+ 	__le32 cfg;
+ 	__le32 ctl;
 -- 
-2.29.2
+2.17.1
 
