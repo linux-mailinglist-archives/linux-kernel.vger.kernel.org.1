@@ -2,24 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E172D0438
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0702D0437
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgLFLoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:44:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43316 "EHLO mail.kernel.org"
+        id S1729261AbgLFLn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgLFLnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:43:55 -0500
+        id S1729213AbgLFLnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:52 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 37/39] Input: i8042 - add ByteSpeed touchpad to noloop table
-Date:   Sun,  6 Dec 2020 12:17:41 +0100
-Message-Id: <20201206111556.442034768@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 38/39] tracing: Remove WARN_ON in start_thread()
+Date:   Sun,  6 Dec 2020 12:17:42 +0100
+Message-Id: <20201206111556.483147152@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
 References: <20201206111554.677764505@linuxfoundation.org>
@@ -31,38 +32,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit a48491c65b513e5cdc3e7a886a4db915f848a5f5 upstream.
+commit 310e3a4b5a4fc718a72201c1e4cf5c64ac6f5442 upstream.
 
-It looks like the C15B laptop got another vendor: ByteSpeed LLC.
+This patch reverts commit 978defee11a5 ("tracing: Do a WARN_ON()
+ if start_thread() in hwlat is called when thread exists")
 
-Avoid AUX loopback on this touchpad as well, thus input subsystem will
-be able to recognize a Synaptics touchpad in the AUX port.
+.start hook can be legally called several times if according
+tracer is stopped
 
-BugLink: https://bugs.launchpad.net/bugs/1906128
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Link: https://lore.kernel.org/r/20201201054723.5939-1-po-hsu.lin@canonical.com
+screen window 1
+[root@localhost ~]# echo 1 > /sys/kernel/tracing/events/kmem/kfree/enable
+[root@localhost ~]# echo 1 > /sys/kernel/tracing/options/pause-on-trace
+[root@localhost ~]# less -F /sys/kernel/tracing/trace
+
+screen window 2
+[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
+0
+[root@localhost ~]# echo hwlat >  /sys/kernel/debug/tracing/current_tracer
+[root@localhost ~]# echo 1 > /sys/kernel/debug/tracing/tracing_on
+[root@localhost ~]# cat /sys/kernel/debug/tracing/tracing_on
+0
+[root@localhost ~]# echo 2 > /sys/kernel/debug/tracing/tracing_on
+
+triggers warning in dmesg:
+WARNING: CPU: 3 PID: 1403 at kernel/trace/trace_hwlat.c:371 hwlat_tracer_start+0xc9/0xd0
+
+Link: https://lkml.kernel.org/r/bd4d3e70-400d-9c82-7b73-a2d695e86b58@virtuozzo.com
+
+Cc: Ingo Molnar <mingo@redhat.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 978defee11a5 ("tracing: Do a WARN_ON() if start_thread() in hwlat is called when thread exists")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042-x86ia64io.h |    4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/trace/trace_hwlat.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -219,6 +219,10 @@ static const struct dmi_system_id __init
- 			DMI_MATCH(DMI_SYS_VENDOR, "PEGATRON CORPORATION"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "C15B"),
- 		},
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "ByteSpeed LLC"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "ByteSpeed Laptop C15B"),
-+		},
- 	},
- 	{ }
- };
+--- a/kernel/trace/trace_hwlat.c
++++ b/kernel/trace/trace_hwlat.c
+@@ -355,7 +355,7 @@ static int start_kthread(struct trace_ar
+ 	struct task_struct *kthread;
+ 	int next_cpu;
+ 
+-	if (WARN_ON(hwlat_kthread))
++	if (hwlat_kthread)
+ 		return 0;
+ 
+ 	/* Just pick the first CPU on first iteration */
 
 
