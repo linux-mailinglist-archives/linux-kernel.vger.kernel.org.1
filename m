@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A26E2D068D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE0E2D068F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727375AbgLFSuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 13:50:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgLFSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 13:50:50 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D756722D01;
-        Sun,  6 Dec 2020 18:50:09 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1klz6l-00Ga5v-Hg; Sun, 06 Dec 2020 18:50:07 +0000
+        id S1727617AbgLFSwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 13:52:41 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:54126 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgLFSwl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 13:52:41 -0500
+Received: by mail-pj1-f67.google.com with SMTP id iq13so6065300pjb.3;
+        Sun, 06 Dec 2020 10:52:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d5RbZx996zoMrju4ehznqsHu4HANttELOatNZACZBLQ=;
+        b=LyRZm48bx/3ig2nqi8jJb2MHQRD01vrZwRFf17XEVxF61LI6V1BDpFOPwmONtIB65B
+         syXhMMIj73Lt1An/UunpPlrEN+ieZNnTaDTyO4aUh1oQOqEKSK1Usm1fnHf5fhDKuP70
+         ol0jZQ39AT9xwgHjQsb5MSoV/VQNaFqlUCooEhfFh5/8iqO0yN7yzs3spx7oIJXKhM80
+         xTW0ZMQ5veWmwdMgZEDUbAlG1mSpcGLAZCgW2SHYoxtBINRRvLmjo0Tfk3Min5Vh3ep2
+         T9DATIia9uJbkODErJ6tTx2CW1viEPhmB1IRE3kOoJMXu+auSoH8BhC1Nxr+1KWYT7bc
+         t6Gg==
+X-Gm-Message-State: AOAM530l6CqpLNNPc+hjzYT0vdmvNEKGQINg9LcRG6inVFvzK1O7XJRg
+        2ZQifCSO53+voGNg9umCO18=
+X-Google-Smtp-Source: ABdhPJxehsfXKPDCEMm5tscYXZI0YTdt51xjFmaPCas5BLRz6LhvfTvaHRVG/DaKlVRtVAmi/XFtlg==
+X-Received: by 2002:a17:90a:f992:: with SMTP id cq18mr13603043pjb.216.1607280714006;
+        Sun, 06 Dec 2020 10:51:54 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id c14sm3344914pfp.167.2020.12.06.10.51.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 10:51:52 -0800 (PST)
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Distinguish between query REQ and query
+ RSP in query trace
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org
+References: <20201206164226.6595-1-huobean@gmail.com>
+ <20201206164226.6595-2-huobean@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <043235b9-e99a-8f7e-69fa-599b94ac2b12@acm.org>
+Date:   Sun, 6 Dec 2020 10:51:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201206164226.6595-2-huobean@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Sun, 06 Dec 2020 18:50:07 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        luojiaxing <luojiaxing@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
-In-Reply-To: <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
-References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
- <20201130112250.GK4077@smile.fi.intel.com>
- <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
- <20201205221522.ifjravnir5bzmjff@mobilestation>
- <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <a18dfb3ef4dd80dddbd038507d9b8b2f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: linus.walleij@linaro.org, fancer.lancer@gmail.com, luojiaxing@huawei.com, tglx@linutronix.de, andy.shevchenko@gmail.com, bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linuxarm@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-06 15:02, Linus Walleij wrote:
-> On Sat, Dec 5, 2020 at 11:15 PM Serge Semin <fancer.lancer@gmail.com> 
-> wrote:
+On 12/6/20 8:42 AM, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
->> Hmm, that sounds like a problem, but the explanation is a bit unclear
->> to me. AFAICS you are saying that the only callbacks which are
->> called during the IRQ request/release are the irq_enable(), right? If
->> so then the only reason why we haven't got a problem reported due to
->> that so far is that the IRQs actually unmasked by default.
+> Currently, in the query completion trace print,  since we use
+> hba->lrb[tag].ucd_req_ptr and didn't differentiate UPIU between
+> request and response, thus header and transaction-specific field
+> in UPIU printed by query trace are identical. This is not very
+> practical. As below:
 > 
-> What we usually do in cases like that (and I have discussed this
-> with tglx in the past I think) is to simply mask off all IRQs in 
-> probe().
-> Then they will be unmasked when requested by drivers.
+> query_send: HDR:16 00 00 0e 00 81 00 00 00 00 00 00, CDB:06 0e 03 00 00 00 00 00 00 00 00 00 00 00 00 00
+> query_complete: HDR:16 00 00 0e 00 81 00 00 00 00 00 00, CDB:06 0e 03 00 00 00 00 00 00 00 00 00 00 00 00 00
 > 
-> See e.g. gpio-pl061 that has this line in probe():
-> writeb(0, pl061->base + GPIOIE); /* disable irqs */
+> For the failure analysis, we want to understand the real response
+> reported by the UFS device, however, the current query trace tells
+> us nothing. After this patch, the query trace on the query_send, and
+> the above a pair of query_send and query_complete will be:
+> 
+> query_send: HDR:16 00 00 0e 00 81 00 00 00 00 00 00, CDB:06 0e 03 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ufshcd_upiu: HDR:36 00 00 0e 00 81 00 00 00 00 00 00, CDB:06 0e 03 00 00 00 00 00 00 00 00 01 00 00 00 00
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index ceb562accc39..e10de94adb3f 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -321,9 +321,15 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+>  static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+>  		const char *str)
+>  {
+> -	struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
+> +	struct utp_upiu_req *rq_rsp;
+> +
+> +	if (!strcmp("query_send", str))
+> +		rq_rsp = hba->lrb[tag].ucd_req_ptr;
+> +	else
+> +		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
+>  
+> -	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq->qr);
+> +	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq_rsp->header,
+> +			  &rq_rsp->qr);
+>  }
 
-This should definitely be the default behaviour. The code code
-expects all interrupt sources to be masked until actively enabled,
-usually with the IRQ being requested.
+Please change the 'str' argument into an enum and let
+ufshcd_add_query_upiu_trace() do the enum-to-string conversion. That
+will allow to convert the strcmp() call into an integer comparison.
 
 Thanks,
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Bart.
