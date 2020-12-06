@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9082D03A4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE522D047D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgLFLj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
+        id S1729618AbgLFLqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:46:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727836AbgLFLjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:39:25 -0500
+        id S1728854AbgLFLqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:46:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 11/20] ibmvnic: Fix TX completion error handling
-Date:   Sun,  6 Dec 2020 12:17:14 +0100
-Message-Id: <20201206111556.098980780@linuxfoundation.org>
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 07/46] net/tls: Protect from calling tls_dev_del for TLS RX twice
+Date:   Sun,  6 Dec 2020 12:17:15 +0100
+Message-Id: <20201206111556.806726701@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
-References: <20201206111555.569713359@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,37 +32,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit ba246c175116e2e8fa4fdfa5f8e958e086a9a818 ]
+[ Upstream commit 025cc2fb6a4e84e9a0552c0017dcd1c24b7ac7da ]
 
-TX completions received with an error return code are not
-being processed properly. When an error code is seen, do not
-proceed to the next completion before cleaning up the existing
-entry's data structures.
+tls_device_offload_cleanup_rx doesn't clear tls_ctx->netdev after
+calling tls_dev_del if TLX TX offload is also enabled. Clearing
+tls_ctx->netdev gets postponed until tls_device_gc_task. It leaves a
+time frame when tls_device_down may get called and call tls_dev_del for
+RX one extra time, confusing the driver, which may lead to a crash.
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This patch corrects this racy behavior by adding a flag to prevent
+tls_device_down from calling tls_dev_del the second time.
+
+Fixes: e8f69799810c ("net/tls: Add generic NIC offload infrastructure")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Link: https://lore.kernel.org/r/20201125221810.69870-1-saeedm@nvidia.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/net/tls.h    |    6 ++++++
+ net/tls/tls_device.c |    5 ++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2192,11 +2192,9 @@ restart_loop:
+--- a/include/net/tls.h
++++ b/include/net/tls.h
+@@ -199,6 +199,12 @@ enum tls_context_flags {
+ 	 * to be atomic.
+ 	 */
+ 	TLS_TX_SYNC_SCHED = 1,
++	/* tls_dev_del was called for the RX side, device state was released,
++	 * but tls_ctx->netdev might still be kept, because TX-side driver
++	 * resources might not be released yet. Used to prevent the second
++	 * tls_dev_del call in tls_device_down if it happens simultaneously.
++	 */
++	TLS_RX_DEV_CLOSED = 2,
+ };
  
- 		next = ibmvnic_next_scrq(adapter, scrq);
- 		for (i = 0; i < next->tx_comp.num_comps; i++) {
--			if (next->tx_comp.rcs[i]) {
-+			if (next->tx_comp.rcs[i])
- 				dev_err(dev, "tx error %x\n",
- 					next->tx_comp.rcs[i]);
--				continue;
--			}
- 			index = be32_to_cpu(next->tx_comp.correlators[i]);
- 			txbuff = &adapter->tx_pool[pool].tx_buff[index];
- 
+ struct cipher_context {
+--- a/net/tls/tls_device.c
++++ b/net/tls/tls_device.c
+@@ -1262,6 +1262,8 @@ void tls_device_offload_cleanup_rx(struc
+ 	if (tls_ctx->tx_conf != TLS_HW) {
+ 		dev_put(netdev);
+ 		tls_ctx->netdev = NULL;
++	} else {
++		set_bit(TLS_RX_DEV_CLOSED, &tls_ctx->flags);
+ 	}
+ out:
+ 	up_read(&device_offload_lock);
+@@ -1291,7 +1293,8 @@ static int tls_device_down(struct net_de
+ 		if (ctx->tx_conf == TLS_HW)
+ 			netdev->tlsdev_ops->tls_dev_del(netdev, ctx,
+ 							TLS_OFFLOAD_CTX_DIR_TX);
+-		if (ctx->rx_conf == TLS_HW)
++		if (ctx->rx_conf == TLS_HW &&
++		    !test_bit(TLS_RX_DEV_CLOSED, &ctx->flags))
+ 			netdev->tlsdev_ops->tls_dev_del(netdev, ctx,
+ 							TLS_OFFLOAD_CTX_DIR_RX);
+ 		WRITE_ONCE(ctx->netdev, NULL);
 
 
