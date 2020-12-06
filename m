@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8C72D040E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1188F2D03E7
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbgLFLmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:42:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
+        id S1728784AbgLFLlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:41:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727924AbgLFLmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:42:45 -0500
+        id S1728754AbgLFLlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:41:22 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maria Pasechnik <mariap@mellanox.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 23/39] net: ip6_gre: set dev->hard_header_len when using header_ops
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 4.19 27/32] dt-bindings: net: correct interrupt flags in examples
 Date:   Sun,  6 Dec 2020 12:17:27 +0100
-Message-Id: <20201206111555.783347806@linuxfoundation.org>
+Message-Id: <20201206111557.073312595@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-References: <20201206111554.677764505@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+References: <20201206111555.787862631@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,69 +33,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 832ba596494b2c9eac7760259eff2d8b7dcad0ee ]
+[ Upstream commit 4d521943f76bd0d1e68ea5e02df7aadd30b2838a ]
 
-syzkaller managed to crash the kernel using an NBMA ip6gre interface. I
-could reproduce it creating an NBMA ip6gre interface and forwarding
-traffic to it:
+GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+These are simple defines so they could be used in DTS but they will not
+have the same meaning:
+1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-  skbuff: skb_under_panic: text:ffffffff8250e927 len:148 put:44 head:ffff8c03c7a33
-  ------------[ cut here ]------------
-  kernel BUG at net/core/skbuff.c:109!
-  Call Trace:
-  skb_push+0x10/0x10
-  ip6gre_header+0x47/0x1b0
-  neigh_connected_output+0xae/0xf0
+Correct the interrupt flags, assuming the author of the code wanted same
+logical behavior behind the name "ACTIVE_xxx", this is:
+  ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
 
-ip6gre tunnel provides its own header_ops->create, and sets it
-conditionally when initializing the tunnel in NBMA mode. When
-header_ops->create is used, dev->hard_header_len should reflect the
-length of the header created. Otherwise, when not used,
-dev->needed_headroom should be used.
-
-Fixes: eb95f52fc72d ("net: ipv6_gre: Fix GRO to work on IPv6 over GRE tap")
-Cc: Maria Pasechnik <mariap@mellanox.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Link: https://lore.kernel.org/r/20201130161911.464106-1-atenart@kernel.org
+Fixes: a1a8b4594f8d ("NFC: pn544: i2c: Add DTS Documentation")
+Fixes: 6be88670fc59 ("NFC: nxp-nci_i2c: Add I2C support to NXP NCI driver")
+Fixes: e3b329221567 ("dt-bindings: can: tcan4x5x: Update binding to use interrupt property")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt
+Link: https://lore.kernel.org/r/20201026153620.89268-1-krzk@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/ip6_gre.c |   16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt |    2 +-
+ Documentation/devicetree/bindings/net/nfc/pn544.txt   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -1120,8 +1120,13 @@ static void ip6gre_tnl_link_config_route
- 			return;
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with N
+ 		clock-frequency = <100000>;
  
- 		if (rt->dst.dev) {
--			dev->needed_headroom = rt->dst.dev->hard_header_len +
--					       t_hlen;
-+			unsigned short dst_len = rt->dst.dev->hard_header_len +
-+						 t_hlen;
-+
-+			if (t->dev->header_ops)
-+				dev->hard_header_len = dst_len;
-+			else
-+				dev->needed_headroom = dst_len;
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <29 GPIO_ACTIVE_HIGH>;
++		interrupts = <29 IRQ_TYPE_LEVEL_HIGH>;
  
- 			if (set_mtu) {
- 				dev->mtu = rt->dst.dev->mtu - t_hlen;
-@@ -1146,7 +1151,12 @@ static int ip6gre_calc_hlen(struct ip6_t
- 	tunnel->hlen = tunnel->tun_hlen + tunnel->encap_hlen;
+ 		enable-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+--- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
++++ b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with P
+ 		clock-frequency = <400000>;
  
- 	t_hlen = tunnel->hlen + sizeof(struct ipv6hdr);
--	tunnel->dev->needed_headroom = LL_MAX_HEADER + t_hlen;
-+
-+	if (tunnel->dev->header_ops)
-+		tunnel->dev->hard_header_len = LL_MAX_HEADER + t_hlen;
-+	else
-+		tunnel->dev->needed_headroom = LL_MAX_HEADER + t_hlen;
-+
- 	return t_hlen;
- }
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <17 GPIO_ACTIVE_HIGH>;
++		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
  
+ 		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
 
 
