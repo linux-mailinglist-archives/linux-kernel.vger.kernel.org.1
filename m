@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4589A2D0220
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CA02D0222
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 10:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgLFJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 04:03:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33374 "EHLO mx2.suse.de"
+        id S1726197AbgLFJHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 04:07:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgLFJDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 04:03:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 775AEAB63;
-        Sun,  6 Dec 2020 09:02:54 +0000 (UTC)
-Date:   Sun, 6 Dec 2020 10:02:50 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        tip-bot2 for Masami Hiramatsu <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org,
-        syzbot+9b64b619f10f19d19a7c@syzkaller.appspotmail.com,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>, x86@kernel.org
-Subject: Re: [tip: x86/urgent] x86/uprobes: Do not use prefixes.nbytes when
- looping over prefixes.bytes
-Message-ID: <20201206090250.GA10741@zn.tnic>
-References: <160697103739.3146288.7437620795200799020.stgit@devnote2>
- <160709424307.3364.5849503551045240938.tip-bot2@tip-bot2>
- <20201205091256.14161a2e1606c527131efc06@kernel.org>
- <20201205101704.GB26409@zn.tnic>
- <20201206125325.d676906774c2329742746005@kernel.org>
+        id S1725767AbgLFJHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 04:07:02 -0500
+Date:   Sun, 6 Dec 2020 11:06:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607245581;
+        bh=s+w0DJiO0lLkfTm14BP/G28WyCllLXEdBVKQ6c423Ag=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gagO/krH5WjoJg2V+3NWtbbaWM9kYMbV6eKBL2Ee/hDqf7FozNpVol+hrpDbIrtzB
+         4/F5hCSHkP7ZCztYSosF/OFCNjQ8oUE1NR5roXgLNT/yx7h/iAoBYWUxXCB1/zr7EK
+         eZ5Zy13XqlwZop+t0NGSqQwlAcBb68iNRQgLcAn8Y2fIVgXOHC6cQxAoLlQaft8hrT
+         yuZDmYadfJGWBNMYXpGRffTk+vGVMaG+bYk/GxtDiSljdpNyjry2rDM9v85xszhavW
+         QsZz1nQYp3O2Y3htOOOXGHGcSeT5O3fnmHTDf6KOV/G3/UfK9NfoUPsIElNKcruTMR
+         46FyyPilulOEg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+Message-ID: <20201206090614.GA693271@unreal>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+ <1b4fe1fd-592d-4a88-b156-fbf6af2df428@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201206125325.d676906774c2329742746005@kernel.org>
+In-Reply-To: <1b4fe1fd-592d-4a88-b156-fbf6af2df428@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-( drop stable@ )
+On Sun, Dec 06, 2020 at 05:58:32PM +0900, Blaž Hrastnik wrote:
+> >
+> > > More on that, the whole purpose of proposed interface is to debug and
+> > > not intended to be used by any user space code.
+> >
+> > The purpose is to provide raw access to the Surface Serial Hub protocol,
+> > just like we provide raw access to USB devices and have hidraw devices.
+> >
+> > So this goes a litle beyond just debugging; and eventually the choice
+> > may be made to implement some functionality with userspace drivers,
+> > just like we do for some HID and USB devices.
+> >
+> > Still I agree with you that adding new userspace API is something which
+> > needs to be considered carefully. So I will look at this closely when
+> > reviewing this set.
+>
+> To add to that: this was previously a debugfs interface but was moved to misc after review on the initial RFC:
+> https://lkml.org/lkml/2020/9/24/96
 
-On Sun, Dec 06, 2020 at 12:53:25PM +0900, Masami Hiramatsu wrote:
-> On Sat, 5 Dec 2020 11:17:04 +0100
-> Borislav Petkov <bp@alien8.de> wrote:
-> 
-> > On Sat, Dec 05, 2020 at 09:12:56AM +0900, Masami Hiramatsu wrote:
-> > > This may break tools/objtool build. Please keep "inat.h".
-> > 
-> > How? Please elaborate.
-> > 
-> > Build tests are fine here.
-> 
-> Oops, sorry, it was for perf build.
-> 
-> Please refer commit 00a263902ac3 ("perf intel-pt: Use shared x86 insn decoder").
+There is a huge difference between the suggestion and final implementation.
 
-Oh wow:
+Greg suggested to add new debug module to the drivers/misc that will
+open char device explicitly after user loaded that module to debug this
+hub. However, the author added full blown char device as a first citizen
+that has all not-break-user constrains.
 
-"This way we continue to be able to process perf.data files with Intel PT
- traces in distros other than x86."
+Thanks
 
-acme, why is that? Can you explain pls?
-
-It probably would be better to fix this so that copying insn.h to keep
-it in sync won't cause any future breakages. Or the diffing check should
-verify whether header paths are wrong in the tools/ version and fail if
-so, so that we don't break it.
-
-Hmmm.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
