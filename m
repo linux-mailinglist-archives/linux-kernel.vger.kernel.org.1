@@ -2,25 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BFB2D0495
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931A72D041D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbgLFLrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:47:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
+        id S1729135AbgLFLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729195AbgLFLnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:43:41 -0500
+        id S1728074AbgLFLnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:18 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eran Ben Elisha <eranbe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 34/39] net/mlx5: Fix wrong address reclaim when command interface is down
-Date:   Sun,  6 Dec 2020 12:17:38 +0100
-Message-Id: <20201206111556.315301575@linuxfoundation.org>
+        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 35/39] ALSA: usb-audio: US16x08: fix value count for level meters
+Date:   Sun,  6 Dec 2020 12:17:39 +0100
+Message-Id: <20201206111556.357338827@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
 References: <20201206111554.677764505@linuxfoundation.org>
@@ -32,62 +31,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@nvidia.com>
+From: Hector Martin <marcan@marcan.st>
 
-[ Upstream commit 1d2bb5ad89f47d8ce8aedc70ef85059ab3870292 ]
+commit 402d5840b0d40a2a26c8651165d29b534abb6d36 upstream.
 
-When command interface is down, driver to reclaim all 4K page chucks that
-were hold by the Firmeware. Fix a bug for 64K page size systems, where
-driver repeatedly released only the first chunk of the page.
+The level meter control returns 34 integers of info. This fixes:
 
-Define helper function to fill 4K chunks for a given Firmware pages.
-Iterate over all unreleased Firmware pages and call the hepler per each.
+snd-usb-audio 3-1:1.0: control 2:0:0:Level Meter:0: access overflow
 
-Fixes: 5adff6a08862 ("net/mlx5: Fix incorrect page count when in internal error")
-Signed-off-by: Eran Ben Elisha <eranbe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: d2bb390a2081 ("ALSA: usb-audio: Tascam US-16x08 DSP mixer quirk")
+Cc: stable@vger.kernel.org
+Signed-off-by: Hector Martin <marcan@marcan.st>
+Link: https://lore.kernel.org/r/20201127132635.18947-1-marcan@marcan.st
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c |   21 ++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-@@ -339,6 +339,24 @@ out_free:
- 	return err;
- }
- 
-+static u32 fwp_fill_manage_pages_out(struct fw_page *fwp, u32 *out, u32 index,
-+				     u32 npages)
-+{
-+	u32 pages_set = 0;
-+	unsigned int n;
-+
-+	for_each_clear_bit(n, &fwp->bitmask, MLX5_NUM_4K_IN_PAGE) {
-+		MLX5_ARRAY_SET64(manage_pages_out, out, pas, index + pages_set,
-+				 fwp->addr + (n * MLX5_ADAPTER_PAGE_SIZE));
-+		pages_set++;
-+
-+		if (!--npages)
-+			break;
-+	}
-+
-+	return pages_set;
-+}
-+
- static int reclaim_pages_cmd(struct mlx5_core_dev *dev,
- 			     u32 *in, int in_size, u32 *out, int out_size)
+---
+ sound/usb/mixer_us16x08.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/sound/usb/mixer_us16x08.c
++++ b/sound/usb/mixer_us16x08.c
+@@ -607,7 +607,7 @@ static int snd_us16x08_eq_put(struct snd
+ static int snd_us16x08_meter_info(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_info *uinfo)
  {
-@@ -362,8 +380,7 @@ static int reclaim_pages_cmd(struct mlx5
- 		if (fwp->func_id != func_id)
- 			continue;
- 
--		MLX5_ARRAY_SET64(manage_pages_out, out, pas, i, fwp->addr);
--		i++;
-+		i += fwp_fill_manage_pages_out(fwp, out, i, npages - i);
- 	}
- 
- 	MLX5_SET(manage_pages_out, out, output_num_entries, i);
+-	uinfo->count = 1;
++	uinfo->count = 34;
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->value.integer.max = 0x7FFF;
+ 	uinfo->value.integer.min = 0;
 
 
