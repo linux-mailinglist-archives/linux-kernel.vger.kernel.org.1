@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355672D0707
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 21:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB9D2D070E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 21:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgLFUGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 15:06:00 -0500
-Received: from ozlabs.org ([203.11.71.1]:56101 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbgLFUGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 15:06:00 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cpy996JsBz9sW0;
-        Mon,  7 Dec 2020 07:05:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607285118;
-        bh=wYgxx6MyAif0XDhUwOA30OGouNV8tUyuxPFR1rfu5wo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kx/uSzU8vQeDTWvRXauXWNe83V0NC58SZtnZeh1W3etXC4Bdpr1NwdSPIZHylEu3e
-         VcHhyOj1MV4cnoX1Nkq9eBCR7B0lSAw939nz4fW+X5ZxMqe07pVbtfSjyiGptr4YHs
-         0PmygBhKk36nhBhnl+x6AV0wXV2FeJrH20fsTLhQWwCWdRS36YC9jGe9pizu28ImPw
-         KpBW0u7LztI721B0jL2HIZj0BokVN9OQ3h1sghGlMYriWeX4AeZWG8el4dIRHh0yC4
-         B+O5+1cK9++AIIR1wCH81ox7BT2yR1cLo8KvQn8R2h8imOoq9z49v2SwTCppMZZj2g
-         ekie3qty9USMg==
-Date:   Mon, 7 Dec 2020 07:05:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20201207070517.28951ed0@canb.auug.org.au>
+        id S1727557AbgLFUKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 15:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727511AbgLFUKY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 15:10:24 -0500
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6283C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 12:09:43 -0800 (PST)
+Received: by mail-ua1-x943.google.com with SMTP id q68so3795088uaq.3
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 12:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iz05We4T6eIjQaXBvxz0eSpPimwSlGMKW8WGflLLLgw=;
+        b=iS/yxV/uv33bWygYcp3w94mm68WCg/cooZBDHGRBRFCb+HEVGfBEws+dpr/6P25Mqk
+         CGF0txaBIDtDjqi1yLxaRHzbKNu312tAIiWry1c6H2XUemwifDXDJ3xgms3nJQh018Ju
+         tSfem3j42gdxUipuE2UCBGdP6HbCXjgyA35rk3ybR2x5sUXsvaX34+w/11PCnDP3wUw3
+         VXU3d3GrfxpXDM3mNsWNN8WzS04oerefikrSUgI3Sa41DzU+d/SyYsbVuDLVrcBbBAFd
+         TPfpfk+LViEDwCmkthUfnAh26cBtd4O/zl0ILiNY2vgWj3ccwdwRthGGUZbaHtAB4IuL
+         4E/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iz05We4T6eIjQaXBvxz0eSpPimwSlGMKW8WGflLLLgw=;
+        b=g5zyHfB47jTNfJHRs2o+QwMOc+4Y5kXuUf4RszDFCpX+5XROFGa+aM5E+h8cuYDh8e
+         QUbJ3dFp+q3Ea9tIY0YyMsGNQ9sf5rADDfJiqzLQOK9cZoXzaA2q+hyHk4WXSI8V+9kP
+         lOIELVnC5doYeYOvItRRPdX1+L2NNVcca8CZPisp9F3xelTFBMDap7SBCSduwr3PmCm9
+         SIDTvHA+gbMnFBWcfiUJq2VqqQ4BcHnqiAKsc0dCLedOsbNoBR88zNClBh2jGqVYUKVZ
+         KIHE9V1KGwCg4V6KvTs08yaWUEGheKGm5R3vq1A6vAokC77WbWFdLV1qBXNIk/rGBdsD
+         ZELQ==
+X-Gm-Message-State: AOAM533N4D6o8QckULL2hxwqy4zJ6AHkmWYNTVRu/UcOgwoknBg7JBEh
+        EfZZBeWS8iLTCyHGQJXHj5BiP9GfJVhbz2/zRgMDUA==
+X-Google-Smtp-Source: ABdhPJyKCb8VYAdpRAyuT9QnDEa4WUbLFAwf7yIvP0eytyeCFIBxggFhwRm1Itv8d1sjhOU4I4dMU+iMqgn79bJuOn0=
+X-Received: by 2002:ab0:6f0f:: with SMTP id r15mr3484878uah.52.1607285382144;
+ Sun, 06 Dec 2020 12:09:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X/tk6r_NtoH3C/EMPWAcH=Z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <20201203112622.GA31188@willie-the-truck> <CABCJKueby8pUoN7f5=6RoyLSt4PgWNx8idUej0sNwAi0F3Xqzw@mail.gmail.com>
+ <20201203182252.GA32011@willie-the-truck> <CAKwvOdnvq=L=gQMv9MHaStmKMOuD5jvffzMedhp3gytYB6R7TQ@mail.gmail.com>
+ <CABCJKufgkq+k0DeYaXrzjXniy=T_N4sN1bxoK9=cUxTZN5xSVQ@mail.gmail.com> <20201206065028.GA2819096@ubuntu-m3-large-x86>
+In-Reply-To: <20201206065028.GA2819096@ubuntu-m3-large-x86>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Sun, 6 Dec 2020 12:09:31 -0800
+Message-ID: <CABCJKue9TJnhge6TVPj9vfZXPGD4RW2JYiN3kNwVKNovTCq8ZA@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, Jian Cai <jiancai@google.com>,
+        Kristof Beyls <Kristof.Beyls@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X/tk6r_NtoH3C/EMPWAcH=Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Dec 5, 2020 at 10:50 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Fri, Dec 04, 2020 at 02:52:41PM -0800, Sami Tolvanen wrote:
+> > On Thu, Dec 3, 2020 at 2:32 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > So I'd recommend to Sami to simply make the Kconfig also depend on
+> > > clang's integrated assembler (not just llvm-nm and llvm-ar).
+> >
+> > Sure, sounds good to me. What's the preferred way to test for this in Kconfig?
+> >
+> > It looks like actually trying to test if we have an LLVM assembler
+> > (e.g. using $(as-instr,.section
+> > ".linker-options","e",@llvm_linker_options)) doesn't work as Kconfig
+> > doesn't pass -no-integrated-as to clang here.
 
-Hi all,
+After a closer look, that's actually not correct, this seems to work
+with Clang+LLD no matter which assembler is used. I suppose we could
+test for .gasversion. to detect GNU as, but that's hardly ideal.
 
-In commit
+> >I could do something
+> > simple like $(success,echo $(LLVM) $(LLVM_IAS) | grep -q "1 1").
+> >
+> > Thoughts?
+> >
+> > Sami
+>
+> I think
+>
+>     depends on $(success,test $(LLVM_IAS) -eq 1)
+>
+> should work, at least according to my brief test.
 
-  9b73bde39cf2 ("drm/msm: Fix use-after-free in msm_gem with carveout")
+Sure, looks good to me. However, I think we should also test for
+LLVM=1 to avoid possible further issues with mismatched toolchains
+instead of only checking for llvm-nm and llvm-ar.
 
-Fixes tag
-
-  Fixes: 4b85f7f5cf7 ("drm/msm: support for an arbitrary number of address =
-spaces")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-In the furture, this can be avoided by setting core.abbrev to 12 (or more)
-or (for git v2.11 or later) just making sure it is not set (or set to
-"auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/X/tk6r_NtoH3C/EMPWAcH=Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NOX0ACgkQAVBC80lX
-0GwvBgf/UtKexj/EgmdeVayzcaxUcdrWHHakeLz8O898t6IoFHHyxG0jM+F1BbQV
-TZME/HBLJ/0vBymUJ1CisKGyDOxvIHe7u//ydB0ycusqztuQq+3f93TLtzoTejNy
-I+Ag42VU3tqTiahLF6TuV6joN8/m9mywo7UFOTbB22k8AC6mJIr+n4M1wDswf9sb
-oRdoaAtHY+8LsOJYI4RCSTiqz8SsAewzmlutzxRZNf69hByoKCEsXMZ/e+G/eBWD
-2njerUSr/271pS/UGthlfZinTP0PV2MjbjjQBF5MGbrJZUBmE+NFSs3rvn7bVDsY
-g6CoJdtCEja1Sj/LcXOLtYfkc+wDMA==
-=KDvo
------END PGP SIGNATURE-----
-
---Sig_/X/tk6r_NtoH3C/EMPWAcH=Z--
+Sami
