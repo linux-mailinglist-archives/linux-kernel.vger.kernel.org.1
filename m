@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5CF2D03E5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344082D044C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgLFLlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:41:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38850 "EHLO mail.kernel.org"
+        id S1728761AbgLFLog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:44:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728754AbgLFLlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:41:19 -0500
+        id S1727939AbgLFLob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:44:31 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
@@ -18,12 +18,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Udai Sharma <udai.sharma@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 26/32] chelsio/chtls: fix panic during unload reload chtls
-Date:   Sun,  6 Dec 2020 12:17:26 +0100
-Message-Id: <20201206111557.024869134@linuxfoundation.org>
+Subject: [PATCH 5.9 19/46] chelsio/chtls: fix panic during unload reload chtls
+Date:   Sun,  6 Dec 2020 12:17:27 +0100
+Message-Id: <20201206111557.385339882@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
-References: <20201206111555.787862631@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,10 +52,10 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/crypto/chelsio/chtls/chtls_cm.c
 +++ b/drivers/crypto/chelsio/chtls/chtls_cm.c
-@@ -1079,6 +1079,7 @@ static struct sock *chtls_recv_sock(stru
- 
- 	oreq->ts_recent = PASS_OPEN_TID_G(ntohl(req->tos_stid));
+@@ -1206,6 +1206,7 @@ static struct sock *chtls_recv_sock(stru
  	sk_setup_caps(newsk, dst);
+ 	ctx = tls_get_ctx(lsk);
+ 	newsk->sk_destruct = ctx->sk_destruct;
 +	newsk->sk_prot_creator = lsk->sk_prot_creator;
  	csk->sk = newsk;
  	csk->passive_reap_next = oreq;
