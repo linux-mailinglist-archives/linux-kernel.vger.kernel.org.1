@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8FE2D0741
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B902D074A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgLFVI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727659AbgLFVI5 (ORCPT
+        id S1727664AbgLFVVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:21:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60218 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgLFVVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:08:57 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6DBC0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 13:08:17 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id t3so7124893pgi.11
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 13:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=GXO966ED6tQiuIi8XWRbC20Roa+9X+ISK1xYWdljls8=;
-        b=fgrZALlk1iIYafdU6BMq3PLhWjGwBDY/LRN2cP98OkxIa+++nB/u6ZD0QszXr5HC6O
-         FklRNEdbzQOvYIy4jMqBJA+GZV3j7kKZx7E2pBr9e9/v2OQ+0r2ouIR3ZG4Gdvd3bond
-         hRciyVNjrLriM3R7+kSfux7rKpdKffnTGmYPM+OcXiYWdzilYS0QaZ0RECFpS/bRx3i1
-         2rVKGo9EkJT1f03zYuSTt1hGSNgg4xDW5R9+kZwQ38vQrt0JP1CIpYupn1jK2v7knudA
-         p34pbP768lp29swtDiGSyF3zlmTEe67DAHPDoWyHThye7WvElDlMrjrzGcwpI+N5PWTc
-         AIYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=GXO966ED6tQiuIi8XWRbC20Roa+9X+ISK1xYWdljls8=;
-        b=RqnzaUy4j25EvrjbNxccg4sTUf7iYOxS7pc+6vBqnq4lxXA1UBHK+IqLZ1D7Jh3Zrt
-         IgAbX7FmLTYv9LrZX3fC5KHmOu1NMlLE17yls/31xNRVdLUZHhhSXe6p132k9Ds96LR4
-         Qs06w8RIhoUka+2t8UU6DcImL7uf4EW8mVfjrgOhvWRuryFTyUF3dy788xjIKzqtQeZO
-         nED+TQaKO3xAHNq55/1XreR+uo9yR+m/0r0Ym+0iSy1KB9uZBkG6ECZicwTuhdOZgF3W
-         cO/wUW8nUHwkVGsQpavN4DPUrf5OORDnGtQqVGu4LE7Adj/7eOIAuccEw8uqD0ZzDHMc
-         lNGA==
-X-Gm-Message-State: AOAM5329jvXMwGxWeRkTWdLYCfPSI+fLpO0ZcdNS0To0xGggGKgx/xpD
-        zUahMeVV5VAJJiT+yzIA/LHfE7XKqjyxXQ==
-X-Google-Smtp-Source: ABdhPJyjh0V0kk86P2rHPBVoc4VQss4mcyorZdZU8DYcfDgeG2V56uRbZ0o0bYMGFs8khGQIGnbwjQ==
-X-Received: by 2002:aa7:8f09:0:b029:18c:4cc6:891d with SMTP id x9-20020aa78f090000b029018c4cc6891dmr13177556pfr.46.1607288896791;
-        Sun, 06 Dec 2020 13:08:16 -0800 (PST)
-Received: from [192.168.1.9] ([122.164.22.111])
-        by smtp.gmail.com with ESMTPSA id a21sm8127596pjq.37.2020.12.06.13.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 13:08:16 -0800 (PST)
-Message-ID: <b519bae35dfa11de0b22d9bd35dc780d796d5feb.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.9 00/46] 5.9.13-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Mon, 07 Dec 2020 02:38:11 +0530
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Sun, 6 Dec 2020 16:21:51 -0500
+Message-Id: <20201206211253.919834182@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607289669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=78N4YASvionDygjdJyxpH+khdroZX1Ca/lN2xuO3Y+M=;
+        b=r7sQkm/veKSNzQ6fxPvYm3vlaeWpCUtPTa5aRm10eaeGhHLMt+y4PAvPpz2OJnDCmxgPCC
+        CHNe+1Hl9MSBLIdTlj0x75orMs9r4swadUt8M8cVFQAgxXF12HkQ71pii6RF2mq790Hwi9
+        Niu5x6sN5uatbQinrOC/gyWbUpBeh4H8ivJFXsUTJz8IJw9ZIg+eX1qIRBMvkg7yfbvRUo
+        R6pdxXV64EGI6IP3jN5+f0rUilkaZGkthUFvtUJT8/u27V64IPJD5YV8AdwAnbqzu9ndSc
+        dB4zpHu8IXFTI3jLrvkJmwi0gZdYry/QrI+RKRIX8JJp3jEHgDKIaJgqm+FOCA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607289669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=78N4YASvionDygjdJyxpH+khdroZX1Ca/lN2xuO3Y+M=;
+        b=fsGxexKcdre6NZN28kfKMYYZOFmprN0Cqj36djKUUjxh2OG1WOq52sGCGjyrJbxbXgWjVZ
+        GMVraCblJdmuMRCg==
+Date:   Sun, 06 Dec 2020 22:12:53 +0100
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [patch 0/3] tick: Annotate and document the intentionaly racy
+ tick_do_timer_cpu
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-06 at 12:17 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.13 release.
-> There are 46 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.13-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.9.yo
-> and the diffstat can be found below.
-> 
-> thanks,
-> 5.9.13
-> greg k-h
-hello,
-
-Compiled and booted 5.9.13-rc1+. No typical regression or regressions.
-
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
-
+VGhlcmUgaGF2ZSBiZWVuIHNldmVyYWwgcmVwb3J0cyBhYm91dCBLQ1NBTiBjb21wbGFpbnRzIHZz
+LiB0aGUgcmFjeSBhY2Nlc3MKdG8gdGlja19kb190aW1lcl9jcHUuIFRoZSBzeXpib3QgbW9kZXJh
+dGlvbiBxdWV1ZSBoYXMgdGhyZWUgZGlmZmVyZW50CnBhdHRlcm5zIGFsbCByZWxhdGVkIHRvIHRo
+aXMuIFRoZXJlIGFyZSBhIGZldyBtb3JlLi4uCgpBcyBJIGtub3cgdGhhdCB0aGlzIGlzIGludGVu
+dGlvbmFsIGFuZCBzYWZlLCBJIGRpZCBub3QgcGF5IG11Y2ggYXR0ZW50aW9uCnRvIGl0LCBidXQg
+TWFyY28gYWN0dWFsbHkgbWFkZSBtZSBmZWVsIGJhZCBhIGZldyBkYXlzIGFnbyBhcyBoZSBleHBs
+YWluZWQKdGhhdCB0aGVzZSBpbnRlbnRpb25hbCByYWNlcyBnZW5lcmF0ZSB0b28gbXVjaCBub2lz
+ZSB0byBnZXQgdG8gdGhlCmRhbmdlcm91cyBvbmVzLgoKVGhlcmUgd2FzIGFuIGVhcmxpZXIgYXR0
+ZW1wdCB0byBqdXN0IHNpbGVuY2UgS0NTQU4gYnkgc2xhcHBpbmcgUkVBRC9XUklURQpvbmNlIGFs
+bCBvdmVyIHRoZSBwbGFjZSB3aXRob3V0IGV2ZW4gdGhlIGZhaW50aWVzdCBhdHRlbXB0IG9mIHJl
+YXNvbmluZywKd2hpY2ggaXMgZGVmaW5pdGVseSB0aGUgd3JvbmcgdGhpbmcgdG8gZG8uCgpUaGUg
+YmFkIHRoaW5nIGFib3V0IHRpY2tfZG9fdGltZXJfY3B1IGlzIHRoYXQgaXRzIG9ubHkgYmFyZWx5
+IGRvY3VtZW50ZWQKd2h5IGl0IGlzIHNhZmUgYW5kIHdvcmtzIGF0IGFsbCwgd2hpY2ggbWFrZXMg
+aXQgZXh0cmVtbHkgaGFyZCBmb3Igc29tZW9uZQpub3QgcmVhbGx5IGZhbWlsaWFyIHdpdGggdGhl
+IGNvZGUgdG8gY29tZSB1cCB3aXRoIHJlYXNvbmluZy4KClNvIE1hcmNvIG1hZGUgbWUgZmFzdCBm
+b3J3YXJkIHRoYXQgaXRlbSBpbiBteSB0b2RvIGxpc3QgYW5kIEkgaGF2ZSB0byBhZG1pdAp0aGF0
+IGl0IHdvdWxkIGhhdmUgYmVlbiBkYW1uZWQgaGVscGZ1bCBpZiB0aGF0IEdsZWl4bmVyIGR1ZGUg
+d291bGQgaGF2ZQphZGRlZCBwcm9wZXIgY29tbWVudHMgaW4gdGhlIGZpcnN0IHBsYWNlLiBXb3Vs
+ZCBoYXZlIHNwYXJlZCBhIGxvdCBvZiBicmFpbgp0d2lzdGluZy4gOikKClN0YXJpbmcgYXQgYWxs
+IHVzYWdlIHNpdGVzIHVuZWFydGhlZCBhIGZldyBzaWxseSB0aGluZ3Mgd2hpY2ggYXJlIGNsZWFu
+ZWQKdXAgdXBmcm9udC4gVGhlIGFjdHVhbCBhbm5vdGF0aW9uIHVzZXMgZGF0YV9yYWNlKCkgd2l0
+aCBwcm9wZXIgY29tbWVudHMgYXMKUkVBRC9XUklURV9PTkNFKCkgZG9lcyBub3QgcmVhbGx5IGJ1
+eSBhbnl0aGluZyB1bmRlciB0aGUgYXNzdW1wdGlvbiB0aGF0CnRoZSBjb21waWxlciBkb2VzIG5v
+dCBwbGF5IHNpbGx5IGJ1Z2dlcnMgYW5kIHRlYXJzIHRoZSAzMmJpdCBzdG9yZXMvbG9hZHMKaW50
+byBieXRlIHdpc2Ugb25lcy4gQnV0IGV2ZW4gdGhhdCB3b3VsZCBjYXVzZSBqdXN0IHBvdGVudGlh
+bGx5IHNob3J0ZXIKaWRsZSBzbGVlcHMgaW4gdGhlIHdvcnN0IGNhc2UgYW5kIG5vdCBhIGNvbXBs
+ZXRlIG1hbGZ1bmN0aW9uLgoKVGhhbmtzLAoKCXRnbHgKLS0tLQogdGljay1jb21tb24uYyB8ICAg
+NTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiB0aWNrLXNjaGVkLmMgIHwgICA5
+NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0t
+LS0tCiAyIGZpbGVzIGNoYW5nZWQsIDExNyBpbnNlcnRpb25zKCspLCAzNCBkZWxldGlvbnMoLSkK
