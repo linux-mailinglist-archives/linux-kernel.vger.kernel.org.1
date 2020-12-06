@@ -2,159 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01532D0610
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2624E2D0625
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgLFQn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
+        id S1726641AbgLFQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727617AbgLFQn0 (ORCPT
+        with ESMTP id S1726112AbgLFQwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:43:26 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591CBC0613D3;
-        Sun,  6 Dec 2020 08:42:46 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id c7so11125778edv.6;
-        Sun, 06 Dec 2020 08:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=XnNK85yQIqDf9XSgYG256xv+0HGL3Yjy71sTBa+LrtE=;
-        b=ZmYXWaMfV7ng5TLBwop9hTTh6CZP4NC8fuCYrzeiKZU8WTs4fj1zjGty3upop0PieK
-         0EZYA+MDWxgtPLpFxxTK5gzUu0UHh9l7Qv1j0gUAMZPup9m6ffpMZ2pBm5hDuQNQH36n
-         1oyuNQgIl0o34dFX9+XGBO37K9fTGziu0Tw4iR+qlS7PFumX+nRuxEFSmvg3qVwJAqc6
-         9gUk0YSth/m65FeTqYJ66ppJqK94up3t0aCRxP0C+uHz9cdPRvfLpHjH6xoZDDM2R2HZ
-         4YsSLUAY/2ERlLfaooHjUokO/fOpXecb4ldvgMf+VW4lMXRXBS2wdo/g8E9uIt+a/2l0
-         0ixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=XnNK85yQIqDf9XSgYG256xv+0HGL3Yjy71sTBa+LrtE=;
-        b=MZzRxvy2J4rx96NSje6UXAdoX4VuA/mwYIhYrf/2Duuayv1iynIsrqx2p4ecZJOVkM
-         FqC7oOwwtJZ1WwWOOqv1bg0DlGPOZjkXRMbF9seRVaqZIPRCh8j2PpBh1QmIp1tILW7/
-         SlP2S2Ip1Iql7walB5+3wz7kyPVAhxJ+dONgflmWbSywYpk9qPL0uN6cfRJsLfySqiWb
-         UvBSOZ3MmYk5NJmY4NGu28fZ0UKWXVmoOBLqa8hCUhJqNbWYqZOXEy+acIIRWZwbBWNK
-         c3DkxnHJoJ3x7JBL/qrkKCT3UvTeWXioF7PHaVzvlyNOMMoVcQZuN6aIL/4PDpptmMbc
-         K+Gg==
-X-Gm-Message-State: AOAM531YYyUINWsgafoDts0LZ7oNqyBiCLhdOG7afN+Z0MqTKldq5txR
-        Vq5EdQpT8cJwmffXcXU/bsg=
-X-Google-Smtp-Source: ABdhPJwOETKzaM7KMpytJ205AVMHQUCCEjcqRbrI1EqqZS28SUbKN8Hl4NuVddTUZOyeueYaJ/ud4w==
-X-Received: by 2002:aa7:c652:: with SMTP id z18mr15916104edr.60.1607272965040;
-        Sun, 06 Dec 2020 08:42:45 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.gmail.com with ESMTPSA id e19sm9157524edr.61.2020.12.06.08.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 08:42:44 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org
-Subject: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
-Date:   Sun,  6 Dec 2020 17:42:26 +0100
-Message-Id: <20201206164226.6595-4-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201206164226.6595-1-huobean@gmail.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
+        Sun, 6 Dec 2020 11:52:31 -0500
+Received: from leonov.paulk.fr (vpn-0-22.aquilenet.fr [IPv6:2a0c:e300:4:22::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72899C0613D0;
+        Sun,  6 Dec 2020 08:51:51 -0800 (PST)
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 1EE30C0139;
+        Sun,  6 Dec 2020 17:51:48 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id 866B5C1D4D; Sun,  6 Dec 2020 17:51:47 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.2
+Received: from localhost.localdomain (collins [192.168.1.129])
+        by gagarine.paulk.fr (Postfix) with ESMTP id F2121C1D31;
+        Sun,  6 Dec 2020 17:51:32 +0100 (CET)
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH v3 0/5] Allwinner V3 SL631 Action Camera Support and Related Fixes
+Date:   Sun,  6 Dec 2020 17:51:26 +0100
+Message-Id: <20201206165131.1041983-1-contact@paulk.fr>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+This series adds support for the Allwinner V3-based SL631 family of
+Action Cameras, starting with the IMX179 fashion.
 
-Transaction Specific Fields (TSF) in the UPIU package could be CDB
-(SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
-TM I/O parameter (Task Management Input/Output Parameter). But, currently,
-we take all of these as CDB  in the UPIU trace. Thus makes user confuse
-among CDB, OSF, and TM message. So fix it with this patch.
+A few fixes to V3 support are added along the way, most notably support
+for the NMI IRQ controller which is necessary for the AXP209 IRQ.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c  |  9 +++++----
- include/trace/events/ufs.h | 10 +++++++---
- 2 files changed, 12 insertions(+), 7 deletions(-)
+Note that some patches in this series may have already been submitted
+(but not yet merged) by others and are included for the series to build.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 29d7240a61bf..5b2219e44743 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -315,7 +315,8 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- {
- 	struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
- 
--	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq->sc.cdb);
-+	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq->sc.cdb,
-+			  "CDB");
- }
- 
- static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -329,7 +330,7 @@ static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
- 
- 	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq_rsp->header,
--			  &rq_rsp->qr);
-+			  &rq_rsp->qr, "OSF");
- }
- 
- static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -340,10 +341,10 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 
- 	if (!strcmp("tm_send", str))
- 		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->req_header,
--				  &descp->input_param1);
-+				  &descp->input_param1, "TM_INPUT");
- 	else
- 		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->rsp_header,
--				  &descp->output_param1);
-+				  &descp->output_param1, "TM_OUTPUT");
- }
- 
- static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-index 0bd54a184391..68e8e97a9b47 100644
---- a/include/trace/events/ufs.h
-+++ b/include/trace/events/ufs.h
-@@ -295,15 +295,17 @@ TRACE_EVENT(ufshcd_uic_command,
- );
- 
- TRACE_EVENT(ufshcd_upiu,
--	TP_PROTO(const char *dev_name, const char *str, void *hdr, void *tsf),
-+	TP_PROTO(const char *dev_name, const char *str, void *hdr, void *tsf,
-+		 const char *tsf_type),
- 
--	TP_ARGS(dev_name, str, hdr, tsf),
-+	TP_ARGS(dev_name, str, hdr, tsf, tsf_type),
- 
- 	TP_STRUCT__entry(
- 		__string(dev_name, dev_name)
- 		__string(str, str)
- 		__array(unsigned char, hdr, 12)
- 		__array(unsigned char, tsf, 16)
-+		__string(tsf_type, tsf_type)
- 	),
- 
- 	TP_fast_assign(
-@@ -311,12 +313,14 @@ TRACE_EVENT(ufshcd_upiu,
- 		__assign_str(str, str);
- 		memcpy(__entry->hdr, hdr, sizeof(__entry->hdr));
- 		memcpy(__entry->tsf, tsf, sizeof(__entry->tsf));
-+		__assign_str(tsf_type, tsf_type);
- 	),
- 
- 	TP_printk(
--		"%s: %s: HDR:%s, CDB:%s",
-+		"%s: %s: HDR:%s, %s:%s",
- 		__get_str(str), __get_str(dev_name),
- 		__print_hex(__entry->hdr, sizeof(__entry->hdr)),
-+		__get_str(tsf_type),
- 		__print_hex(__entry->tsf, sizeof(__entry->tsf))
- 	)
- );
+Changes since v2:
+- Reused A80 binding for V3s NMI since registers are the same;
+- Changes SL631 buttons (up/down/ok) which better reflect reality.
+
+Changes since v1:
+- Rework commit log messages as requested;
+- Fixed v3s nmi controller compatible order in dt bindings doc;
+- Changed SL631 compatible vendor to allwinner;
+- Fixed LRADC button node names;
+- Removed unused LDO4 regulator node;
+- Removed merged patches.
+
+Paul Kocialkowski (5):
+  dt-bindings: irq: sun7i-nmi: Add binding documentation for the V3s NMI
+  ARM: dts: sun8i-v3s: Add the V3s NMI IRQ controller
+  ARM: dts: sun8i: Cleanup the Pinecube AXP209 node
+  dt-bindings: arm: sunxi: Add SL631 with IMX179 bindings
+  ARM: dts: sun8i-v3: Add support for the SL631 Action Camera with
+    IMX179
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   6 +
+ .../allwinner,sun7i-a20-sc-nmi.yaml           |   3 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/sun8i-s3-pinecube.dts       |   8 +-
+ arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts   |  12 ++
+ arch/arm/boot/dts/sun8i-v3-sl631.dtsi         | 138 ++++++++++++++++++
+ arch/arm/boot/dts/sun8i-v3s.dtsi              |  11 +-
+ 7 files changed, 172 insertions(+), 7 deletions(-)
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631-imx179.dts
+ create mode 100644 arch/arm/boot/dts/sun8i-v3-sl631.dtsi
+
 -- 
-2.17.1
+2.29.2
 
