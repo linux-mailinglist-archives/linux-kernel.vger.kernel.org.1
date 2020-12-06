@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D877B2D0452
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236B02D0413
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729392AbgLFLop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:44:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
+        id S1727702AbgLFLnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729353AbgLFLog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:36 -0500
+        id S1729027AbgLFLms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:42:48 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.9 20/46] ibmvnic: Ensure that SCRQ entry reads are correctly ordered
+        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 24/39] net/x25: prevent a couple of overflows
 Date:   Sun,  6 Dec 2020 12:17:28 +0100
-Message-Id: <20201206111557.433246781@linuxfoundation.org>
+Message-Id: <20201206111555.835757221@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,66 +33,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit b71ec952234610b4f90ef17a2fdcb124d5320070 ]
+[ Upstream commit 6ee50c8e262a0f0693dad264c3c99e30e6442a56 ]
 
-Ensure that received Subordinate Command-Response Queue (SCRQ)
-entries are properly read in order by the driver. These queues
-are used in the ibmvnic device to process RX buffer and TX completion
-descriptors. dma_rmb barriers have been added after checking for a
-pending descriptor to ensure the correct descriptor entry is checked
-and after reading the SCRQ descriptor to ensure the entire
-descriptor is read before processing.
+The .x25_addr[] address comes from the user and is not necessarily
+NUL terminated.  This leads to a couple problems.  The first problem is
+that the strlen() in x25_bind() can read beyond the end of the buffer.
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The second problem is more subtle and could result in memory corruption.
+The call tree is:
+  x25_connect()
+  --> x25_write_internal()
+      --> x25_addr_aton()
+
+The .x25_addr[] buffers are copied to the "addresses" buffer from
+x25_write_internal() so it will lead to stack corruption.
+
+Verify that the strings are NUL terminated and return -EINVAL if they
+are not.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: a9288525d2ae ("X25: Dont let x25_bind use addresses containing characters")
+Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/X8ZeAKm8FnFpN//B@mwanda
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ net/x25/af_x25.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2409,6 +2409,12 @@ restart_poll:
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -675,7 +675,8 @@ static int x25_bind(struct socket *sock,
+ 	int len, i, rc = 0;
  
- 		if (!pending_scrq(adapter, adapter->rx_scrq[scrq_num]))
- 			break;
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
- 		next = ibmvnic_next_scrq(adapter, adapter->rx_scrq[scrq_num]);
- 		rx_buff =
- 		    (struct ibmvnic_rx_buff *)be64_to_cpu(next->
-@@ -3107,6 +3113,13 @@ restart_loop:
- 		unsigned int pool = scrq->pool_index;
- 		int num_entries = 0;
- 
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
-+
- 		next = ibmvnic_next_scrq(adapter, scrq);
- 		for (i = 0; i < next->tx_comp.num_comps; i++) {
- 			if (next->tx_comp.rcs[i]) {
-@@ -3507,6 +3520,11 @@ static union sub_crq *ibmvnic_next_scrq(
+ 	if (addr_len != sizeof(struct sockaddr_x25) ||
+-	    addr->sx25_family != AF_X25) {
++	    addr->sx25_family != AF_X25 ||
++	    strnlen(addr->sx25_addr.x25_addr, X25_ADDR_LEN) == X25_ADDR_LEN) {
+ 		rc = -EINVAL;
+ 		goto out;
  	}
- 	spin_unlock_irqrestore(&scrq->lock, flags);
+@@ -769,7 +770,8 @@ static int x25_connect(struct socket *so
  
-+	/* Ensure that the entire buffer descriptor has been
-+	 * loaded before reading its contents
-+	 */
-+	dma_rmb();
-+
- 	return entry;
- }
+ 	rc = -EINVAL;
+ 	if (addr_len != sizeof(struct sockaddr_x25) ||
+-	    addr->sx25_family != AF_X25)
++	    addr->sx25_family != AF_X25 ||
++	    strnlen(addr->sx25_addr.x25_addr, X25_ADDR_LEN) == X25_ADDR_LEN)
+ 		goto out;
  
+ 	rc = -ENETUNREACH;
 
 
