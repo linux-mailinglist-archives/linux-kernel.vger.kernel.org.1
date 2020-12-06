@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101D62D0067
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 05:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637272D0080
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 05:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgLFEKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 23:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
+        id S1727530AbgLFESZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 23:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727181AbgLFEKK (ORCPT
+        with ESMTP id S1727071AbgLFESX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 23:10:10 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE47C0613D4;
-        Sat,  5 Dec 2020 20:09:30 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t7so6693316pfh.7;
-        Sat, 05 Dec 2020 20:09:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bjb3siksjCQxhh7o1xTwvr++qhqZ5Ukvote3GZa+jqw=;
-        b=KOHeAAgDo0eHYW0Zk9uWp2ZvAyXCfE8yYEVlwMUbJfMcNWmJfvd21AJHKMZ0ck/q5I
-         z43qeEDUjAWnRiUzjK9DgzG3ayisnGDNuYDp6BWG60q4MnexXncKBie/7ahrPypBo644
-         LT+O04lap68ike/H1T/X4JF0buT0jtCk12i0ByALZFMiXwbXAbwYSWvuNa2JIuH/reia
-         uESsqWSAPGN5vM2dNEJij4TOyMu7Qm7Lc1klRyky7gm3xWM11MPhgpJUWwnlGz1XPuwc
-         VkIcEnfnBcvz0I89gPxoFqN1FFiBt6Dwu9qFKHKzUWwKX1DbJtntRmPJovdbuQDAnj1a
-         YYsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bjb3siksjCQxhh7o1xTwvr++qhqZ5Ukvote3GZa+jqw=;
-        b=IPYAThCbMtCOoxvwxDynm01WgRoI+ptsi8xeCmdkjgZqSYzR2T2ziKSEunGloD8Z8D
-         0kIKYfUpOpRus8pdGeSbWMY9HDwmBFJNj72joDuW4xBz0+jPlnoeC1HdkVAfs1thUkjt
-         sAAYszgALhv+iagYHH2WfvFNy6hBbmmWsWvb1FiprZc5ri6bc94PAreGSkoTwvH5PHPA
-         IAc70cG+laEN3ybrEyGFlhVZqtgOnebZOIQwofPWL/pTUgqazJoShW8D/r739YLzDaLz
-         0XDzgYnz0uC1AOP7cVqno2umyqncBBBfzoY6TTqiIVnUaXWREJs5T75c9aoAOUu6EyO3
-         TH8g==
-X-Gm-Message-State: AOAM532Po3IwvHozHQ3KUpDgHzsmHEpqpdB08WwUe/jmcjrfBjfXOEVe
-        RaRv8KtkXQndv9tFayL1MVCIUlUxAPs=
-X-Google-Smtp-Source: ABdhPJz/YEITyD7MdfpgzUNYmvtvjp8X5PGZEALctAPo9bkKRJ6t+7KMGGo/iArVDHFezgEB04ZVtg==
-X-Received: by 2002:a17:902:d682:b029:da:c739:ce14 with SMTP id v2-20020a170902d682b02900dac739ce14mr10342893ply.61.1607224403024;
-        Sat, 05 Dec 2020 19:13:23 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id y9sm6382998pjj.8.2020.12.05.19.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 19:13:22 -0800 (PST)
-Date:   Sat, 5 Dec 2020 19:13:19 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 6/7] input: atc260x: Add onkey driver for ATC260x PMICs
-Message-ID: <X8xMTwaUYx+s1BG7@google.com>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <fb61c36b7a8449d76767f148f2d43447294d5038.1607216141.git.cristian.ciocaltea@gmail.com>
+        Sat, 5 Dec 2020 23:18:23 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6CFC0613D0;
+        Sat,  5 Dec 2020 20:17:43 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1klkdd-00Gpbw-Nh; Sun, 06 Dec 2020 03:23:05 +0000
+Date:   Sun, 6 Dec 2020 03:23:05 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201206032305.GD3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fb61c36b7a8449d76767f148f2d43447294d5038.1607216141.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <20201203230336.GC3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 03:27:06AM +0200, Cristian Ciocaltea wrote:
-> The Actions Semi ATC260x PMICs are able to manage an onkey button.
-> This driver exposes the ATC260x onkey as an input device. It can also
-> be configured to force a system reset on a long key-press with an
-> adjustable duration.
+On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
+> > >  The answer (for mainline) is that mips compat does *NOT* want
+> > > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
+> > > retested it (seems to work, both for x86_64 and mips64, execs and
+> > > coredumps for all ABIs alike), with centralization of Kconfig logics
+> > > thrown in.
+> > 
+> > Well, the diffstat looks nice:
+> > 
+> > >  26 files changed, 127 insertions(+), 317 deletions(-)
+> > 
+> > and the patches didn't trigger anything for me, but how much did this
+> > get tested? Do you actually have both kinds of 32-bit elf mips
+> > binaries around and a machine to test on?
 > 
-> The currently supported chip variants are ATC2603C and ATC2609A.
+> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
+> and libraries just fine, and then it's just a matter of -mabi=n32 passed
+> to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
+> and the things appear to work; I hadn't tried that on the actual hardware.
+> I do have a Loongson-2 box, but it would take a while to dig it out and
+> get it up-to-date.
 > 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
-> Changes in v3: 
->  - Integrated Dmitry's review:
->    * Dropped the logic around the check for 'pdev->dev.of_node'
->    * Renamed 'ret' variable in 'atc260x_onkey_probe()' to 'error'
->    * Used 'dev_dbg' instead of 'dev_info' on status KEY_RESET_DISABLED
->    * Dropped 'input_dev->evbit[0] = BIT_MASK(EV_KEY);'
->    * Removed IRQF_TRIGGER_HIGH flag on 'devm_request_threaded_irq()'
->    * Implemented open/close to mitigate the racing issue in
->      'atc260x_onkey_remove()' which has been dropped now
->  - Removed the unnecessary driver compatibles
->  - Used 'reset-time-sec' property of the parent device instead of
->    'actions,reset-time-sec' of now obsolete and removed 'onkey' DT node
+> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
+> > just so that he has a heads-up on this thing and can go and look at
+> > the mailing list in case it goes to a separate mailbox for him..
+> 
+> I would certainly appreciate review and testing - this branch sat
+> around in the "should post it someday" state since June (it was
+> one of the followups grown from regset work back then), and I'm
+> _not_ going to ask pulling it without an explicit OK from mips
+> folks.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+BTW, there's something curious going on in ELF binary recognition for
+x32.  Unlike other 64bit architectures, here we have a 32bit binary
+that successfully passes the native elf_check_arch().  Usually we
+either have different EM_... values for 64bit and 32bit (e.g. for ppc
+and sparc) or we have an explicit check for ->e_ident[EI_CLASS]
+having the right value (ELFCLASS32 or ELFCLASS64 for 32bit and 64bit
+binaries resp.)
 
-Please merge with the rest through MFD I suppose.
+For x32 that's not true - we use EM_X86_64 for ->e_machine and that's
+the only thing the native elf_check_arch() is looking at.  IOW,
+it looks like amd64 elf_load_binary() progresses past elf_check_arch()
+for x32 binaries.  And gets to load_elf_phdrs(), which would appear
+to have a check of its own that should reject the sucker:
+        /*
+         * If the size of this structure has changed, then punt, since
+         * we will be doing the wrong thing.
+         */
+        if (elf_ex->e_phentsize != sizeof(struct elf_phdr))
+                goto out;
+After all, ->e_phentsize is going to be 32 (sizeof(struct elf32_phdr)
+rather than expected 56 (sizeof(struct elf64_phdr)) and off we bugger,
+even though it happens at slightly later point than usual.  Except that
+we are looking at struct elf64_hdr ->e_phentsize - in struct elf32_hdr.
+I.e. at offset 54, two bytes past the end of in-file struct elf32_hdr.
 
-Thanks.
+Usually we won't find 0x38 0x00 in that location, so everything works,
+but IMO that's too convoluted.
 
--- 
-Dmitry
+Peter, is there any reason not to check ->ei_ident[EI_CLASS] in
+amd64 elf_check_arch()?  It's a 1-byte load from hot cacheline
+(offset 4 and we'd just read the 4 bytes at offsets 0..3) +
+compare + branch not taken, so performance impact is pretty much
+nil.  I'm not saying it's a security problem or anything of that
+sort, just that it makes the analysis more subtle than it ought
+to be...
+
+Is it about some malformed homegrown 64bit binaries with BS value
+at offset 4?  Confused...
