@@ -2,143 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD942D0505
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 13:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728182D050D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 14:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgLFM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 07:57:59 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:19806 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgLFM56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 07:57:58 -0500
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 0B6Cuuoh022591;
-        Sun, 6 Dec 2020 21:56:57 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0B6Cuuoh022591
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1607259417;
-        bh=gbIpeIkRESVhlsRy63GztoRY1RdZYOlRiuk3WB+Rdwk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1fkgfoQM4+zB01OeIC6dC0yEsxiUv0OKewB1OPpiftWSR27XmaPQoj6651oWHwnRY
-         0KRny6gm/4vXWy0/QQUPFBw4Yku6oHqt/w2S3svovHV/CEolPiRFhMSgpSM6yuw8ki
-         VA8YBcEBTT3JGQxo/2Ithnd+rhnvUiSptcOxlECu/gAAeBGuQRGpQ8g4aTDzsGtOh4
-         exmWG6+00/FF0I2C9hgplgNnRXLAQH2C08lxuME6hnWVX3P+PO48CZO5x5nu1nV3iC
-         8m0jryUTMUFcjx+bMcvYKgt5QTg1JimZKYdH16kEN7cpVcQ6pHnd8yEtflxw6DQvLu
-         1/MiGBF6X0pig==
-X-Nifty-SrcIP: [209.85.215.174]
-Received: by mail-pg1-f174.google.com with SMTP id w16so6578673pga.9;
-        Sun, 06 Dec 2020 04:56:57 -0800 (PST)
-X-Gm-Message-State: AOAM532zwGhmt63iujtebcKxEupPrw5AP8VY2i070TFWrlIYA/4cuBcE
-        j4Auxm4Ds+PaPkky72NJubFhxvF0sd2z6i43Y6g=
-X-Google-Smtp-Source: ABdhPJzteZp219zhz+wSg7qnEEkJgRUoJJd2Oig5kInGuhzNbpTUiveQwxVN0N1Y2J6Pet7pLqCWjpbmH31H1bVhIXM=
-X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
- b1-20020aa795010000b02901553b11d5c4mr11632573pfp.76.1607259416261; Sun, 06
- Dec 2020 04:56:56 -0800 (PST)
+        id S1727918AbgLFNLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 08:11:40 -0500
+Received: from mga11.intel.com ([192.55.52.93]:39732 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgLFNLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 08:11:39 -0500
+IronPort-SDR: QKDKgtsCPplZI3k++3k1BAcBNY4xVvGkOjvrUfCGIOTh6N4sLGnT2zHcJf2NpGd/f9uz1eLOWm
+ 9eXBlF4gi7QA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9826"; a="170075281"
+X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
+   d="scan'208";a="170075281"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 05:10:59 -0800
+IronPort-SDR: slcHwJiz/mitijhJdZ/Xd8ynlgp6fPnJIxNegCNPB/axnemz6ixn4MKXT2GUNTpqrWqTMfZ1C6
+ SXLTiZQyfFUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
+   d="scan'208";a="316745070"
+Received: from cvg-ubt08.iil.intel.com (HELO cvg-ubt08.me-corp.lan) ([10.185.176.12])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Dec 2020 05:10:52 -0800
+From:   Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] do_exit(): panic() when double fault detected
+Date:   Sun,  6 Dec 2020 15:10:36 +0200
+Message-Id: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CAK7LNASVM_r0q6vQzjzTivu-bhOxgDwm4rsJzT5j7TFJmwOViA@mail.gmail.com>
-In-Reply-To: <CAK7LNASVM_r0q6vQzjzTivu-bhOxgDwm4rsJzT5j7TFJmwOViA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 6 Dec 2020 21:56:19 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ89DmUWajCk6kssBa5rLFDUh6EYgROW=cY3-i_SQJHDA@mail.gmail.com>
-Message-ID: <CAK7LNAQ89DmUWajCk6kssBa5rLFDUh6EYgROW=cY3-i_SQJHDA@mail.gmail.com>
-Subject: Re: [GIT PULL] Kbuild fixes for v5.10-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The email subject should be "Kbuild fixes for v5.10-rc7",
-not for v5.10-rc6.
+Double fault detected in do_exit() is symptom of integrity
+compromised. For safety critical systems, it may be better to
+panic() in this case to minimize risk.
 
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 5 +++++
+ include/linux/kernel.h                          | 1 +
+ kernel/exit.c                                   | 7 +++++++
+ kernel/sysctl.c                                 | 9 +++++++++
+ 4 files changed, 22 insertions(+)
 
-
-
-
-On Sun, Dec 6, 2020 at 9:47 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Hi Linus,
->
-> Please pull some more Kbuild fixes for v5.10
-> Thanks.
->
->
->
-> The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
->
->   Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-> tags/kbuild-fixes-v5.10-2
->
-> for you to fetch changes up to 7d32358be8acb119dcfe39b6cf67ec6d94bf1fe7:
->
->   kbuild: avoid split lines in .mod files (2020-12-06 21:09:28 +0900)
->
-> ----------------------------------------------------------------
-> Kbuild fixes for v5.10 (2nd)
->
->  - Move -Wcast-align to W=3, which tends to be false-positive and there
->    is no tree-wide solution.
->
->  - Pass -fmacro-prefix-map to KBUILD_CPPFLAGS because it is a preprocessor
->    option and makes sense for .S files as well.
->
->  - Disable -gdwarf-2 for Clang's integrated assembler to avoid warnings.
->
->  - Disable --orphan-handling=warn for LLD 10.0.1 to avoid warnings.
->
->  - Fix undesirable line breaks in *.mod files.
->
-> ----------------------------------------------------------------
-> Arnd Bergmann (1):
->       Makefile.extrawarn: move -Wcast-align to W=3
->
-> Denys Zagorui (1):
->       kbuild: use -fmacro-prefix-map for .S sources
->
-> Masahiro Yamada (1):
->       kbuild: avoid split lines in .mod files
->
-> Nathan Chancellor (2):
->       kbuild: Hoist '--orphan-handling' into Kconfig
->       kbuild: Disable CONFIG_LD_ORPHAN_WARN for ld.lld 10.0.1
->
-> Nick Desaulniers (1):
->       Kbuild: do not emit debug info for assembly with LLVM_IAS=1
->
->  MAINTAINERS                       |  1 +
->  Makefile                          | 10 +++++++++-
->  arch/Kconfig                      |  9 +++++++++
->  arch/arm/Kconfig                  |  1 +
->  arch/arm/Makefile                 |  4 ----
->  arch/arm/boot/compressed/Makefile |  4 +++-
->  arch/arm64/Kconfig                |  1 +
->  arch/arm64/Makefile               |  4 ----
->  arch/powerpc/Kconfig              |  1 +
->  arch/powerpc/Makefile             |  1 -
->  arch/x86/Kconfig                  |  1 +
->  arch/x86/Makefile                 |  3 ---
->  arch/x86/boot/compressed/Makefile |  4 +++-
->  init/Kconfig                      | 10 ++++++++++
->  scripts/Makefile.build            | 12 ++++--------
->  scripts/Makefile.extrawarn        |  2 +-
->  scripts/lld-version.sh            | 20 ++++++++++++++++++++
->  17 files changed, 64 insertions(+), 24 deletions(-)
->  create mode 100755 scripts/lld-version.sh
->
->
-> --
-> Best Regards
-> Masahiro Yamada
-
-
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 44fde25bb221..6cb2a63c47f3 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3521,6 +3521,11 @@
+ 			extra details on the taint flags that users can pick
+ 			to compose the bitmask to assign to panic_on_taint.
+ 
++	panic_on_double_fault
++			panic() when double fault detected in do_exit().
++			Useful on safety critical systems; double fault is
++			a symptom of kernel integrity compromised.
++
+ 	panic_on_warn	panic() instead of WARN().  Useful to cause kdump
+ 			on a WARN().
+ 
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 2f05e9128201..0d8822259a36 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -539,6 +539,7 @@ extern int sysctl_panic_on_rcu_stall;
+ extern int sysctl_panic_on_stackoverflow;
+ 
+ extern bool crash_kexec_post_notifiers;
++extern int panic_on_double_fault;
+ 
+ /*
+  * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 1f236ed375f8..e67ae43644f9 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -68,6 +68,9 @@
+ #include <asm/unistd.h>
+ #include <asm/mmu_context.h>
+ 
++int panic_on_double_fault __read_mostly;
++core_param(panic_on_double_fault, panic_on_double_fault, int, 0644);
++
+ static void __unhash_process(struct task_struct *p, bool group_dead)
+ {
+ 	nr_threads--;
+@@ -757,6 +760,10 @@ void __noreturn do_exit(long code)
+ 	 */
+ 	if (unlikely(tsk->flags & PF_EXITING)) {
+ 		pr_alert("Fixing recursive fault but reboot is needed!\n");
++		if (panic_on_double_fault)
++			panic("Double fault detected in %s[%d]\n",
++			      current->comm, task_pid_nr(current));
++
+ 		futex_exit_recursive(tsk);
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		schedule();
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index afad085960b8..869a2ca41e8e 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2600,6 +2600,15 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= &one_thousand,
+ 	},
+ #endif
++	{
++		.procname	= "panic_on_double_fault",
++		.data		= &panic_on_double_fault,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ZERO,
++		.extra2		= SYSCTL_ONE,
++	},
+ 	{
+ 		.procname	= "panic_on_warn",
+ 		.data		= &panic_on_warn,
 -- 
-Best Regards
-Masahiro Yamada
+2.27.0
+
+---------------------------------------------------------------------
+Intel Israel (74) Limited
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
