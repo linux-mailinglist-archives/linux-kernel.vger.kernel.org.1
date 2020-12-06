@@ -2,116 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965DF2D076E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2262D0772
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgLFVlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:41:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLFVlo (ORCPT
+        id S1727874AbgLFVpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:45:38 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60414 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgLFVpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:41:44 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56732C0613D0;
-        Sun,  6 Dec 2020 13:40:58 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 3so11878440wmg.4;
-        Sun, 06 Dec 2020 13:40:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/BxSizpOargIZyac2nTAqdpMqu9JUHGGbqbw7p9cqXY=;
-        b=GzCcTnP1hykHHnk8kieyiyxzTx6xoXN6w89uNNv3N/J1qe9T2XHMBpdfcT1Bpc+IGk
-         EaaJDdlJHbvpCu2nUPwk6beSSXutJJxeoUnHHEKj/WpIDx0DvdyJh/Tmr3REV/dcDl8F
-         OgBVfyso+hW5mt9i/WdzTxUOAvC9QavNiaLgpjkgxzUS6nXKSQ95ftcz+BMzAjwZ9Wd2
-         eWdSCp7UT95HKHkWBEzbgFC7hSKYJiJ4bMgiwg/erq8kMbhh7yvk0xkAqJ6oJnKqaQ+b
-         871rtSreI4ZfDCp/A9FyIMsDMkv965L6cx/FDnFEhDhwMa0fKQ/AJHYhuLxZM9BKCfqx
-         BE4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/BxSizpOargIZyac2nTAqdpMqu9JUHGGbqbw7p9cqXY=;
-        b=VNU8WDfcQzTVAyekvp6LR/43UnEx37F/yxHCW5TmrDDCFuB2LbJm1ITqm5GHRCPZwk
-         Iy+sDvnUdl4/3oBe+lxULTFEHiuS31L8veytM8We3aVniZGGPYicQYtkNSNOIKb8Nw6M
-         Nl0b970GtoMi8cYM25ApVfXrTMlQxfr1RmrOpDACd0lnT5PJsXzJd+lSxikI4alpDeZk
-         JgzcMvohArbysdXBr8pG0UN+lE+5AOr8muNdvNkFx8bmAadgaAQGwbX/YzRcdE8K5Bys
-         Noq/KOuuvDnRpvdq3Ik6oxXtJdPPLeBwa3bCr7f+Wbsm/SE9Qwl4qD65aVSDC5heav4D
-         26/A==
-X-Gm-Message-State: AOAM5337V8tLRL3xTsnppW5uA03nLc5vBPiv9b9cSJThGNYQclJE+ck/
-        Q3DKuu2goduB/vU5wRm0wt+3/ikAoDY=
-X-Google-Smtp-Source: ABdhPJzZKEbCkaETVTQleZ8rPJgbqrJ0gj7vBfgsr/S/ShhK2oE1HYMAySEm5l9TOEN0AbgN/GLHXA==
-X-Received: by 2002:a1c:b78a:: with SMTP id h132mr15145028wmf.141.1607290857074;
-        Sun, 06 Dec 2020 13:40:57 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id y68sm10912421wmc.0.2020.12.06.13.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 13:40:56 -0800 (PST)
-Date:   Sun, 6 Dec 2020 22:40:53 +0100
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>,
-        Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: crypto: sun4i-ss: error with kmap
-Message-ID: <20201206214053.GA8458@Red>
-References: <20201202195501.GA29296@Red>
- <877dpzexfr.fsf@nanos.tec.linutronix.de>
- <20201203173846.GA16207@Red>
- <87r1o6bh1u.fsf@nanos.tec.linutronix.de>
- <20201204132631.GA25321@Red>
- <874kl1bod0.fsf@nanos.tec.linutronix.de>
- <20201204192753.GA19782@Red>
- <87wnxx9tle.fsf@nanos.tec.linutronix.de>
- <20201205184334.GA8034@Red>
- <87mtys8268.fsf@nanos.tec.linutronix.de>
+        Sun, 6 Dec 2020 16:45:38 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607291095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvMIZ8V7P82TIE5ynaeOhFU443FPPkQVZf1zwOM1y3A=;
+        b=L/z43f9iDM03hpUNwETYPWzr/NPqkFYwEJf8JqJmRKeJCuMpmJz5Mo03rquuIhTgiTTbzq
+        ygNu50ZVfmcAnkxnHnpXF9XUDlfq5QsuDszFoNgavLbrmLJBt6TZlQLxwUvgSxkiMguUxk
+        rlzJxBO1CHnB/A7+eIJJCrUjoEoW2q+cpkWbAniiZkG3VCmOWFXcwBXlHFZeOEXd+f6svL
+        Wa8hIdRyt8jho97JBjwClhIB3msgMo1MI3GedduvziOX2LmhaKzF0KkYK5+a+pz+Nydifw
+        GGCBtQi6cZV4euxOfFlDR5817nvI8odyXeuMr59n4dQL3paF//b0M+Oqfx3SbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607291095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvMIZ8V7P82TIE5ynaeOhFU443FPPkQVZf1zwOM1y3A=;
+        b=8n2snkdbySjbb1zYN6zLZrwi86jTBLwFvZK2nIepaSWUJVkTpITkSQOKtv9UxUY2SqcqyM
+        ICQJcgRpD/wBckCg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: recursion handling: Re: [PATCH next v2 3/3] printk: remove logbuf_lock, add syslog_lock
+In-Reply-To: <X8pfX/qPBuY360k/@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de> <20201201205341.3871-4-john.ogness@linutronix.de> <X8pfX/qPBuY360k/@alley>
+Date:   Sun, 06 Dec 2020 22:50:54 +0106
+Message-ID: <87sg8imwx5.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mtys8268.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 08:48:15PM +0100, Thomas Gleixner wrote:
-> Corentin,
-> 
-> On Sat, Dec 05 2020 at 19:43, Corentin Labbe wrote:
-> > On Fri, Dec 04, 2020 at 09:58:21PM +0100, Thomas Gleixner wrote:
-> >> Can you please replace the debug patch with the one below and try again?
-> >> That stops the trace right on the condition.
-> >
-> > Hello, the result could be found at http://kernel.montjoie.ovh/130739.log
-> 
-> Thanks for providing this. This is clearly showing where stuff goes
-> wrong. It starts here at 729.550001. I removed the uninteresting parts:
-> 
-> 0d..2 147103293us : __kmap_local_page_prot <-sg_miter_next
-> 0d..3 147103308us :__kmap_local_pfn_prot: kmap_local_pfn: 1 ffefd000
-> 
-> 0d..3 147103311us : __kmap_local_page_prot <-sg_miter_next
-> 0d..4 147103325us : __kmap_local_pfn_prot: kmap_local_pfn: 3 ffefb000
-> 
-> 0d..3 147103429us : kunmap_local_indexed <-sg_miter_stop
-> 0d..4 147103433us : kunmap_local_indexed: kunmap_local: 3 ffefd000
-> 
-> So this maps two pages and unmaps the first one. That's all called from
-> sun4i_ss_opti_poll() and the bug is clearly visible there:
-> 
-> 	sg_miter_next(&mi);
-> 	sg_miter_next(&mo);
-> 
-> release_ss:
-> 	sg_miter_stop(&mi);
-> 	sg_miter_stop(&mo);
-> 
-> Written by yourself :) Same issue in sun4i_ss_cipher_poll()
-> 
-> Fix below.
-> 
+On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
+> On Tue 2020-12-01 21:59:41, John Ogness wrote:
+>> Since the ringbuffer is lockless, there is no need for it to be
+>> protected by @logbuf_lock. Remove @logbuf_lock.
+>> 
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -1847,6 +1811,65 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
+>>  	}
+>>  }
+>
+> The recursion-related code needs some explanation or we should do it
+> another way. I spent quite some time on it and I am still not sure
+> that I understand it.
 
-Unfortunatly, the crash still happen with the fix.
-See http://kernel.montjoie.ovh/131321.log
+Sorry. :-/
+
+> Let me describe how I understand it.
+>
+>> +#ifdef CONFIG_PRINTK_NMI
+>> +#define NUM_RECURSION_CTX 2
+>> +#else
+>> +#define NUM_RECURSION_CTX 1
+>> +#endif
+>
+> OK, the number of context is limited because interrupts are disabled
+> inside print_enter()/printk_exit(). It is basically the same reason
+> why we have only two printk_safe buffers (NNI + other contexts).
+
+Correct.
+
+> What is the exact reason to disable interrupts around the entire
+> vprintk_store(), please? It should get documented.
+
+It simplifies the context tracking. Also, in mainline interrupts are
+already disabled for all of vprintk_store(). AFAIK latencies due to
+logbuf_lock contention were not an issue.
+
+> One reason is the use of per-cpu variables. Alternative solution would
+> be to store printk_context into task_struct. Well, I am not sure if
+> "current" task is available during early boot. But it might solve
+> problems with per-cpu variables that are not working during early
+> boot.
+>
+> That said, I am not sure if it is worth it.
+
+I really don't want to touch task_struct. IMHO the usefulness of that
+struct is limited, considering that printk can be called from scheduling
+and interrupting contexts.
+
+>> +
+>> +struct printk_recursion {
+>> +	char	count[NUM_RECURSION_CTX];
+>> +};
+>>
+>> +static DEFINE_PER_CPU(struct printk_recursion, percpu_printk_recursion);
+>> +static char printk_recursion_count[NUM_RECURSION_CTX];
+>
+> This is pretty confusing. The array is hidden in a struct when per-cpu
+> variables are used. And a naked array is used for early boot.
+>
+> Is the structure really needed? What about?
+>
+> static DEFINE_PER_CPU(char [PRINTK_CTX_NUM], printk_count);
+> static char printk_count_early[NUM_RECURSION_CTX];
+
+OK.
+
+>> +
+>> +static char *get_printk_count(void)
+>> +{
+>> +	struct printk_recursion *rec;
+>> +	char *count;
+>> +
+>> +	if (!printk_percpu_data_ready()) {
+>> +		count = &printk_recursion_count[0];
+>
+> I see why you avoided per-cpu variables for early boot. I am just
+> curious how printk_context variable works these days. It is used by
+> any printk(), including early code, see vprintk_func().
+
+IMO printk_context is serving a different purpose. With the existance of
+logbuf_lock, printk_context exists for the sole purpose of making sure
+logbuf_lock is not taken recursively or that the CPU does not spin on it
+in NMI context. printk_context is simply gating calls to the safe
+buffers.
+
+For the lockless ringbuffer, there is no issue of taking a lock
+recursively or dangers from NMI. There is no need for the printk_context
+"gate". However, IMHO there is a real danger if a bug in printk (or its
+ringbuffer) lead to infinite recursion. This new recursion counter is
+offering safety against this scenario. Until now this scenario has been
+ignored. So I suppose if we are comfortable with continuing to ignore
+the scenario, then we don't need to track the recursion level.
+
+To test, I triggered artificial WARNs in vsnprintf() of printk code. I
+found it nice to be able to see the stack trace going into printk and at
+the same time I was relieved that such a nested warning was not blasting
+the system into infinite recursion.
+
+>> +	} else {
+>> +		rec = this_cpu_ptr(&percpu_printk_recursion);
+>> +
+>> +		count = &rec->count[0];
+>> +	}
+>> +
+>> +#ifdef CONFIG_PRINTK_NMI
+>> +	if (in_nmi())
+>> +		count++;
+>> +#endif
+>
+> This is extremely confusing. It is far from obvious that
+> the pointer and not the value is incremented.
+>
+> If we really need this to avoid per-cpu variables during early boot
+> then a more clear implementation would be:
+>
+> char *get_printk_counter_by_ctx()
+> {
+> 	int ctx = 0;
+>
+> 	if (in_nmi)
+> 		ctx = 1;
+>
+> 	if (!printk_percpu_data_ready())
+> 		return &printk_count_early[ctx];
+>
+> 	return this_cpu_ptr(printk_count[ctx]);
+> }
+
+Yes, much cleaner. Thank you.
+
+>> +
+>> +	return count;
+>> +}
+>> +
+>> +static bool printk_enter(unsigned long *flags)
+>> +{
+>> +	char *count;
+>> +
+>> +	local_irq_save(*flags);
+>> +	count = get_printk_count();
+>> +	/* Only 1 level of recursion allowed. */
+>
+> We should allow at least some level of recursion. Otherwise, we would
+> not see warnings printed from vsprintf code.
+
+With 1 level, you will see warnings from vsprintf code. I'm not sure it
+makes sense to allow more than 1 level. It causes exponential logging.
+
+>> +	if (*count > 1) {
+>> +		local_irq_restore(*flags);
+>> +		return false;
+>> +	}
+>> +	(*count)++;
+>> +
+>> +	return true;
+>> +}
+>
+> This should be unified with printk_context, printk_nmi_enter(),
+> printk_nmi_exit(). It does not make sense to have two separate
+> printk context counters.
+>
+> Or is there any plan to remove printk_safe and printk_context?
+
+Yes, I plan to remove the safe buffers, which also removes printk_safe.c
+and the printk_context "gate".
+
+> BTW: I prefer to use the bitmask approach. It allows to check
+> the normal context by a single operation (no bit is set).
+> There is no need to go through all counters.
+
+OK.
+
+> Note that we need at least one more context for gdb.
+
+Ah yes, thank you.
+
+John Ogness
