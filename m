@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254F72D038D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5542F2D0424
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgLFLj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:39:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
+        id S1729155AbgLFLnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727953AbgLFLj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:39:27 -0500
+        id S1729127AbgLFLnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:21 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
+        stable@vger.kernel.org, Ayush Ranjan <ayushranjan@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 08/20] netfilter: bridge: reset skb->pkt_type after NF_INET_POST_ROUTING traversal
+Subject: [PATCH 5.4 07/39] sock: set sk_err to ee_errno on dequeue from errq
 Date:   Sun,  6 Dec 2020 12:17:11 +0100
-Message-Id: <20201206111555.953900920@linuxfoundation.org>
+Message-Id: <20201206111555.025782473@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
-References: <20201206111555.569713359@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,84 +33,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 44f64f23bae2f0fad25503bc7ab86cd08d04cd47 ]
+[ Upstream commit 985f7337421a811cb354ca93882f943c8335a6f5 ]
 
-Netfilter changes PACKET_OTHERHOST to PACKET_HOST before invoking the
-hooks as, while it's an expected value for a bridge, routing expects
-PACKET_HOST. The change is undone later on after hook traversal. This
-can be seen with pairs of functions updating skb>pkt_type and then
-reverting it to its original value:
+When setting sk_err, set it to ee_errno, not ee_origin.
 
-For hook NF_INET_PRE_ROUTING:
-  setup_pre_routing / br_nf_pre_routing_finish
+Commit f5f99309fa74 ("sock: do not set sk_err in
+sock_dequeue_err_skb") disabled updating sk_err on errq dequeue,
+which is correct for most error types (origins):
 
-For hook NF_INET_FORWARD:
-  br_nf_forward_ip / br_nf_forward_finish
+  -       sk->sk_err = err;
 
-But the third case where netfilter does this, for hook
-NF_INET_POST_ROUTING, the packet type is changed in br_nf_post_routing
-but never reverted. A comment says:
+Commit 38b257938ac6 ("sock: reset sk_err when the error queue is
+empty") reenabled the behavior for IMCP origins, which do require it:
 
-  /* We assume any code from br_dev_queue_push_xmit onwards doesn't care
-   * about the value of skb->pkt_type. */
+  +       if (icmp_next)
+  +               sk->sk_err = SKB_EXT_ERR(skb_next)->ee.ee_origin;
 
-But when having a tunnel (say vxlan) attached to a bridge we have the
-following call trace:
+But read from ee_errno.
 
-  br_nf_pre_routing
-  br_nf_pre_routing_ipv6
-     br_nf_pre_routing_finish
-  br_nf_forward_ip
-     br_nf_forward_finish
-  br_nf_post_routing           <- pkt_type is updated to PACKET_HOST
-     br_nf_dev_queue_xmit      <- but not reverted to its original value
-  vxlan_xmit
-     vxlan_xmit_one
-        skb_tunnel_check_pmtu  <- a check on pkt_type is performed
-
-In this specific case, this creates issues such as when an ICMPv6 PTB
-should be sent back. When CONFIG_BRIDGE_NETFILTER is enabled, the PTB
-isn't sent (as skb_tunnel_check_pmtu checks if pkt_type is PACKET_HOST
-and returns early).
-
-If the comment is right and no one cares about the value of
-skb->pkt_type after br_dev_queue_push_xmit (which isn't true), resetting
-it to its original value should be safe.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Link: https://lore.kernel.org/r/20201123174902.622102-1-atenart@kernel.org
+Fixes: 38b257938ac6 ("sock: reset sk_err when the error queue is empty")
+Reported-by: Ayush Ranjan <ayushranjan@google.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Link: https://lore.kernel.org/r/20201126151220.2819322-1-willemdebruijn.kernel@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_netfilter_hooks.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ net/core/skbuff.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bridge/br_netfilter_hooks.c
-+++ b/net/bridge/br_netfilter_hooks.c
-@@ -716,6 +716,11 @@ static int br_nf_dev_queue_xmit(struct n
- 	mtu_reserved = nf_bridge_mtu_reduction(skb);
- 	mtu = skb->dev->mtu;
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4452,7 +4452,7 @@ struct sk_buff *sock_dequeue_err_skb(str
+ 	if (skb && (skb_next = skb_peek(q))) {
+ 		icmp_next = is_icmp_err_skb(skb_next);
+ 		if (icmp_next)
+-			sk->sk_err = SKB_EXT_ERR(skb_next)->ee.ee_origin;
++			sk->sk_err = SKB_EXT_ERR(skb_next)->ee.ee_errno;
+ 	}
+ 	spin_unlock_irqrestore(&q->lock, flags);
  
-+	if (nf_bridge->pkt_otherhost) {
-+		skb->pkt_type = PACKET_OTHERHOST;
-+		nf_bridge->pkt_otherhost = false;
-+	}
-+
- 	if (nf_bridge->frag_max_size && nf_bridge->frag_max_size < mtu)
- 		mtu = nf_bridge->frag_max_size;
- 
-@@ -809,8 +814,6 @@ static unsigned int br_nf_post_routing(v
- 	else
- 		return NF_ACCEPT;
- 
--	/* We assume any code from br_dev_queue_push_xmit onwards doesn't care
--	 * about the value of skb->pkt_type. */
- 	if (skb->pkt_type == PACKET_OTHERHOST) {
- 		skb->pkt_type = PACKET_HOST;
- 		nf_bridge->pkt_otherhost = true;
 
 
