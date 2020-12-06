@@ -2,181 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45B62D07CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 00:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ED42D07FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 00:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgLFXAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 18:00:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S1728458AbgLFXNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 18:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgLFXAJ (ORCPT
+        with ESMTP id S1727350AbgLFXNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 18:00:09 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED5CC0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 14:59:28 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 4so5709078qvh.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 14:59:28 -0800 (PST)
+        Sun, 6 Dec 2020 18:13:48 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B626DC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 15:13:01 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id a8so661222lfb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 15:13:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=vv6iFUqkL94sPwQ2xC06XNtvXitukry4+NVPo/3bk+o=;
-        b=rOYi/8c+ypk9++BE8/0IunLZipx4Rav67/2kjjIqyzuuzJLMzSVUcW1JVrnXkgz+WJ
-         o036N8+QfkrG5oFpBQoBeNTOFoAtcC5UcY0G+h+zmjLtQcXCELf72HViH/dzHzTfkQvk
-         R7KqX7oSVT0TVaTxKhmFiTCUIoxH8K/vxsirumOuK58LUxLpO2Csv1G5MunLFPLffu7Z
-         Hhc9XOIgGbgiNDL7tly+d1aljArJKgf9jYEHrZ3itufyyC22HZwDxag2E9d+JRjiwOut
-         PQ9rPPY7jOLxN40M97ewcDUL+B3IhbGkXZt8HI8aT3/OIskVTI7Tx1avA/q+sYbn52vo
-         LyEg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sZQfoLnXFAPIemhCQbHqBClIHGxcIWwkYY30wVQIjgM=;
+        b=G7cHQPLYzozXqUpT9OdSrGjS6i2rZK1/3iIJS+CiC2JlHZ+kweyfS/C/liYHX0+yZN
+         2MrBUrEdvPvt2QsC0C4szIv5YEhlGv2SCP2E6vr9ZO83cTME4W7EUZ0uFEFVJN9/p7Ep
+         J8ZG5p1L6/++32BsFj9AmMf1G4jc5saCu2DVImxrcyLxVBRbDh8I10NC4jesCWXlLhWw
+         GTFqdfDX6uWmwMY3xtMwZA7yMaP6gAvi8GQNcZj6aFU2dgEHolFKZBnJd16rXT3hN1tP
+         ngoOokyqhLfvb0CiZd8OqXBAv4+DKN0b+gGM4K9dEx01p9FqaymCpOcDocRFKYKLDmXV
+         S/wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=vv6iFUqkL94sPwQ2xC06XNtvXitukry4+NVPo/3bk+o=;
-        b=akN1mVyhJGmwvu/1DOG9CggIeBlS8nHHFPdGAgdxR6S/jKz+bQRcUO2IExvZ8Zd6is
-         GJQHullRN+eVQ2tA43WPoRCwG60F2QXyih/+NKrA516HDPjX8sK56Ia5TTiBAV1+Qisd
-         pivYvZ8MjRoWR7UyK2VMz9ykBbfGsCcSFQzf0j4uSjJ7qa7cQ+4xuwznUdk4LKbIZ59N
-         5kcfCUMPi9ubBYNenvIk5l/QbXdLidJLLgGGxXEFxFf7e2qbGAkOKBYrFnoREtxD/NPM
-         wyj73bckfrHvfyF2SKmWrzYNL/+myNSCEsmlDIQMm2R/2jdssXTqsTT76WUoKdkTfEU3
-         IC/g==
-X-Gm-Message-State: AOAM533RlNnSMNT4/X0x14lKE4ApixQ3sy2kHEz4XmmPXyy16dSk26sF
-        FIYTZopOQ1vLDn3TGr0pnx0QxmdWCE/RB3wxtJdGeCGS9iQ=
-X-Google-Smtp-Source: ABdhPJy7GZ/nAqCfjIqrRJRceNk3KZ+5aKrqf84hRWQWl/RP/yFU/ISebh2yBPZHam7hQRzB0cUmbWAQXlYEksN6X2M=
-X-Received: by 2002:a05:6214:114f:: with SMTP id b15mr17948421qvt.34.1607295567389;
- Sun, 06 Dec 2020 14:59:27 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sZQfoLnXFAPIemhCQbHqBClIHGxcIWwkYY30wVQIjgM=;
+        b=lo/+fSm8kXdEFqYBk2Qba+nfxoEw5YZuEQx1SnCJWV4eIBAsHt79u0VEnfc/daYeOp
+         nWUbWLiMr6/lVXLalIESHjaUGGclVtfwYtka4TWhyhMJPqRpfjAzhNWOgBry787hEgl2
+         JHoNG1FiDbr4FUO9Q3trmsbPZ991xdUYGAXUuDnsyGTg7czHjoyhZ810A7l0KWK9aiCi
+         PZUjZQoXL0npT4hIK4Az0xZ9c2hwps9fXOs7kVOYvc8qxcY9gCGku+LTBj4g2nLORoET
+         Cfgtmf8OOSojM/Cd4QUB6KydbTr9tcjTeO9/ugM3qqTlnctYnTv77fUF4UTXarzBDxR3
+         n16A==
+X-Gm-Message-State: AOAM531uLZ65IFQfESkqTkQSao7/J/EGKA4pNgD7qzlAI7R4qjaeKrHF
+        4HOyjqbBGNtCWmLCAE6rKEYQ7fL0v5dftvatGlmdlg==
+X-Google-Smtp-Source: ABdhPJynPRWRPOreE+TXZJ2tcTh8mBoVBiKYumIojnUQM1hD0jjPGLq+3v/aOXk/pB5RdMFpyMDKN/fXK1rySXjM5SE=
+X-Received: by 2002:ac2:4308:: with SMTP id l8mr6755975lfh.260.1607296379983;
+ Sun, 06 Dec 2020 15:12:59 -0800 (PST)
 MIME-Version: 1.0
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Sun, 6 Dec 2020 23:59:16 +0100
-Message-ID: <CAFLxGvwienJ7sU2+QAhFt+ywS9iYkbAXDGviuTC-4CVwLOhXfA@mail.gmail.com>
-Subject: BUG: Invalid wait context with KMEMLEAK and KASAN enabled
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>, aryabinin@virtuozzo.com,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com
+References: <1606901543-8957-1-git-send-email-luojiaxing@huawei.com> <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
+In-Reply-To: <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Dec 2020 00:12:48 +0100
+Message-ID: <CACRpkdbodato7AL4xv-oEO9+-Mo9fDaH+jZh+6T=3urE0tbULw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] gpio: gpio-hisi: Add HiSilicon GPIO support
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Luo!
 
-With both KMEMLEAK and KASAN enabled, I'm facing the following lockdep
-splat at random times on Linus' tree as of today.
-Sometimes it happens at bootup, sometimes much later when userspace has started.
+thanks for your patch! I see that Andy already provided a crowd
+of comments, here are some more!
 
-Does this ring a bell?
+On Wed, Dec 2, 2020 at 10:32 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
 
-[    2.298447] =============================
-[    2.298971] [ BUG: Invalid wait context ]
-[    2.298971] 5.10.0-rc6+ #388 Not tainted
-[    2.298971] -----------------------------
-[    2.298971] ksoftirqd/1/15 is trying to lock:
-[    2.298971] ffff888100b94598 (&n->list_lock){....}-{3:3}, at:
-free_debug_processing+0x3d/0x210
-[    2.298971] other info that might help us debug this:
-[    2.298971] context-{2:2}
-[    2.298971] 1 lock held by ksoftirqd/1/15:
-[    2.298971]  #0: ffffffff835f4140 (rcu_callback){....}-{0:0}, at:
-rcu_core+0x408/0x1040
-[    2.298971] stack backtrace:
-[    2.298971] CPU: 1 PID: 15 Comm: ksoftirqd/1 Not tainted 5.10.0-rc6+ #388
-[    2.298971] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS rel-1.12.0-0-ga698c89-rebuilt.opensuse.org 04/01/2014
-[    2.298971] Call Trace:
-[    2.298971]  <IRQ>
-[    2.298971]  dump_stack+0x9a/0xcc
-[    2.298971]  __lock_acquire.cold+0xce/0x34b
-[    2.298971]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
-[    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[    2.298971]  lock_acquire+0x153/0x4c0
-[    2.298971]  ? free_debug_processing+0x3d/0x210
-[    2.298971]  ? lock_release+0x690/0x690
-[    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[    2.298971]  ? pvclock_clocksource_read+0xd9/0x1a0
-[    2.298971]  _raw_spin_lock_irqsave+0x3b/0x80
-[    2.298971]  ? free_debug_processing+0x3d/0x210
-[    2.298971]  ? qlist_free_all+0x35/0xd0
-[    2.298971]  free_debug_processing+0x3d/0x210
-[    2.298971]  __slab_free+0x286/0x490
-[    2.298971]  ? lockdep_enabled+0x39/0x50
-[    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[    2.298971]  ? run_posix_cpu_timers+0x256/0x2c0
-[    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[    2.298971]  ? posix_cpu_timers_exit_group+0x30/0x30
-[    2.298971]  qlist_free_all+0x59/0xd0
-[    2.298971]  ? qlist_free_all+0xd0/0xd0
-[    2.298971]  per_cpu_remove_cache+0x47/0x50
-[    2.298971]  flush_smp_call_function_queue+0xea/0x2b0
-[    2.298971]  __sysvec_call_function+0x6c/0x250
-[    2.298971]  asm_call_irq_on_stack+0x12/0x20
-[    2.298971]  </IRQ>
-[    2.298971]  sysvec_call_function+0x84/0xa0
-[    2.298971]  asm_sysvec_call_function+0x12/0x20
-[    2.298971] RIP: 0010:__asan_load4+0x1d/0x80
-[    2.298971] Code: 10 00 75 ee c3 0f 1f 84 00 00 00 00 00 4c 8b 04
-24 48 83 ff fb 77 4d 48 b8 ff ff ff ff ff 7f ff ff 48 39 c7 76 3e 48
-8d 47 03 <48> 89 c2 83 e2 07 48 83 fa 02 76 17 48 b9 00 00 00 00 00 fc
-ff df
-[    2.298971] RSP: 0000:ffff888100e4f858 EFLAGS: 00000216
-[    2.298971] RAX: ffffffff83c55773 RBX: ffffffff81002431 RCX: dffffc0000000000
-[    2.298971] RDX: 0000000000000001 RSI: ffffffff83ee8d78 RDI: ffffffff83c55770
-[    2.298971] RBP: ffffffff83c5576c R08: ffffffff81083433 R09: fffffbfff07e333d
-[    2.298971] R10: 000000000001803d R11: fffffbfff07e333c R12: ffffffff83c5575c
-[    2.298971] R13: ffffffff83c55774 R14: ffffffff83c55770 R15: ffffffff83c55770
-[    2.298971]  ? ret_from_fork+0x21/0x30
-[    2.298971]  ? __orc_find+0x63/0xc0
-[    2.298971]  ? stack_access_ok+0x35/0x90
-[    2.298971]  __orc_find+0x63/0xc0
-[    2.298971]  unwind_next_frame+0x1ee/0xbd0
-[    2.298971]  ? ret_from_fork+0x22/0x30
-[    2.298971]  ? ret_from_fork+0x21/0x30
-[    2.298971]  ? deref_stack_reg+0x40/0x40
-[    2.298971]  ? __unwind_start+0x2e8/0x370
-[    2.298971]  ? create_prof_cpu_mask+0x20/0x20
-[    2.298971]  arch_stack_walk+0x83/0xf0
-[    2.298971]  ? ret_from_fork+0x22/0x30
-[    2.298971]  ? rcu_core+0x488/0x1040
-[    2.298971]  stack_trace_save+0x8c/0xc0
-[    2.298971]  ? stack_trace_consume_entry+0x80/0x80
-[    2.298971]  ? sched_clock_local+0x99/0xc0
-[    2.298971]  kasan_save_stack+0x1b/0x40
-[    2.298971]  ? kasan_save_stack+0x1b/0x40
-[    2.298971]  ? kasan_set_track+0x1c/0x30
-[    2.298971]  ? kasan_set_free_info+0x1b/0x30
-[    2.298971]  ? __kasan_slab_free+0x10f/0x150
-[    2.298971]  ? kmem_cache_free+0xa8/0x350
-[    2.298971]  ? rcu_core+0x488/0x1040
-[    2.298971]  ? __do_softirq+0x101/0x573
-[    2.298971]  ? run_ksoftirqd+0x21/0x50
-[    2.298971]  ? smpboot_thread_fn+0x1fc/0x380
-[    2.298971]  ? kthread+0x1c7/0x220
-[    2.298971]  ? ret_from_fork+0x22/0x30
-[    2.298971]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
-[    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[    2.298971]  ? lock_acquire+0x153/0x4c0
-[    2.298971]  ? rcu_core+0x408/0x1040
-[    2.298971]  ? lock_release+0x690/0x690
-[    2.298971]  ? lockdep_enabled+0x39/0x50
-[    2.298971]  ? mark_held_locks+0x49/0x90
-[    2.298971]  kasan_set_track+0x1c/0x30
-[    2.298971]  kasan_set_free_info+0x1b/0x30
-[    2.298971]  __kasan_slab_free+0x10f/0x150
-[    2.298971]  ? rcu_core+0x488/0x1040
-[    2.298971]  kmem_cache_free+0xa8/0x350
-[    2.298971]  ? __ia32_compat_sys_move_pages+0x130/0x130
-[    2.298971]  rcu_core+0x488/0x1040
-[    2.298971]  ? call_rcu+0x5d0/0x5d0
-[    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[    2.298971]  __do_softirq+0x101/0x573
-[    2.298971]  ? trace_event_raw_event_irq_handler_exit+0x150/0x150
-[    2.298971]  run_ksoftirqd+0x21/0x50
-[    2.298971]  smpboot_thread_fn+0x1fc/0x380
-[    2.298971]  ? smpboot_register_percpu_thread+0x180/0x180
-[    2.298971]  ? __kthread_parkme+0xbb/0xd0
-[    2.298971]  ? smpboot_register_percpu_thread+0x180/0x180
-[    2.298971]  kthread+0x1c7/0x220
-[    2.298971]  ? kthread_create_on_node+0xd0/0xd0
-[    2.298971]  ret_from_fork+0x22/0x30
+> +config GPIO_HISI
+> +       tristate "HISILICON GPIO controller driver"
+> +       depends on (ARM64 && ACPI) || COMPILE_TEST
+> +       select GPIO_GENERIC
 
--- 
-Thanks,
-//richard
+Thanks for using the generic driver!
+
+> +#include <linux/acpi.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +
+> +#include "gpiolib.h"
+> +#include "gpiolib-acpi.h"
+
+No GPIO drivers should include these files. If you need
+gpiolib.h then describe in a comment right above the include
+why you have to do this.
+
+I don't know about gpiolig-acpi.h but not unless  Andy
+says it is OK it is not OK.
+
+> +#define HISI_GPIO_SWPORT_DR_SET_WX     0x0
+> +#define HISI_GPIO_SWPORT_DR_CLR_WX     0x4
+> +#define HISI_GPIO_SWPORT_DDR_SET_WX    0x10
+> +#define HISI_GPIO_SWPORT_DDR_CLR_WX    0x14
+> +#define HISI_GPIO_SWPORT_DDR_ST_WX     0x18
+> +#define HISI_GPIO_INTEN_SET_WX         0x20
+> +#define HISI_GPIO_INTEN_CLR_WX         0x24
+> +#define HISI_GPIO_INTMASK_SET_WX       0x30
+> +#define HISI_GPIO_INTMASK_CLR_WX       0x34
+> +#define HISI_GPIO_INTTYPE_EDGE_SET_WX  0x40
+> +#define HISI_GPIO_INTTYPE_EDGE_CLR_WX  0x44
+> +#define HISI_GPIO_INT_POLARITY_SET_WX  0x50
+> +#define HISI_GPIO_INT_POLARITY_CLR_WX  0x54
+> +#define HISI_GPIO_DEBOUNCE_SET_WX      0x60
+> +#define HISI_GPIO_DEBOUNCE_CLR_WX      0x64
+> +#define HISI_GPIO_INTSTATUS_WX         0x70
+> +#define HISI_GPIO_PORTA_EOI_WX         0x78
+> +#define HISI_GPIO_EXT_PORT_WX          0x80
+> +#define HISI_GPIO_INTCOMB_MASK_WX      0xa0
+> +#define HISI_GPIO_INT_DEDGE_SET                0xb0
+> +#define HISI_GPIO_INT_DEDGE_CLR                0xb4
+> +#define HISI_GPIO_INT_DEDGE_ST         0xb8
+
+Nice idea with the double edge register! Hats off to the hardware
+engineer who created this simple yet powerful GPIO.
+
+> +#define HISI_GPIO_REG_SIZE     0x4
+> +#define HISI_GPIO_REG_MAX      0x100
+> +#define HISI_GPIO_PIN_NUM_MAX 32
+
+This seems like a bit surplus definitions, I prefer to just inline
+these. Some use cases will go away after you start using
+bgpio_init().
+
+> +struct hisi_gpio {
+> +       struct device           *dev;
+> +       void __iomem            *reg_base;
+> +       unsigned int            pin_num;
+
+I prefer "line_num", the reason I usually use the term "lines"
+rather than "pins" is that some GPIO lines are internal in
+chips and do not always go out to external pins.
+
+> +       struct gpio_chip        chip;
+> +       struct irq_chip         irq_chip;
+> +       int                     irq;
+
+Do you need to keep irq around in the state?
+
+> +static inline u32 hisi_gpio_read_reg(struct gpio_chip *chip,
+> +                                    unsigned int off)
+> +{
+> +       struct hisi_gpio *hisi_gpio =
+> +                       container_of(chip, struct hisi_gpio, chip);
+> +
+> +       return chip->read_reg(hisi_gpio->reg_base + off);
+> +}
+> +
+> +static inline void hisi_gpio_write_reg(struct gpio_chip *chip,
+> +                                      unsigned int off, u32 val)
+> +{
+> +       struct hisi_gpio *hisi_gpio =
+> +                       container_of(chip, struct hisi_gpio, chip);
+> +
+> +       chip->write_reg(hisi_gpio->reg_base + off, val);
+> +}
+
+OK it is a bit of reusing the register accessors inside the
+GPIO chip generic MMIO abstraction, but to me it is really
+better if you just address the registers directly.
+The indirections through read_reg/write_reg doesn't
+really buy you anything.
+
+> +static void hisi_gpio_set_debounce(struct gpio_chip *chip, unsigned int off,
+> +                                  u32 debounce)
+> +{
+> +       unsigned long mask = BIT(off);
+> +
+> +       if (debounce)
+> +               hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_SET_WX, mask);
+> +       else
+> +               hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_CLR_WX, mask);
+> +}
+
+So debounce is just on/off? No ability to set "how much" or a timer?
+Someone must be guessing inside the block that a certain number
+of ms is perfect(TM) debouncing or is there a register for this that
+you are not showing us? Like register 0x68 or 0x6c...
+
+> +static int hisi_gpio_get_direction(struct gpio_chip *chip, unsigned int gpio)
+> +static int hisi_gpio_direction_output(struct gpio_chip *chip,
+> +                                     unsigned int gpio,
+> +                                     int val)
+> +static int hisi_gpio_direction_input(struct gpio_chip *chip,
+> +                                    unsigned int gpio)
+
+These get replaced by the appropriate parameters to bgpio_init().
+Read the doc in gpio-mmci.c above the function
+bgpio_init() for help. If you still can't figure it out, ask and
+describe your problem and we'll hash it out.
+
+> +       /*
+> +        * The dual-edge interrupt and other interrupt's registers do not
+> +        * take effect at the same time. The registers of the two-edge
+> +        * interrupts have higher priorities, the configuration of
+> +        * the dual-edge interrupts must be disabled before the configuration
+> +        * of other kind of interrupts.
+> +        */
+> +       if (type != IRQ_TYPE_EDGE_BOTH) {
+> +               unsigned int both = hisi_gpio_read_reg(chip, HISI_GPIO_INT_DEDGE_ST);
+> +
+> +               if (both & mask)
+> +                       hisi_gpio_write_reg(chip, HISI_GPIO_INT_DEDGE_CLR, mask);
+> +       }
+
+Nice with this comment and overall the IRQ code looks very
+good. Nice job!
+
+> +static void hisi_gpio_irq_enable(struct irq_data *d)
+> +{
+> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+> +
+> +       hisi_gpio_irq_clr_mask(d);
+> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_SET_WX, BIT(irqd_to_hwirq(d)));
+> +}
+> +
+> +static void hisi_gpio_irq_disable(struct irq_data *d)
+> +{
+> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+> +
+> +       hisi_gpio_irq_set_mask(d);
+> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_CLR_WX, BIT(irqd_to_hwirq(d)));
+> +}
+
+Interesting with a GPIO hardware that both as enable and mask
+bits. I can't see why, usually they just have masks but I suppose
+there is some reason.
+
+> +static void hisi_gpio_irq_handler(struct irq_desc *desc)
+> +{
+> +       struct hisi_gpio *hisi_gpio = irq_desc_get_handler_data(desc);
+> +       u32 irq_msk = hisi_gpio_read_reg(&hisi_gpio->chip,
+> +                                        HISI_GPIO_INTSTATUS_WX);
+> +       struct irq_chip *irq_c = irq_desc_get_chip(desc);
+> +
+> +       chained_irq_enter(irq_c, desc);
+> +       while (irq_msk) {
+> +               int hwirq = fls(irq_msk) - 1;
+> +               int gpio_irq = irq_find_mapping(hisi_gpio->chip.irq.domain,
+> +                                               hwirq);
+> +
+> +               generic_handle_irq(gpio_irq);
+> +               irq_msk &= ~BIT(hwirq);
+> +       }
+
+What about just:
+
+     for_each_set_bit(hwirq, &irq_msk, gc->ngpio)
+
+generic_handle_irq(irq_find_mapping(hisi_gpio->chip.irq.domain,
+                                                            hwirq));
+
+> +       device_for_each_child_node(dev, fwnode)  {
+> +               if (fwnode_property_read_u32(fwnode, "hisi-ngpio",
+> +                                            &hisi_gpio->pin_num)) {
+> +                       dev_err(dev,
+> +                               "failed to get number of gpios for port%d and use default value instead\n",
+> +                               idx);
+> +                       hisi_gpio->pin_num = HISI_GPIO_PIN_NUM_MAX;
+> +               }
+
+Since the registers are only 32 bits suppose this should emit a
+fat warning if line_num is > 32.
+
+> +       dat = hisi_gpio->reg_base + HISI_GPIO_EXT_PORT_WX;
+> +       set = hisi_gpio->reg_base + HISI_GPIO_SWPORT_DR_SET_WX;
+> +       clr = hisi_gpio->reg_base + HISI_GPIO_SWPORT_DR_CLR_WX;
+> +
+> +       res = bgpio_init(&hisi_gpio->chip, hisi_gpio->dev, HISI_GPIO_REG_SIZE, dat, set,
+> +                        clr, NULL, NULL, 0);
+
+That's a lot of variables for my taste, I usually just pass the registers
+to the bgpio_init() call directly, split across a few lines, but it is a
+matter of taste. Make sure you get the direction setting to be handled
+by gpio-mmio as well as described above.
+
+> +       hisi_gpio->chip.direction_output = hisi_gpio_direction_output;
+> +       hisi_gpio->chip.direction_input = hisi_gpio_direction_input;
+> +       hisi_gpio->chip.get_direction = hisi_gpio_get_direction;
+
+So these should be handled by generic GPIO.
+
+> +       hisi_gpio->chip.set_config = hisi_gpio_set_config;
+> +       hisi_gpio->chip.ngpio = hisi_gpio->pin_num;
+> +       hisi_gpio->chip.base = -1;
+
+But these are fine.
+
+Apart from this address everything Andy commented on as well.
+
+Yours,
+Linus Walleij
