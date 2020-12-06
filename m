@@ -2,103 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A152D073E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B3F2D073F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgLFVGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727892AbgLFVGV (ORCPT
+        id S1728098AbgLFVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:07:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:60140 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727009AbgLFVHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:06:21 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0627CC0613D0;
-        Sun,  6 Dec 2020 13:05:35 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id cw27so11579840edb.5;
-        Sun, 06 Dec 2020 13:05:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=0m779MRexPoP7pQQyysjLrE0HDQY6yPdqg+0AgAzsMo=;
-        b=ZBGEA5HhKJ9yfKvxbHQCM6MomKnKY3cE7z/iUKKiVvemLO5EjQSb+jG2QDB60EVYiN
-         jHF7flalpOIK0pwkdeastN/HY8JrymO/+IPZaiacdZcbb25q2/fbg1EncJDaG1BV/qbd
-         HpXnOMv2sh27w3FbtLFaaS7+vQ0+3XmFGCp5QFrCCUyVpVi55K4KeEiA32w3DuAJKm0W
-         Zm9/Ny2ujYQvJ5Dwf5CHmN4TRNjLwJT4oqmqrSiwbRlYLh8AsRgD2XUp1X9NxMQ5ouR3
-         VTVBIgIPsfkmLT5khSClMUDDykPQTJk0r7rO1D7ujUCOUmXOhGCl6gAdSKAf+neKXWAa
-         ClKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=0m779MRexPoP7pQQyysjLrE0HDQY6yPdqg+0AgAzsMo=;
-        b=ksVo+xS9dlXgTKIZKkRYS+Heep2So+ZxbpYFpkrdfTV0ID6zy3/kBPXgxvAo7/LmKt
-         y0BQkfZgyIhTpyap6Tg85vxmZ3SMIl0sG1tivrdaX1xSiAnlOJWfm0PaBVSxonXUxhfL
-         XUnx0urUEP8hE+us1S8LoHmNqMDRLsbYMWDmDGMK4D1vUf/iTdL6lhvx+OQD/aKM7bmr
-         MVqLFjcO5n+GQMYWmKnokbOWCMJpqeoeTbLGKQPVwEghk5ew6hjavmzEEsV3g611NUY6
-         wxK9+N6G9lCZbuM4GvVqQu4EnU4IuTO/b9xBTwoRNJ86pdR2Cravk5kS14Fp7IMJDxAo
-         TfaQ==
-X-Gm-Message-State: AOAM530mzUNvik3juWyB3clKodtET8Ic2liE61aRVr9nVbABJcoWNQRJ
-        ApGAKLc028uKOpmTw+OcXEM=
-X-Google-Smtp-Source: ABdhPJxm64BpyTW9k7eJC6vOAIIyPl3R1EKDNIz+CCc3TcDTWBDwo715prwC7d12bA+NZ+TCuzQzMQ==
-X-Received: by 2002:a05:6402:1d9a:: with SMTP id dk26mr17225283edb.283.1607288733318;
-        Sun, 06 Dec 2020 13:05:33 -0800 (PST)
-Received: from [192.168.74.106] (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id r24sm7361007edo.4.2020.12.06.13.05.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Dec 2020 13:05:32 -0800 (PST)
-Subject: Re: linux-next: Fixes tag needs some work in the drm-msm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rob Clark <robdclark@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20201207070517.28951ed0@canb.auug.org.au>
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-Message-ID: <5820a22b-6fce-20ee-2a48-58c2d57b4ac4@gmail.com>
-Date:   Sun, 6 Dec 2020 23:05:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 6 Dec 2020 16:07:06 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607288784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MM71/X1YSuBbs7pM5Y2HvUTqaJG+g9U4dmtDiPkquA=;
+        b=YxKWBH59AUp1/bCFRxhKmeGVvr1nMMdJADm5YVcpcUL3e3gRL4HPTFp3+/3ELXGFWsJoH1
+        fhk1NZkXPy8g+RG4rxDtsumRLmMtTKKpErJ1XRrYJAHyb3wva4d48Tx0UCOujVnzECDh7S
+        Vooe8Jgt8lDWddopk1xv6CS/Q2v85FnM+dLA1bTCQDLglKe/2fNrhxU+78Y0pKcqfkPyT1
+        T7geONhh/nkid1LE7+WRDzP2ogikoWmSaArxRbnQUn0c6Ui6F9fv3Y6Jjdwf28AbZEWbda
+        KsBmOC8wVEuBvzkS/wvGi3WEPT+LvjAj93TjHroIb7lvgEWmxROnfEuJhbR81A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607288784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MM71/X1YSuBbs7pM5Y2HvUTqaJG+g9U4dmtDiPkquA=;
+        b=DnpCf3yZ36/y8QrTYA8d3txVQ/36P64ADiJpFzYQRRmJZmVBLdJ/+mIUgrbWKeXqjRUO3V
+        tsiCoIRnsGtb0qAg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: syslog: was: [PATCH next v2 3/3] printk: remove logbuf_lock, add syslog_lock
+In-Reply-To: <X8pceqpK+sAudugq@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de> <20201201205341.3871-4-john.ogness@linutronix.de> <X8pceqpK+sAudugq@alley>
+Date:   Sun, 06 Dec 2020 22:12:21 +0106
+Message-ID: <87v9demype.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201207070517.28951ed0@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/20 10:05 PM, Stephen Rothwell wrote:
- > Hi all,
- >
- > In commit
- >
- >   9b73bde39cf2 ("drm/msm: Fix use-after-free in msm_gem with carveout")
- >
- > Fixes tag
- >
- >   Fixes: 4b85f7f5cf7 ("drm/msm: support for an arbitrary number of 
-address spaces")
- >
- > has these problem(s):
- >
- >   - SHA1 should be at least 12 digits long
- >
- > In the furture, this can be avoided by setting core.abbrev to 12 (or 
-more)
- > or (for git v2.11 or later) just making sure it is not set (or set to
- > "auto").
+On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
+> On Tue 2020-12-01 21:59:41, John Ogness wrote:
+>> Since the ringbuffer is lockless, there is no need for it to be
+>> protected by @logbuf_lock. Remove @logbuf_lock.
+>> 
+>> --- a/kernel/printk/printk.c
+>> +++ b/kernel/printk/printk.c
+>> @@ -1490,19 +1444,30 @@ static int syslog_print_all(char __user *buf, int size, bool clear)
+>>  		return -ENOMEM;
+>>  
+>>  	time = printk_time;
+>> -	logbuf_lock_irq();
+>>  	clr_seq = atomic64_read(&clear_seq);
+>>  
+>>  	/*
+>>  	 * Find first record that fits, including all following records,
+>>  	 * into the user-provided buffer for this dump.
+>>  	 */
+>> +
+>>  	prb_for_each_info(clr_seq, prb, seq, &info, &line_count)
+>>  		len += get_record_print_text_size(&info, line_count, true, time);
+>>  
+>> -	/* move first record forward until length fits into the buffer */
+>> +	/*
+>> +	 * Keep track of the latest in case new records are coming in fast
+>> +	 * and overwriting the older records.
+>> +	 */
 
-I'm sorry, I copied and truncated the hash by hand. I should have used
+Your suggestion to merge this and the next comment block is fine.
 
-     git log --pretty=reference
+>> +	newest_seq = seq;
+>> +
+>> +	/*
+>> +	 * Move first record forward until length fits into the buffer. This
+>> +	 * is a best effort attempt. If @newest_seq is reached because the
+>> +	 * ringbuffer is wrapping too fast, just start filling the buffer
+>> +	 * from there.
+>> +	 */
+>
+> It might be that I do not understand English well. But "start filling
+> the buffer from there" sounds like we start filling the buffer from
+> "newest_seq".
+>
+> What about the following?
+>
+> 	/*
+> 	 * Move first record forward until length fits into the buffer.
+> 	 * Ignore newest messages that were not counted in the above
+> 	 * cycle. Messages might appear and get lost in the meantime.
+> 	 * This is the best effort that prevents an infinite loop.
+> 	 */
+> 	newest_seq = seq;
 
-Also scripts/checkpatch.pl didn't notice it. Should I submit v3 of the
-patch or it's too late.
+OK.
 
-Regards,
-Iskren
+>>  	prb_for_each_info(clr_seq, prb, seq, &info, &line_count) {
+>> -		if (len <= size)
+>> +		if (len <= size || info.seq > newest_seq)
+>>  			break;
+>>  		len -= get_record_print_text_size(&info, line_count, true, time);
+>>  	}
+>> @@ -1568,8 +1529,11 @@ int do_syslog(int type, char __user *buf, int len, int source)
+>>  			return 0;
+>>  		if (!access_ok(buf, len))
+>>  			return -EFAULT;
+>> +		spin_lock_irq(&syslog_lock);
+>> +		seq = syslog_seq;
+>> +		spin_unlock_irq(&syslog_lock);
+>
+> It would deserve a comment that the locking is needed to guarantee
+> atomicity of the operation.
 
+OK.
+
+>>  		error = wait_event_interruptible(log_wait,
+>> -				prb_read_valid(prb, syslog_seq, NULL));
+>> +				prb_read_valid(prb, seq, NULL));
+>>  		if (error)
+>>  			return error;
+>>  		error = syslog_print(buf, len);
+>> @@ -2809,11 +2856,7 @@ void register_console(struct console *newcon)
+>>  		nr_ext_console_drivers++;
+>>  
+>>  	if (newcon->flags & CON_PRINTBUFFER) {
+>> -		/*
+>> -		 * console_unlock(); will print out the buffered messages
+>> -		 * for us.
+>> -		 */
+>> -		logbuf_lock_irqsave(flags);
+>> +		spin_lock_irqsave(&syslog_lock, flags);
+>
+> We should take the lock only around assigning syslog_seq. And add a
+> comment that it guarantees atomic update.
+
+OK. So you just want "exclusive_console = newcon;" moved outside the
+critical section.
+
+>>  		/*
+>>  		 * We're about to replay the log buffer.  Only do this to the
+>>  		 * just-registered console to avoid excessive message spam to
+>> @@ -2826,7 +2869,7 @@ void register_console(struct console *newcon)
+>>  		exclusive_console = newcon;
+>>  		exclusive_console_stop_seq = console_seq;
+>>  		console_seq = syslog_seq;
+>> -		logbuf_unlock_irqrestore(flags);
+>> +		spin_unlock_irqrestore(&syslog_lock, flags);
+>>  	}
+>>  	console_unlock();
+>>  	console_sysfs_notify();
+
+John Ogness
