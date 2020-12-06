@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EACD2D0716
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 21:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4DF2D071C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 21:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgLFURd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 15:17:33 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49779 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbgLFURd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 15:17:33 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CpyQV141wz9sVx;
-        Mon,  7 Dec 2020 07:16:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607285810;
-        bh=K971ZTQdRzNtZFt93vuIi22S6tgu7F8ha3iBWUkfbME=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CLOtZdgNL9XRJ07qZqLF3HEjdOcjO9PfWSyT6HOJgWUrnxIW/YZ6HpNyj2PlP/f9X
-         t2cjxG2ct8KoFokx3StDgqVct0MFyZSY+NhXOiqoANeZ1WQybzGZzc4D+xz1mGp7fK
-         OgLUScExZvDX4GV9pgLa/b1RSrlXNrNbO4wS4AbJfOW4LfCme6fkBysrOFn9bcL/cQ
-         VuPkkv+Vk/tsVHmq5t37gYB9ZnHIjw1XdDbrb3d67cLifvF+xp3OcqkIkCjGJBQbJ2
-         tw1bJAgDhLChJ67Oh/Z0WoRV1kmZ8P4xqIErKPinCWbvCHvPuSHP8Bud93IpwkRbbA
-         1tbg2EaSS4p+A==
-Date:   Mon, 7 Dec 2020 07:16:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the pinctrl tree
-Message-ID: <20201207071649.272eba1e@canb.auug.org.au>
+        id S1727892AbgLFUXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 15:23:17 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:55386 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727474AbgLFUXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 15:23:15 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id D6C8C18172F00;
+        Sun,  6 Dec 2020 21:22:32 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id aAMwD0WYdS66; Sun,  6 Dec 2020 21:22:32 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OQctWJ3k0AqL; Sun,  6 Dec 2020 21:22:32 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     miquel.raynal@bootlin.com
+Cc:     vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org
+Subject: [PATCH] mtd: core: Fix refcounting for unpartitioned MTDs
+Date:   Sun,  6 Dec 2020 21:22:20 +0100
+Message-Id: <20201206202220.27290-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q/Wf3cS9Ij4js4y.9MpkJPB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Q/Wf3cS9Ij4js4y.9MpkJPB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Apply changes to usecount also the the master partition.
+Otherwise we have no refcounting at all if an MTD has no partitions.
 
-Hi all,
+Cc: stable@vger.kernel.org
+Fixes: 46b5889cc2c5 ("mtd: implement proper partition handling")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/mtdcore.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-In commit
-
-  c3c882898d07 ("pinctrl: aspeed: Fix GPIO requests on pass-through banks")
-
-Fixes tag
-
-  Fixes: 6726fbff19bf ("pinctrl: aspeed: Fix GPI only function problem.")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 9b92f5c51e9a ("pinctrl: aspeed: Fix GPI only function problem.")
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e9e163ae9d86..b07cbb0661fb 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -993,6 +993,8 @@ int __get_mtd_device(struct mtd_info *mtd)
+ 		}
+ 	}
+=20
++	master->usecount++;
++
+ 	while (mtd->parent) {
+ 		mtd->usecount++;
+ 		mtd =3D mtd->parent;
+@@ -1059,6 +1061,8 @@ void __put_mtd_device(struct mtd_info *mtd)
+ 		mtd =3D mtd->parent;
+ 	}
+=20
++	master->usecount--;
++
+ 	if (master->_put_device)
+ 		master->_put_device(master);
+=20
 --=20
-Cheers,
-Stephen Rothwell
+2.26.2
 
---Sig_/Q/Wf3cS9Ij4js4y.9MpkJPB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NPDEACgkQAVBC80lX
-0Gz8pAf/VFrShv4SKrvjksSj2+EvmbxE4KBNTjdVHASh80V/o3tSvgXuep59IT5i
-kyPHA7ZZyQt4yLxk79le8xB6p9mRooLdjrFMAy/1Lkc/eW7iKGx8oqByV4ZPsjwf
-SqSfZwI71eYs/FUZs7zW+eYN5LP2uOgxvVLFIs43BwkH1E/ha1L8B4E12GijKgWc
-yruR42pjYbBuCPErBudbulk/zmVn3+z4eER/3QCv3f5/dbTbwUS+jaqT7XQt61+B
-u01f3RYBOrOd761oyq5ipcUUC5YrKLL4slqEAGe9u9G2MlvrnH9YnIC4jribDrQZ
-xr4fATyHUWgWt6a3aD6AO7c7bL173A==
-=WxIq
------END PGP SIGNATURE-----
-
---Sig_/Q/Wf3cS9Ij4js4y.9MpkJPB--
