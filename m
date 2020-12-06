@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BCA2D02B6
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205132D02B9
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbgLFKWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 05:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgLFKWq (ORCPT
+        id S1726774AbgLFK0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 05:26:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725867AbgLFK0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 05:22:46 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72861C0613D0;
-        Sun,  6 Dec 2020 02:22:06 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 131so7004520pfb.9;
-        Sun, 06 Dec 2020 02:22:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5q1YhPjhi7857jfqqjPqEtMBVeFBPU6hgI2ckukTgPs=;
-        b=e2gu7aUr0dsKXkMrLonqFcN0weGqSwt3YihATRUVIpty6lUUE0xnsG97LGd8+hWOiq
-         aUcjJtL/QQyo+dp3l5AoGabSOkOrn1lxnUfyQRdmxiVECHguWqBIyWW6R9BW34sojeV5
-         3t1aAtWjt7hMQ9t11rcFepGm35c4bJTAi9mQJlIev5Q5fLsxXu/EyXqSZ98MEMRplSJl
-         1QkNAlaMQLQULaf15HilnP0bPhlncWvFDDjOgPKNvnnc0ElPF8yd0Q8n5GKlXtxKrtgC
-         XaeAcfiSoRguvJ5PEjlAEJhgXgcD2p+j0aQsExAKhw+x45W90iuW0+T6hlLkkDz8g36e
-         FjBw==
+        Sun, 6 Dec 2020 05:26:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607250323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Cs8fezBVb11/ZrMhV5N07RL46IYvKZ6+nnIIc/dB4c=;
+        b=TBLRHAWQFXZ4PmtyQ/petrFdM07+UB9B4CQDaqH1FtjXwR1jvJDixGjb1q6/SVAdOmCRNx
+        oR2KAKvCnMYHGvBf38g5qGA1oNvcjPay558CyKdO8XZTqLiIRucRcLipmT/VhokbDBnsIk
+        sqm3vVpDDPZ0+jiFNF7zgphvke5zMSk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-QdUEtiHfPU2H8OpgjVn8Iw-1; Sun, 06 Dec 2020 05:25:21 -0500
+X-MC-Unique: QdUEtiHfPU2H8OpgjVn8Iw-1
+Received: by mail-wr1-f72.google.com with SMTP id v1so4129092wri.16
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 02:25:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5q1YhPjhi7857jfqqjPqEtMBVeFBPU6hgI2ckukTgPs=;
-        b=fXiJFFl6sI2eGEE2qkeBj9ta47/rmEIR3Jhe/jvO+1NUiuoVfyB38e4F4w8zzlvoQB
-         4wjg27Av2By1ELl0rhiGsT/01vI7CkcgOrMGbVj52zh/chCwggPfglPnRLRKLbnsniI+
-         cixQKbyK5b3EjLS7BlLJ6XHSy2GkdZBbmy8Ao3QoFU10TCPyX5rMMQQ4VtTRWlJfuBTC
-         Ir6X945uhO8B1Gp4iPgkex4ZNHvu9hcWlxYLsBjqrlYU9PH7XdMCkufasbN0Lb0ZthO9
-         12xSMVQoOqUYuAWDUMZ8pdBLkQgZ3DI0CuRNWdnIV1vcHBhKWyO7hootn6qxcrznxwCe
-         ug8Q==
-X-Gm-Message-State: AOAM532XTwIB6ja/xXhMzLu+cO959ZcaQbliynpXMlPN3IaXTe+QsuHh
-        upwKc2VmpWezuIYYPJHp4qM=
-X-Google-Smtp-Source: ABdhPJyr9BWiGt6ikNQEU3/OkQGYQLONw0pEXzd8dS45f7HKBZ5GuSVMWNwq9mItZlauoI5obwSZOQ==
-X-Received: by 2002:a62:14a:0:b029:19d:cdca:da14 with SMTP id 71-20020a62014a0000b029019dcdcada14mr7353477pfb.31.1607250125950;
-        Sun, 06 Dec 2020 02:22:05 -0800 (PST)
-Received: from AHMLPT1827.ap.corp.arrow.com ([103.238.107.96])
-        by smtp.googlemail.com with ESMTPSA id j11sm10375604pfe.26.2020.12.06.02.22.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 02:22:05 -0800 (PST)
-From:   Parth Y Shah <sparth1292@gmail.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     vkoul@kernel.org, dan.j.williams@intel.com,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Parth Y Shah <sparth1292@gmail.com>
-Subject: [PATCH] Fixes kernel crash generating from bam_dma_irq()
-Date:   Sun,  6 Dec 2020 15:51:34 +0530
-Message-Id: <1607250094-21571-1-git-send-email-sparth1292@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3Cs8fezBVb11/ZrMhV5N07RL46IYvKZ6+nnIIc/dB4c=;
+        b=kX/jR5Lt2aBllDUnrhE2DQS3cY+Wm7nHLHbrNkiUrZLtXz0iKdGZVcxUo2fLVvEPXZ
+         7zX1vuU8YY2IaTHJR3NLgW1KP4MuXl5+nryEAlzVvXCTdPVMnv2TCMvBraMiFl/OFY4H
+         77E6XMo08OcLBjB7zpLSv26GF9RJ/OkE3V7ZdnYhJpF5+Drw2ozWub7fjJrjBiFc54Du
+         IQCxvIGXzNdHWvpwZMUNfTsd17fcrmrwvfYLQAhGt5S8LmKBEcxSM3RXLzZK0PMEgRiR
+         2KqDLKURFa/sQ5HtjATp1QNk7BBKvulNvNCcqWhAi6Dhb+D4fKo1M3/dSRE2G1qH3ELc
+         qjFQ==
+X-Gm-Message-State: AOAM531Jj2vOa/Vj05CMHbeWIQ1k7RhdP8O1VgHjEYWyqggtpH2W7A67
+        LdFh2sD+FxrXstXoZJN/u8+Pvc9adjXa2jlzff/QNS0XeOwk3PPmSNImWBjQ0lk8phW3PqqdIWA
+        XoULAnEzlhQAFUZJG94obFK2v
+X-Received: by 2002:a1c:e10b:: with SMTP id y11mr13443651wmg.65.1607250320792;
+        Sun, 06 Dec 2020 02:25:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxk0uA8SEzu1YeOhx3w2fdQXUjS5HSHMQ24JKOD85Sg4hidvHJs9RCcT67xw0Wy3NcOdh8jfA==
+X-Received: by 2002:a1c:e10b:: with SMTP id y11mr13443623wmg.65.1607250320609;
+        Sun, 06 Dec 2020 02:25:20 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id q17sm10489024wrr.53.2020.12.06.02.25.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 02:25:19 -0800 (PST)
+Subject: Re: [PATCH v2 2/9] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+To:     Ashish Kalra <ashish.kalra@amd.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, brijesh.singh@amd.com,
+        dovmurik@linux.vnet.ibm.com, tobin@ibm.com, jejb@linux.ibm.com,
+        frankeh@us.ibm.com
+References: <cover.1606782580.git.ashish.kalra@amd.com>
+ <40acca4b49cd904ea73038309908151508fb555c.1606782580.git.ashish.kalra@amd.com>
+ <20201202165420.GI3226@work-vm>
+ <20201202212232.GB14672@ashkalra_ubuntu_server>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5813902a-f272-a6fe-b32c-c470cb18c1ff@redhat.com>
+Date:   Sun, 6 Dec 2020 11:25:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201202212232.GB14672@ashkalra_ubuntu_server>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While performing suspend/resume, we were getting below kernel crash.
+On 02/12/20 22:22, Ashish Kalra wrote:
+> Hello Dave,
+> 
+> On Wed, Dec 02, 2020 at 04:54:20PM +0000, Dr. David Alan Gilbert wrote:
+>> * Ashish Kalra (Ashish.Kalra@amd.com) wrote:
+>>> From: Brijesh Singh <brijesh.singh@amd.com>
+>>>
+>>> This hypercall is used by the SEV guest to notify a change in the page
+>>> encryption status to the hypervisor. The hypercall should be invoked
+>>> only when the encryption attribute is changed from encrypted -> decrypted
+>>> and vice versa. By default all guest pages are considered encrypted.
+>>
+>> Is it defined whether these are supposed to be called before or after
+>> the the page type has been changed; is it change the type and then
+>> notify or the other way around?
 
-[   54.541672] [FTS][Info]gesture suspend...
-[   54.605256] [FTS][Error][GESTURE]Enter into gesture(suspend) failed!
-[   54.605256]
-[   58.345850] irq event 10: bogus return value fffffff3
-......
+It doesn't matter.  However, you have do it before writing to the page, 
+and the content of the page is unspecified between the hypercall and the 
+write to the page.
 
-[   58.345966] [<ffff0000080830f0>] el1_irq+0xb0/0x124
-[   58.345971] [<ffff000008085360>] arch_cpu_idle+0x10/0x18
-[   58.345975] [<ffff0000081077f4>] do_idle+0x1ac/0x1e0
-[   58.345979] [<ffff0000081079c8>] cpu_startup_entry+0x20/0x28
-[   58.345983] [<ffff000008a80ed0>] rest_init+0xd0/0xdc
-[   58.345988] [<ffff0000091c0b48>] start_kernel+0x390/0x3a4
-[   58.345990] handlers:
-[   58.345994] [<ffff0000085120d0>] bam_dma_irq
+So you cannot for example encrypt a page in place (using the same PFN 
+but different settings of the C bit), you need to do:
 
-The reason for the crash we found is, bam_dma_irq() was returning
-negative value when the device resumes in some conditions.
+	hypercall(); /* mark enc_data as encrypted */
+	/*
+	 * The contents of enc_data is now undefined as it can change
+	 * across migration.
+	 */
+	memset(enc_data, unenc_data, PAGE_SIZE);
 
-In addition, the irq handler should have one of the below return values.
-
-IRQ_NONE            interrupt was not from this device or was not handled
-IRQ_HANDLED         interrupt was handled by this device
-IRQ_WAKE_THREAD     handler requests to wake the handler thread
-
-Therefore, to resolve this crash, we have changed the return value to
-IRQ_NONE.
-
-Signed-off-by: Parth Y Shah <sparth1292@gmail.com>
----
- drivers/dma/qcom/bam_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-index 4eeb8bb..d5773d4 100644
---- a/drivers/dma/qcom/bam_dma.c
-+++ b/drivers/dma/qcom/bam_dma.c
-@@ -875,7 +875,7 @@ static irqreturn_t bam_dma_irq(int irq, void *data)
- 
- 	ret = bam_pm_runtime_get_sync(bdev->dev);
- 	if (ret < 0)
--		return ret;
-+		return IRQ_NONE;
- 
- 	if (srcs & BAM_IRQ) {
- 		clr_mask = readl_relaxed(bam_addr(bdev, 0, BAM_IRQ_STTS));
--- 
-2.7.4
+Paolo
 
