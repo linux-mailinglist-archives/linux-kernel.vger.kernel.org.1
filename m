@@ -2,298 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2ED42D07FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 00:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326972D0806
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 00:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgLFXNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 18:13:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
+        id S1728171AbgLFX01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 18:26:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727350AbgLFXNs (ORCPT
+        with ESMTP id S1726046AbgLFX01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 18:13:48 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B626DC0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 15:13:01 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id a8so661222lfb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 15:13:01 -0800 (PST)
+        Sun, 6 Dec 2020 18:26:27 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1739AC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 15:25:47 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id c7so2785391qke.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 15:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sZQfoLnXFAPIemhCQbHqBClIHGxcIWwkYY30wVQIjgM=;
-        b=G7cHQPLYzozXqUpT9OdSrGjS6i2rZK1/3iIJS+CiC2JlHZ+kweyfS/C/liYHX0+yZN
-         2MrBUrEdvPvt2QsC0C4szIv5YEhlGv2SCP2E6vr9ZO83cTME4W7EUZ0uFEFVJN9/p7Ep
-         J8ZG5p1L6/++32BsFj9AmMf1G4jc5saCu2DVImxrcyLxVBRbDh8I10NC4jesCWXlLhWw
-         GTFqdfDX6uWmwMY3xtMwZA7yMaP6gAvi8GQNcZj6aFU2dgEHolFKZBnJd16rXT3hN1tP
-         ngoOokyqhLfvb0CiZd8OqXBAv4+DKN0b+gGM4K9dEx01p9FqaymCpOcDocRFKYKLDmXV
-         S/wA==
+        d=kudzu-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qrm+4ZKWOsKZ/Gabbvdu+1GZWGD6E7h/REZlQOG1h2Y=;
+        b=ySNThDEmDnkrKwY36pBezSeFTzHP8FIBNIRFI1/MlumxnSy7xHQ18vofPm3zcAdiZ4
+         GQTwly7KYHGPP5LZJk+cWxVJXgYelWEheAnCBCrKTYjPR8zZrrW+pxdeVcq9WYyvDjII
+         iVmrqWTQpfpB4ssUZ1AgAjRp6cSEyRYs5s6RluDDBInJ2nCQiwXR/bVLGGUcsLGIoAOc
+         zmxzc94T6AgrlUsNkdWeRKJEfv/tim+I1GzGS0e3LrQX1hmNmSzeK6jxSq4+x1hBfNsr
+         hsLKql/Th4dUp79EZpUdL+KlQ/3FMQoRb/Jelc6YVuKijZ5B8r35Y4Zf58lsHOk2WX6y
+         QP4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sZQfoLnXFAPIemhCQbHqBClIHGxcIWwkYY30wVQIjgM=;
-        b=lo/+fSm8kXdEFqYBk2Qba+nfxoEw5YZuEQx1SnCJWV4eIBAsHt79u0VEnfc/daYeOp
-         nWUbWLiMr6/lVXLalIESHjaUGGclVtfwYtka4TWhyhMJPqRpfjAzhNWOgBry787hEgl2
-         JHoNG1FiDbr4FUO9Q3trmsbPZ991xdUYGAXUuDnsyGTg7czHjoyhZ810A7l0KWK9aiCi
-         PZUjZQoXL0npT4hIK4Az0xZ9c2hwps9fXOs7kVOYvc8qxcY9gCGku+LTBj4g2nLORoET
-         Cfgtmf8OOSojM/Cd4QUB6KydbTr9tcjTeO9/ugM3qqTlnctYnTv77fUF4UTXarzBDxR3
-         n16A==
-X-Gm-Message-State: AOAM531uLZ65IFQfESkqTkQSao7/J/EGKA4pNgD7qzlAI7R4qjaeKrHF
-        4HOyjqbBGNtCWmLCAE6rKEYQ7fL0v5dftvatGlmdlg==
-X-Google-Smtp-Source: ABdhPJynPRWRPOreE+TXZJ2tcTh8mBoVBiKYumIojnUQM1hD0jjPGLq+3v/aOXk/pB5RdMFpyMDKN/fXK1rySXjM5SE=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr6755975lfh.260.1607296379983;
- Sun, 06 Dec 2020 15:12:59 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qrm+4ZKWOsKZ/Gabbvdu+1GZWGD6E7h/REZlQOG1h2Y=;
+        b=diGgyQZ8ZHK0J0rVjU3V23PaavIOHkMYfC/qfmfXnaueqYU9lwGZcuCLUoih/EomS9
+         0eOHVyfp1Uqgev44dZ1dFQRPPLG+nbOx20UVEliJbjmRaWfonnhgPfFMO0qSkPyyp18u
+         qVPVCkWfjN6zaHIjAyLen1WZnIpbR5bAOWE7DDUan+SPBKJceVhw5blxLb/sp0z8Jz1l
+         cjS5gEq0P8BxIrkusxCoUJnsSoGS8rgK1PXX9HQ/7MzceDfbBtW7svuKtksEPMywDNrn
+         FZTcSH2AYJ3ZkCGbCs4JWKeaL9MmhiPkoNgbIaY0VkWLg/joPyG0KsqyVne/IwmmH8tY
+         uxgg==
+X-Gm-Message-State: AOAM531nJsjaC6QBeP8OFNvpwHKdicbbG98+zfVX7o22Wyk34wD5qY47
+        MYDnhVKMFa4yGh/n1QsvI/uwdQ==
+X-Google-Smtp-Source: ABdhPJyaiXthPQ1OA3IBlW+gUs+IRlD0rMYvjVOwcmY95XkayGvMgVue+hxCLKrhxf7fezOzllSg9A==
+X-Received: by 2002:a37:af06:: with SMTP id y6mr21639192qke.305.1607297146382;
+        Sun, 06 Dec 2020 15:25:46 -0800 (PST)
+Received: from kudzu.us ([2605:a601:a606:1b00:2919:5287:92b6:26db])
+        by smtp.gmail.com with ESMTPSA id 9sm10006501qty.30.2020.12.06.15.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 15:25:46 -0800 (PST)
+Date:   Sun, 6 Dec 2020 18:25:44 -0500
+From:   Jon Mason <jdmason@kudzu.us>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Wang Qing <wangqing@vivo.com>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ntb: idt: fix error check in ntb_hw_idt.c
+Message-ID: <20201206232544.GB11795@kudzu.us>
+References: <1604655811-31933-1-git-send-email-wangqing@vivo.com>
+ <20201110183340.77xcobfsnz43vsa2@mobilestation>
 MIME-Version: 1.0
-References: <1606901543-8957-1-git-send-email-luojiaxing@huawei.com> <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
-In-Reply-To: <1606901543-8957-2-git-send-email-luojiaxing@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Dec 2020 00:12:48 +0100
-Message-ID: <CACRpkdbodato7AL4xv-oEO9+-Mo9fDaH+jZh+6T=3urE0tbULw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] gpio: gpio-hisi: Add HiSilicon GPIO support
-To:     Luo Jiaxing <luojiaxing@huawei.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110183340.77xcobfsnz43vsa2@mobilestation>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luo!
+On Tue, Nov 10, 2020 at 09:33:40PM +0300, Serge Semin wrote:
+> Hello Wang
+> 
+> On Fri, Nov 06, 2020 at 05:43:31PM +0800, Wang Qing wrote:
+> > idt_create_dev never return NULL and fix smatch warning.
+> 
+> Thanks for submitting this. For the both changes
+> Acked-by: Serge Semin <fancer.lancer@gmail.com>
 
-thanks for your patch! I see that Andy already provided a crowd
-of comments, here are some more!
+Applied to the ntb branch.
 
-On Wed, Dec 2, 2020 at 10:32 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
+Thanks,
+Jon
 
-> +config GPIO_HISI
-> +       tristate "HISILICON GPIO controller driver"
-> +       depends on (ARM64 && ACPI) || COMPILE_TEST
-> +       select GPIO_GENERIC
-
-Thanks for using the generic driver!
-
-> +#include <linux/acpi.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +
-> +#include "gpiolib.h"
-> +#include "gpiolib-acpi.h"
-
-No GPIO drivers should include these files. If you need
-gpiolib.h then describe in a comment right above the include
-why you have to do this.
-
-I don't know about gpiolig-acpi.h but not unless  Andy
-says it is OK it is not OK.
-
-> +#define HISI_GPIO_SWPORT_DR_SET_WX     0x0
-> +#define HISI_GPIO_SWPORT_DR_CLR_WX     0x4
-> +#define HISI_GPIO_SWPORT_DDR_SET_WX    0x10
-> +#define HISI_GPIO_SWPORT_DDR_CLR_WX    0x14
-> +#define HISI_GPIO_SWPORT_DDR_ST_WX     0x18
-> +#define HISI_GPIO_INTEN_SET_WX         0x20
-> +#define HISI_GPIO_INTEN_CLR_WX         0x24
-> +#define HISI_GPIO_INTMASK_SET_WX       0x30
-> +#define HISI_GPIO_INTMASK_CLR_WX       0x34
-> +#define HISI_GPIO_INTTYPE_EDGE_SET_WX  0x40
-> +#define HISI_GPIO_INTTYPE_EDGE_CLR_WX  0x44
-> +#define HISI_GPIO_INT_POLARITY_SET_WX  0x50
-> +#define HISI_GPIO_INT_POLARITY_CLR_WX  0x54
-> +#define HISI_GPIO_DEBOUNCE_SET_WX      0x60
-> +#define HISI_GPIO_DEBOUNCE_CLR_WX      0x64
-> +#define HISI_GPIO_INTSTATUS_WX         0x70
-> +#define HISI_GPIO_PORTA_EOI_WX         0x78
-> +#define HISI_GPIO_EXT_PORT_WX          0x80
-> +#define HISI_GPIO_INTCOMB_MASK_WX      0xa0
-> +#define HISI_GPIO_INT_DEDGE_SET                0xb0
-> +#define HISI_GPIO_INT_DEDGE_CLR                0xb4
-> +#define HISI_GPIO_INT_DEDGE_ST         0xb8
-
-Nice idea with the double edge register! Hats off to the hardware
-engineer who created this simple yet powerful GPIO.
-
-> +#define HISI_GPIO_REG_SIZE     0x4
-> +#define HISI_GPIO_REG_MAX      0x100
-> +#define HISI_GPIO_PIN_NUM_MAX 32
-
-This seems like a bit surplus definitions, I prefer to just inline
-these. Some use cases will go away after you start using
-bgpio_init().
-
-> +struct hisi_gpio {
-> +       struct device           *dev;
-> +       void __iomem            *reg_base;
-> +       unsigned int            pin_num;
-
-I prefer "line_num", the reason I usually use the term "lines"
-rather than "pins" is that some GPIO lines are internal in
-chips and do not always go out to external pins.
-
-> +       struct gpio_chip        chip;
-> +       struct irq_chip         irq_chip;
-> +       int                     irq;
-
-Do you need to keep irq around in the state?
-
-> +static inline u32 hisi_gpio_read_reg(struct gpio_chip *chip,
-> +                                    unsigned int off)
-> +{
-> +       struct hisi_gpio *hisi_gpio =
-> +                       container_of(chip, struct hisi_gpio, chip);
-> +
-> +       return chip->read_reg(hisi_gpio->reg_base + off);
-> +}
-> +
-> +static inline void hisi_gpio_write_reg(struct gpio_chip *chip,
-> +                                      unsigned int off, u32 val)
-> +{
-> +       struct hisi_gpio *hisi_gpio =
-> +                       container_of(chip, struct hisi_gpio, chip);
-> +
-> +       chip->write_reg(hisi_gpio->reg_base + off, val);
-> +}
-
-OK it is a bit of reusing the register accessors inside the
-GPIO chip generic MMIO abstraction, but to me it is really
-better if you just address the registers directly.
-The indirections through read_reg/write_reg doesn't
-really buy you anything.
-
-> +static void hisi_gpio_set_debounce(struct gpio_chip *chip, unsigned int off,
-> +                                  u32 debounce)
-> +{
-> +       unsigned long mask = BIT(off);
-> +
-> +       if (debounce)
-> +               hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_SET_WX, mask);
-> +       else
-> +               hisi_gpio_write_reg(chip, HISI_GPIO_DEBOUNCE_CLR_WX, mask);
-> +}
-
-So debounce is just on/off? No ability to set "how much" or a timer?
-Someone must be guessing inside the block that a certain number
-of ms is perfect(TM) debouncing or is there a register for this that
-you are not showing us? Like register 0x68 or 0x6c...
-
-> +static int hisi_gpio_get_direction(struct gpio_chip *chip, unsigned int gpio)
-> +static int hisi_gpio_direction_output(struct gpio_chip *chip,
-> +                                     unsigned int gpio,
-> +                                     int val)
-> +static int hisi_gpio_direction_input(struct gpio_chip *chip,
-> +                                    unsigned int gpio)
-
-These get replaced by the appropriate parameters to bgpio_init().
-Read the doc in gpio-mmci.c above the function
-bgpio_init() for help. If you still can't figure it out, ask and
-describe your problem and we'll hash it out.
-
-> +       /*
-> +        * The dual-edge interrupt and other interrupt's registers do not
-> +        * take effect at the same time. The registers of the two-edge
-> +        * interrupts have higher priorities, the configuration of
-> +        * the dual-edge interrupts must be disabled before the configuration
-> +        * of other kind of interrupts.
-> +        */
-> +       if (type != IRQ_TYPE_EDGE_BOTH) {
-> +               unsigned int both = hisi_gpio_read_reg(chip, HISI_GPIO_INT_DEDGE_ST);
-> +
-> +               if (both & mask)
-> +                       hisi_gpio_write_reg(chip, HISI_GPIO_INT_DEDGE_CLR, mask);
-> +       }
-
-Nice with this comment and overall the IRQ code looks very
-good. Nice job!
-
-> +static void hisi_gpio_irq_enable(struct irq_data *d)
-> +{
-> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
-> +
-> +       hisi_gpio_irq_clr_mask(d);
-> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_SET_WX, BIT(irqd_to_hwirq(d)));
-> +}
-> +
-> +static void hisi_gpio_irq_disable(struct irq_data *d)
-> +{
-> +       struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
-> +
-> +       hisi_gpio_irq_set_mask(d);
-> +       hisi_gpio_write_reg(chip, HISI_GPIO_INTEN_CLR_WX, BIT(irqd_to_hwirq(d)));
-> +}
-
-Interesting with a GPIO hardware that both as enable and mask
-bits. I can't see why, usually they just have masks but I suppose
-there is some reason.
-
-> +static void hisi_gpio_irq_handler(struct irq_desc *desc)
-> +{
-> +       struct hisi_gpio *hisi_gpio = irq_desc_get_handler_data(desc);
-> +       u32 irq_msk = hisi_gpio_read_reg(&hisi_gpio->chip,
-> +                                        HISI_GPIO_INTSTATUS_WX);
-> +       struct irq_chip *irq_c = irq_desc_get_chip(desc);
-> +
-> +       chained_irq_enter(irq_c, desc);
-> +       while (irq_msk) {
-> +               int hwirq = fls(irq_msk) - 1;
-> +               int gpio_irq = irq_find_mapping(hisi_gpio->chip.irq.domain,
-> +                                               hwirq);
-> +
-> +               generic_handle_irq(gpio_irq);
-> +               irq_msk &= ~BIT(hwirq);
-> +       }
-
-What about just:
-
-     for_each_set_bit(hwirq, &irq_msk, gc->ngpio)
-
-generic_handle_irq(irq_find_mapping(hisi_gpio->chip.irq.domain,
-                                                            hwirq));
-
-> +       device_for_each_child_node(dev, fwnode)  {
-> +               if (fwnode_property_read_u32(fwnode, "hisi-ngpio",
-> +                                            &hisi_gpio->pin_num)) {
-> +                       dev_err(dev,
-> +                               "failed to get number of gpios for port%d and use default value instead\n",
-> +                               idx);
-> +                       hisi_gpio->pin_num = HISI_GPIO_PIN_NUM_MAX;
-> +               }
-
-Since the registers are only 32 bits suppose this should emit a
-fat warning if line_num is > 32.
-
-> +       dat = hisi_gpio->reg_base + HISI_GPIO_EXT_PORT_WX;
-> +       set = hisi_gpio->reg_base + HISI_GPIO_SWPORT_DR_SET_WX;
-> +       clr = hisi_gpio->reg_base + HISI_GPIO_SWPORT_DR_CLR_WX;
-> +
-> +       res = bgpio_init(&hisi_gpio->chip, hisi_gpio->dev, HISI_GPIO_REG_SIZE, dat, set,
-> +                        clr, NULL, NULL, 0);
-
-That's a lot of variables for my taste, I usually just pass the registers
-to the bgpio_init() call directly, split across a few lines, but it is a
-matter of taste. Make sure you get the direction setting to be handled
-by gpio-mmio as well as described above.
-
-> +       hisi_gpio->chip.direction_output = hisi_gpio_direction_output;
-> +       hisi_gpio->chip.direction_input = hisi_gpio_direction_input;
-> +       hisi_gpio->chip.get_direction = hisi_gpio_get_direction;
-
-So these should be handled by generic GPIO.
-
-> +       hisi_gpio->chip.set_config = hisi_gpio_set_config;
-> +       hisi_gpio->chip.ngpio = hisi_gpio->pin_num;
-> +       hisi_gpio->chip.base = -1;
-
-But these are fine.
-
-Apart from this address everything Andy commented on as well.
-
-Yours,
-Linus Walleij
+> 
+> They are mostly unrelated though. If they weren't trivial I'd have
+> suggested to split them up into the dedicated patches. Since they
+> aren't I suppose leaving the patch 'as is' is ok, unless the subsystem
+> maintainer thinks differently.
+> 
+> -Sergey
+> 
+> > 
+> > Signed-off-by: Wang Qing <wangqing@vivo.com>
+> > ---
+> >  drivers/ntb/hw/idt/ntb_hw_idt.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
+> > index d54261f..e7a4c2a
+> > --- a/drivers/ntb/hw/idt/ntb_hw_idt.c
+> > +++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
+> > @@ -2511,7 +2511,7 @@ static int idt_init_dbgfs(struct idt_ntb_dev *ndev)
+> >  	/* If the top directory is not created then do nothing */
+> >  	if (IS_ERR_OR_NULL(dbgfs_topdir)) {
+> >  		dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
+> > -		return PTR_ERR(dbgfs_topdir);
+> > +		return PTR_ERR_OR_ZERO(dbgfs_topdir);
+> >  	}
+> >  
+> >  	/* Create the info file node */
+> > @@ -2756,7 +2756,7 @@ static int idt_pci_probe(struct pci_dev *pdev,
+> >  
+> >  	/* Allocate the memory for IDT NTB device data */
+> >  	ndev = idt_create_dev(pdev, id);
+> > -	if (IS_ERR_OR_NULL(ndev))
+> > +	if (IS_ERR(ndev))
+> >  		return PTR_ERR(ndev);
+> >  
+> >  	/* Initialize the basic PCI subsystem of the device */
+> > -- 
+> > 2.7.4
+> > 
