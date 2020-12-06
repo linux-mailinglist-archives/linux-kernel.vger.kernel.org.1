@@ -2,136 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202F72D0788
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464A72D079C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgLFWGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 17:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S1728616AbgLFWJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 17:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgLFWG3 (ORCPT
+        with ESMTP id S1727427AbgLFWJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 17:06:29 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDE0C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 14:05:42 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id o24so12964717ljj.6
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 14:05:42 -0800 (PST)
+        Sun, 6 Dec 2020 17:09:38 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01DEC0613D1
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 14:08:58 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id o25so13332982oie.5
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 14:08:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jYOh6UMvSpP9mpiuIeBGwJObn/ShTIBfx66r2r2mm1Q=;
-        b=TAWEe2AJ21/ymnfEhRmgmu7yS9XHy518Q0Mm5DQLt3/4L7ngyEHQB42xDYoOvsFn4E
-         2MSnx6QdhRf7wJVUsTk/bWruWfa9rYv16INpIYLjxSfPSmXd5ruwjlT5RArGqoUIIa+q
-         nNUnf+1/NTNa3lit9cpVAAQfP1CZsocHbYWCdws/zUzNr3+1jjAcmwNes9M5HF/qO9K8
-         Y/PeHJEEFG8cWzsP4a2lxjNWPCDA58LflNFsS9LYRdm5IGqS9y3I/PygPG3CCIasyZhH
-         IJ0uCHVuvVGVzLcBLLNU4fxbq9xMqo1VQee4uVS2Ip+zbbY54Tl0nl8V1MEkvCdCRHMc
-         I8lQ==
+         :cc:content-transfer-encoding;
+        bh=JCel08KYiln8YgmkxbPOj1WtQ5EQrMdu3OBxwf9clAs=;
+        b=MOSPkYY7RXc+BAeMcL2aCrKADmNx83Ql7gOgBElBF/2aDvhrhz9CCFufS1EbGNlikx
+         dzly5xco1sNTjqLr42kAZHPE/TSrjMEaaAnG07IbxhGmzQU/dQXSKdOYHEL10inJCcfI
+         PLLdMweU/W25zuT0IdGjA7RB6jyYeaeJxveLCMaN33YjDhF1R64JE7otIEUh7wB+IJXN
+         G7LiDRZeR0c+aoBzaL87mXlL11DDh0xNvktlmbNgCsBLx7l+OYh85/vWTHg2+v+y2WFA
+         jdasEnBVq5zNje1/6hLGvppUsJ36LvsMy9oeCUre4BXdgFaoqmIEI2hycWMtzQnZX6yQ
+         QNcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jYOh6UMvSpP9mpiuIeBGwJObn/ShTIBfx66r2r2mm1Q=;
-        b=J9209L4hbYxcibvdwx6i3PHymQqlwdl+QaVLO7imkRD/zNNypawCBu5pNf3ISxzLDE
-         r4RkXqA+9GOPFtdnXtGf0yHLNGQXmuXBgryQ2qwjSRmqRqTuwONr9YlshezEZtdO7/Zt
-         idJjb1J3PBmsY8jOecSXn3q4OAc+DYwY1gYtTGp6DW3/OYB6MutQgYBmBCa4t0qsb0qt
-         4lKElHePYckC4J07IEkU5FGhWp6Fna1A3C8qZOVTjUXbj+e7tkcew3jcBraX9elUKzdD
-         EowZ/YdMWfGj5Ih937XE34u+5sRPAQyBkMe3ren8Y02kbk7UvAKy874hlBo/h0J6ZPhN
-         kI8w==
-X-Gm-Message-State: AOAM530I0Ii3SGSUg1PEim+8lVGTVTkXWlojwoyUtwW9Nt1lPvOhUsez
-        1ZaVzzDgd/PSQ7IaxuGOgExZtOk1z8Y+rpg4bFeiuQ==
-X-Google-Smtp-Source: ABdhPJzMyGRuC+Bc1bPrBXnAz61CoiHtimGEqIGvA/y8Fk53fi5E7rQbPAV55C71yQzmhgVm+doW7FJaRfoD34AL6J0=
-X-Received: by 2002:a2e:9216:: with SMTP id k22mr7564877ljg.138.1607292340737;
- Sun, 06 Dec 2020 14:05:40 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JCel08KYiln8YgmkxbPOj1WtQ5EQrMdu3OBxwf9clAs=;
+        b=YgRUK8LTxs/qcS0nMXSoWjBifiSz6a5/+4r1FGQI4zOn343qsB/zsBc/jhbYcw1/45
+         eUN8apw5IooPMbtSFFASP+0PfgiiVKfUDBJvHL60rp7TU0vqVXqEe3JVimW4tD/6TJKj
+         DZzrI17okO5PlOWagx4vV/eTH/qBaVxN1DSfMxK+HhMvBnLMkUH6LDRZ05xGCoOgJyWV
+         glIaMrGHTic0RhRMCdJEi4LE5pdIbmMw2MCDPwy0KIsCO9qewbiwaNI8v6R8h5C56wtZ
+         rJV+l0h3JIXDGyUwskcXbTRI72/DpmRStNNH6HiLziHXtAKeECbMxpOLxoHSFVRxyCcr
+         7w1w==
+X-Gm-Message-State: AOAM531L7AUGeCXrA51uK/PwREhHefLLvYTVtgmWhNOlPzz0QaiND+GI
+        cXJYTbO3Z8IoPNynaCH2yWF+6a67K/zpxTnIKV/PVA==
+X-Google-Smtp-Source: ABdhPJybJRXrC+5WZsdCuGBMO8dLeix5tmfJ7XfDav/VhIdMKb7kcyrkA0xVqSrC0pQ1nPYKPLPCFebkBpqZbtB5WvU=
+X-Received: by 2002:a05:6808:313:: with SMTP id i19mr10498856oie.70.1607292537946;
+ Sun, 06 Dec 2020 14:08:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201206131036.3780898-1-vladimir.kondratiev@intel.com> <16d6fdae-74ac-774c-9193-130dcfc5bc6c@intel.com>
-In-Reply-To: <16d6fdae-74ac-774c-9193-130dcfc5bc6c@intel.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Sun, 6 Dec 2020 23:05:14 +0100
-Message-ID: <CAG48ez0a+=i5ue+p+snwF6YZaCQkzvYVOACcjHz7E9=uUibbcA@mail.gmail.com>
-Subject: Re: [NEEDS-REVIEW] [PATCH] do_exit(): panic() when double fault detected
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        chenqiwu <chenqiwu@xiaomi.com>, Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201205172207.GA4097@rlk> <20201207082300.38f5207f@canb.auug.org.au>
+In-Reply-To: <20201207082300.38f5207f@canb.auug.org.au>
+From:   Marco Elver <elver@google.com>
+Date:   Sun, 6 Dec 2020 23:08:46 +0100
+Message-ID: <CANpmjNPifOwd9w34dSJhsvmP2sUkKa0ESPiJ7gj+gUDffhPO3A@mail.gmail.com>
+Subject: Re: [PATCH][next] arm64: fix the mm build error in mm/kfence/core.c
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Hui Su <sh_def@163.com>, Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 6, 2020 at 4:37 PM Dave Hansen <dave.hansen@intel.com> wrote:
-> On 12/6/20 5:10 AM, Vladimir Kondratiev wrote:
-> > Double fault detected in do_exit() is symptom of integrity
-> > compromised. For safety critical systems, it may be better to
-> > panic() in this case to minimize risk.
+On Sun, 6 Dec 2020 at 22:23, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Does this fix a real problem that you have observed in practice?
+> Hi all,
 >
-> Or, is this a general "hardening" which you think is a good practice?
+> [Cc'd Andrew Morton]
 >
-> What does this have to do specifically with safety critical systems?
->
-> The kernel generally tries to fix things up and keep running whenever
-> possible, if for no other reason than it helps debug problems.  If that
-> is an undesirable property for your systems, then I think you have a
-> much bigger problem than faults during exit().
->
-> This option, "panic_on_double_fault", doesn't actually panic on all
-> double-faults, which means to me that it's dangerously named.
+> On Sun, 6 Dec 2020 01:22:07 +0800 Hui Su <sh_def@163.com> wrote:
+> >
+> > When I build kernel with ARCH=3Darm64, the building errors came out lik=
+e
+> > this:
+> >   CC      mm/kfence/core.o
+> > In file included from ../mm/kfence/core.c:21:
+> > ../arch/arm64/include/asm/kfence.h: In function =E2=80=98kfence_protect=
+_page=E2=80=99:
+> > ../arch/arm64/include/asm/kfence.h:12:2: error: implicit declaration of
+> > function =E2=80=98set_memory_valid=E2=80=99 [-Werror=3Dimplicit-functio=
+n-declaration]
+> >    12 |  set_memory_valid(addr, 1, !protect);
+> >       |  ^~~~~~~~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> >
+> > which introduced by commit d54febeba2ff ("kfence: use pt_regs to
+> > generate stack trace on faults").
+> >
+> > Signed-off-by: Hui Su <sh_def@163.com>
+> > ---
+> >  arch/arm64/include/asm/kfence.h | 1 +
+> >  1 file changed, 1 insertion(+)
 
-I wonder whether part of the idea here is that normally, when the
-kernel fixes up a kernel crash by killing the offending task, a
-service management process in userspace (e.g. the init daemon) can
-potentially detect this case because it looks as if the task died with
-SIGBUS or something. (I don't think that actually always works in
-practice though, since AFAICS kernel crashes only lead to the *task*
-being killed, not the entire process, and I think killing a single
-worker thread of a multithreaded process might just cause the rest of
-the userspace process to lock up. Not sure whether that's intentional
-or something that should ideally be changed.)
+Thanks, but a patch for this is already in the -mm tree:
+https://lore.kernel.org/mm-commits/20201205011409.o9PNsRntR%25akpm@linux-fo=
+undation.org/
 
-But if the kernel gives up on going through with do_exit() (because it
-crashed in do_exit() before being able to mark the task as waitable),
-the process may, to userspace, appear to still be alive even though
-it's not actually doing anything anymore; and if the kernel doesn't
-tell userspace that the process is no longer functional, userspace
-can't restore the system to a working state.
+Perhaps try the latest -next?
 
-But as Dave said, this best-effort fixup is probably not the kind of
-behavior you'd want in a "safety critical" system anyway; for example,
-often the offending thread will have held some critical spinlock or
-mutex or something, and then the rest of the system piles on into a
-gigantic deadlock involving the lock in question and possibly multiple
-locks that nest around it. You might be better off enabling
-panic_on_oops, ideally with something like pstore-based logging of the
-crash, and then quickly bringing everything back to a clean state
-instead of continuing from an unstable state and then possibly
-blocking somewhere.
+> > diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/k=
+fence.h
+> > index 6c0afeeab635..4d73e34da59d 100644
+> > --- a/arch/arm64/include/asm/kfence.h
+> > +++ b/arch/arm64/include/asm/kfence.h
+> > @@ -4,6 +4,7 @@
+> >  #define __ASM_KFENCE_H
+> >
+> >  #include <asm/cacheflush.h>
+> > +#include <linux/set_memory.h>
+> >
+> >  static inline bool arch_kfence_init_pool(void) { return true; }
+> >
+> > --
+> > 2.25.1
+>
+> Added to linux-next today.  I think it actually fixes patch "arm64,
+> kfence: enable KFENCE for ARM64" since that actually introduces the
+> set_memory_valid() call?
+
+The patch that moved the declaration was after the kfence patch, so
+it'd be the other way around:
+https://lkml.kernel.org/r/X8otwahnmGQGLpge@elver.google.com
+
+Thanks,
+-- Marco
