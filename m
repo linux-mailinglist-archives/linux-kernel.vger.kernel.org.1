@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637272D0080
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 05:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C42D0076
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 05:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgLFESZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 23:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        id S1727714AbgLFEPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 23:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbgLFESX (ORCPT
+        with ESMTP id S1726939AbgLFEPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 23:18:23 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6CFC0613D0;
-        Sat,  5 Dec 2020 20:17:43 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1klkdd-00Gpbw-Nh; Sun, 06 Dec 2020 03:23:05 +0000
-Date:   Sun, 6 Dec 2020 03:23:05 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201206032305.GD3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203230336.GC3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Sat, 5 Dec 2020 23:15:09 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8438CC0613D4;
+        Sat,  5 Dec 2020 20:14:29 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id a6so4686644qtw.6;
+        Sat, 05 Dec 2020 20:14:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ao+xFb0yC7DiD3o1YFIVKpIIu1IkYoSj63p4lHpWOH0=;
+        b=VNs/msRIjF+trubJiGmRCg2tSUbvPM6srfhbduYLLe/3dfmeiRGRMqUGgBtMxgAsAo
+         G1pyrA4UiSy1iAvmciDlr4uwtX1ruKYxlOzHMEQ4h6L3mcIvaZwBq8Z/44Y/u7jZhv/i
+         xGoNNZI12CddIUZ4vYOqIFLst1beD7gBu9MRkPlQabZVWdCtnqaqlu+ONRNnzV/8rZ5i
+         ssOyBW6zxT1piWBqIsGOZuc1VaqL055/Kco9Bjs+xMAIn01+uQSl8z3YklF8KRAuEdlo
+         zcm0cja/R52kSMMEJUuD6vQeNFbFTxQrVkt+M4kWtKaVPhCapmbE4XsEvbo7hd6N70+x
+         Ze3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ao+xFb0yC7DiD3o1YFIVKpIIu1IkYoSj63p4lHpWOH0=;
+        b=QBa/q88j+wNt1so0PuCs9oGewH5tCFexi9a7ySEeQeT1C1RdUWHurh2Fa2JSwj84u2
+         INwb+aiBcI8tGqRree4ZPlmirAdkhlA3l3FLX/tdhItT9dszaVgFhKOLaVob3GXEML84
+         w7R2Kd4wd6F64cfz3WUPXovr4mktO7cw3oHrhbcygQRugelV5If4lJovBDD9e9vN91tb
+         T1jIZSXaKTR4ecfxmLnza6TXL6q6qGj8SD7ua4xm4RU+9DTIwgeCBXr3WRECoNT8yZV5
+         tBm/SpxGEa+KJCQOSHChnltlhPeTrjk5U5Rvx3hw+KifD4z9JQdfZ2qD37jB1OPKpVu4
+         aqsQ==
+X-Gm-Message-State: AOAM532OLdKCz731/dCEn2PogI0MGDJZv1ot1DWLpvQU8/J6XcrNzZ2Y
+        5st1TJTw7v16zh5T9bR1JV0Ol3sabS3Lig==
+X-Google-Smtp-Source: ABdhPJz95/B80Hu9vhoVPEoqWUGRbtzHme07LbE7QYHt8YF5mOlsibi9QNfQB6wnWaIzGRp3HI6HWA==
+X-Received: by 2002:ae9:f816:: with SMTP id x22mr17217785qkh.291.1607226252096;
+        Sat, 05 Dec 2020 19:44:12 -0800 (PST)
+Received: from localhost.localdomain ([198.52.185.246])
+        by smtp.gmail.com with ESMTPSA id z186sm9364566qke.100.2020.12.05.19.44.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Dec 2020 19:44:11 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net v1 1/2] lan743x: improve performance: fix rx_napi_poll/interrupt ping-pong
+Date:   Sat,  5 Dec 2020 22:44:07 -0500
+Message-Id: <20201206034408.31492-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
-> > >  The answer (for mainline) is that mips compat does *NOT* want
-> > > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
-> > > retested it (seems to work, both for x86_64 and mips64, execs and
-> > > coredumps for all ABIs alike), with centralization of Kconfig logics
-> > > thrown in.
-> > 
-> > Well, the diffstat looks nice:
-> > 
-> > >  26 files changed, 127 insertions(+), 317 deletions(-)
-> > 
-> > and the patches didn't trigger anything for me, but how much did this
-> > get tested? Do you actually have both kinds of 32-bit elf mips
-> > binaries around and a machine to test on?
-> 
-> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
-> and libraries just fine, and then it's just a matter of -mabi=n32 passed
-> to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
-> and the things appear to work; I hadn't tried that on the actual hardware.
-> I do have a Loongson-2 box, but it would take a while to dig it out and
-> get it up-to-date.
-> 
-> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
-> > just so that he has a heads-up on this thing and can go and look at
-> > the mailing list in case it goes to a separate mailbox for him..
-> 
-> I would certainly appreciate review and testing - this branch sat
-> around in the "should post it someday" state since June (it was
-> one of the followups grown from regset work back then), and I'm
-> _not_ going to ask pulling it without an explicit OK from mips
-> folks.
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-BTW, there's something curious going on in ELF binary recognition for
-x32.  Unlike other 64bit architectures, here we have a 32bit binary
-that successfully passes the native elf_check_arch().  Usually we
-either have different EM_... values for 64bit and 32bit (e.g. for ppc
-and sparc) or we have an explicit check for ->e_ident[EI_CLASS]
-having the right value (ELFCLASS32 or ELFCLASS64 for 32bit and 64bit
-binaries resp.)
+Even if the rx ring is completely full, and there is more rx data
+waiting on the chip, the rx napi poll fn will never run more than
+once - it will always immediately bail out and re-enable interrupts.
+Which results in ping-pong between napi and interrupt.
 
-For x32 that's not true - we use EM_X86_64 for ->e_machine and that's
-the only thing the native elf_check_arch() is looking at.  IOW,
-it looks like amd64 elf_load_binary() progresses past elf_check_arch()
-for x32 binaries.  And gets to load_elf_phdrs(), which would appear
-to have a check of its own that should reject the sucker:
-        /*
-         * If the size of this structure has changed, then punt, since
-         * we will be doing the wrong thing.
-         */
-        if (elf_ex->e_phentsize != sizeof(struct elf_phdr))
-                goto out;
-After all, ->e_phentsize is going to be 32 (sizeof(struct elf32_phdr)
-rather than expected 56 (sizeof(struct elf64_phdr)) and off we bugger,
-even though it happens at slightly later point than usual.  Except that
-we are looking at struct elf64_hdr ->e_phentsize - in struct elf32_hdr.
-I.e. at offset 54, two bytes past the end of in-file struct elf32_hdr.
+This defeats the purpose of napi, and is bad for performance.
 
-Usually we won't find 0x38 0x00 in that location, so everything works,
-but IMO that's too convoluted.
+Fix by addressing two separate issues:
 
-Peter, is there any reason not to check ->ei_ident[EI_CLASS] in
-amd64 elf_check_arch()?  It's a 1-byte load from hot cacheline
-(offset 4 and we'd just read the 4 bytes at offsets 0..3) +
-compare + branch not taken, so performance impact is pretty much
-nil.  I'm not saying it's a security problem or anything of that
-sort, just that it makes the analysis more subtle than it ought
-to be...
+1. Ensure the rx napi poll fn always updates the rx ring tail
+   when returning, even when not re-enabling interrupts.
 
-Is it about some malformed homegrown 64bit binaries with BS value
-at offset 4?  Confused...
+2. Up to half of elements in a full rx ring are extension
+   frames, which do not generate any skbs. Limit the default
+   napi weight to the smallest no. of skbs that can be generated
+   by a full rx ring.
+
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
+
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 905b2032fa42
+
+To: Bryan Whitehead <bryan.whitehead@microchip.com>
+To: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+To: "David S. Miller" <davem@davemloft.net>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+ drivers/net/ethernet/microchip/lan743x_main.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 87b6c59a1e03..ebb5e0bc516b 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -2260,10 +2260,11 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ 				  INT_BIT_DMA_RX_(rx->channel_number));
+ 	}
+ 
++done:
+ 	/* update RX_TAIL */
+ 	lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
+ 			  rx_tail_flags | rx->last_tail);
+-done:
++
+ 	return count;
+ }
+ 
+@@ -2405,9 +2406,15 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
+ 	if (ret)
+ 		goto return_error;
+ 
++	/* up to half of elements in a full rx ring are
++	 * extension frames. these do not generate skbs.
++	 * to prevent napi/interrupt ping-pong, limit default
++	 * weight to the smallest no. of skbs that can be
++	 * generated by a full rx ring.
++	 */
+ 	netif_napi_add(adapter->netdev,
+ 		       &rx->napi, lan743x_rx_napi_poll,
+-		       rx->ring_size - 1);
++		       (rx->ring_size - 1) / 2);
+ 
+ 	lan743x_csr_write(adapter, DMAC_CMD,
+ 			  DMAC_CMD_RX_SWR_(rx->channel_number));
+-- 
+2.17.1
+
