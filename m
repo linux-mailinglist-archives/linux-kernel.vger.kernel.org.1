@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4E62D0037
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 02:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B2D2D0039
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 02:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgLFBjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 20:39:24 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:43309 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgLFBjX (ORCPT
+        id S1726524AbgLFBrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 20:47:36 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9384 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbgLFBrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 20:39:23 -0500
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 61E80100003;
-        Sun,  6 Dec 2020 01:38:40 +0000 (UTC)
-Date:   Sun, 6 Dec 2020 02:38:40 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: at91: DT for 5.11 #2
-Message-ID: <20201206013840.GA627225@piout.net>
+        Sat, 5 Dec 2020 20:47:35 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CpTnC3slhz70sq;
+        Sun,  6 Dec 2020 09:46:23 +0800 (CST)
+Received: from [127.0.0.1] (10.74.149.191) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Sun, 6 Dec 2020
+ 09:46:44 +0800
+Subject: Re: [PATCH net-next 2/3] net: hns3: add priv flags support to switch
+ limit promisc mode
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>,
+        <huangdaode@huawei.com>, Jian Shen <shenjian15@huawei.com>
+References: <1606997936-22166-1-git-send-email-tanhuazhong@huawei.com>
+ <1606997936-22166-3-git-send-email-tanhuazhong@huawei.com>
+ <20201204182411.1d2d73f3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   tanhuazhong <tanhuazhong@huawei.com>
+Message-ID: <0429b9ad-f8c8-b42f-ebcb-643ef06f54ee@huawei.com>
+Date:   Sun, 6 Dec 2020 09:46:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201204182411.1d2d73f3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.149.191]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd, Olof,
 
-Here is a second round of DT updates, Some are following patches series
-that made it in other subsystems and it would be nice to have them in
-the same release. Other are fixes worth having in v5.11.
 
-The following changes since commit e1062fa7292f1e3744db0a487c4ac0109e09b03d:
+On 2020/12/5 10:24, Jakub Kicinski wrote:
+> On Thu, 3 Dec 2020 20:18:55 +0800 Huazhong Tan wrote:
+>> @@ -224,6 +224,7 @@ static int hclge_map_unmap_ring_to_vf_vector(struct hclge_vport *vport, bool en,
+>>   static int hclge_set_vf_promisc_mode(struct hclge_vport *vport,
+>>   				     struct hclge_mbx_vf_to_pf_cmd *req)
+>>   {
+>> +	struct hnae3_handle *handle = &vport->nic;
+>>   	bool en_bc = req->msg.en_bc ? true : false;
+>>   	bool en_uc = req->msg.en_uc ? true : false;
+>>   	bool en_mc = req->msg.en_mc ? true : false;
+> 
+> Please order variable lines longest to shortest.
 
-  ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host (2020-11-24 12:11:27 +0100)
+will fix it, thanks.
 
-are available in the Git repository at:
+> 
+>> @@ -1154,6 +1158,8 @@ static int hclgevf_cmd_set_promisc_mode(struct hclgevf_dev *hdev,
+>>   	send_msg.en_bc = en_bc_pmc ? 1 : 0;
+>>   	send_msg.en_uc = en_uc_pmc ? 1 : 0;
+>>   	send_msg.en_mc = en_mc_pmc ? 1 : 0;
+>> +	send_msg.en_limit_promisc =
+>> +	test_bit(HNAE3_PFLAG_LIMIT_PROMISC_ENABLE, &handle->priv_flags) ? 1 : 0;
+> 
+> The continuation line should be indented more than the first line.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-dt-5.11-2
+yes, will fix it.
 
-for you to fetch changes up to 85b8350ae99d1300eb6dc072459246c2649a8e50:
+> 
+> I suggest you rename HNAE3_PFLAG_LIMIT_PROMISC_ENABLE to
+> HNAE3_PFLAG_LIMIT_PROMISC, the _ENABLE doesn't add much
+> to the meaning. That way the lines will get shorter.
+> 
 
-  ARM: dts: at91: sama5d2: fix CAN message ram offset and size (2020-12-03 21:44:36 +0100)
+ok, thanks.
 
-----------------------------------------------------------------
-AT91 DT for 5.11 #2:
+> .
+> 
 
- - switch to new TCB PWM bindings
- - rework ADC bindings
- - fix sama5d2 securam and can1
-
-----------------------------------------------------------------
-Alexandre Belloni (4):
-      ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
-      ARM: dts: at91: sama5d3: use proper ADC compatible
-      ARM: dts: at91: at91sam9rl: fix ADC triggers
-      ARM: dts: at91: remove deprecated ADC properties
-
-Claudiu Beznea (2):
-      ARM: dts: at91: sam9x60ek: remove bypass property
-      ARM: dts: at91: sama5d2: map securam as device
-
-Nicolas Ferre (1):
-      ARM: dts: at91: sama5d2: fix CAN message ram offset and size
-
- arch/arm/boot/dts/at91-kizbox.dts    | 45 ++++++++++++++++++++++++------------
- arch/arm/boot/dts/at91-sam9x60ek.dts |  4 ----
- arch/arm/boot/dts/at91sam9260.dtsi   | 25 --------------------
- arch/arm/boot/dts/at91sam9g45.dtsi   | 27 ----------------------
- arch/arm/boot/dts/at91sam9rl.dtsi    | 25 --------------------
- arch/arm/boot/dts/at91sam9x5.dtsi    | 28 ----------------------
- arch/arm/boot/dts/sama5d2.dtsi       |  7 +++---
- arch/arm/boot/dts/sama5d3.dtsi       | 26 +--------------------
- arch/arm/boot/dts/sama5d4.dtsi       | 22 ------------------
- 9 files changed, 35 insertions(+), 174 deletions(-)
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
