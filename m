@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323522D062E
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEB62D062F
 	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbgLFRGa convert rfc822-to-8bit (ORCPT
+        id S1727352AbgLFRGa convert rfc822-to-8bit (ORCPT
         <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Dec 2020 12:06:30 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:52432 "EHLO
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:23463 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726043AbgLFRG3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726757AbgLFRGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 12:06:29 -0500
+        Sun, 6 Dec 2020 12:06:30 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-rQEKOLn7PfqV7oftJJ2w3g-1; Sun, 06 Dec 2020 12:05:31 -0500
-X-MC-Unique: rQEKOLn7PfqV7oftJJ2w3g-1
+ us-mta-500-M7Uruhx8NyKfQTlNjRUPXA-1; Sun, 06 Dec 2020 12:05:33 -0500
+X-MC-Unique: M7Uruhx8NyKfQTlNjRUPXA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 741A08049C0;
-        Sun,  6 Dec 2020 17:05:29 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14475180A086;
+        Sun,  6 Dec 2020 17:05:32 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E3AD260657;
-        Sun,  6 Dec 2020 17:05:26 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A41C060657;
+        Sun,  6 Dec 2020 17:05:29 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -36,9 +36,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>
-Subject: [PATCH 2/3] perf tools: Allow to enable/disable events via control file
-Date:   Sun,  6 Dec 2020 18:05:18 +0100
-Message-Id: <20201206170519.4010606-3-jolsa@kernel.org>
+Subject: [PATCH 3/3] perf tools: Allow to list events via control file
+Date:   Sun,  6 Dec 2020 18:05:19 +0100
+Message-Id: <20201206170519.4010606-4-jolsa@kernel.org>
 In-Reply-To: <20201206170519.4010606-1-jolsa@kernel.org>
 References: <20201206170519.4010606-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -53,14 +53,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding new control events to enable/disable specific event.
-The interface string for control file are:
+Adding new control event to display all evlist events.
 
-  'enable-<EVENT NAME>'
-  'disable-<EVENT NAME>'
-
-when received the command, perf will scan the current evlist
-for <EVENT NAME> and if found it's enabled/disabled.
+The interface string for control file is 'list'. When
+received, perf will scan and print current evlist into
+perf record terminal.
 
 Example session:
 
@@ -70,150 +67,115 @@ Example session:
     Events disabled
 
   terminal 2:
-    # cat perf.pipe | ./perf --no-pager script -i -
-
-  terminal 3:
-    # echo enable-sched:sched_process_fork > control
+    # echo list > control
 
   terminal 1:
-    # mkfifo control ack perf.pipe
     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
     ...
-    event sched:sched_process_fork enabled
+    sched:sched_kthread_stop
+    sched:sched_kthread_stop_ret
+    sched:sched_waking
+    sched:sched_wakeup
+    sched:sched_wakeup_new
+    sched:sched_switch
+    sched:sched_migrate_task
+    sched:sched_process_free
+    sched:sched_process_exit
+    sched:sched_wait_task
+    sched:sched_process_wait
+    sched:sched_process_fork
+    sched:sched_process_exec
+    sched:sched_stat_wait
+    sched:sched_stat_sleep
+    sched:sched_stat_iowait
+    sched:sched_stat_blocked
+    sched:sched_stat_runtime
+    sched:sched_pi_setprio
+    sched:sched_move_numa
+    sched:sched_stick_numa
+    sched:sched_swap_numa
+    sched:sched_wake_idle_without_ipi
+    dummy:HG
 
-  terminal 2:
-    # cat perf.pipe | ./perf --no-pager script -i -
-    bash 33349 [034] 149587.674295: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34056
-    bash 33349 [034] 149588.239521: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34057
-
-  terminal 3:
-    # echo enable-sched:sched_wakeup_new > control
-
-  terminal 1:
-    # mkfifo control ack perf.pipe
-    # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
-    ...
-    event sched:sched_wakeup_new enabled
-
-  terminal 2:
-    # cat perf.pipe | ./perf --no-pager script -i -
-    ...
-    bash 33349 [034] 149632.228023: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34059
-    bash 33349 [034] 149632.228050:   sched:sched_wakeup_new: bash:34059 [120] success=1 CPU:036
-    bash 33349 [034] 149633.950005: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34060
-    bash 33349 [034] 149633.950030:   sched:sched_wakeup_new: bash:34060 [120] success=1 CPU:036
+This new command is handy to get real event names when
+wildcards are used.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/builtin-record.c |  2 ++
- tools/perf/builtin-stat.c   |  2 ++
- tools/perf/util/evlist.c    | 30 +++++++++++++++++++++++++++++-
- tools/perf/util/evlist.h    |  4 ++++
- 4 files changed, 37 insertions(+), 1 deletion(-)
+ tools/perf/builtin-record.c | 1 +
+ tools/perf/builtin-stat.c   | 1 +
+ tools/perf/util/evlist.c    | 6 ++++++
+ tools/perf/util/evlist.h    | 2 ++
+ 4 files changed, 10 insertions(+)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index d832c108a1ca..582b8fba012c 100644
+index 582b8fba012c..f620ed056c89 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -1949,6 +1949,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 				break;
- 			case EVLIST_CTL_CMD_ACK:
+@@ -1951,6 +1951,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
  			case EVLIST_CTL_CMD_UNSUPPORTED:
-+			case EVLIST_CTL_CMD_ENABLE_EVSEL:
-+			case EVLIST_CTL_CMD_DISABLE_EVSEL:
+ 			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+ 			case EVLIST_CTL_CMD_DISABLE_EVSEL:
++			case EVLIST_CTL_CMD_LIST:
  			default:
  				break;
  			}
 diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 89c32692f40c..6a21fb665008 100644
+index 6a21fb665008..56f2206b5991 100644
 --- a/tools/perf/builtin-stat.c
 +++ b/tools/perf/builtin-stat.c
-@@ -590,6 +590,8 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
- 		case EVLIST_CTL_CMD_SNAPSHOT:
- 		case EVLIST_CTL_CMD_ACK:
+@@ -592,6 +592,7 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
  		case EVLIST_CTL_CMD_UNSUPPORTED:
-+		case EVLIST_CTL_CMD_ENABLE_EVSEL:
-+		case EVLIST_CTL_CMD_DISABLE_EVSEL:
+ 		case EVLIST_CTL_CMD_ENABLE_EVSEL:
+ 		case EVLIST_CTL_CMD_DISABLE_EVSEL:
++		case EVLIST_CTL_CMD_LIST:
  		default:
  			break;
  		}
 diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 70aff26612a9..05723227bebf 100644
+index 05723227bebf..c05476ca2ff4 100644
 --- a/tools/perf/util/evlist.c
 +++ b/tools/perf/util/evlist.c
-@@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
- 		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
+@@ -1931,6 +1931,9 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+ 				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
+ 			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
+ 			pr_debug("is snapshot\n");
++		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_LIST_TAG,
++				    (sizeof(EVLIST_CTL_CMD_LIST_TAG)-1))) {
++			*cmd = EVLIST_CTL_CMD_LIST;
+ 		}
+ 	}
  
- 	if (bytes_read > 0) {
--		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
-+		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
-+				    (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
-+			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
-+		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
-+				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
-+			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
-+		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
- 			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
- 			*cmd = EVLIST_CTL_CMD_ENABLE;
- 		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
-@@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
- 	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
- 	int ctlfd_pos = evlist->ctl_fd.pos;
- 	struct pollfd *entries = evlist->core.pollfd.entries;
-+	struct evsel *evsel;
-+	char *evsel_name;
- 
- 	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
- 		return 0;
-@@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
- 			case EVLIST_CTL_CMD_DISABLE:
- 				evlist__disable(evlist);
+@@ -1995,6 +1998,9 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+ 					pr_info("failed: can't find %s event\n", evsel_name);
+ 				}
  				break;
-+			case EVLIST_CTL_CMD_ENABLE_EVSEL:
-+				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
-+				evsel = evlist__find_evsel_by_str(evlist, evsel_name);
-+				if (evsel) {
-+					evlist__enable_evsel(evlist, evsel_name);
-+					pr_info("event %s enabled\n", evsel->name);
-+				} else {
-+					pr_info("failed: can't find %s event\n", evsel_name);
-+				}
-+				break;
-+			case EVLIST_CTL_CMD_DISABLE_EVSEL:
-+				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG) - 1;
-+				evsel = evlist__find_evsel_by_str(evlist, evsel_name);
-+				if (evsel) {
-+					evlist__disable_evsel(evlist, evsel_name);
-+					pr_info("event %s disabled\n", evsel->name);
-+				} else {
-+					pr_info("failed: can't find %s event\n", evsel_name);
-+				}
-+				break;
++			case EVLIST_CTL_CMD_LIST:
++				evlist__for_each_entry(evlist, evsel)
++					pr_info("%s\n", evsel__name(evsel));
  			case EVLIST_CTL_CMD_SNAPSHOT:
  				break;
  			case EVLIST_CTL_CMD_ACK:
 diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 1aae75895dea..e4e8ff8831a3 100644
+index e4e8ff8831a3..6b8a9918fdb2 100644
 --- a/tools/perf/util/evlist.h
 +++ b/tools/perf/util/evlist.h
-@@ -330,6 +330,8 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
- #define EVLIST_CTL_CMD_DISABLE_TAG "disable"
- #define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
+@@ -332,6 +332,7 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
  #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
-+#define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
-+#define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
+ #define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
+ #define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
++#define EVLIST_CTL_CMD_LIST_TAG "list"
  
  #define EVLIST_CTL_CMD_MAX_LEN 64
  
-@@ -337,6 +339,8 @@ enum evlist_ctl_cmd {
- 	EVLIST_CTL_CMD_UNSUPPORTED = 0,
- 	EVLIST_CTL_CMD_ENABLE,
- 	EVLIST_CTL_CMD_DISABLE,
-+	EVLIST_CTL_CMD_ENABLE_EVSEL,
-+	EVLIST_CTL_CMD_DISABLE_EVSEL,
+@@ -343,6 +344,7 @@ enum evlist_ctl_cmd {
+ 	EVLIST_CTL_CMD_DISABLE_EVSEL,
  	EVLIST_CTL_CMD_ACK,
  	EVLIST_CTL_CMD_SNAPSHOT,
++	EVLIST_CTL_CMD_LIST,
  };
+ 
+ int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
 -- 
 2.26.2
 
