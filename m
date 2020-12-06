@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB762D0447
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBFF2D0421
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgLFLo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:44:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43844 "EHLO mail.kernel.org"
+        id S1729143AbgLFLnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729292AbgLFLoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:09 -0500
+        id S1728276AbgLFLnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:21 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 05/46] net: openvswitch: fix TTL decrement action netlink message format
+Subject: [PATCH 5.4 09/39] tun: honor IOCB_NOWAIT flag
 Date:   Sun,  6 Dec 2020 12:17:13 +0100
-Message-Id: <20201206111556.703800808@linuxfoundation.org>
+Message-Id: <20201206111555.131802749@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,170 +31,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 69929d4c49e182f8526d42c43b37b460d562d3a0 ]
+[ Upstream commit 5aac0390a63b8718237a61dd0d24a29201d1c94a ]
 
-Currently, the openvswitch module is not accepting the correctly formated
-netlink message for the TTL decrement action. For both setting and getting
-the dec_ttl action, the actions should be nested in the
-OVS_DEC_TTL_ATTR_ACTION attribute as mentioned in the openvswitch.h uapi.
+tun only checks the file O_NONBLOCK flag, but it should also be checking
+the iocb IOCB_NOWAIT flag. Any fops using ->read/write_iter() should check
+both, otherwise it breaks users that correctly expect O_NONBLOCK semantics
+if IOCB_NOWAIT is set.
 
-When the original patch was sent, it was tested with a private OVS userspace
-implementation. This implementation was unfortunately not upstreamed and
-reviewed, hence an erroneous version of this patch was sent out.
-
-Leaving the patch as-is would cause problems as the kernel module could
-interpret additional attributes as actions and vice-versa, due to the
-actions not being encapsulated/nested within the actual attribute, but
-being concatinated after it.
-
-Fixes: 744676e77720 ("openvswitch: add TTL decrement action")
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Link: https://lore.kernel.org/r/160622121495.27296.888010441924340582.stgit@wsfd-netdev64.ntdv.lab.eng.bos.redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lore.kernel.org/r/e9451860-96cc-c7c7-47b8-fe42cadd5f4c@kernel.dk
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/uapi/linux/openvswitch.h |    2 +
- net/openvswitch/actions.c        |    7 +--
- net/openvswitch/flow_netlink.c   |   74 ++++++++++++++++++++++++++++-----------
- 3 files changed, 60 insertions(+), 23 deletions(-)
+ drivers/net/tun.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/include/uapi/linux/openvswitch.h
-+++ b/include/uapi/linux/openvswitch.h
-@@ -1058,4 +1058,6 @@ enum ovs_dec_ttl_attr {
- 	__OVS_DEC_TTL_ATTR_MAX
- };
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -2028,12 +2028,15 @@ static ssize_t tun_chr_write_iter(struct
+ 	struct tun_file *tfile = file->private_data;
+ 	struct tun_struct *tun = tun_get(tfile);
+ 	ssize_t result;
++	int noblock = 0;
  
-+#define OVS_DEC_TTL_ATTR_MAX (__OVS_DEC_TTL_ATTR_MAX - 1)
+ 	if (!tun)
+ 		return -EBADFD;
+ 
+-	result = tun_get_user(tun, tfile, NULL, from,
+-			      file->f_flags & O_NONBLOCK, false);
++	if ((file->f_flags & O_NONBLOCK) || (iocb->ki_flags & IOCB_NOWAIT))
++		noblock = 1;
 +
- #endif /* _LINUX_OPENVSWITCH_H */
---- a/net/openvswitch/actions.c
-+++ b/net/openvswitch/actions.c
-@@ -970,14 +970,13 @@ static int dec_ttl_exception_handler(str
- {
- 	/* The first action is always 'OVS_DEC_TTL_ATTR_ARG'. */
- 	struct nlattr *dec_ttl_arg = nla_data(attr);
--	int rem = nla_len(attr);
++	result = tun_get_user(tun, tfile, NULL, from, noblock, false);
  
- 	if (nla_len(dec_ttl_arg)) {
--		struct nlattr *actions = nla_next(dec_ttl_arg, &rem);
-+		struct nlattr *actions = nla_data(dec_ttl_arg);
+ 	tun_put(tun);
+ 	return result;
+@@ -2254,10 +2257,15 @@ static ssize_t tun_chr_read_iter(struct
+ 	struct tun_file *tfile = file->private_data;
+ 	struct tun_struct *tun = tun_get(tfile);
+ 	ssize_t len = iov_iter_count(to), ret;
++	int noblock = 0;
  
- 		if (actions)
--			return clone_execute(dp, skb, key, 0, actions, rem,
--					     last, false);
-+			return clone_execute(dp, skb, key, 0, nla_data(actions),
-+					     nla_len(actions), last, false);
- 	}
- 	consume_skb(skb);
- 	return 0;
---- a/net/openvswitch/flow_netlink.c
-+++ b/net/openvswitch/flow_netlink.c
-@@ -2503,28 +2503,42 @@ static int validate_and_copy_dec_ttl(str
- 				     __be16 eth_type, __be16 vlan_tci,
- 				     u32 mpls_label_count, bool log)
- {
--	int start, err;
--	u32 nested = true;
-+	const struct nlattr *attrs[OVS_DEC_TTL_ATTR_MAX + 1];
-+	int start, action_start, err, rem;
-+	const struct nlattr *a, *actions;
+ 	if (!tun)
+ 		return -EBADFD;
+-	ret = tun_do_read(tun, tfile, to, file->f_flags & O_NONBLOCK, NULL);
 +
-+	memset(attrs, 0, sizeof(attrs));
-+	nla_for_each_nested(a, attr, rem) {
-+		int type = nla_type(a);
++	if ((file->f_flags & O_NONBLOCK) || (iocb->ki_flags & IOCB_NOWAIT))
++		noblock = 1;
 +
-+		/* Ignore unknown attributes to be future proof. */
-+		if (type > OVS_DEC_TTL_ATTR_MAX)
-+			continue;
- 
--	if (!nla_len(attr))
--		return ovs_nla_add_action(sfa, OVS_ACTION_ATTR_DEC_TTL,
--					  NULL, 0, log);
-+		if (!type || attrs[type])
-+			return -EINVAL;
-+
-+		attrs[type] = a;
-+	}
-+
-+	actions = attrs[OVS_DEC_TTL_ATTR_ACTION];
-+	if (rem || !actions || (nla_len(actions) && nla_len(actions) < NLA_HDRLEN))
-+		return -EINVAL;
- 
- 	start = add_nested_action_start(sfa, OVS_ACTION_ATTR_DEC_TTL, log);
- 	if (start < 0)
- 		return start;
- 
--	err = ovs_nla_add_action(sfa, OVS_DEC_TTL_ATTR_ACTION, &nested,
--				 sizeof(nested), log);
--
--	if (err)
--		return err;
-+	action_start = add_nested_action_start(sfa, OVS_DEC_TTL_ATTR_ACTION, log);
-+	if (action_start < 0)
-+		return start;
- 
--	err = __ovs_nla_copy_actions(net, attr, key, sfa, eth_type,
-+	err = __ovs_nla_copy_actions(net, actions, key, sfa, eth_type,
- 				     vlan_tci, mpls_label_count, log);
- 	if (err)
- 		return err;
- 
-+	add_nested_action_end(*sfa, action_start);
- 	add_nested_action_end(*sfa, start);
- 	return 0;
- }
-@@ -3487,20 +3501,42 @@ out:
- static int dec_ttl_action_to_attr(const struct nlattr *attr,
- 				  struct sk_buff *skb)
- {
--	int err = 0, rem = nla_len(attr);
--	struct nlattr *start;
-+	struct nlattr *start, *action_start;
-+	const struct nlattr *a;
-+	int err = 0, rem;
- 
- 	start = nla_nest_start_noflag(skb, OVS_ACTION_ATTR_DEC_TTL);
--
- 	if (!start)
- 		return -EMSGSIZE;
- 
--	err = ovs_nla_put_actions(nla_data(attr), rem, skb);
--	if (err)
--		nla_nest_cancel(skb, start);
--	else
--		nla_nest_end(skb, start);
-+	nla_for_each_attr(a, nla_data(attr), nla_len(attr), rem) {
-+		switch (nla_type(a)) {
-+		case OVS_DEC_TTL_ATTR_ACTION:
-+
-+			action_start = nla_nest_start_noflag(skb, OVS_DEC_TTL_ATTR_ACTION);
-+			if (!action_start) {
-+				err = -EMSGSIZE;
-+				goto out;
-+			}
- 
-+			err = ovs_nla_put_actions(nla_data(a), nla_len(a), skb);
-+			if (err)
-+				goto out;
-+
-+			nla_nest_end(skb, action_start);
-+			break;
-+
-+		default:
-+			/* Ignore all other option to be future compatible */
-+			break;
-+		}
-+	}
-+
-+	nla_nest_end(skb, start);
-+	return 0;
-+
-+out:
-+	nla_nest_cancel(skb, start);
- 	return err;
- }
- 
++	ret = tun_do_read(tun, tfile, to, noblock, NULL);
+ 	ret = min_t(ssize_t, ret, len);
+ 	if (ret > 0)
+ 		iocb->ki_pos = ret;
 
 
