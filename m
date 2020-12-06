@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680262D0204
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F522D0205
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgLFItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:49:41 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:46046 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLFItk (ORCPT
+        id S1725986AbgLFIv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 03:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgLFIv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:49:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=WHTCy5l5+fYdUerrjp
-        3tMcqmoP1IK9GclDAiIt73lIc=; b=gWjDUGTW9iFpikukNRiWvcwOFE5mmhmBlA
-        T3lh4vQlvBb4wNJcDNquytTyh7NNZglggAtzQR62O2/C3MtxyZfrFivx9BWwEvgM
-        AI7If9haV8rNEYqiyrBP3qYHMpRLiJ73bOJQpmQmtgnnBwc16PNnRvmtAnGRUCpN
-        w4mFF3LYo=
-Received: from localhost.localdomain (unknown [202.112.113.212])
-        by smtp2 (Coremail) with SMTP id GtxpCgCHA8nMmsxfJf2DEA--.20874S4;
-        Sun, 06 Dec 2020 16:48:13 +0800 (CST)
-From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>, davem@davemloft.net,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
-Date:   Sun,  6 Dec 2020 16:48:01 +0800
-Message-Id: <20201206084801.26479-1-ruc_zhangxiaohui@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: GtxpCgCHA8nMmsxfJf2DEA--.20874S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtF4xZF4rAw4fXF4xJry7ZFb_yoWkZFX_W3
-        4Iva15JrZrtw1IyrsYyw42v3sYkr1rXrWxGa17trWrGFW2vFZrtrnY9rs5Xr12kw1qvr9x
-        Wrs8A3y5ta4FvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjU3vUUUUUU==
-X-Originating-IP: [202.112.113.212]
-X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/1tbipQ3yMFUMa-PfKwAAsf
+        Sun, 6 Dec 2020 03:51:57 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8FEC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 00:51:17 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id x26so5840475vsq.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 00:51:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=5rJEhiw7M4//ilqhvhV0uzXqv5pU/ZP+xujzs2uO70E=;
+        b=b1cNQNvjyJeQXqxsgueRqSnh9VhInZBjUzUlSZts2gWM94mNG+5/bt0HEnIXlYECBB
+         j9LxVcf3YqU4ALLbgwPEuMKtLBlrZPmSmURcr3fHSF/afBjeO58hDmzqn+e+HYHmgbm+
+         xR0xZOWEQnJfJKaRv2nVsgfg91HWq2tWt3VMq8/IPKwOeFL4WSMh8WUMJAAPKGA01EWz
+         LvUiB1Bf07ebi/tV+e1j+ItbBRRU0Lz8pZId6UtwGnstTGcJ5SNFcgmm/Bxb4Jr+ZFs5
+         CzxjgtdUpN0Vjg7rN7ybsAxz+A+o7bV39oKbtOUF+dcCmV/ZYtXzNMz332/CQjEuAc2P
+         iZYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=5rJEhiw7M4//ilqhvhV0uzXqv5pU/ZP+xujzs2uO70E=;
+        b=BZRNNtBCKB4DQ4c4eHniehX6Bg60we+1LlPovZuRHtX18EQp3CO7L4B0jRS37afkGB
+         8CkQt3U/zX82ViIG9BzketNlAK8WDhNoHGuqKe15NJbC9VJnySk6vHDavabqPhWf3Av0
+         cwfHwUxXO4zJrojF8POMNumlMXZB4KsFUEMxMCm4ZNmtCBp8tYb4NJ8BEm4Ngsnm3Vg3
+         IKx9TZ4SmiwHqAtXnv+WOQPG3fqO5u97oEr+uMek33mriMNWVDNvccn7jpS9VXa2iW8M
+         +PvQgG9WnEhFh+ybRZa6rrfVQ8W/NwvDUzfZXcAc3Rapegg+tCgLs71T/daM0/GA0t+N
+         6FYA==
+X-Gm-Message-State: AOAM532EDOzHwVS1umxROy7nA35WHfutrb4DQ44ofBHWjaseLWHVFDqL
+        aJKWXxAcnGHZ6CzwOJsXSzxE9esEDSmdRSn31GY=
+X-Google-Smtp-Source: ABdhPJzgnbd+sWlvmRxdt1dzz6lAh7ua34XhiVDz853a3nzIsRphJl2+3T4VhZRcmy2xBxesjaVb8EX+TKnHnJGVqNs=
+X-Received: by 2002:a05:6102:22fa:: with SMTP id b26mr9945413vsh.35.1607244676605;
+ Sun, 06 Dec 2020 00:51:16 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:ab0:6ced:0:0:0:0:0 with HTTP; Sun, 6 Dec 2020 00:51:16 -0800 (PST)
+Reply-To: Claudiadagadou@hotmail.com
+From:   Mme Claudiadagadou <gabrielle.sophie12@gmail.com>
+Date:   Sun, 6 Dec 2020 09:51:16 +0100
+Message-ID: <CABH9mdJdR7+6LaczzWvC3NgpHeSLgDLP62naPh_G75Mb6XbTng@mail.gmail.com>
+Subject: RE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+--=20
+Hallo
 
-mwifiex_cmd_802_11_ad_hoc_start() calls memcpy() without checking
-the destination size may trigger a buffer overflower,
-which a local user could use to cause denial of service
-or the execution of arbitrary code.
-Fix it by putting the length check before calling memcpy().
+Ich bin Frau Claudia Dagadou, eine Buchhalterin / Bankierin der
+Ecobank Togo. Ich habe Sie wegen eines US-Handelsabkommens (8,5
+Millionen Dollar) kontaktiert, das zur =C3=9Cberweisung an Sie bereit ist.
+Der Inhaber dieses Kontos war der verstorbene Nicolas Ernst,
+Expatriate, verstorben von Chemiedirektor von Petrol-Technical Support
+Services Inc. nach einem Verkehrsunfall. Und niemand wird von der
+Existenz dieses Berichts erfahren. Dieses Konto hat keinen anderen
+Beg=C3=BCnstigten sowohl in seiner Familie als auch in seiner fr=C3=BCheren
+Firma. behaupten, wir werden es 60% f=C3=BCr mich teilen, w=C3=A4hrend 40% =
+f=C3=BCr
+Sie sein werden. Wenn Sie interessiert sind, antworten Sie sofort auf
+die folgenden Informationen unten. Antwort so schnell wie
+m=C3=B6glich.mailprive: (Claudiadagadou@hotmail.com)
 
-Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
----
- drivers/net/wireless/marvell/mwifiex/join.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/join.c b/drivers/net/wireless/marvell/mwifiex/join.c
-index 5934f7147..173ccf79c 100644
---- a/drivers/net/wireless/marvell/mwifiex/join.c
-+++ b/drivers/net/wireless/marvell/mwifiex/join.c
-@@ -877,6 +877,8 @@ mwifiex_cmd_802_11_ad_hoc_start(struct mwifiex_private *priv,
- 
- 	memset(adhoc_start->ssid, 0, IEEE80211_MAX_SSID_LEN);
- 
-+	if (req_ssid->ssid_len > IEEE80211_MAX_SSID_LEN)
-+		req_ssid->ssid_len = IEEE80211_MAX_SSID_LEN;
- 	memcpy(adhoc_start->ssid, req_ssid->ssid, req_ssid->ssid_len);
- 
- 	mwifiex_dbg(adapter, INFO, "info: ADHOC_S_CMD: SSID = %s\n",
--- 
-2.17.1
+Familienname, Nachname ...............................................
+Vorname...........................................
+Alter: ...............................
+Beruf:.....................
+Telefon:.............
+Stadt:.........................
+Land:............................
+Adresse:............................
+Fax:................................
 
+Ich freue mich auf Ihre Antwort
+Freundliche Gr=C3=BC=C3=9Fe,
+Frau Claudia Dagadou,
