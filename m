@@ -2,88 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8DD2D020D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F752D0208
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgLFI50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgLFI5Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:57:25 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A796BC0613D0;
-        Sun,  6 Dec 2020 00:56:44 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h21so10815943wmb.2;
-        Sun, 06 Dec 2020 00:56:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r/p3AYF+CXwhw7AQUHpZf13qD/HqOAzGY2Ed7W/bdRM=;
-        b=GqlRD3lQ/iDrLHrS36Cwy+ZVw0xNS1POBJcRAQ7AVkmUz+BmtXnRiJ0ZyEy7Snsuym
-         Xwkdm1HvMum2dr0uXcbMS4zYMWfm7d/s9CPaC+sXDQW6//bNY/6ttl/hEFrQJUwguXK9
-         s/OJV4okA7N4oew0FVvGGBz1hoRE6GgMnv3KM7OkiAVLy8DNoFu9ZPyDgNo6EmKNoZ6I
-         maSdACer5z2BpwWIGnKaEA8AT7qY3+cGSHvpvYJte2MHusn0b6Gp3SvOahTXBpPYLoyg
-         sO11l+vvAAt+qDVk37bJeWrgrCQuHV+ZToApb2ByWArtXOfTc4Zg/bcZG1ITjfFi7uBC
-         1SNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r/p3AYF+CXwhw7AQUHpZf13qD/HqOAzGY2Ed7W/bdRM=;
-        b=qsSvcwdpxsG5noZzWA7Xwt4QHvRTyx0c++KNuH+m9gYQaBipk+GzV3eMX9GhjUjtmo
-         wWD3FGOjo6AwrH55/axMTbo2wh8JK6nJuMPdCEdRc3+AP33igoSdH2S+8S+PWYx+s8q6
-         ZPa8uF4128/+yzGasdC/jclQJc/9VlpSg7Kbf0uQBAjDMtcewI3WfO06Vd9DNOmoSUZ7
-         htXvauwplhCNrWVJTdKJ/fVsAdjVHgg7C2CgtYUV7wUKLfUh2fbRaKaTmtVFZSjBt+lr
-         ghPa68tUuqIP/D9c6P9rEp10R0HYXOqPj8BVY3e0eUUuuwm5LynOnIZWoxREKbkpZWbH
-         D1OA==
-X-Gm-Message-State: AOAM533gkOvGWce5AaPUrlEe5/ytkKe4YUxMxtHgvzeR06EyfTEz8IO5
-        EGfGqVW+kZXmnUqXHxBQv6NF8wMyLXj0GP+XwIc=
-X-Google-Smtp-Source: ABdhPJwoEfXTWfSTLCjE7/KnmfaVOv7f6V/b9c28RRKbP3jppCmSNr384eJUbBBdET+1QJA+rIvvmbB2J/g32QIzG+4=
-X-Received: by 2002:a1c:7dd8:: with SMTP id y207mr12943843wmc.181.1607245003243;
- Sun, 06 Dec 2020 00:56:43 -0800 (PST)
+        id S1726035AbgLFI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 03:57:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgLFI5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 03:57:19 -0500
+Date:   Sun, 6 Dec 2020 10:56:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607244998;
+        bh=LH+RKt1fSfmVnZq0s40gHs8KqDpkIxtCMOOy7KLFL1k=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HFMYqeq/BpYg9rtXwFWcwQZnMr12OV2oUfJNF5M8sS3PyiOTq0dihhJ1ax0ZpOoGG
+         jq48s8G8dP8+y7dzseb6Lc5reeib2Y1l38pPOUSroHtGOZlgsbu1RHsQQSeNXNlZmS
+         q/ccmhY6yOo2M9erSi3vMwjoZxyN7+FaPA4GdINKxGOxZQMOcloK8a0MoSlmCIwEZU
+         T86advb+nqhWlk+hlWlAyqDuwNktShaQxesW93a3kbkk15vyCPc5e0PYElwatBqDxT
+         BMSu1nR/brpFzqrkar7BX/oRhA08GZZmxR86hHYdv1joob5HrYbVZKNbEr/tEuf/1o
+         pS/Fis4lxVKvw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+Message-ID: <20201206085631.GE210929@unreal>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
 MIME-Version: 1.0
-References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com> <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
-In-Reply-To: <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Sun, 6 Dec 2020 17:56:30 +0900
-Message-ID: <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
-        masahiroy@kernel.org, peterz@infradead.org,
-        peter.enderborg@sony.com, krzk@kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
-        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
-        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
-        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
-        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        dushistov@mail.ru,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This, and the change above this, are not related to this patch so you
-> might not want to include them.
+On Sun, Dec 06, 2020 at 09:41:21AM +0100, Hans de Goede wrote:
+> Hi Leon,
+>
+> On 12/6/20 8:07 AM, Leon Romanovsky wrote:
+> > On Thu, Dec 03, 2020 at 10:26:31PM +0100, Maximilian Luz wrote:
+> >> Hello,
+> >>
+> >> Here is version two of the Surface System Aggregator Module (SAM/SSAM)
+> >> driver series, adding initial support for the embedded controller on 5th
+> >> and later generation Microsoft Surface devices. Initial support includes
+> >> the ACPI interface to the controller, via which battery and thermal
+> >> information is provided on some of these devices.
+> >>
+> >> The previous version and cover letter detailing what this series is
+> >> about can be found at
+> >>
+> >>   https://lore.kernel.org/platform-driver-x86/20201115192143.21571-1-luzmaximilian@gmail.com/
+> >>
+> >> This patch-set can also be found at the following repository and
+> >> reference, if you prefer to look at a kernel tree instead of these
+> >> emails:
+> >>
+> >>   https://github.com/linux-surface/kernel tags/s/surface-aggregator/v2
+> >>
+> >> Thank you all for the feedback to v1, I hope I have addressed all
+> >> comments.
+> >
+> >
+> > I think that it is too far fetched to attempt and expose UAPI headers
+> > for some obscure char device that we are all know won't be around in
+> > a couple of years from now due to the nature of how this embedded world
+> > works.
+>
+> This is not for an embedded device, but for the popular line of
+> Microsoft Surface laptops / 2-in-1s...
 
-> Also, why is this patch series even needed?  I don't see a justification
-> for it anywhere, only "what" this patch is, not "why".
+It is the naming, we don't have char device for every "laptop" vendor.
+Why is Microsoft different here?
 
-I think the find_last_zero_bit will help to improve in
-7th patch's change and It can be used in the future.
-But if my thinking is bad.. Please let me know..
+>
+> > More on that, the whole purpose of proposed interface is to debug and
+> > not intended to be used by any user space code.
+>
+> The purpose is to provide raw access to the Surface Serial Hub protocol,
+> just like we provide raw access to USB devices and have hidraw devices.
 
-Thanks.
-Levi.
+USB devices implement standard protocol, this surface hub is nothing
+even close to that.
+
+>
+> So this goes a litle beyond just debugging; and eventually the choice
+> may be made to implement some functionality with userspace drivers,
+> just like we do for some HID and USB devices.
+
+I don't know how it goes in device/platform area, but in other large
+subsystems, UAPI should be presented with working user-space part.
+
+>
+> Still I agree with you that adding new userspace API is something which
+> needs to be considered carefully. So I will look at this closely when
+> reviewing this set.
+>
+> > Also the idea that you are creating new bus just for this device doesn't
+> > really sound right. I recommend you to take a look on auxiliary bus and
+> > use it or come with very strong justifications why it is not fit yet.
+>
+> AFAIK the auxiliary bus is for sharing a single device between multiple
+> drivers, while the main device-driver also still offers functionality
+> (beyond the providing of access) itself.
+
+The idea behind auxiliary bus is to slice various functionalities into
+different sub-drivers, see it as a way to create subsystem inside one
+driver.
+
+>
+> This is more akin to how the WMI driver also models different WMI
+> functions as a bus + devices on the bus.
+>
+> Or how the SDIO driver multiplex a single SDIO device into its
+> functions by again using a bus + devices on the bus model.
+>
+> Also this has been in the works for quite a while now, the Linux on
+> Microsoft Surface devices community has been working on this out of
+> tree for a long time, see:
+> https://github.com/linux-surface/
+
+It is not relevant, the code is merged than it is ready.
+
+>
+> And an RFC and a v1 have been posted a while ago, while auxiliary
+> bus support is not even in the mainline kernel yet. I would agree
+> with you that this should switch to auxiliary bus, despite the timing,
+> if that would lead to much better code. But ATM I don't really see
+> switching to auxiliary bus offering much benefits here.
+
+The auxiliary bus is merged and part of linux-next.
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/tag/?h=auxbus-5.11-rc1
+
+>
+> > I'm sorry to say, but this series is not ready to be merged yet.
+> >
+> > NAK: Leon Romanovsky <leon@kernel.org>
+>
+> See above, I believe that this all is a bit harsh and I have not
+> really heard convincing arguments for not merging this.
+>
+> Moreover such a quick nack does not really promote working upstream,
+> where as we actually want people to work upstream as much as possible.
+> I know this is not a reason for taking bad code, but I'm not
+> convinced that this is bad code.
+
+I naked explicitly for two reasons: UAPI(chardev) and lack of rationale
+for the custom bus, never said "bad code".
+
+>
+> I have not reviewed this myself yet, but once I have reviewed
+> this and any review remarks have been addressed I do expect to
+> merge this series through the platform-drivers-x86 tree.
+>
+> Regards,
+>
+> Hans de Goede
+> (drivers/platform/x86 and drivers/platform/surface subsys maintainer)
+>
