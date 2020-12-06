@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C7F2D076C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250D22D076D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 22:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgLFVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 16:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S1728075AbgLFVku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 16:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgLFVkD (ORCPT
+        with ESMTP id S1725977AbgLFVku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 16:40:03 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D652C0613D0;
-        Sun,  6 Dec 2020 13:39:23 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cq0Fj12T7z9s0b;
-        Mon,  7 Dec 2020 08:39:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607290761;
-        bh=Rs0BgyK6iRiZjCnwfVYB84MTWnPpL5Ji5eHc2PDiwPc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cC1UEFIxUiddNISxIePHxsHDG+dGibvSyddR5FnTt3kDaax6OZj7KvVFwTlSMA16i
-         E12kPlZLb7yz9czL15i91iHakrI7NRKCMA45UQcHa+PZr7v75eqdLXNHtTgwPz4yDZ
-         nvLfQZ7YF7pJ4RvaSSBdoGzAUSeuXoaSm+fvWN9yRRqDt+oI6ZHU7mrS0b6MnfsKLk
-         H79i6jTD8/FVof3dAReVZn8jwYDtXALby2xMEqWZiOuBT2KVj/pMXAHDMX5pNxtGgK
-         EsoJNaalsyDBIbsQjmSPX1lvYvXKIEXh573GS5ShzHl23LXSF8j8SEToXg3VwYsRGY
-         +nXIt02Ia6BqA==
-Date:   Mon, 7 Dec 2020 08:39:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20201207083920.2f64f4dc@canb.auug.org.au>
-In-Reply-To: <20201204192032.GA1437@paulmck-ThinkPad-P72>
-References: <20201204192526.0b38fb02@canb.auug.org.au>
-        <20201204192032.GA1437@paulmck-ThinkPad-P72>
+        Sun, 6 Dec 2020 16:40:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19D4C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 13:40:09 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607290807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=qdBhMtrI0eQa38m0gb5bqhyKq1hVq6WnHTslTr7nFjE=;
+        b=ddaiGB9h7/CPh8CbLTJLMdeoba2RrmMR8rs1Va6zHiWymCEXTs9L8P0HxP8tE0hE9G/qZV
+        a7vZkrz20QMQAoQO9RVdqSBW+4YkgwmnZloBA4Mdgqr5VvjuueACZjyGl26KXZSdZcfFrA
+        udrRXLQ8z3UTwKueBfZeKB+0XwvWXyi5QjEcF8jetmFZWwfuiuQ6WZ9GT7xIoAehsMKtr8
+        0ALgKybm4IUEoWTWPbYukWzlBonHx2kS+FukCL2y0wg0/gKGJwp9R9xLz9skKz+z1ktVju
+        3xhFnrKiImFJy1AKnuKYYR2bS76AOrVrOkj/Gq3BCmoSlabIcWsxoMMQxiGJLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607290807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=qdBhMtrI0eQa38m0gb5bqhyKq1hVq6WnHTslTr7nFjE=;
+        b=xhfswiY+fEMM6jbJycksCoLzsDDCSqv9/dChskSYjHusnZOyc7muWewalIDsV+n8Q+VyDZ
+        tMLwiRGxt2gZ1zAA==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: timers: Move clearing of base::timer_running under base::lock
+Date:   Sun, 06 Dec 2020 22:40:07 +0100
+Message-ID: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+w=skvRSarInYA9c=UDkO/4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+w=skvRSarInYA9c=UDkO/4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+syzbot reported KCSAN data races vs. timer_base::timer_running being set to
+NULL without holding base::lock in expire_timers().
 
-Hi Paul,
+This looks innocent and most reads are clearly not problematic but for a
+non-RT kernel it's completely irrelevant whether the store happens before
+or after taking the lock. For an RT kernel moving the store under the lock
+requires an extra unlock/lock pair in the case that there is a waiter for
+the timer. But that's not the end of the world and definitely not worth the
+trouble of adding boatloads of comments and annotations to the code. Famous
+last words...
 
-On Fri, 4 Dec 2020 11:20:32 -0800 "Paul E. McKenney" <paulmck@kernel.org> w=
-rote:
->
-> Does the following patch fix things?  (Sigh.  It won't apply on the
-> rcu/next that you used.  Or even on this moment's dev branch.  I will
-> fold it in with attribution and update.  But just to show you what my
-> thought is.)
+Reported-by: syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com
+Reported-by: syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/timer.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Sorry I didn't get the chance to test your patch, but it seems to make
-sense.  I notice that you have added this to the rcu tree for today, so
-I guess we will see :-)
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+w=skvRSarInYA9c=UDkO/4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NT4gACgkQAVBC80lX
-0Gxm1Qf/a/YWDMvY0CAnpbunpBiJZdnkFToLgQxMGbcQrqzN+nIEbxjNm9W5Bqzd
-2dF4oj3GjilQkDxLphqw4bLFYzkbGb/NCJiTPoRFlDDVKZNNNunxK5EPOQO4ZpVH
-uod7wnjLm9fxUaeFZNz3n1LTBs74nzJU91vbjz8f2kFSGXe5KDjuDdBOBJAElOc8
-nqGN9Beao0N+UQvUVTp0CTNdrFNPat72S3WT8UvlT8aJXaVuiCSL0USLmsE5beqH
-jmhDGZm6PiiwqBZfztjEBeao8VMIfdC0eJ7bjRdXQVWDaDGhDXMpjHaZBn7gBbUg
-fyhbRdtiaokLZ6xP1cS5yPMsfa/sKQ==
-=u58/
------END PGP SIGNATURE-----
-
---Sig_/+w=skvRSarInYA9c=UDkO/4--
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1263,8 +1263,10 @@ static inline void timer_base_unlock_exp
+ static void timer_sync_wait_running(struct timer_base *base)
+ {
+ 	if (atomic_read(&base->timer_waiters)) {
++		raw_spin_unlock_irq(&base->lock);
+ 		spin_unlock(&base->expiry_lock);
+ 		spin_lock(&base->expiry_lock);
++		raw_spin_lock_irq(&base->lock);
+ 	}
+ }
+ 
+@@ -1448,14 +1450,14 @@ static void expire_timers(struct timer_b
+ 		if (timer->flags & TIMER_IRQSAFE) {
+ 			raw_spin_unlock(&base->lock);
+ 			call_timer_fn(timer, fn, baseclk);
+-			base->running_timer = NULL;
+ 			raw_spin_lock(&base->lock);
++			base->running_timer = NULL;
+ 		} else {
+ 			raw_spin_unlock_irq(&base->lock);
+ 			call_timer_fn(timer, fn, baseclk);
++			raw_spin_lock_irq(&base->lock);
+ 			base->running_timer = NULL;
+ 			timer_sync_wait_running(base);
+-			raw_spin_lock_irq(&base->lock);
+ 		}
+ 	}
+ }
