@@ -2,127 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1704E2D0305
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990212D030F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgLFKwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 05:52:51 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:41385 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLFKwu (ORCPT
+        id S1726604AbgLFK5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 05:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgLFK5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 05:52:50 -0500
-Received: by mail-io1-f69.google.com with SMTP id v21so7390397iol.8
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 02:52:34 -0800 (PST)
+        Sun, 6 Dec 2020 05:57:10 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652B3C0613D0;
+        Sun,  6 Dec 2020 02:56:30 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id c7so10549459edv.6;
+        Sun, 06 Dec 2020 02:56:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VELJr/NXssUvymRpU41z6schgWDjiLoMIujp5PzNYgI=;
+        b=AM3Xzq6+hFoIMXw5jqHDV/aK4fIVFIUT+gYZkPKMO6b3BMn+5Z3egpuPe7EGFYm9/8
+         gABWnZDGF9uTkxFKMIKBU84O105kpKx9dmPSJ+hCIxRNP8q4GHtGfMB7UdWDzNIAUyI4
+         7gTfafti6On+2jBTq+598x5NApHw6WHqxk1sQR/xEEQLCgUvWvkfbKUwedZSENgXQvPA
+         wfnNngXyHXqTKfi4gSJBTUDk41eZKF357FgFcvXtDjdjDL0V2y5MTdZuNxcEx5kUQhlt
+         PUc3EXFZ1FbsuFeCOS4vBFX/J5Yaqmb7yBEa4sOl1qZsXJoD63UWQJgui5wOcsu6kiXZ
+         tUng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RtKCf1BHb9m9+5vtHLsgsBlaX/jO4yFmes7RmdsLhfg=;
-        b=EeZbyiGdUfWDfGalY4rsbhWA+9AoTt7AiDVylSVmY6Mxld0OaBY95hokFPc5qYbRcH
-         QgPETmsiXCUTgIqotdfR2myDh1yxGBg4nDFZPLFNyvIVi1D6NUghoSTSI5mk1IDh+m9J
-         8/ywiHExJRSrleICNuO/++UTC4cT2+9rha/RcB1mWdVznCHhk3IaZYq+Yswe1FJjQqdK
-         K6RWO6LwkSEOe5zjxxXlTxw/H6Xj92m4SVtC6h9/e3WS4G1E9RfkKVqw08bh08SQeoVM
-         Oju6m4HuENXBJcxCol4mDxkvPVk7N9qvwLjzBZhuE3IQ1iGXzioANkvihWM3EIbCdoES
-         Ar0Q==
-X-Gm-Message-State: AOAM532dZzodAIPinWUYeLaPazD+IQLgT/kSU9F+a00nzxp1V+ZZYNI2
-        k/MiK7VuBM/7n7+GZEcfN3E7XV4kVQTDlBdelLgO7x9/mDnq
-X-Google-Smtp-Source: ABdhPJw15iksimG2cP2A5NCC75wbxRwbsnn26ZmqNYIkqdFIKwi/MvzGW11U5QmfTArX18YATB4jOPO44beb16EY11R6e3ttgddw
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VELJr/NXssUvymRpU41z6schgWDjiLoMIujp5PzNYgI=;
+        b=P3p8D+X82kBsaaUOBGnc9gWVOlBKriRV9htCUmH6YtgppKU2w69daTojbwq0EAAa1I
+         xgsycjLulMk19+z0btj6BLpO3yF+l8VMHZIB2tF+iYVjbmpLlhcK0/rBn/O2j05BcbO9
+         2IbBhCiQMIss1MBkvSoYhGmE7GXcvv2b7dIUCAHp7HSlBT7cpnDt6YIy4Ga3Ma9oteo4
+         bFqY8QNQpES/QPagCJYM0LYYJ9EXJL899WEQqsN9ibQAa8B42mhf3ZLb0jHx3oe8w2xF
+         QW0Fg86IV0pz4MYa3oh06c5VTVpkdcKpuDjIQjD9b7pTgf3ZhxGru62rn+prRId/biRa
+         RN3Q==
+X-Gm-Message-State: AOAM53216fmhzuc3P17AbQ6LcaH+LZo3bhsFjCQOX5Jyzl1vn2fFfbyG
+        zdkQEdG55715Dp6vuwkCxX/XTyQ+/3Q=
+X-Google-Smtp-Source: ABdhPJyfn9tQ0SbTHXlHVreFPNrD0NC+wdf1y4eq/ep9Mt3EpJ18KaU3fRNrlj2DrkQi8Dv6n3Hh2Q==
+X-Received: by 2002:a05:6402:149a:: with SMTP id e26mr15325734edv.232.1607252188637;
+        Sun, 06 Dec 2020 02:56:28 -0800 (PST)
+Received: from [192.168.2.202] (pd9e5a241.dip0.t-ipconnect.de. [217.229.162.65])
+        by smtp.gmail.com with ESMTPSA id v2sm724847ejq.109.2020.12.06.02.56.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 02:56:27 -0800 (PST)
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+ <1b4fe1fd-592d-4a88-b156-fbf6af2df428@www.fastmail.com>
+ <20201206090614.GA693271@unreal>
+ <a1db4b23-8159-924a-a99b-2fa4b0eb6fff@gmail.com>
+ <8c6f7234-fc7e-66c2-948c-1232eb5ff813@redhat.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <f1317cd3-368e-838b-cf9b-74b8b079a62e@gmail.com>
+Date:   Sun, 6 Dec 2020 11:56:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-X-Received: by 2002:a92:c682:: with SMTP id o2mr779659ilg.97.1607251929424;
- Sun, 06 Dec 2020 02:52:09 -0800 (PST)
-Date:   Sun, 06 Dec 2020 02:52:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005168bf05b5c980b8@google.com>
-Subject: kernel BUG at mm/internal.h:LINE! (3)
-From:   syzbot <syzbot+9e1bcf66d5e11d021793@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8c6f7234-fc7e-66c2-948c-1232eb5ff813@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 12/6/20 11:43 AM, Hans de Goede wrote:
+> Hi,
+> 
+> On 12/6/20 11:33 AM, Maximilian Luz wrote:
+>> On 12/6/20 10:06 AM, Leon Romanovsky wrote:> On Sun, Dec 06, 2020 at 05:58:32PM +0900, Blaž Hrastnik wrote:
+>>>>>
+>>>>>> More on that, the whole purpose of proposed interface is to debug and
+>>>>>> not intended to be used by any user space code.
+>>>>>
+>>>>> The purpose is to provide raw access to the Surface Serial Hub protocol,
+>>>>> just like we provide raw access to USB devices and have hidraw devices.
+>>>>>
+>>>>> So this goes a litle beyond just debugging; and eventually the choice
+>>>>> may be made to implement some functionality with userspace drivers,
+>>>>> just like we do for some HID and USB devices.
+>>>>>
+>>>>> Still I agree with you that adding new userspace API is something which
+>>>>> needs to be considered carefully. So I will look at this closely when
+>>>>> reviewing this set.
+>>>>
+>>>> To add to that: this was previously a debugfs interface but was moved to misc after review on the initial RFC:
+>>>> https://lkml.org/lkml/2020/9/24/96
+>>>
+>>> There is a huge difference between the suggestion and final implementation.
+>>>
+>>> Greg suggested to add new debug module to the drivers/misc that will
+>>> open char device explicitly after user loaded that module to debug this
+>>> hub. However, the author added full blown char device as a first citizen
+>>> that has all not-break-user constrains.
+>>
+>> This module still needs to be loaded explicitly.
+> 
+> Good then I really do not see a problem with this.
+> 
+>> And (I might be wrong
+>> about this) the "not-break-user constraints" hold as soon as I register
+>> a misc device at all, no?
+> 
+> Correct.
+> 
+>> So I don't see how this is a) any different
+>> than previously discussed with Greg and b) how the uapi header now
+>> introduces any not-break-user constraints that would not be there
+>> without it.
+>>
+>> This interface is intended as a stable interface. That's something that
+>> I committed to as soon as I decided to implement this via a misc-device.
+>>
+>> Sure, I can move the definitions in the uapi header to the module
+>> itself, but I don't see any benefit in that.
+> 
+> Right, if we are going to use a misc chardev for this, then the
+> correct thing to do is to put the API bits for that chardev under
+> include/uapi.
+> 
+> It would still be good if you can provide a pointer to some userspace
+> tools using this new API; and for the next version maybe add that
+> pointer to the commit message
 
-syzbot found the following issue on:
+Right, I will add that to the commit message. I just linked you the
+scripts in my other response, but here again for completeness:
 
-HEAD commit:    509a1542 Merge tag '5.10-rc6-smb3-fixes' of git://git.samb..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123d9a55500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e49433cfed49b7d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e1bcf66d5e11d021793
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+   https://github.com/linux-surface/surface-aggregator-module/tree/master/scripts/ssam
 
-Unfortunately, I don't have any reproducer for this issue yet.
+While I'm not using the header directly (the scripts are written in
+python) I still think uapi is the right place to put this (please
+correct me if I'm wrong). Not putting them there seems to be needless
+obfuscating to me.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9e1bcf66d5e11d021793@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at mm/internal.h:400!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 28126 Comm: kworker/u4:0 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: writeback wb_workfn (flush-8:0)
-RIP: 0010:vma_address mm/internal.h:400 [inline]
-RIP: 0010:vma_address mm/internal.h:392 [inline]
-RIP: 0010:rmap_walk_file+0x6b4/0xbf0 mm/rmap.c:1923
-Code: f8 06 48 01 44 24 18 e9 1b fb ff ff e8 25 1c ca ff 4c 8d bb 00 f0 1f 00 e9 92 fd ff ff e8 14 1c ca ff 4c 89 e7 e8 95 bb 07 07 <0f> 0b e8 05 1c ca ff 48 8b 44 24 10 4c 8d 68 78 4c 89 ef e8 f4 a5
-RSP: 0018:ffffc9001656efb8 EFLAGS: 00010283
-RAX: 0000000000000154 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880702f8000 RSI: ffffffff8158c855 RDI: fffff52002caddd2
-RBP: ffffea00014ef380 R08: 0000000000000154 R09: ffff8880b9e30627
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888000129318
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000052df4c CR3: 000000016e143000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rmap_walk+0x105/0x190 mm/rmap.c:1948
- page_mkclean+0x21c/0x2b0 mm/rmap.c:998
- clear_page_dirty_for_io+0x318/0xbe0 mm/page-writeback.c:2698
- mpage_submit_page+0x80/0x2c0 fs/ext4/inode.c:2072
- mpage_process_page_bufs+0x656/0x780 fs/ext4/inode.c:2206
- mpage_prepare_extent_to_map+0x904/0xe00 fs/ext4/inode.c:2618
- ext4_writepages+0x95f/0x38a0 fs/ext4/inode.c:2746
- do_writepages+0xec/0x290 mm/page-writeback.c:2352
- __writeback_single_inode+0x122/0x1180 fs/fs-writeback.c:1461
- writeback_sb_inodes+0x53d/0xef0 fs/fs-writeback.c:1721
- __writeback_inodes_wb+0xc6/0x280 fs/fs-writeback.c:1790
- wb_writeback+0x814/0xc40 fs/fs-writeback.c:1896
- wb_check_old_data_flush fs/fs-writeback.c:1998 [inline]
- wb_do_writeback fs/fs-writeback.c:2051 [inline]
- wb_workfn+0x891/0x12d0 fs/fs-writeback.c:2080
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace 5d185e0c163f88c9 ]---
-RIP: 0010:vma_address mm/internal.h:400 [inline]
-RIP: 0010:vma_address mm/internal.h:392 [inline]
-RIP: 0010:rmap_walk_file+0x6b4/0xbf0 mm/rmap.c:1923
-Code: f8 06 48 01 44 24 18 e9 1b fb ff ff e8 25 1c ca ff 4c 8d bb 00 f0 1f 00 e9 92 fd ff ff e8 14 1c ca ff 4c 89 e7 e8 95 bb 07 07 <0f> 0b e8 05 1c ca ff 48 8b 44 24 10 4c 8d 68 78 4c 89 ef e8 f4 a5
-RSP: 0018:ffffc9001656efb8 EFLAGS: 00010283
-RAX: 0000000000000154 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff8880702f8000 RSI: ffffffff8158c855 RDI: fffff52002caddd2
-RBP: ffffea00014ef380 R08: 0000000000000154 R09: ffff8880b9e30627
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888000129318
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000749138 CR3: 0000000013a93000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Regards,
+Max
