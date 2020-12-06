@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080562D015A
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 07:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75702D015E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 08:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgLFGzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 01:55:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16829 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgLFGzI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 01:55:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcc80230000>; Sat, 05 Dec 2020 22:54:27 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 6 Dec
- 2020 06:54:26 +0000
-Date:   Sun, 6 Dec 2020 08:54:22 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>, Cindy Lu <lulu@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vdpa/mlx5: Use random MAC for the vdpa net instance
-Message-ID: <20201206065422.GA161813@mtl-vdi-166.wap.labs.mlnx>
-References: <20201202055714.GA224423@mtl-vdi-166.wap.labs.mlnx>
- <20201202041518-mutt-send-email-mst@kernel.org>
- <3e32ef6d-83c9-5866-30e5-f6eeacd5044d@redhat.com>
- <20201202165932-mutt-send-email-mst@kernel.org>
- <20201203064928.GA27404@mtl-vdi-166.wap.labs.mlnx>
- <20201203054330-mutt-send-email-mst@kernel.org>
- <20201203120929.GA38007@mtl-vdi-166.wap.labs.mlnx>
- <20201203071414-mutt-send-email-mst@kernel.org>
- <20201203122421.GB38007@mtl-vdi-166.wap.labs.mlnx>
- <b74596fe-fff3-2144-b41a-b9898b6933da@redhat.com>
+        id S1725945AbgLFHHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 02:07:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbgLFHHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 02:07:50 -0500
+Date:   Sun, 6 Dec 2020 09:07:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607238429;
+        bh=frMp0i5OpTH7HSUYeC01Dasv3H7b3wML3u9DwCjWj3w=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bwMT/cW+KW6zqLO3YOCneaKPvDm56TNcQtB9kMsKrNH49p2tA6QkEpdod8LjgHEOM
+         GQBH/7BUBG4rL1nhbt0fTApg/ZBaPO7DZsXGJAsxCYTL7edTnEF7a65AbM3brxKGtH
+         G/wXtdHhkarYMJhplyFCDFQ77HQ50w7UeZNzDQKRu6xeB0/wC/XS+DLkWIm5eM8EMo
+         hXpaydi6gFWNL4q+I2rHsAwJWXnfycJXP4Dxfps6VB8+a/LDC7noWfknLcWqiMbfxg
+         /4KhkQUFjmQKoI5kMiCdUpZptE+HrWC+pLgwnVL+zADX4WvRXHfBpeliVI7fQiTX+1
+         kSJ7PskK8V6rA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+Message-ID: <20201206070705.GA686270@unreal>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <b74596fe-fff3-2144-b41a-b9898b6933da@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607237667; bh=RZ4Klcv7MjQhrlFlFICUWdmtXPcLQdJtQcK1nc/RQJo=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=WGhbsaYv64TkjEFiy+xCBZahO2JoDGtylJcvuQEKdC/tTyowhPGK7dojaxb46iu+C
-         6QFRbINr2wG075TrcSSBFpbKzUsBxgFoezM5qy7t8+YrsGDM/qWS+KlLsrOzsBO/zE
-         26fMc6cLqh7ffBLyS2jeCFxgs6/6IW7k9ULRBciyW3yaiDJiXzCJzTPZuHQveXy/TS
-         2kTwJbkFBzWFWAFEb28NVVRG6lv4NNO/An7nbMkWG+3S0ojRcOcPca1UOgGmDRCW9i
-         jM/NQL27Ps//uIISP9JHcsTKFiSN1lAr15gx0r5hAMa+OuKzfi/dvwWQQHEHExt1lJ
-         7uUmJUYpDLm1g==
+In-Reply-To: <20201203212640.663931-1-luzmaximilian@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 10:53:28AM +0800, Jason Wang wrote:
->=20
-> On 2020/12/3 =E4=B8=8B=E5=8D=888:24, Eli Cohen wrote:
-> > > > It is mentioned in Parav's patchset that this will be coming in a
-> > > > subsequent patch to his vdpa tool.
-> > > So I think kernel has two options:
-> > > - require a mac when device is created, we supply it to guest
-> > Yes, the driver should always set VIRTIO_NET_F_MAC and provide a MAC -
-> > either random or whatever configured using the vdpa too.
->=20
->=20
-> A questions here, I think current mlx5 vdpa works for VF only. So I think
-> the VF should have a given MAC? If yes, can we use that MAC?
->=20
-The MAC assigned to VF is by the NIC implementation. Both ther regular
-NIC driver and the VDPA implementation can co-exist so we can't use the
-NIC's MAC for VDPA. We want to steer traffic based on its destination
-MAC address to either VDPA or regular NIC.
+On Thu, Dec 03, 2020 at 10:26:31PM +0100, Maximilian Luz wrote:
+> Hello,
+>
+> Here is version two of the Surface System Aggregator Module (SAM/SSAM)
+> driver series, adding initial support for the embedded controller on 5th
+> and later generation Microsoft Surface devices. Initial support includes
+> the ACPI interface to the controller, via which battery and thermal
+> information is provided on some of these devices.
+>
+> The previous version and cover letter detailing what this series is
+> about can be found at
+>
+>   https://lore.kernel.org/platform-driver-x86/20201115192143.21571-1-luzmaximilian@gmail.com/
+>
+> This patch-set can also be found at the following repository and
+> reference, if you prefer to look at a kernel tree instead of these
+> emails:
+>
+>   https://github.com/linux-surface/kernel tags/s/surface-aggregator/v2
+>
+> Thank you all for the feedback to v1, I hope I have addressed all
+> comments.
+
+
+I think that it is too far fetched to attempt and expose UAPI headers
+for some obscure char device that we are all know won't be around in
+a couple of years from now due to the nature of how this embedded world
+works.
+
+More on that, the whole purpose of proposed interface is to debug and
+not intended to be used by any user space code.
+
+Also the idea that you are creating new bus just for this device doesn't
+really sound right. I recommend you to take a look on auxiliary bus and
+use it or come with very strong justifications why it is not fit yet.
+
+I'm sorry to say, but this series is not ready to be merged yet.
+
+NAK: Leon Romanovsky <leon@kernel.org>
+
+Thanks
