@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4166B2D0179
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 08:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E04A2D017D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 08:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgLFHlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 02:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38856 "EHLO
+        id S1726423AbgLFHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 02:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgLFHlD (ORCPT
+        with ESMTP id S1726011AbgLFHlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 02:41:03 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE52C061A53;
-        Sat,  5 Dec 2020 23:39:59 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id e5so5568289pjt.0;
-        Sat, 05 Dec 2020 23:39:59 -0800 (PST)
+        Sun, 6 Dec 2020 02:41:11 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2307C061A54;
+        Sat,  5 Dec 2020 23:40:02 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q22so6852338pfk.12;
+        Sat, 05 Dec 2020 23:40:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M6RV3FaJwoXsg1iWqHQxcdc2D0CuomR4lDom9lAMu1g=;
-        b=L6FE4bWRCKpP4T55wxxE16AH+IEv2+qOstT9C9gMneUqQvzOHqUOfe7cSl8w/VECsG
-         s7CICivyuGuQ/6ZJDayf9U6kVBFU9w9jioe5SWBgCQoB5I95j9KsePZS0AnS8/BAvMBP
-         zbKB4uL0T3fU0xKGwKqYIwGElmA+VaeV2wpb1SoAjszdhTFzA+JA6OyVuYNTC9YaMkWo
-         8JNfHjHQDoVOZkwt7MujYkgRGREr5M9KOfoFfOPARUDEokm16LGrbHpO7scBTVk+1Ocz
-         THVS2GcOTIzt4NVgqXpA4NxKQOomSnTZC4egmu+QrYEbbmv0lRyli+118NrMRHtoewb+
-         g3KA==
+        bh=Q/fZnwmILAVwVRxmPc3BHj+xLD6tYNXImx9x9q0Upnw=;
+        b=ZAx7M6wWmDzPZG3EX7H+qQsDujWgHIPCKeoIVHntI2zdDNgbI1itIEnpRLS5NffHm9
+         /xc4gO+Kf/OMj9uzbr5aNGif6Omn/PH0PCJdU/SwngX7ay4roXdNIT7BFiNq+A4KP+tK
+         LhMT0DnR3Rk7EEdG8HlMm3uLf/bKTC5NM5si8Ihj0HOs9ei9xahlqHHY3adEhcG8ZJyZ
+         TLGVAWz2TByTT6Pha/qPrrwKbqHBrk+yZQ9/dahX9gkmtBbto8gjWkkkDDiP53OsV18D
+         PZXFljFKNp91Lu6yQQmF0BQXPftUkvH9G0EyfVTK0k/ycQ/my/RpjRXEG9kBgtO9+Y12
+         x9Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M6RV3FaJwoXsg1iWqHQxcdc2D0CuomR4lDom9lAMu1g=;
-        b=DipDpXSv8lKOWe1mImSL4hImhmPhoh6VN4N7laX81mI2NMCS2xdJODypR306/Ate5G
-         7JV3/aGzpv91sa8ucl+cXCCt62ksrgAlHJqSbxNMwDTUveY3NrljQMFJJXsGy9GobQly
-         j0qYU2kjRhEwXYH9TdL6Q3GDBi0SZyeVS+HYUq/7cJkWx67JngbfHez67KTKdSZhyG7I
-         rBHP53sz4j3pHeLqEGaAO+s0GtLOcyVm3c8Ab0syHGdz7LwMW/DcfpUXWArUBSssee48
-         CWYLhtR/jIXIpfBuivhm+JEjCsubnpjCDmek2d4AbWrx5NNhYaPLcRIDmg3yWUwxzJpP
-         crDw==
-X-Gm-Message-State: AOAM533LmBWo+2nF1DrcabHW/W9pTTch6+e189xhTI7diwgi5rxaEnRF
-        AwSi7FsOTkOYM3Yb2pUxe7g=
-X-Google-Smtp-Source: ABdhPJzRTdqnk4fMGn4CaHD0DoH+gHEWLcPHI7wozeDTKhHL3xKgMzK5CO+UnsU8xxdASJVBosI+zQ==
-X-Received: by 2002:a17:902:868a:b029:da:ea50:d55f with SMTP id g10-20020a170902868ab02900daea50d55fmr2608768plo.84.1607240399091;
-        Sat, 05 Dec 2020 23:39:59 -0800 (PST)
+        bh=Q/fZnwmILAVwVRxmPc3BHj+xLD6tYNXImx9x9q0Upnw=;
+        b=tHdQeKYCLcs293rLDViMPxZw+3hIJk6ZiZYd/f0X4CgQ1oE7K4l2zX41vLVO8w3EVR
+         v3GDHUeqDJuG+9v04X3A0fX5U0tFUElTRekuTK8F0h4YrGjZp2JdW6SFOYld3cjbqfZZ
+         +xiEoHA72b5iyZV9BzJy6vvpQw1aF6RgCoOwZN/hDPRYJOZQmfKxXTacaAQkkb6/cCJH
+         lQSO+TrB8n91n19lR27OaUOSwZ+3M47VkSQG3vStto9lpEUn44AvlHOmNnNibK70C0iE
+         quRKq5mx5oDWkBvVd6K1HAh4fpgXGZLOi3jsQZm6JKR9XOUnWToBG9KGZ3dnyIb3KI7x
+         XXeQ==
+X-Gm-Message-State: AOAM530rw11PrSAqJNtqa7jKT4SuFSaxVhdMoNQYZRisRkFbTSRswBIE
+        7an8AbwCHGN96GhoUMOgdJI=
+X-Google-Smtp-Source: ABdhPJyAp3OZKwpgywPLKMgjKPVNgtCjt6bYS9NrbsD4aMwQsD80ubg5hhhiwgMeuQlWusBH6yFotg==
+X-Received: by 2002:aa7:963c:0:b029:19d:dcd3:b2ae with SMTP id r28-20020aa7963c0000b029019ddcd3b2aemr3605310pfg.76.1607240402253;
+        Sat, 05 Dec 2020 23:40:02 -0800 (PST)
 Received: from localhost.localdomain ([2405:201:e004:f092:5562:8d65:7204:31e])
-        by smtp.gmail.com with ESMTPSA id mz1sm4101275pjb.33.2020.12.05.23.39.56
+        by smtp.gmail.com with ESMTPSA id mz1sm4101275pjb.33.2020.12.05.23.39.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 23:39:58 -0800 (PST)
+        Sat, 05 Dec 2020 23:40:01 -0800 (PST)
 From:   Clement Smith <rclemsmith@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Clement Smith <rclemsmith@gmail.com>
-Subject: [PATCH 7/8] tty: serial: jsm: Fixed file by added more spacing
-Date:   Sun,  6 Dec 2020 13:09:31 +0530
-Message-Id: <7a6ccaa7711d5e94b75797121e7f642ae7d38308.1607240285.git.rclemsmith@gmail.com>
+Subject: [PATCH 8/8] tty: serial: jsm: Removed assignment in if statement
+Date:   Sun,  6 Dec 2020 13:09:32 +0530
+Message-Id: <818b6f6e0a0fb31dbde5ac778501ae287781ea5f.1607240285.git.rclemsmith@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <0d1fde4c82ce4b9f20f5d1ae2c6b34314f9d9942.1607240285.git.rclemsmith@gmail.com>
 References: <0d1fde4c82ce4b9f20f5d1ae2c6b34314f9d9942.1607240285.git.rclemsmith@gmail.com>
@@ -68,22 +68,23 @@ Fixed a coding style issue
 
 Signed-off-by: Clement Smith <rclemsmith@gmail.com>
 ---
- drivers/tty/serial/jsm/jsm_tty.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/jsm/jsm_tty.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
-index 19d2f0bc6c10..eab82fb6b384 100644
+index eab82fb6b384..bfd4b55e6c74 100644
 --- a/drivers/tty/serial/jsm/jsm_tty.c
 +++ b/drivers/tty/serial/jsm/jsm_tty.c
-@@ -614,7 +614,7 @@ void jsm_input(struct jsm_channel *ch)
- 				else if (*(ch->ch_equeue + tail + i) & UART_LSR_FE)
- 					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i), TTY_FRAME);
- 				else
--					tty_insert_flip_char(port, *(ch->ch_rqueue +tail +i), TTY_NORMAL);
-+					tty_insert_flip_char(port, *(ch->ch_rqueue + tail + i), TTY_NORMAL);
- 			}
- 		} else {
- 			tty_insert_flip_string(port, ch->ch_rqueue + tail, s);
+@@ -742,7 +742,8 @@ void jsm_check_queue_flow_control(struct jsm_channel *ch)
+ 	int qleft;
+ 
+ 	/* Store how much space we have left in the queue */
+-	if ((qleft = ch->ch_r_tail - ch->ch_r_head - 1) < 0)
++    qleft = ch->ch_r_tail - ch->ch_r_head - 1;
++	if (qleft < 0)
+ 		qleft += RQUEUEMASK + 1;
+ 
+ 	/*
 -- 
 2.27.0
 
