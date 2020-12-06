@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1362D03C3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D2E2D03FD
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgLFLkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:40:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
+        id S1728943AbgLFLmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:42:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728472AbgLFLkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:40:10 -0500
+        id S1728927AbgLFLmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:42:09 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 06/32] tcp: Set INET_ECN_xmit configuration in tcp_reinit_congestion_control
+Subject: [PATCH 5.4 02/39] ipv6: addrlabel: fix possible memory leak in ip6addrlbl_net_init
 Date:   Sun,  6 Dec 2020 12:17:06 +0100
-Message-Id: <20201206111556.085997068@linuxfoundation.org>
+Message-Id: <20201206111554.795047564@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
-References: <20201206111555.787862631@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,49 +32,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexanderduyck@fb.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 55472017a4219ca965a957584affdb17549ae4a4 ]
+[ Upstream commit e255e11e66da8281e337e4e352956e8a4999fca4 ]
 
-When setting congestion control via a BPF program it is seen that the
-SYN/ACK for packets within a given flow will not include the ECT0 flag. A
-bit of simple printk debugging shows that when this is configured without
-BPF we will see the value INET_ECN_xmit value initialized in
-tcp_assign_congestion_control however when we configure this via BPF the
-socket is in the closed state and as such it isn't configured, and I do not
-see it being initialized when we transition the socket into the listen
-state. The result of this is that the ECT0 bit is configured based on
-whatever the default state is for the socket.
+kmemleak report a memory leak as follows:
 
-Any easy way to reproduce this is to monitor the following with tcpdump:
-tools/testing/selftests/bpf/test_progs -t bpf_tcp_ca
+unreferenced object 0xffff8880059c6a00 (size 64):
+  comm "ip", pid 23696, jiffies 4296590183 (age 1755.384s)
+  hex dump (first 32 bytes):
+    20 01 00 10 00 00 00 00 00 00 00 00 00 00 00 00   ...............
+    1c 00 00 00 00 00 00 00 00 00 00 00 07 00 00 00  ................
+  backtrace:
+    [<00000000aa4e7a87>] ip6addrlbl_add+0x90/0xbb0
+    [<0000000070b8d7f1>] ip6addrlbl_net_init+0x109/0x170
+    [<000000006a9ca9d4>] ops_init+0xa8/0x3c0
+    [<000000002da57bf2>] setup_net+0x2de/0x7e0
+    [<000000004e52d573>] copy_net_ns+0x27d/0x530
+    [<00000000b07ae2b4>] create_new_namespaces+0x382/0xa30
+    [<000000003b76d36f>] unshare_nsproxy_namespaces+0xa1/0x1d0
+    [<0000000030653721>] ksys_unshare+0x3a4/0x780
+    [<0000000007e82e40>] __x64_sys_unshare+0x2d/0x40
+    [<0000000031a10c08>] do_syscall_64+0x33/0x40
+    [<0000000099df30e7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Without this patch the SYN/ACK will follow whatever the default is. If dctcp
-all SYN/ACK packets will have the ECT0 bit set, and if it is not then ECT0
-will be cleared on all SYN/ACK packets. With this patch applied the SYN/ACK
-bit matches the value seen on the other packets in the given stream.
+We should free all rules when we catch an error in ip6addrlbl_net_init().
+otherwise a memory leak will occur.
 
-Fixes: 91b5b21c7c16 ("bpf: Add support for changing congestion control")
-Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+Fixes: 2a8cc6c89039 ("[IPV6] ADDRCONF: Support RFC3484 configurable address selection policy table.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20201124071728.8385-1-wanghai38@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_cong.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ net/ipv6/addrlabel.c |   26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
---- a/net/ipv4/tcp_cong.c
-+++ b/net/ipv4/tcp_cong.c
-@@ -196,6 +196,11 @@ static void tcp_reinit_congestion_contro
- 	icsk->icsk_ca_setsockopt = 1;
- 	memset(icsk->icsk_ca_priv, 0, sizeof(icsk->icsk_ca_priv));
+--- a/net/ipv6/addrlabel.c
++++ b/net/ipv6/addrlabel.c
+@@ -306,7 +306,9 @@ static int ip6addrlbl_del(struct net *ne
+ /* add default label */
+ static int __net_init ip6addrlbl_net_init(struct net *net)
+ {
+-	int err = 0;
++	struct ip6addrlbl_entry *p = NULL;
++	struct hlist_node *n;
++	int err;
+ 	int i;
  
-+	if (ca->flags & TCP_CONG_NEEDS_ECN)
-+		INET_ECN_xmit(sk);
-+	else
-+		INET_ECN_dontxmit(sk);
+ 	ADDRLABEL(KERN_DEBUG "%s\n", __func__);
+@@ -315,14 +317,20 @@ static int __net_init ip6addrlbl_net_ini
+ 	INIT_HLIST_HEAD(&net->ipv6.ip6addrlbl_table.head);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ip6addrlbl_init_table); i++) {
+-		int ret = ip6addrlbl_add(net,
+-					 ip6addrlbl_init_table[i].prefix,
+-					 ip6addrlbl_init_table[i].prefixlen,
+-					 0,
+-					 ip6addrlbl_init_table[i].label, 0);
+-		/* XXX: should we free all rules when we catch an error? */
+-		if (ret && (!err || err != -ENOMEM))
+-			err = ret;
++		err = ip6addrlbl_add(net,
++				     ip6addrlbl_init_table[i].prefix,
++				     ip6addrlbl_init_table[i].prefixlen,
++				     0,
++				     ip6addrlbl_init_table[i].label, 0);
++		if (err)
++			goto err_ip6addrlbl_add;
++	}
++	return 0;
 +
- 	if (!((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_LISTEN)))
- 		tcp_init_congestion_control(sk);
++err_ip6addrlbl_add:
++	hlist_for_each_entry_safe(p, n, &net->ipv6.ip6addrlbl_table.head, list) {
++		hlist_del_rcu(&p->list);
++		kfree_rcu(p, rcu);
+ 	}
+ 	return err;
  }
 
 
