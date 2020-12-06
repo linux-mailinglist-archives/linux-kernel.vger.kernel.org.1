@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19A92D036E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6812D040B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgLFLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:34:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29942 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725822AbgLFLec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:34:32 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B6BWEGF085086;
-        Sun, 6 Dec 2020 06:33:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=uLfseV5BFzDmXMVMV/hSVrONSrIDY8EYPsZgh4LDO3w=;
- b=PyoHBTbfhHjuCF1oLDWBdxBcOWbCcrx0qLYyzv7yOnKgB8jexML7XfGkA98WvLEgdz9M
- 5NVJEhCmmrIp3Cx/4wUBNFH/D12JYvRM6KGOh+zrPqK66oGPKD1sItX+hCPEy/g/dqx8
- 1mmR3tykJNjL2hzRzO/O781IVtqWFJTVQvwgussGhs8iMkWv0vL1sYxGjdogh8qOVzX/
- SKGw534Doh9a4lhe7kZPaYQRhzkF3jPh5UqBUmeHv/oWgcvtpiXVn10MduwIQjXxq60m
- JJ3NaX0IoUFgCLFSlAYhKmodHgvNyY3naabX9laFI+MV677+t5cfrBEj9LnLb9HpaiTM Bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 358rmxnm9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Dec 2020 06:33:30 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B6BXGjl087843;
-        Sun, 6 Dec 2020 06:33:29 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 358rmxnm8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Dec 2020 06:33:29 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B6BVO6l024300;
-        Sun, 6 Dec 2020 11:33:27 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8hkes-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 06 Dec 2020 11:33:27 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B6BUtaN30933468
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 6 Dec 2020 11:30:55 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F1ED4C046;
-        Sun,  6 Dec 2020 11:30:55 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A6284C040;
-        Sun,  6 Dec 2020 11:30:51 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.50.18])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sun,  6 Dec 2020 11:30:51 +0000 (GMT)
-Date:   Sun, 6 Dec 2020 13:30:48 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v14 09/10] arch, mm: wire up memfd_secret system call
- were relevant
-Message-ID: <20201206113048.GC123287@linux.ibm.com>
-References: <20201203062949.5484-1-rppt@kernel.org>
- <20201203062949.5484-10-rppt@kernel.org>
- <20201203153916.91f0f80dcb8a0fa81fc341fa@linux-foundation.org>
+        id S1728992AbgLFLmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:42:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728958AbgLFLmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:42:40 -0500
+Date:   Sun, 6 Dec 2020 13:41:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607254920;
+        bh=oK2tHJvsR7FkpksxiOu5pP3zU4wD5WM5i2YAFE0jUOc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E3EMXSgLaNW2HpBJow79E7MmJleXSizShtNmtAAZm0iDwAxmPwB8lWqyTj4JCsyT4
+         NxQsnKFfWDUkODEXqkaGQ9hG9yVFPAFWNCXFlsyceF4UB97f8TiWhdlELpEcsYEzFB
+         hAhK9lUFT0JVonyjQVnzDN4rwu+jidoDbYSr+5TISi1z/3z8Qci6BGgkFyfH4/PFnB
+         EYi+ntUD/kxFbaWsGX1yGGzmXSqWR2jd/WhIQ8NWyZhba6BANR3jQ1DMb0xUoLFKUn
+         6i+1bWwMH16bH0pbKSjo//95FkaqiiGpp6DAsQMlYVZDPxmLOrHRc/BGUjNv1eYou9
+         P7Ck8CUTKfRUA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+Message-ID: <20201206114153.GD693271@unreal>
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201206070705.GA686270@unreal>
+ <052ecf4d-9e08-2c08-8a06-c30ba2b28d82@redhat.com>
+ <20201206085631.GE210929@unreal>
+ <f76b329a-b6f5-486d-b06a-452ec4c51979@redhat.com>
+ <20201206103339.GB693271@unreal>
+ <f2511463-3bb8-a640-7863-b206db136109@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203153916.91f0f80dcb8a0fa81fc341fa@linux-foundation.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-06_06:2020-12-04,2020-12-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=1
- impostorscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=802 malwarescore=0 adultscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012060070
+In-Reply-To: <f2511463-3bb8-a640-7863-b206db136109@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 03:39:16PM -0800, Andrew Morton wrote:
-> On Thu,  3 Dec 2020 08:29:48 +0200 Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Wire up memfd_secret system call on architectures that define
-> > ARCH_HAS_SET_DIRECT_MAP, namely arm64, risc-v and x86.
-> > 
-> > ...
+On Sun, Dec 06, 2020 at 11:41:46AM +0100, Hans de Goede wrote:
+> Hi,
+>
+> On 12/6/20 11:33 AM, Leon Romanovsky wrote:
+> > On Sun, Dec 06, 2020 at 11:04:06AM +0100, Hans de Goede wrote:
+>
+> <snip>
+>
+> >> But there is a difference between being careful and just nacking
+> >> it because no new UAPI may be added at all (also see GKH's response).
 > >
-> > --- a/include/uapi/asm-generic/unistd.h
-> > +++ b/include/uapi/asm-generic/unistd.h
-> > @@ -861,9 +861,13 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
-> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
-> >  #define __NR_watch_mount 441
-> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
-> > +#ifdef __ARCH_WANT_MEMFD_SECRET
-> > +#define __NR_memfd_secret 442
-> > +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
-> > +#endif
-> 
-> Why do we add the ifdef?  Can't we simply define the syscall on all
-> architectures and let sys_ni do its thing?
- 
-I quite blindly copied it from clone3. I agree there is no real need for
-it and sys_ni handles this just fine.
+> > I saw, the author misunderstood the Greg's comments.
+>
+> Quoting from patch 8/9:
+>
+> "
+> +==============================
+> +User-Space EC Interface (cdev)
+> +==============================
+> +
+> +The ``surface_aggregator_cdev`` module provides a misc-device for the SSAM
+> +controller to allow for a (more or less) direct connection from user-space to
+> +the SAM EC. It is intended to be used for development and debugging, and
+> +therefore should not be used or relied upon in any other way. Note that this
+> +module is not loaded automatically, but instead must be loaded manually.
+> "
+>
+> If I'm not mistaken that seems to be pretty much what Greg asked for.
 
--- 
-Sincerely yours,
-Mike.
+Right, unless you forget the end of his request.
+ "
+  The "joy" of creating a user api is that no matter how much you tell
+  people "do not depend on this", they will, so no matter the file being
+  in debugfs, or a misc device, you might be stuck with it for forever,
+  sorry.
+ "
+
+So I still think that exposing user api for a development and debug of device
+that has no future is wrong thing to do.
+
+Thanks
+
+>
+> Regards,
+>
+> Hans
+>
