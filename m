@@ -2,101 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07D42D06A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE322D06E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 20:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgLFS4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 13:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727474AbgLFS4S (ORCPT
+        id S1727557AbgLFT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 14:27:00 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:59658 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726602AbgLFT1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 13:56:18 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65ADC0613D0;
-        Sun,  6 Dec 2020 10:55:37 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id q16so11336105edv.10;
-        Sun, 06 Dec 2020 10:55:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=bSjGFy+0vhLZy2IsDVFq+TblAJIGVbsdDHyc1WrU4a4=;
-        b=UQsDEiC/QRbM4LeVvmYS9ML+mp4yyYURSheR3hr3nTGqVmdZRD+YGxwf8KQq9ohfQH
-         bInRnGnk9OhGUCZw1d0Gfa4EgEiS8D7XOSQ3LCYDUeShN7GlUzMb55PNHCNAFhl95rMi
-         X3SAUhj/feEsB+e0f3BOJZIYEZHX5R5PsbGCrwzpkdzfLuYztSZ0NKUABJ5jApXxEk2F
-         +d+EAss1soKWNAwjpJf5NMdTldXTcMlpEy1XRPAB/0PgbXXV/bRbyJswYSQ9Ph5FXwZa
-         TwGyGWv9l679kui8YiISEkBj4cbfAc1NVrogKCF9KEBSNyo70rAM+TrtNhpiGdVFobOS
-         AOfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bSjGFy+0vhLZy2IsDVFq+TblAJIGVbsdDHyc1WrU4a4=;
-        b=RHZn9H55fisWunXIBdE8/8l5u42yuuJGXoVuzmXb/d299N7YxcvHCpdJY8z8kUHkal
-         +zwaFVbNL+Vk6ePM8x8Nqu1mzqiAp1Gs6cj+1u04ZmRyZxva/5w/xR/au8fYJycmTpvu
-         1AIT1dPwnpADqZN+YfRA+H3MuBcAsEQOLUrtSOLZcp08tqvTUF5bgGjLOS73CvgBJtRw
-         /8iXpL4OHaeuDdvq6ZJmEM+73zpon68WhRRdJOYZfxtOTsEogg5KA+EhAvc4heniCsUG
-         HcyESXITkHFZ7nQC96FkU5gKvETOmH4/vCnp8+lKZWvkhNHcNiea7OZbBGHMHZ5i8L/r
-         ZZvw==
-X-Gm-Message-State: AOAM5319oOrxOoUYIIXv2OFh+OzVpUBVIo0pSscp5RMN0n49nUMS1Fjw
-        LYFu/ZM9lLHEAWIZf7zBeFsQSI0QO24=
-X-Google-Smtp-Source: ABdhPJxJYPv++kOwrhEbfjOdG5+eSKNnNnvfuGDRWU7y/+4IC9ob4506ThTaYV/pCom6K+OlAZKBSQ==
-X-Received: by 2002:a05:6402:845:: with SMTP id b5mr17246576edz.38.1607280936425;
-        Sun, 06 Dec 2020 10:55:36 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
-        by smtp.gmail.com with ESMTPSA id o17sm9644483edz.10.2020.12.06.10.55.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Dec 2020 10:55:35 -0800 (PST)
-Subject: Re: [PATCH 1/1] target: Make sure no zero value in the buffer
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201203114040.12656-1-ruc_zhangxiaohui@163.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <ddc0f1ab-03bb-2e66-280d-0dcea9042b5c@gmail.com>
-Date:   Sun, 6 Dec 2020 19:55:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 6 Dec 2020 14:27:00 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607282777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D2Be4+YLW5TxokiaWwRdxVmQKFAAEtdJ0Q9wRx1ZJQ8=;
+        b=t5tWucw/RvIGvw13Gc7uPVvU7w8ChXXet2quzmvsNd/DCHRv5dkF4HaD4cBIqG9clHqwHP
+        0pOk8DxSWNx4T6GfxzenLhkpDjv7NyTVKKbRV3OWhJzlLaoZD5YLZK9cibst+usGyNIcOT
+        gvcGThs1f2jb5xvVrjnPkX5p8n7d93I2xflY6Cs4stDDwBDt0YKTlTtQOMMfgVEqSq1fyB
+        joFBUtxCDjPCutuw61xSkfpLfbjyWnN/bwWosozf3w7+uxLNWC9/W/mQBMGi286+TNXuGJ
+        gEok3Gu6qEcU7dHxW7NgDG77F4Pp36E4h/VI6HyV7QlXQx1ct2RdoohSY75weA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607282777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D2Be4+YLW5TxokiaWwRdxVmQKFAAEtdJ0Q9wRx1ZJQ8=;
+        b=cnf8atbjZ5DVmOTUpR0MSx2vL4sCcAKpvbP5dtywuTaDNVkXumZS/N24iJCK1SCwtfyGTx
+        UfRedPYkRfVj78BQ==
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-integrity@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v3 3/4] tpm_tis: Disable interrupts if interrupt storm detected
+In-Reply-To: <20201205014340.148235-4-jsnitsel@redhat.com>
+References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-4-jsnitsel@redhat.com>
+Date:   Sun, 06 Dec 2020 20:26:16 +0100
+Message-ID: <87tusy7n3b.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201203114040.12656-1-ruc_zhangxiaohui@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.12.20 12:40, Xiaohui Zhang wrote:
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> 
-> The fix makes sure no zero value in the buffer, by comparing the
-> strlen() of the original buffer with the size variable.
+Jerry,
 
-What problem do you want to fix here?
-I think, presently iblock_set_configfs_dev_params() just ignores input after a possible zero byte, which AFAICS is the usual way to handle such 'abnormal' input.
+On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
+> @@ -715,9 +717,23 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
+>  {
+>  	struct tpm_chip *chip = dev_id;
+>  	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
+> +	static bool check_storm = true;
+> +	static unsigned int check_start;
 
-Of course, strictly taken it is a bug to return 'count' without having processed count bytes. OTOH, iblock_set_configfs_dev_params also silently ignores unknown parameter strings.
-If you want to have strict error handling in such sys- or config-FS callbacks, you have to do a lot of work ...
+So this assumes that there can't be two TPMs which is probably true, but
+everything else in this driver has stuff in tpm_tis_data per device.
 
-> 
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->   drivers/target/target_core_iblock.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-> index f2bd2e207..b23e92449 100644
-> --- a/drivers/target/target_core_iblock.c
-> +++ b/drivers/target/target_core_iblock.c
-> @@ -537,6 +537,8 @@ static ssize_t iblock_set_configfs_dev_params(struct se_device *dev,
->   	int ret = 0, token;
->   	unsigned long tmp_readonly;
->   
-> +	if (strlen(page) < count)
-> +		return -EOVERFLOW;
->   	opts = kstrdup(page, GFP_KERNEL);
->   	if (!opts)
->   		return -ENOMEM;
-> 
+>  	u32 interrupt;
+>  	int i, rc;
+>  
+> +	if (unlikely(check_storm)) {
+> +		if (!check_start) {
+> +			check_start = jiffies_to_msecs(jiffies);
+
+Yuck. I had to read that twice to figure out that it's correct vs. the
+truncation of the result to unsigned int. You can spare that conversion
+by simply doing
+
+   unsigned long end_of_check = jiffies + HZ / 2;
+
+and then the check becomes
+
+    time_before(jiffies, end_of_check)
+
+> +		} else if ((kstat_irqs(priv->irq) > 1000) &&
+> +			   (jiffies_to_msecs(jiffies) - check_start < 500)) {
+
+I assume you can't call disable_irq_nosync() here, but shouldn't this
+shut up the interrupt at the TPM level right here?
+
+> +			check_storm = false;
+> +			schedule_work(&priv->storm_work);
+> +		} else if (jiffies_to_msecs(jiffies) - check_start >= 500) {
+> +			check_storm = false;
+> +		}
+> +	}
+
+So back to kstat_irqs(). As this needs two extra variables anyway:
+
+init()
+	priv->irq_check = 1;
+	priv->end_check = 0;
+
+isr()
+	if (unlikely(priv->irq_check)) {
+		if (!priv->end_check) {
+			priv->end_check = jiffies + HZ / 2;
+		} else if (time_before(jiffies, priv->end_check)) {
+			if (priv->irq_check++ > 1000)
+				schedule_work(...);
+		} else {
+			priv->irq_check = 0;
+		}
+	}
+
+Hmm? I still need to see an argument for an kstat_irqs() export being
+superior.
+
+Though I wonder whether such an infrastructure should be provided in the
+irq core. Let me think about it.
+
+Just as a side note. I was looking at tpm_tis_probe_irq_single() and
+that function is leaking the interrupt request if any of the checks
+afterwards fails, except for the final interrupt probe check which does
+a cleanup. That means on fail before that the interrupt handler stays
+requested up to the point where the module is removed. If that's a
+shared interrupt and some other device is active on the same line, then
+each interrupt from that device will call into the TPM code. Something
+like the below is needed.
+
+Also the X86 autoprobe mechanism is interesting:
+
+	if (IS_ENABLED(CONFIG_X86))
+		for (i = 3; i <= 15; i++)
+			if (!tpm_tis_probe_irq_single(chip, intmask, 0, i))
+				return;
+
+The third argument is 'flags' which is handed to request_irq(). So that
+won't ever be able to probe a shared interrupt. But if an interrupt
+number > 0 is handed to tpm_tis_core_init() the interrupt is requested
+with IRQF_SHARED. Same issue when the chip has an interrupt number in
+the register. It's also requested exclusive which is pretty likely
+to fail on ancient x86 machines.
+
+The vast amount of comments didn't help to figure out what the reasoning
+is.
+
+Thanks,
+
+        tglx
+---
+ drivers/char/tpm/tpm_tis_core.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -782,26 +782,26 @@ static int tpm_tis_probe_irq_single(stru
+ 	rc = tpm_tis_read8(priv, TPM_INT_VECTOR(priv->locality),
+ 			   &original_int_vec);
+ 	if (rc < 0)
+-		return rc;
++		goto fail;
+ 
+ 	rc = tpm_tis_write8(priv, TPM_INT_VECTOR(priv->locality), irq);
+ 	if (rc < 0)
+-		return rc;
++		goto fail;
+ 
+ 	rc = tpm_tis_read32(priv, TPM_INT_STATUS(priv->locality), &int_status);
+ 	if (rc < 0)
+-		return rc;
++		goto fail;
+ 
+ 	/* Clear all existing */
+ 	rc = tpm_tis_write32(priv, TPM_INT_STATUS(priv->locality), int_status);
+ 	if (rc < 0)
+-		return rc;
++		goto fail;
+ 
+ 	/* Turn on */
+ 	rc = tpm_tis_write32(priv, TPM_INT_ENABLE(priv->locality),
+ 			     intmask | TPM_GLOBAL_INT_ENABLE);
+ 	if (rc < 0)
+-		return rc;
++		goto fail;
+ 
+ 	priv->irq_tested = false;
+ 
+@@ -825,6 +825,10 @@ static int tpm_tis_probe_irq_single(stru
+ 	}
+ 
+ 	return 0;
++
++fail:
++	disable_interrupts(chip);
++	return rc;
+ }
+ 
+ /* Try to find the IRQ the TPM is using. This is for legacy x86 systems that
