@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD7D2D026F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7932D027A
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgLFKLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 05:11:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20337 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725822AbgLFKLQ (ORCPT
+        id S1726820AbgLFKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 05:14:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLFKO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 05:11:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607249389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xji8+FhOghfu2/XZrvV9/OViBfo6B1ROea5bmQqV1JA=;
-        b=CpzoQjxutDWpL7kScYSvdSAFQxUOQ+VkokiVuNsKPDKdLi/J+XKcK2OU/P2zaO8zP0MT8v
-        ykOLRTQlndkEzqKyyiivi8KuZVmej1AL0ICr86y/8DGmHgJQ2zV3D8e8bz7/j444gSUhjj
-        E411jfyUtFjHBRhkc0Jn3c04vEz0xcg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-lvejHIBHOCWb1kWWVDAqyg-1; Sun, 06 Dec 2020 05:09:47 -0500
-X-MC-Unique: lvejHIBHOCWb1kWWVDAqyg-1
-Received: by mail-wr1-f69.google.com with SMTP id v1so4117716wri.16
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 02:09:47 -0800 (PST)
+        Sun, 6 Dec 2020 05:14:29 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F797C0613D0;
+        Sun,  6 Dec 2020 02:13:49 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id ce23so11383092ejb.8;
+        Sun, 06 Dec 2020 02:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3woUKLEE6wEcnBKypRYNGZMB9+xn3IKHhO5cYS1A30=;
+        b=V0iZLo5XMiinxvv5L1ffXpJRF9rSKaReN2td6SRBqn7Y6+7nL0onHO3zBfK9UJYoYd
+         vc29jT9G/xaV1hMEHbr4zXbfNa4P86cHCFjnsJlzf562mmFakLh3XSm38Sd7FcUhHqVE
+         pEq8U7hQRxkHt2E9EmwAQuSqDefrrSdQaCdgiwCNzndhw64KO8JhzCKgvzbYhMHmTKSQ
+         DE4NmQEC6m24xEl86hLo+cF+fGUXSJkp/OxQK15aNFFCZlPboOe4BqSFmL1WYqjRAo9M
+         UIt1VOSVUz0qIwUSOGsDRUIn7KX/WGyN8FUJNLSgsy+UBIpcSXPiVFnMel3ko2p6kxIY
+         mPRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xji8+FhOghfu2/XZrvV9/OViBfo6B1ROea5bmQqV1JA=;
-        b=coNnMlz1dpqpM9DS7IRu2KZa4a9bQMfZ8avjwNe3zdu8QuQlBavcVttmU9TGPHRKm/
-         7Y+oWqneAX+20ajWzdPi6MtM36/yu7hNR1bl9C1g6un+SvhlknF23St4/St/2y7yjv5I
-         q5iVefVFoBL1+EK5OaHFzGkqp3tFJGHomDaKpC5GAS2ibBQczdTzjuqjGXFZysJWGdpI
-         gyVlHSuwJYLKFLiWEYhunEFquR/Hl7Ljqf9Q+DHD0cIC1VpJS9nmraB8cYlC+yMuXHU5
-         /rUq4gEdjIXQ8vRimd3T1QFFEv38MPx/49/PbBfAWjrFaQUmvfYjNzLK546l3Cgi9G6n
-         t/cA==
-X-Gm-Message-State: AOAM531sh+zCb7MVlHjMzgtnw+SkCwdBAByieZ693KmdZ1eCL4zMSStX
-        bHQjqs0kD9aDMr7as67/dz/63tc1TJWHRDhoCvycK/N8MTptc/ZTpFUjDukspKRnBn2PNBPuDn2
-        lu6gwsy1H1hwISlOOR1pna95KZ1zasO0a/gvznrhCautlUhiZjVG6vMW/oCv7ocXHe19dPrC885
-        At
-X-Received: by 2002:adf:ec0c:: with SMTP id x12mr14416590wrn.307.1607249386043;
-        Sun, 06 Dec 2020 02:09:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy6VBLcLDbM240XPEJbqvQy/D9PtV57yuW3xEvKi5G+E3Gz9EZOlYSr6q6a9ziYlzURpJ9FlA==
-X-Received: by 2002:adf:ec0c:: with SMTP id x12mr14416555wrn.307.1607249385766;
-        Sun, 06 Dec 2020 02:09:45 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id d3sm10226839wrr.2.2020.12.06.02.09.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Dec 2020 02:09:45 -0800 (PST)
-Subject: Re: [PATCH] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <370db207-7216-ae26-0c33-dab61e0fdaab@redhat.com>
-Date:   Sun, 6 Dec 2020 11:09:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=o3woUKLEE6wEcnBKypRYNGZMB9+xn3IKHhO5cYS1A30=;
+        b=IdhRPHVy05+oLOY25rqibLMB2z2M9cq0JfR6RGh5v88lqk4QKobtsjzv3koJGORuUO
+         KcA+Y7KB3bWhgWnG+YB8AYvC5UO78L/rvNzIA4aTUOH/CVhugfmt6FRVRfBPpCTMiGcY
+         4z3Ozul04bKASZW2bW/C5e5IguYWh9wJsSSe86zcI7nAbkvoNd+usvpg8vm+wBURDk6Z
+         AmyQeGFw3uch/n4vGtNsqOiixvxrkpoduuMpBXD9/D4uaWiZzMyeUyalY9a6b9rjtTbU
+         szRFy4J4ZwaSppeYepKh/MasLF1P0Cd6HrNUGvUlzhmWfbzGPyDmletz8+/LirlZaL6I
+         blbw==
+X-Gm-Message-State: AOAM530mRo3WqLiwoMsayR4ptOV0Tu4r2TWCCgtCs4bddQD5tp1uhByp
+        h7m/fjrIFC5N2mYAPbjhQDA=
+X-Google-Smtp-Source: ABdhPJzRdaxYklwSkZt+6LjbGOc9MFgHtdT72fpEr09ToDDfoWdDtJJtfXne6HdYWuBV7MaGqqq+5w==
+X-Received: by 2002:a17:906:9613:: with SMTP id s19mr14721362ejx.351.1607249627830;
+        Sun, 06 Dec 2020 02:13:47 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id f24sm7701919ejf.117.2020.12.06.02.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 02:13:47 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Three changes for UFS WriteBooster
+Date:   Sun,  6 Dec 2020 11:13:32 +0100
+Message-Id: <20201206101335.3418-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/20 01:48, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> cleaned up the computation of MMIO generation SPTE masks, however it
-> introduced a bug how the upper part was encoded:
-> SPTE bits 52-61 were supposed to contain bits 10-19 of the current
-> generation number, however a missing shift encoded bits 1-10 there instead
-> (mostly duplicating the lower part of the encoded generation number that
-> then consisted of bits 1-9).
-> 
-> In the meantime, the upper part was shrunk by one bit and moved by
-> subsequent commits to become an upper half of the encoded generation number
-> (bits 9-17 of bits 0-17 encoded in a SPTE).
-> 
-> In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
-> has changed the SPTE bit range assigned to encode the generation number and
-> the total number of bits encoded but did not update them in the comment
-> attached to their defines, nor in the KVM MMU doc.
-> Let's do it here, too, since it is too trivial thing to warrant a separate
-> commit.
-> 
-> Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
+From: Bean Huo <beanhuo@micron.com>
 
+Changelog:
+v1--v2:
+  1. Take is_hibern8_wb_flush checkup out from function
+     ufshcd_wb_need_flush() in patch 2/3
+  2. Add UFSHCD_CAP_CLK_SCALING checkup in patch 1/3. that means
+     only for the platform, which doesn't support UFSHCD_CAP_CLK_SCALING,
+     can control WB through "wb_on".
 
-Good catch.  What do you think about this alternative definition?  It 
-computes everything from the bit ranges.
+Bean Huo (3):
+  scsi: ufs: Add "wb_on" sysfs node to control WB on/off
+  scsi: ufs: Keep device active mode only
+    fWriteBoosterBufferFlushDuringHibernate == 1
+  scsi: ufs: Changes comment in the function ufshcd_wb_probe()
 
-#define MMIO_SPTE_GEN_LOW_START         3
-#define MMIO_SPTE_GEN_LOW_END           11
+ drivers/scsi/ufs/ufs-sysfs.c | 40 ++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs.h       |  2 ++
+ drivers/scsi/ufs/ufshcd.c    | 30 +++++++++++++++++----------
+ drivers/scsi/ufs/ufshcd.h    |  2 ++
+ 4 files changed, 63 insertions(+), 11 deletions(-)
 
-#define MMIO_SPTE_GEN_HIGH_START        PT64_SECOND_AVAIL_BITS_SHIFT
-#define MMIO_SPTE_GEN_HIGH_END          62
-
-#define MMIO_SPTE_GEN_LOW_MASK          GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
- 
-MMIO_SPTE_GEN_LOW_START)
-#define MMIO_SPTE_GEN_HIGH_MASK 
-GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
- 
-MMIO_SPTE_GEN_HIGH_START)
-
-#define MMIO_SPTE_GEN_LOW_BITS          (MMIO_SPTE_GEN_LOW_END - 
-MMIO_SPTE_GEN_LOW_START + 1)
-#define MMIO_SPTE_GEN_HIGH_BITS         (MMIO_SPTE_GEN_HIGH_END - 
-MMIO_SPTE_GEN_HIGH_START + 1)
-
-#define MMIO_SPTE_GEN_LOW_SHIFT         (MMIO_SPTE_GEN_LOW_START - 0)
-#define MMIO_SPTE_GEN_HIGH_SHIFT        (MMIO_SPTE_GEN_HIGH_START - 
-MMIO_SPTE_GEN_LOW_BITS)
-
-#define MMIO_SPTE_GEN_MASK 
-GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
-
-
-Thanks,
-
-Paolo
+-- 
+2.17.1
 
