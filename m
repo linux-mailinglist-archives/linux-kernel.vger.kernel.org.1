@@ -2,86 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560732D0784
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202F72D0788
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 23:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgLFWA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 17:00:59 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39121 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727040AbgLFWA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 17:00:58 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cq0jr3BHBz9sVs;
-        Mon,  7 Dec 2020 09:00:16 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607292016;
-        bh=tUWZm6WvfLuGY1J2XRvWYCaZnntTE9jBBg7MeaS+ExQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=D6+7I2Nhpo42hTSC7kUf4DcRvGf456S/0hsBG0IPBAH2iZ0jpcquTfcx0L/vR2CxO
-         hwfShgS59CnuwTbOQHX8d7thO0/+97ZmWMT3mBaEuclImZs0T0XidKrUVpo3+aHLsl
-         r26ca1R9iM+2MtZrll6msNYfP+qPDiT7xw6A4In0pB83hnnbN94EcDh0MagUjxI1cK
-         OQxTUn2doJwfNiRnWqeelPDrxZKJuLZ69KUYrJ0dIck9+FhYw9DYrfK19/rt/V0SN5
-         6nEnweT68JkfJLfuFR4FCFxJNJvduwk58peFfhvHcZQGHOuaeLovhYVUjqCNRy4W5K
-         QclXB1DzPWDMA==
-Date:   Mon, 7 Dec 2020 09:00:15 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20201207090015.14c0684f@canb.auug.org.au>
-In-Reply-To: <20201207085743.67ca0ae2@canb.auug.org.au>
-References: <20201207070517.28951ed0@canb.auug.org.au>
-        <5820a22b-6fce-20ee-2a48-58c2d57b4ac4@gmail.com>
-        <20201207085743.67ca0ae2@canb.auug.org.au>
+        id S1727930AbgLFWGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 17:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgLFWG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 17:06:29 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDE0C0613D1
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 14:05:42 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id o24so12964717ljj.6
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 14:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jYOh6UMvSpP9mpiuIeBGwJObn/ShTIBfx66r2r2mm1Q=;
+        b=TAWEe2AJ21/ymnfEhRmgmu7yS9XHy518Q0Mm5DQLt3/4L7ngyEHQB42xDYoOvsFn4E
+         2MSnx6QdhRf7wJVUsTk/bWruWfa9rYv16INpIYLjxSfPSmXd5ruwjlT5RArGqoUIIa+q
+         nNUnf+1/NTNa3lit9cpVAAQfP1CZsocHbYWCdws/zUzNr3+1jjAcmwNes9M5HF/qO9K8
+         Y/PeHJEEFG8cWzsP4a2lxjNWPCDA58LflNFsS9LYRdm5IGqS9y3I/PygPG3CCIasyZhH
+         IJ0uCHVuvVGVzLcBLLNU4fxbq9xMqo1VQee4uVS2Ip+zbbY54Tl0nl8V1MEkvCdCRHMc
+         I8lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jYOh6UMvSpP9mpiuIeBGwJObn/ShTIBfx66r2r2mm1Q=;
+        b=J9209L4hbYxcibvdwx6i3PHymQqlwdl+QaVLO7imkRD/zNNypawCBu5pNf3ISxzLDE
+         r4RkXqA+9GOPFtdnXtGf0yHLNGQXmuXBgryQ2qwjSRmqRqTuwONr9YlshezEZtdO7/Zt
+         idJjb1J3PBmsY8jOecSXn3q4OAc+DYwY1gYtTGp6DW3/OYB6MutQgYBmBCa4t0qsb0qt
+         4lKElHePYckC4J07IEkU5FGhWp6Fna1A3C8qZOVTjUXbj+e7tkcew3jcBraX9elUKzdD
+         EowZ/YdMWfGj5Ih937XE34u+5sRPAQyBkMe3ren8Y02kbk7UvAKy874hlBo/h0J6ZPhN
+         kI8w==
+X-Gm-Message-State: AOAM530I0Ii3SGSUg1PEim+8lVGTVTkXWlojwoyUtwW9Nt1lPvOhUsez
+        1ZaVzzDgd/PSQ7IaxuGOgExZtOk1z8Y+rpg4bFeiuQ==
+X-Google-Smtp-Source: ABdhPJzMyGRuC+Bc1bPrBXnAz61CoiHtimGEqIGvA/y8Fk53fi5E7rQbPAV55C71yQzmhgVm+doW7FJaRfoD34AL6J0=
+X-Received: by 2002:a2e:9216:: with SMTP id k22mr7564877ljg.138.1607292340737;
+ Sun, 06 Dec 2020 14:05:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NQUrUZ_7k8HWfmd_NLU201i";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201206131036.3780898-1-vladimir.kondratiev@intel.com> <16d6fdae-74ac-774c-9193-130dcfc5bc6c@intel.com>
+In-Reply-To: <16d6fdae-74ac-774c-9193-130dcfc5bc6c@intel.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Sun, 6 Dec 2020 23:05:14 +0100
+Message-ID: <CAG48ez0a+=i5ue+p+snwF6YZaCQkzvYVOACcjHz7E9=uUibbcA@mail.gmail.com>
+Subject: Re: [NEEDS-REVIEW] [PATCH] do_exit(): panic() when double fault detected
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        chenqiwu <chenqiwu@xiaomi.com>, Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NQUrUZ_7k8HWfmd_NLU201i
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 7 Dec 2020 08:57:43 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On Sun, Dec 6, 2020 at 4:37 PM Dave Hansen <dave.hansen@intel.com> wrote:
+> On 12/6/20 5:10 AM, Vladimir Kondratiev wrote:
+> > Double fault detected in do_exit() is symptom of integrity
+> > compromised. For safety critical systems, it may be better to
+> > panic() in this case to minimize risk.
 >
-> We actually prefer
->=20
-> 	git log -1 --format=3D'Fixes: %h (\"%s\")'
+> Does this fix a real problem that you have observed in practice?
+>
+> Or, is this a general "hardening" which you think is a good practice?
+>
+> What does this have to do specifically with safety critical systems?
+>
+> The kernel generally tries to fix things up and keep running whenever
+> possible, if for no other reason than it helps debug problems.  If that
+> is an undesirable property for your systems, then I think you have a
+> much bigger problem than faults during exit().
+>
+> This option, "panic_on_double_fault", doesn't actually panic on all
+> double-faults, which means to me that it's dangerously named.
 
-	git log -1 --format=3D'Fixes: %h ("%s")'
+I wonder whether part of the idea here is that normally, when the
+kernel fixes up a kernel crash by killing the offending task, a
+service management process in userspace (e.g. the init daemon) can
+potentially detect this case because it looks as if the task died with
+SIGBUS or something. (I don't think that actually always works in
+practice though, since AFAICS kernel crashes only lead to the *task*
+being killed, not the entire process, and I think killing a single
+worker thread of a multithreaded process might just cause the rest of
+the userspace process to lock up. Not sure whether that's intentional
+or something that should ideally be changed.)
 
-sorry :-)
+But if the kernel gives up on going through with do_exit() (because it
+crashed in do_exit() before being able to mark the task as waitable),
+the process may, to userspace, appear to still be alive even though
+it's not actually doing anything anymore; and if the kernel doesn't
+tell userspace that the process is no longer functional, userspace
+can't restore the system to a working state.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NQUrUZ_7k8HWfmd_NLU201i
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NVG8ACgkQAVBC80lX
-0Gyi5wf/VG7hVBhOS4R+QkZu5abWue/aZOgpy2aifP47KioHKz+94O4FOw5rv9Hh
-F+9Mm9i1MgDI2seIQy2vZtU2CaJsKyGkOWgyVpDxGpmaGHpXVAcqjiMLDQ2tEdDK
-tEmRUhJ1NEK+kDUNnV+9eieFXGLq7/pPG0GyoSIR7f/5lXhIIrSB5wVwqEssLylP
-hRO/9Yee+Wj+B6gP2mC0ojbxp4Pw53VUqBnE/dtYkOeQCZ/xH0XTzcKwVnuV37w+
-/9O08tZVKGpF/F9IT+qpOKQcPYdYt5CANYqnA7Qod78HKk9MRHgXyUx1LQXwBA5m
-n+1v/iTTFb+cywgN7erIC9TB9w/qMg==
-=/c/3
------END PGP SIGNATURE-----
-
---Sig_/NQUrUZ_7k8HWfmd_NLU201i--
+But as Dave said, this best-effort fixup is probably not the kind of
+behavior you'd want in a "safety critical" system anyway; for example,
+often the offending thread will have held some critical spinlock or
+mutex or something, and then the rest of the system piles on into a
+gigantic deadlock involving the lock in question and possibly multiple
+locks that nest around it. You might be better off enabling
+panic_on_oops, ideally with something like pstore-based logging of the
+crash, and then quickly bringing everything back to a clean state
+instead of continuing from an unstable state and then possibly
+blocking somewhere.
