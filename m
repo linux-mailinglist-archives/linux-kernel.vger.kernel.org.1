@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3BF2D066D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30242D0670
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 19:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727375AbgLFRz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 12:55:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59354 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgLFRz0 (ORCPT
+        id S1727009AbgLFSCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 13:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgLFSCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 12:55:26 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607277285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=07War4FnpacwFh1YaF/5joszhDH3pMW7WlC56is9w4I=;
-        b=q1LwrbiDzWFlcihybyILl6urNUUlW3xoBHDW2gCbvkfnkEPMrsJZsZxh/u3wITbzLbrzsP
-        muFiLKraQSlM6tmzlPpbkAra17ztgm20WOUD8w3h4bcn5gRFbnzKyPIjnEPubhplt2u4fx
-        9Q+sEZJLg4KDNIj8Dwm+rrY7hUHRnJEu8dHN0lJLxPoLarEd6FJ3y0rzv7EllFhJCToaJU
-        te848un/yV8u6K3ZeXL94SlrBnMb4v53QoV3v0yVtOJ2XNMOIo17w+IjymH+AeTP7kjaWJ
-        9lO2rzwwoGDJAkNSoSmcP98uT/dNDppnGFTEHkThFMH5lzXPtOdoIT5Asm8Cjg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607277285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=07War4FnpacwFh1YaF/5joszhDH3pMW7WlC56is9w4I=;
-        b=yKxLEMiFuaSYO1WtTlFlvn2N71he2D9R3O/UuYqLb68HVEC9MGqjskvFkXhbXCAC/YUhO3
-        Ya9c1fGGjdMVKDCA==
-To:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-integrity@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, kernel test robot <lkp@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v3 1/4] irq: export kstat_irqs
-In-Reply-To: <20201205014340.148235-2-jsnitsel@redhat.com>
-References: <20201205014340.148235-1-jsnitsel@redhat.com> <20201205014340.148235-2-jsnitsel@redhat.com>
-Date:   Sun, 06 Dec 2020 18:54:44 +0100
-Message-ID: <87y2ia7rbv.fsf@nanos.tec.linutronix.de>
+        Sun, 6 Dec 2020 13:02:45 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10E6C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 10:02:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=uPUKHsxDpxpcTFpPgVM7xBtfqGHu8IXyB2bXcUtNIhc=; b=O3Quj6ZrA/Ie7Sf2ABCp0jBrtH
+        xAl/4LjR9mOuSr5cjLERO0iyf9Nk4L9SJdqdPFIfRsvbjyo1MjsKt32DfcaFKcRn2+iRiOaYmT9ng
+        727h7zFUn1FQHJGxUNbe29Es82MHvC/r3bidoiApqOaAzN5HEN6wh0YhvE4k50HMZjzJ/b/Mhs9+O
+        kgdL12d8gPqtxMtgdjFAgddZf4WUeKg3yfRYj0ZxdarGTCCUCaXrdyv72mJiF4pJBtgO5uYepVhsB
+        PRFi/UCbCFYO3RZFTZ7DDDNAAqxNdlKsrdvBrSzlESMo3kc9X+02m6KeNMIzGuJq3EMp1eDQ2aSXf
+        6uavB+Mg==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1klyM8-00023l-CM; Sun, 06 Dec 2020 18:01:56 +0000
+Subject: Re: undefined reference to `devm_mux_control_get'
+To:     kernel test robot <lkp@intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+References: <202012070124.pyQeUIVa-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5ec30591-ea93-3e53-a92d-05193daf307a@infradead.org>
+Date:   Sun, 6 Dec 2020 10:01:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <202012070124.pyQeUIVa-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerry,
+On 12/6/20 9:25 AM, kernel test robot wrote:
+> Hi Serge,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   7059c2c00a2196865c2139083cbef47cd18109b6
+> commit: abf00907538e21c469a10809dc2991982673fcbf spi: dw: Add Baikal-T1 SPI Controller glue driver
+> date:   8 weeks ago
+> config: parisc-randconfig-r004-20201207 (attached as .config)
+> compiler: hppa-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=abf00907538e21c469a10809dc2991982673fcbf
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout abf00907538e21c469a10809dc2991982673fcbf
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    hppa-linux-ld: drivers/spi/spi-dw-bt1.o: in function `dw_spi_bt1_sys_init':
+>>> (.text+0x1c): undefined reference to `devm_mux_control_get'
+> 
+> ---
 
-On Fri, Dec 04 2020 at 18:43, Jerry Snitselaar wrote:
 
-The proper prefix is 'genirq:' git log kernel/irq/irqdesc.c would have
-told you. 
+Serge's patch has been:
 
-> To try and detect potential interrupt storms that
-> have been occurring with tpm_tis devices it was suggested
-> to use kstat_irqs() to get the number of interrupts.
-> Since tpm_tis can be built as a module it needs kstat_irqs
-> exported.
+Applied to
 
-I'm not really enthused about exporting this without making it at least
-safe. Using it from an interrupt handler is obviously safe vs. concurrent
-removal, but the next driver writer who thinks this is cool is going to
-get it wrong for sure.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Though I still have to figure out what the advantage of invoking a
-function which needs to do a radix tree lookup over a device local
-counter is just to keep track of this.
+[1/1] spi: dw-bt1: Fix undefined devm_mux_control_get symbol
+      commit: 7218838109fef61cdec988ff728e902d434c9cc5
 
-I'll reply on the TPM part of this as well.
 
-Thanks,
+-- 
+~Randy
 
-        tglx
