@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880272D0472
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A73F2D03FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgLFLpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:45:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        id S1728925AbgLFLmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:42:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727558AbgLFLpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:45:42 -0500
+        id S1728910AbgLFLmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:42:01 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, justin.he@arm.com,
-        Sergio Lopez <slp@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 13/46] vsock/virtio: discard packets only when socket is really closed
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.4 17/39] dt-bindings: net: correct interrupt flags in examples
 Date:   Sun,  6 Dec 2020 12:17:21 +0100
-Message-Id: <20201206111557.101061969@linuxfoundation.org>
+Message-Id: <20201206111555.502900681@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,73 +33,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 3fe356d58efae54dade9ec94ea7c919ed20cf4db ]
+[ Upstream commit 4d521943f76bd0d1e68ea5e02df7aadd30b2838a ]
 
-Starting from commit 8692cefc433f ("virtio_vsock: Fix race condition
-in virtio_transport_recv_pkt"), we discard packets in
-virtio_transport_recv_pkt() if the socket has been released.
+GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+These are simple defines so they could be used in DTS but they will not
+have the same meaning:
+1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-When the socket is connected, we schedule a delayed work to wait the
-RST packet from the other peer, also if SHUTDOWN_MASK is set in
-sk->sk_shutdown.
-This is done to complete the virtio-vsock shutdown algorithm, releasing
-the port assigned to the socket definitively only when the other peer
-has consumed all the packets.
+Correct the interrupt flags, assuming the author of the code wanted same
+logical behavior behind the name "ACTIVE_xxx", this is:
+  ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
 
-If we discard the RST packet received, the socket will be closed only
-when the VSOCK_CLOSE_TIMEOUT is reached.
-
-Sergio discovered the issue while running ab(1) HTTP benchmark using
-libkrun [1] and observing a latency increase with that commit.
-
-To avoid this issue, we discard packet only if the socket is really
-closed (SOCK_DONE flag is set).
-We also set SOCK_DONE in virtio_transport_release() when we don't need
-to wait any packets from the other peer (we didn't schedule the delayed
-work). In this case we remove the socket from the vsock lists, releasing
-the port assigned.
-
-[1] https://github.com/containers/libkrun
-
-Fixes: 8692cefc433f ("virtio_vsock: Fix race condition in virtio_transport_recv_pkt")
-Cc: justin.he@arm.com
-Reported-by: Sergio Lopez <slp@redhat.com>
-Tested-by: Sergio Lopez <slp@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Acked-by: Jia He <justin.he@arm.com>
-Link: https://lore.kernel.org/r/20201120104736.73749-1-sgarzare@redhat.com
+Fixes: a1a8b4594f8d ("NFC: pn544: i2c: Add DTS Documentation")
+Fixes: 6be88670fc59 ("NFC: nxp-nci_i2c: Add I2C support to NXP NCI driver")
+Fixes: e3b329221567 ("dt-bindings: can: tcan4x5x: Update binding to use interrupt property")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt
+Link: https://lore.kernel.org/r/20201026153620.89268-1-krzk@kernel.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/vmw_vsock/virtio_transport_common.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/net/can/tcan4x5x.txt |    2 +-
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt  |    2 +-
+ Documentation/devicetree/bindings/net/nfc/pn544.txt    |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -841,8 +841,10 @@ void virtio_transport_release(struct vso
- 		virtio_transport_free_pkt(pkt);
- 	}
+--- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -33,7 +33,7 @@ tcan4x5x: tcan4x5x@0 {
+ 		spi-max-frequency = <10000000>;
+ 		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <14 GPIO_ACTIVE_LOW>;
++		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
+ 		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		reset-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with N
+ 		clock-frequency = <100000>;
  
--	if (remove_sock)
-+	if (remove_sock) {
-+		sock_set_flag(sk, SOCK_DONE);
- 		vsock_remove_sock(vsk);
-+	}
- }
- EXPORT_SYMBOL_GPL(virtio_transport_release);
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <29 GPIO_ACTIVE_HIGH>;
++		interrupts = <29 IRQ_TYPE_LEVEL_HIGH>;
  
-@@ -1132,8 +1134,8 @@ void virtio_transport_recv_pkt(struct vi
+ 		enable-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+--- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
++++ b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with P
+ 		clock-frequency = <400000>;
  
- 	lock_sock(sk);
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <17 GPIO_ACTIVE_HIGH>;
++		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
  
--	/* Check if sk has been released before lock_sock */
--	if (sk->sk_shutdown == SHUTDOWN_MASK) {
-+	/* Check if sk has been closed before lock_sock */
-+	if (sock_flag(sk, SOCK_DONE)) {
- 		(void)virtio_transport_reset_no_sock(t, pkt);
- 		release_sock(sk);
- 		sock_put(sk);
+ 		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
 
 
