@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931A72D041D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519252D0453
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgLFLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:43:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
+        id S1729403AbgLFLos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728074AbgLFLnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:43:18 -0500
+        id S1729379AbgLFLol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:44:41 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 35/39] ALSA: usb-audio: US16x08: fix value count for level meters
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.9 31/46] chelsio/chtls: fix a double free in chtls_setkey()
 Date:   Sun,  6 Dec 2020 12:17:39 +0100
-Message-Id: <20201206111556.357338827@linuxfoundation.org>
+Message-Id: <20201206111557.960497332@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-References: <20201206111554.677764505@linuxfoundation.org>
+In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
+References: <20201206111556.455533723@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,35 +31,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hector Martin <marcan@marcan.st>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 402d5840b0d40a2a26c8651165d29b534abb6d36 upstream.
+[ Upstream commit 391119fb5c5c4bdb4d57c7ffeb5e8d18560783d1 ]
 
-The level meter control returns 34 integers of info. This fixes:
+The "skb" is freed by the transmit code in cxgb4_ofld_send() and we
+shouldn't use it again.  But in the current code, if we hit an error
+later on in the function then the clean up code will call kfree_skb(skb)
+and so it causes a double free.
 
-snd-usb-audio 3-1:1.0: control 2:0:0:Level Meter:0: access overflow
+Set the "skb" to NULL and that makes the kfree_skb() a no-op.
 
-Fixes: d2bb390a2081 ("ALSA: usb-audio: Tascam US-16x08 DSP mixer quirk")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Link: https://lore.kernel.org/r/20201127132635.18947-1-marcan@marcan.st
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: d25f2f71f653 ("crypto: chtls - Program the TLS session Key")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X8ilb6PtBRLWiSHp@mwanda
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/usb/mixer_us16x08.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/chelsio/chtls/chtls_hw.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/usb/mixer_us16x08.c
-+++ b/sound/usb/mixer_us16x08.c
-@@ -607,7 +607,7 @@ static int snd_us16x08_eq_put(struct snd
- static int snd_us16x08_meter_info(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_info *uinfo)
- {
--	uinfo->count = 1;
-+	uinfo->count = 34;
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->value.integer.max = 0x7FFF;
- 	uinfo->value.integer.min = 0;
+--- a/drivers/crypto/chelsio/chtls/chtls_hw.c
++++ b/drivers/crypto/chelsio/chtls/chtls_hw.c
+@@ -391,6 +391,7 @@ int chtls_setkey(struct chtls_sock *csk,
+ 	csk->wr_unacked += DIV_ROUND_UP(len, 16);
+ 	enqueue_wr(csk, skb);
+ 	cxgb4_ofld_send(csk->egress_dev, skb);
++	skb = NULL;
+ 
+ 	chtls_set_scmd(csk);
+ 	/* Clear quiesce for Rx key */
 
 
