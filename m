@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D732A2D01A4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984682D01AC
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgLFI0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
+        id S1726873AbgLFI0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 03:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgLFI0G (ORCPT
+        with ESMTP id S1726092AbgLFI0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:26:06 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018A9C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 00:25:26 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w16so6348981pga.9
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 00:25:25 -0800 (PST)
+        Sun, 6 Dec 2020 03:26:52 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872F1C061A52
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 00:25:34 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id m9so6370387pgb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 00:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=94t92p220d3blDFDgpx+1JH+mQKvnsugZ3wYNVpL5Pc=;
-        b=aPEbZU4OyEStT3F68E8ntmWaoqDSzRPfxpNag1nustiini6Rf/h8SsWgNHnv4nMhTc
-         R5+L+leR3yh0p1Z46A9wM4d+nzaY/GgZwJyBPEZPXBgMmUXiV5wBRVBZSxvRYxmjxtLd
-         v6lQLZXZNUK0DIQFDR2uuU3dQVm3JJDOD6FYURZgGlVg+xMUJhlcxhvFjvsg8lWGFxJA
-         kfXZFS/lzxEWbrwnrtvgXNPh/EKiZqJEIv6TnJu1UodsK0tRvuYxzOJQqSBbIBLxFmXR
-         3fhfx5Shes7y2EfZXI2Wc1yj+ikUveMtDJd2DyrJNw9155Ig/QQ4g8lwQh8IyrOAfG8a
-         nFDg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JLGZC7sv5nAUpuhCShqzZAhxLbvYoPKLszNPrb+RhvY=;
+        b=qoRift2jV1B6a3umkUaVHUC3RdMLwR6ew6g8R0nSrZ9H3e5JTD8paUXgzqNsnFUdDp
+         txMAue17NrbbuPrSnxB9L6j5TkpBu8Rbl9SNXsUV2tJ5fzr+oOLIJzvNIkGDsvyUxeOI
+         GQXd7P7GEwRyywDQq5EFMjOVhvaaKNy3TCjQDPonI3Y51+fcEmhDuQ6kt4jIzrmKXRJo
+         L8vswZbMmPglR6/mpjwShMGHnqmDNaKTHLF9dGdCx4sGHqZa12q6/QhjE5A6tGKjvClv
+         d1tO81uQB9xdZhC6XXPffaOAihcqiNvA4glBALCf5nVfKvFN/l+F+L0Moo/th6/AN+DE
+         0STQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=94t92p220d3blDFDgpx+1JH+mQKvnsugZ3wYNVpL5Pc=;
-        b=mbdqo1WPzvQIMPxtufabBjjb9BAosyY6feaedm9A1khsnOmABP+SbPlIosavQXxCo7
-         qf+HRSEsaCauPTWpS2Hp85qzrksTsCE/0jKtSvQAREj0asMFWFzkmz6a3Ld+RSvzwuWm
-         BkEr7+Tj5u2WDTV60N9MO3ifwyk3wCcZMTISVSlOFW8pK2m1pNmxXxGarCRZ2LFWtgMG
-         GlAocfmapDy5oRDTwNg3MaSUoCdj7Yf95lAojle5P9awary5RpN1YudbGXvTqdAL1gLt
-         yUrh957vWuKe8awaskf2WiCVIbhoH6LmEsNHXzBimrw/w5znfRSUsbLLAhouwbT7sbe9
-         jd3A==
-X-Gm-Message-State: AOAM532KQ8Vua6RhiZ+5pnpsnjYdOCLWPZHfQ8iq2XLr7wdzBTzDpZpG
-        UU/m22E9VCKIj7cuSFQ7NsMHDw==
-X-Google-Smtp-Source: ABdhPJx9N52V9X/vLGy1rmg1UsEWFvMmYT4HwbKlcPc26xtBH3Uc9GcECnSQRz8S83pEQJd6sID7Iw==
-X-Received: by 2002:a63:48f:: with SMTP id 137mr14064045pge.172.1607243125546;
-        Sun, 06 Dec 2020 00:25:25 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JLGZC7sv5nAUpuhCShqzZAhxLbvYoPKLszNPrb+RhvY=;
+        b=PQ7qMAWAcuJSQ4LYCrBdo2SH+7mrgJN4ORW/5X7YwdH9+q1BvUnC8Gl7AWAk4CzrIw
+         62fPlZJ0VDLVviHN9nbqVH3xCYyN2w6JfR4rg/oHgbGE+mR9VmV54Q7HIp/MaeftlX9d
+         VfthEuEcZ135m66F8Wh7jrI4C6s0hwcCUMekcoYl8K5sLgvpZBGOEfIJMxGUFAIZyxDV
+         cVwMo2KQHAWZ0gC+4dgv20C1b3GwJbYcLbAo/g52MNJgSmNTQu5w2t22U5Pbp2EQuarm
+         0n7/OKlN3l/aaLXE90n5/1YtqNXXPE3En2vy4aLJsgUTj7s9bKXoB31rfSP4tsVMeubg
+         iklg==
+X-Gm-Message-State: AOAM5317VYFz6NDh/6BPow8T/L6EZH0tmV5xtYAWDiGTjF3XpeZpa6g+
+        oJRL98IFwwiYfvPE9nxvFrse1A==
+X-Google-Smtp-Source: ABdhPJx/0GwBWm79tEQQwiyYmG8pU+wlAB4R0dnRQOfOcHPETYvxsRxU+GZUlt7jzm2lH1hwsBwhfQ==
+X-Received: by 2002:a63:1d5d:: with SMTP id d29mr14382201pgm.328.1607243134106;
+        Sun, 06 Dec 2020 00:25:34 -0800 (PST)
 Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id iq3sm6884104pjb.57.2020.12.06.00.25.16
+        by smtp.gmail.com with ESMTPSA id iq3sm6884104pjb.57.2020.12.06.00.25.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 00:25:24 -0800 (PST)
+        Sun, 06 Dec 2020 00:25:33 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -59,77 +59,44 @@ To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 00/12] Convert all vmstat counters to pages or bytes
-Date:   Sun,  6 Dec 2020 16:22:57 +0800
-Message-Id: <20201206082318.11532-1-songmuchun@bytedance.com>
+Subject: [PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
+Date:   Sun,  6 Dec 2020 16:22:58 +0800
+Message-Id: <20201206082318.11532-2-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20201206082318.11532-1-songmuchun@bytedance.com>
+References: <20201206082318.11532-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+by one rather than nr_pages.
 
-This patch series is aimed to convert all THP vmstat counters to pages
-and some KiB vmstat counters to bytes.
+Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-The unit of some vmstat counters are pages, some are bytes, some are
-HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-counters to the userspace, we have to know the unit of the vmstat counters
-is which one. It makes the code complex. Because there are too many choices,
-the probability of making a mistake will be greater.
-
-For example, the below is some bug fix:
-  - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-  - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
-
-This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
-And make the unit of the vmstat counters are either pages or bytes. Fewer choices
-means lower probability of making mistakes :).
-
-This was inspired by Johannes and Roman. Thanks to them.
-
-Changes in v1 -> v2:
-  - Change the series subject from "Convert all THP vmstat counters to pages"
-    to "Convert all vmstat counters to pages or bytes".
-  - Convert NR_KERNEL_SCS_KB account to bytes.
-  - Convert vmstat slab counters to bytes.
-  - Remove {global_}node_page_state_pages.
-
-Muchun Song (12):
-  mm: memcontrol: fix NR_ANON_THPS account
-  mm: memcontrol: convert NR_ANON_THPS account to pages
-  mm: memcontrol: convert NR_FILE_THPS account to pages
-  mm: memcontrol: convert NR_SHMEM_THPS account to pages
-  mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
-  mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
-  mm: memcontrol: convert kernel stack account to bytes
-  mm: memcontrol: convert NR_KERNEL_SCS_KB account to bytes
-  mm: memcontrol: convert vmstat slab counters to bytes
-  mm: memcontrol: scale stat_threshold for byted-sized vmstat
-  mm: memcontrol: make the slab calculation consistent
-  mm: memcontrol: remove {global_}node_page_state_pages
-
- drivers/base/node.c     |  25 ++++-----
- fs/proc/meminfo.c       |  22 ++++----
- include/linux/mmzone.h  |  21 +++-----
- include/linux/vmstat.h  |  21 ++------
- kernel/fork.c           |   8 +--
- kernel/power/snapshot.c |   2 +-
- kernel/scs.c            |   4 +-
- mm/filemap.c            |   4 +-
- mm/huge_memory.c        |   9 ++--
- mm/khugepaged.c         |   4 +-
- mm/memcontrol.c         | 131 ++++++++++++++++++++++++------------------------
- mm/oom_kill.c           |   2 +-
- mm/page_alloc.c         |  17 +++----
- mm/rmap.c               |  19 ++++---
- mm/shmem.c              |   3 +-
- mm/vmscan.c             |   2 +-
- mm/vmstat.c             |  54 ++++++++------------
- 17 files changed, 161 insertions(+), 187 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 22d9bd688d6d..695dedf8687a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5634,10 +5634,8 @@ static int mem_cgroup_move_account(struct page *page,
+ 			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+ 			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+ 			if (PageTransHuge(page)) {
+-				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+-						   -nr_pages);
+-				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+-						   nr_pages);
++				__dec_lruvec_state(from_vec, NR_ANON_THPS);
++				__inc_lruvec_state(to_vec, NR_ANON_THPS);
+ 			}
+ 
+ 		}
 -- 
 2.11.0
 
