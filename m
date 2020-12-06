@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C242D042D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093382D038F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728406AbgLFLnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:43:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
+        id S1728052AbgLFLjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:39:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729177AbgLFLng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:43:36 -0500
+        id S1728035AbgLFLjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:39:31 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
+        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 02/46] devlink: Make sure devlink instance and port are in same net namespace
-Date:   Sun,  6 Dec 2020 12:17:10 +0100
-Message-Id: <20201206111556.560207616@linuxfoundation.org>
+Subject: [PATCH 4.19 11/32] ibmvnic: notify peers when failover and migration happen
+Date:   Sun,  6 Dec 2020 12:17:11 +0100
+Message-Id: <20201206111556.317195640@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+References: <20201206111555.787862631@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,38 +33,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit a7b43649507dae4e55ff0087cad4e4dd1c6d5b99 ]
+[ Upstream commit 98025bce3a6200a0c4637272a33b5913928ba5b8 ]
 
-When devlink reload operation is not used, netdev of an Ethernet port may
-be present in different net namespace than the net namespace of the
-devlink instance.
+Commit 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
+excluded the failover case for notify call because it said
+netdev_notify_peers() can cause network traffic to stall or halt.
+Current testing does not show network traffic stall
+or halt because of the notify call for failover event.
+netdev_notify_peers may be used when a device wants to inform the
+rest of the network about some sort of a reconfiguration
+such as failover or migration.
 
-Ensure that both the devlink instance and devlink port netdev are located
-in same net namespace.
+It is unnecessary to call that in other events like
+FATAL, NON_FATAL, CHANGE_PARAM, and TIMEOUT resets
+since in those scenarios the hardware does not change.
+If the driver must do a hard reset, it is necessary to notify peers.
 
-Fixes: 070c63f20f6c ("net: devlink: allow to change namespaces during reload")
-Signed-off-by: Parav Pandit <parav@nvidia.com>
+Fixes: 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
+Suggested-by: Brian King <brking@linux.vnet.ibm.com>
+Suggested-by: Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>
+Signed-off-by: Dany Madden <drt@linux.ibm.com>
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/devlink.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -626,9 +626,10 @@ static int devlink_nl_port_fill(struct s
- 			devlink_port->desired_type))
- 		goto nla_put_failure_type_locked;
- 	if (devlink_port->type == DEVLINK_PORT_TYPE_ETH) {
-+		struct net *net = devlink_net(devlink_port->devlink);
- 		struct net_device *netdev = devlink_port->type_dev;
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1877,8 +1877,9 @@ static int do_reset(struct ibmvnic_adapt
+ 	for (i = 0; i < adapter->req_rx_queues; i++)
+ 		napi_schedule(&adapter->napi[i]);
  
--		if (netdev &&
-+		if (netdev && net_eq(net, dev_net(netdev)) &&
- 		    (nla_put_u32(msg, DEVLINK_ATTR_PORT_NETDEV_IFINDEX,
- 				 netdev->ifindex) ||
- 		     nla_put_string(msg, DEVLINK_ATTR_PORT_NETDEV_NAME,
+-	if (adapter->reset_reason != VNIC_RESET_FAILOVER &&
+-	    adapter->reset_reason != VNIC_RESET_CHANGE_PARAM) {
++	if ((adapter->reset_reason != VNIC_RESET_FAILOVER &&
++	     adapter->reset_reason != VNIC_RESET_CHANGE_PARAM) ||
++	     adapter->reset_reason == VNIC_RESET_MOBILITY) {
+ 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
+ 		call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
+ 	}
+@@ -2106,6 +2107,9 @@ static int ibmvnic_reset(struct ibmvnic_
+ 	netdev_dbg(adapter->netdev, "Scheduling reset (reason %d)\n", reason);
+ 	schedule_work(&adapter->ibmvnic_reset);
+ 
++	call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
++	call_netdevice_notifiers(NETDEV_RESEND_IGMP, netdev);
++
+ 	return 0;
+ err:
+ 	if (adapter->wait_for_reset)
 
 
