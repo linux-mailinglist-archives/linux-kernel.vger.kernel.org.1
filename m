@@ -2,150 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7880B2D01CD
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31612D01A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgLFI16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgLFI15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:27:57 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C5CC08E860
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 00:27:17 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id v3so5499116plz.13
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 00:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
-        b=RmbjjpKFtDs9T47/FGkL0CG6BFwpK6/K/YoUamLBSgnWsWjKTj8yrVmKeBycWQ7gQN
-         zq6SfYe6JDMH3V+LAODwnDHVj6rBUOPNDGOXWAPmSdJTzSbdwhnAZvxteLxBBYdL3IHt
-         4FMdhhJOQ6E6xQjCF+NYtuSPLkxMz5jtO8yf+Ph/PdVPaOVZGyeHci5skfARy1PX0coQ
-         kkqYaKnAmKLSVucJqD7DsCFoNONObz8/Ky1I4ErghvqKJjzS46TaVvbJ9UvAIdw1OmcX
-         ITzj7oL9WgeBWAqNAwagylKy2yfBMkNhKC4jOuTdoDYeiHPT6KhE1Hxywk2AOp4iVHeI
-         jYhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HZOUEjYnrw/jKRYqpi7q020fqNgK9R8UvUzzMbw50zY=;
-        b=m68Wj8oc4g41LvStFxhhOI48NvIk0+PeYr5QH8C1/MucIF0kYfNijU8LSum53iqQCC
-         0PU9hfoULcT3iJmFg4HN91+ooX2XDHbVqxJQRx+0KDpHxeucE9lp9zYLxzSFPojV7JiB
-         ouQS0DTk74SdTkh+2ZcsxIe7bJLV7i+LwStAaeGXREp0eHS6IifFHmGaVVC+Sbmy8YMj
-         9l/N4Y39E62eabLRJ8Lvdl//8xFsouoV9yaeDEGs1ayppSgziVoBEYji3s8T02ZTpSn5
-         izhhK+zwQlxXltgNu2F437gkoPHFKxy4vXXMhYvXSjgwa9hVGO1b9rpnJAz3bomSBSsP
-         C82w==
-X-Gm-Message-State: AOAM53011cUIsciPXKLY7+jCyRVLBT98iW7D+186BW9Wlz43gS58ycne
-        IoIXBK+PNxT3vrMhVovvB2x0Ow==
-X-Google-Smtp-Source: ABdhPJxkX0NDcl4oC02Df6FTR9ckwWbzwLdNDFyAV7SqFskfJSRdf9BW1JW2vKcP22/0zmIY/Wubsw==
-X-Received: by 2002:a17:90a:e38d:: with SMTP id b13mr11686353pjz.101.1607243236861;
-        Sun, 06 Dec 2020 00:27:16 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id iq3sm6884104pjb.57.2020.12.06.00.27.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 00:27:16 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH 7/9] mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
-Date:   Sun,  6 Dec 2020 16:23:10 +0800
-Message-Id: <20201206082318.11532-14-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201206082318.11532-1-songmuchun@bytedance.com>
-References: <20201206082318.11532-1-songmuchun@bytedance.com>
+        id S1726795AbgLFI0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 03:26:07 -0500
+Received: from mga18.intel.com ([134.134.136.126]:8127 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726181AbgLFI0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 03:26:06 -0500
+IronPort-SDR: TH2DtK4ts+lUb4TMTqBfuuzggN9nwd34bgb1bbJGhqgrHnF7Xb2dYgBydDo720+tWrqLyAM0e4
+ PLH1o2R8jZsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9826"; a="161338912"
+X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
+   d="scan'208";a="161338912"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 00:25:25 -0800
+IronPort-SDR: BQhU3R1VMtil2saxseId70qzRtO3sG+NIb469olD1zV74xC+yOprkBauX9F0ZHZMZNdQpTHFeN
+ dToYARj/P6/w==
+X-IronPort-AV: E=Sophos;i="5.78,397,1599548400"; 
+   d="scan'208";a="316675933"
+Received: from tfmonnel-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.45.58])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 00:25:22 -0800
+Subject: Re: linux-next: ERROR: build error for arm64
+To:     Hui Su <sh_def@163.com>, madalin.bucur@nxp.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     sfr@canb.auug.org.au
+References: <20201206073231.GA3805@rlk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <a6899dcd-eee7-3559-6f4e-584f5f5973ce@intel.com>
+Date:   Sun, 6 Dec 2020 09:25:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <20201206073231.GA3805@rlk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert NR_SHMEM_PMDMAPPED account to pages.
+On 2020-12-06 08:32, Hui Su wrote:
+> hi, all:
+> 
+> The error came out like this when i build the linux-next kernel
+> with ARCH=arm64, with the arm64_defconfig:
+> 
+>    CC      drivers/net/ethernet/freescale/dpaa/dpaa_eth.o
+> ../drivers/net/ethernet/freescale/dpaa/dpaa_eth.c: In function ‘dpaa_fq_init’:
+> ../drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:1135:9: error: too few arguments to function ‘xdp_rxq_info_reg’
+>   1135 |   err = xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
+>        |         ^~~~~~~~~~~~~~~~
+> In file included from ../include/linux/netdevice.h:42,
+>                   from ../include/uapi/linux/if_arp.h:27,
+>                   from ../include/linux/if_arp.h:23,
+>                   from ../drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:40:
+> ../include/net/xdp.h:229:5: note: declared here
+>    229 | int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+>        |     ^~~~~~~~~~~~~~~~
+> make[6]: *** [../scripts/Makefile.build:283: drivers/net/ethernet/freescale/dpaa/dpaa_eth.o] Error 1
+> 
+> 
+> Branch: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> HEAD: 2996bd3f6ca9ea529b40c369a94b247657abdb4d
+> ARCH: arm64
+> CONFIG: arch/arm64/configs/defconfig
+> CMD: make ARCH=arm64 CROSS_COMPILE=/usr/bin/aarch64-linux-gnu- Image
+> 
+> It maybe introduced by the commit b02e5a0ebb172(xsk: Propagate napi_id to XDP socket Rx path),
+> and if anyone solved this, please add:
+> 
+> Reported-by: Hui Su <sh_def@163.com>
+>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- drivers/base/node.c | 3 +--
- fs/proc/meminfo.c   | 2 +-
- mm/page_alloc.c     | 3 +--
- mm/rmap.c           | 6 ++++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Hui, was already resolved in commit fdd8b8249ef8 ("dpaa_eth: fix build
+errorr in dpaa_fq_init").
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index a64f9c5484a0..fe90888f90a8 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -463,8 +463,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     ,
- 			     nid, K(node_page_state(pgdat, NR_ANON_THPS)),
- 			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS)),
--			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
--				    HPAGE_PMD_NR),
-+			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
- 			     nid, K(node_page_state(pgdat, NR_FILE_THPS)),
- 			     nid, K(node_page_state(pgdat, NR_FILE_PMDMAPPED) *
- 				    HPAGE_PMD_NR)
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 574779b6e48c..b2bff8359497 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -133,7 +133,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "ShmemHugePages: ",
- 		    global_node_page_state(NR_SHMEM_THPS));
- 	show_val_kb(m, "ShmemPmdMapped: ",
--		    global_node_page_state(NR_SHMEM_PMDMAPPED) * HPAGE_PMD_NR);
-+		    global_node_page_state(NR_SHMEM_PMDMAPPED));
- 	show_val_kb(m, "FileHugePages:  ",
- 		    global_node_page_state(NR_FILE_THPS));
- 	show_val_kb(m, "FilePmdMapped:  ",
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 8fb9f3d38b67..ddaa1dcd6e38 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5568,8 +5568,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- 			K(node_page_state(pgdat, NR_SHMEM)),
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 			K(node_page_state(pgdat, NR_SHMEM_THPS)),
--			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
--					* HPAGE_PMD_NR),
-+			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)),
- 			K(node_page_state(pgdat, NR_ANON_THPS)),
- #endif
- 			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
-diff --git a/mm/rmap.c b/mm/rmap.c
-index f59e92e26b61..3089ad6bf468 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1219,7 +1219,8 @@ void page_add_file_rmap(struct page *page, bool compound)
- 		if (!atomic_inc_and_test(compound_mapcount_ptr(page)))
- 			goto out;
- 		if (PageSwapBacked(page))
--			__inc_node_page_state(page, NR_SHMEM_PMDMAPPED);
-+			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
-+						HPAGE_PMD_NR);
- 		else
- 			__inc_node_page_state(page, NR_FILE_PMDMAPPED);
- 	} else {
-@@ -1260,7 +1261,8 @@ static void page_remove_file_rmap(struct page *page, bool compound)
- 		if (!atomic_add_negative(-1, compound_mapcount_ptr(page)))
- 			return;
- 		if (PageSwapBacked(page))
--			__dec_node_page_state(page, NR_SHMEM_PMDMAPPED);
-+			__mod_lruvec_page_state(page, NR_SHMEM_PMDMAPPED,
-+						-HPAGE_PMD_NR);
- 		else
- 			__dec_node_page_state(page, NR_FILE_PMDMAPPED);
- 	} else {
--- 
-2.11.0
+Thanks,
+Björn
 
