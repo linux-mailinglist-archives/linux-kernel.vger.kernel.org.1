@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CC32D060B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9248E2D0612
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbgLFQmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:42:12 -0500
-Received: from leonov.paulk.fr ([185.233.101.22]:38194 "EHLO leonov.paulk.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgLFQmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:42:12 -0500
-Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
-        by leonov.paulk.fr (Postfix) with ESMTPS id 1F990C0139;
-        Sun,  6 Dec 2020 17:41:30 +0100 (CET)
-Received: by gagarine.paulk.fr (Postfix, from userid 114)
-        id 73CC7C1D2B; Sun,  6 Dec 2020 17:41:29 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
-        autolearn_force=no version=3.4.2
-Received: from localhost.localdomain (collins [192.168.1.129])
-        by gagarine.paulk.fr (Postfix) with ESMTP id E396AC1D27;
-        Sun,  6 Dec 2020 17:41:20 +0100 (CET)
-From:   Paul Kocialkowski <contact@paulk.fr>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Paul Kocialkowski <contact@paulk.fr>
-Subject: [PATCH] dt-bindings: sram: Document Allwinner V3s bindings for system-control
-Date:   Sun,  6 Dec 2020 17:41:19 +0100
-Message-Id: <20201206164119.1040880-1-contact@paulk.fr>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727864AbgLFQna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727617AbgLFQn3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 11:43:29 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D26C0613D0;
+        Sun,  6 Dec 2020 08:42:42 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id x16so16004779ejj.7;
+        Sun, 06 Dec 2020 08:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Q6ExZ117A0aM/vhFUmbVwSY0OK3ssVDA0XzgyTgogbY=;
+        b=oa5Ad8htSNHvj/Tdm++f/s9AvO7MoWOrXJPAb0LPxHNfb06kZbPQliv8BmR+toZIZx
+         n2LBLRyULnezXirBOE6iL2pe1Ws+o61u7/bqMHrtIgTQpFfc1LnIDgbXKdM8S2bp4vmw
+         Fh8QSyyo9uO4LZy87oDnh8eg3ivL2Vyqyt809od1mUvAS2UXp6SZS+WJs6XDcVlIvUiL
+         Xexr7BjA9sMuGNd7E7Pzb6dWzUyKBYeNnhtgt7DmEnfHPtGfklX8gL4l70+huUesGrF6
+         3GNmIG/Kd0ZXHKG/k+Tdqfnahim/T8GujSAF6djpBb5b4er2Yl0G6HjJptr4/UTyXNP7
+         2QfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Q6ExZ117A0aM/vhFUmbVwSY0OK3ssVDA0XzgyTgogbY=;
+        b=aCBhZPYibcOXyUwxEilEIVvjoOZAus710s+amdeS+zH7i75aklZjPuKfqp2zm8/jeo
+         oye+FvCI1vt19LoKMdMgvBMp1SKxzwVMPcwTt0zBi0++4Y1jGFdeqVHeC1ZSWVwgRVAt
+         NAocn/iE9bGM9UPVeC7JT3994bzibiAs0oHkDOGNq8oHO7TyIrgpNdhPYI7PNdnIp/zg
+         +8UoBrCwB8R4QOldqFCV0CRfagW6KS3qbVbsxPR5DW0MLRYVYGNJvF60seX0C6Ws3Gtt
+         JBRZvB9ymR87vAwY/jn6PzXFIom+XKdmdv95V1w/XKhiveO/Ec7knSbisQJMjZ+YPVBe
+         wj/Q==
+X-Gm-Message-State: AOAM533D6KY5yw0YDKeghteS4yV7NqYut3+qhTkqCZF28+ZUEiR8PMNH
+        bKVNk/tV/pO0afk8n1MCn+U=
+X-Google-Smtp-Source: ABdhPJwRwV6diyTTT5KoBZRaVFt58XwWp1CREVd+1bXwTOoMBkPt0oikx99d/RIKB5NW8OQjqusfkw==
+X-Received: by 2002:a17:906:3ecf:: with SMTP id d15mr15817372ejj.297.1607272961621;
+        Sun, 06 Dec 2020 08:42:41 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id e19sm9157524edr.61.2020.12.06.08.42.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 08:42:41 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org
+Subject: [PATCH v1 0/3] Three fixes for the UPIU trace
+Date:   Sun,  6 Dec 2020 17:42:23 +0100
+Message-Id: <20201206164226.6595-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation about the Allwinner system-control bindings used
-for the V3s SoC. The bindings are already in use in the device-tree
-files and produced warnings in dt bindings checks.
+From: Bean Huo <beanhuo@micron.com>
 
-Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
----
- .../bindings/sram/allwinner,sun4i-a10-system-control.yaml      | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
-index 6ebcbc153691..5c978cb96632 100644
---- a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
-+++ b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
-@@ -36,6 +36,9 @@ properties:
-       - items:
-           - const: allwinner,sun8i-r40-system-control
-           - const: allwinner,sun4i-a10-system-control
-+      - items:
-+          - const: allwinner,sun8i-v3s-system-control
-+          - const: allwinner,sun8i-h3-system-control
-       - const: allwinner,sun50i-a64-sram-controller
-         deprecated: true
-       - const: allwinner,sun50i-a64-system-control
+
+Bean Huo (3):
+  scsi: ufs: Distinguish between query REQ and query RSP in query trace
+  scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM
+    UPIU trace
+  scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
+
+ drivers/scsi/ufs/ufshcd.c  | 21 ++++++++++++++++-----
+ include/trace/events/ufs.h | 10 +++++++---
+ 2 files changed, 23 insertions(+), 8 deletions(-)
+
 -- 
-2.29.2
+2.17.1
 
