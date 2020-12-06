@@ -2,172 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FC42D0667
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE73E2D066B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 18:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgLFRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 12:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S1727038AbgLFRzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 12:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgLFRuC (ORCPT
+        with ESMTP id S1726043AbgLFRzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 12:50:02 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CB4C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 09:49:22 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id l7so78178qvt.4
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 09:49:22 -0800 (PST)
+        Sun, 6 Dec 2020 12:55:13 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF01C0613D0;
+        Sun,  6 Dec 2020 09:54:32 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g185so11586489wmf.3;
+        Sun, 06 Dec 2020 09:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gzJEJ2dEDTrldVi59CiJKB5cjSGxuxrAJTrBTsWJ8L4=;
-        b=xhRjVvrx+ML/hOjj4pqL3dvycyWq23E/cwFwypDKFEO6EisazRfTprUqynuZOi/5+P
-         3vJapBTW2QUs1F+AzwvlQK8O/99OZEc8qIsUtKcYsOP7IghXkB5gJqKYMmIER1r/Rsmi
-         YYvQvXGoN+FhrC6595APtSPtMnKO0uZ6qCDJo=
+        bh=8hPz3fXD4d18hl2wdf9fe7bSAOyqTTVMV/KSC4uywkY=;
+        b=uBK0NQxE8iF0KwU+lcMnKiKiBhUVCD1VpC8jl07R8gba9N5baU4BggiCv/J+Iaf9wT
+         7rDTbQtAzAfS6x4kiiHwUfodAHPWJVcC3dpUlO+a2P4+kOXU/0lzY/1emIZQxnUqdhge
+         yjOJovOvA8aNukFIyIICu09dTO3nQuIWHCNZc04FTedXjTJiTY8bVoP2vRz7H4aHJR1r
+         HSS6S6eZljo4E2T9PeYzJ9mM6YLtQLFlQIgBZrtSwefP4YaLmX4+fADJoy8Q684eYOi9
+         t8DdkLaCNgjvubqTj93Pf+5ezsZt1mOAa2QcJnAts9OU4gX4WOP+K4cl43E9zQGisUjk
+         vWnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gzJEJ2dEDTrldVi59CiJKB5cjSGxuxrAJTrBTsWJ8L4=;
-        b=iWnCNozZSRXxoastJzWNTWH0+VQJ0OSK4FyWz7SyB7dLj7FHfOyP6fafe6XhX1HH2p
-         s0ubj2LQyCIEhG3NYKWxUzHO0Q9Gb4Fx8yYb1fHMBxiz8zjH4KEZwSVPKhlIph9SVWMC
-         Grfeb1VSp6ANKsrLkByndTkBU5gzaejvq8LfHS+DBx+GrFPlcrRdLU4Ev4hHDjU1N6fI
-         EQoGKvGewbD7yilyMfOZfJibrqLLqG3wzTa9f9nQ21HvYfrXMbYkYeyIedP8kAz+Yh1u
-         /bYE+kHsdLJ/WsY9ccp8G8USbzsgYDkPDeIdsoyQGvkrb3l9b5DP6sClG1gUYJvzYuLY
-         WH2Q==
-X-Gm-Message-State: AOAM532dm1dDV+A+ICLNys5CUtJTyFn9tuJZGj21bAvXJGoZ/iLg4osV
-        NO2cSllf6NwQEKPVIJdQcJOcPQ==
-X-Google-Smtp-Source: ABdhPJw/qI6mI0IwIgY1ry4MTHKhqVsrq0WMHy9GSrTbnTHGwKWd8klYefdT5Mxp9E/1acKp0FATGA==
-X-Received: by 2002:a0c:8d47:: with SMTP id s7mr17087856qvb.17.1607276961265;
-        Sun, 06 Dec 2020 09:49:21 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id 6sm85621qko.3.2020.12.06.09.49.20
+        bh=8hPz3fXD4d18hl2wdf9fe7bSAOyqTTVMV/KSC4uywkY=;
+        b=A2iWaSLFnfcgcHw+LNFhaswadpPEh/b0c6fPifjp67LkgZw5GCtzeGgzmbhsiYs5AZ
+         JV7aiG7FFpCh4CSFTz7g1oZJjF+lyiOtn3tffdE4yy542BYUKZu+uHW1uZHeu51gePW8
+         YAD6Z1g4EfJJt3bOSzPTziYzfjzucARIu3NPTpUqNIaFparswq8lu7+Ig5OaFUWlKmAV
+         8Yrre1+Mn00Ac/RZfwP8fosWrUDN5gJEp8UnIIfJ87jxnIlWulfHK6kwMBlU8f956wPo
+         aKDbm06MfHIGY/PY8Rj2cVDrK64MQC3CMy3DDSQ97NPauoQzTgolT6bV3IuPU/a0l9Aa
+         iLkw==
+X-Gm-Message-State: AOAM532eJ2n1XrJuHWsM/g+yzxf9PNQnFiyFoeR7oNumipqDElw8CSOW
+        wnthM4vNL56SVm9qOQ2MHhk=
+X-Google-Smtp-Source: ABdhPJwsetfYWf68hfPKK4uHA4S1B2zNJ7705A7RWG+hDh+MtcbaApWNuQsqOQR6B3SfBIYkx4ZPjw==
+X-Received: by 2002:a1c:f60b:: with SMTP id w11mr10372604wmc.180.1607277271305;
+        Sun, 06 Dec 2020 09:54:31 -0800 (PST)
+Received: from andrea (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id q25sm13008690wmq.37.2020.12.06.09.54.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 09:49:20 -0800 (PST)
-Date:   Sun, 6 Dec 2020 12:49:19 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH -tip 22/32] sched: Split the cookie and setup per-task
- cookie on fork
-Message-ID: <20201206174919.GD201514@google.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-23-joel@joelfernandes.org>
- <20201125111014.GS2414@hirez.programming.kicks-ass.net>
- <20201201192028.GA222419@google.com>
- <20201201193451.GY3040@hirez.programming.kicks-ass.net>
+        Sun, 06 Dec 2020 09:54:30 -0800 (PST)
+Date:   Sun, 6 Dec 2020 18:54:22 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Subject: Re: [PATCH 1/6] Drivers: hv: vmbus: Initialize memory to be sent to
+ the host
+Message-ID: <20201206175422.GA3256@andrea>
+References: <20201118143649.108465-1-parri.andrea@gmail.com>
+ <20201118143649.108465-2-parri.andrea@gmail.com>
+ <MW2PR2101MB1052B9BAFF7876427746F596D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201201193451.GY3040@hirez.programming.kicks-ass.net>
+In-Reply-To: <MW2PR2101MB1052B9BAFF7876427746F596D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Tue, Dec 01, 2020 at 08:34:51PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 01, 2020 at 02:20:28PM -0500, Joel Fernandes wrote:
-> > On Wed, Nov 25, 2020 at 12:10:14PM +0100, Peter Zijlstra wrote:
-> > > On Tue, Nov 17, 2020 at 06:19:52PM -0500, Joel Fernandes (Google) wrote:
-> > > > +void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
-> > > > +{
-> > > > +	if (!p)
-> > > > +		return;
-> > > > +
-> > > > +	if (group)
-> > > > +		p->core_group_cookie = cookie;
-> > > > +	else
-> > > > +		p->core_task_cookie = cookie;
-> > > > +
-> > > > +	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-> > > > +	p->core_cookie = (p->core_task_cookie <<
-> > > > +				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-> > > 
-> > > This seems dangerous; afaict there is nothing that prevents cookie
-> > > collision.
+On Sun, Dec 06, 2020 at 04:59:32PM +0000, Michael Kelley wrote:
+> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Wednesday, November 18, 2020 6:37 AM
 > > 
-> > This is fixed in a later patch by Josh "sched: Refactor core cookie into
-> > struct" where we are having independent fields for each type of cookie.
+> > __vmbus_open() and vmbus_teardown_gpadl() do not inizialite the memory
+> > for the vmbus_channel_open_channel and the vmbus_channel_gpadl_teardown
+> > objects they allocate respectively.  These objects contain padding bytes
+> > and fields that are left uninitialized and that are later sent to the
+> > host, potentially leaking guest data.  Zero initialize such fields to
+> > avoid leaking sensitive information to the host.
+> > 
+> > Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > ---
+> >  drivers/hv/channel.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+> > index 0d63862d65518..9aa789e5f22bb 100644
+> > --- a/drivers/hv/channel.c
+> > +++ b/drivers/hv/channel.c
+> > @@ -621,7 +621,7 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
+> >  		goto error_clean_ring;
+> > 
+> >  	/* Create and init the channel open message */
+> > -	open_info = kmalloc(sizeof(*open_info) +
+> > +	open_info = kzalloc(sizeof(*open_info) +
+> >  			   sizeof(struct vmbus_channel_open_channel),
+> >  			   GFP_KERNEL);
+> >  	if (!open_info) {
+> > @@ -748,7 +748,7 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, u32
+> > gpadl_handle)
+> >  	unsigned long flags;
+> >  	int ret;
+> > 
+> > -	info = kmalloc(sizeof(*info) +
+> > +	info = kzalloc(sizeof(*info) +
+> >  		       sizeof(struct vmbus_channel_gpadl_teardown), GFP_KERNEL);
+> >  	if (!info)
+> >  		return -ENOMEM;
+> > --
+> > 2.25.1
 > 
-> So I don't think that later patch is right... That is, it works, but
-> afaict it's massive overkill.
+> This change is actually zero'ing more memory than is necessary.  Only the
+> 'msg' portion is sent to Hyper-V, so that's all that needs to be zero'ed.
+> But this code is not performance sensitive, and doing the tighter zero'ing
+> would add lines of code with no real value.  So,
 > 
-> 	COOKIE_CMP_RETURN(task_cookie);
-> 	COOKIE_CMP_RETURN(group_cookie);
-> 	COOKIE_CMP_RETURN(color);
-> 
-> So if task_cookie matches, we consider group_cookie, if that matches we
-> consider color.
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-Yes, the cookie is a compound one. A cookie structure is created here which
-has all 3 components. The final cookie value is a pointer to this compound
-structure.
+Thank you for the review.
 
-> 
-> Now, afaict that's semantically exactly the same as just using the
-> narrowest cookie. That is, use the task cookie if there is, and then,
-> walking the cgroup hierarchy (up) pick the first cgroup cookie.
-[..]
-> Which means you only need a single active cookie field.
+Please notice that I posted a v2 of this series:
 
-Its not the same. The "compounded" cookie is needed to enforce the CGroup
-delegation model. This is exactly how both uclamp and cpusets work. For
-uclamp, if we take uclamp.min as an example, if the CGroup sets the
-uclamp.min of a group to 0, then even if you use the per-task interface
-(sched_setattr) for setting the task's clamp - the "effective uclamp.min" of
-the task as seen in /proc/pid/sched will still be 0.
+  https://lkml.kernel.org/r/20201202092214.13520-1-parri.andrea@gmail.com
 
-Similar thing here, if 2 tasks belong to 2 different CGroups and each group is
-tagged with its own tag, then if you use the per-task interface to make the 2
-tasks share a core, the "effective" sharing is still such that the tasks will
-not share a core -- because the CGroup decided to make it so.
-
-I would like to really maintain this model. Doing it any other way is
-confusing - we have already discussed doing it this way before. With that way
-you end up failing one interface if another one was already used.  Been
-there, done that. It sucks a lot.
-
-> IOW, you're just making things complicated and expensive.
-
-The cost of the additional comparisons you mentioned is only in the slow path
-(i.e. when someone joins or leaves a group). Once the task_struct's cookie
-field is set, the cost is not any more than what it was before.
-
-Any other thoughts?
-
-thanks,
-
- - Joel
-
+Thanks,
+  Andrea
