@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2E12D05D8
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E6C2D05E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgLFQHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:07:51 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:54057 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726547AbgLFQHv (ORCPT
+        id S1726641AbgLFQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:19:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58806 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgLFQT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:07:51 -0500
-Received: (qmail 1213044 invoked by uid 1000); 6 Dec 2020 11:07:09 -0500
-Date:   Sun, 6 Dec 2020 11:07:09 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Jules Irenge <jbi.octave@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: dummy-hcd: Fix uninitialized array use in init()
-Message-ID: <20201206160709.GA1212872@rowland.harvard.edu>
-References: <1607063090-3426-1-git-send-email-minhquangbui99@gmail.com>
- <20201204161249.GA1141609@rowland.harvard.edu>
- <CACtPs=Gg3C0KxdFnETHujAyis4hhKnCdV4_ZWqprHkXCXahFvw@mail.gmail.com>
- <20201205151511.GA1179536@rowland.harvard.edu>
- <20201206112405.GB3006@minh>
+        Sun, 6 Dec 2020 11:19:58 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607271556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6FbgwqR8cwx7EiM6FSCm/Hsw2IrEwAZDzoC3Of2D+NM=;
+        b=AMz9My6hb4QDemn9K++Vs98nvP7FMGhxiDgoliw4OGCYQsN4AelRWDtTpvHLHfycGZLdkq
+        lN2D+Rik2oiLYeRdq7oQbj6FeQt5C6GgN/ctLS7OurkWyvZZM9TQDysqxgpACcJCwiNKj9
+        pDoCHie/GHDWiyeGgkAKCjCc4YTlncKuOXCzJXpFNMbcleEhwL+8PA6MREdrMERpT4a2d6
+        OPzyx5pOnVWYX6Xj6X6GKwr48KMbXrQOv+xzh822r86kkdjpNbCHR+shy6UnnUuHtLJjLv
+        d6E0LRcfDyi0J41Y3LZl+2qLY/LOYzMR3a8oNbvB8thi0Zgk8U8OfGBhoqrbGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607271556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6FbgwqR8cwx7EiM6FSCm/Hsw2IrEwAZDzoC3Of2D+NM=;
+        b=Q1r5sG2dmTxR8OVLAifO4qaayPqOe82xtw00JIX+Twp9heSkYjiWB0fmhDdZsNTxJb3AA+
+        fhG1ko9MCJ+5w2BQ==
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <20201203171118.372391-2-mlevitsk@redhat.com>
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com>
+Date:   Sun, 06 Dec 2020 17:19:16 +0100
+Message-ID: <87a6uq9abf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201206112405.GB3006@minh>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 06:24:05PM +0700, Bui Quang Minh wrote:
-> On Sat, Dec 05, 2020 at 10:15:11AM -0500, Alan Stern wrote:
-> > On Sat, Dec 05, 2020 at 07:47:01PM +0700, Minh Bùi Quang wrote:
-> > > Vào Th 6, 4 thg 12, 2020 vào lúc 23:12 Alan Stern
-> > > <stern@rowland.harvard.edu> đã viết:
-> > > > Does this initialization end up using less memory than an explicit
-> > > > memset() call?
-> > > 
-> > > You mean speed?
-> > 
-> > No, I mean memory space.
-> > 
-> > A memset call requires a certain amount of instruction space (to push 
-> > the arguments and make the call) but no static data space.  
-> > Initialization requires some instruction space (to copy the data) and 
-> > static data space as well (to hold the data that is to be copied).
-> > 
-> > Alan Stern
-> > 
-> 
-> Thank you for your clarification, I didn't think about it before.
-> 
-> As I check when compiling the code, with MAX_NUM_UDC=32 the initialization
-> becomes
-> 
->         xor    eax,eax
->         mov    ecx,0x40
->         rep stos DWORD PTR es:[rdi],eax
-> 
-> With MAX_NUM_UDC=2, the initialization becomes
-> 
->         mov    QWORD PTR [rbp-0x30],0x0
->         mov    QWORD PTR [rbp-0x28],0x0
-> 
-> As I see, initialization does not require additional static data space.
-> Am I right?
+On Thu, Dec 03 2020 at 19:11, Maxim Levitsky wrote:
+> +	case KVM_SET_TSC_STATE: {
+> +		struct kvm_tsc_state __user *user_tsc_state = argp;
+> +		struct kvm_tsc_state tsc_state;
+> +		u64 host_tsc, wall_nsec;
+> +
+> +		u64 new_guest_tsc, new_guest_tsc_offset;
+> +
+> +		r = -EFAULT;
+> +		if (copy_from_user(&tsc_state, user_tsc_state, sizeof(tsc_state)))
+> +			goto out;
+> +
+> +		kvm_get_walltime(&wall_nsec, &host_tsc);
+> +		new_guest_tsc = tsc_state.tsc;
+> +
+> +		if (tsc_state.flags & KVM_TSC_STATE_TIMESTAMP_VALID) {
+> +			s64 diff = wall_nsec - tsc_state.nsec;
+> +			if (diff >= 0)
+> +				new_guest_tsc += nsec_to_cycles(vcpu, diff);
+> +			else
+> +				new_guest_tsc -= nsec_to_cycles(vcpu, -diff);
+> +		}
+> +
+> +		new_guest_tsc_offset = new_guest_tsc - kvm_scale_tsc(vcpu, host_tsc);
+> +		kvm_vcpu_write_tsc_offset(vcpu, new_guest_tsc_offset);
 
-Ah, okay, good.  I didn't realize the compiler was smart enough to do 
-this.  Thanks for checking.
+From a timekeeping POV and the guests expectation of TSC this is
+fundamentally wrong:
 
-Alan Stern
+      tscguest = scaled(hosttsc) + offset
+
+The TSC has to be viewed systemwide and not per CPU. It's systemwide
+used for timekeeping and for that to work it has to be synchronized. 
+
+Why would this be different on virt? Just because it's virt or what? 
+
+Migration is a guest wide thing and you're not migrating single vCPUs.
+
+This hackery just papers over he underlying design fail that KVM looks
+at the TSC per vCPU which is the root cause and that needs to be fixed.
+
+Thanks,
+
+        tglx
