@@ -2,115 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFA42CFFE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 01:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45192CFFEA
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 01:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgLFAOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 19:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgLFAOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 19:14:37 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD15C0613D1;
-        Sat,  5 Dec 2020 16:13:57 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id lt17so14210331ejb.3;
-        Sat, 05 Dec 2020 16:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3IgKPEXPEhoiVhProzrF1Nh2SnPmElxALGug4CytgfI=;
-        b=Gle+JDe8dq1mS9tatLrCtwEHambE00p2187JymYCoH3f4Ao7io13hqwYvA2oCxuA30
-         XN+Kv/br6c3CHYzBS2xX7UKSwHQR72yGJCvMXQ6L9VR9to9CXUhvPkezsEzuOvRtYc1I
-         6Qn6EKFgSNKrrv+9eIoFMFdIwkwdNRlb8YwhYsICb79J8D+C6P4426y2xlola7XpXYCn
-         wxgax4SvOaLyX/VhESfmoI781HXHWwfzabJgCd6TB5/PW8gA57FnJf2d6Eg88ewZ68ye
-         L50i5Wue1Nwy+fJ+psrEc4YKRKlJxqXmWZBxHLMX06Os9FMIevT4Q6KnsgTdg8tRmP/r
-         wRkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3IgKPEXPEhoiVhProzrF1Nh2SnPmElxALGug4CytgfI=;
-        b=oL3EaXq3F1Viz5OMdDeUbd/nMs5anq0gBgLVXJPzg4wgf0af5nPkgMLPfuXSnHz30G
-         YZQR/Jp+JzttBr6OyK7Q15p31M4THjkYiRuuzCXMYK0bd1Ut9MCBHKFx1SxCgJKTMtLW
-         zyUzgHFMXRYHDXenvbGSeAeHyTKhO0o/s4wKqizmD2an5sdWX8XQgZ5Y7UJoItfNw1JD
-         RmdDCSKUVirB+Z0Ylnpe+exrMYgb9PBj7im2TBZy7ufjMZI9M1z+CTy3sWF4X7qZorXb
-         W3pKBD0W+TWLkrgpC0p3DqI2ahxewe+kHXYSF+WMsWf9PI8zmLe3JzM235z7WBISwLu8
-         mGcA==
-X-Gm-Message-State: AOAM53302snKS2/CLtme+FTHcvr65UQxFSKaVtkUVSLF90zqJs4EnTx2
-        rSqA5KRAaCD5X1gp2tNGWRg=
-X-Google-Smtp-Source: ABdhPJzdddZB84HMqvCk/h7GloMp+rVVHoftPjacD2sZTy7yG/PM1g9Ak8rt3+nLxxCWv/u0C7GxmA==
-X-Received: by 2002:a17:906:4050:: with SMTP id y16mr12774577ejj.537.1607213635882;
-        Sat, 05 Dec 2020 16:13:55 -0800 (PST)
-Received: from ltop.local ([2a02:a03f:b7fe:f700:78c1:dc3d:b5fd:9b12])
-        by smtp.gmail.com with ESMTPSA id gl2sm6390263ejb.29.2020.12.05.16.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Dec 2020 16:13:54 -0800 (PST)
-Date:   Sun, 6 Dec 2020 01:13:53 +0100
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        edwin.peer@broadcom.com,
-        Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: Re: sparse annotation for error types?
-Message-ID: <20201206001353.fhfu6wzn7nfg7fmv@ltop.local>
-References: <20201205143250.2378b9f9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CAHk-=wjQYjRusiGfXTywSg5xC8knhP6uesDfO3J=bgu5uevtyA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjQYjRusiGfXTywSg5xC8knhP6uesDfO3J=bgu5uevtyA@mail.gmail.com>
+        id S1727260AbgLFAVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 19:21:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgLFAVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 19:21:20 -0500
+Subject: Re: [git pull] Input updates for v5.10-rc6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607214040;
+        bh=IYHOj4vaPvp6771HWufe8aoWa0ykGu8LWN7qLFEVWxI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=XLlGyaXi/B13beFRR6eEuZGrEqYyT0vrpAL+8HgbZuuoHvu0Hw1NHj4iKgU+abd8X
+         R/oqz5BfbnZoETBZMdpl3/0B5eff9vdl3NM8N5m+ZcnhFFA0yRzKSER17hAt/hPtnk
+         Hgk2H34XSgeR5VNmNxJmSN4emVcRre6DJ55tg0+DQ02rx21qR2kx6HUhDuUrJv8+9r
+         kiy8+UJJtzBK110Pfn8pdt/eipWaSipRPxmapqQTYG6ddmo7rqZnFhVrRv3qd41rWV
+         2HSkSlrYQsJBgSqHvyrHj2L0YkVdY7YnoBVgb9p/YYOCEuUvl/iifjFEoxA3sjOWWT
+         740G8Yn3W2BBg==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <X8we6Ff3ikti/2bR@google.com>
+References: <X8we6Ff3ikti/2bR@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <X8we6Ff3ikti/2bR@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: 8c3b55a299c325830a987de21dab6a89ecb71164
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7059c2c00a2196865c2139083cbef47cd18109b6
+Message-Id: <160721404011.14459.459879198480889297.pr-tracker-bot@kernel.org>
+Date:   Sun, 06 Dec 2020 00:20:40 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 03:10:15PM -0800, Linus Torvalds wrote:
-> On Sat, Dec 5, 2020 at 2:34 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > Am I the only one who thinks this would be a good idea?
-> 
->         err = third_step(obj, 0);
-> 
->    err_undo_2s:
->         second_undo(obj);
->    err_undo_1s:
->         first_undo(obj);
->         return err;
-> 
-> iow, the "undo" parts are often done even for the success cases. This
-> is particularly true when those first steps are locking-related, and
-> the code always wants to unlock.
-> 
-> Sparse also doesn't really do any value analysis, so I suspect it
-> wouldn't be trivial to implement in sparse anyway.
+The pull request you sent on Sat, 5 Dec 2020 15:59:36 -0800:
 
-Yes but ... (see here under).
- 
-> Having some kind of smarter compile-time assert could be useful in
-> general, but as mentioned, sparse doesn't really do value range
-> propagation right now, so..
-> 
-> Luc, any reactions?
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
-I agree but the code Jakub showed is very constrained:
-   * only 2 return points
-   * one of them being 0, the other is to be checked.
-and I think this should be checkable easily, something like:
-   * identify the highest point that can't reach the 'return 0'
-   * check that the only way to reach this point is via a zero/non-zero
-     test of the 'err' variable/returned value (which is a very
-     limited kind of value analysis after all).
-But sure, these are rather strict constraints but maybe it's
-common for net drivers?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7059c2c00a2196865c2139083cbef47cd18109b6
 
-Otherwise, yes, it's probably better to annotate the function itself
-or the point of interest (via some kind of assertion) than the
-variable.
+Thank you!
 
-I've not much idea how much this would be useful, though.
-
--- Luc
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
