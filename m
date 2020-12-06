@@ -2,125 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260AA2D0201
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680262D0204
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 09:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgLFIqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 03:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgLFIqP (ORCPT
+        id S1726148AbgLFItl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 03:49:41 -0500
+Received: from mail-m972.mail.163.com ([123.126.97.2]:46046 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLFItk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 03:46:15 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD10C0613D0;
-        Sun,  6 Dec 2020 00:45:29 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id e7so9579759wrv.6;
-        Sun, 06 Dec 2020 00:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VFydP16aQgSOYZnYU7/OlYLKjUicVKh61lfiFMpnZts=;
-        b=jqNgAhpbTyB50/v0hzFe7KzXFtpZOthuqD3u07KgsEbduNLeqWxJBHKIfEB0G8R0JS
-         FMy7Xlz2zszv2GmDBDwbUbpP0zWQrI32hIUoRagrWLl2/pBgX95gMpmfHC+m/PdUJsZZ
-         fA9OWn2ZSkED5NFpNgu8EP5uqbxnOgRvqT98mccNmpMhgJFvOjf6+Y9BML134UiIcQty
-         PHmv5+rQb8uydoE0cGIvrW58v6YQWwhyOwiezAq1zBodNo9Bk0qK6LQm+GVVXomTfUJ6
-         hEWtDePoZNMV79aGUIO0cUv1nTKkNmKtfbQRw7lfN/yz6j1fmh9lOjWXHU5BbXVr1URU
-         6Zjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VFydP16aQgSOYZnYU7/OlYLKjUicVKh61lfiFMpnZts=;
-        b=Lii+dSaSC7uwxSYOcaV3RFEkx73tlj7fu5a7Ku4RdXtPV1rVkVTDF6y64BxrCI9Ftf
-         EV8o5p9rJqRXOKueZGgqmHBK6GEsaivst9P90hRdQUpSOO/jlaRy8pmY9JF38pZaa6yZ
-         wGeNRy/7Ea6Ff7iYY+KAuHzmHWisfpi03BEAx14daFOIXC6sgWTnumQurhTxA3maJnSs
-         A1Py4dSNRL+L52v2YRJeg+5cycD28MCAcaRRRjf+rWExwAYqUBJHHeb+Xt5MYnZScZUJ
-         uO3sPvI+P0grUleG7dip2uZGzqy16wdxByz3niegTjgsKtnYjY3/32ml0r+TLCTciIDX
-         1I0w==
-X-Gm-Message-State: AOAM533OXaZNEYsKbOeaAIqDmuFAVrZcmnoBy+L2bk5ZMQN5K2qDJGqY
-        hW7rYEv6YEt6HKK63E/OpISTPFNxWgMKoGR9oUg=
-X-Google-Smtp-Source: ABdhPJyx/rqejwi9S49Zw3m5y1kznKAsmMF4SEWOKLs4TkvxGb/+CuRHTVP9NVskbOod8rOFO+vN+pumquIRqEEhsgA=
-X-Received: by 2002:adf:bd84:: with SMTP id l4mr14090824wrh.41.1607244327663;
- Sun, 06 Dec 2020 00:45:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
-In-Reply-To: <X8yWxe/9gzosFOam@kroah.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Sun, 6 Dec 2020 17:45:14 +0900
-Message-ID: <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
-        masahiroy@kernel.org, peterz@infradead.org,
-        peter.enderborg@sony.com, krzk@kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
-        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
-        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
-        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
-        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        dushistov@mail.ru,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 6 Dec 2020 03:49:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=WHTCy5l5+fYdUerrjp
+        3tMcqmoP1IK9GclDAiIt73lIc=; b=gWjDUGTW9iFpikukNRiWvcwOFE5mmhmBlA
+        T3lh4vQlvBb4wNJcDNquytTyh7NNZglggAtzQR62O2/C3MtxyZfrFivx9BWwEvgM
+        AI7If9haV8rNEYqiyrBP3qYHMpRLiJ73bOJQpmQmtgnnBwc16PNnRvmtAnGRUCpN
+        w4mFF3LYo=
+Received: from localhost.localdomain (unknown [202.112.113.212])
+        by smtp2 (Coremail) with SMTP id GtxpCgCHA8nMmsxfJf2DEA--.20874S4;
+        Sun, 06 Dec 2020 16:48:13 +0800 (CST)
+From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>, davem@davemloft.net,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
+Date:   Sun,  6 Dec 2020 16:48:01 +0800
+Message-Id: <20201206084801.26479-1-ruc_zhangxiaohui@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: GtxpCgCHA8nMmsxfJf2DEA--.20874S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF4xZF4rAw4fXF4xJry7ZFb_yoWkZFX_W3
+        4Iva15JrZrtw1IyrsYyw42v3sYkr1rXrWxGa17trWrGFW2vFZrtrnY9rs5Xr12kw1qvr9x
+        Wrs8A3y5ta4FvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjU3vUUUUUU==
+X-Originating-IP: [202.112.113.212]
+X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/1tbipQ3yMFUMa-PfKwAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, in 7'th patch (not 8th).
+From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 
+mwifiex_cmd_802_11_ad_hoc_start() calls memcpy() without checking
+the destination size may trigger a buffer overflower,
+which a local user could use to cause denial of service
+or the execution of arbitrary code.
+Fix it by putting the length check before calling memcpy().
 
-Thanks
-Levi.
+Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+---
+ drivers/net/wireless/marvell/mwifiex/join.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Sun, Dec 6, 2020 at 5:31 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Dec 06, 2020 at 03:46:24PM +0900, Levi Yun wrote:
-> > Inspired find_next_*_bit and find_last_bit, add find_last_zero_bit
-> > And add le support about find_last_bit and find_last_zero_bit.
-> >
-> > Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
-> > ---
-> >  lib/find_bit.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++--
-> >  1 file changed, 62 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/lib/find_bit.c b/lib/find_bit.c
-> > index 4a8751010d59..f9dda2bf7fa9 100644
-> > --- a/lib/find_bit.c
-> > +++ b/lib/find_bit.c
-> > @@ -90,7 +90,7 @@ unsigned long find_next_zero_bit(const unsigned long *addr, unsigned long size,
-> >  EXPORT_SYMBOL(find_next_zero_bit);
-> >  #endif
-> >
-> > -#if !defined(find_next_and_bit)
-> > +#ifndef find_next_and_bit
-> >  unsigned long find_next_and_bit(const unsigned long *addr1,
-> >               const unsigned long *addr2, unsigned long size,
-> >               unsigned long offset)
-> > @@ -141,7 +141,7 @@ unsigned long find_last_bit(const unsigned long *addr, unsigned long size)
-> >  {
-> >       if (size) {
-> >               unsigned long val = BITMAP_LAST_WORD_MASK(size);
-> > -             unsigned long idx = (size-1) / BITS_PER_LONG;
-> > +             unsigned long idx = (size - 1) / BITS_PER_LONG;
-> >
-> >               do {
-> >                       val &= addr[idx];
->
-> This, and the change above this, are not related to this patch so you
-> might not want to include them.
->
-> Also, why is this patch series even needed?  I don't see a justification
-> for it anywhere, only "what" this patch is, not "why".
->
-> thanks
->
-> greg k-h
+diff --git a/drivers/net/wireless/marvell/mwifiex/join.c b/drivers/net/wireless/marvell/mwifiex/join.c
+index 5934f7147..173ccf79c 100644
+--- a/drivers/net/wireless/marvell/mwifiex/join.c
++++ b/drivers/net/wireless/marvell/mwifiex/join.c
+@@ -877,6 +877,8 @@ mwifiex_cmd_802_11_ad_hoc_start(struct mwifiex_private *priv,
+ 
+ 	memset(adhoc_start->ssid, 0, IEEE80211_MAX_SSID_LEN);
+ 
++	if (req_ssid->ssid_len > IEEE80211_MAX_SSID_LEN)
++		req_ssid->ssid_len = IEEE80211_MAX_SSID_LEN;
+ 	memcpy(adhoc_start->ssid, req_ssid->ssid, req_ssid->ssid_len);
+ 
+ 	mwifiex_dbg(adapter, INFO, "info: ADHOC_S_CMD: SSID = %s\n",
+-- 
+2.17.1
+
