@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5982D0454
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763E12D0416
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgLFLot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:44:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
+        id S1728021AbgLFLnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:43:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729374AbgLFLoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:44:44 -0500
+        id S1729027AbgLFLnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:43:02 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maria Pasechnik <mariap@mellanox.com>,
-        Antoine Tenart <atenart@kernel.org>,
+        stable@vger.kernel.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Davide Caratti <dcaratti@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 25/46] net: ip6_gre: set dev->hard_header_len when using header_ops
-Date:   Sun,  6 Dec 2020 12:17:33 +0100
-Message-Id: <20201206111557.669687743@linuxfoundation.org>
+Subject: [PATCH 5.4 30/39] net: skbuff: ensure LSE is pullable before decrementing the MPLS ttl
+Date:   Sun,  6 Dec 2020 12:17:34 +0100
+Message-Id: <20201206111556.133608027@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111556.455533723@linuxfoundation.org>
-References: <20201206111556.455533723@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -32,69 +33,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Davide Caratti <dcaratti@redhat.com>
 
-[ Upstream commit 832ba596494b2c9eac7760259eff2d8b7dcad0ee ]
+[ Upstream commit 13de4ed9e3a9ccbe54d05f7d5c773f69ecaf6c64 ]
 
-syzkaller managed to crash the kernel using an NBMA ip6gre interface. I
-could reproduce it creating an NBMA ip6gre interface and forwarding
-traffic to it:
+skb_mpls_dec_ttl() reads the LSE without ensuring that it is contained in
+the skb "linear" area. Fix this calling pskb_may_pull() before reading the
+current ttl.
 
-  skbuff: skb_under_panic: text:ffffffff8250e927 len:148 put:44 head:ffff8c03c7a33
-  ------------[ cut here ]------------
-  kernel BUG at net/core/skbuff.c:109!
-  Call Trace:
-  skb_push+0x10/0x10
-  ip6gre_header+0x47/0x1b0
-  neigh_connected_output+0xae/0xf0
+Found by code inspection.
 
-ip6gre tunnel provides its own header_ops->create, and sets it
-conditionally when initializing the tunnel in NBMA mode. When
-header_ops->create is used, dev->hard_header_len should reflect the
-length of the header created. Otherwise, when not used,
-dev->needed_headroom should be used.
-
-Fixes: eb95f52fc72d ("net: ipv6_gre: Fix GRO to work on IPv6 over GRE tap")
-Cc: Maria Pasechnik <mariap@mellanox.com>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Link: https://lore.kernel.org/r/20201130161911.464106-1-atenart@kernel.org
+Fixes: 2a2ea50870ba ("net: sched: add mpls manipulation actions to TC")
+Reported-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Link: https://lore.kernel.org/r/53659f28be8bc336c113b5254dc637cc76bbae91.1606987074.git.dcaratti@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/ip6_gre.c |   16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ net/core/skbuff.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -1122,8 +1122,13 @@ static void ip6gre_tnl_link_config_route
- 			return;
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5618,6 +5618,9 @@ int skb_mpls_dec_ttl(struct sk_buff *skb
+ 	if (unlikely(!eth_p_mpls(skb->protocol)))
+ 		return -EINVAL;
  
- 		if (rt->dst.dev) {
--			dev->needed_headroom = rt->dst.dev->hard_header_len +
--					       t_hlen;
-+			unsigned short dst_len = rt->dst.dev->hard_header_len +
-+						 t_hlen;
++	if (!pskb_may_pull(skb, skb_network_offset(skb) + MPLS_HLEN))
++		return -ENOMEM;
 +
-+			if (t->dev->header_ops)
-+				dev->hard_header_len = dst_len;
-+			else
-+				dev->needed_headroom = dst_len;
- 
- 			if (set_mtu) {
- 				dev->mtu = rt->dst.dev->mtu - t_hlen;
-@@ -1148,7 +1153,12 @@ static int ip6gre_calc_hlen(struct ip6_t
- 	tunnel->hlen = tunnel->tun_hlen + tunnel->encap_hlen;
- 
- 	t_hlen = tunnel->hlen + sizeof(struct ipv6hdr);
--	tunnel->dev->needed_headroom = LL_MAX_HEADER + t_hlen;
-+
-+	if (tunnel->dev->header_ops)
-+		tunnel->dev->hard_header_len = LL_MAX_HEADER + t_hlen;
-+	else
-+		tunnel->dev->needed_headroom = LL_MAX_HEADER + t_hlen;
-+
- 	return t_hlen;
- }
- 
+ 	lse = be32_to_cpu(mpls_hdr(skb)->label_stack_entry);
+ 	ttl = (lse & MPLS_LS_TTL_MASK) >> MPLS_LS_TTL_SHIFT;
+ 	if (!--ttl)
 
 
