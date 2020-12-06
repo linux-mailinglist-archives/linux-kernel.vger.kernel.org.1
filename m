@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C7E2D0701
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 20:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355672D0707
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 21:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgLFTxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 14:53:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        id S1727605AbgLFUGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 15:06:00 -0500
+Received: from ozlabs.org ([203.11.71.1]:56101 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgLFTxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 14:53:22 -0500
-Subject: Re: [GIT PULL] Char/Misc driver fixes for 5.10-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607284362;
-        bh=ZlfUnxbFI82g+TuP66uUc/HJpmt2j3zX1RaAUoF+h1o=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=C5jWgQx34AJXTcturXhKHjlB+LPdSanhIvdb9OU1+HjtqSMqoPiRyaeKX/aFuimEu
-         1gCoFQyN4s1j1xBIVbtj46SFvSnZH2XhwWu+lSe5jAYzlierucs27MwjMsTU5/gX6H
-         0QsdUDw46rgVCYA8Hc0my2zyLtS2LmLbG7eANGV/5JfoExdvictLMZ3oBj8AONDRwU
-         TxEefb838/vVfBRqPZYT1EyFGb9+TC2lm9ROXXKr3Bq5LnsebwJ1wemAwTKvGn6RER
-         FMUjQE9MwxMvWPjNqcXHBnT5BGHOAnBXl/fjDhx8O+gTEWP4qVR06hZH7UU4b4BVWL
-         eMnabi5CZLuYQ==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X8zsZCwxs6Oas7rJ@kroah.com>
-References: <X8zsZCwxs6Oas7rJ@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X8zsZCwxs6Oas7rJ@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.10-rc7
-X-PR-Tracked-Commit-Id: 264f53b41946dcabb2b3304190839ab5670c7825
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab91292cb3e9f43d9c6839d7572d17b35bc21710
-Message-Id: <160728436226.18476.4209696553179684973.pr-tracker-bot@kernel.org>
-Date:   Sun, 06 Dec 2020 19:52:42 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+        id S1726731AbgLFUGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 15:06:00 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cpy996JsBz9sW0;
+        Mon,  7 Dec 2020 07:05:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607285118;
+        bh=wYgxx6MyAif0XDhUwOA30OGouNV8tUyuxPFR1rfu5wo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kx/uSzU8vQeDTWvRXauXWNe83V0NC58SZtnZeh1W3etXC4Bdpr1NwdSPIZHylEu3e
+         VcHhyOj1MV4cnoX1Nkq9eBCR7B0lSAw939nz4fW+X5ZxMqe07pVbtfSjyiGptr4YHs
+         0PmygBhKk36nhBhnl+x6AV0wXV2FeJrH20fsTLhQWwCWdRS36YC9jGe9pizu28ImPw
+         KpBW0u7LztI721B0jL2HIZj0BokVN9OQ3h1sghGlMYriWeX4AeZWG8el4dIRHh0yC4
+         B+O5+1cK9++AIIR1wCH81ox7BT2yR1cLo8KvQn8R2h8imOoq9z49v2SwTCppMZZj2g
+         ekie3qty9USMg==
+Date:   Mon, 7 Dec 2020 07:05:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Iskren Chernev <iskren.chernev@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the drm-msm tree
+Message-ID: <20201207070517.28951ed0@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/X/tk6r_NtoH3C/EMPWAcH=Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 6 Dec 2020 15:36:20 +0100:
+--Sig_/X/tk6r_NtoH3C/EMPWAcH=Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.10-rc7
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab91292cb3e9f43d9c6839d7572d17b35bc21710
+In commit
 
-Thank you!
+  9b73bde39cf2 ("drm/msm: Fix use-after-free in msm_gem with carveout")
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Fixes tag
+
+  Fixes: 4b85f7f5cf7 ("drm/msm: support for an arbitrary number of address =
+spaces")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+In the furture, this can be avoided by setting core.abbrev to 12 (or more)
+or (for git v2.11 or later) just making sure it is not set (or set to
+"auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/X/tk6r_NtoH3C/EMPWAcH=Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NOX0ACgkQAVBC80lX
+0GwvBgf/UtKexj/EgmdeVayzcaxUcdrWHHakeLz8O898t6IoFHHyxG0jM+F1BbQV
+TZME/HBLJ/0vBymUJ1CisKGyDOxvIHe7u//ydB0ycusqztuQq+3f93TLtzoTejNy
+I+Ag42VU3tqTiahLF6TuV6joN8/m9mywo7UFOTbB22k8AC6mJIr+n4M1wDswf9sb
+oRdoaAtHY+8LsOJYI4RCSTiqz8SsAewzmlutzxRZNf69hByoKCEsXMZ/e+G/eBWD
+2njerUSr/271pS/UGthlfZinTP0PV2MjbjjQBF5MGbrJZUBmE+NFSs3rvn7bVDsY
+g6CoJdtCEja1Sj/LcXOLtYfkc+wDMA==
+=KDvo
+-----END PGP SIGNATURE-----
+
+--Sig_/X/tk6r_NtoH3C/EMPWAcH=Z--
