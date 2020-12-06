@@ -2,192 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D364C2D026C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD7D2D026F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 11:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgLFKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 05:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbgLFKGg (ORCPT
+        id S1726076AbgLFKLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 05:11:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20337 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725822AbgLFKLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 05:06:36 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13636C0613D1;
-        Sun,  6 Dec 2020 02:05:56 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id r24so13758431lfm.8;
-        Sun, 06 Dec 2020 02:05:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xt68N/tojAn+X+eORxYIydzyuDkBvWrZkEpf49UU+Ws=;
-        b=QustGC5gJezh0xNL/1XUtO+dCt5J+pvT7fp6FxldwuvmTZLa7CA93Y9b3RdoAJUE/T
-         g0xIlxWJtXakl4UKiYwvYrJzdR4FMeXEtFrsIzZXkN9FuBTT1ruQEuznJf8QF+n8XBXL
-         wpDjtR4HHi5UVz2iOJeC8+a3jBkvMPWwpc6dI8s91lpQ2HrEfJVGY17ccj59XvsFhPX3
-         RKftikG2ho64wVjuTMMB3FDXGtU5B82ZSdJhdfMQa/J/Z4QBHTc8Y7Y6HQJNYbUzzzPW
-         umgRjuMQFqpjcwNNAsX5ZyKvaIVlk8PJgtkdvWV6jiVv0ZNd/HB3HM+UJ3+RaPZRhrNw
-         PEGg==
+        Sun, 6 Dec 2020 05:11:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607249389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xji8+FhOghfu2/XZrvV9/OViBfo6B1ROea5bmQqV1JA=;
+        b=CpzoQjxutDWpL7kScYSvdSAFQxUOQ+VkokiVuNsKPDKdLi/J+XKcK2OU/P2zaO8zP0MT8v
+        ykOLRTQlndkEzqKyyiivi8KuZVmej1AL0ICr86y/8DGmHgJQ2zV3D8e8bz7/j444gSUhjj
+        E411jfyUtFjHBRhkc0Jn3c04vEz0xcg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-lvejHIBHOCWb1kWWVDAqyg-1; Sun, 06 Dec 2020 05:09:47 -0500
+X-MC-Unique: lvejHIBHOCWb1kWWVDAqyg-1
+Received: by mail-wr1-f69.google.com with SMTP id v1so4117716wri.16
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 02:09:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xt68N/tojAn+X+eORxYIydzyuDkBvWrZkEpf49UU+Ws=;
-        b=aqPo2HP1KCl3RelkHSFdANR47HffthbieUwGsj2OAm9voTZaLr1zd+LhJe1ndUy7+K
-         OKSi1NqvXGyZZpBmHHUxSXztgGETKO9SWnq+j1vaiWdYTP0gxx+ZbYzkX75gzGe46mCR
-         URLBvzz/BauA+bVOAqv0O3PlXwxG4N8a8tegavDReV+ScZvp+bJqRKED1whYarsBqkLm
-         EboL6/6JnW1J4+JuwrcaxlWBf8rV5K5atesBvGdHcyrOTP2pnh9sBtpMnqE4z8WqTlUK
-         J7hJR60B2CIgFJ8F6ne+a1HfL6uOapy+1QGCIF977PseG+V7sNANPmNUURg1rSchQ6/O
-         gINA==
-X-Gm-Message-State: AOAM532GUho/H6lmTl/Y5jMo5Xjk/rJBr/0kl3hITU6XT+qEr9D68mYf
-        n2F2BD/gw70VeILNcf4ve64=
-X-Google-Smtp-Source: ABdhPJw/nG2Sxcwi0lQk9dQrxf0vxOmbyiTRrngGMSbpQGeRGfcRhdlBhixGcs00B/NGWV2nb7r2dw==
-X-Received: by 2002:ac2:5a44:: with SMTP id r4mr5837652lfn.1.1607249154606;
-        Sun, 06 Dec 2020 02:05:54 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id m16sm2498255lfa.57.2020.12.06.02.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 02:05:53 -0800 (PST)
-Date:   Sun, 6 Dec 2020 13:05:51 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        "Nyman, Mathias" <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        narmstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate
- DWC3 sub-node
-Message-ID: <20201206100551.7ioybhtwfscul7kw@mobilestation>
-References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
- <20201205152427.29537-20-Sergey.Semin@baikalelectronics.ru>
- <DM6PR11MB3721E8FEB4E755328D7A517EDDCF0@DM6PR11MB3721.namprd11.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xji8+FhOghfu2/XZrvV9/OViBfo6B1ROea5bmQqV1JA=;
+        b=coNnMlz1dpqpM9DS7IRu2KZa4a9bQMfZ8avjwNe3zdu8QuQlBavcVttmU9TGPHRKm/
+         7Y+oWqneAX+20ajWzdPi6MtM36/yu7hNR1bl9C1g6un+SvhlknF23St4/St/2y7yjv5I
+         q5iVefVFoBL1+EK5OaHFzGkqp3tFJGHomDaKpC5GAS2ibBQczdTzjuqjGXFZysJWGdpI
+         gyVlHSuwJYLKFLiWEYhunEFquR/Hl7Ljqf9Q+DHD0cIC1VpJS9nmraB8cYlC+yMuXHU5
+         /rUq4gEdjIXQ8vRimd3T1QFFEv38MPx/49/PbBfAWjrFaQUmvfYjNzLK546l3Cgi9G6n
+         t/cA==
+X-Gm-Message-State: AOAM531sh+zCb7MVlHjMzgtnw+SkCwdBAByieZ693KmdZ1eCL4zMSStX
+        bHQjqs0kD9aDMr7as67/dz/63tc1TJWHRDhoCvycK/N8MTptc/ZTpFUjDukspKRnBn2PNBPuDn2
+        lu6gwsy1H1hwISlOOR1pna95KZ1zasO0a/gvznrhCautlUhiZjVG6vMW/oCv7ocXHe19dPrC885
+        At
+X-Received: by 2002:adf:ec0c:: with SMTP id x12mr14416590wrn.307.1607249386043;
+        Sun, 06 Dec 2020 02:09:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy6VBLcLDbM240XPEJbqvQy/D9PtV57yuW3xEvKi5G+E3Gz9EZOlYSr6q6a9ziYlzURpJ9FlA==
+X-Received: by 2002:adf:ec0c:: with SMTP id x12mr14416555wrn.307.1607249385766;
+        Sun, 06 Dec 2020 02:09:45 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id d3sm10226839wrr.2.2020.12.06.02.09.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Dec 2020 02:09:45 -0800 (PST)
+Subject: Re: [PATCH] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <370db207-7216-ae26-0c33-dab61e0fdaab@redhat.com>
+Date:   Sun, 6 Dec 2020 11:09:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3721E8FEB4E755328D7A517EDDCF0@DM6PR11MB3721.namprd11.prod.outlook.com>
+In-Reply-To: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wan,
-
-On Sun, Dec 06, 2020 at 09:56:47AM +0000, Wan Mohamad, Wan Ahmad Zainie wrote:
-> Hi Serge.
+On 05/12/20 01:48, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 > 
-> > -----Original Message-----
-> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Sent: Saturday, December 5, 2020 11:24 PM
-> > To: Nyman, Mathias <mathias.nyman@intel.com>; Felipe Balbi
-> > <balbi@kernel.org>; Krzysztof Kozlowski <krzk@kernel.org>; Greg Kroah-
-> > Hartman <gregkh@linuxfoundation.org>; Rob Herring
-> > <robh+dt@kernel.org>; Chunfeng Yun <chunfeng.yun@mediatek.com>;
-> > Wan Mohamad, Wan Ahmad Zainie
-> > <wan.ahmad.zainie.wan.mohamad@intel.com>
-> > Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>; Serge Semin
-> > <fancer.lancer@gmail.com>; Alexey Malahov
-> > <Alexey.Malahov@baikalelectronics.ru>; Pavel Parkhomenko
-> > <Pavel.Parkhomenko@baikalelectronics.ru>; Andy Gross
-> > <agross@kernel.org>; Bjorn Andersson <bjorn.andersson@linaro.org>;
-> > Manu Gautam <mgautam@codeaurora.org>; Roger Quadros
-> > <rogerq@ti.com>; Lad Prabhakar <prabhakar.mahadev-
-> > lad.rj@bp.renesas.com>; Yoshihiro Shimoda
-> > <yoshihiro.shimoda.uh@renesas.com>; narmstrong
-> > <narmstrong@baylibre.com>; Kevin Hilman <khilman@baylibre.com>;
-> > Martin Blumenstingl <martin.blumenstingl@googlemail.com>; linux-arm-
-> > kernel@lists.infradead.org; linux-snps-arc@lists.infradead.org; linux-
-> > mips@vger.kernel.org; linuxppc-dev@lists.ozlabs.org; linux-
-> > usb@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate
-> > DWC3 sub-node
-> > 
-> > Intel Keem Bay DWC3 compatible DT nodes are supposed to have a DWC
-> > USB3 compatible sub-node to describe a fully functioning USB interface. Let's
-> > use the available DWC USB3 DT schema to validate the Qualcomm DWC3 sub-
-> > nodes.
-> > 
-> > Note since the generic DWC USB3 DT node is supposed to be named as
-> > generic USB HCD ("^usb(@.*)?") one we have to accordingly fix the sub-
-> > nodes name regexp and fix the DT node example.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+> cleaned up the computation of MMIO generation SPTE masks, however it
+> introduced a bug how the upper part was encoded:
+> SPTE bits 52-61 were supposed to contain bits 10-19 of the current
+> generation number, however a missing shift encoded bits 1-10 there instead
+> (mostly duplicating the lower part of the encoded generation number that
+> then consisted of bits 1-9).
 > 
-
-> LGTM. With minor change to fix the typo above, Qualcomm to Intel
-> Keem Bay,
-> Acked-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-
-Ah, right. Thanks for noticing that. A probability of copy-paste mistakes
-increases proportionally to the number sleepless hours.)
-
--Sergey
-
+> In the meantime, the upper part was shrunk by one bit and moved by
+> subsequent commits to become an upper half of the encoded generation number
+> (bits 9-17 of bits 0-17 encoded in a SPTE).
 > 
-> > 
-> > ---
-> > 
-> > Changelog v5:
-> > - This is a new patch created for the new Intel Keem Bay bindings file,
-> >   which has been added just recently.
-> > ---
-> >  .../devicetree/bindings/usb/intel,keembay-dwc3.yaml      | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/usb/intel,keembay-
-> > dwc3.yaml b/Documentation/devicetree/bindings/usb/intel,keembay-
-> > dwc3.yaml
-> > index dd32c10ce6c7..43b91ab62004 100644
-> > --- a/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-> > @@ -34,11 +34,8 @@ properties:
-> >  # Required child node:
-> > 
-> >  patternProperties:
-> > -  "^dwc3@[0-9a-f]+$":
-> > -    type: object
-> > -    description:
-> > -      A child node must exist to represent the core DWC3 IP block.
-> > -      The content of the node is defined in dwc3.txt.
-> > +  "^usb@[0-9a-f]+$":
-> > +    $ref: snps,dwc3.yaml#
-> > 
-> >  required:
-> >    - compatible
-> > @@ -68,7 +65,7 @@ examples:
-> >            #address-cells = <1>;
-> >            #size-cells = <1>;
-> > 
-> > -          dwc3@34000000 {
-> > +          usb@34000000 {
-> >                  compatible = "snps,dwc3";
-> >                  reg = <0x34000000 0x10000>;
-> >                  interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
-> > --
-> > 2.29.2
+> In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
+> has changed the SPTE bit range assigned to encode the generation number and
+> the total number of bits encoded but did not update them in the comment
+> attached to their defines, nor in the KVM MMU doc.
+> Let's do it here, too, since it is too trivial thing to warrant a separate
+> commit.
 > 
-> Best regards,
-> Zainie
+> Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+
+
+Good catch.  What do you think about this alternative definition?  It 
+computes everything from the bit ranges.
+
+#define MMIO_SPTE_GEN_LOW_START         3
+#define MMIO_SPTE_GEN_LOW_END           11
+
+#define MMIO_SPTE_GEN_HIGH_START        PT64_SECOND_AVAIL_BITS_SHIFT
+#define MMIO_SPTE_GEN_HIGH_END          62
+
+#define MMIO_SPTE_GEN_LOW_MASK          GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
+ 
+MMIO_SPTE_GEN_LOW_START)
+#define MMIO_SPTE_GEN_HIGH_MASK 
+GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
+ 
+MMIO_SPTE_GEN_HIGH_START)
+
+#define MMIO_SPTE_GEN_LOW_BITS          (MMIO_SPTE_GEN_LOW_END - 
+MMIO_SPTE_GEN_LOW_START + 1)
+#define MMIO_SPTE_GEN_HIGH_BITS         (MMIO_SPTE_GEN_HIGH_END - 
+MMIO_SPTE_GEN_HIGH_START + 1)
+
+#define MMIO_SPTE_GEN_LOW_SHIFT         (MMIO_SPTE_GEN_LOW_START - 0)
+#define MMIO_SPTE_GEN_HIGH_SHIFT        (MMIO_SPTE_GEN_HIGH_START - 
+MMIO_SPTE_GEN_LOW_BITS)
+
+#define MMIO_SPTE_GEN_MASK 
+GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
+
+
+Thanks,
+
+Paolo
+
