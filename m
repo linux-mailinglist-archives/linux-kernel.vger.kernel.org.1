@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E6C2D05E1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB8D2D05E6
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 17:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgLFQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 11:19:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58806 "EHLO
+        id S1726832AbgLFQW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 11:22:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58844 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgLFQT6 (ORCPT
+        with ESMTP id S1726698AbgLFQWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 11:19:58 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
+        Sun, 6 Dec 2020 11:22:25 -0500
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607271556;
+        s=2020; t=1607271704;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6FbgwqR8cwx7EiM6FSCm/Hsw2IrEwAZDzoC3Of2D+NM=;
-        b=AMz9My6hb4QDemn9K++Vs98nvP7FMGhxiDgoliw4OGCYQsN4AelRWDtTpvHLHfycGZLdkq
-        lN2D+Rik2oiLYeRdq7oQbj6FeQt5C6GgN/ctLS7OurkWyvZZM9TQDysqxgpACcJCwiNKj9
-        pDoCHie/GHDWiyeGgkAKCjCc4YTlncKuOXCzJXpFNMbcleEhwL+8PA6MREdrMERpT4a2d6
-        OPzyx5pOnVWYX6Xj6X6GKwr48KMbXrQOv+xzh822r86kkdjpNbCHR+shy6UnnUuHtLJjLv
-        d6E0LRcfDyi0J41Y3LZl+2qLY/LOYzMR3a8oNbvB8thi0Zgk8U8OfGBhoqrbGQ==
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=274El5B09MwkXHRKFDzJ1crhgPsfgSwWs7YHlF6J+1w=;
+        b=L6OrQ2ZHR+GnMnqjaahoqby97f1nPIGNd0jFWA0bCnmrsM3nEOAR5dI4qN8Th79vDAD41s
+        5W+IC2m2UwvKdFosbMHZdA0DngMviNXN0r+laXO5PqaZ6ErO/4ItProagjPLLOf7pputvK
+        oL6d4SEbXU+6Pcw7msbAogFYaiPUVXnHk5cA1O0LNkvKfFSn+hWROX/eCRDczPWg4HfTm1
+        AWKGRKrO5ulKpDfuG0GLaa3oNM7qd70FFZ20M07UH9Zub4bBw39NsmkrNwtE8Iq1JCETzN
+        QI//JbwROXJEtusa9qXfBKoNuol4x4YA568kdRf326Aom/yhw4DUTv69tcZtPw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607271556;
+        s=2020e; t=1607271704;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6FbgwqR8cwx7EiM6FSCm/Hsw2IrEwAZDzoC3Of2D+NM=;
-        b=Q1r5sG2dmTxR8OVLAifO4qaayPqOe82xtw00JIX+Twp9heSkYjiWB0fmhDdZsNTxJb3AA+
-        fhG1ko9MCJ+5w2BQ==
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=274El5B09MwkXHRKFDzJ1crhgPsfgSwWs7YHlF6J+1w=;
+        b=Lk2PiDLshFOdwZBnjeAzeGybsRcDGz+DkqwcPJAA9+8enLweTPfAcGM6n0dVlkMZ7MQXsy
+        RgW3TXshmLKWhXCQ==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <20201203171118.372391-2-mlevitsk@redhat.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com>
-Date:   Sun, 06 Dec 2020 17:19:16 +0100
-Message-ID: <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH -tip v1 0/3] seqlock: assorted cleanups
+Date:   Sun,  6 Dec 2020 17:21:40 +0100
+Message-Id: <20201206162143.14387-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03 2020 at 19:11, Maxim Levitsky wrote:
-> +	case KVM_SET_TSC_STATE: {
-> +		struct kvm_tsc_state __user *user_tsc_state = argp;
-> +		struct kvm_tsc_state tsc_state;
-> +		u64 host_tsc, wall_nsec;
-> +
-> +		u64 new_guest_tsc, new_guest_tsc_offset;
-> +
-> +		r = -EFAULT;
-> +		if (copy_from_user(&tsc_state, user_tsc_state, sizeof(tsc_state)))
-> +			goto out;
-> +
-> +		kvm_get_walltime(&wall_nsec, &host_tsc);
-> +		new_guest_tsc = tsc_state.tsc;
-> +
-> +		if (tsc_state.flags & KVM_TSC_STATE_TIMESTAMP_VALID) {
-> +			s64 diff = wall_nsec - tsc_state.nsec;
-> +			if (diff >= 0)
-> +				new_guest_tsc += nsec_to_cycles(vcpu, diff);
-> +			else
-> +				new_guest_tsc -= nsec_to_cycles(vcpu, -diff);
-> +		}
-> +
-> +		new_guest_tsc_offset = new_guest_tsc - kvm_scale_tsc(vcpu, host_tsc);
-> +		kvm_vcpu_write_tsc_offset(vcpu, new_guest_tsc_offset);
+Hi,
 
-From a timekeeping POV and the guests expectation of TSC this is
-fundamentally wrong:
+When the seqcount_LOCKNAME_t group of data types were introduced, two
+classes of seqlock.h sequence counter macros were added:
 
-      tscguest = scaled(hosttsc) + offset
+  - An external public API which can either take a plain seqcount_t or
+    any of the seqcount_LOCKNAME_t variants.
 
-The TSC has to be viewed systemwide and not per CPU. It's systemwide
-used for timekeeping and for that to work it has to be synchronized. 
+  - An internal API which takes only a plain seqcount_t.
 
-Why would this be different on virt? Just because it's virt or what? 
+To distinguish between the two groups, the "*_seqcount_t_*" pattern was
+used for the latter. This confused a number of mm/ call-site developers,
+and Linus also commented that this was not the standard practice for
+marking kernel internal APIs. [1]
 
-Migration is a guest wide thing and you're not migrating single vCPUs.
+Distinguish the latter group of macros by prefixing a "do_".
 
-This hackery just papers over he underlying design fail that KVM looks
-at the TSC per vCPU which is the root cause and that needs to be fixed.
+A number of call-site developers also complained that the automatic
+preemption disable/enable for the write side macros was not obvious, or
+documented. [2] Linus also suggested adding few comments explaining that
+behavior. [3] Fix it by completing the seqcount write side kernel-doc
+annotations.
 
-Thanks,
+Finally, fix a minor naming inconsistency w.r.t. seqlock.h
+vs. Documentation/locking/seqlock.rst.
 
-        tglx
+This series does not change the output "allyesconfig" kernel binary:
+
+    text         data            bss      ...        filename
+  247616963    289662125       81498728   ...  ../build-x86-64/vmlinux.old
+  247616963    289662125       81498728   ...  ../build-x86-64/vmlinux
+  145054028    78270273        18435468   ...  ../build-arm/vmlinux.old
+  145054028    78270273        18435468   ...  ../build-arm/vmlinux
+
+Note: based over -tip locking/core, instead of latest -rc, due to -tip
+      ab440b2c604b ("seqlock: Rename __seqprop() users").
+
+References:
+
+[1] https://lkml.kernel.org/r/CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com
+[2] https://lkml.kernel.org/r/20201030235121.GQ2620339@nvidia.com
+[3] https://lkml.kernel.org/r/CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com
+
+8<--------------
+
+Ahmed S. Darwish (3):
+  Documentation: seqlock: s/LOCKTYPE/LOCKNAME/g
+  seqlock: Prefix internal seqcount_t-only macros with a "do_"
+  seqlock: kernel-doc: Specify when preemption is automatically altered
+
+ Documentation/locking/seqlock.rst | 21 ++++----
+ include/linux/seqlock.h           | 83 ++++++++++++++++---------------
+ 2 files changed, 54 insertions(+), 50 deletions(-)
+
+base-commit: 97d62caa32d6d79dadae3f8d19af5c92ea9a589a
+--
+2.29.2
