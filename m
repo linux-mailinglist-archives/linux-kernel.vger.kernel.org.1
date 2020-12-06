@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BFB2D03B8
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59A72D03F1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbgLFLkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36844 "EHLO mail.kernel.org"
+        id S1728840AbgLFLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:41:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728315AbgLFLkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:40:00 -0500
+        id S1728851AbgLFLli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:41:38 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Falcon <tlfalcon@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 16/32] ibmvnic: Ensure that SCRQ entry reads are correctly ordered
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 12/39] staging/octeon: fix up merge error
 Date:   Sun,  6 Dec 2020 12:17:16 +0100
-Message-Id: <20201206111556.534444504@linuxfoundation.org>
+Message-Id: <20201206111555.264456188@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
-References: <20201206111555.787862631@linuxfoundation.org>
+In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
+References: <20201206111554.677764505@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -31,66 +33,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Falcon <tlfalcon@linux.ibm.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit b71ec952234610b4f90ef17a2fdcb124d5320070 ]
+commit 673b41e04a035d760bc0aff83fa9ee24fd9c2779 upstream.
 
-Ensure that received Subordinate Command-Response Queue (SCRQ)
-entries are properly read in order by the driver. These queues
-are used in the ibmvnic device to process RX buffer and TX completion
-descriptors. dma_rmb barriers have been added after checking for a
-pending descriptor to ensure the correct descriptor entry is checked
-and after reading the SCRQ descriptor to ensure the entire
-descriptor is read before processing.
+There's a semantic conflict in the Octeon staging network driver, which
+used the skb_reset_tc() function to reset skb state when re-using an
+skb.  But that inline helper function was removed in mainline by commit
+2c64605b590e ("net: Fix CONFIG_NET_CLS_ACT=n and
+CONFIG_NFT_FWD_NETDEV={y, m} build").
 
-Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
-Signed-off-by: Thomas Falcon <tlfalcon@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix it by using skb_reset_redirect() instead.  Also move it out of the
+
+This code path only ends up triggering if REUSE_SKBUFFS_WITHOUT_FREE is
+enabled, which in turn only happens if you don't have CONFIG_NETFILTER
+configured.  Which was how this wasn't caught by the usual allmodconfig
+builds.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/ibm/ibmvnic.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
 
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2162,6 +2162,12 @@ restart_poll:
+---
+ drivers/staging/octeon/ethernet-tx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/staging/octeon/ethernet-tx.c
++++ b/drivers/staging/octeon/ethernet-tx.c
+@@ -352,10 +352,10 @@ int cvm_oct_xmit(struct sk_buff *skb, st
+ 	skb_dst_set(skb, NULL);
+ 	skb_ext_reset(skb);
+ 	nf_reset_ct(skb);
++	skb_reset_redirect(skb);
  
- 		if (!pending_scrq(adapter, adapter->rx_scrq[scrq_num]))
- 			break;
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
- 		next = ibmvnic_next_scrq(adapter, adapter->rx_scrq[scrq_num]);
- 		rx_buff =
- 		    (struct ibmvnic_rx_buff *)be64_to_cpu(next->
-@@ -2784,6 +2790,13 @@ restart_loop:
- 		unsigned int pool = scrq->pool_index;
- 		int num_entries = 0;
- 
-+		/* The queue entry at the current index is peeked at above
-+		 * to determine that there is a valid descriptor awaiting
-+		 * processing. We want to be sure that the current slot
-+		 * holds a valid descriptor before reading its contents.
-+		 */
-+		dma_rmb();
-+
- 		next = ibmvnic_next_scrq(adapter, scrq);
- 		for (i = 0; i < next->tx_comp.num_comps; i++) {
- 			if (next->tx_comp.rcs[i]) {
-@@ -3180,6 +3193,11 @@ static union sub_crq *ibmvnic_next_scrq(
- 	}
- 	spin_unlock_irqrestore(&scrq->lock, flags);
- 
-+	/* Ensure that the entire buffer descriptor has been
-+	 * loaded before reading its contents
-+	 */
-+	dma_rmb();
-+
- 	return entry;
- }
+ #ifdef CONFIG_NET_SCHED
+ 	skb->tc_index = 0;
+-	skb_reset_tc(skb);
+ #endif /* CONFIG_NET_SCHED */
+ #endif /* REUSE_SKBUFFS_WITHOUT_FREE */
  
 
 
