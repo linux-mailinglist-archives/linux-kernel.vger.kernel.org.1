@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59A72D03F1
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182F52D03F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Dec 2020 12:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgLFLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 06:41:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39272 "EHLO mail.kernel.org"
+        id S1728881AbgLFLlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 06:41:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728851AbgLFLli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 06:41:38 -0500
+        id S1727395AbgLFLlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 06:41:47 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 12/39] staging/octeon: fix up merge error
-Date:   Sun,  6 Dec 2020 12:17:16 +0100
-Message-Id: <20201206111555.264456188@linuxfoundation.org>
+        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 13/39] ima: extend boot_aggregate with kernel measurements
+Date:   Sun,  6 Dec 2020 12:17:17 +0100
+Message-Id: <20201206111555.310303768@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
 References: <20201206111554.677764505@linuxfoundation.org>
@@ -33,46 +33,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Maurizio Drocco <maurizio.drocco@ibm.com>
 
-commit 673b41e04a035d760bc0aff83fa9ee24fd9c2779 upstream.
+[ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
 
-There's a semantic conflict in the Octeon staging network driver, which
-used the skb_reset_tc() function to reset skb state when re-using an
-skb.  But that inline helper function was removed in mainline by commit
-2c64605b590e ("net: Fix CONFIG_NET_CLS_ACT=n and
-CONFIG_NFT_FWD_NETDEV={y, m} build").
+Registers 8-9 are used to store measurements of the kernel and its
+command line (e.g., grub2 bootloader with tpm module enabled). IMA
+should include them in the boot aggregate. Registers 8-9 should be
+only included in non-SHA1 digests to avoid ambiguity.
 
-Fix it by using skb_reset_redirect() instead.  Also move it out of the
-
-This code path only ends up triggering if REUSE_SKBUFFS_WITHOUT_FREE is
-enabled, which in turn only happens if you don't have CONFIG_NETFILTER
-configured.  Which was how this wasn't caught by the usual allmodconfig
-builds.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
+Reviewed-by: Bruno Meneguele <bmeneg@redhat.com>
+Tested-by: Bruno Meneguele <bmeneg@redhat.com>  (TPM 1.2, TPM 2.0)
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/octeon/ethernet-tx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima.h        |  2 +-
+ security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/octeon/ethernet-tx.c
-+++ b/drivers/staging/octeon/ethernet-tx.c
-@@ -352,10 +352,10 @@ int cvm_oct_xmit(struct sk_buff *skb, st
- 	skb_dst_set(skb, NULL);
- 	skb_ext_reset(skb);
- 	nf_reset_ct(skb);
-+	skb_reset_redirect(skb);
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 8173982e00ab5..5fae6cfe8d910 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -30,7 +30,7 @@
  
- #ifdef CONFIG_NET_SCHED
- 	skb->tc_index = 0;
--	skb_reset_tc(skb);
- #endif /* CONFIG_NET_SCHED */
- #endif /* REUSE_SKBUFFS_WITHOUT_FREE */
+ enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
+ 		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
+-enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8 };
++enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
  
+ /* digest size for IMA, fits SHA1 or MD5 */
+ #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
+diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
+index d86825261b515..b06baf5d3cd32 100644
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -682,7 +682,7 @@ static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
+ 	if (rc != 0)
+ 		return rc;
+ 
+-	/* cumulative sha1 over tpm registers 0-7 */
++	/* cumulative digest over TPM registers 0-7 */
+ 	for (i = TPM_PCR0; i < TPM_PCR8; i++) {
+ 		ima_pcrread(i, &d);
+ 		/* now accumulate with current aggregate */
+@@ -691,6 +691,19 @@ static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
+ 		if (rc != 0)
+ 			return rc;
+ 	}
++	/*
++	 * Extend cumulative digest over TPM registers 8-9, which contain
++	 * measurement for the kernel command line (reg. 8) and image (reg. 9)
++	 * in a typical PCR allocation. Registers 8-9 are only included in
++	 * non-SHA1 boot_aggregate digests to avoid ambiguity.
++	 */
++	if (alg_id != TPM_ALG_SHA1) {
++		for (i = TPM_PCR8; i < TPM_PCR10; i++) {
++			ima_pcrread(i, &d);
++			rc = crypto_shash_update(shash, d.digest,
++						crypto_shash_digestsize(tfm));
++		}
++	}
+ 	if (!rc)
+ 		crypto_shash_final(shash, digest);
+ 	return rc;
+-- 
+2.27.0
+
 
 
