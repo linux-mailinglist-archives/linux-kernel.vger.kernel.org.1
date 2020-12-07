@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1679E2D18C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5232D18BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgLGSv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:51:26 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31492 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725822AbgLGSvZ (ORCPT
+        id S1726252AbgLGSvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:51:23 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45949 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLGSvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:51:25 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7IZCJa043525;
-        Mon, 7 Dec 2020 13:50:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=V/RZ5Pn73GL8YyKIk4LxKXDZDWqssrriPTr7EmBLW1Q=;
- b=FxMmvavKANNfAfIyy3hdBOYdp6zCGFXu+FiHvkwEgnMuOhTXeIUwKoLYY+i3onsjpf2z
- H7elV5xIcPKEOJABe8EchWUNxMt1noh4bZG0oCpCeyH5s1m77wr5JGJ3G64OLFy76uME
- /YA8unSx45fb/t9/V8MX/hIUfLr7+k0Q5Occ7kFKg/HipXB1+dXwaSHQThwa+GNkq59i
- poB69Zt4CMt67r9kZr52bIjaxpR82onyaCtFZKD46zCiILKwI1zsVO0s5/r5W7YCgY7r
- HFZ5qSck0ddyipijHp+oOrXkTIBYWLzCCAJ8qma9w2UjKCFufMsVAbJSuWXADudtBnZ+ nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359d5p37u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 13:50:41 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7I3KMp044764;
-        Mon, 7 Dec 2020 13:50:41 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359d5p37ts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 13:50:40 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7IQu3d002152;
-        Mon, 7 Dec 2020 18:50:40 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 3581u96f1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 18:50:40 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7IocP121233974
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 18:50:38 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5CB3878063;
-        Mon,  7 Dec 2020 18:50:38 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E3EA7805E;
-        Mon,  7 Dec 2020 18:50:37 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.162.205])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Dec 2020 18:50:37 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer
- invalidated
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        Janosch Frank <frankja@linux.ibm.com>
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
- <20201203185514.54060568.pasic@linux.ibm.com>
- <a8a90aed-97df-6f10-85c2-8e18dba8f085@linux.ibm.com>
- <20201204200502.1c34ae58.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <683dd341-f047-0447-1ee8-c126c305b6c2@linux.ibm.com>
-Date:   Mon, 7 Dec 2020 13:50:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 7 Dec 2020 13:51:23 -0500
+Received: by mail-ot1-f68.google.com with SMTP id h18so9489542otq.12;
+        Mon, 07 Dec 2020 10:51:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G3qQx9rj3Y0jkw8xAvThQpwnEPjDqjhVsbJkOLpjJJc=;
+        b=J5sAs0iPnwduXtt8gVqoQGnpS1GJc60xfLpqQt/ujR51KumjpeMwT/mMBR5NE7Bwew
+         Qv1Im85nl0qUC+IqeOXnV0D00ig8+hRax53trJ3N843U23mhMpyNu1XOhgDE2mIej0Vx
+         Ag6FySiD3iirsSmW4YXOhLPhJpIryLFK29b4KUp5AAwmpVyt3oyvYh7Ce1bE5VivWv0E
+         +ax1FXjyvheQZm/+l5+txHoe+1r8oJtS1NlU33FiOsFy9HDLRSObgfysDF0t7YrtMaZC
+         qq8JBPKBYlVK4Ach+easC5Ih6ZRYFEJ4+flFh/Jj4JaYOgdVGT6i055n5yRZDdxPfIcP
+         18bw==
+X-Gm-Message-State: AOAM530jvgvHr69r0SnzvG2Nq6EebzB1FMj/5HWGju4jdqEvvId7TMGX
+        I8mYjvFh7rMbAHxJnDuWyA==
+X-Google-Smtp-Source: ABdhPJy7fUQkjZ27/+CvPE6JMuQeGK4TS6bKhx4NonPnb1Xi7LrsTBLGZE1a9ODMufitoxPUeLcTuQ==
+X-Received: by 2002:a9d:774a:: with SMTP id t10mr3132445otl.190.1607367041980;
+        Mon, 07 Dec 2020 10:50:41 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p1sm2840721oto.4.2020.12.07.10.50.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 10:50:41 -0800 (PST)
+Received: (nullmailer pid 608789 invoked by uid 1000);
+        Mon, 07 Dec 2020 18:50:40 -0000
+Date:   Mon, 7 Dec 2020 12:50:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        u.kleine-koenig@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: pwm: pca9685: add staggered-outputs property
+Message-ID: <20201207185040.GA608113@robh.at.kernel.org>
+References: <20201112163931.204243-1-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-In-Reply-To: <20201204200502.1c34ae58.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- spamscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=3 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012070117
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112163931.204243-1-clemens.gruber@pqgruber.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 12, 2020 at 05:39:31PM +0100, Clemens Gruber wrote:
+> The pca9685 driver supports a new staggered-outputs property for reduced
+> current surges and EMI. This adds documentation for the new DT property.
+> 
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+>  Documentation/devicetree/bindings/pwm/nxp,pca9685-pwm.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/nxp,pca9685-pwm.txt b/Documentation/devicetree/bindings/pwm/nxp,pca9685-pwm.txt
+> index f21b55c95738..911bbb65984e 100644
+> --- a/Documentation/devicetree/bindings/pwm/nxp,pca9685-pwm.txt
+> +++ b/Documentation/devicetree/bindings/pwm/nxp,pca9685-pwm.txt
+> @@ -12,6 +12,8 @@ Optional properties:
+>    - invert (bool): boolean to enable inverted logic
+>    - open-drain (bool): boolean to configure outputs with open-drain structure;
+>  		       if omitted use totem-pole structure
+> +  - staggered-outputs (bool): boolean to enable staggered output ON times to
+> +			      minimize current surges and EMI
 
+Needs a vendor prefix.
 
-On 12/4/20 2:05 PM, Halil Pasic wrote:
-> On Fri, 4 Dec 2020 09:43:59 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->>>> +{
->>>> +	if (matrix_mdev->kvm) {
->>>> +		(matrix_mdev->kvm);
->>>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
->>> Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
->>> to take more care?
->>>
->>> For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
->>> kvm->arch.crypto.crycb.
->> I do not think so. The CRYCB is used by KVM to provide crypto resources
->> to the guest so it makes sense to protect it from changes to it while
->> passing
->> the AP devices through to the guest. The hook is used only when an AQIC
->> executed on the guest is intercepted by KVM. If the notifier
->> is being invoked to notify vfio_ap that KVM has been set to NULL, this means
->> the guest is gone in which case there will be no AP instructions to
->> intercept.
-> If the update to pqap_hook isn't observed as atomic we still have a
-> problem. With torn writes or reads we would try to use a corrupt function
-> pointer. While the compiler probably ain't likely to generate silly code
-> for the above assignment (multiple write instructions less then
-> quadword wide), I know of nothing that would prohibit the compiler to do
-> so.
-
-I'm sorry, but I still don't understand why you think this is a problem
-given what I stated above.
-
->
-> I'm not certain about the scope of the kvm->lock (if it's supposed to
-> protect the whole sub-tree of objects). Maybe Janosch can help us out.
-> @Janosch: what do you think?
->
-> Regards,
-> Halil
-
+>  
+>  Example:
+>  
+> -- 
+> 2.29.2
+> 
