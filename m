@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A682D0FC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7D12D0FB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgLGLyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:54:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S1726871AbgLGLs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbgLGLyI (ORCPT
+        with ESMTP id S1726370AbgLGLs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:54:08 -0500
-X-Greylist: delayed 351 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 07 Dec 2020 03:53:28 PST
-Received: from forward102o.mail.yandex.net (forward102o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::602])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863A1C0613D0;
-        Mon,  7 Dec 2020 03:53:28 -0800 (PST)
-Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
-        by forward102o.mail.yandex.net (Yandex) with ESMTP id DBFBD66803FA;
-        Mon,  7 Dec 2020 14:47:34 +0300 (MSK)
-Received: from mxback10q.mail.yandex.net (mxback10q.mail.yandex.net [IPv6:2a02:6b8:c0e:1b4:0:640:b6ef:cb3])
-        by forward101q.mail.yandex.net (Yandex) with ESMTP id D9EC3CF4000C;
-        Mon,  7 Dec 2020 14:47:34 +0300 (MSK)
-Received: from vla4-a16f3368381d.qloud-c.yandex.net (vla4-a16f3368381d.qloud-c.yandex.net [2a02:6b8:c17:d85:0:640:a16f:3368])
-        by mxback10q.mail.yandex.net (mxback/Yandex) with ESMTP id rMjVz1xLQZ-lYfi5xEr;
-        Mon, 07 Dec 2020 14:47:34 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1607341654;
-        bh=YgNAleQJwLklwhkvJqaq9XtbQrqkOFbqphiRizVq1Ps=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
-        b=YPnZzdiKaVCKpbjViIx/orxY7OWVDryUmlcL1AOCBrU2C4FpVnMDW2kwfW21UPRuU
-         5PrOYaQDrK2cTQ2jXYW5ULBiEjeNw3BbiECeYiL0wbz46N6ES4qwzHcvlp1FC8nxZ0
-         IQSpKuBKZoH5DSWOk6DYzcJl2gunz+qV1V+b4n1c=
-Authentication-Results: mxback10q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla4-a16f3368381d.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 0PfyyTmv7T-lXmWUtxA;
-        Mon, 07 Dec 2020 14:47:33 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: KVM_SET_CPUID doesn't check supported bits (was Re: [PATCH 0/6]
- KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup)
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
- <20201009153053.GA16234@linux.intel.com>
- <b38dff0b-7e6d-3f3e-9724-8e280938628a@yandex.ru>
- <c206865e-b2da-b996-3d48-2c71d7783fbc@redhat.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <c0c473c1-93af-2a52-bb35-c32f9e96faea@yandex.ru>
-Date:   Mon, 7 Dec 2020 14:47:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 7 Dec 2020 06:48:28 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45156C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:47:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=edP2H5YMzTq6JDL5+Mwz3TSesMidmvdEM37da6u28Ng=; b=xJRNEc1nQVU5maBnwk6Y0WRQNL
+        tMlybxaeMVkp6INeWlcl+KqGuMQgbAQA4I6a8FQjkzEi07ShBuiIWUHb3CkwFi6QqGliblhKZyoTt
+        4cc5KJaZiYykRsYVeu/61mPE5HNDG23kGWfoEb1Q4HXWUV1r/6HGJCCBJYpT/kjpWpN7No1a5GYbA
+        /Xc4BZVqOTUeIEz9Z4RUFQsEylCsamgxo0PMRswxhPVO5nCjFOuJzODqciDQzJ33oGvjM2aERhaRq
+        ljRQ+f1GyR8rXvW95nCU42hvDwaqKAlOVnF18j2ImrxTdLudgHKl3MMY6mDjHAV9Eu+UnV/J/mRRx
+        a0XUj1Zg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmEzZ-0003LX-6a; Mon, 07 Dec 2020 11:47:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D0CEB301478;
+        Mon,  7 Dec 2020 12:47:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BBE3E2081295B; Mon,  7 Dec 2020 12:47:43 +0100 (CET)
+Date:   Mon, 7 Dec 2020 12:47:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 9/9] tasklets: Prevent kill/unlock_wait deadlock on RT
+Message-ID: <20201207114743.GK3040@hirez.programming.kicks-ass.net>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170805.627618080@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <c206865e-b2da-b996-3d48-2c71d7783fbc@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204170805.627618080@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.12.2020 14:29, Paolo Bonzini пишет:
-> On 07/12/20 12:24, stsp wrote:
->> It tries to enable VME among other things.
->> qemu appears to disable VME by default,
->> unless you do "-cpu host". So we have a situation where
->> the host (which is qemu) doesn't have VME,
->> and guest (dosemu) is trying to enable it.
->> Now obviously KVM_SET_CPUID doesn't check anyting
->> at all and returns success. That later turns
->> into an invalid guest state.
->>
->>
->> Question: should KVM_SET_CPUID check for
->> supported bits, end return error if not everything
->> is supported?
->
-> No, it is intentional.  Most bits of CPUID are not ever checked by 
-> KVM, so userspace is supposed to set values that makes sense
-By "that makes sense" you probably
-meant to say "bits_that_makes_sense masked
-with the ones returned by KVM_GET_SUPPORTED_CPUID"?
+On Fri, Dec 04, 2020 at 06:02:00PM +0100, Thomas Gleixner wrote:
+> @@ -825,7 +848,20 @@ void tasklet_kill(struct tasklet_struct
+>  
+>  	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
+>  		do {
+> -			yield();
+>  		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
+>  	}
+>  	tasklet_unlock_wait(t);
 
-So am I right that KVM_SET_CPUID only "lowers"
-the supported bits? In which case I don't need to
-call it at all, but instead just call KVM_GET_SUPPORTED_CPUID
-and see if the needed bits are supported, and
-exit otherwise, right?
+
+Egads... should we not start by doing something like this?
+
+
+---
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index d5bfd5e661fc..95ff5b7f1833 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -529,6 +529,16 @@ void __tasklet_hi_schedule(struct tasklet_struct *t)
+ }
+ EXPORT_SYMBOL(__tasklet_hi_schedule);
+ 
++static inline bool tasklet_clear_sched(struct tasklet_struct *t)
++{
++	if (test_and_clear_bit(TASKLET_STATE_SCHED, &t->state)) {
++		wake_up_var(&t->state);
++		return true;
++	}
++
++	return false;
++}
++
+ static void tasklet_action_common(struct softirq_action *a,
+ 				  struct tasklet_head *tl_head,
+ 				  unsigned int softirq_nr)
+@@ -548,8 +558,7 @@ static void tasklet_action_common(struct softirq_action *a,
+ 
+ 		if (tasklet_trylock(t)) {
+ 			if (!atomic_read(&t->count)) {
+-				if (!test_and_clear_bit(TASKLET_STATE_SCHED,
+-							&t->state))
++				if (!tasklet_clear_sched(t))
+ 					BUG();
+ 				if (t->use_callback)
+ 					t->callback(t);
+@@ -609,13 +618,11 @@ void tasklet_kill(struct tasklet_struct *t)
+ 	if (in_interrupt())
+ 		pr_notice("Attempt to kill tasklet from interrupt\n");
+ 
+-	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
+-		do {
+-			yield();
+-		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
+-	}
++	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state))
++		wait_var_event(&t->state, !test_bit(TASKLET_STATE_SCHED, &t->state));
++
+ 	tasklet_unlock_wait(t);
+-	clear_bit(TASKLET_STATE_SCHED, &t->state);
++	tasklet_clear_sched(t);
+ }
+ EXPORT_SYMBOL(tasklet_kill);
+ 
