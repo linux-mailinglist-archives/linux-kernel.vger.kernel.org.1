@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5692D1B92
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72ACB2D1B94
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgLGVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:00:54 -0500
-Received: from ms.lwn.net ([45.79.88.28]:45156 "EHLO ms.lwn.net"
+        id S1727351AbgLGVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:01:23 -0500
+Received: from mga07.intel.com ([134.134.136.100]:59824 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgLGVAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:00:53 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5CB6D2F3;
-        Mon,  7 Dec 2020 21:00:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5CB6D2F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607374813; bh=Mvfz3wfx4t1iZKoJ0/5aShbqfDEpKtAnqPt6O8wfHsA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P+uTd8ir2wrqcGVkUXEDCyAt7uHrqZ0/oY9Gf+B8IVzwbjaMK1JIFrnsgLqzcEGOW
-         qwak4gOi1GEbKAWi3kDnSadcThioE1cXX0ZU9PhVFOVHuhzkUT+fDT/7YhuIt+jI3e
-         YngOguh9NjjR3CjW0ga7+vbRK8MEOQhV4gMITu5aMQdUMzuHWHgXBi7bGTMF7I7tjk
-         QGlYmLX4TS4zj03hNZNvHcdU/Lj/tRsxfpsfMjLKKHnRT5extpZDml9LBhY2n+n52H
-         2UWtRkYEAclLmYneUsn/iyQarWuKDDrJxZd7SNW2ZbBsom66Wk/3IO8bYDFKL8SGmG
-         l2WINNlZk4/Ew==
-Date:   Mon, 7 Dec 2020 14:00:12 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Stephen Rothwell" <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: nios2: add missing ReST file
-Message-ID: <20201207140012.2f4cf4da@lwn.net>
-In-Reply-To: <e51c4692c4420d28bca35f553a9a3f3d78404d99.1607331056.git.mchehab+huawei@kernel.org>
-References: <20201207185257.1198e407@canb.auug.org.au>
-        <e51c4692c4420d28bca35f553a9a3f3d78404d99.1607331056.git.mchehab+huawei@kernel.org>
-Organization: LWN.net
+        id S1726614AbgLGVBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:01:22 -0500
+IronPort-SDR: E2OydwAfb5DkA76vyYJyhFqTtqhVWEEWyUk67VvbjAODlEcrW7zn9Rseg5w70n4wzy0HbSQ4xI
+ /QRy/vPpsqWQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="237880400"
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="237880400"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 13:00:40 -0800
+IronPort-SDR: F3bzpdIxvMvLyAAEUqHSDTH19i25/wicm7KFY2x+jLJ4+bklGhRLvwf2cUqo6AJKpURL0jGlqm
+ EPU+OUsoxKqA==
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="363307816"
+Received: from sutgikar-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.135.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 13:00:39 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>
+Subject: [PATCH] kernel-doc: Fix example in Nested structs/unions
+Date:   Mon,  7 Dec 2020 13:00:27 -0800
+Message-Id: <20201207210027.1049346-1-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  7 Dec 2020 09:56:20 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+Add missing ';' as well as fixes the indent for the first struct.
 
-> changeset ed13a92d0fde ("docs: archis: add a per-architecture features list")
-> besides having a typo on its title, it was missing the feature file.
-> 
-> Add it.
-> 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Fixes: ed13a92d0fde ("docs: archis: add a per-architecture features list")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-> 
-> Jon/Stephen,
-> 
-> I ended forgetting to add this one to the patch I sent. Sorry for that!
-> 
-> If not too late, feel free to fold this patch with the past one.
-> 
->  Documentation/nios2/features.rst | 3 +++
->  1 file changed, 3 insertions(+)
->  create mode 100644 Documentation/nios2/features.rst
-> 
-> diff --git a/Documentation/nios2/features.rst b/Documentation/nios2/features.rst
-> new file mode 100644
-> index 000000000000..8449e63f69b2
-> --- /dev/null
-> +++ b/Documentation/nios2/features.rst
-> @@ -0,0 +1,3 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +.. kernel-feat:: $srctree/Documentation/features nios2
+Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+---
+ Documentation/doc-guide/kernel-doc.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I've applied this, thanks.
+diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
+index 52a87ab4c99f..79aaa55d6bcf 100644
+--- a/Documentation/doc-guide/kernel-doc.rst
++++ b/Documentation/doc-guide/kernel-doc.rst
+@@ -247,12 +247,12 @@ It is possible to document nested structs and unions, like::
+           struct {
+             int memb1;
+             int memb2;
+-        }
++          };
+           struct {
+             void *memb3;
+             int memb4;
+-          }
+-        }
++          };
++        };
+         union {
+           struct {
+             int memb1;
+-- 
+2.29.2
 
-jon
