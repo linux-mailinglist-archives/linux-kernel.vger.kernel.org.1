@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E1A2D1C8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD27D2D1C95
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgLGV6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgLGV6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:58:50 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB3CC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=veOf+01MBlQBPE69nvGu5M4F4VHbf0u+DtmSctPbaqc=; b=NlpvIDeBmYynJdihFjDPZ+ZcVL
-        ci2p/roynTXJlMgF5AxXW0NAf4lPN/XoDyvWTtsHY9CGkRcM4M3RoMwd+3dRyB/mKcrDH4K7XF/Mk
-        Go3zcdNsFyXAwiVJJ8LG4b5HPUT3Fr+Vh2Klv1cDDRQN+R3/L/ki/RaYXO8IbTbo9pUI58uE0Hsi5
-        bonIP+K/uzyyoKTGIJteuSddpFDhNZ+toRoEB07dIQyV5IDimACbKf1iuK0v/v4VcLxu/PSDxjcfC
-        7cxCwICzhVEDuom1bO7xWFHUeBdrHyvY7WIKUoR1r7dj9YVJ0v7X+f3A5QZPneevBk81zUJ6mbbP9
-        nsj0bl8g==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmOW7-0000ow-9A; Mon, 07 Dec 2020 21:57:59 +0000
-Subject: Re: [PATCH] arch: x86: make video init optional (expert)
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-References: <20201207212033.2736-1-info@metux.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0d4f7c6a-0f66-9031-556b-1e5d51e52edb@infradead.org>
-Date:   Mon, 7 Dec 2020 13:57:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727664AbgLGV7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:59:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725799AbgLGV7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:59:35 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607378335;
+        bh=Pi5GADo6j4UFpk7CEuwQxIw6GRAKpKOinEGB1LvlK40=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=KGof9gI3o9RpVbn/pS5WFPRGlaLFmaat4RM4BGFeRNLSHlKSSHteQphl4wn4+azfu
+         KtERqlIJtZSCGenwUfPJkTcYW5ZJo6IBaJZoGiMapsW+KkrIKC2mdgS1XT7LAGDN0s
+         X8oHcPnPLb5vpHTdUsEyhcggEGCUIH0+SovzMe+isE8PeJLcTrgfeCOnJsxYhGv0Ix
+         YEYGj7ZZgjUm10GiavckoUcToMio2df5OtD8hXaMLZTbytitIOHIniT/e+vu/8vmsz
+         c27HS+3Y2UafuVnMgDcRFeLt04g1LbIpjZPSRhAfHIcKz9QI8OZkV7qkZ2RodmdEyF
+         MihTQOyjKVDdQ==
 MIME-Version: 1.0
-In-Reply-To: <20201207212033.2736-1-info@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201130085743.1656317-1-geert+renesas@glider.be>
+References: <20201130085743.1656317-1-geert+renesas@glider.be>
+Subject: Re: [PATCH v2] clk: renesas: r9a06g032: Drop __packed for portability
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Gareth Williams <gareth.williams.jx@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Mon, 07 Dec 2020 13:58:53 -0800
+Message-ID: <160737833361.1580929.4851886406060076908@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 1:20 PM, Enrico Weigelt, metux IT consult wrote:
-> As x86 is becoming more widespread in embedded devices, that don't have
-> any video adapter at all, make it possible to opt out from video init on
-> bootup (expert option). Also useful for minimized paravirtualized kernels.
-> 
-> Most users wanna leave this enabled and shouldn't touch it, thus defaulting
-
-             want to
-
-> to y and hiding behind CONFIG_EXPERT.
-> 
-> Signed-off-by: Enrico Weigelt <info@metux.net>
+Quoting Geert Uytterhoeven (2020-11-30 00:57:43)
+> The R9A06G032 clock driver uses an array of packed structures to reduce
+> kernel size.  However, this array contains pointers, which are no longer
+> aligned naturally, and cannot be relocated on PPC64.  Hence when
+> compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=3Dy (e.g.
+> PowerPC allyesconfig), the following warnings are produced:
+>=20
+>     WARNING: 136 bad relocations
+>     c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
+>     c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
+>     ...
+>=20
+> Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
+> definition, trading a small size increase for portability.
+>=20
+> This increases the 156-entry clock table by 1 byte per entry, but due to
+> the compiler generating more efficient code for unpacked accesses, the
+> net size increase is only 76 bytes (gcc 9.3.0 on arm32).
+>=20
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  arch/x86/Kconfig       |  7 +++++++
->  arch/x86/boot/Makefile | 10 +++++-----
->  arch/x86/boot/main.c   |  2 ++
->  3 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index fbf26e0f7a6a..43b4b2cca2b0 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -913,6 +913,13 @@ config DMI
->  	  affected by entries in the DMI blacklist. Required by PNP
->  	  BIOS code.
->  
-> +config X86_BOOT_VIDEO
-> +	default y
-> +	bool "Setup video on boot" if EXPERT
-> +	help
-> +	  Enable setting video mode on boot. Say Y here unless your machine
-> +	  doesn't have any video adapter. (eg. embedded systems or VMs)
 
-	                                  (e.g., embedded systems or VMs)
-
-> +
->  config GART_IOMMU
->  	bool "Old AMD GART IOMMU support"
->  	select DMA_OPS
-
-
--- 
-~Randy
-
+Applied to clk-fixes
