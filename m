@@ -2,162 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F258A2D1537
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12CD2D1539
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgLGPyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGPyF (ORCPT
+        id S1726795AbgLGPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:54:47 -0500
+Received: from gproxy10-pub.mail.unifiedlayer.com ([69.89.20.226]:35381 "EHLO
+        gproxy10-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725877AbgLGPyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:54:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBE4C061749;
-        Mon,  7 Dec 2020 07:53:25 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607356403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iOkZ3W3L6bSlN1APqwo5nIbtEaSMrjF8AC1jOpzqAYQ=;
-        b=DLUeAs6z7ruzwD1nO9N5q2h9ySs502k7C/NjLDlKP3QPiqtaYKGnGduBhA7hvz0PJ/mCXG
-        /2yd7g6u1OAOE0+FtCgqBlqlH1ojAFEfpgvstJxlVYP/7OxX37BW70nEjPzRCz8grX+K7v
-        36tsLhxo3zsPPC8aywkLsI78RRXtzEePzzF4IiKLq8z4c/OKCygD/IJbbZ066VSKyZnNSR
-        hpX0rm1sa9NIWtTQwVC/Pslf4VYwZ8ZV2cXSzsDoLXiKt/Y79GOIpiP8AgsVhAKqnRc0ZV
-        uJAda+nTdqOrHefeDqI3BGj7/UnWjNqtm7DTVvnvBz4OVdo+65nfWW2ofi0KLg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607356403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iOkZ3W3L6bSlN1APqwo5nIbtEaSMrjF8AC1jOpzqAYQ=;
-        b=3FfR88oQdeCnzCNAmXtEP9jaR90FX/aW6kJwge0mwQRORSYJTbOJ71GDDVCZP1z0L3bM8h
-        vC889D2QR6hiMBBg==
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: crypto: sun4i-ss: error with kmap
-In-Reply-To: <20201207121820.GB8458@Red>
-References: <20201203173846.GA16207@Red> <87r1o6bh1u.fsf@nanos.tec.linutronix.de> <20201204132631.GA25321@Red> <874kl1bod0.fsf@nanos.tec.linutronix.de> <20201204192753.GA19782@Red> <87wnxx9tle.fsf@nanos.tec.linutronix.de> <20201205184334.GA8034@Red> <87mtys8268.fsf@nanos.tec.linutronix.de> <20201206214053.GA8458@Red> <87ft4i79oq.fsf@nanos.tec.linutronix.de> <20201207121820.GB8458@Red>
-Date:   Mon, 07 Dec 2020 16:53:23 +0100
-Message-ID: <87o8j562a4.fsf@nanos.tec.linutronix.de>
+        Mon, 7 Dec 2020 10:54:46 -0500
+Received: from cmgw15.unifiedlayer.com (unknown [10.9.0.15])
+        by gproxy10.mail.unifiedlayer.com (Postfix) with ESMTP id 0E558140513
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:54:06 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id mIpxk3Yrph41lmIpxk5cyY; Mon, 07 Dec 2020 08:54:06 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=O5cXQi1W c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=_jlGtV7tAAAA:8
+ a=scmqx5nEzC6ecY5XZmMA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=nlm17XC03S6CtCLSeiRr:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FLlAQkAtxtOE5fy8bROlSTjBWj22QU4jjmu1tRBQiBc=; b=KSEV3Be9vKNVEjljuGdfFqHj5E
+        3w5J16fXGKhYhDxRYzKFwl5IDCXCqR5YXuPT/T4+jJEHhSZEVOGMbKE6q1qsv+fnl+qi7qiqYNk/t
+        m9AEm1Aymz8GRC5xOIP+AQIbKrb1Ef/snbWWe8OADfE1sTfVN8yC3Fnq1XLhmfz7bb2wEEAx9Z1cn
+        dX4mpisdnYfXKWMxp8TPAmZUO3SFGZ6K9pZUR+xXRI6FLMYBW3Nk9aKpkOxyZGNURNKyRhh5yvnsZ
+        MWhs4M5NOF9/oh442y4YRenDuAGrAKtUj++sWll7r5rZtsRoIN8PyH8qNxFql2ivrmuyO6lcQmesv
+        G26hyEaQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:59890 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kmIpw-002szA-Vq; Mon, 07 Dec 2020 15:54:05 +0000
+Date:   Mon, 7 Dec 2020 07:54:04 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/20] 4.14.211-rc1 review
+Message-ID: <20201207155404.GA43600@roeck-us.net>
+References: <20201206111555.569713359@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kmIpw-002szA-Vq
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:59890
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 21
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 13:18, Corentin Labbe wrote:
-> On Mon, Dec 07, 2020 at 01:15:49AM +0100, Thomas Gleixner wrote:
+On Sun, Dec 06, 2020 at 12:17:03PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.211 release.
+> There are 20 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
+> Anything received after that time might be too late.
+> 
 
-> So if I understand correctly, basicly I cannot have two atomic kmap at
-> the same time since it made unmapping them in the right order complex.
+Build results:
+	total: 168 pass: 168 fail: 0
+Qemu test results:
+	total: 404 pass: 404 fail: 0
 
-You can, but the ordering has to be correct and with sg_miter that's
-probably hard to get right.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> I am not sure to have well understood your hint, but could you give me
-
-So the point is:
-
-   sg_miter_next(&mi);  map 1 -> vaddr1
-   sg_miter_next(&mo);  map 2 -> vaddr2
-
-   do {
-      ...
-      if (cond) {
-         sg_miter_next(&mi)
-           sg_miter_stop()
-             unmap(vaddr1);      unmaps map2   -> FAIL
-             if (next_page)
-                map();           maps map2 -> vaddr2 -> FAIL
-      }
-
-The only way how that could have ever worked is when the conditional
-sg_miter_next(&mi) did not try to map a new page, i.e. end of data.
-
-The ARM kunmap_atomic() had:
-
-#ifdef CONFIG_DEBUG_HIGHMEM
-		BUG_ON(vaddr != __fix_to_virt(idx));
-		set_fixmap_pte(idx, __pte(0));
-#else
-
-which means the warning and clearing the PTE only happens when debugging
-is enabled. That made your code "work" by chance because the unmap
-leaves map2 intact which means the vaddr2 mapping stays valid, so the
-access to it further down still worked.
-
-   sg_miter_next(&mi);  map 1 -> vaddr1
-   sg_miter_next(&mo);  map 2 -> vaddr2
-
-   do {
-      ...
-      if (cond) {
-         sg_miter_next(&mi)
-           sg_miter_stop()
-             unmap(vaddr1);      idx 2 ---> 1
-                                 but mapping still valid for vaddr2
-      }
-
-   *vaddr2 = x;                  works by chance
-
-But that also would cause trouble in the following case:
-
-   sg_miter_next(&mi);  map 1 -> vaddr1
-   sg_miter_next(&mo);  map 2 -> vaddr2
-
-   do {
-      ...
-      if (cond) {
-         sg_miter_next(&mi)
-           sg_miter_stop()
-             unmap(vaddr1);      idx 2 ---> 1
-                                 but mapping still valid for vaddr2
-      }
-
-interrupt
-   kmap_atomic(some_other_page)
-     idx 1 -> 2                 map some_otherpage to vaddr2
-   kunmap_atomic(vaddr2)        idx 2 --->  1
-                                mapping still valid for vaddr2,
-                                but now points to some_other_page
-end of interrupt
-
-      *vaddr2 = x;              <-- accesses some_other_page  -> FAIL
-
-This is the worst one because it's random data corruption and extremly
-hard to debug.
-
-I made the warning and the pte clearing in the new code unconditional
-just to catch any issues upfront which it did.
-
-   sg_miter_next(&mi);  map 1 -> vaddr1
-   sg_miter_next(&mo);  map 2 -> vaddr2
-
-   do {
-      ...
-      if (cond) {
-         sg_miter_next(&mi)
-           sg_miter_stop()
-             unmap(vaddr1);      unmaps map2   -> FAIL
-             clear map2          invalidates vaddr2
-      }
-
-      *vaddr2 = x;              <-- accesses the unmapped vaddr2 -> CRASH
- 
-> what you think about the following patch which fix (at least) the
-> crash.  Instead of holding SGmiter (and so two kmap), I use only one
-> at a time.
-
-That looks fine at least vs. the sg_miter/kmap_atomic usage.
-
-Thanks,
-
-        tglx
+Genter
