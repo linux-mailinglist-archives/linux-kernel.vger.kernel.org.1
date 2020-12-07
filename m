@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8C72D09C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A032D09CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgLGEnk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Dec 2020 23:43:40 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:49142 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728765AbgLGEnj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 23:43:39 -0500
-Received: from mail-pg1-f198.google.com ([209.85.215.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1km8MU-0005Ej-8z
-        for linux-kernel@vger.kernel.org; Mon, 07 Dec 2020 04:42:58 +0000
-Received: by mail-pg1-f198.google.com with SMTP id c4so7790845pgb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 20:42:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=dRTRoGxZQjf5VfvQ9QuIyncdiTUdvBDf3dsatRDVAPg=;
-        b=RTSBB7Inyew509N8VMgZKwMCcwsd5bm/YQbuG2+MsAARSRTqz1mkk0taQ2WDi57ALr
-         ieQoS8iLOTZhlCvnYM34UI9rWaniOtJzOjtUL3ku47tdUUTHXBb1jyG0RsMPAMd3gljb
-         +3mPisIpqPQLwxxVQJ6xeBCbJ5i7MrFqbsWeP6cKa77yNxRg7PnrjGjtYf7jx5VE+hOZ
-         f5pSxURVkq1sKrnJ4tPp5MP3QpjTRAePXX0oDMampoEcuJTnJzHrN3URUVBMQw+FoS5n
-         +4J9kKV+9lG5DiGaAtRI0+Hn03D/nE43mW73wcEu4hPxtK1v9brr1VVbOGfshnLVeAMm
-         w3dQ==
-X-Gm-Message-State: AOAM530Gk26wWxRj1MN6JMWFgzUc1h+t5lcbI2Gh1yPuGdubSctwqhol
-        8eaAKLzWEygFhZb1JeJgrvkfVXwIOvlKwucYLdVYXYc36ubO44Xg68Zax1NE064h5SoVHGZ4ZTx
-        PkoepHMhVMYFBX6o2Z5HFXU/luT+I5ap8oLwe6Bh5nA==
-X-Received: by 2002:a62:2cc3:0:b029:197:dda8:476a with SMTP id s186-20020a622cc30000b0290197dda8476amr14074265pfs.37.1607316176709;
-        Sun, 06 Dec 2020 20:42:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzcuP2lNMdUlH6UM9n5vr/FUv5lVhwMXHQSz4F1MIyvm218sS3P3QzvWgVdfMzSLSxeSqIrNA==
-X-Received: by 2002:a62:2cc3:0:b029:197:dda8:476a with SMTP id s186-20020a622cc30000b0290197dda8476amr14074254pfs.37.1607316176412;
-        Sun, 06 Dec 2020 20:42:56 -0800 (PST)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id q35sm8987011pjh.38.2020.12.06.20.42.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 20:42:55 -0800 (PST)
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
-Subject: [Regression] Can only do S3 once after "tpm: take TPM chip power
- gating out of tpm_transmit()"
-Message-Id: <7E60C7F0-85C6-4A9A-B905-904D37A5E67B@canonical.com>
-Date:   Mon, 7 Dec 2020 12:42:53 +0800
-Cc:     linux-integrity@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-X-Mailer: Apple Mail (2.3654.20.0.2.21)
+        id S1728765AbgLGEoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 23:44:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726482AbgLGEoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 23:44:19 -0500
+Date:   Mon, 7 Dec 2020 10:13:34 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607316218;
+        bh=qMWn0JbXUrp9SaF1F1XZeFEE50NfhTPxRsyzNxWxLk4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GuFnNHRjXlgFURZ9+tIowoiVvL5eT7tpdqInm1mu0CGTCTH3jrtMxnlvno0K/qYh5
+         U08lebcc8G+fHy1Cooft8+GjB21xPo+KdQOZYNn5M36C1b56DJT6XLrLp32A2DxXlZ
+         FM473Vy0OVcrYWKiDhykpLbgrJTXFtbgaWge8e+GKDAp8bFZ3gBBg5VyRE8cfb6RFU
+         o20jLriO3ha76Nra0tlNhxM+1NaC6jssq90YPur3IBw++x/6ClJ1KWK9x+3xpUhqx3
+         iMgWO2dU10x3ZYDovI182JCWprt4GHVpZEoE3Wb78dmg8CzwBEMPpuxWH18qfq/iia
+         9tyTyuJU6q9TQ==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
+ initializing a device
+Message-ID: <20201207044334.GA8403@vkoul-mobl>
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+ <20201205074508.GQ8403@vkoul-mobl>
+ <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+On 05-12-20, 08:59, Pierre-Louis Bossart wrote:
+> Thanks for the review Vinod.
+> 
+> On 12/5/20 1:45 AM, Vinod Koul wrote:
+> > On 03-12-20, 04:46, Bard Liao wrote:
+> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > 
+> > > When a Slave device is resumed, it may resume the bus and restart the
+> > > enumeration. During that process, we absolutely don't want to call
+> > > regular read/write routines which will wait for the resume to
+> > > complete, otherwise a deadlock occurs.
+> > > 
+> > > Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+> > 
+> > Change looks okay, but not sure why this is a fix for adding no pm
+> > version?
+> 
+> when we added the no_pm version, we missed the two cases below where
+> sdw_update() was used and that creates a deadlock. To me that's a conceptual
+> bug, we didn't fully use the no_pm versions, hence the Fixes tag.
 
-A user report that the system can only do S3 once. Subsequent S3 fails after commit a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()").
+Documentation says:
+"A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
+is used to make it easy to determine where a bug originated, which can help
+review a bug fix. This tag also assists the stable kernel team in determining
+which stable kernel versions should receive your fix. This is the preferred
+method for indicating a bug fixed by the patch. See :ref:`describe_changes`
+for more details."
 
-Dmesg with the issue, collected under 5.10-rc2:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891502/comments/14
+I do not this this helps here as this does not help distros etc
+I would say this is incremental development which improved a case not
+done properly earlier, unless you would like this to be backported.. In
+that case it helps folks...
 
-Dmesg without the issue, collected under 5.0.0-rc8:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891502/comments/16
+> It's ok to remove the tag if you don't think it's useful/relevant, what
+> matters is that we agree on the content.
 
-Full bug report here:
-https://bugs.launchpad.net/bugs/1891502
-
-Kai-Heng
+-- 
+~Vinod
