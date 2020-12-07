@@ -2,166 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEBA2D1067
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 561192D1073
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgLGMRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        id S1726188AbgLGMTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727832AbgLGMRt (ORCPT
+        with ESMTP id S1727431AbgLGMTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:17:49 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0DCC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:17:08 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 11so3518623pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:17:08 -0800 (PST)
+        Mon, 7 Dec 2020 07:19:04 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B7CC0613D0;
+        Mon,  7 Dec 2020 04:18:24 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h21so13479022wmb.2;
+        Mon, 07 Dec 2020 04:18:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PwLZYHwCCF3paOBJPS1BhWHdD5X4EpiAe0X9vEiR5i4=;
-        b=FfsAEx4C8auc6kFouD16ppQeJreiSK9Bmf2UUOL/SaDDjzQKESgY+RuwwJ2+dfgOT4
-         5lqc5wNWxR9KKRYejM6SRgIvp9TWNZqptadCRNYzRGvquJdyn3ybXZCSVQwVJU1xGQWu
-         W4dZqWghKPeyE9rICjckbH937pjD1VPgGfRR7uv9ljvqkvJBEZ8EHV8LAgMUaCx8hIXM
-         MkUFKSb36jNxaEHowKTL0BLsLMqGNPY4yME1lUPB5zQf74N7y3v4/EO9VWjAIO1KQ3ke
-         JZ4Les6/HzxlOYG6gFm52sCOymPyC4XMlmUK0tY3GCU45AdNoNChDAFj/id4696OiDHS
-         3tOA==
+         :content-disposition:in-reply-to;
+        bh=Fdmojab8DFblo4R8a5uw7uYMmGLz7NhMCeyqh5NST7s=;
+        b=Yc5NCuCEbvlagevx0EH2pgwYvkWhWM2nWsB7Q+iasKYh777Oq/PVX7VdkadnIQ7PdT
+         /7pas0rjd6iRQPB/Ddi8sSH9xeG+48dUPr1r5S0KVTXwmxE+AWl3xl/768ZGDaRUCj82
+         1OGpYSMO+5flqGXJwaO5pEDFAfR0sV2Z7zwQaLGxxvfX6oaGZ0hHgqIi77xJ00rVgZu5
+         eI6Qdyl3O91dFS/5uVV/TAaxPnBBH43SBAO/IqBn5r+eTluUX4AexjRZuvH6neAVLgrv
+         rX9S/dNYLrFcYZVKjIeBBiw/tsDd4nVj+UexsMeBpSXocsX2qz+laiZmvfTUg2CL4+sx
+         WJlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PwLZYHwCCF3paOBJPS1BhWHdD5X4EpiAe0X9vEiR5i4=;
-        b=RAD1jiy1uqB/cNUnRX5za8pyBOJLtwIiGZWvLipxmhP87j72AM7vgqpH8pm6ypTr0t
-         8PFw0J1AB8l/qSXLbsjVe7E36dIP3OJv9wGwVa3KfyYdI12BSZ8aH8z/gSzzNDtqxLID
-         IQPOpmNOCfYBK2d5KMlhqPJfmFEcKziIUZNY6u9b6hgOUASAblKPybRwmUGlQkXTHQZ6
-         7X3MeArAdCtaNd7Abmzp/FfvxNCP+/3aLiV0bZUYbO0WBCejDhdo5QzWED5uQyQxXfMa
-         K1jnCjtqTUZ11yFSz1GGRK2ufH08SlC5BSyNgyos1uTD3lhw7PQAWwz/pYDpK17a03yu
-         s4yg==
-X-Gm-Message-State: AOAM53032AgVJSvTLhhjbKgtsM3fetWijLjZDU5QLkzOpClM3fYoP6X3
-        W0R57rjtOrbcjr7lTuco6ZEArQ==
-X-Google-Smtp-Source: ABdhPJyRRXk2sNCSSIrQgDr+mFrwOEQ9P+q7ugFF/wx5Ny7KT55tTvF+j/CNyLSls6MMIMHO6H3F6g==
-X-Received: by 2002:a63:931a:: with SMTP id b26mr535035pge.55.1607343428387;
-        Mon, 07 Dec 2020 04:17:08 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id s21sm11523469pgk.52.2020.12.07.04.17.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Dec 2020 04:17:07 -0800 (PST)
-Date:   Mon, 7 Dec 2020 17:47:04 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH V4 3/3] thermal: cpufreq_cooling: Reuse sched_cpu_util()
- for SMP platforms
-Message-ID: <20201207121704.hpyw3ij3wvb5s7os@vireshk-i7>
-References: <cover.1606198885.git.viresh.kumar@linaro.org>
- <c0d7c796be7df6ac0102d8c2701fc6b541d2ff7d.1606198885.git.viresh.kumar@linaro.org>
- <95991789-0308-76a9-735b-01ef620031b9@arm.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fdmojab8DFblo4R8a5uw7uYMmGLz7NhMCeyqh5NST7s=;
+        b=ONjgybWmg/n0rzQuGdkyc5bf/fdpB8m62koQKS02gkkbymXzmbzR4qEOF6vOcxKrQX
+         SBK2m7luZj4IyoFW81DEbXsBSzHXIgYvU/fDFtMLK8pKKf1fkHPtZwlglUAKYbq/3gso
+         xd4h/ennTtspod4uybAdtaQLHj3hhKyiQtaSF6VkENPG0mGCtIHhX48xueP8jitiEQ9d
+         WdxTYc+L3PDHjmibHEs0OAk5jZ7rioQSlRmo9dX/x8xCleQ6mndplK+qXr+/x3Fp9LTn
+         cAZLN8y7XTVEkAnMBDQRLpOwA2IpJq9GL3UNtFFkWRwd/nDYgFQ5asAu7jI97AHPbOUz
+         YmvA==
+X-Gm-Message-State: AOAM533Z5Pu0j1mKaMeUtD6fz0eQSZ8x/EL1zG6QtNzMjyFYa0hqhABP
+        MHvYo0KOBQMGbJMcxPyhVlg=
+X-Google-Smtp-Source: ABdhPJxlHm7SSIDKU6I+RgB8hoP9YF4vYxLOnvHvN2+ZNcdm8wkwn+joJo10ncGTK49Ph7Fo4T7fcw==
+X-Received: by 2002:a1c:c90b:: with SMTP id f11mr18087966wmb.47.1607343502868;
+        Mon, 07 Dec 2020 04:18:22 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id d191sm13418346wmd.24.2020.12.07.04.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 04:18:22 -0800 (PST)
+Date:   Mon, 7 Dec 2020 13:18:20 +0100
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     herbert@gondor.apana.org.au, mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linuxfoundation.org>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: crypto: sun4i-ss: error with kmap
+Message-ID: <20201207121820.GB8458@Red>
+References: <20201203173846.GA16207@Red>
+ <87r1o6bh1u.fsf@nanos.tec.linutronix.de>
+ <20201204132631.GA25321@Red>
+ <874kl1bod0.fsf@nanos.tec.linutronix.de>
+ <20201204192753.GA19782@Red>
+ <87wnxx9tle.fsf@nanos.tec.linutronix.de>
+ <20201205184334.GA8034@Red>
+ <87mtys8268.fsf@nanos.tec.linutronix.de>
+ <20201206214053.GA8458@Red>
+ <87ft4i79oq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95991789-0308-76a9-735b-01ef620031b9@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <87ft4i79oq.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-12-20, 12:54, Dietmar Eggemann wrote:
-> On 24/11/2020 07:26, Viresh Kumar wrote:
-> > Several parts of the kernel are already using the effective CPU
-> > utilization (as seen by the scheduler) to get the current load on the
-> > CPU, do the same here instead of depending on the idle time of the CPU,
-> > which isn't that accurate comparatively.
-> > 
-> > This is also the right thing to do as it makes the cpufreq governor
-> > (schedutil) align better with the cpufreq_cooling driver, as the power
-> > requested by cpufreq_cooling governor will exactly match the next
-> > frequency requested by the schedutil governor since they are both using
-> > the same metric to calculate load.
-> > 
-> > This was tested on ARM Hikey6220 platform with hackbench, sysbench and
-> > schbench. None of them showed any regression or significant
-> > improvements. Schbench is the most important ones out of these as it
-> > creates the scenario where the utilization numbers provide a better
-> > estimate of the future.
-> > 
-> > Scenario 1: The CPUs were mostly idle in the previous polling window of
-> > the IPA governor as the tasks were sleeping and here are the details
-> > from traces (load is in %):
-> > 
-> >  Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=203 load={{0x35,0x1,0x0,0x31,0x0,0x0,0x64,0x0}} dynamic_power=1339
-> >  New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=600 load={{0x60,0x46,0x45,0x45,0x48,0x3b,0x61,0x44}} dynamic_power=3960
+On Mon, Dec 07, 2020 at 01:15:49AM +0100, Thomas Gleixner wrote:
+> On Sun, Dec 06 2020 at 22:40, Corentin Labbe wrote:
+> > On Sat, Dec 05, 2020 at 08:48:15PM +0100, Thomas Gleixner wrote:
+> >> So this maps two pages and unmaps the first one. That's all called from
+> >> sun4i_ss_opti_poll() and the bug is clearly visible there:
+> >> 
+> >> 	sg_miter_next(&mi);
+> >> 	sg_miter_next(&mo);
+> >> 
+> >> release_ss:
+> >> 	sg_miter_stop(&mi);
+> >> 	sg_miter_stop(&mo);
+> >> 
+> >> Written by yourself :) Same issue in sun4i_ss_cipher_poll()
+> >> 
+> >> Fix below.
+> >> 
+> >
+> > Unfortunatly, the crash still happen with the fix.
+> > See http://kernel.montjoie.ovh/131321.log
 > 
-> When I ran schbench (-t 16 -r 5) on hikey960 I get multiple (~50)
-> instances of ~80ms task activity phase and then ~20ms idle phase on all
-> CPUs.
+> And why are you not looking for the reason of this problem in your own
+> code yourself? It's not a regression caused by my work.
 > 
-> So I assume that scenario 1 is at the beginning (but you mentioned the
-> task were sleeping?)
-
-I am not able to find the exact values I used, but I did something
-like this to create a scenario where the old computations shall find
-the CPU as idle in the last IPA window:
-
-- schbench -m 2 -t 4 -s 25000 -c 20000 -r 60
-
-- sampling rate of IPA to 10 ms
-
-With this IPA wakes up many times and finds the CPUs to have been idle
-in the last IPA window (i.e. 10ms).
-
-> and scenario 2 is somewhere in the middle of the
-> testrun?
-
-This also happens all the time, as there will be cases when the IPA
-runs and finds the CPUs to be always running in last 10 ms.
-
-> IMHO, the util-based approach delivers really better results at the
-> beginning and at the end of the entire testrun.
-> During the testrun, the util-based and the idle-based approach deliver
-> similar results.
+> Turn on CONFIG_DEBUG_HIGHMEM on 5.10-rcX or older kernels and you will
+> get the very same crashes. My work just made these checks unconditional.
 > 
-> It's a little bit tricky to compare test results since the IPA sampling
-> rate is 100ms and the load values you get depend on how the workload
-> pattern and the IPA sampling align.
-
-Right.
-
-> > Here, the "Old" line gives the load and requested_power (dynamic_power
-> > here) numbers calculated using the idle time based implementation, while
-> > "New" is based on the CPU utilization from scheduler.
-> > 
-> > As can be clearly seen, the load and requested_power numbers are simply
-> > incorrect in the idle time based approach and the numbers collected from
-> > CPU's utilization are much closer to the reality.
+> This was broken forever and it's not my problem that you did not enable
+> mandatory debug options when developing this thing.
 > 
-> I assume the IPA sampling is done after ~50ms of the first task activity
-> phase.
+> I gave you tons of hints by now how to debug this and what to look
+> for. Obviously I overlooked something and here is the final hint:
 > 
-> > Scenario 2: The CPUs were busy in the previous polling window of the IPA
-> > governor:
-> > 
-> >  Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
-> >  New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
-> > 
-> > As can be seen, the idle time based load is 100% for all the CPUs as it
-> > took only the last window into account, but in reality the CPUs aren't
-> > that loaded as shown by the utilization numbers.
+>  	sg_miter_next(&mi);
+>  	sg_miter_next(&mo);
 > 
-> Is this an IPA sampling at the end of the ~20ms idle phase?
+>         do {
+>            ....
+>            if (cond1)
+>                sg_miter_next(&mi);      <--- HINT
+>            ....
+>            if (cond2)
+>                sg_miter_next(&mo);
+>  
+> release_ss:
+>  	sg_miter_stop(&mi);
+>  	sg_miter_stop(&mo);
+> 
+> So yes, I overlooked the obvious, but as I said above it's not something
+> which my is failing due to my changes. It was broken forever, it just
+> was not tested properly. Don't blame the messenger.
+> 
 
-This is during the phase where the CPUs were fully busy for the last
-period.
+Hello
 
--- 
-viresh
+I wasnt blaming you, I set you in TO: since you worked on kmap recently just in case of.
+I tryed to debug myself, but since it worked before I was sure the problem was outside my code.
+
+So if I understand correctly, basicly I cannot have two atomic kmap at the same time since it made unmapping them in the right order complex.
+
+I am not sure to have well understood your hint, but could you give me what you think about the following patch which fix (at least) the crash.
+Instead of holding SGmiter (and so two kmap), I use only one at a time.
+
+Thanks for your help.
+
+diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+index 99a415e8a13c..4f25e76dc269 100644
+--- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+@@ -36,6 +36,8 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	unsigned long flags;
+ 	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
+ 	struct sun4i_ss_alg_template *algt;
++	unsigned long toi = 0, too = 0;
++	bool miter_err;
+ 
+ 	if (!areq->cryptlen)
+ 		return 0;
+@@ -71,39 +73,51 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	}
+ 	writel(mode, ss->base + SS_CTL);
+ 
+-	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+-		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+-	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+-		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+-	sg_miter_next(&mi);
+-	sg_miter_next(&mo);
+-	if (!mi.addr || !mo.addr) {
+-		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+-		err = -EINVAL;
+-		goto release_ss;
+-	}
+ 
+ 	ileft = areq->cryptlen / 4;
+ 	oleft = areq->cryptlen / 4;
+ 	oi = 0;
+ 	oo = 0;
+ 	do {
+-		todo = min(rx_cnt, ileft);
+-		todo = min_t(size_t, todo, (mi.length - oi) / 4);
+-		if (todo) {
+-			ileft -= todo;
+-			writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
+-			oi += todo * 4;
+-		}
+-		if (oi == mi.length) {
+-			sg_miter_next(&mi);
+-			oi = 0;
++		if (ileft) {
++			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
++					SG_MITER_FROM_SG | SG_MITER_ATOMIC);
++			if (toi)
++				sg_miter_skip(&mi, toi);
++			miter_err = sg_miter_next(&mi);
++			if (!miter_err || !mi.addr) {
++				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++				err = -EINVAL;
++				goto release_ss;
++			}
++			todo = min(rx_cnt, ileft);
++			todo = min_t(size_t, todo, (mi.length - oi) / 4);
++			if (todo) {
++				ileft -= todo;
++				writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
++				oi += todo * 4;
++			}
++			if (oi == mi.length) {
++				toi += mi.length;
++				oi = 0;
++			}
++			sg_miter_stop(&mi);
+ 		}
+ 
+ 		spaces = readl(ss->base + SS_FCSR);
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+ 
++		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
++			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
++		if (too)
++			sg_miter_skip(&mo, too);
++		miter_err = sg_miter_next(&mo);
++		if (!miter_err || !mo.addr) {
++			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++			err = -EINVAL;
++			goto release_ss;
++		}
+ 		todo = min(tx_cnt, oleft);
+ 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+ 		if (todo) {
+@@ -112,9 +126,10 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 			oo += todo * 4;
+ 		}
+ 		if (oo == mo.length) {
+-			sg_miter_next(&mo);
+ 			oo = 0;
++			too += mo.length;
+ 		}
++		sg_miter_stop(&mo);
+ 	} while (oleft);
+ 
+ 	if (areq->iv) {
+@@ -128,8 +143,6 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mo);
+-	sg_miter_stop(&mi);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
+ 	return err;
+@@ -194,6 +207,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	unsigned int obl = 0;	/* length of data in bufo */
+ 	unsigned long flags;
+ 	bool need_fallback = false;
++	unsigned long toi = 0, too = 0;
++	bool miter_err;
+ 
+ 	if (!areq->cryptlen)
+ 		return 0;
+@@ -253,17 +268,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	}
+ 	writel(mode, ss->base + SS_CTL);
+ 
+-	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+-		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+-	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+-		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+-	sg_miter_next(&mi);
+-	sg_miter_next(&mo);
+-	if (!mi.addr || !mo.addr) {
+-		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+-		err = -EINVAL;
+-		goto release_ss;
+-	}
+ 	ileft = areq->cryptlen;
+ 	oleft = areq->cryptlen;
+ 	oi = 0;
+@@ -271,6 +275,16 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 
+ 	while (oleft) {
+ 		if (ileft) {
++			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
++				       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
++			if (toi)
++				sg_miter_skip(&mi, toi);
++			miter_err = sg_miter_next(&mi);
++			if (!miter_err || !mi.addr) {
++				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++				err = -EINVAL;
++				goto release_ss;
++			}
+ 			/*
+ 			 * todo is the number of consecutive 4byte word that we
+ 			 * can read from current SG
+@@ -303,31 +317,38 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				}
+ 			}
+ 			if (oi == mi.length) {
+-				sg_miter_next(&mi);
++				toi += mi.length;
+ 				oi = 0;
+ 			}
++			sg_miter_stop(&mi);
+ 		}
+ 
+ 		spaces = readl(ss->base + SS_FCSR);
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+-		dev_dbg(ss->dev,
+-			"%x %u/%zu %u/%u cnt=%u %u/%zu %u/%u cnt=%u %u\n",
+-			mode,
+-			oi, mi.length, ileft, areq->cryptlen, rx_cnt,
+-			oo, mo.length, oleft, areq->cryptlen, tx_cnt, ob);
+ 
+ 		if (!tx_cnt)
+ 			continue;
++		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
++			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
++		if (too)
++			sg_miter_skip(&mo, too);
++		miter_err = sg_miter_next(&mo);
++		if (!miter_err || !mo.addr) {
++			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++			err = -EINVAL;
++			goto release_ss;
++		}
+ 		/* todo in 4bytes word */
+ 		todo = min(tx_cnt, oleft / 4);
+ 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
++
+ 		if (todo) {
+ 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
+ 			oleft -= todo * 4;
+ 			oo += todo * 4;
+ 			if (oo == mo.length) {
+-				sg_miter_next(&mo);
++				too += mo.length;
+ 				oo = 0;
+ 			}
+ 		} else {
+@@ -352,12 +373,14 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				obo += todo;
+ 				oo += todo;
+ 				if (oo == mo.length) {
++					too += mo.length;
+ 					sg_miter_next(&mo);
+ 					oo = 0;
+ 				}
+ 			} while (obo < obl);
+ 			/* bufo must be fully used here */
+ 		}
++		sg_miter_stop(&mo);
+ 	}
+ 	if (areq->iv) {
+ 		if (mode & SS_DECRYPTION) {
+@@ -370,8 +393,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mo);
+-	sg_miter_stop(&mi);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
