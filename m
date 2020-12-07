@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F882D1349
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C232D1354
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbgLGOM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:12:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32896 "EHLO mail.kernel.org"
+        id S1726402AbgLGOPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:15:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgLGOM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:12:57 -0500
-Date:   Mon, 7 Dec 2020 15:13:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607350337;
-        bh=IBMlOSU2iIQucQDXTYzzOosHVlluTgpzB+poKtRcw9w=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wwl07o6i4DTkUBy150n/O9L5A0sK2A7T2brGedOTzb2xqUS9Me31gjT1yipnbAtp3
-         rDE80owzb5nA/pXqKIE6wyyECAqYBZL1Bt7O2mFYpeEVLRsVntmF+1gdmhl6eAihwq
-         b274GpcaxnQ8E+8T9GikVP0OHJrbkxUcnB8XPL28=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ross Schmidt <ross.schm.dev@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/10] staging: rtl8723bs: replace unique macros and
- ELEMENT_ID
-Message-ID: <X844h0efBCbQ0yrw@kroah.com>
-References: <20201206034517.4276-1-ross.schm.dev@gmail.com>
- <20201206034517.4276-10-ross.schm.dev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206034517.4276-10-ross.schm.dev@gmail.com>
+        id S1725816AbgLGOPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:15:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31175ABE9;
+        Mon,  7 Dec 2020 14:14:56 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: sgi-ioc3: Turn Kconfig option into a bool
+Date:   Mon,  7 Dec 2020 15:14:46 +0100
+Message-Id: <20201207141446.53898-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 09:45:17PM -0600, Ross Schmidt wrote:
-> Replace unique macros and ELEMENT_ID with kernel provided ieee80211_eid
-> enum.
-> 
-> In a several cases multiple macros or constants are replaced by one
-> constant.
-> 
-> WLAN_EID_HT_CAP, _HT_CAPABILITY_IE_, and EID_HTCapability are replace by
-> WLAN_EID_HT_CAPABILITY.
-> 
-> _WPA2_IE_ID_, EID_WPA2, and _RSN_IE_2_ are replaced by WLAN_EID_RSN.
-> 
-> _HT_EXTRA_INFO_IE_ and _HT_ADD_INFO_IE_ are replaced by
-> WLAN_EID_HT_OPERATION.
-> 
-> WLAN_EID_GENERIC, _WPA_IE_ID_, _SSN_IE_1_, and _VENDOR_SPECIFIC_IE_ are
-> replaced by WLAN_EID_VENDOR_SPECIFIC.
-> 
-> Signed-off-by: Ross Schmidt <ross.schm.dev@gmail.com>
+Module builds of ioc3 fail with following errors:
 
-All other patches in this series applied cleanly, please rebase this one
-and resend.
+ERROR: "spurious_interrupt" [drivers/mfd/ioc3.ko] undefined!
+ERROR: "pci_find_host_bridge" [drivers/mfd/ioc3.ko] undefined!
 
-You might want to break it up into one-patch-per-constant replacement
+Exporting pci_find_host_bridge got rejected by maintainer, so easiest
+fix is to disable module building, which even makes sense since both
+SGI Origin and Octane always contain at least one IOC3 chip.
 
-thanks,
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ drivers/mfd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 8b99a13669bf..2732d2899234 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -2141,7 +2141,7 @@ config RAVE_SP_CORE
+ 	  device found on several devices in RAVE line of hardware.
+ 
+ config SGI_MFD_IOC3
+-	tristate "SGI IOC3 core driver"
++	bool "SGI IOC3 core driver"
+ 	depends on PCI && MIPS && 64BIT
+ 	select MFD_CORE
+ 	help
+-- 
+2.16.4
+
