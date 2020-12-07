@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3EF2D0D2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07712D0D32
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbgLGJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGJjP (ORCPT
+        id S1726370AbgLGJkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:40:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726011AbgLGJkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:39:15 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE566C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:38:34 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a6so10881762wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:38:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XpZ628O5xaXa4RdOKN7MsGWRWJi7+t1IcOBgJgwxavs=;
-        b=sfF17KBm2xoH141r0pfHE47pI1OemoN9EybfIO3Ncd9nZlNuvMJj8l+4ARZJMO4FvT
-         iW8eTCDgYZFqyxaCPdVDBID3vQFjxEVX9a7ufst4amolQGqi2keHfkRhzvyt1jhf7hEw
-         1de/iabQBbAjgqGX3NeGFXk7UWMh2Ke2mHj9BUN2iGQ0JGYaoskfyp7KCVbAVE43xIwi
-         Kjqw6xZ+LhKxAellDgvDuGw552lhrdpU4+X/cGHQaHPwGepodWmsBQ2qOz2hJ0dzWQKT
-         zg3k/G3Yp8y7XG9LovsnFJ5IKhKXWaDpjenONKVgn/URho/cNUIrjzNlEX/werJ0Bq30
-         Tjuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XpZ628O5xaXa4RdOKN7MsGWRWJi7+t1IcOBgJgwxavs=;
-        b=Fy+lpqW3keEd7Qx7q4u+ZwmQkEouBlz37QLj2/ah0gKe38RGdIN1pQsWIL7P6mZrSI
-         Ep2ex6oAV/DHDYrQv7x2bvBbz8aTMZCX69O4QRd6xbPZMONRsDCdmgu6wku6jx/oCQhK
-         wjb1bLExQT0V2hCl4jt+Sg/QTIo0PpVAiTRboWg+Lxx9nknblaamykxrYtI6GdaoAXnA
-         FU8pJB45GzuhMi17rkDjkQ2UdzH9vc8vfn/bBMzb7rRwTOypcAalSfKtJfbKrXQ/LUn4
-         8ZrBNU18MieNScZvSDawlxn+8KcJEa8hA8w008dzw4n+RqiRAI/415QWj+mQyJrLQPeP
-         yryQ==
-X-Gm-Message-State: AOAM530/jhLSbaQXB72MQpIZ+fJNeYSXrBPNPpwaXZuaIHICxlnbwhQ0
-        ntb8sp8f70ZCfORQqSvVArpK6LRomo6fqkhq
-X-Google-Smtp-Source: ABdhPJxGvianTv9DEmfI3MU5uIAXw/ZzSnzw9NA0pWoTLejhJd+h21+1YtLVTZFvErdVAlqf4iLZpg==
-X-Received: by 2002:a1c:9ecf:: with SMTP id h198mr17284160wme.104.1607333913196;
-        Mon, 07 Dec 2020 01:38:33 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id h15sm14315088wrw.15.2020.12.07.01.38.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Dec 2020 01:38:32 -0800 (PST)
-Subject: Re: [RESEND PATCH v6 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl
- driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201202163443.26499-1-srinivas.kandagatla@linaro.org>
- <20201202163443.26499-3-srinivas.kandagatla@linaro.org>
- <CACRpkdabPygUmZXT6FMT4fEU6D638Y3XRwvODy8ucUAbuQ4kvg@mail.gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <4073d9ec-e959-7216-79fa-ee210fbfff17@linaro.org>
-Date:   Mon, 7 Dec 2020 09:38:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 7 Dec 2020 04:40:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607333923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pcoaZt0x7OJTZC6iPILV6dMHi4/WOJfGXYD3G5AOGEM=;
+        b=Q1aNlS3ghwdECTTtmrcLOURTIccBYVOjglXv7KL9onECSBbFyeJPHCibhyO9xbvlL8yHx9
+        HQqjhBzyQW6gN6RXLtNyfTF0Y/g5YlPm4puElbDxgvrMJkd2Teamz7yFaXFJ4+rwXbGfvg
+        4JLwX/UxPe4pSE4wetXDzAO8jDZl2H0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-539-FcLR0oiUOTSlWMwoFHBkpA-1; Mon, 07 Dec 2020 04:38:41 -0500
+X-MC-Unique: FcLR0oiUOTSlWMwoFHBkpA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC8A3106F8DD;
+        Mon,  7 Dec 2020 09:38:37 +0000 (UTC)
+Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6DAB614FD;
+        Mon,  7 Dec 2020 09:38:36 +0000 (UTC)
+Subject: Re: 5.10 RC 7: grub2 out of memory
+To:     Elias Carter <edcarter@ualberta.ca>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <CAJWrxn12rrMtomPUcu4GsDeTe5vpGKsR-F6=hM1Y8a=iAY+gag@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <56e933e4-a495-1497-eb48-b9b8f0da46d3@redhat.com>
+Date:   Mon, 7 Dec 2020 10:38:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdabPygUmZXT6FMT4fEU6D638Y3XRwvODy8ucUAbuQ4kvg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAJWrxn12rrMtomPUcu4GsDeTe5vpGKsR-F6=hM1Y8a=iAY+gag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07.12.20 10:16, Elias Carter wrote:
+> I just compiled and installed 5.10 RC 7 and got a message from grub2:
+> "out of memory, press any key to continue" shortly followed by a
+> kernel panic (see attached screenshot).
+> 
+> The 5.4.0-56-generic kernel from Ubuntu works on my machine fine.
+> 
+> Things I have tried so far:
+> - setting grub video mode to "console"
+> - setting grub video resolution to 800x600
+> - regenerating the initramfs for 5.10 RC 7
+> - verifying that /boot has free space
+> - changing boot mode from UEFI to legacy BIOS
+> 
+> I have attached the following:
+> 1.) dmesg ran from using the 5.4 kernel (since I cant boot into 5.10 RC 7)
+> 2.) my 5.10 RC 7 kernel .config
+> 3.) screenshot of kernel panic after "out of memory" grub2 message
+> 4.) my /etc/default/grub
+> 
+> Please let me know if you would like any more information or testing of patches.
+
+The kernel crashes because it's unable to mount root - I suspect the
+initrd is not loaded, because I would have expected systemd messages
+before trying to mount root (after loading additional drivers from the
+initrd). I assume grub2 fails to load the (now too big?) initrd - you
+could try compiling out debug symbols and give it a try.
+
+What's the size difference between old vs. new kernel and old vs. new
+initrd?
 
 
-On 05/12/2020 22:36, Linus Walleij wrote:
-> On Wed, Dec 2, 2020 at 5:35 PM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
-> 
->> Add initial pinctrl driver to support pin configuration for
->> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
->> on SM8250.
-> 
-> Patch applied!
-> 
->> +config PINCTRL_LPASS_LPI
->> +       tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
->> +       depends on GPIOLIB
-> 
-> I added:
-> 
->      select PINMUX
->      select PINCONF
->      select GENERIC_PINCONF
-> 
-> When applying. You need these I think, your code is working because
-> other drivers are selecting these for you, right? The build robot would
-> hack this to pieces though.
+Similar report for aarch64 was at
 
-Many thanks for doing this!
+https://bugzilla.redhat.com/show_bug.cgi?id=1615969
 
---srini
+which turned out to be a grub2 issue. Which distro/grub2 version etc are
+you running?
 
-> 
-> Yours,
-> Linus Walleij
-> 
+-- 
+Thanks,
+
+David / dhildenb
+
