@@ -2,210 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D6C2D151B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5C82D1511
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgLGPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:50:35 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:49636 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLGPue (ORCPT
+        id S1726660AbgLGPtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:49:22 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:44653 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgLGPtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:50:34 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kmIln-000WAS-88; Mon, 07 Dec 2020 08:49:47 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kmIlm-003c0K-0C; Mon, 07 Dec 2020 08:49:46 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201207124433.4017265-1-vladimir.kondratiev@linux.intel.com>
-        <da3fece2-664c-0ac3-2d22-3ce29bf1bfa8@linux.intel.com>
-Date:   Mon, 07 Dec 2020 09:49:08 -0600
-In-Reply-To: <da3fece2-664c-0ac3-2d22-3ce29bf1bfa8@linux.intel.com> (Vladimir
-        Kondratiev's message of "Mon, 7 Dec 2020 14:52:01 +0200")
-Message-ID: <87pn3ly5u3.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 7 Dec 2020 10:49:22 -0500
+Received: by mail-lf1-f65.google.com with SMTP id d20so18734009lfe.11;
+        Mon, 07 Dec 2020 07:48:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0NeitWUE72bOazPk0RWGIGCfwRRdfTRIc3aJljkPw7Q=;
+        b=IWkuV1ANcrtpi60NRnqzicDl8O/fjOQAVGIQ1uC4HA00Zq2+JTCzDheD5Ic2UkYQJX
+         KOisSPFQypi5OtlARSd0IYNC6Z+KCWCutGX78Fm6Q6m6N8LJhGZjuGCpW0vn3qVQ+pcX
+         ZBUEycX5up+NozEZFGy1WcmyxdW8dDvhLMZf9x8Ly4oigFr0wgS5ABNQdwFSi1oErjc5
+         VabodiEVZJGCBMh73EVQb1roXwSKiK7/S7aLAIImLkl2OFIdqbVcHkWDlducXolZoqGJ
+         D0aIrSkf4uqWsnSybq1Wwv97dLCn/Kw3F8Atk5e/sOTHmYpO4snVST5zDBlucWNzdCL4
+         dZfQ==
+X-Gm-Message-State: AOAM5311f6WXv0n565zvWBVyrWntfpo3Nh3NTYfoGA/dEwCLbJZILwSI
+        tv8JVo0O3nV5yKZp5Rg/jiU=
+X-Google-Smtp-Source: ABdhPJw6teg8d3600aqcwAl3vaNViL+OPA1OTluqrSndPwY8rRZZoslAB2OaQcL2R8tFPxD6rsv7Pw==
+X-Received: by 2002:ac2:46e1:: with SMTP id q1mr9264724lfo.212.1607356113675;
+        Mon, 07 Dec 2020 07:48:33 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id t9sm198271lff.45.2020.12.07.07.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 07:48:32 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kmIlA-0003J3-1U; Mon, 07 Dec 2020 16:49:08 +0100
+Date:   Mon, 7 Dec 2020 16:49:08 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+Message-ID: <X85O9GoDcbiDp97j@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
+ <X841xwCChUEqi5Ad@localhost>
+ <73d57fe9fefe50955771846ea52004fb@kernel.org>
+ <X85FVc07Hc7LQQU8@localhost>
+ <d5fa2065009d5854b4c719003ebcb255@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kmIlm-003c0K-0C;;;mid=<87pn3ly5u3.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18a+xTR/tVhwGXNThjMWrRWA6aYRDEc9Hg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 577 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.0%), b_tie_ro: 10 (1.8%), parse: 1.95
-        (0.3%), extract_message_metadata: 22 (3.7%), get_uri_detail_list: 4.4
-        (0.8%), tests_pri_-1000: 14 (2.4%), tests_pri_-950: 2.1 (0.4%),
-        tests_pri_-900: 1.75 (0.3%), tests_pri_-90: 112 (19.3%), check_bayes:
-        103 (17.9%), b_tokenize: 26 (4.4%), b_tok_get_all: 13 (2.3%),
-        b_comp_prob: 6 (1.0%), b_tok_touch_all: 54 (9.4%), b_finish: 0.99
-        (0.2%), tests_pri_0: 392 (67.9%), check_dkim_signature: 0.87 (0.1%),
-        check_dkim_adsp: 10 (1.7%), poll_dns_idle: 0.44 (0.1%), tests_pri_10:
-        2.2 (0.4%), tests_pri_500: 13 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC PATCH v2] do_exit(): panic() recursion detected
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5fa2065009d5854b4c719003ebcb255@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com> writes:
+On Mon, Dec 07, 2020 at 03:34:23PM +0000, Marc Zyngier wrote:
+> On 2020-12-07 15:08, Johan Hovold wrote:
+> > On Mon, Dec 07, 2020 at 02:41:03PM +0000, Marc Zyngier wrote:
+> >> On 2020-12-07 14:01, Johan Hovold wrote:
+> >> > On Fri, Dec 04, 2020 at 04:47:35PM +0000, Marc Zyngier wrote:
+> >> >> Having recently tried to use the CBUS GPIOs that come thanks to the
+> >> >> ftdio_sio driver, it occurred to me that the driver has a couple of
+> >> >> usability issues:
+> >> >>
+> >> >> - it advertises potential GPIOs that are reserved to other uses (LED
+> >> >>   control, or something else)
+> >> >
+> >> > Consider the alternative, that the gpio offsets (for CBUS0, CBUS1,
+> >> > CBUS2
+> >> > or CBUS4) varies depending on how the pins have been muxed. Hardly very
+> >> > user friendly.
+> >> 
+> >> That's not what I suggest. If you want fixed GPIO offsets, fine by me.
+> >> But telling the user "these are GPIOs you can use", and then
+> >> "on second though, you can't" is not exactly consistent.
+> > 
+> > It's really no different from any other gpio chip which registers all
+> > its lines, including those which may have been muxed for other 
+> > purposes.
+> 
+> If they claim that their lines are available, and then refuse to
+> let the user play with it, that's just a bug willing to be fixed.
 
-> Please ignore version 1 of the patch - it was sent from wrong mail address.
->
-> To clarify the reason:
->
-> Situation where do_exit() re-entered, discovered by static code analysis.
-> For safety critical system, it is better to panic() when minimal chance of
-> corruption detected. For this reason, we also panic on fatal signal delivery -
-> patch for this not submitted yet.
+My point was that this is how *all* gpio drivers work, and that muxing
+is somewhat orthogonal to the gpio controller implementation.
 
-What did the static code analysis say?  What triggers the recursion.
+Not sure how you would even "fix" that since muxing can often be changed
+at runtime while the number of lines is typically a hardware feature
+(which we report to the user). The resource is still there but it may
+not be available for use.
 
-What makes it safe to even call panic on this code path?  Is there
-enough kernel stack?
+> >> >> - it returns an odd error (-ENODEV), instead of the expected -EINVAL
+> >> >>   when a line is unavailable, leading to a difficult diagnostic
+> >> >
+> >> > Hmm, maybe. Several gpio driver return -ENODEV when trying to request
+> >> > reserved pins. Even gpiolib returns -ENODEV when a pins is not yet
+> >> > available due to probe deferal.
+> >> 
+> >> -ENODEV really means "no GPIOchip" in this context. The fact that
+> >> other drivers return -ENODEV for reserved pins looks like a bug to me.
+> > 
+> > No, the chip is there. The -ENODEV is what you get when requesting the
+> > line, because the line isn't available.
+> 
+> I still believe that ENODEV is the wrong error. The device is there,
+> but the request is invalid because the line is used by something else.
+> EINVAL, EBUSY, ENXIO would all be (sort of) OK.
 
-My sense is that if this actually can happen and is a real concern,
-and that it is safe to do something on this code path it is probably
-better just to ooops.  That way if someone is trying to debug such
-a recursion they will have a backtrace to work with.  Plus panic
-on oops will work.
+Fair enough.
 
-Eric
+> >> > -EBUSY could also be an alternative, but that's used to indicate that a
+> >> > line is already in use as a gpio.
+> >> 
+> >> Or something else. Which is exactly the case, as it's been allocated
+> >> to another function.
+> > 
+> > Right, there are invalid requests (e.g. requesting line five of a four
+> > line chip), lines that are already in use, and lines not available due
+> > to muxing.
+> > 
+> > And then there's the question of whether to use the same or distinct
+> > errnos for these. I believe using distinct errnos provides more
+> > feedback, but we can certainly pick another errno for this if it's
+> > really that confusing.
+> 
+> Fundamentally, I don't think the backend driver should be in charge
+> of the error reporting. That should be the char device's job. Leaving it
+> to the individual drivers is a sure way to have an inconsistent API.
 
->
-> On 12/7/20 2:44 PM, Vladimir Kondratiev wrote:
->> Recursive do_exit() is symptom of compromised kernel integrity.
->> For safety critical systems, it may be better to
->> panic() in this case to minimize risk.
->>
->> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
->> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
->>   include/linux/kernel.h                          | 1 +
->>   kernel/exit.c                                   | 7 +++++++
->>   kernel/sysctl.c                                 | 9 +++++++++
->>   4 files changed, 23 insertions(+)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> index 44fde25bb221..6e12a6804557 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -3508,6 +3508,12 @@
->>   			bit 4: print ftrace buffer
->>   			bit 5: print all printk messages in buffer
->>   +	panic_on_exit_recursion
->> +			panic() when do_exit() recursion detected, rather then
->> +			try to stay running whenever possible.
->> +			Useful on safety critical systems; re-entry in do_exit
->> +			is a symptom of compromised kernel integrity.
->> +
->>   	panic_on_taint=	Bitmask for conditionally calling panic() in add_taint()
->>   			Format: <hex>[,nousertaint]
->>   			Hexadecimal bitmask representing the set of TAINT flags
->> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
->> index 2f05e9128201..5afb20534cb2 100644
->> --- a/include/linux/kernel.h
->> +++ b/include/linux/kernel.h
->> @@ -539,6 +539,7 @@ extern int sysctl_panic_on_rcu_stall;
->>   extern int sysctl_panic_on_stackoverflow;
->>     extern bool crash_kexec_post_notifiers;
->> +extern int panic_on_exit_recursion;
->>     /*
->>    * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
->> diff --git a/kernel/exit.c b/kernel/exit.c
->> index 1f236ed375f8..162799a8b539 100644
->> --- a/kernel/exit.c
->> +++ b/kernel/exit.c
->> @@ -68,6 +68,9 @@
->>   #include <asm/unistd.h>
->>   #include <asm/mmu_context.h>
->>   +int panic_on_exit_recursion __read_mostly;
->> +core_param(panic_on_exit_recursion, panic_on_exit_recursion, int, 0644);
->> +
->>   static void __unhash_process(struct task_struct *p, bool group_dead)
->>   {
->>   	nr_threads--;
->> @@ -757,6 +760,10 @@ void __noreturn do_exit(long code)
->>   	 */
->>   	if (unlikely(tsk->flags & PF_EXITING)) {
->>   		pr_alert("Fixing recursive fault but reboot is needed!\n");
->> +		if (panic_on_exit_recursion)
->> +			panic("Recursive do_exit() detected in %s[%d]\n",
->> +			      current->comm, task_pid_nr(current));
->> +
->>   		futex_exit_recursive(tsk);
->>   		set_current_state(TASK_UNINTERRUPTIBLE);
->>   		schedule();
->> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
->> index afad085960b8..bb397fba2c42 100644
->> --- a/kernel/sysctl.c
->> +++ b/kernel/sysctl.c
->> @@ -2600,6 +2600,15 @@ static struct ctl_table kern_table[] = {
->>   		.extra2		= &one_thousand,
->>   	},
->>   #endif
->> +	{
->> +		.procname	= "panic_on_exit_recursion",
->> +		.data		= &panic_on_exit_recursion,
->> +		.maxlen		= sizeof(int),
->> +		.mode		= 0644,
->> +		.proc_handler	= proc_dointvec_minmax,
->> +		.extra1		= SYSCTL_ZERO,
->> +		.extra2		= SYSCTL_ONE,
->> +	},
->>   	{
->>   		.procname	= "panic_on_warn",
->>   		.data		= &panic_on_warn,
->>
+I agree, and your valid-mask approach takes care of the static mux-
+configuration case nicely.
+
+Johan
