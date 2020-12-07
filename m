@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C46C2D1CF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304962D1CF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgLGWMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGWME (ORCPT
+        id S1728019AbgLGWNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:13:04 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:42124 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgLGWND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:12:04 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AB3C061793;
-        Mon,  7 Dec 2020 14:11:24 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id f11so4915952ljn.2;
-        Mon, 07 Dec 2020 14:11:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MJm4yFBoOOG0Zxihy7qPEaeoKuVX+MClzRO8u7W5XUg=;
-        b=tbSwwhqIuNQzd6L+D2wv6DP3s10F3sQjGFbz9OZUiX32KC7DgE1gCLimps3ZYKpw1O
-         btb4gSIDwLmF8DfMaR7t1MJmpGW3up9U8Yg4lnvwjKc2f1ionNYGvK9aJqwWNCh84DzI
-         Wn2yeourqvFLQWyNQaL4qnZyP2G4GCcOOBP4a7WwMlSWL0o6WD3rO7w9x9d7F06HnH3S
-         3LTCVfnD1bicCQawdSIduxCNwCe31R3Mp6nNjJP+9Cl6TbtPvoTpDB6s8XlH+vWU7/DL
-         H+D8y86H6LXu6eMIf1FL9uRO0Nqqf6mVn9Mgfih/V4T0M3CSd6zTcQAO0PXofQPfWg+C
-         gXCA==
+        Mon, 7 Dec 2020 17:13:03 -0500
+Received: by mail-oi1-f195.google.com with SMTP id l200so17202295oig.9;
+        Mon, 07 Dec 2020 14:12:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MJm4yFBoOOG0Zxihy7qPEaeoKuVX+MClzRO8u7W5XUg=;
-        b=r+Lk3SzV3im9Z1Cj4oh5Ex+SIsezMEh8i/tSP7fpthnqkNzVbdusd3fvvaaefGvpKb
-         Ra/xaoHMcN4LyWm7Eo2shdFm1DE52FbyehTcdJe77MogIiQAkxuZVPnsPZlRqDhmPEIm
-         QHlryxQTNsAERp+3bWikZzmlYHwAurFRMIKfRDSzy9BVwKUIua5Uq4p1C+K2lh3G69Zj
-         YQzGrHwQ4KC95L3Doa3qg26KVxjq2KfMRcDnb5wDSA+fdd50C+Tdf3Ix7zfYrywFrh/N
-         013gqYfIq10gpEc7RNN0i2ebOPh0eq2NaDbC5nS9rGe2a40b2p8PFO+1w5Ui/8MxNZVW
-         wJjg==
-X-Gm-Message-State: AOAM531Kk95/TQbwYmtyqXpBJjfBh5RQySogUij5U/ofTHklA6JNThG8
-        S51S8dLXp+vMwjJZbL4cbciCyAp0uLA=
-X-Google-Smtp-Source: ABdhPJwHEfUeaYEY6cBzpP/Ij0Zo7ypjRgpkG3KdpX0TNEunlTBMvM1jIpO0BRfGMx711+SK5PytMA==
-X-Received: by 2002:a2e:2a83:: with SMTP id q125mr5672403ljq.436.1607379082627;
-        Mon, 07 Dec 2020 14:11:22 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-53.dynamic.spd-mgts.ru. [109.252.192.53])
-        by smtp.googlemail.com with ESMTPSA id x25sm3062664lfn.99.2020.12.07.14.11.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 14:11:22 -0800 (PST)
-Subject: Re: [PATCH v11 09/10] PM / devfreq: tegra30: Support interconnect and
- OPPs from device-tree
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f0dNnwK/5kgGvnbmjdPTuCFvEp0Wl2tDHSN9ygZUFJI=;
+        b=iR7qQwAYHwqyqp/92XHaf6rVH0w+jpIt5r8sh0YSSEG7uc8zjr5CPIqC5VFcZvWrH0
+         Kl419Sjyeq876e3j3zGP5Mdxg90BZM+ywFkCgGRjWUnD2jTzWTM+y5U+srxVMzIp2sce
+         KSGUfmFnmvraEHC+tYRdAkof0YuOjcLk+UmY5MCUfRmUzO/rMGaBdWyQeVuXwVyFXdvg
+         UNOBfC02umIj4gwO7Hzq38nd7+3FfsJLPWQTvnV5gO4wMyAAMXH1hmkS3GMRWLR9m+wR
+         1Uv3uo5LH1e2a+QPtp+bYyff2cFU/9PrZwxgI5XKRno0m1HgY8F7FhMjzuE8dC1mi5vs
+         XXHA==
+X-Gm-Message-State: AOAM530lwqf0K5of+drat3arnVfl8/XhOB4dBdLkTC72cT7O/uE7bpFi
+        mze+2jJ6IuaMNtvY9p4OoQ==
+X-Google-Smtp-Source: ABdhPJzEZhGHQKhJ4fnbWGVRdcEsZk1pxoAvOC2puBJBnonaGVPN5ezyD5iEqMhLutQqVZRGmPPz9g==
+X-Received: by 2002:aca:dc85:: with SMTP id t127mr695746oig.19.1607379136647;
+        Mon, 07 Dec 2020 14:12:16 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i25sm201208oto.56.2020.12.07.14.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 14:12:15 -0800 (PST)
+Received: (nullmailer pid 929187 invoked by uid 1000);
+        Mon, 07 Dec 2020 22:12:14 -0000
+Date:   Mon, 7 Dec 2020 16:12:14 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Wolfram Sang <wsa@kernel.org>, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-actions@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-References: <20201203192439.16177-1-digetx@gmail.com>
- <CGME20201203192723epcas1p372e53c3e1443b7cd3010c44faff735ec@epcas1p3.samsung.com>
- <20201203192439.16177-10-digetx@gmail.com>
- <42927892-d4a7-9368-480b-14c0d06e7116@samsung.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6ab55ef7-87bb-9f10-c262-b02430fe7d12@gmail.com>
-Date:   Tue, 8 Dec 2020 01:11:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 10/18] dt-bindings: i2c: owl: Convert Actions Semi Owl
+ binding to a schema
+Message-ID: <20201207221214.GA929136@robh.at.kernel.org>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <42927892-d4a7-9368-480b-14c0d06e7116@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.12.2020 04:32, Chanwoo Choi пишет:
-> On 12/4/20 4:24 AM, Dmitry Osipenko wrote:
->> This patch moves ACTMON driver away from generating OPP table by itself,
->> transitioning it to use the table which comes from device-tree. This
->> change breaks compatibility with older device-trees and brings support
->> for the interconnect framework to the driver. This is a mandatory change
->> which needs to be done in order to implement interconnect-based memory
->> DVFS, i.e. device-trees need to be updated. Now ACTMON issues a memory
->> bandwidth requests using dev_pm_opp_set_bw() instead of driving EMC clock
->> rate directly.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com>
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
->> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
-...
+On Fri, 20 Nov 2020 01:56:04 +0200, Cristian Ciocaltea wrote:
+> Convert the Actions Semi Owl I2C DT binding to a YAML schema for
+> enabling DT validation.
 > 
-> Applied it. Thanks for your work for a long time.
+> Additionally, add a new compatible string corresponding to the I2C
+> controller found in the S500 variant of the Actions Semi Owl SoCs
+> family.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+>  .../devicetree/bindings/i2c/i2c-owl.txt       | 29 ---------
+>  .../devicetree/bindings/i2c/i2c-owl.yaml      | 62 +++++++++++++++++++
+>  2 files changed, 62 insertions(+), 29 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.yaml
 > 
 
-Thank you!
+Reviewed-by: Rob Herring <robh@kernel.org>
