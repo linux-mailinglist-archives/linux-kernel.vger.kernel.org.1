@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6CA2D0BF4
+	by mail.lfdr.de (Postfix) with ESMTP id 7B60F2D0BF5
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgLGIrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        id S1726332AbgLGIrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgLGIrG (ORCPT
+        with ESMTP id S1726173AbgLGIrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:47:06 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24DAC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:46:25 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id w79so809922qkb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 00:46:25 -0800 (PST)
+        Mon, 7 Dec 2020 03:47:08 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE70C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:46:27 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id a6so6464667qtw.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 00:46:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XTZhOtD/mfgDmjZI7TlxngV+W/PI5tFf+zUtfTsDwaM=;
-        b=TCw4ggubn4E4b34Ozz6AnkYFmgCYW/YdHwm3dkrajSvDu9iF3IwTehK+PVHS/LpGuX
-         Uld2WgLFfOLxiQPlmD01/GSOOAUSCggiYyFNwHzRm35H/VlVtskfrhTl6rH2fZvRbLBs
-         q2WRkTieE2XegDMdyaF+lMA7jW6X21mJ0XjFRQnK8HLjdarmhnbUekzM9DsTkgiiNLVb
-         L/ipv+krnBy95KsKZalE6N0TAKgKL1ZIn3wF7FZ+TTnA+H2MeGLjel1+bdqoeYucdkg6
-         tBNdF5MhPiBHj8vIXnaKu29HC7MyGWDP/Yf5WKhFLB6XI+IwTPEXx1OLVvSsHgEv1ftw
-         w/JA==
+        bh=NpdyYEoACj40I4ZoU6WJldnVBTLBOwlyVOBQr8T4Kew=;
+        b=sch1nJmJjyLcCpem9TYTDXeAaeeWlxQkuXNCbmblSiPHOtE4NfUqUpcQnUFZJZ/HpD
+         kL/Ga9mPGlkojKYjTEqnEERK9cyf+PEsooGLU7l3bY4GVxeLAkIWpKfxxdfd4IPDVvPI
+         ngORmXaOooXuleNyvRfEdNDeaQ2NTWXpAAz993L8+48hCcI5XAZ70IGVk9SFkBzjuJis
+         tQf/XfsducGWaylpomokcaJIEsvd/fbw8IePOXDgkJVXJHDTGYLC3JDcy1aB0W/e4ojL
+         HIzTq5IxkToB1DS1OeQ+jVWpkmypQM85jA5t5IblJIXckHwpfyleUX1IfL4e/Ordiz7G
+         PlGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XTZhOtD/mfgDmjZI7TlxngV+W/PI5tFf+zUtfTsDwaM=;
-        b=SjSabMzwImuSnd0Uz+oHzsmGCM1lNtm+pZn+Q/ZEnlKG8Jp0ROp44KN7iLbA6HFzTY
-         Uh25BTTHCehOtc9PW4/FYizTNqSR+GHStVV0Yq3PtdHpSAw6urFDVC99+dKp77TLKrwE
-         XqilYAwTUVuv0vXNcvhBjZn88l5KBTDX6etCYhUs4t2aoCigpojCFT/WHLH0zXJXi4rw
-         xyuC1Eb64Hys7Ozutj6XQMZ1aU3ReNXlI7DwDjHxagBXFPcA8CToD1r8DVHo5cQdQ9a3
-         a6b9rPMt+xt73W+cL7mB717zSPYOUmF+tj93Z8CyPb8ZoiBeoJ7glnmzJ4QGxWhFr1g1
-         RDig==
-X-Gm-Message-State: AOAM533EazbTMh96pphPPZEN7s+QcOwNpTdtQR2iG3qd4cE5LYTZI3FX
-        J1eVg9kFXjPoIgjsSmu7D58=
-X-Google-Smtp-Source: ABdhPJx7aT2XclbJxVMOWrrjzYdD/nc59udTfgiLAzURpOBFj9255P82D7H3hG/Rdwhc2x3wm8J3gQ==
-X-Received: by 2002:a37:6403:: with SMTP id y3mr23201617qkb.204.1607330785078;
-        Mon, 07 Dec 2020 00:46:25 -0800 (PST)
+        bh=NpdyYEoACj40I4ZoU6WJldnVBTLBOwlyVOBQr8T4Kew=;
+        b=K0K9un4UZ1qJsGGgqd94o8S41L1DgON9LjUKegbI7MrBhKRlwUn1OzQzxEvJa46qxp
+         ZqKRzBy3jHNf8fo/cyhsRtaj6E0kPudWt+yYvr4xU4gT59CK7ilkzxCwynGGu67Zos9R
+         MwsgncK2eFsfdCGTfHbvysn6SNET5Nskvm7gxm5H0ifTsXspcvuNtkDhBULCx65G2NOC
+         zAu/1LisHC4T2YMt18Kj+gNNHTnIWsMVsuR1WxqIz46RRrEwkkmqgqed+P73GY4SE69R
+         XjU7gGcrxQNPF9/1u0nkTgLyTmQCO+YVQyBjDYhY/7h0ogvQb9YViahJu3EQlAfJWW+k
+         huqg==
+X-Gm-Message-State: AOAM531myEUaUR2KV0RkImMUZrgt8ZxjbH0ZyxGIcN4FzM90gseyIXHZ
+        sh4YehMlragDLi61E9zwcBE=
+X-Google-Smtp-Source: ABdhPJzAJgTIZ1mMj6CcgI4tmLpV4ibh78NNHIWaZzz07FiegjSWTPIUJtrRnvEA7wX0rH1+LEpqKg==
+X-Received: by 2002:ac8:1c92:: with SMTP id f18mr10045859qtl.319.1607330787050;
+        Mon, 07 Dec 2020 00:46:27 -0800 (PST)
 Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id a9sm3424681qkk.39.2020.12.07.00.46.24
+        by smtp.googlemail.com with ESMTPSA id a9sm3424681qkk.39.2020.12.07.00.46.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 00:46:24 -0800 (PST)
+        Mon, 07 Dec 2020 00:46:26 -0800 (PST)
 From:   Connor McAdams <conmanx360@gmail.com>
 Cc:     conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] ALSA: hda/ca0132 - Change Input Source enum strings.
-Date:   Mon,  7 Dec 2020 03:46:14 -0500
-Message-Id: <20201207084616.411531-2-conmanx360@gmail.com>
+Subject: [PATCH 3/3] ALSA: hda/ca0132 - Unmute surround when speaker output is selected.
+Date:   Mon,  7 Dec 2020 03:46:15 -0500
+Message-Id: <20201207084616.411531-3-conmanx360@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201207084616.411531-1-conmanx360@gmail.com>
 References: <20201207084616.411531-1-conmanx360@gmail.com>
@@ -65,8 +65,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the Input Source enumerated control's strings to make it play
-nice with pulseaudio.
+Make sure GPIO pin for surround channel mute is set to 0 when speaker
+output is selected.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
@@ -74,18 +74,18 @@ Signed-off-by: Connor McAdams <conmanx360@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index e96db73c32f5..793dc5d501a5 100644
+index 793dc5d501a5..6d647d461eab 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -95,7 +95,7 @@ enum {
- };
- 
- /* Strings for Input Source Enum Control */
--static const char *const in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
-+static const char *const in_src_str[3] = { "Microphone", "Line In", "Front Microphone" };
- #define IN_SRC_NUM_OF_INPUTS 3
- enum {
- 	REAR_MIC,
+@@ -1390,7 +1390,7 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
+ 		  .has_hda_gpio     = false,
+ 		  .mmio_gpio_count  = 3,
+ 		  .mmio_gpio_pin    = { 2, 3, 5 },
+-		  .mmio_gpio_set    = { 1, 1, 0 },
++		  .mmio_gpio_set    = { 1, 0, 0 },
+ 		  .scp_cmds_count   = 0,
+ 		  .has_chipio_write = false,
+ 		},
 -- 
 2.25.1
 
