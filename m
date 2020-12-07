@@ -2,154 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2193E2D18D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D882D18D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgLGS4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:56:11 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25388 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725814AbgLGS4L (ORCPT
+        id S1726456AbgLGS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgLGS4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:56:11 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7I3Phd152935;
-        Mon, 7 Dec 2020 13:55:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=JaQ6d5gPXOrXzFIOSaCCdluJPsexvUeqVt6OvMx+lOI=;
- b=eeNO1myBlzfhZqbX+7+pN2a6d+0lJxfxspsO/E0gbE/Nrx199fBm93xXOLhUc3tThLS4
- +QT8O/9KaUOgCx82qrX9ym47TqMH3rB6lGo+d5iof3MECF0bCZ+72ApKB8yQuYBX55HZ
- cWf4rHGp1ZUb7oVMeNdqKAsvYFwUGhbc5A9yD3cUcz4OOHy6p/1X1sM+Fs9x7LF33RsP
- pZOrAkWNMYJCsGQSQnuS0XXntx6xCqJSSgROQEQv0vWsq9kUWQNdxkPjSZfomjmKu1Cg
- 235PTo9BPWU9O7+1AomLzzflinpHL6RRxTHYdrT+FLaPIi15DCOPLDr4uUhz86AqS8J5 yQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359s1dj1su-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 13:55:06 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7IlZTP136279;
-        Mon, 7 Dec 2020 13:55:05 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359s1dj1s6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 13:55:05 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7IS1Ek009022;
-        Mon, 7 Dec 2020 18:55:04 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01wdc.us.ibm.com with ESMTP id 3581u8vys3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 18:55:04 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7It3a320119834
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 18:55:03 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F24378060;
-        Mon,  7 Dec 2020 18:55:03 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 95BB07805C;
-        Mon,  7 Dec 2020 18:54:59 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.183.17])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Dec 2020 18:54:59 +0000 (GMT)
-Message-ID: <fa89e2a960e98b016d4935490fa2905aab0868f7.camel@linux.ibm.com>
-Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Greg KH <greg@kroah.com>, Christoph Hellwig <hch@infradead.org>
-Cc:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Date:   Mon, 07 Dec 2020 10:54:58 -0800
-In-Reply-To: <X85116BXkgTtRDKV@kroah.com>
-References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
-         <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
-         <X85sxxgpdtFXiKsg@kroah.com> <20201207180655.GA30657@infradead.org>
-         <X85zEFduHeUr4YKR@kroah.com> <20201207182603.GA2499@infradead.org>
-         <X85116BXkgTtRDKV@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 clxscore=1011 suspectscore=0 adultscore=0 malwarescore=0
- phishscore=0 spamscore=0 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070117
+        Mon, 7 Dec 2020 13:56:40 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE31C06179C
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 10:55:59 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2so7086769pfq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 10:55:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KtGdp/lwKq2VYARUSn9Vex8GHiah3So/M600I4rdU+k=;
+        b=y8VTp9ob9fYKSzfHkWUymZptoMnZAg/NWhWoUrlxY8pjbTg36T7Fdn2pVvvh9zWVaa
+         B87zFRzbc5t2R3rkosrvupXzz338IyKlSY3h6nO3hw2GSlHpQdfeFCFxtUhS5Em8PxAK
+         GskuFtlBmCwDw1vgOearEpEMLctI3/GBGMMkxS4uTHgTlQmXpFEiGHn6AAwbt+EO5Xpo
+         3asZytuj39HVI8357jpgKbjNw0RDymoX3VrjPjBcw6mvh9J8s4Dahu+rG1Q6cmQ+8YsP
+         4+x7YjvAxBKlP5PrmfwWH835KSJEkeNn4fEjBTBtYWVE8cRi+N6+9AUXb+oBqFMdGTEM
+         BcDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=KtGdp/lwKq2VYARUSn9Vex8GHiah3So/M600I4rdU+k=;
+        b=IlfFfP1L6fXK3v4WPktxTINpsLTsvZPKCs96+4cz0gxpUNG4LNyflNGkTQyfOCTEdJ
+         PYNdsfT1DIOYfbTpu8qZUkJrNV27mmRdn3OnqEWuy+opERFA6Jl9oUkxnS/5p21Iy2ot
+         LoIqUfttGliiJ/o6jCpmOfKxUywBxs2ca2iK3YTQMbNTsMbHkpQLW7fal8DwMS9kmEmi
+         SxVU9Xgma7TRw7Dzk78KxDbtFTEUMGMUTtX6iX5/hLISqUW7yBFQKkt8wSO9Drl5e1xO
+         +eL26ghtn8Y/OeU6rYcfp1yrQE+8+LnIYMpVyUBxnKjmYFc0lGGQjXNb56wm7ax0Mdyr
+         KSNA==
+X-Gm-Message-State: AOAM531sjGfGenEsSlZZQLnGBqRrug2CUot8oYkx0TNQaO1iUlg0swLK
+        mS+PaKtTuAyBGRLK/DwuOPFlFw==
+X-Google-Smtp-Source: ABdhPJzLmOMynfb1JI8F+/oNdCFJom0GbATVogv9ZDfkhxeT99YUXudSQ0OdVQFteOgVntZyE3iBvQ==
+X-Received: by 2002:a62:4dc2:0:b029:19d:b6f2:e7bb with SMTP id a185-20020a624dc20000b029019db6f2e7bbmr17129167pfb.74.1607367358874;
+        Mon, 07 Dec 2020 10:55:58 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id t36sm14214255pfg.55.2020.12.07.10.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 10:55:57 -0800 (PST)
+Date:   Mon, 07 Dec 2020 10:55:57 -0800 (PST)
+X-Google-Original-Date: Mon, 07 Dec 2020 10:55:56 PST (-0800)
+Subject:     Re: [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
+In-Reply-To: <20201204103336.GA7374@infradead.org>
+CC:     dm-devel@redhat.com, agk@redhat.com, snitzer@redhat.com,
+        corbet@lwn.net, song@kernel.org, shuah@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Message-ID: <mhng-97fc5874-29d0-4d9e-8c92-d3704a482f28@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 19:35 +0100, Greg KH wrote:
-> On Mon, Dec 07, 2020 at 06:26:03PM +0000, Christoph Hellwig wrote:
-> > On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
-> > > What "real workload" test can be run on this to help show if it
-> > > is useful or not?  These vendors seem to think it helps for some
-> > > reason, otherwise they wouldn't have added it to their silicon :)
-> > > 
-> > > Should they run fio?  If so, any hints on a config that would be
-> > > good to show any performance increases?
-> > 
-> > A real actual workload that matters.  Then again that was Martins
-> > request to even justify it.  I don't think the broken addressing
-> > that breaks a whole in the SCSI addressing has absolutely not
-> > business being supported in Linux ever.  The vendors should have
-> > thought about the design before committing transistors to something
-> > that fundamentally does not make sense.
+On Fri, 04 Dec 2020 02:33:36 PST (-0800), Christoph Hellwig wrote:
+> What is the advantage over simply using nbd?
 
-Actually, that's not the way it works: vendors add commands because
-standards mandate.  That's why people who want weird commands go and
-join standard committees.  Unfortunately this means that a lot of the
-commands the standard mandates end up not being very useful in
-practice.  For instance in SCSI we really only implement a fraction of
-the commands in the standard.
+There's a short bit about that in the cover letter (and in some talks), but
+I'll expand on it here -- I suppose my most important question is "is this
+interesting enough to take upstream?", so there should be at least a bit of a
+description of what it actually enables:
 
-In this case, the industry already tried a very similar approach with
-GEN 1 hybrid drives and it turned into a complete disaster, which is
-why the mode became optional in shingle drives and much better modes,
-which didn't have the huge shared state problem, superseded it.  Plus
-truncating the LBA of a READ 16 to 4 bytes is asking for capacity
-problems down the line, so even the actual implementation seems to be
-problematic.
+I don't think there's any deep fundamental advantages to doing this as opposed
+to nbd/iscsi over localhost/unix (or by just writing a kernel implementation,
+for that matter), at least in terms of anything that was previously impossible
+now becoming possible.  There are a handful of things that are easier and/or
+faster, though.
 
-All in all, this looks like a short term fix which will go away when
-the drive capacity improves and thus all the effort changing the driver
-will eventually be wasted.
+dm-user looks a lot like NBD without the networking.  The major difference is
+which side initiates messages: in NBD the kernel initiates messages, while in
+dm-user userspace initiates messages (via a read that will block if there is no
+message, but presumably we'd want to add support for a non-blocking userspace
+implementations eventually).  The NBD approach certainly makes sense for a
+networked system, as one generally wants to have a single storage server
+handling multiple clients, but inverting that makes some things simpler in
+dm-user.  
 
-> So "time to boot an android system with this enabled and disabled"
-> would be a valid workload, right?  I'm guessing that's what the
-> vendors here actually care about, otherwise there is no real stress-
-> test on a UFS system that I know of.
+One specific advantage of this change is that a dm-user target can be
+transitioned from one daemon to another without any IO errors: just spin up the
+second daemon, signal the first to stop requesting new messages, and let it
+exit.  We're using that mechanism to replace the daemon launched by early init
+(which runs before the security subsystem is up, as in our use case dm-user
+provides the root filesystem) with one that's properly sandboxed (which can
+only be launched after the root filesystem has come up).  There are ways around
+this (replacing the DM table, for example), but they don't fit it as cleanly.
 
-Um, does it?  I don't believe even the UFS people have claimed this. 
-The problem is that HPB creates a shared state between the driver and
-the device.  That shared state has to be populated, which has to happen
-at start of day, so it's entirely unclear if this is a win or a slow
-down for boot.
+Unless I'm missing something, NBD servers aren't capable of that style of
+transition: soft disconnects can only be initiated by the client (the kernel,
+in this case), which leaves no way for the server to transition while
+guaranteeing that no IOs error out.  It's usually possible to shoehorn this
+sort of direction reversing concept into network protocols, but it's also
+usually ugly (I'm thinking of IDLE, for example).  I didn't try to actually do
+it, but my guess would be that adding a way for the server to ask the client to
+stop sending messages until a new server shows up would be at least as much
+work as doing this.
 
-James
+There are also a handful of possible performance advantages, but I haven't gone
+through the work to prove any of them out yet as performance isn't all that
+important for our first use case.  For example:
 
+* Cutting out the network stack is unlikely to hurt performance.  I'm not sure
+  if it will help performance, though.  I think if we really had workload where
+  the extra copy was likely to be an issue we'd want an explicit ring buffer,
+  but I have a theory that it would be possible to get very good performance out
+  of a stream-style API by using multiple channels and relying on io_uring to
+  plumb through multiple ops per channel.
+* There's a comment in the implementation about allowing userspace to insert
+  itself into user_map(), likely by uploading a BPF fragment.  There's a whole
+  class of interesting block devices that could be written in this fashion:
+  essentially you keep a cache on a regular block device that handles the common
+  cases by remapping BIOs and passing them along, relegating the more complicated
+  logic to fetch cache misses and watching some subset of the access stream where
+  necessary.
 
+  We have a use case like this in Android, where we opportunistically store
+  backups in a portion of the TRIM'd space on devices.  It's currently
+  implemented entirely in kernel by the dm-bow target, but IIUC that was deemed
+  too Android-specific to merge.  Assuming we could get good enough performance
+  we could move that logic to userspace, which lets us shrink our diff with
+  upstream.  It feels like some other interesting block devices could be
+  written in a similar fashion.
+
+All in all, I've found it a bit hard to figure out what sort of interest people
+have in dm-user: when I bring this up I seem to run into people who've done
+similar things before and are vaguely interested, but certainly nobody is
+chomping at the bit.  I'm sending it out in this early state to try and figure
+out if it's interesting enough to keep going.
