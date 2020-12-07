@@ -2,179 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650E92D0CD9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432302D0CD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgLGJSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:18:08 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:40085 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726480AbgLGJSH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:18:07 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437193|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0217741-0.00249463-0.975731;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.J42KvvE_1607332641;
-Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.J42KvvE_1607332641)
-          by smtp.aliyun-inc.com(10.147.43.230);
-          Mon, 07 Dec 2020 17:17:25 +0800
-From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
-To:     tiny.windzz@gmail.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Subject: [PATCH V2 1/3] cpufreq: sun50i: add efuse_xlate to get efuse version.
-Date:   Mon,  7 Dec 2020 17:17:16 +0800
-Message-Id: <20201207091716.17492-1-huangshuosheng@allwinnertech.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726820AbgLGJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:17:54 -0500
+Received: from mga03.intel.com ([134.134.136.65]:46647 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726530AbgLGJRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:17:53 -0500
+IronPort-SDR: vMfIdAdxiMG5efIEpiiBUkNMVazLmcfdNhIi9QC6zgt/JuBplUMGwVk1kd6LsczAHXOvx9V2ZY
+ VWZO+SlLiwfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="173778411"
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="173778411"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 01:17:15 -0800
+IronPort-SDR: TjpiBIKrylNnjVtgm1EAK6M4FiEAvC48pRag6nyWqm/Kn3+nOkUFjvZVacfRES/olOe4juyInf
+ KQKiQgF2epwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="317046397"
+Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Dec 2020 01:17:14 -0800
+Date:   Mon, 7 Dec 2020 17:18:18 +0800
+From:   "Ye, Xiang" <xiang.ye@intel.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] iio:Documentation: Add documentation for hinge
+ sensor channels
+Message-ID: <20201207091818.GA23419@host>
+References: <20201203035352.13918-1-xiang.ye@intel.com>
+ <20201203035352.13918-4-xiang.ye@intel.com>
+ <20201205160540.22d2b8d5@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205160540.22d2b8d5@archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's better to use efuse_xlate to extract the differentiated part
-regarding different SoC.
+Hi Jonathan
 
-Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
----
- drivers/cpufreq/sun50i-cpufreq-nvmem.c | 72 +++++++++++++++++---------
- 1 file changed, 48 insertions(+), 24 deletions(-)
+Thanks for review and comments.
 
-diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-index 9907a165135b..da23d581a4b4 100644
---- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-@@ -22,21 +22,52 @@
- #define NVMEM_MASK	0x7
- #define NVMEM_SHIFT	5
- 
-+#define SUN50I_H6_NVMEM_MASK		0x7
-+#define SUN50I_H6_NVMEM_SHIFT		5
-+
-+struct sunxi_cpufreq_soc_data {
-+	u32 (*efuse_xlate)(void *efuse);
-+};
-+
- static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
- 
-+static u32 sun50i_h6_efuse_xlate(struct nvmem_cell *speedbin_nvmem)
-+{
-+	size_t len;
-+	u32 *speedbin;
-+	u32 efuse_value;
-+
-+	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
-+	if (IS_ERR(speedbin))
-+		return PTR_ERR(speedbin);
-+
-+	efuse_value = (*(u32 *)speedbin >> SUN50I_H6_NVMEM_SHIFT) &
-+			  SUN50I_H6_NVMEM_MASK;
-+	kfree(speedbin);
-+	/*
-+	 * We treat unexpected efuse values as if the SoC was from
-+	 * the slowest bin. Expected efuse values are 1-3, slowest
-+	 * to fastest.
-+	 */
-+	if (efuse_value >= 1 && efuse_value <= 3)
-+		return efuse_value - 1;
-+	else
-+		return 0;
-+}
-+
- /**
-  * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
-+ * @soc_data: pointer to sunxi_cpufreq_soc_data context
-  * @versions: Set to the value parsed from efuse
-  *
-  * Returns 0 if success.
-  */
--static int sun50i_cpufreq_get_efuse(u32 *versions)
-+static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data *soc_data,
-+				    u32 *versions)
- {
- 	struct nvmem_cell *speedbin_nvmem;
- 	struct device_node *np;
- 	struct device *cpu_dev;
--	u32 *speedbin, efuse_value;
--	size_t len;
- 	int ret;
- 
- 	cpu_dev = get_cpu_device(0);
-@@ -63,41 +94,31 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
- 		return PTR_ERR(speedbin_nvmem);
- 	}
- 
--	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
-+	*versions = soc_data->efuse_xlate(speedbin_nvmem);
- 	nvmem_cell_put(speedbin_nvmem);
--	if (IS_ERR(speedbin))
--		return PTR_ERR(speedbin);
--
--	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
--
--	/*
--	 * We treat unexpected efuse values as if the SoC was from
--	 * the slowest bin. Expected efuse values are 1-3, slowest
--	 * to fastest.
--	 */
--	if (efuse_value >= 1 && efuse_value <= 3)
--		*versions = efuse_value - 1;
--	else
--		*versions = 0;
- 
--	kfree(speedbin);
- 	return 0;
- };
- 
- static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
- {
-+	const struct of_device_id *match;
- 	struct opp_table **opp_tables;
- 	char name[MAX_NAME_LEN];
- 	unsigned int cpu;
- 	u32 speed = 0;
- 	int ret;
- 
-+	match = dev_get_platdata(&pdev->dev);
-+	if (!match)
-+		return -EINVAL;
-+
- 	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables),
- 			     GFP_KERNEL);
- 	if (!opp_tables)
- 		return -ENOMEM;
- 
--	ret = sun50i_cpufreq_get_efuse(&speed);
-+	ret = sun50i_cpufreq_get_efuse(match->data, &speed);
- 	if (ret)
- 		return ret;
- 
-@@ -163,8 +184,12 @@ static struct platform_driver sun50i_cpufreq_driver = {
- 	},
- };
- 
-+static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
-+	.efuse_xlate = sun50i_h6_efuse_xlate,
-+};
-+
- static const struct of_device_id sun50i_cpufreq_match_list[] = {
--	{ .compatible = "allwinner,sun50i-h6" },
-+	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
- 	{}
- };
- 
-@@ -198,9 +223,8 @@ static int __init sun50i_cpufreq_init(void)
- 	if (unlikely(ret < 0))
- 		return ret;
- 
--	sun50i_cpufreq_pdev =
--		platform_device_register_simple("sun50i-cpufreq-nvmem",
--						-1, NULL, 0);
-+	sun50i_cpufreq_pdev = platform_device_register_data(NULL,
-+		"sun50i-cpufreq-nvmem", -1, match, sizeof(*match));
- 	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
- 	if (ret == 0)
- 		return 0;
--- 
-2.28.0
+On Sat, Dec 05, 2020 at 04:05:40PM +0000, Jonathan Cameron wrote:
+> On Thu,  3 Dec 2020 11:53:52 +0800
+> Ye Xiang <xiang.ye@intel.com> wrote:
+> 
+> > Add channel description for hinge sensor, including channel label
+> > attribute and raw data description.
+> > 
+> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-iio | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> > index df42bed09f25..82303b1bdff0 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-iio
+> > +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> > @@ -1802,3 +1802,20 @@ Contact:	linux-iio@vger.kernel.org
+> >  Description:
+> >  		Unscaled light intensity according to CIE 1931/DIN 5033 color space.
+> >  		Units after application of scale are nano nanowatts per square meter.
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+> > +KernelVersion:	5.12
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Angle of rotation for channel Y. Units after application of scale
+> > +		and offset are radians.
+> 
+> This entry is already mostly in the doc around line 200, just without the index.
+> Please just add the What: line to that block to reduce repetition.
+> If you want to add... "Where present, Y indexes the channel." or something like
+> that feel free.
+When adding in_anglY_raw to in_angl_raw block, Should I update the KernelVersion form
+4.17 to 5.12? Like blow:
 
+What:		/sys/bus/iio/devices/iio:deviceX/in_angl_raw
+What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+KernelVersion:	5.12
+Contact:	linux-iio@vger.kernel.org
+Description:
+		Angle of rotation. Units after application of scale and offset
+		are radians. Where present, Y indexes the channel.
+
+> 
+> 
+> > +
+> > +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_label
+> > +KernelVersion:	5.12
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Optional symbolic label for channel Y.
+> > +		For Intel hid hinge sensor, the label values are:
+> > +		hinge, keyboard, screen. It means the three channels
+> > +		each correspond respectively to hinge angle, keyboard angle,
+> > +		and screen angle.
+> 
+> Makes sense to keep this block separate given the additional info provided.
+> Alternative would be to add it to the one with in_voltageY_label which would
+> be odd given what follows!
+Ok, Then I will keep the in_anglY_label block here. BTW, I didnot see in_voltageY_label
+in sysfs-bus-iio in current kernel master branch.
+
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+Thanks
+Ye, Xiang
+> 
