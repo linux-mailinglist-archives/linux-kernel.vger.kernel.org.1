@@ -2,74 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642BE2D0EBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7A22D0EC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgLGLON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:14:13 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:59852 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726214AbgLGLOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:14:12 -0500
-Received: from zn.tnic (p4fed31e1.dip0.t-ipconnect.de [79.237.49.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 212061EC0426;
-        Mon,  7 Dec 2020 12:13:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607339611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=d35eddzbqWSHez2jV9H7wuGFlrtTbqPqKgMe7Hcvtnc=;
-        b=CAUu9mk3JaA3qk7MqKyddXKQhrJ0kjxe5kOQDGbt/vFyrLr0Xett2zUdSvjpixpr3/YOsP
-        xHuoiokXsZJGU8uAaCut/tTDDdSoYMw2kFDpoefZffe4EPBRwW3WfizC48NMlcsl0podl/
-        AZnNtY/FsUmyCuB5/HCJc5tB7G5e+cE=
-Date:   Mon, 7 Dec 2020 12:11:16 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Troy Lee <troy_lee@aspeedtech.com>
-Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
-        leetroy@gmail.com, ryan_chen@aspeedtech.com
-Subject: Re: [PATCH v4 1/3] dt-bindings: edac: aspeed-sdram-edac: Add
- ast2400/ast2600 support
-Message-ID: <20201207111116.GB20489@zn.tnic>
-References: <20201207090013.14145-1-troy_lee@aspeedtech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201207090013.14145-1-troy_lee@aspeedtech.com>
+        id S1726487AbgLGLOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbgLGLOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:14:50 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DD8C0613D0;
+        Mon,  7 Dec 2020 03:14:09 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id lt17so18949811ejb.3;
+        Mon, 07 Dec 2020 03:14:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UXP8pGOs6I07RubMzh9UPSoGrdmJCXDEzrlECyPatEc=;
+        b=g+O7K38plSkmPFpEJKYh66kin5NbJPRgVGhwQAldpmJSmOd2tPJBHtktR+U9RjKXN5
+         w1/66nEj3xB5+tbtbGsNbfjwTLmsE7eYHRTi5AqZVowIY8q6YEhxCGOsUIb6HZ6PbQnb
+         8fT6l3mRvBhrS+z4tsA40pH922LNmZdHABA3U7alQX9e21jrKmoMcunZSDdXPY2gJc5U
+         JrtvNcN95XiuhAh8He5lxo2kYPUcSSXK4LUWuLAdtGCF9Ghk0FY17ZdTQhEbH9BlIPJI
+         RgIAaRfuTAX+kLFyUva7YXFU5K9x2O8nU+flbPQ/vsY2Dl6QEgjSbcv42mUtdvQgU8hr
+         Aokw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UXP8pGOs6I07RubMzh9UPSoGrdmJCXDEzrlECyPatEc=;
+        b=C1Qv7OrKdDgGVShIj/28I4oLtheAUVuuTbtp8S5tyf45RdGlInakTKQQsMxSGf5fx9
+         MqcfZ/FFA5NbytHlCgBg5uS9y7UVHzDLFuzRTuZSIteTfCa0jLjNANRmjNEImZG6NZzY
+         kBCEH5l0Z9gJ35p5j5oWvfa4YFIEHwxPbdIWDvXI8BlEbyS1KHorw1pFPFhsE02iffAF
+         mr4nbiGjTrfrZ647GPed6k5dGTU6jt0Uf3vr3+RUojlt8kzg0Zfm1H08WNJXeRbo4vS6
+         yi4FaaFrUSl+iAqyLeytmt7E2o46yrkeH/4tkHHdIRRdfwB+klbQiCTyKTNo7injPqs8
+         TT+Q==
+X-Gm-Message-State: AOAM532+omUMPCh7IuqpUZM7dmx9WXiuicZvRxMwqiAyM+EQTw18fKRd
+        c1K9efc0+uu7xj3f8FPVUjg=
+X-Google-Smtp-Source: ABdhPJxF8cgKuhmNchC2AHpvcVS8hxxEz/nExEi3EGXRnP5GyAKE2BcmBiXCb/EvxDeU0sokkLP0tQ==
+X-Received: by 2002:a17:906:31d2:: with SMTP id f18mr18266080ejf.407.1607339648377;
+        Mon, 07 Dec 2020 03:14:08 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id q25sm7906732eds.85.2020.12.07.03.14.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 03:14:07 -0800 (PST)
+Message-ID: <c4333f6ad6172d991f6afdaea3698c75fb0f7c36.camel@gmail.com>
+Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
+ among CDB, OSF, and TM
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>
+Date:   Mon, 07 Dec 2020 12:14:06 +0100
+In-Reply-To: <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201206164226.6595-1-huobean@gmail.com>
+         <20201206164226.6595-4-huobean@gmail.com>
+         <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:00:11PM +0800, Troy Lee wrote:
-> Adding Aspeed AST2400 and AST2600 binding for edac driver.
+On Mon, 2020-12-07 at 07:57 +0000, Avri Altman wrote:
+> >          TP_printk(
+> > -               "%s: %s: HDR:%s, CDB:%s",
+> > +               "%s: %s: HDR:%s, %s:%s",
+> >                  __get_str(str), __get_str(dev_name),
+> >                  __print_hex(__entry->hdr, sizeof(__entry->hdr)),
+> > +               __get_str(tsf_type),
 > 
-> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
-> Acked-by: Joel Stanley <joel@jms.id.au>
-> ---
->  .../devicetree/bindings/edac/aspeed-sdram-edac.txt       | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> This breaks what current parsers expects.
+> Why str is not enough to distinguish between the command?
+> 
+> Thanks,
+> Avri
 
-All 3 applied, thanks.
+Hi Avri
+Tt donesn't break original CDB parser. for the CDB, it is still the
+same as before. Here just make Transaction Specific Fields in the UPIU
+package much clearer.
 
--- 
-Regards/Gruss,
-    Boris.
+I mentioned in the commits message: 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Transaction Specific Fields (TSF) in the UPIU package could be CDB
+(SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
+TM I/O parameter (Task Management Input/Output Parameter). But we
+didn't differenciate them. we take all of these as CDB. This is wrong.
+
+I want to make it clearer and make UPIU trace in line with the Spec.
+what's more,  how do you filter OSF, TM parameters with current UPIU
+trace? you take all of them as CDB? if so, I think, it's better to
+change parser.
+
+Thanks,
+Bean
+
+
+
+
+
+
