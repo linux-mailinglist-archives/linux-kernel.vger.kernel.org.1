@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7685E2D1106
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482022D110C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgLGMvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:51:37 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34103 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgLGMvh (ORCPT
+        id S1726242AbgLGMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgLGMxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:51:37 -0500
-Received: by mail-ot1-f66.google.com with SMTP id h19so12334641otr.1;
-        Mon, 07 Dec 2020 04:51:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vxn1tTZc/iLRRR28SNO5T7qO/7J056/TEEpSwu6MIsQ=;
-        b=g6K1kTOH95UcrsORF05wzx6MYT2GpdRXR8BHAiJiz7jKK5QjL0ZEz2pCKi8VvrS6Rt
-         s9Rbe3nqZ7M68THoG51AOymTjbtLAztoz8vBX2BS2XgZKMiBaOlOtoTK4pe9UFgqNcLH
-         7BYF7WVeKHp/2exKxQ7mr903gEWnLEx0QaYXBHRsL3yHdPP4uhCgmFwk+8OmFYzo6TMF
-         Qml0y+enrQXdCFyn8++kRpiJ88L+tSsfZwNxY0IZbF1RZnCfELCHV8hnxH1NFJFbEZqF
-         XVbx6uE7LINsrBq/J5L6e66QyYuy5IAZSyh5j0O8E6tLDW225kpHVxLsD7f3aYOKCiaW
-         raSg==
-X-Gm-Message-State: AOAM533y1dUETx+yL4biKebCcTS6YY2IZRtWy6831c/Oxzn0YoN3cn40
-        nMz0kiqRmB2p/NHyajfuWzvR1B1070SgQgTLo1Y=
-X-Google-Smtp-Source: ABdhPJzzpSAY68jEGm78o/tNi9pHSz9tYgXHA+KZEZK7PIa13OARX5x/q5c+wksETK2AQU8pvsCjPi3NXRl115RVbYo=
-X-Received: by 2002:a9d:67da:: with SMTP id c26mr5903659otn.321.1607345456056;
- Mon, 07 Dec 2020 04:50:56 -0800 (PST)
+        Mon, 7 Dec 2020 07:53:03 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B519C0613D2;
+        Mon,  7 Dec 2020 04:52:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mVvoWV/eGHM+7kZ0vIXpK/8KdpiU0TSbdMoKFhbFRfw=; b=WwZu2K5cKSFDGRkLU+JwLayF4V
+        OrrUcySs8/FY0y/dk1l96lzaG4OLyvC/6/ALtcfbhS8/IcLgRy+wvyyBHRLtKHImb/KP0IZCXXyjf
+        Jdp0a4aO+L5m5Q4y5p48z5jk4OCZi0emboNl20hVjXTUL1R54a8OwxGNgReYj7Cmw2CfxdgR+U8lK
+        /fGUJxodRV1YluflWKA12yfCggwloFYbws+ULHYCz7sNeo9OgYFA1I0C78lunEtlmXWkKzxjg6Zb2
+        6Qy3Q6qNiM93n6YNuxwTYSgEThsYfPPX4Sgccri3icuWDgmYnXEDKBr/7YQsnm5WihBj+vBMC35DS
+        ASP+uxRw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmFzX-0004VA-Uf; Mon, 07 Dec 2020 12:51:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91681304B92;
+        Mon,  7 Dec 2020 13:51:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65A36200BB76A; Mon,  7 Dec 2020 13:51:45 +0100 (CET)
+Date:   Mon, 7 Dec 2020 13:51:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH] do_exit(): panic() recursion detected
+Message-ID: <20201207125145.GM3040@hirez.programming.kicks-ass.net>
+References: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
 MIME-Version: 1.0
-References: <3849919.JfvvSOo2yN@kreacher> <52a2b98c-6bf3-760b-eca9-93cf05fb4877@redhat.com>
-In-Reply-To: <52a2b98c-6bf3-760b-eca9-93cf05fb4877@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Dec 2020 13:50:39 +0100
-Message-ID: <CAJZ5v0hwUdsrG4AS_TJimN2ON+fOGP=tWRbTiqaWeY0vEX2-Kw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Add PNP0D80 to the _DEP exceptions list
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        David Box <david.e.box@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 7:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 12/5/20 4:29 PM, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The PNP0D80 ("Windows-compatible System Power Management Controller")
-> > device ID is used for identifying the special device object providing
-> > the LPI (Low-power S0 Idle) _DSM interface [1].  That device object
-> > does not supply any operation regions, but it appears in _DEP lists
-> > for other devices in the ACPI tables on some systems to enforce
-> > specific enumeration ordering that does not matter in Linux.
-> >
-> > For this reason, _DEP list entries pointing to the device object whose
-> > _CID returns PNP0D80 need not be taken into account as real operation
-> > region dependencies, so add that device ID to the list of device IDs
-> > for which the matching _DEP list entries should be ignored.
-> >
-> > Accordingly, update the function used for matching device IDs in that
-> > list to allow it to check _CID as well as _HID and rename it to
-> > acpi_info_matches_ids().
-> >
-> > Link: https://www.uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf # [1]
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Thank you for doing this, I contemplated doing the exact same
-> thing but never got around to it.
->
-> One small review remark inline:
->
-> > ---
-> >  drivers/acpi/scan.c |   27 +++++++++++++++++++++------
-> >  1 file changed, 21 insertions(+), 6 deletions(-)
-> >
-> > Index: linux-pm/drivers/acpi/scan.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/scan.c
-> > +++ linux-pm/drivers/acpi/scan.c
-> > @@ -719,25 +719,40 @@ int acpi_device_add(struct acpi_device *
-> >  /* --------------------------------------------------------------------------
-> >                                   Device Enumeration
-> >     -------------------------------------------------------------------------- */
-> > -static bool acpi_info_matches_hids(struct acpi_device_info *info,
-> > -                                const char * const hids[])
-> > +static bool acpi_info_matches_ids(struct acpi_device_info *info,
-> > +                               const char * const ids[])
-> >  {
-> > +     struct acpi_pnp_device_id_list *cid_list = NULL;
-> >       int i;
-> >
-> >       if (!(info->valid & ACPI_VALID_HID))
-> >               return false;
-> >
-> > -     for (i = 0; hids[i]; i++) {
-> > -             if (!strcmp(info->hardware_id.string, hids[i]))
-> > +     if (info->valid & ACPI_VALID_CID)
-> > +             cid_list = &info->compatible_id_list;
-> > +
-> > +     for (i = 0; ids[i]; i++) {
-> > +             int j;
-> > +
-> > +             if (!strcmp(info->hardware_id.string, ids[i]))
-> >                       return true;
-> > +
-> > +             if (!cid_list)
-> > +                     continue;
-> > +
-> > +             for (j = 0; j < cid_list->count; j++) {
-> > +                     if (!strcmp(cid_list->ids[j].string, ids[i]))
-> > +                             return true;
-> > +             }
-> >       }
-> >
-> >       return false;
-> >  }
-> >
-> >  /* List of HIDs for which we ignore matching ACPI devices, when checking _DEP lists. */
-> > -static const char * const acpi_ignore_dep_hids[] = {
-> > +static const char * const acpi_ignore_dep_ids[] = {
-> >       "INT3396", /* Windows System Power Management Controller */
->
-> I think this one can be dropped now, I checked my acpidump / dsdt.dsl
-> collection and 45/45 DSDTs declaring a _HID of INT3396 also added a _CID of
-> PNP0D80 to this.
+On Mon, Dec 07, 2020 at 02:40:49PM +0200, Vladimir Kondratiev wrote:
+> From: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+> 
+> Recursive do_exit() is symptom of compromised kernel integrity.
+> For safety critical systems, it may be better to
+> panic() in this case to minimize risk.
 
-Sure, in a separate patch.
+You've not answered the previously posed question on why panic_on_oops
+isn't more suitable for your type of systems.
 
-Thanks!
+> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
+
+This Change-ID crap doesn't belong in kernel patches.
