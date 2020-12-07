@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8752D0ACC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3952D0AD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgLGGlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
+        id S1725994AbgLGGoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGGlW (ORCPT
+        with ESMTP id S1725681AbgLGGoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:41:22 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD76BC0613D0;
-        Sun,  6 Dec 2020 22:40:36 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f17so8077505pge.6;
-        Sun, 06 Dec 2020 22:40:36 -0800 (PST)
+        Mon, 7 Dec 2020 01:44:21 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25513C0613D1
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 22:43:35 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id t3so8063374pgi.11
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 22:43:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Nst2sbdvR9A2joKvbm5iRIPSSamR5cjpmMutrZgXWuE=;
-        b=BBhb+gHY/v594+7w5xZMW0Vx6+jo64Vf7QlAwFBywKj8V9JZ0UqtC6/dXamNMQtuhI
-         BzJakTQKRRUwVba3FQFQkfG+gOrfHHAE4b3f38bqspqDFHcCaHcVF00ZOdI7nn7rMVlh
-         Y25ApKBw1evE/in0+NF7GpI/4drzEr8iI/sTWqCGgdmZvAc2Vwpbt5b6HlAF96J0sv/K
-         E7Wb3gvbWAH3d2+0y03kdO/HpUQlUzUEEHAf7Wx2dO5sdXA9WUZ2bnODVRjGHMclhzaI
-         WKzFNL9ltGpK9W619eMfdm7ScERddPcncpvHr7WsjAmZ7z34+DtsmvPN1ErbP4dh71hb
-         GGhQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTCFo1psICK76O3jlTgVwC+qqgFVNzRJMD15/MFmEXU=;
+        b=KUlqcBUkfTfoQA6Gf5V60W+KndKC9YB0nfbveaRvFN9BY5Hp+5x8XZGTmy0J4t4cOr
+         nLSBsWNbZ9aS2WFVxw8Vy+Y7Ek4AmyNY6yTXOOFM1m/a3kT1ymISp7DRLwLq066CckSU
+         v1Q5ixdMGbGF/CARhCXven0qU6pT8EhohJMFYtMvdLlqpdL9xxVL0ZEXW6rFH7dQM7kZ
+         kzaFNOzSOi0579z5jNlrWiQ+nBUk+mGc0f2E9CHhquboDmmv0DxdMfQ2hQWRPH3oIi6M
+         XDOeASpd2e/jt2bJWAt/Rr4bEfUwh56palWQZxqxs47xQnCqoNB60v91UZJA9Lcv/UWK
+         CXEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Nst2sbdvR9A2joKvbm5iRIPSSamR5cjpmMutrZgXWuE=;
-        b=NR3DzL9cu4rvu+uwCKc2Ke/zWh80Z3qEbPMyzikAWorogh1lcqxY1XA3YvkHwK2RIU
-         cyjA64WnYdB7aG1/cKxj85Kn0L3kZrfOl7Zzp1YKl1nsh25bTy1YnnvtIoVELWfjcwvC
-         Qdg6CJizHXh1uxZh9IxrUzNWtr78lENGbJi8ftTwmvqAyodM5vP0CtECTsRKOCe3dFWx
-         nXDMsaemA2r3uBv88827d3BDdyUMQp90bE+Is1m0YvOA4C/w2byBRGtPooB4dSfhfslf
-         ToLmwVx7aVRRlWHRanS34LO0Ln2BIQ14xSwaxN6E2q1K4YpVeHzWCphfZhRuK+TscJ1V
-         1f5w==
-X-Gm-Message-State: AOAM532Xn0bJ0UMeX4/JS8En0OPxuod+PPs2z5cwMO2g+Jx3qJsvWZwt
-        489Xl/En5Ibwgrl2AD1cBH0=
-X-Google-Smtp-Source: ABdhPJxBhCwvs4f6nnR2aF2ZFzOS3Bkv+UbCZXKSAlusmN+5H9F7vOpSRrSDGaSvj0DAfXAe/4UbGA==
-X-Received: by 2002:a17:902:bc88:b029:da:f94c:dcd1 with SMTP id bb8-20020a170902bc88b02900daf94cdcd1mr3179339plb.81.1607323236192;
-        Sun, 06 Dec 2020 22:40:36 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id x23sm12786597pfo.209.2020.12.06.22.40.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BTCFo1psICK76O3jlTgVwC+qqgFVNzRJMD15/MFmEXU=;
+        b=RRQBml/QBt60UeDJcax64wUtlaXjmwKEMlD4XNuwNqGFD4gScryC91zgwX64nq5CIF
+         5012z8FE2xAlUg8SCYlql5EXEG9Gr1ls9VR0SM1z6GsezZCp32p3CZzwKLQWizoO7wyx
+         Xjc3g7Ido1GjGFt07N4VT26Q7gZp3b5P+EqS5LGxS0JMxDfu/IF+5KNQe5/ar5ALRXSe
+         Q7ZzMxEKOD4qo6mXBxXnpkRO6sKTqrog0AmI/CSedAe/eGTDQsjpekv93SG3IpxFpJCk
+         uYdCcn7wmfZz8oWgyabBa6Sy4IiTLtTSgXXJKz8IH5lHxYUxG2hgczU4TF8mLCtySPpT
+         sgXg==
+X-Gm-Message-State: AOAM531XGd1wLQlOv+5YxjLFkNiG0vDoWnTB7ARWbMluAiEa9EooTlu3
+        gie8+zosrpU0xKPxZerXYrk=
+X-Google-Smtp-Source: ABdhPJwZ+Lw8B9E1ooTt8TvtEBSpREUdNxzXcXVMzRfRqP+zb69cahYrJW4xPn/sBsTLYsCwxqu3Ng==
+X-Received: by 2002:a17:902:9891:b029:d8:fdf6:7c04 with SMTP id s17-20020a1709029891b02900d8fdf67c04mr14700381plp.54.1607323413740;
+        Sun, 06 Dec 2020 22:43:33 -0800 (PST)
+Received: from robinhsu-p520.ntc.corp.google.com ([2401:fa00:fc:202:1ea0:b8ff:fe77:fe45])
+        by smtp.gmail.com with ESMTPSA id o9sm9079984pjl.11.2020.12.06.22.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 22:40:35 -0800 (PST)
-Date:   Sun, 6 Dec 2020 22:40:32 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Raul E Rangel <rrangel@chromium.org>
-Cc:     linux-input@vger.kernel.org, Shirish.S@amd.com,
-        Andy Shevchenko <andy@infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        Rajat Jain <rajatja@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] Input: i8042 - Prevent intermixing i8042 commands
-Message-ID: <X83OYA0TaUszBD1y@google.com>
-References: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+        Sun, 06 Dec 2020 22:43:32 -0800 (PST)
+From:   Robin Hsu <robinh3123@gmail.com>
+To:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
+        chao@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
+Subject: [PATCH v2 0/3] f2fs-tools: sload compression support
+Date:   Mon,  7 Dec 2020 14:42:47 +0800
+Message-Id: <20201207064250.272240-1-robinh3123@gmail.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827144112.v2.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raul,
+From: Robin Hsu <robinhsu@google.com>
 
-On Thu, Aug 27, 2020 at 02:41:53PM -0600, Raul E Rangel wrote:
-> The i8042_mutex must be held by writers of the AUX and KBD ports, as
-> well as users of i8042_command. There were a lot of users of
-> i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
-> This resulted in i8042_commands being issues in between PS/2
-> transactions.
-> 
-> This change moves the mutex lock into i8042_command and removes the
-> burden of locking the mutex from the callers.
+* 3 patch set:
+  #1: added some #ifdef for easier support
+  #2: main code change
+  #3: automake changes
 
-I think there is a benefit for allowing users issue a sequence of
-commands to i8042 without interruptions, so I would prefer keeping
-i8042_[un]lock_chip() in place.
+v2 fix (from v1): fixed a bug and a more elegant error handling flow.
 
-Given that the issue you were observing was caused by i8042_port_close()
-interfering with probing, maybe we could do something like this:
+Robin Hsu (3):
+  f2fs-tools: Added #ifdef WITH_func
+  f2fs-tools:sload.f2fs compression support
+  f2fs-tools:sload.f2fs compress: Fixed automake
 
-
-diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index abae23af0791..aff871001eda 100644
---- a/drivers/input/serio/i8042.c
-+++ b/drivers/input/serio/i8042.c
-@@ -344,6 +344,8 @@ int i8042_command(unsigned char *param, int command)
- 	unsigned long flags;
- 	int retval;
- 
-+	lockdep_assert_held(&i8042_mutex);
-+
- 	if (!i8042_present)
- 		return -1;
- 
-@@ -364,6 +366,8 @@ static int i8042_kbd_write(struct serio *port, unsigned char c)
- 	unsigned long flags;
- 	int retval = 0;
- 
-+	lockdep_assert_held(&i8042_mutex);
-+
- 	spin_lock_irqsave(&i8042_lock, flags);
- 
- 	if (!(retval = i8042_wait_write())) {
-@@ -411,6 +415,8 @@ static void i8042_port_close(struct serio *serio)
- 		port_name = "KBD";
- 	}
- 
-+	i8042_lock_chip();
-+
- 	i8042_ctr &= ~irq_bit;
- 	if (i8042_command(&i8042_ctr, I8042_CMD_CTL_WCTR))
- 		pr_warn("Can't write CTR while closing %s port\n", port_name);
-@@ -422,6 +428,8 @@ static void i8042_port_close(struct serio *serio)
- 	if (i8042_command(&i8042_ctr, I8042_CMD_CTL_WCTR))
- 		pr_err("Can't reactivate %s port\n", port_name);
- 
-+	i8042_unlock_chip();
-+
- 	/*
- 	 * See if there is any data appeared while we were messing with
- 	 * port state.
-
-
-Thanks.
+ configure.ac            |  32 +++++++
+ fsck/Makefile.am        |   9 +-
+ fsck/compress_wrapper.c | 102 ++++++++++++++++++++
+ fsck/compress_wrapper.h |  22 +++++
+ fsck/fsck.h             |  15 +++
+ fsck/main.c             | 157 ++++++++++++++++++++++++++++++-
+ fsck/segment.c          | 202 +++++++++++++++++++++++++++++++++++++---
+ fsck/sload.c            |  67 +++++++++++++
+ include/f2fs_fs.h       |  76 ++++++++++++++-
+ lib/libf2fs_io.c        |  33 +++++++
+ 10 files changed, 698 insertions(+), 17 deletions(-)
+ create mode 100644 fsck/compress_wrapper.c
+ create mode 100644 fsck/compress_wrapper.h
 
 -- 
-Dmitry
+2.29.2.576.ga3fc446d84-goog
+
