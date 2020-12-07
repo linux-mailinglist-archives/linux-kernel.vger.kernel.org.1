@@ -2,181 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC782D169C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD02D15F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgLGQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:40:35 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50168 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727673AbgLGQke (ORCPT
+        id S1726016AbgLGQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgLGQ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:40:34 -0500
-Received: from 89-64-79-106.dynamic.chello.pl (89.64.79.106) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id db8c3b154aa71968; Mon, 7 Dec 2020 17:39:51 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: [PATCH v1 1/4] cpufreq: schedutil: Add util to struct sg_cpu
-Date:   Mon, 07 Dec 2020 17:28:25 +0100
-Message-ID: <2344038.BgO4qI7qUv@kreacher>
-In-Reply-To: <20360841.iInq7taT2Z@kreacher>
-References: <20360841.iInq7taT2Z@kreacher>
+        Mon, 7 Dec 2020 11:29:25 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5446C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:28:39 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id r7so2104024wrc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:28:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=naOjb45fn6EGnYDNyCppo0q0f00Y8C+bY3E9HRofE9o=;
+        b=PHrmXXTof7ZQlRczNSIQOYsX9uPeHEESe5KgDkHzLcz2ZSLzH69BpOVLcqnDSiH2n1
+         WQ+of896hgpPhBGx1btEMwSfXLZzYNtgrpddD9xjqUI4pwWNn8Eq8hf8Nr0ckLlCy7Pz
+         S7gA+oEMhNjBIMeXZeKqKC/b4EvozaVyMA8oX60S8OVdE1eZlJyXtKnzb71CjvfGQ3iO
+         d6fEGQ01s9exEnpBlJ3kbS0tNFZPkGsM/jLxsakJXcLRE5fR0x3CMcEZ6nPxX/aHT/HU
+         DhGz6kXUkeHHnvBuJhZ6IaSv52cKCjyhbWe0Ywr+4MmUyEVgBkTHVVCIJeUelnFa1i9f
+         SMsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=naOjb45fn6EGnYDNyCppo0q0f00Y8C+bY3E9HRofE9o=;
+        b=OoamyhsJFNdJgSK4Agx0/G7DG7PJ68/TkFacUS8yZ/RBwimjUF2+MY4xFEJaJriW1J
+         WU6t3Rdq04WnbreOaa0RyxPEHhZSDEsJGnJh4tM5oCed+IU87ftGFTyOXeSFjAITap5Z
+         cvHykIWCxEE3Lf1epO1mRyx1Gda2+IV0bY7MN2tN4jB350Op7vbH6hHZlJvN9s6RXEzr
+         nXXI/emrz2kaAVWMCosgTCnm74cWGDjmJBq2ylt0E+vc13K8MyNZ2vhyJd/u8GVvK+7V
+         7V1TGyZpCjgur/whZyDwfLfHoZc+9QPeby3GRioEaedlMTJs8FT3Q1Eyv0kLX0xnVoFA
+         qKiA==
+X-Gm-Message-State: AOAM531f0nD/cV/tH2or5JVaBLsc+4S0QmpZAqtx/sFYowvXepr0R3Zt
+        MsXpsPW9DmwMxZUARxXD4Phchg==
+X-Google-Smtp-Source: ABdhPJwqaoQObYX23jQT6aZvklGNX6SrNBAc+AVAgdWT4zbj2PIoTUIJwXjk5/SK+JMpYBgva2RMgg==
+X-Received: by 2002:adf:f70b:: with SMTP id r11mr20549323wrp.133.1607358518245;
+        Mon, 07 Dec 2020 08:28:38 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id q17sm16511792wro.36.2020.12.07.08.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 08:28:37 -0800 (PST)
+Date:   Mon, 7 Dec 2020 17:28:31 +0100
+From:   Marco Elver <elver@google.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
+Subject: Re: WARNING in sk_stream_kill_queues (5)
+Message-ID: <X85YL2GZHXpgZYlm@elver.google.com>
+References: <000000000000b4862805b54ef573@google.com>
+ <X8kLG5D+j4rT6L7A@elver.google.com>
+ <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
+ <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
+ <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
+ <X8kjPIrLJUd8uQIX@elver.google.com>
+ <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Instead of passing util and max between functions while computing the
-utilization and capacity, store the former in struct sg_cpu (along
-with the latter and bw_dl).
-
-This will allow the current utilization value to be compared with the
-one obtained previously (which is requisite for some code changes to
-follow this one), but also it makes the code look slightly more
-consistent and clean.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
- 1 file changed, 20 insertions(+), 22 deletions(-)
-
-Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-===================================================================
---- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-+++ linux-pm/kernel/sched/cpufreq_schedutil.c
-@@ -53,6 +53,7 @@ struct sugov_cpu {
- 	unsigned int		iowait_boost;
- 	u64			last_update;
- 
-+	unsigned long		util;
- 	unsigned long		bw_dl;
- 	unsigned long		max;
- 
-@@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
- 	return min(max, util);
- }
- 
--static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
-+static void sugov_get_util(struct sugov_cpu *sg_cpu)
- {
- 	struct rq *rq = cpu_rq(sg_cpu->cpu);
--	unsigned long util = cpu_util_cfs(rq);
- 	unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);
- 
- 	sg_cpu->max = max;
- 	sg_cpu->bw_dl = cpu_bw_dl(rq);
--
--	return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
-+	sg_cpu->util = schedutil_cpu_util(sg_cpu->cpu, cpu_util_cfs(rq), max,
-+					  FREQUENCY_UTIL, NULL);
- }
- 
- /**
-@@ -362,8 +362,6 @@ static void sugov_iowait_boost(struct su
-  * sugov_iowait_apply() - Apply the IO boost to a CPU.
-  * @sg_cpu: the sugov data for the cpu to boost
-  * @time: the update time from the caller
-- * @util: the utilization to (eventually) boost
-- * @max: the maximum value the utilization can be boosted to
-  *
-  * A CPU running a task which woken up after an IO operation can have its
-  * utilization boosted to speed up the completion of those IO operations.
-@@ -377,18 +375,17 @@ static void sugov_iowait_boost(struct su
-  * This mechanism is designed to boost high frequently IO waiting tasks, while
-  * being more conservative on tasks which does sporadic IO operations.
-  */
--static unsigned long sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
--					unsigned long util, unsigned long max)
-+static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
- {
- 	unsigned long boost;
- 
- 	/* No boost currently required */
- 	if (!sg_cpu->iowait_boost)
--		return util;
-+		return;
- 
- 	/* Reset boost if the CPU appears to have been idle enough */
- 	if (sugov_iowait_reset(sg_cpu, time, false))
--		return util;
-+		return;
- 
- 	if (!sg_cpu->iowait_boost_pending) {
- 		/*
-@@ -397,18 +394,19 @@ static unsigned long sugov_iowait_apply(
- 		sg_cpu->iowait_boost >>= 1;
- 		if (sg_cpu->iowait_boost < IOWAIT_BOOST_MIN) {
- 			sg_cpu->iowait_boost = 0;
--			return util;
-+			return;
- 		}
- 	}
- 
- 	sg_cpu->iowait_boost_pending = false;
- 
- 	/*
--	 * @util is already in capacity scale; convert iowait_boost
-+	 * sg_cpu->util is already in capacity scale; convert iowait_boost
- 	 * into the same scale so we can compare.
- 	 */
--	boost = (sg_cpu->iowait_boost * max) >> SCHED_CAPACITY_SHIFT;
--	return max(boost, util);
-+	boost = (sg_cpu->iowait_boost * sg_cpu->max) >> SCHED_CAPACITY_SHIFT;
-+	if (sg_cpu->util < boost)
-+		sg_cpu->util = boost;
- }
- 
- #ifdef CONFIG_NO_HZ_COMMON
-@@ -439,9 +437,8 @@ static void sugov_update_single(struct u
- {
- 	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
--	unsigned long util, max;
--	unsigned int next_f;
- 	unsigned int cached_freq = sg_policy->cached_raw_freq;
-+	unsigned int next_f;
- 
- 	sugov_iowait_boost(sg_cpu, time, flags);
- 	sg_cpu->last_update = time;
-@@ -451,10 +448,10 @@ static void sugov_update_single(struct u
- 	if (!sugov_should_update_freq(sg_policy, time))
- 		return;
- 
--	util = sugov_get_util(sg_cpu);
--	max = sg_cpu->max;
--	util = sugov_iowait_apply(sg_cpu, time, util, max);
--	next_f = get_next_freq(sg_policy, util, max);
-+	sugov_get_util(sg_cpu);
-+	sugov_iowait_apply(sg_cpu, time);
-+
-+	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
- 	/*
- 	 * Do not reduce the frequency if the CPU has not been idle
- 	 * recently, as the reduction is likely to be premature then.
-@@ -491,9 +488,10 @@ static unsigned int sugov_next_freq_shar
- 		struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
- 		unsigned long j_util, j_max;
- 
--		j_util = sugov_get_util(j_sg_cpu);
-+		sugov_get_util(j_sg_cpu);
-+		sugov_iowait_apply(j_sg_cpu, time);
-+		j_util = j_sg_cpu->util;
- 		j_max = j_sg_cpu->max;
--		j_util = sugov_iowait_apply(j_sg_cpu, time, j_util, j_max);
- 
- 		if (j_util * max > j_max * util) {
- 			util = j_util;
+On Thu, Dec 03, 2020 at 07:01PM +0100, Eric Dumazet wrote:
+> On 12/3/20 6:41 PM, Marco Elver wrote:
+> 
+> > One more experiment -- simply adding
+> > 
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -207,7 +207,21 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+> >  	 */
+> >  	size = SKB_DATA_ALIGN(size);
+> >  	size += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> > +	size = 1 << kmalloc_index(size); /* HACK */
+> >  	data = kmalloc_reserve(size, gfp_mask, node, &pfmemalloc);
+> > 
+> > 
+> > also got rid of the warnings. Something must be off with some value that
+> > is computed in terms of ksize(). If not, I don't have any explanation
+> > for why the above hides the problem.
+> 
+> Maybe the implementations of various macros (SKB_DATA_ALIGN and friends)
+> hae some kind of assumptions, I will double check this.
 
 
+Some more data; removing all uses of ksize() fixes the warnings:
 
+| --- a/net/core/skbuff.c
+| +++ b/net/core/skbuff.c
+| @@ -214,7 +214,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+|  	 * Put skb_shared_info exactly at the end of allocated zone,
+|  	 * to allow max possible filling before reallocation.
+|  	 */
+| -	size = SKB_WITH_OVERHEAD(ksize(data));
+| +	size = SKB_WITH_OVERHEAD(size);
+|  	prefetchw(data + size);
+|  
+|  	/*
+| @@ -1628,7 +1628,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+|  			       gfp_mask, NUMA_NO_NODE, NULL);
+|  	if (!data)
+|  		goto nodata;
+| -	size = SKB_WITH_OVERHEAD(ksize(data));
+| +	size = SKB_WITH_OVERHEAD(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+^^ Reverting *only* this to 'ksize(data)' triggers the warning.
+|  	/* Copy only real data... and, alas, header. This should be
+|  	 * optimized for the cases when header is void.
+| @@ -5901,7 +5901,7 @@ static int pskb_carve_inside_header(struct sk_buff *skb, const u32 off,
+|  	if (!data)
+|  		return -ENOMEM;
+|  
+| -	size = SKB_WITH_OVERHEAD(ksize(data));
+| +	size = SKB_WITH_OVERHEAD(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+|  
+|  	/* Copy real data, and all frags */
+|  	skb_copy_from_linear_data_offset(skb, off, data, new_hlen);
+| @@ -6025,7 +6025,7 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
+|  	if (!data)
+|  		return -ENOMEM;
+|  
+| -	size = SKB_WITH_OVERHEAD(ksize(data));
+| +	size = SKB_WITH_OVERHEAD(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+|  
+|  	memcpy((struct skb_shared_info *)(data + size),
+|  	       skb_shinfo(skb), offsetof(struct skb_shared_info, frags[0]));
+
+
+Conversely, only doing this also fixes the warnings:
+
+| --- a/net/core/skbuff.c
+| +++ b/net/core/skbuff.c
+| @@ -1628,7 +1628,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+|  			       gfp_mask, NUMA_NO_NODE, NULL);
+|  	if (!data)
+|  		goto nodata;
+| -	size = SKB_WITH_OVERHEAD(ksize(data));
+| +	size = SKB_WITH_OVERHEAD(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+|  
+|  	/* Copy only real data... and, alas, header. This should be
+|  	 * optimized for the cases when header is void.
+
+But not sure if any of this is helpful, since in the end what we want is
+to make a bunch of subtractions reach precisely 0, and any deviation
+somewhere might, by chance, achieve that.
+
+Thanks,
+-- Marco
