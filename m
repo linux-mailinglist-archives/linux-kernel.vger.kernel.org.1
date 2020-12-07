@@ -2,160 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014472D0DB3
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE232D0DB4
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgLGKBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:01:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726716AbgLGKBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:01:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607335222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1726769AbgLGKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:02:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53970 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726083AbgLGKCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 05:02:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607335292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1LyTFerekovKrRoriYwNaLHxIW4TPTpyekpuOlkC8W4=;
-        b=HfhZ2QId0Ax+AhtrUKUTVus2FhfUFk3Jdc9uWu7CPiG/Tlf59pKvglVqXhfcxOYvikoakJ
-        2DOx3AFCJhx8phDpamcvbYzo4FMYhmrJNcEdE1+mDCwHyeHuD3VQJECBROfAacrpjwfUQ+
-        Mx4b9ePiQuD2p2oARjV7ZXo3LHnpphI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-j-xxMUCKMP-zOb6RX9oAWg-1; Mon, 07 Dec 2020 05:00:20 -0500
-X-MC-Unique: j-xxMUCKMP-zOb6RX9oAWg-1
-Received: by mail-wm1-f71.google.com with SMTP id a205so3897731wme.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:00:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1LyTFerekovKrRoriYwNaLHxIW4TPTpyekpuOlkC8W4=;
-        b=UdtKN4KY2+MqhqelqU1x+7b3PU54PSi2XEyWoN2kfaP7p1ACBdCDT3bDYKTfrQlNZR
-         28zk6K/LIoMHLxumT0OJi1FUt4kIsgqGqbTWKdlDSnRBkBfh5NlWmTLOYo9HYaRxkCx3
-         W3AbjTYglmJ7Tw0KTIvr+DZ0heXV9IHCBC+NjnRCYnep0uOh+gU5an2s+7NoTwih0ebL
-         zBgC7BXDjnIrr2K8bes5PrCeR9hTUykeR3/hSrazWQzgFdzJXxPyn6SabK8tuw6PjR3e
-         ovgXaywXHKV9TbxJM2m6bAMc88s/Sj46y0aMGAqfbpuxiTx1vRlfObbl4p0nlZV+ZmvJ
-         aO4w==
-X-Gm-Message-State: AOAM532R8W5r229+zTqlO42MlzxgMtg6UkRN+gweo6t1fn9uYhnQpgAl
-        cL7sdR/fUM3lUXFPv0vDcA4VDUKYQ/WsyolK5BKYXj+u75d4l8G+xvKB/bmHe9gYvUq5iFQ0Sqp
-        nJ/ko2H7vzglJoCaKtVYJgdbd
-X-Received: by 2002:a1c:2bc2:: with SMTP id r185mr1574980wmr.13.1607335219384;
-        Mon, 07 Dec 2020 02:00:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxDwRGlbEJvgsJXcfvdacxQuheeOSq8WvkrHNzRgR2aybbArIELoXECM77omMRty92P5EwysA==
-X-Received: by 2002:a1c:2bc2:: with SMTP id r185mr1574968wmr.13.1607335219201;
-        Mon, 07 Dec 2020 02:00:19 -0800 (PST)
-Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
-        by smtp.gmail.com with ESMTPSA id e17sm4387653wrw.84.2020.12.07.02.00.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 02:00:18 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:00:16 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v2 4/4] af_vsock: Assign the vsock transport
- considering the vsock address flags
-Message-ID: <20201207100016.6n5x7bd2fqvf2mmi@steredhat>
-References: <20201204170235.84387-1-andraprs@amazon.com>
- <20201204170235.84387-5-andraprs@amazon.com>
+        bh=fNtQCj2fjbnzevCdger0bAZFwvYkYL3KGN2+UIjMuPM=;
+        b=upTCCywKTECKFbCIO5K2h5Tfpb8EnOWZCFI+SE1BWi2g8hogBuZmwiLE/VkLo4UdFvpxeK
+        no/3qYkci4abIgmzu4lh7Gbry6ilG7T3Pp1cU/GutVzzeWPL61wWyVqSookcLXd4dLFqk0
+        S92UrMCzg5W+qhU7vSGJ4ij7lrVTkqE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2DB7EAC55;
+        Mon,  7 Dec 2020 10:01:32 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 11:01:31 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: syslog: was: [PATCH next v2 3/3] printk: remove logbuf_lock, add
+ syslog_lock
+Message-ID: <X839e1NXWPTX+X4J@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
+ <X8pceqpK+sAudugq@alley>
+ <87v9demype.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204170235.84387-5-andraprs@amazon.com>
+In-Reply-To: <87v9demype.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 07:02:35PM +0200, Andra Paraschiv wrote:
->The vsock flags field can be set in the connect and (listen) receive
->paths.
->
->When the vsock transport is assigned, the remote CID is used to
->distinguish between types of connection.
->
->Use the vsock flags value (in addition to the CID) from the remote
->address to decide which vsock transport to assign. For the sibling VMs
->use case, all the vsock packets need to be forwarded to the host, so
->always assign the guest->host transport if the VMADDR_FLAG_TO_HOST flag
->is set. For the other use cases, the vsock transport assignment logic is
->not changed.
->
->Changelog
->
->v1 -> v2
->
->* Use bitwise operator to check the vsock flag.
->* Use the updated "VMADDR_FLAG_TO_HOST" flag naming.
->* Merge the checks for the g2h transport assignment in one "if" block.
->
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> net/vmw_vsock/af_vsock.c | 9 +++++++--
-> 1 file changed, 7 insertions(+), 2 deletions(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 83d035eab0b05..66e643c3b5f85 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -421,7 +421,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
->  * The vsk->remote_addr is used to decide which transport to use:
->  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
->  *    g2h is not loaded, will use local transport;
->- *  - remote CID <= VMADDR_CID_HOST will use guest->host transport;
->+ *  - remote CID <= VMADDR_CID_HOST or h2g is not loaded or remote flags field
->+ *    includes VMADDR_FLAG_TO_HOST flag value, will use guest->host transport;
->  *  - remote CID > VMADDR_CID_HOST will use host->guest transport;
->  */
-> int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
->@@ -429,6 +430,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 	const struct vsock_transport *new_transport;
-> 	struct sock *sk = sk_vsock(vsk);
-> 	unsigned int remote_cid = vsk->remote_addr.svm_cid;
->+	unsigned short remote_flags;
-> 	int ret;
->
-> 	/* If the packet is coming with the source and destination CIDs higher
->@@ -443,6 +445,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 	    vsk->remote_addr.svm_cid > VMADDR_CID_HOST)
-> 		vsk->remote_addr.svm_flags |= VMADDR_FLAG_TO_HOST;
->
->+	remote_flags = vsk->remote_addr.svm_flags;
->+
-> 	switch (sk->sk_type) {
-> 	case SOCK_DGRAM:
-> 		new_transport = transport_dgram;
->@@ -450,7 +454,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> 	case SOCK_STREAM:
-> 		if (vsock_use_local_transport(remote_cid))
-> 			new_transport = transport_local;
->-		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g)
->+		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
->+			 (remote_flags & VMADDR_FLAG_TO_HOST) == VMADDR_FLAG_TO_HOST)
+On Sun 2020-12-06 22:12:21, John Ogness wrote:
+> On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
+> > On Tue 2020-12-01 21:59:41, John Ogness wrote:
+> >> Since the ringbuffer is lockless, there is no need for it to be
+> >> protected by @logbuf_lock. Remove @logbuf_lock.
+> >> 
+> >> --- a/kernel/printk/printk.c
+> >> +++ b/kernel/printk/printk.c
+> >> @@ -2809,11 +2856,7 @@ void register_console(struct console *newcon)
+> >>  		nr_ext_console_drivers++;
+> >>  
+> >>  	if (newcon->flags & CON_PRINTBUFFER) {
+> >> -		/*
+> >> -		 * console_unlock(); will print out the buffered messages
+> >> -		 * for us.
+> >> -		 */
+> >> -		logbuf_lock_irqsave(flags);
+> >> +		spin_lock_irqsave(&syslog_lock, flags);
+> >
+> > We should take the lock only around assigning syslog_seq. And add a
+> > comment that it guarantees atomic update.
+> 
+> OK. So you just want "exclusive_console = newcon;" moved outside the
+> critical section.
 
-Maybe "remote_flags & VMADDR_FLAG_TO_HOST" should be enough, but the 
-patch is okay:
+Exactly, I would like to make it clear that it synchronizes only the
+single assignment. Otherwise, people might get wrong assumption.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+I know that there is a comment describing the scope of each lock.
+But people might miss it or do not search for it at all.
 
-> 			new_transport = transport_g2h;
-> 		else
-> 			new_transport = transport_h2g;
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
->
-
+Best Regards,
+Petr
