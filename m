@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641532D0FF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED042D0FF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgLGMCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:02:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:48686 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgLGMCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:02:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02E561042;
-        Mon,  7 Dec 2020 04:01:19 -0800 (PST)
-Received: from [10.57.61.6] (unknown [10.57.61.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C97D3F718;
-        Mon,  7 Dec 2020 04:01:16 -0800 (PST)
-Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-References: <20201205082957.12544-1-zhukeqian1@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
-Date:   Mon, 7 Dec 2020 12:01:09 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1727055AbgLGMDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:03:06 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9026 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgLGMDG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:03:06 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqMNv6JCwzhntJ;
+        Mon,  7 Dec 2020 20:01:51 +0800 (CST)
+Received: from DESKTOP-6NKE0BC.china.huawei.com (10.174.185.137) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 20:02:15 +0800
+From:   Kunkun Jiang <jiangkunkun@huawei.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "moderated list:ARM SMMU DRIVERS" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>,
+        "Zenghui Yu" <yuzenghui@huawei.com>,
+        Kunkun Jiang <jiangkunkun@huawei.com>
+Subject: [PATCH RESEND] iommu/io-pgtalbe-arm: Remove "iopte_type(pte, l)" extra parameter "l"
+Date:   Mon, 7 Dec 2020 20:01:50 +0800
+Message-ID: <20201207120150.1891-1-jiangkunkun@huawei.com>
+X-Mailer: git-send-email 2.26.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20201205082957.12544-1-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.137]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-05 08:29, Keqian Zhu wrote:
-> ... then we have more chance to detect wrong code logic.
+Knowing from the code, the macro "iopte_type(pte, l)" doesn't use the
+parameter "l" (level). So we'd better to remove it.
 
-I don't follow that justification - it's still the same check with the 
-same outcome, so how does moving it have any effect on the chance to 
-detect errors?
+Fixes: e1d3c0fd701df(iommu: add ARM LPAE page table allocator)
+Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+---
+ drivers/iommu/io-pgtable-arm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-AFAICS the only difference it would make is to make some errors *less* 
-obvious - if a sufficiently broken caller passes an empty prot value 
-alongside an invalid size or already-mapped address, this will now 
-quietly hide the warnings from the more serious condition(s).
+diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+index a7a9bc08dcd1..e58ba5759b80 100644
+--- a/drivers/iommu/io-pgtable-arm.c
++++ b/drivers/iommu/io-pgtable-arm.c
+@@ -130,7 +130,7 @@
+ /* IOPTE accessors */
+ #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
+ 
+-#define iopte_type(pte,l)					\
++#define iopte_type(pte)					\
+ 	(((pte) >> ARM_LPAE_PTE_TYPE_SHIFT) & ARM_LPAE_PTE_TYPE_MASK)
+ 
+ #define iopte_prot(pte)	((pte) & ARM_LPAE_PTE_ATTR_MASK)
+@@ -151,9 +151,9 @@ static inline bool iopte_leaf(arm_lpae_iopte pte, int lvl,
+ 			      enum io_pgtable_fmt fmt)
+ {
+ 	if (lvl == (ARM_LPAE_MAX_LEVELS - 1) && fmt != ARM_MALI_LPAE)
+-		return iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_PAGE;
++		return iopte_type(pte) == ARM_LPAE_PTE_TYPE_PAGE;
+ 
+-	return iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_BLOCK;
++	return iopte_type(pte) == ARM_LPAE_PTE_TYPE_BLOCK;
+ }
+ 
+ static arm_lpae_iopte paddr_to_iopte(phys_addr_t paddr,
+@@ -280,7 +280,7 @@ static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
+ 		/* We require an unmap first */
+ 		WARN_ON(!selftest_running);
+ 		return -EEXIST;
+-	} else if (iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_TABLE) {
++	} else if (iopte_type(pte) == ARM_LPAE_PTE_TYPE_TABLE) {
+ 		/*
+ 		 * We need to unmap and free the old table before
+ 		 * overwriting it with a block entry.
+@@ -548,7 +548,7 @@ static size_t arm_lpae_split_blk_unmap(struct arm_lpae_io_pgtable *data,
+ 		 * block, but anything else is invalid. We can't misinterpret
+ 		 * a page entry here since we're never at the last level.
+ 		 */
+-		if (iopte_type(pte, lvl - 1) != ARM_LPAE_PTE_TYPE_TABLE)
++		if (iopte_type(pte) != ARM_LPAE_PTE_TYPE_TABLE)
+ 			return 0;
+ 
+ 		tablep = iopte_deref(pte, data);
+-- 
+2.19.1
 
-Yes, it will bail out a bit faster in the specific case where the prot 
-value is the only thing wrong, but since when do we optimise for 
-fundamentally incorrect API usage?
-
-Robin.
-
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->   drivers/iommu/io-pgtable-arm.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> index a7a9bc08dcd1..8ade72adab31 100644
-> --- a/drivers/iommu/io-pgtable-arm.c
-> +++ b/drivers/iommu/io-pgtable-arm.c
-> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->   	arm_lpae_iopte prot;
->   	long iaext = (s64)iova >> cfg->ias;
->   
-> -	/* If no access, then nothing to do */
-> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
-> -		return 0;
-> -
->   	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
->   		return -EINVAL;
->   
-> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->   	if (WARN_ON(iaext || paddr >> cfg->oas))
->   		return -ERANGE;
->   
-> +	/* If no access, then nothing to do */
-> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
-> +		return 0;
-> +
->   	prot = arm_lpae_prot_to_pte(data, iommu_prot);
->   	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
->   	/*
-> 
