@@ -2,241 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24A32D14BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05FD2D14BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgLGPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:30:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
+        id S1726203AbgLGPaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgLGPaX (ORCPT
+        with ESMTP id S1725774AbgLGPaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:30:23 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AE5C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:29:42 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id u18so18651192lfd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:29:42 -0800 (PST)
+        Mon, 7 Dec 2020 10:30:20 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D64C061793;
+        Mon,  7 Dec 2020 07:29:40 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id jx16so20018714ejb.10;
+        Mon, 07 Dec 2020 07:29:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1r4BkfM1HxSBgbqgEiz4060IqRLxOtaIkE30fzvcseQ=;
-        b=wVcfbZmQN8la4Jkx+hhD8kP0G/xuJhBB3azFfRHFy4lhCNBOP9f/c/dGdcz/GFg6Tc
-         KRtHM8XiulNddoIo91/5BatfKpCzcyOO5puiBlLsrH2QrDTLjyRrSP3RlF1orsg9TNH0
-         Qp9QHimSX2UCutumFvi8/AyLXBEw2TCuodjMNTb/ZVO+TkejLbtYjq/y0Zif3RPXImGg
-         Zr531Hv5fVanoktew8FUP8xdwBU1WIkktroBTC/VMr2/hlEpCg8eV3OOxsKVceNrOa1f
-         ADSa/jTqWBi9a4jyyVd0XpU34VU/SFsDqARbaCvBtIhSfnUdelkC/09wWpbMfElwGJ7Q
-         GH2w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=czieh0SMLeCnWTqxAlKEr+JxJKJgLdYp49r0pLF9I84=;
+        b=exZdHbMuTVxUx0l4mqHiicOz1w8B0EnlED5S4nkg0zZCOdEchmV1whh1v85k93rpfL
+         RGVHuXlfvosq/pvg7D7gAnJyLiqcUsxnrnOoptdrPQQKuca5WqNmiwmjwaSelz9hKqpY
+         kFbvX+RLIMUNcDKgXoOR/vJAUp1526HO03y8GZkHjND0yiDQTwDha0xWdDh7Nezl2w+7
+         55KELOFdiy9rBAxzoLJYX1/6sQT/4EDNF31ZU8VRAP9JEJbJ7gbWesiHdb8qe2xUwfK3
+         YzGo4f4Akb4Ks+CzgHjXCGwu9y98M2XSIiCiKHxCP8StrwniFXq7Xltzu5m3n3K15bQz
+         u6tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1r4BkfM1HxSBgbqgEiz4060IqRLxOtaIkE30fzvcseQ=;
-        b=pGb9lRv+Wv403VmKqG8b2pArzVIT6jWa6J0T/yC/j7xUonCB1RWuER3BaGZWvh95nW
-         hsogXg6eimTc+Ju8XeGQE6ItMATAkc9FjtrH2168a7xBlMOq7gy3BgqDfOJfIDu5SSy0
-         J4zrsH87B8ZX3lHJSGCTlXS62ysMQ6y2iBjODi0S+RMbjZHi4BVtUds60QksIn6IzoDy
-         zQ7MMt0B5x7DZqr2sViUjraI+VwbwCaOnsG2Rv0Tq+DOeRRUD8c3801oR3gBXZnW5hJT
-         vZ23e5PF9og5SNOlOBGmKlZlYvT+51bf6AyLRRXWOhOITeTBb0ib/0yL7oVNpNcEdP32
-         1q8Q==
-X-Gm-Message-State: AOAM533idBHo8gRD/y6YM+AHx0zyC2MznFbVZrtzPT2ZGS0V7M+Puy/a
-        mapBbBbSDvPxyQtkjE0ZP7qBiTlin1nMeHX1i2jefg==
-X-Google-Smtp-Source: ABdhPJxLzZW3MxYCggTrCcg+jYpgykLQlUaYsw5wv6HqDpuMkEuJ7tXJhfC//kvcPMlBsUAJqPWyWIq0t3ha7XtWxwA=
-X-Received: by 2002:a19:cc91:: with SMTP id c139mr9247647lfg.31.1607354981132;
- Mon, 07 Dec 2020 07:29:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=czieh0SMLeCnWTqxAlKEr+JxJKJgLdYp49r0pLF9I84=;
+        b=m5sa83gExKUqw0CRjJt6s8+UjryMvcMHveJOQ/3YTgEaeMOGN6GNOiXzIv3WTRyXTN
+         vhgL0b7gCw1LoUkIiOJHQLCOZTljnf1unDyjTPki0a5zjhb7pzRMA4XtHnC23/vOYhIi
+         GBUR4euXcxKP8uv2xTUyv8t2b02xAsXVpfnq7CbmebrF/T0L1uEWDvOaT6if9MbzxbFm
+         pSDXRq4spMBeu7I9vM93K371nAFCQy+Kw7T0Ctzw9WGCaRDpqLO3LF7WsAzplOvN0ds3
+         6/U1sHulRXbh8zPedkzox+Z8kepUJkwspHOx2cWLsD1z8YR0WkdwIfZMwBSWPVIPc24e
+         kxBA==
+X-Gm-Message-State: AOAM531Pnp1hpd0ottKQKFTjud2iV39CDzBnyO6j98Mmbw3gNaKc3mus
+        FJfGARGxV8Y4w8ttVDFoIPE=
+X-Google-Smtp-Source: ABdhPJxy15rnADfl5o/5RYP4BifXScV3Maf+Q6Mcc//8MHh20OVX/3ZszuOCO0i+gvlfAoqNPukW7w==
+X-Received: by 2002:a17:906:3b56:: with SMTP id h22mr18815714ejf.491.1607354979213;
+        Mon, 07 Dec 2020 07:29:39 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id u17sm12676796eje.11.2020.12.07.07.29.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 07:29:37 -0800 (PST)
+Date:   Mon, 7 Dec 2020 16:29:36 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Sean Young <sean@mess.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <X85KYHVSwIKcBoRe@ulmo>
+References: <20201204084417.GA2154@gofer.mess.org>
+ <20201204111326.qjux6k2472dmukot@pengutronix.de>
+ <20201204113846.GA6547@gofer.mess.org>
+ <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
+ <20201205173444.GA1265@gofer.mess.org>
+ <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
+ <20201206141941.GA24807@gofer.mess.org>
+ <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
+ <20201207094320.GA10460@gofer.mess.org>
+ <20201207135209.htp7plyotjxp37q2@pengutronix.de>
 MIME-Version: 1.0
-References: <20201201025944.18260-1-song.bao.hua@hisilicon.com>
- <20201201025944.18260-3-song.bao.hua@hisilicon.com> <CAKfTPtAppZFdku6k3cA=kNYKjU5e7w4A+E3R5_m11z+jy_WCBw@mail.gmail.com>
- <f9d9c6e959e441ec94264891ae90c11d@hisilicon.com> <CAKfTPtDqpQBcjq03cJEKN99XOZdNuV560ja9S-oZzkq7BToR8w@mail.gmail.com>
- <414fbd167b214452b925ac674575f0d6@hisilicon.com> <CAKfTPtALPjSvOZ2xf9cka9R-1uqi3AHQ+GYy7asT3wfvmLqaXw@mail.gmail.com>
- <d81006facd444d8a83bd7f1e24ccf6d9@hisilicon.com> <CAKfTPtAy_5QxnbmHq1pbGRhQYJ69ULovO6CKro-KkNKNnHMveg@mail.gmail.com>
- <b6bfb636b1404d3c827e2ba2034e6822@hisilicon.com>
-In-Reply-To: <b6bfb636b1404d3c827e2ba2034e6822@hisilicon.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 7 Dec 2020 16:29:29 +0100
-Message-ID: <CAKfTPtCs5G4wRSuQzfb8wnkNcUDEb7zTdFK2ZY+kpLnZrHFQ0g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sadRVDrrxYS6pVuJ"
+Content-Disposition: inline
+In-Reply-To: <20201207135209.htp7plyotjxp37q2@pengutronix.de>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 10:59, Song Bao Hua (Barry Song)
-<song.bao.hua@hisilicon.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Vincent Guittot [mailto:vincent.guittot@linaro.org]
-> > Sent: Thursday, December 3, 2020 10:39 PM
-> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>; Catalin Marinas
-> > <catalin.marinas@arm.com>; Will Deacon <will@kernel.org>; Rafael J. Wysocki
-> > <rjw@rjwysocki.net>; Cc: Len Brown <lenb@kernel.org>;
-> > gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
-> > Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; Juri
-> > Lelli <juri.lelli@redhat.com>; Dietmar Eggemann <dietmar.eggemann@arm.com>;
-> > Steven Rostedt <rostedt@goodmis.org>; Ben Segall <bsegall@google.com>; Mel
-> > Gorman <mgorman@suse.de>; Mark Rutland <mark.rutland@arm.com>; LAK
-> > <linux-arm-kernel@lists.infradead.org>; linux-kernel
-> > <linux-kernel@vger.kernel.org>; ACPI Devel Maling List
-> > <linux-acpi@vger.kernel.org>; Linuxarm <linuxarm@huawei.com>; xuwei (O)
-> > <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>
-> > Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-> >
-> > On Thu, 3 Dec 2020 at 10:11, Song Bao Hua (Barry Song)
-> > <song.bao.hua@hisilicon.com> wrote:
-> > >
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Vincent Guittot [mailto:vincent.guittot@linaro.org]
-> > > > Sent: Thursday, December 3, 2020 10:04 PM
-> > > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > > Cc: Valentin Schneider <valentin.schneider@arm.com>; Catalin Marinas
-> > > > <catalin.marinas@arm.com>; Will Deacon <will@kernel.org>; Rafael J. Wysocki
-> > > > <rjw@rjwysocki.net>; Cc: Len Brown <lenb@kernel.org>;
-> > > > gregkh@linuxfoundation.org; Jonathan Cameron
-> > <jonathan.cameron@huawei.com>;
-> > > > Ingo Molnar <mingo@redhat.com>; Peter Zijlstra <peterz@infradead.org>; Juri
-> > > > Lelli <juri.lelli@redhat.com>; Dietmar Eggemann
-> > <dietmar.eggemann@arm.com>;
-> > > > Steven Rostedt <rostedt@goodmis.org>; Ben Segall <bsegall@google.com>; Mel
-> > > > Gorman <mgorman@suse.de>; Mark Rutland <mark.rutland@arm.com>; LAK
-> > > > <linux-arm-kernel@lists.infradead.org>; linux-kernel
-> > > > <linux-kernel@vger.kernel.org>; ACPI Devel Maling List
-> > > > <linux-acpi@vger.kernel.org>; Linuxarm <linuxarm@huawei.com>; xuwei (O)
-> > > > <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>
-> > > > Subject: Re: [RFC PATCH v2 2/2] scheduler: add scheduler level for clusters
-> > > >
-> > > > On Wed, 2 Dec 2020 at 21:58, Song Bao Hua (Barry Song)
-> > > > <song.bao.hua@hisilicon.com> wrote:
-> > > > >
-> > > > > >
-> > > > > > Sorry. Please ignore this. I added some printk here while testing
-> > > > > > one numa. Will update you the data in another email.
-> > > > >
-> > > > > Re-tested in one NUMA node(cpu0-cpu23):
-> > > > >
-> > > > > g=1
-> > > > > Running in threaded mode with 1 groups using 40 file descriptors
-> > > > > Each sender will pass 100000 messages of 100 bytes
-> > > > > w/o: 7.689 7.485 7.485 7.458 7.524 7.539 7.738 7.693 7.568 7.674=7.5853
-> > > > > w/ : 7.516 7.941 7.374 7.963 7.881 7.910 7.420 7.556 7.695 7.441=7.6697
-> > > > > w/ but dropped select_idle_cluster:
-> > > > >      7.752 7.739 7.739 7.571 7.545 7.685 7.407 7.580 7.605 7.487=7.611
-> > > > >
-> > > > > g=2
-> > > > > Running in threaded mode with 2 groups using 40 file descriptors
-> > > > > Each sender will pass 100000 messages of 100 bytes
-> > > > > w/o: 10.127 10.119 10.070 10.196 10.057 10.111 10.045 10.164 10.162
-> > > > > 9.955=10.1006
-> > > > > w/ : 9.694 9.654 9.612 9.649 9.686 9.734 9.607 9.842 9.690 9.710=9.6878
-> > > > > w/ but dropped select_idle_cluster:
-> > > > >      9.877 10.069 9.951 9.918 9.947 9.790 9.906 9.820 9.863 9.906=9.9047
-> > > > >
-> > > > > g=3
-> > > > > Running in threaded mode with 3 groups using 40 file descriptors
-> > > > > Each sender will pass 100000 messages of 100 bytes
-> > > > > w/o: 15.885 15.254 15.932 15.647 16.120 15.878 15.857 15.759 15.674
-> > > > > 15.721=15.7727
-> > > > > w/ : 14.974 14.657 13.969 14.985 14.728 15.665 15.191 14.995 14.946
-> > > > > 14.895=14.9005
-> > > > > w/ but dropped select_idle_cluster:
-> > > > >      15.405 15.177 15.373 15.187 15.450 15.540 15.278 15.628 15.228
-> > > > 15.325=15.3591
-> > > > >
-> > > > > g=4
-> > > > > Running in threaded mode with 4 groups using 40 file descriptors
-> > > > > Each sender will pass 100000 messages of 100 bytes
-> > > > > w/o: 20.014 21.025 21.119 21.235 19.767 20.971 20.962 20.914 21.090
-> > > > 21.090=20.8187
-> > > > > w/ : 20.331 20.608 20.338 20.445 20.456 20.146 20.693 20.797 21.381
-> > > > 20.452=20.5647
-> > > > > w/ but dropped select_idle_cluster:
-> > > > >      19.814 20.126 20.229 20.350 20.750 20.404 19.957 19.888 20.226
-> > > > 20.562=20.2306
-> > > > >
-> > > >
-> > > > I assume that you have run this on v5.9 as previous tests.
-> > >
-> > > Yep
-> > >
-> > > > The results don't show any real benefit of select_idle_cluster()
-> > > > inside a node whereas this is where we could expect most of the
-> > > > benefit. We have to understand why we have such an impact on numa
-> > > > tests only.
-> > >
-> > > There is a 4-5.5% increase while g=2 and g=3.
-> >
-> > my point was with vs without select_idle_cluster() but still having a
-> > cluster domain level
-> > In this case, the diff is -0.8% for g=1 +2.2% for g=2, +3% for g=3 and
-> > -1.7% for g=4
-> >
-> > >
-> > > Regarding the huge increase in NUMA case,  at the first beginning, I suspect
-> > > we have wrong llc domain. For example, if cpu0's llc domain span
-> > > cpu0-cpu47, then select_idle_cpu() is running in wrong range while
-> > > it should run in cpu0-cpu23.
-> > >
-> > > But after printing the llc domain's span, I find it is completely right.
-> > > Cpu0's llc span: cpu0-cpu23
-> > > Cpu24's llc span: cpu24-cpu47
-> >
-> > Have you checked that the cluster mask was also correct ?
-> >
-> > >
-> > > Maybe I need more trace data to figure out if select_idle_cpu() is running
-> > > correctly. For example, maybe I can figure out if it is always returning -1,
-> > > or it returns -1 very often?
-> >
-> > yes, could be interesting to check how often select_idle_cpu return -1
-> >
-> > >
-> > > Or do you have any idea?
-> >
-> > tracking migration across nod could help to understand too
->
-> I set a bootargs mem=4G to do swapping test before working on cluster
-> scheduler issue. but I forgot to remove the parameter.
->
-> The huge increase on across-numa case can only be reproduced while
-> i use this mem=4G cmdline which means numa1 has no memory.
-> After removing the limitation, I can't reproduce the huge increase
-> for two NUMAs any more.
 
-Ok. Make more sense
+--sadRVDrrxYS6pVuJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Guess select_idle_cluster() somehow workaround an scheduler issue
-> for numa without memory.
->
-> >
-> > Vincent
-> > >
-> > >
->
-> Thanks
-> Barry
->
+On Mon, Dec 07, 2020 at 02:52:09PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Hello Sean,
+>=20
+> On Mon, Dec 07, 2020 at 09:43:20AM +0000, Sean Young wrote:
+> > Thank you for taking the time to explain your thinking.
+>=20
+> I'm happy you have an open ear for it. With this I really enjoy spending
+> the time to find the right arguments and examples.
+>=20
+> > On Mon, Dec 07, 2020 at 09:16:28AM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> > > On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
+> > > > On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-K=C3=B6nig wro=
+te:
+> > > > > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
+> > > > > > What real life uses-cases are there for round down? If you want=
+ to round
+> > > > > > down, is there any need for round up?
+> > > > >=20
+> > > > > The scenario I have in mind is for driving a motor. I have to adm=
+it
+> > > > > however that usually the period doesn't matter much and it's the
+> > > > > duty_cycle that defines the motor's speed. So for this case the
+> > > > > conservative behaviour is round-down to not make the motor run fa=
+ster
+> > > > > than expected.
+> > > >=20
+> > > > I am reading here that for driving motors, only the duty cycle matt=
+ers,
+> > > > not the period.
+> > >=20
+> > > There is an upper limit (usually around 1 ms) for the period, but if =
+you
+> > > choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
+> > >=20
+> > > @Thierry: Do you have further use cases in mind?
+>=20
+> I asked in the hardware department of the company I work for and they
+> had another usecase: Motors where for example a 1 ms pulse means "move
+> forwards" and 2 ms means "move backwards". They had the same idea as I
+> had: You want to know beforehand the result of a given
+> pwm_apply_state().
+
+I've occasionally considered the idea of adding a pwm_check_state() API
+that would allow you to pass in a struct pwm_state and get a result as
+to whether it can be applied or not. It's never really made much sense
+because pwm_apply_state() can already return failure if it can't apply
+the state.
+
+However, if we need some way for consumers to be more clever about state
+changes, then something like pwm_check_state() might be more useful if,
+in addition to just checking the validity/applicability of the state we
+can also return the state that would be applied after all the hardware-
+specific rounding.
+
+That way the consumer can use it to perform some checks on the resulting
+state and submit it if satisfied with the outcome. Alternatively, if it
+determines that the state is not viable, it can retry with different
+values.
+
+I'm not sure how useful that really is because it makes the usage really
+difficult on the consumer side. Perhaps there's no need for this anymore
+if the consumer is able to specify the rounding, so perhaps we should
+concentrate on that API first.
+
+> > > > > For other usecases (fan, backlight, LED) exactness typically does=
+n't
+> > > > > matter that much.
+> > > >=20
+> > > > So, the use-cases you have are driving motor, fan, backlight, and l=
+ed.
+> > > > And in all these cases the exact Hz does not matter.
+> > > >=20
+> > > > The only uses case where the exact Hz does matter is pwm-ir-tx.=20
+> > > >=20
+> > > > So, I gather there are no use-cases for round-down. Yes, should rou=
+nd-down
+> > > > be needed, then this is more difficult to implement if the driver a=
+lways
+> > > > does a round-closest. But, since there is no reason to have round-d=
+own,
+> > > > this is all academic.
+> > > >=20
+> > > > Your policy of forcing new pwm drivers to use round-down is breaking
+> > > > pwm-ir-tx.
+> > >=20
+> > > So you're indeed suggesting that the "right" rounding strategy for
+> > > lowlevel drivers should be:
+> > >=20
+> > >  - Use the period length closest to the requested period (in doubt ro=
+und
+> > >    down?)
+> > >  - With the chosen period length use the biggest duty_cycle not bigger
+> > >    than the requested duty_cycle.
+> > >=20
+> > > While this seems technically fine I think for maintenance this is a
+> > > nightmare.
+> > >=20
+> > > My preference would be to stick to the rounding strategy we used so f=
+ar
+> > > (i.e.:
+> > >=20
+> > >  - Use the biggest period length not bigger than the requested period
+> > >  - With the chosen period length use the biggest duty_cycle not bigger
+> > >    than the requested duty_cycle.
+> > >=20
+> > > ) and for pwm-ir-tx add support to the PWM API to still make it possi=
+ble
+> > > (and easy) to select the best setting.
+> > >=20
+> > > The reasons why I think that this rounding-down strategy is the best
+> > > are (in order of importance):
+> > >=20
+> > >  - It is easier to implement correctly [1]
+> >=20
+> > Yes, you are right. You have given a great example where a simple
+> > DIV_ROUND_CLOSEST() does not give the result you want.
+> >=20
+> > >  - Same rounding method for period and duty cycle
+> > >  - most drivers already do this (I think)
+> > >=20
+> > > The (IMHO nice) result would then mean:
+> > >=20
+> > >  - All consumers can get the setting they want; and
+> >=20
+> > Once there is a nice pwm api for selecting round-nearest, then yes.
+> >=20
+> > For the uses cases you've given, fan, backlight, and led a round-nearest
+> > is the rounding they would want, I would expect.
+>=20
+> maybe, yes. Maybe it is also not important enough to spend the extra
+> cycles getting round nearest and so sticking to round-down is good
+> enough.
+
+Yeah, I think in most cases currently the consumer just doesn't care
+enough and things happen to just work. Maybe they're not perfect, but
+good enough.
+
+One of the reasons I was reluctant to introduce a "default" rounding
+behaviour is precisely because it's not clear cut, so in some cases the
+default may not be what we really want, such as in the pwm-ir-tx case
+here.
+
+> > >  - Code in lowlevel drivers is simple and the complexity is in common
+> > >    code and so a single place.
+> > >=20
+> > > And it would also allow the pwm-ir-tx driver to notice if the PWM to =
+be
+> > > used can for example only support frequencies under 400 kHz.
+> >=20
+> > I doubt pwm-ir-tx cares about this, however it is a nice-to-have. It wo=
+uld
+> > also be nice if the rounding could be used with atomic configuration
+> > as well.
+>=20
+> I cannot follow, you created 11fc4edc483bea8bf0efa0cc726886d2342f6fa6
+> because 476.2 Mhz was too bad. So you seem to be interested in
+> deviations and part of the problem is that you don't get feedback about
+> how your request is fulfilled.
+>=20
+> > Please let me know when/if this new API exists for pwm so that pwm-ir-tx
+> > can select the right rounding.
+>=20
+> Given that the bcm2835 driver is quite trivial I would be happy to
+> create a series that "fixes" the driver to round down and provide a
+> prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
+> tester and a real use-case were the single two things that stopped me
+> investing time here.
+
+I'd like to avoid adding a new function for this functionality and
+instead add a rounding type field to the PWM state. Also, in doing so we
+should be able to keep the status quo for everyone by making the default
+rounding behaviour "don't care", which is what basically everyone right
+now uses. In specific cases like pwm-ir-tx we can adjust the rounding to
+become "nearest".
+
+That said, the rounding behaviour is not something that the API can
+guarantee, because if we start rejecting "nearest" requests, we might
+end up breaking a bunch of setups that want "nearest" but where the
+controller doesn't support it. At the same time I don't want to make it
+a prerequisite that all drivers implement all possible rounding
+behaviours because it puts a very high burden on the driver writer that
+may not need (or have a way of testing) anything other than "nearest",
+or "round down", or whatever.
+
+So I think from an API perspective the rounding behaviour would always
+have to be a sort of "hint" to the driver to specify what the consumer
+wants to use, but it should never fail to apply a state purely on this
+rounding behaviour, so returning some state that's the best the driver
+can do is better than failing if it doesn't know some mode.
+
+This also ensures that existing drivers will be able to continue to work
+the same way they always have, and the new mechanism is merely something
+to improve the use-cases where we need more precise control.
+
+Thierry
+
+--sadRVDrrxYS6pVuJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/OSl0ACgkQ3SOs138+
+s6Fp6g/9EGoRDw/oiLD0Rf2wTPLILTQuDgAqBJCnzfQ/lVteQy1PHo5Lvo/IE7c8
+xBY2I7e3N3V39NmprqIBQdyXD9hEkVGMtWCcyO+gh7uvZyjKN4R7E0h1xzqV4JQv
+35XZSVZiBSxjhyc2uMNrjtx3kbZqiNcRNyGjPCF/CrDNfHsxJqzt75n3MLTXz8py
+p+bPW+YvDzS/miKYlqxjeOVtxa7lid60kwfV4k89nBD+yPV7FqqAMkIawmqL31q3
+tPxzFN8mcuqbJOb+k3uZlP8O16HDFxrUz0hSGxJ0Uzgyb0Z95rOquLwL0fmoRBEH
+3a6Qi6jyEiwtJfMMIX77zLkrCFIRfrsFL7oqKvYjMTYHmUfJePBxtcDjFkskE7PU
+F1kt8ArcvV1taE2MrUxKfydNNdnC3eGfhdGgXfDYoVSpXTCD3Iwwyxn+4Bwso9W6
+ni2duZ9PUdAZE0TzpQ2ngc3Vs5bvy828wjEpF+KaZ4KwcN+JwGuTpW1TympBZV57
+7wI3L1y3jTpARP2BiRmduM168H1WbPVG8IhbtdjnSmfeHGY0vBGeId7HvASM1YA2
+BzwYl3mLUEekRcZaMfhEPLg1JRaF2xYbTVHAamPmSM44G0dKHMYuvtWLQ6SF2MSI
+MOwIeomKCgob37BViH8IX1ZqZNTVjfJYxvXr14aYXqIXIFmeT6Q=
+=+2zM
+-----END PGP SIGNATURE-----
+
+--sadRVDrrxYS6pVuJ--
