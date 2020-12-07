@@ -2,122 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1322D0D75
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0EE2D0D74
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgLGJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgLGJyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:54:41 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A89C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:54:01 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id c1so155379wrq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:54:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UN6aA93vC/SD1YPAlyO4uMMoWkJ3/yWMdTSHUtoRruw=;
-        b=Ngjq0VL1bGmIacQy8lD1k+mnd2pOVCuiQowuKH23U05X0K6xGYSmPPDoff2IOyaTD5
-         lP5irBVNsOIAzXuCsEWw+Nv5H8BQM32H0/dLssasSlAIPIT9E8WnppPURWE9Ou0/Iz7u
-         g0047BFjLgGkufv41sfwaTLxWfBY52mGddcJ6ZtaIhLc3oUF2PlEAuYsnarqRHJuP2N/
-         IW0kRQ14Mkl0fMzGb9LjlphMRzlXvM99J9SNd4lgPKmEjuhuYulpM8XivmTbltHVgSzs
-         x8tQmN5SJCRI//UKSAJwGoVqYKWAqAgJU3mTU0o0/t+7kG8uMR//D0g+Se8q5CRPCfAq
-         JUqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UN6aA93vC/SD1YPAlyO4uMMoWkJ3/yWMdTSHUtoRruw=;
-        b=VIp5hoEeKwYWSghfbPszgUzmrFGfeSrhn3G6ApRMEtEzdbMAuKzYk09Dfuw2dDgcQD
-         Gnb4vrC6EqwBDPZnflzlQaXyHqWuwebQO3CXRq/Ov6MszXwdqHyshxvHi8mh2O7oFQmg
-         FUtkOtcQNDSk9TZVuF+REKni54R9xnZs47exDZBKJfRbYwlp7vmvWckKeRQe5u5HAn9V
-         JLotlXCckur+UiXAglyCyXOSbp4o1ScgW6ua1IlMVaaC8iC0mw6oJyuUpc24+Bd2prea
-         c7lEqP9MHnbj9/5rHjjYkn0FSteAIBVSepCiF0q4HzEhBafbePt1SREd2PpYt9z4YTF6
-         cubA==
-X-Gm-Message-State: AOAM533TjM9MsjQHqTRVB5evxH25gsnzkvFtLwhemaLqYegzhbl1Oup/
-        Onb1EJDJy6wkPDyuEoGOQPvTaw==
-X-Google-Smtp-Source: ABdhPJz4OF1tVrrRgNAaVkaq9+EQ2tLGO5ijsEk4DKSFcpZF86rWp2XsV1fs+9Znyx+o4qdaXtgMWw==
-X-Received: by 2002:a5d:5643:: with SMTP id j3mr18403591wrw.43.1607334839917;
-        Mon, 07 Dec 2020 01:53:59 -0800 (PST)
-Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id t188sm13558066wmf.9.2020.12.07.01.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:53:59 -0800 (PST)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] arm64: dts: meson: vim3: whitespace fixups
-Date:   Mon,  7 Dec 2020 10:53:45 +0100
-Message-Id: <20201207095346.26297-2-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201207095346.26297-1-jbrunet@baylibre.com>
-References: <20201207095346.26297-1-jbrunet@baylibre.com>
+        id S1726457AbgLGJya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:54:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbgLGJya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:54:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3BAFAD21;
+        Mon,  7 Dec 2020 09:53:47 +0000 (UTC)
+Subject: Re: [PATCH drm/hisilicon v2 1/2] drm/hisilicon: Use managed
+ mode-config init
+To:     "tiantao (H)" <tiantao6@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1607331906-19005-1-git-send-email-tiantao6@hisilicon.com>
+ <1607331906-19005-2-git-send-email-tiantao6@hisilicon.com>
+ <cf28147b-a506-3d72-fb71-bb30a801fd8d@suse.de>
+ <0d60eccc-907d-6fc2-e1c2-c7fe0facd21e@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <dac52155-b9bb-6a01-7e18-d4dd48f58844@suse.de>
+Date:   Mon, 7 Dec 2020 10:53:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0d60eccc-907d-6fc2-e1c2-c7fe0facd21e@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="0I72f04CKrbtKB6WYrp3kjWuNdq7hQS1M"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Spaces have been used to indent 2 nodes.
-Replace those with tabs and remove one extra newline
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--0I72f04CKrbtKB6WYrp3kjWuNdq7hQS1M
+Content-Type: multipart/mixed; boundary="iXbnfvtIHw4JjkM1Kf9QTPJwDkogkIii1";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: "tiantao (H)" <tiantao6@huawei.com>, Tian Tao <tiantao6@hisilicon.com>,
+ airlied@linux.ie, daniel@ffwll.ch, kraxel@redhat.com,
+ alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <dac52155-b9bb-6a01-7e18-d4dd48f58844@suse.de>
+Subject: Re: [PATCH drm/hisilicon v2 1/2] drm/hisilicon: Use managed
+ mode-config init
+References: <1607331906-19005-1-git-send-email-tiantao6@hisilicon.com>
+ <1607331906-19005-2-git-send-email-tiantao6@hisilicon.com>
+ <cf28147b-a506-3d72-fb71-bb30a801fd8d@suse.de>
+ <0d60eccc-907d-6fc2-e1c2-c7fe0facd21e@huawei.com>
+In-Reply-To: <0d60eccc-907d-6fc2-e1c2-c7fe0facd21e@huawei.com>
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+--iXbnfvtIHw4JjkM1Kf9QTPJwDkogkIii1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 7b46555ac55a..12465c4becc7 100644
---- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-@@ -278,12 +278,12 @@ external_phy: ethernet-phy@0 {
- };
- 
- &ethmac {
--        pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
--        pinctrl-names = "default";
--        status = "okay";
--        phy-mode = "rgmii";
--        phy-handle = <&external_phy>;
--        amlogic,tx-delay-ns = <2>;
-+	pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+	phy-mode = "rgmii";
-+	phy-handle = <&external_phy>;
-+	amlogic,tx-delay-ns = <2>;
- };
- 
- &frddr_a {
-@@ -349,9 +349,9 @@ &pcie {
- };
- 
- &pwm_ef {
--        status = "okay";
--        pinctrl-0 = <&pwm_e_pins>;
--        pinctrl-names = "default";
-+	status = "okay";
-+	pinctrl-0 = <&pwm_e_pins>;
-+	pinctrl-names = "default";
- };
- 
- &saradc {
-@@ -445,7 +445,6 @@ w25q128: spi-flash@0 {
- 	};
- };
- 
--
- &tdmif_a {
- 	status = "okay";
- };
--- 
-2.28.0
+Hi
 
+Am 07.12.20 um 10:29 schrieb tiantao (H):
+>=20
+>=20
+> =E5=9C=A8 2020/12/7 17:22, Thomas Zimmermann =E5=86=99=E9=81=93:
+>> Hi
+>>
+>> Am 07.12.20 um 10:05 schrieb Tian Tao:
+>>> Using drmm_mode_config_init() sets up managed release of modesetting
+>>> resources.
+>>>
+>>
+>> Individual patches usually contain a changelog to highlight the=20
+>> difference to previous versions. Please add one before committing the =
+
+>=20
+> Just to be sure: I don't need to add a changlog to this individual=20
+> patch, right?
+
+You should. It's supposed to be good style to add a changelog for each=20
+patch and also highlight the series' overall changes in the cover letter.=
+
+
+Best regards
+Thomas
+
+>=20
+>> patch.=C2=A0 Your cover letter for the series already does this correc=
+tly.
+>>
+>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>>
+>> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>>
+>> Thanks for all these updates.
+>=20
+> Thank you for your constant help with the review code and your careful =
+
+> guidance!
+>=20
+>>
+>>> ---
+>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 14 +++------=
+-----
+>>> =C2=A0 drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |=C2=A0 1 -
+>>> =C2=A0 2 files changed, 3 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c=20
+>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>> index 3687753..7f01213 100644
+>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+>>> @@ -96,8 +96,9 @@ static int hibmc_kms_init(struct hibmc_drm_private =
+
+>>> *priv)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_device *dev =3D &priv->dev;=
+
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>> -=C2=A0=C2=A0=C2=A0 drm_mode_config_init(dev);
+>>> -=C2=A0=C2=A0=C2=A0 priv->mode_config_initialized =3D true;
+>>> +=C2=A0=C2=A0=C2=A0 ret =3D drmm_mode_config_init(dev);
+>>> +=C2=A0=C2=A0=C2=A0 if (ret)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->mode_config.min_width =3D 0;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->mode_config.min_height =3D 0;
+>>> @@ -125,14 +126,6 @@ static int hibmc_kms_init(struct=20
+>>> hibmc_drm_private *priv)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> =C2=A0 }
+>>> -static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+>>> -{
+>>> -=C2=A0=C2=A0=C2=A0 if (priv->mode_config_initialized) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_mode_config_cleanup(&=
+priv->dev);
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->mode_config_initial=
+ized =3D false;
+>>> -=C2=A0=C2=A0=C2=A0 }
+>>> -}
+>>> -
+>>> =C2=A0 /*
+>>> =C2=A0=C2=A0 * It can operate in one of three modes: 0, 1 or Sleep.
+>>> =C2=A0=C2=A0 */
+>>> @@ -262,7 +255,6 @@ static int hibmc_unload(struct drm_device *dev)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_atomic_helper_shutdown(dev);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_disable_msi(dev->pdev);
+>>> -=C2=A0=C2=A0=C2=A0 hibmc_kms_fini(priv);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->dev_private =3D NULL;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> =C2=A0 }
+>>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h=20
+>>> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>> index a49c10e..7d263f4 100644
+>>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+>>> @@ -42,7 +42,6 @@ struct hibmc_drm_private {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_crtc crtc;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_encoder encoder;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hibmc_connector connector;
+>>> -=C2=A0=C2=A0=C2=A0 bool mode_config_initialized;
+>>> =C2=A0 };
+>>> =C2=A0 static inline struct hibmc_connector *to_hibmc_connector(struc=
+t=20
+>>> drm_connector *connector)
+>>>
+>>
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--iXbnfvtIHw4JjkM1Kf9QTPJwDkogkIii1--
+
+--0I72f04CKrbtKB6WYrp3kjWuNdq7hQS1M
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/N+6oFAwAAAAAACgkQlh/E3EQov+Cp
+sQ/+KZGgJvYtL7bhwCJr8ENheu7nGVIe02n+kekMBJntRRmA+7/gLQsebp9F06zrefVcDj+Kv7Qc
+s1F73YPr2SLwH1FgkzDCLd1IeVwgSVq/Eeprar3xziWrXC91d3ak3KavYMjQqHRszEbRMbK/oSqS
+W3HW3LYSkVkhwtuDcfODYjWWlMLn2et7H0eNCam2tA8F34rydGrZA09E4q/OfYuUr7KAQfG9P97d
+iCpl1pz/Z1yzg6/Dnpoxvv7o6oL9rHzo7/b2FJpaznXPEf56I/btGK01POrpXHzIEcFO+fMVbDdb
+CzshuvEKHUMNhFzY0eFmk+ov9tpUv7fq6k4/87rwTOYT07cJ5kAx9mXHwAmW6auf+DS2bS657bT6
+9YIJavqSiGW3GWQ1fztQeLi1QOQfehzGoJz5vBkYN7iLHj0V/hiS1GLUmTtTkJQ7g8jxzHxTyiRX
+QteAS7hCfaHDasEtbq4ijhiEIMENOCF5uuyaYw1CaXilbxrlg3WtyQLG5jVwffEI3CkD1C+foujN
+qHP3RewE+M5U6wn6gC6PX6YnaFRcM49YnyXf7G3GwD4hQAV15gUrWffZ8sxSqo75DVIJq6iE7PAP
+ZuM0l6vJUUSr7DGqWcivcQfTxNJitMYfXcm1JyZZyFTMHiYY/EWOWF62DXNGdbwJsPlIH32SAK/h
+ENM=
+=qLU2
+-----END PGP SIGNATURE-----
+
+--0I72f04CKrbtKB6WYrp3kjWuNdq7hQS1M--
