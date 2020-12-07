@@ -2,69 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573442D0FFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047692D1005
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgLGMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:03:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727253AbgLGMD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:03:27 -0500
-Date:   Mon, 7 Dec 2020 13:02:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607342566;
-        bh=T60EYM3kMV21qsg9PIdxTYnnz7M8skytCR7MJuhDXTw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=efdPqug0yRu0i0SDHuH75YtbPk/3gaFbvUNK6JT0BTy4mcIe3nENFBP+Tq5/BEhyA
-         EiB1HQn78h7aOB/c/iGgD11laslcQ+hjT+uhmcfFL3SjSkSbwImBj1UwY35C3uaVO5
-         a1KU9XTJ9dofSVu52IidJzv9QLfAN7qdRqX8RhzF3bFBCgkMwkvFJZIxixQcF0PX16
-         pCJ4BfE9c7GmY4eglm3IPzlR7aFMHozhkxQC19d0lnvFyiQdtmHtEIxN0NQUIosU3h
-         vcZQcwNf1YgUqzLGJjcCedAtT56MCm1FySAZhpR1izmkJQ/fhIEYrZPOtb3lEF3xWk
-         Prsadxm2sQGjg==
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: drop semicolon from version macro
-Message-ID: <20201207120242.GA14180@linux-8ccs>
-References: <20201207091308.1217-1-johan@kernel.org>
+        id S1727247AbgLGMEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:04:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727096AbgLGMEW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:04:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607342575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VV+E+pdDesJK1ua/OBZSFe/m+EuDUY9iFBTNIzHgamg=;
+        b=ThifjIEcKVv6a0yMxfsCk0fFevCyCjRjNg1nPY1afZmsffxCQbF7gKeo/ZRTewDLaw44im
+        oyr0RUG8tuXvoDVRWJVjgp0+QUJsZIbgs8+c6f7e/DxmvtOfk7dei5ifyD2IU0bp/ASdBS
+        SGpgk4Ubn8stcPMiXrnDoaw/YJJAywQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-219-tlIb3Xe8OLCWM9fm3MzovQ-1; Mon, 07 Dec 2020 07:02:53 -0500
+X-MC-Unique: tlIb3Xe8OLCWM9fm3MzovQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED8511015C88;
+        Mon,  7 Dec 2020 12:02:50 +0000 (UTC)
+Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 879A860BD8;
+        Mon,  7 Dec 2020 12:02:47 +0000 (UTC)
+Subject: Re: [RFC V2 00/37] Enhance memory utilization with DMEMFS
+To:     yulei.kernel@gmail.com, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk,
+        pbonzini@redhat.com, Dan Williams <dan.j.williams@intel.com>
+Cc:     joao.m.martins@oracle.com, rdunlap@infradead.org,
+        sean.j.christopherson@intel.com, xiaoguangrong.eric@gmail.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        Yulei Zhang <yuleixzhang@tencent.com>
+References: <cover.1607332046.git.yuleixzhang@tencent.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <33a1c4ca-9f78-96ca-a774-3adea64aaed3@redhat.com>
+Date:   Mon, 7 Dec 2020 13:02:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201207091308.1217-1-johan@kernel.org>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1607332046.git.yuleixzhang@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Johan Hovold [07/12/20 10:13 +0100]:
->Drop the trailing semicolon from the MODULE_VERSION() macro definition
->which was left when removing the array-of-pointer indirection.
->
->Signed-off-by: Johan Hovold <johan@kernel.org>
+On 07.12.20 12:30, yulei.kernel@gmail.com wrote:
+> From: Yulei Zhang <yuleixzhang@tencent.com>
+> 
+> In current system each physical memory page is assocaited with
+> a page structure which is used to track the usage of this page.
+> But due to the memory usage rapidly growing in cloud environment,
+> we find the resource consuming for page structure storage becomes
+> more and more remarkable. So is it possible that we could reclaim
+> such memory and make it reusable?
+> 
+> This patchset introduces an idea about how to save the extra
+> memory through a new virtual filesystem -- dmemfs.
+> 
+> Dmemfs (Direct Memory filesystem) is device memory or reserved
+> memory based filesystem. This kind of memory is special as it
+> is not managed by kernel and most important it is without 'struct page'.
+> Therefore we can leverage the extra memory from the host system
+> to support more tenants in our cloud service.
 
-Applied, thanks!
+"is not managed by kernel" well, it's obviously is managed by the
+kernel. It's not managed by the buddy ;)
 
-Jessica
+How is this different to using "mem=X" and mapping the relevant memory
+directly into applications? Is this "simply" a control instance on top
+that makes sure unprivileged process can access it and not step onto
+each others feet? Is that the reason why it's called  a "file system"?
+(an example would have helped here, showing how it's used)
 
->---
-> include/linux/module.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/include/linux/module.h b/include/linux/module.h
->index ebe2641d7b0b..b63db970fd26 100644
->--- a/include/linux/module.h
->+++ b/include/linux/module.h
->@@ -279,7 +279,7 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
-> 			},						\
-> 			.module_name	= KBUILD_MODNAME,		\
-> 			.version	= _version,			\
->-		};
->+		}
-> #endif
->
-> /* Optional firmware file (or files) needed by the module
->-- 
->2.26.2
->
+It's worth noting that memory hotunplug, memory poisoning and probably
+more is currently fundamentally incompatible with this approach - which
+should better be pointed out in the cover letter.
+
+Also, I think something similar can be obtained by using dax/hmat
+infrastructure with "memmap=", at least I remember a talk where this was
+discussed (but not sure if they modified the firmware to expose selected
+memory as soft-reserved - we would only need a cmdline parameter to
+achieve the same - Dan might know more).
+
+> 
+> As the belowing figure shows, we uses a kernel boot parameter 'dmem='
+> to reserve the system memory when the host system boots up, the
+> remaining system memory is still managed by system memory management
+> which is associated with "struct page", the reserved memory
+> will be managed by dmem and assigned to guest system, the details
+> can be checked in /Documentation/admin-guide/kernel-parameters.txt.
+> 
+>    +------------------+--------------------------------------+
+>    |  system memory   |     memory for guest system          | 
+>    +------------------+--------------------------------------+
+>     |                                   |
+>     v                                   |
+> struct page                             |
+>     |                                   |
+>     v                                   v
+>     system mem management             dmem  
+> 
+> And during the usage, the dmemfs will handle the memory request to
+> allocate and free the reserved memory on each NUMA node, the user 
+> space application could leverage the mmap interface to access the 
+> memory, and kernel module such as kvm and vfio would be able to pin
+> the memory thongh follow_pfn() and get_user_page() in different given
+> page size granularities.
+
+I cannot say that I really like this approach. I really prefer the
+proposal to free-up most vmemmap pages for huge/gigantic pages instead
+if all this is about is reducing the memmap size.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
