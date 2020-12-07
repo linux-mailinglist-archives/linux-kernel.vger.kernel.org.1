@@ -2,119 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701FF2D1019
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5867E2D101E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgLGMJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgLGMJE (ORCPT
+        id S1727022AbgLGMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:10:20 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:36866 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgLGMKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:09:04 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA504C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:08:23 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id z9so9150660qtn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:08:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j6WcPj0IELZyPAeHgxTFV18eYU66eVdxYM8UMBwb+6k=;
-        b=gTDKlWp7OTo9YtssNfNMMF7sGVDibkhfahzMZ4mew5/uNa2KrOl237g1QrZLr4W1Q5
-         NIxdZCMvoct6LUzRbUO/E4v7qiNUqKotyVLZlhi3VaJhjdBW/kl8rI2g7ZPcoeuU9ZPZ
-         FeXRnBeRF0+aad4UXo/jeJ+FTPTejR5Jy1Mj5m4emujQuAn50tUkXLgYPjEuR6JU4Az7
-         bFFGNcuh9ccE6Zr2RyBsxIgs0q4ZDj4OrfkA4gwxeYqCYgyWs+/ZO4vGwU9Oqxq0XcXi
-         c9M9ojSZk/ciTmR9Fidafkd0B3gz1yaQnBJM0nXSTVtL6D7x4lHEXQL3pzQ+KVsFZzKU
-         Vnqw==
+        Mon, 7 Dec 2020 07:10:19 -0500
+Received: by mail-oi1-f179.google.com with SMTP id l207so12224842oib.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:10:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j6WcPj0IELZyPAeHgxTFV18eYU66eVdxYM8UMBwb+6k=;
-        b=UGe39Kffo4CxHC2isTYcogHWQhlQ9qwlBYF2UgchXVEYlJB177e1CDRoK+5L2ByYQc
-         eXeYSO735CcUA0wQZWbbhQ1XpZ1rJC+jOURjMEc3nS3JSoPXKBXrG7D6EAEZRKEXGZLP
-         mlc6UIEl1T4MCzI5D0dkas6OVNHenGLAhDXNrMcj576jJeZ9OuCkiax7FTsdJ+3gP6o6
-         ENJVtRxLPKm9KcY036hC583LX54Kg4bUv7TKja8e+CyfqiyAq/EASsMVZ0zr0hT6NEer
-         pySSGqi189cm1JnwlsdLCMUt1PlAClKlRULHdByDtUnmrM2KSKkXIAfcodzxb7vFh/Rj
-         SPlw==
-X-Gm-Message-State: AOAM530nc7Owq4dRpZs2hFByQryhjVZOPXBumvMaKwMaGNknzx4ZE7h5
-        4vbeNwRaJWn+GUGJ9f1XTzjPpvwEG4xsMf6Xu3U/AcGtC472Yw==
-X-Google-Smtp-Source: ABdhPJzLv9JfWtnmiT/twmir3juqV9lBsro3kbVQyEWJz6B9CuFQNaphSSsh/w0suT4ZQLlZHcpUMYtIGQM8bujTowI=
-X-Received: by 2002:ac8:5386:: with SMTP id x6mr23435656qtp.43.1607342902842;
- Mon, 07 Dec 2020 04:08:22 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=Gf4f4C3kkK3xkC5PEHsF24NiLGtD172vjUD1vi5tQTc=;
+        b=h1R90lYqlQeeq7ejT/nvdxtxLPKhs5LIAnRGnT2EBYdskUqfWt0CVRk775MC2PUL4x
+         JMTDp9ORCIQuQk3Pl5hmCHHx5giMJl1fOemA3KFe5KjgekKk72+zSsmhA2mLHyc8hG1H
+         SHFeKqjJkdpryxNLxydO/BjjISX/DPyKnrw7x/SPPu1jwUzE59pdpZ/pbLRdmtmVwxE0
+         NsAorEXtSe4hVJ0JOZFMC9Rsj7Bi2JL3CB54u6Iqx76hAoZp7cJMG79Fv1V+N/qmhLmR
+         W5xH3IRv2MMC4U33yM0d8nd9iGL3OazUpJa1sTLOhadIHOVQEoEP6yhVK9y0TUwTi11/
+         ENbg==
+X-Gm-Message-State: AOAM532AOolHa4aroNU00NSQqlQkNvbzFKQhUBYAJlpK8102pmA/3bpo
+        mLMo35Wd/zORtrefBUjIripwQRW3HDHSFi8PqUSRABvlf7o=
+X-Google-Smtp-Source: ABdhPJzYI6ZoWUYeRuiEWXBzV3L2dm+taMvez/yyxn0R4kK5f/y0seWKWMF7FQ1S68gN4HNmvqlbVLDaRfoSXkn00BI=
+X-Received: by 2002:aca:4cd8:: with SMTP id z207mr12066693oia.148.1607342979004;
+ Mon, 07 Dec 2020 04:09:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201204210000.660293c6@canb.auug.org.au> <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
-In-Reply-To: <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Dec 2020 13:08:11 +0100
-Message-ID: <CACT4Y+bYVC=r+bPF7MziOZpJCYqrUj7CFt47Z5PSWjohZLYm+w@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Kees Cook <keescook@google.com>
+References: <20201207120611.1315807-1-geert@linux-m68k.org>
+In-Reply-To: <20201207120611.1315807-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Dec 2020 13:09:28 +0100
+Message-ID: <CAMuHMdWJVgWmAOVDVcLfA7Hsv5h1tzqOt6EfgyB_eO_Jn+ESZg@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.10-rc7
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 6:19 AM Andrew Morton <akpm@linux-foundation.org> wr=
-ote:
->
-> On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
->
-> > Hi all,
-> >
-> > After merging the akpm tree, today's linux-next build (powerpc
-> > allyesconfig) produced warnings like this:
-> >
-> > kernel/kcov.c:296:14: warning: conflicting types for built-in function =
-'__sanitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)'=
- [-Wbuiltin-declaration-mismatch]
-> >   296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
-> >       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Odd.  clang wants that signature, according to
-> https://clang.llvm.org/docs/SanitizerCoverage.html.  But gcc seems to
-> want a different signature.  Beats me - best I can do is to cc various
-> likely culprits ;)
->
-> Which gcc version?  Did you recently update gcc?
->
-> > ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/=
-oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
-> >
-> > (lots of these latter ones)
-> >
-> > I don't know what produced these, but it is in the akpm-current or
-> > akpm trees.
+On Mon, Dec 7, 2020 at 1:08 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.10-rc7[1] to v5.10-rc6[3], the summaries are:
+>   - build errors: +1/-0
 
-I can reproduce this in x86_64 build as well but only if I enable
-UBSAN as well. There were some recent UBSAN changes by Kees, so maybe
-that's what affected the warning.
-Though, the warning itself looks legit and unrelated to UBSAN. In
-fact, if the compiler expects long and we accept u64, it may be broken
-on 32-bit arches...
+  + /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit
+declaration of function 'cleanup_cpu_mmu_context'
+[-Werror=implicit-function-declaration]:  => 914:2
 
-I have gcc version 10.2.0 (Debian 10.2.0-15)
-On next-20201207
-config is defconfig +
-CONFIG_KCOV=3Dy
-CONFIG_KCOV_ENABLE_COMPARISONS=3Dy
-CONFIG_UBSAN=3Dy
+v5.10-rc7/powerpc-gcc4.9/pmac32_defconfig+SMP
 
-$ make -j8 kernel/kcov.o
-  CC      kernel/kcov.o
-kernel/kcov.c:296:14: warning: conflicting types for built-in function
-=E2=80=98__sanitizer_cov_trace_switch=E2=80=99; expected =E2=80=98void(long=
- unsigned int,
-void *)=E2=80=99 [-Wbuiltin-declaration-mismatch]
-  296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0477e92881850d44910a7e94fc2c46f96faa131f/ (all 192 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/b65054597872ce3aefbc6a666385eabdf9e288da/ (all 192 configs)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
