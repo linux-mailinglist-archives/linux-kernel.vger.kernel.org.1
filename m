@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9DD2D1D1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473302D1D27
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbgLGWQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgLGWQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:16:48 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF64C061749;
-        Mon,  7 Dec 2020 14:16:08 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5102F8D;
-        Mon,  7 Dec 2020 23:16:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1607379365;
-        bh=5blhwtDoYN23LG+fh5NNUoMJLOyVAgOlj1w0ADmswhg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f9WALohEgNsUC52o5HaiLYrh30DKknuS2lfaMbSPcZzF4bJIL35SmZnYxGOIO5eT7
-         llQ7FP25BzxgJlOPxzppADiXTKmFf/iC/eQieQx8XmiePGRb86KI2VUBahLCLMfG+f
-         pKvl7ZVTpbeTamlHWb/Nr+4h/dSe2tt85MqEQcl4=
-Date:   Tue, 8 Dec 2020 00:16:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/12] arm64: dts: zynqmp: Add label for zynqmp_ipi
-Message-ID: <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
-References: <cover.1606917949.git.michal.simek@xilinx.com>
- <272e23e0123f02c559bfa4ada9de73eb197aced8.1606917949.git.michal.simek@xilinx.com>
- <X81fXtxvsc7KE7cK@pendragon.ideasonboard.com>
- <99008851-6c12-3acc-6530-25af08429ff5@xilinx.com>
+        id S1728079AbgLGWRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:17:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727646AbgLGWRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:17:42 -0500
+X-Gm-Message-State: AOAM533ClF5LdrJzEvZxwOUiv3Cn5Og+y2bADq2miv74sUmFSbdxUOx7
+        75ffJzxkupKE4oojCbBI/YGtOpzZrENFYRluiFY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607379421;
+        bh=Qo26HfaA4XRlpGslDUwq/ehGvtgfvzRfg7lWwq+xSdk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GNNdf5C6kPAulfIHOlXgLwGL0VQaGTkBpP/oM86lEUVUW3GNVK8R6zHtzNfHx72kY
+         IggtFl4dOv0G4yGD8Dz2qr3liOUfUa4wNnCmV6JbHHaY9adGhF9MprLKBZAvo6XNyD
+         zDuQ0yvXHl7xWtDOg2HMsv+xB9zt/lk5Sm1d+rkU3u8O1JYaZbZvb9TAPDnLuVxEeR
+         ikeBj27cakygQKSrh4tkPWVSnlUKyt1wlQMic+xn7kZq3iWY1jyhA5cEA/JQ5qoSV5
+         xVi2ysvXoT42wZWTBjCaUg2A9nTWsGJHzYp0HIVBFHAnPiIU5Uop8lUkmrrT72n4NU
+         EY6CqdnS2AYLA==
+X-Google-Smtp-Source: ABdhPJxhvfVvbp6iz6JPSBKSOMtCXq60tyJBjKK1QaVYl7mA38/ysmrpzmlk5ZqOf0a8vzfq1bNy/SW2zSGANIgq5Oo=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr10918089otm.305.1607379420605;
+ Mon, 07 Dec 2020 14:17:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <99008851-6c12-3acc-6530-25af08429ff5@xilinx.com>
+References: <20201204081349.1182302-1-arnd@kernel.org> <CADnq5_OmAVZGuz=xHRyST4hE4w1g10wNBQ6iMgfpQD16-9QSiQ@mail.gmail.com>
+ <b9d7e33c-4dcd-0075-d0ca-d22b2488c354@amd.com> <CAK8P3a09KQS7S5-vJU7ECJh0HXUhwZW9zOOp4c32mtvM5XcU1g@mail.gmail.com>
+ <CAKwvOd=-2zoc06EY4R9ZJ0M874bQv3NuT8a0q9=RoYeMMtnXVQ@mail.gmail.com>
+In-Reply-To: <CAKwvOd=-2zoc06EY4R9ZJ0M874bQv3NuT8a0q9=RoYeMMtnXVQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 7 Dec 2020 23:16:44 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0gjPWiRX0yg=i6Qxgyo02AtQVVsw+=w-OvF956Tn=jDw@mail.gmail.com>
+Message-ID: <CAK8P3a0gjPWiRX0yg=i6Qxgyo02AtQVVsw+=w-OvF956Tn=jDw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: make DRM_AMD_DC x86-only again
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roman Li <Roman.Li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Daniel Kolesa <daniel@octaforge.org>,
+        Timothy Pearson <tpearson@raptorengineering.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Mon, Dec 7, 2020 at 11:08 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Dec 7, 2020 at 1:57 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-On Mon, Dec 07, 2020 at 10:39:25AM +0100, Michal Simek wrote:
-> On 06. 12. 20 23:46, Laurent Pinchart wrote:
-> > On Wed, Dec 02, 2020 at 03:06:05PM +0100, Michal Simek wrote:
-> >> Add label which is used by bootloader for adding bootloader specific flag.
-> >>
-> >> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> >> ---
-> >>
-> >> U-Boot needs to add u-boot,dm-pre-reloc; property
-> > 
-> > I'm not entirely sure what best practice rules are in this area, but
-> > shouldn't U-Boot locate the node by name instead of label ?
-> 
-> Labels are not listed in dt binding and there are two approaches how to
-> reference nodes. Via full path with node name or via labels.
-> I do normally use labels which are much simple.
+> >
+> > Right, looking at my latest randconfig logs, I see the same problem on x86
+> > builds with clang as well, though I'm not entirely sure which other
+> > configuration
+> > options are needed to trigger it.
+> >
+> > So my patch can be disregarded, but I agree this needs a better fix,
+> > either in clang or in the dcn driver.
+>
+> If you could give https://github.com/ClangBuiltLinux/frame-larger-than
+> a spin again, I would appreciate any feedback.
 
-Note that labels require the DTB to be compiled with the -@ option,
-otherwise they're not present in the binary.
+I've already tried it, but the tool doesn't seem to like me, I never
+get the information out of it that I want. This time it failed because
+it could not parse the .o file correctly.
 
-> And also if you take a look how dtb looks like (convert back to dts) you
-> can see that for example aliases are using full path (just &label) but
-> clocks/gic which is the part of <> is handled via phandles as numbers.
-> 
-> And labels names can vary and shouldn't be the part of binding doc as
-> far as I know. But I can be wrong of course.
-
-The DT bindings should document the interface with the operating system,
-and if applicable, the boot loader. If the boot loader requires a
-particular label, then it becomes part of the ABI, and I think it should
-be documented in the bindings.
-
--- 
-Regards,
-
-Laurent Pinchart
+      Arnd
