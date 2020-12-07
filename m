@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A3A2D14D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B882D14DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgLGPfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:35:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37636 "EHLO mail.kernel.org"
+        id S1727183AbgLGPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:35:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgLGPfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:35:07 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A5C623730;
-        Mon,  7 Dec 2020 15:34:27 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kmIWt-00GnSK-En; Mon, 07 Dec 2020 15:34:24 +0000
+        id S1726239AbgLGPfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:35:54 -0500
+X-Gm-Message-State: AOAM533XrIsmn8n5miQ06Q+LNPDvQb6p5cehNplzxGU/wXfli1WgUiWx
+        qBQgHNFRBxMwyc4URezRiIHEytp3S7aBeITmRIM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607355313;
+        bh=872LZLRA/jW9vxi15anlCqMMjRBZpeIFkNIHv5aF110=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i6Wk5N45uFz63/jC4GgUpMw4tYNUh6lvjcK5Te+jls87zxUiDZufZ/2EoCEC1yj91
+         57mHVUVLYJogKSTRW0O689S6iUNI2wCs2zVXqwHf9gS8z6z5ipW4oAVkFkYn6/jtaq
+         yL50ciMXnSMcRgKkqrFs2++nLiAZIUkIc0XgvfbqcCBuvuoqrYI4kOJGyWBwtZQls7
+         cUKkixOtaGHdd/hMTfkMZlh4H9NsqnIAicKgyGszPtPoVVtiCy64WCTaAtA0pifDCX
+         DmBj9HssHlUd5xj/UIrNLSwKlE7S7yVEiHjuZq3+Ey+03zWviNLHsNU1i1Wej0ljaj
+         yK8gqO1VVFmyQ==
+X-Google-Smtp-Source: ABdhPJyZfk5L3vN1AsUcQQwJK8YbU04Ct2pvcBdenlr7m+8bFpt062nHrbj4YKrBNMRXEeLwx/hEgoFAM9mQ1O1C8HE=
+X-Received: by 2002:a9d:4042:: with SMTP id o2mr4287710oti.90.1607355312617;
+ Mon, 07 Dec 2020 07:35:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 07 Dec 2020 15:34:23 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
-In-Reply-To: <X85FVc07Hc7LQQU8@localhost>
-References: <20201204164739.781812-1-maz@kernel.org>
- <X841xwCChUEqi5Ad@localhost> <73d57fe9fefe50955771846ea52004fb@kernel.org>
- <X85FVc07Hc7LQQU8@localhost>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d5fa2065009d5854b4c719003ebcb255@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: johan@kernel.org, linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, gregkh@linuxfoundation.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
+ <X7dB9GCUeHa+Hosn@sol.localdomain> <CAMj1kXECHnV6zfXOjEfsjgNTWRsXj7V_+T-hkgn8v69EEdWvEQ@mail.gmail.com>
+ <CAHmME9pzcxQ1aufU7ycTcL+NQYV8P_wMKpetAuSogOw=2N9jRw@mail.gmail.com>
+In-Reply-To: <CAHmME9pzcxQ1aufU7ycTcL+NQYV8P_wMKpetAuSogOw=2N9jRw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 7 Dec 2020 16:35:01 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEXa1Gh-RzRFMe-eyXRT6Qdta+PWifm8AWt7YvM4sS=Zg@mail.gmail.com>
+Message-ID: <CAMj1kXEXa1Gh-RzRFMe-eyXRT6Qdta+PWifm8AWt7YvM4sS=Zg@mail.gmail.com>
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
+ IRQ randomness
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-07 15:08, Johan Hovold wrote:
-> On Mon, Dec 07, 2020 at 02:41:03PM +0000, Marc Zyngier wrote:
->> On 2020-12-07 14:01, Johan Hovold wrote:
->> > On Fri, Dec 04, 2020 at 04:47:35PM +0000, Marc Zyngier wrote:
->> >> Having recently tried to use the CBUS GPIOs that come thanks to the
->> >> ftdio_sio driver, it occurred to me that the driver has a couple of
->> >> usability issues:
->> >>
->> >> - it advertises potential GPIOs that are reserved to other uses (LED
->> >>   control, or something else)
->> >
->> > Consider the alternative, that the gpio offsets (for CBUS0, CBUS1,
->> > CBUS2
->> > or CBUS4) varies depending on how the pins have been muxed. Hardly very
->> > user friendly.
->> 
->> That's not what I suggest. If you want fixed GPIO offsets, fine by me.
->> But telling the user "these are GPIOs you can use", and then
->> "on second though, you can't" is not exactly consistent.
-> 
-> It's really no different from any other gpio chip which registers all
-> its lines, including those which may have been muxed for other 
-> purposes.
+On Mon, 7 Dec 2020 at 15:28, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>
+> Hi Ard,
+>
+> On Tue, Dec 1, 2020 at 1:24 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > > is implemented. In most cases, these are special instructions, but in
+> > > > > some cases, such as on ARM, we may want to back this using firmware
+> > > > > calls, which are considerably more expensive.
+>
+> This seems fine. But I suppose I'm curious to learn more about what
+> you have in mind for ARM. We've been assuming that arch_get_random is
+> not horribly expensive. Usually external RNGs that are horribly
+> expensive separate hardware take a different route and aren't hooked
+> into arch_get_random. When you say "we may want to back this using
+> firmware", does that mean it hasn't happened yet, and you're in a
+> position to direct the design otherwise? If so, would it be reasonable
+> to take a different route with that hardware, and keep arch_get_random
+> for when it's actually implemented by the hardware? Or are there
+> actually good reasons for keeping it one and the same?
+>
 
-If they claim that their lines are available, and then refuse to
-let the user play with it, that's just a bug willing to be fixed.
+Many older generation ARM SoCs have IP blocks that expose an entropy
+source of some kind, and map it in the normal world, which is
+accessible by the OS directly. These are driven as hwrngs via the
+driver stack, which models them as actual devices, with clock and
+regulator handling, power management hooks, etc etc.
 
->> >> - it returns an odd error (-ENODEV), instead of the expected -EINVAL
->> >>   when a line is unavailable, leading to a difficult diagnostic
->> >
->> > Hmm, maybe. Several gpio driver return -ENODEV when trying to request
->> > reserved pins. Even gpiolib returns -ENODEV when a pins is not yet
->> > available due to probe deferal.
->> 
->> -ENODEV really means "no GPIOchip" in this context. The fact that
->> other drivers return -ENODEV for reserved pins looks like a bug to me.
-> 
-> No, the chip is there. The -ENODEV is what you get when requesting the
-> line, because the line isn't available.
+There are multiple examples where such a SoC is being revved up with
+newer cores etc, and now, the IP block is in the secure world, which
+means the OS cannot access it directly, and needs to issue an SMC
+instruction to perform a firmware call to access it. The secure world
+firmware is now entirely in charge of the hardware, and so this SMC
+call is really the only thing that goes on in this driver (no clocks,
+regulators, etc)
 
-I still believe that ENODEV is the wrong error. The device is there,
-but the request is invalid because the line is used by something else.
-EINVAL, EBUSY, ENXIO would all be (sort of) OK.
+So to prevent fragmentation, as well as make the entropy source
+available much earlier in the boot, ARM has issued a firmware spec
+that unifies these SMC calls, and defines them as non-blocking, i.e.,
+return the requested number of entropy bits, or fail immediately.
 
-> 
->> > -EBUSY could also be an alternative, but that's used to indicate that a
->> > line is already in use as a gpio.
->> 
->> Or something else. Which is exactly the case, as it's been allocated
->> to another function.
-> 
-> Right, there are invalid requests (e.g. requesting line five of a four
-> line chip), lines that are already in use, and lines not available due
-> to muxing.
-> 
-> And then there's the question of whether to use the same or distinct
-> errnos for these. I believe using distinct errnos provides more
-> feedback, but we can certainly pick another errno for this if it's
-> really that confusing.
+Therefore, this should not be super expensive, given that the only
+overhead is the CPU cycles spent on calling into the firmware (and a
+bit of overhead perhaps from poking some MMIO registers in the IP
+block). But it is definitely not suitable for being called hundreds of
+times per second, hence this patch. (Note that we are talking about
+arch_get_random_seed_long() here, not arch_get_random_long())
 
-Fundamentally, I don't think the backend driver should be in charge
-of the error reporting. That should be the char device's job. Leaving it
-to the individual drivers is a sure way to have an inconsistent API.
+> On the other hand, rdrand on intel is getting slower and slower, to
+> the point where we've removed it from a few places that used to use
+> it. And I don't see anything terribly wrong with removing the extra
+> call in this path here. So need be, I'll offer my Reviewed-by. But I
+> wanted to get an understanding of the fuller story first.
+>
+
+Given that we already have both arch_get_random_seed_long() and
+arch_get_random_long(), I think it is reasonable for the former to be
+allowed to be slightly more expensive, and we should only invoke it
+for the purpose of reseeding a pseudo-RNG. If this occurs on a hot
+path, there is something terribly wrong already, so I don't think
+RDRAND/RDSEED performance should be a huge concern here.
+
+Note that once this patch lands, we also intend to change the current
+way the arm64 RNDR and RNDRRS instructions are mapped to
+arch_get_random_seed_long() and arch_get_random_long(). (RNDR returns
+64-bit from a DRBG that reseeds an an implementation defined rate, and
+RNDRRS does the same but forces a reseed to occur first)
 
 Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Ard.
