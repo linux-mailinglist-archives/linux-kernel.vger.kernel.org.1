@@ -2,261 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B492B2D19EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381A52D19EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgLGTmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:42:46 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43309 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgLGTmp (ORCPT
+        id S1726061AbgLGToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:44:04 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38484 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgLGToD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:42:45 -0500
-Received: by mail-ot1-f68.google.com with SMTP id q25so1837597otn.10;
-        Mon, 07 Dec 2020 11:42:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=84+J237t/hnJOzYX4kbUkVLlgPgC59cjHTRFGZBkpb8=;
-        b=CMRI52G2KDubxiS1GmyLiXRKtY/ht57zEBeYBjJ6wxgQdF/ytWe9Z1P067OOI06ddo
-         k0/m3H5bb5maOPIP6oele+/h7WrtU4CkX7a4acK54F2EullmKNJMQsiewC9go84fF3eq
-         TRoQ1ZQVJpbU176Z7hT/N4bGMOdyVRspQ/jsO+J85qe8vPYeU8r+TY/rKbolIi37+Ml4
-         eqwKXVb89blDd6ZfaHjhaKgc5Ennv2hwERlRL126y7gignKO7YaBhdODReChuFvd3BO0
-         0P9kKbe9MDI/YGt97b1OiMDwk2UsnSkL5+AQFNyheK2gGTygt2ZYd517Q6pqqlsKixHM
-         2sBQ==
-X-Gm-Message-State: AOAM533Ss70qUk3zjg/Y15bqEovZjgDx9equihOzS7/ZksSgzFWgpmLQ
-        E8eyr2CDP8ZnINTCm0+ebQ==
-X-Google-Smtp-Source: ABdhPJzzJtRHoo1SQLEodnLKivdWQElYR/nCd4dx/2FhhE/Pbb8LDCCmWUB6c9OK+OCfe//5VeG77Q==
-X-Received: by 2002:a9d:3d08:: with SMTP id a8mr14096750otc.126.1607370124083;
-        Mon, 07 Dec 2020 11:42:04 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t13sm3143430oic.4.2020.12.07.11.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:42:02 -0800 (PST)
-Received: (nullmailer pid 690584 invoked by uid 1000);
-        Mon, 07 Dec 2020 19:42:01 -0000
-Date:   Mon, 7 Dec 2020 13:42:01 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     vkoul@kernel.org, nm@ti.com, ssantosh@kernel.org,
-        dan.j.williams@intel.com, t-kristo@ti.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        vigneshr@ti.com, grygorii.strashko@ti.com
-Subject: Re: [PATCH v2 10/19] dt-bindings: dma: ti: Add document for K3 BCDMA
-Message-ID: <20201207194201.GA680126@robh.at.kernel.org>
-References: <20201117105656.5236-1-peter.ujfalusi@ti.com>
- <20201117105656.5236-11-peter.ujfalusi@ti.com>
+        Mon, 7 Dec 2020 14:44:03 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607370201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I334otsRnjsdPvZNHbr6PY/AxaoibaWvPiqif0DnRJQ=;
+        b=JZByJyfFmV0EhRPwqzzi+wmjs2CjVeN5+RRB0rc76BuIQQpNTBqr+mZN8qvu5Gmcsn9b2f
+        jWg5sSC4b7/l50RmsuVuDQsYZf7YnUg7sXKrxB2tAppho6b5BJcCAxkJpwx8wUOcx1Ao3o
+        Z5ybNdP7LJS8XNdfyqUpOjGXvMo/EnY5wNwcTENI/G9iYpC+J1bTK52P04DuSFE0OgMpDV
+        XfHO9VrKs54LAq23igdAJtS24Lkq7KtIpl5nJ93NGzifTFNHHHSwqDLpttqTVvap6ClZzS
+        cV0GGL/eNiAMTNgRKrn5IjjpcOO+oYI4Mm8GkTGsaihOPXUNqb+TW7ZCVOqbHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607370201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I334otsRnjsdPvZNHbr6PY/AxaoibaWvPiqif0DnRJQ=;
+        b=iWz5rZ60m9F4yyaFdHSTlDi1PJXZWUurgulnQya5jua2xiG9HSIYpZLxgOsJ6NJoFVoCQk
+        t1/nYwc2w4hqhCDw==
+To:     Marco Elver <elver@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
+        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
+        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
+Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
+In-Reply-To: <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
+References: <20201206211253.919834182@linutronix.de> <20201206212002.876987748@linutronix.de> <20201207120943.GS3021@hirez.programming.kicks-ass.net> <87y2i94igo.fsf@nanos.tec.linutronix.de> <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
+Date:   Mon, 07 Dec 2020 20:43:21 +0100
+Message-ID: <87eek14d2e.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117105656.5236-11-peter.ujfalusi@ti.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:56:47PM +0200, Peter Ujfalusi wrote:
-> New binding document for
-> Texas Instruments K3 Block Copy DMA (BCDMA).
-> 
-> BCDMA is introduced as part of AM64.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 175 ++++++++++++++++++
->  1 file changed, 175 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> new file mode 100644
-> index 000000000000..c6d76641ebec
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> @@ -0,0 +1,175 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/ti/k3-bcdma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments K3 DMSS BCDMA Device Tree Bindings
-> +
-> +maintainers:
-> +  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-> +
-> +description: |
-> +  The Block Copy DMA (BCDMA) is intended to perform similar functions as the TR
-> +  mode channels of K3 UDMA-P.
-> +  BCDMA includes block copy channels and Split channels.
-> +
-> +  Block copy channels mainly used for memory to memory transfers, but with
-> +  optional triggers a block copy channel can service peripherals by accessing
-> +  directly to memory mapped registers or area.
-> +
-> +  Split channels can be used to service PSI-L based peripherals.
-> +  The peripherals can be PSI-L native or legacy, non PSI-L native peripherals
-> +  with PDMAs. PDMA is tasked to act as a bridge between the PSI-L fabric and the
-> +  legacy peripheral.
-> +
-> +  PDMAs can be configured via BCDMA split channel's peer registers to match with
-> +  the configuration of the legacy peripheral.
-> +
-> +allOf:
-> +  - $ref: /schemas/dma/dma-controller.yaml#
-> +
-> +properties:
-> +  "#dma-cells":
-> +    const: 3
-> +    description: |
-> +      cell 1: type of the BCDMA channel to be used to service the peripheral:
-> +        0 - split channel
-> +        1 - block copy channel using global trigger 1
-> +        2 - block copy channel using global trigger 2
-> +        3 - block copy channel using local trigger
-> +
-> +      cell 2: parameter for the channel:
-> +        if cell 1 is 0 (split channel):
-> +          PSI-L thread ID of the remote (to BCDMA) end.
-> +          Valid ranges for thread ID depends on the data movement direction:
-> +          for source thread IDs (rx): 0 - 0x7fff
-> +          for destination thread IDs (tx): 0x8000 - 0xffff
-> +
-> +          Please refer to the device documentation for the PSI-L thread map and
-> +          also the PSI-L peripheral chapter for the correct thread ID.
-> +        if cell 1 is 1 or 2 (block copy channel using global trigger):
-> +          Unused, ignored
-> +
-> +          The trigger must be configured for the channel externally to BCDMA,
-> +          channels using global triggers should not be requested directly, but
-> +          via DMA event router.
-> +        if cell 1 is 3 (block copy channel using local trigger):
-> +          bchan number of the locally triggered channel
-> +
-> +      cell 3: ASEL value for the channel
-> +
-> +  compatible:
-> +    enum:
-> +      - ti,am64-dmss-bcdma
+On Mon, Dec 07 2020 at 19:19, Marco Elver wrote:
+> On Mon, 7 Dec 2020 at 18:46, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> On Mon, Dec 07 2020 at 13:09, Peter Zijlstra wrote:
+>> > I prefer the form:
+>> >
+>> >       if (data_race(tick_do_timer_cpu == TICK_DO_TIMER_BOOT)) {
+>> >
+>> > But there doesn't yet seem to be sufficient data_race() usage in the
+>> > kernel to see which of the forms is preferred. Do we want to bike-shed
+>> > this now and document the outcome somewhere?
+>>
+>> Yes please before we get a gazillion of patches changing half of them
+>> half a year from now.
+>
+> That rule should be as simple as possible. The simplest would be:
+> "Only enclose the smallest required expression in data_race(); keep
+> the number of required data_race() expressions to a minimum." (=> want
+> least amount of code inside data_race() with the least number of
+> data_race()s).
+>
+> In the case here, that'd be the "if (data_race(tick_do_timer_cpu) ==
+> ..." variant.
+>
+> Otherwise there's the possibility that we'll end up with accesses
+> inside data_race() that we hadn't planned for. For example, somebody
+> refactors some code replacing constants with variables.
+>
+> I currently don't know what the rule for Peter's preferred variant
+> would be, without running the risk of some accidentally data_race()'d
+> accesses.
 
-Typically, we put 'compatible' first.
+I agree. Lets keep it simple and have the data_race() only covering the
+actual access to the racy variable, struct member.
 
-> +  "#address-cells":
-> +    const: 2
-> +
-> +  "#size-cells":
-> +    const: 2
+The worst case we could end up with would be
 
-These apply to child nodes, but you don't have any.
+    if (data_race(A) == data_race(B))
 
-> +
-> +  reg:
-> +    maxItems: 5
-> +
-> +  reg-names:
-> +    items:
-> +      - const: gcfg
-> +      - const: bchanrt
-> +      - const: rchanrt
-> +      - const: tchanrt
-> +      - const: ringrt
-> +
-> +  msi-parent: true
-> +
-> +  ti,asel:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: ASEL value for non slave channels
-> +
-> +  ti,sci-rm-range-bchan:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: |
-> +      Array of BCDMA block-copy channel resource subtypes for resource
-> +      allocation for this host
-> +    minItems: 1
-> +    # Should be enough
-> +    maxItems: 255
-> +    items:
-> +      maximum: 0x3f
-> +
-> +  ti,sci-rm-range-tchan:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: |
-> +      Array of BCDMA split tx channel resource subtypes for resource allocation
-> +      for this host
-> +    minItems: 1
-> +    # Should be enough
-> +    maxItems: 255
-> +    items:
-> +      maximum: 0x3f
-> +
-> +  ti,sci-rm-range-rchan:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: |
-> +      Array of BCDMA split rx channel resource subtypes for resource allocation
-> +      for this host
-> +    minItems: 1
-> +    # Should be enough
-> +    maxItems: 255
-> +    items:
-> +      maximum: 0x3f
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - "#dma-cells"
-> +  - reg
-> +  - reg-names
-> +  - msi-parent
-> +  - ti,sci
-> +  - ti,sci-dev-id
-> +  - ti,sci-rm-range-bchan
-> +  - ti,sci-rm-range-tchan
-> +  - ti,sci-rm-range-rchan
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |+
-> +    cbass_main {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        main_dmss {
-> +            compatible = "simple-mfd";
-> +            #address-cells = <2>;
-> +            #size-cells = <2>;
-> +            dma-ranges;
-> +            ranges;
-> +
-> +            ti,sci-dev-id = <25>;
-> +
-> +            main_bcdma: dma-controller@485c0100 {
-> +                compatible = "ti,am64-dmss-bcdma";
-> +                #address-cells = <2>;
-> +                #size-cells = <2>;
-> +
-> +                reg = <0x0 0x485c0100 0x0 0x100>,
-> +                      <0x0 0x4c000000 0x0 0x20000>,
-> +                      <0x0 0x4a820000 0x0 0x20000>,
-> +                      <0x0 0x4aa40000 0x0 0x20000>,
-> +                      <0x0 0x4bc00000 0x0 0x100000>;
-> +                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-> +                msi-parent = <&inta_main_dmss>;
-> +                #dma-cells = <3>;
-> +
-> +                ti,sci = <&dmsc>;
-> +                ti,sci-dev-id = <26>;
-> +
-> +                ti,sci-rm-range-bchan = <0x20>; /* BLOCK_COPY_CHAN */
-> +                ti,sci-rm-range-rchan = <0x21>; /* SPLIT_TR_RX_CHAN */
-> +                ti,sci-rm-range-tchan = <0x22>; /* SPLIT_TR_TX_CHAN */
-> +            };
-> +        };
-> +    };
-> -- 
-> Peter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+which would still be clearly isolated. The racy part is not the
+comparison, it's the accesses which can cause random results for the
+comparison.
+
+Thanks,
+
+        tglx
+
+
