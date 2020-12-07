@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A192D0EB3
+	by mail.lfdr.de (Postfix) with ESMTP id 964E22D0EB4
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgLGLKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:10:36 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:10525 "EHLO
+        id S1726628AbgLGLKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:10:44 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:60317 "EHLO
         relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgLGLKf (ORCPT
+        with ESMTP id S1726557AbgLGLKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:10:35 -0500
+        Mon, 7 Dec 2020 06:10:43 -0500
 X-Originating-IP: 109.220.208.103
 Received: from localhost.localdomain (lfbn-tou-1-1617-103.w109-220.abo.wanadoo.fr [109.220.208.103])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id AD863240019;
-        Mon,  7 Dec 2020 11:09:51 +0000 (UTC)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E60FE240013;
+        Mon,  7 Dec 2020 11:10:00 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        miquel.raynal@bootlin.com, vigneshr@ti.com,
-        tudor.ambarus@microchip.com, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, robh+dt@kernel.org
-Cc:     cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
-        richard@nod.at, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, qi-ming.wu@intel.com
-Subject: Re: [PATCH v17 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-Date:   Mon,  7 Dec 2020 12:09:50 +0100
-Message-Id: <20201207110950.8142-1-miquel.raynal@bootlin.com>
+To:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] mtd: spinand: micron: Add support for MT29F2G01AAAED
+Date:   Mon,  7 Dec 2020 12:09:59 +0100
+Message-Id: <20201207110959.8205-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To:  <20201110012333.18647-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20201108113735.2533-3-nthirumalesha7@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: e5ec4db9992be75dd4e18c408e0ea2f6646ae112
+X-linux-mtd-patch-commit: 99df69d2c6978e568c1791fd18561cefc4f3feb4
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-10 at 01:23:32 UTC, "Ramuthevar, Vadivel MuruganX" wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Sun, 2020-11-08 at 11:37:35 UTC, Thirumalesha Narasimhappa wrote:
+> The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
+> ECC
 > 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
