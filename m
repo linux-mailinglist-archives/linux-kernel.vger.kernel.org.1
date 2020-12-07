@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234AB2D1343
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3C32D134C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgLGOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:12:09 -0500
-Received: from verein.lst.de ([213.95.11.211]:42032 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727134AbgLGOMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:12:07 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7321567373; Mon,  7 Dec 2020 15:11:23 +0100 (CET)
-Date:   Mon, 7 Dec 2020 15:11:23 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     SelvaKumar S <selvakuma.s1@samsung.com>
-Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
-        damien.lemoal@wdc.com, hch@lst.de, sagi@grimberg.me,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
-        nj.shetty@samsung.com, joshi.k@samsung.com,
-        javier.gonz@samsung.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/2] add simple copy support
-Message-ID: <20201207141123.GC31159@lst.de>
-References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com> <20201204094659.12732-1-selvakuma.s1@samsung.com>
+        id S1726795AbgLGON4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:13:56 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34379 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgLGONz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:13:55 -0500
+Received: by mail-wr1-f67.google.com with SMTP id k14so12924787wrn.1;
+        Mon, 07 Dec 2020 06:13:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gG7VgUZtjX4oofV7gBPwji7WUqiGnJQzMVNQgM8p0KI=;
+        b=ezMlb7Ga7t9M6AwPYfev/SUnfIJ/AEYtRJXq83YANQloZMdCxp+MGh2kGCIKh6E0JY
+         mM1ufDMlyE5NipQVqgd2FNbKsA9ZewCZ0iD8g0JavMnE0Lz7hOlcO1ah/GR1Zv4DEg0l
+         i+sHlJmFGgfygdfJyFEJPCvEhkJjg/7NZvfyDFVE0bbVfBsoMF4W7mW6JfVmWl3DrWmb
+         e9CcYiPvT0Ra399/apuhY405v4cRBIx21HYMl7XSvbOtSIJfoMAZyJ8mbWcl0PUtMK8x
+         YFXRh+CuRhC9rWCmNmldyDc6P92Y6vttL+Ej5FMFjiCS5Gs07Q5OOxxGl6FNYmGk08Ec
+         120w==
+X-Gm-Message-State: AOAM532/xDX/JEew6rYFJjl07elYif6K/D9IfNNHPS29JBp/AoRNR20i
+        QhrD16uauq2kv9Q6WpXfvUw=
+X-Google-Smtp-Source: ABdhPJyDGmRg/7pSYaUY4kTpP3/w8YFZ21qsd0KTsX0+bqFdeH6YXibx9gEqHimAS3PtvvVq5sh71w==
+X-Received: by 2002:a5d:4349:: with SMTP id u9mr19326981wrr.319.1607350393759;
+        Mon, 07 Dec 2020 06:13:13 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z11sm15491704wmc.39.2020.12.07.06.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 06:13:12 -0800 (PST)
+Date:   Mon, 7 Dec 2020 15:13:11 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: Re: [PATCH net-next] nfc: s3fwrn5: Change irqflags
+Message-ID: <20201207141311.GB34599@kozik-lap>
+References: <20201207113827.2902-1-bongsu.jeon@samsung.com>
+ <20201207115147.GA26206@kozik-lap>
+ <CACwDmQDHXwqzmUE_jEmPcJnCcPrzn=7qT=4rp1MF3s30OM7uTQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201204094659.12732-1-selvakuma.s1@samsung.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CACwDmQDHXwqzmUE_jEmPcJnCcPrzn=7qT=4rp1MF3s30OM7uTQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So, I'm really worried about:
+On Mon, Dec 07, 2020 at 10:39:01PM +0900, Bongsu Jeon wrote:
+> On Mon, Dec 7, 2020 at 8:51 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > On Mon, Dec 07, 2020 at 08:38:27PM +0900, Bongsu Jeon wrote:
+> > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> > >
+> > > change irqflags from IRQF_TRIGGER_HIGH to IRQF_TRIGGER_RISING for stable
+> > > Samsung's nfc interrupt handling.
+> >
+> > 1. Describe in commit title/subject the change. Just a word "change irqflags" is
+> >    not enough.
+> >
+> Ok. I'll update it.
+> 
+> > 2. Describe in commit message what you are trying to fix. Before was not
+> >    stable? The "for stable interrupt handling" is a little bit vauge.
+> >
+> Usually, Samsung's NFC Firmware sends an i2c frame as below.
+> 
+> 1. NFC Firmware sets the gpio(interrupt pin) high when there is an i2c
+> frame to send.
+> 2. If the CPU's I2C master has received the i2c frame, NFC F/W sets
+> the gpio low.
+> 
+> NFC driver's i2c interrupt handler would be called in the abnormal case
+> as the NFC F/W task of number 2 is delayed because of other high
+> priority tasks.
+> In that case, NFC driver will try to receive the i2c frame but there
+> isn't any i2c frame
+> to send in NFC. It would cause an I2C communication problem.
+> This case would hardly happen.
+> But, I changed the interrupt as a defense code.
+> If Driver uses the TRIGGER_RISING not LEVEL trigger, there would be no problem
+> even if the NFC F/W task is delayed.
 
- a) a good use case.  GC in f2fs or btrfs seem like good use cases, as
-    does accelating dm-kcopyd.  I agree with Damien that lifting dm-kcopyd
-    to common code would also be really nice.  I'm not 100% sure it should
-    be a requirement, but it sure would be nice to have
-    I don't think just adding an ioctl is enough of a use case for complex
-    kernel infrastructure.
- b) We had a bunch of different attempts at SCSI XCOPY support form IIRC
-    Martin, Bart and Mikulas.  I think we need to pull them into this
-    discussion, and make sure whatever we do covers the SCSI needs.
+All this should be explained in commit message, not in the email.
 
-On Fri, Dec 04, 2020 at 03:16:57PM +0530, SelvaKumar S wrote:
-> This patchset tries to add support for TP4065a ("Simple Copy Command"),
-> v2020.05.04 ("Ratified")
 > 
-> The Specification can be found in following link.
-> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+> > 3. This is contradictory to the bindings and current DTS. I think the
+> >    driver should not force the specific trigger type because I could
+> >    imagine some configuration that the actual interrupt to the CPU is
+> >    routed differently.
+> >
+> >    Instead, how about removing the trigger flags here and fixing the DTS
+> >    and bindings example?
+> >
 > 
-> This is an RFC. Looking forward for any feedbacks or other alternate
-> designs for plumbing simple copy to IO stack.
+> As I mentioned before,
+> I changed this code because of Samsung NFC's I2C Communication way.
+> So, I think that it is okay for the nfc driver to force the specific
+> trigger type( EDGE_RISING).
 > 
-> Simple copy command is a copy offloading operation and is  used to copy
-> multiple contiguous ranges (source_ranges) of LBA's to a single destination
-> LBA within the device reducing traffic between host and device.
-> 
-> This implementation accepts destination, no of sources and arrays of
-> source ranges from application and attach it as payload to the bio and
-> submits to the device.
-> 
-> Following limits are added to queue limits and are exposed in sysfs
-> to userspace
-> 	- *max_copy_sectors* limits the sum of all source_range length
-> 	- *max_copy_nr_ranges* limits the number of source ranges
-> 	- *max_copy_range_sectors* limit the maximum number of sectors
-> 		that can constitute a single source range.
-> 
-> Changes from v1:
-> 
-> 1. Fix memory leak in __blkdev_issue_copy
-> 2. Unmark blk_check_copy inline
-> 3. Fix line break in blk_check_copy_eod
-> 4. Remove p checks and made code more readable
-> 5. Don't use bio_set_op_attrs and remove op and set
->    bi_opf directly
-> 6. Use struct_size to calculate total_size
-> 7. Fix partition remap of copy destination
-> 8. Remove mcl,mssrl,msrc from nvme_ns
-> 9. Initialize copy queue limits to 0 in nvme_config_copy
-> 10. Remove return in QUEUE_FLAG_COPY check
-> 11. Remove unused OCFS
-> 
-> SelvaKumar S (2):
->   block: add simple copy support
->   nvme: add simple copy support
-> 
->  block/blk-core.c          |  94 ++++++++++++++++++++++++++---
->  block/blk-lib.c           | 123 ++++++++++++++++++++++++++++++++++++++
->  block/blk-merge.c         |   2 +
->  block/blk-settings.c      |  11 ++++
->  block/blk-sysfs.c         |  23 +++++++
->  block/blk-zoned.c         |   1 +
->  block/bounce.c            |   1 +
->  block/ioctl.c             |  43 +++++++++++++
->  drivers/nvme/host/core.c  |  87 +++++++++++++++++++++++++++
->  include/linux/bio.h       |   1 +
->  include/linux/blk_types.h |  15 +++++
->  include/linux/blkdev.h    |  15 +++++
->  include/linux/nvme.h      |  43 ++++++++++++-
->  include/uapi/linux/fs.h   |  13 ++++
->  14 files changed, 461 insertions(+), 11 deletions(-)
-> 
-> -- 
-> 2.25.1
----end quoted text---
+> What do you think about it?
+
+Some different chip or some different hardware implementation could have
+the signal inverted, e.g. edge falling, not rising. This is rather
+a theoretical scenario but still such change makes the code more
+generic, configurable with DTS. Therefore trigger mode should be
+configured via DTS, not enforced by the driver.
+
+Best regards,
+Krzysztof
