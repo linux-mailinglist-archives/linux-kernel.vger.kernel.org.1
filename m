@@ -2,108 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8632D1593
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB6D2D15A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgLGQIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S1727699AbgLGQJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgLGQIU (ORCPT
+        with ESMTP id S1727648AbgLGQJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:08:20 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A3CC061749;
-        Mon,  7 Dec 2020 08:07:34 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id m19so20185807ejj.11;
-        Mon, 07 Dec 2020 08:07:34 -0800 (PST)
+        Mon, 7 Dec 2020 11:09:42 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D24C0611E4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:08:28 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id z3so18638338ybc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:08:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WM/4xKSlXYVQWjEHfbWD8YX/luYlEiJYgCc/oLAT72M=;
-        b=qKgDPJDPA18nffgQ211xSgkPcAycCzVVcqW7ZbuMWzxFCl++LQpCcZ0C8J9T4DBrb6
-         p2DyTpTDyOyGEmGwTleB4Bx0L0GLAX5iez4RwZzXoWT1pdfjAq/co6NNNvtB7OLGfOKI
-         1uX0OOQSymZjTgwxQdxqYq/qFmw5H3489UCNx2Z2BRcY0cSZQVaZhYcWNkZ9TAhWc1K5
-         QuRFZclmSDh7OabGFcl1oAqmMQL9EuZqUQ6WGjkmo192doqD6wBVw4b1H/xZ3ctMDW7n
-         OWOuLFt2ht5DYzcpHSswwkatv6rFQKTbuggtu44/Ptnhuxws2wgN22HqGQOxjgpyOA8u
-         lW1A==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=KFgD8YIRWXpoDvV2V8052aIfA4U5x1v+0l9kUcqRm+k=;
+        b=Ghj1R+EJ/qdBT/riYw4m213zqxkgLqS+z4feLKEzpN/nnE6G/Mysyc3eEH0tTzikEO
+         VPQeYcOjl8vEyd6V7EP9Y4BllHRC9krTw9kbY8kjeNWCXEymYDD/klnI/qv8qS3Yz8Fg
+         jOe4+L91kVhCtaSwJiYW+ENDHQmuhGLEZbDZXWh2Oyma9dHh1G/QduKNWYI+bUEHLUk7
+         V4LJ3iI7YfCMwCNRXYHFZCro62pP4woGoJUNqQxOhhcapYX+2e8FpfStO2cdccfqpvAe
+         L1PNGQ9AV4CQomvGlq+aPDvgBQG2kYmPV9RabYA4Uf1tudwNe3LHGoGNNhVkx36TGjyN
+         EsXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WM/4xKSlXYVQWjEHfbWD8YX/luYlEiJYgCc/oLAT72M=;
-        b=I06gYwwQyMWjGxy5hJ/YCNBs9CYyY6ylhwPCQrHjvrMk5hnaGWkRpjUajfYsVTvdEa
-         ynmU0NhhhvjoxAn4eA2i1TFmxqbCfiG5/Yc6cbw+tgu+dpUVJBcaLACUSPpga778Xc76
-         Yero6HczDsHa4RYSt6DDDgco+JuLWOCvwaw/bM0St0H+mKJkErAEB1g44/zfIhUX/Wfy
-         oOovlVdoiVd8MAV/n/V2G+ads6LAMvHdIRAldhYHKydD35dAw7TwnzvlGqFgjNyhwp0X
-         8MWZF8R+Ts0dvmEhK2WbVFALWJLWBsOGG4pnlbsYhGUyAnpWYxVOlcomqhrBne3dT8CN
-         VaQA==
-X-Gm-Message-State: AOAM530av7WoJnQTM0cOPS9RIrXe9JZC1qUMQWEnsrNoLqBAPoOZGJwB
-        OCHjrnChAvbEuZxabcTzWFQ=
-X-Google-Smtp-Source: ABdhPJzwCMTqsxTqqO4VotBrTjalTBZGvqcXJVYEDpt0nKWW3uuKzpE893tD69cUr19XrpsPZQAWzg==
-X-Received: by 2002:a17:906:c1c6:: with SMTP id bw6mr20020182ejb.199.1607357252890;
-        Mon, 07 Dec 2020 08:07:32 -0800 (PST)
-Received: from localhost ([51.15.41.238])
-        by smtp.gmail.com with ESMTPSA id e21sm13941813edv.96.2020.12.07.08.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:07:31 -0800 (PST)
-Date:   Mon, 7 Dec 2020 16:07:30 +0000
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost scsi: fix error return code in
- vhost_scsi_set_endpoint()
-Message-ID: <20201207160730.GI203660@stefanha-x1.localdomain>
-References: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ev7mvGV+3JQuI2Eo"
-Content-Disposition: inline
-In-Reply-To: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=KFgD8YIRWXpoDvV2V8052aIfA4U5x1v+0l9kUcqRm+k=;
+        b=CMxdSXLJd22+vRRMvSobMSm/XvAvT57gb+Xb9SRPU7pJ7cnytNcywWoJpLfZnl8d5P
+         xXlh31mSNDawDgb1TK5XAj+QfUVDANaYYtO3bNtghG+9sCnnBRk2VSIFEQUidMBJCFx0
+         ez6MGeIG8K3PfeOEgIY2GFe7gTw9m9nh2bDPold+1agJdWM61UCirJ7Ysay07QMi9tyf
+         +vfn011LlsIF79ZjjTGjUbwPt7z/XHugKNuw8s3B+vWdFRPlbW2a4zY+1ihLXnXvhjzj
+         49KZSE1hQwgNJkwGN0AjKzMpWPXSKF+1UXZerswnQzY3FXtOKR1XZStf5embBNX/8OYU
+         mwxw==
+X-Gm-Message-State: AOAM531DpzFyDIIRoYRwWCg3vSRCX9H8rpR5wZCFAnDKtkFX88C9UMQG
+        B8Y74XX2P8UwVxKFK2eBjuimFuKVqudurA==
+X-Google-Smtp-Source: ABdhPJz+kZV/dfJkzyYsmLtUvRn80DVTGUoiQDhMe1ef9+pTPsU+LNOyBFTohQLsJiL7hXi7+VBjiO/X96Jtiw==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a25:c647:: with SMTP id
+ k68mr24475368ybf.337.1607357307680; Mon, 07 Dec 2020 08:08:27 -0800 (PST)
+Date:   Mon,  7 Dec 2020 16:07:30 +0000
+In-Reply-To: <20201207160734.2345502-1-jackmanb@google.com>
+Message-Id: <20201207160734.2345502-8-jackmanb@google.com>
+Mime-Version: 1.0
+References: <20201207160734.2345502-1-jackmanb@google.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH bpf-next v4 07/11] bpf: Add instructions for atomic_[cmp]xchg
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This adds two atomic opcodes, both of which include the BPF_FETCH
+flag. XCHG without the BPF_FETCH flag would naturally encode
+atomic_set. This is not supported because it would be of limited
+value to userspace (it doesn't imply any barriers). CMPXCHG without
+BPF_FETCH woulud be an atomic compare-and-write. We don't have such
+an operation in the kernel so it isn't provided to BPF either.
 
---ev7mvGV+3JQuI2Eo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There are two significant design decisions made for the CMPXCHG
+instruction:
 
-On Fri, Dec 04, 2020 at 04:43:30PM +0800, Zhang Changzhong wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
->=20
-> Fixes: 25b98b64e284 ("vhost scsi: alloc cmds per vq instead of session")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/vhost/scsi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+ - To solve the issue that this operation fundamentally has 3
+   operands, but we only have two register fields. Therefore the
+   operand we compare against (the kernel's API calls it 'old') is
+   hard-coded to be R0. x86 has similar design (and A64 doesn't
+   have this problem).
 
-Acked-by: Stefan Hajnoczi <stefanha@redhat.com>
+   A potential alternative might be to encode the other operand's
+   register number in the immediate field.
 
---ev7mvGV+3JQuI2Eo
-Content-Type: application/pgp-signature; name="signature.asc"
+ - The kernel's atomic_cmpxchg returns the old value, while the C11
+   userspace APIs return a boolean indicating the comparison
+   result. Which should BPF do? A64 returns the old value. x86 returns
+   the old value in the hard-coded register (and also sets a
+   flag). That means return-old-value is easier to JIT.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ arch/x86/net/bpf_jit_comp.c    |  8 ++++++++
+ include/linux/filter.h         | 22 ++++++++++++++++++++++
+ include/uapi/linux/bpf.h       |  4 +++-
+ kernel/bpf/core.c              | 20 ++++++++++++++++++++
+ kernel/bpf/disasm.c            | 15 +++++++++++++++
+ kernel/bpf/verifier.c          | 19 +++++++++++++++++--
+ tools/include/linux/filter.h   | 22 ++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  4 +++-
+ 8 files changed, 110 insertions(+), 4 deletions(-)
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl/OU0IACgkQnKSrs4Gr
-c8gAeQf+MEz4NCEr2G4ywg8AHw7rf050IHblQEjkZBazrQQ706YvtfGZssxTae9f
-psRCnNLjHsZ2mFYWbtyPqI91egzIyJTNuu7odm3ILPfrXA7Lv8Uo2vZ9TNMN4+ZG
-L060RA9br9G2+DYTn7yC6M9B1a6mKdDS68rzDQSMAHns29WLSoRLYXIJBsoxd/sv
-Q9hxE1Sns6QVw/zOGCD9bre1pEWU2der61Qa4SfblpZgY9c9hXYNeKztrnznYufl
-TsFTa02ME99jRC71/mG/qoT+Nh1OEtpcJ6ZqkU2lHEaYAng800NpNTIOaqEMmEZV
-DfiQZ9kcrCzp+QXcuRpFFk/5rcaGdg==
-=tZ45
------END PGP SIGNATURE-----
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index eea7d8b0bb12..308241187582 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -815,6 +815,14 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
+ 		/* src_reg = atomic_fetch_add(dst_reg + off, src_reg); */
+ 		EMIT2(0x0F, 0xC1);
+ 		break;
++	case BPF_XCHG:
++		/* src_reg = atomic_xchg(dst_reg + off, src_reg); */
++		EMIT1(0x87);
++		break;
++	case BPF_CMPXCHG:
++		/* r0 = atomic_cmpxchg(dst_reg + off, r0, src_reg); */
++		EMIT2(0x0F, 0xB1);
++		break;
+ 	default:
+ 		pr_err("bpf_jit: unknown atomic opcode %02x\n", atomic_op);
+ 		return -EFAULT;
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index b5258bca10d2..e1e1fc946a7c 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -265,6 +265,8 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+  *
+  *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+  *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
++ *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
++ *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+  */
+ 
+ #define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
+@@ -293,6 +295,26 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+ 		.off   = OFF,					\
+ 		.imm   = BPF_ADD })
+ 
++/* Atomic exchange, src_reg = atomic_xchg(dst_reg + off, src_reg) */
++
++#define BPF_ATOMIC_XCHG(SIZE, DST, SRC, OFF)			\
++	((struct bpf_insn) {					\
++		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = OFF,					\
++		.imm   = BPF_XCHG  })
++
++/* Atomic compare-exchange, r0 = atomic_cmpxchg(dst_reg + off, r0, src_reg) */
++
++#define BPF_ATOMIC_CMPXCHG(SIZE, DST, SRC, OFF)			\
++	((struct bpf_insn) {					\
++		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = OFF,					\
++		.imm   = BPF_CMPXCHG })
++
+ /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+ 
+ #define BPF_ST_MEM(SIZE, DST, OFF, IMM)				\
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d5389119291e..b733af50a5b9 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -45,7 +45,9 @@
+ #define BPF_EXIT	0x90	/* function return */
+ 
+ /* atomic op type fields (stored in immediate) */
+-#define BPF_FETCH	0x01	/* fetch previous value into src reg */
++#define BPF_XCHG	(0xe0 | BPF_FETCH)	/* atomic exchange */
++#define BPF_CMPXCHG	(0xf0 | BPF_FETCH)	/* atomic compare-and-write */
++#define BPF_FETCH	0x01	/* not an opcode on its own, used to build others */
+ 
+ /* Register numbers */
+ enum {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 61e93eb7d363..28f960bc2e30 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1630,6 +1630,16 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 				(u32) SRC,
+ 				(atomic_t *)(unsigned long) (DST + insn->off));
+ 			break;
++		case BPF_XCHG:
++			SRC = (u32) atomic_xchg(
++				(atomic_t *)(unsigned long) (DST + insn->off),
++				(u32) SRC);
++			break;
++		case BPF_CMPXCHG:
++			BPF_R0 = (u32) atomic_cmpxchg(
++				(atomic_t *)(unsigned long) (DST + insn->off),
++				(u32) BPF_R0, (u32) SRC);
++			break;
+ 		default:
+ 			goto default_label;
+ 		}
+@@ -1647,6 +1657,16 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 				(u64) SRC,
+ 				(atomic64_t *)(s64) (DST + insn->off));
+ 			break;
++		case BPF_XCHG:
++			SRC = (u64) atomic64_xchg(
++				(atomic64_t *)(u64) (DST + insn->off),
++				(u64) SRC);
++			break;
++		case BPF_CMPXCHG:
++			BPF_R0 = (u64) atomic64_cmpxchg(
++				(atomic64_t *)(u64) (DST + insn->off),
++				(u64) BPF_R0, (u64) SRC);
++			break;
+ 		default:
+ 			goto default_label;
+ 		}
+diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+index d2e20f6d0516..ee8d1132767b 100644
+--- a/kernel/bpf/disasm.c
++++ b/kernel/bpf/disasm.c
+@@ -167,6 +167,21 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
+ 				BPF_SIZE(insn->code) == BPF_DW ? "64" : "",
+ 				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
+ 				insn->dst_reg, insn->off, insn->src_reg);
++		} else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
++			   insn->imm == BPF_CMPXCHG) {
++			verbose(cbs->private_data, "(%02x) r0 = atomic%s_cmpxchg((%s *)(r%d %+d), r0, r%d)\n",
++				insn->code,
++				BPF_SIZE(insn->code) == BPF_DW ? "64" : "",
++				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
++				insn->dst_reg, insn->off,
++				insn->src_reg);
++		} else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
++			   insn->imm == BPF_XCHG) {
++			verbose(cbs->private_data, "(%02x) r%d = atomic%s_xchg((%s *)(r%d %+d), r%d)\n",
++				insn->code, insn->src_reg,
++				BPF_SIZE(insn->code) == BPF_DW ? "64" : "",
++				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
++				insn->dst_reg, insn->off, insn->src_reg);
+ 		} else {
+ 			verbose(cbs->private_data, "BUG_%02x\n", insn->code);
+ 		}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f8c4e809297d..f5f4460b3e4e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3608,11 +3608,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 
+ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+ {
++	int load_reg;
+ 	int err;
+ 
+ 	switch (insn->imm) {
+ 	case BPF_ADD:
+ 	case BPF_ADD | BPF_FETCH:
++	case BPF_XCHG:
++	case BPF_CMPXCHG:
+ 		break;
+ 	default:
+ 		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
+@@ -3634,6 +3637,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	if (err)
+ 		return err;
+ 
++	if (insn->imm == BPF_CMPXCHG) {
++		/* Check comparison of R0 with memory location */
++		err = check_reg_arg(env, BPF_REG_0, SRC_OP);
++		if (err)
++			return err;
++	}
++
+ 	if (is_pointer_value(env, insn->src_reg)) {
+ 		verbose(env, "R%d leaks addr into mem\n", insn->src_reg);
+ 		return -EACCES;
+@@ -3664,8 +3674,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	if (!(insn->imm & BPF_FETCH))
+ 		return 0;
+ 
+-	/* check and record load of old value into src reg  */
+-	err = check_reg_arg(env, insn->src_reg, DST_OP);
++	if (insn->imm == BPF_CMPXCHG)
++		load_reg = BPF_REG_0;
++	else
++		load_reg = insn->src_reg;
++
++	/* check and record load of old value */
++	err = check_reg_arg(env, load_reg, DST_OP);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/tools/include/linux/filter.h b/tools/include/linux/filter.h
+index 4e0100ba52c2..21598053fd40 100644
+--- a/tools/include/linux/filter.h
++++ b/tools/include/linux/filter.h
+@@ -174,6 +174,8 @@
+  *
+  *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+  *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
++ *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
++ *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+  */
+ 
+ #define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
+@@ -212,6 +214,26 @@
+ 		.off   = OFF,					\
+ 		.imm   = BPF_ADD | BPF_FETCH })
+ 
++/* Atomic exchange, src_reg = atomic_xchg(dst_reg + off, src_reg) */
++
++#define BPF_ATOMIC_XCHG(SIZE, DST, SRC, OFF)			\
++	((struct bpf_insn) {					\
++		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = OFF,					\
++		.imm   = BPF_XCHG })
++
++/* Atomic compare-exchange, r0 = atomic_cmpxchg(dst_reg + off, r0, src_reg) */
++
++#define BPF_ATOMIC_CMPXCHG(SIZE, DST, SRC, OFF)			\
++	((struct bpf_insn) {					\
++		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
++		.dst_reg = DST,					\
++		.src_reg = SRC,					\
++		.off   = OFF,					\
++		.imm   = BPF_CMPXCHG })
++
+ /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+ 
+ #define BPF_ST_MEM(SIZE, DST, OFF, IMM)				\
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index d5389119291e..b733af50a5b9 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -45,7 +45,9 @@
+ #define BPF_EXIT	0x90	/* function return */
+ 
+ /* atomic op type fields (stored in immediate) */
+-#define BPF_FETCH	0x01	/* fetch previous value into src reg */
++#define BPF_XCHG	(0xe0 | BPF_FETCH)	/* atomic exchange */
++#define BPF_CMPXCHG	(0xf0 | BPF_FETCH)	/* atomic compare-and-write */
++#define BPF_FETCH	0x01	/* not an opcode on its own, used to build others */
+ 
+ /* Register numbers */
+ enum {
+-- 
+2.29.2.576.ga3fc446d84-goog
 
---ev7mvGV+3JQuI2Eo--
