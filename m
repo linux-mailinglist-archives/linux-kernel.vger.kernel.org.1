@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7A22D0EC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55F32D0EC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgLGLOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
+        id S1726557AbgLGLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgLGLOu (ORCPT
+        with ESMTP id S1726198AbgLGLPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:14:50 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DD8C0613D0;
-        Mon,  7 Dec 2020 03:14:09 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id lt17so18949811ejb.3;
-        Mon, 07 Dec 2020 03:14:09 -0800 (PST)
+        Mon, 7 Dec 2020 06:15:38 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77338C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:14:58 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id 11so12080308oty.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 03:14:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UXP8pGOs6I07RubMzh9UPSoGrdmJCXDEzrlECyPatEc=;
-        b=g+O7K38plSkmPFpEJKYh66kin5NbJPRgVGhwQAldpmJSmOd2tPJBHtktR+U9RjKXN5
-         w1/66nEj3xB5+tbtbGsNbfjwTLmsE7eYHRTi5AqZVowIY8q6YEhxCGOsUIb6HZ6PbQnb
-         8fT6l3mRvBhrS+z4tsA40pH922LNmZdHABA3U7alQX9e21jrKmoMcunZSDdXPY2gJc5U
-         JrtvNcN95XiuhAh8He5lxo2kYPUcSSXK4LUWuLAdtGCF9Ghk0FY17ZdTQhEbH9BlIPJI
-         RgIAaRfuTAX+kLFyUva7YXFU5K9x2O8nU+flbPQ/vsY2Dl6QEgjSbcv42mUtdvQgU8hr
-         Aokw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CDa/bzky3vYFC4xxSuOCp3ghimMh4GECLA5nY8N/fUQ=;
+        b=hx+OgTRg5lMLP/kziSxsNaPlM9h2bc2RfQU1/rtzHESa+ND7aVRNCI71QM0YImfqD0
+         Yo7+sxC3NskWKOJ5qtEaRy2IkavFgsVP3/elyHZ54eLjZ8ivjJEFr9e1y4ZbnrR+PluY
+         jU+fxcy5C4KfEcCdZ4ldf+gfP4A4lNdwAGts4GanpY6rH8TLvlhbeziXFP3AURCQkk6o
+         qxxaLHefzbURt+R16gnQNPuw2WmUkWUwSLLEjU11anroQQoRnhfat/5vzTKg/ecIuDIk
+         tbkw0HoB/eycgrorYAdbZg16XToNfwuGPO3grCwFsE3nEnA1CrxjrY9Y+OcPpzc2fxh+
+         R36Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UXP8pGOs6I07RubMzh9UPSoGrdmJCXDEzrlECyPatEc=;
-        b=C1Qv7OrKdDgGVShIj/28I4oLtheAUVuuTbtp8S5tyf45RdGlInakTKQQsMxSGf5fx9
-         MqcfZ/FFA5NbytHlCgBg5uS9y7UVHzDLFuzRTuZSIteTfCa0jLjNANRmjNEImZG6NZzY
-         kBCEH5l0Z9gJ35p5j5oWvfa4YFIEHwxPbdIWDvXI8BlEbyS1KHorw1pFPFhsE02iffAF
-         mr4nbiGjTrfrZ647GPed6k5dGTU6jt0Uf3vr3+RUojlt8kzg0Zfm1H08WNJXeRbo4vS6
-         yi4FaaFrUSl+iAqyLeytmt7E2o46yrkeH/4tkHHdIRRdfwB+klbQiCTyKTNo7injPqs8
-         TT+Q==
-X-Gm-Message-State: AOAM532+omUMPCh7IuqpUZM7dmx9WXiuicZvRxMwqiAyM+EQTw18fKRd
-        c1K9efc0+uu7xj3f8FPVUjg=
-X-Google-Smtp-Source: ABdhPJxF8cgKuhmNchC2AHpvcVS8hxxEz/nExEi3EGXRnP5GyAKE2BcmBiXCb/EvxDeU0sokkLP0tQ==
-X-Received: by 2002:a17:906:31d2:: with SMTP id f18mr18266080ejf.407.1607339648377;
-        Mon, 07 Dec 2020 03:14:08 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id q25sm7906732eds.85.2020.12.07.03.14.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Dec 2020 03:14:07 -0800 (PST)
-Message-ID: <c4333f6ad6172d991f6afdaea3698c75fb0f7c36.camel@gmail.com>
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Date:   Mon, 07 Dec 2020 12:14:06 +0100
-In-Reply-To: <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
-         <20201206164226.6595-4-huobean@gmail.com>
-         <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CDa/bzky3vYFC4xxSuOCp3ghimMh4GECLA5nY8N/fUQ=;
+        b=mAt4x0ECPNQvTUVLZSWBX0lMnPUUhpO2ZWCsG/PwuwehfAYxIU4Ud1YjXncd4bhQf6
+         6DzWApk19Zv11mywtGFDBy51G4DRDp6/am+/sjdO4b6fck+0KFQkHM7rfsA0qRbnhcEe
+         xe1zfLf1+JBsf1atKbiuzUVYYXOdjdDg4CJXcJJyHH9Ud0SkTO8fzxxn7uAtvIa3rRDa
+         yV+34ol59KmcHjpcwHXZ6l+jJGTXHFhTGcj0OO0D+aTD1Y2s3tYYND270jbHGOB1uwNZ
+         uK96Mz6CBo0U0JTyZtUZHdBc8chEi+GyPfBjI1IyraW0dfdyHcd4W3O2w0ZdOLsoPnSF
+         WYrg==
+X-Gm-Message-State: AOAM531kdEbyQAVyIqWmZldBxZxiDY2dNIDVSvJDeqMSpxQmBcGvSNBc
+        RpN+dG9FmLKNMn2v2OS284zTE/knwCADNL9vSUfr+g==
+X-Google-Smtp-Source: ABdhPJwk058/GoMNmNv+Cj4Gd61prkxnZJl7VLyI6OsONWjVjNF7OnNL2pO01+T+Vs49sYtWvkNtfDJkxu+1vSquZbE=
+X-Received: by 2002:a05:6830:117:: with SMTP id i23mr12717618otp.365.1607339697581;
+ Mon, 07 Dec 2020 03:14:57 -0800 (PST)
+MIME-Version: 1.0
+References: <20201117181607.1761516-1-qperret@google.com> <20201117181607.1761516-17-qperret@google.com>
+ <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
+ <X8p5kLSIq2MoQZ24@google.com> <20201207102002.GA3825@willie-the-truck> <20201207110528.GA18365@C02TD0UTHF1T.local>
+In-Reply-To: <20201207110528.GA18365@C02TD0UTHF1T.local>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 7 Dec 2020 11:14:21 +0000
+Message-ID: <CA+EHjTwp7Kndg7-qT=Q0V-wOK+EuUf_K_efMfFe-qo-4dY91Bw@mail.gmail.com>
+Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Quentin Perret <qperret@google.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>, kernel-team@android.com,
+        Android KVM <android-kvm@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 07:57 +0000, Avri Altman wrote:
-> >          TP_printk(
-> > -               "%s: %s: HDR:%s, CDB:%s",
-> > +               "%s: %s: HDR:%s, %s:%s",
-> >                  __get_str(str), __get_str(dev_name),
-> >                  __print_hex(__entry->hdr, sizeof(__entry->hdr)),
-> > +               __get_str(tsf_type),
-> 
-> This breaks what current parsers expects.
-> Why str is not enough to distinguish between the command?
-> 
-> Thanks,
-> Avri
+On Mon, Dec 7, 2020 at 11:05 AM Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Mon, Dec 07, 2020 at 10:20:03AM +0000, Will Deacon wrote:
+> > On Fri, Dec 04, 2020 at 06:01:52PM +0000, Quentin Perret wrote:
+> > > On Thursday 03 Dec 2020 at 12:57:33 (+0000), Fuad Tabba wrote:
+> > > <snip>
+> > > > > +SYM_FUNC_START(__kvm_init_switch_pgd)
+> > > > > +       /* Turn the MMU off */
+> > > > > +       pre_disable_mmu_workaround
+> > > > > +       mrs     x2, sctlr_el2
+> > > > > +       bic     x3, x2, #SCTLR_ELx_M
+> > > > > +       msr     sctlr_el2, x3
+> > > > > +       isb
+> > > > > +
+> > > > > +       tlbi    alle2
+> > > > > +
+> > > > > +       /* Install the new pgtables */
+> > > > > +       ldr     x3, [x0, #NVHE_INIT_PGD_PA]
+> > > > > +       phys_to_ttbr x4, x3
+> > > > > +alternative_if ARM64_HAS_CNP
+> > > > > +       orr     x4, x4, #TTBR_CNP_BIT
+> > > > > +alternative_else_nop_endif
+> > > > > +       msr     ttbr0_el2, x4
+> > > > > +
+> > > > > +       /* Set the new stack pointer */
+> > > > > +       ldr     x0, [x0, #NVHE_INIT_STACK_HYP_VA]
+> > > > > +       mov     sp, x0
+> > > > > +
+> > > > > +       /* And turn the MMU back on! */
+> > > > > +       dsb     nsh
+> > > > > +       isb
+> > > > > +       msr     sctlr_el2, x2
+> > > > > +       isb
+> > > > > +       ret     x1
+> > > > > +SYM_FUNC_END(__kvm_init_switch_pgd)
+> > > > > +
+> > > >
+> > > > Should the instruction cache be flushed here (ic iallu), to discard
+> > > > speculatively fetched instructions?
+> > >
+> > > Hmm, Will? Thoughts?
+> >
+> > The I-cache is physically tagged, so not sure what invalidation would
+> > achieve here. Fuad -- what do you think could go wrong specifically?
+>
+> While the MMU is off, instruction fetches can be made from the PoC
+> rather than the PoU, so where instructions have been modified/copied and
+> not cleaned to the PoC, it's possible to fetch stale copies into the
+> I-caches. The physical tag doesn't prevent that.
+>
+> In the regular CPU boot paths, __enabble_mmu() has an IC IALLU after
+> enabling the MMU to ensure that we get rid of anything stale (e.g. so
+> secondaries don't miss ftrace patching, which is only cleaned to the
+> PoU).
+>
+> That might not be a problem here, if things are suitably padded and
+> never dynamically patched, but if so it's probably worth a comment.
+>
+> Fuad, is that the sort of thing you were considering, or did you have
+> additional concerns?
 
-Hi Avri
-Tt donesn't break original CDB parser. for the CDB, it is still the
-same as before. Here just make Transaction Specific Fields in the UPIU
-package much clearer.
-
-I mentioned in the commits message: 
-
-Transaction Specific Fields (TSF) in the UPIU package could be CDB
-(SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
-TM I/O parameter (Task Management Input/Output Parameter). But we
-didn't differenciate them. we take all of these as CDB. This is wrong.
-
-I want to make it clearer and make UPIU trace in line with the Spec.
-what's more,  how do you filter OSF, TM parameters with current UPIU
-trace? you take all of them as CDB? if so, I think, it's better to
-change parser.
-
-Thanks,
-Bean
-
-
-
-
-
-
+No other concerns. Thanks Mark.
+/fuad
