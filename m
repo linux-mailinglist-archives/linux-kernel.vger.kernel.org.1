@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78142D0FEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641532D0FF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgLGMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgLGMAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:00:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57AAC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:59:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ruiN8SJtTuUIP3pb9sg0hgod0TOT8rORb9N8dDgUyWY=; b=XL/kUxg7Xe4176O/HRpN2kny/5
-        TJiIqz86OTre+mFJndMNODpqB4aHUfhinHIrg8jS+bDklZWmvwbm9I3SWG2rnEHd7Rv3FrcyriZPy
-        K75vmVfi55l3vjbd7Mr19j4uQriwVeX4YmH8QcC6EhdrSkA4cvAbmjcp4SyjYElfd8nVaVN4EvAyd
-        1ouQCoDWJwecMzcJ8QwVDVRHUdkbuvJsfphnZLwkmpbl+fkRas8+5JEn90S+p3+4VQ8GAPfxAL6Lg
-        yyRmBFyDJw6zmp1S0HmoQJd60hT6SyzfOyNkSuydc2bpEFW0kxNtbDNwUYnj4S0rYj+HSuZhkFWAK
-        6TesbQEg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmFBJ-0000rG-MP; Mon, 07 Dec 2020 11:59:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48A5730700B;
-        Mon,  7 Dec 2020 12:59:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2E8A52081294F; Mon,  7 Dec 2020 12:59:53 +0100 (CET)
-Date:   Mon, 7 Dec 2020 12:59:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [patch 1/3] tick: Remove pointless cpu valid check in hotplug
- code
-Message-ID: <20201207115953.GR3021@hirez.programming.kicks-ass.net>
-References: <20201206211253.919834182@linutronix.de>
- <20201206212002.582579516@linutronix.de>
+        id S1726969AbgLGMCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:02:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:48686 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726370AbgLGMCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:02:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02E561042;
+        Mon,  7 Dec 2020 04:01:19 -0800 (PST)
+Received: from [10.57.61.6] (unknown [10.57.61.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C97D3F718;
+        Mon,  7 Dec 2020 04:01:16 -0800 (PST)
+Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
+References: <20201205082957.12544-1-zhukeqian1@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
+Date:   Mon, 7 Dec 2020 12:01:09 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206212002.582579516@linutronix.de>
+In-Reply-To: <20201205082957.12544-1-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 10:12:54PM +0100, Thomas Gleixner wrote:
+On 2020-12-05 08:29, Keqian Zhu wrote:
+> ... then we have more chance to detect wrong code logic.
 
->  void tick_handover_do_timer(void)
->  {
-> +	if (tick_do_timer_cpu == smp_processor_id())
-> +		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
+I don't follow that justification - it's still the same check with the 
+same outcome, so how does moving it have any effect on the chance to 
+detect errors?
 
-For the paranoid amongst us, would it make sense to add something like:
+AFAICS the only difference it would make is to make some errors *less* 
+obvious - if a sufficiently broken caller passes an empty prot value 
+alongside an invalid size or already-mapped address, this will now 
+quietly hide the warnings from the more serious condition(s).
 
-	/*
-	 * There must always be at least one online CPU.
-	 */
-	WARN_ON_ONCE(tick_do_timer_cpu >= nr_cpu_ids);
+Yes, it will bail out a bit faster in the specific case where the prot 
+value is the only thing wrong, but since when do we optimise for 
+fundamentally incorrect API usage?
 
->  }
+Robin.
+
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>   drivers/iommu/io-pgtable-arm.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index a7a9bc08dcd1..8ade72adab31 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>   	arm_lpae_iopte prot;
+>   	long iaext = (s64)iova >> cfg->ias;
+>   
+> -	/* If no access, then nothing to do */
+> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+> -		return 0;
+> -
+>   	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+>   		return -EINVAL;
+>   
+> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>   	if (WARN_ON(iaext || paddr >> cfg->oas))
+>   		return -ERANGE;
+>   
+> +	/* If no access, then nothing to do */
+> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+> +		return 0;
+> +
+>   	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+>   	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
+>   	/*
+> 
