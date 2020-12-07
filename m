@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF5E2D19DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3F62D19E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgLGTl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGTl5 (ORCPT
+        id S1726684AbgLGTmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:42:35 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5526 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLGTme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:41:57 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4889CC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:41:17 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id k8so13323520ilr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=newoldbits-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zYJcT4hetYL0tKq9XSHGQkMfsmmcPjbj08++qXmaLCM=;
-        b=tlLC68iK8/I/THqmaQXIaoQOQrE/ecLEdQS+XINmXM3dTf2eOjXQLPBIuos5p8vsS+
-         neSdG2DpBL7mxDNw6tzUBtMAja0R9XFS/6uF1NDnAUL5SdaTK+qEsmBaxLdQosZnjKXB
-         EKdvegPEYvpZtvl6TIYbQr+M4SZORKenIW3lzqsRjuXeNLgZxpiw5UNnRgl1n92Ac1RS
-         vlfk3hF2hh25s8tG6EFo+KIJbcEvP9Ou1rr7Uh3v1i8qR1vEgdOs9jeGZDlDKlfS11Qv
-         ht+MJyi+M7ulLv3mRU67gOomblnSmoFcCWu17MVA4qKuMruBpJhsfWUdd0skLnM1/Sso
-         tGrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zYJcT4hetYL0tKq9XSHGQkMfsmmcPjbj08++qXmaLCM=;
-        b=qDxS4UgZXcBMUF8gMbcbffdiQYzRbzShV9Br3HaMpe62actLvHS8abxteZHZMSzFaj
-         JM49HrKv+pswzwmpmp5lfKz69uIBw8jr1k7zLbuo5Qnsy+aACmFluBpsxIvvFc3kha67
-         V7eDtevofL9uiUgwre9By9sD2NkeKpYlW+1EgOgxofNT4SdK+KveyUmtWfGAR8dSH6hf
-         p60fuXav80wUu/eXfaba5uUT1wY6pML81ZD51rQAxhFXMTQ/VxwFhyexR2AHheNzcnvA
-         uxrIefo/2QUOCng5BmpkDhmUdMGu3msRo/BoDa0qzpIzQi6TF+4RetENrWZJ79F1WAUL
-         tGAA==
-X-Gm-Message-State: AOAM5339SI0+7JGSxrKOblQGEMsi1+X/BZ0pu7osVZuBrJj5vSsI1rnq
-        Ynk86p5yAhSaG1lFxWjVHXkzgosq4hrJtw2C6XNL3A==
-X-Google-Smtp-Source: ABdhPJw07PSB4YyIs3KMeAufuOw+D5vgUuqY57Hc8lSSbaw3ooS9fotF8itkZSUBuD7KmfK0LaQNPdkro1uTDRNSZZE=
-X-Received: by 2002:a92:130e:: with SMTP id 14mr23031339ilt.281.1607370076640;
- Mon, 07 Dec 2020 11:41:16 -0800 (PST)
+        Mon, 7 Dec 2020 14:42:34 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fce85820000>; Mon, 07 Dec 2020 11:41:54 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Dec
+ 2020 19:41:49 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.50) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 7 Dec 2020 19:41:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AtZ9aPoiaB7Gv2iSE+H4ZA4LEC/zk26inv0m6OdHxt/Z7WD6igBRe18YFvXwPz1VeKg5U8xz1QCf9P7xuJ4r8B524SWLgLRx7R86IdiyQOgN9Pwc8il2ci5y7fzov2Re7AbqwVzeW1Wt4tyY33qvoueVixkpMztbJAdzU8z+VTGi3BGTaolJnUMtnU/0HP13zcjKVcb0IspNK9fhkpVswTRzzcQMnN6bh3hCa0oysxwQ/i37fh1kGXcopU6f8GC7Ywy4H0NrzrxaswfAmbsNoJAvCy9jTVy5TP6mD7XyydBiiGmIg/bWccNC/AoJhUMSt5N1Zf7FEwVYiOIOwCynHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HqTy8dDKl7SjE0J6RfNFvzfdvO9nKXmsOrzBKAZzcws=;
+ b=NGWaZRqmICN8bwJsaFwRKcS1kTn279W8+OgS59ek7LFylIEm87hg3UxaUEesqx057YPQU185Wtm8oZ8/myuqdmgoy/1jhHbfpzlWvsIhIPnJsl3rTKwD2OZpFCw5sMQqN9YXITJI9cQJVZzQ7g4hh5qR9BzKNDQfbdyPnLUb6QiE1RmH8cmkZNPRqrso9BAJPrfPa8p6DftkmE8njJV1ln+pCY7FRcpl4ixjEQB6Dak3wthN5Ldqn11qDNhO7plHribOT7mIJoHTDbx9C4T5ZAJzurXF1XH6e4xy3CYzjoA5SB93hhCzT10W3FxhEWrCUCeYLFRLVksv7t6mNy8VmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4010.namprd12.prod.outlook.com (2603:10b6:5:1ce::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Mon, 7 Dec
+ 2020 19:41:47 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
+ 19:41:47 +0000
+Date:   Mon, 7 Dec 2020 15:41:45 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+CC:     <faisal.latif@intel.com>, <shiraz.saleem@intel.com>,
+        <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] infiniband: i40iw: replace atomic_add_return()
+Message-ID: <20201207194145.GA1769554@nvidia.com>
+References: <1606726376-7675-1-git-send-email-yejune.deng@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1606726376-7675-1-git-send-email-yejune.deng@gmail.com>
+X-ClientProxiedBy: MN2PR20CA0064.namprd20.prod.outlook.com
+ (2603:10b6:208:235::33) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20201201083408.51006-1-jean.pihet@newoldbits.com>
- <20201201184100.GN2073444@lunn.ch> <CAORVsuXv5Gw18EeHwP36EkzF4nN5PeGerBQQa-6ruWAQRX+GoQ@mail.gmail.com>
- <20201201194819.ygmrdwcpvywkszat@skbuf>
-In-Reply-To: <20201201194819.ygmrdwcpvywkszat@skbuf>
-From:   Jean Pihet <jean.pihet@newoldbits.com>
-Date:   Mon, 7 Dec 2020 20:41:05 +0100
-Message-ID: <CAORVsuWFiTo0-cX-8vbPh+bYvNyTM6NiFPaM5fij9bO4pWymyA@mail.gmail.com>
-Subject: Re: [PATCH v2] net: dsa: ksz8795: adjust CPU link to host interface
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
-        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
-        Hugo Cornelis <hugo.cornelis@essensium.com>,
-        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0064.namprd20.prod.outlook.com (2603:10b6:208:235::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Mon, 7 Dec 2020 19:41:46 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmMOH-007QMT-PM; Mon, 07 Dec 2020 15:41:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607370114; bh=HqTy8dDKl7SjE0J6RfNFvzfdvO9nKXmsOrzBKAZzcws=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=qUoiEuT5KXvtWCQ2XTdfcr25c/4kVJLIZ//HXs44cxUlRJV7G6HC/3XfL0TT0HWjh
+         lfx814mn8DMknwRLUqgvhHe4WJK9d4Yr2+p+FpEGWDdxv9TZaOapTf5aaNKZenD37L
+         aImORiXo9cbYmTVR5KGxIgl/zboTrfmlzhjUg8OhTC5xZeQIysfb+CUe3nFbVxiIFR
+         uCczNIitL8aUMFeC6ohyHJg4zRXxiM/+VDko4E8S6gzQu8TMzWOC3QfqWZrG3Acop+
+         qvBcxSfw5nLLcnnTLaVVj4ypvyaYr7+JektEJLID5m6HzxHAd6ccqLkQ0iQ6s/IAbA
+         8TsW3Y6RW5Mfg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+On Mon, Nov 30, 2020 at 04:52:56PM +0800, Yejune Deng wrote:
+> atomic_inc_return() is a little neater
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> ---
+>  drivers/infiniband/hw/i40iw/i40iw_cm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-On Tue, Dec 1, 2020 at 8:48 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> Hi Jean,
->
-> On Tue, Dec 01, 2020 at 07:58:01PM +0100, Jean Pihet wrote:
-> > Hi Andrew,
-> >
-> > On Tue, Dec 1, 2020 at 7:41 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > >
-> > > On Tue, Dec 01, 2020 at 09:34:08AM +0100, Jean Pihet wrote:
-> > > > Add support for RGMII in 100 and 1000 Mbps.
-> > > >
-> > > > Adjust the CPU port settings from the host interface settings: interface
-> > > > MII type, speed, duplex.
-> > >
-> > > Hi Jean
-> > >
-> > > You have still not explained why this is needed. Why? is always the
-> > > important question to answer in the commit message. The What? is
-> > > obvious from reading the patch. Why does you board need this, when no
-> > > over board does?
-> >
-> > I reworked the commit description about the What and thought it was
-> > enough. Do you need a cover letter to describe it more?
-> >
-> > The Why is:
-> > "
-> > Configure the host port of the switch to match the host interface
-> > settings. This is useful when the switch is directly connected to the
-> > host MAC interface.
-> > "
-> > Thank you for reviewing the patch.
->
-> First of all, I am not clear if you want the patch merged or not. If you
-> do, then I don't understand why you did not use the ./scripts/get_maintainer.pl
-> tool to get the email addresses of the people who can help you with
-> that. No one from Microchip, not the DSA maintainers, not the networking
-> maintainer.
-My bad, I thought that sending to both LKML and netdev was enough.
+Applied to for-next with the note from Shiraz
 
->
-> Secondly, don't you get an annoying warning that you should not use
-> .adjust_link and should migrate to .phylink_mac_link_up? Why do you
-> ignore it? Did you even see it?
-No there is no warning using my arm config, both with linux and netdev kernels.
-
->
-> Thirdly, your patch is opaque and has three changes folded into one. You
-> refactor some code from ksz8795_port_setup into a separate function, you
-> add logic for the speeds of 100 and 10 for RGMII, and you call this
-> function from .adjust_link. You must justify why you need all of this,
-> and cannot just add 3 lines to ksz8795_port_setup. You must explain that
-> the ksz8795_port_setup function does not use information from device
-> tree. Then you must explain why the patch is correct.
-> The code refactored out of ksz8795_port_setup, plus the changes you've
-> added to it, looks now super weird. Half of ksz8795_mii_config treats
-> p->phydev.speed as an output variable, and half of it as an input
-> variable. To the untrained eye this looks like a hack. I'm sure you can
-> clarify. This is what Andrew wants to see.
-
-Ok taking notes here, thanks for the valuable input.
-
->
-> Fourth, seriously now, could you just copy Microchip people to your
-> patches? The phylink conversion was done this summer, I'm sure they can
-> help with some suggestions.
-Ok will do, and check the phylink conversion code.
-
-Thank you for reviewing.
-
-BR,
-Jean
+Thanks,
+Jason
