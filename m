@@ -2,193 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72242D0B75
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE412D0B73
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgLGIEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgLGIEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:04:39 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F89C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:03:53 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id bo9so18072236ejb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 00:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ubdvv4RcYFwcs44+1Q+bf4oDunFVL2/v2wPXLvUfjgY=;
-        b=OBEqyLFPDo3mO1YltDeQnpsjlH1rQDnQXXhXeGegH/CA1JbHmETM1xQ4wvWMD4pO49
-         JgE+LDJrlWPKOop2xgKIJ8aIC+ED1zr1u3QjmpC1t+a1VaOOD03BSudqI4P9W6kb6Iwy
-         ytc/V7vHqlgbmQvidcYSj+VoHcIfJ2bVXEXx2bXUbuU/4kG8eOco/BgtJ0ZbxaAXGNgV
-         WQR+XteLAdi9cy7WM5UOFZrlJCC1aEtlHZO4Frr18xXT80bJXwyKxsdvIBGWYQiVyB2f
-         XjNn/OoKpetYwQKGESHnkAOlNjCWyFpeyv0Azp4GmleE+PG4Ivjm0y3Co9Yn7k2fSbqT
-         SQ0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ubdvv4RcYFwcs44+1Q+bf4oDunFVL2/v2wPXLvUfjgY=;
-        b=fqcZlF/L9acnoWf8jnYnUtT4K2xfvoUC/chnTWmgdyQYL5ldqtjnmhzy1XRZumUM96
-         sWZqywUMV1f6n0TvAD1Yiubi/jkyiT2ZFGn0YLUfzM8NF0iEb8LTiEk123iFGqL20LVF
-         PwmrKeXWHyEhEJvLau7CtISIQ8M19exhcpFBidMM6khFhyPm4NvivTR9pNGKZI8C6iuE
-         fXmerFcm/lva1Q2NXUNcX2bTa2U10mZCnAjpsAqq0vobOG9HJgUXNt9bC3eRY3RQikhj
-         M2kmF90mchfvL0c+1ODcW6rQG8w+ChrUNtOBCiImB8l5+5tUyipaux1Ak5/D18hX4AEO
-         Oruw==
-X-Gm-Message-State: AOAM531SR+HBZq238k4L1F7gOhbpq6UxMw/xhtnt+phSBLYosTBBh2R5
-        8RHoJsNms/uCU7iqyDrRWvew4GEC1Wv0Mqw1MM8AQQ==
-X-Google-Smtp-Source: ABdhPJzdE/OoTpeXoZkbhKIzXJyGacWn43/7YmGVU+I1AkK4/RbfwK5b3bKhHOmdfgd6+nKaaU1/+twqAj/6fgfrH7Q=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr17600514eju.375.1607328231815;
- Mon, 07 Dec 2020 00:03:51 -0800 (PST)
+        id S1726267AbgLGIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:04:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56256 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgLGIE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 03:04:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AD0C0AC9A;
+        Mon,  7 Dec 2020 08:03:46 +0000 (UTC)
+Subject: Re: [PATCH drm/hisilicon 1/2] drm/hisilicon: Use managed mode-config
+ init
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1607302172-60123-1-git-send-email-tiantao6@hisilicon.com>
+ <1607302172-60123-2-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <ba38ae20-a041-6918-331a-09cf796b92a3@suse.de>
+Date:   Mon, 7 Dec 2020 09:03:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201206111554.677764505@linuxfoundation.org>
-In-Reply-To: <20201206111554.677764505@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 7 Dec 2020 13:33:40 +0530
-Message-ID: <CA+G9fYt_KqsrGQM4=+hToOs+Uihw07228NSP2mMxSh669mCO-A@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/39] 5.4.82-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1607302172-60123-2-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="80odkjGCcbfPDE9qIJkqNNKY3rNHialNG"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 6 Dec 2020 at 17:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.82 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.82-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--80odkjGCcbfPDE9qIJkqNNKY3rNHialNG
+Content-Type: multipart/mixed; boundary="rSeKpMEG8NxEtli9NgiqrkACXqpsKmn3V";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <ba38ae20-a041-6918-331a-09cf796b92a3@suse.de>
+Subject: Re: [PATCH drm/hisilicon 1/2] drm/hisilicon: Use managed mode-config
+ init
+References: <1607302172-60123-1-git-send-email-tiantao6@hisilicon.com>
+ <1607302172-60123-2-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1607302172-60123-2-git-send-email-tiantao6@hisilicon.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+--rSeKpMEG8NxEtli9NgiqrkACXqpsKmn3V
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Hi
 
-Summary
-------------------------------------------------------------------------
+Am 07.12.20 um 01:49 schrieb Tian Tao:
+> Using drmm_mode_config_init() sets up managed release of modesetting
+> resources.
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 13 +++----------
+>   1 file changed, 3 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index 3687753..d631f82 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -96,7 +96,9 @@ static int hibmc_kms_init(struct hibmc_drm_private *p=
+riv)
+>   	struct drm_device *dev =3D &priv->dev;
+>   	int ret;
+>  =20
+> -	drm_mode_config_init(dev);
+> +	ret =3D drmm_mode_config_init(dev);
+> +	if (ret)
+> +		return ret;
+>   	priv->mode_config_initialized =3D true;
 
-kernel: 5.4.82-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 08a1fd1f5653a704bab8d0da9940b59073a56d04
-git describe: v5.4.81-40-g08a1fd1f5653
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.81-40-g08a1fd1f5653
+I think mode_config_initialized is only required by hibmc_kms_finit(),=20
+which you remove. You should remove this line and the field from struct=20
+hibmc_drm_private.
 
-No regressions (compared to build v5.4.81)
+Best regards
+Thomas
 
-No fixes (compared to build v5.4.81)
-
-
-Ran 51117 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* kvm-unit-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-sched-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-fs-tests
-* ltp-io-test[
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
+>  =20
+>   	dev->mode_config.min_width =3D 0;
+> @@ -125,14 +127,6 @@ static int hibmc_kms_init(struct hibmc_drm_private=
+ *priv)
+>   	return 0;
+>   }
+>  =20
+> -static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+> -{
+> -	if (priv->mode_config_initialized) {
+> -		drm_mode_config_cleanup(&priv->dev);
+> -		priv->mode_config_initialized =3D false;
+> -	}
+> -}
+> -
+>   /*
+>    * It can operate in one of three modes: 0, 1 or Sleep.
+>    */
+> @@ -262,7 +256,6 @@ static int hibmc_unload(struct drm_device *dev)
+>   	drm_atomic_helper_shutdown(dev);
+>  =20
+>   	pci_disable_msi(dev->pdev);
+> -	hibmc_kms_fini(priv);
+>   	dev->dev_private =3D NULL;
+>   	return 0;
+>   }
+>=20
 
 --=20
-Linaro LKFT
-https://lkft.linaro.org
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--rSeKpMEG8NxEtli9NgiqrkACXqpsKmn3V--
+
+--80odkjGCcbfPDE9qIJkqNNKY3rNHialNG
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/N4eEFAwAAAAAACgkQlh/E3EQov+Ai
+0Q//eqJuBrVY30X+MZYNToSYM6gaSCN3C4Oz0YvhkPTMWkmbsHJK5GNiFAV2jCr9+cIuLey7nhmG
+Of/+KCKZWYQsSKuVVaPaIiEXPtFLB71tNRQgBq5NXgZczBBw5tEE0cWTosli2QcWyXgkGOgM3HsO
+Jh8idx33Z1sl8yKL5pBNZyik0t/1CBGcMqP9+pdRFKFVaUAxXViPj4hSeqCLce22svDxIUhGlfr5
+nB9839dYMdOP0XNSnIruHFPuTBdCdxbwqk83lEVWaWZKJqTpLSHV7it7qNxQIYSgBpZgu6OFx/im
+eMc7aF2OTkP8e1ze+fKz/dDZp3ag4Dy4rbgrLlLSGQnh8nhwJjJdCPyfbkGF4tizEqaPelIMUfag
+cfsWGjOFxnWxlNwn3SX+anxwvRf/XmaCdrSu0tpDxoRtP5rofnlJwBlZ7vf4xt3iHjn7y4BY72MA
+yfKrtJG5THxGdqOJ6C34C+vSH6XJBqAPvWa1JKzOzg7hCARvHoqs45bZGtJLvpkE1YP89lsbUH/9
+4P8IjzIRj/RAJTzCEfeNI7dtdKtHaD8/95b7V5RVkoWLOJG9eV/o4VAZxRvX8R2SYw4rz6pol3C1
+15ibP4Tj6KPzBdz+uUwpC0raGOzsRpSrcEsb+pKhFNRDxZb/jeSW6hcShPTBFKjHk7nbP2JsZP9w
+ZmI=
+=SSDP
+-----END PGP SIGNATURE-----
+
+--80odkjGCcbfPDE9qIJkqNNKY3rNHialNG--
