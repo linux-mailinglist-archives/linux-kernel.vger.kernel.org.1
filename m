@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0932D1509
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5562D150D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbgLGPq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:46:29 -0500
-Received: from foss.arm.com ([217.140.110.172]:53942 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGPq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:46:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CB1431B;
-        Mon,  7 Dec 2020 07:45:43 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62E4A3F68F;
-        Mon,  7 Dec 2020 07:45:41 -0800 (PST)
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-To:     Peter Maydell <peter.maydell@linaro.org>
-Cc:     Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-References: <20201119153901.53705-1-steven.price@arm.com>
- <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
- <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
- <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
- <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
- <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
- <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
-Date:   Mon, 7 Dec 2020 15:45:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726447AbgLGPsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:48:16 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:44973 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725863AbgLGPsQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:48:16 -0500
+Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 0820CC0DFEF50
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:47:35 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id mIjekWgPrdCH5mIjeka6Jn; Mon, 07 Dec 2020 08:47:35 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=Tu7Iegfh c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
+ a=aUUhapolnoLvr2g7utAA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gBytMmuiFgYWYPWFzExR31Z/H0j/t4BFhzTX+2b3O0k=; b=jhKdHOfWP5f1ooxEOCvPg/L6M9
+        zDnLo2Tp2pYHW3vL9En+osqEXvE2sU+93g6ktm527fISmpQ3KCO2nLimfPO08pwc/tuZ0qhib6ojp
+        YgyYxYeOj5KOBEdOvoOuTsgZogwf954K5cAWz94qus0idUkZH3LWK/w+HSW+jvyrdWGKNgO+eCpH8
+        8BSF0bUcWXJJtjy83uhIV86ASlXK0eJmBcwgL8qGibzI90MT6u8VmXqjq7TkNFiwnLYKIQqZglMhf
+        EuKpSEz87qAwfLEz5YKRisJqGkuuKZgRg+aM0l2BjMsV84k3zWE0PLgUPzsoWq/PnwnpdCrFsMqeR
+        fZ/2BEkQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:59828 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kmIjd-002qlk-VR; Mon, 07 Dec 2020 15:47:34 +0000
+Date:   Mon, 7 Dec 2020 07:47:33 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: pmbus: correct title underline length
+Message-ID: <20201207154733.GA42429@roeck-us.net>
+References: <20201207152658.32444-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207152658.32444-1-lukas.bulwahn@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kmIjd-002qlk-VR
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:59828
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 1
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2020 15:27, Peter Maydell wrote:
-> On Mon, 7 Dec 2020 at 14:48, Steven Price <steven.price@arm.com> wrote:
->> Sounds like you are making good progress - thanks for the update. Have
->> you thought about how the PROT_MTE mappings might work if QEMU itself
->> were to use MTE? My worry is that we end up with MTE in a guest
->> preventing QEMU from using MTE itself (because of the PROT_MTE
->> mappings). I'm hoping QEMU can wrap its use of guest memory in a
->> sequence which disables tag checking (something similar will be needed
->> for the "protected VM" use case anyway), but this isn't something I've
->> looked into.
+On Mon, Dec 07, 2020 at 04:26:58PM +0100, Lukas Bulwahn wrote:
+> Commit b722d7b9e4da ("hwmon: (pmbus) Driver for Delta power supplies
+> Q54SJ108A2") provides new documentation for DELTA Q54SJ108A2NC* drivers,
+> but the title underline was too short.
 > 
-> It's not entirely the same as the "protected VM" case. For that
-> the patches currently on list basically special case "this is a
-> debug access (eg from gdbstub/monitor)" which then either gets
-> to go via "decrypt guest RAM for debug" or gets failed depending
-> on whether the VM has a debug-is-ok flag enabled. For an MTE
-> guest the common case will be guests doing standard DMA operations
-> to or from guest memory. The ideal API for that from QEMU's
-> point of view would be "accesses to guest RAM don't do tag
-> checks, even if tag checks are enabled for accesses QEMU does to
-> memory it has allocated itself as a normal userspace program".
+> make htmldocs warns:
+> 
+>   Documentation/hwmon/q54sj108a2.rst:4: WARNING: Title underline too short.
+> 
+> Adjust the title underline to the correct length.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Sorry, I know I simplified it rather by saying it's similar to protected 
-VM. Basically as I see it there are three types of memory access:
-
-1) Debug case - has to go via a special case for decryption or ignoring 
-the MTE tag value. Hopefully this can be abstracted in the same way.
-
-2) Migration - for a protected VM there's likely to be a special method 
-to allow the VMM access to the encrypted memory (AFAIK memory is usually 
-kept inaccessible to the VMM). For MTE this again has to be special 
-cased as we actually want both the data and the tag values.
-
-3) Device DMA - for a protected VM it's usual to unencrypt a small area 
-of memory (with the permission of the guest) and use that as a bounce 
-buffer. This is possible with MTE: have an area the VMM purposefully 
-maps with PROT_MTE. The issue is that this has a performance overhead 
-and we can do better with MTE because it's trivial for the VMM to 
-disable the protection for any memory.
-
-The part I'm unsure on is how easy it is for QEMU to deal with (3) 
-without the overhead of bounce buffers. Ideally there'd already be a 
-wrapper for guest memory accesses and that could just be wrapped with 
-setting TCO during the access. I suspect the actual situation is more 
-complex though, and I'm hoping Haibo's investigations will help us 
-understand this.
+Applied.
 
 Thanks,
+Guenter
 
-Steve
+> ---
+> applies on next-20201207 and the hwmon -next tree
+> 
+> Guenter, Jean, please pick this minor doc fix on your -next tree.
+> 
+>  Documentation/hwmon/q54sj108a2.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
+> index fabce671985a..035312d25c34 100644
+> --- a/Documentation/hwmon/q54sj108a2.rst
+> +++ b/Documentation/hwmon/q54sj108a2.rst
+> @@ -1,7 +1,7 @@
+>  .. SPDX-License-Identifier: GPL-2.0-or-later
+>  
+>  Kernel driver q54sj108a2
+> -=====================
+> +========================
+>  
+>  Supported chips:
+>  
