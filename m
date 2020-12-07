@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200812D145E
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9472D145F
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgLGPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:05:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        id S1726935AbgLGPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:05:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgLGPF1 (ORCPT
+        with ESMTP id S1726137AbgLGPFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:05:27 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F34C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:04:41 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id p187so13629595iod.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:04:41 -0800 (PST)
+        Mon, 7 Dec 2020 10:05:41 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8E0C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:04:55 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id o24so15290001ljj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wZXGgbnZ8cr/0Rdgsg8K6lYkELQtNZTW++ELghaI2sA=;
-        b=nFRzR+gbLLYeXQW0Ah+9hwRhhbtRxhRC1Z+B71h5O3N88OlwY/9DsiwpvsO8u1hsPL
-         UjeyktuhRCxR/CytnMiDmBtDLpzFKfdl74vr/XBK2GIIGUuXwYla/uUQLniWlySGZOMg
-         UN8CuOVwThl2MUypIH9Dok/GCcwnymSYi4Jsa2xIDrkGFk050WVX79nIkvFckZu3eBX9
-         LZM8F3ModQEeS5FT6Yex7JJI4P4qDjPkAZXvUj022+CZG4LB0YUjBqgUsE4t5vGxJIZx
-         d//d70FjqUa7hKcmNcqQNljnzHkaM9IK+vYrf+TnqeNnn+HG4P3WFgUN2NHodcSHC9AI
-         HkXw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hH3HH1W/RdGqCEOBZUdis54iFut/lRLRcuUST7BctN4=;
+        b=nmqDfxGjl4uCmTqkR6aOZDk0yp/hvoy0PCUbM16UMMElqTWeHunwHNKk9NHaVPHazV
+         51FsVp6diC8OT5WV7GpfcetvX+3g3icgH+AyeuxcPIxuA5oWp7QHVfoQdSpgV0+mjNPL
+         9fZG5u6i9U+a6i+C5UuZrGGwwPUx+7Hl2EqwZuTkK0z0jhLtsLcUKFED0GQGToe51bzl
+         C5TDGBgRFrtS/DLiiPDLiNKE9VCbgYojGMmYwyLcwDjAVRuLBYBk64iwnBAkW4fYuoZ/
+         nS0k+4W57UJn14s92/+CNXiifU2e5+Df6Pyywin1pYmVpQjEmQGvTK5GSOKhBmKtB/MZ
+         QFUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wZXGgbnZ8cr/0Rdgsg8K6lYkELQtNZTW++ELghaI2sA=;
-        b=Q9+18kXkhCZ7CYlVUAXHEIFDuOmgYV4ADj8zHTAluwi8hmMw1XMDRjoz91rWK9PAyV
-         XKCbOtPYZgyAbyAyD0KzbU/+7bNfyk/hL5AJ1aLw30LnGj7Pt8lSQ3Ki/tbr/2wxnppE
-         0yDrmDDbkGyYuGwYY2vvGsp9JqpIeDO19mWf9h8nVzodb0Pbln9faHxwXLuI540akBH7
-         k8BtBcqSjoTci4Fh9qBscCHK5Jy8yysq0GdjkMJ7y14dEQO9nQRYURV3dYFr2yHtlTEG
-         pcNbylHn6i7Tl9fSC/lJgzgfz1DQsjMmKFjBJhMK59BAS448ZLBv/ql/UW3h8GXdwerH
-         B6Ng==
-X-Gm-Message-State: AOAM533jtiBLgh+boAB6U2r/FPv+mB9vn8ozJgCiVAxaSr2fwkBEshvV
-        jGBQn7CoQ7Pc++L4lpW0Nhr4Ug==
-X-Google-Smtp-Source: ABdhPJwVc+ApxMZ5Dz5ik7ifV1t7aLoJlEZO+JWLeP7ZNiFTeQZzBCNHB5hhoKQCGQqL0ZpZ+Ul15Q==
-X-Received: by 2002:a5e:8344:: with SMTP id y4mr20562092iom.116.1607353480454;
-        Mon, 07 Dec 2020 07:04:40 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c2sm7562579iln.70.2020.12.07.07.04.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 07:04:39 -0800 (PST)
-Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
-To:     Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20201207081558.2361-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <13bd991a-be45-6521-655d-74b8d810b714@kernel.dk>
-Date:   Mon, 7 Dec 2020 08:04:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hH3HH1W/RdGqCEOBZUdis54iFut/lRLRcuUST7BctN4=;
+        b=YkESZJGXxU2iDwL/xXeOVWNbAiUXePPgU7xBtoKB7e354zwVH0m56fmRQnjL8b0Lno
+         7LxABgRBEKaeTCECfF2RIk29ROwECMBYrBWHek7wi0DOnDUOiQ5DEZIXs2uKM4wCdL72
+         L6NWwHxwI229CaLWb9jZ4IYnNaSxcPKEsWS1AT85TzWspxqXHB/g4qS9FJNVx8r8naGz
+         dndkKWhQuaWM0byqVzYoqQqgYl/9R4JosyzQlcLO9fOeH/DL9jIq/PCYG4EFyHWmqCeS
+         r8pJJ1nAsVsv163pt2a1mGfFNdnm64MfFm3C7aY53HJWjAbh/wsrhKhDKBNLBi8Wi50o
+         5bCQ==
+X-Gm-Message-State: AOAM531TxXbcJxcKoCV2fo/beDk4lPzjYChGaqUqUwvkWuh483D3A3ls
+        8y+QYjRAEaSgVU/qt6dxsC9tEj7ug4DhW922MTh2iw==
+X-Google-Smtp-Source: ABdhPJwAZmBEgjXUg/vVei+pbotwoNHAJnvhFOkL0tEDVpvez1cAY8vT6OmhpM3R37fAqhs8ncgEVzNomifjRCmxuao=
+X-Received: by 2002:a2e:800e:: with SMTP id j14mr8744290ljg.226.1607353493834;
+ Mon, 07 Dec 2020 07:04:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201207081558.2361-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201207091516.24683-1-mgorman@techsingularity.net>
+In-Reply-To: <20201207091516.24683-1-mgorman@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 7 Dec 2020 16:04:41 +0100
+Message-ID: <CAKfTPtC9At0Oej+u6-mtBdV6_vhFiNJGPQ-BFQc7RpUtDDixVA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] Reduce worst-case scanning of runqueues in select_idle_sibling
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 1:15 AM, Hillf Danton wrote:
-> Put file as part of error handling when setting up io ctx to fix
-> memory leak like the following one.
-> 
->    BUG: memory leak
->    unreferenced object 0xffff888101ea2200 (size 256):
->      comm "syz-executor355", pid 8470, jiffies 4294953658 (age 32.400s)
->      hex dump (first 32 bytes):
->        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->        20 59 03 01 81 88 ff ff 80 87 a8 10 81 88 ff ff   Y..............
->      backtrace:
->        [<000000002e0a7c5f>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
->        [<000000002e0a7c5f>] __alloc_file+0x1f/0x130 fs/file_table.c:101
->        [<000000001a55b73a>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
->        [<00000000fb22349e>] alloc_file+0x33/0x1b0 fs/file_table.c:193
->        [<000000006e1465bb>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
->        [<000000007118092a>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
->        [<000000007118092a>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
->        [<000000002ae99012>] io_uring_get_fd fs/io_uring.c:9198 [inline]
->        [<000000002ae99012>] io_uring_create fs/io_uring.c:9377 [inline]
->        [<000000002ae99012>] io_uring_setup+0x1125/0x1630 fs/io_uring.c:9411
->        [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->        [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Mon, 7 Dec 2020 at 10:15, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> This is a minimal series to reduce the amount of runqueue scanning in
+> select_idle_sibling in the worst case.
+>
+> Patch 1 removes SIS_AVG_CPU because it's unused.
+>
+> Patch 2 improves the hit rate of p->recent_used_cpu to reduce the amount
+>         of scanning. It should be relatively uncontroversial
+>
+> Patch 3-4 scans the runqueues in a single pass for select_idle_core()
+>         and select_idle_cpu() so runqueues are not scanned twice. It's
+>         a tradeoff because it benefits deep scans but introduces overhead
+>         for shallow scans.
+>
+> Even if patch 3-4 is rejected to allow more time for Aubrey's idle cpu mask
 
-Applied for 5.10, thanks.
+patch 3 looks fine and doesn't collide with Aubrey's work. But I don't
+like patch 4  which manipulates different cpumask including
+load_balance_mask out of LB and I prefer to wait for v6 of Aubrey's
+patchset which should fix the problem of possibly  scanning twice busy
+cpus in select_idle_core and select_idle_cpu
 
--- 
-Jens Axboe
 
+
+> approach to stand on its own, patches 1-2 should be fine. The main decision
+> with patch 4 is whether select_idle_core() should do a full scan when searching
+> for an idle core, whether it should be throttled in some other fashion or
+> whether it should be just left alone.
+>
+> --
+> 2.26.2
+>
