@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79A92D0EF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E22E2D0EE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgLGLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:25:35 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:45757 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbgLGLZe (ORCPT
+        id S1726480AbgLGLYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:24:11 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9112 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgLGLYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:25:34 -0500
-Received: from [192.168.1.155] ([95.114.88.149]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MMY9X-1kTKyR0ddv-00JXzz; Mon, 07 Dec 2020 12:22:52 +0100
-Subject: Re: [PATCH v2 1/2] drivers: gpio: put virtual gpio device into their
- own submenu
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-References: <20201203191135.21576-1-info@metux.net>
- <CAMpxmJVkXeH_B4A_e1Vy4H2LcQnNz0BVoZyXNKEXmG8NvgO6cw@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <169ead3f-8d6a-5de2-772e-707b7cbab635@metux.net>
-Date:   Mon, 7 Dec 2020 12:22:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 7 Dec 2020 06:24:11 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqLWm1h5RzM1Tb;
+        Mon,  7 Dec 2020 19:22:44 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 19:23:15 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <jean-philippe@linaro.org>, <Jonathan.Cameron@huawei.com>,
+        <song.bao.hua@hisilicon.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] iommu/arm-smmu-v3: Fix not checking return value about devm_add_action
+Date:   Mon, 7 Dec 2020 19:23:29 +0800
+Message-ID: <1607340209-51539-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <CAMpxmJVkXeH_B4A_e1Vy4H2LcQnNz0BVoZyXNKEXmG8NvgO6cw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ln1Vk8aZ+xYN6SKVVwyXg/icq2rUNG6aQh3VOfQKle0ytH4nyGl
- AuDiIa1NR1CbTBRsRm1LRT8KMgL3tFtW9Sd+dTB7zyjB+BP3wlWe5i7vdCN2/uorFtn7n2x
- +WEAQiCGcEG8YNQDrUbqzJQAzB3/0CfHFk6Sg4QaNVJ2idBfoTvlWDAgcKHlVD5jm6Solmb
- wmb2e+WBXCjyEjVi2rBnA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ja1UYl5fJlI=:TnURbpt5+bz13c3bg+gtyg
- QDkV/NyH+je8tGZeHnHcwpToLOhMMMw0bXBq6apc4/rUVNALaCHRSo+VTgD7TWlm8PyM1IByL
- 6dZRjL2FX2FVOCqnDwFKbIbBUaAiaq/PnlczOkN3vXSs0EVgo+581eD2uLZOdrz8zG1oejWvr
- sX94szIess39b9Y5QpCzY/5zjSj6h9QOhvKoQjfrk3jW1cRMwojvQnk08ShSkdRq4khvkh6PP
- srsVXie4+zDVG51ML0m8fLyNfV4GbaXKHNX7+KMg7z/0oE4doQ58XiV8qFDD5zH5TH0HI/yWG
- 5cSQ2BjAJ5uyvnUcvItsha4f2IiCCeMkiEyBwDBItAfYC5/+izHrh7XIG3FOk+M/mWuMBqQBo
- 1pI+60cPNqll7ACVHSVxEh2aVxMVEXBiTiajkIFF8OIyTsOznG1j9om4iFvjP
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 11:31, Bartosz Golaszewski wrote:
+Use devm_add_action_or_reset to avoid the situation where the release
+function is not called when devm_add_action returns an error.
 
-> I'd call this section "Virtual GPIO drivers" because the code contains
-> drivers not devices.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-fixed in v2.
+v2:
+check the return value about evm_add_action_or_reset()
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-
---mtx
-
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 2ddf5ec..76c28e7 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2680,7 +2680,8 @@ static int arm_smmu_cmdq_init(struct arm_smmu_device *smmu)
+ 		ret = -ENOMEM;
+ 	} else {
+ 		cmdq->valid_map = bitmap;
+-		devm_add_action(smmu->dev, arm_smmu_cmdq_free_bitmap, bitmap);
++		ret = devm_add_action_or_reset(smmu->dev,
++					       arm_smmu_cmdq_free_bitmap, bitmap);
+ 	}
+ 
+ 	return ret;
+@@ -2938,7 +2939,7 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
+ 	}
+ 
+ 	/* Add callback to free MSIs on teardown */
+-	devm_add_action(dev, arm_smmu_free_msis, dev);
++	devm_add_action_or_reset(dev, arm_smmu_free_msis, dev);
+ }
+ 
+ static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+2.7.4
+
