@@ -2,324 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1802D1A85
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9132D1A8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgLGU3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:29:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45618 "EHLO mail.kernel.org"
+        id S1726346AbgLGUcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:32:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGU3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:29:12 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9D162368A;
-        Mon,  7 Dec 2020 20:28:29 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 15:28:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: Re: [PATCH 1/1] x86/kprobes: Do not decode opcode in
- resume_execution()
-Message-ID: <20201207152828.1a39df5d@gandalf.local.home>
-In-Reply-To: <160726389867.3413805.17190350990123597258.stgit@devnote2>
-References: <160726388853.3413805.4854581312983421622.stgit@devnote2>
-        <160726389867.3413805.17190350990123597258.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726104AbgLGUcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:32:16 -0500
+Date:   Mon, 7 Dec 2020 12:31:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607373095;
+        bh=dhTYw5ud5BHG353VDU98B6oku7U8oYVLLb0qfO+807U=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=quqI6HvAxjJmHmIGWgnOEhVqCKxsw2nK1FZAzQbWE3iZbYr1DtYpN4kqYqU0j6K7u
+         EQwBC2bJUgkZMkIwwTXJLHfJpYu9oQ0QtIYsG4hfYDP6yeN3swQXd1dnanC92DmmDC
+         zTU+NpydZswxnwwRiSRSXnBBBXABXnmrpHneONDrtQe7/nKtF2vfR2HRndFEh6EXuY
+         vm0612R4OkJuXEuphzN6Zt74JZ3yxt1g0dm2iue1VQuZ5attVzegJRp+X5NOoMIktI
+         JPG0GF7atd7fwxZd8SRSc9hF6RhFXR1xy3aM1KyR6GFzjX3nDA8Qjk1g2MCiKg7Iro
+         ZQ20RwLhUq9Xw==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix race of pending_pages in
+ decompression
+Message-ID: <X86RJdLhOVRm28Eu@gmail.com>
+References: <20201205042626.1113600-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205042626.1113600-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  6 Dec 2020 23:11:38 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Currently kprobes x86 decodes opcode right after single
-> stepping in resume_execution(). But it already decoded the
-> opcode while preparing arch_specific_insn in arch_copy_kprobe().
+On Sat, Dec 05, 2020 at 01:26:26PM +0900, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
 > 
-> This decodes opcode in arch_copy_kprobe() instead of
-> resume_execution() and sets some flags which classifies
-> the opcode for resuming process.
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-This probably should go via the tip tree.
-
--- Steve
-
+> I found out f2fs_free_dic() is invoked in a wrong timing, but
+> f2fs_verify_bio() still needed the dic info and it triggered the
+> below kernel panic. It has been caused by the race condition of
+> pending_pages value between decompression and verity logic, when
+> the same compression cluster had been split in different bios.
+> By split bios, f2fs_verify_bio() ended up with decreasing
+> pending_pages value before it is reset to nr_cpages by
+> f2fs_decompress_pages() and caused the kernel panic.
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> [ 4416.564763] Unable to handle kernel NULL pointer dereference
+>                at virtual address 0000000000000000
+> ...
+> [ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
+> [ 4416.908515] pc : fsverity_verify_page+0x20/0x78
+> [ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
+> [ 4416.913722] sp : ffffffc019533cd0
+> [ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
+> [ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
+> [ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
+> [ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
+> [ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
+> [ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
+> [ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
+> [ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
+> [ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
+> [ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
+> [ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
+> [ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
+> [ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
+> [ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
+> [ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
+> [ 4416.929184] Call trace:
+> [ 4416.929187]  fsverity_verify_page+0x20/0x78
+> [ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
+> [ 4416.929192]  f2fs_verity_work+0x58/0x84
+> [ 4417.050667]  process_one_work+0x270/0x47c
+> [ 4417.055354]  worker_thread+0x27c/0x4d8
+> [ 4417.059784]  kthread+0x13c/0x320
+> [ 4417.063693]  ret_from_fork+0x10/0x18
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 > ---
->  arch/x86/include/asm/kprobes.h |   11 ++-
->  arch/x86/kernel/kprobes/core.c |  166 ++++++++++++++++++----------------------
->  2 files changed, 80 insertions(+), 97 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-> index 991a7ad540c7..d20a3d6be36e 100644
-> --- a/arch/x86/include/asm/kprobes.h
-> +++ b/arch/x86/include/asm/kprobes.h
-> @@ -58,14 +58,17 @@ struct arch_specific_insn {
->  	/* copy of the original instruction */
->  	kprobe_opcode_t *insn;
->  	/*
-> -	 * boostable = false: This instruction type is not boostable.
-> -	 * boostable = true: This instruction has been boosted: we have
-> +	 * boostable = 0: This instruction type is not boostable.
-> +	 * boostable = 1: This instruction has been boosted: we have
->  	 * added a relative jump after the instruction copy in insn,
->  	 * so no single-step and fixup are needed (unless there's
->  	 * a post_handler).
->  	 */
-> -	bool boostable;
-> -	bool if_modifier;
-> +	unsigned boostable:1;
-> +	unsigned if_modifier:1;
-> +	unsigned is_call:1;
-> +	unsigned is_pushf:1;
-> +	unsigned is_abs_ip:1;
->  	/* Number of bytes of text poked */
->  	int tp_len;
->  };
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index 547c7abb39f5..9d95f43363f1 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -132,26 +132,6 @@ void synthesize_relcall(void *dest, void *from, void *to)
->  }
->  NOKPROBE_SYMBOL(synthesize_relcall);
->  
-> -/*
-> - * Skip the prefixes of the instruction.
-> - */
-> -static kprobe_opcode_t *skip_prefixes(kprobe_opcode_t *insn)
-> -{
-> -	insn_attr_t attr;
-> -
-> -	attr = inat_get_opcode_attribute((insn_byte_t)*insn);
-> -	while (inat_is_legacy_prefix(attr)) {
-> -		insn++;
-> -		attr = inat_get_opcode_attribute((insn_byte_t)*insn);
-> -	}
-> -#ifdef CONFIG_X86_64
-> -	if (inat_is_rex_prefix(attr))
-> -		insn++;
-> -#endif
-> -	return insn;
-> -}
-> -NOKPROBE_SYMBOL(skip_prefixes);
-> -
->  /*
->   * Returns non-zero if INSN is boostable.
->   * RIP relative instructions are adjusted at copying time in 64 bits mode
-> @@ -311,25 +291,6 @@ static int can_probe(unsigned long paddr)
->  	return (addr == paddr);
->  }
->  
-> -/*
-> - * Returns non-zero if opcode modifies the interrupt flag.
-> - */
-> -static int is_IF_modifier(kprobe_opcode_t *insn)
-> -{
-> -	/* Skip prefixes */
-> -	insn = skip_prefixes(insn);
-> -
-> -	switch (*insn) {
-> -	case 0xfa:		/* cli */
-> -	case 0xfb:		/* sti */
-> -	case 0xcf:		/* iret/iretd */
-> -	case 0x9d:		/* popf/popfd */
-> -		return 1;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  /*
->   * Copy an instruction with recovering modified instruction by kprobes
->   * and adjust the displacement if the instruction uses the %rip-relative
-> @@ -411,9 +372,9 @@ static int prepare_boost(kprobe_opcode_t *buf, struct kprobe *p,
->  		synthesize_reljump(buf + len, p->ainsn.insn + len,
->  				   p->addr + insn->length);
->  		len += JMP32_INSN_SIZE;
-> -		p->ainsn.boostable = true;
-> +		p->ainsn.boostable = 1;
->  	} else {
-> -		p->ainsn.boostable = false;
-> +		p->ainsn.boostable = 0;
->  	}
->  
->  	return len;
-> @@ -450,12 +411,75 @@ void free_insn_page(void *page)
->  	module_memfree(page);
->  }
->  
-> +static void set_resume_flags(struct kprobe *p, struct insn *insn)
-> +{
-> +	insn_byte_t opcode = insn->opcode.bytes[0];
-> +
-> +	switch (opcode) {
-> +	case 0xfa:		/* cli */
-> +	case 0xfb:		/* sti */
-> +	case 0x9d:		/* popf/popfd */
-> +		/* Check whether the instruction modifies Interrupt Flag or not */
-> +		p->ainsn.if_modifier = 1;
-> +		break;
-> +	case 0x9c:	/* pushfl */
-> +		p->ainsn.is_pushf = 1;
-> +		break;
-> +	case 0xcf:	/* iret */
-> +		p->ainsn.if_modifier = 1;
-> +		fallthrough;
-> +	case 0xc2:	/* ret/lret */
-> +	case 0xc3:
-> +	case 0xca:
-> +	case 0xcb:
-> +	case 0xea:	/* jmp absolute -- ip is correct */
-> +		/* ip is already adjusted, no more changes required */
-> +		p->ainsn.is_abs_ip = 1;
-> +		/* Without resume jump, this is boostable */
-> +		p->ainsn.boostable = 1;
-> +		break;
-> +	case 0xe8:	/* call relative - Fix return addr */
-> +		p->ainsn.is_call = 1;
-> +		break;
-> +#ifdef CONFIG_X86_32
-> +	case 0x9a:	/* call absolute -- same as call absolute, indirect */
-> +		p->ainsn.is_call = 1;
-> +		p->ainsn.is_abs_ip = 1;
-> +		break;
-> +#endif
-> +	case 0xff:
-> +		opcode = insn->opcode.bytes[1];
-> +		if ((opcode & 0x30) == 0x10) {
-> +			/*
-> +			 * call absolute, indirect
-> +			 * Fix return addr; ip is correct.
-> +			 * But this is not boostable
-> +			 */
-> +			p->ainsn.is_call = 1;
-> +			p->ainsn.is_abs_ip = 1;
-> +			break;
-> +		} else if (((opcode & 0x31) == 0x20) ||
-> +			   ((opcode & 0x31) == 0x21)) {
-> +			/*
-> +			 * jmp near and far, absolute indirect
-> +			 * ip is correct.
-> +			 */
-> +			p->ainsn.is_abs_ip = 1;
-> +			/* Without resume jump, this is boostable */
-> +			p->ainsn.boostable = 1;
-> +		}
-> +		break;
-> +	}
-> +}
-> +
->  static int arch_copy_kprobe(struct kprobe *p)
->  {
->  	struct insn insn;
->  	kprobe_opcode_t buf[MAX_INSN_SIZE];
->  	int len;
->  
-> +	memset(&p->ainsn, 0, sizeof(p->ainsn));
-> +
->  	/* Copy an instruction with recovering if other optprobe modifies it.*/
->  	len = __copy_instruction(buf, p->addr, p->ainsn.insn, &insn);
->  	if (!len)
-> @@ -467,8 +491,8 @@ static int arch_copy_kprobe(struct kprobe *p)
->  	 */
->  	len = prepare_boost(buf, p, &insn);
->  
-> -	/* Check whether the instruction modifies Interrupt Flag or not */
-> -	p->ainsn.if_modifier = is_IF_modifier(buf);
-> +	/* Analyze the opcode and set resume flags */
-> +	set_resume_flags(p, &insn);
->  
->  	/* Also, displacement change doesn't affect the first byte */
->  	p->opcode = buf[0];
-> @@ -806,11 +830,6 @@ NOKPROBE_SYMBOL(trampoline_handler);
->   * 2) If the single-stepped instruction was a call, the return address
->   * that is atop the stack is the address following the copied instruction.
->   * We need to make it the address following the original instruction.
-> - *
-> - * If this is the first time we've single-stepped the instruction at
-> - * this probepoint, and the instruction is boostable, boost it: add a
-> - * jump instruction after the copied instruction, that jumps to the next
-> - * instruction after the probepoint.
->   */
->  static void resume_execution(struct kprobe *p, struct pt_regs *regs,
->  			     struct kprobe_ctlblk *kcb)
-> @@ -818,59 +837,20 @@ static void resume_execution(struct kprobe *p, struct pt_regs *regs,
->  	unsigned long *tos = stack_addr(regs);
->  	unsigned long copy_ip = (unsigned long)p->ainsn.insn;
->  	unsigned long orig_ip = (unsigned long)p->addr;
-> -	kprobe_opcode_t *insn = p->ainsn.insn;
-> -
-> -	/* Skip prefixes */
-> -	insn = skip_prefixes(insn);
->  
->  	regs->flags &= ~X86_EFLAGS_TF;
-> -	switch (*insn) {
-> -	case 0x9c:	/* pushfl */
-> +
-> +	/* Fixup the contents of top of stack */
-> +	if (p->ainsn.is_pushf) {
->  		*tos &= ~(X86_EFLAGS_TF | X86_EFLAGS_IF);
->  		*tos |= kcb->kprobe_old_flags;
-> -		break;
-> -	case 0xc2:	/* iret/ret/lret */
-> -	case 0xc3:
-> -	case 0xca:
-> -	case 0xcb:
-> -	case 0xcf:
-> -	case 0xea:	/* jmp absolute -- ip is correct */
-> -		/* ip is already adjusted, no more changes required */
-> -		p->ainsn.boostable = true;
-> -		goto no_change;
-> -	case 0xe8:	/* call relative - Fix return addr */
-> +	} else if (p->ainsn.is_call) {
->  		*tos = orig_ip + (*tos - copy_ip);
-> -		break;
-> -#ifdef CONFIG_X86_32
-> -	case 0x9a:	/* call absolute -- same as call absolute, indirect */
-> -		*tos = orig_ip + (*tos - copy_ip);
-> -		goto no_change;
-> -#endif
-> -	case 0xff:
-> -		if ((insn[1] & 0x30) == 0x10) {
-> -			/*
-> -			 * call absolute, indirect
-> -			 * Fix return addr; ip is correct.
-> -			 * But this is not boostable
-> -			 */
-> -			*tos = orig_ip + (*tos - copy_ip);
-> -			goto no_change;
-> -		} else if (((insn[1] & 0x31) == 0x20) ||
-> -			   ((insn[1] & 0x31) == 0x21)) {
-> -			/*
-> -			 * jmp near and far, absolute indirect
-> -			 * ip is correct. And this is boostable
-> -			 */
-> -			p->ainsn.boostable = true;
-> -			goto no_change;
-> -		}
-> -	default:
-> -		break;
->  	}
->  
-> -	regs->ip += orig_ip - copy_ip;
-> +	if (!p->ainsn.is_abs_ip)
-> +		regs->ip += orig_ip - copy_ip;
->  
-> -no_change:
->  	restore_btf();
->  }
->  NOKPROBE_SYMBOL(resume_execution);
+> v3: back to v1 and enabled verity in a unit of cluster
+> v2: merged verity_pages with pending_pages, and increased the
+>     pending_pages count only if STEP_VERITY is set on bio
 
+I am trying to review this but it is very hard, as the f2fs compression code is
+very hard to understand.
+
+It looks like a 'struct decompress_io_ctx' represents the work to decompress a
+particular cluster.  Since the compressed data of the cluster can be read using
+multiple bios, there is a reference count of how many pages are remaining to be
+read before all the cluster's pages have been read and decompression can start.
+
+What I don't understand is why that reference counting needs to work differently
+depending on whether verity is enabled or not.  Shouldn't it be exactly the
+same?
+
+There also seems to be some confusion about the scope of STEP_VERITY.  Before
+f2fs compression was added, it was a per-bio thing.  But now in a compressed
+file, it's really a per-cluster thing, since all decompressed pages in a
+compressed cluster are verified (or not verified) at once.
+
+Wouldn't it make a lot more sense to, when a cluster needs both compression and
+verity, *not* set STEP_VERITY on the bios, but rather set a similar flag in the
+decompress_io_ctx?
+
+- Eric
