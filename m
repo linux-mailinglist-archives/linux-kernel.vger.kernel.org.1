@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D512D1024
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834162D102B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbgLGMKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:10:51 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2331 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727018AbgLGMKv (ORCPT
+        id S1727114AbgLGMNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgLGMND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:10:51 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CqMYR1xCjz13RDD;
-        Mon,  7 Dec 2020 20:09:15 +0800 (CST)
-Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 7 Dec 2020 20:10:06 +0800
-Received: from [10.174.185.137] (10.174.185.137) by
- dggema765-chm.china.huawei.com (10.1.198.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 7 Dec 2020 20:10:05 +0800
-Subject: Re: [PATCH] iommu/io-pgtalbe-arm: Remove "iopte_type(pte, l)" extra
- parameter "l"
-To:     Will Deacon <will@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
-References: <20201207081404.1699-1-jiangkunkun@huawei.com>
- <20201207102458.GB3825@willie-the-truck>
-From:   Kunkun Jiang <jiangkunkun@huawei.com>
-Message-ID: <83f3f9f5-43d8-e02b-39e2-70edd42799a8@huawei.com>
-Date:   Mon, 7 Dec 2020 20:09:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 7 Dec 2020 07:13:03 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD4EC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:12:23 -0800 (PST)
+Received: from zn.tnic (p4fed31e1.dip0.t-ipconnect.de [79.237.49.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D1DB31EC03D5;
+        Mon,  7 Dec 2020 13:12:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607343142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TdtSOyTOpTjTSBOSgG4WDCQi7gPbDzXTXixxH5iz0PY=;
+        b=eX7eg8p0nul6zE+SUdm2p04WXKmuUIInXYNksw2VWei44SQTwFAk42XavAhC//9uYU+wNm
+        GebsHHz8Oe9bQ/Lm38I/L1EHhlw4LskTSgUhcpmdrausspGRD4auhVlnGB/GbIIsGlzeuA
+        7cMICkJACDC6Df/fOQBHai9ejX6ggyo=
+Date:   Mon, 7 Dec 2020 13:10:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v7] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201207121007.GD20489@zn.tnic>
+References: <20201203032559.3388-1-Ashish.Kalra@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207102458.GB3825@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.185.137]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggema765-chm.china.huawei.com (10.1.198.207)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201203032559.3388-1-Ashish.Kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Thu, Dec 03, 2020 at 03:25:59AM +0000, Ashish Kalra wrote:
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index 1bcfbcd2bfd7..46549bd3d840 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -485,7 +485,38 @@ static void print_mem_encrypt_feature_info(void)
+>  	pr_cont("\n");
+>  }
 
-On 2020/12/7 18:24, Will Deacon wrote:
-> On Mon, Dec 07, 2020 at 04:14:04PM +0800, Kunkun Jiang wrote:
->> Knowing from the code, the macro "iopte_type(pte, l)" doesn't use the
->> parameter "l" (level). So we'd better to remove it.
->>
->> Fixes: e1d3c0fd701df(iommu: add ARM LPAE page table allocator)
->> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
->> ---
->>   drivers/iommu/io-pgtable-arm.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
->> index a7a9bc08dcd1..925ae2b713d6 100644
->> --- a/drivers/iommu/io-pgtable-arm.c
->> +++ b/drivers/iommu/io-pgtable-arm.c
->> @@ -130,7 +130,7 @@
->>   /* IOPTE accessors */
->>   #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
->>   
->> -#define iopte_type(pte,l)					\
->> +#define iopte_type(pte)					\
->>   	(((pte) >> ARM_LPAE_PTE_TYPE_SHIFT) & ARM_LPAE_PTE_TYPE_MASK)
-> Shouldn't we update all the users of the macro too?
->
-> Will
-> .
+Any text about why 6% was chosen? A rule of thumb or so? Measurements?
 
-Sorry for my carelessness.  :(
+> +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
+> +
+>  /* Architecture __weak replacement functions */
+> +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> +{
+> +	unsigned long size = iotlb_default_size;
+> +
+> +	/*
+> +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> +	 * SEV uses SWOTLB to make this happen without changing device
+> +	 * drivers. However, depending on the workload being run, the
+> +	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
+> +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> +	 * performance degradation especially with high I/O workloads.
+> +	 * Adjust the default size of SWIOTLB for SEV guests using
+> +	 * a percentage of guest memory for SWIOTLB buffers.
+> +	 * Also as the SWIOTLB bounce buffer memory is allocated
+> +	 * from low memory, ensure that the adjusted size is within
+> +	 * the limits of low available memory.
+> +	 *
+> +	 */
+> +	if (sev_active()) {
+> +		phys_addr_t total_mem = memblock_phys_mem_size();
 
-I have resent it.
+Please integrate scripts/checkpatch.pl into your patch creation
+workflow. Some of the warnings/errors *actually* make sense:
 
+WARNING: Missing a blank line after declarations
+#95: FILE: arch/x86/mm/mem_encrypt.c:511:
++               phys_addr_t total_mem = memblock_phys_mem_size();
++               size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
 
-Thanks,
+But no need to resend now - just a hint for the future.
 
-Kunkun Jiang
+Konrad, ack?
 
+On a 2G guest here, it says:
+
+[    0.018373] SWIOTLB bounce buffer size adjusted to 122MB for SEV
+
+so it makes sense to me.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
