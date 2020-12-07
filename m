@@ -2,223 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B502D10AA
+	by mail.lfdr.de (Postfix) with ESMTP id 72F452D10AB
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725816AbgLGMiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:38:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgLGMiF (ORCPT
+        id S1725966AbgLGMiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgLGMiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:38:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607344597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zIx/GuOwLH7KKTYFdh//bNTfPEG2vhibcsgFFH2/VrU=;
-        b=BauclSzIfP2KEbQAN+dMFl/9ZzoZbvIQYEQhCY9/Avvn3EX4lq+CCZ04tV4Xz9UeTqPMOV
-        YpgnxsF4IGRMuNGMKVcc+mKbbsW0/Z6pP6DgZeGgQv8gxiid416eHBs6zu8XzX2RQXSXGl
-        C3AH4pLg9Tc47gOvqEQZNeBJy5LsnsY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-l1kDTieHNCSMQ4hMxtShqA-1; Mon, 07 Dec 2020 07:36:33 -0500
-X-MC-Unique: l1kDTieHNCSMQ4hMxtShqA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3FDD800D55;
-        Mon,  7 Dec 2020 12:36:29 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BF5DA60BE2;
-        Mon,  7 Dec 2020 12:36:23 +0000 (UTC)
-Subject: Re: [PATCH v7 04/15] mm/hugetlb: Introduce nr_free_vmemmap_pages in
- the struct hstate
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-5-songmuchun@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
-Date:   Mon, 7 Dec 2020 13:36:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201130151838.11208-5-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Mon, 7 Dec 2020 07:38:18 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10FAC0613D0;
+        Mon,  7 Dec 2020 04:37:31 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id bo9so19159856ejb.13;
+        Mon, 07 Dec 2020 04:37:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=aUwTnuqZnXrzXUdRMDyUoF+/uTT+YAcAeAhD7mlLVbQ=;
+        b=Q8uUqcRvNNq6yYwv5RqGt+ClFR3tpVNNPyQNW4ZnhPAOiHmdPfjMHKxd15EphDGh6o
+         gM92fXdFpmMP1M6tndBnP2C4MrGgN+ll6SRYJmQkuZuCsN+fFvyKPgWAy67DfKEewewx
+         Mwo5LbrAL/NSih9hTd1LG0LHNnkd3znXkew80+lXY8BXFAhrIZ3ZN0H6W0uE870kIOv2
+         rd88rX6SRj7Htzw2zyIbITKjtEYACAICish9SInrsVxET3DYoGWlBdanro5DUwIrn/90
+         VzT8tjPsb+ul0JJ6JiFRgY8ctKxOe9ROi+JtxWjzD4bpnILEN2ovhn2WuxseM1UuAYsw
+         H31A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=aUwTnuqZnXrzXUdRMDyUoF+/uTT+YAcAeAhD7mlLVbQ=;
+        b=Uu1i5Lkp3bdl1IDhE9zGTt1/+z3a9BYrvzXXbjBkipk+3xhdzmKU6BIcHnc0+IP6Na
+         yIqNvojU5bF53B70yUZAQVigsY4YmyqlxFrg03TujNTxJHbvQBIxey+tUsZFPmEjhJvg
+         Ty2C0dntmJGDiEJLq1guBtLQMEQQwEEAjB8NM6dlJxPXI+gH68YctZf3fuWVmJA66x8j
+         c/0DCWU6mioJLRcnmcH4DJWFSwKgHA+yRoBkjfnWU2/y4cyjauY1BRldLfKLO7mogkqY
+         s/2WmB7lwjjwUtQr/XdU1Mtnj000BsDj9tAENUrE+qcrp+OnkPjqJv6IKxOEQmfjrEf4
+         cMDQ==
+X-Gm-Message-State: AOAM532zU/z3gRJt//XnM9udbU2BG/BnAOchdH4BGAp1a2akjcN+cILx
+        PMAn/LbShZ5xW+arWArcaQk=
+X-Google-Smtp-Source: ABdhPJzSM/eEU1fO8yP9OhDoxsK91+z17v3cKu2RB7tpgf6FWeYRxqKkYeaQoCrQSzhN31xWp0Mnog==
+X-Received: by 2002:a17:906:2581:: with SMTP id m1mr18311458ejb.28.1607344650673;
+        Mon, 07 Dec 2020 04:37:30 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d4a:c600:c0f8:50a9:4ab0:a9ab])
+        by smtp.gmail.com with ESMTPSA id u15sm13848265edt.24.2020.12.07.04.37.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 04:37:30 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] bpf: propagate __user annotations properly
+Date:   Mon,  7 Dec 2020 13:37:20 +0100
+Message-Id: <20201207123720.19111-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.20 16:18, Muchun Song wrote:
-> Every HugeTLB has more than one struct page structure. The 2M HugeTLB
-> has 512 struct page structure and 1G HugeTLB has 4096 struct page
-> structures. We __know__ that we only use the first 4(HUGETLB_CGROUP_MIN_ORDER)
-> struct page structures to store metadata associated with each HugeTLB.
-> 
-> There are a lot of struct page structures(8 page frames for 2MB HugeTLB
-> page and 4096 page frames for 1GB HugeTLB page) associated with each
-> HugeTLB page. For tail pages, the value of compound_head is the same.
-> So we can reuse first page of tail page structures. We map the virtual
-> addresses of the remaining pages of tail page structures to the first
-> tail page struct, and then free these page frames. Therefore, we need
-> to reserve two pages as vmemmap areas.
-> 
-> So we introduce a new nr_free_vmemmap_pages field in the hstate to
-> indicate how many vmemmap pages associated with a HugeTLB page that we
-> can free to buddy system.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  include/linux/hugetlb.h |   3 ++
->  mm/Makefile             |   1 +
->  mm/hugetlb.c            |   3 ++
->  mm/hugetlb_vmemmap.c    | 129 ++++++++++++++++++++++++++++++++++++++++++++++++
->  mm/hugetlb_vmemmap.h    |  20 ++++++++
->  5 files changed, 156 insertions(+)
->  create mode 100644 mm/hugetlb_vmemmap.c
->  create mode 100644 mm/hugetlb_vmemmap.h
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ebca2ef02212..4efeccb7192c 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -492,6 +492,9 @@ struct hstate {
->  	unsigned int nr_huge_pages_node[MAX_NUMNODES];
->  	unsigned int free_huge_pages_node[MAX_NUMNODES];
->  	unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +	unsigned int nr_free_vmemmap_pages;
-> +#endif
->  #ifdef CONFIG_CGROUP_HUGETLB
->  	/* cgroup control files */
->  	struct cftype cgroup_files_dfl[7];
-> diff --git a/mm/Makefile b/mm/Makefile
-> index ed4b88fa0f5e..056801d8daae 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -71,6 +71,7 @@ obj-$(CONFIG_FRONTSWAP)	+= frontswap.o
->  obj-$(CONFIG_ZSWAP)	+= zswap.o
->  obj-$(CONFIG_HAS_DMA)	+= dmapool.o
->  obj-$(CONFIG_HUGETLBFS)	+= hugetlb.o
-> +obj-$(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)	+= hugetlb_vmemmap.o
->  obj-$(CONFIG_NUMA) 	+= mempolicy.o
->  obj-$(CONFIG_SPARSEMEM)	+= sparse.o
->  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 1f3bf1710b66..25f9e8e9fc4a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -42,6 +42,7 @@
->  #include <linux/userfaultfd_k.h>
->  #include <linux/page_owner.h>
->  #include "internal.h"
-> +#include "hugetlb_vmemmap.h"
->  
->  int hugetlb_max_hstate __read_mostly;
->  unsigned int default_hstate_idx;
-> @@ -3206,6 +3207,8 @@ void __init hugetlb_add_hstate(unsigned int order)
->  	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
->  					huge_page_size(h)/1024);
->  
-> +	hugetlb_vmemmap_init(h);
-> +
->  	parsed_hstate = h;
->  }
->  
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> new file mode 100644
-> index 000000000000..51152e258f39
-> --- /dev/null
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -0,0 +1,129 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Free some vmemmap pages of HugeTLB
-> + *
-> + * Copyright (c) 2020, Bytedance. All rights reserved.
-> + *
-> + *     Author: Muchun Song <songmuchun@bytedance.com>
-> + *
-> + * The struct page structures (page structs) are used to describe a physical
-> + * page frame. By default, there is a one-to-one mapping from a page frame to
-> + * it's corresponding page struct.
-> + *
-> + * The HugeTLB pages consist of multiple base page size pages and is supported
-> + * by many architectures. See hugetlbpage.rst in the Documentation directory
-> + * for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
-> + * are currently supported. Since the base page size on x86 is 4KB, a 2MB
-> + * HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
-> + * 4096 base pages. For each base page, there is a corresponding page struct.
-> + *
-> + * Within the HugeTLB subsystem, only the first 4 page structs are used to
-> + * contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
-> + * provides this upper limit. The only 'useful' information in the remaining
-> + * page structs is the compound_head field, and this field is the same for all
-> + * tail pages.
-> + *
-> + * By removing redundant page structs for HugeTLB pages, memory can returned to
-> + * the buddy allocator for other uses.
-> + *
-> + * When the system boot up, every 2M HugeTLB has 512 struct page structs which
-> + * size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+__htab_map_lookup_and_delete_batch() stores a user pointer in the local
+variable ubatch and uses that in copy_{from,to}_user(), but ubatch misses a
+__user annotation.
 
+So, sparse warns in the various assignments and uses of ubatch:
 
-You should try to generalize all descriptions regarding differing base
-page sizes. E.g., arm64 supports 4k, 16k, and 64k base pages.
+  kernel/bpf/hashtab.c:1415:24: warning: incorrect type in initializer
+    (different address spaces)
+  kernel/bpf/hashtab.c:1415:24:    expected void *ubatch
+  kernel/bpf/hashtab.c:1415:24:    got void [noderef] __user *
 
-[...]
+  kernel/bpf/hashtab.c:1444:46: warning: incorrect type in argument 2
+    (different address spaces)
+  kernel/bpf/hashtab.c:1444:46:    expected void const [noderef] __user *from
+  kernel/bpf/hashtab.c:1444:46:    got void *ubatch
 
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Free some vmemmap pages of HugeTLB
-> + *
-> + * Copyright (c) 2020, Bytedance. All rights reserved.
-> + *
-> + *     Author: Muchun Song <songmuchun@bytedance.com>
-> + */
-> +#ifndef _LINUX_HUGETLB_VMEMMAP_H
-> +#define _LINUX_HUGETLB_VMEMMAP_H
-> +#include <linux/hugetlb.h>
-> +
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +void __init hugetlb_vmemmap_init(struct hstate *h);
-> +#else
-> +static inline void hugetlb_vmemmap_init(struct hstate *h)
-> +{
-> +}
-> +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
-> +#endif /* _LINUX_HUGETLB_VMEMMAP_H */
-> 
+  kernel/bpf/hashtab.c:1608:16: warning: incorrect type in assignment
+    (different address spaces)
+  kernel/bpf/hashtab.c:1608:16:    expected void *ubatch
+  kernel/bpf/hashtab.c:1608:16:    got void [noderef] __user *
 
-This patch as it stands is rather sub-optimal. I mean, all it does is
-add documentation and print what could be done.
+  kernel/bpf/hashtab.c:1609:26: warning: incorrect type in argument 1
+    (different address spaces)
+  kernel/bpf/hashtab.c:1609:26:    expected void [noderef] __user *to
+  kernel/bpf/hashtab.c:1609:26:    got void *ubatch
 
-Can we instead introduce the basic infrastructure and enable it via this
-patch on top, where we glue all the pieces together? Or is there
-something I am missing?
+Add the __user annotation to repair this chain of propagating __user
+annotations in __htab_map_lookup_and_delete_batch().
 
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master (v5.10-rc7) and next-20201204
+
+BPF maintainers, please pick this minor non-urgent clean-up patch.
+
+ kernel/bpf/hashtab.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index fe7a0733a63a..76c791def033 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1412,7 +1412,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	void *keys = NULL, *values = NULL, *value, *dst_key, *dst_val;
+ 	void __user *uvalues = u64_to_user_ptr(attr->batch.values);
+ 	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
+-	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
++	void __user *ubatch = u64_to_user_ptr(attr->batch.in_batch);
+ 	u32 batch, max_count, size, bucket_size;
+ 	struct htab_elem *node_to_free = NULL;
+ 	u64 elem_map_flags, map_flags;
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
