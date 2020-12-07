@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05D12D0A2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D006D2D0A31
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgLGFYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 00:24:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgLGFYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:24:07 -0500
-Date:   Mon, 7 Dec 2020 10:53:22 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607318606;
-        bh=mCUznOjbXqYI2bND5qpnl271aklxnGqHkYPfhMN+B1s=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hhFX7cv2zmKRTlDhCb5OIbP4nfCjPilnplR1u15Jpz+3PvyQv5mOl7qloz1ycRUTW
-         GGleRxw5AvzUDEvYYG/ToPRIm/I5SWTsf3iSRBlKvwTnBOtr9OYPW7hHRtiGdih5vP
-         RWIuCxO1+Rj5GXeFH9DZk1IaX1zoEegPe5yQ0RvbarDnIuLiKyX8Wg5VPLVwTzeYN2
-         URd7GoN10EoQ+1F3+WrOyZ1iOoBrjysumZgsbvmoj5jjudTtxdiWyRCWki3G9UxB/6
-         ialwfa1X0B654Cs/2SOUAumrx9oUIQMu8jOVzzN5AQV66TknztO3U7cSmhmllxLZrA
-         zee/2uVE/N+gA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Parth Y Shah <sparth1292@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fixes kernel crash generating from bam_dma_irq()
-Message-ID: <20201207052322.GD8403@vkoul-mobl>
-References: <1607250094-21571-1-git-send-email-sparth1292@gmail.com>
+        id S1726168AbgLGFZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 00:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgLGFZd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 00:25:33 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F5FC0613D2
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 21:24:53 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1km90p-0000C3-J3; Mon, 07 Dec 2020 06:24:39 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1km90o-0000yR-6p; Mon, 07 Dec 2020 06:24:38 +0100
+Date:   Mon, 7 Dec 2020 06:24:38 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk@vger.kernel.org, aford@beaconembedded.com,
+        charles.steves@logicpd.com, Aisheng Dong <aisheng.dong@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx: Fix reparenting of UARTs not associated with
+ sdout
+Message-ID: <20201207052438.GA3977@pengutronix.de>
+References: <20201204183154.94002-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1607250094-21571-1-git-send-email-sparth1292@gmail.com>
+In-Reply-To: <20201204183154.94002-1-aford173@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 06:13:56 up 4 days, 17:40, 32 users,  load average: 0.04, 0.17, 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Parth,
+Hi Adam,
 
-On 06-12-20, 15:51, Parth Y Shah wrote:
-> While performing suspend/resume, we were getting below kernel crash.
+On Fri, Dec 04, 2020 at 12:31:54PM -0600, Adam Ford wrote:
+> The default clock source on i.MX8M Mini and Nano boards use a 24MHz clock,
+> but users who need to re-parent the clock source run into issues because
+> all the UART clocks are enabled whether or not they're needed by sdout.
 > 
-> [   54.541672] [FTS][Info]gesture suspend...
-> [   54.605256] [FTS][Error][GESTURE]Enter into gesture(suspend) failed!
-> [   54.605256]
-> [   58.345850] irq event 10: bogus return value fffffff3
-> ......
+> Any attempt to change the parent results in an busy error because the
+> clocks have been enabled already.
 > 
-> [   58.345966] [<ffff0000080830f0>] el1_irq+0xb0/0x124
-> [   58.345971] [<ffff000008085360>] arch_cpu_idle+0x10/0x18
-> [   58.345975] [<ffff0000081077f4>] do_idle+0x1ac/0x1e0
-> [   58.345979] [<ffff0000081079c8>] cpu_startup_entry+0x20/0x28
-> [   58.345983] [<ffff000008a80ed0>] rest_init+0xd0/0xdc
-> [   58.345988] [<ffff0000091c0b48>] start_kernel+0x390/0x3a4
-> [   58.345990] handlers:
-> [   58.345994] [<ffff0000085120d0>] bam_dma_irq
+>   clk: failed to reparent uart1 to sys_pll1_80m: -16
 > 
-> The reason for the crash we found is, bam_dma_irq() was returning
-> negative value when the device resumes in some conditions.
+> Instead of pre-initializing all UARTS, scan the device tree to see if UART
+> clock is used as stdout before initializing it.  Only enable the UART clock
+> if it's needed in order to delay the clock initialization until after the
+> re-parenting of the clocks.
 > 
-> In addition, the irq handler should have one of the below return values.
+> Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
+> Suggested-by: Aisheng Dong <aisheng.dong@nxp.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > 
-> IRQ_NONE            interrupt was not from this device or was not handled
-> IRQ_HANDLED         interrupt was handled by this device
-> IRQ_WAKE_THREAD     handler requests to wake the handler thread
-> 
-> Therefore, to resolve this crash, we have changed the return value to
-> IRQ_NONE.
-
-The change and explanation look good to me, unfortunately the patch
-title is incorrect. It describes the fix it does and not the change in
-this patch. Also do add subsystem and driver tags to the patch! git log
-would tell you this information
-
-Consider: "dmaengine: bam_dma: fix return of bam_dma_irq()" as a
-suggestion.
-
-> 
-> Signed-off-by: Parth Y Shah <sparth1292@gmail.com>
-> ---
->  drivers/dma/qcom/bam_dma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-> index 4eeb8bb..d5773d4 100644
-> --- a/drivers/dma/qcom/bam_dma.c
-> +++ b/drivers/dma/qcom/bam_dma.c
-> @@ -875,7 +875,7 @@ static irqreturn_t bam_dma_irq(int irq, void *data)
+> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
+> index 47882c51cb85..6dcc5fbd8f3f 100644
+> --- a/drivers/clk/imx/clk.c
+> +++ b/drivers/clk/imx/clk.c
+> @@ -163,12 +163,18 @@ __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
 >  
->  	ret = bam_pm_runtime_get_sync(bdev->dev);
-
-Also this looks wrong to me. get_sync() can sleep and we cant invoke
-that in an irq. Srini have you seen this issue
-
->  	if (ret < 0)
-> -		return ret;
-> +		return IRQ_NONE;
+>  void imx_register_uart_clocks(struct clk ** const clks[])
+>  {
+> +	struct clk *uart_clk;
+>  	if (imx_keep_uart_clocks) {
+>  		int i;
 >  
->  	if (srcs & BAM_IRQ) {
->  		clr_mask = readl_relaxed(bam_addr(bdev, 0, BAM_IRQ_STTS));
+>  		imx_uart_clocks = clks;
+> -		for (i = 0; imx_uart_clocks[i]; i++)
+> -			clk_prepare_enable(*imx_uart_clocks[i]);
+> +		for (i = 0; imx_uart_clocks[i]; i++) {
+> +			uart_clk = of_clk_get(of_stdout, i);
+
+This looks wrong. imx_uart_clocks is an array containing all clocks that
+could possibly be used for an UART. With of_clk_get(of_stdout, i) you
+get the nth clock for one specific UART.
+What you have to do here is: For each of imx_uart_clocks[] you have to
+iterate over all clocks of the of_stdout node.
+
+Sascha
+
+> +			if (IS_ERR(uart_clk))
+> +				continue;
+> +			clk_prepare_enable(uart_clk);
+> +			clk_put(uart_clk);
+> +		}
+>  	}
+>  }
+>  
 > -- 
-> 2.7.4
+> 2.25.1
+> 
+> 
 
 -- 
-~Vinod
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
