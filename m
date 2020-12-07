@@ -2,152 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302D52D152A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDAA2D152F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgLGPw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgLGPwZ (ORCPT
+        id S1727113AbgLGPxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:53:19 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:41803 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbgLGPxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:52:25 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93918C061749;
-        Mon,  7 Dec 2020 07:51:45 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id y5so13809102iow.5;
-        Mon, 07 Dec 2020 07:51:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CYz7RogK/K3ng3n1DTHUn/3sWgf0KmqiKSNRx0uTMWo=;
-        b=qsd97huoIFeX39CRRtYbj7nNFonLXhk4CefxZ7PHg6K6WHCIq+sN2FRaA82iQmLGH4
-         6iVlEHDE4ULsLaruUHmMFW44tgFbLIBUQ5bZ8r5AuxpRVOpZ8ZS1HYaTzusdHpofEkR1
-         czYFiwHExEqmnhRxv8Zo98PWxRQuu144njHWrRM8AXPufCUuoZPaI2o1MKC4HeQw7Yny
-         yKXYEUAYsDrFkJfZusnRSfwWNSYMxbxmczOAlPKyW/e1B2Erpk6yC+yeG2+gjmBMNquO
-         2ODhVPwHYXQPSp/Icz3TOy3rfypSvZ0z0qApnhDy5ejnA/idlqgVQ5wGQt3CNH+wEwWt
-         qerw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CYz7RogK/K3ng3n1DTHUn/3sWgf0KmqiKSNRx0uTMWo=;
-        b=O+DKwxQeuUEy8NaPo/2JJhFBSLmoaIbDuXm1bDquy1WPZPV/i2tYzEHr+OTsAs7otF
-         XBMC+BdEwYuAlXCH7gAj7gl3ekFnCmbx0N9ri2ZsS1tbZyZ9Hwg9BYGtTQPKMWQDMfgX
-         97pWkWkTViQ1RGXF+tfkvJ0ioQGF3vf2JE3ZnVXV1MfF4H48qT2BFVyrw1UICjHYrMIJ
-         4wOtHAmm9RYNmAZwsi+uc4crZuYC8u+pfwJ7/wXTJfwkoVAfpt/K5q/sOyUrrTTxydY+
-         9E+BdI+fh66yNMwKE92750rlVZLTRI2wf/OdUPDE/UOx1skI3WTyyXPFdjcAB3AGJzyg
-         kCeQ==
-X-Gm-Message-State: AOAM533WWK+OfncItBR/6jMpHMBU1z2uLzYS2XK5In57jDq2HspTbJT3
-        fCT8UDcFaAnefiHXLKRunu5EfHgQOFaOQrgxKts=
-X-Google-Smtp-Source: ABdhPJy/TVMlbkFldjHrZwMtSRREASJy8F3Pp7g+s3SU6qZZeUKNgEieCDpmIYzV2PnIUK1U+NqazgU5XilVQsJ3cVM=
-X-Received: by 2002:a5d:9401:: with SMTP id v1mr20648355ion.142.1607356304774;
- Mon, 07 Dec 2020 07:51:44 -0800 (PST)
+        Mon, 7 Dec 2020 10:53:19 -0500
+Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 3700BC0E0361D
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:51:56 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id mInrkb7EzDlydmInskNUBV; Mon, 07 Dec 2020 08:51:56 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=JpnfUvwC c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=DfNHnWVPAAAA:8
+ a=bwPn_-YrvpYwKejdRpEA:9 a=CjuIK1q_8ugA:10:nop_charset_2
+ a=rjTVMONInIDnV1a_A2c_:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4OhFR1YGQnXPhyHt9T/2uXpL2IQ6MJ6nFeb6JRHtjnA=; b=BCcucOppEM31AeUbKq8s9Mo9Sj
+        ypzXHcrTiFJN3z3ksm0hvRkOMOwuVdGPdbjZsPc7ZGc+9cf0xcZaE7UABShxDrtXbUq5wfixhEBJH
+        X15D0Qb7iJ6tFbi54NfsGYV8Tu6Bn9ASEHxiFBl4UXk2cHwfslv3djlvF6FcSx0SE7Pei11TI0404
+        D84t7qHO5A559G6BpJe1GnDgjzZCTM52b0xEG3OD9ysmT+T4cEGLv6MxqJKZLbV9ccpVj2LHPpKmJ
+        2zhfv+n63n/fZH/RvtG1HHjWfTPVHyg5ynlXvjL6uiDu/d2N8S4YMQvsTmzrsOqY7MtE9TS2dCEvg
+        BZbxLRFw==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:59860 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1kmInr-002s9a-7g; Mon, 07 Dec 2020 15:51:55 +0000
+Date:   Mon, 7 Dec 2020 07:51:54 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] hwmon: ltc2992: fix less than zero comparisons
+ with an unsigned integer
+Message-ID: <20201207155154.GA43526@roeck-us.net>
+References: <20201207142410.168987-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20201204183154.94002-1-aford173@gmail.com> <20201207052438.GA3977@pengutronix.de>
-In-Reply-To: <20201207052438.GA3977@pengutronix.de>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 7 Dec 2020 09:51:33 -0600
-Message-ID: <CAHCN7xJ8kmCxijvzpi+gj=R-QmPc6pqmsMzU5CRt3pQ9B98k+w@mail.gmail.com>
-Subject: Re: [PATCH] clk: imx: Fix reparenting of UARTs not associated with sdout
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        charles.steves@logicpd.com, Aisheng Dong <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207142410.168987-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1kmInr-002s9a-7g
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:59860
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 8
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 6, 2020 at 11:24 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
->
-> Hi Adam,
->
-> On Fri, Dec 04, 2020 at 12:31:54PM -0600, Adam Ford wrote:
-> > The default clock source on i.MX8M Mini and Nano boards use a 24MHz clock,
-> > but users who need to re-parent the clock source run into issues because
-> > all the UART clocks are enabled whether or not they're needed by sdout.
-> >
-> > Any attempt to change the parent results in an busy error because the
-> > clocks have been enabled already.
-> >
-> >   clk: failed to reparent uart1 to sys_pll1_80m: -16
-> >
-> > Instead of pre-initializing all UARTS, scan the device tree to see if UART
-> > clock is used as stdout before initializing it.  Only enable the UART clock
-> > if it's needed in order to delay the clock initialization until after the
-> > re-parenting of the clocks.
-> >
-> > Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
-> > Suggested-by: Aisheng Dong <aisheng.dong@nxp.com>
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-> > index 47882c51cb85..6dcc5fbd8f3f 100644
-> > --- a/drivers/clk/imx/clk.c
-> > +++ b/drivers/clk/imx/clk.c
-> > @@ -163,12 +163,18 @@ __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
-> >
-> >  void imx_register_uart_clocks(struct clk ** const clks[])
-> >  {
-> > +     struct clk *uart_clk;
-> >       if (imx_keep_uart_clocks) {
-> >               int i;
-> >
-> >               imx_uart_clocks = clks;
-> > -             for (i = 0; imx_uart_clocks[i]; i++)
-> > -                     clk_prepare_enable(*imx_uart_clocks[i]);
-> > +             for (i = 0; imx_uart_clocks[i]; i++) {
-> > +                     uart_clk = of_clk_get(of_stdout, i);
->
-> This looks wrong. imx_uart_clocks is an array containing all clocks that
-> could possibly be used for an UART. With of_clk_get(of_stdout, i) you
-> get the nth clock for one specific UART.
-> What you have to do here is: For each of imx_uart_clocks[] you have to
-> iterate over all clocks of the of_stdout node.
+On Mon, Dec 07, 2020 at 02:24:10PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There are several occurrances of a less than zero error check on
+> a u32 unsigned integer. These will never be true. Fix this by making
+> reg_value a plain int.
+> 
+> Addresses-Coverity: ("Unsigned comparison against zero")
+> Fixes: e126370240e0 ("hwmon: (ltc2992) Add support")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Sascha,
+Applied.
 
-Thanks for the review.
+Thanks,
+Guenter
 
-I agree that I'm using the wrong index when checking of_stdout, but I
-am not sure we need to loop through  imx_uart_clocks at all.
-I looked at the NXP repo, and they just focus on looping through
-of_stdout and don't reference the imx_uart_clocks. Can't we just loop
-through the of_stdout and enable any clocks found in that?
-
-adam
-
-
->
-> Sascha
->
-> > +                     if (IS_ERR(uart_clk))
-> > +                             continue;
-> > +                     clk_prepare_enable(uart_clk);
-> > +                     clk_put(uart_clk);
-> > +             }
-> >       }
-> >  }
-> >
-> > --
-> > 2.25.1
-> >
-> >
->
-> --
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> ---
+>  drivers/hwmon/ltc2992.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
+> index 69dbb5aa5dc2..4382105bf142 100644
+> --- a/drivers/hwmon/ltc2992.c
+> +++ b/drivers/hwmon/ltc2992.c
+> @@ -480,7 +480,7 @@ static int ltc2992_read_gpios_in(struct device *dev, u32 attr, int nr_gpio, long
+>  
+>  static int ltc2992_read_in_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+>  {
+> -	u32 reg_val;
+> +	int reg_val;
+>  	u32 mask;
+>  
+>  	if (attr == hwmon_in_max_alarm)
+> @@ -534,7 +534,7 @@ static int ltc2992_read_in(struct device *dev, u32 attr, int channel, long *val)
+>  
+>  static int ltc2992_get_current(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
+>  {
+> -	u32 reg_val;
+> +	int reg_val;
+>  
+>  	reg_val = ltc2992_read_reg(st, reg, 2);
+>  	if (reg_val < 0)
+> @@ -558,7 +558,7 @@ static int ltc2992_set_current(struct ltc2992_state *st, u32 reg, u32 channel, l
+>  
+>  static int ltc2992_read_curr_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+>  {
+> -	u32 reg_val;
+> +	int reg_val;
+>  	u32 mask;
+>  
+>  	if (attr == hwmon_curr_max_alarm)
+> @@ -609,7 +609,7 @@ static int ltc2992_read_curr(struct device *dev, u32 attr, int channel, long *va
+>  
+>  static int ltc2992_get_power(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
+>  {
+> -	u32 reg_val;
+> +	int reg_val;
+>  
+>  	reg_val = ltc2992_read_reg(st, reg, 3);
+>  	if (reg_val < 0)
+> @@ -633,7 +633,7 @@ static int ltc2992_set_power(struct ltc2992_state *st, u32 reg, u32 channel, lon
+>  
+>  static int ltc2992_read_power_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+>  {
+> -	u32 reg_val;
+> +	int reg_val;
+>  	u32 mask;
+>  
+>  	if (attr == hwmon_power_max_alarm)
