@@ -2,125 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5522D0A42
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC64E2D0A45
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgLGFhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 00:37:02 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48384 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725681AbgLGFhC (ORCPT
+        id S1726511AbgLGFhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 00:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgLGFhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:37:02 -0500
-X-UUID: 9de2484883f04f76b3c9e1c241e729b6-20201207
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7cgxbLM7dkXY5Hb3GfuhmSgn4dXbKCZjp0SRyz1WbnU=;
-        b=P3zjUA6ANrhzeAgIgi9QLx1HzpHLQuFfJxX0nSVxYZIXKZHjs47YXe42MlFi9ePzRzssAHTDy56GdW76y9aHnBsUMV6QZQDQWXEGDweyI8PEbbnN/yD/maqyrTKNHXgcYq0m216TrCLjFoU+jRyLAoyaHVViqcR9g8/EmywoBrY=;
-X-UUID: 9de2484883f04f76b3c9e1c241e729b6-20201207
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1079014085; Mon, 07 Dec 2020 13:36:12 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Dec 2020 13:36:09 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Dec 2020 13:36:08 +0800
-Message-ID: <1607319370.3580.8.camel@mtkswgap22>
-Subject: Re: [PATCH v2 2/3] scsi: ufs: Keep device active mode only
- fWriteBoosterBufferFlushDuringHibernate == 1
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
-        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
-        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Mon, 7 Dec 2020 13:36:10 +0800
-In-Reply-To: <20201206101335.3418-3-huobean@gmail.com>
-References: <20201206101335.3418-1-huobean@gmail.com>
-         <20201206101335.3418-3-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 7 Dec 2020 00:37:15 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD64C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 21:36:34 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ce23so13932422ejb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 21:36:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=G4LlgMCq631UUu8D9rdAHM0/TC7MUROVJ5w6Q0ptdvQ=;
+        b=yJXCOGSm3p0ymlxgXOKyztjN6W5ZdifoYjl35o7SGUmIYWut1Z11DjJfZMzpABPV1t
+         Qic0DKpxqiZ38+DNi2VzVKxmfaRkMRlZWF9fyCCekq9ZO0R4sPoMVQpK5K8ibbWx5+wy
+         6zQ0v3M5dx60KlFccGUIbWyxmD3Z978A+VVyylTGvu9NQPZ82Pqi5lfwOITxA/jZiaVO
+         /vxO9JnEt04Cetx+TddS4KvCbxI6bnq7mf/h0eWbE7SETXDD2y96EummPpUzdTpmST8j
+         BlEUQaJHdW0vhv4cPl0jdSN42S6KPYpJpiCqD4a8k/Lyiu3nAqtS1UO4pef4/F94i7+j
+         WaFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=G4LlgMCq631UUu8D9rdAHM0/TC7MUROVJ5w6Q0ptdvQ=;
+        b=ddw1Ws/bopfBPYUl59zDAKFzUC6ievlLxZ9Ofc3b4LzZf1So9uwZJD6XeY3ELlYECC
+         V9+UsflMABR35jCIuEgTI9Leg83KfzVpg2vxhhcZ629FYS6bjK/yQajy+Am4KVkjMBe4
+         c2pdJ2X32fIVT0csvGYfOPyU1/k/dgWBjFYaA1CHu8YIuU/WtKWx3SINltGA/a12iHBx
+         N2yFaCEIGfFhTQiJrnjtA2qMcY72yZk4yRPSD8JzXbWGAscbPJR1ASsbnwzq5ARlllQX
+         TkvN6w4NCJBDAHMNwe7KtNRVuv++rBfQQNx/biszVcUVaDdHnj0IcPATk6cZxbM4UH+Y
+         rmxQ==
+X-Gm-Message-State: AOAM5327zHGt+BERBuDfnhEyerqTMle1oUzze3tpLqSG5P89DK1xc81i
+        Ii8fzXXqwxm2JB2gxrwpG03swWizLjVZsyjPC+pr36/YSFmTw/8w
+X-Google-Smtp-Source: ABdhPJyt4XRP1e++zVGdrBo9VE34sMun8PleYjFWZtk2N5cq9n5DW58DGShodjq/71w2TZVf1uE3KS0242gX91q0Ris=
+X-Received: by 2002:a17:907:2070:: with SMTP id qp16mr17307208ejb.503.1607319392893;
+ Sun, 06 Dec 2020 21:36:32 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: FAE8D878E4678B6A4481F99C92F7AE150ED676839090D1D9D5B2008999A4DE9C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 7 Dec 2020 11:06:10 +0530
+Message-ID: <CA+G9fYvhJTwQkGyH7HQzSsDBHT7pm5ziA9VTkRhE_bDSQp3JYg@mail.gmail.com>
+Subject: sched: core.c:7270 Illegal context switch in RCU-bh read-side
+ critical section! __alloc_pages_nodemask
+To:     open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        linux-stable <stable@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTEyLTA2IGF0IDExOjEzICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gRnJv
-bTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IEFjY29yZGluZyB0byB0aGUg
-SkVERUMgVUZTIDMuMSBTcGVjLCBJZiBmV3JpdGVCb29zdGVyQnVmZmVyRmx1c2hEdXJpbmdIaWJl
-cm5hdGUNCj4gaXMgc2V0IHRvIG9uZSwgdGhlIGRldmljZSBmbHVzaGVzIHRoZSBXcml0ZUJvb3N0
-ZXIgQnVmZmVyIGRhdGEgYXV0b21hdGljYWxseQ0KPiB3aGVuZXZlciB0aGUgbGluayBlbnRlcnMg
-dGhlIGhpYmVybmF0ZSAoSElCRVJOOCkgc3RhdGUuIFdoaWxlIHRoZSBmbHVzaGluZw0KPiBvcGVy
-YXRpb24gaXMgaW4gcHJvZ3Jlc3MsIHRoZSBkZXZpY2Ugc2hvdWxkIGJlIGtlcHQgaW4gQWN0aXZl
-IHBvd2VyIG1vZGUuDQo+IEN1cnJlbnRseSwgd2Ugc2V0IHRoaXMgZmxhZyBkdXJpbmcgdGhlIFVG
-U0hDRCBwcm9iZSBzdGFnZSwgYnV0IHdlIGRpZG4ndCBkZWFsDQo+IHdpdGggaXRzIHByb2dyYW1t
-aW5nIGZhaWx1cmUuIEV2ZW4gdGhpcyBmYWlsdXJlIGlzIGxlc3MgbGlrZWx5IHRvIG9jY3VyLCBi
-dXQNCj4gc3RpbGwgaXQgaXMgcG9zc2libGUuDQo+IFRoaXMgcGF0Y2ggaXMgdG8gYWRkIGNoZWNr
-dXAgb2YgZldyaXRlQm9vc3RlckJ1ZmZlckZsdXNoRHVyaW5nSGliZXJuYXRlIHNldHRpbmcsDQo+
-IGtlZXAgdGhlIGRldmljZSBhcyAiYWN0aXZlIHBvd2VyIG1vZGUiIG9ubHkgd2hlbiB0aGlzIGZs
-YWcgYmUgc3VjY2Vzc2Z1bGx5IHNldA0KPiB0byAxLg0KPiANCj4gRml4ZXM6IDUxZGQ5MDViZDJm
-NiAoInNjc2k6IHVmczogRml4IFdyaXRlQm9vc3RlciBmbHVzaCBkdXJpbmcgcnVudGltZSBzdXNw
-ZW5kIikNCj4gU2lnbmVkLW9mZi1ieTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4g
-LS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmcy5oICAgIHwgIDIgKysNCj4gIGRyaXZlcnMvc2Nz
-aS91ZnMvdWZzaGNkLmMgfCAyMCArKysrKysrKysrKysrKystLS0tLQ0KPiAgMiBmaWxlcyBjaGFu
-Z2VkLCAxNyBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvc2NzaS91ZnMvdWZzLmggYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy5oDQo+IGluZGV4
-IGQ1OTNlZGI0ODc2Ny4uMzExZDVmN2EwMjRkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kv
-dWZzL3Vmcy5oDQo+ICsrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzLmgNCj4gQEAgLTUzMCw2ICs1
-MzAsOCBAQCBzdHJ1Y3QgdWZzX2Rldl9pbmZvIHsNCj4gIAlib29sIGZfcG93ZXJfb25fd3BfZW47
-DQo+ICAJLyogS2VlcHMgaW5mb3JtYXRpb24gaWYgYW55IG9mIHRoZSBMVSBpcyBwb3dlciBvbiB3
-cml0ZSBwcm90ZWN0ZWQgKi8NCj4gIAlib29sIGlzX2x1X3Bvd2VyX29uX3dwOw0KPiArCS8qIElu
-ZGljYXRlcyBpZiBmbHVzaCBXQiBidWZmZXIgZHVyaW5nIGhpYmVybjggc3VjY2Vzc2Z1bGx5IGVu
-YWJsZWQgKi8NCj4gKwlib29sIGlzX2hpYmVybjhfd2JfZmx1c2g7DQoNClBlcmhhcHMgYSBtb3Jl
-IGNvbXByZWhlbnNpdmUgbmFtZT8NCkZvciBleGFtcGxlLCB3Yl9mbHVzaF9kdXJpbmdfaGliZXJu
-OD8NCj4gIAkvKiBNYXhpbXVtIG51bWJlciBvZiBnZW5lcmFsIExVIHN1cHBvcnRlZCBieSB0aGUg
-VUZTIGRldmljZSAqLw0KPiAgCXU4IG1heF9sdV9zdXBwb3J0ZWQ7DQo+ICAJdTggd2JfZGVkaWNh
-dGVkX2x1Ow0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyBiL2RyaXZl
-cnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gaW5kZXggMzAzMzI1OTJlNjI0Li5kYTM4ZDc2MDk0NGIg
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gKysrIGIvZHJpdmVy
-cy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBAQCAtMjg1LDEwICsyODUsMTYgQEAgc3RhdGljIGlubGlu
-ZSB2b2lkIHVmc2hjZF93Yl9jb25maWcoc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gIAkJZGV2X2Vy
-cihoYmEtPmRldiwgIiVzOiBFbmFibGUgV0IgZmFpbGVkOiAlZFxuIiwgX19mdW5jX18sIHJldCk7
-DQo+ICAJZWxzZQ0KPiAgCQlkZXZfaW5mbyhoYmEtPmRldiwgIiVzOiBXcml0ZSBCb29zdGVyIENv
-bmZpZ3VyZWRcbiIsIF9fZnVuY19fKTsNCj4gKw0KPiAgCXJldCA9IHVmc2hjZF93Yl90b2dnbGVf
-Zmx1c2hfZHVyaW5nX2g4KGhiYSwgdHJ1ZSk7DQo+IC0JaWYgKHJldCkNCj4gKwlpZiAocmV0KSB7
-DQo+ICAJCWRldl9lcnIoaGJhLT5kZXYsICIlczogRW4gV0IgZmx1c2ggZHVyaW5nIEg4OiBmYWls
-ZWQ6ICVkXG4iLA0KPiAgCQkJX19mdW5jX18sIHJldCk7DQo+ICsJCWhiYS0+ZGV2X2luZm8uaXNf
-aGliZXJuOF93Yl9mbHVzaCA9IGZhbHNlOw0KDQpQZXJoYXBzIHRoaXMgc3RhdGVtZW50IGNvdWxk
-IGJlIGR1bW15IGJlY2F1c2UNCmhiYS0+ZGV2X2luZm8uaXNfaGliZXJuOF93Yl9mbHVzaCBpcyB6
-ZXJvLWluaXRpYWxpemVkIGFuZA0KdWZzaGNkX3diX2NvbmZpZygpIGlzIGludm9rZWQgb25seSBv
-bmNlIGR1cmluZyB1ZnMgaW5pdGlhbGl6YXRpb24uDQoNClRoYW5rcywNClN0YW5sZXkgQ2h1DQoN
-Cj4gKwl9IGVsc2Ugew0KPiArCQloYmEtPmRldl9pbmZvLmlzX2hpYmVybjhfd2JfZmx1c2ggPSB0
-cnVlOw0KPiArCX0NCj4gKw0KPiAgCXVmc2hjZF93Yl90b2dnbGVfZmx1c2goaGJhLCB0cnVlKTsN
-Cj4gIH0NCj4gIA0KPiBAQCAtNTQ0OCw2ICs1NDU0LDcgQEAgc3RhdGljIGJvb2wgdWZzaGNkX3di
-X25lZWRfZmx1c2goc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gIA0KPiAgCWlmICghdWZzaGNkX2lz
-X3diX2FsbG93ZWQoaGJhKSkNCj4gIAkJcmV0dXJuIGZhbHNlOw0KPiArDQo+ICAJLyoNCj4gIAkg
-KiBUaGUgdWZzIGRldmljZSBuZWVkcyB0aGUgdmNjIHRvIGJlIE9OIHRvIGZsdXNoLg0KPiAgCSAq
-IFdpdGggdXNlci1zcGFjZSByZWR1Y3Rpb24gZW5hYmxlZCwgaXQncyBlbm91Z2ggdG8gZW5hYmxl
-IGZsdXNoDQo+IEBAIC04NTQwLDYgKzg1NDcsNyBAQCBzdGF0aWMgaW50IHVmc2hjZF9zdXNwZW5k
-KHN0cnVjdCB1ZnNfaGJhICpoYmEsIGVudW0gdWZzX3BtX29wIHBtX29wKQ0KPiAgCWVudW0gdWZz
-X3BtX2xldmVsIHBtX2x2bDsNCj4gIAllbnVtIHVmc19kZXZfcHdyX21vZGUgcmVxX2Rldl9wd3Jf
-bW9kZTsNCj4gIAllbnVtIHVpY19saW5rX3N0YXRlIHJlcV9saW5rX3N0YXRlOw0KPiArCWJvb2wg
-aGliZXJuODsNCj4gIA0KPiAgCWhiYS0+cG1fb3BfaW5fcHJvZ3Jlc3MgPSAxOw0KPiAgCWlmICgh
-dWZzaGNkX2lzX3NodXRkb3duX3BtKHBtX29wKSkgew0KPiBAQCAtODU5OSwxMSArODYwNywxMyBA
-QCBzdGF0aWMgaW50IHVmc2hjZF9zdXNwZW5kKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGVudW0gdWZz
-X3BtX29wIHBtX29wKQ0KPiAgCQkgKiBIaWJlcm44LCBrZWVwIGRldmljZSBwb3dlciBtb2RlIGFz
-ICJhY3RpdmUgcG93ZXIgbW9kZSINCj4gIAkJICogYW5kIFZDQyBzdXBwbHkuDQo+ICAJCSAqLw0K
-PiArCQloaWJlcm44ID0gcmVxX2xpbmtfc3RhdGUgPT0gVUlDX0xJTktfSElCRVJOOF9TVEFURSB8
-fA0KPiArCQkJKHJlcV9saW5rX3N0YXRlID09IFVJQ19MSU5LX0FDVElWRV9TVEFURSAmJg0KPiAr
-CQkJIHVmc2hjZF9pc19hdXRvX2hpYmVybjhfZW5hYmxlZChoYmEpKTsNCj4gKw0KPiAgCQloYmEt
-PmRldl9pbmZvLmJfcnBtX2Rldl9mbHVzaF9jYXBhYmxlID0NCj4gLQkJCWhiYS0+YXV0b19ia29w
-c19lbmFibGVkIHx8DQo+IC0JCQkoKChyZXFfbGlua19zdGF0ZSA9PSBVSUNfTElOS19ISUJFUk44
-X1NUQVRFKSB8fA0KPiAtCQkJKChyZXFfbGlua19zdGF0ZSA9PSBVSUNfTElOS19BQ1RJVkVfU1RB
-VEUpICYmDQo+IC0JCQl1ZnNoY2RfaXNfYXV0b19oaWJlcm44X2VuYWJsZWQoaGJhKSkpICYmDQo+
-ICsJCQloYmEtPmF1dG9fYmtvcHNfZW5hYmxlZCB8fCAoaGliZXJuOCAmJg0KPiArCQkJaGJhLT5k
-ZXZfaW5mby5pc19oaWJlcm44X3diX2ZsdXNoICYmDQo+ICAJCQl1ZnNoY2Rfd2JfbmVlZF9mbHVz
-aChoYmEpKTsNCj4gIAl9DQo+ICANCg0K
+While booting arm64 hikey board with stable-rc 5.9.13-rc1 the following warning
+noticed. This is hard to reproduce.
 
+Step to reproduce:
+------------------------
+# Boot arm64 hikey device with stable-rc 5.9.13-rc1
+# Since it is hard to reproduce you may notice this warning
+
+Crash log :
+--------------
+[   10.763081] [drm] Initialized kirin 1.0.0 20150718 for f4100000.ade
+on minor 1
+[   10.764088] Bluetooth: hci0: change remote baud rate command in firmware
+[[0;32m  OK  [0m] Started TEE Supplicant.
+[   10.791741] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
+req 400000Hz, actual 400000HZ div = 31)
+E/TC:0 tee_entry_std:545 Bad arg address 0x6b681000
+[[0;32m  OK  [0m] Started Periodic Command Scheduler.
+[   10.846417] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
+req 25000000Hz, actual 24800000HZ div = 0)
+[   10.887083]
+[   10.887087]
+[   10.887095] =====================================
+[   10.887098] =============================
+[   10.887101] WARNING: bad unlock balance detected!
+[   10.887107] WARNING: suspicious RCU usage
+[   10.887112] 5.9.13-rc1 #1 Not tainted
+[   10.887120] 5.9.13-rc1 #1 Not tainted
+[   10.887122] -------------------------------------
+[   10.887129] systemd-udevd/306 is trying to release lock (
+[   10.887133] -----------------------------
+[   10.887135] fs_reclaim) at:
+[   10.887144] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+context switch in RCU-bh read-side critical section!
+[   10.887163] [<ffff80001030f2e8>] __alloc_pages_nodemask+0x250/0x4c0
+[   10.887166]
+[   10.887166] other info that might help us debug this:
+[   10.887166]
+[   10.887170] but there are no more locks to release!
+[   10.887175]
+[   10.887175] other info that might help us debug this:
+[   10.887179]
+[   10.887179] rcu_scheduler_active = 2, debug_locks = 0
+[   10.887182] 1 lock held by systemd-udevd/306:
+[   10.887189] 1 lock held by systemd-sysctl/342:
+[   10.887192]  #0: ffff00007474e518
+[   10.887199]  #0:
+[   10.887202]  (
+[   10.887209] ffff000070c54708
+[   10.887212] &mm->mmap_lock){++++}-{3:3}
+[   10.887219]  (
+[   10.887228] , at: do_page_fault+0x168/0x420
+[   10.887230] &type->i_mutex_dir_key
+[   10.887235]
+[   10.887235] stack backtrace:
+[   10.887237] #3){++++}-{3:3}
+[   10.887246] CPU: 1 PID: 306 Comm: systemd-udevd Not tainted 5.9.13-rc1 #1
+[   10.887255] , at: iterate_dir+0x54/0x1d0
+[   10.887258] Hardware name: HiKey Development Board (DT)
+[   10.887264]
+[   10.887264] stack backtrace:
+[   10.887266] Call trace:
+[   10.887276]  dump_backtrace+0x0/0x1f8
+[   10.887283]  show_stack+0x2c/0x38
+[   10.887292]  dump_stack+0xec/0x158
+[   10.887303]  print_unlock_imbalance_bug+0xec/0xf0
+[   10.887311]  lock_release+0x300/0x388
+[   10.887320]  __alloc_pages_nodemask+0x268/0x4c0
+[   10.887329]  alloc_pages_vma+0x90/0x240
+[   10.887338]  handle_mm_fault+0x8d4/0x12f0
+[   10.887346]  do_page_fault+0x1c4/0x420
+[   10.887353]  do_translation_fault+0xb0/0xcc
+[   10.887363]  do_mem_abort+0x50/0xb0
+[   10.887372]  el1_abort+0x28/0x30
+[   10.887379]  el1_sync_handler+0xc0/0xf0
+[   10.887386]  el1_sync+0x7c/0x100
+[   10.887397]  __arch_copy_to_user+0x1d8/0x310
+[   10.887407]  copy_page_to_iter+0x110/0x3e8
+[   10.887416]  generic_file_buffered_read+0x4b8/0xaa8
+[   10.887423]  generic_file_read_iter+0xd4/0x168
+[   10.887432]  blkdev_read_iter+0x50/0x78
+[   10.887442]  new_sync_read+0x100/0x1a0
+[   10.887449]  vfs_read+0x1b4/0x1d8
+[   10.887457]  ksys_read+0x74/0xf8
+[   10.887465]  __arm64_sys_read+0x24/0x30
+[   10.887472]  el0_svc_common.constprop.3+0x7c/0x198
+[   10.887478]  do_el0_svc+0x34/0xa0
+[   10.887486]  el0_sync_handler+0x16c/0x210
+[   10.887492]  el0_sync+0x140/0x180
+[   10.887504] CPU: 6 PID: 342 Comm: systemd-sysctl Not tainted 5.9.13-rc1 #1
+[   10.887510] Hardware name: HiKey Development Board (DT)
+[   10.887515] Call trace:
+[   10.887524]  dump_backtrace+0x0/0x1f8
+[   10.887531]  show_stack+0x2c/0x38
+[   10.887542]  dump_stack+0xec/0x158
+[   10.887552]  lockdep_rcu_suspicious+0xd4/0xf8
+[   10.887561]  ___might_sleep+0x1e4/0x208
+[   10.887569]  __might_sleep+0x54/0x90
+[   10.887577]  __might_fault+0x58/0xa8
+[   10.887584]  filldir64+0x1f0/0x488
+[   10.887593]  call_filldir+0xb0/0x140
+[   10.887600]  ext4_readdir+0x700/0x900
+[   10.887607]  iterate_dir+0x88/0x1d0
+[   10.887615]  __arm64_sys_getdents64+0x70/0x1a0
+[   10.887622]  el0_svc_common.constprop.3+0x7c/0x198
+[   10.887629]  do_el0_svc+0x34/0xa0
+[   10.887637]  el0_sync_handler+0x16c/0x210
+[   10.887644]  el0_sync+0x140/0x180
+[   10.912334] Console: switching to colour frame buffer device 256x72
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+Full boot log link,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.12-47-g1372e1af58d4/testrun/3538040/suite/linux-log-parser/test/check-kernel-warning-2012813/log
+
+metadata:
+  git branch: linux-5.9.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  git commit: 1372e1af58d410676db7917cc3484ca22d471623
+  git describe: v5.9.12-47-g1372e1af58d4
+  make_kernelversion: 5.9.13-rc1
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/hikey/lkft/linux-stable-rc-5.9/47/config
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
