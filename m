@@ -2,195 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06362D14D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A3A2D14D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgLGPer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:34:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37516 "EHLO mail.kernel.org"
+        id S1727149AbgLGPfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:35:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgLGPeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:34:46 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726119AbgLGPfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:35:07 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 813F022B40;
-        Mon,  7 Dec 2020 15:34:04 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 10:34:03 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-Message-ID: <20201207103403.1c9c1045@gandalf.local.home>
-In-Reply-To: <20201206164226.6595-4-huobean@gmail.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
-        <20201206164226.6595-4-huobean@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A5C623730;
+        Mon,  7 Dec 2020 15:34:27 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmIWt-00GnSK-En; Mon, 07 Dec 2020 15:34:24 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 07 Dec 2020 15:34:23 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+In-Reply-To: <X85FVc07Hc7LQQU8@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
+ <X841xwCChUEqi5Ad@localhost> <73d57fe9fefe50955771846ea52004fb@kernel.org>
+ <X85FVc07Hc7LQQU8@localhost>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d5fa2065009d5854b4c719003ebcb255@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: johan@kernel.org, linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, gregkh@linuxfoundation.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  6 Dec 2020 17:42:26 +0100
-Bean Huo <huobean@gmail.com> wrote:
-
-> From: Bean Huo <beanhuo@micron.com>
+On 2020-12-07 15:08, Johan Hovold wrote:
+> On Mon, Dec 07, 2020 at 02:41:03PM +0000, Marc Zyngier wrote:
+>> On 2020-12-07 14:01, Johan Hovold wrote:
+>> > On Fri, Dec 04, 2020 at 04:47:35PM +0000, Marc Zyngier wrote:
+>> >> Having recently tried to use the CBUS GPIOs that come thanks to the
+>> >> ftdio_sio driver, it occurred to me that the driver has a couple of
+>> >> usability issues:
+>> >>
+>> >> - it advertises potential GPIOs that are reserved to other uses (LED
+>> >>   control, or something else)
+>> >
+>> > Consider the alternative, that the gpio offsets (for CBUS0, CBUS1,
+>> > CBUS2
+>> > or CBUS4) varies depending on how the pins have been muxed. Hardly very
+>> > user friendly.
+>> 
+>> That's not what I suggest. If you want fixed GPIO offsets, fine by me.
+>> But telling the user "these are GPIOs you can use", and then
+>> "on second though, you can't" is not exactly consistent.
 > 
-> Transaction Specific Fields (TSF) in the UPIU package could be CDB
-> (SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
-> TM I/O parameter (Task Management Input/Output Parameter). But, currently,
-> we take all of these as CDB  in the UPIU trace. Thus makes user confuse
-> among CDB, OSF, and TM message. So fix it with this patch.
+> It's really no different from any other gpio chip which registers all
+> its lines, including those which may have been muxed for other 
+> purposes.
+
+If they claim that their lines are available, and then refuse to
+let the user play with it, that's just a bug willing to be fixed.
+
+>> >> - it returns an odd error (-ENODEV), instead of the expected -EINVAL
+>> >>   when a line is unavailable, leading to a difficult diagnostic
+>> >
+>> > Hmm, maybe. Several gpio driver return -ENODEV when trying to request
+>> > reserved pins. Even gpiolib returns -ENODEV when a pins is not yet
+>> > available due to probe deferal.
+>> 
+>> -ENODEV really means "no GPIOchip" in this context. The fact that
+>> other drivers return -ENODEV for reserved pins looks like a bug to me.
 > 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c  |  9 +++++----
->  include/trace/events/ufs.h | 10 +++++++---
->  2 files changed, 12 insertions(+), 7 deletions(-)
+> No, the chip is there. The -ENODEV is what you get when requesting the
+> line, because the line isn't available.
+
+I still believe that ENODEV is the wrong error. The device is there,
+but the request is invalid because the line is used by something else.
+EINVAL, EBUSY, ENXIO would all be (sort of) OK.
+
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 29d7240a61bf..5b2219e44743 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -315,7 +315,8 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
->  {
->  	struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
->  
-> -	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq->sc.cdb);
-> +	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq->sc.cdb,
-> +			  "CDB");
->  }
->  
->  static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-> @@ -329,7 +330,7 @@ static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
->  		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
->  
->  	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq_rsp->header,
-> -			  &rq_rsp->qr);
-> +			  &rq_rsp->qr, "OSF");
->  }
->  
->  static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-> @@ -340,10 +341,10 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
->  
->  	if (!strcmp("tm_send", str))
->  		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->req_header,
-> -				  &descp->input_param1);
-> +				  &descp->input_param1, "TM_INPUT");
->  	else
->  		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp->rsp_header,
-> -				  &descp->output_param1);
-> +				  &descp->output_param1, "TM_OUTPUT");
+>> > -EBUSY could also be an alternative, but that's used to indicate that a
+>> > line is already in use as a gpio.
+>> 
+>> Or something else. Which is exactly the case, as it's been allocated
+>> to another function.
+> 
+> Right, there are invalid requests (e.g. requesting line five of a four
+> line chip), lines that are already in use, and lines not available due
+> to muxing.
+> 
+> And then there's the question of whether to use the same or distinct
+> errnos for these. I believe using distinct errnos provides more
+> feedback, but we can certainly pick another errno for this if it's
+> really that confusing.
 
-You could save some space on the ring buffer, if you made the above into an
-enum, and then used print_symbolic().
+Fundamentally, I don't think the backend driver should be in charge
+of the error reporting. That should be the char device's job. Leaving it
+to the individual drivers is a sure way to have an inconsistent API.
 
->  }
->  
->  static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-> index 0bd54a184391..68e8e97a9b47 100644
-> --- a/include/trace/events/ufs.h
-> +++ b/include/trace/events/ufs.h
-> @@ -295,15 +295,17 @@ TRACE_EVENT(ufshcd_uic_command,
->  );
+Thanks,
 
-
-You could make this:
-
-#define TRACE_TSF_TYPES		\
-	EM(CDB)			\
-	EM(OSF)			\
-	EM(TM_INPUT)		\
-	EMe(TM_OUTPUT)
-
-#ifndef TRACE_TSF_TYPES_ENUMS
-#define TRACE_TSF_TYPES_ENUMS
-#undef EM
-#undef EMe
-
-#define EM(x)	TRACE_TSF_##x,
-#define EMe(x)	TRACE_TSF_##x
-
-enum {
-	TRACE_TSF_TYPES
-}
-#endif /* TRACE_TSF_TYPES_ENUMS */
-
-#undef EM
-#undef EMe
-
-/* These export the enum names to user space */
-#define EM(x)	TRACE_DEFINE_ENUM(TRACE_TSF_##x)
-#define EMe(x)	TRACE_DEFINE_ENUM(TRACE_TSF_##x)
-
-TRACE_TSF_TYPES
-
-#undef EM
-#undef EMe
-
-/* These are used in the print_symbolic */
-#define EM(x) { TRACE_TSF_##x, #x },
-#define EMe(x) { TRACE_TSF_##x, #x }
-
-
->  
->  TRACE_EVENT(ufshcd_upiu,
-> -	TP_PROTO(const char *dev_name, const char *str, void *hdr, void *tsf),
-> +	TP_PROTO(const char *dev_name, const char *str, void *hdr, void *tsf,
-> +		 const char *tsf_type),
-
-		int tsf_type;
-
->  
-> -	TP_ARGS(dev_name, str, hdr, tsf),
-> +	TP_ARGS(dev_name, str, hdr, tsf, tsf_type),
->  
->  	TP_STRUCT__entry(
->  		__string(dev_name, dev_name)
->  		__string(str, str)
->  		__array(unsigned char, hdr, 12)
->  		__array(unsigned char, tsf, 16)
-> +		__string(tsf_type, tsf_type)
-
-		__field(int, tsf_type)
-
->  	),
->  
->  	TP_fast_assign(
-> @@ -311,12 +313,14 @@ TRACE_EVENT(ufshcd_upiu,
->  		__assign_str(str, str);
->  		memcpy(__entry->hdr, hdr, sizeof(__entry->hdr));
->  		memcpy(__entry->tsf, tsf, sizeof(__entry->tsf));
-> +		__assign_str(tsf_type, tsf_type);
-
-
-		__entry->tsf_type = tsf_type;
-
-
->  	),
->  
->  	TP_printk(
-> -		"%s: %s: HDR:%s, CDB:%s",
-> +		"%s: %s: HDR:%s, %s:%s",
->  		__get_str(str), __get_str(dev_name),
->  		__print_hex(__entry->hdr, sizeof(__entry->hdr)),
-> +		__get_str(tsf_type),
-
-		print_symbolic(tsf_type, TRACE_TSF_TYPES),
-
--- Steve
-
-
->  		__print_hex(__entry->tsf, sizeof(__entry->tsf))
->  	)
->  );
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
