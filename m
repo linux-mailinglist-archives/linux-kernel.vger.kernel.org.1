@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF002D08BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2102D08CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgLGBPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 20:15:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58212 "EHLO mail.kernel.org"
+        id S1728667AbgLGBTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 20:19:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:37880 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgLGBPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:15:31 -0500
-Date:   Mon, 7 Dec 2020 02:14:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607303691;
-        bh=VqRQ7iKirwWIux4wAq03tm7o6Qg9yrT+iDhtIX5XAac=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RFBhGL/pvMuQYcqiByPC+xhmm+LZHNE1OlnBTZVfOXSABeV6REk7NduYuvxhuUDO9
-         JezlvxjhugigUAQvlPKR13On85ExW7QrW3uCsny/fY8g4rjMOxhs0ITi2veD5uStLi
-         v6rweOprXRuJd9nIipfB4tApv2F7Lkdb6uluVSozfBjl+2L/LFcypFWg1cVgna3XRX
-         kAaVCw72ehAzvwkZQ1G9vYMlv1KzP8IPz+PVMb2z28ucAjiIuhJ021WxxYwmnNMdwl
-         BCEps+QRfaLfr8P5PSZQqt/FFTFn4lg6AF7ZKIjMsbxAlFGhjSAqudvE6hVBnWto8J
-         nNQrxuHDuq51Q==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 2/9] irqtime: Make accounting correct on RT
-Message-ID: <20201207011448.GC113660@lothringen>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170804.889561591@linutronix.de>
- <20201207002343.GA113660@lothringen>
- <87czzm77re.fsf@nanos.tec.linutronix.de>
+        id S1728583AbgLGBTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:19:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0800B11D4;
+        Sun,  6 Dec 2020 17:18:26 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83E2C3F66B;
+        Sun,  6 Dec 2020 17:18:23 -0800 (PST)
+Subject: Re: [RESEND PATCH 13/19] phy: sun4i-usb: add support for A100 USB PHY
+To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>
+References: <cover.1604988979.git.frank@allwinnertech.com>
+ <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <c118ad12-28b1-b733-484b-6751d1546e37@arm.com>
+Date:   Mon, 7 Dec 2020 01:18:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czzm77re.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 01:57:25AM +0100, Thomas Gleixner wrote:
-> On Mon, Dec 07 2020 at 01:23, Frederic Weisbecker wrote:
-> >> --- a/kernel/sched/cputime.c
-> >> +++ b/kernel/sched/cputime.c
-> >> @@ -60,7 +60,7 @@ void irqtime_account_irq(struct task_str
-> >>  	cpu = smp_processor_id();
-> >>  	delta = sched_clock_cpu(cpu) - irqtime->irq_start_time;
-> >>  	irqtime->irq_start_time += delta;
-> >> -	pc = preempt_count() - offset;
-> >> +	pc = irq_count() - offset;
-> >
-> > There are many preempt_count() users all around waiting for similar issues.
-> > Wouldn't it be more reasonable to have current->softirq_disable_cnt just saving
-> > the softirq count on context switch?
-> 
-> There are not that many and all of them need to be looked at.
-> 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index d2003a7d5ab5..6c899c35d6ba 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -3469,6 +3469,10 @@ static inline void prepare_task(struct task_struct *next)
-> >  
-> >  static inline void finish_task(struct task_struct *prev)
-> >  {
-> > +#ifdef CONFIG_PREEMPT_RT
-> > +	prev->softirq_disable_cnt = softirq_count();
-> > +	__preempt_count_sub(prev->softirq_disable_cnt);
-> > +#endif
-> 
-> You fundamentaly break RT with that.
-> 
-> If local_bh_disable() fiddles with the actual preempt_count on RT then
-> softirq disabled sections and softirq processing are not longer
-> preemtible.
-> 
-> You asked me in the last round of patches to add a proper argument for
-> pulling out the softirq count from preempt_count. Here is the revised
-> changelog which you agreed with:
-> 
->  "RT requires the softirq processing and local bottomhalf disabled regions to
->   be preemptible. Using the normal preempt count based serialization is
->   therefore not possible because this implicitely disables preemption.
->   ....
->  "
-> 
-> Full text in patch 1/9.
-> 
-> According to the above folding of softirq count into the actual preempt
-> count cannot work at all.
-> 
-> The current RT approach just works except for the places which look at
-> the raw preempt_count and not using the wrappers. Those places are
-> restricted to core code and a pretty small number.
-> 
-> Trying to do what you suggest would be a major surgery all over the
-> place including a complete trainwreck on the highly optimized
-> preempt_enable() --> preempt decision.
+On 10/11/2020 06:40, Frank Lee wrote:
 
-I suspected it was more complicated than I imagined :-)
-Nevermind.
+Hi,
 
-Thanks.
+
+> From: Yangtao Li <frank@allwinnertech.com>
+> 
+> Add support for a100's usb phy, which with 2 PHYs.
+> 
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> ---
+>  drivers/phy/allwinner/phy-sun4i-usb.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> index a6900495baa5..1a0e403131e7 100644
+> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> @@ -107,6 +107,7 @@ enum sun4i_usb_phy_type {
+>  	sun8i_r40_phy,
+>  	sun8i_v3s_phy,
+>  	sun50i_a64_phy,
+> +	sun50i_a100_phy,
+>  	sun50i_h6_phy,
+>  };
+>  
+> @@ -289,7 +290,13 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+>  	}
+>  
+>  	if (data->cfg->type == sun8i_a83t_phy ||
+> +	    data->cfg->type == sun50i_a100_phy ||
+>  	    data->cfg->type == sun50i_h6_phy) {
+> +		if (phy->pmu && data->cfg->enable_pmu_unk1) {
+> +			val = readl(phy->pmu + REG_PMU_UNK1);
+> +			writel(val & ~BIT(3), phy->pmu + REG_PMU_UNK1);
+> +		}
+> +
+
+So having a closer look, this does not look right. We should not use
+this very same variable (enable_pmu_unk1) for a different bit.
+
+So what about changing "bool enable_pmu_unk1;" into "u32
+pmu_phy_tune_mask;", and using this to mask bits in this PMU register,
+regardless of the PHY type (above this "if" statement)? We just check it
+for being 0 and possibly skip the R/M/W sequence.
+Then the newer SoCs get .pmu_phy_tune_mask = BIT(1), in their config
+below, and the A100 gets BIT(3). Older PHYs just omit this line at all,
+are initialised to 0, and are skipped.
+
+That would look more cleaner and might even be a bit future proof.
+
+Cheers,
+Andre
+
+>  		if (phy->index == 0) {
+>  			val = readl(data->base + data->cfg->phyctl_offset);
+>  			val |= PHY_CTL_VBUSVLDEXT;
+> @@ -339,6 +346,7 @@ static int sun4i_usb_phy_exit(struct phy *_phy)
+>  
+>  	if (phy->index == 0) {
+>  		if (data->cfg->type == sun8i_a83t_phy ||
+> +		    data->cfg->type == sun50i_a100_phy ||
+>  		    data->cfg->type == sun50i_h6_phy) {
+>  			void __iomem *phyctl = data->base +
+>  				data->cfg->phyctl_offset;
+> @@ -960,6 +968,16 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
+>  	.phy0_dual_route = true,
+>  };
+>  
+> +static const struct sun4i_usb_phy_cfg sun50i_a100_cfg = {
+> +	.num_phys = 2,
+> +	.type = sun50i_a100_phy,
+> +	.disc_thresh = 3,
+> +	.phyctl_offset = REG_PHYCTL_A33,
+> +	.dedicated_clocks = true,
+> +	.enable_pmu_unk1 = true,
+> +	.phy0_dual_route = true,
+> +};
+> +
+>  static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
+>  	.num_phys = 4,
+>  	.type = sun50i_h6_phy,
+> @@ -983,6 +1001,7 @@ static const struct of_device_id sun4i_usb_phy_of_match[] = {
+>  	{ .compatible = "allwinner,sun8i-v3s-usb-phy", .data = &sun8i_v3s_cfg },
+>  	{ .compatible = "allwinner,sun50i-a64-usb-phy",
+>  	  .data = &sun50i_a64_cfg},
+> +	{ .compatible = "allwinner,sun50i-a100-usb-phy", .data = &sun50i_a100_cfg },
+>  	{ .compatible = "allwinner,sun50i-h6-usb-phy", .data = &sun50i_h6_cfg },
+>  	{ },
+>  };
+> 
+
