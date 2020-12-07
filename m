@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184152D0874
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 01:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365712D087A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 01:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgLGABq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 19:01:46 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44510 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728687AbgLGABp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 19:01:45 -0500
-IronPort-SDR: k8wH93XHQCkFDJcxQqFMeultzdPMuyeaD6RqJQ6jx7xx8E7S/BsmbCSwfyGPGimBrKWJCT0LGn
- +gtl+4BxI6xQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="170112328"
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="170112328"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 16:01:03 -0800
-IronPort-SDR: HikeVi8HJ8QhBpef8H3Pj8XYH09sXgZmjbojUfZeOLvlzqGK648zwnfrWnUF/99OmBnWWkx5DU
- G+wiDcHEaPng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="316876359"
-Received: from lkp-server01.sh.intel.com (HELO 47754f1311fc) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Dec 2020 16:01:01 -0800
-Received: from kbuild by 47754f1311fc with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1km3xd-00011Y-9D; Mon, 07 Dec 2020 00:01:01 +0000
-Date:   Mon, 07 Dec 2020 08:00:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 84da009f06e60cf59d5e861f8e2101d2d3885517
-Message-ID: <5fcd70b1.L+MemRd7tet2fMnL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728683AbgLGADn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 19:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgLGADn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 19:03:43 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13E0C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 16:03:02 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 91so7113316wrj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 16:03:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6mC3YoKcV6h/4OTV+qmejqeiSs0/6gZwXZU4VbR7pC4=;
+        b=ZOlIue3xf69vkO4QJqvYKR6Y1pI/KKsit5xiIxFC4inNgbO+Z+qjSk66jzaRYlYiEc
+         um9pbckrn2WZf49nBovPN9hLVfDXMnlYmr4GRHBzzX3SF1dGHlzMowa7qfxn4+Vhicf5
+         2QRSnEdJVLOUpMRvfQ9B3e5omtJWzPnUH+uflzvEmrjsdL10x11H9ReTaPkcJVAUkso3
+         WjulBNZtsoXGMjG4YImBDMX5OlFD1L8yDCyeE3cSmmvo9K/icvouV48S2gwxMuQfjC+F
+         chIBrkiQlNyquJ7xvS3tKerZDxg9NfXCHxkcrynWJw9XUDsZ5N4dlLr2OE1hfOJTm/ay
+         4jpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6mC3YoKcV6h/4OTV+qmejqeiSs0/6gZwXZU4VbR7pC4=;
+        b=bv/MLFshVj9XL9ZgmdwE9PDuwKLA/ff0hqRbqTGMNtV0sWcjsG7t3WnwhOMZaYEnxz
+         tk1vRtICK/DbQAlhlVmP5wnD1itmrJZcJHWw3/EFsqDNvgrWMMhlteeZn58CLE5q15fW
+         5CkmVh7hNYRD+6mO4JCAmBQvSIWalwMISQoeP5JmD3OlNzUBP0tv5VuzoYAJjdb/H7Xy
+         OaRPkVfU4HflcwCqDpZETiiaIv/xqjTPA7WnqTcsY2+2O6rC0oBZjo3buOWVd0g5/j/i
+         gYOdYqBTNzWPEHkOO/D7fIIzZiwoY3LBlVUktXA3rZBLvP7eMKbjDYr9+wGUe+pU97z4
+         3gGQ==
+X-Gm-Message-State: AOAM5326zqbnQ/yYzovOsQD8aagT9qVj4cqMLEDa2872Ay0eIxbq+aSO
+        gjeN/i2/+bLKh4uGxoi4a0MhhQ==
+X-Google-Smtp-Source: ABdhPJyq/y0Usg/htjOoN89qwDk2tNzdxOq4xYyGg8M2HDHutxEX1+4Vd091FtaActysm4bWGJgZbQ==
+X-Received: by 2002:adf:f3cf:: with SMTP id g15mr16843502wrp.71.1607299381241;
+        Sun, 06 Dec 2020 16:03:01 -0800 (PST)
+Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
+        by smtp.gmail.com with ESMTPSA id v1sm12614215wrr.48.2020.12.06.16.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 16:03:00 -0800 (PST)
+From:   Jann Horn <jannh@google.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH pidfd] signal: Add missing __user annotation to copy_siginfo_from_user_any
+Date:   Mon,  7 Dec 2020 01:02:52 +0100
+Message-Id: <20201207000252.138564-1-jannh@google.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 84da009f06e60cf59d5e861f8e2101d2d3885517  x86/sev-es: Use new for_each_insn_prefix() macro to loop over prefixes bytes
+copy_siginfo_from_user_any() takes a userspace pointer as second
+argument; annotate the parameter type accordingly.
 
-elapsed time: 723m
-
-configs tested: 93
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-arm                           h3600_defconfig
-arc                              alldefconfig
-sh                           se7750_defconfig
-sh                        sh7763rdp_defconfig
-m68k                             allmodconfig
-mips                    maltaup_xpa_defconfig
-arm                        keystone_defconfig
-arm                           sunxi_defconfig
-xtensa                           allyesconfig
-arm                         hackkit_defconfig
-c6x                        evmc6678_defconfig
-mips                         bigsur_defconfig
-powerpc                      ppc6xx_defconfig
-mips                     cu1830-neo_defconfig
-sh                        edosk7760_defconfig
-sh                          r7785rp_defconfig
-parisc                generic-64bit_defconfig
-arm                           u8500_defconfig
-arm                            hisi_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201206
-i386                 randconfig-a004-20201206
-i386                 randconfig-a001-20201206
-i386                 randconfig-a002-20201206
-i386                 randconfig-a006-20201206
-i386                 randconfig-a003-20201206
-x86_64               randconfig-a004-20201206
-x86_64               randconfig-a006-20201206
-x86_64               randconfig-a002-20201206
-x86_64               randconfig-a001-20201206
-x86_64               randconfig-a005-20201206
-x86_64               randconfig-a003-20201206
-i386                 randconfig-a014-20201206
-i386                 randconfig-a013-20201206
-i386                 randconfig-a011-20201206
-i386                 randconfig-a015-20201206
-i386                 randconfig-a012-20201206
-i386                 randconfig-a016-20201206
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a016-20201206
-x86_64               randconfig-a012-20201206
-x86_64               randconfig-a014-20201206
-x86_64               randconfig-a013-20201206
-x86_64               randconfig-a015-20201206
-x86_64               randconfig-a011-20201206
-
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I'm messing around with clang's version of __user annotation checking
+and it spotted this issue:
+
+kernel/signal.c:3759:44: warning: casting to dereferenceable pointer remove=
+s 'noderef' attribute [-Wnoderef]
+                ret =3D copy_siginfo_from_user_any(&kinfo, info);
+                                                         ^~~~
+Untracked cast to function pointer at kernel/signal.c:4294:26
+
+
+Christian, since this is pidfd code, can you take this through your tree?
+Or should I send this to akpm (or someone else)?
+
+ kernel/signal.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index ef8f2a28d37c..4693191dc17c 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3685,7 +3685,8 @@ static bool access_pidfd_pidns(struct pid *pid)
+ 	return true;
+ }
+=20
+-static int copy_siginfo_from_user_any(kernel_siginfo_t *kinfo, siginfo_t *=
+info)
++static int copy_siginfo_from_user_any(kernel_siginfo_t *kinfo,
++		siginfo_t __user *info)
+ {
+ #ifdef CONFIG_COMPAT
+ 	/*
+
+base-commit: 0477e92881850d44910a7e94fc2c46f96faa131f
+--=20
+2.29.2.576.ga3fc446d84-goog
+
