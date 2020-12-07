@@ -2,90 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FA92D1515
+	by mail.lfdr.de (Postfix) with ESMTP id 353622D1514
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgLGPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
+        id S1726883AbgLGPtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgLGPtm (ORCPT
+        with ESMTP id S1726778AbgLGPtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:49:42 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDFEC06179C
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:49:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YhTuQpAuVhEXZKFT3p3qbp40M3jZi+iAS4Ki0D9kbgk=; b=wr3ouKempAHHE1O6HSg1PGu1E7
-        qXyl3QyHhzb+ARRJX7ZxG+WW2NOZudStGTb9KayddDovSowmVo2YsdD6WfR9g/FyNzNdoKzFBdwbb
-        6dHhXAjOx5IppkvN6kfTgEZ2Rz9sjRy2HtwXsHp+FXhH6AFyxjNDjVJF99U7AU7+vue9NNpyOvzZS
-        z2CaS0htrRK6zS0XsdI61HWybueeVRG0w69ec7FHbO+t7+IJ6ke11t/d2s5UtQ3//jQJgOgIg9IWM
-        mjDZhrS/d/GghG7sBA1lSZLMkvxmqfJCyqTSSyODtx53T7hVoAcitIgmGLSiAfXu3vAozc911CSnG
-        pjJYrbig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmIkl-0002zy-NT; Mon, 07 Dec 2020 15:48:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AEFC304B92;
-        Mon,  7 Dec 2020 16:48:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0A261200E4A0F; Mon,  7 Dec 2020 16:48:39 +0100 (CET)
-Date:   Mon, 7 Dec 2020 16:48:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, mgorman@techsingularity.net,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-Message-ID: <20201207154838.GP3040@hirez.programming.kicks-ass.net>
-References: <20201118043113.53128-1-aubrey.li@linux.intel.com>
+        Mon, 7 Dec 2020 10:49:33 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8811C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:48:52 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l9so4082050wrt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:48:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UP632KzV8q/pnPeSOlqUSkndcfY2+BT3fJ9Prk+u7ew=;
+        b=Ipdlcls9kyqNyX6Qhc86PRPdrdbMtj53DwOhc2UwWErC83fNYkK3wqSwToYUcLqURz
+         FrxkyAJirl59tcHgt1ynxog5yRZwt3lmvNg+ZRncezSDmxQXyAnHHMm9Ck4AmaNrlmIV
+         LGv54RwDzC7JtvDLU5h1XI9YmbxvPwG6fVbCKrSBL+Vf/sfODCaH45VFjwbWIFuH0xYc
+         dFpsWt8pCiRqjAoLy7/dwyNw+wYr2JgLzaHbGI7a0Zx6uWmpgkk1sXrAphFc23LlVroi
+         mVvCbFy1ASeeI5XM/Gikxy/SqxccYyPwBmvOSffpnSJw7MQpL5nl8g779EomKKGmQ/PU
+         AD4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UP632KzV8q/pnPeSOlqUSkndcfY2+BT3fJ9Prk+u7ew=;
+        b=lb6teVM/yDPbljjmX0j+upbuNknJEjRVJY9MzPdhJ5Uwjbq6HyHRpe4h3bz5xHqxYX
+         Z/L+94yw0QnrIjolXHmFWCLnOCuh0rB54mlJPpVmxJL2y7BxNe/RMCZMM0w2ZP0flLk6
+         4HHygrqD1iMR05q69DJzpxw/Hlf+CT5L0rPC3MP5UsVNVAEjVlWqA4D0osnh0wdfR4zB
+         oXTSVn3spZltYzq7+Ey7k3skndu7uvGNEwJxqXBit0gHHDwA8ZE+SR+ol3uRi/0cxO9C
+         ncgjgsI5AAKsLy30/X9sgtNCmLI6LxEYGo2MOPJ0qiYcnYx5T5TlkAPg2szbxAUrQfPp
+         Lg2w==
+X-Gm-Message-State: AOAM531t/58C3GExhiMU93CuDykjbmGkSUJYHY3KYYLPGWpqVRSYnF1M
+        9PBkREvPMLvjvjxlsqQWgHeCQQ==
+X-Google-Smtp-Source: ABdhPJzGA+pA+rM8Nk2dRevaDPo47pLvG38H7lX7zYyZOSidu+JR1gr2BHx9m68iLWRahh+qgLJ1AA==
+X-Received: by 2002:adf:8285:: with SMTP id 5mr6622195wrc.289.1607356131397;
+        Mon, 07 Dec 2020 07:48:51 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id a13sm14937428wrm.39.2020.12.07.07.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 07:48:50 -0800 (PST)
+Date:   Mon, 7 Dec 2020 15:48:46 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v3 13/14] bpf: Add tests for new BPF atomic
+ operations
+Message-ID: <X85O3ihW1s7Afqoz@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-14-jackmanb@google.com>
+ <b629793c-fb9c-6ef5-e2d6-7acaf1d2fc7f@fb.com>
+ <X8oFJW/mMFHVxngY@google.com>
+ <6f008322-0b8f-223a-9148-ce9fee0810dc@fb.com>
+ <CAEf4BzZHty17jLH7T-vDLGZftr077BUb9mSciX2Lt3Ofs4r7CQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118043113.53128-1-aubrey.li@linux.intel.com>
+In-Reply-To: <CAEf4BzZHty17jLH7T-vDLGZftr077BUb9mSciX2Lt3Ofs4r7CQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 12:31:13PM +0800, Aubrey Li wrote:
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index f324dc36fc43..6f5947673e66 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -163,6 +163,7 @@ static void cpuidle_idle_call(void)
->  	 */
->  
->  	if (cpuidle_not_available(drv, dev)) {
-> +		update_idle_cpumask(this_rq(), true);
->  		tick_nohz_idle_stop_tick();
->  
->  		default_idle_call();
-> @@ -193,6 +194,7 @@ static void cpuidle_idle_call(void)
->  			max_latency_ns = dev->forced_idle_latency_limit_ns;
->  		}
->  
-> +		update_idle_cpumask(this_rq(), true);
->  		tick_nohz_idle_stop_tick();
->  
->  		next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
-> @@ -205,10 +207,12 @@ static void cpuidle_idle_call(void)
->  		 */
->  		next_state = cpuidle_select(drv, dev, &stop_tick);
->  
-> -		if (stop_tick || tick_nohz_tick_stopped())
-> +		if (stop_tick || tick_nohz_tick_stopped()) {
-> +			update_idle_cpumask(this_rq(), true);
->  			tick_nohz_idle_stop_tick();
+On Fri, Dec 04, 2020 at 11:49:22AM -0800, Andrii Nakryiko wrote:
+> On Fri, Dec 4, 2020 at 7:29 AM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 12/4/20 1:45 AM, Brendan Jackman wrote:
+> > > On Thu, Dec 03, 2020 at 11:06:31PM -0800, Yonghong Song wrote:
+> > >> On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> > > [...]
+> > >>> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> > >>> new file mode 100644
+> > >>> index 000000000000..66f0ccf4f4ec
+> > >>> --- /dev/null
+> > >>> +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+> > >>> @@ -0,0 +1,262 @@
+> > >>> +// SPDX-License-Identifier: GPL-2.0
+> > >>> +
+> > >>> +#include <test_progs.h>
+> > >>> +
+> > >>> +
+> > >>> +#include "atomics_test.skel.h"
+> > >>> +
+> > >>> +static struct atomics_test *setup(void)
+> > >>> +{
+> > >>> +   struct atomics_test *atomics_skel;
+> > >>> +   __u32 duration = 0, err;
+> > >>> +
+> > >>> +   atomics_skel = atomics_test__open_and_load();
+> > >>> +   if (CHECK(!atomics_skel, "atomics_skel_load", "atomics skeleton failed\n"))
+> > >>> +           return NULL;
+> > >>> +
+> > >>> +   if (atomics_skel->data->skip_tests) {
+> > >>> +           printf("%s:SKIP:no ENABLE_ATOMICS_TEST (missing Clang BPF atomics support)",
+> > >>> +                  __func__);
+> > >>> +           test__skip();
+> > >>> +           goto err;
+> > >>> +   }
+> > >>> +
+> > >>> +   err = atomics_test__attach(atomics_skel);
+> > >>> +   if (CHECK(err, "atomics_attach", "atomics attach failed: %d\n", err))
+> > >>> +           goto err;
+> > >>> +
+> > >>> +   return atomics_skel;
+> > >>> +
+> > >>> +err:
+> > >>> +   atomics_test__destroy(atomics_skel);
+> > >>> +   return NULL;
+> > >>> +}
+> > >>> +
+> > >>> +static void test_add(void)
+> > >>> +{
+> > >>> +   struct atomics_test *atomics_skel;
+> > >>> +   int err, prog_fd;
+> > >>> +   __u32 duration = 0, retval;
+> > >>> +
+> > >>> +   atomics_skel = setup();
+> > >>
+> > >> When running the test, I observed a noticeable delay between skel load and
+> > >> skel attach. The reason is the bpf program object file contains
+> > >> multiple programs and the above setup() tries to do attachment
+> > >> for ALL programs but actually below only "add" program is tested.
+> > >> This will unnecessarily increase test_progs running time.
+> > >>
+> > >> The best is for setup() here only load and attach program "add".
+> > >> The libbpf API bpf_program__set_autoload() can set a particular
+> > >> program not autoload. You can call attach function explicitly
+> > >> for one specific program. This should be able to reduce test
+> > >> running time.
+> > >
+> > > Interesting, thanks a lot - I'll try this out next week. Maybe we can
+> > > actually load all the progs once at the beginning (i.e. in
+> >
+> > If you have subtest, people expects subtest can be individual runable.
+> > This will complicate your logic.
+> >
+> > > test_atomics_test) then attach/detch each prog individually as needed...
+> > > Sorry, I haven't got much of a grip on libbpf yet.
+> >
+> > One alternative is not to do subtests. There is nothing run to have
+> > just one bpf program instead of many. This way, you load all and attach
+> > once, then do all the test verification.
+> 
+> I think subtests are good for debuggability, at least. But in this
+> case it's very easy to achieve everything you've discussed:
+> 
+> 1. do open() right there in test_atomics_test()  (btw, consider naming
+> the test just "atomics" or "atomic_insns" or something, no need for
+> test-test tautology)
+> 2. check if needs skipping, skip entire test
+> 3. if not skipping, load
+> 4. then pass the same instance of the skeleton to each subtest
+> 5. each subtest will
+>   5a. bpf_prog__attach(skel->prog.my_specific_subtest_prog);
+>   5b. trigger and do checks
+>   5c. bpf_link__destroy(<link from 5a step>);
 
-We already have a callback in tick_nohz_idle_stop_tick(), namely
-nohz_balance_enter_idle().
-
+Thanks, this seems like the way forward to me.
