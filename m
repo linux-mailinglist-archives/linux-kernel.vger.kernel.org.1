@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFC42D0B36
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3F02D0B52
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgLGHjI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 02:39:08 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:54724 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLGHjI (ORCPT
+        id S1726220AbgLGHtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 02:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgLGHtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 02:39:08 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id A111460CEF32;
-        Mon,  7 Dec 2020 08:38:25 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id lYe7XNyoDZpR; Mon,  7 Dec 2020 08:38:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 482326231F21;
-        Mon,  7 Dec 2020 08:38:25 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Y1hHDwrmG42h; Mon,  7 Dec 2020 08:38:25 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1A58B60CEF32;
-        Mon,  7 Dec 2020 08:38:25 +0100 (CET)
-Date:   Mon, 7 Dec 2020 08:38:24 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        tglx <tglx@linutronix.de>
-Message-ID: <1460772961.85699.1607326704865.JavaMail.zimbra@nod.at>
-In-Reply-To: <20201207043518.GA1819081@boqun-archlinux>
-References: <CAFLxGvwienJ7sU2+QAhFt+ywS9iYkbAXDGviuTC-4CVwLOhXfA@mail.gmail.com> <20201207043518.GA1819081@boqun-archlinux>
-Subject: Re: BUG: Invalid wait context with KMEMLEAK and KASAN enabled
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Invalid wait context with KMEMLEAK and KASAN enabled
-Thread-Index: 6g9dKygF4YhpzjznohWxx1ckhTfl2Q==
+        Mon, 7 Dec 2020 02:49:36 -0500
+X-Greylist: delayed 559 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Dec 2020 23:48:56 PST
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A654C0613D1
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 23:48:56 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 3C18A4D0D8855;
+        Sun,  6 Dec 2020 23:38:55 -0800 (PST)
+Date:   Sun, 06 Dec 2020 23:38:50 -0800 (PST)
+Message-Id: <20201206.233850.576775262589107523.davem@davemloft.net>
+To:     tanhuazhong@huawei.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, huangdaode@huawei.com, sfr@canb.auug.org.au
+Subject: Re: [PATCH net] net: hns3: remove a misused pragma packed
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1607325625-29945-1-git-send-email-tanhuazhong@huawei.com>
+References: <1607325625-29945-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Sun, 06 Dec 2020 23:38:55 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Boqun,
+From: Huazhong Tan <tanhuazhong@huawei.com>
+Date: Mon, 7 Dec 2020 15:20:25 +0800
 
------ Ursprüngliche Mail -----
->> Does this ring a bell?
->> 
->> [    2.298447] =============================
->> [    2.298971] [ BUG: Invalid wait context ]
->> [    2.298971] 5.10.0-rc6+ #388 Not tainted
->> [    2.298971] -----------------------------
->> [    2.298971] ksoftirqd/1/15 is trying to lock:
->> [    2.298971] ffff888100b94598 (&n->list_lock){....}-{3:3}, at:
->> free_debug_processing+0x3d/0x210
+> hclge_dbg_reg_info[] is defined as an array of packed structure
+> accidentally. However, this array contains pointers, which are
+> no longer aligned naturally, and cannot be relocated on PPC64.
+> Hence, when compile-testing this driver on PPC64 with
+> CONFIG_RELOCATABLE=y (e.g. PowerPC allyesconfig), there will be
+> some warnings.
 > 
-> I guest you also had CONFIG_PROVE_RAW_LOCK_NESTING=y, right?
+> Since each field in structure hclge_qos_pri_map_cmd and
+> hclge_dbg_bitmap_cmd is type u8, the pragma packed is unnecessary
+> for these two structures as well, so remove the pragma packed in
+> hclge_debugfs.h to fix this issue, and this increases
+> hclge_dbg_reg_info[] by 4 bytes per entry.
+> 
+> Fixes: a582b78dfc33 ("net: hns3: code optimization for debugfs related to "dump reg"")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 
-Yes, this is the case!
-
-Thanks,
-//richard
+Applied, thank you.
