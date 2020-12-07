@@ -2,308 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB2A2D0CA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD062D0CB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgLGJHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgLGJHM (ORCPT
+        id S1726645AbgLGJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:11:19 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:26708 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726016AbgLGJLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:07:12 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C854C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:06:35 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id g25so9104573wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QjxDW2drtGiPZSkPSVEeerKiZkSzCtUcHw8vu7Bw0GQ=;
-        b=xrZY5ZLgMpunieRnA2RuUoGzUxAJmIF+az8XAF86NbzKXL0ZnHErUKcr4zgJBCP3S1
-         9Fg92hNQsPwhh2SmIVOPSP5k+qDAH8AbAtzVVDpN2sVdJCT7XVnDIXhQu7IHkyzSqGJC
-         1aEanLUsG6DkR/mTrTVKdV3+cHNuYsmJzZts6qv84WVxp856g0kQErnfuC/L341GrsQz
-         Cess4c3QxczikoqUQy3pr/ADERQfTNJn9L5kIqJURzX5KKQRs9lfUoFAX3YaPrdxJZ2N
-         HP0dXU8w9o1KCJ/ihjZvMDNO0507xrmqfGej4rHEeB+UJE3IHBZ7De92Hfl/o/9m2MYU
-         wB1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QjxDW2drtGiPZSkPSVEeerKiZkSzCtUcHw8vu7Bw0GQ=;
-        b=sFDYjN/KfNjRQLXM+RKLIpfL97G6ukckVo/K9SpGSBjIOgRa6fqEIgmNCUD7/mBfYW
-         ITS3zsjK1ziPYKXykpE8Tdth58PYZgVoDO253hrILBT0vn3EUqaPXx86XONGOCa+WZnW
-         hj0MN+D8otdjXQx1p2I+LYbuwF9e6O8wQYOO8T3TVjuQI4yqZB2ELxmKr0wRqoLTDUaN
-         yAWYow99WqwHubE6CghNde32tNStWiWCxAtwDoI8KFk22PaPJzVdNidzpP4hyKhIfi3x
-         FXqt1TWrlkkqsnAxu1R5ohxV+8aMhA2Yoy5eVAMTrc3JRvGF0dD1wnaNTGB2APHj/PeX
-         BH5w==
-X-Gm-Message-State: AOAM533jj8l68oEtMy4I+u2J5Gmdc+0oeI5ub26Oa7EJkK0mD3VEBnoQ
-        9gd/6eIyAcbv1p3ZRFWjLVpSsA==
-X-Google-Smtp-Source: ABdhPJyDwFXiJ9eLgCiqwKy+Q8kcZpDo54W7x5DIT4GqeWajdD3VhI+ZGc6tPZIkxLN3QFREAxOjEA==
-X-Received: by 2002:a1c:3b44:: with SMTP id i65mr2161434wma.9.1607331993523;
-        Mon, 07 Dec 2020 01:06:33 -0800 (PST)
-Received: from [192.168.1.9] (hst-221-6.medicom.bg. [84.238.221.6])
-        by smtp.googlemail.com with ESMTPSA id n189sm13279173wmf.20.2020.12.07.01.06.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 01:06:32 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] v4l: Add HDR10 static metadata controls
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-References: <20201123230257.31690-1-stanimir.varbanov@linaro.org>
- <20201123230257.31690-2-stanimir.varbanov@linaro.org>
- <17035750-c01e-1601-756b-6c2c87e6b828@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <c0346859-91b2-90b9-16b6-f0c364351562@linaro.org>
-Date:   Mon, 7 Dec 2020 11:06:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <17035750-c01e-1601-756b-6c2c87e6b828@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 7 Dec 2020 04:11:18 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="38474932"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 07 Dec 2020 17:07:46 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(23668:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Mon, 07 Dec 2020 17:07:45 +0800 (CST)
+Received: from 101.12.100.64
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(106412:0:AUTH_LOGIN)
+        (envelope-from <jingle.wu@emc.com.tw>); Mon, 07 Dec 2020 17:07:44 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        "jingle.wu" <jingle.wu@emc.com.tw>
+Subject: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type 0x5F.
+Date:   Mon,  7 Dec 2020 17:07:51 +0800
+Message-Id: <20201207090751.9076-1-jingle.wu@emc.com.tw>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 0x5F is new trackpoint report type of some module.
 
+Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+---
+ drivers/input/mouse/elan_i2c_core.c  | 2 ++
+ drivers/input/mouse/elan_i2c_smbus.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-On 12/2/20 1:12 PM, Hans Verkuil wrote:
-> On 24/11/2020 00:02, Stanimir Varbanov wrote:
->> Add Content light level and Mastering display colour volume v4l2
->> compounf controls, relevant payload structures and validation.
-> 
-> compounf -> compound
-> 
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/v4l2-core/v4l2-ctrls.c | 62 ++++++++++++++++++++++++++++
->>  include/media/hdr10-ctrls.h          | 55 ++++++++++++++++++++++++
->>  include/media/v4l2-ctrls.h           |  3 ++
->>  3 files changed, 120 insertions(+)
->>  create mode 100644 include/media/hdr10-ctrls.h
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
->> index ad47d00e28d6..028630576401 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -1024,6 +1024,9 @@ const char *v4l2_ctrl_get_name(u32 id)
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
->>  
->> +	case V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
->> +	case V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
->> +
->>  	/* CAMERA controls */
->>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
->>  	case V4L2_CID_CAMERA_CLASS:		return "Camera Controls";
->> @@ -1461,6 +1464,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->>  		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->>  		break;
->> +	case V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO:
->> +		*type = V4L2_CTRL_TYPE_HDR10_CLL_INFO;
->> +		break;
->> +	case V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY:
->> +		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
->> +		break;
->>  	case V4L2_CID_UNIT_CELL_SIZE:
->>  		*type = V4L2_CTRL_TYPE_AREA;
->>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> @@ -1775,6 +1784,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
->>  	struct v4l2_area *area;
->>  	void *p = ptr.p + idx * ctrl->elem_size;
->>  	unsigned int i;
->> @@ -1934,6 +1944,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->>  		zero_padding(*p_hevc_slice_params);
->>  		break;
->>  
->> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
->> +		break;
->> +
->> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
->> +		p_hdr10_mastering = p;
->> +
->> +		for (i = 0; i < 3; ++i) {
->> +			if (p_hdr10_mastering->display_primaries_x[i] <
->> +				V4L2_HDR10_MASTERING_PRIMARIES_X_LOW ||
->> +			    p_hdr10_mastering->display_primaries_x[i] >
->> +				V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH ||
->> +			    p_hdr10_mastering->display_primaries_y[i] <
->> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW ||
->> +			    p_hdr10_mastering->display_primaries_y[i] >
->> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH)
->> +				return -EINVAL;
->> +		}
->> +
->> +		if (p_hdr10_mastering->white_point_x <
->> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW ||
->> +		    p_hdr10_mastering->white_point_x >
->> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH ||
->> +		    p_hdr10_mastering->white_point_y <
->> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW ||
->> +		    p_hdr10_mastering->white_point_y >
->> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH)
->> +			return -EINVAL;
->> +
->> +		if (p_hdr10_mastering->max_luminance <
->> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW ||
->> +		    p_hdr10_mastering->max_luminance >
->> +			V4L2_HDR10_MASTERING_MAX_LUMA_HIGH ||
->> +		    p_hdr10_mastering->min_luminance <
->> +			V4L2_HDR10_MASTERING_MIN_LUMA_LOW ||
->> +		    p_hdr10_mastering->min_luminance >
->> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
->> +			return -EINVAL;
->> +
->> +		if (p_hdr10_mastering->max_luminance ==
->> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW &&
->> +		    p_hdr10_mastering->min_luminance ==
->> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
->> +			return -EINVAL;
->> +
->> +		break;
->> +
->>  	case V4L2_CTRL_TYPE_AREA:
->>  		area = p;
->>  		if (!area->width || !area->height)
->> @@ -2626,6 +2682,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->>  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->>  		break;
->> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
->> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_cll_info);
->> +		break;
->> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
->> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_mastering_display);
->> +		break;
->>  	case V4L2_CTRL_TYPE_AREA:
->>  		elem_size = sizeof(struct v4l2_area);
->>  		break;
->> diff --git a/include/media/hdr10-ctrls.h b/include/media/hdr10-ctrls.h
->> new file mode 100644
->> index 000000000000..f6f77edc0b60
->> --- /dev/null
->> +++ b/include/media/hdr10-ctrls.h
->> @@ -0,0 +1,55 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * These are the HEVC state controls for use with stateless HEVC
->> + * codec drivers.
->> + *
->> + * It turns out that these structs are not stable yet and will undergo
->> + * more changes. So keep them private until they are stable and ready to
->> + * become part of the official public API.
->> + */
->> +
->> +#ifndef _HDR10_CTRLS_H_
->> +#define _HDR10_CTRLS_H_
->> +
->> +/*
->> + * Content light level information.
->> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.35
->> + */
->> +#define V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO	(V4L2_CID_MPEG_BASE + 1017)
->> +#define V4L2_CTRL_TYPE_HDR10_CLL_INFO		0x0123
->> +
->> +struct v4l2_ctrl_hdr10_cll_info {
->> +	__u16 max_content_light_level;
->> +	__u16 max_pic_average_light_level;
->> +};
->> +
->> +/*
->> + * Mastering display colour volume.
->> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.28
->> + */
->> +#define V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY (V4L2_CID_MPEG_BASE + 1018)
-> 
-> I don't think this should be part of the codec control class. It is also needed
-> for HDMI receivers, for example.
-> 
-> I think it is better to create a new "Colorimetry" control class for controls like
-> this.
-
-I guess in this case I need to create a new ext-ctrls-colorimetry.rst,
-right?
-
-> 
-> But I advise that you wait until this PR is merged:
-> https://patchwork.linuxtv.org/project/linux-media/patch/d68da172-b251-000f-653d-38a8a4c7b715@xs4all.nl/
-> 
-> Note that you also need to add validation support for this to std_validate_compound()
-> and possibly add initialization to std_init_compound() is v4l2-ctrls.c.
-
-The patch has validation for mastering display already. But I wonder do
-we really need this validation because CTA-861-G is more liberal about
-the values comparing with Rec. ITU-T H.265. Or the other option is to
-combine both of them?
-
-> 
-> Regards,
-> 
-> 	Hans
-> 
->> +#define V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY	0x0124
->> +
->> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_LOW	5
->> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH	37000
->> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW	5
->> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH	42000
->> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW	5
->> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH	37000
->> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW	5
->> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH	42000
->> +#define V4L2_HDR10_MASTERING_MAX_LUMA_LOW	50000
->> +#define V4L2_HDR10_MASTERING_MAX_LUMA_HIGH	100000000
->> +#define V4L2_HDR10_MASTERING_MIN_LUMA_LOW	1
->> +#define V4L2_HDR10_MASTERING_MIN_LUMA_HIGH	50000
->> +
->> +struct v4l2_ctrl_hdr10_mastering_display {
->> +	__u16 display_primaries_x[3];
->> +	__u16 display_primaries_y[3];
->> +	__u16 white_point_x;
->> +	__u16 white_point_y;
->> +	__u32 max_luminance;
->> +	__u32 min_luminance;
->> +};
->> +
->> +#endif
->> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
->> index 4fbace0fc7e5..81bd026fc1ea 100644
->> --- a/include/media/v4l2-ctrls.h
->> +++ b/include/media/v4l2-ctrls.h
->> @@ -19,6 +19,7 @@
->>   */
->>  #include <media/mpeg2-ctrls.h>
->>  #include <media/fwht-ctrls.h>
->> +#include <media/hdr10-ctrls.h>
->>  #include <media/h264-ctrls.h>
->>  #include <media/vp8-ctrls.h>
->>  #include <media/hevc-ctrls.h>
->> @@ -80,6 +81,8 @@ union v4l2_ctrl_ptr {
->>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hdr10_cll_info *p_hdr10_cll;
->> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
->>  	struct v4l2_area *p_area;
->>  	void *p;
->>  	const void *p_const;
->>
-> 
-
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index 61ed3f5ca219..8f0c4663167c 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -52,6 +52,7 @@
+ #define ETP_REPORT_ID		0x5D
+ #define ETP_REPORT_ID2		0x60	/* High precision report */
+ #define ETP_TP_REPORT_ID	0x5E
++#define ETP_TP_REPORT_ID2	0x5F
+ #define ETP_REPORT_ID_OFFSET	2
+ #define ETP_TOUCH_INFO_OFFSET	3
+ #define ETP_FINGER_DATA_OFFSET	4
+@@ -1076,6 +1077,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
+ 		elan_report_absolute(data, report, true);
+ 		break;
+ 	case ETP_TP_REPORT_ID:
++	case ETP_TP_REPORT_ID2:
+ 		elan_report_trackpoint(data, report);
+ 		break;
+ 	default:
+diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
+index 1820f1cfc1dc..1226d47ec3cf 100644
+--- a/drivers/input/mouse/elan_i2c_smbus.c
++++ b/drivers/input/mouse/elan_i2c_smbus.c
+@@ -45,6 +45,7 @@
+ #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
+ 
+ #define ETP_SMBUS_REPORT_LEN		32
++#define ETP_SMBUS_REPORT_LEN2		7
+ #define ETP_SMBUS_REPORT_OFFSET		2
+ #define ETP_SMBUS_HELLOPACKET_LEN	5
+ #define ETP_SMBUS_IAP_PASSWORD		0x1234
+@@ -497,7 +498,7 @@ static int elan_smbus_get_report(struct i2c_client *client,
+ 		return len;
+ 	}
+ 
+-	if (len != ETP_SMBUS_REPORT_LEN) {
++	if ((len != ETP_SMBUS_REPORT_LEN) && (len != ETP_SMBUS_REPORT_LEN2))  {
+ 		dev_err(&client->dev,
+ 			"wrong report length (%d vs %d expected)\n",
+ 			len, ETP_SMBUS_REPORT_LEN);
 -- 
-regards,
-Stan
+2.17.1
+
