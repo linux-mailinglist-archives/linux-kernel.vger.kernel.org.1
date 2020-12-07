@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E872D1501
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A9B2D14F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgLGPnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:43:12 -0500
-Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:56139 "EHLO
-        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726754AbgLGPnM (ORCPT
+        id S1726137AbgLGPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLGPmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:43:12 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id 1ECE2FA88F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:42:19 +0000 (GMT)
-Received: (qmail 27896 invoked from network); 7 Dec 2020 15:42:18 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 7 Dec 2020 15:42:18 -0000
-Date:   Mon, 7 Dec 2020 15:42:16 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH 0/4] Reduce worst-case scanning of runqueues in
- select_idle_sibling
-Message-ID: <20201207154216.GE3371@techsingularity.net>
-References: <20201207091516.24683-1-mgorman@techsingularity.net>
- <CAKfTPtC9At0Oej+u6-mtBdV6_vhFiNJGPQ-BFQc7RpUtDDixVA@mail.gmail.com>
+        Mon, 7 Dec 2020 10:42:16 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F40DC061749;
+        Mon,  7 Dec 2020 07:41:30 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id q3so9221124pgr.3;
+        Mon, 07 Dec 2020 07:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E6bwFpo35es8wLk5NhibYg+TeLN+z3hooUCzqmhyN1U=;
+        b=epAl91DNeg6fZtFYD67aKCCsc1e45j8LLu0urPe3RtMRICJgT8yIOmqvdiT9QTpk2q
+         4HqiE3YE7lbZxRjDxm5QHyb8nvpWaXBWXrBRe457xwlM23WlHLxIRzMhm3bdG9FTfps2
+         ZGm6azTvbvQ/mOr5QRVdaTKljQJfxzLaiiQAdov5bt2Vj17JlMp0FvgP54bIPZIJJd6S
+         h5mrxVR/c8ga3C9+mj9EZLRHJBk/zI0BDEu4IbRrJiUgZPh79OzfSMxwdxZVL0/hwflE
+         0EZ0P5hDyc5NR1YJuUzPpCjXqWWLnlgBWTm5kqvFPxNOdiu57dsOBvK1HAqL5jpOo1g/
+         kRFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E6bwFpo35es8wLk5NhibYg+TeLN+z3hooUCzqmhyN1U=;
+        b=W1Cr1EpgYBlwHmOmpD53O9Sf/KZ+EBRAWfkrZHxvfN9CtfX7McRzK6+jkx36RTXcjx
+         wCzdb28Mgz1nmwVbUyAB4LrGZIS0yhJbZ4zXsLiH7/4Zil6tDylqMOxtx43m7osRRI+q
+         wklM+WwCTjpuahr6hCu1/u+DjkO9uM4TgH2tT8rxuFq6dfW1SttqDEej287fXzQ7crOb
+         rY8c7IkwPSABsAMzpZFHHnCUMBdqfaHvMO/X7QnHSQD1LbZ3gkS1pEwjdVDBWJDtltTe
+         DUQrXg67F2ZO8kfjtXGkpRMPaM59eof9jxRWs24+WFJasDwQGTPX9+tIQI/Pvcjp6/ta
+         tlOw==
+X-Gm-Message-State: AOAM532FZahaPkDiDKWc8Z0iTduZGLuk7NGxNKIWFi8Cyqu4mu/zmj+k
+        CLIWDro2AtI8GOS7YXooGb7YuaQj08cCbaTqKAs=
+X-Google-Smtp-Source: ABdhPJy0J0wMIbx/uoMm5AY9VvNc+405O1p/i7YOAoUKvbaSg//wrHj2iKkiEZQO64u8lwSzUv6UkJyDyibKFQGLj0o=
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
+ 66-20020a6204450000b029019c162bbbefmr16587022pfe.40.1607355689471; Mon, 07
+ Dec 2020 07:41:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtC9At0Oej+u6-mtBdV6_vhFiNJGPQ-BFQc7RpUtDDixVA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201207112354.13884-1-info@metux.net>
+In-Reply-To: <20201207112354.13884-1-info@metux.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Dec 2020 17:42:18 +0200
+Message-ID: <CAHp75Vd_iiqTYvgD59C7j+btx70s_Ge0UC4JU2uPa33enFW08w@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers: gpio: put virtual gpio device into their own submenu
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 04:04:41PM +0100, Vincent Guittot wrote:
-> On Mon, 7 Dec 2020 at 10:15, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > This is a minimal series to reduce the amount of runqueue scanning in
-> > select_idle_sibling in the worst case.
-> >
-> > Patch 1 removes SIS_AVG_CPU because it's unused.
-> >
-> > Patch 2 improves the hit rate of p->recent_used_cpu to reduce the amount
-> >         of scanning. It should be relatively uncontroversial
-> >
-> > Patch 3-4 scans the runqueues in a single pass for select_idle_core()
-> >         and select_idle_cpu() so runqueues are not scanned twice. It's
-> >         a tradeoff because it benefits deep scans but introduces overhead
-> >         for shallow scans.
-> >
-> > Even if patch 3-4 is rejected to allow more time for Aubrey's idle cpu mask
-> 
-> patch 3 looks fine and doesn't collide with Aubrey's work. But I don't
-> like patch 4  which manipulates different cpumask including
-> load_balance_mask out of LB and I prefer to wait for v6 of Aubrey's
-> patchset which should fix the problem of possibly  scanning twice busy
-> cpus in select_idle_core and select_idle_cpu
-> 
+On Mon, Dec 7, 2020 at 1:29 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
+>
+> Since we already have a few virtual GPIO drivers, and more to come,
+> this category deserves its own submenu.
+>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
 
-Seems fair, we can see where we stand after V6 of Aubrey's work.  A lot
-of the motivation for patch 4 would go away if we managed to avoid calling
-select_idle_core() unnecessarily. As it stands, we can call it a lot from
-hackbench even though the chance of getting an idle core are minimal.
-
-Assuming I revisit it, I'll update the schedstat debug patches to include
-the times select_idle_core() starts versus how many times it fails and
-see can I think of a useful heuristic.
-
-I'll wait for more review on patches 1-3 and if I hear nothing, I'll
-resend just those.
-
-Thanks Vincent.
+You are not a first day contributor, where is the changelog?
 
 -- 
-Mel Gorman
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
