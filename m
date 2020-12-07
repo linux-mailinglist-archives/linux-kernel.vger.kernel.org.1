@@ -2,187 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EB12D0B97
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B11D2D0B95
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgLGIRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
+        id S1726274AbgLGIRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgLGIRT (ORCPT
+        with ESMTP id S1726016AbgLGIRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:17:19 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85342C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:16:39 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmBh8-0000Zr-Up; Mon, 07 Dec 2020 09:16:30 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmBh6-0004km-HV; Mon, 07 Dec 2020 09:16:28 +0100
-Date:   Mon, 7 Dec 2020 09:16:28 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
-References: <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
- <20201206141941.GA24807@gofer.mess.org>
+        Mon, 7 Dec 2020 03:17:14 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97F7C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:16:33 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id lt17so18245988ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 00:16:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iYj4pUoj9o5PR+qG7Qn3L1SJKXMPS3+hvYYnqb4yHOw=;
+        b=c8bMSHij6AKZgKH+1ByBckieZlo8OFHunwfNP3RwYtvl8jJLycmvKIxOaM4lp7R6Tq
+         J77atErU5l67mJKevaaZa/t/IxL7KDMZ+oVGF4ByZgjcBMPGpSjhDufp+mafUCxYHQHC
+         sPFSwK8FE75EGl7MdmqRDUtu8wNc6RyyOpGI2Z9EfTCLOX4DkcF1TlrPkfPThRdJkHpF
+         LADyRXTKZkRbxnRbIZtZAqhqgPW2NOSTwBqEm5j+vMd8zla2AkVtqu16osBQn2ebKEtE
+         hRS17c3Ls9p+CI9OZUI8M11tO35e98qpS75Ye1i3M7TuoWiQt9eYbbooJbgkXQq/0YEy
+         42Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iYj4pUoj9o5PR+qG7Qn3L1SJKXMPS3+hvYYnqb4yHOw=;
+        b=lLXGn98xLU0tDL3Y9HukT+YTemAGOVIQjLscC09rRtD/MHMrAydJQczAAzQhvmQ+Jm
+         iwIvsDCl5ct0faDSCunWtvYnD463ixMoywTPwdxr2/a6oMpItmCctR7vIA7h6LSExobM
+         o5hlabyVIhx0PjHL9HhvYcJx4RzJzPL42ixGz3rkA5p+C6iLvTfL6YAkxq9sDQteLxKy
+         zBQHb9b6vFZSoplX3E3Jf96ebvKN9nxWPocSnR5SP9wYeL5y059fgnUQ2AEX6yBte7sK
+         4zOejPe8+r1SgyeB9xeiRDs4jdU0Up89GmZdDrHnzkg/nHI0R2zw8s7REZIFM7lOGsFu
+         cKVw==
+X-Gm-Message-State: AOAM531ArisYt7vcg5GK7UEZ7hUx4DPHgZ7xByHPQUpDz0oufLv6Rm7H
+        VcXa7SZFgEiBW8aE5qLFgxxzqA==
+X-Google-Smtp-Source: ABdhPJwb4jRV2xylIOGlV+IbqS3THEEk1xv/TWj/PDOLR2zfUPpGUmwka3CjMKimmTAV6Dyou0TXtA==
+X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr1630369ejo.479.1607328992695;
+        Mon, 07 Dec 2020 00:16:32 -0800 (PST)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id n22sm12100137edr.11.2020.12.07.00.16.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 00:16:32 -0800 (PST)
+Date:   Mon, 7 Dec 2020 09:16:31 +0100
+From:   "javier.gonz@samsung.com" <javier@javigon.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201207081631.usapwn5jj35c5633@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <CH2PR04MB6522F1188557C829285ED5E8E7F10@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20201204144003.GA8868@redsun51.ssa.fujisawa.hgst.com>
+ <20201207074616.mocdy6m5qgsn6yqg@mpHalley>
+ <CH2PR04MB6522623991D84D67B13DDF66E7CE0@CH2PR04MB6522.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r7t4bbhedmu7hxrs"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201206141941.GA24807@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CH2PR04MB6522623991D84D67B13DDF66E7CE0@CH2PR04MB6522.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07.12.2020 08:06, Damien Le Moal wrote:
+>On 2020/12/07 16:46, javier.gonz@samsung.com wrote:
+>> On 04.12.2020 23:40, Keith Busch wrote:
+>>> On Fri, Dec 04, 2020 at 11:25:12AM +0000, Damien Le Moal wrote:
+>>>> On 2020/12/04 20:02, SelvaKumar S wrote:
+>>>>> This patchset tries to add support for TP4065a ("Simple Copy Command"),
+>>>>> v2020.05.04 ("Ratified")
+>>>>>
+>>>>> The Specification can be found in following link.
+>>>>> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+>>>>>
+>>>>> This is an RFC. Looking forward for any feedbacks or other alternate
+>>>>> designs for plumbing simple copy to IO stack.
+>>>>>
+>>>>> Simple copy command is a copy offloading operation and is  used to copy
+>>>>> multiple contiguous ranges (source_ranges) of LBA's to a single destination
+>>>>> LBA within the device reducing traffic between host and device.
+>>>>>
+>>>>> This implementation accepts destination, no of sources and arrays of
+>>>>> source ranges from application and attach it as payload to the bio and
+>>>>> submits to the device.
+>>>>>
+>>>>> Following limits are added to queue limits and are exposed in sysfs
+>>>>> to userspace
+>>>>> 	- *max_copy_sectors* limits the sum of all source_range length
+>>>>> 	- *max_copy_nr_ranges* limits the number of source ranges
+>>>>> 	- *max_copy_range_sectors* limit the maximum number of sectors
+>>>>> 		that can constitute a single source range.
+>>>>
+>>>> Same comment as before. I think this is a good start, but for this to be really
+>>>> useful to users and kernel components alike, this really needs copy emulation
+>>>> for drives that do not have a native copy feature, similarly to what write zeros
+>>>> handling for instance: if the drive does not have a copy command (simple copy
+>>>> for NVMe or XCOPY for scsi), then the block layer should issue read/write
+>>>> commands to seamlessly execute the copy. Otherwise, this will only serve a small
+>>>> niche for users and will not be optimal for FS and DM drivers that could be
+>>>> simplified with a generic block layer copy functionality.
+>>>>
+>>>> This is my 10 cents though, others may differ about this.
+>>>
+>>> Yes, I agree that copy emulation support should be included with the
+>>> hardware enabled solution.
+>>
+>> Keith, Damien,
+>>
+>> Can we do the block layer emulation with this patchset and then work in
+>> follow-up patchses on (i) the FS interface with F2FS as a first user and
+>> (ii) other HW accelerations such as XCOPY?
+>
+>The initial patchset supporting NVMe simple copy and emulation copy, all under
+>an API that probably will be similar that of dm-kcopyd will cover all block
+>devices. Other hardware native support for copy functions such as scsi extended
+>copy can be added later under the hood without any API changes (or minimal changes).
 
---r7t4bbhedmu7hxrs
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sounds good. That we can do. We will add a new patch for this.
 
-On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
-> Hello Uwe,
->=20
-> On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
-> > > What real life uses-cases are there for round down? If you want to ro=
-und
-> > > down, is there any need for round up?
-> >=20
-> > The scenario I have in mind is for driving a motor. I have to admit
-> > however that usually the period doesn't matter much and it's the
-> > duty_cycle that defines the motor's speed. So for this case the
-> > conservative behaviour is round-down to not make the motor run faster
-> > than expected.
->=20
-> I am reading here that for driving motors, only the duty cycle matters,
-> not the period.
+>
+>I am not sure what you mean by "FS interface for F2FS": the block layer API for
+>this copy functionality will be what F2FS (and other FSes) will call. That is
+>the interface, no ?
 
-There is an upper limit (usually around 1 ms) for the period, but if you
-choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
+Essentially yes.. I mean adding the F2FS logic and potentially some
+helpers to the block layer to aid GC.
 
-@Thierry: Do you have further use cases in mind?
+>
+>> For XCOPY, I believe we need to have a separate discussion as much works
+>> is already done that we should align to.
+>
+>I think Martin (added to this thread) and others have looked into it but I do
+>not think that anything made it into the kernel yet.
 
-> > For other usecases (fan, backlight, LED) exactness typically doesn't
-> > matter that much.
->=20
-> So, the use-cases you have are driving motor, fan, backlight, and led.
-> And in all these cases the exact Hz does not matter.
->=20
-> The only uses case where the exact Hz does matter is pwm-ir-tx.=20
->=20
-> So, I gather there are no use-cases for round-down. Yes, should round-down
-> be needed, then this is more difficult to implement if the driver always
-> does a round-closest. But, since there is no reason to have round-down,
-> this is all academic.
->=20
-> Your policy of forcing new pwm drivers to use round-down is breaking
-> pwm-ir-tx.
-
-So you're indeed suggesting that the "right" rounding strategy for
-lowlevel drivers should be:
-
- - Use the period length closest to the requested period (in doubt round
-   down?)
- - With the chosen period length use the biggest duty_cycle not bigger
-   than the requested duty_cycle.
-
-While this seems technically fine I think for maintenance this is a
-nightmare.
-
-My preference would be to stick to the rounding strategy we used so far
-(i.e.:
-
- - Use the biggest period length not bigger than the requested period
- - With the chosen period length use the biggest duty_cycle not bigger
-   than the requested duty_cycle.
-
-) and for pwm-ir-tx add support to the PWM API to still make it possible
-(and easy) to select the best setting.
-
-The reasons why I think that this rounding-down strategy is the best
-are (in order of importance):
-
- - It is easier to implement correctly [1]
- - Same rounding method for period and duty cycle
- - most drivers already do this (I think)
-
-The (IMHO nice) result would then mean:
-
- - All consumers can get the setting they want; and
- - Code in lowlevel drivers is simple and the complexity is in common
-   code and so a single place.
-
-And it would also allow the pwm-ir-tx driver to notice if the PWM to be
-used can for example only support frequencies under 400 kHz.
-
-Best regards
-Uwe
-
-[1] Consider a PWM with a parent frequency of 66 MHz, to select the
-    period you can pick an integer divider "div" resulting in the period
-    4096 / (pclk * d). So the obvious implementation for round-nearest
-    would be:
-
-    	pclk =3D clk_get_rate(myclk);
-	div =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC * 4096, targetperiod * pclk);
-
-    , right?
-
-    With targetperiod =3D 2641 ns this picks div =3D 23 and so a period of
-    2698.2872200263505 ns (delta =3D 57.2872200263505 ns).
-    The optimal divider however is div =3D 24. (implemented period =3D
-    2585.8585858585857 ns, delta =3D 55.14141414141448 ns)
-
-    For round-down the correct implementation is:
-
-    	pclk =3D clk_get_rate(myclk);
-	div =3D DIV_ROUND_UP(NSEC_PER_SEC * 4096, targetperiod * pclk);
-
-    Exercise for the reader: Come up with a correct implementation for
-    "round-nearest" and compare its complexity to the round-down code.
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---r7t4bbhedmu7hxrs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/N5NkACgkQwfwUeK3K
-7AmLpgf+Py+CFKFZtAi0EaZORlcfGV4BYD8OXxpWshzSlh6wvKWG23vobo2NLu1e
-ZcJ+MuEwIqQvH4KlxSOPEBR/JbTIBECwNO/VZ4lG3GDJGoMvPm1M5FYZGdT4YaHK
-u/R4JHtAXajn77RjlQtJv9r2L3ZZJznVVGhkOJfpYMXeCY0wmIL7uiqMey0UOFYQ
-PGfR4oev1WglnyNXZD2vruMW6k4Oj9HfvB5pCxLdF82qqXo3VE9Vf0vGAsL3POay
-cR3rtka0wut1GTtuo1ZChEbvywGQiyMMM8OU6Zq/clRBJvxwjhmiX3NKinfzZ3jd
-/pOFxeyIxM6QzrwbVKbKtCKTO3F/iQ==
-=ukN6
------END PGP SIGNATURE-----
-
---r7t4bbhedmu7hxrs--
+Exactly. Looking at some of the code posted through time and recalling
+the discussions at LSF/MM, seems like there are a number of things we
+are not addressing here that could be incorporated down the road, such
+as dedicated syscalls / extensions, multi namespace / device support,
+etc.
+>
