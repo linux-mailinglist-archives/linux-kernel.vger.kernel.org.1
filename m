@@ -2,229 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E35D2D192F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5362D1937
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgLGTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgLGTKL (ORCPT
+        id S1726660AbgLGTNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:13:06 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:39296 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgLGTNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:10:11 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EFEC061257
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:09:20 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id l9so4714267wrt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:09:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jCh3YkTolPPOUud4un2kHWaTqPIRbwaR3OZE9Pv+gLk=;
-        b=fyN6Oo4AHvNfExKI3HUy9bxEsBXaospDterXXGQ6XkEsXSMLmrDW9PFE8cyudstWjn
-         i7NX9DAyhd8HWewIznJzD+NCzyZs1yOEZnt7GMC3tzwwuMtD9Ri1T1+EkOsxuxIwE2Ir
-         9y7rdQXBfmDpUOkvyEjtCdP5bS3shDIzdayYjJQkk8+GCd+8EQi93zIUkp28Iju7Xjbp
-         Pe60IVcvvmJjwpQ6jLmUloQ6u0y6BgibxHIp1iOZ9GlHsWeaMLcYW8oTarxMGOrBnYtw
-         nhUvV6IXYS19IasG/g28MZxh25CHTs0Smjr/JoAqsurG15MDDFLkoktuIA19MN65y2KO
-         66FQ==
+        Mon, 7 Dec 2020 14:13:06 -0500
+Received: by mail-oi1-f195.google.com with SMTP id v85so6045707oia.6;
+        Mon, 07 Dec 2020 11:12:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=jCh3YkTolPPOUud4un2kHWaTqPIRbwaR3OZE9Pv+gLk=;
-        b=A8VHodbcs3pXUyo/wl6cTc0U+vIqcRAjOMXU4Dt1FTkjDWR6aIiFZwWONjVUF+Xvkn
-         Epeyg5RBH94TtwK9iVNk6xySu0PY6Fg0M6fM0SLDeXuZxCqywvQ8Qpn94U9ry0ior+ni
-         o9rDPK7jVkMVmUh29AUrj2t3Bqc5iQH3uKD3atzdFUsBpT7Une3EOeNgl0nATCk4hAGk
-         3rEiGXq6N1Yt+sA5VfILdCl7mdZUhp4+5eSBasGROJ8w9dMC7GwhLdbk8AgTuldsnToM
-         MskFtezGTck9WRxVnHmKjGam2yojmuhld/kw/+JAoUh1SWcP8naA7pxt5U+19tURV/JS
-         LZfg==
-X-Gm-Message-State: AOAM531m9yFhzrTFdmD/5iyCbSUyDCihbecFkORihMUUC1yeSrqkTMjv
-        LKozo2rEiWrZTJAeplSXdARhgdri+eTKWw==
-X-Google-Smtp-Source: ABdhPJyhAG6yZyaRuAu0PqhYSC+X7/QFU9aFw3pipwinmMKg36yA1qqPssLj5eC550qN+GaWP6S3CQ==
-X-Received: by 2002:adf:efc4:: with SMTP id i4mr20729608wrp.323.1607368159250;
-        Mon, 07 Dec 2020 11:09:19 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
-        by smtp.gmail.com with ESMTPSA id v1sm16335827wrr.48.2020.12.07.11.09.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8SHydtJy4B3UMw3R1X7HeF54ElAdK6mKxbhCrnomd5Q=;
+        b=kf4DjB58l02T7qrDiBCoWVZ3IiINYjISsLT0HOceyJ7ObkuNgINW6BIOMfytlgWYhe
+         a8f+G5SfgqYws2Gqk6yjBJTPeyvpBWfUC/jPMvxI3K+eGUDTVfKvAeQqsTRHYowSlPme
+         kUlT7dXyX8Wy5vdyFS9GyP5R4Qd9QJJwL68erDx8vAeDs9ZnIuJI7ctCCA3C3GRn2iP9
+         xuP/S8tTOUhQbEbyoEqsRrq8hyL1VPVhTHmDFYJtW+ru6PkZPs0ZVBVMt3CGU5m88PEB
+         qXF3S61ZJ1N9OOi7dKEWwp1deCt+lYwo0O/36Pk0k0HtfVJIwot26I/3PEGBmVvDC1GF
+         qiFw==
+X-Gm-Message-State: AOAM532QSK5EI12Dd7hc236KRQa7GvlYPbpbqEdbE+fak/PDbdSwFVp0
+        +JWKCpLfpWeWNMNX05Y1Gw==
+X-Google-Smtp-Source: ABdhPJxgi/17L27QdomEpugFdHxI2nUtjU+HIG03xT2QjHS4m2+jGomkvAidntLme6xWFNc1IL3xow==
+X-Received: by 2002:aca:5291:: with SMTP id g139mr229980oib.63.1607368344472;
+        Mon, 07 Dec 2020 11:12:24 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z14sm476443oot.5.2020.12.07.11.12.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:09:18 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v2 4/4] thermal/core: Remove ms based delay fields
-Date:   Mon,  7 Dec 2020 20:09:02 +0100
-Message-Id: <20201207190902.30464-4-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201207190902.30464-1-daniel.lezcano@linaro.org>
-References: <20201207190902.30464-1-daniel.lezcano@linaro.org>
+        Mon, 07 Dec 2020 11:12:23 -0800 (PST)
+Received: (nullmailer pid 643080 invoked by uid 1000);
+        Mon, 07 Dec 2020 19:12:22 -0000
+Date:   Mon, 7 Dec 2020 13:12:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan McDowell <noodles@earth.li>
+Cc:     Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dmaengine: Convert Qualcomm ADM bindings to
+ yaml
+Message-ID: <20201207191222.GA629533@robh.at.kernel.org>
+References: <20201115181242.GA30004@earth.li>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201115181242.GA30004@earth.li>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code does no longer use the ms unit based fields to set the
-delays as they are replaced by the jiffies.
+On Sun, Nov 15, 2020 at 06:12:42PM +0000, Jonathan McDowell wrote:
+> Converts the device tree bindings for the Qualcomm Application Data
+> Mover (ADM) DMA controller over to YAML schemas.
+> 
+> Signed-off-by: Jonathan McDowell <noodles@earth.li>
+> ---
+>  .../devicetree/bindings/dma/qcom,adm.yaml     | 102 ++++++++++++++++++
+>  .../devicetree/bindings/dma/qcom_adm.txt      |  61 -----------
+>  2 files changed, 102 insertions(+), 61 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/dma/qcom,adm.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_adm.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/qcom,adm.yaml b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> new file mode 100644
+> index 000000000000..353d85d3326d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/qcom,adm.yaml
+> @@ -0,0 +1,102 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/qcom,adm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: QCOM ADM DMA Controller
+> +
+> +maintainers:
+> +  - Jonathan McDowell <noodles@earth.li>
+> +
+> +description: |
+> +  QCOM Application Data Mover (ADM) DMA controller found in the MSM8x60
+> +  and IPQ/APQ8064 platforms.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: qcom,adm
 
-Remove them and replace their user to use the jiffies version instead.
+Needs SoC specific compatible(s).
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/platform/x86/acerhdf.c                     | 3 ++-
- drivers/thermal/da9062-thermal.c                   | 4 ++--
- drivers/thermal/gov_power_allocator.c              | 2 +-
- drivers/thermal/thermal_core.c                     | 2 +-
- drivers/thermal/thermal_core.h                     | 2 --
- drivers/thermal/thermal_sysfs.c                    | 2 +-
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 6 ++++--
- include/linux/thermal.h                            | 7 -------
- 8 files changed, 11 insertions(+), 17 deletions(-)
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      Address range for DMA registers
 
-diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
-index 7b26f601b407..b7dbcf6be13e 100644
---- a/drivers/platform/x86/acerhdf.c
-+++ b/drivers/platform/x86/acerhdf.c
-@@ -336,7 +336,8 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
- 			pr_notice("interval changed to: %d\n", interval);
- 
- 		if (thermal)
--			thermal->polling_delay_ms = interval*1000;
-+			thermal->polling_delay_jiffies =
-+				msecs_to_jiffies(interval * 1000);
- 
- 		prev_interval = interval;
- 	}
-diff --git a/drivers/thermal/da9062-thermal.c b/drivers/thermal/da9062-thermal.c
-index ebb3d0b4a5be..180edec34e07 100644
---- a/drivers/thermal/da9062-thermal.c
-+++ b/drivers/thermal/da9062-thermal.c
-@@ -95,7 +95,7 @@ static void da9062_thermal_poll_on(struct work_struct *work)
- 		thermal_zone_device_update(thermal->zone,
- 					   THERMAL_EVENT_UNSPECIFIED);
- 
--		delay = msecs_to_jiffies(thermal->zone->passive_delay_ms);
-+		delay = thermal->zone->passive_delay_jiffies;
- 		queue_delayed_work(system_freezable_wq, &thermal->work, delay);
- 		return;
- 	}
-@@ -245,7 +245,7 @@ static int da9062_thermal_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev,
- 		"TJUNC temperature polling period set at %d ms\n",
--		thermal->zone->passive_delay_ms);
-+		jiffies_to_msecs(thermal->zone->passive_delay_jiffies));
- 
- 	ret = platform_get_irq_byname(pdev, "THERMAL");
- 	if (ret < 0) {
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index f7a663f698d4..f8c3d1e40b86 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -258,7 +258,7 @@ static u32 pid_controller(struct thermal_zone_device *tz,
- 	 * power being applied, slowing down the controller)
- 	 */
- 	d = mul_frac(tz->tzp->k_d, err - params->prev_err);
--	d = div_frac(d, tz->passive_delay_ms);
-+	d = div_frac(d, jiffies_to_msecs(tz->passive_delay_jiffies));
- 	params->prev_err = err;
- 
- 	power_range = p + i + d;
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 16ef5d652d85..aff15c6b1c61 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -313,7 +313,7 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
- 
- 	if (!stop && tz->passive)
- 		thermal_zone_device_set_polling(tz, tz->passive_delay_jiffies);
--	else if (!stop && tz->polling_delay_ms)
-+	else if (!stop && tz->polling_delay_jiffies)
- 		thermal_zone_device_set_polling(tz, tz->polling_delay_jiffies);
- 	else
- 		thermal_zone_device_set_polling(tz, 0);
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 2c9551ed5ef8..5baa308ee7a5 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -131,7 +131,6 @@ void thermal_zone_set_trips(struct thermal_zone_device *tz);
- static inline void thermal_zone_set_passive_delay(
- 	struct thermal_zone_device *tz, int delay_ms)
- {
--	tz->passive_delay_ms = delay_ms;
- 	tz->passive_delay_jiffies = msecs_to_jiffies(delay_ms);
- 	if (delay_ms > 1000)
- 		tz->passive_delay_jiffies = round_jiffies(tz->passive_delay_jiffies);
-@@ -140,7 +139,6 @@ static inline void thermal_zone_set_passive_delay(
- static inline void thermal_zone_set_polling_delay(
- 	struct thermal_zone_device *tz, int delay_ms)
- {
--	tz->polling_delay_ms = delay_ms;
- 	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
- 	if (delay_ms > 1000)
- 		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index 9598b288a0a1..8532b1dd0608 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -233,7 +233,7 @@ passive_store(struct device *dev, struct device_attribute *attr,
- 		return -EINVAL;
- 
- 	if (state && !tz->forced_passive) {
--		if (!tz->passive_delay_ms)
-+		if (!tz->passive_delay_jiffies)
- 			thermal_zone_set_passive_delay(tz, 1000);
- 		thermal_zone_device_rebind_exception(tz, "Processor",
- 						     sizeof("Processor"));
-diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-index 4baff19e1142..f84375865c97 100644
---- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-@@ -166,6 +166,7 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
- 			     char *domain)
- {
- 	struct ti_thermal_data *data;
-+	int interval;
- 
- 	data = ti_bandgap_get_sensor_data(bgp, id);
- 
-@@ -183,9 +184,10 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
- 		return PTR_ERR(data->ti_thermal);
- 	}
- 
-+	interval = jiffies_to_msecs(data->ti_thermal->polling_delay_jiffies);
-+
- 	ti_bandgap_set_sensor_data(bgp, id, data);
--	ti_bandgap_write_update_interval(bgp, data->sensor_id,
--					data->ti_thermal->polling_delay_ms);
-+	ti_bandgap_write_update_interval(bgp, data->sensor_id, interval);
- 
- 	return 0;
- }
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 5dd9bdb6c6ad..f23a388ded15 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -116,13 +116,8 @@ struct thermal_cooling_device {
-  * @devdata:	private pointer for device private data
-  * @trips:	number of trip points the thermal zone supports
-  * @trips_disabled;	bitmap for disabled trips
-- * @passive_delay_ms:	number of milliseconds to wait between polls when
-- *			performing passive cooling.
-  * @passive_delay_jiffies: number of jiffies to wait between polls when
-  *			performing passive cooling.
-- * @polling_delay_ms:	number of milliseconds to wait between polls when
-- *			checking whether trip points have been crossed (0 for
-- *			interrupt driven systems)
-  * @polling_delay_jiffies: number of jiffies to wait between polls when
-  *			checking whether trip points have been crossed (0 for
-  *			interrupt driven systems)
-@@ -164,8 +159,6 @@ struct thermal_zone_device {
- 	void *devdata;
- 	int trips;
- 	unsigned long trips_disabled;	/* bitmap for disabled trips */
--	int passive_delay_ms;
--	int polling_delay_ms;
- 	int passive_delay_jiffies;
- 	int polling_delay_jiffies;
- 	int temperature;
--- 
-2.17.1
+Drop description. Doesn't really add anything specific to this binding.
 
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      Should contain one interrupt shared by all channels
+
+Drop.
+
+> +
+> +  "#dma-cells":
+> +    const: 2
+> +    description:
+> +      First cell denotes the channel number.  Second cell denotes CRCI
+> +      (client rate control interface) flow control assignment. If no
+> +      flow control is required, use 0.
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    description:
+> +      Should contain the core clock and interface clock.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core
+> +      - const: iface
+> +
+> +  resets:
+> +    maxItems: 4
+> +    description:
+> +      Must contain an entry for each entry in reset names.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: clk
+> +      - const: c0
+> +      - const: c1
+> +      - const: c2
+> +
+> +  qcom,ee:
+> +    maxItems: 1
+
+maxItems is for arrays and this is a scalar.
+
+> +    description:
+> +      Indicates the security domain identifier used in the secure world.
+
+How do I get 'ee' from this? Is this something other QCom blocks need?
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +required:
+> +  - "#dma-cells"
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - qcom,ee
+> +  - resets
+> +  - reset-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/reset/qcom,gcc-ipq806x.h>
+> +
+> +    adm_dma: dma@18300000 {
+
+Drop unused labels.
+
+> +             compatible = "qcom,adm";
+> +             reg = <0x18300000 0x100000>;
+> +             interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+> +             #dma-cells = <2>;
+> +
+> +             clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> +             clock-names = "core", "iface";
+> +
+> +             resets = <&gcc ADM0_RESET>,
+> +                      <&gcc ADM0_C0_RESET>,
+> +                      <&gcc ADM0_C1_RESET>,
+> +                      <&gcc ADM0_C2_RESET>;
+> +             reset-names = "clk", "c0", "c1", "c2";
+> +             qcom,ee = <0>;
+> +    };
+> +
+> +...
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_adm.txt b/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> deleted file mode 100644
+> index 9d3b2f917b7b..000000000000
+> --- a/Documentation/devicetree/bindings/dma/qcom_adm.txt
+> +++ /dev/null
+> @@ -1,61 +0,0 @@
+> -QCOM ADM DMA Controller
+> -
+> -Required properties:
+> -- compatible: must contain "qcom,adm" for IPQ/APQ8064 and MSM8960
+> -- reg: Address range for DMA registers
+> -- interrupts: Should contain one interrupt shared by all channels
+> -- #dma-cells: must be <2>.  First cell denotes the channel number.  Second cell
+> -  denotes CRCI (client rate control interface) flow control assignment.
+> -- clocks: Should contain the core clock and interface clock.
+> -- clock-names: Must contain "core" for the core clock and "iface" for the
+> -  interface clock.
+> -- resets: Must contain an entry for each entry in reset names.
+> -- reset-names: Must include the following entries:
+> -  - clk
+> -  - c0
+> -  - c1
+> -  - c2
+> -- qcom,ee: indicates the security domain identifier used in the secure world.
+> -
+> -Example:
+> -		adm_dma: dma@18300000 {
+> -			compatible = "qcom,adm";
+> -			reg = <0x18300000 0x100000>;
+> -			interrupts = <0 170 0>;
+> -			#dma-cells = <2>;
+> -
+> -			clocks = <&gcc ADM0_CLK>, <&gcc ADM0_PBUS_CLK>;
+> -			clock-names = "core", "iface";
+> -
+> -			resets = <&gcc ADM0_RESET>,
+> -				<&gcc ADM0_C0_RESET>,
+> -				<&gcc ADM0_C1_RESET>,
+> -				<&gcc ADM0_C2_RESET>;
+> -			reset-names = "clk", "c0", "c1", "c2";
+> -			qcom,ee = <0>;
+> -		};
+> -
+> -DMA clients must use the format descripted in the dma.txt file, using a three
+> -cell specifier for each channel.
+> -
+> -Each dmas request consists of 3 cells:
+> - 1. phandle pointing to the DMA controller
+> - 2. channel number
+> - 3. CRCI assignment, if applicable.  If no CRCI flow control is required, use 0.
+> -    The CRCI is used for flow control.  It identifies the peripheral device that
+> -    is the source/destination for the transferred data.
+> -
+> -Example:
+> -
+> -	spi4: spi@1a280000 {
+> -		spi-max-frequency = <50000000>;
+> -
+> -		pinctrl-0 = <&spi_pins>;
+> -		pinctrl-names = "default";
+> -
+> -		cs-gpios = <&qcom_pinmux 20 0>;
+> -
+> -		dmas = <&adm_dma 6 9>,
+> -			<&adm_dma 5 10>;
+> -		dma-names = "rx", "tx";
+> -	};
+> -- 
+> 2.29.2
+> 
