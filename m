@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2A72D1A11
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E082D1A15
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgLGTyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:54:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGTyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:54:44 -0500
-Date:   Mon, 7 Dec 2020 21:53:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607370844;
-        bh=BdQC2xqiYbPynB6ee1sdspvA3uTspzSbKGlxef667To=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kbxSe+Y/JdDEtvEzmtinEDS3lvUlkk8ZbniyyDKsnPBeNYiZjGeBQwY9I59c4NxFk
-         v+6syZLGTWmP55ItOhK3KMVEHhOFnYu6vYJhz4XikpGFjJ6zFxqtrhizL8gMNy+cs9
-         7rZFF2ZlqVeRNSXiF+jMYZPEwQcy8uvGzhjWOgZZH+9Pco+xh2oaqSivE8USm+ygTo
-         QGA1K5R+mybGUTwhITOTadiNOwZp8JhnmZakqCD6TznNb4+oIQvM1ozdjalRxapshX
-         +VISJ1RQnvrPgSG/v+qE8DwS0ufYFF7OOfJd6iQn9LU9uErqg9Hfi7TnBskMmlkUpl
-         PH2gy5ASiwbpA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 07/17] driver core: Add fwnode_init()
-Message-ID: <20201207195357.GF693271@unreal>
-References: <20201121020232.908850-1-saravanak@google.com>
- <20201121020232.908850-8-saravanak@google.com>
- <20201206072621.GA687065@unreal>
- <CAGETcx9L0f5HPgunTf_WRsr9yeaYK1Ku5ESzeb0A1pkn3Yy2aw@mail.gmail.com>
+        id S1726788AbgLGTze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:55:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725947AbgLGTze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 14:55:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607370847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tFrKOV1BLc45Eb5xzztDBxsVCtCYfxdlUliSYWsrF50=;
+        b=WdQDAzjHG2dLqmbF/nSvFOE2GXGf57VasnT05nwnQtSYviAzdkneH65+ccMK/xcbj7aqqq
+        TNvXl9l7m/CGmtMc0pQD+S/Zt6Afrz8ayOrbtikVXkWpKGV9UoRq79U9S1fYZ2xVlxFu+i
+        enmIO9ou/jNKad8m98qcaBJtDIboORw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-9JQsb76OP-uKbg4ike39rQ-1; Mon, 07 Dec 2020 14:54:06 -0500
+X-MC-Unique: 9JQsb76OP-uKbg4ike39rQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78714192D787;
+        Mon,  7 Dec 2020 19:54:04 +0000 (UTC)
+Received: from krava (unknown [10.40.192.62])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 408241001E73;
+        Mon,  7 Dec 2020 19:53:59 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 20:53:58 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Budankov <abudankov@huawei.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 3/3] perf tools: Allow to list events via control file
+Message-ID: <20201207195358.GB4103648@krava>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-4-jolsa@kernel.org>
+ <20201207162806.GE125383@kernel.org>
+ <ebfd55bc-9118-920e-3ffd-0c24833c08b9@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx9L0f5HPgunTf_WRsr9yeaYK1Ku5ESzeb0A1pkn3Yy2aw@mail.gmail.com>
+In-Reply-To: <ebfd55bc-9118-920e-3ffd-0c24833c08b9@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:25:15AM -0800, Saravana Kannan wrote:
-> On Sat, Dec 5, 2020 at 11:26 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Nov 20, 2020 at 06:02:22PM -0800, Saravana Kannan wrote:
-> > > There are multiple locations in the kernel where a struct fwnode_handle
-> > > is initialized. Add fwnode_init() so that we have one way of
-> > > initializing a fwnode_handle.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > ---
-> > >  drivers/acpi/property.c         | 2 +-
-> > >  drivers/acpi/scan.c             | 2 +-
-> > >  drivers/base/swnode.c           | 2 +-
-> > >  drivers/firmware/efi/efi-init.c | 8 ++++----
-> > >  include/linux/fwnode.h          | 6 ++++++
-> > >  include/linux/of.h              | 2 +-
-> > >  kernel/irq/irqdomain.c          | 2 +-
-> > >  7 files changed, 15 insertions(+), 9 deletions(-)
-> >
-> > In this series, I didn't find any extension of fwnode_init() to be it more
-> > than simple assignment. This change looks to me like unnecessary churn and
-> > obfuscation rather than improvement.
-> >
-> > "...ops = &...;" is pretty standard in the kernel to initialize ops
-> > structures.
->
-> Subsequent patches make fwnode_init() do more stuff.
+On Mon, Dec 07, 2020 at 08:09:06PM +0300, Alexei Budankov wrote:
 
-But not in this series, right?
+SNIP
 
-Thanks
+> > sched:sched_move_numa: type: 2, size: 120, config: 0x12c, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> > sched:sched_stick_numa: type: 2, size: 120, config: 0x12b, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> > sched:sched_swap_numa: type: 2, size: 120, config: 0x12a, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> > sched:sched_wake_idle_without_ipi: type: 2, size: 120, config: 0x129, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> > # Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
+> > [acme@five ~]$
+> > 
+> > Also I think we should use 'evlist' instead of 'list', to be consistent.
+> 
+> FWIW,
+> 
+> Or may be even name the command starting with a verb like 'list_events'
 
->
-> -Saravana
+I think evlist is better because there's 'perf evlist' command
+
+thanks,
+jirka
+
