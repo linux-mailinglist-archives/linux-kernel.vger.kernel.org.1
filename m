@@ -2,157 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5B82D10CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04522D10CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgLGMqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:46:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:13302 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLGMqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:46:34 -0500
-IronPort-SDR: cnOsql8PLSohbGzBapKpFP6nayEoxa6CkOJHFuqQETKJEu7nEEIu4Zn98+m3oSV7M0APoSC45s
- l7sNfi6Y4lSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="170182999"
-X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
-   d="scan'208";a="170182999"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 04:44:48 -0800
-IronPort-SDR: KIcPa1m/tdFSrCCg+HZ9wcNpGF/RBbY/5Xg1Ca101JRRKwiOb/+WF10Wk62CakzdO2ew9KNkf3
- A/QkDatczTeA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
-   d="scan'208";a="436691903"
-Received: from cvg-ubt08.iil.intel.com (HELO cvg-ubt08.me-corp.lan) ([10.185.176.12])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Dec 2020 04:44:41 -0800
-From:   Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        id S1725863AbgLGMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:45:50 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8720 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLGMpt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:45:49 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqNL060spzkmlP;
+        Mon,  7 Dec 2020 20:44:24 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
+ 20:44:56 +0800
+Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
+To:     Serge Semin <fancer.lancer@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [RFC PATCH v2] do_exit(): panic() recursion detected
-Date:   Mon,  7 Dec 2020 14:44:33 +0200
-Message-Id: <20201207124433.4017265-1-vladimir.kondratiev@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <bgolaszewski@baylibre.com>, <linus.walleij@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
+ <20201130112250.GK4077@smile.fi.intel.com>
+ <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
+ <20201205221522.ifjravnir5bzmjff@mobilestation>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <a25a0eaf-f4ce-b2db-dea2-667fac62985f@huawei.com>
+Date:   Mon, 7 Dec 2020 20:44:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
+In-Reply-To: <20201205221522.ifjravnir5bzmjff@mobilestation>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recursive do_exit() is symptom of compromised kernel integrity.
-For safety critical systems, it may be better to
-panic() in this case to minimize risk.
 
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
-Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
----
- Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
- include/linux/kernel.h                          | 1 +
- kernel/exit.c                                   | 7 +++++++
- kernel/sysctl.c                                 | 9 +++++++++
- 4 files changed, 23 insertions(+)
+On 2020/12/6 6:15, Serge Semin wrote:
+> On Tue, Dec 01, 2020 at 04:59:21PM +0800, luojiaxing wrote:
+>> On 2020/11/30 19:22, Andy Shevchenko wrote:
+>>> On Mon, Nov 30, 2020 at 05:36:19PM +0800, Luo Jiaxing wrote:
+>>>> The mask and unmask registers are not configured in dwapb_irq_enable() and
+>>>> dwapb_irq_disable(). In the following situations, the IRQ will be masked by
+>>>> default after the IRQ is enabled:
+>>>>
+>>>> mask IRQ -> disable IRQ -> enable IRQ
+>>>>
+>>>> In this case, the IRQ status of GPIO controller is inconsistent with it's
+>>>> irq_data too. For example, in __irq_enable(), IRQD_IRQ_DISABLED and
+>>>> IRQD_IRQ_MASKED are both clear, but GPIO controller do not perform unmask.
+>>> Sounds a bit like a papering over the issue which is slightly different.
+>>> Can you elaborate more, why ->irq_mask() / ->irq_unmask() are not being called?
+>>
+>> Sure, The basic software invoking process is as follows:
+>>
+>> Release IRQ:
+>> free_irq() -> __free_irq() -> irq_shutdown() ->__irq_disable()
+>>
+>> Disable IRQ:
+>> disable_irq() -> __disable_irq_nosync() -> __disable_irq -> irq_disable ->
+>> __irq_disable()
+>>
+>> As shown before, both will call __irq_disable(). The code of it is as
+>> follows:
+>>
+>> if (irqd_irq_disabled(&desc->irq_data)) {
+>>      if (mask)
+>>          mask_irq(desc);
+>>
+>> } else {
+>>          irq_state_set_disabled(desc);
+>>              if (desc->irq_data.chip->irq_disable) {
+>> desc->irq_data.chip->irq_disable(&desc->irq_data);
+>>                  irq_state_set_masked(desc);
+>>              } else if (mask) {
+>>                  mask_irq(desc);
+>>      }
+>> }
+>>
+>> Because gpio-dwapb.c provides the hook function of irq_disable,
+>> __irq_disable() will directly calls chip->irq_disable() instead of
+>> mask_irq().
+>>
+>> For irq_enable(), it's similar and the code is as follows:
+>>
+>> if (!irqd_irq_disabled(&desc->irq_data)) {
+>>      unmask_irq(desc);
+>> } else {
+>>      irq_state_clr_disabled(desc);
+>>      if (desc->irq_data.chip->irq_enable) {
+>> desc->irq_data.chip->irq_enable(&desc->irq_data);
+>>          irq_state_clr_masked(desc);
+>>      } else {
+>>          unmask_irq(desc);
+>>      }
+>> }
+>>
+>> Similarly, because gpio-dwapb.c provides the hook function of irq_enable,
+>> irq_enable() will directly calls chip->irq_enable() but does not call
+>> unmask_irq().
+>>
+>>
+>> Therefore, the current handle is as follows:
+>>
+>> API of IRQ:        |   mask_irq()             | disable_irq()
+>> |    enable_irq()
+>>
+>> gpio-dwapb.c:  |   chip->irq_mask()   | chip->irq_diable()   |
+>> chip->irq_enable()
+>>
+>> I do not know why irq_enable() only calls chip->irq_enable(). However, the
+>> code shows that irq_enable() clears the disable and masked flags in the
+>> irq_data state.
+>>
+>> Therefore, for gpio-dwapb.c, I thinks ->irq_enable also needs to clear the
+>> disable and masked flags in the hardware register.
+>>
+> Hmm, that sounds like a problem, but the explanation is a bit unclear
+> to me. AFAICS you are saying that the only callbacks which are
+> called during the IRQ request/release are the irq_enable(), right?
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 44fde25bb221..6e12a6804557 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3508,6 +3508,12 @@
- 			bit 4: print ftrace buffer
- 			bit 5: print all printk messages in buffer
- 
-+	panic_on_exit_recursion
-+			panic() when do_exit() recursion detected, rather then
-+			try to stay running whenever possible.
-+			Useful on safety critical systems; re-entry in do_exit
-+			is a symptom of compromised kernel integrity.
-+
- 	panic_on_taint=	Bitmask for conditionally calling panic() in add_taint()
- 			Format: <hex>[,nousertaint]
- 			Hexadecimal bitmask representing the set of TAINT flags
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2f05e9128201..5afb20534cb2 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -539,6 +539,7 @@ extern int sysctl_panic_on_rcu_stall;
- extern int sysctl_panic_on_stackoverflow;
- 
- extern bool crash_kexec_post_notifiers;
-+extern int panic_on_exit_recursion;
- 
- /*
-  * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 1f236ed375f8..162799a8b539 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -68,6 +68,9 @@
- #include <asm/unistd.h>
- #include <asm/mmu_context.h>
- 
-+int panic_on_exit_recursion __read_mostly;
-+core_param(panic_on_exit_recursion, panic_on_exit_recursion, int, 0644);
-+
- static void __unhash_process(struct task_struct *p, bool group_dead)
- {
- 	nr_threads--;
-@@ -757,6 +760,10 @@ void __noreturn do_exit(long code)
- 	 */
- 	if (unlikely(tsk->flags & PF_EXITING)) {
- 		pr_alert("Fixing recursive fault but reboot is needed!\n");
-+		if (panic_on_exit_recursion)
-+			panic("Recursive do_exit() detected in %s[%d]\n",
-+			      current->comm, task_pid_nr(current));
-+
- 		futex_exit_recursive(tsk);
- 		set_current_state(TASK_UNINTERRUPTIBLE);
- 		schedule();
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index afad085960b8..bb397fba2c42 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2600,6 +2600,15 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= &one_thousand,
- 	},
- #endif
-+	{
-+		.procname	= "panic_on_exit_recursion",
-+		.data		= &panic_on_exit_recursion,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= SYSCTL_ONE,
-+	},
- 	{
- 		.procname	= "panic_on_warn",
- 		.data		= &panic_on_warn,
--- 
-2.27.0
+
+Yes, but one point needs to be clarified, for IRQ requests, it calls 
+irq_enable(); for IRQ release, it calls irq_disable().
+
+Actually I am thinking that why only irq_enable()/irq_disable() is 
+called since the mask and enable flags of irq_data are both set.
+
+Does IRQ subsystem expect irq_enable to set both mask and enable? If we 
+didn't do that, the state machine of the software is different from 
+hardware, at least for mask bit.
+
+
+> If
+> so then the only reason why we haven't got a problem reported due to
+> that so far is that the IRQs actually unmasked by default.
+
+
+yes, I think so, Common drivers do not mask the IRQ before releasing it. 
+But that's possible.
+
+
+>
+> In anyway I'd suggest to join someone from the kernel IRQs-related
+> subsystem to this discussion to ask their opinion whether the IRQs
+> setup procedure is supposed to work like you say and the irq_enable
+> shall actually also unmask IRQs.
+>
+> Thomas, Jason, Mark, could you give us your comment about the issue?
+>
+> -Sergey
+>
+>>
+>>
+> .
+>
 
