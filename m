@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866602D129B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4502D12B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgLGNyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:54:04 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9029 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgLGNyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:54:04 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqPry4HVtzhkhd;
-        Mon,  7 Dec 2020 21:52:50 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
- 21:53:13 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v2] btrfs: free-space-cache: Fix error return code in __load_free_space_cache
-Date:   Mon, 7 Dec 2020 21:56:12 +0800
-Message-ID: <20201207135612.4132398-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726795AbgLGN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:56:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbgLGN4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:56:45 -0500
+Date:   Mon, 7 Dec 2020 14:57:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607349365;
+        bh=j86uMV4nyGVtSMouy6rinWH1bQBectAHXQddmRlgCYE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yvf2FXmbvhSfU3lAlqtKMVjqPy8dj8msx3z87M9FMABLA4qNe1fID7Yb5BSLYmYGr
+         MK3qeZTi1wf55JabHQVoST0ArIR/CcOQbHeKEJQCjAbUNMmoGs17QwxrvTVcuBX+4V
+         K9n33H95RReOfR/ah0mbNgYtDHqeOt/3V/BufnJc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Adam Borowski <kilobyte@angband.pl>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Jann Horn <jannh@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: Remove dead termiox code
+Message-ID: <X840u5K1Y2kIHnQR@kroah.com>
+References: <20201203020331.2394754-1-jannh@google.com>
+ <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
+ <X8nwnXQKOYWBWBZ+@kroah.com>
+ <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
+ <X8n1JiDS8ZVA6e6o@kroah.com>
+ <8e993706-46e2-cbed-265f-1ba63cc9274d@kernel.org>
+ <X8n8+Dhi9RT4bfHk@kroah.com>
+ <20201207101904.GC2265@angband.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207101904.GC2265@angband.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return the error code(instead always 0) when memory allocating
-failed in __load_free_space_cache().
+On Mon, Dec 07, 2020 at 11:19:04AM +0100, Adam Borowski wrote:
+> On Fri, Dec 04, 2020 at 10:10:16AM +0100, Greg Kroah-Hartman wrote:
+> > On Fri, Dec 04, 2020 at 09:51:07AM +0100, Jiri Slaby wrote:
+> > > > > > On Fri, Dec 04, 2020 at 08:22:41AM +0100, Jiri Slaby wrote:
+> > > > > > > On 03. 12. 20, 3:03, Jann Horn wrote:
+> > > > > > > > Delete this dead code; but leave the definition of struct termiox in the
+> > > > > > > > UAPI headers intact.
+> [was snipped]
+> > > > > > > I am thinking -- can/should we mark the structure as deprecated so that                                 
+> > > > > > > userspace stops using it eventually?   
+> 
+> > > Note this ^^^^^. He is talking about _not_ touching the definition in the
+> > > UAPI header. Does the rest below makes more sense now?
+> > 
+> > No, I'm still confused :)
+> > 
+> > We can't touch the UAPI definitions, but the fact that this api never
+> > did anything still is ok as after this patch it continues to not do
+> > anything.
+> > 
+> > I'm confused as to what you are proposing...
+> 
+> The UAPI definition can't be removed, but it would be nice to issue a
+> compiler _warning_ if it's ever used.
+> 
+> Like eg. __attribute__ ((deprecated))
 
-This lacks the analysis of consequences, so there's only one caller and
-that will treat values <=0 as 'cache not loaded'. There's no functional
-change but otherwise the error values should be there for clarity.
+Don't add build warnings for no good reasons, that's not nice.  As the
+feature just doesn't work, anyone who tries to use it will very quickly
+realize that :)
 
-Fixes: a67509c30079f4c50 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/btrfs/free-space-cache.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index af0013d3df63..ae4059ce2f84 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -744,8 +744,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 	while (num_entries) {
- 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
- 				      GFP_NOFS);
--		if (!e)
-+		if (!e) {
-+			ret = -ENOMEM;
- 			goto free_cache;
-+		}
- 
- 		ret = io_ctl_read_entry(&io_ctl, e, &type);
- 		if (ret) {
-@@ -764,6 +766,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 			e->trim_state = BTRFS_TRIM_STATE_TRIMMED;
- 
- 		if (!e->bytes) {
-+			ret = -1;
- 			kmem_cache_free(btrfs_free_space_cachep, e);
- 			goto free_cache;
- 		}
-@@ -784,6 +787,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 			e->bitmap = kmem_cache_zalloc(
- 					btrfs_free_space_bitmap_cachep, GFP_NOFS);
- 			if (!e->bitmap) {
-+				ret = -ENOMEM;
- 				kmem_cache_free(
- 					btrfs_free_space_cachep, e);
- 				goto free_cache;
--- 
-2.25.4
-
+greg k-h
