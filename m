@@ -2,156 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA162D0E52
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C972D0E54
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgLGKnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:43:14 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:63769 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgLGKnO (ORCPT
+        id S1726705AbgLGKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:43:43 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47743 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726207AbgLGKnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:43:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607337768; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Wvgu5LNknKKtzh44u0u14MyyrMp6TkmWb5YLGVhgF2s=; b=Q3GS2yo3eQMWlD7sJn7+t+ioW2ZHPbsOFFG/1j0Ap3GKWU9AIPTHvsYtrE9i/8GKF/ixMA3H
- M9IUI/156Kd43kVQ314ttC4ZvekeIt80hEFeCLlrHe7VxtZiLfBxu5S6vG8GUqdNXzi7shi6
- 9oyZUn+sa2TweWuUCyC74LFMilA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fce070eb50fb3818a6de8b5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 10:42:22
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17633C43461; Mon,  7 Dec 2020 10:42:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D27ADC433ED;
-        Mon,  7 Dec 2020 10:42:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D27ADC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     robh@kernel.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
-        dianders@chromium.org
-Subject: [PATCH v3 2/2] arm: dts: sc7180: Add support for gpu fuse
-Date:   Mon,  7 Dec 2020 16:12:08 +0530
-Message-Id: <1607337728-11398-2-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607337728-11398-1-git-send-email-akhilpo@codeaurora.org>
-References: <1607337728-11398-1-git-send-email-akhilpo@codeaurora.org>
+        Mon, 7 Dec 2020 05:43:41 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id EDF26C85;
+        Mon,  7 Dec 2020 05:42:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 07 Dec 2020 05:42:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=4Jwhw2Ic55x6RIMZNlBc3yosIWX
+        o+ErXu4UtPYIfWFQ=; b=toAerI7+j78OPoYkKIEoNUVGn5IQz2SVmmmUGRIW6zp
+        mxj4AA++dILUPK8q5kaGwJOPzJkLuky3MudzLzE9X/ccHE5IElxA/zfZmQj1QVLb
+        0I/pCgjsg9XUccizopowW8N0ZT2pS6AZ7SI+EelyAQWow0PgrVl875kVmDrapEMN
+        0TcJ9J7YJ7hW+uk6ne9bXjm4WrVg+1YVcRm8IG/wn1y/a8jn8+W1HIGGX/+cWNOU
+        Ugkunbaj2tMRZKCna4Ve9dlfMlr8FR3pRsEGhNloI0HDZqc6bfHrUNuY52xJhrPb
+        EHXtz9RyHiHlRsWGEoWnSu52l0IgG+RqCi/PTT+41eQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4Jwhw2
+        Ic55x6RIMZNlBc3yosIWXo+ErXu4UtPYIfWFQ=; b=duIvpOaMo2pUgTWKFcRLSP
+        EQUYf28+4RgyZboq2sbWQBXRpT7bDvRwKYTyVoA54Bn79iTLbL8i1Xg1A0h334tY
+        CnqEgOIgofqhxwrdvdfzFsFlehJij2wkSulxa4lQGKDYGmlLq4oLmx8x5HPefFUe
+        NbnNLSWz8/catzV3Z3uatCQn7b7f//OqbEIA4nv+e9oVxZY9+VfBuYPbReCmRXcx
+        /lNxuqo/OF5rI23CU+VXNJC9pos98pIvL2DmYr/Fu1aA6keTCc6B3AwTvtopXdpP
+        OA4v1m198i/yqtQXn3it8s/4wlZOQTsBIKUvkNx1oSbyr2KnYLMHQPrQVfhcbc2g
+        ==
+X-ME-Sender: <xms:GQfOX4N7upqicD_OmawZyJAMhN1bgm53Rccc_Hty52JjL6mDzFDeIA>
+    <xme:GQfOX-9kGCu1QjPeJlI9nfWRn1eIwyUPEXjtM77wPfkHUzCTaubl6Ga9YOoVvxsyl
+    RuGp1jOpYact8Z1YIU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:GQfOX_QLxokXfRd_K7gNkXjramwIl8ftBkpGCTZcF5VEceZwbi0VIw>
+    <xmx:GQfOXwu743nieHiI2mxuqC6opkLXzJqMaGbVOjZ2lxkoAJeTMTDX_A>
+    <xmx:GQfOXwdKarRCALzNtG4DjtBN1jAL9Y7DIxafX7WJa-B73Pvuw0ke-Q>
+    <xmx:GgfOX-sIsXD8FUGYDB_2z8EmJYxN4aTUXHge2-ewdreRZF3isCSsDA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D53A51080057;
+        Mon,  7 Dec 2020 05:42:32 -0500 (EST)
+Date:   Mon, 7 Dec 2020 11:42:31 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v7 2/3] drm: Add support for the LogiCVC display
+ controller
+Message-ID: <20201207104231.ipa5dccnxxro3xxc@gilmour>
+References: <20201102155308.142691-1-paul.kocialkowski@bootlin.com>
+ <20201102155308.142691-3-paul.kocialkowski@bootlin.com>
+ <20201103094659.56sdcerwwzqu2gdy@gilmour.lan>
+ <X8e7kBx/OYpN2HqB@aptenodytes>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4dept5ksr44ncocz"
+Content-Disposition: inline
+In-Reply-To: <X8e7kBx/OYpN2HqB@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for gpu fuse to help identify the supported opps.
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+--4dept5ksr44ncocz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 6678f1e..8cae3eb 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -675,6 +675,11 @@
- 				reg = <0x25b 0x1>;
- 				bits = <1 3>;
- 			};
-+
-+			gpu_speed_bin: gpu_speed_bin@1d2 {
-+				reg = <0x1d2 0x2>;
-+				bits = <5 8>;
-+			};
- 		};
- 
- 		sdhc_1: sdhci@7c4000 {
-@@ -1907,52 +1912,69 @@
- 			operating-points-v2 = <&gpu_opp_table>;
- 			qcom,gmu = <&gmu>;
- 
-+			nvmem-cells = <&gpu_speed_bin>;
-+			nvmem-cell-names = "speed_bin";
-+
- 			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "gfx-mem";
- 
- 			gpu_opp_table: opp-table {
- 				compatible = "operating-points-v2";
- 
-+				opp-825000000 {
-+					opp-hz = /bits/ 64 <825000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
-+					opp-peak-kBps = <8532000>;
-+					opp-supported-hw = <0x04>;
-+				};
-+
- 				opp-800000000 {
- 					opp-hz = /bits/ 64 <800000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
- 					opp-peak-kBps = <8532000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-650000000 {
- 					opp-hz = /bits/ 64 <650000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
- 					opp-peak-kBps = <7216000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-565000000 {
- 					opp-hz = /bits/ 64 <565000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
- 					opp-peak-kBps = <5412000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-430000000 {
- 					opp-hz = /bits/ 64 <430000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
- 					opp-peak-kBps = <5412000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-355000000 {
- 					opp-hz = /bits/ 64 <355000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
- 					opp-peak-kBps = <3072000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-267000000 {
- 					opp-hz = /bits/ 64 <267000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 					opp-peak-kBps = <3072000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 
- 				opp-180000000 {
- 					opp-hz = /bits/ 64 <180000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
- 					opp-peak-kBps = <1804000>;
-+					opp-supported-hw = <0x07>;
- 				};
- 			};
- 		};
--- 
-2.7.4
+On Wed, Dec 02, 2020 at 05:06:40PM +0100, Paul Kocialkowski wrote:
+> > > +static void logicvc_crtc_atomic_begin(struct drm_crtc *drm_crtc,
+> > > +				      struct drm_atomic_state *state)
+> > > +{
+> > > +	struct logicvc_crtc *crtc =3D logicvc_crtc(drm_crtc);
+> > > +	struct drm_crtc_state *crtc_state =3D
+> > > +		drm_atomic_get_old_crtc_state(state, drm_crtc);
+> > > +	struct drm_device *drm_dev =3D drm_crtc->dev;
+> > > +	unsigned long flags;
+> > > +
+> > > +	/* Register pending event, only if vblank is already on. */
+> > > +	if (drm_crtc->state->event && crtc_state->active) {
+> > > +		spin_lock_irqsave(&drm_dev->event_lock, flags);
+> > > +		WARN_ON(drm_crtc_vblank_get(drm_crtc) !=3D 0);
+> > > +
+> > > +		crtc->event =3D drm_crtc->state->event;
+> > > +		drm_crtc->state->event =3D NULL;
+> > > +
+> > > +		spin_unlock_irqrestore(&drm_dev->event_lock, flags);
+> > > +	}
+> > > +}
+> >=20
+> > That's unusual to do it in atomic_begin, why do you need it?
+>=20
+> This is to cover the case where we need to send a page flip event but the
+> crtc is already on. In that case, neither atomic_enable nor atomic_disable
+> will be called so we need to rely on atomic_begin to grab that event.
+> This happens for example when a single plane is updated.
+>=20
+> The same thing is done in e.g. sun4i-drm.
 
+Yeah, but I'm not sure why that's needed in the first place on sun4i-drm
+either. This looks to me as either something that should be handled by
+the helpers, or isn't needed at all. Just like the other times you
+fiddle with the vblank in your driver.
+
+I looked around and the only drivers that have that logic seem to be ARM
+HDLCD, Atmel HCLDC, Meson, Tegra. This looks like it might be some cargo
+cult.
+
+Daniel, do you know why that would be needed?
+
+> > > +static void logicvc_version_print(struct logicvc_drm *logicvc)
+> > > +{
+> > > +	u32 version;
+> > > +
+> > > +	regmap_read(logicvc->regmap, LOGICVC_IP_VERSION_REG, &version);
+> > > +
+> > > +	DRM_INFO("LogiCVC version %d.%02d.%c\n",
+> > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MAJOR, version),
+> > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MINOR, version),
+> > > +		 (char)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_LEVEL, version) +
+> > > +		 'a');
+> >=20
+> > DRM_DEV_INFO?
+>=20
+> Okay but now according to Sam, "DRM_DEV_ERROR() and friends are deprecate=
+d"
+> so I wonder which is the right one to use at this point.
+
+AFAIU, it's drm_info / drm_err
+
+> > > +static void logicvc_encoder_enable(struct drm_encoder *drm_encoder)
+> > > +{
+> > > +	struct logicvc_drm *logicvc =3D logicvc_drm(drm_encoder->dev);
+> > > +	struct logicvc_interface *interface =3D
+> > > +		logicvc_interface_from_drm_encoder(drm_encoder);
+> > > +
+> > > +	regmap_update_bits(logicvc->regmap, LOGICVC_POWER_CTRL_REG,
+> > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE,
+> > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE);
+> > > +
+> > > +	if (interface->drm_panel) {
+> > > +		drm_panel_prepare(interface->drm_panel);
+> > > +
+> > > +		/* Encoder enable is too early to enable the panel and a white
+> > > +		 * screen will be seen if the panel gets enabled before the
+> > > +		 * first page flip is done (and no other framebuffer
+> > > +		 * configuration remains from the boot software). */
+> > > +		interface->drm_panel_enabled =3D false;
+> > > +	}
+> > > +}
+> >=20
+> > That's fishy (and the similar stuff in commit_tail). Is it because you
+> > need to have the CRTC powered before the encoder?
+> >=20
+> > If so, you should try the commit_tail_rpm variant, it makes sure the
+> > CRTC is powered on before making a commit.
+>=20
+> No, this is unrelated to CRTC vs encoder enable order. Instead, it's about
+> panel enable order: I don't want to enable the panel before a buffer was
+> flipped on the CRTC otherwise a blank/white/garbage screen will be shown.
+
+Well, since the encoder will enable the panel, it's kind of related
+though?
+
+> This is why this drm_panel_enabled variable is used to make sure we don't
+> enable the panel before.
+>=20
+> This is nothing specific to my hardware, but a general concern that proba=
+bly
+> exists in every DRM driver. Nobody really seems to care about it but I've
+> decided that I would in this driver. Now if you think this is too exotic,
+> I don't mind removing it.
+
+If this is a concern of yours and affects multiple drivers, then it
+should be fixed in the core, not in one particular driver.
+
+> > > +static void logicvc_connector_destroy(struct drm_connector *drm_conn=
+ector)
+> > > +{
+> > > +	drm_connector_cleanup(drm_connector);
+> > > +}
+> >=20
+> > I guess you don't need that intermediate function?
+>=20
+> I would need to check if that call is necessary or if some implied mechan=
+ism
+> calls it for me already.
+
+What I meant is that you don't need logicvc_connector_destroy, you can
+directly set the atomic_destroy_state to drm_connector_cleanup.
+
+Maximey
+
+--4dept5ksr44ncocz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX84HFwAKCRDj7w1vZxhR
+xbMiAP9dLZJOM3DGmzAPkfzmg8Zd6tJamUGV8IiSAS3VKmzdMgD/YEHQimvZh/De
+Xbwz1yPzxtmWpE79V4vFdE30Mlrz2QA=
+=WXG0
+-----END PGP SIGNATURE-----
+
+--4dept5ksr44ncocz--
