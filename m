@@ -2,333 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC702D1035
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1012D1038
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgLGMOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:14:23 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2473 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgLGMOX (ORCPT
+        id S1727403AbgLGMPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:15:03 -0500
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:18700 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726953AbgLGMPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:14:23 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CqMdw5z38z4yXs;
-        Mon,  7 Dec 2020 20:13:08 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 7 Dec 2020 20:13:38 +0800
-Subject: Re: [PATCH v5 1/4] dt-bindings: Document the hi3559a clock bindings
-To:     Rob Herring <robh@kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <vkoul@kernel.org>,
-        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>
-References: <20201119200129.28532-1-gengdongjiu@huawei.com>
- <20201119200129.28532-2-gengdongjiu@huawei.com>
- <20201130220711.GA3112118@robh.at.kernel.org>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <b1253045-12a9-e411-4141-ce49bc1407c9@huawei.com>
-Date:   Mon, 7 Dec 2020 20:13:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        Mon, 7 Dec 2020 07:15:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607343302; x=1638879302;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GFjTBwiMsy/jkht3qyFKrEfUwi0zcnxXvuQxaUOUZMA=;
+  b=ukVqmoArXv4oOY7Ky2RX4odpDxIw6oSd9/DgEBX2At4fVkOzhI9FJ8mq
+   jEpua/cacpjGpiZa6+LijVp9TuCBkQp9idslMRJuazrsSmYlVAEpkU9Uf
+   5CHZhTcCmYzBbms//ruuQfFsSBDqgsJd44ljBf8fQINqO8oo5VmjHr4ga
+   gmdr1D2WbBEwgDP0fdW3hKo761N/pTGtyvjGt1GpfzQzLDXAGOg+p9wSm
+   RYVH5qO95f0xQRIn/wfyA2EerPJIRQHU8S9nz7MoBv3T3dqauZ/hrLEVz
+   vpXx9kCUlhEaG5d33F27vJCHnS16L4YpaB9vUVMfNFimqK0WDnLwBu4to
+   Q==;
+IronPort-SDR: aPlQPbbxV4o/pof+XZr6LiHVeGs5VFBiFOzEEDSM32YvBWps66rSzkGtFl//KPRKHuQxf47GcT
+ gVUjx2zb9OtfF+B7V93kur9fEIaE4ehiZ4/gnkTCjlX/AIfDYirfdSYZD+0k/BTKEm+h7P6A01
+ AdaAGu/0LKtcsYR/K+01io9BpA4YjltVhQ9SMq4WTWQ00+lii1IfZ51IS/SlofcBHll+aqWy8k
+ B+gLzdq3fVRiY2ssHV1yAQjTgaf2jpy4YBcNI5jzwIVbyufavOMOedu7RNyWaN0hmjdfBOeorM
+ LZY=
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="98863061"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Dec 2020 05:13:56 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 7 Dec 2020 05:13:56 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 7 Dec 2020 05:13:54 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v9 0/4]  Adding the Sparx5 Serdes driver
+Date:   Mon, 7 Dec 2020 13:13:41 +0100
+Message-ID: <20201207121345.3818234-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201130220711.GA3112118@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/1 6:07, Rob Herring wrote:
-> On Thu, Nov 19, 2020 at 08:01:26PM +0000, Dongjiu Geng wrote:
->> Add DT bindings documentation for hi3559a SoC clock.
->>
->> Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
->> ---
->>  .../clock/hisilicon,hi3559av100-clock.yaml    |  66 +++++++
->>  include/dt-bindings/clock/hi3559av100-clock.h | 165 ++++++++++++++++++
->>  2 files changed, 231 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
->>  create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml b/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
->> new file mode 100644
->> index 000000000000..0f531e8186d2
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
->> @@ -0,0 +1,66 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/hisilicon,hi3559av100-clock.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Hisilicon SOC Clock for HI3559AV100
->> +
->> +maintainers:
->> +  - Dongjiu Geng <gengdongjiu@huawei.com>
->> +
->> +description: |
->> +  Hisilicon SOC clock control module which supports the clocks, resets and
->> +  power domains on HI3559AV100.
->> +
->> +  See also:
->> +    dt-bindings/clock/hi3559av100-clock.h
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - hisilicon,hi3559av100-clock
->> +      - hisilicon,hi3559av100-shub-clock
->> +
->> +  reg:
->> +    minItems: 1
->> +    maxItems: 2
->> +
->> +  '#clock-cells':
->> +    const: 1
->> +
->> +  '#reset-cells':
->> +    const: 2
-> 
-> What's in each cell?
+Adding the Sparx5 Serdes driver
 
-I will add description for each cell.
+This series of patches provides the serdes driver for the Microchip Sparx5
+ethernet switch.
 
-> 
->> +
->> +  '#address-cells':
->> +    const: 2
->> +
->> +  '#size-cells':
->> +    const: 2
-> 
-> #address-cells and #size-cells are for child nodes, but you have none so 
-> drop them.
+The serdes driver supports the 10G and 25G serdes instances available in the
+Sparx5.
 
-Ok, thanks for the reminder.
+The Sparx5 serdes support several interface modes with several speeds and also
+allows the client to change the mode and the speed according to changing in the
+environment such as changing cables from DAC to fiber.
 
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - '#clock-cells'
->> +  - '#reset-cells'
->> +  - '#address-cells'
->> +  - '#size-cells'
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    soc {
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +
->> +        clock: clock0@12010000 {
-> 
-> clock-controller@...
+The serdes driver is to be used by the Sparx5 switchdev driver that
+will follow in subsequent series.
 
-  ok.
+Sparx5 Arhitecture:
+===================
 
-> 
->> +            compatible = "hisilicon,hi3559av100-clock";
->> +            #address-cells = <2>;
->> +            #size-cells = <2>;
->> +            #clock-cells = <1>;
->> +            #reset-cells = <2>;
->> +            reg = <0x0 0x12010000 0x0 0x10000>;
->> +        };
->> +    };
->> +...
->> diff --git a/include/dt-bindings/clock/hi3559av100-clock.h b/include/dt-bindings/clock/hi3559av100-clock.h
->> new file mode 100644
->> index 000000000000..88baa86cff85
->> --- /dev/null
->> +++ b/include/dt-bindings/clock/hi3559av100-clock.h
->> @@ -0,0 +1,165 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
-> 
-> Don't care about non-GPL OS/users?
-will fix it.
+Below is a diagram of the Ethernet transport part of the Sparx5 chip.
 
-I will modify it to "GPL-2.0-only OR BSD-2-Clause"
+The diagram shows the switch core that sends/receives traffic via the Frame Bus
+and passes to the Port Modules.
+The Port Modules are able to talk to a SerDes via a Port Muxing configuration.
+The SerDes instances (33 in all) then passes the traffic on its lanes to the
+attached cuPHY or SFP module.
 
-> 
->> +/*
->> + * Copyright (c) 2019-2020, Huawei Tech. Co., Ltd.
->> + *
->> + * Author: Dongjiu Geng <gengdongjiu@huawei.com>
->> + */
->> +
->> +#ifndef __DTS_HI3559AV100_CLOCK_H
->> +#define __DTS_HI3559AV100_CLOCK_H
->> +
->> +/*  fixed   rate    */
->> +#define HI3559AV100_FIXED_1188M     1
->> +#define HI3559AV100_FIXED_1000M     2
->> +#define HI3559AV100_FIXED_842M      3
->> +#define HI3559AV100_FIXED_792M      4
->> +#define HI3559AV100_FIXED_750M      5
->> +#define HI3559AV100_FIXED_710M      6
->> +#define HI3559AV100_FIXED_680M      7
->> +#define HI3559AV100_FIXED_667M      8
->> +#define HI3559AV100_FIXED_631M      9
->> +#define HI3559AV100_FIXED_600M      10
->> +#define HI3559AV100_FIXED_568M      11
->> +#define HI3559AV100_FIXED_500M      12
->> +#define HI3559AV100_FIXED_475M      13
->> +#define HI3559AV100_FIXED_428M      14
->> +#define HI3559AV100_FIXED_400M      15
->> +#define HI3559AV100_FIXED_396M      16
->> +#define HI3559AV100_FIXED_300M      17
->> +#define HI3559AV100_FIXED_250M      18
->> +#define HI3559AV100_FIXED_198M      19
->> +#define HI3559AV100_FIXED_187p5M    20
->> +#define HI3559AV100_FIXED_150M      21
->> +#define HI3559AV100_FIXED_148p5M    22
->> +#define HI3559AV100_FIXED_125M      23
->> +#define HI3559AV100_FIXED_107M      24
->> +#define HI3559AV100_FIXED_100M      25
->> +#define HI3559AV100_FIXED_99M       26
->> +#define HI3559AV100_FIXED_74p25M    27
->> +#define HI3559AV100_FIXED_72M       28
->> +#define HI3559AV100_FIXED_60M       29
->> +#define HI3559AV100_FIXED_54M       30
->> +#define HI3559AV100_FIXED_50M       31
->> +#define HI3559AV100_FIXED_49p5M     32
->> +#define HI3559AV100_FIXED_37p125M   33
->> +#define HI3559AV100_FIXED_36M       34
->> +#define HI3559AV100_FIXED_32p4M     35
->> +#define HI3559AV100_FIXED_27M       36
->> +#define HI3559AV100_FIXED_25M       37
->> +#define HI3559AV100_FIXED_24M       38
->> +#define HI3559AV100_FIXED_12M       39
->> +#define HI3559AV100_FIXED_3M        40
->> +#define HI3559AV100_FIXED_1p6M      41
->> +#define HI3559AV100_FIXED_400K      42
->> +#define HI3559AV100_FIXED_100K      43
->> +#define HI3559AV100_FIXED_200M      44
->> +#define HI3559AV100_FIXED_75M       75
->> +
->> +#define HI3559AV100_I2C0_CLK    50
->> +#define HI3559AV100_I2C1_CLK    51
->> +#define HI3559AV100_I2C2_CLK    52
->> +#define HI3559AV100_I2C3_CLK    53
->> +#define HI3559AV100_I2C4_CLK    54
->> +#define HI3559AV100_I2C5_CLK    55
->> +#define HI3559AV100_I2C6_CLK    56
->> +#define HI3559AV100_I2C7_CLK    57
->> +#define HI3559AV100_I2C8_CLK    58
->> +#define HI3559AV100_I2C9_CLK    59
->> +#define HI3559AV100_I2C10_CLK   60
->> +#define HI3559AV100_I2C11_CLK   61
->> +
->> +#define HI3559AV100_SPI0_CLK    62
->> +#define HI3559AV100_SPI1_CLK    63
->> +#define HI3559AV100_SPI2_CLK    64
->> +#define HI3559AV100_SPI3_CLK    65
->> +#define HI3559AV100_SPI4_CLK    66
->> +#define HI3559AV100_SPI5_CLK    67
->> +#define HI3559AV100_SPI6_CLK    68
->> +
->> +#define HI3559AV100_EDMAC_CLK     69
->> +#define HI3559AV100_EDMAC_AXICLK  70
->> +#define HI3559AV100_EDMAC1_CLK    71
->> +#define HI3559AV100_EDMAC1_AXICLK 72
->> +#define HI3559AV100_VDMAC_CLK     73
->> +
->> +/*  mux clocks  */
->> +#define HI3559AV100_FMC_MUX     80
->> +#define HI3559AV100_SYSAPB_MUX  81
->> +#define HI3559AV100_UART_MUX    82
->> +#define HI3559AV100_SYSBUS_MUX  83
->> +#define HI3559AV100_A73_MUX     84
->> +#define HI3559AV100_MMC0_MUX    85
->> +#define HI3559AV100_MMC1_MUX    86
->> +#define HI3559AV100_MMC2_MUX    87
->> +#define HI3559AV100_MMC3_MUX    88
->> +
->> +/*  gate    clocks  */
->> +#define HI3559AV100_FMC_CLK     90
->> +#define HI3559AV100_UART0_CLK   91
->> +#define HI3559AV100_UART1_CLK   92
->> +#define HI3559AV100_UART2_CLK   93
->> +#define HI3559AV100_UART3_CLK   94
->> +#define HI3559AV100_UART4_CLK   95
->> +#define HI3559AV100_MMC0_CLK    96
->> +#define HI3559AV100_MMC1_CLK    97
->> +#define HI3559AV100_MMC2_CLK    98
->> +#define HI3559AV100_MMC3_CLK    99
->> +
->> +#define HI3559AV100_ETH_CLK         100
->> +#define HI3559AV100_ETH_MACIF_CLK   101
->> +#define HI3559AV100_ETH1_CLK        102
->> +#define HI3559AV100_ETH1_MACIF_CLK  103
->> +
->> +/*  complex */
->> +#define HI3559AV100_MAC0_CLK                110
->> +#define HI3559AV100_MAC1_CLK                111
->> +#define HI3559AV100_SATA_CLK                112
->> +#define HI3559AV100_USB_CLK                 113
->> +#define HI3559AV100_USB1_CLK                114
->> +
->> +/* pll clocks */
->> +#define HI3559AV100_APLL_CLK                250
->> +#define HI3559AV100_GPLL_CLK                251
->> +
->> +#define HI3559AV100_CRG_NR_CLKS	            256
->> +
->> +#define HI3559AV100_SHUB_SOURCE_SOC_24M	    0
->> +#define HI3559AV100_SHUB_SOURCE_SOC_200M    1
->> +#define HI3559AV100_SHUB_SOURCE_SOC_300M    2
->> +#define HI3559AV100_SHUB_SOURCE_PLL         3
->> +#define HI3559AV100_SHUB_SOURCE_CLK         4
->> +
->> +#define HI3559AV100_SHUB_I2C0_CLK           10
->> +#define HI3559AV100_SHUB_I2C1_CLK           11
->> +#define HI3559AV100_SHUB_I2C2_CLK           12
->> +#define HI3559AV100_SHUB_I2C3_CLK           13
->> +#define HI3559AV100_SHUB_I2C4_CLK           14
->> +#define HI3559AV100_SHUB_I2C5_CLK           15
->> +#define HI3559AV100_SHUB_I2C6_CLK           16
->> +#define HI3559AV100_SHUB_I2C7_CLK           17
->> +
->> +#define HI3559AV100_SHUB_SPI_SOURCE_CLK     20
->> +#define HI3559AV100_SHUB_SPI4_SOURCE_CLK    21
->> +#define HI3559AV100_SHUB_SPI0_CLK           22
->> +#define HI3559AV100_SHUB_SPI1_CLK           23
->> +#define HI3559AV100_SHUB_SPI2_CLK           24
->> +#define HI3559AV100_SHUB_SPI3_CLK           25
->> +#define HI3559AV100_SHUB_SPI4_CLK           26
->> +
->> +#define HI3559AV100_SHUB_UART_CLK_32K       30
->> +#define HI3559AV100_SHUB_UART_SOURCE_CLK    31
->> +#define HI3559AV100_SHUB_UART_DIV_CLK       32
->> +#define HI3559AV100_SHUB_UART0_CLK          33
->> +#define HI3559AV100_SHUB_UART1_CLK          34
->> +#define HI3559AV100_SHUB_UART2_CLK          35
->> +#define HI3559AV100_SHUB_UART3_CLK          36
->> +#define HI3559AV100_SHUB_UART4_CLK          37
->> +#define HI3559AV100_SHUB_UART5_CLK          38
->> +#define HI3559AV100_SHUB_UART6_CLK          39
->> +
->> +#define HI3559AV100_SHUB_EDMAC_CLK          40
->> +
->> +#define HI3559AV100_SHUB_NR_CLKS            50
->> +
->> +#endif  /* __DTS_HI3559AV100_CLOCK_H */
->> +
->> -- 
->> 2.17.1
->>
-> .
-> 
+ +---------------------------------------------------------+
+ |                                                         |
+ |                         Switch Core                     |
+ |                                                         |
+ +----------------------------+----------------------------+
+                              |
+ -------+--------------+------+-------+--------------+-----+   Frame Bus
+        |              |              |              |
+ +------+-----+ +------+-----+ +------+-----+ +------+-----+
+ |1G/2.G Port | |5G Port     | |10G Port    | |25GG Port   |
+ |Modules     | |Modules     | |Modules     | |Modules     |
+ |MAC, PCS    | |MAC, PCS    | |MAC, PCS    | |MAC, PCS    |
+ +------+-----+ +------+-----+ +------+-----+ +------+-----+
+        |              |              |              |
+ -------+-+------------+-------+------+----------+---+-----+  Port Muxing
+          |                    |                 |
+    +-----+----+         +-----+----+         +--+-------+
+    |SerDes 5G |         |SerDes 10G|         |SerDes 25G|    SerDes Driver
+    |Lane (13) |         |Lane (12) |         |Lane (8)  |    Controls these
+    +-----+----+         +-----+----+         +-----+----+
+          |                    |                    |
+       to cuPHY             to cuPHY             to cuPHY
+       or SFP               or SFP               or SFP
+
+The 33 SerDes instances are handled internally by 2 SerDes macros types:
+
+- A 10G SerDes macro that supports the following rates and modes:
+  - 100 Mbps:
+       - 100BASE-FX
+  - 1.25 Gbps:
+       - SGMII
+       - 1000BASE-X
+       - 1000BASE-KX
+  - 3.125 Gbps:
+       - 2.5GBASE-X
+       - 2.5GBASE-KX
+  - 5 Gbps:
+       - QSGMII
+       - USGMII
+  - 5.15625 Gbps:
+       - 5GBASE-KR
+       - 5G-USXGMII
+  - 10 Gbps:
+       - 10G-USGMII
+  - 10.3125 Gbps:
+       - 10GBASE-R
+       - 10GBASE-KR
+       - USXGMII
+
+- A 25G SerDes macro that supports the following rates and modes:
+  - 1.25 Gbps:
+       - SGMII
+       - 1000BASE-X
+       - 1000BASE-KX
+  - 3.125 Gbps:
+       - 2.5GBASE-X
+       - 2.5GBASE-KX
+  - 5 Gbps:
+       - QSGMII
+       - USGMII
+  - 5.15625 Gbps:
+       - 5GBASE-KR
+       - 5G-USXGMII
+  - 10 Gbps:
+       - 10G-USGMII
+  - 10.3125 Gbps:
+       - 10GBASE-R
+       - 10GBASE-KR
+       - USXGMII
+  - 10.3125 Gbps:
+       - 10GBASE-R
+       - 10GBASE-KR
+       - USXGMII
+  - 25.78125 Gbps:
+       - 25GBASE-KR
+       - 25GBASE-CR
+       - 25GBASE-SR
+       - 25GBASE-LR
+       - 25GBASE-ER
+
+The SerDes driver handles these SerDes instances and configures them based on
+the selected mode, speed and media type.
+
+In the current version of the SerDes driver only a subset of the above modes
+are supported: the modes that can be tested on our current evaluation boards
+(PCB134 and PCB35).
+
+The first 13 10G SerDes macros are limited to 6G, and this gives the SerDes
+instance architecture shown on the diagram above.
+
+The Port Muxing allows a Port Module to use a specific SerDes instance, but not
+all combinations are allowed.
+This is functionality as well as the configuration of the Port Modules is
+handled by the SwitchDev Driver.
+
+
+
+History:
+--------
+v8 -> v9:
+    Replace pr_err with dev_err
+    Expanded the description here in the cover letter (should probably og into
+    the driver, at least part of it).
+
+v7 -> v8:
+    Provide the IO targets as offsets from the start of the IO range
+    Initialise resource index
+
+v6 -> v7:
+    This series changes the way the IO targets are provided to the driver.
+    Now only one IO range is available in the DT, and the driver has a table
+    to map its targets (as their order is still not sequential), thus reducing
+    the DT needed information and binding requirements.
+    The register access macros have been converted to functions.
+
+    - Bindings:
+      - reg prop: minItems set to 1
+      - reg-names prop: removed
+    - Driver
+      - Use one IO range and map targets via this.
+      - Change register access macros to use functions.
+      - Provided a new header files with reg access functions.
+    - Device tree
+      - Provide only one IO range
+
+v5 -> v6:
+     Series error: This had the same content as v5
+
+v4 -> v5:
+    - Bindings:
+      - Removed .yaml from compatible string
+      - reg prop: removed description and added minItems
+      - reg-names prop: removed description and added const name list and minItems
+      - #phy-cells prop: removed description and added maxItems
+    - Configuration interface
+      - Removed include of linux/phy.h
+      - Added include of linux/types.h
+    - Driver
+       - Added include of linux/phy.h
+
+v3 -> v4:
+    - Add a reg-names item to the binding description
+    - Add a clocks item to the binding description
+    - Removed the clock parameter from the configuration interface
+    - Use the clock dt node to get the coreclock, and using that when 
+      doing the actual serdes configuration
+    - Added a clocks entry with a system clock reference to the serdes node in
+      the device tree
+
+v2 -> v3:
+    - Sorted the Kconfig sourced folders
+    - Sorted the Makefile included folders
+    - Changed the configuration interface documentation to use kernel style
+
+v1 -> v2: Fixed kernel test robot warnings
+    - Made these structures static:
+      - media_presets_25g
+      - mode_presets_25g
+      - media_presets_10g
+      - mode_presets_10g
+    - Removed these duplicate initializations:
+      - sparx5_sd25g28_params.cfg_rx_reserve_15_8
+      - sparx5_sd25g28_params.cfg_pi_en
+      - sparx5_sd25g28_params.cfg_cdrck_en
+      - sparx5_sd10g28_params.cfg_cdrck_en
+
+Lars Povlsen (2):
+  dt-bindings: phy: Add sparx5-serdes bindings
+  arm64: dts: sparx5: Add Sparx5 serdes driver node
+
+Steen Hegelund (2):
+  phy: Add ethernet serdes configuration option
+  phy: Add Sparx5 ethernet serdes PHY driver
+
+ .../bindings/phy/microchip,sparx5-serdes.yaml |  100 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |    8 +
+ drivers/phy/Kconfig                           |    3 +-
+ drivers/phy/Makefile                          |    1 +
+ drivers/phy/microchip/Kconfig                 |   12 +
+ drivers/phy/microchip/Makefile                |    6 +
+ drivers/phy/microchip/sparx5_serdes.c         | 2436 +++++++++++++++
+ drivers/phy/microchip/sparx5_serdes.h         |  129 +
+ drivers/phy/microchip/sparx5_serdes_regs.h    | 2695 +++++++++++++++++
+ include/linux/phy/phy-ethernet-serdes.h       |   30 +
+ include/linux/phy/phy.h                       |    4 +
+ 11 files changed, 5423 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+ create mode 100644 drivers/phy/microchip/Kconfig
+ create mode 100644 drivers/phy/microchip/Makefile
+ create mode 100644 drivers/phy/microchip/sparx5_serdes.c
+ create mode 100644 drivers/phy/microchip/sparx5_serdes.h
+ create mode 100644 drivers/phy/microchip/sparx5_serdes_regs.h
+ create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+
+-- 
+2.29.2
+
