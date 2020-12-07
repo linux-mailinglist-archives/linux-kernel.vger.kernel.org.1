@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD342D17EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156772D17FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgLGRy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGRy1 (ORCPT
+        id S1726269AbgLGR5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:57:04 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:41992 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgLGR5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:54:27 -0500
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE1C061749;
-        Mon,  7 Dec 2020 09:53:46 -0800 (PST)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 6CB545C0054;
-        Mon,  7 Dec 2020 18:53:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1607363623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MkGJj4xRtLjLHi9uk2lHu+eJLiMO4r8tHRe6lcpmSbI=;
-        b=raPdImDDTIiegSJWjc9kp0oB2+0DxMTvr7V45zgBlwAyRvQvZJYeV65YXexfMT6YySjMio
-        MGhyV6XVgfS3gjot5iY7Kan2RfqSx8D5JVuEZYvwkQiluiOdbExVol7zVEQkdAw6hGsPfm
-        IP1eU/sZ3VORqVBeqt08uRn3tapwSQ0=
+        Mon, 7 Dec 2020 12:57:04 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7HsBGA168672;
+        Mon, 7 Dec 2020 17:56:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=2qoV9t4oMDr+80NiF6UJxp7Yc6katy906iDlX3M96e4=;
+ b=WnSQ9MH21KvEJ2A909sf/pZyqMt00VqH/VxO8zZd3DFcoHhgr70bnrdZ6vECoDUAIiLz
+ fgPhJNDJ2bQ/2e4B/J8W89UolTUI4Ylv0A6FEYNiQViYYsUUTVM1GNGttZg5BV1JTFbX
+ +jSYPgfNYNENy5Lggpz9w+C6R39YUR8u6VUhTRb57ss8E20czLY+GAcTLWwzfpGiB19w
+ c4oa8IeCXxxPwj2qd2I+L8XaEv3aMp8fEcu4Y5H77Oc1Zl+pP6VFrtVRs8qZhtQMN4u7
+ NRvMRFKbkmGQYxkoGZcCMuSsOmk2BdglzPp6OSnwpdyG0KV1eY4JAUG6lBJoGZ0LQRO8 9w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3581mqpnxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 17:56:17 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7HtemK094978;
+        Mon, 7 Dec 2020 17:56:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m4wkn3d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 17:56:17 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B7HuG5k016291;
+        Mon, 7 Dec 2020 17:56:16 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 09:56:15 -0800
+Date:   Mon, 7 Dec 2020 20:55:44 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] regulator: da9121: Potential Oops in
+ da9121_assign_chip_model()
+Message-ID: <X85soGKnWAjPUA7a@mwanda>
 MIME-Version: 1.0
-Date:   Mon, 07 Dec 2020 18:53:43 +0100
-From:   Stefan Agner <stefan@agner.ch>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     khilman@baylibre.com, robh+dt@kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        christianshewitt@gmail.com, jian.hu@amlogic.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] ARM: dts: meson: fix PHY deassert timing
- requirements
-In-Reply-To: <CAFBinCA_eaJHv7e+8ZM=z=zUZ9uQY_JZ=618=LwJYM-Gi+OO+g@mail.gmail.com>
-References: <14754fd95378b78eb9a0a3f8b6bab13f7263c7f1.1606828668.git.stefan@agner.ch>
- <6bfe17d86ead62c20d236e2ebbc7b7fe3354829d.1606828668.git.stefan@agner.ch>
- <CAFBinCA_eaJHv7e+8ZM=z=zUZ9uQY_JZ=618=LwJYM-Gi+OO+g@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <1275fb519490b00a079ac832277585f1@agner.ch>
-X-Sender: stefan@agner.ch
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012070116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-05 14:04, Martin Blumenstingl wrote:
-> Hi Stefan,
-> 
-> On Tue, Dec 1, 2020 at 2:21 PM Stefan Agner <stefan@agner.ch> wrote:
->>
->> According to the datasheet (Rev. 1.9) the RTL8211F requires at least
->> 72ms "for internal circuits settling time" before accessing the PHY
->> egisters. On similar boards with the same PHY this fixes an issue where
-> there's a typo here: it should be "registers"
-> this is the same for the other four patches also
+There is a missing "return ret;" on this error path so we call
+"da9121_check_device_type(i2c, chip);" which will end up dereferencing
+"chip->regmap" and lead to an Oops.
 
-Whoops, will send v3 shortly.
+Fixes: c860476b9e3a ("regulator: da9121: Add device variant regmaps")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/regulator/da9121-regulator.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
->> Ethernet link would not come up when using ip link set down/up.
-> I have never experienced that myself but gotten a few reports about this.
-> thank you very much for coming up with info from the datasheet!
-> 
-> the following stmmac patch [0] has been added recently which may - or
-> may not - have any impact also.
+diff --git a/drivers/regulator/da9121-regulator.c b/drivers/regulator/da9121-regulator.c
+index db1c2cc838bc..e4fc3a7cd5d8 100644
+--- a/drivers/regulator/da9121-regulator.c
++++ b/drivers/regulator/da9121-regulator.c
+@@ -915,6 +915,7 @@ static int da9121_assign_chip_model(struct i2c_client *i2c,
+ 		ret = PTR_ERR(chip->regmap);
+ 		dev_err(chip->dev, "Failed to configure a register map: %d\n",
+ 			ret);
++		return ret;
+ 	}
+ 
+ 	ret = da9121_check_device_type(i2c, chip);
+-- 
+2.29.2
 
-Thanks for the hint, wasn't aware of that.
-
---
-Stefan
-
-> 
->> Fixes: a2c6e82e5341 ("ARM: dts: meson: switch to the generic Ethernet PHY reset bindings")
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> with above typo fixed:
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> and also:
-> Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> #
-> on Odroid-C1+
-> 
-> 
-> Best regards,
-> Martin
-> 
-> 
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/net/ethernet/stmicro/stmmac?id=56311a315da7ebc668dbcc2f1c99689cc10796c4
