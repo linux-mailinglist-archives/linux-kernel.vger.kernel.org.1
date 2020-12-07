@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF052D0B47
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2967B2D0B49
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgLGHq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 02:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
+        id S1726122AbgLGHrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 02:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgLGHq7 (ORCPT
+        with ESMTP id S1726055AbgLGHrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 02:46:59 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F853C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 23:46:19 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 69so353837pgg.8
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 23:46:19 -0800 (PST)
+        Mon, 7 Dec 2020 02:47:05 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF1FC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 23:46:18 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id g20so18126279ejb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 23:46:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=siy5k+plcJtXdcMZn6ACu9NpjqM7plnkiw05pK5XU78=;
-        b=SDUXu+D0A6hVVfD7s9o8DA/1jQ8Bu8P0p8WJ72Zd8IiPT4Jbd36OkBflzx5nis97e7
-         2m+YWrHHdHGVquqwdMRyTXd5AnglaWoSG0eV6tKGxXmzW+a5GwSp7V71wKEwMpJOXHMs
-         TIOd0RDwkoVEhMq8PpWQpru6n3UIkct5T95tfzH9yX5AlilLX5Q5Fx5MqoygwCmEwLvB
-         FPmFW57vMqXXyrDjZkgJPNRCzYytAvf4cuT/08hU54TWqXSt04STB3EFnpu7qH4X5L1s
-         G7pSSFaShvs7GSinDFoY7GMzwoeBgorkdGaPSWmuVKDxcuLpMDcuMN7lNi8DUwG9w8ev
-         AFhQ==
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H37Uk/40yzLuHJ510VKEIUp0RQ+PZefPT2yeqkErhUg=;
+        b=YByJcKFlSczTgeZhju2uMm2NIdVWlh4zrHYMrf3feowxRHe1DgmrNadEvKp0ryXkAD
+         PHlRZYwLszOen49P72OgOB7Yj0Z+HpY1GCwebiYBeEE/z7vT/YGPsh93c59nBPxmmiTF
+         oMYzfSvvVxEU5/c4xGYgMBzq8masamx5nngKqEMmSEXAyVMHp6qZcJJqPn1Zu44/rhaZ
+         tXoZT2sgg7ez8d/yjs3MjMK78x+gcGqAWfBTY5z6XJw3imuAh+P42MgKSVg5pKTepXA8
+         3cSIMENmKsR1Qaq6H/bI2QwgvzubzwqfBEhgaqqb9BHqcMWehuHIBKrE1aGcH44iRWjx
+         hTHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=siy5k+plcJtXdcMZn6ACu9NpjqM7plnkiw05pK5XU78=;
-        b=L2HRLTgaGbrCv7cfmQPqxEnwG1oBf6g3ul5qpDQG53W7fLAbq8V9I40CqqIE2V9yZv
-         ZvHpgItY8hy3DvfWy5n8X2mcoFfPAkjHoz4inEgr8nUtjtqSU61AGs7Lx62lnBZtJatk
-         A2deb2vJfNSUEL9ZEhJIf4lcKyzr8pjYpA2XOrEwbx9zGkHYknNzyf9k1uuqpU6jQ2ho
-         QsJ/1lfhxjBDMDCbEiUWmrJKkEQFQRvnuki+IU7BVtX9G28rMF2ea5Yk7BkjiD7qBGpQ
-         FBhBnYLl5fR8x3W633OqojMCMfo8KPGGMDNkNH8j7Lg1f1SDQ5GUWI5snQsqF2lFYzzm
-         ADsg==
-X-Gm-Message-State: AOAM532EgaHSX3UFTq49EzsDFJLuYgnVoEsZredo6wwea32xnCDkVPGz
-        I912GND2gQtspE4dGX0d5+MfZg==
-X-Google-Smtp-Source: ABdhPJz5sQW7nMiLfe5VnS5PY25vhc4Gn/3VRv6D4H965tRx0eW+S7+5lm9b9onKp9q38melEzDkUg==
-X-Received: by 2002:a63:c843:: with SMTP id l3mr17438532pgi.202.1607327178597;
-        Sun, 06 Dec 2020 23:46:18 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id c184sm521086pfb.11.2020.12.06.23.46.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H37Uk/40yzLuHJ510VKEIUp0RQ+PZefPT2yeqkErhUg=;
+        b=n8yFDzCrwRPRz78v+ciFAia7OXRoKCGfNMfmSAke/r3c4hYMQZ95JhOHFiTDh2ccJZ
+         m2gBMIh5qQZc0znwTTKaQ0gqUCPKpz2IWl9BJO6msyxP1g/DVLOBBNZKhTRLrwD8xZUq
+         Hb1lDMNJo+73Flv5Xlof+dIveC3voGoToAz+HPi3OebvHQE7jd+v4uyb0ttZ5XM8Ni3q
+         H6bIZutFq9ieZfOMyyj7aXHxosBtin833HyBL1fikiDoAz+2prLRTjJKyh5VRICPZXOq
+         glV1NBOBpuPx31S+Z6Z83QZtYB1vfC6std2icaRk4tTkHLCRi1Sh/wBcofm+wrkMdvJI
+         HILA==
+X-Gm-Message-State: AOAM532fZ4yfzX1RF0U7uBGOTP6aql01f8YLtiYMIpRttZc2+CQyMxbV
+        gHlx9JsVxlsGkRNhBpthVMYPXA==
+X-Google-Smtp-Source: ABdhPJzIa5O3cMvuafw6M6JqsvV9/GygQAIh8T7eOMf7z+MaNcc/rzLLg6xADVx25y95wFRUKMw1cg==
+X-Received: by 2002:a17:906:12cf:: with SMTP id l15mr17565338ejb.540.1607327177482;
         Sun, 06 Dec 2020 23:46:17 -0800 (PST)
-Date:   Mon, 7 Dec 2020 13:16:15 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
- callback for drivers
-Message-ID: <20201207074615.kmvy5afoolhv5cgq@vireshk-i7>
-References: <1817571.2o5Kk4Ohv2@kreacher>
- <2174134.tL5yAn4CWt@kreacher>
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id z96sm5951767ede.81.2020.12.06.23.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 23:46:16 -0800 (PST)
+From:   "javier.gonz@samsung.com" <javier@javigon.com>
+X-Google-Original-From: "javier.gonz@samsung.com" <javier.gonz@samsung.com>
+Date:   Mon, 7 Dec 2020 08:46:16 +0100
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201207074616.mocdy6m5qgsn6yqg@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <CH2PR04MB6522F1188557C829285ED5E8E7F10@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20201204144003.GA8868@redsun51.ssa.fujisawa.hgst.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <2174134.tL5yAn4CWt@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201204144003.GA8868@redsun51.ssa.fujisawa.hgst.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-11-20, 19:37, Rafael J. Wysocki wrote:
-> Index: linux-pm/include/linux/cpufreq.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/cpufreq.h
-> +++ linux-pm/include/linux/cpufreq.h
-> @@ -320,6 +320,15 @@ struct cpufreq_driver {
->  					unsigned int index);
->  	unsigned int	(*fast_switch)(struct cpufreq_policy *policy,
->  				       unsigned int target_freq);
-> +	/*
-> +	 * ->fast_switch() replacement for drivers that use an internal
-> +	 * representation of performance levels and can pass hints other than
-> +	 * the target performance level to the hardware.
-> +	 */
-> +	void		(*adjust_perf)(unsigned int cpu, bool busy,
+On 04.12.2020 23:40, Keith Busch wrote:
+>On Fri, Dec 04, 2020 at 11:25:12AM +0000, Damien Le Moal wrote:
+>> On 2020/12/04 20:02, SelvaKumar S wrote:
+>> > This patchset tries to add support for TP4065a ("Simple Copy Command"),
+>> > v2020.05.04 ("Ratified")
+>> >
+>> > The Specification can be found in following link.
+>> > https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+>> >
+>> > This is an RFC. Looking forward for any feedbacks or other alternate
+>> > designs for plumbing simple copy to IO stack.
+>> >
+>> > Simple copy command is a copy offloading operation and is  used to copy
+>> > multiple contiguous ranges (source_ranges) of LBA's to a single destination
+>> > LBA within the device reducing traffic between host and device.
+>> >
+>> > This implementation accepts destination, no of sources and arrays of
+>> > source ranges from application and attach it as payload to the bio and
+>> > submits to the device.
+>> >
+>> > Following limits are added to queue limits and are exposed in sysfs
+>> > to userspace
+>> > 	- *max_copy_sectors* limits the sum of all source_range length
+>> > 	- *max_copy_nr_ranges* limits the number of source ranges
+>> > 	- *max_copy_range_sectors* limit the maximum number of sectors
+>> > 		that can constitute a single source range.
+>>
+>> Same comment as before. I think this is a good start, but for this to be really
+>> useful to users and kernel components alike, this really needs copy emulation
+>> for drives that do not have a native copy feature, similarly to what write zeros
+>> handling for instance: if the drive does not have a copy command (simple copy
+>> for NVMe or XCOPY for scsi), then the block layer should issue read/write
+>> commands to seamlessly execute the copy. Otherwise, this will only serve a small
+>> niche for users and will not be optimal for FS and DM drivers that could be
+>> simplified with a generic block layer copy functionality.
+>>
+>> This is my 10 cents though, others may differ about this.
+>
+>Yes, I agree that copy emulation support should be included with the
+>hardware enabled solution.
 
-Maybe this should still take policy as an argument (like other calls)
-instead of CPU, even if it is going to be used for single-cpu per
-policy case for now.
+Keith, Damien,
 
-> +				       unsigned long min_perf,
-> +				       unsigned long target_perf,
-> +				       unsigned long capacity);
+Can we do the block layer emulation with this patchset and then work in
+follow-up patchses on (i) the FS interface with F2FS as a first user and
+(ii) other HW accelerations such as XCOPY?
 
--- 
-viresh
+For XCOPY, I believe we need to have a separate discussion as much works
+is already done that we should align to.
+
