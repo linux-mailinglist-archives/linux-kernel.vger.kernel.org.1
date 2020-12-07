@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630CE2D0E8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638BC2D0E8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgLGK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:59:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725842AbgLGK7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:59:48 -0500
-Date:   Mon, 7 Dec 2020 10:59:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607338747;
-        bh=5X4Wa2tCGKFImboi89kNZo+q4agi1Sa5rC9nKY4bhJQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jrzTGziG9p7kWufm4+jEWs1AcM3mYrffolvbVjt22y4jw6bR3+ct20YSRnbiynHtY
-         ZKE4tl6T1gvC3TKkkMTo/b8kXbzkCoXXHxURN09nnRyqZFNrEPrEn83Z41+TK1Zqwk
-         G/615OmtLz2u9VS2i5XQ0/7GIGsucMsjONeks3mxeOu1f+arJCjNu3kaZUeUFxelQr
-         DNGxIeO6iSofrDL7Ns3ta0vdln1BnNkwvVlXYvmKDJTZ/qSrzCa6t+mACfEOgZYdQH
-         frsrxtr2ZGwh5MPOQK6sc+0eE+hXtrY1f3UI29nQvj6YO4X00Zq/0NUDIJzW2ji1UD
-         dX4ymbMZkAhKg==
-From:   Will Deacon <will@kernel.org>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, Marc Zyngier <maz@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
-Message-ID: <20201207105900.GB4198@willie-the-truck>
-References: <20201205082957.12544-1-zhukeqian1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205082957.12544-1-zhukeqian1@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726522AbgLGLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgLGLAP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:00:15 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE3DC0613D0;
+        Mon,  7 Dec 2020 02:59:35 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id n26so18834684eju.6;
+        Mon, 07 Dec 2020 02:59:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ueepF1yzZbMICZuzK5SyCCKVIYjp8Ub6eatZHwC5SNQ=;
+        b=Uj3sJueNflNH5hUhwt0vjG3oYCYO+JvWwURqSIkaAssBzmL9l0UksVHzWDm3qtz2tJ
+         K2m/NH2IdmMK5JHKkmP1rQvuZ8ND6SqV+WJ7jnZvE5Eyn2HHH+Je5moW1QNHSWCyEpDu
+         v/pxS7OwzqkPBZf9XdCP/TY/+iTf/wAi+/bR4ovxnTn/pvxrSdiEqGpTmENEooWhkXFS
+         YrmBG+XL7/DfLNeH7Csw7rlznTI7736WIW6Y2Bum3XMNeT/Gq4Oua5l8dCecVZSpCWuv
+         D4jzSoJ2ktoxY+57WJj5i5Xo4XKLTKhCr/BZ4yAaOQmrtJIxGFSZxYmr+jZYqJS6tGqN
+         KUXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ueepF1yzZbMICZuzK5SyCCKVIYjp8Ub6eatZHwC5SNQ=;
+        b=thT23nSDShPr2xX/3NpUDpMxhD8gKoOlhwBUCCx2CGBgKgNgyTkWjvcfvr7lpRSS1X
+         Pz+eomatxnB8PT+t1dJxAbApNEFkS+gYT9WkaHAfDBBI/rUKACHNp+518Dad2BuWnMx0
+         iQHN6OkaFeSjqOgeGVVXleH3jl7Y6gnPRVpdg/BBAt8F+my1SM9FeuEh+KysEZFlHI6l
+         rSHkLVmFYdgNX27REs8z4+E561h56aEYmjR2w15btXSATP+MvZmIG2IXnV3vHVjCLpNF
+         xhXhByZCiv+/KymjSLi1bKqJvATo8xgEBFFiwpDAAQqS8mWkLZUdfmPAqzZvZnnXyMfV
+         GmPQ==
+X-Gm-Message-State: AOAM5327hIC8otNbF9ym3IEPjjHUbvLFrDpvfJe4WCOu4BXzjATJRJQH
+        58CTcBu3hoLa64vhr6RAJKY=
+X-Google-Smtp-Source: ABdhPJwdVXVVZBusMiT3eABzfCHMmKAbPpc8SyCWfIQKwVGaIl4aMaqM9p8ahtPH/YufDw7gFzoe9g==
+X-Received: by 2002:a17:906:52d9:: with SMTP id w25mr17646791ejn.504.1607338773893;
+        Mon, 07 Dec 2020 02:59:33 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id h23sm11571690ejg.37.2020.12.07.02.59.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 02:59:33 -0800 (PST)
+Message-ID: <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
+Subject: Re: [PATCH] scsi: ufs: Enable WB flush during suspend only if WB is
+ enabled
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com
+Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Date:   Mon, 07 Dec 2020 11:59:31 +0100
+In-Reply-To: <20201207055006.24471-1-stanley.chu@mediatek.com>
+References: <20201207055006.24471-1-stanley.chu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 04:29:57PM +0800, Keqian Zhu wrote:
-> ... then we have more chance to detect wrong code logic.
-
-This could do with being a bit more explicit. Something like:
-
-	Although handling a mapping request with no permissions is a
-	trivial no-op, defer the early return until after the size/range
-	checks so that we are consistent with other mapping requests.
-
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  drivers/iommu/io-pgtable-arm.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+On Mon, 2020-12-07 at 13:50 +0800, Stanley Chu wrote:
+> WriteBootser flush during suspend is not necessary to be enabled if
+> WriteBooster feature is disabled. Simply adding a check to prevent
+> unexpected power drain.
 > 
-> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-> index a7a9bc08dcd1..8ade72adab31 100644
-> --- a/drivers/iommu/io-pgtable-arm.c
-> +++ b/drivers/iommu/io-pgtable-arm.c
-> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->  	arm_lpae_iopte prot;
->  	long iaext = (s64)iova >> cfg->ias;
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 4879e87577e1..89fa8b9ac11d 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5458,7 +5458,7 @@ static bool ufshcd_wb_need_flush(struct ufs_hba
+> *hba)
+>         u32 avail_buf;
+>         u8 index;
 >  
-> -	/* If no access, then nothing to do */
-> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
-> -		return 0;
-> -
->  	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
->  		return -EINVAL;
->  
-> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->  	if (WARN_ON(iaext || paddr >> cfg->oas))
->  		return -ERANGE;
->  
-> +	/* If no access, then nothing to do */
-> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
-> +		return 0;
+> -       if (!ufshcd_is_wb_allowed(hba))
+> +       if (!ufshcd_is_wb_allowed(hba) || !hba->wb_enabled)
+>                 return false;
+>         /*
+>          * The ufs device needs the vcc to be ON to flush.
 
-This looks sensible to me, but please can you make the same change for
-io-pgtable-arm-v7s.c so that the behaviour is consistent across the two
-formats?
 
-Thanks,
+Hi Stanley
 
-Will
+In the 3.1 Spec:
+
+"If the fWriteBoosterEn flag is set to zero, data written to any
+logical unit is written in normal storage.
+If the fWriteBoosterEn flag is set to one and the device is configured
+in “shared buffer” mode, data written to any logical unit is written in
+the shared WriteBooster Buffer."
+
+so, IMO, fWriteBoosterEn is independant with WB buffer flush.
+
+as for the flush:
+
+"There are two methods for flushing data from the WriteBooster Buffer
+to the normal storage: one is using an explicit flush command, the
+other enabling the flushing during link hibernate state. If the
+fWriteBoosterBufferFlushEn flag is set to one, the device shall flush
+the data stored in the WriteBooster Buffer to the normal storage. If
+fWriteBoosterBufferFlushDuringHibernate is set to one, the device
+flushes the WriteBooster Buffer data automatically whenever the link
+enters the hibernate (HIBERN8) state."
+
+IMO, for the flush, it is controlled by fWriteBoosterBufferFlushEn and
+fWriteBoosterBufferFlushDuringHibernate.
+
+how do you understand the above two paragraphs from Spec?
+
+
+thanks,
+Bean
+
+
