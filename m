@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E772D0D36
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171C42D0D0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgLGJla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:41:30 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:49452 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbgLGJl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:41:29 -0500
-X-Greylist: delayed 549 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 04:41:28 EST
-IronPort-SDR: /GNf1k3r6g7zoHSmda2y1LZxQcHJt6cExAwV83bn+BKevUYrwKA10mUYYcqWLDpk/fDuAsEi1s
- EPreFuhzTL5kM4Hk+SnLdVlRS+ZikwK0OB52dFThTdhRiFUHENna46ma8NSTrJxYOeVEB5U/b0
- 5QKQvL7WzImc0BgG4Q0RRJq8OkE1iLNKkdUdRg4e0H0ouqu8LIbmJXN+iI2u4veUtDnew79Bw3
- urSwvx8aPQo0yDG7g03DhDlcbfWDXuGe9ZplSlnSC3q1TVVbEi/33/BdGL5kRmjGDxFI8LvVEo
- d70=
-X-IronPort-AV: E=Sophos;i="5.78,399,1599516000"; 
-   d="scan'208";a="15063546"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 07 Dec 2020 10:31:38 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 07 Dec 2020 10:31:38 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 07 Dec 2020 10:31:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1607333498; x=1638869498;
-  h=from:to:cc:subject:date:message-id;
-  bh=UOXhKhew792DWKPSXP/HOL6B6naG2LvvyuBO86TcfZ0=;
-  b=XrcG6Z+NcqbRETfHmZjiIdN0c4S18UKNWAtY+uU1zOyHdU9dTintlcHb
-   cZ/+dmRUxynV434l0Vl3yH49a0tiIjLUHvlpnzoglK3ISQLYGOHk85szp
-   JDRX2wnBOd2ngoCfbcox7ti8/Iq7Ze5SviZC+SN11Fd+qAg979tSSrFFs
-   JrF/S4PTFRsTpfYQhJTfJhyphRp+ZZNMzhh4myfrxNlzR3fuBmdyDMIxj
-   b6OFHLIVcP/WwUipwkbyn2mOdO1Wn4VEKKTutJbhiCiYVUonD30+f+Ew4
-   LrVe2xyZwX/uLrgdvx3C0vDqQivMg4kqEm3UhHlRb7DhoRvcl8gH8jGc7
-   Q==;
-IronPort-SDR: +KrO04IhMcntlV/SorEtNQjgbqKO7kerxS37C3XzN4K8lfM8o7Yohvvxn76AUIFagbzd+yK0Gw
- C/UxVVFC3EQlCjyxPAjbhF7KZDXCfmoWs2N9J7QAPAFdCPI8n3iBEsTndFzD5vjNjxd5Iq+E9S
- 2z1JAll47sxNvyovCseIJ/tki4SB1/ygpWUPOuj+NXAEy0ZIuH00KT5tdUhlCkBKqNiqkFpvyU
- SxNB8wbrutwOOUYtRfwGOBAxKEs3SR6f3dGOSVG8oNkrhXCF/kT6BTvEu3VBXvfQHla5J/i6rX
- 4e4=
-X-IronPort-AV: E=Sophos;i="5.78,399,1599516000"; 
-   d="scan'208";a="15063545"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 07 Dec 2020 10:31:38 +0100
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 98E69280070;
-        Mon,  7 Dec 2020 10:31:38 +0100 (CET)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: vendor-prefixes: correct the spelling of TQ-Systems GmbH
-Date:   Mon,  7 Dec 2020 10:30:36 +0100
-Message-Id: <20201207093036.29824-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726402AbgLGJcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgLGJcf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:32:35 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26D4C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:31:49 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w206so9148298wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=GLuU4c9odSxFrnOuGet4+6CjpgyrMIWPZsUZq/PreGk=;
+        b=i0Yc5QA90bEFBhwG6hH1g28TISmrUpKKqy2tRuXZIKguMBG/kBKv49AJWqGmNlgWXK
+         uUk2WVKjmEgACcqYUvwAdPy7RY+jUaZeSbx5AeFS0JMNUwURxkbW+Kfi+olqbWTFqZnO
+         D2uPXUc2baCQ2KMw//MjQL/+BZ6osDZlgQzE03l/aCcTikXeX9BWQp786HvpJ3N9Vgww
+         S+ImKyqgUny8XZiooKdMpc9pk6opwrdQux/WAQiHKa3ZsvUjBz0bhHJxAkRgzQXZDORw
+         4d8LduMwaP8LaT2vgNQGVSGIn7spsXDHE5r5YwmXJRhq1wCLQjTOjbKgabX3l7wXkeVi
+         ahkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=GLuU4c9odSxFrnOuGet4+6CjpgyrMIWPZsUZq/PreGk=;
+        b=A5Ugz8fPN96PhNzkUe1/d299KlT1zCuJ7z9sb6M1pT8XsqLFcctbEUsyKOPQmT7c/P
+         87+CaTgngNh+xxwL7WGHXqIGICLQBBeLbAaxyT1OkEwr02qcXgEV1rckaBmkiTs9eIVu
+         XmVcyjWHBBjmngIEFKwWP3HNl6eB1969PflCSNezlVNelwed+rpHMF5acRsxpXMPubfK
+         kmOsItGHBNtlz2CkPTnEEFtu/t4N717PRHRG05dj6kyVExWqw73EDD5fRWtIo9iliKp5
+         XJXS3EXvjuDMxF4tYYDJmrc+BAwvIc/CYi7uhHjhW/bJYUMakKD8NhSqDeQg0ZUhVp+0
+         IsYg==
+X-Gm-Message-State: AOAM533HG/kxxD0EnaqkwjeczNzC/a4DGgMcWodHkJIhx7toSQaMXqh8
+        Zr5EHYAZxxmmH2Pc+igJmqe2Dw==
+X-Google-Smtp-Source: ABdhPJw4vyyf2WIkP9E5DrBKTOacvbXpy3jjxOnALxt8z3HsQ49xyCYXLUlrFZfzyjlszQINDzHQYg==
+X-Received: by 2002:a1c:9949:: with SMTP id b70mr17600666wme.85.1607333508343;
+        Mon, 07 Dec 2020 01:31:48 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id k64sm12889681wmb.11.2020.12.07.01.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 01:31:47 -0800 (PST)
+References: <20201205213207.519341-1-martin.blumenstingl@googlemail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] net: stmmac: dwmac-meson8b: fix mask definition of the
+ m250_sel mux
+In-reply-to: <20201205213207.519341-1-martin.blumenstingl@googlemail.com>
+Message-ID: <1jo8j62c8t.fsf@starbuckisacylon.baylibre.com>
+Date:   Mon, 07 Dec 2020 10:31:46 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Merchel <Max.Merchel@tq-group.com>
 
-"TQ-Systems" is written with a dash, as can be seen on
-https://www.tq-group.com/en/imprint/
+On Sat 05 Dec 2020 at 22:32, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-Signed-off-by: Max Merchel <Max.Merchel@tq-group.com>
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The m250_sel mux clock uses bit 4 in the PRG_ETH0 register. Fix this by
+> shifting the PRG_ETH0_CLK_M250_SEL_MASK accordingly as the "mask" in
+> struct clk_mux expects the mask relative to the "shift" field in the
+> same struct.
+>
+> While here, get rid of the PRG_ETH0_CLK_M250_SEL_SHIFT macro and use
+> __ffs() to determine it from the existing PRG_ETH0_CLK_M250_SEL_MASK
+> macro.
+>
+> Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 3a76c226771b..5b7ee0e059a2 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1125,7 +1125,7 @@ patternProperties:
-   "^tpo,.*":
-     description: TPO
-   "^tq,.*":
--    description: TQ Systems GmbH
-+    description: TQ-Systems GmbH
-   "^tronfy,.*":
-     description: Tronfy
-   "^tronsmart,.*":
--- 
-2.17.1
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> index dc0b8b6d180d..459ae715b33d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+> @@ -30,7 +30,6 @@
+>  #define PRG_ETH0_EXT_RMII_MODE		4
+>  
+>  /* mux to choose between fclk_div2 (bit unset) and mpll2 (bit set) */
+> -#define PRG_ETH0_CLK_M250_SEL_SHIFT	4
+>  #define PRG_ETH0_CLK_M250_SEL_MASK	GENMASK(4, 4)
+>  
+>  /* TX clock delay in ns = "8ns / 4 * tx_dly_val" (where 8ns are exactly one
+> @@ -155,8 +154,9 @@ static int meson8b_init_rgmii_tx_clk(struct meson8b_dwmac *dwmac)
+>  		return -ENOMEM;
+>  
+>  	clk_configs->m250_mux.reg = dwmac->regs + PRG_ETH0;
+> -	clk_configs->m250_mux.shift = PRG_ETH0_CLK_M250_SEL_SHIFT;
+> -	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK;
+> +	clk_configs->m250_mux.shift = __ffs(PRG_ETH0_CLK_M250_SEL_MASK);
+> +	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK >>
+> +				     clk_configs->m250_mux.shift;
+>  	clk = meson8b_dwmac_register_clk(dwmac, "m250_sel", mux_parents,
+>  					 ARRAY_SIZE(mux_parents), &clk_mux_ops,
+>  					 &clk_configs->m250_mux.hw);
 
