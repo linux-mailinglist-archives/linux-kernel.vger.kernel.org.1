@@ -2,253 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F4F2D0C1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFA82D0C24
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgLGIwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:52:14 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:7298 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgLGIwO (ORCPT
+        id S1726413AbgLGIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:54:35 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8712 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgLGIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:52:14 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="38474458"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 07 Dec 2020 16:51:08 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2870:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Mon, 07 Dec 2020 16:51:06 +0800 (CST)
-Received: from 101.12.100.64
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(106416:0:AUTH_LOGIN)
-        (envelope-from <jingle.wu@emc.com.tw>); Mon, 07 Dec 2020 16:51:04 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        dmitry.torohov@gmail.com
-Cc:     phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: [PATCH 2/2] Input: elantech - Some module tp of tracpoint report has a smbus protocol error.
-Date:   Mon,  7 Dec 2020 16:51:11 +0800
-Message-Id: <20201207085111.8386-1-jingle.wu@emc.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Mon, 7 Dec 2020 03:54:34 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqHCF02K4zkmH9;
+        Mon,  7 Dec 2020 16:53:13 +0800 (CST)
+Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 16:53:43 +0800
+From:   Guohua Zhong <zhongguohua1@huawei.com>
+To:     <patrick@baymotion.com>, <joern@lazybastard.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nixiaoming@huawei.com>, <wangle6@huawei.com>,
+        <young.liuyang@huawei.com>, <zhongguohua1@huawei.com>
+Subject: [PATCH v3] phram: Allow the user to set the erase page size.
+Date:   Mon, 7 Dec 2020 16:53:42 +0800
+Message-ID: <20201207085342.24852-1-zhongguohua1@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.101.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add the conditional expression to distinguish different patterns regarding 0, 1, 2.
-2. Add the function to get or set more bytes from register
-3. Get and correct the device informations including ic_type, module id from different pattern.
-4. Add the function to change the report id 0x5F of trackpoint.
-5. Some module has a bug which makes default SMBUS trackpoint report 0x5E has a smbus protocol error.
----
- drivers/input/mouse/elantech.c | 128 ++++++++++++++++++++++++++++++++-
- drivers/input/mouse/elantech.h |   4 ++
- 2 files changed, 131 insertions(+), 1 deletion(-)
+From: Patrick O'Grady <patrick@baymotion.com>
 
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 90f8765f9efc..b3240775ceca 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -89,6 +89,57 @@ static int elantech_ps2_command(struct psmouse *psmouse,
- 	return rc;
+Permit the user to specify the erase page size as a parameter.
+This solves two problems:
+
+- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+create images with erase sizes less than 8KiB; many architectures
+define PAGE_SIZE as 4KiB.
+
+- Allows more effective use of small capacity devices.  JFFS2
+needs somewhere between 2 and 5 empty pages for garbage collection;
+and for an NVRAM part with only 32KiB of space, a smaller erase page
+allows much better utilization in applications where garbage collection
+is important.
+
+Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
+Reviewed-by: Joern Engel <joern@logfs.org>
+Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
+[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
+Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
+
+v3:
+ update authorship for Patrick O'Grady and remove the reported-by tag for kernel test robot
+
+v2: https://lore.kernel.org/lkml/20201204080821.46868-1-zhongguohua1@huawei.com/
+ fix build error which is reported by kernel test robot
+
+v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
+ 1.fix token array index out of bounds
+ 2.update patch for kernel master branch
+---
+ drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 087b5e86d1bf..1729b94b2abf 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -6,14 +6,14 @@
+  * Usage:
+  *
+  * one commend line parameter per device, each in the form:
+- *   phram=<name>,<start>,<len>
++ *   phram=<name>,<start>,<len>[,<erasesize>]
+  * <name> may be up to 63 characters.
+- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
++ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
+  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
+- * gigabytes.
++ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
+  *
+  * Example:
+- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
++ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+@@ -26,6 +26,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
++#include <asm/div64.h>
+ 
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+@@ -88,7 +89,7 @@ static void unregister_devices(void)
+ 	}
  }
  
-+/*
-+ * Send an Elantech style special command to read 3 bytes from a register
-+ */
-+static int elantech_read_reg_params(struct psmouse *psmouse, unsigned char reg,
-+                                    unsigned char *param)
-+{
-+	int rc = 0;
-+	
-+	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, reg) ||
-+	    elantech_ps2_command(psmouse, param, PSMOUSE_CMD_GETINFO)) {
-+			rc = -1;
-+	}
-+		
-+	if (rc)
-+		psmouse_err(psmouse,
-+			    "failed to read register 0x%02x.\n", reg);
-+	return rc;
-+}
-+
-+/*
-+ * Send an Elantech style special command to write a register with a parameter
-+ */
-+static int elantech_write_reg_params(struct psmouse *psmouse, unsigned char reg,
-+				unsigned char *param)
-+{
-+	
-+	int rc = 0;
-+	
-+	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+		    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-+		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+		    elantech_ps2_command(psmouse, NULL, reg) ||
-+		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+		    elantech_ps2_command(psmouse, NULL, param[0]) ||
-+		    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+		    elantech_ps2_command(psmouse, NULL, param[1]) ||
-+		    elantech_ps2_command(psmouse, NULL, PSMOUSE_CMD_SETSCALE11)) {
-+			rc = -1;
-+		}
-+		
-+	if (rc)
-+		psmouse_err(psmouse,
-+			    "failed to write register 0x%02x with value 0x%02x0x%02x.\n",
-+			    reg, param[0], param[1]);
-+	return rc;
-+
-+}
-+
- /*
-  * Send an Elantech style special command to read a value from a register
-  */
-@@ -1529,6 +1580,27 @@ static const struct dmi_system_id no_hw_res_dmi_table[] = {
- 	{ }
- };
- 
-+/*
-+ * Change Report id 0x5E to 0x5F.
-+ */
-+static int elantech_change_report_id(struct psmouse *psmouse)
-+{
-+	unsigned char param[2] = { 0x10, 0x03 };
-+	
-+	if (elantech_write_reg_params(psmouse, 0x7, param) == 0) {
-+		if (elantech_read_reg_params(psmouse, 0x7, param) == 0) {
-+			if ((param[0] == 0x10) && (param[1] == 0x03)) {
-+				return 0;
-+			}
-+			psmouse_err(psmouse,
-+		    	"Elantech change report id Fail. (0x%02x, 0x%02x)\n",
-+		    	param[0], param[1]);
-+		}	
-+	}
-+	psmouse_err(psmouse,
-+		    	"Elantech change report id Fail.\n");
-+	return -1;
-+}
- /*
-  * determine hardware version and set some properties according to it.
-  */
-@@ -1556,6 +1628,18 @@ static int elantech_set_properties(struct elantech_device_info *info)
- 			return -1;
- 		}
- 	}
-+	
-+	
-+	/* Get information pattern for hw_version 4 */
-+	if (ver == 15) {
-+		if ((info->fw_version & 0x0000ff) == 0x01)
-+			info->pattern = 0x01;
-+		else if ((info->fw_version & 0x0000ff) == 0x02)
-+			info->pattern = 0x02;
-+		else
-+			info->pattern = 0x00;
-+	} else
-+		info->pattern = 0x00;
- 
- 	/* decide which send_cmd we're gonna use early */
- 	info->send_cmd = info->hw_version >= 3 ? elantech_send_cmd :
-@@ -1598,7 +1682,8 @@ static int elantech_query_info(struct psmouse *psmouse,
+-static int register_device(char *name, phys_addr_t start, size_t len)
++static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
  {
- 	unsigned char param[3];
- 	unsigned char traces;
--
-+	unsigned char ic_body[3];
-+	
- 	memset(info, 0, sizeof(*info));
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
+ 	new->mtd._write = phram_write;
+ 	new->mtd.owner = THIS_MODULE;
+ 	new->mtd.type = MTD_RAM;
+-	new->mtd.erasesize = PAGE_SIZE;
++	new->mtd.erasesize = erasesize;
+ 	new->mtd.writesize = 1;
  
- 	/*
-@@ -1628,6 +1713,21 @@ static int elantech_query_info(struct psmouse *psmouse,
- 		     info->capabilities[0], info->capabilities[1],
- 		     info->capabilities[2]);
+ 	ret = -EAGAIN;
+@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
+ static int phram_init_called;
+ /*
+  * This shall contain the module parameter if any. It is of the form:
+- * - phram=<device>,<address>,<size> for module case
+- * - phram.phram=<device>,<address>,<size> for built-in case
+- * We leave 64 bytes for the device name, 20 for the address and 20 for the
+- * size.
+- * Example: phram.phram=rootfs,0xa0000000,512Mi
++ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
++ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
++ * We leave 64 bytes for the device name, 20 for the address , 20 for the
++ * size and 20 for the erasesize.
++ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
+  */
+-static char phram_paramline[64 + 20 + 20];
++static char phram_paramline[64 + 20 + 20 + 20];
+ #endif
  
-+
-+	info->ic_version = (info->fw_version & 0x0f0000) >> 16;
-+	
-+	if ((info->pattern > 0x00) && (info->ic_version == 0xf)) {
-+		if (info->send_cmd(psmouse, ETP_ICBODY_QUERY, ic_body)) {
-+			psmouse_err(psmouse, "failed to query ic body\n");
-+			return -EINVAL;
-+		}
-+		info->ic_version = (ic_body[0] << 8) | ic_body[1];
-+		psmouse_info(psmouse,
-+			     "Elan ic body : 0x%04x, current fw version : 0x%02x\n",
-+			     info->ic_version,
-+			     ic_body[2]);
-+	}	
-+	
- 	if (info->hw_version != 1) {
- 		if (info->send_cmd(psmouse, ETP_SAMPLE_QUERY, info->samples)) {
- 			psmouse_err(psmouse, "failed to query sample data\n");
-@@ -1640,6 +1740,11 @@ static int elantech_query_info(struct psmouse *psmouse,
- 			     info->samples[2]);
+ static int phram_setup(const char *val)
+ {
+-	char buf[64 + 20 + 20], *str = buf;
+-	char *token[3];
++	char buf[64 + 20 + 20 + 20], *str = buf;
++	char *token[4];
+ 	char *name;
+ 	uint64_t start;
+ 	uint64_t len;
++	uint64_t erasesize = PAGE_SIZE;
+ 	int i, ret;
+ 
+ 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
+@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
+ 	strcpy(str, val);
+ 	kill_final_newline(str);
+ 
+-	for (i = 0; i < 3; i++)
++	for (i = 0; i < 4; i++)
+ 		token[i] = strsep(&str, ",");
+ 
+ 	if (str)
+@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
+ 		goto error;
  	}
  
-+	if (info->pattern > 0x00) 
-+		info->product_id = (info->samples[0] << 8) | info->samples[1];
-+	else
-+		info->product_id = info->samples[1];
-+	
- 	if (info->samples[1] == 0x74 && info->hw_version == 0x03) {
- 		/*
- 		 * This module has a bug which makes absolute mode
-@@ -1653,6 +1758,27 @@ static int elantech_query_info(struct psmouse *psmouse,
- 
- 	/* The MSB indicates the presence of the trackpoint */
- 	info->has_trackpoint = (info->capabilities[0] & 0x80) == 0x80;
-+	
-+	if (info->has_trackpoint) {
-+		if ((info->ic_version == 0x0011) && (info->product_id == 0x08 || 
-+						      info->product_id == 0x09 ||
-+						      info->product_id == 0x0D ||
-+						      info->product_id == 0x0E)) {
-+		/*
-+		 * This module has a bug which makes default SMBUS trackpoint report 
-+		 * 0x5E have a protocol error, So change the report id to 0x5F,  
-+		 * if it is not changed to 0x5F report, so let's abort 
-+		 * so we'll be using standard PS/2 protocol.
-+		 */
-+			if (elantech_change_report_id(psmouse) != 0) {
-+				psmouse_info(psmouse,
-+			     	"Trackpoint report is broken, forcing standard PS/2 protocol\n");
-+				return -ENODEV;
-+			}
-+				
+-	ret = register_device(name, start, len);
++	if (token[3]) {
++		ret = parse_num64(&erasesize, token[3]);
++		if (ret) {
++			parse_err("illegal erasesize\n");
++			goto error;
 +		}
-+						      
 +	}
++
++	if (len == 0 || erasesize == 0 || erasesize > len
++	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
++		parse_err("illegal erasesize or len\n");
++		goto error;
++	}
++
++	ret = register_device(name, start, len, (uint32_t)erasesize);
+ 	if (ret)
+ 		goto error;
  
- 	info->x_res = 31;
- 	info->y_res = 31;
-diff --git a/drivers/input/mouse/elantech.h b/drivers/input/mouse/elantech.h
-index e0a3e59d4f1b..571e6ca11d33 100644
---- a/drivers/input/mouse/elantech.h
-+++ b/drivers/input/mouse/elantech.h
-@@ -18,6 +18,7 @@
- #define ETP_CAPABILITIES_QUERY		0x02
- #define ETP_SAMPLE_QUERY		0x03
- #define ETP_RESOLUTION_QUERY		0x04
-+#define ETP_ICBODY_QUERY		0x05
+-	pr_info("%s device: %#llx at %#llx\n", name, len, start);
++	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
+ 	return 0;
  
- /*
-  * Command values for register reading or writing
-@@ -140,7 +141,10 @@ struct elantech_device_info {
- 	unsigned char samples[3];
- 	unsigned char debug;
- 	unsigned char hw_version;
-+	unsigned char pattern;
- 	unsigned int fw_version;
-+	unsigned int ic_version;
-+	unsigned int product_id;
- 	unsigned int x_min;
- 	unsigned int y_min;
- 	unsigned int x_max;
+ error:
+@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
+ }
+ 
+ module_param_call(phram, phram_param_call, NULL, NULL, 0200);
+-MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
++MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
+ 
+ 
+ static int __init init_phram(void)
 -- 
-2.17.1
+2.12.3
 
