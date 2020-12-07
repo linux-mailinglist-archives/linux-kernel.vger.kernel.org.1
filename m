@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE352D109B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB34E2D10A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbgLGMeW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 07:34:22 -0500
-Received: from aposti.net ([89.234.176.197]:53508 "EHLO aposti.net"
+        id S1727260AbgLGMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:36:07 -0500
+Received: from mout.gmx.net ([212.227.15.18]:59463 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgLGMeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:34:22 -0500
-Date:   Mon, 07 Dec 2020 12:33:18 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>, linux-mmc@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        ARM/Mediatek SoC support <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Message-Id: <IVYYKQ.T5GFS8Z1QTP2@crapouillou.net>
-In-Reply-To: <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
-References: <20201203222922.1067522-1-arnd@kernel.org>
-        <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
-        <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com>
+        id S1726370AbgLGMgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:36:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607344442;
+        bh=0d1+Dzo1u/9nlI5Vu2HRoIjjB7ZSUOHMPNkpO7nwQYg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Y7S/hbp1SKISw1ufN7WFJgTRMtCHIK3oVG6G1OUknkvdkqfzk89X/Cyr2wSsDMxAW
+         0Kqi1L95wYKzN7AVhPFU1p+DKWnUrVS0H3kK/e7C0V3ehC76S9X1UME+nOZzcgfu8Z
+         OFUyb3YzRO2EGcrgfVFH86U8Kw2EoaBCXl3A80+8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.4]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBUmD-1krSMw3Xqh-00Cynv; Mon, 07
+ Dec 2020 13:34:01 +0100
+Message-ID: <3ec93680c6a27626b23e99d552aa778be7b2ecec.camel@gmx.de>
+Subject: Re: scheduling while atomic in z3fold
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org
+Date:   Mon, 07 Dec 2020 13:34:00 +0100
+In-Reply-To: <CAM4kBBL5+xNWq6DWHY6nQjwDTj8PZKem-rGuFvimi7jekjA+Xw@mail.gmail.com>
+References: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
+         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
+         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
+         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
+         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
+         <20201130160327.ov32m4rapk4h432a@linutronix.de>
+         <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
+         <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
+         <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
+         <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de>
+         <20201203133934.37aotbdjnd36lrxv@linutronix.de>
+         <10d5088861ba219f3f7cd657fc95b0bedc19010a.camel@gmx.de>
+         <cad7848c-7fd3-b4a4-c079-5896bb47ee49@konsulko.com>
+         <3ffed6172820f2e8e821e1b8817dbd0bdd693c26.camel@gmx.de>
+         <CAM4kBBL5+xNWq6DWHY6nQjwDTj8PZKem-rGuFvimi7jekjA+Xw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:e2CuKsVCIq1wO8Gyf47ggrWJwiV1KEEQde9dViGUgPjRcDUEE5r
+ NCJiMn3ocxzTghgRjCHq5OiEPfJt//iNw1qttvfGfzTi1ZAa9/GhNI0uoh8Ik3eOlFtlJ26
+ OFFkHRuRnoskDwK52D8lpsH2S3Xgyv9qa4QEkAgwI7r4iCjDNgPx0JNgXzz6PJY5MFBhgvu
+ JRuoLqsLkdbbP0aBipFNw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OV65OwFGK3I=:YKyr6c3slvGtZo4SANrQt7
+ rNdKyHcMeAsjOl1dPNzzmBsfNAi211xhkO5LrNHq9zssL6FGdEYq4Qex4sVimR3M/bGqn5lyo
+ nAJaUzTadWPVDp7bqMEZQBetoM0+b06LHyJ5iHfePf22VEuvWzLkbglGRucHIpsSCsoNnNudz
+ 5H2NeW6SJ8YPZGjb3z6NemcDaQfMDFY40+pcOHjxUwPQx7WBu8X7jBgiYCjYYW73JhJyg2ezD
+ PpXx/duS07dxaThYVNZABtaz9wSUql9DB3yMareD0eq+xRZNttqgLK/OhcDL+Br/pzzvaw0lK
+ rtJqNYPWe+EY7NjAcelqZFhL2ZkYepGTaWWAP6lVpZtlgVoD/VfgM8b7IFbQmM9F0ZjrjnJzD
+ 26keiuS1HeS8Cq9qacH4Q/TKvG84/CycWP4V/aUiaPMhurATqDkXEOCpoviQHGR4/0WaJs5I6
+ 0Q5andS/aWdC8I7CxEie5d2JR8FX79zdhR1oqiVO48lhGRcpAUTTl1ZAsj3dAqr+27bS2tbhy
+ YhQ/SzJxmlJG0YRd+SccVZ/D7BmoFxk3uqGqp/TAgEe6OrlzPgdwXZBfbkPC1UkCeLz514R2v
+ QiezfSaTmUAQ0LF7Pt4g/V2BDRtps05tS5TSw+0j3Yd3v2BF6ZI7RaYRHe7TjHOXMx6qS4EJ4
+ 36AQhscPFBY4FjMbNo9iEA/7bqHFqVJ0UvMbH2BE3mKxA/NV4D8dQK20+7IQpVGoNrrGfUxnQ
+ yH0/rMiH18WgFdmqovrJOE3abwBq284htWi/fYeia7C2AezPy1ZrqES0RrB7NPGMQ/WjLxTGr
+ A10JofJcnstYL3hLtT4nuPmtAGzIaWi+xr2X4KeHqZF3v9g71O7ZThFk88NOi9HZk/AmfugWx
+ b2Q4o1FqR/OF/OUw892w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Mon, 2020-12-07 at 12:52 +0100, Vitaly Wool wrote:
+>
+> Thanks. This trace beats me because I don't quite get how this could
+> have happened.
 
-Le ven. 4 déc. 2020 à 15:14, Arnd Bergmann <arnd@kernel.org> a écrit 
-:
-> On Fri, Dec 4, 2020 at 11:02 AM Ulf Hansson <ulf.hansson@linaro.org> 
-> wrote:
->>  On Thu, 3 Dec 2020 at 23:29, Arnd Bergmann <arnd@kernel.org> wrote:
-> 
->>  > -#ifdef CONFIG_PM
->>  >  static void msdc_save_reg(struct msdc_host *host)
->> 
->>  Shouldn't msdc_save|restore_reg() be turned into "__maybe_unused" 
->> as well?
-> 
-> There is no need since the compiler can figure that out already when 
-> there
-> is a reference to the function from dead code.
-> 
->>  >
->>  > -static int msdc_resume(struct device *dev)
->>  > +static int __maybe_unused msdc_resume(struct device *dev)
->>  >  {
->>  >         return pm_runtime_force_resume(dev);
->>  >  }
->>  > -#endif
->>  >
->>  >  static const struct dev_pm_ops msdc_dev_pm_ops = {
->> 
->>  You may also change this to a __maybe_unused, as long as you also
->>  assign the .pm pointer in the mt_msdc_driver with
->>  pm_ptr(&msdc_dev_pm_ops).
->> 
->>  Ideally the compiler should drop these functions/datas entirely 
->> then.
-> 
-> I don't see a lot of other instances of that yet, and it's fairly new.
-> Maybe we should fix it before it gets propagated further.
-> 
-> I would suggest we redefine pm_ptr like
-> 
-> #define pm_ptr(_ptr) (IS_ENABLED(CONFIG_PM) ? (_ptr) : NULL)
+I swear there's a mythical creature loose in there somewhere ;-)
+Everything looks just peachy up to the instant it goes boom, then you
+find in the wreckage that which was most definitely NOT there just a
+few ns ago.
 
-By the way, as I'm ending up doing the same in a different context, I 
-think it would be useful to have a IF_ENABLED() macro defined like this:
+> Hitting write_unlock at line 341 would mean that HANDLES_ORPHANED bit
+> is set but obviously it isn't.
+> Could you please comment out the ".shrink =3D z3fold_zpool_shrink" line
+> and retry?
 
-#define IF_ENABLED(_cfg, _ptr) (IS_ENABLED(_cfg) ? (_ptr) : NULL)
+Unfortunately, that made zero difference.
 
-Then the pm_ptr(_ptr) macro could be defined like this:
-
-#define pm_ptr(_ptr) IF_ENABLED(CONFIG_PM, _ptr)
-
-Cheers,
--Paul
-
-> and remove the __maybe_unused annotations on those that we
-> already have. This also has the effect of dropping the unused
-> data from the object, but without having to an an #ifdef or
-> __maybe_unused.
-> 
-> Adding Paul and Rafael to Cc for clarification on this.
-> 
->        Arnd
-
+	-Mike
 
