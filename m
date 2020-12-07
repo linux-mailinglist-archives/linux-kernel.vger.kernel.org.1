@@ -2,132 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA572D0D13
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB192D0D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgLGJe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLGJe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:34:26 -0500
-Date:   Mon, 7 Dec 2020 10:33:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607333625;
-        bh=XCxg2s6N94uHQMR78/Ss1aKun/U23rUI97jwBlZMlUE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YJ/PB3TNza9aUML1mkcoBNn+4ZECY4tbbSQcjZ/VlVQzSakLkDVuM47Ca3ZFb16aH
-         gQ7sHbe58ZuG1fBk3jJmuvRC/AtOs3R6oqXg+vN6BlYQEi7uBLku9d5X+XIjJLhZKU
-         Orx+Oh989U/WF0cHzq3HQb8fwizhMKGV+C/mWU9rnqBKLfzwhijfKFQnO2e6XmygXm
-         UsazLvpfmJaR85vRQxvFJEOWsFN2NOi8qy7FP95yqpZCEqNCghgn5YjKe8wlAHDVyt
-         e5UQSyBEm9vP06me0+AoQ2yzmx7kQ2yyXT0/61E4OGKjkD1Lim0+BBU9hNPeBW/k0W
-         Ka7h4/xdF2e2A==
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        id S1726635AbgLGJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:36:46 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:33651 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLGJgp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:36:45 -0500
+Received: from [192.168.1.155] ([95.114.88.149]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MnFps-1kKX8C3xeW-00jMNg; Mon, 07 Dec 2020 10:33:57 +0100
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     Jason Wang <jasowang@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] improve get_feat.pl output when all features are
- displayed
-Message-ID: <20201207103340.78f003f5@coco.lan>
-In-Reply-To: <20201205170350.19d91c51@coco.lan>
-References: <20201203153642.594afd85@lwn.net>
-        <cover.1607095090.git.mchehab+huawei@kernel.org>
-        <20201204144843.1ed3b988@lwn.net>
-        <20201205170350.19d91c51@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Cc:     corbet@lwn.net, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, mst@redhat.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
+ <37a9fbc6-d75f-f6cd-f052-0dd416594a84@redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <635faeb7-950e-e594-3217-69032ed9cbd1@metux.net>
+Date:   Mon, 7 Dec 2020 10:33:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <37a9fbc6-d75f-f6cd-f052-0dd416594a84@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:uyhQiyLYIW2+ht8ujHR3ocz5i10aYyRMp5NddJBt91W9n5CxJwR
+ er36oazoeWX6Z4GoxbZ4xMlWA2hLnzmUFiqcqQ27WHsxdfoIKkY80aa0wg3rp35pxb4fsHa
+ qq31FRXicF33+I6GzajXHH8RM8IxzkBTzHN10gwSpdWEp8HTG7lSlVp8TeRIQ6zeqbeuI4H
+ nanv24HHaY/Fs3hmOKHhQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VPbMj2CC5EU=:LIkWLnAHT3uJ58igbF8Wwa
+ mOWcFo1umrUdXT3rFzQZssgyXE7NjwxsmPUDVQfcMDQXkMc0RnUbhBaup+JcQ4asNXwq6Iu7M
+ /KCeGfavK6h7OmGFrz7pTaa2kbrJiBrV9RVgRjzqfKC8CB0/usK43jBYxF3HiduIcT88wRn+M
+ bxVgXNZ+ezdB9t9YeHY0L77yLRS8u3BP48hzVmEGTvON1SuPutR7yHGKpOLQNQyqCx/2wvQ7O
+ dVle384Glr4IDdg/+TCbJ0aJLYxL6J6aBJo8x1XfGBXeTqYLEnbdBLCOk4oruOKoP0mVQQdC1
+ DDOQx4myVQBUBng2gLmV2XE2TCQMMf/bUEQrRXVYfSUJ6wfbL5vBq69poFRc8vNxgv6eI4Y4L
+ a0k0aLt0+PCj0RmiqZ53Gtnunn+BCBsPI/D7XwSFDzl0mkE2QIXweKnQ/Z65N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, 5 Dec 2020 17:03:50 +0100
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+On 07.12.20 04:48, Jason Wang wrote:
 
-> Em Fri, 4 Dec 2020 14:48:43 -0700
-> Jonathan Corbet <corbet@lwn.net> escreveu:
+Hi,
+
+>>> Not a native speaker but event sounds like something driver read from
+>>> device. Looking at the below lists, most of them except for
+>>> VIRTIO_GPIO_EV_HOST_LEVEL looks more like a command.
+>> okay, shall I name it "message" ?
 > 
-> > On Fri,  4 Dec 2020 16:32:27 +0100
-> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> >   
-> > > As requested, those patches improve the output of the script, when all features
-> > > are displayed.
-> > > 
-> > > The first patch was already posted as-is at v3.
-> > > 
-> > > Patch 2 is optional. IMO, it makes more sense for the admin guide to show
-> > > the architectures where the features are OK, then TODO, and finally the
-> > > ones that are incompatible with the features. I already sent it together
-> > > with a comment.
-> > > 
-> > > Patch 3 is new: it tries to reduce the width of the table, in order for it
-> > > to better fit on a terminal. With the patch, the number of columns were
-> > > reduced, in order to better fit at console output. Before the patch, the
-> > > output takes 281 lines with 158 columns (total size: 38.9 kB). 
-> > > After the patch, displaying all features require 439 lines and 92 columns
-> > > (total size: 37.6 kB).    
-> > 
-> > OK, this is much improved, thanks; applied.  
 > 
-> Anytime.
+> It might be better.
+
+Okay, renamed to messages in v3.
+
+>>> #define VIRTIO_NET_OK     0
+>>> #define VIRTIO_NET_ERR    1
+>> hmm, so I'd need to define all the error codes that possibly could
+>> happen ?
 > 
-> > 
-> > The one last thing I would do is stick "valign=top" on all the table
-> > entries, but we can leave the shed a different color for now :)  
 > 
-> I actually prefer myself valign=center on tables ;-)
+> Yes, I think you need.
+
+Okay, going to do it in the next version.
+
+>>> If I read the code correctly, this expects there will be at most a
+>>> single type of event that can be processed at the same time. E.g can
+>>> upper layer want to read from different lines in parallel? If yes, we
+>>> need to deal with that.
+>> @Linus @Bartosz: can that happen or does gpio subsys already serialize
+>> requests ?
+>>
+>> Initially, I tried to protect it by spinlock (so, only one request may
+>> run at a time, other calls just wait until the first is finished), but
+>> it crashed when gpio cdev registration calls into the driver (fetches
+>> the status) while still in bootup.
+>>
+>> Don't recall the exact error anymore, but something like an
+>> inconsistency in the spinlock calls.
+>>
+>> Did I just use the wrong type of lock ?
 > 
-> In any case, a change like that should be simple to do.
+> I'm not sure since I am not familiar with GPIO. But a question is, if at
+> most one request is allowed, I'm not sure virtio is the best choice here
+> since we don't even need a queue(virtqueue) here.
+
+I guess, I should add locks to the gpio callback functions (where gpio
+subsys calls in). That way, requests are requests are strictly ordered.
+The locks didn't work in my previous attempts, but probably because I've
+missed to set the can_sleep flag (now fixed in v3).
+
+The gpio ops are already waiting for reply of the corresponding type, so
+the only bad thing that could happen is the same operation being called
+twice (when coming from different threads) and replies mixed up between
+first and second one. OTOH I don't see much problem w/ that. This can be
+fixed by adding a global lock.
+
+> I think it's still about whether or not we need allow a batch of
+> requests via a queue. Consider you've submitted two request A and B, and
+> if B is done first, current code won't work. This is because, the reply
+> is transported via rxq buffers not just reuse the txq buffer if I read
+> the code correctly.
+
+Meanwhile I've changed it to allocate a new rx buffer for the reply
+(done right before the request is sent), so everything should be
+processed in the order it had been sent. Assuming virtio keeps the
+order of the buffers in the queues.
+
+>> Could you please give an example how bi-directional transmission within
+>> the same queue could look like ?
 > 
-> either adjust:
+> You can check how virtio-blk did this in:
 > 
-> 	Documentation/sphinx-static/theme_overrides.css
+> https://docs.oasis-open.org/virtio/virtio/v1.1/csprd01/virtio-v1.1-csprd01.html#x1-2500006
+
+hmm, still don't see how the code would actually look like. (in qemu as
+well as kernel). Just add the fetched inbuf as an outbuf (within the
+same queue) ?
+
+>> Maybe add one new buffer per request and one new per received async
+>> signal ?
 > 
-> to change it globally for all tables or create a "table_valign_top" CSS
-> class on it, changing the script to add:
-> 
-> 	.. cssclass:: table_valign_top
-> 
-> Before each table.
+> It would be safe to fill the whole rxq and do the refill e.g when half
+> of the queue is used.
 
-Btw, if you want to play with changing the table alignment, the
-enclosed patch changes the alignment to use valign=top for all
-tables (and not only for the feature ones).
-
-Don't forget to remove the old theme before testing the
-patch with:
-
-	$ rm $(find Documentation/output/ -name theme_overrides.css)
-
-As sphinx (at least version 2.4.4) only writes it if the file
-doesn't exist.
-
-Thanks,
-Mauro
-
-[PATCH] docs: use top-alignment for table cells
-
-Change the table's default in order to align cells on the top,
-overriding the defaults found on Read the Docs Sphinx Theme.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/Documentation/sphinx-static/theme_overrides.css b/Documentation/sphinx-static/theme_overrides.css
-index 459ec5b29d68..e850859e35a0 100644
---- a/Documentation/sphinx-static/theme_overrides.css
-+++ b/Documentation/sphinx-static/theme_overrides.css
-@@ -42,6 +42,11 @@ p {
- 	font-size: 100%;
- }
- 
-+/* use vertical alignment on tables */
-+.rst-content table.docutils td, .rst-content table.field-list td, .wy-table td {
-+    vertical-align: top;
-+}
-+
- /* Interim: Code-blocks with line nos - lines and line numbers don't line up.
-  * see: https://github.com/rtfd/sphinx_rtd_theme/issues/419
-  */
+Okay, doing that now in v3: there's always at least one rx buffer,
+and requests as well as the intr receiver always add a new one.
+(they get removed on fetching, IMHO).
 
 
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
