@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D117F2D196F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF432D1976
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:28:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgLGT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S1726572AbgLGT1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgLGT0V (ORCPT
+        with ESMTP id S1726522AbgLGT1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:26:21 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84C2C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:25:40 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id o144so14029499ybg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:25:40 -0800 (PST)
+        Mon, 7 Dec 2020 14:27:01 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC68AC061257
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:25:52 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id j17so5912709ybt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:25:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dzi60D45rWQuaA2cHr5rB8Qrg2wnEyiFvWItg7Nmx+A=;
-        b=v+WQqOx59N4nA+TR3LOO4M4W3N8UUxCd0mi3VCA8QhjuDwo4lIM2+KUjXY4FldkutS
-         N3bExgP4Ogg8B3b0uktbNmwWg7AQmW0STl6R4EvJlNkfllvx3u4GnKCMfiMy6ZPF5DCT
-         ZWIK6jyLgazQ3AjLbIkw1Slu7PeW/Ol5A0PDEi3EAgvI75uo5+oh4xkSm1s2hZbvnjFQ
-         cKgVdvDiXo0sp5k0CAO4kTZ947dYA48KsKA/oO2ZGVPGIC3/sCveX07WRqK7ML6yxNrx
-         AbvIxSQFUZJNZslcFFXo+40ytrrNOS21ihYbAMPkDbuMkp/Eoe9k8fsa3M/0rkagkaCn
-         WkvQ==
+        bh=8+tZQPXNlLpNRwKXrGfU0wAdVOOOImfIsinmDNKvGmE=;
+        b=iu6kvgbq9TtuxPwNho0xw8fX1TKCuQz9gfrzrRgd+PsL1XOXTPo5mUC/cMlKU2VfdH
+         x/FL5NxtSdnKNZrLOnsFmCiBYrNUiF9WvMOZUy/qX0ns3pqWKDxVqr4IBiyIotqUJw+r
+         nA8JmUpC+H3vRtBZQSIpWYwGtx9Mv29ZtXVIIGsCAjgQCL8NRRZRQhho00b2w9yG7elN
+         Sv6UB2LtyZsRF8bsvy7lGjTmNVkxJeS32HJogTbtZBtlKO3pkhHD59i041ecAHyLHt80
+         ZqHgPS52tWFFjvpicGK4A3msh3uPdMWvt/QfgZ65tqRzW4VGR5vY/H9D9j2H3LH92LTS
+         bSeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dzi60D45rWQuaA2cHr5rB8Qrg2wnEyiFvWItg7Nmx+A=;
-        b=C2GvcQv4sfyvu5zGOWvfR9qGWF/6dP3oDvClPcUlibIqJvs1fiCe8mEtiKKSDV7ToZ
-         acBYQQnrxMmBf0eSwdRn1PShqmGZ7buFXP0m9BHk78yb1rwhKPSFBO6NsOWZJtjSO3vS
-         irH+P7Su1zydXZqyqiN2uNl0o+flkuzm+lFmIXR4s/6CKnJmrrnGYEtuvTX6nue7AckH
-         EhbanRvLozsCl2u9deUuSunJ55UyxvWcRtqXY6ZFOP33PHjEkLvUHq0x20Hqvmhcj4hC
-         mJNmLJLL7FVd/Oz2oY7Glc5bphn8zFwBPJLzygy1uZhd7aIr5uSVpCOuJ5aqcQdiXerv
-         Acog==
-X-Gm-Message-State: AOAM530m2405OoKkH2UYyIFTSksi5ZDEjQeZTHfGkW2dwhSJRNnpcgm5
-        DyIuADRNWYZiQUiqHqpRbHH8uj/E73ZzsDQzLekaDg==
-X-Google-Smtp-Source: ABdhPJzh94uQucZym0EJ/OhT0eAxJs+lEBfZI5tn0VwSrzUilb89QB7ghzACx8BH7y0+Q9uP9BQEqVPCQXCZ16NCfhM=
-X-Received: by 2002:a25:1383:: with SMTP id 125mr22570950ybt.32.1607369139748;
- Mon, 07 Dec 2020 11:25:39 -0800 (PST)
+        bh=8+tZQPXNlLpNRwKXrGfU0wAdVOOOImfIsinmDNKvGmE=;
+        b=NsKEv/3/JJVldwq5q9hASO6Q5DgabXc/OYcP4KRcAib4XszZUmWT/Qun809dOrqCB2
+         D1E+oYmvNkaCGhUH0cOtc0iyHhTApWmuozNZmnmCBiSfbuayd9ONjPJaruKvM+MCTeZ5
+         CtCsPxG9AYLHTO8jL0O0v0qIH5NiZh9TG5216a5Uv9E6nbfbta7mglcmrflxLtV7Ejjz
+         zvdgR3FhG+tE5YFfTGmYNTFF8HgXqsB/aOZxZy1deGpOIdo6LdrvGr1j153qZbsxGzMr
+         Eb9mgdvtYiWuWfDWugn3tWf3T943tjz60dTwZl5g1PEDY2AK5XxEGfMOcoDT8GYclPUY
+         60bA==
+X-Gm-Message-State: AOAM532kvSbYJBaIMyuQwyJ9OQzpvzVoFttv59pzhG0VvVlozG3tXwQ5
+        PWcyBJufhBdXBQgwZ0TkEltxpwzEx+uEoBYMU3R05A==
+X-Google-Smtp-Source: ABdhPJzT6cEkqAvkPYLZ7+/FjCSHl+b/WvFb3DgdXgVmc9Zg+YwA95J3KT2qIX7KYt319m5Xqp/eqxxrhX05Qw/wqqY=
+X-Received: by 2002:a5b:bc8:: with SMTP id c8mr24563420ybr.228.1607369151841;
+ Mon, 07 Dec 2020 11:25:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121020232.908850-1-saravanak@google.com> <20201121020232.908850-9-saravanak@google.com>
- <20201206074840.GB687065@unreal>
-In-Reply-To: <20201206074840.GB687065@unreal>
+References: <20201121020232.908850-1-saravanak@google.com> <20201121020232.908850-8-saravanak@google.com>
+ <20201206072621.GA687065@unreal>
+In-Reply-To: <20201206072621.GA687065@unreal>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 7 Dec 2020 11:25:03 -0800
-Message-ID: <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
-Subject: Re: [PATCH v2 08/17] driver core: Add fwnode link support
+Date:   Mon, 7 Dec 2020 11:25:15 -0800
+Message-ID: <CAGETcx9L0f5HPgunTf_WRsr9yeaYK1Ku5ESzeb0A1pkn3Yy2aw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] driver core: Add fwnode_init()
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -76,59 +76,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 11:48 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Sat, Dec 5, 2020 at 11:26 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On Fri, Nov 20, 2020 at 06:02:23PM -0800, Saravana Kannan wrote:
-> > Add support for creating supplier-consumer links between fwnodes.  It is
-> > intended for internal use the driver core and generic firmware support
-> > code (eg. Device Tree, ACPI), so it is simple by design and the API
-> > provided is limited.
+> On Fri, Nov 20, 2020 at 06:02:22PM -0800, Saravana Kannan wrote:
+> > There are multiple locations in the kernel where a struct fwnode_handle
+> > is initialized. Add fwnode_init() so that we have one way of
+> > initializing a fwnode_handle.
 > >
 > > Signed-off-by: Saravana Kannan <saravanak@google.com>
 > > ---
-> >  drivers/base/core.c    | 98 ++++++++++++++++++++++++++++++++++++++++++
-> >  drivers/of/dynamic.c   |  1 +
-> >  include/linux/fwnode.h | 14 ++++++
-> >  3 files changed, 113 insertions(+)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 401fa7e3505c..e2b246a44d1a 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -50,6 +50,104 @@ static LIST_HEAD(wait_for_suppliers);
-> >  static DEFINE_MUTEX(wfs_lock);
-> >  static LIST_HEAD(deferred_sync);
-> >  static unsigned int defer_sync_state_count = 1;
-> > +static DEFINE_MUTEX(fwnode_link_lock);
-> > +
-> > +/**
-> > + * fwnode_link_add - Create a link between two fwnode_handles.
-> > + * @con: Consumer end of the link.
-> > + * @sup: Supplier end of the link.
-> > + *
-> > + * Create a fwnode link between fwnode handles @con and @sup. The fwnode link
-> > + * represents the detail that the firmware lists @sup fwnode as supplying a
-> > + * resource to @con.
-> > + *
-> > + * The driver core will use the fwnode link to create a device link between the
-> > + * two device objects corresponding to @con and @sup when they are created. The
-> > + * driver core will automatically delete the fwnode link between @con and @sup
-> > + * after doing that.
-> > + *
-> > + * Attempts to create duplicate links between the same pair of fwnode handles
-> > + * are ignored and there is no reference counting.
+> >  drivers/acpi/property.c         | 2 +-
+> >  drivers/acpi/scan.c             | 2 +-
+> >  drivers/base/swnode.c           | 2 +-
+> >  drivers/firmware/efi/efi-init.c | 8 ++++----
+> >  include/linux/fwnode.h          | 6 ++++++
+> >  include/linux/of.h              | 2 +-
+> >  kernel/irq/irqdomain.c          | 2 +-
+> >  7 files changed, 15 insertions(+), 9 deletions(-)
 >
-> Sorry to ask, but why is that?
-> Isn't this a programmer error?
+> In this series, I didn't find any extension of fwnode_init() to be it more
+> than simple assignment. This change looks to me like unnecessary churn and
+> obfuscation rather than improvement.
+>
+> "...ops = &...;" is pretty standard in the kernel to initialize ops
+> structures.
 
-No, not a programmer error.
-
-One firmware node can point to the same supplier many times. For
-example, the consumer can be using multiple clocks from the same
-supplier clock controller. In the context of fw_devlink, there's no
-reason to keep track of each clock dependency separately because we'll
-be creating only one device link from fwnode link. So multiple fwnode
-link attempts between the same two devices are just treated as one
-instance of dependency. I hope that clarifies things.
+Subsequent patches make fwnode_init() do more stuff.
 
 -Saravana
