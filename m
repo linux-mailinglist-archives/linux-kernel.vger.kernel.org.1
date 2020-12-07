@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702B42D196A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D117F2D196F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgLGTZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
+        id S1726252AbgLGT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgLGTZg (ORCPT
+        with ESMTP id S1725816AbgLGT0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:25:36 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59631C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:24:56 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id lt17so21196026ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:24:56 -0800 (PST)
+        Mon, 7 Dec 2020 14:26:21 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84C2C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:25:40 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id o144so14029499ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:25:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=javigon-com.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IVD1p2kuvVXrBfr0DQp8uX8UYpU8DuPwPA/j+U9iw7o=;
-        b=BT+NDgyuc4B9FYRdUmCPvz8gjOkn6+mHA6vCDn6QzeHfUUeVlC9fv9qefVr60Fi4o8
-         N+o33ru5BmuDsrganRp9xPYlw9T4COKiKzJVIiibRWtkGYUeWzfA+vwEjIThXkXCM/Ob
-         v+IduKCrHlR2/fbICCriKjUrIp3nu1m1Yjdr6Q9zzZw8wQ+/MzIoQ+PIjpI2AHX08tNF
-         o79x236sD+eQzaNCTTmeXMydo7bCcfYZv2T91v+5zWh9xA1eXU1ksRhuj/YKDJDQ4LB1
-         0EJPtboMkRXu+WFzXkzP01egTvP5VfJha5u1lyfPXyF4vmUc1wpvHu9UBb6KiowaNlCa
-         iHoQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dzi60D45rWQuaA2cHr5rB8Qrg2wnEyiFvWItg7Nmx+A=;
+        b=v+WQqOx59N4nA+TR3LOO4M4W3N8UUxCd0mi3VCA8QhjuDwo4lIM2+KUjXY4FldkutS
+         N3bExgP4Ogg8B3b0uktbNmwWg7AQmW0STl6R4EvJlNkfllvx3u4GnKCMfiMy6ZPF5DCT
+         ZWIK6jyLgazQ3AjLbIkw1Slu7PeW/Ol5A0PDEi3EAgvI75uo5+oh4xkSm1s2hZbvnjFQ
+         cKgVdvDiXo0sp5k0CAO4kTZ947dYA48KsKA/oO2ZGVPGIC3/sCveX07WRqK7ML6yxNrx
+         AbvIxSQFUZJNZslcFFXo+40ytrrNOS21ihYbAMPkDbuMkp/Eoe9k8fsa3M/0rkagkaCn
+         WkvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IVD1p2kuvVXrBfr0DQp8uX8UYpU8DuPwPA/j+U9iw7o=;
-        b=EhBXXRl4UHe/ZLVWj6WE1Nt6kQTw/IeIrj5eTJw3Wxaa03lnSLqfzB2MfraeeUQFXT
-         jhgxXXWJpX9weaCdGlxh3TjJ0sxHUmavZeFoWodyYZ8n1GIrDVrhe431POCMnrsx7BNT
-         74E5gq1lSxLeLym4jNMOVLH9om+iZHc96+UjoJ/DwGrNJ/sXg01y2Z7pG/o8et/V0qS8
-         3ZINPXMyZ/YJwJ7vytN8nOrhO2TiAN/I22PPG3Tosynik//aYdoyhzvgDy1ayG2BGvpf
-         n6VZgA5vGFX6Th3kuvPyeo5LKo6i+rv0EyR8Pvrudhamc0mCG+0xmTWamUW/3l/Ci/9J
-         Yd7w==
-X-Gm-Message-State: AOAM530gSVghdMyIH0gzZ4uEga5z7rsB47TXh2iWX+oEk6p5mNtJrC+U
-        hUvALXBwXclwwcGAwOnKgaTyFw==
-X-Google-Smtp-Source: ABdhPJz9bYSQy3NHjmWx84lzpD6uTWLsBYmyjEhdoYT4EzGm+iefSEkI4OwWBZ212/zNmk1iIBD9rw==
-X-Received: by 2002:a17:906:b08b:: with SMTP id x11mr20225762ejy.302.1607369095020;
-        Mon, 07 Dec 2020 11:24:55 -0800 (PST)
-Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
-        by smtp.gmail.com with ESMTPSA id b17sm13218700eju.76.2020.12.07.11.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:24:54 -0800 (PST)
-From:   "Javier =?utf-8?B?R29uesOhbGV6?=" <javier@javigon.com>
-X-Google-Original-From: Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
-Date:   Mon, 7 Dec 2020 20:24:53 +0100
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        SelvaKumar S <selvakuma.s1@samsung.com>,
-        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
-        damien.lemoal@wdc.com, sagi@grimberg.me,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
-        nj.shetty@samsung.com, joshi.k@samsung.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/2] add simple copy support
-Message-ID: <20201207192453.vc6clbdhz73hzs7l@mpHalley>
-References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
- <20201204094659.12732-1-selvakuma.s1@samsung.com>
- <20201207141123.GC31159@lst.de>
- <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dzi60D45rWQuaA2cHr5rB8Qrg2wnEyiFvWItg7Nmx+A=;
+        b=C2GvcQv4sfyvu5zGOWvfR9qGWF/6dP3oDvClPcUlibIqJvs1fiCe8mEtiKKSDV7ToZ
+         acBYQQnrxMmBf0eSwdRn1PShqmGZ7buFXP0m9BHk78yb1rwhKPSFBO6NsOWZJtjSO3vS
+         irH+P7Su1zydXZqyqiN2uNl0o+flkuzm+lFmIXR4s/6CKnJmrrnGYEtuvTX6nue7AckH
+         EhbanRvLozsCl2u9deUuSunJ55UyxvWcRtqXY6ZFOP33PHjEkLvUHq0x20Hqvmhcj4hC
+         mJNmLJLL7FVd/Oz2oY7Glc5bphn8zFwBPJLzygy1uZhd7aIr5uSVpCOuJ5aqcQdiXerv
+         Acog==
+X-Gm-Message-State: AOAM530m2405OoKkH2UYyIFTSksi5ZDEjQeZTHfGkW2dwhSJRNnpcgm5
+        DyIuADRNWYZiQUiqHqpRbHH8uj/E73ZzsDQzLekaDg==
+X-Google-Smtp-Source: ABdhPJzh94uQucZym0EJ/OhT0eAxJs+lEBfZI5tn0VwSrzUilb89QB7ghzACx8BH7y0+Q9uP9BQEqVPCQXCZ16NCfhM=
+X-Received: by 2002:a25:1383:: with SMTP id 125mr22570950ybt.32.1607369139748;
+ Mon, 07 Dec 2020 11:25:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+References: <20201121020232.908850-1-saravanak@google.com> <20201121020232.908850-9-saravanak@google.com>
+ <20201206074840.GB687065@unreal>
+In-Reply-To: <20201206074840.GB687065@unreal>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 7 Dec 2020 11:25:03 -0800
+Message-ID: <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
+Subject: Re: [PATCH v2 08/17] driver core: Add fwnode link support
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.2020 15:56, Hannes Reinecke wrote:
->On 12/7/20 3:11 PM, Christoph Hellwig wrote:
->>So, I'm really worried about:
->>
->>  a) a good use case.  GC in f2fs or btrfs seem like good use cases, as
->>     does accelating dm-kcopyd.  I agree with Damien that lifting dm-kcopyd
->>     to common code would also be really nice.  I'm not 100% sure it should
->>     be a requirement, but it sure would be nice to have
->>     I don't think just adding an ioctl is enough of a use case for complex
->>     kernel infrastructure.
->>  b) We had a bunch of different attempts at SCSI XCOPY support form IIRC
->>     Martin, Bart and Mikulas.  I think we need to pull them into this
->>     discussion, and make sure whatever we do covers the SCSI needs.
->>
->And we shouldn't forget that the main issue which killed all previous 
->implementations was a missing QoS guarantee.
->It's nice to have simply copy, but if the implementation is _slower_ 
->than doing it by hand from the OS there is very little point in even 
->attempting to do so.
->I can't see any provisions for that in the TPAR, leading me to the 
->assumption that NVMe simple copy will suffer from the same issue.
+On Sat, Dec 5, 2020 at 11:48 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
->So if we can't address this I guess this attempt will fail, too.
+> On Fri, Nov 20, 2020 at 06:02:23PM -0800, Saravana Kannan wrote:
+> > Add support for creating supplier-consumer links between fwnodes.  It is
+> > intended for internal use the driver core and generic firmware support
+> > code (eg. Device Tree, ACPI), so it is simple by design and the API
+> > provided is limited.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/base/core.c    | 98 ++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/of/dynamic.c   |  1 +
+> >  include/linux/fwnode.h | 14 ++++++
+> >  3 files changed, 113 insertions(+)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index 401fa7e3505c..e2b246a44d1a 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -50,6 +50,104 @@ static LIST_HEAD(wait_for_suppliers);
+> >  static DEFINE_MUTEX(wfs_lock);
+> >  static LIST_HEAD(deferred_sync);
+> >  static unsigned int defer_sync_state_count = 1;
+> > +static DEFINE_MUTEX(fwnode_link_lock);
+> > +
+> > +/**
+> > + * fwnode_link_add - Create a link between two fwnode_handles.
+> > + * @con: Consumer end of the link.
+> > + * @sup: Supplier end of the link.
+> > + *
+> > + * Create a fwnode link between fwnode handles @con and @sup. The fwnode link
+> > + * represents the detail that the firmware lists @sup fwnode as supplying a
+> > + * resource to @con.
+> > + *
+> > + * The driver core will use the fwnode link to create a device link between the
+> > + * two device objects corresponding to @con and @sup when they are created. The
+> > + * driver core will automatically delete the fwnode link between @con and @sup
+> > + * after doing that.
+> > + *
+> > + * Attempts to create duplicate links between the same pair of fwnode handles
+> > + * are ignored and there is no reference counting.
+>
+> Sorry to ask, but why is that?
+> Isn't this a programmer error?
 
-Good point. We can share some performance data on how Simple Copy scales
-in terms of bw / latency and the CPU usage. Do you have anything else in
-mind?
+No, not a programmer error.
+
+One firmware node can point to the same supplier many times. For
+example, the consumer can be using multiple clocks from the same
+supplier clock controller. In the context of fw_devlink, there's no
+reason to keep track of each clock dependency separately because we'll
+be creating only one device link from fwnode link. So multiple fwnode
+link attempts between the same two devices are just treated as one
+instance of dependency. I hope that clarifies things.
+
+-Saravana
