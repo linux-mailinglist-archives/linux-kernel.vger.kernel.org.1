@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9C82D17BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10F72D17C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgLGRp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:45:28 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38000 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGRp2 (ORCPT
+        id S1726250AbgLGRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:46:50 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50016 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgLGRqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:45:28 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607363086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1QUndeheCuNlov7jkNGxkSugjzDYPAV/QAtYJEVlMGg=;
-        b=C9+xbwFql+APDD1YZq7/d2stuP1bjVimKp0efMSS7EYEf4mfxoZMP0Qm2mRQpTZwjzI6vu
-        bhIUYVX2zwSkfL0B+pm+B9EbkhUi+t+++UbHL3wKmVBUX94UkYGy4rnvS5QDN1ewWX5M3v
-        RhgJ8polMJPr6Cw+vDftdGFkLymWZYgYykUuA44O+6LzRig3CRk9ATSElWxwOLrrNiV3wA
-        0w0IQaZUVJPGiN0kfW13N9Cec3qDGhLGwA8DyTzOFw0WcNSVga89kvrPig+G9SfdIpaSJR
-        kFGiKZVWsm2RuYp1Tsy2vbskgEuUV+ds7V13wPCa0hdp7tWSIdI2gb2ORhv+iQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607363086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1QUndeheCuNlov7jkNGxkSugjzDYPAV/QAtYJEVlMGg=;
-        b=f3NkeE7MPmTwjy9im/Z/sOUSYpCeI8OpMoGQMy+KE9uq400FeM2UGFkkt363hZRAXszVAL
-        YFGX9xhRtR7Ps/Bw==
-To:     Peter Zijlstra <peterz@infradead.org>
+        Mon, 7 Dec 2020 12:46:50 -0500
+Received: from 89-64-79-106.dynamic.chello.pl (89.64.79.106) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id 15eef89c5e0b1054; Mon, 7 Dec 2020 18:46:07 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [patch 1/3] tick: Remove pointless cpu valid check in hotplug code
-In-Reply-To: <20201207115953.GR3021@hirez.programming.kicks-ass.net>
-References: <20201206211253.919834182@linutronix.de> <20201206212002.582579516@linutronix.de> <20201207115953.GR3021@hirez.programming.kicks-ass.net>
-Date:   Mon, 07 Dec 2020 18:44:46 +0100
-Message-ID: <871rg15x4h.fsf@nanos.tec.linutronix.de>
+        Kees Cook <keescook@chromium.org>,
+        Hans De Goede <hdegoede@redhat.com>
+Subject: [PATCH] ACPI: scan: Fix up _DEP-related terminology with supplier/consumer
+Date:   Mon, 07 Dec 2020 18:46:06 +0100
+Message-ID: <6314382.p3e4rEhblS@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 12:59, Peter Zijlstra wrote:
-> On Sun, Dec 06, 2020 at 10:12:54PM +0100, Thomas Gleixner wrote:
->
->>  void tick_handover_do_timer(void)
->>  {
->> +	if (tick_do_timer_cpu == smp_processor_id())
->> +		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
->
-> For the paranoid amongst us, would it make sense to add something like:
->
-> 	/*
-> 	 * There must always be at least one online CPU.
-> 	 */
-> 	WARN_ON_ONCE(tick_do_timer_cpu >= nr_cpu_ids);
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-And add that to all places which look at online mask during hotplug.
+The ACPI namespace scanning code uses the terms master/slave when
+populating the list of _DEP dependencies, but that use has no
+external exposures and is not mandated by nor associated with any
+external specifications.
 
-If we really care we can add it somewhere central in the hotplug
-code. If that ever triggers then the wreckaged tick duty is just
-uninteresting.
+Change the language used through-out to supplier/consumer.
 
-Thanks,
+No functional impact.
 
-        tglx
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -51,8 +51,8 @@ static u64 spcr_uart_addr;
+ 
+ struct acpi_dep_data {
+ 	struct list_head node;
+-	acpi_handle master;
+-	acpi_handle slave;
++	acpi_handle supplier;
++	acpi_handle consumer;
+ };
+ 
+ void acpi_scan_lock_acquire(void)
+@@ -1881,8 +1881,8 @@ static void acpi_device_dep_initialize(s
+ 		if (!dep)
+ 			return;
+ 
+-		dep->master = dep_devices.handles[i];
+-		dep->slave  = adev->handle;
++		dep->supplier = dep_devices.handles[i];
++		dep->consumer  = adev->handle;
+ 		adev->dep_unmet++;
+ 
+ 		mutex_lock(&acpi_dep_list_lock);
+@@ -2058,8 +2058,8 @@ void acpi_walk_dep_device_list(acpi_hand
+ 
+ 	mutex_lock(&acpi_dep_list_lock);
+ 	list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
+-		if (dep->master == handle) {
+-			acpi_bus_get_device(dep->slave, &adev);
++		if (dep->supplier == handle) {
++			acpi_bus_get_device(dep->consumer, &adev);
+ 			if (!adev)
+ 				continue;
+ 
+
+
+
