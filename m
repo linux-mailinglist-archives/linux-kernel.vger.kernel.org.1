@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504D92D1928
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122592D192E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgLGTJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        id S1726763AbgLGTKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:10:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgLGTJ6 (ORCPT
+        with ESMTP id S1726616AbgLGTKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:09:58 -0500
+        Mon, 7 Dec 2020 14:10:05 -0500
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BFDC0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:09:17 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a6so232385wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:09:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307D9C06138C
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:09:19 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id k10so226216wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:09:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LwCnH4NJfHp5ZykyBVx/tUGuZ/xxrEB0midiN+uyBnQ=;
-        b=XfOuHP/I+sgUgtIImebemPfmcZZujI8Cebh1xBnaU9kkJvzZodlCckakvVyq5R2i7i
-         8PvJiTTaTfwYSVHpRmWBXrHgtPDkCrIiEtQ88RZ/JD+PKqMYuHIVq7BEf+K4PquIsp3B
-         ZbnTdYLnpd/AkzqvutIx5jTYSJs4Eyhxk6VuKOUFp6WPTqV6fgMj4wOem1a+BdG9GdJJ
-         TIvcQc1j8GuyAW/cLflX21znv7bUMGUeH68DQQmmCr1j08IlUTt+oQjrKan03EW+hc5L
-         qaUWGKLC5bMbXycb8BCeaTjiJu4JZ/+Y/JUomOxJYo2WzacxbWEADO8H6/ejQgLP669r
-         eFXw==
+        bh=BhPEvjVqwexH1Hle2+ctCV7xDbrLGK3UanoHRddvROg=;
+        b=WukHso3EQRBNv8iqcv+rXMyFp5xa0jSexX3IuFw/1s62AkBakuROjwGPEUQgkpI2Dd
+         P8cyn4AzlwV3MkKqiqtwpW92EhNR8SQiVfDV1bS2NTcK+SZu6l1oLWIkN4WeKZu3xwmA
+         6miHNlV2QMlyz1OP1r4YiEBsM7+DL9QW0ujTPYOb2evMteLVdt6+LTwyuZUr94P70UsZ
+         fs4Va3s3va5PRXRLxyEhy/ciK0jstMh+nFRyzJ3iG2ZkUUzlqyFtGWRO5QP/s2uhSL4m
+         myMfGJNWq2RN2LCrEaaW/BrSuQ4buOKC72HFSCx8MHSqdQE0RVL6kencjxXH37QF0JI7
+         nAzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=LwCnH4NJfHp5ZykyBVx/tUGuZ/xxrEB0midiN+uyBnQ=;
-        b=PzfFQ0tZqFabM5zSKQ9+wiB+oiwG6EslpLcBz8bAs0zO12JELK5H0kMnpotWn/4vI9
-         hhKyNb8U7EfHD6ldjje0iFvTCblWFDYNELHb/HxY3Q3N5BRduhtkLnuJTQVLSmihzl1y
-         n5ijJfEi9iJc5XbklSm2GUEpr4do/khweC891mw1BzoReoiPNWcxEs5ID0ZAhnXlXYDv
-         Oh4Fn8EVfD6UWaApStz0X7C85bVQ/tzZtjqib8tdphw4jXicga9OLe2ZE41IWRDBBeBI
-         w6UoFdZPPhPBNrVORhpVWvyBxraQiLqooYzJ/nG5MPYo3SoXMKpVpVPud6oZzWR4ukTi
-         PKFQ==
-X-Gm-Message-State: AOAM533Z6j+IMi92ueqixOoKD+wwdmFVuIPRE3dHVVSx1HohH/xrthLr
-        hcUibh3lBrT7F/jPNn7A6QzA6w==
-X-Google-Smtp-Source: ABdhPJwPMyNHUTILCIZvl63yYKwMKQSWuHNnz702Axnx6wy5nZlnHtNhfgE9a+eh7n9Q6n3EpvbkQw==
-X-Received: by 2002:a1c:491:: with SMTP id 139mr257287wme.81.1607368156261;
-        Mon, 07 Dec 2020 11:09:16 -0800 (PST)
+        bh=BhPEvjVqwexH1Hle2+ctCV7xDbrLGK3UanoHRddvROg=;
+        b=mbnx1qPVzVa31G//JidECoC68r4+vcNUdeM5q95SsQsnKdj/NBdJ2iIZ55OIfuHn2L
+         SSMJZhg29BiPR1xgyUu72kzz3Sh+1TmINXAqn0Yxs3aGfVRqvwflVs5ob3MiFuKbzDNO
+         x5cFHneB40KpBVQ2rTFoVQvTINiLSINxgkNWugR1DmJPm5bx/XjNiFjVLS4wYT0g0QKM
+         eiuwR0/8fWOul5AckwWCRsdc21pVUisrrBsHXY6+wR4QEo5Kr/aR8arEeRffK9l0pb+T
+         ZvG7F+ASqEu4snvDhBH9Qajd2H+GtKrIxg7wiGYOA6Nw+km426wrbwsQm/RtWNEK2izM
+         myog==
+X-Gm-Message-State: AOAM530K1GKxdVHX13K1e8GhbFthvq8p5WtJm/KPiEwR8G766LqP59SP
+        jZjFs4kHBvyRKFCzBIr4CRI8Uw==
+X-Google-Smtp-Source: ABdhPJyfxlGAPdqiFPDwEUccMpP0WTwaWEQ1Wo7185UsZAXNrYmF4pbmpTs18AQ1aoq6wF47gyFnLA==
+X-Received: by 2002:a1c:c2d4:: with SMTP id s203mr319881wmf.58.1607368157831;
+        Mon, 07 Dec 2020 11:09:17 -0800 (PST)
 Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
-        by smtp.gmail.com with ESMTPSA id v1sm16335827wrr.48.2020.12.07.11.09.14
+        by smtp.gmail.com with ESMTPSA id v1sm16335827wrr.48.2020.12.07.11.09.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:09:15 -0800 (PST)
+        Mon, 07 Dec 2020 11:09:17 -0800 (PST)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
 Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
         linux-pm@vger.kernel.org
-Subject: [PATCH v2 2/4] thermal/core: Precompute the delays from msecs to jiffies
-Date:   Mon,  7 Dec 2020 20:09:00 +0100
-Message-Id: <20201207190902.30464-2-daniel.lezcano@linaro.org>
+Subject: [PATCH v2 3/4] thermal/core: Use precomputed jiffies for the polling
+Date:   Mon,  7 Dec 2020 20:09:01 +0100
+Message-Id: <20201207190902.30464-3-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201207190902.30464-1-daniel.lezcano@linaro.org>
 References: <20201207190902.30464-1-daniel.lezcano@linaro.org>
@@ -61,111 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The delays are stored in ms units and when the polling function is
-called this delay is converted into jiffies at each call.
-
-Instead of doing the conversion again and again, compute the jiffies
-at init time and use the value directly when setting the polling.
+The delays are also stored in jiffies based unit. Use them instead of
+the ms.
 
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/thermal/thermal_core.c  |  5 +++--
- drivers/thermal/thermal_core.h  | 18 ++++++++++++++++++
- drivers/thermal/thermal_sysfs.c |  4 ++--
- include/linux/thermal.h         |  7 +++++++
- 4 files changed, 30 insertions(+), 4 deletions(-)
+ drivers/thermal/thermal_core.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 5b500d72aab4..08c6e4e36896 100644
+index 08c6e4e36896..16ef5d652d85 100644
 --- a/drivers/thermal/thermal_core.c
 +++ b/drivers/thermal/thermal_core.c
-@@ -1340,8 +1340,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- 	tz->device.class = &thermal_class;
- 	tz->devdata = devdata;
- 	tz->trips = trips;
--	tz->passive_delay_ms = passive_delay;
--	tz->polling_delay_ms = polling_delay;
-+
-+	thermal_zone_set_passive_delay(tz, passive_delay);
-+	thermal_zone_set_polling_delay(tz, polling_delay);
+@@ -291,14 +291,9 @@ static int __init thermal_register_governors(void)
+ static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
+ 					    int delay)
+ {
+-	if (delay > 1000)
++	if (delay)
+ 		mod_delayed_work(system_freezable_power_efficient_wq,
+-				 &tz->poll_queue,
+-				 round_jiffies(msecs_to_jiffies(delay)));
+-	else if (delay)
+-		mod_delayed_work(system_freezable_power_efficient_wq,
+-				 &tz->poll_queue,
+-				 msecs_to_jiffies(delay));
++				 &tz->poll_queue, delay);
+ 	else
+ 		cancel_delayed_work(&tz->poll_queue);
+ }
+@@ -317,9 +312,9 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
+ 	mutex_lock(&tz->lock);
  
- 	/* sys I/F */
- 	/* Add nodes that are always present via .groups */
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 8df600fa7b79..2c9551ed5ef8 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -128,6 +128,24 @@ int thermal_build_list_of_policies(char *buf);
- /* Helpers */
- void thermal_zone_set_trips(struct thermal_zone_device *tz);
+ 	if (!stop && tz->passive)
+-		thermal_zone_device_set_polling(tz, tz->passive_delay_ms);
++		thermal_zone_device_set_polling(tz, tz->passive_delay_jiffies);
+ 	else if (!stop && tz->polling_delay_ms)
+-		thermal_zone_device_set_polling(tz, tz->polling_delay_ms);
++		thermal_zone_device_set_polling(tz, tz->polling_delay_jiffies);
+ 	else
+ 		thermal_zone_device_set_polling(tz, 0);
  
-+static inline void thermal_zone_set_passive_delay(
-+	struct thermal_zone_device *tz, int delay_ms)
-+{
-+	tz->passive_delay_ms = delay_ms;
-+	tz->passive_delay_jiffies = msecs_to_jiffies(delay_ms);
-+	if (delay_ms > 1000)
-+		tz->passive_delay_jiffies = round_jiffies(tz->passive_delay_jiffies);
-+}
-+
-+static inline void thermal_zone_set_polling_delay(
-+	struct thermal_zone_device *tz, int delay_ms)
-+{
-+	tz->polling_delay_ms = delay_ms;
-+	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
-+	if (delay_ms > 1000)
-+		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
-+}
-+
- /* sysfs I/F */
- int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
- void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index f465462d8aa1..9598b288a0a1 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -234,11 +234,11 @@ passive_store(struct device *dev, struct device_attribute *attr,
- 
- 	if (state && !tz->forced_passive) {
- 		if (!tz->passive_delay_ms)
--			tz->passive_delay_ms = 1000;
-+			thermal_zone_set_passive_delay(tz, 1000);
- 		thermal_zone_device_rebind_exception(tz, "Processor",
- 						     sizeof("Processor"));
- 	} else if (!state && tz->forced_passive) {
--		tz->passive_delay_ms = 0;
-+		thermal_zone_set_passive_delay(tz, 0);
- 		thermal_zone_device_unbind_exception(tz, "Processor",
- 						     sizeof("Processor"));
- 	}
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 230d451bf335..5dd9bdb6c6ad 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -118,9 +118,14 @@ struct thermal_cooling_device {
-  * @trips_disabled;	bitmap for disabled trips
-  * @passive_delay_ms:	number of milliseconds to wait between polls when
-  *			performing passive cooling.
-+ * @passive_delay_jiffies: number of jiffies to wait between polls when
-+ *			performing passive cooling.
-  * @polling_delay_ms:	number of milliseconds to wait between polls when
-  *			checking whether trip points have been crossed (0 for
-  *			interrupt driven systems)
-+ * @polling_delay_jiffies: number of jiffies to wait between polls when
-+ *			checking whether trip points have been crossed (0 for
-+ *			interrupt driven systems)
-  * @temperature:	current temperature.  This is only for core code,
-  *			drivers should use thermal_zone_get_temp() to get the
-  *			current temperature
-@@ -161,6 +166,8 @@ struct thermal_zone_device {
- 	unsigned long trips_disabled;	/* bitmap for disabled trips */
- 	int passive_delay_ms;
- 	int polling_delay_ms;
-+	int passive_delay_jiffies;
-+	int polling_delay_jiffies;
- 	int temperature;
- 	int last_temperature;
- 	int emul_temperature;
 -- 
 2.17.1
 
