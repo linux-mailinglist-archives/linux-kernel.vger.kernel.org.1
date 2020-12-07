@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED2F2D1382
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65EA2D1385
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgLGOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:24:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgLGOYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:24:40 -0500
-X-Gm-Message-State: AOAM532vBmgLr02Cs4jrkuIiGiI+C0Oqpo1AKIEiqpJGXwguTvLcjYlc
-        GFVznSy0DSYsnYqBkniDkqnDY07w3mFEwLlDiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607351039;
-        bh=a7lRSAu8t586Y7OhUkO8LXnMc7m/RnNg6gX+ZTBRNrM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jb7WQMCFbP/dqWuZVhv88Al19PMduTFP5DqS7xlT4Ao02ezjg1Y6BJQ2W4HZ2ts7Z
-         cV8A4aS6fDblr1fTZcSzLtdABqAtN+qxMWdlo5jHXlJS9fywD69hCTdmzcNooAHxBz
-         PjYd6x96+Mdbe4l9L6qiIKgjJOzzMLeRFkR70JbladDdVm68ripimz87yPhMKl3M6E
-         ZWb+8CHDmb7jzTN01xsxZSfdKjGe2jjz4Hokm37os57y0b+ddoTkJWbpVfr8rdSo33
-         +2cHQyq6xOanr/IhBVPpvz/izHVwx2JMTXAjKZedW2i+xD2lTWoudCkfiZVihMFKkn
-         13v0qtVUXD9vw==
-X-Google-Smtp-Source: ABdhPJyCK+XPyYjI3rGvm9cg99s5jJTla3Nw8Zty8yN5frd+1OrtkBIrpss0IimDx7gT2okOUEQ743lh0FHKXgZNnWg=
-X-Received: by 2002:a50:f404:: with SMTP id r4mr20217224edm.62.1607351037965;
- Mon, 07 Dec 2020 06:23:57 -0800 (PST)
+        id S1726370AbgLGOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:24:56 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36648 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgLGOY4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:24:56 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kmHQw-0003JI-DO; Mon, 07 Dec 2020 14:24:10 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        linux-hwmon@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] hwmon: ltc2992: fix less than zero comparisons with an unsigned integer
+Date:   Mon,  7 Dec 2020 14:24:10 +0000
+Message-Id: <20201207142410.168987-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201204165841.3845589-1-arnd@kernel.org>
-In-Reply-To: <20201204165841.3845589-1-arnd@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 7 Dec 2020 08:23:46 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLCWK99AXzCWXpPsRxA+X5OKsHEGZtBhAsaVFhXoeRb9g@mail.gmail.com>
-Message-ID: <CAL_JsqLCWK99AXzCWXpPsRxA+X5OKsHEGZtBhAsaVFhXoeRb9g@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: exynos: add back MSI dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 10:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> While the exynos driver does not always need MSI, the generic
-> deisgnware host code it uses fails to build without it:
->
-> WARNING: unmet direct dependencies detected for PCIE_DW_HOST
->   Depends on [n]: PCI [=y] && PCI_MSI_IRQ_DOMAIN [=n]
->   Selected by [y]:
->   - PCI_EXYNOS [=y] && PCI [=y] && (ARCH_EXYNOS [=n] || COMPILE_TEST [=y])
-> drivers/pci/controller/dwc/pcie-designware-host.c:247:19: error: implicit declaration of function 'pci_msi_create_irq_domain' [-Werror,-Wimplicit-function-declaration]
->         pp->msi_domain = pci_msi_create_irq_domain(fwnode,
->                          ^
->
-> Add back the dependency that all other designware controllers have.
->
-> Fixes: f0a6743028f9 ("PCI: dwc: exynos: Rework the driver to support Exynos5433 variant")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/pci/controller/dwc/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+From: Colin Ian King <colin.king@canonical.com>
 
-Seems like we should rework this to avoid select on options with
-depends, but that's a separate change.
+There are several occurrances of a less than zero error check on
+a u32 unsigned integer. These will never be true. Fix this by making
+reg_value a plain int.
 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 020101b58155..e403bb2eeb4c 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -85,6 +85,7 @@ config PCIE_DW_PLAT_EP
->  config PCI_EXYNOS
->         tristate "Samsung Exynos PCIe controller"
->         depends on ARCH_EXYNOS || COMPILE_TEST
-> +       depends on PCI && PCI_MSI_IRQ_DOMAIN
+Addresses-Coverity: ("Unsigned comparison against zero")
+Fixes: e126370240e0 ("hwmon: (ltc2992) Add support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/hwmon/ltc2992.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-PCI isn't needed here.
+diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
+index 69dbb5aa5dc2..4382105bf142 100644
+--- a/drivers/hwmon/ltc2992.c
++++ b/drivers/hwmon/ltc2992.c
+@@ -480,7 +480,7 @@ static int ltc2992_read_gpios_in(struct device *dev, u32 attr, int nr_gpio, long
+ 
+ static int ltc2992_read_in_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+ {
+-	u32 reg_val;
++	int reg_val;
+ 	u32 mask;
+ 
+ 	if (attr == hwmon_in_max_alarm)
+@@ -534,7 +534,7 @@ static int ltc2992_read_in(struct device *dev, u32 attr, int channel, long *val)
+ 
+ static int ltc2992_get_current(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
+ {
+-	u32 reg_val;
++	int reg_val;
+ 
+ 	reg_val = ltc2992_read_reg(st, reg, 2);
+ 	if (reg_val < 0)
+@@ -558,7 +558,7 @@ static int ltc2992_set_current(struct ltc2992_state *st, u32 reg, u32 channel, l
+ 
+ static int ltc2992_read_curr_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+ {
+-	u32 reg_val;
++	int reg_val;
+ 	u32 mask;
+ 
+ 	if (attr == hwmon_curr_max_alarm)
+@@ -609,7 +609,7 @@ static int ltc2992_read_curr(struct device *dev, u32 attr, int channel, long *va
+ 
+ static int ltc2992_get_power(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
+ {
+-	u32 reg_val;
++	int reg_val;
+ 
+ 	reg_val = ltc2992_read_reg(st, reg, 3);
+ 	if (reg_val < 0)
+@@ -633,7 +633,7 @@ static int ltc2992_set_power(struct ltc2992_state *st, u32 reg, u32 channel, lon
+ 
+ static int ltc2992_read_power_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
+ {
+-	u32 reg_val;
++	int reg_val;
+ 	u32 mask;
+ 
+ 	if (attr == hwmon_power_max_alarm)
+-- 
+2.29.2
 
->         select PCIE_DW_HOST
->         help
->           Enables support for the PCIe controller in the Samsung Exynos SoCs
-> --
-> 2.27.0
->
