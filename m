@@ -2,110 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B472F2D0EA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DCF2D0EA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgLGLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:06:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:47258 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726244AbgLGLGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:06:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 861F21042;
-        Mon,  7 Dec 2020 03:05:57 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A111C3F66B;
-        Mon,  7 Dec 2020 03:05:54 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:05:45 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        Android KVM <android-kvm@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        open list <linux-kernel@vger.kernel.org>,
+        id S1726617AbgLGLHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbgLGLHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:07:09 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926A1C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:06:29 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kmELT-0006rA-MA; Mon, 07 Dec 2020 12:06:19 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kmELQ-0003OA-J2; Mon, 07 Dec 2020 12:06:16 +0100
+Date:   Mon, 7 Dec 2020 12:06:16 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Fuad Tabba <tabba@google.com>, Marc Zyngier <maz@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>
-Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <20201207110528.GA18365@C02TD0UTHF1T.local>
-References: <20201117181607.1761516-1-qperret@google.com>
- <20201117181607.1761516-17-qperret@google.com>
- <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
- <X8p5kLSIq2MoQZ24@google.com>
- <20201207102002.GA3825@willie-the-truck>
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/8] dt-bindings: display: simple: fix alphabetical
+ order for EDT compatibles
+Message-ID: <20201207110616.r47utgzdkw3wrply@pengutronix.de>
+References: <20201202081826.29512-1-o.rempel@pengutronix.de>
+ <20201202081826.29512-2-o.rempel@pengutronix.de>
+ <20201205193229.GF332836@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201207102002.GA3825@willie-the-truck>
+In-Reply-To: <20201205193229.GF332836@ravnborg.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:59:39 up 5 days,  1:06, 24 users,  load average: 0.11, 0.08, 0.07
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:20:03AM +0000, Will Deacon wrote:
-> On Fri, Dec 04, 2020 at 06:01:52PM +0000, Quentin Perret wrote:
-> > On Thursday 03 Dec 2020 at 12:57:33 (+0000), Fuad Tabba wrote:
-> > <snip>
-> > > > +SYM_FUNC_START(__kvm_init_switch_pgd)
-> > > > +       /* Turn the MMU off */
-> > > > +       pre_disable_mmu_workaround
-> > > > +       mrs     x2, sctlr_el2
-> > > > +       bic     x3, x2, #SCTLR_ELx_M
-> > > > +       msr     sctlr_el2, x3
-> > > > +       isb
-> > > > +
-> > > > +       tlbi    alle2
-> > > > +
-> > > > +       /* Install the new pgtables */
-> > > > +       ldr     x3, [x0, #NVHE_INIT_PGD_PA]
-> > > > +       phys_to_ttbr x4, x3
-> > > > +alternative_if ARM64_HAS_CNP
-> > > > +       orr     x4, x4, #TTBR_CNP_BIT
-> > > > +alternative_else_nop_endif
-> > > > +       msr     ttbr0_el2, x4
-> > > > +
-> > > > +       /* Set the new stack pointer */
-> > > > +       ldr     x0, [x0, #NVHE_INIT_STACK_HYP_VA]
-> > > > +       mov     sp, x0
-> > > > +
-> > > > +       /* And turn the MMU back on! */
-> > > > +       dsb     nsh
-> > > > +       isb
-> > > > +       msr     sctlr_el2, x2
-> > > > +       isb
-> > > > +       ret     x1
-> > > > +SYM_FUNC_END(__kvm_init_switch_pgd)
-> > > > +
-> > > 
-> > > Should the instruction cache be flushed here (ic iallu), to discard
-> > > speculatively fetched instructions?
+On Sat, Dec 05, 2020 at 08:32:29PM +0100, Sam Ravnborg wrote:
+> Hi Oleksij
+
+> Thanks for fixing this, but something is not correct.
+> I think you switched around the order of comment and compatible.
+
+Ack, i confused my self with comments like:
+> > -      - edt,etm0700g0dh6
+> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> > -        # Same as ETM0700G0DH6 but with inverted pixel clock.
+> >        - edt,etm070080bdh6
+
+Do this comments actually make any sense? All of this devices are kind
+of similar to each other.
+
+> On Wed, Dec 02, 2020 at 09:18:19AM +0100, Oleksij Rempel wrote:
+> > Reorder it alphabetically and remove one double entry.
 > > 
-> > Hmm, Will? Thoughts?
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  .../bindings/display/panel/panel-simple.yaml     | 16 +++++++---------
+> >  1 file changed, 7 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> > index edb53ab0d9eb..428b03342fea 100644
+> > --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> > +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+> > @@ -106,26 +106,24 @@ properties:
+> >          # Emerging Display Technology Corp. 3.5" QVGA TFT LCD panel
+> >        - edt,et035012dm6
+> >          # Emerging Display Technology Corp. 480x272 TFT Display with capacitive touch
+> > +      - edt,et057090dhu
+> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> >        - edt,etm043080dh6gp
+> >          # Emerging Display Technology Corp. 480x272 TFT Display
+> >        - edt,etm0430g0dh6
+> >          # Emerging Display Technology Corp. 5.7" VGA TFT LCD panel
+> > -      - edt,et057090dhu
+> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> > -      - edt,etm070080dh6
+> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+
+
+> >          # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> >          # Same display as the ETM0700G0BDH6, but with changed hardware for the
+> >          # backlight and the touch interface.
+> > +      - edt,etm070080dh6
+> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> >        - edt,etm070080edh6
+> >          # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> >          # Same timings as the ETM0700G0DH6, but with resistive touch.
+> > -      - edt,etm070080dh6
+> > -        # Evervision Electronics Co. Ltd. VGG804821 5.0" WVGA TFT LCD Panel
+> > +      - edt,etm0700g0dh6
+> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> > +        # Same as ETM0700G0DH6 but with inverted pixel clock.
+> >        - evervision,vgg804821
+> >          # Foxlink Group 5" WVGA TFT LCD panel
+> >        - foxlink,fl500wvr00-a0t
 > 
-> The I-cache is physically tagged, so not sure what invalidation would
-> achieve here. Fuad -- what do you think could go wrong specifically?
+> It goes like this
+> 
+> 	  # This is the comment
+> 	- compatible,for-the-comment
+> 
+> I always look at the first entry when I need to check the order.
+> Also the comment for evervision,vgg804821 seems to be lost in the above.
 
-While the MMU is off, instruction fetches can be made from the PoC
-rather than the PoU, so where instructions have been modified/copied and
-not cleaned to the PoC, it's possible to fetch stale copies into the
-I-caches. The physical tag doesn't prevent that.
+ack.
 
-In the regular CPU boot paths, __enabble_mmu() has an IC IALLU after
-enabling the MMU to ensure that we get rid of anything stale (e.g. so
-secondaries don't miss ftrace patching, which is only cleaned to the
-PoU).
-
-That might not be a problem here, if things are suitably padded and
-never dynamically patched, but if so it's probably worth a comment.
-
-Fuad, is that the sort of thing you were considering, or did you have
-additional concerns?
-
-Thanks,
-Mark.
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
