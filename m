@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E916F2D08B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633AC2D08B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbgLGBK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 20:10:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgLGBK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:10:57 -0500
-Date:   Mon, 7 Dec 2020 02:10:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607303416;
-        bh=o81IGJgSZQXnZEBbhHAnRGzuEDw1jSKf5jRiVxLyslw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hv71Zg5b6rvZKMRtiHdv3Q6JwzsQau5XT8yLSeNvK0RsQ78+2qltOliCXJmkSSLcK
-         tLuJzj0GKuk6FifcLaOF6eEk9wDgIxzkRyjBqR2s+xOTx1DFQm4JmcdeS1FJNS8nNR
-         ysovuoatx1qf7R9Zw1zZgVzKaUCQ6ZZKHJO+RztZFNqI14SIEaHh+qziXSXerU3ggv
-         rPUEFmShiFoYpAsIZT8lZHeBcGUcTKjboetN9EdiYqi9wpZ5xFkygCKG1qa8tBB2Nw
-         X7rhb0SUUWzXuKfoa/v2JSElvsN0DroUOWr4h1BSTjbI4pSrI5Mzi1Qix6FxykfCS1
-         CY3TBqxNGWfdQ==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: timers: Move clearing of base::timer_running under base::lock
-Message-ID: <20201207011013.GB113660@lothringen>
-References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+        id S1728601AbgLGBLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 20:11:24 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9019 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgLGBLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:11:24 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cq4x0351qzhn7d;
+        Mon,  7 Dec 2020 09:10:12 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 09:10:37 +0800
+Subject: Re: [PATCH 2/5] crypto: hisilicon/sec - add new type of sqe for
+ Kunpeng930
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1606357086-9785-1-git-send-email-liulongfang@huawei.com>
+ <1606357086-9785-3-git-send-email-liulongfang@huawei.com>
+ <20201204070359.GA26438@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <26023bba-78cf-4d91-3510-b6d69fa4768e@huawei.com>
+Date:   Mon, 7 Dec 2020 09:10:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201204070359.GA26438@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 10:40:07PM +0100, Thomas Gleixner wrote:
-> syzbot reported KCSAN data races vs. timer_base::timer_running being set to
-> NULL without holding base::lock in expire_timers().
+On 2020/12/4 15:03, Herbert Xu Wrote:
+> On Thu, Nov 26, 2020 at 10:18:03AM +0800, Longfang Liu wrote:
+>>
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.h b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> index 0e933e7..712176b 100644
+>> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> @@ -211,6 +219,167 @@ struct sec_sqe {
+>>  	struct sec_sqe_type2 type2;
+>>  };
+>>  
+>> +#pragma pack(4)
 > 
-> This looks innocent and most reads are clearly not problematic but for a
-> non-RT kernel it's completely irrelevant whether the store happens before
-> or after taking the lock. For an RT kernel moving the store under the lock
-> requires an extra unlock/lock pair in the case that there is a waiter for
-> the timer. But that's not the end of the world and definitely not worth the
-> trouble of adding boatloads of comments and annotations to the code. Famous
-> last words...
-
-There is another thing I noticed lately wrt. del_timer_sync() VS timer execution:
-
-
-    int data = 0;
-
-    void timer_func(struct timer_list *t)
-    {
-        data = 1;
-    }
-
-                 CPU 0                                           CPU 1
-    ------------------------------                             --------------------------
-    base = lock_timer_base(timer, &flags);                     raw_spin_unlock(&base->lock);
-    if (base->running_timer != timer)                          call_timer_fn(timer, fn, baseclk);
-        ret = detach_if_pending(timer, base, true);            base->running_timer = NULL;
-    raw_spin_unlock_irqrestore(&base->lock, flags);            raw_spin_lock(&base->lock);
-
-    x = data;
-    
-
-Here if the timer has previously executed on CPU 1 and then CPU 0 sees base->running_timer == NULL,
-it will return, assuming the timer has completed. But there is nothing to enforce the fact that x
-will be equal to 1. Enforcing that is a behaviour I would expect in this case since this is a kind
-of "wait for completion" function. But perhaps it doesn't apply here, in fact I have no idea...
-
-But if we recognize that as an issue, we would need a mirroring load_acquire()/store_release() on
-base->running_timer.
+> Please don't use pragma pack.  Instead add the attributes as
+> needed to each struct or member.
+> 
+> Cheers,
+> 
+OK, I will modify it in next patchset
+thanks.
+Longfang
