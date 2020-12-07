@@ -2,70 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E422D0D82
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922DF2D0D7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgLGJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:55:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8716 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGJzp (ORCPT
+        id S1726447AbgLGJzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgLGJzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:55:45 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqJYr4FQMzkltR;
-        Mon,  7 Dec 2020 17:54:24 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 17:54:55 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: fix to account inline xattr correctly during recovery
-Date:   Mon, 7 Dec 2020 17:54:41 +0800
-Message-ID: <20201207095441.73567-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 04:55:21 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F94C0613D4;
+        Mon,  7 Dec 2020 01:54:14 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id t7so9332345pfh.7;
+        Mon, 07 Dec 2020 01:54:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cQNqejnHKcv71ogNXQXWu1nJrilCEf7ocHyvluhTstc=;
+        b=g30udMM1VuAWbWxL2/BJDWR/lG7bQE0VU8xjEd13qKZzRC6KOfzAM3WN6wc1JFbUHA
+         paIDx534W92bNFGN6L83h9q3FDnYpttE7r7Bv2xV3Ze43sSth+v2VYm26zGOeHaZrOWB
+         K5JT73YDl7u5Lb9cS975oglkf40inKuAm0n9Dipd+bsG/QvK5CZ4xKAwGOcPaigvGP/a
+         g9aakI2R15t8MdqHVPsbX+FOBUjheBnAA/bXO015PUAAlY1cLo93A6lJTeqqUmQidw14
+         tJoEpe61zudYXm6NDHfTEutMMmOKqCVCKc5O4pMdKMgzQDzAi0V7NWH+nIXFGyJzdJlz
+         lelA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cQNqejnHKcv71ogNXQXWu1nJrilCEf7ocHyvluhTstc=;
+        b=QwI18E4a6B3FAKeIgWsVohwaqw8/ogjF4oDgnKOOHJiKLOFhKZlMPq1n1V1szgMHyH
+         Sh78YPBB2HclboGB8RIU00ULlQ2M/JmGbmRwRKsSPUX9iVjPMWYDok4hNXEHEd0Zj57v
+         ZIkhNVUBCtZe0WVnoTOqhYW3HfyWRFBgI2Jyw5sXLv2DacqIcnHhU6CG9EixVhrcuZ6/
+         E/KRav3C6HF0H9MOnAy0XQ2Ei6Vrexc+GxTNGgi+I3agOC1EKmaSUugGESpLUQElqCQu
+         5XKpx1Kgt1AFWV3EyOJqUpryWJaebRfF4DCAIYlkf6F0HxNN++dGS9P1ed05DBDqluuz
+         EG3A==
+X-Gm-Message-State: AOAM5332PXVg6a6IKiQgAqe/prlzhTIin/CbR8qvWJi/zs5JpUYMFYy2
+        qdTHZzYV0pr4ubhpY/nKIrNWNv6soNh4pbDqFGI=
+X-Google-Smtp-Source: ABdhPJyjR8NCqP4BwkiF+lJpanNRuoSGVUTlMMZMbsnJVenOsZ3LLSVlxWxATKrXkRR4Y8N6SIPiC5/CdXA7fBL9rLg=
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
+ 66-20020a6204450000b029019c162bbbefmr15382640pfe.40.1607334854121; Mon, 07
+ Dec 2020 01:54:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+References: <20201204164739.781812-1-maz@kernel.org>
+In-Reply-To: <20201204164739.781812-1-maz@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Dec 2020 11:55:02 +0200
+Message-ID: <CAHp75VcDqHLzaAZ=EOV8EfhOxLvEC4do+UDVmAWD229xmEok+w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     USB <linux-usb@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During recovery, we may missed to update inline xattr count correctly,
-fix it.
+On Fri, Dec 4, 2020 at 6:49 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Having recently tried to use the CBUS GPIOs that come thanks to the
+> ftdio_sio driver, it occurred to me that the driver has a couple of
+> usability issues:
+>
+> - it advertises potential GPIOs that are reserved to other uses (LED
+>   control, or something else)
+>
+> - it returns an odd error (-ENODEV), instead of the expected -EINVAL
+>   when a line is unavailable, leading to a difficult diagnostic
+>
+> We address the issues in a number of ways:
+>
+> - Stop reporting invalid GPIO lines as valid to userspace. It
+>   definitely seems odd to do so. Instead, report the line as being
+>   used, making the userspace interface a bit more consistent.
+>
+> - Implement the init_valid_mask() callback in the ftdi_sio driver,
+>   allowing it to report which lines are actually valid.
+>
+> - As suggested by Linus, give an indication to the user of why some of
+>   the GPIO lines are unavailable, and point them to a useful tool
+>   (once per boot). It is a bit sad that there next to no documentation
+>   on how to use these CBUS pins.
+>
+> - Drop the error reporting code, which has become useless at this
+>   point.
+>
+> Tested with a couple of FTDI devices (FT230X and FT231X) and various
+> CBUS configurations.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/node.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Series looks pretty good to me, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index e65d73293a3f..3a24423ac65f 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -2594,9 +2594,15 @@ int f2fs_recover_inline_xattr(struct inode *inode, struct page *page)
- 
- 	ri = F2FS_INODE(page);
- 	if (ri->i_inline & F2FS_INLINE_XATTR) {
--		set_inode_flag(inode, FI_INLINE_XATTR);
-+		if (!f2fs_has_inline_xattr(inode)) {
-+			set_inode_flag(inode, FI_INLINE_XATTR);
-+			stat_inc_inline_xattr(inode);
-+		}
- 	} else {
--		clear_inode_flag(inode, FI_INLINE_XATTR);
-+		if (f2fs_has_inline_xattr(inode)) {
-+			stat_dec_inline_xattr(inode);
-+			clear_inode_flag(inode, FI_INLINE_XATTR);
-+		}
- 		goto update_inode;
- 	}
- 
+> Marc Zyngier (4):
+>   gpiolib: cdev: Flag invalid GPIOs as used
+>   USB: serial: ftdi_sio: Report the valid GPIO lines to gpiolib
+>   USB: serial: ftdi_sio: Log the CBUS GPIO validity
+>   USB: serial: ftdi_sio: Drop GPIO line checking dead code
+>
+>  drivers/gpio/gpiolib-cdev.c   |  1 +
+>  drivers/usb/serial/ftdi_sio.c | 26 +++++++++++++++++++++++---
+>  2 files changed, 24 insertions(+), 3 deletions(-)
+>
+> --
+> 2.28.0
+>
+
+
 -- 
-2.29.2
-
+With Best Regards,
+Andy Shevchenko
