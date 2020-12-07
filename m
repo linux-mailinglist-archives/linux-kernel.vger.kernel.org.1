@@ -2,100 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DE12D11B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C152D11CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgLGNW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:22:26 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53205 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGNWZ (ORCPT
+        id S1726370AbgLGNXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:23:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725866AbgLGNXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:22:25 -0500
-Received: by mail-wm1-f66.google.com with SMTP id a6so11451489wmc.2;
-        Mon, 07 Dec 2020 05:22:09 -0800 (PST)
+        Mon, 7 Dec 2020 08:23:34 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E78C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:22:54 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id d2so6042029pfq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:22:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0to9OB/whgv3qi9ufsQ+EKxpPLl37hR48TuYHnONOzs=;
+        b=TthrRXTSO0r6XRrwG3mgwoHswcmwD0e5xJ0kpAYE36Qk4eW2ixqIQnJ2gD+ZhBuuV4
+         As1vKJEOjlV9/bdfYHKaQGaFV1pr51FxZQVryIP6rEhe9GUskhHasg+09ZD0kAuiGwzz
+         /5qQI6+2sBcah5HizF/kGLbyHPDn0bj2QyXxAsLqoN5ptTQf1sjZYEZKVRW3/dcYoYS2
+         60VtDaQbpT/WnbLR8s4qMmvIkMtz81cMXkbBDn6CF71YXFN/BMq6dlgMzppe7UAPoJTM
+         PdPvbIAOBcIFA1xlph+JEA+k94vtyOzo5aP9jWVjpGS3rnze/MtchkpOp6xgYhfLwsjv
+         BdjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MJwMrUj3WNQ0Z6JF3rMMT8PRx7qig2o2mEv5ta9FJhk=;
-        b=iPJwYcwjjFrBn3UILT6Ut20S2nzO+hxf+Kk52/R5f5e0smBaU1Z/PeyVMDiL7t+1kg
-         eg27v6L2dOZ0bHO085FQxYAg7YiZi5AF4Juy6ergY6vTWUj9RGQpVkTYExcghp1u+V+e
-         rSGaCgGQ+HYeDk8P4sfxJ2+mTsx8mmXeM1Xae+ukHaP53SFa0zssqyWA7JEC+zW9wjIc
-         SOtan1b+JH0SmCREKHap6795F9FDJ/++gmkKfRgu0BVAtpviNrnRyMRbLcNQ5SQ82g5E
-         hjxl2UFhX9vKMeQ1leAu5pwrx58rqgE44lcUy72zUV9nFart5We8lg9qMuDZl7aluXwI
-         YHtg==
-X-Gm-Message-State: AOAM533KQJE+Hs+2z0s4iB5Ja83FrQLa/0cTfDCPY3x3sGKSy/HKAXCl
-        U4ZfAdjTMHF6BI1xkziDVgA=
-X-Google-Smtp-Source: ABdhPJyO70ZClWQf3G0rlUyq9BYbIJl9dRorKgaLYiVZ7ua/tO2HTRt3sifgwB+7CESnraCvF7RTjg==
-X-Received: by 2002:a7b:c2e8:: with SMTP id e8mr18172792wmk.103.1607347303289;
-        Mon, 07 Dec 2020 05:21:43 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y6sm15005491wmg.39.2020.12.07.05.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 05:21:41 -0800 (PST)
-Date:   Mon, 7 Dec 2020 14:21:40 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mn: Fix duplicate node name
-Message-ID: <20201207132140.GA31982@kozik-lap>
-References: <1607324004-12960-1-git-send-email-shengjiu.wang@nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0to9OB/whgv3qi9ufsQ+EKxpPLl37hR48TuYHnONOzs=;
+        b=JNcI6d4guxdssGv9pV1+tmuu+LwRFzbF0+778X3faiUkOPAeO+2TkArCMiU7jiBUHZ
+         RoieE4onBUbQbfvKoN5EmzeBO+QspxTFwn984usa0DaUwp0gVp0VF8cnHaRrLYsVT9lv
+         IcI8ywMts/c2pudgbgCnlaIUaDaXIrbnJalBDAuKKbibKa0Efsf95K6Xk75j1ZRmGUBw
+         AgdAHv1pT6ahzXTsMY6iXDI2XKzmB+HNQt86cZAvRUUp7oUiLMEpOndhBiuRvXaulwUv
+         /M2P0V4fBmLeER1IT08lOVLBvi9UlAxmK57MT/bKlyqsXNBzfUjLRatoDP+Cl87XJrvN
+         SYDw==
+X-Gm-Message-State: AOAM5307r8tNoxnn4DzV5l8skX6jxJse/hW/ruX0FJH9G8rUT7jvf8RH
+        MvioS34TGX9EAE/SzvagoJ/QsVKV5d9H5X9WTyG40Q==
+X-Google-Smtp-Source: ABdhPJz1TKVgB8tDVH4DF5F75OY3VOXP48xOAa+s6tWfhnAlLp8FuLCfgyBvpB66zoppS+m0y+RKaMoCQpgm0vrtUqM=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr16165559plt.34.1607347374167; Mon, 07
+ Dec 2020 05:22:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1607324004-12960-1-git-send-email-shengjiu.wang@nxp.com>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-4-songmuchun@bytedance.com> <2ec1d360-c8c8-eb7b-2afe-b75ee61cfcea@redhat.com>
+ <CAMZfGtVnw8aJWceLM1UerkAZzcjkObb-ZrCE_Jj6w3EUR=UN3Q@mail.gmail.com> <ebff035a-a32b-cd7b-f4c1-332ddc1ceaa4@redhat.com>
+In-Reply-To: <ebff035a-a32b-cd7b-f4c1-332ddc1ceaa4@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 7 Dec 2020 21:22:17 +0800
+Message-ID: <CAMZfGtVoRYedj9wF2_EbEpP2WJrBo5qzt0XtnWSEF+Bb8QZOXQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v7 03/15] mm/hugetlb: Introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 02:53:24PM +0800, Shengjiu Wang wrote:
-> Error log:
-> sysfs: cannot create duplicate filename '/bus/platform/devices/30000000.bus'
-> 
-> The spba bus name is duplicate with aips bus name.
-> Refine spba bus name to fix this issue.
-> 
-> Fixes: 970406eaef3a ("arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter")
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> index fd669c0f3fe5..30762eb4f0a7 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> @@ -246,7 +246,7 @@ aips1: bus@30000000 {
->  			#size-cells = <1>;
->  			ranges;
->  
-> -			spba: bus@30000000 {
-> +			spba: spba-bus@30000000 {
+On Mon, Dec 7, 2020 at 8:47 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 07.12.20 13:42, Muchun Song wrote:
+> > On Mon, Dec 7, 2020 at 8:19 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 30.11.20 16:18, Muchun Song wrote:
+> >>> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> >>> whether to enable the feature of freeing unused vmemmap associated
+> >>> with HugeTLB pages. And this is just for dependency check. Now only
+> >>> support x86.
+> >>
+> >> x86 - i386 and x86-64? (I assume the latter only ;) )
+> >
+> > Yeah, you are right. Only the latter support SPARSEMEM_VMEMMAP.
+> >
+> >>
+> >>>
+> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>> ---
+> >>>  arch/x86/mm/init_64.c |  2 +-
+> >>>  fs/Kconfig            | 14 ++++++++++++++
+> >>>  2 files changed, 15 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> >>> index 0a45f062826e..0435bee2e172 100644
+> >>> --- a/arch/x86/mm/init_64.c
+> >>> +++ b/arch/x86/mm/init_64.c
+> >>> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+> >>>
+> >>>  static void __init register_page_bootmem_info(void)
+> >>>  {
+> >>> -#ifdef CONFIG_NUMA
+> >>> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+> >>>       int i;
+> >>>
+> >>
+> >> Why does this hunk belong into this patch? Looks like this should go
+> >> into another patch.
+> >
+> > Of course can. But Mike suggests that it is better to use it when
+> > introducing a new config. Because this config depends on
+> > HAVE_BOOTMEM_INFO_NODE. And register_page_bootmem_info
+> > is aimed to register bootmem info. So maybe it is reasonable from
+> > this point of view. What is your opinion?
+> >
+>
+> Ah, I see. Maybe mention in the patch description, because the
+> "Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP" part left me
+> clueless. Stumbling over this change only left me rather clueless.
 
-The proper node name is "bus" so basically you introduce wrong name to
-other problem.  Introducing wrong names at least requires a comment.
+OK, I will improve the commit log. Thanks.
 
-However the actual problem here is not in node names but in addresses:
+>
+> >>
+> >>>       for_each_online_node(i)
+> >>> diff --git a/fs/Kconfig b/fs/Kconfig
+> >>> index 976e8b9033c4..4961dd488444 100644
+> >>> --- a/fs/Kconfig
+> >>> +++ b/fs/Kconfig
+> >>> @@ -245,6 +245,20 @@ config HUGETLBFS
+> >>>  config HUGETLB_PAGE
+> >>>       def_bool HUGETLBFS
+> >>>
+> >>> +config HUGETLB_PAGE_FREE_VMEMMAP
+> >>> +     def_bool HUGETLB_PAGE
+> >>> +     depends on X86
+> >>> +     depends on SPARSEMEM_VMEMMAP
+> >>> +     depends on HAVE_BOOTMEM_INFO_NODE
+> >>> +     help
+> >>> +       When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
+> >>> +       memory from pre-allocated HugeTLB pages when they are not used.
+> >>> +       6 pages per 2MB HugeTLB page and 4094 per 1GB HugeTLB page.
+> >>
+> >> Calculations only apply to 4k base pages, no?
+> >
+> > No, if the base page is not 4k, we also can free 6 pages.
+> >
+> > For example:
+> >
+> > If the base page size is 64k, the PMD huge page size is 512MB. We also
+>
+> Note that 2MB huge pages on arm64 with 64k base pages are possible as
+> well. Also, I think powerpc always has 16MB huge pages, independent of
+> base page sizes.
 
-	aips1: bus@30000000 {
-		spba: bus@30000000 {
+I see now. Now only support x86-64, you are right, I should point out the base
+page size. When supporting more architectures in the future. We can update
+the message here. :)
 
-You have to devices with the same unit address. How do you share the
-address space?
+Thanks.
 
-I think this should be rather fixed.
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
 
-Best regards,
-Krzysztof
 
-
->  				compatible = "fsl,spba-bus", "simple-bus";
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -- 
-> 2.27.0
-> 
+-- 
+Yours,
+Muchun
