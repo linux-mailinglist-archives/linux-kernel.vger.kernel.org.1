@@ -2,176 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B122D1299
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30A02D12A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgLGNx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:53:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39404 "EHLO
+        id S1726534AbgLGNzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:55:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32230 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725994AbgLGNx4 (ORCPT
+        by vger.kernel.org with ESMTP id S1726188AbgLGNzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:53:56 -0500
+        Mon, 7 Dec 2020 08:55:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607349149;
+        s=mimecast20190719; t=1607349222;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o2eDRpg2p3nscNNP24Y5Wwi2J4Ejtn5EoY7jP2IsnBU=;
-        b=Sb555piwauIVRwBB2hC1xw2b/RNQm+JidT7PCSXHT8p7mPfUAHdJDEe7m6V3CJQg8GMLXT
-        2OQQ2JBH9rhuneONRkyNasO2H+os27XEtAU8VywBlMsRhTCjz7Sndy+/jAjVSmZaJ2EyfH
-        s63b0VWVTGAmJtwpE2Iez1reDfUSNxc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-GfxOM3Q9PzypT8vHcO6obw-1; Mon, 07 Dec 2020 08:52:27 -0500
-X-MC-Unique: GfxOM3Q9PzypT8vHcO6obw-1
-Received: by mail-wm1-f70.google.com with SMTP id r1so5368485wmn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:52:27 -0800 (PST)
+        bh=z0LkzQwUfy3VSXbaI0zGos8FMVr/WHmEntut1gHn3+k=;
+        b=FwEn1tS0f1hfI8htmFG8+qiX4WmOzQjioopkl7lwE7Sv3VjSp5M2o5MChHtAM41qZoU/of
+        Moutn6m015HVWXjtvWwA32PBwxI0n8FM7PMeNFFNNIwEu/LVp5wS792LRb5yVPOKAz2xx+
+        zn0te5beBW9XBJECmbGaNAdSaVPAV4w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-ZBCqAqXCPiKfWDJNPel8Aw-1; Mon, 07 Dec 2020 08:53:40 -0500
+X-MC-Unique: ZBCqAqXCPiKfWDJNPel8Aw-1
+Received: by mail-ej1-f69.google.com with SMTP id a8so3857872ejc.19
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:53:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=o2eDRpg2p3nscNNP24Y5Wwi2J4Ejtn5EoY7jP2IsnBU=;
-        b=GLOfD5n8Qt0V/KayU2XMi0zBcB/gOtgMGdEiXMu7SeHe8JJOORXXhAec2LDq71hRQN
-         0U7SKKHFBNQiDLWN8vpSMU4exbJ2BljkNUBYTk+1y1Aj5N31Ev0F/eqkWHgDDZROgVYO
-         PbDVTde9P6kd/p7YwS42aK0+SstgZchOsRVazAghbrJnleUOmO9lydgRkiThj/UXtXQ7
-         Ub4Wb3zN4tHUHVZgqSQQ30Eb2vTeyw9Lxu7ZDNG53gp7sPoEKrCwJMrWPFPp2/z6bvVE
-         D7IMm9PS8mSOIqIXit4IGiR55/M89KvLUInbmUsGt8v90FUB30HmxuMj4RZIGGaj76PA
-         2A/g==
-X-Gm-Message-State: AOAM533tX4/YZvlXrrB22Dd3r7nxFNTzNOdgIzF5jMSkoyTeTjL8Zc7F
-        Pe0SpXIO0opvBKVdCM1977OHlQdbKD+nCJ5VZlcSpyrdMi4FPA/e1vPG2PAa5L8Jl6wUNZjaSB9
-        AnRcO4LOU4T7uIGCzflGFS+Ih
-X-Received: by 2002:a5d:5689:: with SMTP id f9mr19985953wrv.181.1607349145791;
-        Mon, 07 Dec 2020 05:52:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxry8r99XfuZsd9xpT/D3HhTrDgujG2fkSVGb9ILMFpXGDKe10crdm3NpHJ20Ml9kS7Zd7JfA==
-X-Received: by 2002:a5d:5689:: with SMTP id f9mr19985923wrv.181.1607349145521;
-        Mon, 07 Dec 2020 05:52:25 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id h14sm13884316wrx.37.2020.12.07.05.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 05:52:24 -0800 (PST)
-Date:   Mon, 7 Dec 2020 08:52:20 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com,
-        msuchanek@suse.de
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-Message-ID: <20201206075131-mutt-send-email-mst@kernel.org>
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
- <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=z0LkzQwUfy3VSXbaI0zGos8FMVr/WHmEntut1gHn3+k=;
+        b=H/evyRjiIdHGO655Cpe7zadKX8Sv3wV+A3u1JmMNkKAjmhWikwWZ0xxjMsNyTubQ1R
+         NwwzMVvJvfyXFObE1n85ZRcUeE8rH/cWk1T/Xn8n09sgVKoWYF5a7LAEVEORTATTVcIP
+         H4qOZpbzXfiNYYXtHut5gXysYiGwSddGOadXw+rzMr3g4e0pfP2lM5ceOgum0+KNlnlI
+         HwSrlCPUrSufmo5XHAQXS31UfIABu3K25xCKBT6WGrTCa9AddkWfP5TwTN1jAkdR0OPd
+         Qg34PbJ65qPcNJiWreqggP7c8n20TptkYGmxZYqjF5FvUGkazFhsTxLL+xEogw4FQ7ss
+         a2Kw==
+X-Gm-Message-State: AOAM530rD9jLUrNykamErwKLvEQ6mL9G7PstWgl8MeQszL8vOz+lkqEk
+        M/MifQOuktwin1au7i0H5RBUmQWLH1qLoOoie2uR5lsQ87fBXX5s2qTYXUkbgvMjEWWc6visF0I
+        WdquJRQSqN7DPnAG94sjpoWDc
+X-Received: by 2002:a17:906:3949:: with SMTP id g9mr1614658eje.493.1607349219540;
+        Mon, 07 Dec 2020 05:53:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJznKUtld+R2eani16aYv7FkTYc+IAEjmmDGmWJ4/zXLR1uBNDrcK65++w70LLXnxfSN1v5fTw==
+X-Received: by 2002:a17:906:3949:: with SMTP id g9mr1614646eje.493.1607349219349;
+        Mon, 07 Dec 2020 05:53:39 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id p22sm12230242ejx.59.2020.12.07.05.53.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 05:53:38 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: mlx-platform: remove an unused variable
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Shych <michaelsh@mellanox.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20201203223105.1195709-1-arnd@kernel.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <64393b7e-ba81-1545-dfe8-bc3567dd534b@redhat.com>
+Date:   Mon, 7 Dec 2020 14:53:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
+In-Reply-To: <20201203223105.1195709-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 09:05:16PM +0100, Enrico Weigelt, metux IT consult wrote:
-> On 05.12.20 20:32, Michael S. Tsirkin wrote:
+Hi,
+
+On 12/3/20 11:30 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Hi,
+> The only reference to the mlxplat_mlxcpld_psu[] array got removed,
+> so there is now a warning from clang:
 > 
-> > It seems a bit of a mess, at this point I'm not entirely sure when
-> > should drivers select VIRTIO and when depend on it.
+> drivers/platform/x86/mlx-platform.c:322:30: error: variable 'mlxplat_mlxcpld_psu' is not needed and will not be emitted [-Werror,-Wunneeded-internal-declaration]
+> static struct i2c_board_info mlxplat_mlxcpld_psu[] = {
 > 
-> if VIRTIO just enables something that could be seen as library
-> functions, then select should be right, IMHO.
+> Remove the array as well and adapt the ARRAY_SIZE() call
+> accordingly.
 > 
-> > The text near it says:
-> > 
-> > # SPDX-License-Identifier: GPL-2.0-only
-> > config VIRTIO
-> >         tristate
-> 
-> oh, wait, doesn't have an menu text, so we can't even explicitly enable
-> it (not shown in menu) - only implicitly. Which means that some other
-> option must select it, in order to become availe at all, and in order
-> to make others depending on it becoming available.
-> 
-> IMHO, therefore select is the correct approach.
-> 
-> 
-> >         help
-> >           This option is selected by any driver which implements the virtio
-> >           bus, such as CONFIG_VIRTIO_PCI, CONFIG_VIRTIO_MMIO, CONFIG_RPMSG
-> >           or CONFIG_S390_GUEST.
-> > 
-> > Which seems clear enough and would indicate drivers for devices *behind*
-> > the bus should not select VIRTIO and thus presumably should "depend on" it.
-> > This is violated in virtio console and virtio fs drivers.
-> 
-> See above: NAK. because it can't even be enabled directly (by the user).
-> If it wasn't meant otherwise, we'd have to add an menu text.
+> Fixes: 912b341585e3 ("platform/x86: mlx-platform: Remove PSU EEPROM from MSN274x platform configuration")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Thank you for your patch.
+
+Note that there are 4 more cases where the foo1 and foo2 in:
+.data = foo1 and .count = ARRAY_SIZE(foo2) are not the same.
+
+There are 2 cases where .count is set to ARRAY_SIZE(mlxplat_mlxcpld_pwr)
+instead of to ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data)
+
+and there are 2 cases where .count is set to ARRAY_SIZE(mlxplat_mlxcpld_fan)
+instead of to ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data)
+
+If one of the MLX people can provide a patch fixing this then that
+would be great.
+
+###
+
+I've applied this patch to my review-hans  branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
 
 
-The point is that user enables one of the bindings.
-That in turn enables drivers. If we merely select VIRTIO
-there's a chance user won't remember to select any bindings
-and will be surprised not to see any devices.
 
 
 
-> > For console it says:
-> > 
-> > commit 9f30eb29c514589e16f2999ea070598583d1f6ec
-> > Author: Michal Suchanek <msuchanek@suse.de>
-> > Date:   Mon Aug 31 18:58:50 2020 +0200
-> > 
-> >     char: virtio: Select VIRTIO from VIRTIO_CONSOLE.
-> >     
-> >     Make it possible to have virtio console built-in when
-> >     other virtio drivers are modular.
-> >     
-> >     Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> >     Reviewed-by: Amit Shah <amit@kernel.org>
-> >     Link: https://lore.kernel.org/r/20200831165850.26163-1-msuchanek@suse.de
-> >     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > 
-> > which seems kind of bogus - why do we care about allowing a builtin
-> > virtio console driver if the pci virtio bus driver is a module?
-> > There won't be any devices on the bus to attach to ...
-> 
-> When using other transports ?
-
-Any transport selects VIRTIO so if you enable that, you get
-VIRTIO and thus it's enough to depend on it.
-
-> In my current project, eg. I'm using mmio - my kernel has pci completely
-> disabled.
-> 
-> > I am inclined to fix console and virtio fs to depend on VIRTIO:
-> > select is harder to use correctly ...
-> 
-> I don't thinkt that would be good - instead everybody should just select
-> VIRTIO, never depend on it (maybe depend on VIRTIO_MENU instead)
-
-GPU depends on VIRTIO and on VIRTIO_MENU ... which seems even messier
-...
-
-> 
-> --mtx
-> 
-> -- 
 > ---
-> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schlüssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
+>  drivers/platform/x86/mlx-platform.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+> index 598f44558764..6a634b72bfc2 100644
+> --- a/drivers/platform/x86/mlx-platform.c
+> +++ b/drivers/platform/x86/mlx-platform.c
+> @@ -319,15 +319,6 @@ static struct i2c_mux_reg_platform_data mlxplat_extended_mux_data[] = {
+>  };
+>  
+>  /* Platform hotplug devices */
+> -static struct i2c_board_info mlxplat_mlxcpld_psu[] = {
+> -	{
+> -		I2C_BOARD_INFO("24c02", 0x51),
+> -	},
+> -	{
+> -		I2C_BOARD_INFO("24c02", 0x50),
+> -	},
+> -};
+> -
+>  static struct i2c_board_info mlxplat_mlxcpld_pwr[] = {
+>  	{
+>  		I2C_BOARD_INFO("dps460", 0x59),
+> @@ -456,7 +447,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
+>  		.aggr_mask = MLXPLAT_CPLD_AGGR_PSU_MASK_DEF,
+>  		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+>  		.mask = MLXPLAT_CPLD_PSU_MASK,
+> -		.count = ARRAY_SIZE(mlxplat_mlxcpld_psu),
+> +		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_psu_items_data),
+>  		.inversed = 1,
+>  		.health = false,
+>  	},
+> @@ -495,7 +486,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_comex_items[] = {
+>  		.aggr_mask = MLXPLAT_CPLD_AGGR_MASK_CARRIER,
+>  		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+>  		.mask = MLXPLAT_CPLD_PSU_MASK,
+> -		.count = ARRAY_SIZE(mlxplat_mlxcpld_psu),
+> +		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_psu_items_data),
+>  		.inversed = 1,
+>  		.health = false,
+>  	},
+> 
 
