@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12132D1A1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486162D1A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgLGT5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgLGT5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:57:17 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE8BC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:56:31 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id q75so377241wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
-        b=Rx2kkCmZ+FgKln8FUJd506TxOlujIx2a854tc5Lv/wbSoF4I3D5Y3UTDvOiPf4BEU0
-         9b9A8fmyTZZ/BvEcc6/iQ4yZ7S4SkzfURcxY6jir+78TKz30w2hxqARUgdOrkXfeOUB9
-         OUjSXC+UW2mecPfAlRcn4bc31TC7dogLu/4Xs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
-        b=TpghuYW1DO7b7ZGVQGPTxLDneLiYO9fRqb9b6MmpBf7vjP7tJcPAplhlMylKYzSIo4
-         WfKXphDLJEHybKt/SjuJnZYsmuqISQ8bGjvb8led0XTKXIQ4q+lc0UF+GIpfCaKVOfBf
-         WT5lRuFSs/SUScAu3uQb0bKbOlt+6wDnDB7OdP9xeK3EK2cSmaGL8eGvBhnovca3S2xC
-         wp5uSRtmsRZ3ku17wzpqy+nX+5U3sChbOm6sS2sgZBOT/NKE3TCv2UTTiWt7D2EzIYNN
-         +OyebFL4BUZIHG3m4LVnBdLGDBQHOhmJZaoOMRXbLNk5oUfmjNmb5uTXsONLQuI+gFe8
-         p50w==
-X-Gm-Message-State: AOAM5335jDt2KerxnKzpfT+4D/J8UGVItBU9CtmYQRjHaEopXFM9YrH3
-        l+kzDyJ7HYfSKRynBYazlNnV1Q==
-X-Google-Smtp-Source: ABdhPJwRr3c35YwXYieC6vSlSfluvpB8QKErxv59vR3tfD4WwjdeDPBfFZj0sPyFG8L9BtVzgSKjvA==
-X-Received: by 2002:a1c:2ec6:: with SMTP id u189mr469286wmu.31.1607370990290;
-        Mon, 07 Dec 2020 11:56:30 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id v20sm325722wml.34.2020.12.07.11.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:56:29 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, rdunlap@infradead.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] bpf: Only call sock_from_file with CONFIG_NET
-Date:   Mon,  7 Dec 2020 20:55:39 +0100
-Message-Id: <20201207195539.609787-1-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        id S1726759AbgLGT4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:56:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgLGT4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 14:56:54 -0500
+Date:   Mon, 7 Dec 2020 21:56:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607370973;
+        bh=yPs9QDsuXZBj0AnHJQPLKk5uozke+DFy1FCuNPHFJoo=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CJywbZ6F2J2n4eSInxwY89uD9zCi+tJPVViTO3691+MbLs7gpFDUgsHVlISgnxaB7
+         c6Q6Gc5kLSk58ing3N17b3+fDpNAMQNcEZ0S6sBLEcJL1qggNTKcDJAaVRHUZJ7vsn
+         IHEfwaOhAARTvu3xTRQhd3uK9sEWHcVC9XY5ot+uwbbn5OfWMOHrZGpShI+dseMtFb
+         uhdRD/+roWdSMfEkiKVnPn4Zy4BvB1jRTFcgHWd8Ncx9goUulpxSHxOczempw61nn7
+         MBvtpw3qDK0eSJ7jesv6ALXVKqqjoiF3kFJ04FAQZaTwKNjNtYaJG/+9sV46cHkFZQ
+         vSDpsnS4WsP/A==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 08/17] driver core: Add fwnode link support
+Message-ID: <20201207195607.GG693271@unreal>
+References: <20201121020232.908850-1-saravanak@google.com>
+ <20201121020232.908850-9-saravanak@google.com>
+ <20201206074840.GB687065@unreal>
+ <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids
-  ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
-  bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
-When compiling a kernel with BPF and without NET.
+On Mon, Dec 07, 2020 at 11:25:03AM -0800, Saravana Kannan wrote:
+> On Sat, Dec 5, 2020 at 11:48 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Fri, Nov 20, 2020 at 06:02:23PM -0800, Saravana Kannan wrote:
+> > > Add support for creating supplier-consumer links between fwnodes.  It is
+> > > intended for internal use the driver core and generic firmware support
+> > > code (eg. Device Tree, ACPI), so it is simple by design and the API
+> > > provided is limited.
+> > >
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> > >  drivers/base/core.c    | 98 ++++++++++++++++++++++++++++++++++++++++++
+> > >  drivers/of/dynamic.c   |  1 +
+> > >  include/linux/fwnode.h | 14 ++++++
+> > >  3 files changed, 113 insertions(+)
+> > >
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index 401fa7e3505c..e2b246a44d1a 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -50,6 +50,104 @@ static LIST_HEAD(wait_for_suppliers);
+> > >  static DEFINE_MUTEX(wfs_lock);
+> > >  static LIST_HEAD(deferred_sync);
+> > >  static unsigned int defer_sync_state_count = 1;
+> > > +static DEFINE_MUTEX(fwnode_link_lock);
+> > > +
+> > > +/**
+> > > + * fwnode_link_add - Create a link between two fwnode_handles.
+> > > + * @con: Consumer end of the link.
+> > > + * @sup: Supplier end of the link.
+> > > + *
+> > > + * Create a fwnode link between fwnode handles @con and @sup. The fwnode link
+> > > + * represents the detail that the firmware lists @sup fwnode as supplying a
+> > > + * resource to @con.
+> > > + *
+> > > + * The driver core will use the fwnode link to create a device link between the
+> > > + * two device objects corresponding to @con and @sup when they are created. The
+> > > + * driver core will automatically delete the fwnode link between @con and @sup
+> > > + * after doing that.
+> > > + *
+> > > + * Attempts to create duplicate links between the same pair of fwnode handles
+> > > + * are ignored and there is no reference counting.
+> >
+> > Sorry to ask, but why is that?
+> > Isn't this a programmer error?
+>
+> No, not a programmer error.
+>
+> One firmware node can point to the same supplier many times. For
+> example, the consumer can be using multiple clocks from the same
+> supplier clock controller. In the context of fw_devlink, there's no
+> reason to keep track of each clock dependency separately because we'll
+> be creating only one device link from fwnode link. So multiple fwnode
+> link attempts between the same two devices are just treated as one
+> instance of dependency. I hope that clarifies things.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- kernel/trace/bpf_trace.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Yes, thanks.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 0cf0a6331482..877123bae71f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1272,7 +1272,11 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
- 
- BPF_CALL_1(bpf_sock_from_file, struct file *, file)
- {
-+#ifdef CONFIG_NET
- 	return (unsigned long) sock_from_file(file);
-+#else
-+	return NULL;
-+#endif
- }
- 
- BTF_ID_LIST(bpf_sock_from_file_btf_ids)
--- 
-2.29.2.576.ga3fc446d84-goog
-
+>
+> -Saravana
