@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02202D0ED6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169E12D0EDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgLGLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
+        id S1726666AbgLGLVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgLGLSx (ORCPT
+        with ESMTP id S1726110AbgLGLVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:18:53 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE826C0613D0;
-        Mon,  7 Dec 2020 03:18:12 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id cw27so13290559edb.5;
-        Mon, 07 Dec 2020 03:18:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LzuHMjHqXt98AxqLTSyAQqGYo+32ZS7gzfcD3uCXQW4=;
-        b=nH0ybEha6h0mKYzN4F5umyS6sby7ByHgwez3MrADauhPUEDAi/eVEnr58E6kfkfLCD
-         ZX6EpvQ0OovXbSMoSybu+F5FY2PMD+nkOKqlQzI5p1Dn9L8Mh7vTILMME5LTuJCk5JuL
-         CeiGnTZJJjcReRevzasOGNHEjhsSP0LzS8LsKDSrJF0hpZ6J7sLhQFeOu6A1Z6hf96mc
-         DePi0De/vBGUH5jYQIDA12biyYzv/H1T96mGOhDlti6t1Bjdi+IFOdvy8HviYrRrdmXW
-         4/HHfi0odQKbXaIoPdv/zNcNkW+xZ9uAg9vWpedGcfPhfxMF+yRwy7KMVFTnnKN74I4t
-         5bOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LzuHMjHqXt98AxqLTSyAQqGYo+32ZS7gzfcD3uCXQW4=;
-        b=o6JXFs36l5PdxU+BWQDIO35W/qXE8+TIoki0k6BUGg6z7OFULSnz3nC93v4eVNDDhG
-         dM9xxhUYf2D2zajiqVYuYmWyJkFphlVrq/uN8E5t8qf225OQ9kxMoQLIkQKKayw1aaMt
-         JygEKyyZFa5mDI/Zuq/PGLqTm/u+XhBqK2FIje9aPtVW9zrhs6Q3U3sKiBAGkkWTcu1Q
-         T5aaQLKHSz3uOmJPhtkeMz7muFszx8LHTsXSCb47JLkC02vSamKSKt+SZt4+eyZYouCP
-         eWwNwajvfy0Gq64E1xL0HVGMzynilEmVFg7Tw6sk6C2zXUGHRXVFneq9O/2NzYiD3YM7
-         3naA==
-X-Gm-Message-State: AOAM532kUyJeX6jfZ0OCMGuJhYMWbhpZQ2Y6G1K1GUN0RUG4GsQExfqW
-        j+GhYeQWgpueps6TYnxhhp4=
-X-Google-Smtp-Source: ABdhPJzl+PN+VkJLuyn63SQwtZ1OPssyI9WwqBcUHgDh9IZW4ri99HI4fxdqY9W5GXUBbjc68zEtQQ==
-X-Received: by 2002:a05:6402:1a54:: with SMTP id bf20mr3385270edb.65.1607339891647;
-        Mon, 07 Dec 2020 03:18:11 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id z9sm12090123eju.123.2020.12.07.03.18.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Dec 2020 03:18:11 -0800 (PST)
-Message-ID: <2ef12e328ecdc411e7d145a331d7c8ce668bf2be.camel@gmail.com>
-Subject: Re: [PATCH v2 2/3] scsi: ufs: Keep device active mode only
- fWriteBoosterBufferFlushDuringHibernate == 1
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 07 Dec 2020 12:18:10 +0100
-In-Reply-To: <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206101335.3418-1-huobean@gmail.com>
-         <20201206101335.3418-3-huobean@gmail.com>
-         <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Mon, 7 Dec 2020 06:21:11 -0500
+Received: from forward103j.mail.yandex.net (forward103j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFA3C0613D0;
+        Mon,  7 Dec 2020 03:20:30 -0800 (PST)
+Received: from mxback20o.mail.yandex.net (mxback20o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::71])
+        by forward103j.mail.yandex.net (Yandex) with ESMTP id B22446740561;
+        Mon,  7 Dec 2020 14:19:44 +0300 (MSK)
+Received: from iva8-174eb672ffa9.qloud-c.yandex.net (iva8-174eb672ffa9.qloud-c.yandex.net [2a02:6b8:c0c:b995:0:640:174e:b672])
+        by mxback20o.mail.yandex.net (mxback/Yandex) with ESMTP id GKEM0V6vu4-JhG8wS3d;
+        Mon, 07 Dec 2020 14:19:44 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1607339984;
+        bh=cujZ5fgdqoqmtn58wgEJskMaZD1pndF1c5b5+GdIU6o=;
+        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
+        b=lMArW/MkQDkIueucpPdTqjaxhGzGYmYtumO5Gri9Adoo+xpkRKyeVfkjT5w1JDRtP
+         JZqbJJjKn/Msd1p7zSzz9dy/08ke1vSkrTgET05y0iBq8gZpf6vDSB4Q7XyzsyR3Yw
+         WF+GQg3RXd3bEt0Hbp9Au905DolJ7ijDM7VbXIrc=
+Authentication-Results: mxback20o.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva8-174eb672ffa9.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id zbCNYRZQU8-JhIibuG2;
+        Mon, 07 Dec 2020 14:19:43 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: KVM_SET_CPUID doesn't check supported bits (was Re: [PATCH 0/6] KVM:
+ x86: KVM_SET_SREGS.CR4 bug fixes and cleanup)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
+ <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
+ <20201008175951.GA9267@linux.intel.com>
+ <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
+ <20201009040453.GA10744@linux.intel.com>
+ <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
+ <20201009153053.GA16234@linux.intel.com>
+From:   stsp <stsp2@yandex.ru>
+Message-ID: <a9a1f4be-48b8-a110-3285-9f84f0d2f104@yandex.ru>
+Date:   Mon, 7 Dec 2020 14:19:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201009153053.GA16234@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 08:02 +0000, Avri Altman wrote:
-> > According to the JEDEC UFS 3.1 Spec, If
-> > fWriteBoosterBufferFlushDuringHibernate
-> > is set to one, the device flushes the WriteBooster Buffer data
-> > automatically
-> > whenever the link enters the hibernate (HIBERN8) state. While the
-> > flushing
-> > operation is in progress, the device should be kept in Active power
-> > mode.
-> > Currently, we set this flag during the UFSHCD probe stage, but we
-> > didn't deal
-> > with its programming failure. Even this failure is less likely to
-> > occur, but
-> > still it is possible.
-> > This patch is to add checkup of
-> > fWriteBoosterBufferFlushDuringHibernate
-> > setting,
-> > keep the device as "active power mode" only when this flag be
-> > successfully
-> > set
-> > to 1.
-> > 
-> > Fixes: 51dd905bd2f6 ("scsi: ufs: Fix WriteBooster flush during
-> > runtime
-> > suspend")
-> > Signed-off-by: Bean Huo <beanhuo@micron.com>
-> 
-> You've added the fixes tag,
+09.10.2020 18:30, Sean Christopherson пишет:
+>> The only other effect of setting VMXE was clearing VME. Which shouldn't
+>> affect anything either, right?
+> Hmm, clearing VME would mean that exceptions/interrupts within the guest would
+> trigger a switch out of v86 and into vanilla protected mode.  v86 and PM have
+> different consistency checks, particularly for segmentation, so it's plausible
+> that clearing CR4.VME inadvertantly worked around the bug by avoiding invalid
+> guest state for v86.
 
-yes,it is a bug.
+Almost.
 
->  but my previous comment is still unanswered:
-> you are adding protection to a single device management command.
-> Why this command in particular? 
-> What makes it so special that it needs this extra care?
-> 
+So with your patch set (thanks!) and a
+bit of further investigations, it now became
+clear where the problem is.
+We have this code:
+---
 
-see the Spec: 
-"
-If fWriteBoosterBufferFlushDuringHibernate is set to one, the device
-flushes the WriteBooster Buffer data automatically whenever the link
-enters the hibernate (HIBERN8) state.
+|cpuid->nent = 2; // Use the same values as in emu-i386/simx86/interp.c 
+// (Pentium 133-200MHz, "GenuineIntel") cpuid->entries[0] = (struct 
+kvm_cpuid_entry) { .function = 0, .eax = 1, .ebx = 0x756e6547, .ecx = 
+0x6c65746e, .edx = 0x49656e69 }; // family 5, model 2, stepping 12, fpu 
+vme de pse tsc msr mce cx8 cpuid->entries[1] = (struct kvm_cpuid_entry) 
+{ .function = 1, .eax = 0x052c, .ebx = 0, .ecx = 0, .edx = 0x1bf }; ret 
+= ioctl(vcpufd, KVM_SET_CPUID, cpuid); free(cpuid); if (ret == -1) { 
+perror("KVM: KVM_SET_CPUID"); return 0; } --- It tries to enable VME 
+among other things. qemu appears to disable VME by default, unless you 
+do "-cpu host". So we have a situation where the host (which is qemu) 
+doesn't have VME, and guest (dosemu) is trying to enable it. Now obviously ||KVM_SET_CPUID|  doesn't check anyting
+at all and returns success. That later turns
+into an invalid guest state.
 
-The device shall stop the flushing operation if
-fWriteBoosterBufferFlushDuringHibernate are set to zero.
-....
-
-"
-If fWriteBoosterBufferFlushDuringHibernate ==0, device will not flush
-WB, even if you keep device as "active mode" and LINK in hibernate
-state.
-
-Bean
-Thanks,
-
+Question: should|KVM_SET_CPUID|  check for
+supported bits, end return error if not everything
+is supported?
+||
 
