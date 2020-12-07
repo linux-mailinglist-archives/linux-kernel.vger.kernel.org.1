@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9652D0DB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F2A2D0DAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgLGKCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:02:30 -0500
-Received: from lucky1.263xmail.com ([211.157.147.132]:42664 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbgLGKCa (ORCPT
+        id S1726636AbgLGKBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:01:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57266 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726474AbgLGKBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:02:30 -0500
-X-Greylist: delayed 651 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 05:02:20 EST
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 10BCEEF694;
-        Mon,  7 Dec 2020 17:49:08 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from zxing.hoperun.com (unknown [61.155.110.138])
-        by smtp.263.net (postfix) whith ESMTP id P48105T139714124306176S1607334547556994_;
-        Mon, 07 Dec 2020 17:49:08 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <598cefafa60468ed8a0fc307f86a7219>
-X-RL-SENDER: zhou_x1@hoperun.com
-X-SENDER: zhou_x1@hoperun.com
-X-LOGIN-NAME: zhou_x1@hoperun.com
-X-FST-TO: arnd@arndb.de
-X-SENDER-IP: 61.155.110.138
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Zhou Xingxing <zhou_x1@hoperun.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Zhou Xingxing <zhou_x1@hoperun.com>
-Subject: [PATCH] misc: isl29003: Fix typo for get/set mode
-Date:   Mon,  7 Dec 2020 17:49:05 +0800
-Message-Id: <1607334545-2091-1-git-send-email-zhou_x1@hoperun.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 7 Dec 2020 05:01:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607335182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wjEi7P6hfgHyVnloaZRqgJjDDglMZbfIlgcOGjdp8xA=;
+        b=MootowQjVTnZejB48I+AD0oHUcDYdUdRpVDdjAn8zu5AORZjHA7HuiZ3OQwSuRBDqeTsJl
+        uOhr31osRbvlV+uVFvwytG/PcV5mMNY9bda4CxfeELToVl6A23Bc/DaQwYm/6SrnAeUuAv
+        vOlm0g88hZhyeJtsO47p7FODwU0jXtI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-OJnfDXB_NKKmPcWtaQnmNA-1; Mon, 07 Dec 2020 04:59:41 -0500
+X-MC-Unique: OJnfDXB_NKKmPcWtaQnmNA-1
+Received: by mail-wm1-f72.google.com with SMTP id r1so5160763wmn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:59:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wjEi7P6hfgHyVnloaZRqgJjDDglMZbfIlgcOGjdp8xA=;
+        b=qT+W27ykNQpliRx1tTKHwZjy3GhWeRR5/B5nFFoMb3UoPpsSLqJHSdKSkTDDlOFGv5
+         mC5jWhhuCyAiLxPSu9cAuNgqY/fEh1KGnmXhwTITe/Y99KSfJR8NZzcoFbZ6vuNNhGI0
+         lnb2ECWclSP7pGMGngKPpPj/cO3cjDBa6E0LuEnf7k/5naoXYcLxhKVnFSkyfFCaBERx
+         Wg1+bRH5Gvo/1QxVLbRv0NvQdF8/phPww5ZmShAUp32i5KVZMaRYqxi+JeFs2CTukBvg
+         96S79jyLbhxJDwU3VJylhvi/fqz1a274nUj2kqwVmOSFX2OVcmYqxwZe7J8u+iv/T9Hx
+         0r/w==
+X-Gm-Message-State: AOAM530ngfNg1Fc/pQNpZc+4X6ej30L+NCsXCPQSIH4+hgyPszxx0+M0
+        6L2KQoZhIKJlP8dg9hUx0LJMCHulACVFtoIr/oOU52Lgf61P0e6msFeRXkQKFvXoK2hmx4467zJ
+        V5OeWKp3BwWi89buaDeJbDjxk
+X-Received: by 2002:a1c:dfd7:: with SMTP id w206mr6173164wmg.48.1607335178828;
+        Mon, 07 Dec 2020 01:59:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyFiS5PYUNMXq2Bt6vvLeQpbyZVXsYBq9dEWjw2Fu3EpywNW0qYSK/GmgwEO8IbbiPHcS7Y7w==
+X-Received: by 2002:a1c:dfd7:: with SMTP id w206mr6173151wmg.48.1607335178631;
+        Mon, 07 Dec 2020 01:59:38 -0800 (PST)
+Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
+        by smtp.gmail.com with ESMTPSA id p11sm15094191wrj.14.2020.12.07.01.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 01:59:37 -0800 (PST)
+Date:   Mon, 7 Dec 2020 10:59:35 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 2/4] vm_sockets: Add VMADDR_FLAG_TO_HOST
+ vsock flag
+Message-ID: <20201207095935.um2aafhvoikwy5xr@steredhat>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+ <20201204170235.84387-3-andraprs@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201204170235.84387-3-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The operation of get/set mode was same with get/set resolution. It is
-a typo absolutely. This patch updates these bits operated by get/set
-mode.
+On Fri, Dec 04, 2020 at 07:02:33PM +0200, Andra Paraschiv wrote:
+>Add VMADDR_FLAG_TO_HOST vsock flag that is used to setup a vsock
+>connection where all the packets are forwarded to the host.
+>
+>Then, using this type of vsock channel, vsock communication between
+>sibling VMs can be built on top of it.
+>
+>Changelog
+>
+>v1 -> v2
+>
+>* New patch in v2, it was split from the first patch in the series.
+>* Remove the default value for the vsock flags field.
+>* Update the naming for the vsock flag to "VMADDR_FLAG_TO_HOST".
+>
+>Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>---
+> include/uapi/linux/vm_sockets.h | 15 +++++++++++++++
+> 1 file changed, 15 insertions(+)
+>
+>diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
+>index 46735376a57a8..72e1a3d05682d 100644
+>--- a/include/uapi/linux/vm_sockets.h
+>+++ b/include/uapi/linux/vm_sockets.h
+>@@ -114,6 +114,21 @@
+>
+> #define VMADDR_CID_HOST 2
+>
+>+/* The current default use case for the vsock channel is the following:
+>+ * local vsock communication between guest and host and nested VMs setup.
+>+ * In addition to this, implicitly, the vsock packets are forwarded to the host
+>+ * if no host->guest vsock transport is set.
+>+ *
+>+ * Set this flag value in the sockaddr_vm corresponding field if the vsock
+>+ * packets need to be always forwarded to the host. Using this behavior,
+>+ * vsock communication between sibling VMs can be setup.
 
-Signed-off-by: Zhou Xingxing <zhou_x1@hoperun.com>
----
- drivers/misc/isl29003.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Maybe we can add a sentence saying that this flag is set on the remote 
+peer address for an incoming connection when it is routed from the host 
+(local CID and remote CID > VMADDR_CID_HOST).
 
-diff --git a/drivers/misc/isl29003.c b/drivers/misc/isl29003.c
-index c12406f..703d20e 100644
---- a/drivers/misc/isl29003.c
-+++ b/drivers/misc/isl29003.c
-@@ -127,13 +127,13 @@ static int isl29003_set_resolution(struct i2c_client *client, int res)
- static int isl29003_get_mode(struct i2c_client *client)
- {
- 	return __isl29003_read_reg(client, ISL29003_REG_COMMAND,
--		ISL29003_RES_MASK, ISL29003_RES_SHIFT);
-+		ISL29003_MODE_MASK, ISL29003_MODE_SHIFT);
- }
- 
- static int isl29003_set_mode(struct i2c_client *client, int mode)
- {
- 	return __isl29003_write_reg(client, ISL29003_REG_COMMAND,
--		ISL29003_RES_MASK, ISL29003_RES_SHIFT, mode);
-+		ISL29003_MODE_MASK, ISL29003_MODE_SHIFT, mode);
- }
- 
- /* power_state */
--- 
-2.7.4
-
-
+>+ *
+>+ * This way can explicitly distinguish between vsock channels created for
+>+ * different use cases, such as nested VMs (or local communication between
+>+ * guest and host) and sibling VMs.
+>+ */
+>+#define VMADDR_FLAG_TO_HOST 0x0001
+>+
+> /* Invalid vSockets version. */
+>
+> #define VM_SOCKETS_INVALID_VERSION -1U
+>-- 
+>2.20.1 (Apple Git-117)
+>
+>
+>
+>
+>Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+>
 
