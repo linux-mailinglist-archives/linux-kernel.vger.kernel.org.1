@@ -2,119 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123472D1055
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529D52D106E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgLGMRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbgLGMRY (ORCPT
+        id S1727879AbgLGMSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:18:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727831AbgLGMSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:17:24 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD082C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:16:43 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id j13so7332631pjz.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:16:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2jD4wHcJJlBIQx2668YfWwft0+hoWgNC83Bw+E+5vHU=;
-        b=urv5yGIB55SdkAowinQ5hQNE4We7mRVn/jy61tXEo+c5qJikiNyPSAOANZcKoFVXCh
-         JQ0T3BpdVoNDfuFySpVTHCLylsab91jHwBjvq5soJR3ST/M2x2My9gFuojp5nbBLNpto
-         upQ9pq1liyxJFaO/7VXvevlieC6z4bnw9t/KkpXoO/gsbTaAZ6+z6QtnyLTH02Qyyl+6
-         PB70h6zoFvrpjbqIUoisTMNjlRSfGJf9KONB5K2j2uyUVwI+wqxFY81JzWK/68VamowZ
-         0b2SfHZxEvaf/EWswY/H4+6NEM/IoDl31NvbiGliB/iz+wIJN2URLSmT0+Qda2X+Jhex
-         572Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2jD4wHcJJlBIQx2668YfWwft0+hoWgNC83Bw+E+5vHU=;
-        b=ae1GwPvny4FmhKH6v5fhwPGB7CFtHYc7p9Zfwcu2fF7U3bbOKY/CUJm3vC3wm21Etr
-         C2u2qGr+EpfneH7U9rBkjV3GfvjR1lTSicTxCAjmnbFiU2frbDAsJlUO5DQl4MPVTKQc
-         bQOvHHRhcOlQFiICNkSNFkl60xJ1JekrkIHaEaWp3tiPXiCBVowLEkcEx0PBRd1DhjoQ
-         lIaQdeL/ZBoMyqu74JWc5Rszl+mEBHQ+LRlbrOr1QrGQxu50/oBLfNYyZhQg6x5DQwFj
-         CE16/gUTCoRF/pEbO6WAxr9o2hXA7FIy7ga4ad2bMgeFMlqK19wYHBG+XnsxgfQVJbX7
-         aSIQ==
-X-Gm-Message-State: AOAM53026Rf7E/CZYjpiUfEZtZQcFtQB6PdjX2DCPgo5IJR/QTA2UHD2
-        sH3ZtS/BbPzy0kBDmZEk7tCgsYvsBgY3xN9sTHWvig==
-X-Google-Smtp-Source: ABdhPJx7dJV6HPyqzd41Q0ApDOhuD6KvtSFfq9vHWey0F0Shcc9vdI4nXgzDX3fwRfhjmHt9GIpXonvCDxH4DymN7Qs=
-X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr16138235pjr.229.1607343403421;
- Mon, 07 Dec 2020 04:16:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-3-songmuchun@bytedance.com> <3840b0eb-bc65-6ad4-9ef9-f6e1603d1473@redhat.com>
-In-Reply-To: <3840b0eb-bc65-6ad4-9ef9-f6e1603d1473@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 7 Dec 2020 20:16:07 +0800
-Message-ID: <CAMZfGtVa3mmdJip=sPoAT-ibgimhiOAy+OKzpjtatzLd0SahPg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v7 02/15] mm/memory_hotplug: Move
- {get,put}_page_bootmem() to bootmem_info.c
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        Mon, 7 Dec 2020 07:18:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607343403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N6oDFfyq47RyWju2nHjeojjMvm9K1GLJgiOLjWvGMww=;
+        b=SgKtE8uFBdkFbiDS5/ZMdMTZP/NCoAUrPvUuqHby+38R/P7QW1T7S+gf24Zflb5K5ja6uX
+        XSPI0m5Em9BIXrCDxf+taFR+wFGu1QiMS92WPLteHZpsSDXedn2tsEtNeFU9uVbwpmO14x
+        jwM5CeKCDNwmNzdVKe5DZU14dWsAAFc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-_HOXYd9OOjWvW5CDT30MqA-1; Mon, 07 Dec 2020 07:16:39 -0500
+X-MC-Unique: _HOXYd9OOjWvW5CDT30MqA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2F0F800D62;
+        Mon,  7 Dec 2020 12:16:36 +0000 (UTC)
+Received: from starship (unknown [10.35.206.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1B74620DE;
+        Mon,  7 Dec 2020 12:16:27 +0000 (UTC)
+Message-ID: <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Mon, 07 Dec 2020 14:16:26 +0200
+In-Reply-To: <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+         <20201203171118.372391-2-mlevitsk@redhat.com>
+         <87a6uq9abf.fsf@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 8:14 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 30.11.20 16:18, Muchun Song wrote:
-> > In the later patch, we will use {get,put}_page_bootmem() to initialize
-> > the page for vmemmap or free vmemmap page to buddy. So move them out of
-> > CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code movement without any
-> > functional change.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> > ---
-> >  arch/x86/mm/init_64.c          |  2 +-
-> >  include/linux/bootmem_info.h   | 13 +++++++++++++
-> >  include/linux/memory_hotplug.h |  4 ----
-> >  mm/bootmem_info.c              | 25 +++++++++++++++++++++++++
-> >  mm/memory_hotplug.c            | 27 ---------------------------
-> >  mm/sparse.c                    |  1 +
-> >  6 files changed, 40 insertions(+), 32 deletions(-)
-> >
->
-> I'd squash this into the previous patch and name it like
->
-> "mm/memory_hotplug: Factor out bootmem core functions to bootmem_info.c"
+On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
+> On Thu, Dec 03 2020 at 19:11, Maxim Levitsky wrote:
+> > +	case KVM_SET_TSC_STATE: {
+> > +		struct kvm_tsc_state __user *user_tsc_state = argp;
+> > +		struct kvm_tsc_state tsc_state;
+> > +		u64 host_tsc, wall_nsec;
+> > +
+> > +		u64 new_guest_tsc, new_guest_tsc_offset;
+> > +
+> > +		r = -EFAULT;
+> > +		if (copy_from_user(&tsc_state, user_tsc_state, sizeof(tsc_state)))
+> > +			goto out;
+> > +
+> > +		kvm_get_walltime(&wall_nsec, &host_tsc);
+> > +		new_guest_tsc = tsc_state.tsc;
+> > +
+> > +		if (tsc_state.flags & KVM_TSC_STATE_TIMESTAMP_VALID) {
+> > +			s64 diff = wall_nsec - tsc_state.nsec;
+> > +			if (diff >= 0)
+> > +				new_guest_tsc += nsec_to_cycles(vcpu, diff);
+> > +			else
+> > +				new_guest_tsc -= nsec_to_cycles(vcpu, -diff);
+> > +		}
+> > +
+> > +		new_guest_tsc_offset = new_guest_tsc - kvm_scale_tsc(vcpu, host_tsc);
+> > +		kvm_vcpu_write_tsc_offset(vcpu, new_guest_tsc_offset);
+> 
+> From a timekeeping POV and the guests expectation of TSC this is
+> fundamentally wrong:
+> 
+>       tscguest = scaled(hosttsc) + offset
+> 
+> The TSC has to be viewed systemwide and not per CPU. It's systemwide
+> used for timekeeping and for that to work it has to be synchronized. 
+> 
+> Why would this be different on virt? Just because it's virt or what? 
+> 
+> Migration is a guest wide thing and you're not migrating single vCPUs.
+> 
+> This hackery just papers over he underlying design fail that KVM looks
+> at the TSC per vCPU which is the root cause and that needs to be fixed.
 
-OK, will do. Thanks for your suggestions. :)
+I don't disagree with you.
+As far as I know the main reasons that kvm tracks TSC per guest are
 
->
->
-> --
+1. cases when host tsc is not stable 
+(hopefully rare now, and I don't mind making
+the new API just refuse to work when this is detected, and revert to old way
+of doing things).
+
+2. (theoretical) ability of the guest to introduce per core tsc offfset
+by either using TSC_ADJUST (for which I got recently an idea to stop
+advertising this feature to the guest), or writing TSC directly which
+is allowed by Intel's PRM:
+
+"The RDMSR and WRMSR instructions read and write the time-stamp counter, treating the time-stamp counter as an
+ordinary MSR (address 10H). In the Pentium 4, Intel Xeon, and P6 family processors, all 64-bits of the time-stamp
+counter are read using RDMSR (just as with RDTSC). When WRMSR is used to write the time-stamp counter on
+processors before family [0FH], models [03H, 04H]: only the low-order 32-bits of the time-stamp counter can be
+written (the high-order 32 bits are cleared to 0). For family [0FH], models [03H, 04H, 06H]; for family [06H]],
+model [0EH, 0FH]; for family [06H]], DisplayModel [17H, 1AH, 1CH, 1DH]: all 64 bits are writable."
+
+
+But other than that I don't mind making TSC offset global per VM thing.
+Paulo, what do you think about this?
+
+Best regards,
+	Maxim Levitsky
+
+
+> 
 > Thanks,
->
-> David / dhildenb
->
+> 
+>         tglx
+> 
 
 
--- 
-Yours,
-Muchun
