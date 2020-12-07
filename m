@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B962D0972
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5294B2D0975
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgLGDbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:31:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728561AbgLGDbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:31:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607311780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TXUkdR17CT0/PFeXaHlete1OGprY+UB5Y5Uzoc4vxP8=;
-        b=B1mhJO1p4VM8lXA7jll7+cPnkBpAe0r688HFHUJ8PJZM00WP6r1A/vz5ZvbnTfSK19I7c2
-        7aR8N01guDtcTgT2D/bsPZPH/YzcpcyuFCBzbpIjKHDy+GXYVufHwO5wKfXDvYuPNQso2M
-        09wJDz6rajwLU+T5Fu9XSlKG71GLMyA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-2EmvEE_XM2SYGv0V3U7eKg-1; Sun, 06 Dec 2020 22:29:38 -0500
-X-MC-Unique: 2EmvEE_XM2SYGv0V3U7eKg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53571107ACE4;
-        Mon,  7 Dec 2020 03:29:37 +0000 (UTC)
-Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8C7860CED;
-        Mon,  7 Dec 2020 03:29:31 +0000 (UTC)
-Subject: Re: [PATCH V2 19/19] vdpa: introduce virtio pci driver
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com
-References: <20201204040353.21679-1-jasowang@redhat.com>
- <20201204040353.21679-20-jasowang@redhat.com>
- <20201204152043.ewqlwviaf33wwiyx@steredhat>
- <73a1c314-7398-6182-146f-cd2012646736@infradead.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d7ae5645-9437-2f03-b0c8-35c1812747d2@redhat.com>
-Date:   Mon, 7 Dec 2020 11:29:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728881AbgLGDbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:31:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728561AbgLGDbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:31:16 -0500
+X-Gm-Message-State: AOAM531fmYpUdSB0X9LzVcnLceUz7cLGxg2nb19F6VgI1CpHZyfmgCFj
+        LUa+dsyU1BYR4OjqNd5a4IJf93YIRvWyj0V886U=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607311835;
+        bh=eUFEhztFtJTOa9eLt/B7ip1iRdwwveiI7Iz0zAA+e4w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MHCFBPPGIBbBzQoTfSE+6TXG+czMkoFtneP7hOKgWTB9get5ooKKySHHq4wSSSHuu
+         jnwpdLNM5HQPCKsNzuikeUfH+oTnYsw+JtnarFq1XxpoIVh4dA5bOjXNNz1hXmnzEg
+         8D7JGBu2XBvUgnAAyZrJYedpgLVmPjy1DZq5h6VH7CQCMkkBDbVSgf9GYiYwvPVJ0S
+         R4BMQguCVtuSekDaOCc9Q0v6AC0sq+9T/IhRwyvTH/Fh8b6J+/rJXhtcv9GzNVickx
+         kRx17yyvDMEWnwuWeiZbdloL2KSo2n3w7GLWAGCMod1qHa9Ei94otUbLbqVPJRml0+
+         PDuXmAcN/SqdQ==
+X-Google-Smtp-Source: ABdhPJxayhJDe6prQ4cG6ZHdLlgm9hAqKWp2IyvGfr9ZYkzgsb8dlwZ9TK86GpKKZ0XyJ+ub6j9+Vpgs/sZy8RdPdas=
+X-Received: by 2002:a9f:21f8:: with SMTP id 111mr10681980uac.115.1607311834678;
+ Sun, 06 Dec 2020 19:30:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <73a1c314-7398-6182-146f-cd2012646736@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
+ <1737702.WCGJIqnLLh@diego>
+In-Reply-To: <1737702.WCGJIqnLLh@diego>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Mon, 7 Dec 2020 11:30:23 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65119yabRi1EE1KSjJ0ehBqd-SoLD-PT-9su3Z+QSVwdg@mail.gmail.com>
+Message-ID: <CAGb2v65119yabRi1EE1KSjJ0ehBqd-SoLD-PT-9su3Z+QSVwdg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
+To:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ping
 
-On 2020/12/5 上午1:12, Randy Dunlap wrote:
-> On 12/4/20 7:20 AM, Stefano Garzarella wrote:
->> On Fri, Dec 04, 2020 at 12:03:53PM +0800, Jason Wang wrote:
->>> This patch introduce a vDPA driver for virtio-pci device. It bridges
->>> the virtio-pci control command to the vDPA bus. This will be used for
->>> features prototyping and testing.
->>>
->>> Note that get/restore virtqueue state is not supported which needs
->>> extension on the virtio specification.
->>>
->>> Signed-off-by: Jason Wang <jasowang@redhat.com>
->>> ---
->>> drivers/vdpa/Kconfig              |   6 +
->>> drivers/vdpa/Makefile             |   1 +
->>> drivers/vdpa/virtio_pci/Makefile  |   2 +
->>> drivers/vdpa/virtio_pci/vp_vdpa.c | 455 ++++++++++++++++++++++++++++++
->>> 4 files changed, 464 insertions(+)
->>> create mode 100644 drivers/vdpa/virtio_pci/Makefile
->>> create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa.c
->>>
->>> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
->>> index 358f6048dd3c..18cad14f533e 100644
->>> --- a/drivers/vdpa/Kconfig
->>> +++ b/drivers/vdpa/Kconfig
->>> @@ -48,4 +48,10 @@ config MLX5_VDPA_NET
->>>        be executed by the hardware. It also supports a variety of stateless
->>>        offloads depending on the actual device used and firmware version.
->>>
->>> +config VP_VDPA
->>> +    tristate "Virtio PCI bridge vDPA driver"
->>> +    depends on PCI_MSI && VIRTIO_PCI_MODERN
->>> +    help
->>> +      This kernel module that bridges virtio PCI device to vDPA bus.
->>                               ^
->> Without 'that' maybe sound better, but I'm not a native speaker :-)
-> Yes, drop 'that', please.
-
-
-Will fix.
-
-Thanks
-
-
+On Wed, Nov 18, 2020 at 4:49 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
 >
->>> +
->>> endif # VDPA
+> Am Mittwoch, 18. November 2020, 08:17:21 CET schrieb Chen-Yu Tsai:
+> > From: Chen-Yu Tsai <wens@csie.org>
+> >
+> > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' =
+is
+> > an optional property. And indeed there are boards that don't require it=
+.
+> >
+> > Make the driver follow the binding by using devm_gpiod_get_optional()
+> > instead of devm_gpiod_get().
+> >
+> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller suppo=
+rt")
+> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC drive=
+r")
+> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt()=
+ to parse DT")
+> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de
 
+It's been close to three weeks since this was sent.
+Any chance we can get this into v5.10 or v5.11?
+
+
+Regards
+ChenYu
+
+> I'll pick up patches 2-4 separately, after giving Rob a chance to look at
+> the simple binding.
+>
+>
+> Heiko
+>
+> > ---
+> > Changes since v1:
+> >
+> >   - Rewrite subject to match existing convention and reference
+> >     'ep-gpios' DT property instead of the 'ep_gpio' field
+> > ---
+> >  drivers/pci/controller/pcie-rockchip.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/contr=
+oller/pcie-rockchip.c
+> > index 904dec0d3a88..c95950e9004f 100644
+> > --- a/drivers/pci/controller/pcie-rockchip.c
+> > +++ b/drivers/pci/controller/pcie-rockchip.c
+> > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *ro=
+ckchip)
+> >       }
+> >
+> >       if (rockchip->is_rc) {
+> > -             rockchip->ep_gpio =3D devm_gpiod_get(dev, "ep", GPIOD_OUT=
+_HIGH);
+> > +             rockchip->ep_gpio =3D devm_gpiod_get_optional(dev, "ep", =
+GPIOD_OUT_HIGH);
+> >               if (IS_ERR(rockchip->ep_gpio)) {
+> >                       dev_err(dev, "missing ep-gpios property in node\n=
+");
+> >                       return PTR_ERR(rockchip->ep_gpio);
+> >
+>
+>
+>
+>
