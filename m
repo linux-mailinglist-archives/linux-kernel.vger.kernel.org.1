@@ -2,154 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72902D1A2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9DD2D1A34
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgLGUDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:03:11 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12866 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726578AbgLGUDK (ORCPT
+        id S1727075AbgLGUD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:03:58 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:44445 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726795AbgLGUD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:03:10 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7K0cFL030170;
-        Mon, 7 Dec 2020 12:02:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=m+GbydYCsM+9Eqs+kHgUyqtbdjf9kuBWw0UOILhR8fc=;
- b=TEBJ3xKrcYDEr0oA3UehSzwxZwE7hNLl39NK47qcZTXBSjx2RtVKXAdONUccFnRinN1Y
- Ae+LqnRKwtRT5tSdCeYoBSeA30+rTONFofjKW9F8/cjQ/ymqhhcqbcaVL44+LJa1zqpK
- p00qN4XZR0jc5y+4xSKV8wMtbBFK3SDyqCc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 358u4ugtwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 07 Dec 2020 12:02:03 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 7 Dec 2020 12:02:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JPagJIxyZ5Zt0jy7wz/+poVKHDlb+f19LW0CrM0t05yGAPYiYqxPXsP9Kq/vr7Yt+l/AUqiwtFy15l7+iYB0lUjdIpM77zIM8yRqqP1OpBgBz5acU8YitUwFSQOKm19/EFn3xPLgQBhfz0uj2J5ARjClu5ky4Uq5FKcb73W7OIDocUK7keLYs0PAPGBgN37u3E6IKo5435ONgQ5tE2Q9pkGPm/rL5gbTzF/ede0cL+ONICogmseQU5yESo0rtkdoNS1hzTN4uKGkTpkOqrzToOl8HTF+SnEKQ0SqiHhK7GCtRPyfvGthfekbvXAk3F1Y+jn2TR/xv6jFDtuGbm3asA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m+GbydYCsM+9Eqs+kHgUyqtbdjf9kuBWw0UOILhR8fc=;
- b=UhRL5ZIIA7Mvt4eUft4AHUaF6bp+uAaOfdVMrAiAfdjR/ZUUSeraUYNQKO5Nw8yUgF0AWXsPXbqOmkkpwJfALO/4w1x0GwxId3ZV95/Mff5jPWy1Vp+hHgCNzbqZ9fqTTJ2Cz18f5Xi7g8QvHgzw6jCFv998mmXgDpa/7GA8cQP7S3B3oNh/30N4iRcmBBKesJemNUmojtTby7yVScPuLNu1jPVWY0uPknBWlwbys0mVPgwuTTloli06GAegeqlVH0w6ajInXvjUPdswOyKXN//UQQTABNHRbnbtqzRPAB+bDrr58B5d7W5LBRoRZ1D+6GMaKsxe71rTj4Ciuk9yLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m+GbydYCsM+9Eqs+kHgUyqtbdjf9kuBWw0UOILhR8fc=;
- b=KUkOVynAWJVo3RLc+0/MA3Q3fXoTMtT+BrhpJNlS/F75eo3MIytp1CZxJ2A9Ru0oJmyCunYgKVQ3vOo6wZjEDRqdZLYJBg33v0Y6ohiPIbO3CdlDrdthPzjVgw1UM7FPI4ZlFLkUD5svN6RS3UkN8fgESx0QiFlTJVdw0Ox7yQg=
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2759.namprd15.prod.outlook.com (2603:10b6:a03:151::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Mon, 7 Dec
- 2020 20:02:00 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 20:02:00 +0000
-Date:   Mon, 7 Dec 2020 12:01:55 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <adobriyan@gmail.com>, <akpm@linux-foundation.org>,
-        <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <hughd@google.com>, <will@kernel.org>,
-        <rppt@kernel.org>, <tglx@linutronix.de>, <esyr@redhat.com>,
-        <peterx@redhat.com>, <krisman@collabora.com>, <surenb@google.com>,
-        <avagin@openvz.org>, <elver@google.com>, <rdunlap@infradead.org>,
-        <iamjoonsoo.kim@lge.com>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>
-Subject: Re: [RESEND PATCH v2 09/12] mm: memcontrol: convert vmstat slab
- counters to bytes
-Message-ID: <20201207200155.GC2238414@carbon.dhcp.thefacebook.com>
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201206101451.14706-10-songmuchun@bytedance.com>
- <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
-X-Originating-IP: [2620:10d:c090:400::5:64ac]
-X-ClientProxiedBy: MWHPR15CA0035.namprd15.prod.outlook.com
- (2603:10b6:300:ad::21) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:64ac) by MWHPR15CA0035.namprd15.prod.outlook.com (2603:10b6:300:ad::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Mon, 7 Dec 2020 20:01:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3023b256-e7cd-4ca6-8161-08d89aeaf5b2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2759:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2759AD920961BF906080D987BECE0@BYAPR15MB2759.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sJdx8cMUtF6bOQ8p+4VUNL48WUO7YYYmfnopvGR7Bdhs+91T1WGAhhKs5Y/eV6tJmPQD912hXsbFnmBQXoullY9rGQnbLrSw+tTeWQR5nX0OPV+A1eS1MLO9a54QfvHM56rtsaQjVspJbrTNRg2SPBJMf+4TaUxbpm3UTRsSPXIHym0mEMZ0gHLNB3uU/u9H4grpY5RecOoTWnLYA9TMmOZN+y2gXMnf2KQTNkStqKpPY1zvxMVp4qm4oEk9UyeJQruePIgpxxr2rnmGkOVrg50A+qvOG8Ad/HtakmYHmM0p9mf+WT8GAIrQgTLEUJO1rdhgQQAYDrNdiG3gNnbLtTHVYYyI560rSzHG0BW+v6WpzpRuj66gfrWr1GBejcbOpBOKwVpxGBvOZGjCY4is3g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(39860400002)(366004)(66476007)(66946007)(66556008)(7416002)(5660300002)(4744005)(33656002)(8936002)(2906002)(6506007)(7696005)(1076003)(8676002)(966005)(16526019)(186003)(478600001)(9686003)(6916009)(55016002)(316002)(52116002)(4326008)(86362001)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jc7QaiPcUcs51Adad0dQiHreY+zVrrL/wAvc/J0mR1bAi9yq9eg26Ooc+mFI?=
- =?us-ascii?Q?SshpTK7InjsFwnNXQQ8UZY8jNEO2DtNGOHbtJYDHO3WnDJsAQPnc3Cas8AMm?=
- =?us-ascii?Q?afEgf/V+yDSHvRsRlCqewK5MlaXh0M/F2efqQjd8W35D5pEafzHCDkRZFYG3?=
- =?us-ascii?Q?/aA4jFBWLSVkYqPhSnZS7fEHH6UM/8iCMov9DNIxPu8GIpNW7tb8Lhnb3Lns?=
- =?us-ascii?Q?RwYg6phwsICQVAsN5nYL+5rpmgE8jrMO4WU7BciXohZgZseTp8iZOmzCqHnJ?=
- =?us-ascii?Q?+0GxetFvElKTMJzEbX3upH7P6cZRUWhFyZxuoDDn4KuAoaKE88xUu5sznwAy?=
- =?us-ascii?Q?bURJWWL0vnxJHgbF+pMjaRIcLo2RNWjUITpZfsWukKuxNrdp5jD4n/uDQfmu?=
- =?us-ascii?Q?wA6BUOa+MoYJDqIiqrrCudFMpPQ4OJeOE9NmA4BlLSL9SOro9ZmhS/Jdq+tb?=
- =?us-ascii?Q?E8QD5mY8GA0COof63Rao4TuLqbQMXaNDQsWmMm86Hht8vNF+FUAZp/WfdsS7?=
- =?us-ascii?Q?vULdmUo3CrshY1i9qw5c4KbT6HKIvjNOJHzJG8b96YEikU37RNG9puXWkNKO?=
- =?us-ascii?Q?CA1Ld+RJd/453vQLfOA+b4SJNuPiHC1wp89l6rBl3AkjbDPFsb2zr9qzX3GQ?=
- =?us-ascii?Q?ccp36BdH7ZmxmgJ81zn/67DEagtleqEKnSKMNkKMq+j5KsTmf7BwAwzYkoW6?=
- =?us-ascii?Q?3viTkNHYEric5Z6l3q+ara8baldWxhNTA3pfjmNI5BU92WakDB2mIMvNb8P0?=
- =?us-ascii?Q?/4UN3oXG8xnwIkyionj4SM6no0SNOjgsYPSK+ZJkqOJugZ2DDm9SDuuOebk2?=
- =?us-ascii?Q?4KvcsjoT4WM2xVB5UzdfCK6yXyHqw0Sxf639p6pzkY/HKbV3PTIqH3DY5xhl?=
- =?us-ascii?Q?9mG3BFMJlY+QaoCKYs+Bz14haLer7DxlV53QFzG9gS3/6Gy7oDfJxRG5SqmD?=
- =?us-ascii?Q?E+Q3YIPTpqpHQBrJhhY9H2ke3WHsY3DMrdMnmhpX4nvhWGPcVNjp598KXAua?=
- =?us-ascii?Q?um9Y8oGKK9YUMfHFRusdYm5vHQ=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 20:02:00.7596
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3023b256-e7cd-4ca6-8161-08d89aeaf5b2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5mkKHwBgoEjxIEAGSvYmkt5TgKO0wq++QqiHuFBqJ5HhzzJ/16PChrdTe0/wD3Yr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2759
-X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 7 Dec 2020 15:03:57 -0500
+Received: by mail-io1-f69.google.com with SMTP id a1so12775801ioa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:03:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XMGMPIEBErujLDEv/XhG8es0A2X7wQdMlren4Z/PANs=;
+        b=pbAlIpusciBqW78bAAAfybpiTlYmuyDXRd/bVeK/UHx7TV+XslKqPmNlVAJpCBgbuA
+         7d0mNrVpGsBPPyZJumJl8WzzMQ2Xa8kwYoMVzDBfGJGxW2ScK04XxpPHU4qnppv+phWX
+         izHsnIZBc8m738RrC3Hgd8QNKRfqt2/dGS4rI4yklkYcwQT6TUalCmpJaMEDjO/gwk0y
+         ws40DwhcbLPLvcfXg5x2VDUePR0bFhymCZiU5MM0Cllgfr6xOFvSdhiU8Fbr1Il9RYLA
+         aUvHAQs1MK3BjFLugvIv1DlX3O15RKPUttANgbjAYE3cGXw6ESbv33QSC9LrYoRNNAAH
+         cQug==
+X-Gm-Message-State: AOAM531I5Hh0Axz/kjSq68w9YQvhGo3wT+YDhpviJ9EFuqq3dj7ENstd
+        IhfHTZuDYHLDeytfMW/PlwGH8htSs67Zbe7FXvGcjhIhRkGb
+X-Google-Smtp-Source: ABdhPJzTcO6HdC1HPfBAdo9qmGVdcPBUW/k2i+We0dzvt/EZzDBbvbOZVtuuykvGXpgUi0FP8aosriwNV5mZyRTTk2+r7qY8ypQC
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 adultscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012070129
-X-FB-Internal: deliver
+X-Received: by 2002:a5e:a916:: with SMTP id c22mr9051978iod.144.1607371391149;
+ Mon, 07 Dec 2020 12:03:11 -0800 (PST)
+Date:   Mon, 07 Dec 2020 12:03:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000caabb705b5e550aa@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Write in pcpu_freelist_populate
+From:   syzbot <syzbot+942085bfb8f7a276af1c@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:46:22AM -0800, Roman Gushchin wrote:
-> On Sun, Dec 06, 2020 at 06:14:48PM +0800, Muchun Song wrote:
-> > the global and per-node counters are stored in pages, however memcg
-> > and lruvec counters are stored in bytes. This scheme looks weird.
-> > So convert all vmstat slab counters to bytes.
-> 
-> There is a reason for this weird scheme:
-> percpu caches (see struct per_cpu_nodestat) are s8, so counting in bytes
-> will lead to overfills. Switching to s32 can lead to an increase in
-> the cache thrashing, especially on small machines.
+Hello,
 
-JFYI:
-I've tried to convert all slab counters to bytes and change those s8 percpu batches to s32
-about a year ago. Here is a link to that thread:
-https://patchwork.kernel.org/project/linux-mm/patch/20191018002820.307763-3-guro@fb.com/
+syzbot found the following issue on:
 
-Thanks!
+HEAD commit:    34da8721 selftests/bpf: Test bpf_sk_storage_get in tcp ite..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c3b837500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cb098ab0334059f
+dashboard link: https://syzkaller.appspot.com/bug?extid=942085bfb8f7a276af1c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+942085bfb8f7a276af1c@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in pcpu_freelist_push_node kernel/bpf/percpu_freelist.c:33 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in pcpu_freelist_populate+0x1fe/0x260 kernel/bpf/percpu_freelist.c:114
+Write of size 8 at addr ffffc90119e78020 by task syz-executor.4/27988
+
+CPU: 1 PID: 27988 Comm: syz-executor.4 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ pcpu_freelist_push_node kernel/bpf/percpu_freelist.c:33 [inline]
+ pcpu_freelist_populate+0x1fe/0x260 kernel/bpf/percpu_freelist.c:114
+ prealloc_init kernel/bpf/hashtab.c:323 [inline]
+ htab_map_alloc+0x981/0x1230 kernel/bpf/hashtab.c:507
+ find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
+ map_create kernel/bpf/syscall.c:829 [inline]
+ __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4374
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e0f9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f679c7a7c68 EFLAGS: 00000246
+ ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e0f9
+RDX: 0000000000000040 RSI: 0000000020000040 RDI: 0000000000000000
+RBP: 000000000119c068 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
+R13: 00007fffd601c75f R14: 00007f679c7a89c0 R15: 000000000119c034
+
+
+Memory state around the buggy address:
+ ffffc90119e77f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90119e77f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90119e78000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                               ^
+ ffffc90119e78080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90119e78100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
