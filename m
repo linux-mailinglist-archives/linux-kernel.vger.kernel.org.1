@@ -2,154 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ECA2D0E2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D05E2D0E2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbgLGKkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:40:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:46698 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725842AbgLGKkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:40:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D43B1042;
-        Mon,  7 Dec 2020 02:39:55 -0800 (PST)
-Received: from [10.163.86.92] (unknown [10.163.86.92])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BC2A3F66B;
-        Mon,  7 Dec 2020 02:39:50 -0800 (PST)
-Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
- reserved for the page map
-To:     Mike Rapoport <rppt@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wei Li <liwei213@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, butao@hisilicon.com,
-        Will Deacon <will@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        fengbaopeng2@hisilicon.com
-References: <20201204014443.43329-1-liwei213@huawei.com>
- <20201204111347.GA844@willie-the-truck>
- <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
- <390f5f441d99a832f4b2425b46f6d971@kernel.org>
- <20201207094215.GC1112728@linux.ibm.com>
- <CAMj1kXFdtom+OBJ84he9C5eNw-KJ8zwW04WB0ab6Gp_DCiYkRg@mail.gmail.com>
- <20201207100426.GE1112728@linux.ibm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <39d72e1c-b3b3-89d3-1a1a-3ee222d40761@arm.com>
-Date:   Mon, 7 Dec 2020 16:09:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726292AbgLGKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgLGKkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 05:40:06 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B88EC0613D0;
+        Mon,  7 Dec 2020 02:39:26 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id l23so7202637pjg.1;
+        Mon, 07 Dec 2020 02:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fDci9LEkbZBuld4sW/fQVQolVRaWQo6HEweIao+YO5I=;
+        b=ZcYZM8qLWwwsLC8hP8jseED2i9g/3K17WRfv36ZEDTVlHxnP2B19wHuIxrT7AXAQYP
+         NUoWGZkNsIR8bFc/bhVkIsmR57dMMChFY8NImwRQTWM4ztHy/gAXNYbRIJikc9+ZlQ5O
+         mPvcMDmiesW9uloNu4nbOTCZg9F/Mc8Zr45Ha3zGkKC3DBP7gO8YUiHEXorbuIWdo4mS
+         ZBeDoYkaEp31tMi5bbosCpp1Y5VN5sqFpb40mjSXdYuMeXq3XeFhb/z3JDm7EaAhwA21
+         Fe1jP9KXpI4EOBjJCFu68QUn2CdNAn3LupiE3giSVt0bYYiSIMCGiYKxr1HWEAjs6sYE
+         FwPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fDci9LEkbZBuld4sW/fQVQolVRaWQo6HEweIao+YO5I=;
+        b=EVLb19UkKLKMEUFUlhEfDBCjCwfv0K3+xmoajw8zsTT2xfeqbYqGd2RTGeNbLOZOqH
+         QQb2B8z2uks+bYbkVxKTq61ngarzMj2RVBrRSz1cnZDq4NKIsCdn+q1IR54MFwmDcVv5
+         mhfHNirncsnse8jyDFyNroP/cOSUWDRa3oZeclw6InYLbqajBddn5kPualSh7jsQsc63
+         7w3Ao693tKNfYlqIh3hoKYQqLzGE+yXs4A08vRCBpg5rc5XvU1FFe/DMDm0R1rv9LqZq
+         +kPKZ3FeJxWWo0JJtj/G3+PlJOV+I2I7fzwLxEC4z6usQZEZ0QbOvaV012T2GSZ3Q5mb
+         hm/Q==
+X-Gm-Message-State: AOAM532IycZnOolOop9zA0bizhBBrbayXcTU3w6iZEuLLqVXKbsQ+wOs
+        sVLy72PT/y1h6d0g3427hL2j31sVdP0+M3dQabo=
+X-Google-Smtp-Source: ABdhPJw4iT57I8S8JLy3wVMNjx+Vglg02f7unXFwxHibyGY1fqiWXm5Eh4YsMrH5xubVzFTdNjqZfJeIuycCKGx6Jik=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr16140877pjf.181.1607337565811;
+ Mon, 07 Dec 2020 02:39:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201207100426.GE1112728@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
+In-Reply-To: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 7 Dec 2020 12:40:14 +0200
+Message-ID: <CAHp75Vef910QkY6114a_3+AAM8-WXjwYdncgcCJDP9z6+UMirA@mail.gmail.com>
+Subject: Re: [PATCH] do_exit(): panic() when double fault detected
+To:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 6, 2020 at 3:16 PM Vladimir Kondratiev
+<vladimir.kondratiev@intel.com> wrote:
 
+> ---------------------------------------------------------------------
+> Intel Israel (74) Limited
+>
+> This e-mail and any attachments may contain confidential material for
+> the sole use of the intended recipient(s). Any review or distribution
+> by others is strictly prohibited. If you are not the intended
+> recipient, please contact the sender and delete all copies.
 
-On 12/7/20 3:34 PM, Mike Rapoport wrote:
-> On Mon, Dec 07, 2020 at 10:49:26AM +0100, Ard Biesheuvel wrote:
->> On Mon, 7 Dec 2020 at 10:42, Mike Rapoport <rppt@linux.ibm.com> wrote:
->>>
->>> On Mon, Dec 07, 2020 at 09:35:06AM +0000, Marc Zyngier wrote:
->>>> On 2020-12-07 09:09, Ard Biesheuvel wrote:
->>>>> (+ Marc)
->>>>>
->>>>> On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
->>>>>>
->>>>>> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
->>>>>>> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
->>>>>>> do not free the reserved memory for the page map, decrease the section
->>>>>>> size can reduce the waste of reserved memory.
->>>>>>>
->>>>>>> Signed-off-by: Wei Li <liwei213@huawei.com>
->>>>>>> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
->>>>>>> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
->>>>>>> ---
->>>>>>>  arch/arm64/include/asm/sparsemem.h | 2 +-
->>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
->>>>>>> index 1f43fcc79738..8963bd3def28 100644
->>>>>>> --- a/arch/arm64/include/asm/sparsemem.h
->>>>>>> +++ b/arch/arm64/include/asm/sparsemem.h
->>>>>>> @@ -7,7 +7,7 @@
->>>>>>>
->>>>>>>  #ifdef CONFIG_SPARSEMEM
->>>>>>>  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
->>>>>>> -#define SECTION_SIZE_BITS    30
->>>>>>> +#define SECTION_SIZE_BITS    27
->>>>>>
->>>>>> We chose '30' to avoid running out of bits in the page flags. What
->>>>>> changed?
->>>>>>
->>>>>> With this patch, I can trigger:
->>>>>>
->>>>>> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds
->>>>>> SECTION_SIZE
->>>>>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->>>>>>
->>>>>> if I bump up NR_CPUS and NODES_SHIFT.
->>>>>>
->>>>>
->>>>> Does this mean we will run into problems with the GICv3 ITS LPI tables
->>>>> again if we are forced to reduce MAX_ORDER to fit inside
->>>>> SECTION_SIZE_BITS?
->>>>
->>>> Most probably. We are already massively constraint on platforms
->>>> such as TX1, and dividing the max allocatable range by 8 isn't
->>>> going to make it work any better...
->>>
->>> I don't think MAX_ORDER should shrink. Even if SECTION_SIZE_BITS is
->>> reduced it should accomodate the existing MAX_ORDER.
->>>
->>> My two pennies.
->>>
->>
->> But include/linux/mmzone.h:1170 has this:
->>
->> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
->> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->> #endif
->>
->> and Will managed to trigger it after applying this patch.
-> 
-> Right, because with 64K pages section size of 27 bits is not enough to
-> accomodate MAX_ORDER (2^13 pages of 64K).
-> 
-> Which means that definition of SECTION_SIZE_BITS should take MAX_ORDER
-> into account either statically with 
-> 
-> #ifdef ARM64_4K_PAGES
-> #define SECTION_SIZE_BITS <a number>
-> #elif ARM64_16K_PAGES
-> #define SECTION_SIZE_BITS <a larger number>
-> #elif ARM64_64K_PAGES
-> #define SECTION_SIZE_BITS <even larger number>
-> #else
-> #error "and what is the page size?"
-> #endif
-> 
-> or dynamically, like e.g. ia64 does:
-> 
-> #ifdef CONFIG_FORCE_MAX_ZONEORDER
-> #if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
-> #undef SECTION_SIZE_BITS
-> #define SECTION_SIZE_BITS (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
-> #endif
+You have a problematic footer. No one will apply or touch this material anyway.
 
-I had proposed the same on the other thread here. But with this the
-SECTION_SIZE_BITS becomes 22 in case of 4K page size reducing to an
-extent where PMD based vmemmap mapping could not be created. Though
-have not looked into much details yet.
-
-Using CONFIG_FORCE_MAX_ZONEORDER seems to the right thing to do. But
-if that does not reasonably work for 4K pages, we might have to hard
-code it as 27 to have huge page vmemmap mappings.
+-- 
+With Best Regards,
+Andy Shevchenko
