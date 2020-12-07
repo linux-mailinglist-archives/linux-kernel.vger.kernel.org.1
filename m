@@ -2,170 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABDF2D1016
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701FF2D1019
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727331AbgLGMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:08:33 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4110 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgLGMIc (ORCPT
+        id S1727358AbgLGMJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgLGMJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:08:32 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CqMWH1lvWzXkrx;
-        Mon,  7 Dec 2020 20:07:23 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 7 Dec 2020 20:07:49 +0800
-Received: from [10.145.28.31] (10.145.28.31) by dggpemm000001.china.huawei.com
- (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 7 Dec 2020
- 20:07:49 +0800
-Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
- reserved for the page map
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-CC:     Barry Song <song.bao.hua@hisilicon.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <butao@hisilicon.com>, Will Deacon <will@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        <fengbaopeng2@hisilicon.com>, <saberlily.xia@hisilicon.com>,
-        <zhaojiapeng@huawei.com>
-References: <20201204014443.43329-1-liwei213@huawei.com>
- <20201204111347.GA844@willie-the-truck>
- <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
- <390f5f441d99a832f4b2425b46f6d971@kernel.org>
- <20201207094215.GC1112728@linux.ibm.com>
- <CAMj1kXFdtom+OBJ84he9C5eNw-KJ8zwW04WB0ab6Gp_DCiYkRg@mail.gmail.com>
- <20201207100426.GE1112728@linux.ibm.com>
- <39d72e1c-b3b3-89d3-1a1a-3ee222d40761@arm.com>
-From:   Wei Li <liwei213@huawei.com>
-Message-ID: <3d7a68d7-e33a-fd42-3362-5019feade7ce@huawei.com>
-Date:   Mon, 7 Dec 2020 20:07:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 7 Dec 2020 07:09:04 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA504C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:08:23 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id z9so9150660qtn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=j6WcPj0IELZyPAeHgxTFV18eYU66eVdxYM8UMBwb+6k=;
+        b=gTDKlWp7OTo9YtssNfNMMF7sGVDibkhfahzMZ4mew5/uNa2KrOl237g1QrZLr4W1Q5
+         NIxdZCMvoct6LUzRbUO/E4v7qiNUqKotyVLZlhi3VaJhjdBW/kl8rI2g7ZPcoeuU9ZPZ
+         FeXRnBeRF0+aad4UXo/jeJ+FTPTejR5Jy1Mj5m4emujQuAn50tUkXLgYPjEuR6JU4Az7
+         bFFGNcuh9ccE6Zr2RyBsxIgs0q4ZDj4OrfkA4gwxeYqCYgyWs+/ZO4vGwU9Oqxq0XcXi
+         c9M9ojSZk/ciTmR9Fidafkd0B3gz1yaQnBJM0nXSTVtL6D7x4lHEXQL3pzQ+KVsFZzKU
+         Vnqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j6WcPj0IELZyPAeHgxTFV18eYU66eVdxYM8UMBwb+6k=;
+        b=UGe39Kffo4CxHC2isTYcogHWQhlQ9qwlBYF2UgchXVEYlJB177e1CDRoK+5L2ByYQc
+         eXeYSO735CcUA0wQZWbbhQ1XpZ1rJC+jOURjMEc3nS3JSoPXKBXrG7D6EAEZRKEXGZLP
+         mlc6UIEl1T4MCzI5D0dkas6OVNHenGLAhDXNrMcj576jJeZ9OuCkiax7FTsdJ+3gP6o6
+         ENJVtRxLPKm9KcY036hC583LX54Kg4bUv7TKja8e+CyfqiyAq/EASsMVZ0zr0hT6NEer
+         pySSGqi189cm1JnwlsdLCMUt1PlAClKlRULHdByDtUnmrM2KSKkXIAfcodzxb7vFh/Rj
+         SPlw==
+X-Gm-Message-State: AOAM530nc7Owq4dRpZs2hFByQryhjVZOPXBumvMaKwMaGNknzx4ZE7h5
+        4vbeNwRaJWn+GUGJ9f1XTzjPpvwEG4xsMf6Xu3U/AcGtC472Yw==
+X-Google-Smtp-Source: ABdhPJzLv9JfWtnmiT/twmir3juqV9lBsro3kbVQyEWJz6B9CuFQNaphSSsh/w0suT4ZQLlZHcpUMYtIGQM8bujTowI=
+X-Received: by 2002:ac8:5386:: with SMTP id x6mr23435656qtp.43.1607342902842;
+ Mon, 07 Dec 2020 04:08:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <39d72e1c-b3b3-89d3-1a1a-3ee222d40761@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.145.28.31]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+References: <20201204210000.660293c6@canb.auug.org.au> <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
+In-Reply-To: <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 7 Dec 2020 13:08:11 +0100
+Message-ID: <CACT4Y+bYVC=r+bPF7MziOZpJCYqrUj7CFt47Z5PSWjohZLYm+w@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Kees Cook <keescook@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ saberlily + jiapeng)
+On Sat, Dec 5, 2020 at 6:19 AM Andrew Morton <akpm@linux-foundation.org> wr=
+ote:
+>
+> On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+>
+> > Hi all,
+> >
+> > After merging the akpm tree, today's linux-next build (powerpc
+> > allyesconfig) produced warnings like this:
+> >
+> > kernel/kcov.c:296:14: warning: conflicting types for built-in function =
+'__sanitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)'=
+ [-Wbuiltin-declaration-mismatch]
+> >   296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
+> >       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Odd.  clang wants that signature, according to
+> https://clang.llvm.org/docs/SanitizerCoverage.html.  But gcc seems to
+> want a different signature.  Beats me - best I can do is to cc various
+> likely culprits ;)
+>
+> Which gcc version?  Did you recently update gcc?
+>
+> > ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/=
+oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
+> >
+> > (lots of these latter ones)
+> >
+> > I don't know what produced these, but it is in the akpm-current or
+> > akpm trees.
 
-On 2020/12/7 18:39, Anshuman Khandual wrote:
-> 
-> 
-> On 12/7/20 3:34 PM, Mike Rapoport wrote:
->> On Mon, Dec 07, 2020 at 10:49:26AM +0100, Ard Biesheuvel wrote:
->>> On Mon, 7 Dec 2020 at 10:42, Mike Rapoport <rppt@linux.ibm.com> wrote:
->>>>
->>>> On Mon, Dec 07, 2020 at 09:35:06AM +0000, Marc Zyngier wrote:
->>>>> On 2020-12-07 09:09, Ard Biesheuvel wrote:
->>>>>> (+ Marc)
->>>>>>
->>>>>> On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
->>>>>>>
->>>>>>> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
->>>>>>>> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
->>>>>>>> do not free the reserved memory for the page map, decrease the section
->>>>>>>> size can reduce the waste of reserved memory.
->>>>>>>>
->>>>>>>> Signed-off-by: Wei Li <liwei213@huawei.com>
->>>>>>>> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
->>>>>>>> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
->>>>>>>> ---
->>>>>>>>  arch/arm64/include/asm/sparsemem.h | 2 +-
->>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
->>>>>>>> index 1f43fcc79738..8963bd3def28 100644
->>>>>>>> --- a/arch/arm64/include/asm/sparsemem.h
->>>>>>>> +++ b/arch/arm64/include/asm/sparsemem.h
->>>>>>>> @@ -7,7 +7,7 @@
->>>>>>>>
->>>>>>>>  #ifdef CONFIG_SPARSEMEM
->>>>>>>>  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
->>>>>>>> -#define SECTION_SIZE_BITS    30
->>>>>>>> +#define SECTION_SIZE_BITS    27
->>>>>>>
->>>>>>> We chose '30' to avoid running out of bits in the page flags. What
->>>>>>> changed?
->>>>>>>
->>>>>>> With this patch, I can trigger:
->>>>>>>
->>>>>>> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds
->>>>>>> SECTION_SIZE
->>>>>>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->>>>>>>
->>>>>>> if I bump up NR_CPUS and NODES_SHIFT.
->>>>>>>
->>>>>>
->>>>>> Does this mean we will run into problems with the GICv3 ITS LPI tables
->>>>>> again if we are forced to reduce MAX_ORDER to fit inside
->>>>>> SECTION_SIZE_BITS?
->>>>>
->>>>> Most probably. We are already massively constraint on platforms
->>>>> such as TX1, and dividing the max allocatable range by 8 isn't
->>>>> going to make it work any better...
->>>>
->>>> I don't think MAX_ORDER should shrink. Even if SECTION_SIZE_BITS is
->>>> reduced it should accomodate the existing MAX_ORDER.
->>>>
->>>> My two pennies.
->>>>
->>>
->>> But include/linux/mmzone.h:1170 has this:
->>>
->>> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
->>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->>> #endif
->>>
->>> and Will managed to trigger it after applying this patch.
->>
->> Right, because with 64K pages section size of 27 bits is not enough to
->> accomodate MAX_ORDER (2^13 pages of 64K).
->>
->> Which means that definition of SECTION_SIZE_BITS should take MAX_ORDER
->> into account either statically with 
->>
->> #ifdef ARM64_4K_PAGES
->> #define SECTION_SIZE_BITS <a number>
->> #elif ARM64_16K_PAGES
->> #define SECTION_SIZE_BITS <a larger number>
->> #elif ARM64_64K_PAGES
->> #define SECTION_SIZE_BITS <even larger number>
->> #else
->> #error "and what is the page size?"
->> #endif
->>
->> or dynamically, like e.g. ia64 does:
->>
->> #ifdef CONFIG_FORCE_MAX_ZONEORDER
->> #if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
->> #undef SECTION_SIZE_BITS
->> #define SECTION_SIZE_BITS (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
->> #endif
-> 
-> I had proposed the same on the other thread here. But with this the
-> SECTION_SIZE_BITS becomes 22 in case of 4K page size reducing to an
-> extent where PMD based vmemmap mapping could not be created. Though
-> have not looked into much details yet.
-> 
-> Using CONFIG_FORCE_MAX_ZONEORDER seems to the right thing to do. But
-> if that does not reasonably work for 4K pages, we might have to hard
-> code it as 27 to have huge page vmemmap mappings.
-> .
-> 
+I can reproduce this in x86_64 build as well but only if I enable
+UBSAN as well. There were some recent UBSAN changes by Kees, so maybe
+that's what affected the warning.
+Though, the warning itself looks legit and unrelated to UBSAN. In
+fact, if the compiler expects long and we accept u64, it may be broken
+on 32-bit arches...
+
+I have gcc version 10.2.0 (Debian 10.2.0-15)
+On next-20201207
+config is defconfig +
+CONFIG_KCOV=3Dy
+CONFIG_KCOV_ENABLE_COMPARISONS=3Dy
+CONFIG_UBSAN=3Dy
+
+$ make -j8 kernel/kcov.o
+  CC      kernel/kcov.o
+kernel/kcov.c:296:14: warning: conflicting types for built-in function
+=E2=80=98__sanitizer_cov_trace_switch=E2=80=99; expected =E2=80=98void(long=
+ unsigned int,
+void *)=E2=80=99 [-Wbuiltin-declaration-mismatch]
+  296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
