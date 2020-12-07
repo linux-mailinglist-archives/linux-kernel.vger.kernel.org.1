@@ -2,177 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B22D141D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCDD2D1423
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgLGOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:53:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGOxs (ORCPT
+        id S1726645AbgLGOzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:55:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39716 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725931AbgLGOzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:53:48 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31ABC051773
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:53:07 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id g18so9092378pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 06:53:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=67q06ahdve+maXXaXcuBF0/78g4V9jwMrZzg/oICieI=;
-        b=H7aX76AZlFayE7q9/thM8tX2F4CdIfANhGAWc55owFDZkkd+M4/VnK4QkPZJOC60Il
-         EqBdwBRnmbarXV5lwcCaaR18VtKxpNVNexjWgzxL2TVVoO5rGJ+9h7sBWeNQUnPfoghd
-         U3WdTdhzvGFyXigIEPMlH+PTwGgOMAFWPps5TizIkVykOzrbp2mE4EqKuy0qWsH5I4BZ
-         8loNvDefr/DQ6mBNOMsP+yXbizUQ+t7/FONemwW2+Y8ew8nBBdKo4dGV5x8zmT64fL4+
-         SrYoVyCXwR3cyegtYMDWqbTxYLtNBTmcbRa188Vt8Co6ggvMmxOL3gmvOYgehOb4IeM2
-         xC3g==
+        Mon, 7 Dec 2020 09:55:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607352853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZY9alcaJwbCVcJul/NI3QBrRiFsddnsGdax2/APiTVA=;
+        b=Z9GZvlSPzSHEl+iNjE0h/baToJ4LhpnSiTAixwueWwKjBcxLJV7Ml+F0BX0glTjWY/63I6
+        zrwx9gzl9g6fvLdBs1Et2DNPOBrbIlyjoyoM4uWayVvsm1rho85h5S2JbAKqvHxsyHoIr/
+        CX/tjx0FEs9f5/co/GItmc7XFbttUx4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-L5A_i1ShM8-dkhK10UPW5A-1; Mon, 07 Dec 2020 09:54:11 -0500
+X-MC-Unique: L5A_i1ShM8-dkhK10UPW5A-1
+Received: by mail-ej1-f71.google.com with SMTP id ny19so3120002ejb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 06:54:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=67q06ahdve+maXXaXcuBF0/78g4V9jwMrZzg/oICieI=;
-        b=Srn6HGFqh+d9bX3bthXA/8T7LQR9DDByaprLhEEh6qwslNNaL1LXoLlx8MvFzIl+fK
-         otAH1LNTHQ3GrmlheAO1c4k7DL7rvitU6amKAA//HWpz1fqPguUpW2egJQEEV49HOxgs
-         mp9lgmm0UE790fUMrpHXHB9k/pZ1PVVod6L40Fe2NGo5z5sHUajFJA3+oCR2NY04PUS7
-         ExGqesZ7CkkourwSJ4QedNGGv0IhW8S/Xwh4/LyTcNMZwtbDvUnURDFVKZ+RnY+rGzS2
-         EghPnNqjCWl9QEzI80mEvj/hKSFXoANnpMCxMO7XwxXVms7LhYfwnIV9jc5/shGjSqN7
-         bmSg==
-X-Gm-Message-State: AOAM533cIJbDnd0ZyB4VzF6fE/Cj5KSzZI1SxQZIEOYTD0Xi2j0/XfOl
-        jeem/lFNLqJMA1+1tQw9olBXvpZ9KqR/G6nsL0UT/g==
-X-Google-Smtp-Source: ABdhPJwJ4IWHc9o4dLsL8uDmX/narH/dl/xqmI8YYc9Xn9QfxasAXfpW6XsPkLCBTKXQ0jbtCkPsQdCgDzMGRkbdCXc=
-X-Received: by 2002:a63:c15:: with SMTP id b21mr18447984pgl.341.1607352787255;
- Mon, 07 Dec 2020 06:53:07 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZY9alcaJwbCVcJul/NI3QBrRiFsddnsGdax2/APiTVA=;
+        b=KLq0dwLqRHYBivjO6czY1i3d2gq9L11QahCb5vDUhm/PaJ20Qi44It1RqfphFiQ1+V
+         xPC+PkGEQfn61NVE3+tPnexfKwIn5m33RqAebBKsjfp4H9p7kkF8qvfPWYqhXCe8cJ/v
+         qNg2f6v+eXV8DlnAEqV1pWma4rThRk1T5YSORijPOh/ElPseB/8lID4rwCb2F81mCwVc
+         yxGD/6WiiFgRrBkkqDieHZugBLKJhO5XyFe2sfX1jEKsuOObsEMpMatEYP+61J60WTRH
+         Rj6pDQKjmsvgNXA5GQINuz5PtxUVNWbdGGpHHQ/CjTOlWkNjk2zwhlxKqbq+l0ebfGzi
+         Vucg==
+X-Gm-Message-State: AOAM53224xDIiNDwEAZv+/oEU1nA1l1StDQs2nT0y8U7kU3ciQ0wKSZd
+        VxGREMAmikSKXypps71zfJA7kbODhe2yO3IaEMobsRdUtGBucVskg73AfE7w7zgkN6aR+bQeATb
+        0xp1b9z3tHMUuYc4b+RA1FQ/AkRVV9PcxTl+G3AA+Z6kXG6l0B4lrjZKejm9z9wylUdZFI0FyIO
+        d0
+X-Received: by 2002:a50:998d:: with SMTP id m13mr19773437edb.119.1607352850565;
+        Mon, 07 Dec 2020 06:54:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJybvxtqBPfHFtpim+Hnhr9mhb51+yZcFZIaYdxT1fb4tmHWVW6GNTQRpZiN6fS1x3dyQf7Elw==
+X-Received: by 2002:a50:998d:: with SMTP id m13mr19773417edb.119.1607352850355;
+        Mon, 07 Dec 2020 06:54:10 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id rh2sm12520011ejb.68.2020.12.07.06.54.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 06:54:09 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] platform/x86/drivers/acerhdf: Check the interval
+ value when it is set
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        =?UTF-8?Q?Peter_K=c3=a4stle?= <peter@piie.net>,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201203071738.2363701-2-daniel.lezcano@linaro.org>
+ <20201203071738.2363701-1-daniel.lezcano@linaro.org>
+ <92e330ff28a10b1fb92d91c083fa3cac@piie.net>
+ <bf62927f-972b-b4c3-ff97-179af6d53882@linaro.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <771a76da-bdd3-54b2-3661-e9db918ee00d@redhat.com>
+Date:   Mon, 7 Dec 2020 15:54:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201206101451.14706-1-songmuchun@bytedance.com> <20201207130018.GJ25569@dhcp22.suse.cz>
-In-Reply-To: <20201207130018.GJ25569@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 7 Dec 2020 22:52:30 +0800
-Message-ID: <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com>
-Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat
- counters to pages or bytes
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bf62927f-972b-b4c3-ff97-179af6d53882@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 9:00 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Sun 06-12-20 18:14:39, Muchun Song wrote:
-> > Hi,
-> >
-> > This patch series is aimed to convert all THP vmstat counters to pages
-> > and some KiB vmstat counters to bytes.
-> >
-> > The unit of some vmstat counters are pages, some are bytes, some are
-> > HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-> > counters to the userspace, we have to know the unit of the vmstat counters
-> > is which one. It makes the code complex. Because there are too many choices,
-> > the probability of making a mistake will be greater.
-> >
-> > For example, the below is some bug fix:
-> >   - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-> >   - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
-> >
-> > This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
-> > And make the unit of the vmstat counters are either pages or bytes. Fewer choices
-> > means lower probability of making mistakes :).
-> >
-> > This was inspired by Johannes and Roman. Thanks to them.
->
-> It would be really great if you could summarize the current and after
-> the patch state so that exceptions are clear and easier to review. The
+Hi,
 
-Agree. Will do in the next version. Thanks.
+On 12/4/20 12:43 PM, Daniel Lezcano wrote:
+> On 03/12/2020 22:22, Peter Kästle wrote:
+>> 3. Dezember 2020 08:17, "Daniel Lezcano" <daniel.lezcano@linaro.org> schrieb:
+>>
+>>> Currently the code checks the interval value when the temperature is
+>>> read which is bad for two reasons:
+>>>
+>>> - checking and setting the interval in the get_temp callback is
+>>> inaccurate and awful, that can be done when changing the value.
+>>>
+>>> - Changing the thermal zone structure internals is an abuse of the
+>>> exported structure, moreover no lock is taken here.
+>>>
+>>> The goal of this patch is to solve the first item by using the 'set'
+>>> function called when changing the interval. The check is done there
+>>> and removed from the get_temp function. If the thermal zone was not
+>>> initialized yet, the interval is not updated in this case as that will
+>>> happen in the init function when registering the thermal zone device.
+>>
+>> Thanks for your effort.  This improves the code, good finding.
+>>
+>>  
+>>> I don't have any hardware to test the changes.
+>>
+>> Tests successfully executed on my good old AOA110.
+>>
+>>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>
+>> Acked-by: Peter Kaestle <peter@piie.net>
+> 
+> Thanks for testing the changes.
+> 
+> Shall pick the patches through the thermal tree ?
 
+I can take them through the drivers/platform/x86 (pdx86) tree,
+but if you prefer to take them upstream through the thermal tree,
+then that is fine too...
 
-> existing situation is rather convoluted but we have at least units part
-> of the name so it is not too hard to notice that. Reducing exeptions
-> sounds nice but I am not really sure it is such an improvement it is
-> worth a lot of code churn. Especially when it comes to KB vs B. Counting
+Here is my ack (as pdx86 maintainer) for taking them through
+the thermal tree:
 
-There are two vmstat counters (NR_KERNEL_STACK_KB and
-NR_KERNEL_SCS_KB) whose units are KB. If we do this, all
-vmstat counter units are either pages or bytes in the end. When
-we expose those counters to userspace, it can be easy. You can
-reference to:
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-    [RESEND PATCH v2 11/12] mm: memcontrol: make the slab calculation consistent
+Regards,
 
-From this point of view, I think that it is worth doing this. Right?
+Hans
 
-> THPs as regular pages sounds like a good plan to me because we can
-> expect that THP will be of a different size in the future - especially
-> for file THPs. It can be easy to convert.
->
-> > Changes in v1 -> v2:
-> >   - Change the series subject from "Convert all THP vmstat counters to pages"
-> >     to "Convert all vmstat counters to pages or bytes".
-> >   - Convert NR_KERNEL_SCS_KB account to bytes.
-> >   - Convert vmstat slab counters to bytes.
-> >   - Remove {global_}node_page_state_pages.
-> >
-> > Muchun Song (12):
-> >   mm: memcontrol: fix NR_ANON_THPS account
-> >   mm: memcontrol: convert NR_ANON_THPS account to pages
-> >   mm: memcontrol: convert NR_FILE_THPS account to pages
-> >   mm: memcontrol: convert NR_SHMEM_THPS account to pages
-> >   mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
-> >   mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
-> >   mm: memcontrol: convert kernel stack account to bytes
-> >   mm: memcontrol: convert NR_KERNEL_SCS_KB account to bytes
-> >   mm: memcontrol: convert vmstat slab counters to bytes
-> >   mm: memcontrol: scale stat_threshold for byted-sized vmstat
-> >   mm: memcontrol: make the slab calculation consistent
-> >   mm: memcontrol: remove {global_}node_page_state_pages
-> >
-> >  drivers/base/node.c     |  25 ++++-----
-> >  fs/proc/meminfo.c       |  22 ++++----
-> >  include/linux/mmzone.h  |  21 +++-----
-> >  include/linux/vmstat.h  |  21 ++------
-> >  kernel/fork.c           |   8 +--
-> >  kernel/power/snapshot.c |   2 +-
-> >  kernel/scs.c            |   4 +-
-> >  mm/filemap.c            |   4 +-
-> >  mm/huge_memory.c        |   9 ++--
-> >  mm/khugepaged.c         |   4 +-
-> >  mm/memcontrol.c         | 131 ++++++++++++++++++++++++------------------------
-> >  mm/oom_kill.c           |   2 +-
-> >  mm/page_alloc.c         |  17 +++----
-> >  mm/rmap.c               |  19 ++++---
-> >  mm/shmem.c              |   3 +-
-> >  mm/vmscan.c             |   2 +-
-> >  mm/vmstat.c             |  54 ++++++++------------
-> >  17 files changed, 161 insertions(+), 187 deletions(-)
-> >
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
-
-
-
---
-Yours,
-Muchun
