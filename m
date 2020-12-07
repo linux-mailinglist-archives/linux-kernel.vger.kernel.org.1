@@ -2,234 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477392D1C4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C862D1C69
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbgLGVrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgLGVrf (ORCPT
+        id S1727571AbgLGVym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:54:42 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:36540 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgLGVyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:47:35 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF2C06179C
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:46:54 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmOLE-0004A9-2U; Mon, 07 Dec 2020 22:46:44 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmOLC-0001da-7r; Mon, 07 Dec 2020 22:46:42 +0100
-Date:   Mon, 7 Dec 2020 22:46:41 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Sean Young <sean@mess.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201207214641.64xom6njb3mlnhgp@pengutronix.de>
-References: <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
- <20201206141941.GA24807@gofer.mess.org>
- <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
- <20201207094320.GA10460@gofer.mess.org>
- <20201207135209.htp7plyotjxp37q2@pengutronix.de>
- <X85KYHVSwIKcBoRe@ulmo>
+        Mon, 7 Dec 2020 16:54:41 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7Lnw7P096433;
+        Mon, 7 Dec 2020 21:51:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=piCzqQm0mVCxgJj+sqHb/JruJS99OLdhf2z56yFWCeg=;
+ b=uSA+u//ggfO7i4LGAaf93J1AoylnkzIAC4LQ0OSldelB5IPBHq3VKCdqzUCEpZHZOqTE
+ c3INRBq4HHEN7iHQaMjtkIyo9/gZSK4Y+T8nkTTTlfZaw/eMfTVVBRe+LvotIiCL3+GP
+ f4lzsob+5FB8v5bRCTfabbfsbnFfZ4iIpRQvj9exBnIv46zFiQOKYCCJdOmuIsHOW3sD
+ 0FwXvFAP9OjBHXUfN/E0ddpMuYqiJhSokQd3ZD2w9+wsC4d/jpatORjjymCFlAssjVDH
+ cEd+y0E3+mFNlfYqOkLSW0wJ47TVch+Vsodi2rswHqmDN3sJ0OSHKWLXLYMCWfCCdyPL rQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mqqrv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 21:51:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7LejtD192480;
+        Mon, 7 Dec 2020 21:49:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 358ksmrh2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 21:49:06 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B7Lmueg020940;
+        Mon, 7 Dec 2020 21:49:00 GMT
+Received: from [192.168.0.193] (/69.207.174.138)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 13:48:56 -0800
+Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
+ interface
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-24-joel@joelfernandes.org>
+ <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
+ <20201206173418.GC201514@google.com>
+From:   chris hyser <chris.hyser@oracle.com>
+Message-ID: <912e3ad8-5b18-566b-4321-537f3ff7e8be@oracle.com>
+Date:   Mon, 7 Dec 2020 16:48:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ljsvtnk2xcuzdnkj"
-Content-Disposition: inline
-In-Reply-To: <X85KYHVSwIKcBoRe@ulmo>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201206173418.GC201514@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/6/20 12:34 PM, Joel Fernandes wrote:
+> Looks ok to me except the missing else { } clause you found. Also, maybe
+> dest/src can be renamed to from/to to make meaning of variables more clear?
+> 
 
---ljsvtnk2xcuzdnkj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+yes.
 
-Hello Thierry,
+> Also looking forward to the docs/test updates.
 
-On Mon, Dec 07, 2020 at 04:29:36PM +0100, Thierry Reding wrote:
-> On Mon, Dec 07, 2020 at 02:52:09PM +0100, Uwe Kleine-K=F6nig wrote:
-> > I asked in the hardware department of the company I work for and they
-> > had another usecase: Motors where for example a 1 ms pulse means "move
-> > forwards" and 2 ms means "move backwards". They had the same idea as I
-> > had: You want to know beforehand the result of a given
-> > pwm_apply_state().
->=20
-> I've occasionally considered the idea of adding a pwm_check_state() API
-> that would allow you to pass in a struct pwm_state and get a result as
-> to whether it can be applied or not. It's never really made much sense
-> because pwm_apply_state() can already return failure if it can't apply
-> the state.
->=20
-> However, if we need some way for consumers to be more clever about state
-> changes, then something like pwm_check_state() might be more useful if,
-> in addition to just checking the validity/applicability of the state we
-> can also return the state that would be applied after all the hardware-
-> specific rounding.
+on it.
 
-You describe exactly the function I had in mind when talking about
-pwm_round_state. In my eyes pwm_round_state is the better name, because
-it makes it obvious that it modifies the passed pwm_state. The clk
-framework also has clk_round_rate with similar semantics.
+Thanks.
 
-> I'm not sure how useful that really is because it makes the usage really
-> difficult on the consumer side. Perhaps there's no need for this anymore
-> if the consumer is able to specify the rounding, so perhaps we should
-> concentrate on that API first.
+-chrish
 
-Yeah, I think it will not be very useful to be used directly by
-consumers in most cases. The driver's callback can however be used in
-helper functions provided by the framework. The pwm-ir-tx driver would
-then do:
-
-	struct pwm_state state =3D {
-		.period =3D carrier_period,
-		.duty_cycle =3D 0,
-		...
-	};
-
-	ret =3D pwm_round_nearest(mypwn, &state);
-	if (!ret)
-		... error handling
-
-and then inspect state to judge if it is good enough and use that.
-
-> One of the reasons I was reluctant to introduce a "default" rounding
-> behaviour is precisely because it's not clear cut, so in some cases the
-> default may not be what we really want, such as in the pwm-ir-tx case
-> here.
-
-I think we can agree that with consumers having different needs we
-should be able to give all of them what they need. Preferably in a way
-that lowlevel drivers must do only something simple and the main
-complexity lives in common framework code.
-
-> > Given that the bcm2835 driver is quite trivial I would be happy to
-> > create a series that "fixes" the driver to round down and provide a
-> > prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
-> > tester and a real use-case were the single two things that stopped me
-> > investing time here.
->=20
-> I'd like to avoid adding a new function for this functionality and
-> instead add a rounding type field to the PWM state. Also, in doing so we
-> should be able to keep the status quo for everyone by making the default
-> rounding behaviour "don't care", which is what basically everyone right
-> now uses. In specific cases like pwm-ir-tx we can adjust the rounding to
-> become "nearest".
-
-And you want to adapt all drivers (maybe on a on-demand base) to
-implement "round-down", "round-period-to-nearest-but-duty-down" and all
-other demands that my come up in the future? Did you notice how
-difficult "round-nearest" is even in the simple example with a single
-divider in my mail to Sean earlier today? I don't want this in several
-drivers. And note this isn't even workable, consider the servo motor
-example where a 1ms pulse means move forward and 2ms pulse means move
-backwards. In this case you really want to know before applying the
-state that the resulting pulses will be longer than (say) 1.8 ms or
-shorter than 1.2 ms. And note that adding a "rounding" member to state
-doesn't prevent us touching all drivers. If I request a certain state
-with round-nearest and the driver is not aware of rounding it might use
-round-down and even applies this. Also the PWM driver should not be free
-to say "Ohh, the consumer requested 2ms and rounding up, but 1ms is the
-best I can do, so that's what they get". So I might drive my vehicle
-into a house and won't even notice before something bad happens.
-
-This convinces me that it's impossible to provide the needed features to
-consumers without adding a new callback that queries the HW capabilities
-without modifying the output.
-
-> That said, the rounding behaviour is not something that the API can
-> guarantee, because if we start rejecting "nearest" requests, we might
-> end up breaking a bunch of setups that want "nearest" but where the
-> controller doesn't support it.
-
-I cannot follow you. Why do you want to reject nearest requests? There
-should always be a single state that is nearest to a given request. If
-you request a period length of 2 years the actually returned state might
-use a considerably shorter period, but there should be no need to reject
-this. (It might only be good if this can be noticed before the state
-with the shorter period is put into action.)
-
-For round-down some states are impossible, but round-nearest should be
-fine.
-
-> At the same time I don't want to make it
-> a prerequisite that all drivers implement all possible rounding
-> behaviours because it puts a very high burden on the driver writer that
-> may not need (or have a way of testing) anything other than "nearest",
-> or "round down", or whatever.
-
-That's why I think all drivers should just implement "round down" and
-framework logic can implement the necessary logic to still provide
-consumers a "round nearest" or any other necessary rounding strategy.
-
-> So I think from an API perspective the rounding behaviour would always
-> have to be a sort of "hint" to the driver to specify what the consumer
-> wants to use, but it should never fail to apply a state purely on this
-> rounding behaviour, so returning some state that's the best the driver
-> can do is better than failing if it doesn't know some mode.
-
-I don't agree. If I want my motor to move forward, I don't want the PWM
-driver in use be lax enough to result in a backwards move.
-
-> This also ensures that existing drivers will be able to continue to work
-> the same way they always have, and the new mechanism is merely something
-> to improve the use-cases where we need more precise control.
-
-My thought to go forward is:
-
-- Introduce a new callback "round_state" or "round_down_state" to make
-  it more obvious which behaviour is expected.
-- For all drivers implementing this callback, enforce that
-  .apply(.round_down_state(somestate)) behaves identically to
-  .apply(somestate) and that .round_down_state indeed rounds down.
-- Implement a pwm_round_nearest_state() function that only works for
-  lowlevel drivers implementing .round_down_state. This way it can rely
-  on the above item and so can be implemented without too much hassle.
-
-Also all drivers can just stay as they are and as soon as someone
-implements the round_down_state callback the driver becomes more useful.
-Until this is the case they just continue to work as they do today, too.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ljsvtnk2xcuzdnkj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/Oor4ACgkQwfwUeK3K
-7AnWSwf/b9/HDWESUlV8hHpDv7nDC9UwQOOjmbEWVlbNljb5s1p8YU2Oxp75e+x3
-Tu/BlbUlBOSZxfU3cb0/iLyAo4qbEU+D/ARKn6jvwMfsgPiYb49DCG9o2BfL9YtQ
-q4FFJ6845NRocN0Tpp7w7a/FHQVHbdwBdA0qPvvyVyf4PxoV+DpRyEqXzsX7tpGn
-MJazfvarSkD3xpYv82gBWOF+OITEocH4FCWJIq72Fw5AWUqpM1II1c84KR8AZkF0
-ky/Cl2KDBvVLDECWkc+wo3VL9oT3vWc5iN42ivkTAcYvtdq0yzZB+5p5OzKKTRj8
-iFo0kmIDlqUSIW3uACRS9Tfa1GDZeg==
-=6zhQ
------END PGP SIGNATURE-----
-
---ljsvtnk2xcuzdnkj--
