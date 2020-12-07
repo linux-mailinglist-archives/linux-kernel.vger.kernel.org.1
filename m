@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533E82D0E38
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EDF2D0E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgLGKmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:42:14 -0500
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:8626 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726231AbgLGKmN (ORCPT
+        id S1726508AbgLGKmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:42:19 -0500
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:20200 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726234AbgLGKmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:42:13 -0500
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7AbJaL007276;
-        Mon, 7 Dec 2020 02:41:01 -0800
+        Mon, 7 Dec 2020 05:42:16 -0500
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7AZNE5029451;
+        Mon, 7 Dec 2020 02:41:04 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=V46CWwGcrjKlqT3mlKwB7Z3JLuyXeWGZ2tQm6YBFWt0=;
- b=B/fyUBwY85bUKyMt+NSeencX23lSQo7I2pAVaQzTRd+qxCMj4u7URP0tjQdZDdiWYCmH
- vRxVLWdM4H4pTRd6J0pE56YzY1thlaiNc3YV69uLzV0H/m4ScuUygt8IBvr3rI+eCTfH
- PfPpiHGfTVvd5blXjMPcv6qJMFoCVfFeg0aKl045CUzbaJQyFh9pQ5iwvJ0Q/EMT2a7T
- EgQMM2UsXUZpxJUXIFu23pwbIGn0tzjSrLAKfg2OeKVo052p8yy58/JjbCKo0UtAMHG1
- ubs3XiIIYdvHUXxdayNB4kCyAY1M1ehu0E/AL/2Cu/+Bu7X2M9eMOmGp/PLAEhb/kA9a mQ== 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3587n2m7yg-1
+ bh=C0rWzlAmBSFxbD0cf8qFiC3epv+wwPBdHYI2eJ6k6j8=;
+ b=eaA1osbAdGiAsyAnq+7Jj01DfIif0mJOSU/TIYrebztDUiohJjhv3JnfymInn8Sy12iP
+ bisktA2mdnyOOT4FmCdzMHxm29ESweT3lSjZUqWfgCR+3bE0qqzszEhRMJswfwH4zAGE
+ LSpw7czmfhMkT1jqyqWjrcFRPjEyuW8/IU8QE39wFUNPUKmSOrsg/LstsnOogBNoixzT
+ oFDT8Ttft2FiuNLH2I4d12hOf99q8eylrPfJA1HPP/S2GXODbXWNLa7rI7lc5i45wcNS
+ Z9i6RDSvpaMB2my0zPvuqbhQNG7qXp9vSWNgGI7YZOlmUpR2qKOziwzNFM91cxCz149P nQ== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 3586p3vc2c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 02:41:01 -0800
+        Mon, 07 Dec 2020 02:41:03 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UnE4bacrowOOfWS19ZMQ0kzfU3kCe0LuEsIpWV0ImdVklBrDzTNh3ovx7R/3qp0H6rl+98hkswn++ulyst0zVJzUWkCg0pO4D4FMYRrszbzkBPGY2FECNTFva5dW7QdzN5nf3/a2OIggON65/6XxXhF/f6CK8cPaYrTAxkGxmMRqQXfvljVSfQB7f2ZHTPjl5pwojBizr/0KMxIaM2NB9TjMX2tRHEAzG20Cm1nkCWufaCny0HJevmH6dGH3F2dQCDwS00XSnzidBPoDSIjNnRPnIG+R9JQWZZZHPysi5F1bDMUUXzT97WF7eJQjM5AxINYXgklYSy0gsC7RZ2IAaw==
+ b=oa7D4kNPS7T/r0YgT+MDCwHw4nWySiX9XZ3Cocel874hHsmBW1GJN0pa4rV3bxW6lseVYG0jCokZk05nU7tQcbHIbwXK0MU6Eemj2vD43bMnTx9kiQlTmgSeyGdVvDGaR7Ji7B2xOVOW3WTWor2VIyXugEBc2DYNcosQgA+smI3S3UB+Blud1ZJhEq6HV0IPW4edc84U6i0wV+/Pe48ZIHPmymg13aMNfn67Je7ODxplxn1zyMm1+G+QeBOibObTrmpsLMrLpLK8+bL/RXKEO0CQDgm4izqDsoJxA0L0V6MigrcRxXfm6PRXOPDlZtN3WZA630hywVKuDysS+zTc+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V46CWwGcrjKlqT3mlKwB7Z3JLuyXeWGZ2tQm6YBFWt0=;
- b=N6DGUlIozgv4bPLa7DM6tjL4v4YXrb21aVvehcnToR7pyiWYR7HCMTzLfGPuGSyf0QtA9bKDoUUbt/hfaY3WrZNWm5PYvOjrhXCLT+rRn8I9kqBJwNPCF11dJGFLVU74CitnbW06edePdOTpG0cDf7KiALAOQuIqmAcXNOE/LjgHDEGIPw3pzY8nfz2/lrQUy/5UbvTGV+zbuoNvAJWsYhpslcVd6pSdsOcey461r904qutEMTcRwpGi4Fpy34zZVPF1VPW2gw75Qxco6o8z6IcMuYiY2u5pddkR3vPtaNZad0sD2UvNht3FAiI3UqTGJb9SVjVQPrjxIpuKaen7Eg==
+ bh=C0rWzlAmBSFxbD0cf8qFiC3epv+wwPBdHYI2eJ6k6j8=;
+ b=QnJNkyfV2Awo4tFIRsQEXuMcvt7Yos02ZyoNUagwx6HLa7y/N0ipyHVwRRejdsNvds1r3fjSIINydNK1LJgERvDh84U1Gwp4SCnKb8zSLFkGax7BSL7wRoZpWi9TNwqgX73cZdb0wpmuN4qQttFD5gAfWYZYXe0Gh0185huZvzDYzEsYIJSbt++ta2s73NmlYWOPfESrpdHpHBcVoNIRQdcuR/Nn9djAdu4Q6vD+SKfYnZZvDIDkHilXcfQ6ZMHLYlb2KjaRv/VL3RL4rbsw4BtGE+sswLKXN8tIr4Cp/LDR8EKwrW7ctvy5dcLxkEvimXRFzGOMyoJzyXj4wSix/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  158.140.1.148) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
@@ -42,18 +42,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V46CWwGcrjKlqT3mlKwB7Z3JLuyXeWGZ2tQm6YBFWt0=;
- b=U/eH5u2FB3sEv9k0NdIXMBIkkmH95felDiqbS1c7i6haQHzCnjJa6zHFA0zGk7KogZwRTk5K+2dg1Wm5HUdDPhpc3a9M8Ka4C5Gk4LCVYEn8rsymLGultyMZm4DFdCIsmzCJRMSD3x8p6iLrX5orbY164AaXUTjs9wHBNXqC3go=
-Received: from MW4PR03CA0020.namprd03.prod.outlook.com (2603:10b6:303:8f::25)
- by MW2PR07MB3947.namprd07.prod.outlook.com (2603:10b6:907:5::24) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=C0rWzlAmBSFxbD0cf8qFiC3epv+wwPBdHYI2eJ6k6j8=;
+ b=tM/cAuFA8B/aoZ8TCTy2ytPf5YQsEHb8yiBcQIxm2RH9BY0CQ0SijJT4Q9SgtsGE62oJ9EnnBKKkoU9W7LdxMTyqKqaUrGXwiocmtXdUQhF3iRDcqjWLYUfUV/mMqet/UpVEREyUc9L2Az4yRKNaHPhvxfiE5BJ/e1h7kO4wLPk=
+Received: from MWHPR1201CA0014.namprd12.prod.outlook.com
+ (2603:10b6:301:4a::24) by SN6PR07MB4238.namprd07.prod.outlook.com
+ (2603:10b6:805:60::23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
- 2020 10:40:59 +0000
-Received: from MW2NAM12FT041.eop-nam12.prod.protection.outlook.com
- (2603:10b6:303:8f:cafe::13) by MW4PR03CA0020.outlook.office365.com
- (2603:10b6:303:8f::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21 via Frontend
- Transport; Mon, 7 Dec 2020 10:40:59 +0000
+ 2020 10:41:00 +0000
+Received: from MW2NAM12FT056.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:301:4a:cafe::b1) by MWHPR1201CA0014.outlook.office365.com
+ (2603:10b6:301:4a::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Mon, 7 Dec 2020 10:41:00 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
  smtp.mailfrom=cadence.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=pass action=none
@@ -62,26 +62,26 @@ Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
  158.140.1.148 as permitted sender) receiver=protection.outlook.com;
  client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
 Received: from sjmaillnx2.cadence.com (158.140.1.148) by
- MW2NAM12FT041.mail.protection.outlook.com (10.13.181.1) with Microsoft SMTP
+ MW2NAM12FT056.mail.protection.outlook.com (10.13.181.132) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.10 via Frontend Transport; Mon, 7 Dec 2020 10:40:59 +0000
+ 15.20.3654.10 via Frontend Transport; Mon, 7 Dec 2020 10:41:00 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 0B7AeuT2007278
+        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 0B7AeuT4007278
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Mon, 7 Dec 2020 02:40:58 -0800
+        Mon, 7 Dec 2020 02:40:59 -0800
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
  15.0.1367.3; Mon, 7 Dec 2020 11:40:56 +0100
 Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Mon, 7 Dec 2020 11:40:55 +0100
+ 15.0.1367.3 via Frontend Transport; Mon, 7 Dec 2020 11:40:56 +0100
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0B7AetpH006424;
-        Mon, 7 Dec 2020 11:40:55 +0100
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0B7Aeunh006428;
+        Mon, 7 Dec 2020 11:40:56 +0100
 Received: (from pawell@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0B7Aetq9006423;
-        Mon, 7 Dec 2020 11:40:55 +0100
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0B7AeuBO006427;
+        Mon, 7 Dec 2020 11:40:56 +0100
 From:   Pawel Laszczak <pawell@cadence.com>
 To:     <peter.chen@nxp.com>
 CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
@@ -89,9 +89,9 @@ CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
         <colin.king@canonical.com>, <rogerq@ti.com>, <kurahul@cadence.com>,
         <nsekhar@ti.com>, <a-govindraju@ti.com>,
         Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH v5 01/10] usb: cdns3: Add support for DRD CDNSP
-Date:   Mon, 7 Dec 2020 11:32:18 +0100
-Message-ID: <20201207103227.606-2-pawell@cadence.com>
+Subject: [PATCH v5 02/10] usb: cdns3: Split core.c into cdns3-plat and core.c file
+Date:   Mon, 7 Dec 2020 11:32:19 +0100
+Message-ID: <20201207103227.606-3-pawell@cadence.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20201207103227.606-1-pawell@cadence.com>
 References: <20201207103227.606-1-pawell@cadence.com>
@@ -100,492 +100,800 @@ Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a68186c6-6acf-438f-475b-08d89a9c95d9
-X-MS-TrafficTypeDiagnostic: MW2PR07MB3947:
-X-Microsoft-Antispam-PRVS: <MW2PR07MB39479EB51D3598E12E2F621FDDCE0@MW2PR07MB3947.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Office365-Filtering-Correlation-Id: 4211acfa-099a-4faf-0a34-08d89a9c96b3
+X-MS-TrafficTypeDiagnostic: SN6PR07MB4238:
+X-Microsoft-Antispam-PRVS: <SN6PR07MB423806A5E3C6B66AE61FAB85DDCE0@SN6PR07MB4238.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:494;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /7YAjqIqM6hJmriounIEEYaUQtpDk15UhOd7lwZmeaph0sfHiHvUrwjACb2FUE/VwFMIvwkjG2ZgdxDpTqwJTykJw+G13kuisncJEGhYjq3Lb/bjXtd44RI+l4NuD+0C57XYxtOpLoWrbz7vFunylrRCw87LUhq/mNuqWk0JE3GbWJJ3CaGmJdEqMlUin4+9SFYVbueQlQ/YB9a0+kF9Y89b3zLXrVHX9EemtonEaA7cDgsvVgei0p4rOdrFhph2vUCmn1PNcSAQpZTNFeeNdRbAM5dvnkft9k4938wqpJXxZ0+fR4hAzTK7lMOxUNLW0jNLVS70Y1zJyOmTS2Mbo8RouQxCp/vxr625OY3ptTO5Uwu4myOncQAMNI9CC17l14xrrjMQ3d4pejrN6J3D7zpk1cJXyn5RLRWRGwcuaeLgrFVAMvNVW+vDRBluaBmbO1rQLectZHny49peerEyaA==
-X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(36092001)(46966005)(186003)(6666004)(8936002)(36756003)(54906003)(2906002)(1076003)(2616005)(26005)(316002)(42186006)(7636003)(36906005)(70206006)(426003)(83380400001)(82310400003)(30864003)(47076004)(8676002)(5660300002)(86362001)(70586007)(478600001)(356005)(336012)(6916009)(107886003)(34020700004)(4326008)(82740400003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: n06qcJKDHapucYPtscmTFYDiF/JUWeIud5IXEyGtpBIV0L/cBaa9jdWfhO8nt24QOWAS9rtQrWcj8Aux2ZvwOhXcDnjAGP0mVgw6T/mEnlcN5MhhcvnGa2h0j5vdwrEaBmCHlZ50jWU0XjInkkHL/62N2gef4n1EyoRkeRHv0ZXpdMcjMZWuZxpEGP2RooS38+FBuhKCwQBGhVzsvmfZf7nyDp7V+p/WzgUtSqirp2mHDIgHClDBR0SxOk6gLRjCQ9MSwKDcjOJoqqsO3jz+hsnWnHcvM5o4tCSCG+W+jxvZyhyijR8jJhtnWaga84922nQccSWMJFv89V32YPJMhUYQUBd9s2h5tShC7pIet+ZvS0bQI4mTdnS0uPEx1IvuTtaBOEV9stVQzDeF0pDq3TQzr+9qHJ0BmmnyWGKD1cn6a0ozZfUdFRu0L9jdWeMH7uKvjQLmVcVo2ym3EF/y5A==
+X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(36092001)(46966005)(54906003)(34020700004)(8936002)(82310400003)(83380400001)(2616005)(7636003)(336012)(8676002)(42186006)(316002)(36906005)(426003)(26005)(478600001)(186003)(47076004)(82740400003)(1076003)(356005)(6916009)(5660300002)(2906002)(70206006)(107886003)(86362001)(30864003)(36756003)(6666004)(70586007)(4326008);DIR:OUT;SFP:1101;
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 10:40:59.1716
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 10:41:00.6007
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a68186c6-6acf-438f-475b-08d89a9c95d9
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4211acfa-099a-4faf-0a34-08d89a9c96b3
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT041.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: MW2NAM12FT056.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR07MB3947
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB4238
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-12-07_09:2020-12-04,2020-12-07 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
- clxscore=1015 phishscore=0 mlxlogscore=959 priorityscore=1501
- suspectscore=1 impostorscore=0 malwarescore=0 adultscore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012070068
+ spamscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=1
+ malwarescore=0 impostorscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012070067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch adds support for Cadence DRD Super Speed Plus controller(CDNSP).
-CDNSP DRD is a part of Cadence CDNSP controller.
-The DRD CDNSP controller has a lot of difference on hardware level but on
-software level is quite compatible with CDNS3 DRD. For this reason
-CDNS3 DRD part of CDNS3 driver was reused for CDNSP driver.
+Patch splits file core.c into core.c containing the common reusable code
+and cnd3-plat.c containing device platform specific code. These changes
+are required to make possible reuse DRD part of CDNS3 driver in CDNSP
+driver.
 
 Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 Tested-by: Aswath Govindraju <a-govindraju@ti.com>
 ---
- drivers/usb/cdns3/core.c |  24 +++++++---
- drivers/usb/cdns3/core.h |   5 ++
- drivers/usb/cdns3/drd.c  | 101 +++++++++++++++++++++++++++------------
- drivers/usb/cdns3/drd.h  |  67 +++++++++++++++++++++-----
- 4 files changed, 148 insertions(+), 49 deletions(-)
+ drivers/usb/cdns3/Makefile     |   2 +-
+ drivers/usb/cdns3/cdns3-plat.c | 312 +++++++++++++++++++++++++++++++++
+ drivers/usb/cdns3/core.c       | 284 +++---------------------------
+ drivers/usb/cdns3/core.h       |   6 +
+ drivers/usb/cdns3/drd.c        |   1 -
+ drivers/usb/cdns3/drd.h        |   1 -
+ 6 files changed, 343 insertions(+), 263 deletions(-)
+ create mode 100644 drivers/usb/cdns3/cdns3-plat.c
 
+diff --git a/drivers/usb/cdns3/Makefile b/drivers/usb/cdns3/Makefile
+index d47e341a6f39..a1fe9612053a 100644
+--- a/drivers/usb/cdns3/Makefile
++++ b/drivers/usb/cdns3/Makefile
+@@ -2,7 +2,7 @@
+ # define_trace.h needs to know how to find our header
+ CFLAGS_trace.o				:= -I$(src)
+ 
+-cdns3-y					:= core.o drd.o
++cdns3-y					:= cdns3-plat.o core.o drd.o
+ 
+ obj-$(CONFIG_USB_CDNS3)			+= cdns3.o
+ cdns3-$(CONFIG_USB_CDNS3_GADGET)	+= gadget.o ep0.o
+diff --git a/drivers/usb/cdns3/cdns3-plat.c b/drivers/usb/cdns3/cdns3-plat.c
+new file mode 100644
+index 000000000000..5dcb83af6c86
+--- /dev/null
++++ b/drivers/usb/cdns3/cdns3-plat.c
+@@ -0,0 +1,312 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Cadence USBSS DRD Driver.
++ *
++ * Copyright (C) 2018-2020 Cadence.
++ * Copyright (C) 2017-2018 NXP
++ * Copyright (C) 2019 Texas Instruments
++ *
++ *
++ * Author: Peter Chen <peter.chen@nxp.com>
++ *         Pawel Laszczak <pawell@cadence.com>
++ *         Roger Quadros <rogerq@ti.com>
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++
++#include "core.h"
++
++static int set_phy_power_on(struct cdns3 *cdns)
++{
++	int ret;
++
++	ret = phy_power_on(cdns->usb2_phy);
++	if (ret)
++		return ret;
++
++	ret = phy_power_on(cdns->usb3_phy);
++	if (ret)
++		phy_power_off(cdns->usb2_phy);
++
++	return ret;
++}
++
++static void set_phy_power_off(struct cdns3 *cdns)
++{
++	phy_power_off(cdns->usb3_phy);
++	phy_power_off(cdns->usb2_phy);
++}
++
++/**
++ * cdns3_plat_probe - probe for cdns3 core device
++ * @pdev: Pointer to cdns3 core platform device
++ *
++ * Returns 0 on success otherwise negative errno
++ */
++static int cdns3_plat_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct resource	*res;
++	struct cdns3 *cdns;
++	void __iomem *regs;
++	int ret;
++
++	cdns = devm_kzalloc(dev, sizeof(*cdns), GFP_KERNEL);
++	if (!cdns)
++		return -ENOMEM;
++
++	cdns->dev = dev;
++	cdns->pdata = dev_get_platdata(dev);
++
++	platform_set_drvdata(pdev, cdns);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_IRQ, "host");
++	if (!res) {
++		dev_err(dev, "missing host IRQ\n");
++		return -ENODEV;
++	}
++
++	cdns->xhci_res[0] = *res;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "xhci");
++	if (!res) {
++		dev_err(dev, "couldn't get xhci resource\n");
++		return -ENXIO;
++	}
++
++	cdns->xhci_res[1] = *res;
++
++	cdns->dev_irq = platform_get_irq_byname(pdev, "peripheral");
++
++	if (cdns->dev_irq < 0)
++		return cdns->dev_irq;
++
++	regs = devm_platform_ioremap_resource_byname(pdev, "dev");
++	if (IS_ERR(regs))
++		return PTR_ERR(regs);
++	cdns->dev_regs	= regs;
++
++	cdns->otg_irq = platform_get_irq_byname(pdev, "otg");
++	if (cdns->otg_irq < 0)
++		return cdns->otg_irq;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg");
++	if (!res) {
++		dev_err(dev, "couldn't get otg resource\n");
++		return -ENXIO;
++	}
++
++	cdns->phyrst_a_enable = device_property_read_bool(dev, "cdns,phyrst-a-enable");
++
++	cdns->otg_res = *res;
++
++	cdns->wakeup_irq = platform_get_irq_byname_optional(pdev, "wakeup");
++	if (cdns->wakeup_irq == -EPROBE_DEFER)
++		return cdns->wakeup_irq;
++	else if (cdns->wakeup_irq == 0)
++		return -EINVAL;
++
++	if (cdns->wakeup_irq < 0) {
++		dev_dbg(dev, "couldn't get wakeup irq\n");
++		cdns->wakeup_irq = 0x0;
++	}
++
++	cdns->usb2_phy = devm_phy_optional_get(dev, "cdns3,usb2-phy");
++	if (IS_ERR(cdns->usb2_phy))
++		return PTR_ERR(cdns->usb2_phy);
++
++	ret = phy_init(cdns->usb2_phy);
++	if (ret)
++		return ret;
++
++	cdns->usb3_phy = devm_phy_optional_get(dev, "cdns3,usb3-phy");
++	if (IS_ERR(cdns->usb3_phy))
++		return PTR_ERR(cdns->usb3_phy);
++
++	ret = phy_init(cdns->usb3_phy);
++	if (ret)
++		goto err_phy3_init;
++
++	ret = set_phy_power_on(cdns);
++	if (ret)
++		goto err_phy_power_on;
++
++	ret = cdns3_init(cdns);
++	if (ret)
++		goto err_cdns_init;
++
++	device_set_wakeup_capable(dev, true);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++	if (!(cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW)))
++		pm_runtime_forbid(dev);
++
++	/*
++	 * The controller needs less time between bus and controller suspend,
++	 * and we also needs a small delay to avoid frequently entering low
++	 * power mode.
++	 */
++	pm_runtime_set_autosuspend_delay(dev, 20);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_use_autosuspend(dev);
++
++	return 0;
++
++err_cdns_init:
++	set_phy_power_off(cdns);
++err_phy_power_on:
++	phy_exit(cdns->usb3_phy);
++err_phy3_init:
++	phy_exit(cdns->usb2_phy);
++
++	return ret;
++}
++
++/**
++ * cdns3_remove - unbind drd driver and clean up
++ * @pdev: Pointer to Linux platform device
++ *
++ * Returns 0 on success otherwise negative errno
++ */
++static int cdns3_plat_remove(struct platform_device *pdev)
++{
++	struct cdns3 *cdns = platform_get_drvdata(pdev);
++	struct device *dev = cdns->dev;
++
++	pm_runtime_get_sync(dev);
++	pm_runtime_disable(dev);
++	pm_runtime_put_noidle(dev);
++	cdns3_remove(cdns);
++	set_phy_power_off(cdns);
++	phy_exit(cdns->usb2_phy);
++	phy_exit(cdns->usb3_phy);
++	return 0;
++}
++
++#ifdef CONFIG_PM
++
++static int cdns3_set_platform_suspend(struct device *dev,
++				      bool suspend, bool wakeup)
++{
++	struct cdns3 *cdns = dev_get_drvdata(dev);
++	int ret = 0;
++
++	if (cdns->pdata && cdns->pdata->platform_suspend)
++		ret = cdns->pdata->platform_suspend(dev, suspend, wakeup);
++
++	return ret;
++}
++
++static int cdns3_controller_suspend(struct device *dev, pm_message_t msg)
++{
++	struct cdns3 *cdns = dev_get_drvdata(dev);
++	bool wakeup;
++	unsigned long flags;
++
++	if (cdns->in_lpm)
++		return 0;
++
++	if (PMSG_IS_AUTO(msg))
++		wakeup = true;
++	else
++		wakeup = device_may_wakeup(dev);
++
++	cdns3_set_platform_suspend(cdns->dev, true, wakeup);
++	set_phy_power_off(cdns);
++	spin_lock_irqsave(&cdns->lock, flags);
++	cdns->in_lpm = true;
++	spin_unlock_irqrestore(&cdns->lock, flags);
++	dev_dbg(cdns->dev, "%s ends\n", __func__);
++
++	return 0;
++}
++
++static int cdns3_controller_resume(struct device *dev, pm_message_t msg)
++{
++	struct cdns3 *cdns = dev_get_drvdata(dev);
++	int ret;
++	unsigned long flags;
++
++	if (!cdns->in_lpm)
++		return 0;
++
++	ret = set_phy_power_on(cdns);
++	if (ret)
++		return ret;
++
++	cdns3_set_platform_suspend(cdns->dev, false, false);
++
++	spin_lock_irqsave(&cdns->lock, flags);
++	cdns3_resume(cdns, !PMSG_IS_AUTO(msg));
++	cdns->in_lpm = false;
++	spin_unlock_irqrestore(&cdns->lock, flags);
++	if (cdns->wakeup_pending) {
++		cdns->wakeup_pending = false;
++		enable_irq(cdns->wakeup_irq);
++	}
++	dev_dbg(cdns->dev, "%s ends\n", __func__);
++
++	return ret;
++}
++
++static int cdns3_plat_runtime_suspend(struct device *dev)
++{
++	return cdns3_controller_suspend(dev, PMSG_AUTO_SUSPEND);
++}
++
++static int cdns3_plat_runtime_resume(struct device *dev)
++{
++	return cdns3_controller_resume(dev, PMSG_AUTO_RESUME);
++}
++
++#ifdef CONFIG_PM_SLEEP
++
++static int cdns3_plat_suspend(struct device *dev)
++{
++	struct cdns3 *cdns = dev_get_drvdata(dev);
++
++	cdns3_suspend(cdns);
++
++	return cdns3_controller_suspend(dev, PMSG_SUSPEND);
++}
++
++static int cdns3_plat_resume(struct device *dev)
++{
++	return cdns3_controller_resume(dev, PMSG_RESUME);
++}
++#endif /* CONFIG_PM_SLEEP */
++#endif /* CONFIG_PM */
++
++static const struct dev_pm_ops cdns3_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(cdns3_plat_suspend, cdns3_plat_resume)
++	SET_RUNTIME_PM_OPS(cdns3_plat_runtime_suspend,
++			   cdns3_plat_runtime_resume, NULL)
++};
++
++#ifdef CONFIG_OF
++static const struct of_device_id of_cdns3_match[] = {
++	{ .compatible = "cdns,usb3" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, of_cdns3_match);
++#endif
++
++static struct platform_driver cdns3_driver = {
++	.probe		= cdns3_plat_probe,
++	.remove		= cdns3_plat_remove,
++	.driver		= {
++		.name	= "cdns-usb3",
++		.of_match_table	= of_match_ptr(of_cdns3_match),
++		.pm	= &cdns3_pm_ops,
++	},
++};
++
++module_platform_driver(cdns3_driver);
++
++MODULE_ALIAS("platform:cdns3");
++MODULE_AUTHOR("Pawel Laszczak <pawell@cadence.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Cadence USB3 DRD Controller Driver");
 diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-index 1991cb5cf6bf..04990812181d 100644
+index 04990812181d..7b67a7c74586 100644
 --- a/drivers/usb/cdns3/core.c
 +++ b/drivers/usb/cdns3/core.c
-@@ -97,13 +97,23 @@ static int cdns3_core_init_role(struct cdns3 *cdns)
- 	 * can be restricted later depending on strap pin configuration.
- 	 */
- 	if (dr_mode == USB_DR_MODE_UNKNOWN) {
--		if (IS_ENABLED(CONFIG_USB_CDNS3_HOST) &&
--		    IS_ENABLED(CONFIG_USB_CDNS3_GADGET))
--			dr_mode = USB_DR_MODE_OTG;
--		else if (IS_ENABLED(CONFIG_USB_CDNS3_HOST))
--			dr_mode = USB_DR_MODE_HOST;
--		else if (IS_ENABLED(CONFIG_USB_CDNS3_GADGET))
--			dr_mode = USB_DR_MODE_PERIPHERAL;
-+		if (cdns->version == CDNSP_CONTROLLER_V2) {
-+			if (IS_ENABLED(CONFIG_USB_CDNSP_HOST) &&
-+			    IS_ENABLED(CONFIG_USB_CDNSP_GADGET))
-+				dr_mode = USB_DR_MODE_OTG;
-+			else if (IS_ENABLED(CONFIG_USB_CDNSP_HOST))
-+				dr_mode = USB_DR_MODE_HOST;
-+			else if (IS_ENABLED(CONFIG_USB_CDNSP_GADGET))
-+				dr_mode = USB_DR_MODE_PERIPHERAL;
-+		} else {
-+			if (IS_ENABLED(CONFIG_USB_CDNS3_HOST) &&
-+			    IS_ENABLED(CONFIG_USB_CDNS3_GADGET))
-+				dr_mode = USB_DR_MODE_OTG;
-+			else if (IS_ENABLED(CONFIG_USB_CDNS3_HOST))
-+				dr_mode = USB_DR_MODE_HOST;
-+			else if (IS_ENABLED(CONFIG_USB_CDNS3_GADGET))
-+				dr_mode = USB_DR_MODE_PERIPHERAL;
-+		}
- 	}
- 
- 	/*
-diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
-index 3176f924293a..0d87871499ea 100644
---- a/drivers/usb/cdns3/core.h
-+++ b/drivers/usb/cdns3/core.h
-@@ -55,7 +55,9 @@ struct cdns3_platform_data {
-  * @otg_res: the resource for otg
-  * @otg_v0_regs: pointer to base of v0 otg registers
-  * @otg_v1_regs: pointer to base of v1 otg registers
-+ * @otg_cdnsp_regs: pointer to base of CDNSP otg registers
-  * @otg_regs: pointer to base of otg registers
-+ * @otg_irq_regs: pointer to interrupt registers
-  * @otg_irq: irq number for otg controller
-  * @dev_irq: irq number for device controller
-  * @wakeup_irq: irq number for wakeup event, it is optional
-@@ -86,9 +88,12 @@ struct cdns3 {
- 	struct resource			otg_res;
- 	struct cdns3_otg_legacy_regs	*otg_v0_regs;
- 	struct cdns3_otg_regs		*otg_v1_regs;
-+	struct cdnsp_otg_regs		*otg_cdnsp_regs;
- 	struct cdns3_otg_common_regs	*otg_regs;
-+	struct cdns3_otg_irq_regs	*otg_irq_regs;
- #define CDNS3_CONTROLLER_V0	0
- #define CDNS3_CONTROLLER_V1	1
-+#define CDNSP_CONTROLLER_V2	2
- 	u32				version;
- 	bool				phyrst_a_enable;
- 
-diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
-index 38ccd29e4cde..95863d44e3e0 100644
---- a/drivers/usb/cdns3/drd.c
-+++ b/drivers/usb/cdns3/drd.c
-@@ -2,13 +2,12 @@
- /*
-  * Cadence USBSS DRD Driver.
-  *
-- * Copyright (C) 2018-2019 Cadence.
-+ * Copyright (C) 2018-2020 Cadence.
-  * Copyright (C) 2019 Texas Instruments
-  *
-  * Author: Pawel Laszczak <pawell@cadence.com>
-  *         Roger Quadros <rogerq@ti.com>
-  *
-- *
-  */
- #include <linux/kernel.h>
- #include <linux/interrupt.h>
-@@ -28,8 +27,9 @@
-  *
-  * Returns 0 on success otherwise negative errno
-  */
--int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
-+static int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
- {
-+	u32 __iomem *override_reg;
- 	u32 reg;
- 
- 	switch (mode) {
-@@ -39,11 +39,24 @@ int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
- 		break;
- 	case USB_DR_MODE_OTG:
- 		dev_dbg(cdns->dev, "Set controller to OTG mode\n");
--		if (cdns->version == CDNS3_CONTROLLER_V1) {
--			reg = readl(&cdns->otg_v1_regs->override);
-+
-+		if (cdns->version == CDNSP_CONTROLLER_V2)
-+			override_reg = &cdns->otg_cdnsp_regs->override;
-+		else if (cdns->version == CDNS3_CONTROLLER_V1)
-+			override_reg = &cdns->otg_v1_regs->override;
-+		else
-+			override_reg = &cdns->otg_v0_regs->ctrl1;
-+
-+		reg = readl(override_reg);
-+
-+		if (cdns->version != CDNS3_CONTROLLER_V0)
- 			reg |= OVERRIDE_IDPULLUP;
--			writel(reg, &cdns->otg_v1_regs->override);
-+		else
-+			reg |= OVERRIDE_IDPULLUP_V0;
- 
-+		writel(reg, override_reg);
-+
-+		if (cdns->version == CDNS3_CONTROLLER_V1) {
- 			/*
- 			 * Enable work around feature built into the
- 			 * controller to address issue with RX Sensitivity
-@@ -55,10 +68,6 @@ int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode)
- 				reg |= PHYRST_CFG_PHYRST_A_ENABLE;
- 				writel(reg, &cdns->otg_v1_regs->phyrst_cfg);
- 			}
--		} else {
--			reg = readl(&cdns->otg_v0_regs->ctrl1);
--			reg |= OVERRIDE_IDPULLUP_V0;
--			writel(reg, &cdns->otg_v0_regs->ctrl1);
- 		}
- 
- 		/*
-@@ -123,7 +132,7 @@ bool cdns3_is_device(struct cdns3 *cdns)
-  */
- static void cdns3_otg_disable_irq(struct cdns3 *cdns)
- {
--	writel(0, &cdns->otg_regs->ien);
-+	writel(0, &cdns->otg_irq_regs->ien);
- }
- 
- /**
-@@ -133,7 +142,7 @@ static void cdns3_otg_disable_irq(struct cdns3 *cdns)
- static void cdns3_otg_enable_irq(struct cdns3 *cdns)
- {
- 	writel(OTGIEN_ID_CHANGE_INT | OTGIEN_VBUSVALID_RISE_INT |
--	       OTGIEN_VBUSVALID_FALL_INT, &cdns->otg_regs->ien);
-+	       OTGIEN_VBUSVALID_FALL_INT, &cdns->otg_irq_regs->ien);
- }
- 
- /**
-@@ -144,16 +153,21 @@ static void cdns3_otg_enable_irq(struct cdns3 *cdns)
-  */
- int cdns3_drd_host_on(struct cdns3 *cdns)
- {
--	u32 val;
-+	u32 val, ready_bit;
- 	int ret;
- 
- 	/* Enable host mode. */
- 	writel(OTGCMD_HOST_BUS_REQ | OTGCMD_OTG_DIS,
- 	       &cdns->otg_regs->cmd);
- 
-+	if (cdns->version == CDNSP_CONTROLLER_V2)
-+		ready_bit = OTGSTS_CDNSP_XHCI_READY;
-+	else
-+		ready_bit = OTGSTS_CDNS3_XHCI_READY;
-+
- 	dev_dbg(cdns->dev, "Waiting till Host mode is turned on\n");
- 	ret = readl_poll_timeout_atomic(&cdns->otg_regs->sts, val,
--					val & OTGSTS_XHCI_READY, 1, 100000);
-+					val & ready_bit, 1, 100000);
- 
- 	if (ret)
- 		dev_err(cdns->dev, "timeout waiting for xhci_ready\n");
-@@ -189,17 +203,22 @@ void cdns3_drd_host_off(struct cdns3 *cdns)
-  */
- int cdns3_drd_gadget_on(struct cdns3 *cdns)
- {
--	int ret, val;
- 	u32 reg = OTGCMD_OTG_DIS;
-+	u32 ready_bit;
-+	int ret, val;
- 
- 	/* switch OTG core */
- 	writel(OTGCMD_DEV_BUS_REQ | reg, &cdns->otg_regs->cmd);
- 
- 	dev_dbg(cdns->dev, "Waiting till Device mode is turned on\n");
- 
-+	if (cdns->version == CDNSP_CONTROLLER_V2)
-+		ready_bit = OTGSTS_CDNSP_DEV_READY;
-+	else
-+		ready_bit = OTGSTS_CDNS3_DEV_READY;
-+
- 	ret = readl_poll_timeout_atomic(&cdns->otg_regs->sts, val,
--					val & OTGSTS_DEV_READY,
--					1, 100000);
-+					val & ready_bit, 1, 100000);
- 	if (ret) {
- 		dev_err(cdns->dev, "timeout waiting for dev_ready\n");
- 		return ret;
-@@ -244,7 +263,7 @@ static int cdns3_init_otg_mode(struct cdns3 *cdns)
- 
- 	cdns3_otg_disable_irq(cdns);
- 	/* clear all interrupts */
--	writel(~0, &cdns->otg_regs->ivect);
-+	writel(~0, &cdns->otg_irq_regs->ivect);
- 
- 	ret = cdns3_set_mode(cdns, USB_DR_MODE_OTG);
- 	if (ret)
-@@ -313,7 +332,7 @@ static irqreturn_t cdns3_drd_irq(int irq, void *data)
- 	if (cdns->in_lpm)
- 		return ret;
- 
--	reg = readl(&cdns->otg_regs->ivect);
-+	reg = readl(&cdns->otg_irq_regs->ivect);
- 
- 	if (!reg)
- 		return IRQ_NONE;
-@@ -332,7 +351,7 @@ static irqreturn_t cdns3_drd_irq(int irq, void *data)
- 		ret = IRQ_WAKE_THREAD;
- 	}
- 
--	writel(~0, &cdns->otg_regs->ivect);
-+	writel(~0, &cdns->otg_irq_regs->ivect);
+@@ -385,26 +385,6 @@ static int cdns3_role_set(struct usb_role_switch *sw, enum usb_role role)
  	return ret;
  }
  
-@@ -347,28 +366,43 @@ int cdns3_drd_init(struct cdns3 *cdns)
- 		return PTR_ERR(regs);
+-static int set_phy_power_on(struct cdns3 *cdns)
+-{
+-	int ret;
+-
+-	ret = phy_power_on(cdns->usb2_phy);
+-	if (ret)
+-		return ret;
+-
+-	ret = phy_power_on(cdns->usb3_phy);
+-	if (ret)
+-		phy_power_off(cdns->usb2_phy);
+-
+-	return ret;
+-}
+-
+-static void set_phy_power_off(struct cdns3 *cdns)
+-{
+-	phy_power_off(cdns->usb3_phy);
+-	phy_power_off(cdns->usb2_phy);
+-}
  
- 	/* Detection of DRD version. Controller has been released
--	 * in two versions. Both are similar, but they have same changes
--	 * in register maps.
--	 * The first register in old version is command register and it's read
--	 * only, so driver should read 0 from it. On the other hand, in v1
--	 * the first register contains device ID number which is not set to 0.
--	 * Driver uses this fact to detect the proper version of
-+	 * in three versions. All are very similar and are software compatible,
-+	 * but they have same changes in register maps.
-+	 * The first register in oldest version is command register and it's
-+	 * read only. Driver should read 0 from it. On the other hand, in v1
-+	 * and v2 the first register contains device ID number which is not
-+	 * set to 0. Driver uses this fact to detect the proper version of
- 	 * controller.
- 	 */
- 	cdns->otg_v0_regs = regs;
- 	if (!readl(&cdns->otg_v0_regs->cmd)) {
- 		cdns->version  = CDNS3_CONTROLLER_V0;
- 		cdns->otg_v1_regs = NULL;
-+		cdns->otg_cdnsp_regs = NULL;
- 		cdns->otg_regs = regs;
-+		cdns->otg_irq_regs = (struct cdns3_otg_irq_regs *)
-+				     &cdns->otg_v0_regs->ien;
- 		writel(1, &cdns->otg_v0_regs->simulate);
- 		dev_dbg(cdns->dev, "DRD version v0 (%08x)\n",
- 			 readl(&cdns->otg_v0_regs->version));
- 	} else {
- 		cdns->otg_v0_regs = NULL;
- 		cdns->otg_v1_regs = regs;
-+		cdns->otg_cdnsp_regs = regs;
-+
- 		cdns->otg_regs = (void *)&cdns->otg_v1_regs->cmd;
--		cdns->version  = CDNS3_CONTROLLER_V1;
--		writel(1, &cdns->otg_v1_regs->simulate);
-+
-+		if (cdns->otg_cdnsp_regs->did == OTG_CDNSP_DID) {
-+			cdns->otg_irq_regs = (struct cdns3_otg_irq_regs *)
-+					      &cdns->otg_cdnsp_regs->ien;
-+			cdns->version  = CDNSP_CONTROLLER_V2;
-+		} else {
-+			cdns->otg_irq_regs = (struct cdns3_otg_irq_regs *)
-+					      &cdns->otg_v1_regs->ien;
-+			writel(1, &cdns->otg_v1_regs->simulate);
-+			cdns->version  = CDNS3_CONTROLLER_V1;
-+		}
-+
- 		dev_dbg(cdns->dev, "DRD version v1 (ID: %08x, rev: %08x)\n",
- 			 readl(&cdns->otg_v1_regs->did),
- 			 readl(&cdns->otg_v1_regs->rid));
-@@ -378,10 +412,17 @@ int cdns3_drd_init(struct cdns3 *cdns)
+ /**
+  * cdns3_wakeup_irq - interrupt handler for wakeup events
+@@ -431,16 +411,13 @@ static irqreturn_t cdns3_wakeup_irq(int irq, void *data)
  
- 	/* Update dr_mode according to STRAP configuration. */
- 	cdns->dr_mode = USB_DR_MODE_OTG;
--	if (state == OTGSTS_STRAP_HOST) {
-+
-+	if ((cdns->version == CDNSP_CONTROLLER_V2 &&
-+	     state == OTGSTS_CDNSP_STRAP_HOST) ||
-+	    (cdns->version != CDNSP_CONTROLLER_V2 &&
-+	     state == OTGSTS_STRAP_HOST)) {
- 		dev_dbg(cdns->dev, "Controller strapped to HOST\n");
- 		cdns->dr_mode = USB_DR_MODE_HOST;
--	} else if (state == OTGSTS_STRAP_GADGET) {
-+	} else if ((cdns->version == CDNSP_CONTROLLER_V2 &&
-+		    state == OTGSTS_CDNSP_STRAP_GADGET) ||
-+		   (cdns->version != CDNSP_CONTROLLER_V2 &&
-+		    state == OTGSTS_STRAP_GADGET)) {
- 		dev_dbg(cdns->dev, "Controller strapped to PERIPHERAL\n");
- 		cdns->dr_mode = USB_DR_MODE_PERIPHERAL;
+ /**
+  * cdns3_probe - probe for cdns3 core device
+- * @pdev: Pointer to cdns3 core platform device
++ * @cdns: Pointer to cdnsp structure.
+  *
+  * Returns 0 on success otherwise negative errno
+  */
+-static int cdns3_probe(struct platform_device *pdev)
++int cdns3_init(struct cdns3 *cdns)
+ {
+-	struct device *dev = &pdev->dev;
+-	struct resource	*res;
+-	struct cdns3 *cdns;
+-	void __iomem *regs;
++	struct device *dev = cdns->dev;
+ 	int ret;
+ 
+ 	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
+@@ -449,87 +426,8 @@ static int cdns3_probe(struct platform_device *pdev)
+ 		return ret;
  	}
+ 
+-	cdns = devm_kzalloc(dev, sizeof(*cdns), GFP_KERNEL);
+-	if (!cdns)
+-		return -ENOMEM;
+-
+-	cdns->dev = dev;
+-	cdns->pdata = dev_get_platdata(dev);
+-
+-	platform_set_drvdata(pdev, cdns);
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_IRQ, "host");
+-	if (!res) {
+-		dev_err(dev, "missing host IRQ\n");
+-		return -ENODEV;
+-	}
+-
+-	cdns->xhci_res[0] = *res;
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "xhci");
+-	if (!res) {
+-		dev_err(dev, "couldn't get xhci resource\n");
+-		return -ENXIO;
+-	}
+-
+-	cdns->xhci_res[1] = *res;
+-
+-	cdns->dev_irq = platform_get_irq_byname(pdev, "peripheral");
+-	if (cdns->dev_irq < 0)
+-		return cdns->dev_irq;
+-
+-	regs = devm_platform_ioremap_resource_byname(pdev, "dev");
+-	if (IS_ERR(regs))
+-		return PTR_ERR(regs);
+-	cdns->dev_regs	= regs;
+-
+-	cdns->otg_irq = platform_get_irq_byname(pdev, "otg");
+-	if (cdns->otg_irq < 0)
+-		return cdns->otg_irq;
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otg");
+-	if (!res) {
+-		dev_err(dev, "couldn't get otg resource\n");
+-		return -ENXIO;
+-	}
+-
+-	cdns->phyrst_a_enable = device_property_read_bool(dev, "cdns,phyrst-a-enable");
+-
+-	cdns->otg_res = *res;
+-
+-	cdns->wakeup_irq = platform_get_irq_byname_optional(pdev, "wakeup");
+-	if (cdns->wakeup_irq == -EPROBE_DEFER)
+-		return cdns->wakeup_irq;
+-	else if (cdns->wakeup_irq == 0)
+-		return -EINVAL;
+-
+-	if (cdns->wakeup_irq < 0) {
+-		dev_dbg(dev, "couldn't get wakeup irq\n");
+-		cdns->wakeup_irq = 0x0;
+-	}
+-
+ 	mutex_init(&cdns->mutex);
+ 
+-	cdns->usb2_phy = devm_phy_optional_get(dev, "cdns3,usb2-phy");
+-	if (IS_ERR(cdns->usb2_phy))
+-		return PTR_ERR(cdns->usb2_phy);
+-
+-	ret = phy_init(cdns->usb2_phy);
+-	if (ret)
+-		return ret;
+-
+-	cdns->usb3_phy = devm_phy_optional_get(dev, "cdns3,usb3-phy");
+-	if (IS_ERR(cdns->usb3_phy))
+-		return PTR_ERR(cdns->usb3_phy);
+-
+-	ret = phy_init(cdns->usb3_phy);
+-	if (ret)
+-		goto err1;
+-
+-	ret = set_phy_power_on(cdns);
+-	if (ret)
+-		goto err2;
+-
+ 	if (device_property_read_bool(dev, "usb-role-switch")) {
+ 		struct usb_role_switch_desc sw_desc = { };
+ 
+@@ -541,9 +439,8 @@ static int cdns3_probe(struct platform_device *pdev)
+ 
+ 		cdns->role_sw = usb_role_switch_register(dev, &sw_desc);
+ 		if (IS_ERR(cdns->role_sw)) {
+-			ret = PTR_ERR(cdns->role_sw);
+ 			dev_warn(dev, "Unable to register Role Switch\n");
+-			goto err3;
++			return PTR_ERR(cdns->role_sw);
+ 		}
+ 	}
+ 
+@@ -555,153 +452,50 @@ static int cdns3_probe(struct platform_device *pdev)
+ 
+ 		if (ret) {
+ 			dev_err(cdns->dev, "couldn't register wakeup irq handler\n");
+-			goto err4;
++			goto role_switch_unregister;
+ 		}
+ 	}
+ 
+ 	ret = cdns3_drd_init(cdns);
+ 	if (ret)
+-		goto err4;
++		goto init_failed;
+ 
+ 	ret = cdns3_core_init_role(cdns);
+ 	if (ret)
+-		goto err4;
++		goto init_failed;
+ 
+ 	spin_lock_init(&cdns->lock);
+-	device_set_wakeup_capable(dev, true);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
+-	if (!(cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW)))
+-		pm_runtime_forbid(dev);
+ 
+-	/*
+-	 * The controller needs less time between bus and controller suspend,
+-	 * and we also needs a small delay to avoid frequently entering low
+-	 * power mode.
+-	 */
+-	pm_runtime_set_autosuspend_delay(dev, 20);
+-	pm_runtime_mark_last_busy(dev);
+-	pm_runtime_use_autosuspend(dev);
+ 	dev_dbg(dev, "Cadence USB3 core: probe succeed\n");
+ 
+ 	return 0;
+-err4:
++init_failed:
+ 	cdns3_drd_exit(cdns);
++role_switch_unregister:
+ 	if (cdns->role_sw)
+ 		usb_role_switch_unregister(cdns->role_sw);
+-err3:
+-	set_phy_power_off(cdns);
+-err2:
+-	phy_exit(cdns->usb3_phy);
+-err1:
+-	phy_exit(cdns->usb2_phy);
+ 
+ 	return ret;
+ }
+ 
+ /**
+  * cdns3_remove - unbind drd driver and clean up
+- * @pdev: Pointer to Linux platform device
++ * @cdns: Pointer to cdnsp structure.
+  *
+  * Returns 0 on success otherwise negative errno
+  */
+-static int cdns3_remove(struct platform_device *pdev)
++int cdns3_remove(struct cdns3 *cdns)
+ {
+-	struct cdns3 *cdns = platform_get_drvdata(pdev);
+-
+-	pm_runtime_get_sync(&pdev->dev);
+-	pm_runtime_disable(&pdev->dev);
+-	pm_runtime_put_noidle(&pdev->dev);
+ 	cdns3_exit_roles(cdns);
+ 	usb_role_switch_unregister(cdns->role_sw);
+-	set_phy_power_off(cdns);
+-	phy_exit(cdns->usb2_phy);
+-	phy_exit(cdns->usb3_phy);
+-	return 0;
+-}
+-
+-#ifdef CONFIG_PM
+-
+-static int cdns3_set_platform_suspend(struct device *dev,
+-		bool suspend, bool wakeup)
+-{
+-	struct cdns3 *cdns = dev_get_drvdata(dev);
+-	int ret = 0;
+-
+-	if (cdns->pdata && cdns->pdata->platform_suspend)
+-		ret = cdns->pdata->platform_suspend(dev, suspend, wakeup);
+-
+-	return ret;
+-}
+-
+-static int cdns3_controller_suspend(struct device *dev, pm_message_t msg)
+-{
+-	struct cdns3 *cdns = dev_get_drvdata(dev);
+-	bool wakeup;
+-	unsigned long flags;
+-
+-	if (cdns->in_lpm)
+-		return 0;
+-
+-	if (PMSG_IS_AUTO(msg))
+-		wakeup = true;
+-	else
+-		wakeup = device_may_wakeup(dev);
+-
+-	cdns3_set_platform_suspend(cdns->dev, true, wakeup);
+-	set_phy_power_off(cdns);
+-	spin_lock_irqsave(&cdns->lock, flags);
+-	cdns->in_lpm = true;
+-	spin_unlock_irqrestore(&cdns->lock, flags);
+-	dev_dbg(cdns->dev, "%s ends\n", __func__);
+ 
+ 	return 0;
+ }
+ 
+-static int cdns3_controller_resume(struct device *dev, pm_message_t msg)
+-{
+-	struct cdns3 *cdns = dev_get_drvdata(dev);
+-	int ret;
+-	unsigned long flags;
+-
+-	if (!cdns->in_lpm)
+-		return 0;
+-
+-	ret = set_phy_power_on(cdns);
+-	if (ret)
+-		return ret;
+-
+-	cdns3_set_platform_suspend(cdns->dev, false, false);
+-
+-	spin_lock_irqsave(&cdns->lock, flags);
+-	if (cdns->roles[cdns->role]->resume && !PMSG_IS_AUTO(msg))
+-		cdns->roles[cdns->role]->resume(cdns, false);
+-
+-	cdns->in_lpm = false;
+-	spin_unlock_irqrestore(&cdns->lock, flags);
+-	if (cdns->wakeup_pending) {
+-		cdns->wakeup_pending = false;
+-		enable_irq(cdns->wakeup_irq);
+-	}
+-	dev_dbg(cdns->dev, "%s ends\n", __func__);
+-
+-	return ret;
+-}
+-
+-static int cdns3_runtime_suspend(struct device *dev)
+-{
+-	return cdns3_controller_suspend(dev, PMSG_AUTO_SUSPEND);
+-}
+-
+-static int cdns3_runtime_resume(struct device *dev)
+-{
+-	return cdns3_controller_resume(dev, PMSG_AUTO_RESUME);
+-}
+ #ifdef CONFIG_PM_SLEEP
+-
+-static int cdns3_suspend(struct device *dev)
++int cdns3_suspend(struct cdns3 *cdns)
+ {
+-	struct cdns3 *cdns = dev_get_drvdata(dev);
++	struct device *dev = cdns->dev;
+ 	unsigned long flags;
+ 
+ 	if (pm_runtime_status_suspended(dev))
+@@ -713,52 +507,22 @@ static int cdns3_suspend(struct device *dev)
+ 		spin_unlock_irqrestore(&cdns->lock, flags);
+ 	}
+ 
+-	return cdns3_controller_suspend(dev, PMSG_SUSPEND);
++	return 0;
+ }
+ 
+-static int cdns3_resume(struct device *dev)
++int cdns3_resume(struct cdns3 *cdns, u8 set_active)
+ {
+-	int ret;
++	struct device *dev = cdns->dev;
+ 
+-	ret = cdns3_controller_resume(dev, PMSG_RESUME);
+-	if (ret)
+-		return ret;
++	if (cdns->roles[cdns->role]->resume)
++		cdns->roles[cdns->role]->resume(cdns, false);
+ 
+-	pm_runtime_disable(dev);
+-	pm_runtime_set_active(dev);
+-	pm_runtime_enable(dev);
++	if (set_active) {
++		pm_runtime_disable(dev);
++		pm_runtime_set_active(dev);
++		pm_runtime_enable(dev);
++	}
+ 
+-	return ret;
++	return 0;
+ }
+ #endif /* CONFIG_PM_SLEEP */
+-#endif /* CONFIG_PM */
+-
+-static const struct dev_pm_ops cdns3_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(cdns3_suspend, cdns3_resume)
+-	SET_RUNTIME_PM_OPS(cdns3_runtime_suspend, cdns3_runtime_resume, NULL)
+-};
+-
+-#ifdef CONFIG_OF
+-static const struct of_device_id of_cdns3_match[] = {
+-	{ .compatible = "cdns,usb3" },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(of, of_cdns3_match);
+-#endif
+-
+-static struct platform_driver cdns3_driver = {
+-	.probe		= cdns3_probe,
+-	.remove		= cdns3_remove,
+-	.driver		= {
+-		.name	= "cdns-usb3",
+-		.of_match_table	= of_match_ptr(of_cdns3_match),
+-		.pm	= &cdns3_pm_ops,
+-	},
+-};
+-
+-module_platform_driver(cdns3_driver);
+-
+-MODULE_ALIAS("platform:cdns3");
+-MODULE_AUTHOR("Pawel Laszczak <pawell@cadence.com>");
+-MODULE_LICENSE("GPL v2");
+-MODULE_DESCRIPTION("Cadence USB3 DRD Controller Driver");
+diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
+index 0d87871499ea..c97c2bb1582f 100644
+--- a/drivers/usb/cdns3/core.h
++++ b/drivers/usb/cdns3/core.h
+@@ -118,5 +118,11 @@ struct cdns3 {
+ };
+ 
+ int cdns3_hw_role_switch(struct cdns3 *cdns);
++int cdns3_init(struct cdns3 *cdns);
++int cdns3_remove(struct cdns3 *cdns);
+ 
++#ifdef CONFIG_PM_SLEEP
++int cdns3_resume(struct cdns3 *cdns, u8 set_active);
++int cdns3_suspend(struct cdns3 *cdns);
++#endif /* CONFIG_PM_SLEEP */
+ #endif /* __LINUX_CDNS3_CORE_H */
+diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
+index 95863d44e3e0..ed8cde91a02c 100644
+--- a/drivers/usb/cdns3/drd.c
++++ b/drivers/usb/cdns3/drd.c
+@@ -14,7 +14,6 @@
+ #include <linux/delay.h>
+ #include <linux/iopoll.h>
+ #include <linux/usb/otg.h>
+-#include <linux/phy/phy.h>
+ 
+ #include "gadget.h"
+ #include "drd.h"
 diff --git a/drivers/usb/cdns3/drd.h b/drivers/usb/cdns3/drd.h
-index f1ccae285a16..a767b6893938 100644
+index a767b6893938..8f3625ad4ef8 100644
 --- a/drivers/usb/cdns3/drd.h
 +++ b/drivers/usb/cdns3/drd.h
-@@ -1,8 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * Cadence USB3 DRD header file.
-+ * Cadence USB3 and USBSSP DRD header file.
-  *
-- * Copyright (C) 2018-2019 Cadence.
-+ * Copyright (C) 2018-2020 Cadence.
-  *
-  * Author: Pawel Laszczak <pawell@cadence.com>
-  */
-@@ -13,7 +13,7 @@
- #include <linux/phy/phy.h>
+@@ -10,7 +10,6 @@
+ #define __LINUX_CDNS3_DRD
+ 
+ #include <linux/usb/otg.h>
+-#include <linux/phy/phy.h>
  #include "core.h"
  
--/*  DRD register interface for version v1. */
-+/*  DRD register interface for version v1 of cdns3 driver. */
- struct cdns3_otg_regs {
- 	__le32 did;
- 	__le32 rid;
-@@ -38,7 +38,7 @@ struct cdns3_otg_regs {
- 	__le32 ctrl2;
- };
- 
--/*  DRD register interface for version v0. */
-+/*  DRD register interface for version v0 of cdns3 driver. */
- struct cdns3_otg_legacy_regs {
- 	__le32 cmd;
- 	__le32 sts;
-@@ -57,14 +57,45 @@ struct cdns3_otg_legacy_regs {
- 	__le32 ctrl1;
- };
- 
-+/* DRD register interface for cdnsp driver */
-+struct cdnsp_otg_regs {
-+	__le32 did;
-+	__le32 rid;
-+	__le32 cfgs1;
-+	__le32 cfgs2;
-+	__le32 cmd;
-+	__le32 sts;
-+	__le32 state;
-+	__le32 ien;
-+	__le32 ivect;
-+	__le32 tmr;
-+	__le32 simulate;
-+	__le32 adpbc_sts;
-+	__le32 adp_ramp_time;
-+	__le32 adpbc_ctrl1;
-+	__le32 adpbc_ctrl2;
-+	__le32 override;
-+	__le32 vbusvalid_dbnc_cfg;
-+	__le32 sessvalid_dbnc_cfg;
-+	__le32 susp_timing_ctrl;
-+};
-+
-+#define OTG_CDNSP_DID	0x0004034E
-+
- /*
-- * Common registers interface for both version of DRD.
-+ * Common registers interface for both CDNS3 and CDNSP version of DRD.
-  */
- struct cdns3_otg_common_regs {
- 	__le32 cmd;
- 	__le32 sts;
- 	__le32 state;
--	__le32 different1;
-+};
-+
-+/*
-+ * Interrupt related registers. This registers are mapped in different
-+ * location for CDNSP controller.
-+ */
-+struct cdns3_otg_irq_regs {
- 	__le32 ien;
- 	__le32 ivect;
- };
-@@ -92,9 +123,9 @@ struct cdns3_otg_common_regs {
- #define OTGCMD_DEV_BUS_DROP		BIT(8)
- /* Drop the bus for Host mode*/
- #define OTGCMD_HOST_BUS_DROP		BIT(9)
--/* Power Down USBSS-DEV. */
-+/* Power Down USBSS-DEV - only for CDNS3.*/
- #define OTGCMD_DEV_POWER_OFF		BIT(11)
--/* Power Down CDNSXHCI. */
-+/* Power Down CDNSXHCI - only for CDNS3. */
- #define OTGCMD_HOST_POWER_OFF		BIT(12)
- 
- /* OTGIEN - bitmasks */
-@@ -123,20 +154,31 @@ struct cdns3_otg_common_regs {
- #define OTGSTS_OTG_NRDY_MASK		BIT(11)
- #define OTGSTS_OTG_NRDY(p)		((p) & OTGSTS_OTG_NRDY_MASK)
- /*
-- * Value of the strap pins.
-+ * Value of the strap pins for:
-+ * CDNS3:
-  * 000 - no default configuration
-  * 010 - Controller initiall configured as Host
-  * 100 - Controller initially configured as Device
-+ * CDNSP:
-+ * 000 - No default configuration.
-+ * 010 - Controller initiall configured as Host.
-+ * 100 - Controller initially configured as Device.
-  */
- #define OTGSTS_STRAP(p)			(((p) & GENMASK(14, 12)) >> 12)
- #define OTGSTS_STRAP_NO_DEFAULT_CFG	0x00
- #define OTGSTS_STRAP_HOST_OTG		0x01
- #define OTGSTS_STRAP_HOST		0x02
- #define OTGSTS_STRAP_GADGET		0x04
-+#define OTGSTS_CDNSP_STRAP_HOST		0x01
-+#define OTGSTS_CDNSP_STRAP_GADGET	0x02
-+
- /* Host mode is turned on. */
--#define OTGSTS_XHCI_READY		BIT(26)
-+#define OTGSTS_CDNS3_XHCI_READY		BIT(26)
-+#define OTGSTS_CDNSP_XHCI_READY		BIT(27)
-+
- /* "Device mode is turned on .*/
--#define OTGSTS_DEV_READY		BIT(27)
-+#define OTGSTS_CDNS3_DEV_READY		BIT(27)
-+#define OTGSTS_CDNSP_DEV_READY		BIT(26)
- 
- /* OTGSTATE- bitmasks */
- #define OTGSTATE_DEV_STATE_MASK		GENMASK(2, 0)
-@@ -152,6 +194,8 @@ struct cdns3_otg_common_regs {
- #define OVERRIDE_IDPULLUP		BIT(0)
- /* Only for CDNS3_CONTROLLER_V0 version */
- #define OVERRIDE_IDPULLUP_V0		BIT(24)
-+/* Vbusvalid/Sesvalid override select. */
-+#define OVERRIDE_SESS_VLD_SEL		BIT(10)
- 
- /* PHYRST_CFG - bitmasks */
- #define PHYRST_CFG_PHYRST_A_ENABLE     BIT(0)
-@@ -170,6 +214,5 @@ int cdns3_drd_gadget_on(struct cdns3 *cdns);
- void cdns3_drd_gadget_off(struct cdns3 *cdns);
- int cdns3_drd_host_on(struct cdns3 *cdns);
- void cdns3_drd_host_off(struct cdns3 *cdns);
--int cdns3_set_mode(struct cdns3 *cdns, enum usb_dr_mode mode);
- 
- #endif /* __LINUX_CDNS3_DRD */
+ /*  DRD register interface for version v1 of cdns3 driver. */
 -- 
 2.17.1
 
