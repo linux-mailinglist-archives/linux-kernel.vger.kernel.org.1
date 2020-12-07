@@ -2,195 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E989D2D15DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F2E2D15E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgLGQWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:22:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:45175 "EHLO mga09.intel.com"
+        id S1726883AbgLGQYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:24:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgLGQWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:22:00 -0500
-IronPort-SDR: 9GgYIDLzIFh6ho9HOjYuP6ok3wvWqVDuJjTd8o8hKQtfoOTGKWBZrZpmcFGFIuxvTzal9Zryrx
- 3iEqygdyZUjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="173876012"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="173876012"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 08:20:13 -0800
-IronPort-SDR: GLrS16k9ZSgyMUmmIqRt/OuboMmhUDssZftBuPHS4JbytnwElwPGvpb4gz9NtxU26qwSYwJRBt
- KrKhds2u7Eig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="407200993"
-Received: from cvg-ubt08.iil.intel.com (HELO [10.185.176.12]) ([10.185.176.12])
-  by orsmga001.jf.intel.com with ESMTP; 07 Dec 2020 08:19:57 -0800
-Subject: Re: [RFC PATCH v2] do_exit(): panic() recursion detected
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201207124433.4017265-1-vladimir.kondratiev@linux.intel.com>
- <da3fece2-664c-0ac3-2d22-3ce29bf1bfa8@linux.intel.com>
- <87pn3ly5u3.fsf@x220.int.ebiederm.org>
-From:   Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
-Message-ID: <f6f1208a-12c4-77b8-2e1d-fb4a03a2211a@linux.intel.com>
-Date:   Mon, 7 Dec 2020 18:19:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1725863AbgLGQYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:24:16 -0500
+Date:   Mon, 7 Dec 2020 08:23:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607358215;
+        bh=RtjDqwhG7C9VhOOl+aSC4bpaP4bWy/pDESZGvoZx9zU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DU++70I+51+gNFDYK6kI4FDLSxpKQIioYgO98XUgQD5TEitNO8fdoO6ZTJvlt/1/W
+         p098+X1lEHR6GVBVarJB9paZJikaNWVh9rC9zVEOnF+38dt7Cb1DVavSB3d4Ou94Lv
+         006HQuqQMKuB1t4xq9n7jvVjFRadF035QrAsnLtr19qUgWftR3pj/UUTq3AvIs1Hym
+         apmeZ0zxAs9vRgvpqBojlDjk/diVfwzykjYg6t3wsQz9fbFC7g/cbazu07923RBEKI
+         dLWNhiGeS/dEfhyC3uIsO3x3y69Ux7EVAFWzUmsn/F3O/o8RYgp+0G+SG6wGe1fmvi
+         xEQpVuRG7eSQg==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Robin Hsu <robinh3123@gmail.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
+        linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
+Subject: Re: [PATCH v2 3/3] f2fs-tools:sload.f2fs compress: Fixed automake
+Message-ID: <X85XBTIuQghbh7Cw@google.com>
+References: <20201207064250.272240-1-robinh3123@gmail.com>
+ <20201207064250.272240-4-robinh3123@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87pn3ly5u3.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207064250.272240-4-robinh3123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I see 2 paths how "bad things" can cause recursive do_exit - various 
-traps that go through die() and therefore covered by panic_on_oops; and 
-do_group_exit() as result of fatal signal.
+On 12/07, Robin Hsu wrote:
+> From: Robin Hsu <robinhsu@google.com>
+> 
+> Fixed automake for sload.f2fs compression support
+> 
+> ./configure now will by default depends on liblzo2 and liblz4.
+> 
+> To compile without liblzo2 (and thus not support liblzo2 compression),
+> run ./configure with '--without-lzo2' option.
+> 
+> To compile without liblz4 (and thus not support liblz4 compression),
+> run ./configure with '--without-lz4' option.
+> 
+> Test: Build with automake OK on glinux
+> Bug: 170918502
+> Signed-off-by: Robin Hsu <robinhsu@google.com>
+> Change-Id: I25d339e4cab4ca196781da89fc3df3e13f869234
+> ---
+>  configure.ac     | 32 ++++++++++++++++++++++++++++++++
+>  fsck/Makefile.am |  9 ++++++---
+>  2 files changed, 38 insertions(+), 3 deletions(-)
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 1e5619d..3a357b2 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -44,6 +44,14 @@ AC_ARG_WITH([blkid],
+>  	AS_HELP_STRING([--without-blkid],
+>  	  [Ignore presence of libblkid and disable blkid support]))
+>  
+> +AC_ARG_WITH([lzo2],
+> +	AS_HELP_STRING([--without-lzo2],
+> +	  [Ignore liblzo ver.2 for sload (not supporting lzo compression)]))
+> +
+> +AC_ARG_WITH([lz4],
+> +	AS_HELP_STRING([--without-lz4],
+> +	  [Ignore liblz4 for sload (not supporting lz4 compression)]))
+> +
+>  # Checks for programs.
+>  AC_PROG_CC
+>  AC_PROG_LIBTOOL
+> @@ -52,6 +60,30 @@ AC_PATH_PROG([LDCONFIG], [ldconfig],
+>         [$PATH:/sbin])
+>  
+>  # Checks for libraries.
+> +AS_IF([test "x$with_lzo2" != xno],
+> +            [AC_CHECK_LIB([lzo2], [main],
+> +              [AC_SUBST([liblzo2_LIBS], ["-llzo2"])
+> +               AC_DEFINE([HAVE_LIBLZO2], [1],
+> +                         [Define if you have liblzo2])
+> +              ],
+> +              [if test "x$with_lzo2" != xcheck; then
+> +                 AC_MSG_FAILURE(
+> +                   [--with-lzo2 was given (or by default), but test for liblzo2 failed])
+> +               fi
+> +              ], [])])
+> +
+> +AS_IF([test "x$with_lz4" != xno],
+> +            [AC_CHECK_LIB([lz4], [main],
+> +              [AC_SUBST([liblz4_LIBS], ["-llz4"])
+> +               AC_DEFINE([HAVE_LIBLZ4], [1],
+> +                         [Define if you have liblz4])
+> +              ],
+> +              [if test "x$with_lz4" != xcheck; then
+> +                 AC_MSG_FAILURE(
+> +                   [--with-lz4 was given (or by default), but test for liblz4 failed])
+> +               fi
+> +              ], [])])
+> +
 
-Provided one add "panic on coredump" functionality, path through 
-do_group_exit() covered as well.
+Please don't bother users to be aware of libraries only for sload.f2fs using
+compression.
 
-Let's drop this patch.
-
-Thanks, Vladimir
-
-On 12/7/20 5:49 PM, Eric W. Biederman wrote:
-> Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com> writes:
-> 
->> Please ignore version 1 of the patch - it was sent from wrong mail address.
->>
->> To clarify the reason:
->>
->> Situation where do_exit() re-entered, discovered by static code analysis.
->> For safety critical system, it is better to panic() when minimal chance of
->> corruption detected. For this reason, we also panic on fatal signal delivery -
->> patch for this not submitted yet.
-> 
-> What did the static code analysis say?  What triggers the recursion.
-> 
-> What makes it safe to even call panic on this code path?  Is there
-> enough kernel stack?
-> 
-> My sense is that if this actually can happen and is a real concern,
-> and that it is safe to do something on this code path it is probably
-> better just to ooops.  That way if someone is trying to debug such
-> a recursion they will have a backtrace to work with.  Plus panic
-> on oops will work.
-> 
-> Eric
-> 
->>
->> On 12/7/20 2:44 PM, Vladimir Kondratiev wrote:
->>> Recursive do_exit() is symptom of compromised kernel integrity.
->>> For safety critical systems, it may be better to
->>> panic() in this case to minimize risk.
->>>
->>> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
->>> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
->>> ---
->>>    Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
->>>    include/linux/kernel.h                          | 1 +
->>>    kernel/exit.c                                   | 7 +++++++
->>>    kernel/sysctl.c                                 | 9 +++++++++
->>>    4 files changed, 23 insertions(+)
->>>
->>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->>> index 44fde25bb221..6e12a6804557 100644
->>> --- a/Documentation/admin-guide/kernel-parameters.txt
->>> +++ b/Documentation/admin-guide/kernel-parameters.txt
->>> @@ -3508,6 +3508,12 @@
->>>    			bit 4: print ftrace buffer
->>>    			bit 5: print all printk messages in buffer
->>>    +	panic_on_exit_recursion
->>> +			panic() when do_exit() recursion detected, rather then
->>> +			try to stay running whenever possible.
->>> +			Useful on safety critical systems; re-entry in do_exit
->>> +			is a symptom of compromised kernel integrity.
->>> +
->>>    	panic_on_taint=	Bitmask for conditionally calling panic() in add_taint()
->>>    			Format: <hex>[,nousertaint]
->>>    			Hexadecimal bitmask representing the set of TAINT flags
->>> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
->>> index 2f05e9128201..5afb20534cb2 100644
->>> --- a/include/linux/kernel.h
->>> +++ b/include/linux/kernel.h
->>> @@ -539,6 +539,7 @@ extern int sysctl_panic_on_rcu_stall;
->>>    extern int sysctl_panic_on_stackoverflow;
->>>      extern bool crash_kexec_post_notifiers;
->>> +extern int panic_on_exit_recursion;
->>>      /*
->>>     * panic_cpu is used for synchronizing panic() and crash_kexec() execution. It
->>> diff --git a/kernel/exit.c b/kernel/exit.c
->>> index 1f236ed375f8..162799a8b539 100644
->>> --- a/kernel/exit.c
->>> +++ b/kernel/exit.c
->>> @@ -68,6 +68,9 @@
->>>    #include <asm/unistd.h>
->>>    #include <asm/mmu_context.h>
->>>    +int panic_on_exit_recursion __read_mostly;
->>> +core_param(panic_on_exit_recursion, panic_on_exit_recursion, int, 0644);
->>> +
->>>    static void __unhash_process(struct task_struct *p, bool group_dead)
->>>    {
->>>    	nr_threads--;
->>> @@ -757,6 +760,10 @@ void __noreturn do_exit(long code)
->>>    	 */
->>>    	if (unlikely(tsk->flags & PF_EXITING)) {
->>>    		pr_alert("Fixing recursive fault but reboot is needed!\n");
->>> +		if (panic_on_exit_recursion)
->>> +			panic("Recursive do_exit() detected in %s[%d]\n",
->>> +			      current->comm, task_pid_nr(current));
->>> +
->>>    		futex_exit_recursive(tsk);
->>>    		set_current_state(TASK_UNINTERRUPTIBLE);
->>>    		schedule();
->>> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
->>> index afad085960b8..bb397fba2c42 100644
->>> --- a/kernel/sysctl.c
->>> +++ b/kernel/sysctl.c
->>> @@ -2600,6 +2600,15 @@ static struct ctl_table kern_table[] = {
->>>    		.extra2		= &one_thousand,
->>>    	},
->>>    #endif
->>> +	{
->>> +		.procname	= "panic_on_exit_recursion",
->>> +		.data		= &panic_on_exit_recursion,
->>> +		.maxlen		= sizeof(int),
->>> +		.mode		= 0644,
->>> +		.proc_handler	= proc_dointvec_minmax,
->>> +		.extra1		= SYSCTL_ZERO,
->>> +		.extra2		= SYSCTL_ONE,
->>> +	},
->>>    	{
->>>    		.procname	= "panic_on_warn",
->>>    		.data		= &panic_on_warn,
->>>
+>  PKG_CHECK_MODULES([libuuid], [uuid])
+>  
+>  AS_IF([test "x$with_selinux" != "xno"],
+> diff --git a/fsck/Makefile.am b/fsck/Makefile.am
+> index 1fc7310..74bc4b8 100644
+> --- a/fsck/Makefile.am
+> +++ b/fsck/Makefile.am
+> @@ -3,12 +3,15 @@
+>  AM_CPPFLAGS = ${libuuid_CFLAGS} -I$(top_srcdir)/include
+>  AM_CFLAGS = -Wall
+>  sbin_PROGRAMS = fsck.f2fs
+> -noinst_HEADERS = common.h dict.h dqblk_v2.h f2fs.h fsck.h node.h quotaio.h quotaio_tree.h quotaio_v2.h xattr.h
+> +noinst_HEADERS = common.h dict.h dqblk_v2.h f2fs.h fsck.h node.h quotaio.h \
+> +		quotaio_tree.h quotaio_v2.h xattr.h compress_wrapper.h
+>  include_HEADERS = $(top_srcdir)/include/quota.h
+>  fsck_f2fs_SOURCES = main.c fsck.c dump.c mount.c defrag.c resize.c \
+> -		node.c segment.c dir.c sload.c xattr.c \
+> +		node.c segment.c dir.c sload.c xattr.c compress_wrapper.c \
+>  		dict.c mkquota.c quotaio.c quotaio_tree.c quotaio_v2.c
+> -fsck_f2fs_LDADD = ${libselinux_LIBS} ${libuuid_LIBS} $(top_builddir)/lib/libf2fs.la
+> +fsck_f2fs_LDADD = ${libselinux_LIBS} ${libuuid_LIBS} \
+> +	${liblzo2_LIBS} ${liblz4_LIBS} \
+> +	$(top_builddir)/lib/libf2fs.la
+>  
+>  install-data-hook:
+>  	ln -sf fsck.f2fs $(DESTDIR)/$(sbindir)/dump.f2fs
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
