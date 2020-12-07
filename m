@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F80D2D0DA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F802D0D9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgLGKAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:00:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726482AbgLGKAi (ORCPT
+        id S1726338AbgLGJ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:59:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgLGJ7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:00:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607335152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wZ6b7tmrNj+Z3UgMZscrtE7hUQNOmYAzTygWMxGHxZE=;
-        b=J39gPqRfjDKxV7Q23VRfwrY+hCeBFPbbk7VvwGfHhqGNPAtNrpDpl/Rk9bHUDQBZawptqJ
-        0R/+6wYH8OPnPwrJGDBdCkyrtB6lS7mVzdFDliPk2BwLAX7BsqhDVU5Om6I+jdLZRv/l6w
-        acgok4PGXdRzL4znMoIBBvESJAfK3jU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-3QC3-LGMPGmGqZjSvQwXVg-1; Mon, 07 Dec 2020 04:59:10 -0500
-X-MC-Unique: 3QC3-LGMPGmGqZjSvQwXVg-1
-Received: by mail-wm1-f72.google.com with SMTP id f12so5122757wmf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:59:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wZ6b7tmrNj+Z3UgMZscrtE7hUQNOmYAzTygWMxGHxZE=;
-        b=bFWIdJIl/a2oyHrT4d+RCqHNXjh7qs6B3qwz64F7+V8ClxWL+9HjTkM9poLGTUtUV0
-         2SC4jV6gXcOih1w9vGAhmUK6079MYUCc9mPIhOC5FTZhAY120kkhbU3TI15q79YAqbOM
-         YQpKWneVKF3gT7c1fWAlX+CxzAmHMyo6NfhOL25HquRxWsk3KiFLOtISNH2PM6His3Sm
-         Hc8qEFGSpR4dzjg8TStSVvNVWf1FMRY4UzJmP2UnGTDHBCPSp4tyYgTqrxUuxQMcvQPg
-         5aE4Z3jkETP5gPsy7Rwhr+9meMDuPvMdH/7Nd/5yTGLlRe9PfIy807YuG0kJXJ8aNIVt
-         74Ew==
-X-Gm-Message-State: AOAM533/FszO6EnREmgDGVYlftNvOLwKICYWWmbrjhFmBV4EjFGeSZRy
-        7maFkxNDGSFPZpmCIbFi/wvlC5ZWbD8OTJnvQe9vRBFNNKxqTrqcGudqn/4hVyey+CyzO1KOfuJ
-        Uyc7knKElgqQabkC0jR72xIqV
-X-Received: by 2002:a1c:b657:: with SMTP id g84mr17392381wmf.181.1607335149353;
-        Mon, 07 Dec 2020 01:59:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxCFQaeUZVyXJgZGAWNTmlrtXNDqvE9bdYCTsRkM15YEqF3CEjIzOf1fKC8mI/ujuq8ZgeFaw==
-X-Received: by 2002:a1c:b657:: with SMTP id g84mr17392365wmf.181.1607335149141;
-        Mon, 07 Dec 2020 01:59:09 -0800 (PST)
-Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
-        by smtp.gmail.com with ESMTPSA id h98sm15379928wrh.69.2020.12.07.01.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:59:08 -0800 (PST)
-Date:   Mon, 7 Dec 2020 10:59:05 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
- vsock address data structure
-Message-ID: <20201207095905.q7rczeh54n2zy7fo@steredhat>
-References: <20201204170235.84387-1-andraprs@amazon.com>
- <20201204170235.84387-2-andraprs@amazon.com>
+        Mon, 7 Dec 2020 04:59:54 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14FCC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:59:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Qd2+AlNY9X1REh7opX5R/Afc8FG3yj+a1rEOCbrIfh4=; b=kWsWVo6E7Yc8h2Jl7DGzJTgGEO
+        OwmgT0koMJLgiEd3nKsjklgnDKoqi9123olRq6wCa6/liDHWlONN9Zxooyf/lKrsNtwp7wCfjEFCg
+        AaTDCkVJII6Dr7mXMLVR+mBTH6oRut/Clfs6fn4RUW5rvKJTXZbgqq1wC+l7ASVO5bbJc9C18Lz3X
+        Bf9chnO54FjBSJgLThQtVf8QHxceNIgbBd6+3dXbNwLkVz5bj/WlC0xhl43Lo9AhOZ8s5jJwukalP
+        D4vxqc5eo4ZT2YbXFBGo4hKCq9JavKJeD6VY+TIxJGGOxd5ZsJGLzQEykYYCE7/9qpM5dW+NTB4LH
+        /uj7OMuQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmDIU-0002YC-Ns; Mon, 07 Dec 2020 09:59:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0374F301478;
+        Mon,  7 Dec 2020 10:59:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D40A221053394; Mon,  7 Dec 2020 10:59:07 +0100 (CET)
+Date:   Mon, 7 Dec 2020 10:59:07 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: tick/sched: Make jiffies update quick check more robust
+Message-ID: <20201207095907.GI3040@hirez.programming.kicks-ass.net>
+References: <87czzpc02w.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204170235.84387-2-andraprs@amazon.com>
+In-Reply-To: <87czzpc02w.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 07:02:32PM +0200, Andra Paraschiv wrote:
->vsock enables communication between virtual machines and the host they
->are running on. With the multi transport support (guest->host and
->host->guest), nested VMs can also use vsock channels for communication.
->
->In addition to this, by default, all the vsock packets are forwarded to
->the host, if no host->guest transport is loaded. This behavior can be
->implicitly used for enabling vsock communication between sibling VMs.
->
->Add a flags field in the vsock address data structure that can be used
->to explicitly mark the vsock connection as being targeted for a certain
->type of communication. This way, can distinguish between different use
->cases such as nested VMs and sibling VMs.
->
->Use the already available "svm_reserved1" field and mark it as a flags
->field instead. This field can be set when initializing the vsock address
->variable used for the connect() call.
->
->Changelog
->
->v1 -> v2
->
->* Update the field name to "svm_flags".
->* Split the current patch in 2 patches.
+On Fri, Dec 04, 2020 at 11:55:19AM +0100, Thomas Gleixner wrote:
+>  	/*
+> +	 * 64bit can do a quick check without holding jiffies lock and
+> +	 * without looking at the sequence count. The smp_load_acquire()
+>  	 * pairs with the update done later in this function.
+>  	 *
+> +	 * 32bit cannot do that because the store of tick_next_period
+> +	 * consists of two 32bit stores and the first store could move it
+> +	 * to a random point in the future.
+>  	 */
+> +	if (IS_ENABLED(CONFIG_64BIT)) {
+> +		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
+> +			return;
 
-Usually the changelog goes after the 3 dashes, but I'm not sure there is 
-a strict rule :-)
+Explicit ACQUIRE
 
-Anyway the patch LGTM:
+> +	} else {
+> +		unsigned int seq;
+> +
+> +		/*
+> +		 * Avoid contention on jiffies_lock and protect the quick
+> +		 * check with the sequence count.
+> +		 */
+> +		do {
+> +			seq = read_seqcount_begin(&jiffies_seq);
+> +			nextp = tick_next_period;
+> +		} while (read_seqcount_retry(&jiffies_seq, seq));
+> +
+> +		if (ktime_before(now, nextp))
+> +			return;
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Actually has an implicit ACQUIRE:
 
->
->Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
->---
-> include/uapi/linux/vm_sockets.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
->index fd0ed7221645d..46735376a57a8 100644
->--- a/include/uapi/linux/vm_sockets.h
->+++ b/include/uapi/linux/vm_sockets.h
->@@ -145,7 +145,7 @@
->
-> struct sockaddr_vm {
-> 	__kernel_sa_family_t svm_family;
->-	unsigned short svm_reserved1;
->+	unsigned short svm_flags;
-> 	unsigned int svm_port;
-> 	unsigned int svm_cid;
-> 	unsigned char svm_zero[sizeof(struct sockaddr) -
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
->
+	read_seqcount_retry() implies smp_rmb(), which ensures
+	LOAD->LOAD order, IOW any later load must happen after our
+	@tick_next_period load.
 
+	Then it has a control dependency on ktime_before(,nextp), which
+	ensures LOAD->STORE order.
+
+	Combined we have a LOAD->{LOAD,STORE} order on the
+	@tick_next_period load, IOW ACQUIRE.
+
+> +	}
+>  
+> +	/* Quick check failed, i.e. update is required. */
+>  	raw_spin_lock(&jiffies_lock);
+
+Another ACQUIRE, which means the above ACQUIRE only ensures we load the
+lock value after?
+
+Or are we trying to guarantee the caller is sure to observe the new
+jiffies value if we return?
+
+> +	/*
+> +	 * Reevaluate with the lock held. Another CPU might have done the
+> +	 * update already.
+> +	 */
+>  	if (ktime_before(now, tick_next_period)) {
+>  		raw_spin_unlock(&jiffies_lock);
+>  		return;
+> @@ -112,11 +118,25 @@ static void tick_do_update_jiffies64(kti
+>  	jiffies_64 += ticks;
+>  
+>  	/*
+> +	 * Keep the tick_next_period variable up to date.
+>  	 */
+> +	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
+> +
+> +	if (IS_ENABLED(CONFIG_64BIT)) {
+> +		/*
+> +		 * Pairs with smp_load_acquire() in the lockless quick
+> +		 * check above and ensures that the update to jiffies_64 is
+> +		 * not reordered vs. the store to tick_next_period, neither
+> +		 * by the compiler nor by the CPU.
+> +		 */
+> +		smp_store_release(&tick_next_period, nextp);
+> +	} else {
+> +		/*
+> +		 * A plain store is good enough on 32bit as the quick check
+> +		 * above is protected by the sequence count.
+> +		 */
+> +		tick_next_period = nextp;
+> +	}
+>  
+>  	/*
+>  	 * Release the sequence count. calc_global_load() below is not
