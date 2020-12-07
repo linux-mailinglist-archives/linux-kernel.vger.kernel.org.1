@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C652D1B8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5692D1B92
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgLGVAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgLGVAf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:00:35 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18BCC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:59:54 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id 19so6493208qkm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SsoIYjBoSOJL9ZsEeEbVAcU4nkxuyAtiLgrYShov/wE=;
-        b=i1it63IPF7Tvk8uDkG0531W5MNt7LWyQnwaM2j4BTI/61OlhQiI+VJ+wpKpxZtDvPg
-         vEbdjngT0eARrKE1T1aDZ5DUhPlRd6VaejmMAMYVKthNBOHrPSsuBBQ1ZuENokzB6dtF
-         yhrP4xK+GkxHP/lT20KBd8CQD8v9ddhEUt4KyKzk90DAVyxhAhPv2/fOScXi86WtSoDS
-         pxFsfOu40Viw5B0+ZIGnOOGOs/6fZWDZT73kzeOZ+cW8r4ZP6WIiNfwcU4nfgYwCvIn9
-         HnuENOVvoflwLViv82Sro/eJNtOgTprMrJh9VG29iHH8wAWpwGeiaNDBl54i69ekJJuK
-         THvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SsoIYjBoSOJL9ZsEeEbVAcU4nkxuyAtiLgrYShov/wE=;
-        b=jJtBPy8p2VpZaMnqAcKLRu7zS02Y5y5TRDcBnD41v/e7jk1ZJuetrWb48AoDn8xrS1
-         W1CV3fZvHTM/JSJ0ZX+0wEuBHjw2q9D8/cd2f9ja4pXQz+6HXbSEC4KNeM1gtmc45jjM
-         yaYS0iiFf9livTo9Zt8rl48r0xhE3WoqYfyFVyho0mRzN3lytb2e3/g6aotjEKXRVX0/
-         LMBMyp6U2BiAMdxvvfr96qIyQYs1jBLP8iBa+xyN7qVfRk6zvLZWGMLZcIXozsW7QKu4
-         NbmhH7NXin7Chj2SSNHEpxfRSc/7+BOVohcbU+IKcFAahY18TYYOC2Bd+F+vWBWXQzbI
-         xNlw==
-X-Gm-Message-State: AOAM531PNUeUmnA/RGMoShpJNlY55N+fINPADMmK6C3+Q0jVuoaH0TX4
-        CfRokbuNx+t+47WqdpYiqj9bGA==
-X-Google-Smtp-Source: ABdhPJy/AObM5SP970JiKVbzk0clsLDS7Pku3nuk+S/w0OWrxn3W3HE1Z7GvrEj0qJrW03GFHY7u/Q==
-X-Received: by 2002:a05:620a:138b:: with SMTP id k11mr25874513qki.323.1607374794219;
-        Mon, 07 Dec 2020 12:59:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id s8sm11621645qtw.61.2020.12.07.12.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 12:59:53 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kmNbs-007fZb-Sn; Mon, 07 Dec 2020 16:59:52 -0400
-Date:   Mon, 7 Dec 2020 16:59:52 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 6/8] ntp, rtc: Move rtc_set_ntp_time() to ntp code
-Message-ID: <20201207205952.GL5487@ziepe.ca>
-References: <20201206214613.444124194@linutronix.de>
- <20201206220542.166871172@linutronix.de>
+        id S1727281AbgLGVAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:00:54 -0500
+Received: from ms.lwn.net ([45.79.88.28]:45156 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726208AbgLGVAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:00:53 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5CB6D2F3;
+        Mon,  7 Dec 2020 21:00:13 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5CB6D2F3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607374813; bh=Mvfz3wfx4t1iZKoJ0/5aShbqfDEpKtAnqPt6O8wfHsA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P+uTd8ir2wrqcGVkUXEDCyAt7uHrqZ0/oY9Gf+B8IVzwbjaMK1JIFrnsgLqzcEGOW
+         qwak4gOi1GEbKAWi3kDnSadcThioE1cXX0ZU9PhVFOVHuhzkUT+fDT/7YhuIt+jI3e
+         YngOguh9NjjR3CjW0ga7+vbRK8MEOQhV4gMITu5aMQdUMzuHWHgXBi7bGTMF7I7tjk
+         QGlYmLX4TS4zj03hNZNvHcdU/Lj/tRsxfpsfMjLKKHnRT5extpZDml9LBhY2n+n52H
+         2UWtRkYEAclLmYneUsn/iyQarWuKDDrJxZd7SNW2ZbBsom66Wk/3IO8bYDFKL8SGmG
+         l2WINNlZk4/Ew==
+Date:   Mon, 7 Dec 2020 14:00:12 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: nios2: add missing ReST file
+Message-ID: <20201207140012.2f4cf4da@lwn.net>
+In-Reply-To: <e51c4692c4420d28bca35f553a9a3f3d78404d99.1607331056.git.mchehab+huawei@kernel.org>
+References: <20201207185257.1198e407@canb.auug.org.au>
+        <e51c4692c4420d28bca35f553a9a3f3d78404d99.1607331056.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206220542.166871172@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 10:46:19PM +0100, Thomas Gleixner wrote:
-> rtc_set_ntp_time() is not really RTC functionality as the code is just a
-> user of RTC. Move it into the NTP code which allows further cleanups.
+On Mon,  7 Dec 2020 09:56:20 +0100
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> changeset ed13a92d0fde ("docs: archis: add a per-architecture features list")
+> besides having a typo on its title, it was missing the feature file.
 > 
-> Requested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Add it.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: ed13a92d0fde ("docs: archis: add a per-architecture features list")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  drivers/rtc/Makefile  |    1 
->  drivers/rtc/systohc.c |   61 ----------------------------------
->  include/linux/rtc.h   |   34 -------------------
->  kernel/time/ntp.c     |   88 ++++++++++++++++++++++++++++++++++++++++++++++++--
->  4 files changed, 85 insertions(+), 99 deletions(-)
+> 
+> Jon/Stephen,
+> 
+> I ended forgetting to add this one to the patch I sent. Sorry for that!
+> 
+> If not too late, feel free to fold this patch with the past one.
+> 
+>  Documentation/nios2/features.rst | 3 +++
+>  1 file changed, 3 insertions(+)
+>  create mode 100644 Documentation/nios2/features.rst
+> 
+> diff --git a/Documentation/nios2/features.rst b/Documentation/nios2/features.rst
+> new file mode 100644
+> index 000000000000..8449e63f69b2
+> --- /dev/null
+> +++ b/Documentation/nios2/features.rst
+> @@ -0,0 +1,3 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. kernel-feat:: $srctree/Documentation/features nios2
 
-Fair enough, it is asymmetric with how HCTOSYS works, but not a big
-deal
+I've applied this, thanks.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+jon
