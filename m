@@ -2,130 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192302D1396
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B572D13A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgLGO1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgLGO1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:27:14 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC83C0613D0;
-        Mon,  7 Dec 2020 06:26:34 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id x23so8123372lji.7;
-        Mon, 07 Dec 2020 06:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1B4ipYgOhPfv+d9TPnP1fvw4sKD2zjUHJ0ZUz1kJsk4=;
-        b=nHDJ6961kd4vzacwTGOMER8fNFWyBeL2p/kPlIIggbsazO+mT0b7hWs1PMrf2Pyu7R
-         5+1a6HO2FDGcy8/94NYqI8RUNzd0/Ff2ND6b8YKxfDv4jUpbqbhxkA5c8YJiZ9xdrB42
-         OOUjVeveeN+Qc0fsSciHyx7JGyIQUJBc35kxbbdAjUehJEnxWwi3BkN6cHu1aGTt8Ko9
-         IVRbcYBFWFDMWerSi+1LcIcH7qDoBJveqSTRzsuMmOBb99+9j11X1IEXkaJXvMQKH3zp
-         +WW21ZuZcmguwkBWUd0Vcvi0b4B9T/RMuEJNr9IhkPxRtTTftjzsDCxw5IdqocQEXYTg
-         4CkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1B4ipYgOhPfv+d9TPnP1fvw4sKD2zjUHJ0ZUz1kJsk4=;
-        b=E2dOSj+sdvjZXUEEtl5LyCf+hxNsKNQj7BQbdhvjvLOVC+sjxClvybLFfdbk79wSss
-         X/lgajUyBHaD4/JmggCMj/MPefp9pP65rJHS4A1fEQh7ADQhYWnumuQ7Kwxv+Ck399DI
-         GN+N0dyd2Z05WzLjqfyqJboBHH2iogo7soFoCzspSIuDmg1b6hIZ0hQfOW9l1WP/OnhO
-         4KFSjlgTrqwcys5BrNHi9VJrQswEykiU85T9KzprE+uLA3qyMrngBJtnFqLe57ytBZFc
-         JDthhuMQ9QflB88+FbdKQDsJZ/yyTSIj5QdgR9MIQ+nnBXvrm+dhGScef29fbtadwIwV
-         XijQ==
-X-Gm-Message-State: AOAM532EMH8XBPm9ctDdSYKcpi1s/mzbNbSs2+eJQkWgXOvZd9WQd8Ku
-        57BmDVsA3+PjbS06VeU5fUk2aKvBdSpwch0sX5g=
-X-Google-Smtp-Source: ABdhPJx8fkI1pkpOflcZyIiQeJtY3tgXadpUV6BcFDkM1ZKLX7DBCJ5eJmEDff99x2MAH0xnax7xkBIykjvgEOlcnV8=
-X-Received: by 2002:a2e:9842:: with SMTP id e2mr8814104ljj.373.1607351192458;
- Mon, 07 Dec 2020 06:26:32 -0800 (PST)
+        id S1727134AbgLGO1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:27:47 -0500
+Received: from mga11.intel.com ([192.55.52.93]:20779 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727020AbgLGO1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:27:45 -0500
+IronPort-SDR: lYOEijeGHiU/oWsYpT30vhGWnJm1NwTF/Y9cPzWm0dghL+hzVXjmbztOIVk7ajyq6u4sydcJoQ
+ JkSLcN0qoFzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="170199928"
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="170199928"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 06:27:04 -0800
+IronPort-SDR: 3u0qspbNL9RYOf+BUJACiaWzE7ayCppzCwNwALlmCV5ax3+/nR0LKLoxhzxEQ07XWXM9OnkLYf
+ hguk2tqydGwg==
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="363162186"
+Received: from hrong-mobl2.amr.corp.intel.com (HELO [10.212.14.53]) ([10.212.14.53])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 06:27:02 -0800
+Subject: Re: [NEEDS-REVIEW] [RFC PATCH] do_exit(): panic() recursion detected
+To:     Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9d601a43-302a-7e26-15e7-53222b832faa@intel.com>
+Date:   Mon, 7 Dec 2020 06:27:01 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201207113827.2902-1-bongsu.jeon@samsung.com>
- <20201207115147.GA26206@kozik-lap> <CACwDmQDHXwqzmUE_jEmPcJnCcPrzn=7qT=4rp1MF3s30OM7uTQ@mail.gmail.com>
- <20201207141311.GB34599@kozik-lap>
-In-Reply-To: <20201207141311.GB34599@kozik-lap>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Mon, 7 Dec 2020 23:26:21 +0900
-Message-ID: <CACwDmQBON8bNDR1gEGafb6S63LgkQf9oS9T4=RVQDHQiHgTj9g@mail.gmail.com>
-Subject: Re: [PATCH net-next] nfc: s3fwrn5: Change irqflags
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 11:13 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Dec 07, 2020 at 10:39:01PM +0900, Bongsu Jeon wrote:
-> > On Mon, Dec 7, 2020 at 8:51 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> > > On Mon, Dec 07, 2020 at 08:38:27PM +0900, Bongsu Jeon wrote:
-> > > > From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > > >
-> > > > change irqflags from IRQF_TRIGGER_HIGH to IRQF_TRIGGER_RISING for stable
-> > > > Samsung's nfc interrupt handling.
-> > >
-> > > 1. Describe in commit title/subject the change. Just a word "change irqflags" is
-> > >    not enough.
-> > >
-> > Ok. I'll update it.
-> >
-> > > 2. Describe in commit message what you are trying to fix. Before was not
-> > >    stable? The "for stable interrupt handling" is a little bit vauge.
-> > >
-> > Usually, Samsung's NFC Firmware sends an i2c frame as below.
-> >
-> > 1. NFC Firmware sets the gpio(interrupt pin) high when there is an i2c
-> > frame to send.
-> > 2. If the CPU's I2C master has received the i2c frame, NFC F/W sets
-> > the gpio low.
-> >
-> > NFC driver's i2c interrupt handler would be called in the abnormal case
-> > as the NFC F/W task of number 2 is delayed because of other high
-> > priority tasks.
-> > In that case, NFC driver will try to receive the i2c frame but there
-> > isn't any i2c frame
-> > to send in NFC. It would cause an I2C communication problem.
-> > This case would hardly happen.
-> > But, I changed the interrupt as a defense code.
-> > If Driver uses the TRIGGER_RISING not LEVEL trigger, there would be no problem
-> > even if the NFC F/W task is delayed.
->
-> All this should be explained in commit message, not in the email.
->
-Okay.  I will
+On 12/7/20 4:40 AM, Vladimir Kondratiev wrote:
+> Recursive do_exit() is symptom of compromised kernel integrity.
+> For safety critical systems, it may be better to
+> panic() in this case to minimize risk.
 
-> >
-> > > 3. This is contradictory to the bindings and current DTS. I think the
-> > >    driver should not force the specific trigger type because I could
-> > >    imagine some configuration that the actual interrupt to the CPU is
-> > >    routed differently.
-> > >
-> > >    Instead, how about removing the trigger flags here and fixing the DTS
-> > >    and bindings example?
-> > >
-> >
-> > As I mentioned before,
-> > I changed this code because of Samsung NFC's I2C Communication way.
-> > So, I think that it is okay for the nfc driver to force the specific
-> > trigger type( EDGE_RISING).
-> >
-> > What do you think about it?
->
-> Some different chip or some different hardware implementation could have
-> the signal inverted, e.g. edge falling, not rising. This is rather
-> a theoretical scenario but still such change makes the code more
-> generic, configurable with DTS. Therefore trigger mode should be
-> configured via DTS, not enforced by the driver.
->
-Okay. I understand it.
+This changelog is still woefully inadequate.  It doesn't really describe
+the problem which is being fixed.  Patches are generally not accepted by
+batting around things like "safety-critical".
 
-> Best regards,
-> Krzysztof
+> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
+
+What's this Change-Id?  Is this for some system outside of Linux?  If
+so, we don't need that in kernel changelogs.
