@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FF52D0D23
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3EF2D0D2F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgLGJgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:36:46 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:52127 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725770AbgLGJgq (ORCPT
+        id S1726184AbgLGJjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgLGJjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:36:46 -0500
-X-UUID: 409aee5ba71640c3a4ec31d2a59bce0b-20201207
-X-UUID: 409aee5ba71640c3a4ec31d2a59bce0b-20201207
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 128335919; Mon, 07 Dec 2020 17:36:00 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Dec 2020 17:35:57 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Dec 2020 17:35:56 +0800
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
-        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v2] iommu: Improve the performance for direct_mapping
-Date:   Mon, 7 Dec 2020 17:35:53 +0800
-Message-ID: <20201207093553.8635-1-yong.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 7 Dec 2020 04:39:15 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE566C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:38:34 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a6so10881762wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:38:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XpZ628O5xaXa4RdOKN7MsGWRWJi7+t1IcOBgJgwxavs=;
+        b=sfF17KBm2xoH141r0pfHE47pI1OemoN9EybfIO3Ncd9nZlNuvMJj8l+4ARZJMO4FvT
+         iW8eTCDgYZFqyxaCPdVDBID3vQFjxEVX9a7ufst4amolQGqi2keHfkRhzvyt1jhf7hEw
+         1de/iabQBbAjgqGX3NeGFXk7UWMh2Ke2mHj9BUN2iGQ0JGYaoskfyp7KCVbAVE43xIwi
+         Kjqw6xZ+LhKxAellDgvDuGw552lhrdpU4+X/cGHQaHPwGepodWmsBQ2qOz2hJ0dzWQKT
+         zg3k/G3Yp8y7XG9LovsnFJ5IKhKXWaDpjenONKVgn/URho/cNUIrjzNlEX/werJ0Bq30
+         Tjuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XpZ628O5xaXa4RdOKN7MsGWRWJi7+t1IcOBgJgwxavs=;
+        b=Fy+lpqW3keEd7Qx7q4u+ZwmQkEouBlz37QLj2/ah0gKe38RGdIN1pQsWIL7P6mZrSI
+         Ep2ex6oAV/DHDYrQv7x2bvBbz8aTMZCX69O4QRd6xbPZMONRsDCdmgu6wku6jx/oCQhK
+         wjb1bLExQT0V2hCl4jt+Sg/QTIo0PpVAiTRboWg+Lxx9nknblaamykxrYtI6GdaoAXnA
+         FU8pJB45GzuhMi17rkDjkQ2UdzH9vc8vfn/bBMzb7rRwTOypcAalSfKtJfbKrXQ/LUn4
+         8ZrBNU18MieNScZvSDawlxn+8KcJEa8hA8w008dzw4n+RqiRAI/415QWj+mQyJrLQPeP
+         yryQ==
+X-Gm-Message-State: AOAM530/jhLSbaQXB72MQpIZ+fJNeYSXrBPNPpwaXZuaIHICxlnbwhQ0
+        ntb8sp8f70ZCfORQqSvVArpK6LRomo6fqkhq
+X-Google-Smtp-Source: ABdhPJxGvianTv9DEmfI3MU5uIAXw/ZzSnzw9NA0pWoTLejhJd+h21+1YtLVTZFvErdVAlqf4iLZpg==
+X-Received: by 2002:a1c:9ecf:: with SMTP id h198mr17284160wme.104.1607333913196;
+        Mon, 07 Dec 2020 01:38:33 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id h15sm14315088wrw.15.2020.12.07.01.38.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 01:38:32 -0800 (PST)
+Subject: Re: [RESEND PATCH v6 2/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl
+ driver
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201202163443.26499-1-srinivas.kandagatla@linaro.org>
+ <20201202163443.26499-3-srinivas.kandagatla@linaro.org>
+ <CACRpkdabPygUmZXT6FMT4fEU6D638Y3XRwvODy8ucUAbuQ4kvg@mail.gmail.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4073d9ec-e959-7216-79fa-ee210fbfff17@linaro.org>
+Date:   Mon, 7 Dec 2020 09:38:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <CACRpkdabPygUmZXT6FMT4fEU6D638Y3XRwvODy8ucUAbuQ4kvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently direct_mapping always use the smallest pgsize which is SZ_4K
-normally to mapping. This is unnecessary. we could gather the size, and
-call iommu_map then, iommu_map could decide how to map better with the
-just right pgsize.
 
-From the original comment, we should take care overlap, otherwise,
-iommu_map may return -EEXIST. In this overlap case, we should map the
-previous region before overlap firstly. then map the left part.
 
-Each a iommu device will call this direct_mapping when its iommu
-initialize, This patch is effective to improve the boot/initialization
-time especially while it only needs level 1 mapping.
+On 05/12/2020 22:36, Linus Walleij wrote:
+> On Wed, Dec 2, 2020 at 5:35 PM Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org> wrote:
+> 
+>> Add initial pinctrl driver to support pin configuration for
+>> LPASS (Low Power Audio SubSystem) LPI (Low Power Island) pinctrl
+>> on SM8250.
+> 
+> Patch applied!
+> 
+>> +config PINCTRL_LPASS_LPI
+>> +       tristate "Qualcomm Technologies Inc LPASS LPI pin controller driver"
+>> +       depends on GPIOLIB
+> 
+> I added:
+> 
+>      select PINMUX
+>      select PINCONF
+>      select GENERIC_PINCONF
+> 
+> When applying. You need these I think, your code is working because
+> other drivers are selecting these for you, right? The build robot would
+> hack this to pieces though.
 
-Signed-off-by: Anan Sun <anan.sun@mediatek.com>
-Signed-off-by: Yong Wu <yong.wu@mediatek.com>
----
-change notes:
-v2: Refine the code flow.
-v1: https://lore.kernel.org/linux-iommu/20201120090628.6566-1-yong.wu@mediatek.com/
-base on v5.10-rc1.
----
- drivers/iommu/iommu.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+Many thanks for doing this!
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 8c470f451a32..1a91decb95fa 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -737,6 +737,7 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
- 	/* We need to consider overlapping regions for different devices */
- 	list_for_each_entry(entry, &mappings, list) {
- 		dma_addr_t start, end, addr;
-+		size_t map_size = 0;
- 
- 		if (domain->ops->apply_resv_region)
- 			domain->ops->apply_resv_region(dev, domain, entry);
-@@ -748,16 +749,27 @@ static int iommu_create_device_direct_mappings(struct iommu_group *group,
- 		    entry->type != IOMMU_RESV_DIRECT_RELAXABLE)
- 			continue;
- 
--		for (addr = start; addr < end; addr += pg_size) {
-+		for (addr = start; addr <= end; addr += pg_size) {
- 			phys_addr_t phys_addr;
- 
-+			if (addr == end)
-+				goto map_end;
-+
- 			phys_addr = iommu_iova_to_phys(domain, addr);
--			if (phys_addr)
-+			if (!phys_addr) {
-+				map_size += pg_size;
- 				continue;
-+			}
- 
--			ret = iommu_map(domain, addr, addr, pg_size, entry->prot);
--			if (ret)
--				goto out;
-+map_end:
-+			if (map_size) {
-+				ret = iommu_map(domain, addr - map_size,
-+						addr - map_size, map_size,
-+						entry->prot);
-+				if (ret)
-+					goto out;
-+				map_size = 0;
-+			}
- 		}
- 
- 	}
--- 
-2.18.0
+--srini
 
+> 
+> Yours,
+> Linus Walleij
+> 
