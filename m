@@ -2,94 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B88D2D1E5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCB82D1E61
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgLGX3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgLGX3y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:29:54 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBAEC061749;
-        Mon,  7 Dec 2020 15:29:14 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmPwC-00HHdx-Bc; Mon, 07 Dec 2020 23:29:00 +0000
-Date:   Mon, 7 Dec 2020 23:29:00 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andy Lavr <andy.lavr@gmail.com>
-Subject: Re: [PATCH v2 15/24] proc/fd: In proc_readfd_common use
- task_lookup_next_fd_rcu
-Message-ID: <20201207232900.GD4115853@ZenIV.linux.org.uk>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-15-ebiederm@xmission.com>
+        id S1727016AbgLGXcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:32:07 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:43150 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgLGXcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:32:06 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kmPyO-00AiL5-JO; Tue, 08 Dec 2020 00:31:16 +0100
+Date:   Tue, 8 Dec 2020 00:31:16 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1 2/2] net: dsa: microchip: improve port count
+ comments
+Message-ID: <20201207233116.GB2475764@lunn.ch>
+References: <20201205152814.7867-1-TheSven73@gmail.com>
+ <20201205152814.7867-2-TheSven73@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120231441.29911-15-ebiederm@xmission.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201205152814.7867-2-TheSven73@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 05:14:32PM -0600, Eric W. Biederman wrote:
-> When discussing[1] exec and posix file locks it was realized that none
-> of the callers of get_files_struct fundamentally needed to call
-> get_files_struct, and that by switching them to helper functions
-> instead it will both simplify their code and remove unnecessary
-> increments of files_struct.count.  Those unnecessary increments can
-> result in exec unnecessarily unsharing files_struct which breaking
-> posix locks, and it can result in fget_light having to fallback to
-> fget reducing system performance.
+On Sat, Dec 05, 2020 at 10:28:14AM -0500, Sven Van Asbroeck wrote:
+> From: Sven Van Asbroeck <thesven73@gmail.com>
 > 
-> Using task_lookup_next_fd_rcu simplifies proc_readfd_common, by moving
-> the checking for the maximum file descritor into the generic code, and
-> by remvoing the need for capturing and releasing a reference on
-> files_struct.
+> Port counts in microchip dsa drivers can be quite confusing:
+> on the ksz8795, ksz_chip_data->port_cnt excludes the cpu port,
+> yet on the ksz9477, it includes the cpu port.
 > 
-> As task_lookup_fd_rcu may update the fd ctx->pos has been changed
-> to be the fd +2 after task_lookup_fd_rcu returns.
+> Add comments to document this situation explicitly.
 
+Rather than document it, we should make it uniform. Unless there is a
+valid reason to require them to mean different things.
 
-> +	for (fd = ctx->pos - 2;; fd++) {
->  		struct file *f;
->  		struct fd_data data;
->  		char name[10 + 1];
->  		unsigned int len;
->  
-> -		f = files_lookup_fd_rcu(files, fd);
-> +		f = task_lookup_next_fd_rcu(p, &fd);
-
-Ugh...  That makes for a massive cacheline pingpong on task_lock -
-instead of grabbing/dropping task_lock() once in the beginning, we do
-that for every damn descriptor.
-
-I really don't like this one.  If anything, I would rather have
-a helper that would collect a bunch of pairs (fd,mode) into an
-array and have lookups batched into it.  With the loop in that
-sucker grabbing a reasonable amount into a local array, then
-doing proc_fill_cache() for each collected.
+      Andrew
