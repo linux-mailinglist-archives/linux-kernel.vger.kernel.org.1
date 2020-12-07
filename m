@@ -2,124 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5294B2D0975
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06ED52D097E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbgLGDbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:31:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728561AbgLGDbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:31:16 -0500
-X-Gm-Message-State: AOAM531fmYpUdSB0X9LzVcnLceUz7cLGxg2nb19F6VgI1CpHZyfmgCFj
-        LUa+dsyU1BYR4OjqNd5a4IJf93YIRvWyj0V886U=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607311835;
-        bh=eUFEhztFtJTOa9eLt/B7ip1iRdwwveiI7Iz0zAA+e4w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MHCFBPPGIBbBzQoTfSE+6TXG+czMkoFtneP7hOKgWTB9get5ooKKySHHq4wSSSHuu
-         jnwpdLNM5HQPCKsNzuikeUfH+oTnYsw+JtnarFq1XxpoIVh4dA5bOjXNNz1hXmnzEg
-         8D7JGBu2XBvUgnAAyZrJYedpgLVmPjy1DZq5h6VH7CQCMkkBDbVSgf9GYiYwvPVJ0S
-         R4BMQguCVtuSekDaOCc9Q0v6AC0sq+9T/IhRwyvTH/Fh8b6J+/rJXhtcv9GzNVickx
-         kRx17yyvDMEWnwuWeiZbdloL2KSo2n3w7GLWAGCMod1qHa9Ei94otUbLbqVPJRml0+
-         PDuXmAcN/SqdQ==
-X-Google-Smtp-Source: ABdhPJxayhJDe6prQ4cG6ZHdLlgm9hAqKWp2IyvGfr9ZYkzgsb8dlwZ9TK86GpKKZ0XyJ+ub6j9+Vpgs/sZy8RdPdas=
-X-Received: by 2002:a9f:21f8:: with SMTP id 111mr10681980uac.115.1607311834678;
- Sun, 06 Dec 2020 19:30:34 -0800 (PST)
+        id S1728775AbgLGDhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:37:22 -0500
+Received: from terminus.zytor.com ([198.137.202.136]:38907 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726484AbgLGDhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:37:21 -0500
+Received: from [IPv6:2601:646:8680:a581:458a:7aa1:7e4f:150e] ([IPv6:2601:646:8680:a581:458a:7aa1:7e4f:150e])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 0B73aNsS2299624
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Sun, 6 Dec 2020 19:36:25 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 0B73aNsS2299624
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020112401; t=1607312188;
+        bh=wbkAToI/itQ/qNYtHwZIZR/QpPQ/3vZmoTo1c2ql5ks=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=fCnbIQHXFuq8mQbOol2dRg9W8bNR+/a4dfcteKrs0tvV2zKs/1yPVLpxCdpe8/5+f
+         UStv2U3tuz7je57z+evG7sLms9YlFYyg0ZW/VT5gBv3JS6gpVX/U5U4q8qO8zolcLU
+         iLjO7vk9H8MKQFqWC1/SE3cxavJz+V2TNr4BAwwUuMmu7uP62uJixEn95bHoqrqvoq
+         6GHdVn8rRYYGT+/focPsP8EhIh04YeIN2PNNY1YyUlQWjITGwxOWUrlpaDHJ+JLOAF
+         S8+we7tGZbmOGaw8EJhCXDYftHc2XpYCJNxQ5/b1deQykRgQIuU6oTSyDAO8/YTST2
+         GYX+oi/krzRFg==
+Date:   Sun, 06 Dec 2020 19:36:15 -0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201206032305.GD3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk> <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com> <20201203230336.GC3579531@ZenIV.linux.org.uk> <20201206032305.GD3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
- <1737702.WCGJIqnLLh@diego>
-In-Reply-To: <1737702.WCGJIqnLLh@diego>
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 7 Dec 2020 11:30:23 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65119yabRi1EE1KSjJ0ehBqd-SoLD-PT-9su3Z+QSVwdg@mail.gmail.com>
-Message-ID: <CAGb2v65119yabRi1EE1KSjJ0ehBqd-SoLD-PT-9su3Z+QSVwdg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-To:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCHSET] saner elf compat
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+From:   hpa@zytor.com
+Message-ID: <0FF0E78B-6D38-43BD-8E64-CC9360903B2D@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping
+On December 5, 2020 7:23:05 PM PST, Al Viro <viro@zeniv=2Elinux=2Eorg=2Euk>=
+ wrote:
+>On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
+>> > >  The answer (for mainline) is that mips compat does *NOT* want
+>> > > COMPAT_BINFMT_ELF=2E  Not a problem with that series, though, so
+>I'd
+>> > > retested it (seems to work, both for x86_64 and mips64, execs and
+>> > > coredumps for all ABIs alike), with centralization of Kconfig
+>logics
+>> > > thrown in=2E
+>> >=20
+>> > Well, the diffstat looks nice:
+>> >=20
+>> > >  26 files changed, 127 insertions(+), 317 deletions(-)
+>> >=20
+>> > and the patches didn't trigger anything for me, but how much did
+>this
+>> > get tested? Do you actually have both kinds of 32-bit elf mips
+>> > binaries around and a machine to test on?
+>>=20
+>> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets
+>the toolchain
+>> and libraries just fine, and then it's just a matter of -mabi=3Dn32
+>passed
+>> to gcc)=2E  "Machine" is qemu-system-mips64el -machine malta -m 1024
+>-cpu 5KEc
+>> and the things appear to work; I hadn't tried that on the actual
+>hardware=2E
+>> I do have a Loongson-2 box, but it would take a while to dig it out
+>and
+>> get it up-to-date=2E
+>>=20
+>> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here
+>explicitly
+>> > just so that he has a heads-up on this thing and can go and look at
+>> > the mailing list in case it goes to a separate mailbox for him=2E=2E
+>>=20
+>> I would certainly appreciate review and testing - this branch sat
+>> around in the "should post it someday" state since June (it was
+>> one of the followups grown from regset work back then), and I'm
+>> _not_ going to ask pulling it without an explicit OK from mips
+>> folks=2E
+>
+>BTW, there's something curious going on in ELF binary recognition for
+>x32=2E  Unlike other 64bit architectures, here we have a 32bit binary
+>that successfully passes the native elf_check_arch()=2E  Usually we
+>either have different EM_=2E=2E=2E values for 64bit and 32bit (e=2Eg=2E f=
+or ppc
+>and sparc) or we have an explicit check for ->e_ident[EI_CLASS]
+>having the right value (ELFCLASS32 or ELFCLASS64 for 32bit and 64bit
+>binaries resp=2E)
+>
+>For x32 that's not true - we use EM_X86_64 for ->e_machine and that's
+>the only thing the native elf_check_arch() is looking at=2E  IOW,
+>it looks like amd64 elf_load_binary() progresses past elf_check_arch()
+>for x32 binaries=2E  And gets to load_elf_phdrs(), which would appear
+>to have a check of its own that should reject the sucker:
+>        /*
+>         * If the size of this structure has changed, then punt, since
+>         * we will be doing the wrong thing=2E
+>         */
+>        if (elf_ex->e_phentsize !=3D sizeof(struct elf_phdr))
+>                goto out;
+>After all, ->e_phentsize is going to be 32 (sizeof(struct elf32_phdr)
+>rather than expected 56 (sizeof(struct elf64_phdr)) and off we bugger,
+>even though it happens at slightly later point than usual=2E  Except that
+>we are looking at struct elf64_hdr ->e_phentsize - in struct elf32_hdr=2E
+>I=2Ee=2E at offset 54, two bytes past the end of in-file struct elf32_hdr=
+=2E
+>
+>Usually we won't find 0x38 0x00 in that location, so everything works,
+>but IMO that's too convoluted=2E
+>
+>Peter, is there any reason not to check ->ei_ident[EI_CLASS] in
+>amd64 elf_check_arch()?  It's a 1-byte load from hot cacheline
+>(offset 4 and we'd just read the 4 bytes at offsets 0=2E=2E3) +
+>compare + branch not taken, so performance impact is pretty much
+>nil=2E  I'm not saying it's a security problem or anything of that
+>sort, just that it makes the analysis more subtle than it ought
+>to be=2E=2E=2E
+>
+>Is it about some malformed homegrown 64bit binaries with BS value
+>at offset 4?  Confused=2E=2E=2E
 
-On Wed, Nov 18, 2020 at 4:49 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Am Mittwoch, 18. November 2020, 08:17:21 CET schrieb Chen-Yu Tsai:
-> > From: Chen-Yu Tsai <wens@csie.org>
-> >
-> > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' =
-is
-> > an optional property. And indeed there are boards that don't require it=
-.
-> >
-> > Make the driver follow the binding by using devm_gpiod_get_optional()
-> > instead of devm_gpiod_get().
-> >
-> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller suppo=
-rt")
-> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC drive=
-r")
-> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt()=
- to parse DT")
-> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
->
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de
-
-It's been close to three weeks since this was sent.
-Any chance we can get this into v5.10 or v5.11?
-
-
-Regards
-ChenYu
-
-> I'll pick up patches 2-4 separately, after giving Rob a chance to look at
-> the simple binding.
->
->
-> Heiko
->
-> > ---
-> > Changes since v1:
-> >
-> >   - Rewrite subject to match existing convention and reference
-> >     'ep-gpios' DT property instead of the 'ep_gpio' field
-> > ---
-> >  drivers/pci/controller/pcie-rockchip.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/contr=
-oller/pcie-rockchip.c
-> > index 904dec0d3a88..c95950e9004f 100644
-> > --- a/drivers/pci/controller/pcie-rockchip.c
-> > +++ b/drivers/pci/controller/pcie-rockchip.c
-> > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *ro=
-ckchip)
-> >       }
-> >
-> >       if (rockchip->is_rc) {
-> > -             rockchip->ep_gpio =3D devm_gpiod_get(dev, "ep", GPIOD_OUT=
-_HIGH);
-> > +             rockchip->ep_gpio =3D devm_gpiod_get_optional(dev, "ep", =
-GPIOD_OUT_HIGH);
-> >               if (IS_ERR(rockchip->ep_gpio)) {
-> >                       dev_err(dev, "missing ep-gpios property in node\n=
-");
-> >                       return PTR_ERR(rockchip->ep_gpio);
-> >
->
->
->
->
+I can't think of any=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
