@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D882D18D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BF32D18D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgLGS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:56:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgLGS4k (ORCPT
+        id S1726479AbgLGS4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:56:45 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:43667 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgLGS4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:56:40 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE31C06179C
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 10:55:59 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id d2so7086769pfq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 10:55:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KtGdp/lwKq2VYARUSn9Vex8GHiah3So/M600I4rdU+k=;
-        b=y8VTp9ob9fYKSzfHkWUymZptoMnZAg/NWhWoUrlxY8pjbTg36T7Fdn2pVvvh9zWVaa
-         B87zFRzbc5t2R3rkosrvupXzz338IyKlSY3h6nO3hw2GSlHpQdfeFCFxtUhS5Em8PxAK
-         GskuFtlBmCwDw1vgOearEpEMLctI3/GBGMMkxS4uTHgTlQmXpFEiGHn6AAwbt+EO5Xpo
-         3asZytuj39HVI8357jpgKbjNw0RDymoX3VrjPjBcw6mvh9J8s4Dahu+rG1Q6cmQ+8YsP
-         4+x7YjvAxBKlP5PrmfwWH835KSJEkeNn4fEjBTBtYWVE8cRi+N6+9AUXb+oBqFMdGTEM
-         BcDQ==
+        Mon, 7 Dec 2020 13:56:44 -0500
+Received: by mail-ot1-f66.google.com with SMTP id q25so1692643otn.10;
+        Mon, 07 Dec 2020 10:56:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=KtGdp/lwKq2VYARUSn9Vex8GHiah3So/M600I4rdU+k=;
-        b=IlfFfP1L6fXK3v4WPktxTINpsLTsvZPKCs96+4cz0gxpUNG4LNyflNGkTQyfOCTEdJ
-         PYNdsfT1DIOYfbTpu8qZUkJrNV27mmRdn3OnqEWuy+opERFA6Jl9oUkxnS/5p21Iy2ot
-         LoIqUfttGliiJ/o6jCpmOfKxUywBxs2ca2iK3YTQMbNTsMbHkpQLW7fal8DwMS9kmEmi
-         SxVU9Xgma7TRw7Dzk78KxDbtFTEUMGMUTtX6iX5/hLISqUW7yBFQKkt8wSO9Drl5e1xO
-         +eL26ghtn8Y/OeU6rYcfp1yrQE+8+LnIYMpVyUBxnKjmYFc0lGGQjXNb56wm7ax0Mdyr
-         KSNA==
-X-Gm-Message-State: AOAM531sjGfGenEsSlZZQLnGBqRrug2CUot8oYkx0TNQaO1iUlg0swLK
-        mS+PaKtTuAyBGRLK/DwuOPFlFw==
-X-Google-Smtp-Source: ABdhPJzLmOMynfb1JI8F+/oNdCFJom0GbATVogv9ZDfkhxeT99YUXudSQ0OdVQFteOgVntZyE3iBvQ==
-X-Received: by 2002:a62:4dc2:0:b029:19d:b6f2:e7bb with SMTP id a185-20020a624dc20000b029019db6f2e7bbmr17129167pfb.74.1607367358874;
-        Mon, 07 Dec 2020 10:55:58 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id t36sm14214255pfg.55.2020.12.07.10.55.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jYKdPSvZjpIiPbVZhXmqc2j76RFh4wXSWnm0PlBYAnE=;
+        b=Z39OpqLW8DFiyjS998uYGx7yV9CaoJ6CB3vqIhUR7AoKj4b94CowyDILTxij5oy+FD
+         dtUjSBjWIrNiqQUrBAmTd+uFYhm67Ukb3yRymUn/x8+8/wVA0LQusZzmA9HDixnR0Xyi
+         3Piapd4vLNiSNtKQofK9rJ3vHdOv/+Hct0dJYLn9rnTGaRNL+dlunk2d4XQWeBMqmB7D
+         LiIdUPhqxnsw1HkGcbEsAV973nFhqA3CO0zYnBDKjl0eTlSn6MPo6S/Px43lVUm2ewE6
+         o17v6elkCNWIm/vl/iE25do+AyvSob1yEOR1OZPSyeHAPcvv2lG4Bhhc3Rxi4RGCE11o
+         4lcQ==
+X-Gm-Message-State: AOAM533otl+9OCHicf0q08pMd/6D0HRkJ0tHop0CMUjqoPLHEwpQQglg
+        q5N8COSX8iZo+pHVpnge4XW7CsWb+g==
+X-Google-Smtp-Source: ABdhPJz/ljYtKFGmvSgmn4Lys4Ug3P+P2nQy5R4djRcCMl2NVsn0vyrFdDgT0CIZTb6Yp59q9uNiOw==
+X-Received: by 2002:a9d:7a97:: with SMTP id l23mr13992794otn.232.1607367363221;
+        Mon, 07 Dec 2020 10:56:03 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i4sm2780609oos.31.2020.12.07.10.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 10:55:57 -0800 (PST)
-Date:   Mon, 07 Dec 2020 10:55:57 -0800 (PST)
-X-Google-Original-Date: Mon, 07 Dec 2020 10:55:56 PST (-0800)
-Subject:     Re: [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
-In-Reply-To: <20201204103336.GA7374@infradead.org>
-CC:     dm-devel@redhat.com, agk@redhat.com, snitzer@redhat.com,
-        corbet@lwn.net, song@kernel.org, shuah@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Message-ID: <mhng-97fc5874-29d0-4d9e-8c92-d3704a482f28@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 07 Dec 2020 10:56:01 -0800 (PST)
+Received: (nullmailer pid 617149 invoked by uid 1000);
+        Mon, 07 Dec 2020 18:56:00 -0000
+Date:   Mon, 7 Dec 2020 12:56:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: pci-ep: Add binding to specify
+ virtual function
+Message-ID: <20201207185600.GA609331@robh.at.kernel.org>
+References: <20201112175358.2653-1-kishon@ti.com>
+ <20201112175358.2653-2-kishon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112175358.2653-2-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020 02:33:36 PST (-0800), Christoph Hellwig wrote:
-> What is the advantage over simply using nbd?
+On Thu, Nov 12, 2020 at 11:23:53PM +0530, Kishon Vijay Abraham I wrote:
+> Add binding to specify virtual function (associated with each physical
+> function) in endpoint mode.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  Documentation/devicetree/bindings/pci/pci-ep.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/pci-ep.yaml b/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> index 7847bbcd4a03..90c85a0c44a1 100644
+> --- a/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> +++ b/Documentation/devicetree/bindings/pci/pci-ep.yaml
+> @@ -23,6 +23,15 @@ properties:
+>      default: 1
+>      maximum: 255
+>  
+> +  max-virtual-functions:
+> +    description: Maximum number of virtual functions that can be configured
 
-There's a short bit about that in the cover letter (and in some talks), but
-I'll expand on it here -- I suppose my most important question is "is this
-interesting enough to take upstream?", so there should be at least a bit of a
-description of what it actually enables:
+Need to say what each element of the array corresponds to.
 
-I don't think there's any deep fundamental advantages to doing this as opposed
-to nbd/iscsi over localhost/unix (or by just writing a kernel implementation,
-for that matter), at least in terms of anything that was previously impossible
-now becoming possible.  There are a handful of things that are easier and/or
-faster, though.
+> +    allOf:
 
-dm-user looks a lot like NBD without the networking.  The major difference is
-which side initiates messages: in NBD the kernel initiates messages, while in
-dm-user userspace initiates messages (via a read that will block if there is no
-message, but presumably we'd want to add support for a non-blocking userspace
-implementations eventually).  The NBD approach certainly makes sense for a
-networked system, as one generally wants to have a single storage server
-handling multiple clients, but inverting that makes some things simpler in
-dm-user.  
+Can drop 'allOf' here.
 
-One specific advantage of this change is that a dm-user target can be
-transitioned from one daemon to another without any IO errors: just spin up the
-second daemon, signal the first to stop requesting new messages, and let it
-exit.  We're using that mechanism to replace the daemon launched by early init
-(which runs before the security subsystem is up, as in our use case dm-user
-provides the root filesystem) with one that's properly sandboxed (which can
-only be launched after the root filesystem has come up).  There are ways around
-this (replacing the DM table, for example), but they don't fit it as cleanly.
+> +      - $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    minItems: 0
 
-Unless I'm missing something, NBD servers aren't capable of that style of
-transition: soft disconnects can only be initiated by the client (the kernel,
-in this case), which leaves no way for the server to transition while
-guaranteeing that no IOs error out.  It's usually possible to shoehorn this
-sort of direction reversing concept into network protocols, but it's also
-usually ugly (I'm thinking of IDLE, for example).  I didn't try to actually do
-it, but my guess would be that adding a way for the server to ask the client to
-stop sending messages until a new server shows up would be at least as much
-work as doing this.
+minItems should never be 0. That's no property present.
 
-There are also a handful of possible performance advantages, but I haven't gone
-through the work to prove any of them out yet as performance isn't all that
-important for our first use case.  For example:
-
-* Cutting out the network stack is unlikely to hurt performance.  I'm not sure
-  if it will help performance, though.  I think if we really had workload where
-  the extra copy was likely to be an issue we'd want an explicit ring buffer,
-  but I have a theory that it would be possible to get very good performance out
-  of a stream-style API by using multiple channels and relying on io_uring to
-  plumb through multiple ops per channel.
-* There's a comment in the implementation about allowing userspace to insert
-  itself into user_map(), likely by uploading a BPF fragment.  There's a whole
-  class of interesting block devices that could be written in this fashion:
-  essentially you keep a cache on a regular block device that handles the common
-  cases by remapping BIOs and passing them along, relegating the more complicated
-  logic to fetch cache misses and watching some subset of the access stream where
-  necessary.
-
-  We have a use case like this in Android, where we opportunistically store
-  backups in a portion of the TRIM'd space on devices.  It's currently
-  implemented entirely in kernel by the dm-bow target, but IIUC that was deemed
-  too Android-specific to merge.  Assuming we could get good enough performance
-  we could move that logic to userspace, which lets us shrink our diff with
-  upstream.  It feels like some other interesting block devices could be
-  written in a similar fashion.
-
-All in all, I've found it a bit hard to figure out what sort of interest people
-have in dm-user: when I bring this up I seem to run into people who've done
-similar things before and are vaguely interested, but certainly nobody is
-chomping at the bit.  I'm sending it out in this early state to try and figure
-out if it's interesting enough to keep going.
+> +    maxItems: 255
+> +    items:
+> +      maximum: 255
+> +
+>    max-link-speed:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [ 1, 2, 3, 4 ]
+> -- 
+> 2.17.1
+> 
