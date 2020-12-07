@@ -2,121 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B8A2D0907
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ED32D090A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgLGB43 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 6 Dec 2020 20:56:29 -0500
-Received: from mga04.intel.com ([192.55.52.120]:23948 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgLGB42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:56:28 -0500
-IronPort-SDR: 3R1E2/jVG2aiPjM6THEXssd52ayDXnQncLpkhNFYgtG0HbiuL9f7jKo+lbUPVa/GDmyvrlssOj
- 0D+f1EEWhnmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="171059316"
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="171059316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 17:55:48 -0800
-IronPort-SDR: a6Z98o16Q9vmI4WSuvjgJSCGCKKknLx3GQyOhR31BV7HM4n3JfvUWy7gNt215H8JW1ppw27thX
- VmVN5j2Wt5CA==
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="362918747"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.16.231])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 17:55:48 -0800
-Date:   Sun, 6 Dec 2020 17:55:47 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] ice: fix array overflow on receiving too many
- fragments for a packet
-Message-ID: <20201206175547.00005aa9@intel.com>
-In-Reply-To: <20201207011415.463-1-ruc_zhangxiaohui@163.com>
-References: <20201207011415.463-1-ruc_zhangxiaohui@163.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S1728609AbgLGB6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 20:58:08 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50274 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgLGB6H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:58:07 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9B79620B717A;
+        Sun,  6 Dec 2020 17:57:25 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9B79620B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607306246;
+        bh=GlK/s+EgmPB0irtv3GsX2LP5l3rsRGSrZ5ZAEDyFZWo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=K2s7YpIG3jT6Kbmk7H5cqTFtoC8kKL0UxcO2SbLxrElURapXNMC5TMrEQNEMfHS2J
+         cmPtogosChV2GbmjuMWRlHvHrS+FySyeZm02j8sE59kG+IZ0nMPWLwl9Jkg8w6mC/N
+         xPe+vrF3OmZyxLbSitDAtLCscev//C+4Xmof8A3A=
+Subject: Re: [PATCH v10 5/8] powerpc: Move remove_ima_buffer() to
+ drivers/of/kexec.c
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+References: <20201204195149.611-1-nramas@linux.microsoft.com>
+ <20201204195149.611-6-nramas@linux.microsoft.com>
+ <87sg8km2n5.fsf@manicouagan.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <19238597-5866-b5bb-2d84-e8f9a5c6089b@linux.microsoft.com>
+Date:   Sun, 6 Dec 2020 17:57:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <87sg8km2n5.fsf@manicouagan.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiaohui Zhang wrote:
-
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+On 12/5/20 12:14 PM, Thiago Jung Bauermann wrote:
 > 
-> If the hardware receives an oversized packet with too many rx fragments,
-> skb_shinfo(skb)->frags can overflow and corrupt memory of adjacent pages.
-> This becomes especially visible if it corrupts the freelist pointer of
-> a slab page.
-
-As I replied to the ionic patch, please justify this with how you found
-it and how you reproduced a problem. Resend the patches as a series so
-we can discuss them as one change.
+> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> 
+>> remove_ima_buffer() removes the chosen node "linux,ima-kexec-buffer"
+>> from the device tree and frees the memory reserved for carrying forward
+>> the IMA measurement logs on kexec. This function does not have
+>> architecture specific code, but is currently limited to powerpc.
+>>
+>> Move remove_ima_buffer() to "drivers/of/ima_kexec.c" so that it is
+> 
+> s/ima_kexec./kexec.c/
+Will fix it.
 
 > 
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>> accessible for other architectures as well.
+>>
+>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> index eae75260f..f0f034fa5 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> @@ -823,8 +823,12 @@ ice_add_rx_frag(struct ice_ring *rx_ring, struct ice_rx_buf *rx_buf,
->  
->  	if (!size)
->  		return;
-> -	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
-> +	struct skb_shared_info *shinfo = skb_shinfo(skb);
-> +
-> +	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
-> +		skb_add_rx_frag(skb, shinfo, rx_buf->page,
->  			rx_buf->page_offset, size, truesize);
-> +	}
+> Looks good. Just minor comments below. Nevertheless:
+> 
+> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+> 
+>> ---
+>>   arch/powerpc/include/asm/ima.h |  8 ++------
+>>   arch/powerpc/kexec/ima.c       | 26 --------------------------
+>>   drivers/of/kexec.c             | 29 +++++++++++++++++++++++++++++
+>>   include/linux/kexec.h          |  1 +
+>>   4 files changed, 32 insertions(+), 32 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/ima.h b/arch/powerpc/include/asm/ima.h
+>> index ead488cf3981..a2fc71bc3b23 100644
+>> --- a/arch/powerpc/include/asm/ima.h
+>> +++ b/arch/powerpc/include/asm/ima.h
+>> @@ -2,17 +2,13 @@
+>>   #ifndef _ASM_POWERPC_IMA_H
+>>   #define _ASM_POWERPC_IMA_H
+>>   
+>> +#include <linux/kexec.h>
+>> +
+>>   struct kimage;
+> 
+> When you include <linux/kexec.h>, there's no need anymore for the
+> `struct kimage` forward declaration so you can remove it.
 
-The driver is using 2kB receive buffers, and can chain them together up
-to a max receive size of 9126 bytes (or so), so how can we receive more
-than 18 fragments? Please explain your logic
+Sure - i'll remove the forward declaration.
 
->  
->  	/* page is being used so we must update the page offset */
->  	ice_rx_buf_adjust_pg_offset(rx_buf, truesize);
+> 
+>>   
+>>   int ima_get_kexec_buffer(void **addr, size_t *size);
+>>   int ima_free_kexec_buffer(void);
+>>   
+>> -#ifdef CONFIG_IMA
+>> -void remove_ima_buffer(void *fdt, int chosen_node);
+>> -#else
+>> -static inline void remove_ima_buffer(void *fdt, int chosen_node) {}
+>> -#endif
+>> -
+> 
+> This patch introduces a slight behaviour change on powerpc when
+> CONFIG_IMA isn't set: since remove_ima_buffer() is now defined,
+> kexec_file_load() will remove the IMA kexec buffer when creating the FDT
+> for the next kernel. Before this patch, it will leave it there.
+> 
+> I think it's actually an improvement since a stale IMA kexec buffer
+> isn't useful and just wastes memory. This should be mentioned on the
+> commit message.
 
-Your patch doesn't compile. You must compile test and explain your
-patches better.
+Thanks Thiago.
 
-  CC [M]  drivers/net/ethernet/intel/ice//ice_main.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_controlq.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_common.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_nvm.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_switch.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_sched.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_base.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_lib.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_txrx_lib.o
-  CC [M]  drivers/net/ethernet/intel/ice//ice_txrx.o
-drivers/net/ethernet/intel/ice//ice_txrx.c: In function ‘ice_add_rx_frag’:
-drivers/net/ethernet/intel/ice//ice_txrx.c:829:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-  829 |  struct skb_shared_info *shinfo = skb_shinfo(skb);
-      |  ^~~~~~
-drivers/net/ethernet/intel/ice//ice_txrx.c:832:24: warning: passing argument 2 of ‘skb_add_rx_frag’ makes integer from pointer without a cast [-Wint-conversion]
-  832 |   skb_add_rx_frag(skb, shinfo, rx_buf->page,
-      |                        ^~~~~~
-      |                        |
-      |                        struct skb_shared_info *
-In file included from ./include/linux/if_ether.h:19,
-                 from ./include/uapi/linux/ethtool.h:19,
-                 from ./include/linux/ethtool.h:18,
-                 from ./include/linux/netdevice.h:37,
-                 from ./include/trace/events/xdp.h:8,
-                 from ./include/linux/bpf_trace.h:5,
-                 from drivers/net/ethernet/intel/ice//ice_txrx.c:8:
-./include/linux/skbuff.h:2182:47: note: expected ‘int’ but argument is of type ‘struct skb_shared_info *’
- 2182 | void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int off,
-      |                                           ~~~~^
+Appreciate if you could test this change for powerpc and let me know if 
+you see any issues.
+
+>>   #ifdef CONFIG_IMA_KEXEC
+>>   int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
+>>   			      size_t size);
+>> diff --git a/arch/powerpc/kexec/ima.c b/arch/powerpc/kexec/ima.c
+>> index 906e8212435d..68017123b07d 100644
+>> --- a/arch/powerpc/kexec/ima.c
+>> +++ b/arch/powerpc/kexec/ima.c
+>> @@ -61,32 +61,6 @@ int ima_free_kexec_buffer(void)
+>>   	return memblock_free(addr, size);
+>>   }
+>>   
+>> -/**
+>> - * remove_ima_buffer - remove the IMA buffer property and reservation from @fdt
+>> - *
+>> - * @fdt: Flattened Device Tree to update
+>> - * @chosen_node: Offset to the chosen node in the device tree
+>> - *
+>> - * The IMA measurement buffer is of no use to a subsequent kernel, so we always
+>> - * remove it from the device tree.
+>> - */
+>> -void remove_ima_buffer(void *fdt, int chosen_node)
+>> -{
+>> -	int ret;
+>> -	unsigned long addr;
+>> -	size_t size;
+>> -
+>> -	ret = get_ima_kexec_buffer(fdt, chosen_node, &addr, &size);
+>> -	if (ret)
+>> -		return;
+>> -
+>> -	fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
+>> -
+>> -	ret = delete_fdt_mem_rsv(fdt, addr, size);
+>> -	if (!ret)
+>> -		pr_debug("Removed old IMA buffer reservation.\n");
+>> -}
+>> -
+>>   #ifdef CONFIG_IMA_KEXEC
+>>   /**
+>>    * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
+>> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+>> index 516b86f7113a..42d16dfff78d 100644
+>> --- a/drivers/of/kexec.c
+>> +++ b/drivers/of/kexec.c
+>> @@ -129,3 +129,32 @@ int get_ima_kexec_buffer(void *fdt, int chosen_node,
+>>   
+>>   	return 0;
+>>   }
+>> +
+>> +/**
+>> + * remove_ima_buffer - remove the IMA buffer property and reservation from @fdt
+>> + *
+>> + * @fdt: Flattened Device Tree to update
+>> + * @chosen_node: Offset to the chosen node in the device tree
+>> + *
+>> + * The IMA measurement buffer is of no use to a subsequent kernel, so we always
+>> + * remove it from the device tree.
+>> + */
+>> +void remove_ima_buffer(void *fdt, int chosen_node)
+>> +{
+>> +	int ret;
+>> +	unsigned long addr;
+>> +	size_t size;
+>> +
+>> +	if (!IS_ENABLED(CONFIG_HAVE_IMA_KEXEC))
+>> +		return;
+>> +
+>> +	ret = get_ima_kexec_buffer(fdt, chosen_node, &addr, &size);
+>> +	if (ret)
+>> +		return;
+>> +
+>> +	fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
+>> +
+>> +	ret = delete_fdt_mem_rsv(fdt, addr, size);
+>> +	if (!ret)
+>> +		pr_debug("Removed old IMA buffer reservation.\n");
+>> +}
+>> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+>> index 10ff704ab670..52a0efff184d 100644
+>> --- a/include/linux/kexec.h
+>> +++ b/include/linux/kexec.h
+>> @@ -411,6 +411,7 @@ static inline int kexec_crash_loaded(void) { return 0; }
+>>   extern int get_root_addr_size_cells(int *addr_cells, int *size_cells);
+>>   extern int get_ima_kexec_buffer(void *fdt, int chosen_node,
+>>   				unsigned long *addr, size_t *size);
+>> +extern void remove_ima_buffer(void *fdt, int chosen_node);
+>>   extern int delete_fdt_mem_rsv(void *fdt, unsigned long start,
+>>   			      unsigned long size);
+>>   #endif /* CONFIG_OF_FLATTREE */
+> 
+> Same comment as before: remove the `extern` keyword.
+> 
+
+Will remove "extern" keyword.
+
+  -lakshmi
+
