@@ -2,135 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794BF2D171F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CDB2D1730
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgLGRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:08:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgLGRIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:08:31 -0500
-Date:   Mon, 7 Dec 2020 14:07:59 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607360870;
-        bh=a970EhfEbrk/JJVxpU7b8914DtQrmf35iq1oze/2Jwk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X33xqTvKYo2ZJ9q8j2VkzanU17YO2fSkwLlPwvJfEl+MXCNEHU8/ng2c0HRrFAgLr
-         0lHMCHvvSePpUKaUIAbNRnImNiimGg2p1SWO8a+NjNt61y0fRwAYO4vnBjLKbamjN8
-         HFkPMhT+m3A+X/zIxGIrC/CFQSHCtk4O9zf292JCEmZs/qJT+1hghdx9jxs+V42UMk
-         sSUqR+8Xz+E6ooDFtj0bvOoejk/P5cMck8iLmX0zZ/8Y6QZTXxp/Qz6LWmTuA8Be9v
-         kbpX18o3kolmvwckfFtSO/7nrj87YVwpYqJZ9FJiklMEFUsaw75OHhvM54T2ANF0jJ
-         mnxZAcCIqN7/Q==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V2 02/12] perf record: Support new sample type for data
- page size
-Message-ID: <20201207170759.GB129853@kernel.org>
-References: <20201130172803.2676-1-kan.liang@linux.intel.com>
- <20201130172803.2676-3-kan.liang@linux.intel.com>
+        id S1727422AbgLGRKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:10:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2215 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGRKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:10:06 -0500
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CqV8j5gV7z67MQF;
+        Tue,  8 Dec 2020 01:06:45 +0800 (CST)
+Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 18:09:18 +0100
+Received: from [10.47.199.254] (10.47.199.254) by
+ lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 17:09:12 +0000
+Subject: Re: [PATCH 3/3] perf tools: Allow to list events via control file
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-4-jolsa@kernel.org>
+ <20201207162806.GE125383@kernel.org>
+From:   Alexei Budankov <abudankov@huawei.com>
+Message-ID: <ebfd55bc-9118-920e-3ffd-0c24833c08b9@huawei.com>
+Date:   Mon, 7 Dec 2020 20:09:06 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130172803.2676-3-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201207162806.GE125383@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.199.254]
+X-ClientProxiedBy: braeml704-chm.china.huawei.com (10.226.71.60) To
+ lhreml741-chm.china.huawei.com (10.201.108.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Nov 30, 2020 at 09:27:53AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Kan Liang <kan.liang@linux.intel.com>
+Hi,
+
+On 07.12.2020 19:28, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Dec 06, 2020 at 06:05:19PM +0100, Jiri Olsa escreveu:
+>> Adding new control event to display all evlist events.
+>>
+>> The interface string for control file is 'list'. When
+>> received, perf will scan and print current evlist into
+>> perf record terminal.
+>>
+>> Example session:
+>>
+>>   terminal 1:
+>>     # mkfifo control ack perf.pipe
+>>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+>>     Events disabled
+>>
+>>   terminal 2:
+>>     # echo list > control
+>>
+>>   terminal 1:
+>>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+>>     ...
+>>     sched:sched_kthread_stop
+>>     sched:sched_kthread_stop_ret
+>>     sched:sched_waking
+>>     sched:sched_wakeup
+>>     sched:sched_wakeup_new
+>>     sched:sched_switch
+>>     sched:sched_migrate_task
+>>     sched:sched_process_free
+>>     sched:sched_process_exit
+>>     sched:sched_wait_task
+>>     sched:sched_process_wait
+>>     sched:sched_process_fork
+>>     sched:sched_process_exec
+>>     sched:sched_stat_wait
+>>     sched:sched_stat_sleep
+>>     sched:sched_stat_iowait
+>>     sched:sched_stat_blocked
+>>     sched:sched_stat_runtime
+>>     sched:sched_pi_setprio
+>>     sched:sched_move_numa
+>>     sched:sched_stick_numa
+>>     sched:sched_swap_numa
+>>     sched:sched_wake_idle_without_ipi
+>>     dummy:HG
+>>
+>> This new command is handy to get real event names when
+>> wildcards are used.
 > 
-> Support new sample type PERF_SAMPLE_DATA_PAGE_SIZE for page size.
+> Ok, would be nice to have a verbose mode like:
 > 
-> Add new option --data-page-size to record sample data page size.
+> [acme@five ~]$ sudo ~acme/bin/perf record -e 'sched:*' sleep 0.001
+> [ perf record: Woken up 14 times to write data ]
+> [ perf record: Captured and wrote 0.023 MB perf.data (16 samples) ]
+> [acme@five ~]$ sudo ~acme/bin/perf evlist
+> sched:sched_kthread_stop
+> sched:sched_kthread_stop_ret
+> sched:sched_waking
+> sched:sched_wakeup
+> sched:sched_wakeup_new
+> sched:sched_switch
+> sched:sched_migrate_task
+> sched:sched_process_free
+> sched:sched_process_exit
+> sched:sched_wait_task
+> sched:sched_process_wait
+> sched:sched_process_fork
+> sched:sched_process_exec
+> sched:sched_stat_wait
+> sched:sched_stat_sleep
+> sched:sched_stat_iowait
+> sched:sched_stat_blocked
+> sched:sched_stat_runtime
+> sched:sched_pi_setprio
+> sched:sched_move_numa
+> sched:sched_stick_numa
+> sched:sched_swap_numa
+> sched:sched_wake_idle_without_ipi
+> # Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
+> [acme@five ~]$ sudo ~acme/bin/perf evlist -v
+> sched:sched_kthread_stop: type: 2, size: 120, config: 0x13f, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
+> sched:sched_kthread_stop_ret: type: 2, size: 120, config: 0x13e, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_waking: type: 2, size: 120, config: 0x13d, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_wakeup: type: 2, size: 120, config: 0x13c, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_wakeup_new: type: 2, size: 120, config: 0x13b, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_switch: type: 2, size: 120, config: 0x13a, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_migrate_task: type: 2, size: 120, config: 0x139, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_process_free: type: 2, size: 120, config: 0x138, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_process_exit: type: 2, size: 120, config: 0x137, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_wait_task: type: 2, size: 120, config: 0x136, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_process_wait: type: 2, size: 120, config: 0x135, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_process_fork: type: 2, size: 120, config: 0x134, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_process_exec: type: 2, size: 120, config: 0x133, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stat_wait: type: 2, size: 120, config: 0x132, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stat_sleep: type: 2, size: 120, config: 0x131, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stat_iowait: type: 2, size: 120, config: 0x130, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stat_blocked: type: 2, size: 120, config: 0x12f, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stat_runtime: type: 2, size: 120, config: 0x12e, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_pi_setprio: type: 2, size: 120, config: 0x12d, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_move_numa: type: 2, size: 120, config: 0x12c, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_stick_numa: type: 2, size: 120, config: 0x12b, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_swap_numa: type: 2, size: 120, config: 0x12a, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> sched:sched_wake_idle_without_ipi: type: 2, size: 120, config: 0x129, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
+> # Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
+> [acme@five ~]$
+> 
+> Also I think we should use 'evlist' instead of 'list', to be consistent.
 
-So, trying this on a kernel without this feature I get:
+FWIW,
 
-[acme@five perf]$ perf record --data-page-size sleep 1
-Error:
-The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cycles:u).
-/bin/dmesg | grep -i perf may provide additional information.
+Or may be even name the command starting with a verb like 'list_events'
 
-[acme@five perf]$
+Thanks,
+Alexei
 
-I'm adding the following patch right after yours, next time please test
-this and provide a similar error message.
-
-- Arnaldo
-
-commit 2044fec7fcc6070b09f9b6a67922b0b9e4295dba
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Mon Dec 7 14:04:05 2020 -0300
-
-    perf evsel: Emit warning about kernel not supporting the data page size sample_type bit
-    
-    Before we had this unhelpful message:
-    
-      $ perf record --data-page-size sleep 1
-      Error:
-      The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cycles:u).
-      /bin/dmesg | grep -i perf may provide additional information.
-      $
-    
-    Add support to the perf_missing_features variable to remember what
-    caused evsel__open() to fail and then use that information in
-    evsel__open_strerror().
-    
-      $ perf record --data-page-size sleep 1
-      Error:
-      Asking for the data page size isn't supported by this kernel.
-      $
-    
-    Cc: Kan Liang <kan.liang@linux.intel.com>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Andi Kleen <ak@linux.intel.com>
-    Cc: Jiri Olsa <jolsa@redhat.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Michael Ellerman <mpe@ellerman.id.au>
-    Cc: Stephane Eranian <eranian@google.com>
-    Cc: Will Deacon <will@kernel.org>
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 5e6085c3fc761a55..c26ea82220bd8625 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1873,7 +1873,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 	 * Must probe features in the order they were added to the
- 	 * perf_event_attr interface.
- 	 */
--        if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
-+        if (!perf_missing_features.data_page_size &&
-+	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
-+		perf_missing_features.data_page_size = true;
-+		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
-+		goto out_close;
-+	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
- 		perf_missing_features.cgroup = true;
- 		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
- 		goto out_close;
-@@ -2673,6 +2678,8 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
- 	"We found oprofile daemon running, please stop it and try again.");
- 		break;
- 	case EINVAL:
-+		if (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE && perf_missing_features.data_page_size)
-+			return scnprintf(msg, size, "Asking for the data page size isn't supported by this kernel.");
- 		if (evsel->core.attr.write_backward && perf_missing_features.write_backward)
- 			return scnprintf(msg, size, "Reading from overwrite event is not supported by this kernel.");
- 		if (perf_missing_features.clockid)
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 79a860d8e3eefe23..cd1d8dd431997b84 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -144,6 +144,7 @@ struct perf_missing_features {
- 	bool aux_output;
- 	bool branch_hw_idx;
- 	bool cgroup;
-+	bool data_page_size;
- };
- 
- extern struct perf_missing_features perf_missing_features;
+> 
+> Applied 1/3 and 2/3.
+> 
+> - Arnaldo
+>  
+>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>> ---
+>>  tools/perf/builtin-record.c | 1 +
+>>  tools/perf/builtin-stat.c   | 1 +
+>>  tools/perf/util/evlist.c    | 6 ++++++
+>>  tools/perf/util/evlist.h    | 2 ++
+>>  4 files changed, 10 insertions(+)
+>>
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index 582b8fba012c..f620ed056c89 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -1951,6 +1951,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  			case EVLIST_CTL_CMD_UNSUPPORTED:
+>>  			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+>>  			case EVLIST_CTL_CMD_DISABLE_EVSEL:
+>> +			case EVLIST_CTL_CMD_LIST:
+>>  			default:
+>>  				break;
+>>  			}
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index 6a21fb665008..56f2206b5991 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -592,6 +592,7 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
+>>  		case EVLIST_CTL_CMD_UNSUPPORTED:
+>>  		case EVLIST_CTL_CMD_ENABLE_EVSEL:
+>>  		case EVLIST_CTL_CMD_DISABLE_EVSEL:
+>> +		case EVLIST_CTL_CMD_LIST:
+>>  		default:
+>>  			break;
+>>  		}
+>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>> index 05723227bebf..c05476ca2ff4 100644
+>> --- a/tools/perf/util/evlist.c
+>> +++ b/tools/perf/util/evlist.c
+>> @@ -1931,6 +1931,9 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+>>  				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
+>>  			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
+>>  			pr_debug("is snapshot\n");
+>> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_LIST_TAG,
+>> +				    (sizeof(EVLIST_CTL_CMD_LIST_TAG)-1))) {
+>> +			*cmd = EVLIST_CTL_CMD_LIST;
+>>  		}
+>>  	}
+>>  
+>> @@ -1995,6 +1998,9 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>>  					pr_info("failed: can't find %s event\n", evsel_name);
+>>  				}
+>>  				break;
+>> +			case EVLIST_CTL_CMD_LIST:
+>> +				evlist__for_each_entry(evlist, evsel)
+>> +					pr_info("%s\n", evsel__name(evsel));
+>>  			case EVLIST_CTL_CMD_SNAPSHOT:
+>>  				break;
+>>  			case EVLIST_CTL_CMD_ACK:
+>> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+>> index e4e8ff8831a3..6b8a9918fdb2 100644
+>> --- a/tools/perf/util/evlist.h
+>> +++ b/tools/perf/util/evlist.h
+>> @@ -332,6 +332,7 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
+>>  #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
+>>  #define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
+>>  #define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
+>> +#define EVLIST_CTL_CMD_LIST_TAG "list"
+>>  
+>>  #define EVLIST_CTL_CMD_MAX_LEN 64
+>>  
+>> @@ -343,6 +344,7 @@ enum evlist_ctl_cmd {
+>>  	EVLIST_CTL_CMD_DISABLE_EVSEL,
+>>  	EVLIST_CTL_CMD_ACK,
+>>  	EVLIST_CTL_CMD_SNAPSHOT,
+>> +	EVLIST_CTL_CMD_LIST,
+>>  };
+>>  
+>>  int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
+>> -- 
+>> 2.26.2
+>>
+> 
