@@ -2,195 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6B12D156D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B252D1569
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgLGQB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:01:56 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12020 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726891AbgLGQBz (ORCPT
+        id S1727022AbgLGQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgLGQBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:01:55 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7FWp04062929;
-        Mon, 7 Dec 2020 11:00:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=k1wpCQsort0IzYh/DjMW0A6+snT0JIYuzCRTR+TV2H4=;
- b=IlBG77CHhECNohXSJ7vbdMx4y6/Bb0nbUjONmUvdIPakRhIy8FzBasmfI8eWl58TeyVN
- Kjtc8pUHgh+2ap1XV+1HEBI0+A2LQX6fYvD1s9/Ee93E3Pt/pEkon88XOPnHqYaV33qG
- IDmFGTAyeyO0YatqA+ifqGAhT3juO7yNH9ZnqZMiOOcMOb5Flu6zksHQd0UI/0phjlqU
- KUUjCGjlfeXc00yPS4L3jQSexQSryZYCWacgb0LfNoCHdrwOk5fBrEfZMXNqtop2m89t
- /SVlnxsj2ypv8tL3Dd2lqptfmVSqPLSJuTwjBOQfO7woEZTjBjelkB6wa+8ncw9vZALb Pw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359pyghad7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 11:00:19 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7FtVmR167099;
-        Mon, 7 Dec 2020 11:00:18 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359pyghaau-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 11:00:18 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7Fs0JH028499;
-        Mon, 7 Dec 2020 16:00:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8kvwx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 16:00:15 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7G0Dr845416766
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 16:00:13 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BD254C071;
-        Mon,  7 Dec 2020 16:00:13 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B96F74C070;
-        Mon,  7 Dec 2020 16:00:08 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.50.18])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  7 Dec 2020 16:00:08 +0000 (GMT)
-Date:   Mon, 7 Dec 2020 18:00:06 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Qian Cai <qcai@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v14 09/10] arch, mm: wire up memfd_secret system call
- were relevant
-Message-ID: <20201207160006.GG1112728@linux.ibm.com>
-References: <20201203062949.5484-1-rppt@kernel.org>
- <20201203062949.5484-10-rppt@kernel.org>
- <81631d3391abca3f41f2e19092b97a61d49f4e44.camel@redhat.com>
+        Mon, 7 Dec 2020 11:01:34 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3060AC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:00:54 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id i3so6833180pfd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:00:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lM0WuLFezI4DgUVIv9tHFek9mZlL8JVIYtiPTuIe1i8=;
+        b=kbfciW8e8c9iyJrhOcz17nhJT7qYBlGk+2u/n/iqhnv89bEa5UC9/Eg7M8JV0AHKtL
+         P+22D6mGIRBKQ3E4jVWW+ee2L9iNRiie72mWT3+mnBdbz9J0GNy12tSn/FVTLErdtKSf
+         exPhKr/Q13rphwK/XVwASyIhTDokUbrY2sY840Bqc8XgOrjOrik16SQclTjZ++wUBcqI
+         amQPV+e2AInJbV+1S3arjvmuxun3mPpOVIA8AnuffExVIz7wFrTCL2lzMwHVZQbyBCV2
+         1QLLZfVHpzixCH4AXc79AYhtoTqDqYBOBNgW2Op2NzRn9xkbJATvm1ZVb0Hn5Xy09XBt
+         5EWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lM0WuLFezI4DgUVIv9tHFek9mZlL8JVIYtiPTuIe1i8=;
+        b=ICW4OgF2vdGpN4YlmKY/+0nxKTGxiq4WOOMBXQCgMXIVQGdMac8gKWfgFuSgrqamlj
+         /i75nAxI4+AAnbF2OWg495pXSevq0ZLaincKTt8eioh0NEuNg8F5O+EDhP1ysPccWQFJ
+         tnHRWYHQlKVTERiI95pVP9uhweDjpwHGwWSyKUJVwdlYly8ECecykxwQ/jwKIX7gs2Kv
+         VbyWmsVUm8yN4TFuKXBJ2VSwAJWmCasn1U+3VlHAtvN5BhKSpVNwMpAoYIG0Lo9sWC+E
+         /H747BdawM7V1cMmLVmluj7EwwvdPOgIRqgqKORDfpSXhOZu2xJZAlU83+5A/Lw0HcGU
+         0DVg==
+X-Gm-Message-State: AOAM530oD6319B7xZO7ZrhlK4ZEgsgvxp+OHWEOKd5HD65E7ZepLHLGZ
+        VRjtNnsxSgJJJYYmQHYJqApPZQ==
+X-Google-Smtp-Source: ABdhPJyV4rYEnm55TXN93aP5Cqfz+sqaDms9fAkSfQdIJHYDMAGBBvylNH/P/lbMQZrVW+9O8adjjA==
+X-Received: by 2002:a62:b50f:0:b029:19e:2974:b7a4 with SMTP id y15-20020a62b50f0000b029019e2974b7a4mr3023076pfe.61.1607356853504;
+        Mon, 07 Dec 2020 08:00:53 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id gm2sm11296944pjb.35.2020.12.07.08.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 08:00:52 -0800 (PST)
+Date:   Mon, 7 Dec 2020 09:00:51 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mike.leach@linaro.org
+Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
+ the overflow of HiSilicon ETM
+Message-ID: <20201207160051.GA1506562@xps15>
+References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
+ <20201204185551.GB1424711@xps15>
+ <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
+ <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
+ <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
+ <d82f1200-c31f-1040-a630-57e132cabf1b@arm.com>
+ <6078c05c-273d-a9cb-6dcb-68009260a581@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <81631d3391abca3f41f2e19092b97a61d49f4e44.camel@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_11:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=849 spamscore=0
- phishscore=0 bulkscore=0 clxscore=1015 priorityscore=1501 adultscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070098
+In-Reply-To: <6078c05c-273d-a9cb-6dcb-68009260a581@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 09:45:59AM -0500, Qian Cai wrote:
-> On Thu, 2020-12-03 at 08:29 +0200, Mike Rapoport wrote:
-
-...
-
-> > diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> > index 6d55324363ab..f9d93fbf9b69 100644
-> > --- a/include/linux/syscalls.h
-> > +++ b/include/linux/syscalls.h
-> > @@ -1010,6 +1010,7 @@ asmlinkage long sys_pidfd_send_signal(int pidfd, int sig,
-> >  asmlinkage long sys_pidfd_getfd(int pidfd, int fd, unsigned int flags);
-> >  asmlinkage long sys_watch_mount(int dfd, const char __user *path,
-> >  				unsigned int at_flags, int watch_fd, int watch_id);
-> > +asmlinkage long sys_memfd_secret(unsigned long flags);
-> >  
-> >  /*
-> >   * Architecture-specific system calls
-> > diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> > index 5df46517260e..51151888f330 100644
-> > --- a/include/uapi/asm-generic/unistd.h
-> > +++ b/include/uapi/asm-generic/unistd.h
-> > @@ -861,9 +861,13 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
-> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
-> >  #define __NR_watch_mount 441
-> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
-> > +#ifdef __ARCH_WANT_MEMFD_SECRET
-> > +#define __NR_memfd_secret 442
-> > +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
-> > +#endif
+On Mon, Dec 07, 2020 at 07:32:21PM +0800, Qi Liu wrote:
 > 
-> I can't see where was it defined for arm64 after it looks like Andrew has
-> deleted the  above chunk. Thus, we have a warning using this .config:
 > 
-> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+> On 2020/12/7 19:27, Suzuki K Poulose wrote:
+> > On 12/7/20 11:21 AM, Qi Liu wrote:
+> >>
+> >> Hi Suzuki,
+> >> On 2020/12/7 18:38, Suzuki K Poulose wrote:
+> >>> On 12/7/20 2:08 AM, Qi Liu wrote:
+> >>>> Hi Mathieu,
+> >>>>
+> >>>> On 2020/12/5 2:55, Mathieu Poirier wrote:
+> >>>>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
+> >>>>>> The ETM device can't keep up with the core pipeline when cpu core
+> >>>>>> is at full speed. This may cause overflow within core and its ETM.
+> >>>>>> This is a common phenomenon on ETM devices.
+> >>>>>>
+> >>>>>> On HiSilicon Hip08 platform, a specific feature is added to set
+> >>>>>> core pipeline. So commit rate can be reduced manually to avoid ETM
+> >>>>>> overflow.
+> >>>>>>
+> >>>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> >>>>>> ---
+> >>>>>> Change since v1:
+> >>>>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+> >>>>>>     to keep specific feature off platforms which don't use it.
+> >>>>>> Change since v2:
+> >>>>>> - remove some unused variable.
+> >>>>>> Change since v3:
+> >>>>>> - use read/write_sysreg_s() to access register.
+> >>>>>> Change since v4:
+> >>>>>> - rename the call back function to a more generic name, and fix some
+> >>>>>>     compile warnings.
+> >>>>>>
+> >>>>>>    drivers/hwtracing/coresight/Kconfig                |  9 +++
+> >>>>>>    drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
+> >>>>>>    drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
+> >>>>>>    3 files changed, 105 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> >>>>>> index c119824..1cc3601 100644
+> >>>>>> --- a/drivers/hwtracing/coresight/Kconfig
+> >>>>>> +++ b/drivers/hwtracing/coresight/Kconfig
+> >>>>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+> >>>>>>          To compile this driver as a module, choose M here: the
+> >>>>>>          module will be called coresight-etm4x.
+> >>>>>>
+> >>>>>> +config ETM4X_IMPDEF_FEATURE
+> >>>>>> +    bool "Control overflow impdef support in CoreSight ETM 4.x driver "
+> >>>>>> +    depends on CORESIGHT_SOURCE_ETM4X
+> >>>>>> +    help
+> >>>>>> +      This control provides overflow implement define for CoreSight
+> >>>>>> +      ETM 4.x tracer module which could not reduce commit race
+> >>>>>> +      automatically, and could avoid overflow within ETM tracer module
+> >>>>>> +      and its cpu core.
+> >>>>>> +
+> >>>>>>    config CORESIGHT_STM
+> >>>>>>        tristate "CoreSight System Trace Macrocell driver"
+> >>>>>>        depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+> >>>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >>>>>> index abd706b..fcee27a 100644
+> >>>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >>>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >>>>>> @@ -3,6 +3,7 @@
+> >>>>>>     * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+> >>>>>>     */
+> >>>>>>
+> >>>>>> +#include <linux/bitops.h>
+> >>>>>>    #include <linux/kernel.h>
+> >>>>>>    #include <linux/moduleparam.h>
+> >>>>>>    #include <linux/init.h>
+> >>>>>> @@ -28,7 +29,9 @@
+> >>>>>>    #include <linux/perf_event.h>
+> >>>>>>    #include <linux/pm_runtime.h>
+> >>>>>>    #include <linux/property.h>
+> >>>>>> +
+> >>>>>>    #include <asm/sections.h>
+> >>>>>> +#include <asm/sysreg.h>
+> >>>>>>    #include <asm/local.h>
+> >>>>>>    #include <asm/virt.h>
+> >>>>>>
+> >>>>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
+> >>>>>>        int rc;
+> >>>>>>    };
+> >>>>>>
+> >>>>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+> >>>>>> +
+> >>>>>> +#define HISI_HIP08_AMBA_ID        0x000b6d01
+> >>>>>> +#define ETM4_AMBA_MASK            0xfffff
+> >>>>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR    0x3000
+> >>>>>
+> >>>>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
+> >>>>> is set - is this intentional?  What is bit 13 for?
+> >>>>>
+> >>>> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
+> >>>> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
+> >>>> reduced to minimum value. So bit 12 and 13 should be cleared together in
+> >>>> etm4_hisi_config_core_commit().
+> >>>
+> >>> Please could you document this in the function.
+> >>>
+> >> of course, thanks.
+> >>>>
+> >>>> Qi
+> >>>>
+> >>>>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT    12
+> >>>>>> +#define HISI_HIP08_CORE_COMMIT_REG    sys_reg(3, 1, 15, 2, 5)
+> >>>>>> +
+> >>>>>> +struct etm4_arch_features {
+> >>>>>> +    void (*arch_callback)(bool enable);
+> >>>>>> +};
+> >>>>>> +
+> >>>>>> +static bool etm4_hisi_match_pid(unsigned int id)
+> >>>>>> +{
+> >>>>>> +    return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
+> >>>>>> +}
+> >>>>>> +
+> >>>>>> +static void etm4_hisi_config_core_commit(bool enable)
+> >>>>>> +{
+> >>>>>> +    u64 val;
+> >>>>>> +
+> >>>>>> +    val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
+> >>>>>> +    val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
+> >>>>>> +    val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
+> >>>
+> >>> I would use the explicitly masked values when you update
+> >>> a register.
+> >>>
+> >> ok, how about changing these code to this:
+> >> val &= ~GENMASK(12, 13);
+> > 
+> > I would do :
+> > 
+> > // Rename the HISI_HIP08_CORE_COMMIT_CLEAR to HISI_HIP08_CORE_COMMIT_MASK
+> > // above.
+> > #define HISI_HIP08_CORE_COMMIT_MASK        0x3000
+> > 
+> > #define HISI_HIP08_CORE_COMMIT_FULL        0b00
+> > #define HISI_HIP08_CORE_COMMIT_LVL_1        0b01
+> > 
+> > 
+> > u8 commit = enable ? HISI_HIP08_CORE_COMMIT_LVL_1 : HISI_HIP08_CORE_COMMIT_FULL;
+> > 
+> > ...
+> > 
+> > val |= commit << HISI_HIP08_CORE_COMMIT_SHIFT;
+> > 
+> > ..
+> > 
+> > 
+> > Suzuki
+> > 
+> > .
+> ok, I'll send a new version. :)
 > 
-> <stdin>:1539:2: warning: #warning syscall memfd_secret not implemented [-Wcpp]
 
-I was under the impression that Andrew only removed the #ifdef...
+Please do so by tomorrow morning (North America time) if you want to see this
+going in the v5.11 merge window.  Otherwise it will be another 3 months.
 
-Andrew, can you please restore syscall definition for memfd_secret() in
-include/uapi/asm-generic/unistd.h?
-
-> >  
-> >  #undef __NR_syscalls
-> > -#define __NR_syscalls 442
-> > +#define __NR_syscalls 443
-> >  
-> >  /*
-> >   * 32 bit systems traditionally used different
-> > diff --git a/mm/secretmem.c b/mm/secretmem.c
-> > index 7236f4d9458a..b8a32954ac68 100644
-> > --- a/mm/secretmem.c
-> > +++ b/mm/secretmem.c
-> > @@ -415,6 +415,9 @@ static int __init secretmem_setup(char *str)
-> >  	unsigned long reserved_size;
-> >  	int err;
-> >  
-> > +	if (!can_set_direct_map())
-> > +		return 0;
-> > +
-> >  	reserved_size = memparse(str, NULL);
-> >  	if (!reserved_size)
-> >  		return 0;
-> > diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
-> > index a18b47695f55..b7609958ee36 100755
-> > --- a/scripts/checksyscalls.sh
-> > +++ b/scripts/checksyscalls.sh
-> > @@ -40,6 +40,10 @@ cat << EOF
-> >  #define __IGNORE_setrlimit	/* setrlimit */
-> >  #endif
-> >  
-> > +#ifndef __ARCH_WANT_MEMFD_SECRET
-> > +#define __IGNORE_memfd_secret
-> > +#endif
-> > +
-> >  /* Missing flags argument */
-> >  #define __IGNORE_renameat	/* renameat2 */
-> >  
+> Thanks
+> Qi
+> > 
 > 
-
--- 
-Sincerely yours,
-Mike.
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
