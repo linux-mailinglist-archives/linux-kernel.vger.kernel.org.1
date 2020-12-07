@@ -2,113 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71B92D0B91
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EB12D0B97
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbgLGIQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:16:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41306 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgLGIQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:16:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1ADF6AC9A;
-        Mon,  7 Dec 2020 08:15:57 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id BE771603C1; Mon,  7 Dec 2020 09:15:56 +0100 (CET)
-Date:   Mon, 7 Dec 2020 09:15:56 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-Message-ID: <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
-References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
- <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
- <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
- <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+        id S1726299AbgLGIRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgLGIRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 03:17:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85342C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 00:16:39 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmBh8-0000Zr-Up; Mon, 07 Dec 2020 09:16:30 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmBh6-0004km-HV; Mon, 07 Dec 2020 09:16:28 +0100
+Date:   Mon, 7 Dec 2020 09:16:28 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
+References: <1606564926-19555-1-git-send-email-LinoSanfilippo@gmx.de>
+ <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
+ <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204084417.GA2154@gofer.mess.org>
+ <20201204111326.qjux6k2472dmukot@pengutronix.de>
+ <20201204113846.GA6547@gofer.mess.org>
+ <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
+ <20201205173444.GA1265@gofer.mess.org>
+ <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
+ <20201206141941.GA24807@gofer.mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="r7t4bbhedmu7hxrs"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+In-Reply-To: <20201206141941.GA24807@gofer.mess.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 08:18:57AM +0800, Alex Shi wrote:
-> 
-> 
-> 在 2020/11/11 上午3:50, Andrew Morton 写道:
-> > On Tue, 10 Nov 2020 08:39:24 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> > 
-> >> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> >>>
-> >>> Otherwise it cause gcc warning:
-> >>>           ^~~~~~~~~~~~~~~
-> >>> ../mm/filemap.c:830:14: warning: no previous prototype for
-> >>> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
-> >>>  noinline int __add_to_page_cache_locked(struct page *page,
-> >>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>
-> >> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
-> > 
-> > hm, yes.
-> 
-> When the config enabled, compiling looks good untill pahole tool
-> used to get BTF info, but I still failed on a right version pahole
-> > 1.16. Sorry.
-> 
-> > 
-> >>>
-> >>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> >>> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >>> Cc: linux-mm@kvack.org
-> >>> Cc: linux-kernel@vger.kernel.org
-> >>> ---
-> >>>  mm/filemap.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/mm/filemap.c b/mm/filemap.c
-> >>> index d90614f501da..249cf489f5df 100644
-> >>> --- a/mm/filemap.c
-> >>> +++ b/mm/filemap.c
-> >>> @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
-> >>>  }
-> >>>  EXPORT_SYMBOL_GPL(replace_page_cache_page);
-> >>>
-> >>> -noinline int __add_to_page_cache_locked(struct page *page,
-> >>> +static noinline int __add_to_page_cache_locked(struct page *page,
-> >>>                                         struct address_space *mapping,
-> >>>                                         pgoff_t offset, gfp_t gfp,
-> >>>                                         void **shadowp)
-> > 
-> > It's unclear to me whether BTF_ID() requires that the target symbol be
-> > non-static.  It doesn't actually reference the symbol:
-> > 
-> > #define BTF_ID(prefix, name) \
-> >         __BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
-> > 
-> 
-> The above usage make me thought BTF don't require the symbol, though
-> the symbol still exist in vmlinux with 'static'.
-> 
-> So any comments of this, Alexei? 
 
-It's probably more complicated: our v5.10-rc7 builds with
-CONFIG_DEBUG_INFO_BTF=y fail on ppc64 and ppc64le with
+--r7t4bbhedmu7hxrs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-     BTFIDS  vmlinux
-   FAILED unresolved symbol __add_to_page_cache_locked
+On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
+> Hello Uwe,
+>=20
+> On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
+> > > What real life uses-cases are there for round down? If you want to ro=
+und
+> > > down, is there any need for round up?
+> >=20
+> > The scenario I have in mind is for driving a motor. I have to admit
+> > however that usually the period doesn't matter much and it's the
+> > duty_cycle that defines the motor's speed. So for this case the
+> > conservative behaviour is round-down to not make the motor run faster
+> > than expected.
+>=20
+> I am reading here that for driving motors, only the duty cycle matters,
+> not the period.
 
+There is an upper limit (usually around 1 ms) for the period, but if you
+choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
 
-but succeed on x86_64, i586, aarch64 and s390x. So far I don't see why
-this should depend on architecture.
+@Thierry: Do you have further use cases in mind?
 
-Michal
+> > For other usecases (fan, backlight, LED) exactness typically doesn't
+> > matter that much.
+>=20
+> So, the use-cases you have are driving motor, fan, backlight, and led.
+> And in all these cases the exact Hz does not matter.
+>=20
+> The only uses case where the exact Hz does matter is pwm-ir-tx.=20
+>=20
+> So, I gather there are no use-cases for round-down. Yes, should round-down
+> be needed, then this is more difficult to implement if the driver always
+> does a round-closest. But, since there is no reason to have round-down,
+> this is all academic.
+>=20
+> Your policy of forcing new pwm drivers to use round-down is breaking
+> pwm-ir-tx.
+
+So you're indeed suggesting that the "right" rounding strategy for
+lowlevel drivers should be:
+
+ - Use the period length closest to the requested period (in doubt round
+   down?)
+ - With the chosen period length use the biggest duty_cycle not bigger
+   than the requested duty_cycle.
+
+While this seems technically fine I think for maintenance this is a
+nightmare.
+
+My preference would be to stick to the rounding strategy we used so far
+(i.e.:
+
+ - Use the biggest period length not bigger than the requested period
+ - With the chosen period length use the biggest duty_cycle not bigger
+   than the requested duty_cycle.
+
+) and for pwm-ir-tx add support to the PWM API to still make it possible
+(and easy) to select the best setting.
+
+The reasons why I think that this rounding-down strategy is the best
+are (in order of importance):
+
+ - It is easier to implement correctly [1]
+ - Same rounding method for period and duty cycle
+ - most drivers already do this (I think)
+
+The (IMHO nice) result would then mean:
+
+ - All consumers can get the setting they want; and
+ - Code in lowlevel drivers is simple and the complexity is in common
+   code and so a single place.
+
+And it would also allow the pwm-ir-tx driver to notice if the PWM to be
+used can for example only support frequencies under 400 kHz.
+
+Best regards
+Uwe
+
+[1] Consider a PWM with a parent frequency of 66 MHz, to select the
+    period you can pick an integer divider "div" resulting in the period
+    4096 / (pclk * d). So the obvious implementation for round-nearest
+    would be:
+
+    	pclk =3D clk_get_rate(myclk);
+	div =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC * 4096, targetperiod * pclk);
+
+    , right?
+
+    With targetperiod =3D 2641 ns this picks div =3D 23 and so a period of
+    2698.2872200263505 ns (delta =3D 57.2872200263505 ns).
+    The optimal divider however is div =3D 24. (implemented period =3D
+    2585.8585858585857 ns, delta =3D 55.14141414141448 ns)
+
+    For round-down the correct implementation is:
+
+    	pclk =3D clk_get_rate(myclk);
+	div =3D DIV_ROUND_UP(NSEC_PER_SEC * 4096, targetperiod * pclk);
+
+    Exercise for the reader: Come up with a correct implementation for
+    "round-nearest" and compare its complexity to the round-down code.
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--r7t4bbhedmu7hxrs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/N5NkACgkQwfwUeK3K
+7AmLpgf+Py+CFKFZtAi0EaZORlcfGV4BYD8OXxpWshzSlh6wvKWG23vobo2NLu1e
+ZcJ+MuEwIqQvH4KlxSOPEBR/JbTIBECwNO/VZ4lG3GDJGoMvPm1M5FYZGdT4YaHK
+u/R4JHtAXajn77RjlQtJv9r2L3ZZJznVVGhkOJfpYMXeCY0wmIL7uiqMey0UOFYQ
+PGfR4oev1WglnyNXZD2vruMW6k4Oj9HfvB5pCxLdF82qqXo3VE9Vf0vGAsL3POay
+cR3rtka0wut1GTtuo1ZChEbvywGQiyMMM8OU6Zq/clRBJvxwjhmiX3NKinfzZ3jd
+/pOFxeyIxM6QzrwbVKbKtCKTO3F/iQ==
+=ukN6
+-----END PGP SIGNATURE-----
+
+--r7t4bbhedmu7hxrs--
