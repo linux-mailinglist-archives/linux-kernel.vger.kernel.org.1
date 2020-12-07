@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617912D1264
+	by mail.lfdr.de (Postfix) with ESMTP id CDB8E2D1265
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgLGNo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgLGNo3 (ORCPT
+        id S1726493AbgLGNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:44:32 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60535 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726187AbgLGNoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:44:29 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637DAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:43:48 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id l11so18177035lfg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:43:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gP0uJhQTgF/+63+6gB2l+pnsCV2YV5kIdg6VVuH/EPg=;
-        b=wIwEnnsZNQshljsYBE4lem1wlantjPxjdyfhvVc5xSyfwo/p1r3xY4FFmPmRbkP3Ji
-         TDPOtFp7oYMFl1jRnDGJRFvwN6eNJvWA9YMsEQUzwT+c26CRjCY03kenMQSZV5D7uKAy
-         oOgEBb/0wcKQZWP2BoYXl4f5ifuyJLym4cMeY94MgOo9Pj3Rab7X/5dkEirUjfA1paHE
-         8tPdH4aToNawRR7X1A4J+0NWY86ZbfcwMW18bAi6WNUAT/3xGwfvLnCbbLQzGctEH+PE
-         0dOEnClsuG/3DQ585xyUwWTDbpFln1ceL4kyoMfP4Y3CtmjkaZsFJkW4U6rrSIJ+pG91
-         H9HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gP0uJhQTgF/+63+6gB2l+pnsCV2YV5kIdg6VVuH/EPg=;
-        b=hVl+/6RLuiPWzM6ijF0LbHDF9a2LKTQkb6zsfTvC9xdIhC5xbwNuAoPLGWWj+JB8br
-         EJoDQ2kxS2mfiac1f6uBSHe98bL3NV8iBZTjhCdpSwpJekkI/XsUrgCz02gCTiJGRruf
-         AnZjIPbjTNHgfXTjA24/LA/S0UpHqSXfXBNzuOdoRPN7sUUs53skLolVZeVJPAb+VP0C
-         KO/L/yroFiPJubemUjjywDHh4CFc2iPlSGi9b2MpGvFPfKskvMpKsN3h5x4Mip6EobAD
-         Ojz2jV2uyAGv1GJJ4BusPj5qUg5KfL6tprAC2NjbTnrX+/kRl3zQDPxoWRnLTuOjJCLE
-         TW1A==
-X-Gm-Message-State: AOAM530+6Z9jr0F3ebuvDDUZvy9mViDBykNg6lIb1+roT6XDZICCTAkq
-        zODXeYo9qUW5cZ7+HaxWwoVzKP7ST2eWhwaOF6Ttyw==
-X-Google-Smtp-Source: ABdhPJzLSJLiAu+AIBChoSsaNDZ5Zux7SKhh0tTGmJJ86OXT69+jxhMioDzwzNkdyd8WY2fO4ut19U3EPJxorUBCyMU=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr7872928lfh.260.1607348626724;
- Mon, 07 Dec 2020 05:43:46 -0800 (PST)
-MIME-Version: 1.0
-References: <tencent_220963AF059847E1171B4AB9@qq.com> <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
- <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com> <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
- <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com> <CACRpkdZmM3GK6mebmm6nT-XXfdTB5KGwArAFk-1Gx6noZDxVAw@mail.gmail.com>
- <1jr1o1katc.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1jr1o1katc.fsf@starbuckisacylon.baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Dec 2020 14:43:36 +0100
-Message-ID: <CACRpkdbZxPwGNF427T85hmNHw6ncnYExKmXzLJM1rq8FCZOpxw@mail.gmail.com>
-Subject: Re: 0001-add-amlogic-gpio-to-irq
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>,
-        khilman <khilman@baylibre.com>,
-        narmstrong <narmstrong@baylibre.com>,
-        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic <linux-amlogic@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Mon, 7 Dec 2020 08:44:32 -0500
+X-UUID: ff3f90193e6b4f1182c6b23973cee090-20201207
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4Ii3UID8fse2i4ieiqVMLnoGaYyiqaOaZASNr1fmU3o=;
+        b=CuO11Iff6rYrBhIN5hgz70qM7QtKLODbhYYcSUfzZZ4nk1nachc+L4g8e1riCv2kxxMSt15PFauTT+S2m7Ko0k1E5aiFLlNZSpjWtZjx3ubcvwnMtBxloYVO2flFrxiU8qqZ4KiVcM4yQVKTjxcFIdOLScZyWMz9qrLsq7Tx/DU=;
+X-UUID: ff3f90193e6b4f1182c6b23973cee090-20201207
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1611850613; Mon, 07 Dec 2020 21:43:44 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Dec 2020 21:43:38 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Dec 2020 21:43:38 +0800
+Message-ID: <1607348620.3580.18.camel@mtkswgap22>
+Subject: Re: [PATCH] scsi: ufs: Enable WB flush during suspend only if WB is
+ enabled
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Date:   Mon, 7 Dec 2020 21:43:40 +0800
+In-Reply-To: <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
+References: <20201207055006.24471-1-stanley.chu@mediatek.com>
+         <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 2:25 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> [Me]
+SGkgQmVhbiwNCg0KT24gTW9uLCAyMDIwLTEyLTA3IGF0IDExOjU5ICswMTAwLCBCZWFuIEh1byB3
+cm90ZToNCj4gT24gTW9uLCAyMDIwLTEyLTA3IGF0IDEzOjUwICswODAwLCBTdGFubGV5IENodSB3
+cm90ZToNCj4gPiBXcml0ZUJvb3RzZXIgZmx1c2ggZHVyaW5nIHN1c3BlbmQgaXMgbm90IG5lY2Vz
+c2FyeSB0byBiZSBlbmFibGVkIGlmDQo+ID4gV3JpdGVCb29zdGVyIGZlYXR1cmUgaXMgZGlzYWJs
+ZWQuIFNpbXBseSBhZGRpbmcgYSBjaGVjayB0byBwcmV2ZW50DQo+ID4gdW5leHBlY3RlZCBwb3dl
+ciBkcmFpbi4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5j
+aHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5j
+IHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
+LSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyBiL2Ry
+aXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPiBpbmRleCA0ODc5ZTg3NTc3ZTEuLjg5ZmE4Yjlh
+YzExZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ID4gKysr
+IGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+IEBAIC01NDU4LDcgKzU0NTgsNyBAQCBz
+dGF0aWMgYm9vbCB1ZnNoY2Rfd2JfbmVlZF9mbHVzaChzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEp
+DQo+ID4gICAgICAgICB1MzIgYXZhaWxfYnVmOw0KPiA+ICAgICAgICAgdTggaW5kZXg7DQo+ID4g
+IA0KPiA+IC0gICAgICAgaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpKQ0KPiA+ICsgICAg
+ICAgaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8ICFoYmEtPndiX2VuYWJsZWQpDQo+
+ID4gICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCj4gPiAgICAgICAgIC8qDQo+ID4gICAg
+ICAgICAgKiBUaGUgdWZzIGRldmljZSBuZWVkcyB0aGUgdmNjIHRvIGJlIE9OIHRvIGZsdXNoLg0K
+PiANCj4gDQo+IEhpIFN0YW5sZXkNCj4gDQo+IEluIHRoZSAzLjEgU3BlYzoNCj4gDQo+ICJJZiB0
+aGUgZldyaXRlQm9vc3RlckVuIGZsYWcgaXMgc2V0IHRvIHplcm8sIGRhdGEgd3JpdHRlbiB0byBh
+bnkNCj4gbG9naWNhbCB1bml0IGlzIHdyaXR0ZW4gaW4gbm9ybWFsIHN0b3JhZ2UuDQo+IElmIHRo
+ZSBmV3JpdGVCb29zdGVyRW4gZmxhZyBpcyBzZXQgdG8gb25lIGFuZCB0aGUgZGV2aWNlIGlzIGNv
+bmZpZ3VyZWQNCj4gaW4g4oCcc2hhcmVkIGJ1ZmZlcuKAnSBtb2RlLCBkYXRhIHdyaXR0ZW4gdG8g
+YW55IGxvZ2ljYWwgdW5pdCBpcyB3cml0dGVuIGluDQo+IHRoZSBzaGFyZWQgV3JpdGVCb29zdGVy
+IEJ1ZmZlci4iDQo+IA0KPiBzbywgSU1PLCBmV3JpdGVCb29zdGVyRW4gaXMgaW5kZXBlbmRhbnQg
+d2l0aCBXQiBidWZmZXIgZmx1c2guDQo+IA0KPiBhcyBmb3IgdGhlIGZsdXNoOg0KPiANCj4gIlRo
+ZXJlIGFyZSB0d28gbWV0aG9kcyBmb3IgZmx1c2hpbmcgZGF0YSBmcm9tIHRoZSBXcml0ZUJvb3N0
+ZXIgQnVmZmVyDQo+IHRvIHRoZSBub3JtYWwgc3RvcmFnZTogb25lIGlzIHVzaW5nIGFuIGV4cGxp
+Y2l0IGZsdXNoIGNvbW1hbmQsIHRoZQ0KPiBvdGhlciBlbmFibGluZyB0aGUgZmx1c2hpbmcgZHVy
+aW5nIGxpbmsgaGliZXJuYXRlIHN0YXRlLiBJZiB0aGUNCj4gZldyaXRlQm9vc3RlckJ1ZmZlckZs
+dXNoRW4gZmxhZyBpcyBzZXQgdG8gb25lLCB0aGUgZGV2aWNlIHNoYWxsIGZsdXNoDQo+IHRoZSBk
+YXRhIHN0b3JlZCBpbiB0aGUgV3JpdGVCb29zdGVyIEJ1ZmZlciB0byB0aGUgbm9ybWFsIHN0b3Jh
+Z2UuIElmDQo+IGZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaER1cmluZ0hpYmVybmF0ZSBpcyBzZXQg
+dG8gb25lLCB0aGUgZGV2aWNlDQo+IGZsdXNoZXMgdGhlIFdyaXRlQm9vc3RlciBCdWZmZXIgZGF0
+YSBhdXRvbWF0aWNhbGx5IHdoZW5ldmVyIHRoZSBsaW5rDQo+IGVudGVycyB0aGUgaGliZXJuYXRl
+IChISUJFUk44KSBzdGF0ZS4iDQo+IA0KPiBJTU8sIGZvciB0aGUgZmx1c2gsIGl0IGlzIGNvbnRy
+b2xsZWQgYnkgZldyaXRlQm9vc3RlckJ1ZmZlckZsdXNoRW4gYW5kDQo+IGZXcml0ZUJvb3N0ZXJC
+dWZmZXJGbHVzaER1cmluZ0hpYmVybmF0ZS4NCj4gDQo+IGhvdyBkbyB5b3UgdW5kZXJzdGFuZCB0
+aGUgYWJvdmUgdHdvIHBhcmFncmFwaHMgZnJvbSBTcGVjPw0KDQpUaGFua3MgZm9yIHlvdXIgcmV2
+aWV3IGFuZCBmZWVkYmFjayEgOiApDQoNCkFjdHVhbGx5IHRoaXMgcGF0Y2ggaXMgbm90IG1vdGl2
+YXRlZCBieSBhbnkgbGltaXRhdGlvbiBpbiBzcGVjLiBJIHdhcw0KdGhpbmtpbmcgdGhhdCBpZiBo
+b3N0IGRpc2FibGVzIFdyaXRlQm9vc3Rlciwgd2hpY2ggbWF5IGltcGx5IHRoYXQgaG9zdA0KZG9l
+cyBub3Qgd2FudCBhbnkgV0IgcmVsYXRlZCBvcGVyYXRpb25zIGluIGRldmljZSBkdXJpbmcgdGhl
+IGRpc2FibGVkDQpwZXJpb2QuDQoNCkhvd2V2ZXIgSSBtYXkgYmUgd3JvbmcgYmVjYXVzZSBob3N0
+IG1heSBvbmx5IHdhbnQgbm90IGNvbnN1bWluZyBhbnkgV0INCmJ1ZmZlciBpbiBkZXZpY2UgZHVy
+aW5nIHRoZSBkaXNhYmxlZCB0aW1lLCBidXQgc3RpbGwgd2FudCB0aGUgImZsdXNoIg0Kb3BlcmF0
+aW9uIGluIGRldmljZSB0byBjbGVhbiBXQiBidWZmZXIgYXMgcXVpY2tseSBhcyBwb3NzaWJsZSB0
+byBmdWxmaWxsDQpmdXR1cmUgaGlnaC10aHJvdWdocHV0IHJlcXVpcmVtZW50IGFmdGVyIFdCIGlz
+IHJlLWVuYWJsZWQuDQoNClNvLCBJIHdvdWxkIGRyb3AgdGhpcyBwYXRjaC4NCg0KVGhhbmtzLA0K
+U3RhbmxleSBDaHUNCj4gDQo+IA0KPiB0aGFua3MsDQo+IEJlYW4NCj4gDQo+IA0KDQo=
 
-> > So maybe the problem is that you need to go back and think about
-> > updating the DT bindings for this thing to include interrupt-controller
-> > as well?
->
-> We do
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-meson-gpio.c
->
-> That's actually the only thing we provide, on purpose.
-
-Aha I see now.
-
-> >>  * We only get to know a mapping is required when gpio_to_irq() is called
-> >
-> > No that callback should not be used for that.
->
-> Agreed ... I was trying explain why we did *not* push a patch similar to what
-> was proposed here, or use gpiolib irqchip.
-
-The gpiolib irqchip kind of suppose there is a 1-to-1 mapping between a
-GPIO line and an IRQ, so I see the reasoning. That said, the callbacks
-are code so a deviant remapping irq line "pool" could possibly be used.
-
-> > I don't quite understand this. Do you mean you are bombarded by pointless
-> > requests for interrupts that will not work anyways?
->
-> When we tried the approach suggested in this patch (again I agree it is
-> bad, which is why I'm against it), some drivers out there (I don't
-> remember which one TBH - that was 3 years ago) parsed the "gpio"
-> property and tried gpio_to_irq() and if it did not work then go
-> something else (like polling).
->
-> However the allocation stayed behind. It does not take much
-> "bombardment" when you only have 8.
-
-I don't see any problem with gpio_to_irq() always returning -EINVAL
-in situations like this.
-
-> We control the ressources of the devices through DT, not the necessarily
-> drivers (which may be generic)
->
-> Some device needs the gpio, even if we don't want the irq.
-> We can't always prevent the driver to try gpio_to_irq().
-
-True. But you can say "no" to anything trying to do that, that way you
-will only hand out the irqs on a first-come-first serve basis to the clients
-that use the irqs directly and thus you get it under control.
-
-> This why I don't want gpio_to_irq() to be enabled on this HW, because it
-> would not be under our control anymore.
-
-I think you can enable it and use gpiolibs hierarchical irqchip but let
-gpio_to_irq() say no to everything.
-
-> Again agreed. I'm really sorry if I have been that unclear about my
-> motive here. We already had that discussion 3 years ago, I totally
-> understand your point and agree. I was trying (and failing) to tell the
-> author of the patch that this approach had already been discussed in
-> past and that, unless gpiolib dramatically changed since then,
-> gpio_to_irq() should be used in this way and he should use irqchip we
-> already provide.
-
-OK I get it.
-
-It's just that from my point of view using the hierarchical gpiolib irqchip
-has a value in itself even if gpio_to_irq() isn't used at all because it brings
-the criss-cross under control.
-
-If the author wants to get some driver to work, such as MMC card detect
-or ethernet phy or similar, what s/he should do is to go and fix the driver
-to ask for an irq directly from the platform device or similar if it
-can't get an
-IRQ from the GPIO line by using gpiod_to_irq().
-
-Yours,
-Linus Walleij
