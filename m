@@ -2,347 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EF92D1D34
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969AB2D1D3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgLGWVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:21:06 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39226 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727281AbgLGWVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:21:05 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607379623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ffdn/d6YKHDKkGyemzTmLc5K1NIiOGgQkvkjXNBeldY=;
-        b=BNZlynDLUaMcIVZkLpgNtaYz9popsTiNJvzbJcOQbsgf42i9VmV8nZyfve1rJm7FQ0ffvk
-        XRXIK2Aa5sGIlTYqFLiqy3hqQAFRyLLfZYEL09Vc/5ywcYiQk0e65SaNXGJNaw8BQLBEC/
-        wfsN8fpXranPeZ0HWXlrUcLqV+afJXRdQFJ1580TMGSmzt64xB3V+9xZDAe9901S0/HDpr
-        SsTjp7L2bY0DqzIHayekUtpyWy+CmC2MOQeWS1usFFEhKSrD8VE7PWg1UEob18Y8MCUofe
-        krUq8wyaLnNp5j6NPy9N9rV3ZJh47eyA2qMMVhYlDCs591amAnu56stOSALmPg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607379623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ffdn/d6YKHDKkGyemzTmLc5K1NIiOGgQkvkjXNBeldY=;
-        b=6ZuOe+lA250UYCSZV7lJvOwC4DNDtImZ0QCcIoV8idAMoLFKlkXxBOusvAB+1jCj8WAlOA
-        7pG6rMaI7cJsRyAg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH next v3 3/3] printk: remove logbuf_lock protection for ringbuffer
-Date:   Mon,  7 Dec 2020 23:26:20 +0106
-Message-Id: <20201207222020.2923-4-john.ogness@linutronix.de>
-In-Reply-To: <20201207222020.2923-1-john.ogness@linutronix.de>
-References: <20201207222020.2923-1-john.ogness@linutronix.de>
+        id S1728098AbgLGWVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:21:15 -0500
+Received: from mail-dm6nam11on2060.outbound.protection.outlook.com ([40.107.223.60]:62561
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727896AbgLGWVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:21:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SitXOdDDoDC4dYMZp98DLVgfB+WHl0X1IM8FUe9FP2V9jkKyGxN/DjMJAcryJNmzu2xH+g/Ru4fYz2RXBSX6eLS9CiTs5+XrFx9r1jw7X5ETo0FDIqrexybeaaLpZm9CDR4tTdnoG2riXNUX5IjC0E1BLKQ0cxpkQVKLLFilDL8yxSaTXJhGej8uVK5hmgD8JwokG1aDGz46VQvnZOcKP1CnnmjeO6Pu5Ao0NqOyvQcDWuJHQZlbzPy88zJNa4aibmhIXsfBSZ2PV0jvrcK6YPftd7OhK/p0c75iY6Q9U1jinYBEIk79au9qBOk6DXgtkwbTtqddHVb+P3TuPUUrgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K03og3SnhegWj4PSPPPz5JDEG9HLiTivWCPKuqp3jS8=;
+ b=Z0U9TKO3Y+G+UvJ0mZYyrY0rLIl1kW06gx/6RbeG9oAJAEQ+Z/xNfDYJhpDI3rk+cj9TmlLXL0g+ZHQu237k/235IqRiFttzuzrmPgg4DOezplorNOCG5NHtrSi6d5k1486IguDIYxgLOkTK7dUgDO4SdcS0CGQAaSUHeSZjbG9gsNdhVk9mEJ6tg1qHxaFB6vJfW33uP3x+yH5YvnI0jBqp2esqf2m01j/DX/uQJfvlDHNUCIXVgThn+7SdPZrPGnF8dg7B5G5CG5cuQq3U/yp5T5mT6d7NXIWYMap8LtRCruf2V+HGNlq4DFR//9XbMd7rTzBbxe4qa9xg1hG2HQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K03og3SnhegWj4PSPPPz5JDEG9HLiTivWCPKuqp3jS8=;
+ b=fvmQFv86n1HKsk+QUdv/uhHPpCPCDrmtHimuCmUyTNSaHDC4pUzm/rYjqIrOek3fpSXYebMg8KdFTUVdbF50CfdPK/wgyZFhxx54NKfsVE0FlZFsaowq+pb5NWbSCp7+lJH8wrfCOS/Duga41rluHQYmj9LgJG+p5pTsx9OY6K4=
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4384.namprd12.prod.outlook.com (2603:10b6:806:9f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
+ 2020 22:20:21 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Mon, 7 Dec 2020
+ 22:20:21 +0000
+From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dave.hansen@linux-intel.com" <dave.hansen@linux-intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "rientjes@google.com" <rientjes@google.com>
+Subject: Re: [PATCH v7] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Topic: [PATCH v7] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Thread-Index: AQHWySQLBB68k2x6+UCJ0Df9iPf5sanrkYWAgACmmgCAAAJHgIAAAZ75
+Date:   Mon, 7 Dec 2020 22:20:20 +0000
+Message-ID: <60FF61F4-9A7D-4467-A148-2956903C74AA@amd.com>
+References: <20201203032559.3388-1-Ashish.Kalra@amd.com>
+ <20201207121007.GD20489@zn.tnic>
+ <20201207220624.GB6855@ashkalra_ubuntu_server>,<20201207221433.GI20489@zn.tnic>
+In-Reply-To: <20201207221433.GI20489@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [136.49.12.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 855eebd5-b12c-4021-cadf-08d89afe4904
+x-ms-traffictypediagnostic: SA0PR12MB4384:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA0PR12MB4384CAB5E4F07BD8DE47F3318ECE0@SA0PR12MB4384.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hoqjZua6jk3FksFKlbZNH3whBoqFW1ZmvyS/qkTBgdIXGH1qtozzBZTKqRtHVO9qxLrc5MvdsB7GrekZP7QBNBYokKlKFNxLnCBLPK6TbcGEKD0On9RU0kQld0TZxp1/fvDklFHGA7JiFOfAolBW7dCyNiimpp00pEI+26uG+7UyMvCkxaj+nk4q7REZBEHltmuTk4HgKknGIniY/WnhFqVOVT5ne+s97YokDyLtniAK8RMt1JLzkAeiK9Rs+8bbm3AjSmMFgYsx8IzYnzDLyQLq0/iPmUUY+N0CADeL9k61VGNgB7Kqzs4LcLrjsktpwC/SPTPGPwX1y4DmpWCBoAgB8faXeV56S4HSFjgChNQ/Vtw+venFGE+XqoYSHcag
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(8936002)(6512007)(36756003)(2906002)(478600001)(316002)(4744005)(33656002)(5660300002)(86362001)(54906003)(186003)(2616005)(4326008)(66556008)(26005)(66476007)(8676002)(6916009)(53546011)(71200400001)(76116006)(66946007)(6506007)(66446008)(7416002)(6486002)(64756008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?c3BUTTg4SlcrOUNIL2RUNitHTjZOamR3RXVjSkpmS0RzQTExL2hSTFR5QjNi?=
+ =?utf-8?B?Q2lOQng0N0UzTHZPZzR5b2QvU25JaWlFMjVaUEpJTkdMdG5idVNGMnVxU1Qy?=
+ =?utf-8?B?bXlYSTFaSmROS2ZBc1NOK2pFT2lkMjgzaHUzNXVVdWxyUnh1NFZHN0xqMEl5?=
+ =?utf-8?B?UitsUnRGdGV4ZHZ4eXhKcE5LakFVSnBDSGF4aHdaNk9ZMWk0Z05sMXEvYWZy?=
+ =?utf-8?B?WS82d2QyNW1qbGpUN1IwZWhiZHJLQThVWWQ1a1BPZGpIOUF5ckpoUWhUSUkr?=
+ =?utf-8?B?NmxtWHg0SjNrTjZtaEdvSFVjTCtoR21PNXMzNEVESHNkczYrdHIxMGRxUFYr?=
+ =?utf-8?B?czNUeDVzM0crMHQrYjJVa3N5OGFTb2xjSVltKzd6NUcxZlN3REF4all1MHR2?=
+ =?utf-8?B?VkVycFpzMytLOU9obHpSaVNMaDNENEQwK1hVQk1FZ0hGZi9JamRtT1owbFdk?=
+ =?utf-8?B?QVRjQXluUm80dXZqZWJHR0ZuV0xSSG50ME5SbDFaOUt4bzc5eGZlWWhiM2lM?=
+ =?utf-8?B?WHpsUkRzNG10M091MEV3RUVrRzNZRlYrRG5VeWxIZTNNNnEwWmxxRnBZRnFQ?=
+ =?utf-8?B?YkpUTGxvcDB1aEluMW1pTFhrYjFCVHAyeDVFTTdUejBUNkdpMDV4RkFuakZx?=
+ =?utf-8?B?WTN2c1Z0VDgvY3dxVVhLRUoxRElEeVVkWm1FSHpqYWpsa3J5NW42V1ZwSzBM?=
+ =?utf-8?B?WXVQdnBZL0tvK0N1OVJJWGpWSUFITndyRUJCMGQ5cjllYTR3VVhoNzJTaXY2?=
+ =?utf-8?B?NTArTThZekRjSVJwelpiS1JTUGxmWVF2a0xMaUNNVzZkVmJSWEdXalRLL2JN?=
+ =?utf-8?B?a29YVzNDcE5TMG4vRHh3ZmUwYlFWdm1JQm94ajE5NWNMOG4yeEhIL09MVmdp?=
+ =?utf-8?B?REdLSkhlbjdUWmFFQ045MUh1blQ5b3VXbWROL2RjWk5pajNTMHNwR25PSUJi?=
+ =?utf-8?B?aCtXS0lGempTbkY2Mm54NUVrUnpja0pvZUtTWExZU3NJQklON1hxUlZ6aCtM?=
+ =?utf-8?B?d2xzZ1IrYnovRkljdVBMWFhUUVFKcm10OWlzbkxYNkhYaVJoMEl6UkxRYmJI?=
+ =?utf-8?B?M3NQQit1eXBZZzBNcXdFNlZOdHEyOVpZOXhpRFZxa3B2WU1XRUJCcG03K2NW?=
+ =?utf-8?B?aVNIMlZVQnllSGp1QmJORlZPeUw4Z2lucDg2amdleUdKcjBsdmtGQW15Q1du?=
+ =?utf-8?B?L25kTDBPTG1ralFOUjYwZCt0YW13RHdvZlhlSmV4YnljUkF5cjhneEVTZlV6?=
+ =?utf-8?B?QUg3OFlWa3hLSktVMUxMbGV1QnBYc0tVOHlLaGZKbE9kRU1mTDg2eVhpNmhI?=
+ =?utf-8?Q?vwnZNHkTbJqUE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 855eebd5-b12c-4021-cadf-08d89afe4904
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2020 22:20:20.9507
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xPGQZPXI1+4SnzF0QUcgad+io5MYPDfxK70xXZjJgZNcut4HvbWBINrC59ArYpu97e3zfcipmXqOeEe7zT2i7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4384
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the ringbuffer is lockless, there is no need for it to be
-protected by @logbuf_lock. Remove @logbuf_lock protection of the
-ringbuffer.
-
-This means that printk_nmi_direct and printk_safe_flush_on_panic()
-no longer need to acquire any lock to run.
-
-Without @logbuf_lock it is no longer possible to use the single
-static buffer for temporarily sprint'ing the message. Instead,
-use vsnprintf() to determine the length and perform the real
-vscnprintf() using the area reserved from the ringbuffer. This
-leads to suboptimal packing of the message data, but will
-result in less wasted storage than multiple per-cpu buffers to
-support lockless temporary sprint'ing.
-
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/printk/printk.c      | 131 +++++++++++++++++++++++++-----------
- kernel/printk/printk_safe.c |  18 +----
- 2 files changed, 95 insertions(+), 54 deletions(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index e1f068677a74..f3c0fcc3163f 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1068,7 +1068,6 @@ void __init setup_log_buf(int early)
- 	struct printk_record r;
- 	size_t new_descs_size;
- 	size_t new_infos_size;
--	unsigned long flags;
- 	char *new_log_buf;
- 	unsigned int free;
- 	u64 seq;
-@@ -1126,8 +1125,6 @@ void __init setup_log_buf(int early)
- 		 new_descs, ilog2(new_descs_count),
- 		 new_infos);
- 
--	logbuf_lock_irqsave(flags);
--
- 	log_buf_len = new_log_buf_len;
- 	log_buf = new_log_buf;
- 	new_log_buf_len = 0;
-@@ -1143,8 +1140,6 @@ void __init setup_log_buf(int early)
- 	 */
- 	prb = &printk_rb_dynamic;
- 
--	logbuf_unlock_irqrestore(flags);
--
- 	if (seq != prb_next_seq(&printk_rb_static)) {
- 		pr_err("dropped %llu messages\n",
- 		       prb_next_seq(&printk_rb_static) - seq);
-@@ -1861,19 +1856,91 @@ static inline u32 printk_caller_id(void)
- 		0x80000000 + raw_smp_processor_id();
- }
- 
--/* Must be called under logbuf_lock. */
-+/**
-+ * parse_prefix - Parse level and control flags.
-+ *
-+ * @text:     The text message.
-+ * @text_len: A pointer to a value of strlen(@text), will be updated.
-+ * @level:    A pointer to the current level value, will be updated.
-+ * @lflags:   A pointer to the current log flags, will be updated.
-+ *
-+ * The variable pointed to by @text_len is updated to the message length
-+ * when subtracting the parsed level and control flag length.
-+ *
-+ * @level may be NULL if the caller is not interested in the parsed value.
-+ * Otherwise the variable pointed to by @level must be set to
-+ * LOGLEVEL_DEFAULT in order to be updated with the parsed value.
-+ *
-+ * @lflags may be NULL if the caller is not interested in the parsed value.
-+ * Otherwise the variable pointed to by @lflags will be OR'd with the parsed
-+ * value.
-+ *
-+ * Return: The text message with the parsed level and control flags skipped.
-+ */
-+static char *parse_prefix(char *text, u16 *text_len, int *level, enum log_flags *lflags)
-+{
-+	int kern_level;
-+
-+	while (*text_len >= 2) {
-+		kern_level = printk_get_level(text);
-+		if (!kern_level)
-+			break;
-+
-+		switch (kern_level) {
-+		case '0' ... '7':
-+			if (level && *level == LOGLEVEL_DEFAULT)
-+				*level = kern_level - '0';
-+			break;
-+		case 'c':	/* KERN_CONT */
-+			if (lflags)
-+				*lflags |= LOG_CONT;
-+		}
-+
-+		*text_len -= 2;
-+		text += 2;
-+	}
-+
-+	return text;
-+}
-+
-+static u16 printk_sprint(char *text, u16 size, int facility, enum log_flags *lflags,
-+			 const char *fmt, va_list args)
-+{
-+	char *orig_text = text;
-+	u16 text_len;
-+
-+	text_len = vscnprintf(text, size, fmt, args);
-+
-+	/* Mark and strip a trailing newline. */
-+	if (text_len && text[text_len - 1] == '\n') {
-+		text_len--;
-+		*lflags |= LOG_NEWLINE;
-+	}
-+
-+	/* Strip log level and control flags. */
-+	if (facility == 0) {
-+		text = parse_prefix(text, &text_len, NULL, NULL);
-+		if (text != orig_text)
-+			memmove(orig_text, text, text_len);
-+	}
-+
-+	return text_len;
-+}
-+
-+__printf(4, 0)
- int vprintk_store(int facility, int level,
- 		  const struct dev_printk_info *dev_info,
- 		  const char *fmt, va_list args)
- {
- 	const u32 caller_id = printk_caller_id();
--	static char textbuf[LOG_LINE_MAX];
- 	struct prb_reserved_entry e;
- 	enum log_flags lflags = 0;
- 	struct printk_record r;
- 	u16 trunc_msg_len = 0;
--	char *text = textbuf;
-+	char prefix_buf[8];
-+	va_list args2;
- 	u16 text_len;
-+	int ret = 0;
- 	u64 ts_nsec;
- 
- 	/*
-@@ -1884,35 +1951,21 @@ int vprintk_store(int facility, int level,
- 	 */
- 	ts_nsec = local_clock();
- 
-+	va_copy(args2, args);
-+
- 	/*
- 	 * The printf needs to come first; we need the syslog
- 	 * prefix which might be passed-in as a parameter.
- 	 */
--	text_len = vscnprintf(text, sizeof(textbuf), fmt, args);
-+	text_len = vsnprintf(&prefix_buf[0], sizeof(prefix_buf), fmt, args) + 1;
-+	if (text_len > CONSOLE_LOG_MAX)
-+		text_len = CONSOLE_LOG_MAX;
- 
--	/* mark and strip a trailing newline */
--	if (text_len && text[text_len-1] == '\n') {
--		text_len--;
--		lflags |= LOG_NEWLINE;
--	}
--
--	/* strip kernel syslog prefix and extract log level or control flags */
-+	/* Extract log level or control flags. */
- 	if (facility == 0) {
--		int kern_level;
--
--		while ((kern_level = printk_get_level(text)) != 0) {
--			switch (kern_level) {
--			case '0' ... '7':
--				if (level == LOGLEVEL_DEFAULT)
--					level = kern_level - '0';
--				break;
--			case 'c':	/* KERN_CONT */
--				lflags |= LOG_CONT;
--			}
-+		u16 tmplen = sizeof(prefix_buf);
- 
--			text_len -= 2;
--			text += 2;
--		}
-+		parse_prefix(&prefix_buf[0], &tmplen, &level, &lflags);
- 	}
- 
- 	if (level == LOGLEVEL_DEFAULT)
-@@ -1924,7 +1977,8 @@ int vprintk_store(int facility, int level,
- 	if (lflags & LOG_CONT) {
- 		prb_rec_init_wr(&r, text_len);
- 		if (prb_reserve_in_last(&e, prb, &r, caller_id, LOG_LINE_MAX)) {
--			memcpy(&r.text_buf[r.info->text_len], text, text_len);
-+			text_len = printk_sprint(&r.text_buf[r.info->text_len], text_len,
-+						 facility, &lflags, fmt, args2);
- 			r.info->text_len += text_len;
- 
- 			if (lflags & LOG_NEWLINE) {
-@@ -1934,7 +1988,8 @@ int vprintk_store(int facility, int level,
- 				prb_commit(&e);
- 			}
- 
--			return text_len;
-+			ret = text_len;
-+			goto out;
- 		}
- 	}
- 
-@@ -1950,11 +2005,11 @@ int vprintk_store(int facility, int level,
- 
- 		prb_rec_init_wr(&r, text_len + trunc_msg_len);
- 		if (!prb_reserve(&e, prb, &r))
--			return 0;
-+			goto out;
- 	}
- 
- 	/* fill message */
--	memcpy(&r.text_buf[0], text, text_len);
-+	text_len = printk_sprint(&r.text_buf[0], text_len, facility, &lflags, fmt, args2);
- 	if (trunc_msg_len)
- 		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
- 	r.info->text_len = text_len + trunc_msg_len;
-@@ -1972,7 +2027,10 @@ int vprintk_store(int facility, int level,
- 	else
- 		prb_final_commit(&e);
- 
--	return (text_len + trunc_msg_len);
-+	ret = text_len + trunc_msg_len;
-+out:
-+	va_end(args2);
-+	return ret;
- }
- 
- asmlinkage int vprintk_emit(int facility, int level,
-@@ -1995,10 +2053,7 @@ asmlinkage int vprintk_emit(int facility, int level,
- 	boot_delay_msec(level);
- 	printk_delay();
- 
--	/* This stops the holder of console_sem just where we want him */
--	logbuf_lock_irqsave(flags);
- 	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
--	logbuf_unlock_irqrestore(flags);
- 
- 	/* If called from the scheduler, we can not call up(). */
- 	if (!in_sched) {
-diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-index a0e6f746de6c..7248b6e3df6c 100644
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -266,18 +266,6 @@ void printk_safe_flush(void)
-  */
- void printk_safe_flush_on_panic(void)
- {
--	/*
--	 * Make sure that we could access the main ring buffer.
--	 * Do not risk a double release when more CPUs are up.
--	 */
--	if (raw_spin_is_locked(&logbuf_lock)) {
--		if (num_online_cpus() > 1)
--			return;
--
--		debug_locks_off();
--		raw_spin_lock_init(&logbuf_lock);
--	}
--
- 	printk_safe_flush();
- }
- 
-@@ -371,17 +359,15 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
- 	 * Try to use the main logbuf even in NMI. But avoid calling console
- 	 * drivers that might have their own locks.
- 	 */
--	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK) &&
--	    raw_spin_trylock(&logbuf_lock)) {
-+	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
- 		int len;
- 
- 		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
--		raw_spin_unlock(&logbuf_lock);
- 		defer_console_output();
- 		return len;
- 	}
- 
--	/* Use extra buffer in NMI when logbuf_lock is taken or in safe mode. */
-+	/* Use extra buffer in NMI or in safe mode. */
- 	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
- 		return vprintk_nmi(fmt, args);
- 
--- 
-2.20.1
-
+DQoNCj4gT24gRGVjIDcsIDIwMjAsIGF0IDQ6MTQgUE0sIEJvcmlzbGF2IFBldGtvdiA8YnBAYWxp
+ZW44LmRlPiB3cm90ZToNCj4gDQo+IO+7v09uIE1vbiwgRGVjIDA3LCAyMDIwIGF0IDEwOjA2OjI0
+UE0gKzAwMDAsIEFzaGlzaCBLYWxyYSB3cm90ZToNCj4+IFRoaXMgaXMgcmVsYXRlZCB0byB0aGUg
+ZWFybGllciBzdGF0aWMgYWRqdXN0bWVudCBvZiB0aGUgU1dJT1RMQiBidWZmZXJzDQo+PiBhcyBw
+ZXIgZ3Vlc3QgbWVtb3J5IHNpemUgYW5kIEtvbnJhZCdzIGZlZWRiYWNrIG9uIHRoZSBzYW1lLCBh
+cyBjb3BpZWQNCj4+IGJlbG93IDogDQo+PiANCj4+Pj4gVGhhdCBpcyBlYXRpbmcgMTI4TUIgZm9y
+IDFHQiwgYWthIDEyJSBvZiB0aGUgZ3Vlc3QgbWVtb3J5IGFsbG9jYXRlZCBzdGF0aWNhbGx5IGZv
+ciB0aGlzLg0KPj4+PiANCj4+Pj4gQW5kIGZvciBndWVzdHMgdGhhdCBhcmUgMkdCLCB0aGF0IGlz
+IDEyJSB1bnRpbCBpdCBnZXRzIHRvIDNHQiB3aGVuIA0KPj4+PiBpdCBpcyA4JSBhbmQgdGhlbiA2
+JSBhdCA0R0IuDQo+Pj4+IA0KPj4+PiBJIHdvdWxkIHByZWZlciB0aGlzIHRvIGJlIGJhc2VkIG9u
+IHlvdXIgbWVtb3J5IGNvdW50LCB0aGF0IGlzIDYlIG9mIA0KPj4+PiB0b3RhbCBtZW1vcnkuDQo+
+IA0KPiBTbyBubyBydWxlIG9mIHRodW1iIGFuZCBubyBtZWFzdXJlbWVudHM/IEp1c3QgYSBtYWdp
+YyBudW1iZXIgNi4NCg0KSXQgaXMgbW9yZSBvZiBhbiBhcHByb3hpbWF0aW9uIG9mIHRoZSBlYXJs
+aWVyIHN0YXRpYyBhZGp1c3RtZW50IHdoaWNoIHdhcyAxMjhNIGZvciA8MUcgZ3Vlc3RzLCAyNTZN
+IGZvciAxRy00RyBndWVzdHMgYW5kIDUxMk0gZm9yID40RyBndWVzdHMuDQoNClRoYW5rcywNCkFz
+aGlzaA==
