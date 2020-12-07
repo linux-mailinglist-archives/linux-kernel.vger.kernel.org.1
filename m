@@ -2,126 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D006D2D0A31
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24572D0A36
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgLGFZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 00:25:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgLGFZd (ORCPT
+        id S1725853AbgLGFa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 00:30:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49603 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725681AbgLGFa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:25:33 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F5FC0613D2
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 21:24:53 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1km90p-0000C3-J3; Mon, 07 Dec 2020 06:24:39 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1km90o-0000yR-6p; Mon, 07 Dec 2020 06:24:38 +0100
-Date:   Mon, 7 Dec 2020 06:24:38 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-clk@vger.kernel.org, aford@beaconembedded.com,
-        charles.steves@logicpd.com, Aisheng Dong <aisheng.dong@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: imx: Fix reparenting of UARTs not associated with
- sdout
-Message-ID: <20201207052438.GA3977@pengutronix.de>
-References: <20201204183154.94002-1-aford173@gmail.com>
+        Mon, 7 Dec 2020 00:30:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607318971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p9SyX3Wbogf9IuwRBc6i2Dzncrlgn1ZL50RBQLD9/wk=;
+        b=Ymu1xTBQRbyOvIWYyTyN5PTUvY77CZnTY1wTJXJtqpyYu1wMc97VdYtMwQ4Ylx+IhaAOsT
+        ZGBrxTp7v/GwB+7n1GZrYzrspvHTX4SXcC7haGz2tBCY6Vg0YCOmruOHa9W5CpB6WZ8IoG
+        vsOTMMs9KQfOucb57+fNzjANkY0qnjE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-ffOF8WXdNR2oi5-NL-dTHA-1; Mon, 07 Dec 2020 00:29:29 -0500
+X-MC-Unique: ffOF8WXdNR2oi5-NL-dTHA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6703C801B12;
+        Mon,  7 Dec 2020 05:29:28 +0000 (UTC)
+Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BACC6614EB;
+        Mon,  7 Dec 2020 05:29:18 +0000 (UTC)
+Subject: Re: [PATCH v3 13/19] vdpa_sim: add get_config callback in
+ vdpasim_dev_attr
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, Oren Duer <oren@nvidia.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Shahaf Shuler <shahafs@nvidia.com>, Eli Cohen <elic@nvidia.com>
+References: <20201203170511.216407-1-sgarzare@redhat.com>
+ <20201203170511.216407-14-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <829a5026-a68c-6d02-49ef-f237dcae2460@redhat.com>
+Date:   Mon, 7 Dec 2020 13:29:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204183154.94002-1-aford173@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 06:13:56 up 4 days, 17:40, 32 users,  load average: 0.04, 0.17, 0.17
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201203170511.216407-14-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
 
-On Fri, Dec 04, 2020 at 12:31:54PM -0600, Adam Ford wrote:
-> The default clock source on i.MX8M Mini and Nano boards use a 24MHz clock,
-> but users who need to re-parent the clock source run into issues because
-> all the UART clocks are enabled whether or not they're needed by sdout.
-> 
-> Any attempt to change the parent results in an busy error because the
-> clocks have been enabled already.
-> 
->   clk: failed to reparent uart1 to sys_pll1_80m: -16
-> 
-> Instead of pre-initializing all UARTS, scan the device tree to see if UART
-> clock is used as stdout before initializing it.  Only enable the UART clock
-> if it's needed in order to delay the clock initialization until after the
-> re-parenting of the clocks.
-> 
-> Fixes: 9461f7b33d11c ("clk: fix CLK_SET_RATE_GATE with clock rate protection")
-> Suggested-by: Aisheng Dong <aisheng.dong@nxp.com>
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-> index 47882c51cb85..6dcc5fbd8f3f 100644
-> --- a/drivers/clk/imx/clk.c
-> +++ b/drivers/clk/imx/clk.c
-> @@ -163,12 +163,18 @@ __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
->  
->  void imx_register_uart_clocks(struct clk ** const clks[])
->  {
-> +	struct clk *uart_clk;
->  	if (imx_keep_uart_clocks) {
->  		int i;
->  
->  		imx_uart_clocks = clks;
-> -		for (i = 0; imx_uart_clocks[i]; i++)
-> -			clk_prepare_enable(*imx_uart_clocks[i]);
-> +		for (i = 0; imx_uart_clocks[i]; i++) {
-> +			uart_clk = of_clk_get(of_stdout, i);
+On 2020/12/4 上午1:05, Stefano Garzarella wrote:
+> The get_config callback can be used by the device to fill the
+> config structure.
+> The callback will be invoked in vdpasim_get_config() before copying
+> bytes into caller buffer.
+>
+> Move vDPA-net config updates from vdpasim_set_features() in the
+> new vdpasim_net_get_config() callback.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+> v3:
+> - checked if get_config callback is set before call it
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 35 +++++++++++++++++++-------------
+>   1 file changed, 21 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index fe71ed7890e1..f935ade0806b 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -60,6 +60,8 @@ struct vdpasim_virtqueue {
+>   #define VDPASIM_NET_FEATURES	(VDPASIM_FEATURES | \
+>   				 (1ULL << VIRTIO_NET_F_MAC))
+>   
+> +struct vdpasim;
+> +
+>   struct vdpasim_dev_attr {
+>   	u64 supported_features;
+>   	size_t config_size;
+> @@ -67,6 +69,7 @@ struct vdpasim_dev_attr {
+>   	u32 id;
+>   
+>   	work_func_t work_fn;
+> +	void (*get_config)(struct vdpasim *vdpasim, void *config);
+>   };
+>   
+>   /* State of each vdpasim device */
+> @@ -522,8 +525,6 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
+>   static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>   {
+>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+> -	struct virtio_net_config *config =
+> -		(struct virtio_net_config *)vdpasim->config;
+>   
+>   	/* DMA mapping must be done by driver */
+>   	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+> @@ -531,16 +532,6 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
+>   
+>   	vdpasim->features = features & vdpasim->dev_attr.supported_features;
+>   
+> -	/* We generally only know whether guest is using the legacy interface
+> -	 * here, so generally that's the earliest we can set config fields.
+> -	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
+> -	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
+> -	 */
+> -
+> -	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+> -	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+> -	memcpy(config->mac, macaddr_buf, ETH_ALEN);
 
-This looks wrong. imx_uart_clocks is an array containing all clocks that
-could possibly be used for an UART. With of_clk_get(of_stdout, i) you
-get the nth clock for one specific UART.
-What you have to do here is: For each of imx_uart_clocks[] you have to
-iterate over all clocks of the of_stdout node.
 
-Sascha
+Patch looks good to me.
 
-> +			if (IS_ERR(uart_clk))
-> +				continue;
-> +			clk_prepare_enable(uart_clk);
-> +			clk_put(uart_clk);
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.25.1
-> 
-> 
+But we need Michael to confirm whether doing moving like this is safe. I 
+guess what has been done were trying to make sure get_config() fail 
+before set_features(), but it's not clear to me whether it's useful.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks
+
+
+> -
+>   	return 0;
+>   }
+>   
+> @@ -595,8 +586,13 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
+>   {
+>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>   
+> -	if (offset + len < vdpasim->dev_attr.config_size)
+> -		memcpy(buf, vdpasim->config + offset, len);
+> +	if (offset + len > vdpasim->dev_attr.config_size)
+> +		return;
+> +
+> +	if (vdpasim->dev_attr.get_config)
+> +		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
+> +
+> +	memcpy(buf, vdpasim->config + offset, len);
+>   }
+>   
+>   static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
+> @@ -739,6 +735,16 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
+>   	.free                   = vdpasim_free,
+>   };
+>   
+> +static void vdpasim_net_get_config(struct vdpasim *vdpasim, void *config)
+> +{
+> +	struct virtio_net_config *net_config =
+> +		(struct virtio_net_config *)config;
+> +
+> +	net_config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
+> +	net_config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
+> +	memcpy(net_config->mac, macaddr_buf, ETH_ALEN);
+> +}
+> +
+>   static int __init vdpasim_dev_init(void)
+>   {
+>   	struct vdpasim_dev_attr dev_attr = {};
+> @@ -747,6 +753,7 @@ static int __init vdpasim_dev_init(void)
+>   	dev_attr.supported_features = VDPASIM_NET_FEATURES;
+>   	dev_attr.nvqs = VDPASIM_VQ_NUM;
+>   	dev_attr.config_size = sizeof(struct virtio_net_config);
+> +	dev_attr.get_config = vdpasim_net_get_config;
+>   	dev_attr.work_fn = vdpasim_net_work;
+>   
+>   	vdpasim_dev = vdpasim_create(&dev_attr);
+
