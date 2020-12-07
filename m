@@ -2,183 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E292D0D59
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817912D0D5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgLGJrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgLGJrq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:47:46 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19D9C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:47:00 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id q16so12976187edv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Nh8hmJxQmwGFKjIJpdn8QfXbazqpO8ZVQJAcoMlQ+3o=;
-        b=VNKKV4Fly/daUxewGdtMaBZQ3fo5sOW0ocbXzN6TrjTXhToq3hpHiiGoAZUmsQ4SIV
-         IRBqAx1kcTdaPTKV3LXqS81IP4XzpDKoicUCe/282i82pvW5uEStjqQlvb1GYeEnhhq8
-         IEyENnFrFnku0OSJFb6OPWtjtaEbi7DPuucIeEy9IoK1t66W0bADcmNq66j6VIhqM6C8
-         zYM1oCKvCtNh/r+8goR2quYyQf9pb3LqncA9NWtqyJGam5COz2SpxCAaIo7CsMo/KIEn
-         ztpdnZka7o0zxFFkSgTB9AdDHH62hZpkfbnOClyS+eyXruK1jN2PwqSAKeL+d058UfN5
-         QlAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Nh8hmJxQmwGFKjIJpdn8QfXbazqpO8ZVQJAcoMlQ+3o=;
-        b=ShNeSHfbClEL7BAQ9uFOWF6x1zHW9RLqVMpZgmt8kdl72JGPxYUhE/k27IyRbgyGNJ
-         ktxZgMKWK3jUd1c9t/s8nsCBrIh+KznP8GtVPDCM7M3w+DIR1p3sUDo83ydshMC2353/
-         urNfJ85pqCo1NaoKPXSliULyTXUx0E5gaSpNxJw7eTt4uGhzg5fqwATwlyRh9+/QONWN
-         BS1RJMJCgwwpD5AZV+Y6KAoder8T3dyORwsmiSBXTgsCE503yjObD1ASj4m7622U3RN8
-         aJGETgkuqqgPZT+Mi0PF+nV53r1Krk7oRLczSU/xNiiCQiQKJ4di/D0ci1RF9lGNIrBe
-         EMOA==
-X-Gm-Message-State: AOAM531ET7GvfM443ZNUjHqmPuBzyj232ztN7QPMKjQqv8A/Qv2xwoTZ
-        7J8fbxx8efh2YpC9oknbiZnb9ohJCUuI1zZVyY/45A==
-X-Google-Smtp-Source: ABdhPJzytcBIbxeErCX98lt+bmjf0polBe3qHxsOL8Xewcp2KpuP5PRo8B85e7gd/4P0iLWTCYGrRYSaohcf8g8ew9U=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr12675680edw.52.1607334419167;
- Mon, 07 Dec 2020 01:46:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206111555.787862631@linuxfoundation.org>
-In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 7 Dec 2020 15:16:47 +0530
-Message-ID: <CA+G9fYv++q-swaWAgWifNvoLjMENOgeowwisVEy5Re5CgGSt7Q@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/32] 4.19.162-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726076AbgLGJtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:49:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58322 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgLGJtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:49:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8377ACBA;
+        Mon,  7 Dec 2020 09:48:27 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, vbabka@suse.cz,
+        dan.j.williams@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH] mm,memory_failure: Always pin the page in madvise_inject_error
+Date:   Mon,  7 Dec 2020 10:48:18 +0100
+Message-Id: <20201207094818.8518-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 6 Dec 2020 at 17:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.162 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.162-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+madvise_inject_error() uses get_user_pages_fast to translate the
+address we specified to a page.
+After [1], we drop the extra reference count for memory_failure() path.
+That commit says that memory_failure wanted to keep the pin in order
+to take the page out of circulation.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+The truth is that we need to keep the page pinned, otherwise the
+page might be re-used after the put_page() and we can end up messing
+with someone else's memory.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+E.g:
 
-Summary
-------------------------------------------------------------------------
+CPU0
+process X					CPU1
+ madvise_inject_error
+  get_user_pages
+   put_page
+					page gets reclaimed
+					process Y allocates the page
+  memory_failure
+   // We mess with process Y memory
 
-kernel: 4.19.162-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 35a4debf26a46be2487f7401acf73ae8b7a4a3f1
-git describe: v4.19.161-33-g35a4debf26a4
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.161-33-g35a4debf26a4
+madvise() is meant to operate on a self address space, so messing with
+pages that do not belong to us seems the wrong thing to do.
+To avoid that, let us keep the page pinned for memory_failure as well.
 
-No regressions (compared to build v4.19.161)
+Pages for DAX mappings will release this extra refcount in
+memory_failure_dev_pagemap.
 
-No fixes (compared to build v4.19.161)
+[1] ("23e7b5c2e271: mm, madvise_inject_error:
+      Let memory_failure() optionally take a page reference")
 
-Ran 42661 total tests in the following environments and test suites.
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Fixes: 23e7b5c2e271 ("mm, madvise_inject_error: Let memory_failure() optionally take a page reference")
+---
+ mm/madvise.c        | 9 +--------
+ mm/memory-failure.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
+diff --git a/mm/madvise.c b/mm/madvise.c
+index c6b5524add58..19edddba196d 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -907,14 +907,7 @@ static int madvise_inject_error(int behavior,
+ 		} else {
+ 			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
+ 				 pfn, start);
+-			/*
+-			 * Drop the page reference taken by get_user_pages_fast(). In
+-			 * the absence of MF_COUNT_INCREASED the memory_failure()
+-			 * routine is responsible for pinning the page to prevent it
+-			 * from being released back to the page allocator.
+-			 */
+-			put_page(page);
+-			ret = memory_failure(pfn, 0);
++			ret = memory_failure(pfn, MF_COUNT_INCREASED);
+ 		}
+ 
+ 		if (ret)
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 869ece2a1de2..064d605cc416 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1258,6 +1258,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 	loff_t start;
+ 	dax_entry_t cookie;
+ 
++	if (flags & MF_COUNT_INCREASED)
++		/*
++		 * Drop the extra refcount in case we come from madvise().
++		 */
++		put_page(page);
++
+ 	/*
+ 	 * Prevent the inode from being freed while we are interrogating
+ 	 * the address_space, typically this would be handled by
+-- 
+2.26.2
 
-Test Suites
------------
-* build
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* kselftest
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
