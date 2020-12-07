@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7E82D096F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B962D0972
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgLGDao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:30:44 -0500
-Received: from mail-db8eur05on2069.outbound.protection.outlook.com ([40.107.20.69]:54323
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728053AbgLGDan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:30:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bMpQ0OmCmci3zoLuEk0FsLlrkG2pjUYhU7g3osDIfU0tYh0Q/jx256Z4Rx1ud6DRbMT/z3xe/Vutx1S3xdh4QZWzEU+RRO/MJsbqGC/pHJl5NpdTh3uDmMQqzTbDtrBd7Tvn6HTDtL9H1Q8NiUUKruNRLFLn+o2NonDd8ah971WB8EYoFETFjhjYEHGPTmoPUK7o8m9vWb5tgaD3B9Nsc6Q1yfpo1RM6P9tjfirv8vPTVWAFwpJPiwW7QUUknRX+Px/Lwf+XgyAe8dea23rirXA9QdquQvJeN4oLlFIj+NYFmNkltbyoMvqF/Xw3ZrFAFp+YA/wRozmrIyaOE+ozSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9JSeJ4BfHUTWIkNllgctdEGRJjyABC52MC+dm/mcAfs=;
- b=kCNSfv195JjlWZ5QmjIqObwBdWo3eLTPgp7bCSJR9SUo43wOE6HXsgE5kD0wVMC5enYvN7O6oYGm30BarNuo4z6mMVKVLTFb3MrwGYsuYHUfuvh7qOm9F8UR2BiDfOxrao7f867hW9jmRM2FUu+NIhWMNIQiPKPL7ZNgBTvHPysL+KHIoWcKfXLJP8mqdrXFiO4/k6t5VoOGxCIjyHSGUVBOeVaiOmd/bwakmL0T6xYwOAjclkEsjbD22/WfRpnXg/N9ApaOn12Zj0K3LsSPrpoPQmrx1mRR2R2kdTW7+eVkw+tXxr6bOeD3TtkYdd/bK3JsvYGyCvAJDlExWOJIjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9JSeJ4BfHUTWIkNllgctdEGRJjyABC52MC+dm/mcAfs=;
- b=bco3VsWqsIAKkN+uevREvXMGDhQHQxtnq6uz7z6Ky9RkILF41wy9j6t14bCedxY+lK6xfwioonIfji/3GIRpfeePeB4JX1rQ6+4VO6mD5vORMaGsQyY97o/kVQmvCZCfpPf8UVfusKcFjCwbzleyv9YHtTbmLwTSB2EQlM1jaBQ=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VE1PR04MB6349.eurprd04.prod.outlook.com (2603:10a6:803:126::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
- 2020 03:29:39 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3611.038; Mon, 7 Dec 2020
- 03:29:39 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com
-Subject: [PATCH v3 6/6] MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
-Date:   Mon,  7 Dec 2020 11:21:00 +0800
-Message-Id: <1607311260-13983-7-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607311260-13983-1-git-send-email-victor.liu@nxp.com>
-References: <1607311260-13983-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR01CA0085.apcprd01.prod.exchangelabs.com
- (2603:1096:3:15::11) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S1728854AbgLGDbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:31:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728561AbgLGDbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:31:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607311780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TXUkdR17CT0/PFeXaHlete1OGprY+UB5Y5Uzoc4vxP8=;
+        b=B1mhJO1p4VM8lXA7jll7+cPnkBpAe0r688HFHUJ8PJZM00WP6r1A/vz5ZvbnTfSK19I7c2
+        7aR8N01guDtcTgT2D/bsPZPH/YzcpcyuFCBzbpIjKHDy+GXYVufHwO5wKfXDvYuPNQso2M
+        09wJDz6rajwLU+T5Fu9XSlKG71GLMyA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-2EmvEE_XM2SYGv0V3U7eKg-1; Sun, 06 Dec 2020 22:29:38 -0500
+X-MC-Unique: 2EmvEE_XM2SYGv0V3U7eKg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53571107ACE4;
+        Mon,  7 Dec 2020 03:29:37 +0000 (UTC)
+Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8C7860CED;
+        Mon,  7 Dec 2020 03:29:31 +0000 (UTC)
+Subject: Re: [PATCH V2 19/19] vdpa: introduce virtio pci driver
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com
+References: <20201204040353.21679-1-jasowang@redhat.com>
+ <20201204040353.21679-20-jasowang@redhat.com>
+ <20201204152043.ewqlwviaf33wwiyx@steredhat>
+ <73a1c314-7398-6182-146f-cd2012646736@infradead.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d7ae5645-9437-2f03-b0c8-35c1812747d2@redhat.com>
+Date:   Mon, 7 Dec 2020 11:29:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0085.apcprd01.prod.exchangelabs.com (2603:1096:3:15::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3632.18 via Frontend Transport; Mon, 7 Dec 2020 03:29:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 850444b1-da72-4e25-d00e-08d89a605407
-X-MS-TrafficTypeDiagnostic: VE1PR04MB6349:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VE1PR04MB6349420C7CB177EF956FB8E598CE0@VE1PR04MB6349.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:901;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BfUP86UJ7/v0trpJIE45kkpSZBjx+K2rs2J/345uu5crqyZHyn3KEvOUzPSnp6yR5a2NaLlQj4D15alshDv6PY4F+hciN3S7NR92u++6znFDzJGaW3M0pc4qTmiN+t42qHGIOiRFncutYCJQwke7k0QPsJpDtUevFNjacOZu6Qc9IRV2wOg8OjGQCzye/+H9KBSYKO9JH6M+FDrOZaZPqow9DJLorNsLMRyEZuCJ1wCxSFIoF745iYg3QsUXmkZl6vefK9wT6S2WxrkHPBb0e6J7kxZb4Y0UV4eCUpnKVWQXaOYqgMCkhXHOZerQZZ1HB8eUkxVkpMuuDEMVRpGtlTQybhF+mQ82wYyiRooxMPuCf8MXes/evgVpWbiiaKCM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(8936002)(6506007)(6512007)(2616005)(316002)(52116002)(26005)(478600001)(69590400008)(16526019)(186003)(6486002)(6666004)(4326008)(2906002)(4744005)(7416002)(956004)(86362001)(36756003)(66946007)(66476007)(8676002)(66556008)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2lDi/cvu5syncVGyGmdSL3K2kvKhPTQHf8KiSN7pp3GhKUq62oykNX74l+QY?=
- =?us-ascii?Q?OtXlJIv/8rcZs8pKUkjJnT8WOIvF6vobLLnmvQodB3Qp7fKOp1D6lSrCUHR3?=
- =?us-ascii?Q?JR6O1RMyfPrfXCyHO+IoLHNQNVFL3+IFpACnRiQkaOExwnO4mHeHcHT63nA/?=
- =?us-ascii?Q?S2hmA7iYsiJQdhdzldyM47EMlLGnxKWHid/3mxLxORTLwWsAdEYueNTnCMoA?=
- =?us-ascii?Q?1jyxDy3U9d4H0SukjJ00QQ1CozEhqEsn4qppmERgNlnmvU+RLfpd9lLrm1cB?=
- =?us-ascii?Q?kKRWSjoRQsQrVs6M9r7nMF+xYu0juTg6N1knks2VwtNjvJ6rki4jizQ6d2dD?=
- =?us-ascii?Q?x+P0Yz/pLRZ73pb7JNjaXWeAcOyAX0HjDWmLR+X15pVuLdKSc1dW+psUUJwt?=
- =?us-ascii?Q?bEn300tQCWSGYwIf/5hnqSay27dm1opLxaw4u0bASocHAe0L1CPitQE/Kj/F?=
- =?us-ascii?Q?Se3rOHqNT6zL9J0EUkC35Z6ZgW61wgXlQBsaJBagYQpbF3ej2EY3+Swv20VU?=
- =?us-ascii?Q?v8GZAxZSiEmVPoF3X2dF70/dqYaBj5lg+3MnIuRDy8HbAHRj4yd7tggiypIf?=
- =?us-ascii?Q?1GcinXjRTccTWPHup72ffTLBIaPr/r4F7K94YqVSt2RSzrKTKD1PCJag2nW7?=
- =?us-ascii?Q?hHKazC57ddJ6mrrySM176bE/aIuBpO9nj0ordsQH/tDyCJ3qWGbB0HjbH3DF?=
- =?us-ascii?Q?uRAinZu2aBa4vkvv2IfQvsCL+DaMBkTqwQefiSTabns+exKReIqv3+1PVTMG?=
- =?us-ascii?Q?0QlNXa81XcZuffadsH794YvZG0Lov+J6/eGvuxDlK4BGeHXkWcCRsER4KMBG?=
- =?us-ascii?Q?RA1JpASyvwyu5SUlHftqRPmgul2rzluuKtqu+fwJn0G/tmR4bRF8TUvYua5K?=
- =?us-ascii?Q?sijiHG8jAP8CIXKGv3ZvVQ1LRa7zSHM6W7gqky157GLJ+SlE+GH1dPQd00fJ?=
- =?us-ascii?Q?HAeP2715fMfoAqXlLhAwSDnVG+btEXJFiZiGMIQ8QIGhg3jfOzqR3/pwOueO?=
- =?us-ascii?Q?/bPL?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 850444b1-da72-4e25-d00e-08d89a605407
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 03:29:39.6337
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zt9c2ZDdLzDHUKP6mQgQtGPz614oWXF+ZlBSv9gIGRdga+I5OayqGszxetFcKsJrjM/flBq9rMKDE7BnG/Rb0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6349
+In-Reply-To: <73a1c314-7398-6182-146f-cd2012646736@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of the i.MX8qxp DPU DRM driver.
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
-v2->v3:
-* No change.
+On 2020/12/5 上午1:12, Randy Dunlap wrote:
+> On 12/4/20 7:20 AM, Stefano Garzarella wrote:
+>> On Fri, Dec 04, 2020 at 12:03:53PM +0800, Jason Wang wrote:
+>>> This patch introduce a vDPA driver for virtio-pci device. It bridges
+>>> the virtio-pci control command to the vDPA bus. This will be used for
+>>> features prototyping and testing.
+>>>
+>>> Note that get/restore virtqueue state is not supported which needs
+>>> extension on the virtio specification.
+>>>
+>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>> ---
+>>> drivers/vdpa/Kconfig              |   6 +
+>>> drivers/vdpa/Makefile             |   1 +
+>>> drivers/vdpa/virtio_pci/Makefile  |   2 +
+>>> drivers/vdpa/virtio_pci/vp_vdpa.c | 455 ++++++++++++++++++++++++++++++
+>>> 4 files changed, 464 insertions(+)
+>>> create mode 100644 drivers/vdpa/virtio_pci/Makefile
+>>> create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa.c
+>>>
+>>> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+>>> index 358f6048dd3c..18cad14f533e 100644
+>>> --- a/drivers/vdpa/Kconfig
+>>> +++ b/drivers/vdpa/Kconfig
+>>> @@ -48,4 +48,10 @@ config MLX5_VDPA_NET
+>>>        be executed by the hardware. It also supports a variety of stateless
+>>>        offloads depending on the actual device used and firmware version.
+>>>
+>>> +config VP_VDPA
+>>> +    tristate "Virtio PCI bridge vDPA driver"
+>>> +    depends on PCI_MSI && VIRTIO_PCI_MODERN
+>>> +    help
+>>> +      This kernel module that bridges virtio PCI device to vDPA bus.
+>>                               ^
+>> Without 'that' maybe sound better, but I'm not a native speaker :-)
+> Yes, drop 'that', please.
 
-v1->v2:
-* No change.
 
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Will fix.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 970d9ce..dee4586 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5834,6 +5834,15 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
- 
-+DRM DRIVERS FOR FREESCALE i.MX8QXP
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
-+F:	Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-+F:	drivers/gpu/drm/imx/dpu/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
--- 
-2.7.4
+Thanks
+
+
+>
+>>> +
+>>> endif # VDPA
 
