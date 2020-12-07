@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C7C2D1E14
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456232D1E18
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgLGXEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:04:25 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34940 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLGXEY (ORCPT
+        id S1728295AbgLGXEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:04:48 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:45468 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728191AbgLGXEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:04:24 -0500
-Received: by mail-oi1-f194.google.com with SMTP id s2so7911409oij.2;
-        Mon, 07 Dec 2020 15:04:08 -0800 (PST)
+        Mon, 7 Dec 2020 18:04:47 -0500
+Received: by mail-oi1-f193.google.com with SMTP id f132so2916472oib.12;
+        Mon, 07 Dec 2020 15:04:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JDyEQxWXMtErR98/q4wOxR4ceF9zN8CopbLuOWAp1Hs=;
-        b=q7wgbNadz0NnYLt39YX30BjK4I4Iv1erHZwAVGFo9ermKkJHadPY0PogfqrwX71pWk
-         8BlXlZ51zI+aNYdJsVci1+GH1LP+tPzGPFz8f3fXRQgJDKXKiIPw3+/e+8FgInE36a9X
-         Eu7IDuIK9FVFxmF/+/H8BQaupKYDJ9Z7/fpD4a2gupQ6LbXmZqzd6RXjNTZ/xpg8aZgx
-         cwV939KbSI+URgB5jyRrSO3iKvnJvRR24sSudO8lb1ohApCqRrzPwJ49x7Ha/csnXJ03
-         z0+bwgtE5FChWyKwlUr9v3tnwO911jeT6DjMxcCGJ79rm0TSy2r9pz6bFjqkTmZAXYMa
-         IN6w==
-X-Gm-Message-State: AOAM531ZYd3RnNzYtP9RFyQ/BNsFZTS9V/NjYiqv/n9aFo02widyGsw6
-        FM/cx2IdgtwgxbgpKhVNg5uvCaUzTg==
-X-Google-Smtp-Source: ABdhPJyhvceWIftXpfjTcIiRH/weA9PgINyFjDiqVws7i4QdzaQMU+plcDBUtWO7TTq/Vw4flTSBMA==
-X-Received: by 2002:aca:df83:: with SMTP id w125mr777779oig.165.1607382223593;
-        Mon, 07 Dec 2020 15:03:43 -0800 (PST)
+        bh=FKVOi81QuTxtmvRA/1QQ/i5ym4BvFRsKDGyyquA2QGo=;
+        b=eNBC3eewy9RFGjNbS2oh3m/WrMPSAB2U9aaSe1KIyA0tcsyFsQu6EPjdBPvY015++F
+         UpeS5wtzFGePypwV3LBg61X3S3YYUfHakEInzzUsDwAG5LiNirK0PROcL7GJbhd4paGa
+         81GTx8Joo5Ycje6Icb0ZdrGw+lWFqkSqXr+L2hu3vWqHxIaYpguB8VbYbA7m95zvAuVP
+         qfuuut4CATzgEmEE/V6N6DyQxn507zzmuEjt2Wtuel+Q2k0jG7rbO1mRuHFtQYYTYdHe
+         rRSLvvielgaVOYyKPZ5tQocFaOU6O+uwUWFLukp9v267ZtTacqhi/0M0xEFLl3yYndMm
+         XP3g==
+X-Gm-Message-State: AOAM532mkFbk43pSG1fV4Bg2RFqD3TzzfEd7dYZVznGmh7dhAGptQoj3
+        k5tYOmkAxVbjehW2QLaw+KOqAIVZHw==
+X-Google-Smtp-Source: ABdhPJwPrbY2Mjm4riXSridU15duWihLNezTrBEYDRujhThLF7Qyb60cdAnrlpGQs50eGq37s+lzoA==
+X-Received: by 2002:aca:5548:: with SMTP id j69mr856075oib.32.1607382246438;
+        Mon, 07 Dec 2020 15:04:06 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n63sm3281008oih.39.2020.12.07.15.03.41
+        by smtp.gmail.com with ESMTPSA id j204sm952836oih.15.2020.12.07.15.04.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:03:42 -0800 (PST)
-Received: (nullmailer pid 1012896 invoked by uid 1000);
-        Mon, 07 Dec 2020 23:03:41 -0000
-Date:   Mon, 7 Dec 2020 17:03:41 -0600
+        Mon, 07 Dec 2020 15:04:05 -0800 (PST)
+Received: (nullmailer pid 1014048 invoked by uid 1000);
+        Mon, 07 Dec 2020 23:04:04 -0000
+Date:   Mon, 7 Dec 2020 17:04:04 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+Cc:     David Airlie <airlied@linux.ie>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint
- warnings
-Message-ID: <20201207230341.GA1012843@robh.at.kernel.org>
-References: <20201207045527.1607-1-thunder.leizhen@huawei.com>
- <20201207045527.1607-2-thunder.leizhen@huawei.com>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [PATCH v2 1/1] dt-bindings: display: eliminate yamllint warnings
+Message-ID: <20201207230404.GA1013997@robh.at.kernel.org>
+References: <20201207044830.1551-1-thunder.leizhen@huawei.com>
+ <20201207044830.1551-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207045527.1607-2-thunder.leizhen@huawei.com>
+In-Reply-To: <20201207044830.1551-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 12:55:27 +0800, Zhen Lei wrote:
+On Mon, 07 Dec 2020 12:48:30 +0800, Zhen Lei wrote:
 > Eliminate the following yamllint warnings:
-> ./Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
-> :32:13:[warning] wrong indentation: expected 14 but found 12 (indentation)
-> :35:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+> ./Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> :52:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+> 
+> ./Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
+> :42:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+> :45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+> 
+> ./Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
+> :21:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+> 
+> ./Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
+> :25:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
 > 
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 > ---
->  .../devicetree/bindings/clock/imx8qxp-lpcg.yaml      | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+>  .../devicetree/bindings/display/bridge/analogix,anx7625.yaml          | 4 ++--
+>  .../devicetree/bindings/display/bridge/intel,keembay-dsi.yaml         | 4 ++--
+>  Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml   | 4 ++--
+>  Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml | 2 +-
+>  4 files changed, 7 insertions(+), 7 deletions(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
