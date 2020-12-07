@@ -2,177 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145022D0E67
+	by mail.lfdr.de (Postfix) with ESMTP id EE45A2D0E69
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgLGKtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgLGKtW (ORCPT
+        id S1726429AbgLGKt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:49:28 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8718 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgLGKt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:49:22 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9517C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:48:35 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id a8so2633805lfb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hHdC4ujfq/sltdEUUsvjJDbRnESRD9gRv1wBr/8BciA=;
-        b=Ae9ZfB8al/FPgLf4JFsxc7tvg1V9qxcJ4n+0hJhJLhan+RU/NZHHZ7RmFV7feXj98U
-         zoC7EivklqYsT5m2Am2djyaTw2zBwww1qKex5P0pGsNVtp+/HjSenSObGg2pnjt+VHM5
-         +NS2ZL6Egssl40XpcvcZ51nv7jrM8ITFEztypRhSA5O5S/MnI0Ryb+q5U/rvjdPsoQK+
-         FFiOeIocO+5h82lr6sLGUMWPffA7OCWR6vtDp9OoN7XC3hzawYA+yFh/1NH/MVxKro4S
-         VDENbA0HwfiD+uN1tQOkoSprGiYFJgy7nhbi/ixcJxDgO0vjAioGKifrwyWC4d4xxmRS
-         RmKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hHdC4ujfq/sltdEUUsvjJDbRnESRD9gRv1wBr/8BciA=;
-        b=s3NP4HwrRfHqRrgbIOOgKUSuxeUmIDLVDKFoq8P7dheqbZ+v0tZdZl8Ta1+xdRrUI5
-         ouQ4RwIpSKtEsrIA2+3L4o0W01+iIhjbp5fn4HQug6yz/QVZ5DOEjxbEx5pczPsS2Spn
-         AUFpiamBNyjkVMML8MLKImUTAIBDZSYX+oABOlNnzQpqIpykevpVFnSmnS1VISgo/nun
-         twfQYUOtFKKR2gied0mLIpRu3rf+GvzHaTItkzY1VYEbEAds4xBnZJOvd3MZGceePhDh
-         sm6anXe9hI6Mxr4nmLXlL/cXVdCx3Rr72HjQqYipAhtVyP+cGYqikwTB21TJBB8hnxZT
-         YodQ==
-X-Gm-Message-State: AOAM533+Oz7KXZPLOUBa+9N4aI6camjDcwsPss0l515tKEkL7ZD367ax
-        lKFPbI1JWkPHEevn3YA181gxAbnAp9NSpMu0MjSnzQ==
-X-Google-Smtp-Source: ABdhPJx9Yi4fPTOzVqekOVpmfn4yuJQ/ANOi6GRZwBZNXobm0cq1w55+gcDyVGdCkUP5tx2zlrSetJUN0QVXCM80sJw=
-X-Received: by 2002:ac2:5311:: with SMTP id c17mr8180683lfh.22.1607338113921;
- Mon, 07 Dec 2020 02:48:33 -0800 (PST)
+        Mon, 7 Dec 2020 05:49:28 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqKln337PzkmXD;
+        Mon,  7 Dec 2020 18:48:05 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 18:48:33 +0800
+Subject: ping // [PATCH] mtd:cfi_cmdset_0002: fix atomic sleep bug when
+ CONFIG_MTD_XIP=y
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <tudor.ambarus@microchip.com>, <tpoynor@mvista.com>,
+        <tglx@linutronix.de>, <vwool@ru.mvista.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <wangle6@huawei.com>
+References: <20201127130731.99270-1-nixiaoming@huawei.com>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <a02e1364-3b82-039a-4b65-e2a216663dd4@huawei.com>
+Date:   Mon, 7 Dec 2020 18:48:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-References: <20201203102936.4049556-1-apusaka@google.com> <20201203182903.v1.1.I92d2e2a87419730d60136680cbe27636baf94b15@changeid>
- <20B6F2AD-1A60-4E3C-84C2-E3CB7294FABC@holtmann.org> <CAJQfnxHDThaJ58iFSpyq4bLopeuATvd+4fOR2AAgbNaabNSMuQ@mail.gmail.com>
- <25116F72-CE7C-46B6-A83A-5D33E9142BF9@holtmann.org> <CAJQfnxG_GDsTTJ1v=Ug0MqEGmTSdeYcOhEf3rQ1hDTmvJS0JrQ@mail.gmail.com>
- <14E449EF-6E91-43BF-9477-61B29B20783A@holtmann.org>
-In-Reply-To: <14E449EF-6E91-43BF-9477-61B29B20783A@holtmann.org>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Mon, 7 Dec 2020 18:48:22 +0800
-Message-ID: <CAJQfnxGOg_b+DkqVuUh0jqQL4VmY0ijB4kEmfGg92K3D_KbNZQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] Bluetooth: advmon offload MSFT add rssi support
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201127130731.99270-1-nixiaoming@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+ping
 
-On Mon, 7 Dec 2020 at 17:57, Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Archie,
->
-> >>>>> MSFT needs rssi parameter for monitoring advertisement packet,
-> >>>>> therefore we should supply them from mgmt.
-> >>>>>
-> >>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> >>>>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> >>>>> Reviewed-by: Yun-Hao Chung <howardchung@google.com>
-> >>>>
-> >>>> I don=E2=80=99t need any Reviewed-by if they are not catching an obv=
-ious user API breakage.
-> >>>>
-> >>>>> ---
-> >>>>>
-> >>>>> include/net/bluetooth/hci_core.h | 9 +++++++++
-> >>>>> include/net/bluetooth/mgmt.h     | 9 +++++++++
-> >>>>> net/bluetooth/mgmt.c             | 8 ++++++++
-> >>>>> 3 files changed, 26 insertions(+)
-> >>>>>
-> >>>>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetoo=
-th/hci_core.h
-> >>>>> index 9873e1c8cd16..42d446417817 100644
-> >>>>> --- a/include/net/bluetooth/hci_core.h
-> >>>>> +++ b/include/net/bluetooth/hci_core.h
-> >>>>> @@ -246,8 +246,17 @@ struct adv_pattern {
-> >>>>>     __u8 value[HCI_MAX_AD_LENGTH];
-> >>>>> };
-> >>>>>
-> >>>>> +struct adv_rssi_thresholds {
-> >>>>> +     __s8 low_threshold;
-> >>>>> +     __s8 high_threshold;
-> >>>>> +     __u16 low_threshold_timeout;
-> >>>>> +     __u16 high_threshold_timeout;
-> >>>>> +     __u8 sampling_period;
-> >>>>> +};
-> >>>>> +
-> >>>>> struct adv_monitor {
-> >>>>>     struct list_head patterns;
-> >>>>> +     struct adv_rssi_thresholds rssi;
-> >>>>>     bool            active;
-> >>>>>     __u16           handle;
-> >>>>> };
-> >>>>> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/m=
-gmt.h
-> >>>>> index d8367850e8cd..dc534837be0e 100644
-> >>>>> --- a/include/net/bluetooth/mgmt.h
-> >>>>> +++ b/include/net/bluetooth/mgmt.h
-> >>>>> @@ -763,9 +763,18 @@ struct mgmt_adv_pattern {
-> >>>>>     __u8 value[31];
-> >>>>> } __packed;
-> >>>>>
-> >>>>> +struct mgmt_adv_rssi_thresholds {
-> >>>>> +     __s8 high_threshold;
-> >>>>> +     __le16 high_threshold_timeout;
-> >>>>> +     __s8 low_threshold;
-> >>>>> +     __le16 low_threshold_timeout;
-> >>>>> +     __u8 sampling_period;
-> >>>>> +} __packed;
-> >>>>> +
-> >>>>> #define MGMT_OP_ADD_ADV_PATTERNS_MONITOR      0x0052
-> >>>>> struct mgmt_cp_add_adv_patterns_monitor {
-> >>>>>     __u8 pattern_count;
-> >>>>> +     struct mgmt_adv_rssi_thresholds rssi;
-> >>>>>     struct mgmt_adv_pattern patterns[];
-> >>>>> } __packed;
-> >>>>
-> >>>> This is something we can not do. It breaks an userspace facing API. =
-Is the mgmt opcode 0x0052 in an already released kernel?
-> >>>
-> >>> Yes, the opcode does exist in an already released kernel.
-> >>>
-> >>> The DBus method which accesses this API is put behind the experimenta=
-l
-> >>> flag, therefore we expect they are flexible enough to support changes=
-.
-> >>> Previously, we already had a discussion in an email thread with the
-> >>> title "Offload RSSI tracking to controller", and the outcome supports
-> >>> this change.
-> >>>
-> >>> Here is an excerpt of the discussion.
-> >>
-> >> it doesn=E2=80=99t matter. This is fixed API now and so we can not jus=
-t change it. The argument above is void. What matters if it is in already r=
-eleased kernel.
-> >
-> > If that is the case, do you have a suggestion to allow RSSI to be
-> > considered when monitoring advertisement? Would a new MGMT opcode with
-> > these parameters suffice?
->
-> its the only way.
+On 2020/11/27 21:07, Xiaoming Ni wrote:
+> When CONFIG_MTD_XIP=y, local_irq_disable() is called in xip_disable().
+> To avoid sleep in interrupt context, we need to call local_irq_enable()
+> before schedule().
+> 
+> The problem call stack is as follows:
+> bug1:
+> 	do_write_oneword_retry()
+> 		xip_disable()
+> 			local_irq_disable()
+> 		do_write_oneword_once()
+> 			schedule()
+> bug2:
+> 	do_write_buffer()
+> 		xip_disable()
+> 			local_irq_disable()
+> 		do_write_buffer_wait()
+> 			schedule()
+> bug3:
+> 	do_erase_chip()
+> 		xip_disable()
+> 			local_irq_disable()
+> 		schedule()
+> bug4:
+> 	do_erase_oneblock()
+> 		xip_disable()
+> 			local_irq_disable()
+> 		schedule()
+> 
+> Fixes: 02b15e343aee ("[MTD] XIP for AMD CFI flash.")
+> Cc: stable@vger.kernel.org # v2.6.13
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> ---
+>   drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index a1f3e1031c3d..12c3776f093a 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1682,7 +1682,11 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+>   			set_current_state(TASK_UNINTERRUPTIBLE);
+>   			add_wait_queue(&chip->wq, &wait);
+>   			mutex_unlock(&chip->mutex);
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_enable();
+>   			schedule();
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_disable();
+>   			remove_wait_queue(&chip->wq, &wait);
+>   			timeo = jiffies + (HZ / 2); /* FIXME */
+>   			mutex_lock(&chip->mutex);
+> @@ -1962,7 +1966,11 @@ static int __xipram do_write_buffer_wait(struct map_info *map,
+>   			set_current_state(TASK_UNINTERRUPTIBLE);
+>   			add_wait_queue(&chip->wq, &wait);
+>   			mutex_unlock(&chip->mutex);
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_enable();
+>   			schedule();
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_disable();
+>   			remove_wait_queue(&chip->wq, &wait);
+>   			timeo = jiffies + (HZ / 2); /* FIXME */
+>   			mutex_lock(&chip->mutex);
+> @@ -2461,7 +2469,11 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+>   			set_current_state(TASK_UNINTERRUPTIBLE);
+>   			add_wait_queue(&chip->wq, &wait);
+>   			mutex_unlock(&chip->mutex);
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_enable();
+>   			schedule();
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_disable();
+>   			remove_wait_queue(&chip->wq, &wait);
+>   			mutex_lock(&chip->mutex);
+>   			continue;
+> @@ -2560,7 +2572,11 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+>   			set_current_state(TASK_UNINTERRUPTIBLE);
+>   			add_wait_queue(&chip->wq, &wait);
+>   			mutex_unlock(&chip->mutex);
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_enable();
+>   			schedule();
+> +			if (IS_ENABLED(CONFIG_MTD_XIP))
+> +				local_irq_disable();
+>   			remove_wait_queue(&chip->wq, &wait);
+>   			mutex_lock(&chip->mutex);
+>   			continue;
+> 
 
-I will make the necessary changes. Thanks for the confirmation.
-
-Regards,
-Archie
-
->
-> Regards
->
-> Marcel
->
