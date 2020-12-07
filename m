@@ -2,161 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628692D191F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFACB2D1922
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgLGTGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:06:43 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63938 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726459AbgLGTGn (ORCPT
+        id S1726510AbgLGTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:08:50 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:60393 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726122AbgLGTIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:06:43 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7J1KgK142231;
-        Mon, 7 Dec 2020 14:06:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rz/hQifI7yG+1lfVplc1tW6OqA321PiRrPM49SK9VH8=;
- b=q0meRKXudrG6MMuphS2OjM5RYZX7QuSHCnWlQdY7bVUuY/PirZdp6r/UvVYiJ2NRWXe+
- QXmf6bgaLr4B/XRFtOXCAS+eCJqCUq0yrBusBOH226Oy28/6QTviPZeQybuupLnA5iZ4
- mmN+r7cN+7ACWvSD/v4ZW/glA5RGhWQV4/mY9yc0hFIWvtI58fjD1BqHixpGQ82VYMFI
- ErX8sxmyA3AE+e16WNfVoTb5OUb7AR0S5Js518nf7+gVWgn7ADxvK+YC1Sdw9UAVl0Jr
- FFhidHU3BWtXnsIEQMRN6M0AcHdHcjEQbeTdwnR/f5TYLObKykWoWphy9kQKvqoo8002 Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 359q2u6fqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 14:05:59 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7J2vuT148497;
-        Mon, 7 Dec 2020 14:05:59 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 359q2u6fpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 14:05:59 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7J1uXg020330;
-        Mon, 7 Dec 2020 19:05:58 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02dal.us.ibm.com with ESMTP id 3581u9ej04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 19:05:58 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7J5vcw20644280
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 19:05:57 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0D7217805F;
-        Mon,  7 Dec 2020 19:05:57 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E16F78060;
-        Mon,  7 Dec 2020 19:05:55 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.162.205])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Dec 2020 19:05:55 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM pointer
- invalidated
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <ab3f1948-bb23-c0d0-7205-f46cd6dbe99d@linux.ibm.com>
-Date:   Mon, 7 Dec 2020 14:05:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 7 Dec 2020 14:08:50 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2D168580420;
+        Mon,  7 Dec 2020 14:07:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 07 Dec 2020 14:07:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=slDo1AYMceMUDPx2oG/rgi009ZU
+        nahXrkGvRRX4QoI0=; b=Y4fNC3vE/PdXxdQkz/Z4nrTznAXdWo3cp4zporo9eGW
+        7G8wI43NWQu0B/mlE1d5Vl0s006j6MrpycthYqtz/N501LvzD9fjn//VntV6DFvA
+        kOXm6dmiHNp/Ip/ejQl17SwlnHP+ZzeEQQLr4JC8ok6oO/Z639w+2V75XNQdIa2D
+        8vt0w76FvnZi6J9HQ5qA03P9CSTLrKpyklzLAcnkc/O8biu5rftPGPV6Da8g/nMJ
+        9EMKTFZH8dl4f5qQOnJmjPgNse5BMvE40KWjrMkh2xa/9lUhdRfr8p4rowxMVfGd
+        Ij+soshDFadQNKGNR90Fqa/dvqw0M3qhCmILr1UqsOA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=slDo1A
+        YMceMUDPx2oG/rgi009ZUnahXrkGvRRX4QoI0=; b=VwxNdjyYSLTFiHUPk2yhC+
+        vMvqLCYZID8ELnJwjw5u97qNGKaZ+yw4ljHoUMyPk1uQEjVijPum3RIdtGihUVz/
+        nF/kiCt33md5HXCTjqtp1TVxGvaCovqSldwIwQ4r/1UazpyWbFSJ8u8Bwb1PW+DT
+        4D3+vKiwC3cOxuZ1P9P0GmGGMp3lBTLsv1d376Qw2Y30Ta2oQNSGh/+aJExXiNuy
+        rofM90tF21JAqudZnxlpRnh/vsqgvdaLJwcoWN0xUt96BqTdHV7sWiu3kIA7prJP
+        rF0oZWM4r95SpHLk0HXZkAGGrAPLYc2JXe4KwWt+jW1VXgGxu5ASBjy638Dm04rg
+        ==
+X-ME-Sender: <xms:fH3OX98aKD8cXjuO48KkjvoU1-LVtxh7MLfgB7OYsC3AiMJ5-mQrKw>
+    <xme:fH3OXxvnwVuuMKkpuRI5Y5X6IwG0EcwMnjIVdzsrhDkpMBM4t_t_Mkft3Mm74LyMa
+    6HYjH66gKEDDw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedguddvtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:fH3OX7AAdrU8CvgsS6zafPGvt6xnq-7GCn8KmAhCctSTmpaKnJkPwA>
+    <xmx:fH3OXxfX_87UhWAA240rinhU0YvqO6lXslDctJm-jJfJ4pFvRJZESA>
+    <xmx:fH3OXyMDpXVf7jZBvax4RU7WM5pPugUSjr3zhIrwKpv5LNkFl3T47g>
+    <xmx:f33OX7wWa09iZphyZDHar1q4pCX-VI8psrZAm8h6x45E993s-Gj-Xg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 79DB5108005B;
+        Mon,  7 Dec 2020 14:07:40 -0500 (EST)
+Date:   Mon, 7 Dec 2020 20:08:51 +0100
+From:   Greg KH <greg@kroah.com>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <X859wznB1peRtjp0@kroah.com>
+References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
+ <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+ <X85sxxgpdtFXiKsg@kroah.com>
+ <20201207180655.GA30657@infradead.org>
+ <X85zEFduHeUr4YKR@kroah.com>
+ <20201207182603.GA2499@infradead.org>
+ <X85116BXkgTtRDKV@kroah.com>
+ <fa89e2a960e98b016d4935490fa2905aab0868f7.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=3 mlxscore=0 adultscore=0 clxscore=1015
- spamscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070119
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa89e2a960e98b016d4935490fa2905aab0868f7.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 07, 2020 at 10:54:58AM -0800, James Bottomley wrote:
+> On Mon, 2020-12-07 at 19:35 +0100, Greg KH wrote:
+> > On Mon, Dec 07, 2020 at 06:26:03PM +0000, Christoph Hellwig wrote:
+> > > On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
+> > > > What "real workload" test can be run on this to help show if it
+> > > > is useful or not?  These vendors seem to think it helps for some
+> > > > reason, otherwise they wouldn't have added it to their silicon :)
+> > > > 
+> > > > Should they run fio?  If so, any hints on a config that would be
+> > > > good to show any performance increases?
+> > > 
+> > > A real actual workload that matters.  Then again that was Martins
+> > > request to even justify it.  I don't think the broken addressing
+> > > that breaks a whole in the SCSI addressing has absolutely not
+> > > business being supported in Linux ever.  The vendors should have
+> > > thought about the design before committing transistors to something
+> > > that fundamentally does not make sense.
+> 
+> Actually, that's not the way it works: vendors add commands because
+> standards mandate.  That's why people who want weird commands go and
+> join standard committees.  Unfortunately this means that a lot of the
+> commands the standard mandates end up not being very useful in
+> practice.  For instance in SCSI we really only implement a fraction of
+> the commands in the standard.
+> 
+> In this case, the industry already tried a very similar approach with
+> GEN 1 hybrid drives and it turned into a complete disaster, which is
+> why the mode became optional in shingle drives and much better modes,
+> which didn't have the huge shared state problem, superseded it.  Plus
+> truncating the LBA of a READ 16 to 4 bytes is asking for capacity
+> problems down the line, so even the actual implementation seems to be
+> problematic.
+> 
+> All in all, this looks like a short term fix which will go away when
+> the drive capacity improves and thus all the effort changing the driver
+> will eventually be wasted.
 
+"short term" in the embedded world means "this device is stuck with this
+chip for the next 8 years", it's not like a storage device you can
+replace, so this might be different than the shingle drive mess.  Also,
+I see many old SoCs still showing up in brand new devices many many
+years after they were first introduced, on-chip storage controllers is
+something we need to support well if we don't want to see huge
+out-of-tree patchsets like UFS traditionally has been lugging around for
+many years.
 
-On 12/2/20 6:41 PM, Tony Krowiak wrote:
-> The vfio_ap device driver registers a group notifier with VFIO when the
-> file descriptor for a VFIO mediated device for a KVM guest is opened to
-> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-> event). When the KVM pointer is set, the vfio_ap driver stashes the pointer
-> and calls the kvm_get_kvm() function to increment its reference counter.
-> When the notifier is called to make notification that the KVM pointer has
-> been set to NULL, the driver should clean up any resources associated with
-> the KVM pointer and decrement its reference counter. The current
-> implementation does not take care of this clean up.
->
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 21 +++++++++++++--------
->   1 file changed, 13 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index e0bde8518745..eeb9c9130756 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1083,6 +1083,17 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
->   	return NOTIFY_DONE;
->   }
->   
-> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
-> +{
-> +	if (matrix_mdev->kvm) {
-> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> > So "time to boot an android system with this enabled and disabled"
+> > would be a valid workload, right?  I'm guessing that's what the
+> > vendors here actually care about, otherwise there is no real stress-
+> > test on a UFS system that I know of.
+> 
+> Um, does it?  I don't believe even the UFS people have claimed this. 
+> The problem is that HPB creates a shared state between the driver and
+> the device.  That shared state has to be populated, which has to happen
+> at start of day, so it's entirely unclear if this is a win or a slow
+> down for boot.
 
-This reset probably does not belong here since there is no
-reason to reset the queues in the group notifier (see below).
-The reset should be done in the release callback only regardless
-of whether the KVM pointer exists or not.
+Ok, showing that this actually matters is a good rule, Daejun, can you
+provide that if you resubmit this patchset?
 
-> +		kvm_put_kvm(matrix_mdev->kvm);
-> +		matrix_mdev->kvm = NULL;
-> +	}
-> +}
-> +
->   static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->   				       unsigned long action, void *data)
->   {
-> @@ -1095,7 +1106,7 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
->   
->   	if (!data) {
-> -		matrix_mdev->kvm = NULL;
-> +		vfio_ap_mdev_put_kvm(matrix_mdev);
->   		return NOTIFY_OK;
->   	}
->   
-> @@ -1222,13 +1233,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
->   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->   
->   	mutex_lock(&matrix_dev->lock);
-> -	if (matrix_mdev->kvm) {
-> -		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> -		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> -		vfio_ap_mdev_reset_queues(mdev);
+thanks,
 
-This release should be moved outside of the block and
-performed regardless of whether the KVM pointer exists or
-not.
-
-> -		kvm_put_kvm(matrix_mdev->kvm);
-> -		matrix_mdev->kvm = NULL;
-> -	}
-> +	vfio_ap_mdev_put_kvm(matrix_mdev);
->   	mutex_unlock(&matrix_dev->lock);
->   
->   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
-
+greg k-h
