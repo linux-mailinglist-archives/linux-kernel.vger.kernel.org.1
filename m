@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC272D1958
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3D62D195B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgLGTUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:20:44 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:45943 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgLGTUo (ORCPT
+        id S1726110AbgLGTVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:21:22 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38989 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgLGTVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:20:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607368843; x=1638904843;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=hxKTfM//5YEvZ6W0CS6LHyswofJMOPaGP5WLOMDbBQk=;
-  b=RxsUW+rzYx+Qd8NF0xHiYLjI+LRYAQTUgpXi3iU2xCJsWrBZsVPUjgbF
-   dpF3QJY7gVACMSytrJWCcra2NiQz12U8PAx8LvMqy4/kNlZAeFE2TwWbJ
-   lDRkj2MAhP8SC+iEEcFMq00DXjpQcLJBYTbWJUvao7itrQ77fmQJcjdn0
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.78,400,1599523200"; 
-   d="scan'208";a="69636348"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 07 Dec 2020 19:20:06 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 75049A1892;
-        Mon,  7 Dec 2020 19:18:17 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.146) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 7 Dec 2020 19:18:11 +0000
-Subject: Re: [PATCH net-next v2 0/4] vsock: Add flags field in the vsock
- address
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <20201204170235.84387-1-andraprs@amazon.com>
- <20201207100525.v4z7rlewnwubjphu@steredhat>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <eb53647a-dbf4-ace4-3cf8-a55c1fbb0c7a@amazon.com>
-Date:   Mon, 7 Dec 2020 21:18:02 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Mon, 7 Dec 2020 14:21:22 -0500
+Received: by mail-oi1-f195.google.com with SMTP id v85so6076195oia.6;
+        Mon, 07 Dec 2020 11:21:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JSsF2fMn6gn09wqsZvVS/trYqwZ/I/Qd8YAVDUbBcNE=;
+        b=RDymnVUcej2tGnin61A5vy3QHaeQg3Lzc/UfHLgnZF2/+2X8x6ehFkJtb3MYoWjp8j
+         v2ZSFhGQiSN0TuVZAJlxc3qBp/m9RvAEUXt2+Uf8Hf6xoy9f7qC45FlUcAHbPrqwChyU
+         u7XVZtFVUUJoZRtZz/HHpoQkU3TcbjINhScMiQTJHO2eACqHnJkmqYU7PSXh8tX10DL+
+         hf+j+Cta83KYSm4mXIu7KWISiUfEhdgwqoiyNnMIrvPrmw2BAy+1uV1VwO43iK1I/vBp
+         23j5/TIVOIzKWGPFHO0MYk79/OuWrypjA7DYmsoDQbNt4k2zt1qDjLxkHaCoJgZ1CfXA
+         hqmg==
+X-Gm-Message-State: AOAM532sPaJ/v3KtlVkoba72Q/C5mo/8KXUQdTYnlozjP/RwaNFKZcR0
+        UW0yt48iHu4a1/D2knZ7mDfZ0JM4xw==
+X-Google-Smtp-Source: ABdhPJxtGn1GTYrqSbd6F1ZwM1v5EHysU70rmtwWsFbcCL1ba54BQcwubDafDwpgaQunlLQXPRXirw==
+X-Received: by 2002:aca:518c:: with SMTP id f134mr288203oib.108.1607368841091;
+        Mon, 07 Dec 2020 11:20:41 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j2sm112031otq.78.2020.12.07.11.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 11:20:40 -0800 (PST)
+Received: (nullmailer pid 656175 invoked by uid 1000);
+        Mon, 07 Dec 2020 19:20:39 -0000
+Date:   Mon, 7 Dec 2020 13:20:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     devicetree@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Vinod Koul <vkoul@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb3-phy: convert to yaml
+Message-ID: <20201207192039.GA656120@robh.at.kernel.org>
+References: <20201116074650.16070-1-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207100525.v4z7rlewnwubjphu@steredhat>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.146]
-X-ClientProxiedBy: EX13D44UWC002.ant.amazon.com (10.43.162.169) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201116074650.16070-1-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNy8xMi8yMDIwIDEyOjA1LCBTdGVmYW5vIEdhcnphcmVsbGEgd3JvdGU6Cj4KPiBIaSBB
-bmRyYSwKPgo+IE9uIEZyaSwgRGVjIDA0LCAyMDIwIGF0IDA3OjAyOjMxUE0gKzAyMDAsIEFuZHJh
-IFBhcmFzY2hpdiB3cm90ZToKPj4gdnNvY2sgZW5hYmxlcyBjb21tdW5pY2F0aW9uIGJldHdlZW4g
-dmlydHVhbCBtYWNoaW5lcyBhbmQgdGhlIGhvc3QgCj4+IHRoZXkgYXJlCj4+IHJ1bm5pbmcgb24u
-IE5lc3RlZCBWTXMgY2FuIGJlIHNldHVwIHRvIHVzZSB2c29jayBjaGFubmVscywgYXMgdGhlIG11
-bHRpCj4+IHRyYW5zcG9ydCBzdXBwb3J0IGhhcyBiZWVuIGF2YWlsYWJsZSBpbiB0aGUgbWFpbmxp
-bmUgc2luY2UgdGhlIHY1LjUgCj4+IExpbnV4IGtlcm5lbAo+PiBoYXMgYmVlbiByZWxlYXNlZC4K
-Pj4KPj4gSW1wbGljaXRseSwgaWYgbm8gaG9zdC0+Z3Vlc3QgdnNvY2sgdHJhbnNwb3J0IGlzIGxv
-YWRlZCwgYWxsIHRoZSAKPj4gdnNvY2sgcGFja2V0cwo+PiBhcmUgZm9yd2FyZGVkIHRvIHRoZSBo
-b3N0LiBUaGlzIGJlaGF2aW9yIGNhbiBiZSB1c2VkIHRvIHNldHVwIAo+PiBjb21tdW5pY2F0aW9u
-Cj4+IGNoYW5uZWxzIGJldHdlZW4gc2libGluZyBWTXMgdGhhdCBhcmUgcnVubmluZyBvbiB0aGUg
-c2FtZSBob3N0LiBPbmUgCj4+IGV4YW1wbGUgY2FuCj4+IGJlIHRoZSB2c29jayBjaGFubmVscyB0
-aGF0IGNhbiBiZSBlc3RhYmxpc2hlZCB3aXRoaW4gQVdTIE5pdHJvIEVuY2xhdmVzCj4+IChzZWUg
-RG9jdW1lbnRhdGlvbi92aXJ0L25lX292ZXJ2aWV3LnJzdCkuCj4+Cj4+IFRvIGJlIGFibGUgdG8g
-ZXhwbGljaXRseSBtYXJrIGEgY29ubmVjdGlvbiBhcyBiZWluZyB1c2VkIGZvciBhIAo+PiBjZXJ0
-YWluIHVzZSBjYXNlLAo+PiBhZGQgYSBmbGFncyBmaWVsZCBpbiB0aGUgdnNvY2sgYWRkcmVzcyBk
-YXRhIHN0cnVjdHVyZS4gVGhlIAo+PiAic3ZtX3Jlc2VydmVkMSIgZmllbGQKPj4gaGFzIGJlZW4g
-cmVwdXJwb3NlZCB0byBiZSB0aGUgZmxhZ3MgZmllbGQuIFRoZSB2YWx1ZSBvZiB0aGUgZmxhZ3Mg
-Cj4+IHdpbGwgdGhlbiBiZQo+PiB0YWtlbiBpbnRvIGNvbnNpZGVyYXRpb24gd2hlbiB0aGUgdnNv
-Y2sgdHJhbnNwb3J0IGlzIGFzc2lnbmVkLiBUaGlzIAo+PiB3YXkgY2FuCj4+IGRpc3Rpbmd1aXNo
-IGJldHdlZW4gZGlmZmVyZW50IHVzZSBjYXNlcywgc3VjaCBhcyBuZXN0ZWQgVk1zIC8gbG9jYWwg
-Cj4+IGNvbW11bmljYXRpb24KPj4gYW5kIHNpYmxpbmcgVk1zLgo+Cj4gdGhlIHNlcmllcyBzZWVt
-cyBpbiBhIGdvb2Qgc2hhcGUsIEkgbGVmdCBzb21lIG1pbm9yIGNvbW1lbnRzLgo+IEkgcnVuIG15
-IHRlc3Qgc3VpdGUgKHZzb2NrX3Rlc3QsIGlwZXJmMywgbmMpIHdpdGggbmVzdGVkIFZNcyAoUUVN
-VS9LVk0pLAo+IGFuZCBldmVyeXRoaW5nIGxvb2tzIGdvb2QuCgpUaGFua3MsIFN0ZWZhbm8sIGZv
-ciByZXZpZXcgYW5kIGNoZWNraW5nIGl0IG91dCBmb3IgdGhlIG5lc3RlZCBjYXNlIGFzIHdlbGwu
-CgpJJ2xsIHNlbmQgb3V0IHYzIGluY2x1ZGluZyB0aGUgYWRkcmVzc2VkIGZlZWRiYWNrIGFuZCB0
-aGUgUmIgdGFncy4KCj4KPiBOb3RlOiBJJ2xsIGJlIG9mZmxpbmUgdG9kYXkgYW5kIHRvbW9ycm93
-LCBzbyBJIG1heSBtaXNzIGZvbGxvd3Vwcy4KCk9rLCBucCwgdGhhbmtzIGZvciB0aGUgaGVhZHMt
-dXAuCgpBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChSb21hbmlhKSBTLlIuTC4g
-cmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJ
-YXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3RlcmVkIGluIFJvbWFuaWEu
-IFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
+On Mon, 16 Nov 2020 08:46:49 +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> 1. Change syntax from txt to yaml
+> 2. Drop "Driver for" from the title
+> 3. Drop "reg = <0x0>;" from example (noticed by dt_binding_check)
+> 4. Specify license
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> I think this should go through linux-phy tree. Kishon, Vinod, can you
+> take this patch?
+> 
+> This patch generates a false positive checkpatch.pl warning [0].
+> Please ignore:
+> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+> 
+> [0] https://lkml.org/lkml/2020/2/18/1084
+> ---
+>  .../bindings/phy/bcm-ns-usb3-phy.txt          | 34 ----------
+>  .../bindings/phy/bcm-ns-usb3-phy.yaml         | 62 +++++++++++++++++++
+>  2 files changed, 62 insertions(+), 34 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.txt
+>  create mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb3-phy.yaml
+> 
 
+Reviewed-by: Rob Herring <robh@kernel.org>
