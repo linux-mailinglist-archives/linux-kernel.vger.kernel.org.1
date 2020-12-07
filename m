@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4001A2D1E2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B7C2D1E31
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgLGXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:14:28 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:36924 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727723AbgLGXO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:14:28 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id D6851C89267;
-        Tue,  8 Dec 2020 00:13:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1607382826;
-        bh=bval0ZHQCjvevq9TbYQlvh+Mg28E3XwHRGLYW8SRBDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sp6pfa1uU7xXPlqzVIRlcfftxJR75yvOPvGfWOAmlJwqLTSMv/dznlwlZI57NRlC0
-         QaOdP9TkhxvTmPAFaWhZlzgYXouTbsHO5VX8EMuc1FM7ijDVoJwaA5rSZXGkNx9XcO
-         BrzPNAy14Kn69z5zw9SiLXDt/zQ18XWEwzBn6V7k=
-Date:   Tue, 8 Dec 2020 00:13:44 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
-Message-ID: <X863KNo0IaekkU7q@workstation.tuxnet>
-References: <20201207193629.493241-1-clemens.gruber@pqgruber.com>
- <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
+        id S1728241AbgLGXOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:14:44 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57642 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgLGXOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:14:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7N5GB7189231;
+        Mon, 7 Dec 2020 23:13:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Ktdu4qmteWvXa71HFVIEcHcRM66wjaKYjDCbVCkZjms=;
+ b=mQ0j1WMFcb4/Xb8gJNBgcYFZaEmazjxoFXvaqN6NC1bQHtVjcvo8Fk7pXq+muqPY/cDe
+ yf5LrE64N8SVfGEiRYDhHZHfLLd2jBKNqXj8CNSTQcAONBLIGUDiRLrcEj4e/rdN/NCA
+ Fa5vtMwvW10Eqfkkf0yypO834dEupF7mO1bgs11s05SSD0R1w7CnFxWrjVFuh0ZcHyEu
+ 5NGSBzBFVZbJAX2RKSojHQHr2lZVFvuQ3HuNynv+1HWikpYe5uqNAQYNZPliun59i6FT
+ RMi4KyBaWKg0P7fPo4H1Lq+dZAYDNxvrgB+gzmhZliTiaGW0zoY7hZbnFzRIFvPv/Hlh Vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35825m038n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 23:13:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7N6SFn190955;
+        Mon, 7 Dec 2020 23:13:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 358m3wyhp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 23:13:49 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B7NDmIE015578;
+        Mon, 7 Dec 2020 23:13:48 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 15:13:47 -0800
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Subject: Re: [PATCH v3] scsi: ufs: Remove pre-defined initial voltage values
+ of device powers
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1sg8h1a73.fsf@ca-mkp.ca.oracle.com>
+References: <20201202091819.22363-1-stanley.chu@mediatek.com>
+Date:   Mon, 07 Dec 2020 18:13:44 -0500
+In-Reply-To: <20201202091819.22363-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Wed, 2 Dec 2020 17:18:19 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=1 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012070152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012070152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:00:25PM +0100, Uwe Kleine-König wrote:
-> On Mon, Dec 07, 2020 at 08:36:27PM +0100, Clemens Gruber wrote:
-> > The switch to the atomic API goes hand in hand with a few fixes to
-> > previously experienced issues:
-> > - The duty cycle is no longer lost after disable/enable (previously the
-> >   OFF registers were cleared in disable and the user was required to
-> >   call config to restore the duty cycle settings)
-> > - If one sets a period resulting in the same prescale register value,
-> >   the sleep and write to the register is now skipped
-> > - The prescale register is now set to the default value in probe. On
-> >   systems without CONFIG_PM, the chip is woken up at probe time.
-> > 
-> > The hardware readout may return slightly different values than those
-> > that were set in apply due to the limited range of possible prescale and
-> > counter register values. If one channel is reconfigured with new duty
-> > cycle and period, the others will keep the same relative duty cycle to
-> > period ratio as they had before, even though the per-chip / global
-> > frequency changed. (The PCA9685 has only one prescaler!)
-> 
-> This is not acceptable, if you have two PWM outputs and a consumer
-> modifies one of them the other must change. So if this chip only
-> supports a single period length of all channels, the first consumer
-> enabling a channel defines the period to be used. All later consumers
-> must live with that. (Also the first must be denied modifying the period
-> if a second consumer has enabled its PWM.)
 
-Good idea, but is it OK to potentially break users relying on the old
-behavior ("the last one who changes the period wins") ?
+Stanley,
 
-> 
-> > Note that although the datasheet mentions 200 Hz as default frequency
-> > when using the internal 25 MHz oscillator, the calculated period from
-> > the default prescaler register setting of 30 is 5079040ns.
-> 
-> That means the datasheet is lax because 5079040ns corresponds to
-> 196.88760080645162 Hz but it calls that 200 Hz, right?
+> UFS specficication allows different VCC configurations for UFS devices,
+> for example,
 
-Yes, it calls prescale setting 0x1E 200 Hz, but calculating the
-period from that prescaler setting leads to 5079040ns (196.9 Hz) as you
-mentioned.
-Also, the datasheet does not specify frequency accuracy / internal
-oscillator specifications. I measured about 207 Hz on one chip and about
-205 Hz on another with the scope today, when configuring a 5079040ns
-period.
+Applied to 5.11/scsi-staging, thanks!
 
-> 
-> I didn't look in the patch in detail, but get the impression it is more
-> complicated than necessary. For example adding improved PM behaviour
-> should probably go into a separate patch, also adding the .get_state
-> callback should be split out.
-
-Agreed. I'll split it up more in the next revision!
-
-Thanks,
-Clemens
+-- 
+Martin K. Petersen	Oracle Linux Engineering
