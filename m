@@ -2,91 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124892D0CD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650E92D0CD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgLGJR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:17:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9124 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgLGJR5 (ORCPT
+        id S1726637AbgLGJSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:18:08 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:40085 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726480AbgLGJSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:17:57 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqHkP483qz15Rgx;
-        Mon,  7 Dec 2020 17:16:45 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
- 17:17:14 +0800
-Subject: Re: [PATCH 0/4] dt-bindings: media: eliminate yamllint warnings
-To:     Jacopo Mondi <jacopo@jmondi.org>
-CC:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        "Shawn Guo" <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201207042400.1498-1-thunder.leizhen@huawei.com>
- <20201207090825.gbgpqidxyxfujqmg@uno.localdomain>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <15b36b9f-ed0b-1d25-834b-5592eae4feea@huawei.com>
-Date:   Mon, 7 Dec 2020 17:17:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 7 Dec 2020 04:18:07 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437193|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0217741-0.00249463-0.975731;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.J42KvvE_1607332641;
+Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.J42KvvE_1607332641)
+          by smtp.aliyun-inc.com(10.147.43.230);
+          Mon, 07 Dec 2020 17:17:25 +0800
+From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
+To:     tiny.windzz@gmail.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Subject: [PATCH V2 1/3] cpufreq: sun50i: add efuse_xlate to get efuse version.
+Date:   Mon,  7 Dec 2020 17:17:16 +0800
+Message-Id: <20201207091716.17492-1-huangshuosheng@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201207090825.gbgpqidxyxfujqmg@uno.localdomain>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's better to use efuse_xlate to extract the differentiated part
+regarding different SoC.
 
+Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
+---
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c | 72 +++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 24 deletions(-)
 
-On 2020/12/7 17:08, Jacopo Mondi wrote:
-> Hi Zhen,
-> 
-> On Mon, Dec 07, 2020 at 12:23:56PM +0800, Zhen Lei wrote:
->> These patches are based on the latest linux-next code.
->>
->> Zhen Lei (4):
->>   dt-bindings: media: adv7604: eliminate yamllint warnings
->>   dt-bindings: media: nokia,smia: eliminate yamllint warnings
->>   dt-bindings: media: ov772x: eliminate yamllint warnings
->>   dt-bindings: media: imx214: eliminate yamllint warnings
-> 
-> The adv7604, ov772x and imx214 bits have been addressed by:
-> https://www.spinics.net/lists/linux-media/msg181093.html
-
-OK
-
-> 
-> Thanks
->   j
-> 
->>
->>  Documentation/devicetree/bindings/media/i2c/adv7604.yaml     |  4 ++--
->>  Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml    | 11 ++++++-----
->>  Documentation/devicetree/bindings/media/i2c/ovti,ov772x.yaml | 12 ++++++------
->>  Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml | 12 ++++++------
->>  4 files changed, 20 insertions(+), 19 deletions(-)
->>
->> --
->> 1.8.3
->>
->>
-> 
-> .
-> 
+diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+index 9907a165135b..da23d581a4b4 100644
+--- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
++++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+@@ -22,21 +22,52 @@
+ #define NVMEM_MASK	0x7
+ #define NVMEM_SHIFT	5
+ 
++#define SUN50I_H6_NVMEM_MASK		0x7
++#define SUN50I_H6_NVMEM_SHIFT		5
++
++struct sunxi_cpufreq_soc_data {
++	u32 (*efuse_xlate)(void *efuse);
++};
++
+ static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
+ 
++static u32 sun50i_h6_efuse_xlate(struct nvmem_cell *speedbin_nvmem)
++{
++	size_t len;
++	u32 *speedbin;
++	u32 efuse_value;
++
++	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++	if (IS_ERR(speedbin))
++		return PTR_ERR(speedbin);
++
++	efuse_value = (*(u32 *)speedbin >> SUN50I_H6_NVMEM_SHIFT) &
++			  SUN50I_H6_NVMEM_MASK;
++	kfree(speedbin);
++	/*
++	 * We treat unexpected efuse values as if the SoC was from
++	 * the slowest bin. Expected efuse values are 1-3, slowest
++	 * to fastest.
++	 */
++	if (efuse_value >= 1 && efuse_value <= 3)
++		return efuse_value - 1;
++	else
++		return 0;
++}
++
+ /**
+  * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
++ * @soc_data: pointer to sunxi_cpufreq_soc_data context
+  * @versions: Set to the value parsed from efuse
+  *
+  * Returns 0 if success.
+  */
+-static int sun50i_cpufreq_get_efuse(u32 *versions)
++static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data *soc_data,
++				    u32 *versions)
+ {
+ 	struct nvmem_cell *speedbin_nvmem;
+ 	struct device_node *np;
+ 	struct device *cpu_dev;
+-	u32 *speedbin, efuse_value;
+-	size_t len;
+ 	int ret;
+ 
+ 	cpu_dev = get_cpu_device(0);
+@@ -63,41 +94,31 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
+ 		return PTR_ERR(speedbin_nvmem);
+ 	}
+ 
+-	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++	*versions = soc_data->efuse_xlate(speedbin_nvmem);
+ 	nvmem_cell_put(speedbin_nvmem);
+-	if (IS_ERR(speedbin))
+-		return PTR_ERR(speedbin);
+-
+-	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
+-
+-	/*
+-	 * We treat unexpected efuse values as if the SoC was from
+-	 * the slowest bin. Expected efuse values are 1-3, slowest
+-	 * to fastest.
+-	 */
+-	if (efuse_value >= 1 && efuse_value <= 3)
+-		*versions = efuse_value - 1;
+-	else
+-		*versions = 0;
+ 
+-	kfree(speedbin);
+ 	return 0;
+ };
+ 
+ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
+ {
++	const struct of_device_id *match;
+ 	struct opp_table **opp_tables;
+ 	char name[MAX_NAME_LEN];
+ 	unsigned int cpu;
+ 	u32 speed = 0;
+ 	int ret;
+ 
++	match = dev_get_platdata(&pdev->dev);
++	if (!match)
++		return -EINVAL;
++
+ 	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables),
+ 			     GFP_KERNEL);
+ 	if (!opp_tables)
+ 		return -ENOMEM;
+ 
+-	ret = sun50i_cpufreq_get_efuse(&speed);
++	ret = sun50i_cpufreq_get_efuse(match->data, &speed);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -163,8 +184,12 @@ static struct platform_driver sun50i_cpufreq_driver = {
+ 	},
+ };
+ 
++static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
++	.efuse_xlate = sun50i_h6_efuse_xlate,
++};
++
+ static const struct of_device_id sun50i_cpufreq_match_list[] = {
+-	{ .compatible = "allwinner,sun50i-h6" },
++	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
+ 	{}
+ };
+ 
+@@ -198,9 +223,8 @@ static int __init sun50i_cpufreq_init(void)
+ 	if (unlikely(ret < 0))
+ 		return ret;
+ 
+-	sun50i_cpufreq_pdev =
+-		platform_device_register_simple("sun50i-cpufreq-nvmem",
+-						-1, NULL, 0);
++	sun50i_cpufreq_pdev = platform_device_register_data(NULL,
++		"sun50i-cpufreq-nvmem", -1, match, sizeof(*match));
+ 	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
+ 	if (ret == 0)
+ 		return 0;
+-- 
+2.28.0
 
