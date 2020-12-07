@@ -2,119 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9742D1704
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CCD2D1702
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgLGQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:58:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726089AbgLGQ6w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:58:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607360246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LLHZCbOYXPJ7MY6WjbMQpSbeaoaAjjItMHe+oZxxLHU=;
-        b=iOHMw8p44w7eVx0dJocTBRVBokcaIfUwfYS7lrxGyZsRHRQWyVQ7zU3ZtsVasfmzIxLdnj
-        SdmLgkvIIcT+/+0ZvH5EFOJlpmyURX53ENyCATQSgthmGf6tJEF82eUAKGJ9jkjafgn4WD
-        0gWZDNLZ42R5cYwP5gEHGTfB/PCHle0=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-KnDXMSWpMk2PIehTApeexg-1; Mon, 07 Dec 2020 11:57:24 -0500
-X-MC-Unique: KnDXMSWpMk2PIehTApeexg-1
-Received: by mail-ed1-f72.google.com with SMTP id bf13so6013438edb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:57:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LLHZCbOYXPJ7MY6WjbMQpSbeaoaAjjItMHe+oZxxLHU=;
-        b=kdppAzYwPpKf6Zj2jEHPh9FnxG+nltMYET09Mvja8Yymk5o8K/haR6zZYxIs5g+dXN
-         iH/uByCakqGoj/BQaf6rbFzM0FBBq1X8VnZmudZRsf7htTNbts3aDO0YWM2vfSLLplhB
-         I4HaZwW/PN209PVBgiGPlIptAziNvychG6ORBnZXvR00+PDP5cTC73Shz8Jr0HFE0qX9
-         Htvctx2UF/rj5XoC+foAWZ8Xq20PkYhCTCrjVG+dB4/zp89oOQGeMQRqrTDGD22he8Qh
-         lBHySmHZ8KD2lektZ0V2nTc4GlMxGXNHYW64YpkRG9GogEaJOqKczCUU+Tr+dubfG0jh
-         6GmA==
-X-Gm-Message-State: AOAM530SVcoNS6jMLvUl9C849EuAB8RkCPSL0YhNllC8IoZQ7bH7ZoCf
-        i2847721cDt3NkJ+8INwOYPTpRhpEcmzsXBDJ0iGWz+ePTazUug5yOgDIRt+VUt3lI8s765N5LB
-        PEsY+0Ifa2XpItmy4F5h6PxGn
-X-Received: by 2002:a50:d5c4:: with SMTP id g4mr20057020edj.334.1607360243312;
-        Mon, 07 Dec 2020 08:57:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw1N5nwphyKoCqsmZgEKXI9H+Mw91KH2+2fnvV7wGnIOijW0LZB0No74yHlMUXrBlP25aZaCQ==
-X-Received: by 2002:a50:d5c4:: with SMTP id g4mr20057010edj.334.1607360243119;
-        Mon, 07 Dec 2020 08:57:23 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id 2sm12915706ejw.65.2020.12.07.08.57.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 08:57:22 -0800 (PST)
-Subject: Re: [PATCH] ACPI: scan: Drop INT3396 from acpi_ignore_dep_ids[]
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <12017158.VsPUki9SGr@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a78eed2a-4c33-7e1a-88df-d92e33c74e20@redhat.com>
-Date:   Mon, 7 Dec 2020 17:57:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <12017158.VsPUki9SGr@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727571AbgLGQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:58:48 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:16870 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbgLGQ6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:58:47 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CqTyb3Wqvz9txly;
+        Mon,  7 Dec 2020 17:57:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id MYSDaGpMEC1u; Mon,  7 Dec 2020 17:57:59 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CqTyb2PQKz9txlw;
+        Mon,  7 Dec 2020 17:57:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7C7AC8B7A7;
+        Mon,  7 Dec 2020 17:58:04 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4uuHAZRD3IvC; Mon,  7 Dec 2020 17:58:04 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 658AA8B7A1;
+        Mon,  7 Dec 2020 17:58:02 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 70CEA66846; Mon,  7 Dec 2020 16:58:01 +0000 (UTC)
+Message-Id: <18bcb456d32a3e74f5ae241fd6f1580c092d07f5.1607360230.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/mm: Fix KUAP warning by providing
+ copy_from_kernel_nofault_allowed()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, hch@lst.de,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Date:   Mon,  7 Dec 2020 16:58:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Since commit c33165253492 ("powerpc: use non-set_fs based maccess
+routines"), userspace access is not granted anymore when using
+copy_from_kernel_nofault()
 
-On 12/7/20 5:55 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> According to Hans, all device objects where the _HID returns
-> "INT3396" also have a _CID returning "PNP0D80", so the former
-> need not be present in acpi_ignore_dep_ids[] any more.
-> 
-> Link: https://lore.kernel.org/linux-acpi/52a2b98c-6bf3-760b-eca9-93cf05fb4877@redhat.com/
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+However, kthread_probe_data() uses copy_from_kernel_nofault()
+to check validity of pointers. When the pointer is NULL,
+it points to userspace, leading to a KUAP fault and triggering
+the following big hammer warning many times when you request
+a sysrq "show task":
 
-Thanks, patch looks good to me. FWIW:
+[ 1117.202054] ------------[ cut here ]------------
+[ 1117.202102] Bug: fault blocked by AP register !
+[ 1117.202261] WARNING: CPU: 0 PID: 377 at arch/powerpc/include/asm/nohash/32/kup-8xx.h:66 do_page_fault+0x4a8/0x5ec
+[ 1117.202310] Modules linked in:
+[ 1117.202428] CPU: 0 PID: 377 Comm: sh Tainted: G        W         5.10.0-rc5-01340-g83f53be2de31-dirty #4175
+[ 1117.202499] NIP:  c0012048 LR: c0012048 CTR: 00000000
+[ 1117.202573] REGS: cacdbb88 TRAP: 0700   Tainted: G        W          (5.10.0-rc5-01340-g83f53be2de31-dirty)
+[ 1117.202625] MSR:  00021032 <ME,IR,DR,RI>  CR: 24082222  XER: 20000000
+[ 1117.202899]
+[ 1117.202899] GPR00: c0012048 cacdbc40 c2929290 00000023 c092e554 00000001 c09865e8 c092e640
+[ 1117.202899] GPR08: 00001032 00000000 00000000 00014efc 28082224 100d166a 100a0920 00000000
+[ 1117.202899] GPR16: 100cac0c 100b0000 1080c3fc 1080d685 100d0000 100d0000 00000000 100a0900
+[ 1117.202899] GPR24: 100d0000 c07892ec 00000000 c0921510 c21f4440 0000005c c0000000 cacdbc80
+[ 1117.204362] NIP [c0012048] do_page_fault+0x4a8/0x5ec
+[ 1117.204461] LR [c0012048] do_page_fault+0x4a8/0x5ec
+[ 1117.204509] Call Trace:
+[ 1117.204609] [cacdbc40] [c0012048] do_page_fault+0x4a8/0x5ec (unreliable)
+[ 1117.204771] [cacdbc70] [c00112f0] handle_page_fault+0x8/0x34
+[ 1117.204911] --- interrupt: 301 at copy_from_kernel_nofault+0x70/0x1c0
+[ 1117.204979] NIP:  c010dbec LR: c010dbac CTR: 00000001
+[ 1117.205053] REGS: cacdbc80 TRAP: 0301   Tainted: G        W          (5.10.0-rc5-01340-g83f53be2de31-dirty)
+[ 1117.205104] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 28082224  XER: 00000000
+[ 1117.205416] DAR: 0000005c DSISR: c0000000
+[ 1117.205416] GPR00: c0045948 cacdbd38 c2929290 00000001 00000017 00000017 00000027 0000000f
+[ 1117.205416] GPR08: c09926ec 00000000 00000000 3ffff000 24082224
+[ 1117.206106] NIP [c010dbec] copy_from_kernel_nofault+0x70/0x1c0
+[ 1117.206202] LR [c010dbac] copy_from_kernel_nofault+0x30/0x1c0
+[ 1117.206258] --- interrupt: 301
+[ 1117.206372] [cacdbd38] [c004bbb0] kthread_probe_data+0x44/0x70 (unreliable)
+[ 1117.206561] [cacdbd58] [c0045948] print_worker_info+0xe0/0x194
+[ 1117.206717] [cacdbdb8] [c00548ac] sched_show_task+0x134/0x168
+[ 1117.206851] [cacdbdd8] [c005a268] show_state_filter+0x70/0x100
+[ 1117.206989] [cacdbe08] [c039baa0] sysrq_handle_showstate+0x14/0x24
+[ 1117.207122] [cacdbe18] [c039bf18] __handle_sysrq+0xac/0x1d0
+[ 1117.207257] [cacdbe48] [c039c0c0] write_sysrq_trigger+0x4c/0x74
+[ 1117.207407] [cacdbe68] [c01fba48] proc_reg_write+0xb4/0x114
+[ 1117.207550] [cacdbe88] [c0179968] vfs_write+0x12c/0x478
+[ 1117.207686] [cacdbf08] [c0179e60] ksys_write+0x78/0x128
+[ 1117.207826] [cacdbf38] [c00110d0] ret_from_syscall+0x0/0x34
+[ 1117.207938] --- interrupt: c01 at 0xfd4e784
+[ 1117.208008] NIP:  0fd4e784 LR: 0fe0f244 CTR: 10048d38
+[ 1117.208083] REGS: cacdbf48 TRAP: 0c01   Tainted: G        W          (5.10.0-rc5-01340-g83f53be2de31-dirty)
+[ 1117.208134] MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 44002222  XER: 00000000
+[ 1117.208470]
+[ 1117.208470] GPR00: 00000004 7fc34090 77bfb4e0 00000001 1080fa40 00000002 7400000f fefefeff
+[ 1117.208470] GPR08: 7f7f7f7f 10048d38 1080c414 7fc343c0 00000000
+[ 1117.209104] NIP [0fd4e784] 0xfd4e784
+[ 1117.209180] LR [0fe0f244] 0xfe0f244
+[ 1117.209236] --- interrupt: c01
+[ 1117.209274] Instruction dump:
+[ 1117.209353] 714a4000 418200f0 73ca0001 40820084 73ca0032 408200f8 73c90040 4082ff60
+[ 1117.209727] 0fe00000 3c60c082 386399f4 48013b65 <0fe00000> 80010034 3860000b 7c0803a6
+[ 1117.210102] ---[ end trace 1927c0323393af3e ]---
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
+To avoid that, copy_from_kernel_nofault_allowed() is used to check
+whether the address is a valid kernel address. But the default
+version of it returns true for any address.
 
-Regards,
+Provide a powerpc version of copy_from_kernel_nofault_allowed()
+that returns false when the address is below TASK_USER_MAX,
+so that copy_from_kernel_nofault() will return -ERANGE.
 
-Hans
+Reported-by: Qian Cai <qcai@redhat.com>
+Fixes: c33165253492 ("powerpc: use non-set_fs based maccess routines")
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+This issue was introduced in 5.10-rc1. I didn't mark it for stable, hopping it will go into 5.10
 
+v2: Using is_kernel_addr() instead of comparison to TASK_SIZE_MAX.
+---
+ arch/powerpc/mm/Makefile  | 2 +-
+ arch/powerpc/mm/maccess.c | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+ create mode 100644 arch/powerpc/mm/maccess.c
 
-> ---
-> 
-> On top of https://patchwork.kernel.org/project/linux-acpi/patch/3849919.JfvvSOo2yN@kreacher/
-> 
-> ---
->  drivers/acpi/scan.c |    1 -
->  1 file changed, 1 deletion(-)
-> 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -751,7 +751,6 @@ static bool acpi_info_matches_ids(struct
->  
->  /* List of HIDs for which we ignore matching ACPI devices, when checking _DEP lists. */
->  static const char * const acpi_ignore_dep_ids[] = {
-> -	"INT3396", /* Windows System Power Management Controller */
->  	"PNP0D80", /* Windows-compatible System Power Management Controller */
->  	NULL
->  };
-> 
-> 
-> 
+diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
+index 5e147986400d..55b4a8bd408a 100644
+--- a/arch/powerpc/mm/Makefile
++++ b/arch/powerpc/mm/Makefile
+@@ -5,7 +5,7 @@
+ 
+ ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
+ 
+-obj-y				:= fault.o mem.o pgtable.o mmap.o \
++obj-y				:= fault.o mem.o pgtable.o mmap.o maccess.o \
+ 				   init_$(BITS).o pgtable_$(BITS).o \
+ 				   pgtable-frag.o ioremap.o ioremap_$(BITS).o \
+ 				   init-common.o mmu_context.o drmem.o
+diff --git a/arch/powerpc/mm/maccess.c b/arch/powerpc/mm/maccess.c
+new file mode 100644
+index 000000000000..fa9a7a718fc6
+--- /dev/null
++++ b/arch/powerpc/mm/maccess.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/uaccess.h>
++#include <linux/kernel.h>
++
++bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
++{
++	return is_kernel_addr((unsigned long)unsafe_src);
++}
+-- 
+2.25.0
 
