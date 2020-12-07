@@ -2,202 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422FF2D1A6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF052D1A6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgLGUUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:20:55 -0500
-Received: from mga02.intel.com ([134.134.136.20]:13872 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgLGUUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:20:55 -0500
-IronPort-SDR: TUS7moYoyR/pKKdzTGqu2nYrAVgQKdkJ9vUiIJsOoqJrV7FNvJkpobFvqPutOmNhlsCnWi3rrg
- ehjQAQyxwsZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="160813006"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="160813006"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 12:19:08 -0800
-IronPort-SDR: eH/0L0lHIKqhbUdOzB+Q5wRjYpj61qppwNzbvIi3jM2xUzElpyrx6dw88rDpNgIlIcNauS80Yd
- W55WsCAB2Fsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="541619292"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Dec 2020 12:19:08 -0800
-Received: from [10.251.11.130] (kliang2-MOBL.ccr.corp.intel.com [10.251.11.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 6BFBC5805B9;
-        Mon,  7 Dec 2020 12:19:07 -0800 (PST)
-Subject: Re: [PATCH V2 06/12] perf mem: Clean up output format
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-References: <20201130172803.2676-1-kan.liang@linux.intel.com>
- <20201130172803.2676-7-kan.liang@linux.intel.com>
- <20201204232756.GK3613628@krava>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <978f0cb9-43d6-1ae5-e1ce-5ec4cc9fca12@linux.intel.com>
-Date:   Mon, 7 Dec 2020 15:19:06 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726273AbgLGUUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:20:44 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33258 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLGUUo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:20:44 -0500
+Received: by mail-ot1-f68.google.com with SMTP id b18so13775552ots.0;
+        Mon, 07 Dec 2020 12:20:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+8fj10nDje2x93+KcCvXW7CIv2lqtiTGkIsq3PGAkpQ=;
+        b=QmWP6UUvEWOLWv8TLrh9DFiSAHMmF2KIfYfdt1772iEs32YcEfZquSi1tPhho5cUgu
+         +P17fJGWsgGOF7LRUUBGakSETmkvkEmtn38UsfXZ4QLYGvnLOCLugminfokPrlPuCX2f
+         Gj8PbY/URhtjhyMWkR8My+ROLvT7jesf/jSgi7MrgDeM2LHetq5a1Bc+dfEz7S13fdNf
+         h4XCbL/nvv9EYXMzdUvMorHByNKVQw4Eymsw7CiWucxoGrBnZuoH8YBkpOTJsG+sIlsT
+         ndj0NKMCafdxqirnxifWzf4ro4f6pgNLIwdR5vCCtYZ15wVrOdDeMeBgfwvOr7+GNtUZ
+         g2wQ==
+X-Gm-Message-State: AOAM532OQm2Waypd04pkUhUMTH/zvlin4Gqk8kHXq4mo7OHB/UVKLDu5
+        2O3EAqO11cw9DJTsb4coyZVfwPebCsnqPOxx4iO3yklJ
+X-Google-Smtp-Source: ABdhPJy2xXJ31q/f+prT+1t1V3CRJwLEpaT1rJWaISAdMh4ZqnS5NVqYeodB/wICppPMsAb4jFStHycuOjYZ7aK37g8=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr14394879oth.250.1607372403410;
+ Mon, 07 Dec 2020 12:20:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201204232756.GK3613628@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAK8P3a2Habmz95y+J+-4NiT5SGYhO_Fia-SHhapX-3NYRbEMmw@mail.gmail.com>
+ <CAHk-=wjA2Der39e_SWZ6S-DoVCJTu-Zwf6jn2wxmGTKzNPV1Dw@mail.gmail.com>
+ <CAD=FV=Vow5_jv=-O=f2v4_5Nb4DiOUB1sQUx6r=-y5A-6rP4hw@mail.gmail.com>
+ <CAHk-=whtySEgkH+VFy9oW8Q-+iuivGBo0hOUcee3DvrsBAQUrA@mail.gmail.com>
+ <CAD=FV=Up-JW8RtMLQ_pAG3e0d8NnpT+rDiguxcz3DnVUz_7Jbw@mail.gmail.com>
+ <CAHk-=wi2CQwAnKucLwE8vNZgXxyRy6L+DcgjGqxKHwbacKgaMQ@mail.gmail.com>
+ <CAPDyKFp9L+L9VeUD038G3mBTLBuPJsMtv7JhxCcSGb3iY=eq5A@mail.gmail.com> <CAK8P3a1Va_xJzk8qqJM1VBWfSKpomKbQh_NpPO20aoORoe0SWQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1Va_xJzk8qqJM1VBWfSKpomKbQh_NpPO20aoORoe0SWQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 7 Dec 2020 21:19:52 +0100
+Message-ID: <CAMuHMdUT83EkE-phUX2Z431AtGPfZvXeKwQriDKEHJKfr2R40A@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC fixes for v5.10, part 3
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CC devicetree
 
+On Tue, Dec 1, 2020 at 3:06 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Tue, Dec 1, 2020 at 12:39 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > So, I think we have two options. If people are willing to move to
+> > "disk labels" or to patch their DTBs with mmc aliases, things can stay
+> > as is. Otherwise, we can revert the async probe parts of the mmc host
+> > drivers, but that would still leave us in a fragile situation.
+>
+> Can you reliably detect whether the mmc aliases in the dt exist?
+> If that's possible, maybe the async flag could be masked out to only have
+> an effect when the device number is known.
 
-On 12/4/2020 6:27 PM, Jiri Olsa wrote:
-> On Mon, Nov 30, 2020 at 09:27:57AM -0800, kan.liang@linux.intel.com wrote:
-> 
-> SNIP
-> 
->> @@ -172,7 +172,7 @@ dump_raw_samples(struct perf_tool *tool,
->>   {
->>   	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
->>   	struct addr_location al;
->> -	const char *fmt;
->> +	const char *fmt, *field_sep;
->>   
->>   	if (machine__resolve(machine, &al, sample) < 0) {
->>   		fprintf(stderr, "problem processing %d event, skipping it.\n",
->> @@ -186,60 +186,41 @@ dump_raw_samples(struct perf_tool *tool,
->>   	if (al.map != NULL)
->>   		al.map->dso->hit = 1;
->>   
->> -	if (mem->phys_addr) {
->> -		if (symbol_conf.field_sep) {
->> -			fmt = "%d%s%d%s0x%"PRIx64"%s0x%"PRIx64"%s0x%016"PRIx64
->> -			      "%s%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
->> -		} else {
->> -			fmt = "%5d%s%5d%s0x%016"PRIx64"%s0x016%"PRIx64
->> -			      "%s0x%016"PRIx64"%s%5"PRIu64"%s0x%06"PRIx64
->> -			      "%s%s:%s\n";
->> -			symbol_conf.field_sep = " ";
->> -		}
->> -
->> -		printf(fmt,
->> -			sample->pid,
->> -			symbol_conf.field_sep,
->> -			sample->tid,
->> -			symbol_conf.field_sep,
->> -			sample->ip,
->> -			symbol_conf.field_sep,
->> -			sample->addr,
->> -			symbol_conf.field_sep,
->> -			sample->phys_addr,
->> -			symbol_conf.field_sep,
->> -			sample->weight,
->> -			symbol_conf.field_sep,
->> -			sample->data_src,
->> -			symbol_conf.field_sep,
->> -			al.map ? (al.map->dso ? al.map->dso->long_name : "???") : "???",
->> -			al.sym ? al.sym->name : "???");
->> +	field_sep = symbol_conf.field_sep;
-> 
-> hum, what's the point of having field_sep?
+IMHO DT aliases are not a proper solution for this.
 
+Yes, you can detect reliably if an alias exists in the DT.
+The problems start when having multiple devices, some with aliases,
+some without.  And when devices can appear dynamically (without
+aliases, as there is no support for dynamically updating the aliases
+list).
 
-To keep the fmt consistent.
+Gr{oetje,eeting}s,
 
-The patch divides the "printf(fmt,..." into two part. In the first half 
-part, the symbol_conf.field_sep may be modified to " ";
-In the second half part, we should not use the modified 
-symbol_conf.field_sep for the below check. The field_sep keeps the 
-original value and should be used.
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-> 
->> +	if (field_sep) {
->> +		fmt = "%d%s%d%s0x%"PRIx64"%s0x%"PRIx64"%s";
->>   	} else {
->> -		if (symbol_conf.field_sep) {
->> -			fmt = "%d%s%d%s0x%"PRIx64"%s0x%"PRIx64"%s%"PRIu64
->> -			      "%s0x%"PRIx64"%s%s:%s\n";
->> -		} else {
->> -			fmt = "%5d%s%5d%s0x%016"PRIx64"%s0x016%"PRIx64
->> -			      "%s%5"PRIu64"%s0x%06"PRIx64"%s%s:%s\n";
->> -			symbol_conf.field_sep = " ";
->> -		}
->> +		fmt = "%5d%s%5d%s0x%016"PRIx64"%s0x016%"PRIx64"%s";
->> +		symbol_conf.field_sep = " ";
->> +	}
->> +	printf(fmt,
->> +		sample->pid,
->> +		symbol_conf.field_sep,
->> +		sample->tid,
->> +		symbol_conf.field_sep,
->> +		sample->ip,
->> +		symbol_conf.field_sep,
->> +		sample->addr,
->> +		symbol_conf.field_sep);
->>   
->> -		printf(fmt,
->> -			sample->pid,
->> -			symbol_conf.field_sep,
->> -			sample->tid,
->> -			symbol_conf.field_sep,
->> -			sample->ip,
->> -			symbol_conf.field_sep,
->> -			sample->addr,
->> -			symbol_conf.field_sep,
->> -			sample->weight,
->> -			symbol_conf.field_sep,
->> -			sample->data_src,
->> -			symbol_conf.field_sep,
->> -			al.map ? (al.map->dso ? al.map->dso->long_name : "???") : "???",
->> -			al.sym ? al.sym->name : "???");
->> +	if (mem->phys_addr) {
->> +		printf("0x%016"PRIx64"%s",
->> +			sample->phys_addr,
->> +			symbol_conf.field_sep);
->>   	}
->> +
->> +	if (field_sep)
->> +		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
->> +	else
->> +		fmt = "%5"PRIu64"%s0x%06"PRIx64"%s%s:%s\n";
->> +
->> +	printf(fmt,
->> +		sample->weight,
->> +		symbol_conf.field_sep,
->> +		sample->data_src,
->> +		symbol_conf.field_sep,
->> +		al.map ? (al.map->dso ? al.map->dso->long_name : "???") : "???",
->> +		al.sym ? al.sym->name : "???");
->>   out_put:
->>   	addr_location__put(&al);
->>   	return 0;
->> @@ -287,10 +268,12 @@ static int report_raw_events(struct perf_mem *mem)
->>   	if (ret < 0)
->>   		goto out_delete;
->>   
->> +	printf("# PID, TID, IP, ADDR, ");
->> +
->>   	if (mem->phys_addr)
->> -		printf("# PID, TID, IP, ADDR, PHYS ADDR, LOCAL WEIGHT, DSRC, SYMBOL\n");
->> -	else
->> -		printf("# PID, TID, IP, ADDR, LOCAL WEIGHT, DSRC, SYMBOL\n");
->> +		printf("PHYS ADDR, ");
->> +
->> +	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
-> 
-> if phys addr is the only member, can't we just squeeze it via
->    "%s", mem->phys_addr ? "PHYS ADDR" : "",
-> like I mentioned in the other reply? and same also above?
-> 
-
-The phys addr is not the only member, the next patch (07/12) will add 
-data page size as a new member.  So I factor out phys_addr in this and 
-the previous patch (05/12).
-
-Thanks,
-Kan
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
