@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE1C2D14AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE082D14B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgLGP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S1726489AbgLGP16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgLGP1s (ORCPT
+        with ESMTP id S1725774AbgLGP15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:27:48 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C675C061793;
-        Mon,  7 Dec 2020 07:27:08 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id g20so20079998ejb.1;
-        Mon, 07 Dec 2020 07:27:08 -0800 (PST)
+        Mon, 7 Dec 2020 10:27:57 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8092DC061749;
+        Mon,  7 Dec 2020 07:27:42 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id r127so13274303yba.10;
+        Mon, 07 Dec 2020 07:27:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Rp+P9Or0j6DWseCgzSCSqRpb92TpbMCw1CU1y05qoqE=;
-        b=Pq2ZX5lkuoFxgjEs2KbqSFVL8cPKnNUupOT96huS/FSYFvGZngyjS0dyT0ePGCtmcB
-         gi/GMTzAOEnvAUyxuDq5cP8wyz7sQcmF92iWmYEFgo7kgdu1sidKig17oX4pI7O8DXx1
-         KrURhX8NWWPXWsbNp5MAvZqqlRUD8Wodenq9EBCEI+OX0bzjZ6xpQWoFhn6sBNOAjbjo
-         eXwPMOKEWaNCbt2RJt2YoTVTPw3WFGUKHtS2t20PC0ebnTaDjuTrelb1c7k0nIYVmSiH
-         upX7oDZ7ld38LnxUCLBcROz3K3WK3w05gVt993YAnw0bYDFCOBCFWZ4c5AHVyEa7ARgP
-         z7mw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=phc99HuuYD9VXJ3x5GtiGwc8Fm58CjNcdWxCONF1lr4=;
+        b=W1sx0xc5Oyx9rInMyuvkllJOMoJ/K2uQESx8VLM9hcYq20EfXPbtKNkoEG1UEJJKn1
+         jWoB/gpBoOvhCsp7xX5K/YJ25C7EfNSlpyw4QHRg37EKJCetQMRUdzVKHyldTlT5+Pcn
+         0PX9ojzZJoRpucQDXdqVxCHi2/jqbqMNljxuM7OFp/rGTVgFNpkIAU+T319FqvPHqQws
+         ggzjj7oK5S+Z0Eo+fNq+LDaxrJFDjzO8ELkoYlRpsdHJ6RYiOW/iKxNudYKmlsdybqh8
+         uggdF/lszY2WP5tpD2eTEu1Bdl0qIv5VGoRXMxprHytrsDICL/KWPShVF4nLbLEj3/kw
+         fRXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Rp+P9Or0j6DWseCgzSCSqRpb92TpbMCw1CU1y05qoqE=;
-        b=UvWwCK3gJt7thPm5rcNtHW+sVHNlKYez5UBKKOHe4Bli4/JR6Tgi6uQAWughXbyk7R
-         dB28AVawOjlrjxuK9f5b7SC8lp5bYp/+iJFwUoGKV0xGrNHUyKwoXDTmiPTCEwrMbMvM
-         GaGnZRite55Nb8Xi2XLRZ5TFoSW2n+WemlRxeHhEyx/Irh6Q32+bTbVSamTTd1l4HHo6
-         gI6Mk295yA2sBSgkeqHVzGMQwLw1Fcx0fbm6qPC7FOOiqZJyEkjFMN7Qsm09dKgswCU3
-         +UDGyIyvk7vBNWM+igssOHm1+wWXprSLCtCVGuVdhq5kaiLtHAfnV6zPxivWTf5t32AJ
-         nPpg==
-X-Gm-Message-State: AOAM532/1pVGQFwBRZUzEmIsahG1CRWoNLy2Jex86fT2/vZNKDuug7vz
-        1d+JXz7QPEE4VXkQWAj7As4=
-X-Google-Smtp-Source: ABdhPJwS+yVLfyk+DMzk+wdAwq7aCn8HcI2xyoCiXvzJWGCYxKrDcHFWVHOYMkjyDqbUA+sV2oJILw==
-X-Received: by 2002:a17:906:118c:: with SMTP id n12mr19888808eja.167.1607354827345;
-        Mon, 07 Dec 2020 07:27:07 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d4a:c600:c0f8:50a9:4ab0:a9ab])
-        by smtp.gmail.com with ESMTPSA id t26sm13928513edt.69.2020.12.07.07.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 07:27:06 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] hwmon: pmbus: correct title underline length
-Date:   Mon,  7 Dec 2020 16:26:58 +0100
-Message-Id: <20201207152658.32444-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=phc99HuuYD9VXJ3x5GtiGwc8Fm58CjNcdWxCONF1lr4=;
+        b=kAXVhh2cvF2hTRI3kHc764YFW4r3GXe0Apd1Iz+Weli+4qUlo1L5gLO+J4nhYxCBwV
+         OZZqp3PxHjlzU2Rj0YX39kZRjDIqERyxxFTSS1bEKJf7FbjYpjtFoSX9ZBeF7kyXlZ/l
+         PihJyZ91gBFJbI1Qib93adaV86WOIYC+MtwvZ6daGdt5rMozXLf5S4fkqwe3XMPLZAd2
+         8UafXhGFGmH+IEtouoLTZh/r8zicGBRd/QL1jOzSna5uOlDOcSAu1h7s3lG1F2IPmi20
+         85cdnfP0FVXYlPnsViz6Ex9mPshsQJZsGbuLbfaXeoX3KblTn9sJ177pVMpSg76Ix3IY
+         Zw/w==
+X-Gm-Message-State: AOAM532cjitMSPrfh0PbdevFbzLiwKb/int2HGlq/bQjFjj00dxEJjNi
+        /Ha4rs9mZ0i2ThE24aVBk22141o/KWkPaMrijrrM8VEnhE0=
+X-Google-Smtp-Source: ABdhPJz3Ywtpw3noy4z1jp1OoPuIHl/rJhw4cgAY2X6IKQ9w8OIaenSGx7PQIbvT4pYrAZcAwUG48NAi5XbLczQnqvo=
+X-Received: by 2002:a25:c68c:: with SMTP id k134mr24345206ybf.451.1607354861831;
+ Mon, 07 Dec 2020 07:27:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20201027204226.26906-1-pboris@amazon.com> <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
+ <CANT5p=q2YvkEOEa4bS=-nbPOc9Xwa=4gnc09csCcszMmMjYSPg@mail.gmail.com>
+In-Reply-To: <CANT5p=q2YvkEOEa4bS=-nbPOc9Xwa=4gnc09csCcszMmMjYSPg@mail.gmail.com>
+From:   Boris Protopopov <boris.v.protopopov@gmail.com>
+Date:   Mon, 7 Dec 2020 10:27:31 -0500
+Message-ID: <CAHhKpQ7PwgDysS3nUAA0ALLdMZqnzG6q6wL1tmn3aqOPwZbyyg@mail.gmail.com>
+Subject: Re: [PATCH] Add support for getting and setting SACLs
+To:     Shyam Prasad N <nspmangalore@gmail.com>
+Cc:     Boris Protopopov <pboris@amazon.com>,
+        Steve French <sfrench@samba.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b722d7b9e4da ("hwmon: (pmbus) Driver for Delta power supplies
-Q54SJ108A2") provides new documentation for DELTA Q54SJ108A2NC* drivers,
-but the title underline was too short.
+Hello, Shyam,
 
-make htmldocs warns:
+sorry for the delayed reply and thanks for looking at this patch. Yes,
+the testing was done using the extended versions of
+getcifsacl/setcifsacl (added setting owner and SACL support), the
+patch for that posted recently via samba-technical (message ID
+<20201120214918.12517-1-pboris@amazon.com>). I have tested
+setting/getting the owner, DACL, and SACL, for all the DACL/SACL flags
+(-a, -D, -M, -S), SACL type SYSTEM_AUDIT. This testing was done
+against 5.10.0-rc1 and 4.14.203 (the latter required porting the
+user-space patch). I believe this testing has fully exercised the code
+changes in question.
 
-  Documentation/hwmon/q54sj108a2.rst:4: WARNING: Title underline too short.
+I will look at contributing to the fsxtesting-cifs code, but I think
+the setcifsacl/getcifsact patch that enables easy access to the
+descriptor components is a pre-requisite for such contributions.
 
-Adjust the title underline to the correct length.
+Thanks!
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies on next-20201207 and the hwmon -next tree
 
-Guenter, Jean, please pick this minor doc fix on your -next tree.
-
- Documentation/hwmon/q54sj108a2.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/hwmon/q54sj108a2.rst b/Documentation/hwmon/q54sj108a2.rst
-index fabce671985a..035312d25c34 100644
---- a/Documentation/hwmon/q54sj108a2.rst
-+++ b/Documentation/hwmon/q54sj108a2.rst
-@@ -1,7 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0-or-later
- 
- Kernel driver q54sj108a2
--=====================
-+========================
- 
- Supported chips:
- 
--- 
-2.17.1
-
+On Wed, Dec 2, 2020 at 5:43 AM Shyam Prasad N <nspmangalore@gmail.com> wrote:
+>
+> Hi Boris,
+>
+> At a high level, the changes look good to me. Will go through the
+> changes in more detail tomorrow morning.
+>
+> On a related note, we may need more test coverage in this area.
+> Can you please share your testing output against your changes?
+> Or even better, if you can contribute some xfstests for this use case:
+> https://wiki.samba.org/index.php/Xfstesting-cifs
+>
+> Regards,
+> Shyam
+>
+> On Wed, Dec 2, 2020 at 12:24 AM Boris Protopopov
+> <boris.v.protopopov@gmail.com> wrote:
+> >
+> > Hello,
+> > I am checking in to see if anyone had a chance to take a look at this
+> > patch. I would appreciate any feedback.
+> > Thanks!
+> >
+> > On Tue, Oct 27, 2020 at 5:01 PM Boris Protopopov via samba-technical
+> > <samba-technical@lists.samba.org> wrote:
+> > >
+> > > Add SYSTEM_SECURITY access flag and use with smb2 when opening
+> > > files for getting/setting SACLs. Add "system.cifs_ntsd_full"
+> > > extended attribute to allow user-space access to the functionality.
+> > > Avoid multiple server calls when setting owner, DACL, and SACL.
+> > >
+> > > Signed-off-by: Boris Protopopov <pboris@amazon.com>
+> > > ---
+> > ...
+>
+>
+>
+> --
+> -Shyam
