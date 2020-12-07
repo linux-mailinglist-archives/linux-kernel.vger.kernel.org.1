@@ -2,130 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224B52D168C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADD22D1696
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgLGQjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:39:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGQjT (ORCPT
+        id S1727622AbgLGQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:40:31 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61978 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgLGQkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:39:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBD2C061749;
-        Mon,  7 Dec 2020 08:38:38 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607359117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7l+UILr+JWHc8AnnfIEx57njnbogruA/YdmfJ48nOWQ=;
-        b=QEWCmfVg9WQzZxZMjjUfHb5J5LLN4FF5IbRC778foF8tzrzme+wn/5z/gtWeGMRX3M/d0V
-        06fmWGoVGLJrU4SCAa2kQbzP6hoZvrOYOtVOTrch/w4572yosLo3+qcAmdLs/oFrdj9nX0
-        jvC0TiIEdN9b5Igp1mw/hR3D5TRAdcobKVaUHdK54ZCgFEDZrdUC4VHat/caLcAPxr4SKK
-        Xt9scgAfUS3OTX9eRkTA+s8gB/tbxwxlzMtVTaDc+rs2hBI3G4kFp66JX0CaBioW8PxE5A
-        4jFVRqBZ4ohR1Mix2mfhqLCPPhtZ0qBiwbAoydPgyNmAIrhJFHysMKhY+1EgRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607359117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7l+UILr+JWHc8AnnfIEx57njnbogruA/YdmfJ48nOWQ=;
-        b=Jl8yYrpCp9vwJobQHJttjXxAiqDTAdR0IBiu1qjmf4qFl/smdAMHpC8SOO7ort40g7LE1V
-        YkLLDTF8x0m0JmCw==
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <87a6uq9abf.fsf@nanos.tec.linutronix.de> <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
-Date:   Mon, 07 Dec 2020 17:38:36 +0100
-Message-ID: <87a6up606r.fsf@nanos.tec.linutronix.de>
+        Mon, 7 Dec 2020 11:40:31 -0500
+Received: from 89-64-79-106.dynamic.chello.pl (89.64.79.106) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id aa4a46705c8d1b84; Mon, 7 Dec 2020 17:39:48 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: [PATCH v1 4/4] cpufreq: intel_pstate: Implement the ->adjust_perf() callback
+Date:   Mon, 07 Dec 2020 17:38:58 +0100
+Message-ID: <3342398.tGQZsKHvNY@kreacher>
+In-Reply-To: <20360841.iInq7taT2Z@kreacher>
+References: <20360841.iInq7taT2Z@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
-> On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
->> From a timekeeping POV and the guests expectation of TSC this is
->> fundamentally wrong:
->> 
->>       tscguest = scaled(hosttsc) + offset
->> 
->> The TSC has to be viewed systemwide and not per CPU. It's systemwide
->> used for timekeeping and for that to work it has to be synchronized. 
->> 
->> Why would this be different on virt? Just because it's virt or what? 
->> 
->> Migration is a guest wide thing and you're not migrating single vCPUs.
->> 
->> This hackery just papers over he underlying design fail that KVM looks
->> at the TSC per vCPU which is the root cause and that needs to be fixed.
->
-> I don't disagree with you.
-> As far as I know the main reasons that kvm tracks TSC per guest are
->
-> 1. cases when host tsc is not stable 
-> (hopefully rare now, and I don't mind making
-> the new API just refuse to work when this is detected, and revert to old way
-> of doing things).
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-That's a trainwreck to begin with and I really would just not support it
-for anything new which aims to be more precise and correct.  TSC has
-become pretty reliable over the years.
+Make intel_pstate expose the ->adjust_perf() callback when it
+operates in the passive mode with HWP enabled which causes the
+schedutil governor to use that callback instead of ->fast_switch().
 
-> 2. (theoretical) ability of the guest to introduce per core tsc offfset
-> by either using TSC_ADJUST (for which I got recently an idea to stop
-> advertising this feature to the guest), or writing TSC directly which
-> is allowed by Intel's PRM:
+The minimum and target performance-level values passed by the
+governor to ->adjust_perf() are converted to HWP.REQ.MIN and
+HWP.REQ.DESIRED, respectively, which allows the processor to
+adjust its configuration to maximize energy-efficiency while
+providing sufficient capacity.
 
-For anything halfways modern the write to TSC is reflected in TSC_ADJUST
-which means you get the precise offset.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-The general principle still applies from a system POV.
+Changes with respect to the RFC:
+ - Drop the code related to the dropped "busy" argument of
+   ->adjust_perf().
+ - Update the changelog accordingly.
 
-     TSC base (systemwide view) - The sane case
+---
+ drivers/cpufreq/intel_pstate.c |   70 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 58 insertions(+), 12 deletions(-)
 
-     TSC CPU  = TSC base + TSC_ADJUST
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2526,20 +2526,19 @@ static void intel_cpufreq_trace(struct c
+ 		fp_toint(cpu->iowait_boost * 100));
+ }
+ 
+-static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
+-				     bool strict, bool fast_switch)
++static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 min, u32 max,
++				     u32 desired, bool fast_switch)
+ {
+ 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
+ 
+ 	value &= ~HWP_MIN_PERF(~0L);
+-	value |= HWP_MIN_PERF(target_pstate);
++	value |= HWP_MIN_PERF(min);
+ 
+-	/*
+-	 * The entire MSR needs to be updated in order to update the HWP min
+-	 * field in it, so opportunistically update the max too if needed.
+-	 */
+ 	value &= ~HWP_MAX_PERF(~0L);
+-	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
++	value |= HWP_MAX_PERF(max);
++
++	value &= ~HWP_DESIRED_PERF(~0L);
++	value |= HWP_DESIRED_PERF(desired);
+ 
+ 	if (value == prev)
+ 		return;
+@@ -2569,11 +2568,15 @@ static int intel_cpufreq_update_pstate(s
+ 	int old_pstate = cpu->pstate.current_pstate;
+ 
+ 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+-	if (hwp_active)
+-		intel_cpufreq_adjust_hwp(cpu, target_pstate,
+-					 policy->strict_target, fast_switch);
+-	else if (target_pstate != old_pstate)
++	if (hwp_active) {
++		int max_pstate = policy->strict_target ?
++					target_pstate : cpu->max_perf_ratio;
++
++		intel_cpufreq_adjust_hwp(cpu, target_pstate, max_pstate, 0,
++					 fast_switch);
++	} else if (target_pstate != old_pstate) {
+ 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
++	}
+ 
+ 	cpu->pstate.current_pstate = target_pstate;
+ 
+@@ -2634,6 +2637,47 @@ static unsigned int intel_cpufreq_fast_s
+ 	return target_pstate * cpu->pstate.scaling;
+ }
+ 
++static void intel_cpufreq_adjust_perf(unsigned int cpunum,
++				      unsigned long min_perf,
++				      unsigned long target_perf,
++				      unsigned long capacity)
++{
++	struct cpudata *cpu = all_cpu_data[cpunum];
++	int old_pstate = cpu->pstate.current_pstate;
++	int cap_pstate, min_pstate, max_pstate, target_pstate;
++
++	update_turbo_state();
++	cap_pstate = global.turbo_disabled ? cpu->pstate.max_pstate :
++					     cpu->pstate.turbo_pstate;
++
++	/* Optimization: Avoid unnecessary divisions. */
++
++	target_pstate = cap_pstate;
++	if (target_perf < capacity)
++		target_pstate = DIV_ROUND_UP(cap_pstate * target_perf, capacity);
++
++	min_pstate = cap_pstate;
++	if (min_perf < capacity)
++		min_pstate = DIV_ROUND_UP(cap_pstate * min_perf, capacity);
++
++	if (min_pstate < cpu->pstate.min_pstate)
++		min_pstate = cpu->pstate.min_pstate;
++
++	if (min_pstate < cpu->min_perf_ratio)
++		min_pstate = cpu->min_perf_ratio;
++
++	max_pstate = min(cap_pstate, cpu->max_perf_ratio);
++	if (max_pstate < min_pstate)
++		max_pstate = min_pstate;
++
++	target_pstate = clamp_t(int, target_pstate, min_pstate, max_pstate);
++
++	intel_cpufreq_adjust_hwp(cpu, min_pstate, max_pstate, target_pstate, true);
++
++	cpu->pstate.current_pstate = target_pstate;
++	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
++}
++
+ static int intel_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ {
+ 	int max_state, turbo_max, min_freq, max_freq, ret;
+@@ -3032,6 +3076,8 @@ static int __init intel_pstate_init(void
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.flags |= CPUFREQ_NEED_UPDATE_LIMITS;
++			intel_cpufreq.fast_switch = NULL;
++			intel_cpufreq.adjust_perf = intel_cpufreq_adjust_perf;
+ 			if (!default_driver)
+ 				default_driver = &intel_pstate;
+ 
 
-The guest TSC base is a per guest constant offset to the host TSC.
 
-     TSC guest base = TSC host base + guest base offset
 
-If the guest want's this different per vCPU by writing to the MSR or to
-TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which
-is the offset to the TSC base of the guest.
-
-    TSC guest CPU = TSC guest base + CPU TSC_ADJUST
-
-==>
-
-    TSC guest CPU = TSC host base + guest base offset + CPU TSC_ADJUST
-
-The normal and sane case is just TSC_ADJUST == 0.
-
-It's very cleanly decomposable.
-
-Thanks,
-
-        tglx
