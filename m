@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2684E2D1BD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191D12D1BDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbgLGVOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:14:21 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:36228 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGVOV (ORCPT
+        id S1727520AbgLGVQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:16:36 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:35882 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgLGVQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:14:21 -0500
-Received: by mail-oi1-f194.google.com with SMTP id x16so17081877oic.3;
-        Mon, 07 Dec 2020 13:14:05 -0800 (PST)
+        Mon, 7 Dec 2020 16:16:35 -0500
+Received: by mail-ot1-f66.google.com with SMTP id y24so13931857otk.3;
+        Mon, 07 Dec 2020 13:16:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wSSUTQZg6bgD+NFU+dlyoaBo/UNi5gEZyvnAHdAYmoI=;
-        b=RN9JS3E7E9gcR0KUJzJ56alonCOF9zuUJoeFP0W4/pdjrULcIPkwLhTlfTjDnag/0F
-         mbe6F6R7hMJQlDRFjZ5qlGsBglNEOaJikveEKE5SAR+C4faDn/ApwbwKDiW1/OpFp3CR
-         42YTpy8CzGEbwSYzY6tfs3QOyXhjJ5F8UWbZF0F6MBJLT9pgK43eejPZqQw74e9f7Um9
-         i6wgRshxbXVzcM38pNHf9L7fx5Z1UQQg8nx7lxrL11B2+b+VUniktW2V1w/kwre+velW
-         MYPUVhwB6zzqizvMTq8EWPX0y+JgFBMHtlWKe7Z64VRVPmi2RsA8VlZdFXqLhN+mN/ym
-         dbCg==
-X-Gm-Message-State: AOAM530EPfaaICi1YIGSjeY/E/wJqjduIRXhqGcdQeBlOXgO2zcCLDWq
-        q8SdzJ+ZE4t0lHsrwcp5BQ==
-X-Google-Smtp-Source: ABdhPJwxEb2r9vTvghtzHd8K3uHSFXi9O1760V/OHmnDBVyD9HJ35YFbgajx/vD/9xQJIohC18waoQ==
-X-Received: by 2002:aca:3192:: with SMTP id x140mr558323oix.172.1607375620156;
-        Mon, 07 Dec 2020 13:13:40 -0800 (PST)
+        bh=rSAFkhpNJQAuz9y5dju0W7uXjODyDSx6iiAnGJorzFE=;
+        b=LabFy7kUaJOrTWpn/CBHBFDaeDjB4dsNcUXA8Qcf1E4f/qFJ/Ai6GA2hazlu+uZytJ
+         GHMswHc7dj6B3XmIWCehObD7ldrgL2/GJDBuEIsgSYGAMnAX/VsH/+aZbZfJDW2BQySb
+         TOQ9ZMpv/NVJdNi8T1IwoDe/6iXUK3zJ8pwW+InL085rp81rS9MfmHhu9jmHPu6eHP7f
+         oMze/1BkFrN80ebN/S+X/h7zKt9MsV/rfUwNFiHp3GsWkxkC49R+9/FUi1DuX8PV5iUw
+         yqefHQZku8SAcjCGtXHC/CoSjY5V44Qhjhb7XRJzeOl4owq9nPi7OLPWNgR2yoOEu0f/
+         bZGA==
+X-Gm-Message-State: AOAM530i1PHfomfi4j+KqYQzIzTz2pHPOPEbJZt7r+z6RZd7gVukMqhq
+        7sVIIAyXfJtne2WH7gbdwA==
+X-Google-Smtp-Source: ABdhPJxQpESfvNGlJAqwTMytNEER2nkmsXBzu8vhDgGPWF4PCnXOQyEU6ub0eGzupCQoCYrmNFRMlQ==
+X-Received: by 2002:a05:6830:128a:: with SMTP id z10mr14708659otp.3.1607375754577;
+        Mon, 07 Dec 2020 13:15:54 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t186sm3224633oif.1.2020.12.07.13.13.38
+        by smtp.gmail.com with ESMTPSA id b28sm2878493oob.22.2020.12.07.13.15.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:13:38 -0800 (PST)
-Received: (nullmailer pid 835084 invoked by uid 1000);
-        Mon, 07 Dec 2020 21:13:37 -0000
-Date:   Mon, 7 Dec 2020 15:13:37 -0600
+        Mon, 07 Dec 2020 13:15:53 -0800 (PST)
+Received: (nullmailer pid 838684 invoked by uid 1000);
+        Mon, 07 Dec 2020 21:15:52 -0000
+Date:   Mon, 7 Dec 2020 15:15:52 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-rockchip@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        Johan Jonker <jbx6244@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: rockchip: Add FriendlyARM
- NanoPi M4B
-Message-ID: <20201207211337.GA835025@robh.at.kernel.org>
-References: <20201118071724.4866-1-wens@kernel.org>
- <20201118071724.4866-3-wens@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Min Guo <min.guo@mediatek.com>, devicetree@vger.kernel.org,
+        David Airlie <airlied@linux.ie>, linux-usb@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 03/11] dt-bindings: phy: convert phy-mtk-xsphy.txt to
+ YAML schema
+Message-ID: <20201207211552.GA838655@robh.at.kernel.org>
+References: <20201118082126.42701-1-chunfeng.yun@mediatek.com>
+ <20201118082126.42701-3-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118071724.4866-3-wens@kernel.org>
+In-Reply-To: <20201118082126.42701-3-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 15:17:22 +0800, Chen-Yu Tsai wrote:
-> From: Chen-Yu Tsai <wens@csie.org>
+On Wed, 18 Nov 2020 16:21:18 +0800, Chunfeng Yun wrote:
+> Convert phy-mtk-xsphy.txt to YAML schema mediatek,xsphy.yaml
 > 
-> The NanoPi M4B is a minor revision of the original M4.
-> 
-> The differences against the original Nanopi M4 that are common with the
-> other M4V2 revision include:
-> 
->   - microphone header removed
->   - power button added
->   - recovery button added
-> 
-> Additional changes specific to the M4B:
-> 
->   - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
->     USB 2.0 ports
->   - ADB toggle switch added; this changes the top USB 3.0 host port to
->     a peripheral port
->   - Type-C port no longer supports data or PD
->   - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
->     but only 1T1R (down from 2T2R) for WiFi
-> 
-> Add a compatible string for the new board revision.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> v3:
+>   1. remove type for property with standard unit suffix suggested by Rob
+>   2. remove '|' for descritpion
+>   3. fix yamllint warning
+> 
+> v2:
+>   1. modify description and compatible definition suggested by Rob
+> ---
+>  .../bindings/phy/mediatek,xsphy.yaml          | 199 ++++++++++++++++++
+>  .../devicetree/bindings/phy/phy-mtk-xsphy.txt | 109 ----------
+>  2 files changed, 199 insertions(+), 109 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
