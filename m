@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71022D1A25
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A1D2D1A29
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgLGT72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgLGT71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:59:27 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2D7C061749;
-        Mon,  7 Dec 2020 11:58:47 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9E3691280221;
-        Mon,  7 Dec 2020 11:58:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607371125;
-        bh=k/Dd2cYrK28lrZ2qpukQjOHheuWRRxKEAwCopHSG05E=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=oWAhxkXjg6qRXeEQo0LSHh69muuIN//JVI5b76pfiGzTOFOSiSeerHyhJYkd13aLz
-         vV+mTEvXUo0Xm5JPQSxmzIg7QGeHJurbI1samrBMs2MT85XklMBErr+1vtwRlr9RbH
-         Mr1O+RF9DmddGa9u2oJf1yAmPZX/oNkCTcDqY9fQ=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id S1wle3Jxpi4d; Mon,  7 Dec 2020 11:58:45 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E939C128021B;
-        Mon,  7 Dec 2020 11:58:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607371125;
-        bh=k/Dd2cYrK28lrZ2qpukQjOHheuWRRxKEAwCopHSG05E=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=oWAhxkXjg6qRXeEQo0LSHh69muuIN//JVI5b76pfiGzTOFOSiSeerHyhJYkd13aLz
-         vV+mTEvXUo0Xm5JPQSxmzIg7QGeHJurbI1samrBMs2MT85XklMBErr+1vtwRlr9RbH
-         Mr1O+RF9DmddGa9u2oJf1yAmPZX/oNkCTcDqY9fQ=
-Message-ID: <db6ccb14819c4c7a32e886eade144884fafc55fe.camel@HansenPartnership.com>
-Subject: Re: [PATCH v3 3/4] tpm_tis: Disable interrupts if interrupt storm
- detected
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Matthew Garrett <mjg59@google.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Date:   Mon, 07 Dec 2020 11:58:44 -0800
-In-Reply-To: <20201207192803.GH5487@ziepe.ca>
-References: <20201205014340.148235-1-jsnitsel@redhat.com>
-         <20201205014340.148235-4-jsnitsel@redhat.com>
-         <87tusy7n3b.fsf@nanos.tec.linutronix.de> <20201207192803.GH5487@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
+        id S1727050AbgLGUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:01:24 -0500
+Received: from smtp.uniroma2.it ([160.80.6.22]:46010 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgLGUBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:01:24 -0500
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0B7JxWEZ000880;
+        Mon, 7 Dec 2020 20:59:37 +0100
+Received: from lubuntu-18.04 (unknown [160.80.103.126])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 1476D120078;
+        Mon,  7 Dec 2020 20:59:28 +0100 (CET)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1607371168; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8GUTq8erjAR+WpqdwgE8Twu+O0oWWwjcJRgvjKDUeB8=;
+        b=ZIP+1mpspntF6b3PVPnTY+UZMZvPgNoKXKzEZjUvD6/e2B/skJnmSgRfVkARPrT2+68bDG
+        VtvKjijzQ1rPVXBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1607371168; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8GUTq8erjAR+WpqdwgE8Twu+O0oWWwjcJRgvjKDUeB8=;
+        b=aPr8pz1APniZ3QwO8zZTAtRMkVJDWtX/9jsqvwwukNviz248dowf3ZzrdaDeeBr5c+Ihm7
+        iuwb4qWU13dc2Z5Q5PTxmBF3n8OvLLHkmhJZ+HV+myLjQX2tsfr889T5PGYU/SbqLs7E2m
+        RBoouBgf8DG1rmyyBy+xazOBIZsK35MO0ZYzTW07bEgQF3SZyKf5+fpS0z9XiG8VluiuV9
+        bP9Hf0DyVvUJ7ZT0K0UgHOJznj/7yM9CVyZiPAR5XKJZcYyQl18y1/sOotcA/fOmxRjRT0
+        IPYoSHh7OebyIk96Vf3G2uqrgQGhfnaRoSPwJcPH97vbrMLfd9LCMGDMWfLycA==
+Date:   Mon, 7 Dec 2020 20:59:26 +0100
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: Re: [PATCH][next] seg6: fix unintentional integer overflow on left
+ shift
+Message-Id: <20201207205926.6222eca38744c43632248a41@uniroma2.it>
+In-Reply-To: <20201207144503.169679-1-colin.king@canonical.com>
+References: <20201207144503.169679-1-colin.king@canonical.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 15:28 -0400, Jason Gunthorpe wrote:
-> On Sun, Dec 06, 2020 at 08:26:16PM +0100, Thomas Gleixner wrote:
-> > Just as a side note. I was looking at tpm_tis_probe_irq_single()
-> > and that function is leaking the interrupt request if any of the
-> > checks afterwards fails, except for the final interrupt probe check
-> > which does a cleanup. That means on fail before that the interrupt
-> > handler stays requested up to the point where the module is
-> > removed. If that's a shared interrupt and some other device is
-> > active on the same line, then each interrupt from that device will
-> > call into the TPM code. Something like the below is needed.
-> > 
-> > Also the X86 autoprobe mechanism is interesting:
-> > 
-> > 	if (IS_ENABLED(CONFIG_X86))
-> > 		for (i = 3; i <= 15; i++)
-> > 			if (!tpm_tis_probe_irq_single(chip, intmask, 0,
-> > i))
-> > 				return;
-> > 
-> > The third argument is 'flags' which is handed to request_irq(). So
-> > that won't ever be able to probe a shared interrupt. But if an
-> > interrupt number > 0 is handed to tpm_tis_core_init() the interrupt
-> > is requested with IRQF_SHARED. Same issue when the chip has an
-> > interrupt number in the register. It's also requested exclusive
-> > which is pretty likely to fail on ancient x86 machines.
+On Mon,  7 Dec 2020 14:45:03 +0000
+Colin King <colin.king@canonical.com> wrote:
+
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> It is very likely none of this works any more, it has been repeatedly
-> reworked over the years and just left behind out of fear someone
-> needs it. I've thought it should be deleted for a while now.
+> Shifting the integer value 1 is evaluated using 32-bit arithmetic
+> and then used in an expression that expects a unsigned long value
+> leads to a potential integer overflow. Fix this by using the BIT
+> macro to perform the shift to avoid the overflow.
 > 
-> I suppose the original logic was to try and probe without SHARED
-> because a probe would need exclusive access to the interrupt to tell
-> if the TPM was actually the source, not some other device.
+> Addresses-Coverity: ("Uninitentional integer overflow")
+> Fixes: 964adce526a4 ("seg6: improve management of behavior attributes")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  net/ipv6/seg6_local.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> It is all very old and very out of step with current thinking, IMHO.
-> I skeptical that TPM interrupts were ever valuable enough to deserve
-> this in the first place.
+> diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+> index b07f7c1c82a4..d68de8cd1207 100644
+> --- a/net/ipv6/seg6_local.c
+> +++ b/net/ipv6/seg6_local.c
+> @@ -1366,7 +1366,7 @@ static void __destroy_attrs(unsigned long parsed_attrs, int max_parsed,
+>  	 * attribute; otherwise, we call the destroy() callback.
+>  	 */
+>  	for (i = 0; i < max_parsed; ++i) {
+> -		if (!(parsed_attrs & (1 << i)))
+> +		if (!(parsed_attrs & BIT(i)))
+>  			continue;
+>  
+>  		param = &seg6_action_params[i];
+> -- 
+> 2.29.2
+>
 
-For what it's worth, I agree.  Trying to probe all 15 ISA interrupts is
-last millennium thinking we should completely avoid.  If it's not
-described in ACPI then you don't get an interrupt full stop.
+Hi Colin,
+thanks for the fix. I've just given a look a the whole seg6_local.c code and I
+found that such issues is present in other parts of the code.
 
-James
+If we agree, I can make a fix which explicitly eliminates the several (1 << i)
+in favor of BIT(i).
 
-
+Andrea
