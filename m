@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3332D13B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045E82D13B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbgLGO3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:29:46 -0500
-Received: from forward100o.mail.yandex.net ([37.140.190.180]:32907 "EHLO
-        forward100o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726007AbgLGO3q (ORCPT
+        id S1726320AbgLGOad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgLGOac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:29:46 -0500
-Received: from mxback14g.mail.yandex.net (mxback14g.mail.yandex.net [IPv6:2a02:6b8:c03:773:0:640:d1d3:51e5])
-        by forward100o.mail.yandex.net (Yandex) with ESMTP id B76EC4AC05BA;
-        Mon,  7 Dec 2020 17:29:03 +0300 (MSK)
-Received: from sas8-b61c542d7279.qloud-c.yandex.net (sas8-b61c542d7279.qloud-c.yandex.net [2a02:6b8:c1b:2912:0:640:b61c:542d])
-        by mxback14g.mail.yandex.net (mxback/Yandex) with ESMTP id tTnFluAx8C-T3sCFrax;
-        Mon, 07 Dec 2020 17:29:03 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1607351343;
-        bh=oOiExwMNQHtfcgYSxIUj6xzsg445mQfA3dlJmKEAPrw=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
-        b=AUvGLVlmuQPBN+yuVOMrO5njrrY1kAqmHObZenOTg9HuPtHR5UeA0Xi2eRNBHsmX9
-         lKaAGZNHIIhIksLa+XkxNwThjbu1N7lrfrWJJ/yHl0XrEzxLSjMTTNCYvvuj7bPqLR
-         PxWWAHFQ6HPyZMGWKAH78d6ifgsYxS9wjUA/Jc5I=
-Authentication-Results: mxback14g.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by sas8-b61c542d7279.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id ZIoNUqAXzC-T2nenAaI;
-        Mon, 07 Dec 2020 17:29:02 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: KVM_SET_CPUID doesn't check supported bits (was Re: [PATCH 0/6]
- KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup)
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru>
- <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru>
- <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru>
- <20201009153053.GA16234@linux.intel.com>
- <b38dff0b-7e6d-3f3e-9724-8e280938628a@yandex.ru>
- <c206865e-b2da-b996-3d48-2c71d7783fbc@redhat.com>
- <c0c473c1-93af-2a52-bb35-c32f9e96faea@yandex.ru>
- <CABgObfYS57_ez-t=eu9+3S2bhSXC_9DTj=64Sna2jnYEMYo2Ag@mail.gmail.com>
- <9201e8ac-68d2-2bb3-1ef3-efd698391955@yandex.ru>
- <CABgObfb_4r=k_qakd+48hPar8rzc-P50+dgdoYvQaL2H-po6+g@mail.gmail.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <f505b1f3-4117-ba0f-ef3a-e6ff5293205f@yandex.ru>
-Date:   Mon, 7 Dec 2020 17:29:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 7 Dec 2020 09:30:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F381C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:29:52 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607351390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lah/+c+Ehtzql4vM/HHQHHurw4w3/5r9VJI3o7azYjo=;
+        b=hi4ARtp98vuZmR/tNcJAN6eHKnibqV15GwHDQS+9oX/FpD/XH++n8zf3nR4EEoREdkSxXk
+        tZasQCWWQ6qNmonMHxIAk0EfPG+fMIbVnjXVK2OoJ+EpnJ70j/Cf4psY2thT0XOenzmiAf
+        kOdL8i97zHndA+OSXWAfEEc7nyrgQQkyOWFVGQpy6/UbKfGTrf2x1TE+FtuPXazWSpyS4u
+        wbk6EmvqLT7/ntHb8ArLYOT+4ct87ZhRacdkrLtjVEAebkHVF8zmZ6XGxHP6Srr/azFMPj
+        ETbOFpG66Sdut0Wa17JcOtqmqureSuo0R6Ts0Cm0bCLLL2dk1Wse/iLx6l2d0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607351390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lah/+c+Ehtzql4vM/HHQHHurw4w3/5r9VJI3o7azYjo=;
+        b=EE6nikc6RZYqU7E+EmxmDw/lw64wrsqbRJPpKDCmKA802ka3vteyCel0nnxEC7M1ds2M22
+        rNoqNYo6vIwqUMAg==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: timers: Move clearing of base::timer_running under base::lock
+In-Reply-To: <20201207130753.kpxf2ydroccjzrge@linutronix.de>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de> <20201207130753.kpxf2ydroccjzrge@linutronix.de>
+Date:   Mon, 07 Dec 2020 15:29:50 +0100
+Message-ID: <87a6up7kpt.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CABgObfb_4r=k_qakd+48hPar8rzc-P50+dgdoYvQaL2H-po6+g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.12.2020 17:09, Paolo Bonzini пишет:
+On Mon, Dec 07 2020 at 14:07, Sebastian Andrzej Siewior wrote:
+> On 2020-12-06 22:40:07 [+0100], Thomas Gleixner wrote:
+>> syzbot reported KCSAN data races vs. timer_base::timer_running being set to
+>> NULL without holding base::lock in expire_timers().
+>> 
+>> This looks innocent and most reads are clearly not problematic but for a
+>> non-RT kernel it's completely irrelevant whether the store happens before
+>> or after taking the lock. For an RT kernel moving the store under the lock
+>> requires an extra unlock/lock pair in the case that there is a waiter for
+>> the timer. But that's not the end of the world and definitely not worth the
+>> trouble of adding boatloads of comments and annotations to the code. Famous
+>> last words...
+>> 
+>> Reported-by: syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com
+>> Reported-by: syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 >
->
-> Il lun 7 dic 2020, 15:04 stsp <stsp2@yandex.ru 
-> <mailto:stsp2@yandex.ru>> ha scritto:
->
->     Perhaps it would be good if guest cpuid to
->     have a default values of KVM_GET_SUPPORTED_CPUID,
->     so that the user doesn't have to do the needless
->     calls to just copy host features to guest cpuid.
->
->
-> It is too late to change that aspect of the API, unfortunately. We 
-> don't know how various userspaces would behave.
-Which means some sensible behaviour
-already exists if I don't call KVM_SET_CPUID2.
-So what is it, #UD on CPUID?
-Would be good to have that documented.
+> One thing I noticed while testing it is that the "corner" case in
+> timer_sync_wait_running() is quite reliably hit by rcu_preempt
+> rcu_gp_fqs_loop() -> swait_event_idle_timeout_exclusive() invocation.
+
+I assume it's something like this:
+
+     timeout -> wakeup
+
+->preemption
+        del_timer_sync()
+                .....
+
+Thanks,
+
+        tglx
