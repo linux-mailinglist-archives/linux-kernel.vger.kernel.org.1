@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1A72D12A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068F22D12B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgLGNzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:55:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53670 "EHLO mail.kernel.org"
+        id S1726769AbgLGN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgLGNzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:55:11 -0500
-Date:   Mon, 7 Dec 2020 14:55:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607349270;
-        bh=RKKTuSyE3VLcEVuJMn517hFL2sJvSMPQLR1pCq6wI1c=;
+        id S1726197AbgLGN4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:56:37 -0500
+Date:   Mon, 7 Dec 2020 13:55:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607349356;
+        bh=aR/NRdBp/XTaHY/Lbtre73wBwiC7h9vzC9/Oqrv1lPc=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OWllYt/v/LCcdhxJjxTp+RAn6OnZPK815Kso48vBa8+Bc+c7TF4msHv8aB9ngrA3n
-         G1wivtVJ/QA7PcnxvfZTe6Iu34OEvV+iKBQDfNikVn4hFUNeEALc9cgOXvUXW+sika
-         tXmMVXXOggKMWsxL5R1uOSfaJnbM4lt8PgwMvPzk=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Akash Asthana <akashast@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        mka@chromium.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, saravanak@google.com
-Subject: Re: [PATCH 3/3] Serial: Separate out earlycon support
-Message-ID: <X840XDgspqwuPt1C@kroah.com>
-References: <1607330847-15522-1-git-send-email-akashast@codeaurora.org>
- <1607330847-15522-4-git-send-email-akashast@codeaurora.org>
- <X83x0BZmGYtQSMUU@kroah.com>
- <ab693e13-0478-5301-5ccb-9d8b1191afa1@codeaurora.org>
+        b=qmYCI9Ua3j27G+ZVFuL74cZKEsHUncnzriJeaNgXWdg5PXNtiS0jhSZCHy5JFdm+h
+         8GfUeOzQBcKwx5BBwI5i+Vla43gx6hBUVPJoRDndrbi+ZR2nKubFniGzDVH6P1srRB
+         4RGCceW4hL35l5PpQT0PKn1kKHdCt49xY1EEZcOHomsu44U3HHaVIS1z3L5JPXsaKf
+         cQ0S7ObEN5RlU8SH62D/+9D7fsifto55+OqHm9UfDh9Z9+/4ikQOgvjH13g4H82ZDf
+         O+OWPgsEY9YEKN/6TBsfEMmUMjy3HGpd+xAlpwGh4VRAR0dOrGlu2VhfY6qJOaS7lg
+         YEDGzlismANEw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        troy.kisky@boundarydevices.com, gary.bisson@boundarydevices.com
+Subject: Re: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator
+Message-ID: <20201207135551.GE5694@sirena.org.uk>
+References: <20201206002629.12872-1-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="G6nVm6DDWH/FONJq"
 Content-Disposition: inline
-In-Reply-To: <ab693e13-0478-5301-5ccb-9d8b1191afa1@codeaurora.org>
+In-Reply-To: <20201206002629.12872-1-adrien.grassein@gmail.com>
+X-Cookie: Absinthe makes the tart grow fonder.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:52:32PM +0530, Akash Asthana wrote:
-> Hi Greg,
-> 
-> On 12/7/2020 2:41 PM, Greg KH wrote:
-> > On Mon, Dec 07, 2020 at 02:17:27PM +0530, Akash Asthana wrote:
-> > > Separate out earlycon support from serial driver and remove it's
-> > > dependency on QUP wrapper driver.
-> > > 
-> > > This enable us to manage earlycon independently and we can re-use the
-> > > same earlycon driver for android project which currently uses
-> > > downstream version of QUP drivers.
-> > What do you mean by "downstream" here?
-> > 
-> > > Signed-off-by: Akash Asthana <akashast@codeaurora.org>
-> > > ---
-> > >   drivers/tty/serial/Kconfig              |   9 +
-> > >   drivers/tty/serial/Makefile             |   1 +
-> > >   drivers/tty/serial/qcom_geni_earlycon.c | 649 ++++++++++++++++++++++++++++++++
-> > >   drivers/tty/serial/qcom_geni_serial.c   |  97 -----
-> > So you are replacing 97 lines of code with 649 lines?  How is this
-> > benefiting anyone?
-> > 
-> > confused,
-> 
-> We have 2 versions of QUP driver, upstream version(Present in linus tree,
-> mostly used for chromium project) and downstream version(belong to vendor
-> part of code in GKI design, used for all the other project).
 
-Why do you have 2 different versions?  Why not merge them both into the
-kernel tree?  That seems like madness to try to support 2.  And why
-would we care about any out-of-tree code?  This is increasing our
-complexity for code that isn't even being merged here, not anything you
-would do if you were the maintainer of it, right?
+--G6nVm6DDWH/FONJq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> There is need to enable geni earlycon in Google provided boot image for GKI
-> to facilitate the debug until real console(belong to vendor code) is up.
+On Sun, Dec 06, 2020 at 01:26:28AM +0100, Adrien Grassein wrote:
+> Add dt-bindings for the pf8x00 driver.
 
-Then submit the code for that here please.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> Currently it won't be possible because geni earlycon cannot be enabled
-> independently, it depends on upstream QUP wrapper driver
-> (soc/qcom/qcom-geni-se.c) and upstream serial
-> driver(serial/qcom_geni_serial.c).
-> 
-> With this patch I am trying to break any dependency btw earlycon hook and
-> QUP kernel drivers, so it can be managed independently.
+> +  compatible:
+> +    enum:
+> +      - nxp,pf8x00
 
-Please submit the code that depends on this change, and we will be glad
-to review it.
+Compatible strings should be for specific devices not wildcards.
 
-thanks,
+> +          nxp,hw-en:
+> +            $ref: /schemas/types.yaml#definitions/flag
+> +            description: |
+> +              Only available for ldo2. Used to enable or disable ld02.
 
-greg k-h
+I don't understand what this is documenting - what is "hw-en" and how is
+it used to enable or disable LDO2?
+
+> +          nxp,vselect-en:
+> +            $ref: /schemas/types.yaml#definitions/flag
+> +            description: |
+> +              Only available for ldo2. When specified, use the VSELECT p=
+in
+> +              of the chip to control the output voltage of the ldo02 reg=
+ulator.
+
+Shouldn't there be a GPIO specified somewhere or something so that the
+VSELECT pin can be controlled? =20
+
+> +          nxp,ilim-ma:
+> +            $ref: /schemas/types.yaml#definitions/uint32
+> +            minimum: 2100
+> +            maximum: 4500
+> +            default: 2100
+> +            enum: [ 2100, 2600, 3000, 4500 ]
+> +            description: |
+> +              Defines the maximum current delivered by the regulator (in=
+ mA).
+
+Is this not a fixed property of the regulator?
+
+> +          nxp,quad-phase:
+> +            $ref: /schemas/types.yaml#definitions/flag
+> +            description: |
+> +              This allow regulators  sw1 and sw2, or sw3 and sw4 or sw4 =
+and sw5
+> +              to work together to deliver a maximum 10A current.
+
+Presumably this must be set on both the regulators being grouped
+together?
+
+--G6nVm6DDWH/FONJq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/ONGYACgkQJNaLcl1U
+h9ALMgf/S3CUgMICMMHH6IBVaLN/WVSxyeihoNEW60F6OBxUO0Y7Ru0S8Q1PnMzm
+VLK/6pN5hXe73lDyZD2bOD2UMeU9mrb6uUWDuBeTC0wJ6fRXkLKOm/TmUFEkAPZW
+Bwa1GwZKaWm6TMw8FeenA07jQX6Wmj9PtOXdsxHmXVAeEts5VXBHRkapKVuUesWx
+B3Ly6tGRU1xm/mt/9abrvEZmiKuc+RkLooIrM3Fbw9yyxyElhBvHAVDYDGbW3hWi
+BFLDZkQ3Mhv5F7YVjOjD4tzD7L0O9UgnV31eXAJBN8DMvFoSTlaCJKzlFJ7L+4ZB
+lL/TCFraAyLpsHcZ3Da62A+qrDAsMQ==
+=nRAA
+-----END PGP SIGNATURE-----
+
+--G6nVm6DDWH/FONJq--
