@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E50C2D1C89
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E1A2D1C8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgLGV62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:58:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgLGV62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:58:28 -0500
-X-Gm-Message-State: AOAM530KFnro0aAy7+9XPC2TBRalQu0DnrYVCtLO1CcuQ9XBURl6xCTq
-        qLmmN8GRhmgTE9VqckdObOmWfASN6LlWNVcCgCU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607378267;
-        bh=ksOiwcQuyTdGZ/0xs0Rr3mLefm+gUEwoODlr/FTT3Ws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Bn2nl2YOJ1o9oYaE9lF5+mCXzzqHF51w0qB54r5FqFF7X1izJlfvlnOw5I7Q8GHKP
-         RoqU57WTKC6faoiDe3Zw67frqSRE0l+IEo3kY5u2Vfbvse1KdQbjOweX7H2w0q5oPl
-         5EjwaDkh/2qkB3wiU25+Jehl4xlayHZGwHxYTOuQK09tDDJwgSQ/s8WtTmFLA/C34u
-         Wcm4Gor8fnFiYwhYtL3P0Wg+nJLvxmtoBhWSCAz2jwBEr+8DPeBarLBzhc0QsAGg1v
-         iX7/TvPgtiZIwV82aMuBpA/+U2BIFKFOysBUcnCkGagTgi2RB2/neq3C+OQDn145wv
-         e7H2EYDeqISRg==
-X-Google-Smtp-Source: ABdhPJwFFIJ6eWvVRpDubr3SS1DWxrsa13Jhn19Yuha6L2b5D9qVbE12GKTRLJcaOLffzSjg4EZrJuLVG8mRfpqw3IM=
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr14853258otk.251.1607378267025;
- Mon, 07 Dec 2020 13:57:47 -0800 (PST)
+        id S1727281AbgLGV6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbgLGV6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:58:50 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB3CC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:58:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=veOf+01MBlQBPE69nvGu5M4F4VHbf0u+DtmSctPbaqc=; b=NlpvIDeBmYynJdihFjDPZ+ZcVL
+        ci2p/roynTXJlMgF5AxXW0NAf4lPN/XoDyvWTtsHY9CGkRcM4M3RoMwd+3dRyB/mKcrDH4K7XF/Mk
+        Go3zcdNsFyXAwiVJJ8LG4b5HPUT3Fr+Vh2Klv1cDDRQN+R3/L/ki/RaYXO8IbTbo9pUI58uE0Hsi5
+        bonIP+K/uzyyoKTGIJteuSddpFDhNZ+toRoEB07dIQyV5IDimACbKf1iuK0v/v4VcLxu/PSDxjcfC
+        7cxCwICzhVEDuom1bO7xWFHUeBdrHyvY7WIKUoR1r7dj9YVJ0v7X+f3A5QZPneevBk81zUJ6mbbP9
+        nsj0bl8g==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmOW7-0000ow-9A; Mon, 07 Dec 2020 21:57:59 +0000
+Subject: Re: [PATCH] arch: x86: make video init optional (expert)
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+References: <20201207212033.2736-1-info@metux.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0d4f7c6a-0f66-9031-556b-1e5d51e52edb@infradead.org>
+Date:   Mon, 7 Dec 2020 13:57:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201204081349.1182302-1-arnd@kernel.org> <CADnq5_OmAVZGuz=xHRyST4hE4w1g10wNBQ6iMgfpQD16-9QSiQ@mail.gmail.com>
- <b9d7e33c-4dcd-0075-d0ca-d22b2488c354@amd.com>
-In-Reply-To: <b9d7e33c-4dcd-0075-d0ca-d22b2488c354@amd.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 7 Dec 2020 22:57:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a09KQS7S5-vJU7ECJh0HXUhwZW9zOOp4c32mtvM5XcU1g@mail.gmail.com>
-Message-ID: <CAK8P3a09KQS7S5-vJU7ECJh0HXUhwZW9zOOp4c32mtvM5XcU1g@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: make DRM_AMD_DC x86-only again
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roman Li <Roman.Li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Timothy Pearson <tpearson@raptorengineering.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201207212033.2736-1-info@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 9:50 PM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
-> Am 07.12.20 um 21:47 schrieb Alex Deucher:
-> > On Fri, Dec 4, 2020 at 3:13 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> As the DRM_AMD_DC_DCN3_0 code was x86-only and fails to build on
-> >> arm64, merging it into DRM_AMD_DC means that the top-level symbol
-> >> is now x86-only as well.
-> >>
-> >> Compilation fails on arm64 with clang-12 with
-> >>
-> >> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30=
-.c:3641:6: error: stack frame size of 2416 bytes in function 'dml30_ModeSup=
-portAndSystemConfigurationFull' [-Werror,-Wframe-larger-than=3D]
-> >> void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_l=
-ib *mode_lib)
-> >>
-> >> I tried to see if the stack usage can be reduced, but this is code
-> >> that is described as "This file is gcc-parsable HW gospel, coming
-> >> straight from HW engineers." and is written in a way that is inherentl=
-y
-> >> nonportable and not meant to be understood by humans.
-> >>
-> >> There are probably no non-x86 users of this code, so simplify
-> >> the dependency list accordingly.
-> > + Daniel, Timothy
-> >
-> > Others contributed code to enable this on PPC64 and ARM64.
-> > Unfortunately, we don't have these platforms to test with within AMD.
-> > Does PPC64 have the same stack limitations as ARM64?  Harry, Leo, can
-> > you take a look at fixing the stack usage?
->
-> This reminds me that I wanted to reply on this.
->
-> 2416 is even to much on x86 if you add -Werror :)
->
-> So this needs to be fixed anyway.
+On 12/7/20 1:20 PM, Enrico Weigelt, metux IT consult wrote:
+> As x86 is becoming more widespread in embedded devices, that don't have
+> any video adapter at all, make it possible to opt out from video init on
+> bootup (expert option). Also useful for minimized paravirtualized kernels.
+> 
+> Most users wanna leave this enabled and shouldn't touch it, thus defaulting
 
-Right, looking at my latest randconfig logs, I see the same problem on x86
-builds with clang as well, though I'm not entirely sure which other
-configuration
-options are needed to trigger it.
+             want to
 
-So my patch can be disregarded, but I agree this needs a better fix,
-either in clang or in the dcn driver.
+> to y and hiding behind CONFIG_EXPERT.
+> 
+> Signed-off-by: Enrico Weigelt <info@metux.net>
+> ---
+>  arch/x86/Kconfig       |  7 +++++++
+>  arch/x86/boot/Makefile | 10 +++++-----
+>  arch/x86/boot/main.c   |  2 ++
+>  3 files changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index fbf26e0f7a6a..43b4b2cca2b0 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -913,6 +913,13 @@ config DMI
+>  	  affected by entries in the DMI blacklist. Required by PNP
+>  	  BIOS code.
+>  
+> +config X86_BOOT_VIDEO
+> +	default y
+> +	bool "Setup video on boot" if EXPERT
+> +	help
+> +	  Enable setting video mode on boot. Say Y here unless your machine
+> +	  doesn't have any video adapter. (eg. embedded systems or VMs)
 
-       Arnd
+	                                  (e.g., embedded systems or VMs)
+
+> +
+>  config GART_IOMMU
+>  	bool "Old AMD GART IOMMU support"
+>  	select DMA_OPS
+
+
+-- 
+~Randy
+
