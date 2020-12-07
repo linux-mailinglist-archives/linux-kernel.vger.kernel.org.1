@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF87C2D0AD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FAA2D0AE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725918AbgLGGoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGGoJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:44:09 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D623DC0613D0;
-        Sun,  6 Dec 2020 22:43:28 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 131so8813039pfb.9;
-        Sun, 06 Dec 2020 22:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qx6YS0mIUJ0wDKcdijGuZVewPoru0FmkFXCzv4uYK/g=;
-        b=J7wb/1h6//TSJi0L/gu18/CgEVvCUfSkTdW5Ipbn8Y6cWVwAFTF1GRNT2twJQGQbbI
-         rSNrn3BtOD3OXSASTN4MCwacCP0gUzOB99CczYylJ/nqYy9fAa9096Emald2D42mcSaI
-         pHwyR0spaBY7/l1HpEBCbtRIJQkdVki50CjdX66b5H355r9pi4CppcdPrv9VGWm7PLdh
-         PqOwV2GNvrPSGXSXV82WwUPvJgk4ENt7Vjb3BCsKONfsT/TX7tWFWSPO6TDW9CYIfMXy
-         kf0owEWMkFMoL7ULWGcAvJ8DOer7oz+S9j2XgMq7BSrxzzQ87A38yZNHK2B8/MCGoxfL
-         4pkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qx6YS0mIUJ0wDKcdijGuZVewPoru0FmkFXCzv4uYK/g=;
-        b=aDrmbEjiMbkh73mr4XqxEy8uP9m3VLStdP6BFQtdz1SnsdMtrlbMyDJ+N5eQA0GgDJ
-         UaEr8tyFdphkDbx/syDphCATf2ZAh5s1KsNJBCRwfTRD4z1OAwTHdRPsbARaT6dm44Kw
-         qWEs4pjHU5z5l7cHQCYVce04Af9/Yhq8uCnSDwuBDL7uNE8KAkeXSrX6Xt6OiKAbcaDP
-         pyReRFuvVDbQJ0riX+M8QTfP+5/mDxUXWzHs5nS/F+fTTTy4lMGLxIXjhWaZjz3mn4lP
-         x5LU5zaGu9edBG3qp90xEH6W9+smt8fk+z/BfmyO21pe3HyrMxfNIIIb2FbC+e7JjJmL
-         NQ4w==
-X-Gm-Message-State: AOAM530g6ALe+k6pudCTh9Vsa6z91NpbCp6KhL4y+Tzxd6OcI0/gpckW
-        cQoxHhrtmNFbPyXz1nngecdRJRpFtTk=
-X-Google-Smtp-Source: ABdhPJw4KtlvCSJv/e3r2iVipvylZQ0K18ya7T5fV4AOwssNTbfbY9FPKwD149LlfDS9rhTp1ynm7g==
-X-Received: by 2002:a17:902:c395:b029:da:9aca:c972 with SMTP id g21-20020a170902c395b02900da9acac972mr14694983plg.32.1607323408407;
-        Sun, 06 Dec 2020 22:43:28 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id z7sm2596426pgz.43.2020.12.06.22.43.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Dec 2020 22:43:27 -0800 (PST)
-Date:   Sun, 6 Dec 2020 22:43:24 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     kholk11@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v9 2/3] Input: Add Novatek NT36xxx touchscreen driver
-Message-ID: <X83PDBKOq9bwSI0N@google.com>
-References: <20201028221302.66583-1-kholk11@gmail.com>
- <20201028221302.66583-3-kholk11@gmail.com>
+        id S1725933AbgLGGrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:47:37 -0500
+Received: from mga18.intel.com ([134.134.136.126]:5500 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725832AbgLGGrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 01:47:36 -0500
+IronPort-SDR: MXgJcQ9SXg5mkoAeGjE0M5N+EFxs9YIXFuk6CjaAJQtWaBFvVO2FMiRKZdRclL8xJ7wb6Wz5rG
+ HYIBxLtQuEVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="161422300"
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="161422300"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 22:46:56 -0800
+IronPort-SDR: 4FH3/Y817ld6sm+54ad8aUJ+RAw5sbHDpwqTAM/MP0pI8maX3Aytstx5sdbZIFZ/+Z7xloG9ro
+ fd9YOjOFvrjQ==
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="363003127"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 22:46:55 -0800
+Date:   Sun, 6 Dec 2020 22:46:55 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        David Howells <dhowells@redhat.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Steve French <sfrench@samba.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Brian King <brking@us.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 03/17] drivers/gpu: Convert to mem*_page()
+Message-ID: <20201207064655.GK1563847@iweiny-DESK2.sc.intel.com>
+References: <20201124060755.1405602-1-ira.weiny@intel.com>
+ <20201124060755.1405602-4-ira.weiny@intel.com>
+ <160648211578.10416.3269409785516897908@jlahtine-mobl.ger.corp.intel.com>
+ <20201204160504.GH1563847@iweiny-DESK2.sc.intel.com>
+ <878sad9p7f.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201028221302.66583-3-kholk11@gmail.com>
+In-Reply-To: <878sad9p7f.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi AngeloGioacchino,
+On Fri, Dec 04, 2020 at 11:33:08PM +0100, Thomas Gleixner wrote:
+> On Fri, Dec 04 2020 at 08:05, Ira Weiny wrote:
+> > So I think I'm going to submit the base patch to Andrew today (with some
+> > cleanups per the comments in this thread).
+> 
+> Could you please base that on tip core/mm where the kmap_local() muck is
+> and use kmap_local() right away?
 
-On Wed, Oct 28, 2020 at 11:13:01PM +0100, kholk11@gmail.com wrote:
-> +/**
-> + * nt36xxx_set_page - Set page number for read/write
-> + * @ts: Main driver structure
-> + *
-> + * Return: Always zero for success, negative number for error
-> + */
-> +static int nt36xxx_set_page(struct nt36xxx_i2c *ts, u32 pageaddr)
-> +{
-> +	u32 data = cpu_to_be32(pageaddr) >> 8;
-> +	int ret;
-> +
-> +	ret = regmap_noinc_write(ts->fw_regmap, NT36XXX_CMD_SET_PAGE,
-> +				 &data, sizeof(data));
-> +	if (ret)
-> +		return ret;
-> +
-> +	usleep_range(100, 200);
-> +	return ret;
-> +}
+Sure.  Would that mean it should go through you and not Andrew?
 
-Regmap is supposed to handle paged access for you as long as you set it
-up for paged access. Why do you need custom page handling here?
+Ira
 
-Thanks.
-
--- 
-Dmitry
+> 
+> Thanks,
+> 
+>         tglx
