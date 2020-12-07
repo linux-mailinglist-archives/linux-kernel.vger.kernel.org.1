@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306412D1AB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643F2D1AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgLGUkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:40:42 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:50767 "EHLO
+        id S1726758AbgLGUku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:40:50 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:34607 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLGUkm (ORCPT
+        with ESMTP id S1725774AbgLGUkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:40:42 -0500
+        Mon, 7 Dec 2020 15:40:49 -0500
 Received: from orion.localdomain ([95.114.88.149]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MSbt9-1kblMp2nub-00Sv8x for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020
- 21:38:10 +0100
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MQPVR-1kZVFY2h73-00MHAf; Mon, 07 Dec 2020 21:38:17 +0100
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org
 Subject: [PATCH v3] drivers: gpio: put virtual gpio device into their own submenu
-Date:   Mon,  7 Dec 2020 21:38:09 +0100
-Message-Id: <20201207203809.18187-1-info@metux.net>
+Date:   Mon,  7 Dec 2020 21:38:16 +0100
+Message-Id: <20201207203816.18269-1-info@metux.net>
 X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:O/pUk4LyfxAbG39WNks3Vbb8ERrhg6Cxmx1flqb83Cq5A3JridE
- YmLu87xX5Hvudnqqa8RQXj8UKJz6lv6pcRRKdV/8BIERUd6RBS3HVRY7vup18kLeeHPWsmp
- gbNtd46yzDlcb4QZVaQl6dP3Y+xr+gLrZPJ5Z3tCozkJ9SzyZkLXwK2VtNIj36zB774lbVS
- bHUXBJ1Dag/V/LpyiRJQA==
+X-Provags-ID: V03:K1:eI/5m4FrSEirjVdlYJ1a8RaLSFyfKPxQtHZQk6VK3JLE3YdIRH6
+ HdmFavy3rUyMw/5DrJH+DnQ9ZfHJwCyzUqM/DvUwDYej8LYSz+1ABBF77Yxf5MKKxnqBB6W
+ Eei9ifbabkHaU/taqDM0/mKiNiyOXMHUk2QQwRslvflyjPV0oeETBrreQCL/AzjGwRrFi+b
+ YcIuQa4dn1qebwEGOI27Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pJxDEHjybfI=:4+Lohec+CP7MNQWYsflCiL
- iuzaQHRppkrYTALc2TwEwpoCXfewmIS8hN6sSRC6ETnHBSFYmznS6R8yB792Fb2MCpJKFvYH8
- xzpbUFwO+8OP1KbK47cr21nSepCq4kimFMn+CcxojRq3MAkHrVZzZcv4lqmaixoBmxRX6MoNh
- qmB56y55unqHIzy4xSalAyh2t/zLwCBGKr6T3FCZB5UWaxRwu+YQ9lAkMs/JBkDDEe7Q/tn9J
- VLl5sovocZDay6exMrDcAp3T/XU7NTOGohWl7tdWx0KO3k8043mCBnWY0iIk3+RKvoopCeGxh
- MIXJLVKkCDSt7fzzUy66KWmnHgIPB2yEiXk8YrCJfZ3jHT1354EXppqgKMXcj+vBUTsZ5OFqD
- qN6z4ibypxCt+X9VIGrOcB1tG4wsGmAc2IusYhZAAXLLArgo30ukJcL0g4WPo
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/y4/O1rS4+s=:rSFSrUlEZSwgHF4i6CthdQ
+ MXb28Z2T3JJftMFGWmtetS4mCX2QEX16g0Lo86R5MWG6t1P0M3PuSlZbgEZQ6q3uHjKYh89fL
+ 6H0uDUH8fuwr5boPWO4rfFjVd/D/YVnJlfNB18bEFnGGFJ83HM3RCSfHaKk8oNFPSrk3WJ2ft
+ rTwUo6BnhaPNhaRolBD3d6JfzMYcnRHOGgbHcUrJhcq6pgF5x9YyGRBqpXyxOaLkozUIsMDzT
+ ytoUNlIkwVEi0NwHbt+Lyy1VIoumGoAMG1B/2wEovOqeR5SKveidHb8pyupSt4Ut2qFkVd37C
+ mA0crfrAumpgSPZ/yxsp9xL1upkYPTjIREs4LzlNCesgrYWMPDix53W24YmCXG9T1FNDuLhTm
+ 9n3++3LeQ7w7/MQdC+yDnC7yEcN8Ra43Juq7gQhLRDN+AunBf3/Xf20wX+PEQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
