@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976492D108A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8A62D108C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgLGMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:24:48 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:50713 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgLGMYr (ORCPT
+        id S1727264AbgLGM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:26:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgLGM0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:24:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607343867; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+mUTQzvbhSGlGo6aoMkrl/HRw3qNTx/tD8A12F6p1U8=; b=TwYff87JWSFJK2My3vmlUAoH6jBpPtKdZoNRmADYbNm3ZsWQpbAdqfsxQG3GPyspsuHzUxsM
- oZ5I179bZgEgSU2ZeZ3i+it+i3J1YyONK3sce1T5wUJceoAk9fMt0jxQPBkeHEe7jiE/v3a+
- AapykoypV8jJPLD6bOpB5pxcWfo=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fce1edb4afea888935a8be2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 12:23:55
- GMT
-Sender: akashast=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A867DC433ED; Mon,  7 Dec 2020 12:23:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.89] (unknown [106.205.31.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 637C9C433CA;
-        Mon,  7 Dec 2020 12:23:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 637C9C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 3/3] Serial: Separate out earlycon support
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        mka@chromium.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, saravanak@google.com
-References: <1607330847-15522-1-git-send-email-akashast@codeaurora.org>
- <1607330847-15522-4-git-send-email-akashast@codeaurora.org>
- <X835NxSOLM7+17T6@kroah.com>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <7c2e0928-e9ee-fc0d-7a6e-784591adf25a@codeaurora.org>
-Date:   Mon, 7 Dec 2020 17:53:42 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 7 Dec 2020 07:26:03 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A840CC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:25:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KMHvh9xDEViq9Wttdh76WcHcHftlsk/1mfEYbi1JYyE=; b=k5IwLzqpi6ft6ZcfFqvMkO4lDT
+        XlUejawfGpbUWjPoFIXIl0aSdWugKA7iRGqz85cLGu8ApxFibfro3UfRr+PWjidaez//znbv/hArr
+        xZvmxl9FHlmVk4xU3YecvxFnRaGRclt9a+vSEc9K+HreO4xYu8tXMgqGxJaIsmKdvkhz0riaaybbK
+        JtvGaznp2pLufwdnn00b4QisrhfjZavcpDkPsYQ+CngJHmIC6M1p+xWaKVJwcD6B36uZYkRFt8+ib
+        eha2HtSXRqnyca8zqniCaT8lHJugPHf7Mw3FNwgFUx96PJ6P0mthL+MDoj3cXmY0llhG/MMpuWeD8
+        cBsKX88w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmFZt-0001Im-0n; Mon, 07 Dec 2020 12:25:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01349305C1C;
+        Mon,  7 Dec 2020 13:25:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E3EFE20299B5F; Mon,  7 Dec 2020 13:25:13 +0100 (CET)
+Date:   Mon, 7 Dec 2020 13:25:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: timers: Move clearing of base::timer_running under base::lock
+Message-ID: <20201207122513.GT3021@hirez.programming.kicks-ass.net>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+ <20201207011013.GB113660@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <X835NxSOLM7+17T6@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207011013.GB113660@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Mon, Dec 07, 2020 at 02:10:13AM +0100, Frederic Weisbecker wrote:
+> On Sun, Dec 06, 2020 at 10:40:07PM +0100, Thomas Gleixner wrote:
+> > syzbot reported KCSAN data races vs. timer_base::timer_running being set to
+> > NULL without holding base::lock in expire_timers().
+> > 
+> > This looks innocent and most reads are clearly not problematic but for a
+> > non-RT kernel it's completely irrelevant whether the store happens before
+> > or after taking the lock. For an RT kernel moving the store under the lock
+> > requires an extra unlock/lock pair in the case that there is a waiter for
+> > the timer. But that's not the end of the world and definitely not worth the
+> > trouble of adding boatloads of comments and annotations to the code. Famous
+> > last words...
+> 
+> There is another thing I noticed lately wrt. del_timer_sync() VS timer execution:
 
-On 12/7/2020 3:13 PM, Greg KH wrote:
-> On Mon, Dec 07, 2020 at 02:17:27PM +0530, Akash Asthana wrote:
->> Separate out earlycon support from serial driver and remove it's
->> dependency on QUP wrapper driver.
->>
->> This enable us to manage earlycon independently and we can re-use the
->> same earlycon driver for android project which currently uses
->> downstream version of QUP drivers.
->>
->> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
->> ---
->>   drivers/tty/serial/Kconfig              |   9 +
->>   drivers/tty/serial/Makefile             |   1 +
->>   drivers/tty/serial/qcom_geni_earlycon.c | 649 ++++++++++++++++++++++++++++++++
->>   drivers/tty/serial/qcom_geni_serial.c   |  97 -----
->>   4 files changed, 659 insertions(+), 97 deletions(-)
->>   create mode 100644 drivers/tty/serial/qcom_geni_earlycon.c
-> Nit, your subject line shoudl say somewhere that this is the qcom
-> earlycon driver/support, not "earlycon in general".
-Thanks for feedback, I will take care of it in next post.
->
-> thanks,
->
-> greg k-h
+> Here if the timer has previously executed on CPU 1 and then CPU 0 sees base->running_timer == NULL,
+> it will return, assuming the timer has completed. But there is nothing to enforce the fact that x
+> will be equal to 1. Enforcing that is a behaviour I would expect in this case since this is a kind
+> of "wait for completion" function. But perhaps it doesn't apply here, in fact I have no idea...
+> 
+> But if we recognize that as an issue, we would need a mirroring load_acquire()/store_release() on
+> base->running_timer.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+Yeah, I think you're right. del_timer_sync() explicitly states it waits
+for completion of the handler, so it isn't weird to then also expect to
+be able to observe the results of the handler.
 
+Thomas' patch fixes this.
