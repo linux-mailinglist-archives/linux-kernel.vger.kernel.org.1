@@ -2,135 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5152D16C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9962D16C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgLGQsU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 11:48:20 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:33219 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727303AbgLGQsU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:48:20 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-242-QI3yR-scPsyRFFaCGeCl_A-1; Mon, 07 Dec 2020 16:46:41 +0000
-X-MC-Unique: QI3yR-scPsyRFFaCGeCl_A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 7 Dec 2020 16:46:40 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 7 Dec 2020 16:46:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'John Ogness' <john.ogness@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Thread-Topic: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Thread-Index: AQHWzICKswdVD7bXr0KkK6JFsMrIzKnr1zJA
-Date:   Mon, 7 Dec 2020 16:46:40 +0000
-Message-ID: <d7d870a0081d4375945d169ee5850b9d@AcuMS.aculab.com>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-3-john.ogness@linutronix.de> <X8n9a2DWUFE/giyB@alley>
- <875z5eof8g.fsf@jogness.linutronix.de>
- <20201207093419.GH3040@hirez.programming.kicks-ass.net>
- <87mtyq9blw.fsf@jogness.linutronix.de>
-In-Reply-To: <87mtyq9blw.fsf@jogness.linutronix.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727891AbgLGQrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:47:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgLGQro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:47:44 -0500
+Date:   Mon, 7 Dec 2020 08:47:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607359624;
+        bh=Po6SGiB8kC8wpl8vbPA6UxUzzWrt2PKdruHXPI8zeGo=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ETPYTkXa/dwkVxgcqtpb/jnyoegGlYqlIAYrFtVGg70vhekpau+xABZt9bGIq57P6
+         WDW6grxAxsMEkGI4U6JT9+bKP6GVDluP9oDrAGNOyGdzJ0FnGtpRazTSGpOx3+esQt
+         WX5legyJIXLYoqa4QmSyOLdGPJz+ts8V+9FhX5ox/Q/T9Pa/3K4RwCCKefYWgukbv2
+         9adH+U/KqfCWED3jZJ7iQNYcx1glgxAAcoMREKbJrYHVg8gkYe2KSgpmNzQboQ/rlx
+         DOgWOLKondGyI893H1Fox2hFpR/0WD2ze2Bv/ka4dMdTYTrd0Bw+s9U+U6U9BSOV7r
+         6czzQhnJSEYbg==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the rcu tree
+Message-ID: <20201207164704.GH2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201207192028.5333e4d7@canb.auug.org.au>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207192028.5333e4d7@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Ogness
-> Sent: 07 December 2020 10:04
+On Mon, Dec 07, 2020 at 07:20:28PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> On 2020-12-07, Peter Zijlstra <peterz@infradead.org> wrote:
-> >> Yes, and it is read-only access. Perhaps atomic64_t is the wrong thing
-> >> to use here. We could use a seqcount_latch and a shadow variable so that
-> >> if a writer has been preempted, we can use the previous value. (Only
-> >> kmsg_dump would need to use the lockless variant to read the value.)
-> >>
-> >> void clear_seq_set(u64 val)
-> >> {
-> >>         spin_lock_irq(&clear_lock);
-> >>         raw_write_seqcount_latch(&clear_latch);
-> >>         clear_seq[0] = val;
-> >>         raw_write_seqcount_latch(&clear_latch);
-> >>         clear_seq[1] = val;
-> >>         spin_unlock_irq(&clear_lock);
-> >> }
-> >>
-> >> u64 clear_seq_get_nolock(void)
-> >> {
-> >>         unsigned int seq, idx;
-> >>         u64 val;
-> >>
-> >>         do {
-> >>                 seq = raw_read_seqcount_latch(&clear_latch);
-> >>                 idx = seq & 0x1;
-> >>                 val = clear_seq[idx];
-> >>         } while (read_seqcount_latch_retry(&clear_latch, seq));
-> >>
-> >>         return val;
-> >> }
-> >
-> > That's overly complicated.
-> >
-> > If you're going to double the storage you can simply do:
-> >
-> >
-> > 	seq = val
-> > 	smp_wmb();
-> > 	seq_copy = val;
-> >
-> > vs
-> >
-> > 	do {
-> > 		tmp = seq_copy;
-> > 		smp_rmb();
-> > 		val = seq;
-> > 	} while (val != tmp);
+> After merging the rcu tree, today's linux-next build (htmldocs) produced
+> this warning:
 > 
-> That will not work. We are talking about a situation where the writer is
-> preempted. So seq will never equal seq_copy in that situation. I expect
-> that the seqcount_latch is necessary.
+> Documentation/core-api/mm-api:49: mm/slab_common.c:569: WARNING: Inline literal start-string without end-string.
+> Documentation/core-api/mm-api:49: mm/slab_common.c:595: WARNING: Inline literal start-string without end-string.
+> 
+> Maybe introduced by commit
+> 
+>   f7c3fb4fc476 ("mm: Add kmem_last_alloc() to return last allocation for memory block")
+> 
+> (or one of the following ones).
 
-Is the value just being incremented??
-If so you can do:
-	seq_hi_0 = val >> 32;
-	smp_wmb();
-	seq_lo = val;
-	smp_wmb();
-	seq_hi_1 = val >> 32;
+I freely confess that I have absolutely no idea what it doesn't like.
+It is complaining about this header comment, correct?
 
-Then the reader can assume that seq_lo is zero if seq_h1_0 and
-seq_hi_1 differ.
+/**
+ * kmem_last_alloc_stack - Get return address and stack for last allocation
+ * @object: object for which to find last-allocation return address.
+ * @stackp: %NULL or pointer to location to place return-address stack.
+ * @nstackp: maximum number of return addresses that may be stored.
+ *
+ * If the pointer references a slab-allocated object and if sufficient
+ * debugging is enabled, return the return address for the corresponding
+ * allocation.  If stackp is non-%NULL in %CONFIG_STACKTRACE kernels running
+ * the slub allocator, also copy the return-address stack into @stackp,
+ * limited by @nstackp.  Otherwise, return %NULL or an appropriate error
+ * code using %ERR_PTR().
+ *
+ * Return: return address from last allocation, %NULL or negative error code.
+ */
 
-	David
-
-	
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+							Thanx, Paul
