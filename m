@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2373D2D12F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FA52D1300
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgLGOBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:01:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgLGOBX (ORCPT
+        id S1727364AbgLGOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:01:52 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33387 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgLGOBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:01:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57492C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:00:43 -0800 (PST)
-Date:   Mon, 7 Dec 2020 15:00:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607349641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EpLte4OfQdYM2bvhiOAl1LeQjrSrqFUqkKhrRrW07gY=;
-        b=JtS7Ylt++U4yYFnk/5jb5Zwst/Tn7BnkjqIbKBhQf/8q4gpuCpfZnKuMQjZV0EdrdjY2Vi
-        EnKb7SMjWY0JElsw0QIwLk68m08z6FsAKPpeSjIpeGGZJ58irRTFdfpy1IwaWAx/WimnaT
-        mWLyGedG+uMfA9pLMnQpwUPRN8SQzeE6hM+VpfuJsLHpoz+lqZUJkKNgMbeKZ0PbpYUOJy
-        RIbvWGF/YaAAmWOMvOMddr5Ga7W239QLnVRCtj2GzQrdda171rRg2xO/cFRZsYec3Gtz/W
-        lyoH0dj4LG0FOOGLcsAl3rw5zXW4ARyEqEPcxvVWbbAirDMMSPcDwPfA1suNAA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607349641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EpLte4OfQdYM2bvhiOAl1LeQjrSrqFUqkKhrRrW07gY=;
-        b=PfjhlqPhY/T17mp1rwFrfV4BheK9NiZ2O9F9c+hUx8WgVnzKysf22PxEpS6v+rI9qTwzY5
-        eV7gHx57gLf7blBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [patch V2 9/9] tasklets: Prevent kill/unlock_wait deadlock on RT
-Message-ID: <20201207140040.yrxsu4v4xz43szkk@linutronix.de>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170805.627618080@linutronix.de>
- <20201207114743.GK3040@hirez.programming.kicks-ass.net>
+        Mon, 7 Dec 2020 09:01:51 -0500
+Received: by mail-lj1-f196.google.com with SMTP id t22so15084836ljk.0;
+        Mon, 07 Dec 2020 06:01:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZJadRuqd/X/33u5mpXvpNeLeZmHhShIKn6hwyJ9UfKA=;
+        b=LhtyHvC/0dOXB0ZN4sET4ns81ik1dID9qQriSwHYnQUlQcP4zXQCCsKn6Q3hlWCQXc
+         6i7KrIwtKhq0ppiHsWe/QHQZmw+HIP5+ZEm2nvmkA+PW+22nlYqg2qzG2JWFX6pqZfeH
+         4wXtlLjZ06oLkudLGM4VavQW790aTrYGGo9AQzPVQ4oE1TtuM3wdgeR7BB8kR8CYbzUR
+         oNsTAT8kF+5kjkky+Pnrne1IG4xfyLhqYNaX1QtXorOvANUWxBukizF0Nul57fPN1sE3
+         dXhCaBWFEwdIR1b2+2loBO36SfKHq30TgWPIdm8pwTENfQppVevmX9JmBJoBMr6+0vTi
+         7ATA==
+X-Gm-Message-State: AOAM530+2PmmgRmRzq778IXLN0sp8a9kGFGwASEierd+3lXD7LjRvkCR
+        GeqiY4A8+nFk9bfHojXaqHM=
+X-Google-Smtp-Source: ABdhPJwIK6DWcc2jbvjLKzTf3YHVukzIYpfk6l++v/K20CulH1k1FGe/dCo5jsEM0SIBRO47JY3cfA==
+X-Received: by 2002:a05:651c:8d:: with SMTP id 13mr2441212ljq.33.1607349669142;
+        Mon, 07 Dec 2020 06:01:09 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id k13sm336342lfo.294.2020.12.07.06.01.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 06:01:08 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kmH5D-0002ji-SH; Mon, 07 Dec 2020 15:01:43 +0100
+Date:   Mon, 7 Dec 2020 15:01:43 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 0/4] USB: ftdio_sio: GPIO validity fixes
+Message-ID: <X841xwCChUEqi5Ad@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207114743.GK3040@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201204164739.781812-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-07 12:47:43 [+0100], Peter Zijlstra wrote:
-> On Fri, Dec 04, 2020 at 06:02:00PM +0100, Thomas Gleixner wrote:
-> > @@ -825,7 +848,20 @@ void tasklet_kill(struct tasklet_struct
-> >  
-> >  	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
-> >  		do {
-> > -			yield();
-> >  		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
-> >  	}
-> >  	tasklet_unlock_wait(t);
+On Fri, Dec 04, 2020 at 04:47:35PM +0000, Marc Zyngier wrote:
+> Having recently tried to use the CBUS GPIOs that come thanks to the
+> ftdio_sio driver, it occurred to me that the driver has a couple of
+> usability issues:
 > 
+> - it advertises potential GPIOs that are reserved to other uses (LED
+>   control, or something else)
+
+Consider the alternative, that the gpio offsets (for CBUS0, CBUS1, CBUS2
+or CBUS4) varies depending on how the pins have been muxed. Hardly very
+user friendly.
+
+> - it returns an odd error (-ENODEV), instead of the expected -EINVAL
+>   when a line is unavailable, leading to a difficult diagnostic
+
+Hmm, maybe. Several gpio driver return -ENODEV when trying to request
+reserved pins. Even gpiolib returns -ENODEV when a pins is not yet
+available due to probe deferal.
+
+-EBUSY could also be an alternative, but that's used to indicate that a
+line is already in use as a gpio.
+
+> We address the issues in a number of ways:
 > 
-> Egads... should we not start by doing something like this?
+> - Stop reporting invalid GPIO lines as valid to userspace. It
+>   definitely seems odd to do so. Instead, report the line as being
+>   used, making the userspace interface a bit more consistent.
+> 
+> - Implement the init_valid_mask() callback in the ftdi_sio driver,
+>   allowing it to report which lines are actually valid.
+> 
+> - As suggested by Linus, give an indication to the user of why some of
+>   the GPIO lines are unavailable, and point them to a useful tool
+>   (once per boot). It is a bit sad that there next to no documentation
+>   on how to use these CBUS pins.
 
-So we keep the RT part as-is and replace the non-RT bits with this?
+Don't be sad, Marc; write some documentation. ;)
 
-Sebastian
+Johan
