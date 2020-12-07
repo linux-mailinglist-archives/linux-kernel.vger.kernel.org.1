@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAC72D1497
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34332D14A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgLGPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S1726402AbgLGP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLGPZH (ORCPT
+        with ESMTP id S1725804AbgLGP0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:25:07 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2E9C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:24:27 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id o11so10081495ote.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ePZ6odnGRSIS18NlRzl4CISfk4V5dznqUnLHErxLtDg=;
-        b=TWIMTcRamXlWkOYwMtcuIRzEiBXJETLPYIaGzWBFS6suPAEOACnOqrLBcNLhiDfiqe
-         LASrxZEZeI+luhgqmCA7KfeBqbnbq7dNc4foKDXcG1P5Ido5OCsGfY4to6qszZNRDyUS
-         xHbKHyt80xrrDHGkQ7034QLNYHOWiySq9EOOc0MtMXO8g8U78o0gRjAcye6gVFA1DntB
-         pF0tYRkju0GkS0S6T1XUIb4FASAObsp9QbeBwWd2qNT/+13WOmQaMYh2pzBmZh9xBMHr
-         0R6X5FcDsCN+LFzy6U3lVrhIfkN1mmaBr8/VEvzkbDiQlr7hYyJBcu2LhVMXcyz676+B
-         nVUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ePZ6odnGRSIS18NlRzl4CISfk4V5dznqUnLHErxLtDg=;
-        b=TpXdcxduB1rV0W1GRj4ojbNES2kFy5zVO0t619aMf0wvWti/HTnz8Gz5OP2GhRbIaY
-         X8AIIYZWEqzlrIPpEVRcdSvoCKUlqqN+/UVxDj1OZ0cl+ljBqmEmYmpDT1mqxN7YlGyt
-         TPyHmC/kU8qMsvb30TG6Fa1bPC+1zAlHzNuG0gCqWtvtLewjLNvLLV1yu2V78Kz4wrTc
-         sI0EimQfjzHaPgVjN68DCe2XWkBqmkpJBGK6B1jedjK7DL2izEIv2+JzovfB05cz3MSP
-         Gk7/DU1rk9KXr/JYDgK7PF+hj8sUokgfg2X4WmSNelv1+C/CHngLSsqoXYXCHi8NKja8
-         YiVA==
-X-Gm-Message-State: AOAM530oM4ZHD6fxTd/16060BZt9Ek2laABNyLgdElt0c4lM5N0T1doe
-        EXKpQDxGcR5qVbPTjhIdM5xRSsww3HT2S2TjCGA=
-X-Google-Smtp-Source: ABdhPJyNVjZ4VuT3LH/Munmg27VQUTdViaFTKTLAmWZ80U+7lq/lrBDDlLf80f7MS2V9eWrh7pkaST+yNtpI1z2lcQ4=
-X-Received: by 2002:a9d:889:: with SMTP id 9mr13436548otf.6.1607354666928;
- Mon, 07 Dec 2020 07:24:26 -0800 (PST)
+        Mon, 7 Dec 2020 10:26:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBB0C06179C
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:25:36 -0800 (PST)
+Date:   Mon, 7 Dec 2020 16:25:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607354735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sv4eRfw6q+BoSj9ElHesitQZKO3ngXQI1PVZppTaTS0=;
+        b=GLT2ResdfZxdkfyJXCtG2A9vgvhjECYZfsOmf/2snVGP50amVQ2fJIEQFyB4+NgabWFlO7
+        w1+G+yidWMwAGyEAYJ30NT3/VlF3KsnpJxFamjWCbwoKcWOy50nhzctvb27DM9vNSVj8KE
+        eV50VRQEKl2xNyTF+KD0guYttYfTpjYI5bZeqdo4PW310nzdPH1Nn7vL/6ImqHxIg2vfp9
+        HDrYvHAWic35tCM0Vgx3Jqd+vNc6hQTPbXqkQ/FSx9RLoCSrgyUYwKQeEFzSLrFhcMtlHO
+        sDaqBUTGMdrOGTk2UuNPDXJn3un6wlkh3BnYb6qeRMP2WgdwWrI5TsS3B8Y2nQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607354735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sv4eRfw6q+BoSj9ElHesitQZKO3ngXQI1PVZppTaTS0=;
+        b=3ySZJaJWob4oYpVye6XdH023AbAMCbCFtnpiA3MGouUlDVJZ1wAroSZ5Z2xAK8N/5TGrSN
+        0ZPayJm6HIaAcHBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: timers: Move clearing of base::timer_running under base::lock
+Message-ID: <20201207152533.rybefuzd57kxxv57@linutronix.de>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+ <20201207130753.kpxf2ydroccjzrge@linutronix.de>
+ <87a6up7kpt.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20200429165347.48909-1-rminnich@google.com> <2124367.HovnAMPojK@sven-edge>
- <CAP6exYJ7QR+Y7Vsumecx_3rUC4cNY4xJj4e6759S8US6FX7ADg@mail.gmail.com> <2560223.mvXUDI8C0e@ripper>
-In-Reply-To: <2560223.mvXUDI8C0e@ripper>
-From:   ron minnich <rminnich@gmail.com>
-Date:   Mon, 7 Dec 2020 07:24:15 -0800
-Message-ID: <CAP6exYK75zwqhtrMykMqPepPfq=S95UEByy61D136aPKCBBSRQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: parser: cmdline: Support MTD names containing one or
- more colons
-To:     Sven Eckelmann <sven@narfation.org>
-Cc:     linux-mtd@lists.infradead.org, John Audia <graysky@archlinux.us>,
-        Adrian Schmutzler <freifunk@adrianschmutzler.de>,
-        jstefek@datto.com, Richard Weinberger <richard@nod.at>,
-        Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ron Minnich <rminnich@google.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87a6up7kpt.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I pinged the person again. Hope to hear today. Sorry for delay.
+On 2020-12-07 15:29:50 [+0100], Thomas Gleixner wrote:
+> On Mon, Dec 07 2020 at 14:07, Sebastian Andrzej Siewior wrote:
+> > One thing I noticed while testing it is that the "corner" case in
+> > timer_sync_wait_running() is quite reliably hit by rcu_preempt
+> > rcu_gp_fqs_loop() -> swait_event_idle_timeout_exclusive() invocation.
+> 
+> I assume it's something like this:
+> 
+>      timeout -> wakeup
+> 
+> ->preemption
+>         del_timer_sync()
+>                 .....
 
-On Sun, Dec 6, 2020 at 11:52 PM Sven Eckelmann <sven@narfation.org> wrote:
->
-> On Friday, 27 November 2020 19:54:30 CET ron minnich wrote:
-> > Thanks, Sven, for your patience, I will indeed try to test this next week.
->
-> Any test results?
->
-> Kind regards,
->         Sven
+Yes, but it triggers frequently. Like `rcuc' is somehow is aligned with
+the timeout.
+
+|          <idle>-0       [007] dN.h4..    46.299705: sched_wakeup: comm=rcuc/7 pid=53 prio=98 target_cpu=007
+|          <idle>-0       [007] d...2..    46.299728: sched_switch: prev_comm=swapper/7 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=rcuc/7 next_pid=53 next_prio=98
+|          rcuc/7-53      [007] d...2..    46.299742: sched_switch: prev_comm=rcuc/7 prev_pid=53 prev_prio=98 prev_state=S ==> next_comm=ksoftirqd/7 next_pid=54 next_prio=120
+|     ksoftirqd/7-54      [007] .....13    46.299750: timer_expire_entry: timer=000000003bd1e045 function=process_timeout now=4294903802 baseclk=4294903802
+|     ksoftirqd/7-54      [007] d...213    46.299750: sched_waking: comm=rcu_preempt pid=11 prio=98 target_cpu=007
+|     ksoftirqd/7-54      [007] dN..313    46.299754: sched_wakeup: comm=rcu_preempt pid=11 prio=98 target_cpu=007
+|     ksoftirqd/7-54      [007] dN..213    46.299756: sched_stat_runtime: comm=ksoftirqd/7 pid=54 runtime=13265 [ns] vruntime=3012610540 [ns]
+|     ksoftirqd/7-54      [007] d...213    46.299760: sched_switch: prev_comm=ksoftirqd/7 prev_pid=54 prev_prio=120 prev_state=R+ ==> next_comm=rcu_preempt next_pid=11 next_prio=98
+|     rcu_preempt-11      [007] d...311    46.299766: sched_pi_setprio: comm=ksoftirqd/7 pid=54 oldprio=120 newprio=98
+del_timer_sync()
+|     rcu_preempt-11      [007] d...211    46.299773: sched_switch: prev_comm=rcu_preempt prev_pid=11 prev_prio=98 prev_state=R+ ==> next_comm=ksoftirqd/7 next_pid=54 next_prio=98
+|     ksoftirqd/7-54      [007] .....13    46.299774: timer_expire_exit: timer=000000003bd1e045
+|     ksoftirqd/7-54      [007] dN..311    46.299784: sched_pi_setprio: comm=ksoftirqd/7 pid=54 oldprio=98 newprio=120
+|     ksoftirqd/7-54      [007] dN..311    46.299788: sched_waking: comm=rcu_preempt pid=11 prio=98 target_cpu=007
+|     ksoftirqd/7-54      [007] dN..411    46.299790: sched_wakeup: comm=rcu_preempt pid=11 prio=98 target_cpu=007
+|     ksoftirqd/7-54      [007] dN..311    46.299792: sched_stat_runtime: comm=ksoftirqd/7 pid=54 runtime=7404 [ns] vruntime=3012617944 [ns]
+|     ksoftirqd/7-54      [007] d...2..    46.299797: sched_switch: prev_comm=ksoftirqd/7 prev_pid=54 prev_prio=120 prev_state=S ==> next_comm=rcu_preempt next_pid=11 next_prio=98
+
+
+> Thanks,
+> 
+>         tglx
+
+Sebastian
