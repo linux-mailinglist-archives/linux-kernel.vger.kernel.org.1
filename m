@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7D12D1E1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0AE2D1E20
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgLGXJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:09:05 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:41992 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgLGXJF (ORCPT
+        id S1727687AbgLGXKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:10:51 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:54718 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgLGXKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:09:05 -0500
-Received: by mail-ot1-f68.google.com with SMTP id 11so14176774oty.9;
-        Mon, 07 Dec 2020 15:08:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zsVLjp+2xVraSwpotdRQfpDFqATYYtM1FS0Mr8BrZ+c=;
-        b=ZFps8B8N2eu9j4Sbl91kBD5HDxYQ/rlCreJV1ak3WBs/T8yNICMYZHLE+QMS3sr8/M
-         2PFmWJ0nFcvxtD9aEwGZYXtQWfCz8I9ZjW3IwZF8QrHTQea0/IKrZU/e/Q5DJd6zIiws
-         NNCnloQGi0jIyHOS7BomCuQgSj25+bm24+p7Q8tliDv1SlFvVxriDRD0tJBZ17+/cXgf
-         ITCqBhSHDbban9l0r1G+VHoVA0kng3jPyGRxmjV4bPQe73PBLum/OFtHlFo5pwHuyQ+W
-         Q7TjAqa7101JDtqrOI1GkRV0cX7DeQIxfYLA54+8oMzWI3A2D0BIt3D1tV2cepoxLIsc
-         DKHA==
-X-Gm-Message-State: AOAM533ufCDJV4FIPp+f+mYE0NxfRUGsYBvrJEVp3KvmwuAi5arb6PcQ
-        O+W8ArOfxKTi3sltVq07BQ==
-X-Google-Smtp-Source: ABdhPJz4Ez45qvDjUXcFbK2D9LsN06TUB99Be4VmINejvsIBhqWEOY1+GGCCp/E8ICedi7w4b/lemw==
-X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr14831740ots.336.1607382504412;
-        Mon, 07 Dec 2020 15:08:24 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x72sm3289675oia.16.2020.12.07.15.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:08:22 -0800 (PST)
-Received: (nullmailer pid 1021070 invoked by uid 1000);
-        Mon, 07 Dec 2020 23:08:21 -0000
-Date:   Mon, 7 Dec 2020 17:08:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v2 1/3] reset: hisilicon: correct vendor prefix
-Message-ID: <20201207230821.GA1015860@robh.at.kernel.org>
-References: <20201204014236.1158-1-thunder.leizhen@huawei.com>
- <20201204014236.1158-2-thunder.leizhen@huawei.com>
+        Mon, 7 Dec 2020 18:10:50 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7N5TpZ189332;
+        Mon, 7 Dec 2020 23:09:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=T7KLRlQ+gfMECE58ayyi5kqFFSVyV6sPyaB0MVl2Hyw=;
+ b=FSFwXSGtflm9oR58D15C1Y4EfX7RKCYUl/EMu72T4iZnoLCCJ41HQDNGF7StDw4GGjox
+ pHT8n2o8Y9JLCBqGZiy1OyuYGtt03VoE7jf2Inp3YSZrXV/xliNzCkX7xaeHQk5CEVbe
+ Uru2Ci23HNLF3xKr82Pbd/+Ht+kSNOlYBV5SyDvhvz8+z5oKKdlMcCQTwX1Q7x6tG0Nj
+ 2Udq7SRDKj2H43v+IOk3agOpu1uDwZ39n7zZuGeaD6hG4n2sLH4kKnZzCB8Wf6ZSRHNS
+ rlK7uDrQwBaKuAClnJmvYosEWeYI3ILanyPdtuKRFFULvkPuU4KPV+hikj+g1/A3PYTg Pg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35825m02st-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 23:09:52 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7N4jPe016304;
+        Mon, 7 Dec 2020 23:09:52 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 358ksmth4e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 23:09:52 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B7N9lVa001520;
+        Mon, 7 Dec 2020 23:09:48 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 15:09:47 -0800
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Subject: Re: [PATCH v1 0/4] scsi: ufs: Cleanup phy_initialization vop
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1360h2oy8.fsf@ca-mkp.ca.oracle.com>
+References: <20201205120041.26869-1-stanley.chu@mediatek.com>
+Date:   Mon, 07 Dec 2020 18:09:43 -0500
+In-Reply-To: <20201205120041.26869-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Sat, 5 Dec 2020 20:00:37 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204014236.1158-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=890 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=904 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012070152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 09:42:34AM +0800, Zhen Lei wrote:
-> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
-> stated in "vendor-prefixes.yaml".
 
-Yes, but you can't fix this as changing it breaks compability between 
-DTBs and kernels.
+Stanley,
 
-hisi has to be documented and marked 'deprecated'.
+> This series simply cleans up UFS vops and shall not change any
+> functionality.
 
-> 
-> Fixes: 1527058736fa ("reset: hisilicon: add reset-hi3660")
-> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
-> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Cc: Chen Feng <puck.chen@hisilicon.com>
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
->  arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 2 +-
->  drivers/reset/hisilicon/reset-hi3660.c    | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> index 49c19c6879f95ce..bfb1375426d2b58 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-> @@ -345,7 +345,7 @@
->  		crg_rst: crg_rst_controller {
->  			compatible = "hisilicon,hi3660-reset";
->  			#reset-cells = <2>;
-> -			hisi,rst-syscon = <&crg_ctrl>;
-> +			hisilicon,rst-syscon = <&crg_ctrl>;
->  		};
->  
->  
-> @@ -376,7 +376,7 @@
->  
->  		iomcu_rst: reset {
->  			compatible = "hisilicon,hi3660-reset";
-> -			hisi,rst-syscon = <&iomcu>;
-> +			hisilicon,rst-syscon = <&iomcu>;
->  			#reset-cells = <2>;
->  		};
->  
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-> index 85b0dfb35d6d396..5c5a5dc964ea848 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-> @@ -155,7 +155,7 @@
->  			compatible = "hisilicon,hi3670-reset",
->  				     "hisilicon,hi3660-reset";
->  			#reset-cells = <2>;
-> -			hisi,rst-syscon = <&crg_ctrl>;
-> +			hisilicon,rst-syscon = <&crg_ctrl>;
->  		};
->  
->  		pctrl: pctrl@e8a09000 {
-> diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
-> index a7d4445924e558c..8f1953159a65b31 100644
-> --- a/drivers/reset/hisilicon/reset-hi3660.c
-> +++ b/drivers/reset/hisilicon/reset-hi3660.c
-> @@ -83,7 +83,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
->  	if (!rc)
->  		return -ENOMEM;
->  
-> -	rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-syscon");
-> +	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
->  	if (IS_ERR(rc->map)) {
->  		dev_err(dev, "failed to get hi3660,rst-syscon\n");
->  		return PTR_ERR(rc->map);
-> -- 
-> 1.8.3
-> 
-> 
+Applied to 5.11/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
