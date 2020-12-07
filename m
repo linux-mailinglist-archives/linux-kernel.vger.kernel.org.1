@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1952D17B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5302D17C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgLGRmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGRmY (ORCPT
+        id S1726101AbgLGRpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:45:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725781AbgLGRpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:42:24 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B6DC061749;
-        Mon,  7 Dec 2020 09:41:43 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607362901;
+        Mon, 7 Dec 2020 12:45:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607363067;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=L32qUYNVEpBe9pHXHARYKfmodEfeLdlaSl0E/tFjVbY=;
-        b=exKT3dqL8Az3jX6xDH5KYgocsTqh4E6l2rVscnGGw8gltDmUGbZ3D3ZQk5bhdBxjfXTa6U
-        7RArTzjQbzr2wMV22+0SRKQST2bcl551qSxw348hbuvSNGCkskqDqQsj07+Klr0+BBws/V
-        e5/mAKlSNDUOTvpmtoKZA5zQGkhYsVuIBuS+7aUkzlwUQLIPtT4cuqdTMTUO36HRMr6LvL
-        sSneVlZbR9KBfW39Dyqtykn6dQnc7Fh2r8Fv7BADk4iIeFvtRNKuFjDYHqcvOccnar3+Dc
-        bVMB17gzSRx0T9BpFiVKLBLUdAmH8OO45KTuppw64aNU2Ul1lShochFAN/OFRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607362901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L32qUYNVEpBe9pHXHARYKfmodEfeLdlaSl0E/tFjVbY=;
-        b=Gzsj99alnWOe/KUs+jKp4LzquDn7Xo7eVyT96prRvS8wWKKUofOND0uezBo6rcQGjEoqZp
-        kOIaHBXdnbtGhuCg==
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <87im9dlpsw.fsf@vitty.brq.redhat.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <87a6uq9abf.fsf@nanos.tec.linutronix.de> <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com> <87im9dlpsw.fsf@vitty.brq.redhat.com>
-Date:   Mon, 07 Dec 2020 18:41:41 +0100
-Message-ID: <875z5d5x9m.fsf@nanos.tec.linutronix.de>
+        bh=8CxERT4u5MDQXm5Jldr8EFPIiLsHrezNO76Dqv+04UU=;
+        b=EpH1IcSnQwM7xzC6qsDRe24aecl/7ZFiKVqLTrn8cbqX2HixhfgZKtdQ1sJS9SJjNe37eK
+        a78G/kQvYf49j2YMnCm0ESEhyN0F4KtlHVbVf3m9MFNd6RwArUM52IZPPtxt693/M1wkcM
+        //VIZBl455iiKIhFokl3yqSKQAw7JAY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-1LUvcVXBNISK6Oz0QmAItQ-1; Mon, 07 Dec 2020 12:44:25 -0500
+X-MC-Unique: 1LUvcVXBNISK6Oz0QmAItQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9FF75804024;
+        Mon,  7 Dec 2020 17:44:23 +0000 (UTC)
+Received: from work-vm (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B8F6C60636;
+        Mon,  7 Dec 2020 17:44:20 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 17:44:18 +0000
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        David Gibson <dgibson@redhat.com>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+Message-ID: <20201207174418.GF3135@work-vm>
+References: <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+ <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+ <20201207164428.GD3135@work-vm>
+ <CAFEAcA9mq0xh1CNvw9UZoNwcOBuoVnCNcBkRDSUv7UK27qdESg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFEAcA9mq0xh1CNvw9UZoNwcOBuoVnCNcBkRDSUv7UK27qdESg@mail.gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 14:16, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
->> But other than that I don't mind making TSC offset global per VM thing.
->> Paulo, what do you think about this?
->>
->
-> Not Paolo here but personally I'd very much prefer we go this route but
-> unsynchronized TSCs are, unfortunately, still a thing: I was observing
-> it on an AMD Epyc server just a couple years ago (cured with firmware
-> update).
+* Peter Maydell (peter.maydell@linaro.org) wrote:
+> On Mon, 7 Dec 2020 at 16:44, Dr. David Alan Gilbert <dgilbert@redhat.com> wrote:
+> > * Steven Price (steven.price@arm.com) wrote:
+> > > Sorry, I know I simplified it rather by saying it's similar to protected VM.
+> > > Basically as I see it there are three types of memory access:
+> > >
+> > > 1) Debug case - has to go via a special case for decryption or ignoring the
+> > > MTE tag value. Hopefully this can be abstracted in the same way.
+> > >
+> > > 2) Migration - for a protected VM there's likely to be a special method to
+> > > allow the VMM access to the encrypted memory (AFAIK memory is usually kept
+> > > inaccessible to the VMM). For MTE this again has to be special cased as we
+> > > actually want both the data and the tag values.
+> > >
+> > > 3) Device DMA - for a protected VM it's usual to unencrypt a small area of
+> > > memory (with the permission of the guest) and use that as a bounce buffer.
+> > > This is possible with MTE: have an area the VMM purposefully maps with
+> > > PROT_MTE. The issue is that this has a performance overhead and we can do
+> > > better with MTE because it's trivial for the VMM to disable the protection
+> > > for any memory.
+> >
+> > Those all sound very similar to the AMD SEV world;  there's the special
+> > case for Debug that Peter mentioned; migration is ...complicated and
+> > needs special case that's still being figured out, and as I understand
+> > Device DMA also uses a bounce buffer (and swiotlb in the guest to make
+> > that happen).
+> 
+> Mmm, but for encrypted VMs the VM has to jump through all these
+> hoops because "don't let the VM directly access arbitrary guest RAM"
+> is the whole point of the feature. For MTE, we don't want in general
+> to be doing tag-checked accesses to guest RAM and there is nothing
+> in the feature "allow guests to use MTE" that requires that the VMM's
+> guest RAM accesses must do tag-checking. So we should avoid having
+> a design that require us to jump through all the hoops.
 
-Right this happens still occasionally, but for quite some time this is
-100% firmware sillyness and not a fundamental property of the hardware
-anymore. Interestingly enough has the number of reports on Intel based
-systems vs. such wreckage as obvservable via TSC_ADJUST gone down after
-we added support for it and yelled prominently. I wish AMD would have
-that as well.
+Yes agreed, that's a fair distinction.
 
-> We try to catch such situation in KVM instead of blowing up but
-> this may still result in subtle bugs I believe. Maybe we would be better
-> off killing all VMs in case TSC ever gets unsynced (by default).
+Dave
 
-I just ran a guest on an old machine with unsynchronized TSCs and was
-able to observe clock monotonic going backwards between two threads
-pinned on two vCPUs, which _is_ bad. Getting unsynced clocks reliably
-under control is extremly hard.
 
-> Another thing to this bucket is kvmclock which is currently per-cpu. If
-> we forbid TSC to un-synchronize (he-he), there is no point in doing
-> that. We can as well use e.g. Hyper-V TSC page method which is
-> per-VM. Creating another PV clock in KVM may be a hard sell as all
-> modern x86 CPUs support TSC scaling (in addition to TSC offsetting which
-> is there for a long time) and when it's there we don't really need a PV
-> clock to make migration possible.
+ Even if
+> it happens that handling encrypted VMs means that QEMU has to grow
+> some infrastructure for carefully positioning hoops in appropriate
+> places, we shouldn't use it unnecessarily... All we actually need is
+> a mechanism for migrating the tags: I don't think there's ever a
+> situation where you want tag-checking enabled for the VMM's accesses
+> to the guest RAM.
+> 
+> thanks
+> -- PMM
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
-That should be the long term goal.
-
-Thanks,
-
-        tglx
