@@ -2,252 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C1B2D092A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB14A2D092F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgLGC01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 21:26:27 -0500
-Received: from mail-eopbgr60050.outbound.protection.outlook.com ([40.107.6.50]:18756
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726400AbgLGC00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 21:26:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n7yGdQkAWnWCfR9pNR4FfNfOy7qLkuBn4J4nUHDvvdBu3On6qtZJ/BaSk5zmL/7iqaV/OPeWBEKMs87DemkhfQ5T+BDwRS092cFE43wdiSpHBA2Asz+RitCDSZ1gc3tS8JpCNdd1x/oggjxzadK8BIVWGZmP8TQXz5HukhJId0byHAiUFGjU/dqXoxKDRyqBr5+ewp7hRTzzCO22IhPNJypvHFrhRDXp8du0Eg9pmbmOt2YCeRkp9MNQhiuH2tlBoJ1qACzeJeR/CSbmTofQgvXXJ3+qdyWU8M+dQmu/lX4nEB/3UPf/OA84Z5NWcLGFL0bFh70XHie9ijuTgJGwuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zse4pKhjkyELOfk3Xe8LBznsfz33nMlKql3TXH41z9g=;
- b=JCEpQGdyFMwTb9K4i5RP6TA/+NAwWHJE/P75ihbevmugWr+0AmsIX2SFl0sDLQSf/33KzAGfi8njNoVLHDYE7x3Y6O8nvfZTRUSxIz0l5ykvGtsWl00deVgqoN6IcBCNz6lIoQIW6l1unU7h66P4KZEw3at7gudmY5EfsmY2SQQHSIwoI6X8bAsX838pyQ3YuN6OManycosYSXstjIqwzCbVMIxwflzZl3KxgB9NE3krfOywpnT4mWO25g9xkxMq+jGtxpLMR5d6slaTHhbQbdUV56xargX1cax639UQQfw144ReikEMD4eq30vnk/CCV/DKNZHnKTU43+IkVKo4HA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Zse4pKhjkyELOfk3Xe8LBznsfz33nMlKql3TXH41z9g=;
- b=Y+jPdAXUqoXVTktxtKBxj8tghcYAr+hKpv/BqF4Slx2xyO23KnaG6pAiMkszIEoi0OD7V7l+StVgm9ouUIBiNc+wS0XfW02lGceZcU07d8fG2Frga2Ra+sGK8DpDpflF4eXufp2Vvl1b4/AeBNq7exH/4Gs/UlQ12cH36oaMNEo=
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
- by DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Mon, 7 Dec
- 2020 02:25:37 +0000
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 02:25:37 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Bin Liu <b-liu@ti.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>
-Subject: RE: [PATCH 04/15] usb: misc: ehset: update to use the
- usb_control_msg_{send|recv}() API
-Thread-Topic: [PATCH 04/15] usb: misc: ehset: update to use the
- usb_control_msg_{send|recv}() API
-Thread-Index: AQHWxmmqKlq4UxeHFEKSHj1443IfHKnq83OA
-Date:   Mon, 7 Dec 2020 02:25:37 +0000
-Message-ID: <DBBPR04MB7979E6ADD92EA2E8B840B7B48BCE0@DBBPR04MB7979.eurprd04.prod.outlook.com>
-References: <20201129160612.1908074-1-anant.thazhemadam@gmail.com>
- <20201129160612.1908074-5-anant.thazhemadam@gmail.com>
-In-Reply-To: <20201129160612.1908074-5-anant.thazhemadam@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [180.164.155.184]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1c71ff6b-0600-49bb-78e5-08d89a576233
-x-ms-traffictypediagnostic: DB6PR0402MB2760:
-x-microsoft-antispam-prvs: <DB6PR0402MB276015A4A34724872C07085C8BCE0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ziaNYl8MwenZFQNOhY5Wp/NYqMvcXCMyfQtStOJiBGwAzrYudLeTSCUR+cCqTc89BY7181GWAnWkHs6EWVV3xOEL1vW7R4domjXhDXUgPTxkbJS7acGS4KtJ/ROJVBIwa9+HdmnYY/UI8y5a36pROQ8/4MdUpTWLjDciBcqR8NqiaNrn+EBor8w2n4FOkTMh/g4HGIcAVtbh69F62a7jgIF78vWVim9ox03CiHWDncC6Cxq8ldg2CG9PirCf3Clfpzn/AgYBXzmJzm1iMzk9kmqqbArw8KD5F1mtVty3H7CAnZtzodG5vVmx0P0OFf0heaOFqTF/ESlq1uHBlutwSw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(76116006)(478600001)(8676002)(4326008)(110136005)(55016002)(5660300002)(44832011)(316002)(83380400001)(54906003)(7696005)(33656002)(6506007)(66446008)(52536014)(2906002)(186003)(66946007)(66556008)(26005)(15650500001)(8936002)(86362001)(71200400001)(9686003)(66476007)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3e8bci1IV8Vi+2jOwEFn5zrt3UmSsFapwB0L9T7inKMs5vzH82wu7miQ0vlv?=
- =?us-ascii?Q?ZcDmPpY6N7kU+i9m9BEkyrky60hjYYhaWPqupJGMWYY6iXbKz7u15gG3XZJB?=
- =?us-ascii?Q?KPuJwxS/eHWmEPDUFVeMq1zwFkLl+clC/ye7az1r59ykshN29T1nd8SJhM/a?=
- =?us-ascii?Q?Lsu5E/bOjIGJpxHFyGmvN/3boKIvYTEkrC6A8QLP4mv0sRsymLGwhuRsivV/?=
- =?us-ascii?Q?bLuJLXuU623Hh0EItsNti2VnVWXkN/q3zz51+BaUD6azg6HvbxOYv+heE0SQ?=
- =?us-ascii?Q?mXQ8on3G7q93IUxYZQnltGeJf1ISOCl7QfYwcMSL/ED1F1sZK5bK2gRRrFL0?=
- =?us-ascii?Q?Pj/KMosSO5g9ASp3aEUWTKCAb9Z5X9DqiVbdbedlil/DSgKaPHkSi1nkremy?=
- =?us-ascii?Q?IKMF2PN9nisJRknPpeQ9tKRIhQdrsaryfSRc2fGYusX2WOSJZZWxqMUUB8td?=
- =?us-ascii?Q?+8USP2kzBWc4rBUhQNj1HcSlXPobf4oHXgiRfQZL8zxTXSqt4hFSyDoNVD2G?=
- =?us-ascii?Q?OjtEl4nFPkaM9Cep3uk7uo6ueGKH3v1CyTgtOCzhQKSfgMmz2xPCK4/+jhsP?=
- =?us-ascii?Q?tzz/lX5m0t3Wy+NM4bXmuCelDH1Fq8SAwh6dkez4RbN3d7f03FEDdS+DRvlF?=
- =?us-ascii?Q?Q41moFYMVmg6hfIpIhI8cS8Drd7O3tw6H8G3GdlAK7nJjJi2Z0bXFlgqV7bT?=
- =?us-ascii?Q?JiaL/7yRjbv2pGeJfopXDPqsjYBDolT1G9wE9d9jo2j9GODp00h13c5y2Z3z?=
- =?us-ascii?Q?fo7SZoqhYCFm7adDwlq097GJKys6ifrTLKhvfy3KktrY6cX3qflgd4kw6MUN?=
- =?us-ascii?Q?HJM96UuHskPV+JrHj1oVgjs/2z60ruVvUn7SmDXATLUFS1/Xk4TMDh8of98a?=
- =?us-ascii?Q?S/95kA087SO26P2SaPWYc77TryNQpK8gf5VEhkUOUYAyjpmoZ7gnQaSI45K/?=
- =?us-ascii?Q?QRPqVzdfokQk7BW2oIZ+z8GSzC2wB4cVl6dcO8HpAzI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728612AbgLGC3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 21:29:10 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:52237 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726489AbgLGC3J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 21:29:09 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UHiWS7c_1607308106;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UHiWS7c_1607308106)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Dec 2020 10:28:26 +0800
+Subject: Re: [PATCH] docs/zh_CN: Improve Cinese transolation quality.
+To:     Ran Wang <gxndwr@outlook.com>, Harry Wei <harryxiyou@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <AT5PR8401MB09648490A868481BB51D7326CCF00@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <718033fa-eb9f-63b7-5285-18fac2310721@linux.alibaba.com>
+Date:   Mon, 7 Dec 2020 10:28:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c71ff6b-0600-49bb-78e5-08d89a576233
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2020 02:25:37.1943
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fLb4Ratk3MubXpNx3u0wGjtCgRXnS53FpjENsB7rmerlzaTnvt/UaCkNjxK0HxjlZkPtB1EYcXOWuTdTG+E3bQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2760
+In-Reply-To: <AT5PR8401MB09648490A868481BB51D7326CCF00@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> The newer usb_control_msg_{send|recv}() API are an improvement on the
-> existing usb_control_msg() as it ensures that a short read/write is treat=
-ed as
-> an error, data can be used off the stack, and raw usb pipes need not be c=
-reated
-> in the calling functions.
-> For this reason, instances of usb_control_msg() have been replaced with
-> usb_control_msg_{recv|send}() appropriately.
->=20
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
 
-Peter
-
+在 2020/12/5 下午6:36, Ran Wang 写道:
+> Signed-off-by: Ran Wang <gxndwr@outlook.com>
 > ---
->  drivers/usb/misc/ehset.c | 70 ++++++++++++++++++----------------------
->  1 file changed, 31 insertions(+), 39 deletions(-)
->=20
-> diff --git a/drivers/usb/misc/ehset.c b/drivers/usb/misc/ehset.c index
-> 2752e1f4f4d0..068f4fae2965 100644
-> --- a/drivers/usb/misc/ehset.c
-> +++ b/drivers/usb/misc/ehset.c
-> @@ -30,48 +30,42 @@ static int ehset_probe(struct usb_interface *intf,
->=20
->  	switch (test_pid) {
->  	case TEST_SE0_NAK_PID:
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_TEST,
-> -					(USB_TEST_SE0_NAK << 8) | portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-> +					   (USB_TEST_SE0_NAK << 8) | portnum,
-> +					   NULL, 0, 1000, GFP_KERNEL);
->  		break;
->  	case TEST_J_PID:
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_TEST,
-> -					(USB_TEST_J << 8) | portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-> +					   (USB_TEST_J << 8) | portnum, NULL, 0,
-> +					   1000, GFP_KERNEL);
->  		break;
->  	case TEST_K_PID:
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_TEST,
-> -					(USB_TEST_K << 8) | portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-> +					   (USB_TEST_K << 8) | portnum, NULL, 0,
-> +					   1000, GFP_KERNEL);
->  		break;
->  	case TEST_PACKET_PID:
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_TEST,
-> -					(USB_TEST_PACKET << 8) | portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-> +					   (USB_TEST_PACKET << 8) | portnum,
-> +					   NULL, 0, 1000, GFP_KERNEL);
->  		break;
->  	case TEST_HS_HOST_PORT_SUSPEND_RESUME:
->  		/* Test: wait for 15secs -> suspend -> 15secs delay -> resume */
->  		msleep(15 * 1000);
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_SUSPEND, portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_SUSPEND,
-> +					   portnum, NULL, 0, 1000, GFP_KERNEL);
->  		if (ret < 0)
->  			break;
->=20
->  		msleep(15 * 1000);
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_CLEAR_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_SUSPEND, portnum,
-> -					NULL, 0, 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0,
-> USB_REQ_CLEAR_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_SUSPEND,
-> +					   portnum, NULL, 0, 1000, GFP_KERNEL);
->  		break;
->  	case TEST_SINGLE_STEP_GET_DEV_DESC:
->  		/* Test: wait for 15secs -> GetDescriptor request */ @@ -80,11
-> +74,10 @@ static int ehset_probe(struct usb_interface *intf,
->  		if (!buf)
->  			return -ENOMEM;
->=20
-> -		ret =3D usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
-> -					USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
-> -					USB_DT_DEVICE << 8, 0,
-> -					buf, USB_DT_DEVICE_SIZE,
-> -					USB_CTRL_GET_TIMEOUT);
-> +		ret =3D usb_control_msg_recv(dev, 0, USB_REQ_GET_DESCRIPTOR,
-> +					   USB_DIR_IN, USB_DT_DEVICE << 8, 0,
-> +					   buf, USB_DT_DEVICE_SIZE,
-> +					   USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
->  		kfree(buf);
->  		break;
->  	case TEST_SINGLE_STEP_SET_FEATURE:
-> @@ -100,11 +93,10 @@ static int ehset_probe(struct usb_interface *intf,
->  			break;
->  		}
->=20
-> -		ret =3D usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
-> -					USB_REQ_SET_FEATURE, USB_RT_PORT,
-> -					USB_PORT_FEAT_TEST,
-> -					(6 << 8) | portnum,
-> -					NULL, 0, 60 * 1000);
-> +		ret =3D usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-> +					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-> +					   (6 << 8) | portnum, NULL, 0,
-> +					   60 * 1000, GFP_KERNEL);
->=20
->  		break;
->  	default:
-> @@ -112,7 +104,7 @@ static int ehset_probe(struct usb_interface *intf,
->  			__func__, test_pid);
->  	}
->=20
-> -	return (ret < 0) ? ret : 0;
-> +	return ret;
->  }
->=20
->  static void ehset_disconnect(struct usb_interface *intf)
-> --
-> 2.25.1
+>  .../translations/zh_CN/process/1.Intro.rst    | 61 ++++++++++---------
+>  1 file changed, 32 insertions(+), 29 deletions(-)
+> 
+> diff --git a/Documentation/translations/zh_CN/process/1.Intro.rst b/Documentation/translations/zh_CN/process/1.Intro.rst
+> index 10a15f3dc282..73feae61410c 100644
+> --- a/Documentation/translations/zh_CN/process/1.Intro.rst
+> +++ b/Documentation/translations/zh_CN/process/1.Intro.rst
+> @@ -11,33 +11,35 @@
+>  执行摘要
+>  --------
+>  
+> -本节的其余部分涵盖了内核开发过程的范围，以及开发人员及其雇主在这方面可能遇
+> -到的各种挫折。内核代码应该合并到正式的（“主线”）内核中有很多原因，包括对用
+> -户的自动可用性、多种形式的社区支持以及影响内核开发方向的能力。提供给Linux
+> -内核的代码必须在与GPL兼容的许可证下可用。
+> +本节的其余部分介绍了内核开发流程相关知识，其中包括开发者及其雇主在这方面可能遇
+> +到的各种问题。内核代码合并到官方的（“主线”）仓库会有很多好处，比如能在第一时
+> +间让用户获得更新，可以从社区得到多种形式的支持，以及能够以此影响内核未来发展方
+> +向。需要注意提供给Linux内核的代码必须是在与GPL兼容的许可证下使用。
 
+good. 
+>  
+> -:ref:`cn_development_process` 介绍了开发过程、内核发布周期和合并窗口的机制。
+> -涵盖了补丁开发、审查和合并周期中的各个阶段。有一些关于工具和邮件列表的讨论。
+> -鼓励希望开始内核开发的开发人员作为初始练习跟踪并修复bug。
+> +:ref:`cn_development_process` 介绍了内核开发流程、发布周期以及合并窗口期相关的
+> +机制。同时还讲解了补丁开发、审查和合并周期各个阶段要点。此外还包括一些关于工具
+> +和邮件列表的讨论。我们建议那些希望开始内核开发的开发者们以跟踪并修复bug作为初
+> +始练习。
+>  
+
+good.
+
+>  
+> -:ref:`cn_development_early_stage` 包括早期项目规划，重点是尽快让开发社区参与
+> +:ref:`cn_development_early_stage` 介绍项目早期的工作规划，重点是尽快让开发社区
+> +有机会参与到规划中
+>  
+> -:ref:`cn_development_coding` 是关于编码过程的；讨论了其他开发人员遇到的几个
+> -陷阱。对补丁的一些要求已经涵盖，并且介绍了一些工具，这些工具有助于确保内核
+> -补丁是正确的。
+> +:ref:`cn_development_coding` 代码编写过程相关；
+
+Maybe the original word is more fluency? 
+
+> 讨论了一些其他开发者曾经走入到
+> +的误区。并介绍社区对补丁的要求，同时指导如何通过使用一些工具来帮助确保内核补
+> +丁的质量。
+
+ok.
+
+>  
+> -:ref:`cn_development_posting` 讨论发布补丁以供评审的过程。为了让开发社区
+> -认真对待，补丁必须正确格式化和描述，并且必须发送到正确的地方。遵循本节中的
+> -建议有助于确保为您的工作提供最好的接纳。
+> +:ref:`cn_development_posting` 介绍发布补丁以供评审的流程。补丁只有在符合特定的
+> +格式及正确描述，并且发送到正确的地方，开发社区才有可能对其认真审查。遵循本节中
+> +的建议有助于确保为您的工作成果提供最好的接纳。
+>  
+> -:ref:`cn_development_followthrough` 介绍了发布补丁之后发生的事情；该工作
+> -在这一点上还远远没有完成。与审阅者一起工作是开发过程中的一个重要部分；本节
+> -提供了一些关于如何在这个重要阶段避免问题的提示。当补丁被合并到主线中时，
+> -开发人员要注意不要假定任务已经完成。
+> +:ref:`cn_development_followthrough` 介绍了提交补丁之后发生的事情；至此工作实际
+
+is it bybond 80 chars?
+
+> +上还远未完成。与审阅者一起合作是开发过程中的重要部分；本节提供了一些关于如何在
+> +这个重要阶段避免出现问题的提示。此外，即使当补丁已经被合并到主线中，开发者也不
+> +能认为任务就此完成。
+>  
+>  :ref:`cn_development_advancedtopics` 介绍了两个“高级”主题：
+> -使用Git管理补丁和查看其他人发布的补丁。
+> +使用Git管理补丁和查看其他人提交的补丁。
+
+Any different of above lines?
+>  
+>  :ref:`cn_development_conclusion` 总结了有关内核开发的更多信息，附带有带有
+>  指向资源的链接.
+> @@ -62,19 +64,20 @@ Linux最引人注目的特性之一是这些开发人员可以访问它；任何
+>  内核开发周期可以涉及1000多个开发人员，他们为100多个不同的公司
+>  （或者根本没有公司）工作。
+>  
+> -与内核开发社区合作并不是特别困难。但是，尽管如此，许多潜在的贡献者在尝试做
+> -内核工作时遇到了困难。内核社区已经发展了自己独特的操作方式，使其能够在每天
+> -都要更改数千行代码的环境中顺利运行（并生成高质量的产品）。因此，Linux内核开发
+> +与内核开发社区合作并不是特别困难。但是，尽管如此，许多潜在的贡献者在尝试参与
+> +内核开发时遇到了困难。内核社区已经发展了自己独特的开发流程，使其能够在每天
+> +都要更改数千行代码的环境中顺利运转（并生成高质量的产品）。因此，Linux内核开发
+>  过程与专有的开发方法有很大的不同也就不足为奇了。
+good.
+
+>  
+> -对于新开发人员来说，内核的开发过程可能会让人感到奇怪和恐惧，但这个背后有充分的
+> -理由和坚实的经验。一个不了解内核社区的方式的开发人员（或者更糟的是，他们试图
+> -抛弃或规避内核社区的方式）会有一个令人沮丧的体验。开发社区, 在帮助那些试图学习
+> -的人的同时，没有时间帮助那些不愿意倾听或不关心开发过程的人。
+> +对于新开发者来说，内核的开发流程可能会让人感到陌生和望而生畏，但这个背后其实
+> +是有充分的理由和坚实的实际经验作支撑。一个不了解内核社区工作方式的开发者（或
+> +者更糟的是，如果他们试图抛弃或规避内核社区的方式）将会有一个令人沮丧的体验。
+> +毕竟开发社区在帮助那些试图学习的人的同时，没有时间帮助那些不愿意倾听或不关心
+> +开发流程的人。
+
+good.
+
+>  
+> -希望阅读本文的人能够避免这种令人沮丧的经历。这里有很多材料，但阅读时所做的
+> -努力会在短时间内得到回报。开发社区总是需要能让内核变更好的开发人员；下面的
+> -文本应该帮助您或为您工作的人员加入我们的社区。
+> +希望大家能通过阅读本文来避免那些令人沮丧的经历。这里有很多材料，请相信阅读这
+> +些所付出的努力将会在短时间内得到回报。开发社区总是需要那些能让内核变更好的
+> +开发者；下面的文章应当能帮助您或为您工作的人加入我们的社区。
+
+good.
+>  
+>  致谢
+>  ----
+> 
