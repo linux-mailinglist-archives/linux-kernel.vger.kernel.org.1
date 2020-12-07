@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3866E2D1331
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208D62D1333
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgLGOLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S1726618AbgLGOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgLGOLM (ORCPT
+        with ESMTP id S1726459AbgLGOLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:11:12 -0500
+        Mon, 7 Dec 2020 09:11:14 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D25CC061A52
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:10:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F22C061A55
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:10:09 -0800 (PST)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kmHCx-0003cR-Bg; Mon, 07 Dec 2020 15:09:43 +0100
+        id 1kmHCx-0003cS-Bi; Mon, 07 Dec 2020 15:09:43 +0100
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kmHCv-0008AM-0u; Mon, 07 Dec 2020 15:09:41 +0100
+        id 1kmHCv-0008AX-2M; Mon, 07 Dec 2020 15:09:41 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         David Jander <david@protonic.nl>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v7 4/8] dt-bindings: vendor-prefixes: Add an entry for Plymovent
-Date:   Mon,  7 Dec 2020 15:09:35 +0100
-Message-Id: <20201207140939.31297-5-o.rempel@pengutronix.de>
+Subject: [PATCH v7 5/8] dt-bindings: arm: fsl: add Plymovent M2M board
+Date:   Mon,  7 Dec 2020 15:09:36 +0100
+Message-Id: <20201207140939.31297-6-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201207140939.31297-1-o.rempel@pengutronix.de>
 References: <20201207140939.31297-1-o.rempel@pengutronix.de>
@@ -56,27 +56,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "ply" entry for Plymovent Group BV: https://www.plymovent.com/
+Add Plymovent Group BV M2M iMX6dl based board
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 6a9be2bbbcb6..8332d50301ea 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -840,6 +840,8 @@ patternProperties:
-     description: PLDA
-   "^plx,.*":
-     description: Broadcom Corporation (formerly PLX Technology)
-+  "^ply,.*":
-+    description: Plymovent Group BV
-   "^pni,.*":
-     description: PNI Sensor Corporation
-   "^pocketbook,.*":
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 4772f64c4463..36c5a0c5ace2 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -364,6 +364,7 @@ properties:
+               - fsl,imx6dl-sabresd        # i.MX6 DualLite SABRE Smart Device Board
+               - karo,imx6dl-tx6dl         # Ka-Ro electronics TX6U Modules
+               - kontron,imx6dl-samx6i     # Kontron i.MX6 Solo SMARC Module
++              - ply,plym2m                # Plymovent M2M board
+               - poslab,imx6dl-savageboard # Poslab SavageBoard Dual
+               - prt,prtrvt                # Protonic RVT board
+               - prt,prtvt7                # Protonic VT7 board
 -- 
 2.29.2
 
