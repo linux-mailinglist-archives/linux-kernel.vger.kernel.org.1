@@ -2,242 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9698F2D15F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E192D15F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgLGQ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:28:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726250AbgLGQ2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:28:39 -0500
-Date:   Mon, 7 Dec 2020 13:28:06 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607358478;
-        bh=nRlIfzNBiMW1ZMSiw/12T5d8Qh3w8D1cmzX87CQgfhk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q3EwbrH9HQPBnFvGMEBIvCEZcO6oT5jwAi7yBeVEeUVk5KJX9wpTQtueWzl7M1TLM
-         NVq75QWCHGYkJcGwVnZgLfTBq9+EAY6a8no0Ioe5vU51D3FgtKdVS9IwYmF8i+ezQO
-         ze+bhTzqOkdfKneJdWzf1bFvREHFrDoU/e8+7jhFRiGq26cngMZU5ngkEOSnR6HX3o
-         wNiVPmuJ+N0HaLErQHGDEXt8P/OyPhD9Rxr0SMWB6PXw5FaxTEIpAfD5aChYG49pc5
-         DBFzEEnaVav1THCRHI+HHrEij2YLOF2a2qN4uQneMtJjHlPT5sQ/GkxA2jsU5z1ZPr
-         P+031wqfmTheg==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 3/3] perf tools: Allow to list events via control file
-Message-ID: <20201207162806.GE125383@kernel.org>
-References: <20201206170519.4010606-1-jolsa@kernel.org>
- <20201206170519.4010606-4-jolsa@kernel.org>
+        id S1727113AbgLGQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgLGQ3B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:29:01 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F484C061749;
+        Mon,  7 Dec 2020 08:28:21 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id x15so12752963ilq.1;
+        Mon, 07 Dec 2020 08:28:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
+        b=vRQotTdQ72iJTBqQPpmsoH+8dVTjUI576M40I4FfCXlRtAESaiSd7YPk3O83pr02ml
+         4/Y2VMY1uZOZB8ZcB5z+IsX5FdltqM1WPZYCkUMVzwEV+AGd9StHtGFKaeHlYUbQob4Y
+         hp9aptvyKZo+tvwG6NE6ORWQfju5M/BNA8l0fAuzCVOroY9EV49heOMWgV6NliaLrGlv
+         5O+zo3NkovEQ2VcQNn7cMZ3Uwz8TTce0D5aP1Ksk+Si588cX5uOwElBJtuJ4o5OnQ1oo
+         9Y0yupH3QuFLjDSvEtDFssQKJ7HRF33F7iv7RnbfnKSgHNeDUYUpljM2zO3DK+1YTaaS
+         roWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
+        b=IsNjxFUgrciSWjNl4LTugic6auNW836JUz+Gld7wg1TUL5kpf3VBJCBrDBLfgsbL9h
+         US2Bzl0IkZ/D7S793bsSOxYjzEGHTFlxJaj9bh9RWgg5ebLMZe3S2suMVCedFs75AdqB
+         FspEblqsRMRrLZGhYXiYHodzBi6uNG7G28L8KwikwvR1uqYrbw77M0a4+wEQpmPni90Y
+         ijK1h8IN7ylwnaTC4pbK4wrXZuSroKugdZMdgUlwJnV/G2E//EW4WB/ex/EkBH08i+Xz
+         O8RoRhJQG7cKztine2vZMSUbavYd7xUO5LvBbgL46cZuw53dgtyauEJ9HDUTJgInDQAf
+         HjsQ==
+X-Gm-Message-State: AOAM533dUfVNFDBFeZZeRDF8LiWehx6r/Yyz674nZ9eE8kymSPyvBOc6
+        SgrgBwaNhCq7btL54ZWEC/WwG2ckfaxGHxAdwHY=
+X-Google-Smtp-Source: ABdhPJzAPIkJv6/oiUZrILoK9k6D0gpWLBTZWT6CddYFBbvPG6eaBCYlqu8ziMMCme2b6s5WI0RSQUsOQ0bE17XczdM=
+X-Received: by 2002:a92:8587:: with SMTP id f129mr22302422ilh.251.1607358500532;
+ Mon, 07 Dec 2020 08:28:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206170519.4010606-4-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20201207123720.19111-1-lukas.bulwahn@gmail.com> <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
+In-Reply-To: <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 7 Dec 2020 17:28:15 +0100
+Message-ID: <CAKXUXMxy92jnARL-ibh1BDqSE3VvzKFMpo8YsC+40JMjFpcSHg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: propagate __user annotations properly
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Dec 06, 2020 at 06:05:19PM +0100, Jiri Olsa escreveu:
-> Adding new control event to display all evlist events.
-> 
-> The interface string for control file is 'list'. When
-> received, perf will scan and print current evlist into
-> perf record terminal.
-> 
-> Example session:
-> 
->   terminal 1:
->     # mkfifo control ack perf.pipe
->     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
->     Events disabled
-> 
->   terminal 2:
->     # echo list > control
-> 
->   terminal 1:
->     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
->     ...
->     sched:sched_kthread_stop
->     sched:sched_kthread_stop_ret
->     sched:sched_waking
->     sched:sched_wakeup
->     sched:sched_wakeup_new
->     sched:sched_switch
->     sched:sched_migrate_task
->     sched:sched_process_free
->     sched:sched_process_exit
->     sched:sched_wait_task
->     sched:sched_process_wait
->     sched:sched_process_fork
->     sched:sched_process_exec
->     sched:sched_stat_wait
->     sched:sched_stat_sleep
->     sched:sched_stat_iowait
->     sched:sched_stat_blocked
->     sched:sched_stat_runtime
->     sched:sched_pi_setprio
->     sched:sched_move_numa
->     sched:sched_stick_numa
->     sched:sched_swap_numa
->     sched:sched_wake_idle_without_ipi
->     dummy:HG
-> 
-> This new command is handy to get real event names when
-> wildcards are used.
+On Mon, Dec 7, 2020 at 5:12 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/7/20 4:37 AM, Lukas Bulwahn wrote:
+> > __htab_map_lookup_and_delete_batch() stores a user pointer in the local
+> > variable ubatch and uses that in copy_{from,to}_user(), but ubatch misses a
+> > __user annotation.
+> >
+> > So, sparse warns in the various assignments and uses of ubatch:
+> >
+> >    kernel/bpf/hashtab.c:1415:24: warning: incorrect type in initializer
+> >      (different address spaces)
+> >    kernel/bpf/hashtab.c:1415:24:    expected void *ubatch
+> >    kernel/bpf/hashtab.c:1415:24:    got void [noderef] __user *
+> >
+> >    kernel/bpf/hashtab.c:1444:46: warning: incorrect type in argument 2
+> >      (different address spaces)
+> >    kernel/bpf/hashtab.c:1444:46:    expected void const [noderef] __user *from
+> >    kernel/bpf/hashtab.c:1444:46:    got void *ubatch
+> >
+> >    kernel/bpf/hashtab.c:1608:16: warning: incorrect type in assignment
+> >      (different address spaces)
+> >    kernel/bpf/hashtab.c:1608:16:    expected void *ubatch
+> >    kernel/bpf/hashtab.c:1608:16:    got void [noderef] __user *
+> >
+> >    kernel/bpf/hashtab.c:1609:26: warning: incorrect type in argument 1
+> >      (different address spaces)
+> >    kernel/bpf/hashtab.c:1609:26:    expected void [noderef] __user *to
+> >    kernel/bpf/hashtab.c:1609:26:    got void *ubatch
+> >
+> > Add the __user annotation to repair this chain of propagating __user
+> > annotations in __htab_map_lookup_and_delete_batch().
+>
+> Add fix tag?
+>
+> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
+>
 
-Ok, would be nice to have a verbose mode like:
+Fixes tag can be added by the maintainers when they pick it, but I
+personally am not a fan of adding a Fixes tag for such a minor fix
+here.
 
-[acme@five ~]$ sudo ~acme/bin/perf record -e 'sched:*' sleep 0.001
-[ perf record: Woken up 14 times to write data ]
-[ perf record: Captured and wrote 0.023 MB perf.data (16 samples) ]
-[acme@five ~]$ sudo ~acme/bin/perf evlist
-sched:sched_kthread_stop
-sched:sched_kthread_stop_ret
-sched:sched_waking
-sched:sched_wakeup
-sched:sched_wakeup_new
-sched:sched_switch
-sched:sched_migrate_task
-sched:sched_process_free
-sched:sched_process_exit
-sched:sched_wait_task
-sched:sched_process_wait
-sched:sched_process_fork
-sched:sched_process_exec
-sched:sched_stat_wait
-sched:sched_stat_sleep
-sched:sched_stat_iowait
-sched:sched_stat_blocked
-sched:sched_stat_runtime
-sched:sched_pi_setprio
-sched:sched_move_numa
-sched:sched_stick_numa
-sched:sched_swap_numa
-sched:sched_wake_idle_without_ipi
-# Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
-[acme@five ~]$ sudo ~acme/bin/perf evlist -v
-sched:sched_kthread_stop: type: 2, size: 120, config: 0x13f, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-sched:sched_kthread_stop_ret: type: 2, size: 120, config: 0x13e, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_waking: type: 2, size: 120, config: 0x13d, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_wakeup: type: 2, size: 120, config: 0x13c, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_wakeup_new: type: 2, size: 120, config: 0x13b, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_switch: type: 2, size: 120, config: 0x13a, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_migrate_task: type: 2, size: 120, config: 0x139, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_process_free: type: 2, size: 120, config: 0x138, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_process_exit: type: 2, size: 120, config: 0x137, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_wait_task: type: 2, size: 120, config: 0x136, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_process_wait: type: 2, size: 120, config: 0x135, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_process_fork: type: 2, size: 120, config: 0x134, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_process_exec: type: 2, size: 120, config: 0x133, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stat_wait: type: 2, size: 120, config: 0x132, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stat_sleep: type: 2, size: 120, config: 0x131, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stat_iowait: type: 2, size: 120, config: 0x130, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stat_blocked: type: 2, size: 120, config: 0x12f, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stat_runtime: type: 2, size: 120, config: 0x12e, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_pi_setprio: type: 2, size: 120, config: 0x12d, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_move_numa: type: 2, size: 120, config: 0x12c, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_stick_numa: type: 2, size: 120, config: 0x12b, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_swap_numa: type: 2, size: 120, config: 0x12a, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-sched:sched_wake_idle_without_ipi: type: 2, size: 120, config: 0x129, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|ID|CPU|PERIOD|RAW, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-# Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
-[acme@five ~]$
+It is purely a syntactic change and change for the sparse semantic
+parser, but it really does not need to be backported and nothing
+observable in the binary was broken.
 
-Also I think we should use 'evlist' instead of 'list', to be consistent.
+That is my rationale for not adding a Fixes: tag here. It is your final call.
 
-Applied 1/3 and 2/3.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+>
+> Thanks for the fix. LGTM. I guess either bpf or bpf-next tree is fine
+> since this is not a correctness issue.
+>
 
-- Arnaldo
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/builtin-record.c | 1 +
->  tools/perf/builtin-stat.c   | 1 +
->  tools/perf/util/evlist.c    | 6 ++++++
->  tools/perf/util/evlist.h    | 2 ++
->  4 files changed, 10 insertions(+)
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 582b8fba012c..f620ed056c89 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1951,6 +1951,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->  			case EVLIST_CTL_CMD_UNSUPPORTED:
->  			case EVLIST_CTL_CMD_ENABLE_EVSEL:
->  			case EVLIST_CTL_CMD_DISABLE_EVSEL:
-> +			case EVLIST_CTL_CMD_LIST:
->  			default:
->  				break;
->  			}
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 6a21fb665008..56f2206b5991 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -592,6 +592,7 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
->  		case EVLIST_CTL_CMD_UNSUPPORTED:
->  		case EVLIST_CTL_CMD_ENABLE_EVSEL:
->  		case EVLIST_CTL_CMD_DISABLE_EVSEL:
-> +		case EVLIST_CTL_CMD_LIST:
->  		default:
->  			break;
->  		}
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 05723227bebf..c05476ca2ff4 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -1931,6 +1931,9 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
->  				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
->  			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
->  			pr_debug("is snapshot\n");
-> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_LIST_TAG,
-> +				    (sizeof(EVLIST_CTL_CMD_LIST_TAG)-1))) {
-> +			*cmd = EVLIST_CTL_CMD_LIST;
->  		}
->  	}
->  
-> @@ -1995,6 +1998,9 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
->  					pr_info("failed: can't find %s event\n", evsel_name);
->  				}
->  				break;
-> +			case EVLIST_CTL_CMD_LIST:
-> +				evlist__for_each_entry(evlist, evsel)
-> +					pr_info("%s\n", evsel__name(evsel));
->  			case EVLIST_CTL_CMD_SNAPSHOT:
->  				break;
->  			case EVLIST_CTL_CMD_ACK:
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index e4e8ff8831a3..6b8a9918fdb2 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -332,6 +332,7 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
->  #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
->  #define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
->  #define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
-> +#define EVLIST_CTL_CMD_LIST_TAG "list"
->  
->  #define EVLIST_CTL_CMD_MAX_LEN 64
->  
-> @@ -343,6 +344,7 @@ enum evlist_ctl_cmd {
->  	EVLIST_CTL_CMD_DISABLE_EVSEL,
->  	EVLIST_CTL_CMD_ACK,
->  	EVLIST_CTL_CMD_SNAPSHOT,
-> +	EVLIST_CTL_CMD_LIST,
->  };
->  
->  int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
-> -- 
-> 2.26.2
-> 
+Agree, and it is no functional change, nor a change in the object
+code. So risks of regressions are very, very low (zero).
 
--- 
+Thanks for the review,
 
-- Arnaldo
+Lukas
