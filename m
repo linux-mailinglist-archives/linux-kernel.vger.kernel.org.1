@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63072D1A38
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472772D1A3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgLGUFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgLGUFT (ORCPT
+        id S1726171AbgLGUGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:06:44 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34149 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgLGUGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:05:19 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9502C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:04:38 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id d17so21284077ejy.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:04:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=1fLpHyStJBLv4aqDCL/7SVHpDLwiRrQzoRyrVsNBNNw=;
-        b=jNsLsfeV2FkguEwqHIJLI4rYmYRF1wgUtiYqQqIWfatqST5/EFGHOcLs+JlHGF1sLJ
-         4JBP6HOQLZw7L8sCJYntHm+guWJwv5ev6HKQvgfw8ahmy27wZXtrUH6qjosvnA/oRqih
-         CWOov84H1+Ujj81/cwqrSte8yOSjXq5VxD3ts=
+        Mon, 7 Dec 2020 15:06:44 -0500
+Received: by mail-io1-f72.google.com with SMTP id r16so12811262ioa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:06:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=1fLpHyStJBLv4aqDCL/7SVHpDLwiRrQzoRyrVsNBNNw=;
-        b=r72p44evR422mZ+XHb86u4cqmx5djWlfuPHH0clBpu+AeshCkNoKMGncFzxTgdFiSj
-         VN9frW3jIaMd5ZCEEDAqigYZArbpX6/r2Uc4g1F8TbzfQKcO+EAGcCsQcr6TBlEFY5W7
-         W6+ph8R4xHCtFfkCeqHNFidrvvD+mCGffqGzCi9K7KqVAWbmmkbibnjn2y2naI+JHjSM
-         FEUVwth4vTTCtTV+9cH07Ceyp6Hh6oCX/spWe7qywpFwqkEcp3q/2RApTHZe6UjzgOSI
-         IN2p3J3REWcvHXoORSzjHIQnPVnv1zydZaGpHQE9FF26h0dzX6UMne6qbP4Vj+os/uCj
-         fTDA==
-X-Gm-Message-State: AOAM532dhCSgKGq9Nf7DI/5+WynF1wzSLjZQT8dd2MKIHNs7WO6X0ppY
-        fzemcUIA+r3a4XpCrMdNzwgl/w==
-X-Google-Smtp-Source: ABdhPJzC2Cp/8Sf+L1ff7VBAIICLIXnXpNa/LfTinUDha9V4CAAhbm1VDVmv3BRLiyb0CFIZG9yfDw==
-X-Received: by 2002:a17:907:20a4:: with SMTP id pw4mr20120451ejb.499.1607371477671;
-        Mon, 07 Dec 2020 12:04:37 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id e10sm13809540ejl.70.2020.12.07.12.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 12:04:37 -0800 (PST)
-Message-ID: <aeeb146ca7b4194e23e99fc3cd0fa0dcdc951651.camel@chromium.org>
-Subject: Re: [PATCH bpf-next] bpf: Only call sock_from_file with CONFIG_NET
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, rdunlap@infradead.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 07 Dec 2020 21:04:36 +0100
-In-Reply-To: <20201207195539.609787-1-revest@chromium.org>
-References: <20201207195539.609787-1-revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=f91Cn9JrjQvLKYOBpSApGIvFk2qNoHy/Rwzqofllw7c=;
+        b=iw8irQ1GUHgnXVN3WbEZsDjFSIPv2lgXPtfeEw1BCr5g+bnYkAcX+ADSo7nVxR9alV
+         FPqIMzKOPkQ1KD4yl7Z1bDbupfDu8f46znmjOuwvojbir1RMuyvxAUdgMmXJosXvu+R/
+         Qdq5qqsmXlH6hQMcq0nYJljjZxFzUQEy+48pbduEsl/nhY6Q8cpTuAa/4hHFbQjxF5B4
+         T7sACQmvCg5CGeY93zd+eVS8zb6g78XyanmjBUaQKPM2mZlyg+8Wzmwtx8ZTfNVZBPv3
+         3HIkL/B/w92xemW4w6hZvXsjSg7HzHPmHHYFSkhtvmQe5qvjN2xGpVczeRzuQAUgpY8Z
+         NJUg==
+X-Gm-Message-State: AOAM5311y8uZXKp8UuPh+2/QBc3quxR8kVis4dYmCLxeBkuesttZwLBi
+        9QTLGyXgI7BNtN8XfhUWFh4aI9CPJuFeOyEpewJK0K2JMeqv
+X-Google-Smtp-Source: ABdhPJyC6SF3czRBHkW4WdJ75PP3mMjjj8Q5VVBEpf059Kgwd3BbGABo0E0O6VkZWmJEU+fuGvmA86O2Z28ozOmG75cjRlZ5noxa
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:4ec4:: with SMTP id r187mr23352536jaa.65.1607371563715;
+ Mon, 07 Dec 2020 12:06:03 -0800 (PST)
+Date:   Mon, 07 Dec 2020 12:06:03 -0800
+In-Reply-To: <0000000000009caba805a9c7b840@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000013d25705b5e55be6@google.com>
+Subject: Re: INFO: rcu detected stall in __se_sys_mount
+From:   syzbot <syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, fweisbec@gmail.com,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 20:55 +0100, Florent Revest wrote:
-> This avoids
->   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
->   bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
-> When compiling a kernel with BPF and without NET.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  kernel/trace/bpf_trace.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 0cf0a6331482..877123bae71f 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1272,7 +1272,11 @@ const struct bpf_func_proto
-> bpf_snprintf_btf_proto = {
->  
->  BPF_CALL_1(bpf_sock_from_file, struct file *, file)
->  {
-> +#ifdef CONFIG_NET
->  	return (unsigned long) sock_from_file(file);
-> +#else
-> +	return NULL;
+syzbot suspects this issue was fixed by commit:
 
-Ugh, and of course I messed up my fix... :) Now this causes a:
+commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Oct 16 12:21:14 2020 +0000
 
-./include/linux/stddef.h:8:14: warning: returning ‘void *’ from a
-function with return type ‘u64’ {aka ‘long long unsigned int’} makes
-integer from pointer without a cast [-Wint-conversion]
-    8 | #define NULL ((void *)0)
-      |              ^
-kernel/trace/bpf_trace.c:1278:9: note: in expansion of macro ‘NULL’
- 1278 |  return NULL;
+    afs: Fix cell removal
 
-So I'm sending a v2!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=162cebcf500000
+start commit:   c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=3f2db34df769d77edf8c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11df5d4f900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157851e0500000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: afs: Fix cell removal
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
