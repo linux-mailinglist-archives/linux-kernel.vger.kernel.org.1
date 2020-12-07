@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F44D2D0FBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2772D0FBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgLGLwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:52:38 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54117 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgLGLwi (ORCPT
+        id S1727007AbgLGLxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726935AbgLGLxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:52:38 -0500
-Received: by mail-wm1-f67.google.com with SMTP id k10so11222343wmi.3;
-        Mon, 07 Dec 2020 03:52:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cq2jFqDwIfrHoFOscYqfVgmZg47FDTLhoPP6+XAE2X8=;
-        b=cLnEBmmTvVorb3orFqYas6JyWceC4RR7/ZlQ839ETQcCGPCYl6a3aJ4tePmJHzNbj+
-         uH5PKrfaqKTVwsVqejBAbnrl9iLPzAIxpFdec/vR1cHuugitT1yp3q63RiAik72ojjbG
-         GZW2AZTm+7dgCPEeEB0htb7Nidz1yRBjw9wrk9HGgvj/+5KuxJLlYc+e7BILTpG9Qval
-         ecE1iFgtgQa0oSEm0+Hxw9fx3P4P71j3RVy3vohd/u8todu6fPmAL+HLPbBfxtqteNSq
-         BMTwBnH1gJpQrjG8tu3Z4I1qRubQ0cKPKcnqJpKShryJXQy3UR0/1wtGzhEQj/uQ9j72
-         TY3g==
-X-Gm-Message-State: AOAM532JhRUhBOyPVaHDQe/kp4LelQxBIqBF/ajEYN8JmPybh44WqO8d
-        kBR5bUz3+CLnLyOVBXTVDgs=
-X-Google-Smtp-Source: ABdhPJyggceK9kt1VON7RQM0pfXWP5R4vsXfjlVOjCpVKWVLZL7ubApXA+vTShbTcFEzdCKvK/06GQ==
-X-Received: by 2002:a1c:3c09:: with SMTP id j9mr18047135wma.180.1607341910456;
-        Mon, 07 Dec 2020 03:51:50 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y2sm14522546wrn.31.2020.12.07.03.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 03:51:49 -0800 (PST)
-Date:   Mon, 7 Dec 2020 12:51:47 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH net-next] nfc: s3fwrn5: Change irqflags
-Message-ID: <20201207115147.GA26206@kozik-lap>
-References: <20201207113827.2902-1-bongsu.jeon@samsung.com>
+        Mon, 7 Dec 2020 06:53:10 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422F9C0613D1;
+        Mon,  7 Dec 2020 03:52:30 -0800 (PST)
+Date:   Mon, 07 Dec 2020 11:52:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607341945;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7lLbg9HYQLDU0PQIwExP2M8i4aSkkQpCBM0/mqhPj/8=;
+        b=ssRC/tfT5Gz+SygLZYrYjpCOa9la/Z32YSUCSXARBC74YjSTKqtNpKEtratP7Rs7tNmLEy
+        s7t2mzwNU5XVYTvIaou8shp8lz6Ua9Pb9eeE/Gro2afpPHu6nRWTURyLkfwFmFb8IHDJ/i
+        ZEpdJDG6pfD8oThacHu+a8YKO5GegZcpJGuHW8O99PLYnZFkiu7xAL4XYj6fxV1Sjfxr4U
+        /rp/mcAflTFgL4ijIUPrtSJVwx+CAEmkBWtmjPj4VGnKJCOUO3DjgAt+AUcfaxuZHgy+ZX
+        LNp6pDumXfoPLm1fZUmnKtc2tsNYkkJ2HyQvP8MbToeMFO3xe/eo42ivHBDLzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607341945;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7lLbg9HYQLDU0PQIwExP2M8i4aSkkQpCBM0/mqhPj/8=;
+        b=Yu14CqfOgkgP1z3CYsrE5S16I4Zkx0jLpY/xUIL9h+UwAmeIqJlQQuC1vZJA0DgH5f5yGS
+        tC5HxpLt3csnKyCg==
+From:   "tip-bot2 for Qiujun Huang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/alternative: Update text_poke_bp() kernel-doc comment
+Cc:     Qiujun Huang <hqjagain@gmail.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201203145020.2441-1-hqjagain@gmail.com>
+References: <20201203145020.2441-1-hqjagain@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201207113827.2902-1-bongsu.jeon@samsung.com>
+Message-ID: <160734194487.3364.10524070332719619645.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:38:27PM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> change irqflags from IRQF_TRIGGER_HIGH to IRQF_TRIGGER_RISING for stable
-> Samsung's nfc interrupt handling.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-1. Describe in commit title/subject the change. Just a word "change irqflags" is
-   not enough.
+Commit-ID:     72ebb5ff806f9a421a2a53cdfe6c4ebbab243bd5
+Gitweb:        https://git.kernel.org/tip/72ebb5ff806f9a421a2a53cdfe6c4ebbab243bd5
+Author:        Qiujun Huang <hqjagain@gmail.com>
+AuthorDate:    Thu, 03 Dec 2020 22:50:20 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 07 Dec 2020 12:44:22 +01:00
 
-2. Describe in commit message what you are trying to fix. Before was not
-   stable? The "for stable interrupt handling" is a little bit vauge.
+x86/alternative: Update text_poke_bp() kernel-doc comment
 
-3. This is contradictory to the bindings and current DTS. I think the
-   driver should not force the specific trigger type because I could
-   imagine some configuration that the actual interrupt to the CPU is
-   routed differently.
+Update kernel-doc parameter name after
 
-   Instead, how about removing the trigger flags here and fixing the DTS
-   and bindings example?
+  c3d6324f841b ("x86/alternatives: Teach text_poke_bp() to emulate instructions")
 
-Best regards,
-Krzysztof
+changed the last parameter from @handler to @emulate.
 
-> 
-> Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> ---
->  drivers/nfc/s3fwrn5/i2c.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-> index e1bdde105f24..016f6b6df849 100644
-> --- a/drivers/nfc/s3fwrn5/i2c.c
-> +++ b/drivers/nfc/s3fwrn5/i2c.c
-> @@ -213,7 +213,7 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
->  		return ret;
->  
->  	ret = devm_request_threaded_irq(&client->dev, phy->i2c_dev->irq, NULL,
-> -		s3fwrn5_i2c_irq_thread_fn, IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> +		s3fwrn5_i2c_irq_thread_fn, IRQF_TRIGGER_RISING | IRQF_ONESHOT,
->  		S3FWRN5_I2C_DRIVER_NAME, phy);
->  	if (ret)
->  		s3fwrn5_remove(phy->common.ndev);
-> -- 
-> 2.17.1
-> 
+ [ bp: Make commit message more precise. ]
+
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201203145020.2441-1-hqjagain@gmail.com
+---
+ arch/x86/kernel/alternative.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 4adbe65..ed3efc5 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1365,7 +1365,7 @@ void __ref text_poke_queue(void *addr, const void *opcode, size_t len, const voi
+  * @addr:	address to patch
+  * @opcode:	opcode of new instruction
+  * @len:	length to copy
+- * @handler:	address to jump to when the temporary breakpoint is hit
++ * @emulate:	instruction to be emulated
+  *
+  * Update a single instruction with the vector in the stack, avoiding
+  * dynamically allocated memory. This function should be used when it is
