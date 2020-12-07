@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8276A2D1DD8
+	by mail.lfdr.de (Postfix) with ESMTP id EF0652D1DD9
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgLGW5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgLGW5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:57:31 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400CCC061749;
-        Mon,  7 Dec 2020 14:56:45 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id x16so21890442ejj.7;
-        Mon, 07 Dec 2020 14:56:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zU+qQFKdWZjfJ+RDJwbypYwf59sZH0V4V5cKayroUxc=;
-        b=GxaNnbN1FkZTq/Z/73I9lRXWVFnW+6/gYBwPv2syEcdn6WlBBHVR+AoBOIqSLbeYPT
-         +3n43Y0mYeHstt4QuLC17iH5/nAo1GLGnZHD4+kG06HCKc8jdhIJ3dW4i1J3IzUq3Hx0
-         H5z6Iz9fOwFuuqdePTZfasYetoplTN8ewySisDAHccgaIQJF01ewkzMboZkOjswUrM+U
-         vMyoXve7MHdZ11Zk+tVhTwkgNPLbFt+Bi4xm4uEcuKppvmL/xxlgNbVWB5k8Aj1lGtBz
-         rCp5rdSTqXI3ZZuNExxDccnQgyTBP8+w51niWEsrdbQiqg7Mv5iH/c0RmvQPxVa2vvAy
-         b8gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zU+qQFKdWZjfJ+RDJwbypYwf59sZH0V4V5cKayroUxc=;
-        b=lHMp6I2htYDU+FRlmlb+S+ollIySY4rU9F7N7oiNvRP4WolOCU07uGzp+HbNawUVNI
-         HeBb9xxstB3MhFgLqTOkEtPtIQDT8YGbCdcZHylfhhjbwMPou/rMX/CjphrY4JYd6Pjh
-         QamOeywnKcA+5DXAeYD2Pgrt2ShTojmqw0+WSqx6/t7aDz6lqHVcYg8BbPLKvR0wFpaO
-         Uqd4ch0xpKk9q039ONFf3uRn5zB6ouDNfwqLqMnhCcx4z0FGNDRCvNRokTj0EOA4SE9z
-         kd2Ygd5he331A6WY+dvMwYE/KfXrPWt3xst4qZY+QZJWnQWId8/8PMU1oph6jmPF9x3b
-         P4mQ==
-X-Gm-Message-State: AOAM531zxuUDriOUmc+8/2APCdMZswNZLUVU9gYQxLyiixxv31CSaNMZ
-        /5xCfuuAT69mBziL7qn4xKE=
-X-Google-Smtp-Source: ABdhPJyU2elBWQBkZCA9xFi5xpiulFFA1qg9UPLdyBp0aoKvHW1JQnwNR7C0cdx3gNqJgZBYGnBRBg==
-X-Received: by 2002:a17:906:c007:: with SMTP id e7mr20495234ejz.511.1607381804031;
-        Mon, 07 Dec 2020 14:56:44 -0800 (PST)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id ca4sm9115038edb.80.2020.12.07.14.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 14:56:43 -0800 (PST)
-Date:   Tue, 8 Dec 2020 00:56:47 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
- for Actions Semi S500 SoC
-Message-ID: <20201207225647.GC250758@ubuntu2004>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201207221107.GA927276@robh.at.kernel.org>
+        id S1727877AbgLGW5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:57:49 -0500
+Received: from mga18.intel.com ([134.134.136.126]:54197 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727787AbgLGW5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:57:49 -0500
+IronPort-SDR: 7zKLOhtyxhEYBUi48Qi1kkQvaizdQ+yFxqtrVFibpjueHWK2wEpgQBfUl1Yu3Sy3rjyE7ld1tp
+ 7zazYKAIAFbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="161561964"
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="161561964"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:57:08 -0800
+IronPort-SDR: zrK7N13f0547j6HUqKFTrPIBK5St3oJ2fDzMKbb6+BPw0XKG8JNCxz/onBIap5+rFNlbzyL0gG
+ Rc4ZzAHEnpoQ==
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="407363009"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:57:06 -0800
+From:   ira.weiny@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH V2 0/2] Lift memcpy_[to|from]_page to core
+Date:   Mon,  7 Dec 2020 14:57:01 -0800
+Message-Id: <20201207225703.2033611-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207221107.GA927276@robh.at.kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 04:11:07PM -0600, Rob Herring wrote:
-> On Fri, 20 Nov 2020 01:55:58 +0200, Cristian Ciocaltea wrote:
-> > Add a new compatible string corresponding to the DMA controller found
-> > in the S500 variant of the Actions Semi Owl SoCs family.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+From: Ira Weiny <ira.weiny@intel.com>
 
-Thanks for reviewing,
-Cristi
+These are based on tip/core/mm.  As I was looking at converting the calls to
+kmap_local_page() I realized that there were a number of calls in highmem.h
+which should also be converted.
+
+So I've added a second prelim patch to convert those.
+
+This is a V2 to get into 5.11 so that we can start to convert all the various
+subsystems in 5.12.[1]
+
+I'm sending to Andrew and Thomas but I'm expecting these to go through
+tip/core/mm via Thomas if that is ok with Andrew.
+
+[1] https://lore.kernel.org/lkml/20201204160504.GH1563847@iweiny-DESK2.sc.intel.com/
+
+Ira Weiny (2):
+  mm/highmem: Remove deprecated kmap_atomic
+  mm/highmem: Lift memcpy_[to|from]_page to core
+
+ include/linux/highmem.h | 28 +++++++++++++-------------
+ include/linux/pagemap.h | 44 +++++++++++++++++++++++++++++++++++++++++
+ lib/iov_iter.c          | 26 +++---------------------
+ 3 files changed, 61 insertions(+), 37 deletions(-)
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
