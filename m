@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9342D1A90
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600622D1A93
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgLGUdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGUdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:33:00 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36E7C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:32:19 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqZjq5r7Zz9sVl;
-        Tue,  8 Dec 2020 07:32:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607373136;
-        bh=n413a+GrSbv/wBxEwbRE4qtzByHdg5UJm8RGITccl9c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LTXsnBTcOg7xPYAJJKmwSSc4FbANtxJRsnww8jcCHER7Lmlaxohf/PyMywpYEUa6a
-         tC2zZwg6pvo7XbrAkGXF510/lU/4cfoWGS7sgSSnXiaWSWm/+61znM3mnQXXRZezYx
-         tTXjk6dBDURTEY67AinGArRV1P1gRxEGO/WhrIpsoB2BfEFQtaJ7qgeQvDcchTA2UO
-         Lrg5HamaHUSpSO+/bqPnVUeJYIb9Kq7anYoK8r+9wh26DpsHJMq1CNNZ9FlUJluLWe
-         oPVnZuEFCNu0UyReILFrGZFjJvP6uVLS5hwPlGxLLmUz1XwpeI0pzOdsPUS0y35HOi
-         TOyz9mZP4Lfbw==
-Date:   Tue, 8 Dec 2020 07:32:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marco Elver <elver@google.com>
-Cc:     Hui Su <sh_def@163.com>, Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH][next] arm64: fix the mm build error in mm/kfence/core.c
-Message-ID: <20201208073214.0d3bd2b8@canb.auug.org.au>
-In-Reply-To: <CANpmjNOWpa17L7mjhKdaFjWYfAzy12NjXUDtuPHpzm808QApRg@mail.gmail.com>
-References: <20201205172207.GA4097@rlk>
-        <20201207082300.38f5207f@canb.auug.org.au>
-        <CANpmjNPifOwd9w34dSJhsvmP2sUkKa0ESPiJ7gj+gUDffhPO3A@mail.gmail.com>
-        <CANpmjNOWpa17L7mjhKdaFjWYfAzy12NjXUDtuPHpzm808QApRg@mail.gmail.com>
+        id S1726642AbgLGUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:33:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:32982 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgLGUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:33:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32D9531B;
+        Mon,  7 Dec 2020 12:32:19 -0800 (PST)
+Received: from [10.57.61.6] (unknown [10.57.61.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A3EE3F66B;
+        Mon,  7 Dec 2020 12:32:17 -0800 (PST)
+Subject: Re: [PATCH] PCI: dwc: Set 32-bit DMA mask for MSI target address
+ allocation
+To:     Vidya Sagar <vidyas@nvidia.com>, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, robh@kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20201117165312.25847-1-vidyas@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a5d8c24b-c605-8753-b022-ab959cf52340@arm.com>
+Date:   Mon, 7 Dec 2020 20:32:16 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/AYuN9KtU3laHxkih/=Rs4i4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201117165312.25847-1-vidyas@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/AYuN9KtU3laHxkih/=Rs4i4
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 2020-11-17 16:53, Vidya Sagar wrote:
+> Set DMA mask to 32-bit while allocating the MSI target address so that
+> the address is usable for both 32-bit and 64-bit MSI capable devices.
+> Throw a warning if it fails to set the mask to 32-bit to alert that
+> devices that are only 32-bit MSI capable may not work properly.
 
-Hi Marco,
+This is slightly wacky, but no more so than the rest of the not-DMA 
+shenanigans here... Ultimately it probably is the least-worst way to 
+avoid the issue, so in terms of functionality,
 
-On Mon, 7 Dec 2020 15:52:07 +0100 Marco Elver <elver@google.com> wrote:
->
-> On Sun, 6 Dec 2020 at 23:08, Marco Elver <elver@google.com> wrote:
-> > On Sun, 6 Dec 2020 at 22:23, Stephen Rothwell <sfr@canb.auug.org.au> wr=
-ote: =20
-> [...]
-> > > > ../arch/arm64/include/asm/kfence.h:12:2: error: implicit declaratio=
-n of
-> > > > function =E2=80=98set_memory_valid=E2=80=99 [-Werror=3Dimplicit-fun=
-ction-declaration]
-> > > >    12 |  set_memory_valid(addr, 1, !protect);
-> > > >       |  ^~~~~~~~~~~~~~~~
-> > > > cc1: some warnings being treated as errors
-> > > >
-> > > > which introduced by commit d54febeba2ff ("kfence: use pt_regs to
-> > > > generate stack trace on faults").
-> > > >
-> > > > Signed-off-by: Hui Su <sh_def@163.com>
-> > > > ---
-> > > >  arch/arm64/include/asm/kfence.h | 1 +
-> > > >  1 file changed, 1 insertion(+) =20
-> >
-> > Thanks, but a patch for this is already in the -mm tree:
-> > https://lore.kernel.org/mm-commits/20201205011409.o9PNsRntR%25akpm@linu=
-x-foundation.org/
-> >
-> > Perhaps try the latest -next? =20
->=20
-> Although I notice that patch somehow was dropped from -mm, or maybe
-> I'm not looking hard enough?
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-It may just be that Andrew has not published that version of his patch
-series yet.
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> Given the other patch that I've pushed to the MSI sub-system
+> http://patchwork.ozlabs.org/project/linux-pci/patch/20201117145728.4516-1-vidyas@nvidia.com/
+> which is going to catch any mismatch between MSI capability (32-bit) of the
+> device and system's inability to allocate the required MSI target address,
+> I'm not sure how much sense is this patch going to be make. But, I can
+> certainly say that if the memory allocation mechanism gives the addresses
+> from 64-bit pool by default, this patch at least makes sure that MSI target
+> address is allocated from 32-bit pool.
 
---=20
-Cheers,
-Stephen Rothwell
+Note that this doesn't change where anything is allocated as such, it 
+just means that on systems with most of their RAM above 4GB, those few 
+bytes of private data that you map "for free" will be copied into the 
+SWIOTLB buffer and hog 2KB of its typical 64MB capacity effectively for 
+ever.
 
---Sig_/AYuN9KtU3laHxkih/=Rs4i4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+>   drivers/pci/controller/dwc/pcie-designware-host.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 44c2a6572199..e6a230eddf66 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -388,6 +388,14 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>   							    dw_chained_msi_isr,
+>   							    pp);
+>   
+> +			ret = dma_set_mask(pci->dev, DMA_BIT_MASK(32));
+> +			if (!ret) {
+> +				dev_warn(pci->dev,
+> +					 "Failed to set DMA mask to 32-bit. "
+> +					 "Devices with only 32-bit MSI support"
+> +					 " may not work properly\n");
+> +			}
 
------BEGIN PGP SIGNATURE-----
+Ironically, the only real reason for that dma_set_mask() to ever fail is 
+if the system had no 32-bit addressable memory, in which case you could 
+likely pick any 32-bit doorbell address with impunity, just not via this 
+mechanism (although whether it would be worthwhile is another matter).
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/OkU4ACgkQAVBC80lX
-0Gyi3Qf9EAIRGmzw7JNoFMsxGgSgM/wt/AesXfcetRvVOlWlihucsthsrlcVTU4M
-Ny6DJxPi6twetta8iZ8CAmdBvJRAxd8Y2vbuPzMlu/n6U6u+YQra071LZHCCXvgy
-JnWCRY3QKLuarPVNnhMk15/uU0zlWjzIzsM03/nnaAYKR8aFrGmA9jnaFTrcuRDI
-PO6hZPuvYjHnq7Iom2PktTI+PZAjQY6+AD5/Xn26UZusIqEFSrc8qQkaBwTu0T51
-9fhQ6VqC27jjDRQE1fCHMOGN17embwbe6lIKd0ZbCVENxZCtW0dP/UvZwLe6Vvt2
-aDen7EShSvZwQU090dFd5o9LBhetag==
-=JBfN
------END PGP SIGNATURE-----
+Robin.
 
---Sig_/AYuN9KtU3laHxkih/=Rs4i4--
+> +
+>   			pp->msi_data = dma_map_single_attrs(pci->dev, &pp->msi_msg,
+>   						      sizeof(pp->msi_msg),
+>   						      DMA_FROM_DEVICE,
+> 
