@@ -2,108 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E312D1160
+	by mail.lfdr.de (Postfix) with ESMTP id DCAB42D1162
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgLGNHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgLGNHP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:07:15 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4BCC0613D0;
-        Mon,  7 Dec 2020 05:06:29 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id t9so7753316ilf.2;
-        Mon, 07 Dec 2020 05:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TCtv0YByR+6RlAU/Nc+PNAffJQIiNShejB5wWTuZSQQ=;
-        b=LqLYEcLWn0hEGhKOOXyejkwOujrKekWleTh+XscKmgOqbV4xGqpJMVaGZu5Gna1I49
-         qTCNRxutMsvP9mbGT08seZ+JWrdJdY2t/9CxsZxaTvaLEYzYeM4QUToqP7+/GJgZ9ONF
-         ll/Z7kF7RKuvxC3Cq5Of/q47w4RehQHXlexRgZlsPiO4EQ3hyWWEtMzsbZ93zz6pTnGF
-         y847zbpst/VNzEkxINH+Lx1QKVSfJ9BDrwC4zs3Vk45/3126xC1dwWLwW3Fo/QYVYoUS
-         QeMI2KDBDlSryYzWsqsTaI+doB0nqwM0kKLifma0NXOTjeOobSYiWNFTIKCZgxwGOHYp
-         QJEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TCtv0YByR+6RlAU/Nc+PNAffJQIiNShejB5wWTuZSQQ=;
-        b=cjHpLmslXAvQCtMZk55XEChZ53BD24xEoDBJZG2N9NAZXxU1dtA4GUE+UTmX8M+Ibk
-         7VA+SbiApBk7j3d0VO3z2Pr+hHjl9GUK/Tg2S5OuMUmxsDDKMhz5uh63ZpYS7Ha2vEf3
-         fWk7bcc6+NAa0Mh/UqZV+jwHcaFfW5FiKgqJuWQj8LHtCbxCJWuRtAnEV9XMFYwtWg9E
-         Hpbs7qLR7feppPgQLzCOLILEMFnjpRuX7uz35jGhKwTFVVFFso0Ursbz8k98ipsUGkLb
-         7J53ZdnGpqA8MVw+ez2CK6smsmxRRdyazj8BbgD/uSDJA+tpN/K538Nq4RN2saY26PbX
-         SZfQ==
-X-Gm-Message-State: AOAM533bj8TajE+FRdfFO/Mb7lAjdPryyVzpID+wOjEJALTHP/0IWC4G
-        vKDjQZzf7SnprxP6+Y59+qMmKorG7v8as082l884MAmpdJ/uQw==
-X-Google-Smtp-Source: ABdhPJyOD5ZrPvmAysN1gfPHDyKxXeKJz44fxIBMA4BuEXib+EyEnwCxxbUvqQKIO191ZVxOsEFtmx4ORlNHwXTJHdE=
-X-Received: by 2002:a92:a804:: with SMTP id o4mr21737089ilh.125.1607346388641;
- Mon, 07 Dec 2020 05:06:28 -0800 (PST)
+        id S1726302AbgLGNHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:07:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725867AbgLGNHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:07:22 -0500
+Date:   Mon, 7 Dec 2020 14:06:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607346402;
+        bh=/S4wAAJphnrhh2Uzis7jKmvU2S4fC/taQwaYkyRT5MY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XVJ+QEd/YpHRqtQbJ3Y6WBR14e3iG6y2rf3HNSM/zuGGEPdnoWq8v+HflJL1piOQO
+         jzLABBTXfiteouQl8DLeiHfPdvf0lvciH/vjCZCYv2bOE+Vd8gi2HHy4jRUq5/oim6
+         SNyvBBtrn2Ar44gu9j9jeL3qPt/yhExcc0Gy+NdX++4bDqijLqQ0/lSO66iPOsS+Hj
+         mfmhX0PKy80KafSaHsmgZ8efp0cLoj6JYCCiPAhD0JuJ85zU2fUNkw6zs5i1mHd2RS
+         ZhpkbzIQyw6vq+EggbGqjMj2uNrkRZGmX7CPBvkDnHMLBHW1iTFjVcrR4CvARaKYNf
+         YLHFvN0q5ZQfQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 1/9] softirq: Add RT specific softirq accounting
+Message-ID: <20201207130639.GB122233@lothringen>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170804.765109984@linutronix.de>
 MIME-Version: 1.0
-References: <20201207123610.18246-1-lukas.bulwahn@gmail.com> <20201207130449.nbt23aholqebbvux@wittgenstein>
-In-Reply-To: <20201207130449.nbt23aholqebbvux@wittgenstein>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 7 Dec 2020 14:06:17 +0100
-Message-ID: <CAKXUXMyC163hWT-bf=Nbw3KQspYWo_oTCNBYH-Di5ky+NU190A@mail.gmail.com>
-Subject: Re: [PATCH] signal: propagate __user annotations properly
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Christian Brauner <christian@brauner.io>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Kees Cook <keescook@chromium.org>,
-        David Howells <dhowells@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Serge Hallyn <serge@hallyn.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204170804.765109984@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 2:04 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Mon, Dec 07, 2020 at 01:36:10PM +0100, Lukas Bulwahn wrote:
-> > Commit 3eb39f47934f ("signal: add pidfd_send_signal() syscall") introduced
-> > copy_siginfo_from_user_any(), but missed to add the __user annotation to
-> > the user pointer that is passed as second argument.
-> >
-> > Hence, when copy_siginfo_from_user_any() calls copy_siginfo_from_user(),
-> > sparse warns:
-> >
-> >   kernel/signal.c:3716:46: warning: incorrect type in argument 2 (different address spaces)
-> >   kernel/signal.c:3716:46:    expected struct siginfo const [noderef] [usertype] __user *from
-> >   kernel/signal.c:3716:46:    got struct siginfo [usertype] *info
-> >
-> > And when pidfd_send_signal() calls copy_siginfo_from_user_any(), sparse
-> > warns as well:
-> >
-> >   kernel/signal.c:3776:58: warning: incorrect type in argument 2 (different address spaces)
-> >   kernel/signal.c:3776:58:    expected struct siginfo [usertype] *info
-> >   kernel/signal.c:3776:58:    got struct siginfo [noderef] [usertype] __user *info
-> >
-> > Add the __user annotation to repair this chain of propagating __user
-> > annotations.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > applies cleanly on current master (v5.10-rc7) and next-20201204
-> >
-> > Christian, please pick this minor non-urgent clean-up patch.
->
-> Thanks for the patch. Unfortunately I already picked up Jann's patch who
-> sent it yesterday or this morning:
-> https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/commit/?h=pidfd
->
+On Fri, Dec 04, 2020 at 06:01:52PM +0100, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> RT requires the softirq processing and local bottomhalf disabled regions to
+> be preemptible. Using the normal preempt count based serialization is
+> therefore not possible because this implicitely disables preemption.
+> 
+> RT kernels use a per CPU local lock to serialize bottomhalfs. As
+> local_bh_disable() can nest the lock can only be acquired on the outermost
+> invocation of local_bh_disable() and released when the nest count becomes
+> zero. Tasks which hold the local lock can be preempted so its required to
+> keep track of the nest count per task.
+> 
+> Add a RT only counter to task struct and adjust the relevant macros in
+> preempt.h.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Thanks for letting me know and good to know that Jann is tracking
-those sparse warnings as well :)
-
-Lukas
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
