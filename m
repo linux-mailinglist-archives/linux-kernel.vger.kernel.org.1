@@ -2,142 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630B02D0984
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B4B2D0986
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgLGDlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728729AbgLGDlv (ORCPT
+        id S1728748AbgLGDoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:44:24 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8955 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgLGDoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:41:51 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F643C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 19:41:11 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id l23so6659584pjg.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 19:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=dxyVgq9wir+Vt+l/aYhT1fh3gohCtzVJwY55PsYwhXQ=;
-        b=cpBMuL8d3aNWORrYrc8Ke1Emtw7kNtKm8C2LV1nJSk1l0qXyaRC6gHj0Z90oGQ8J5l
-         +fRxxdoUNWAyxI9U1OJWteMN6pw7Xm3G5Kh6TNMPCsNs/05TRo1SV+xcTHsRyJs5n5XC
-         3vCIkUJfGGKjuVZm+jonCOLS4Gek9Jx804wgNj6NLsydAej90RDZIvXEMJVXcYQErRGE
-         gEV0/+Q3NgcPy1AOzCOpMS3VF8AI3tmiD3sHXOcHp7UNmC1W8tVbWl6RpfyWuXn48Prr
-         Ecp45VrFX5rIB+5nrhh9K1zP1Pq+Z64QI56tyCgHk0lOJkjteP7xS1d0Avl8gsyonE0y
-         9krg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dxyVgq9wir+Vt+l/aYhT1fh3gohCtzVJwY55PsYwhXQ=;
-        b=ZsVenYRKiMyYnf6mj0fIc0Kd/f/pE1rskWpUH8zoNwf4xdMHzJCdu/A6HEenB8tyA0
-         KWLsWUuj6CFy/KQmNeuJosKGTJJ4gVqCAIOANg9DAOAJxRoNvazN64kXeNJZVUuAaLVm
-         kTunMJ/DgJCZpKzh4yWP3kiyAUh4l2rPLhhRecwPcFSy9zGbs9oXaR1/nWFTDzjj7JJ7
-         nr2/iyqs8dOy7dk1pRt5CC6azYXqOcK18P2LTB4b4YCMiVA4JMxjqZyclJq0qv2ikiPW
-         LEe7XKD7sQEKMu9M7CjXqVTMWZD+XyjfJZCoWteNmbujbpiQCSftnwFG86hrxfXYDT/u
-         a8+A==
-X-Gm-Message-State: AOAM532KGvfmz1OjYTpBbjQD2d+JubfM8rbGuL9gJ/0IvbIjLntrBKd4
-        UbNZHG44y6uH60yJvsOXfuLzEKjDUw3cPg==
-X-Google-Smtp-Source: ABdhPJx/Oqm+T1Mhytc8big0M5Rh8llLWWixOjXO0eqEYBECBJExJ0y3EQJL9HR+O+2zqWO6n9v39Q==
-X-Received: by 2002:a17:90a:a108:: with SMTP id s8mr2704798pjp.206.1607312470088;
-        Sun, 06 Dec 2020 19:41:10 -0800 (PST)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id m4sm13485068pfd.203.2020.12.06.19.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Dec 2020 19:41:09 -0800 (PST)
-Subject: Re: [PATCH 1/1] ionic: fix array overflow on receiving too many
- fragments for a packet
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Pensando Drivers <drivers@pensando.io>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201206133537.30135-1-ruc_zhangxiaohui@163.com>
- <20201206175157.0000170d@intel.com>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <4ddd5457-3cbb-9a5b-90ef-3557452cd854@pensando.io>
-Date:   Sun, 6 Dec 2020 19:41:07 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.1
+        Sun, 6 Dec 2020 22:44:23 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cq8Kf57H0zhnbZ;
+        Mon,  7 Dec 2020 11:43:18 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 11:43:38 +0800
+Subject: Re: [PATCH 2/5] crypto: hisilicon/sec - add new type of sqe for
+ Kunpeng930
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1606357086-9785-1-git-send-email-liulongfang@huawei.com>
+ <1606357086-9785-3-git-send-email-liulongfang@huawei.com>
+ <20201204070359.GA26438@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <dd219ba4-b96d-7434-34d5-5b046f24775f@huawei.com>
+Date:   Mon, 7 Dec 2020 11:43:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20201206175157.0000170d@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20201204070359.GA26438@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/20 5:51 PM, Jesse Brandeburg wrote:
-> Xiaohui Zhang wrote:
->
->> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+
+On 2020/12/4 15:03, Herbert Xu Wrote:
+> On Thu, Nov 26, 2020 at 10:18:03AM +0800, Longfang Liu wrote:
 >>
->> If the hardware receives an oversized packet with too many rx fragments,
->> skb_shinfo(skb)->frags can overflow and corrupt memory of adjacent pages.
->> This becomes especially visible if it corrupts the freelist pointer of
->> a slab page.
->>
->> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> Hi, thanks for your patch.
->
-> It appears this is a part of a series of patches (at least this one and
-> one to the ice driver) - please send as one series, with a cover letter
-> explanation.
->
-> Please justify how this is a bug and how this is found / reproduced.
->
-> I'll respond separately to the ice driver patch as I don't know this
-> hardware and it's limits, but I suspect that you've tried to fix a bug
-> where there was none. (It seems like something a code scanner might find
-> and be confused about)
->
->> ---
->>   drivers/net/ethernet/pensando/ionic/ionic_txrx.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
->> index 169ac4f54..a3e274c65 100644
->> --- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
->> +++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
->> @@ -102,8 +102,12 @@ static struct sk_buff *ionic_rx_frags(struct ionic_queue *q,
->>   
->>   		dma_unmap_page(dev, dma_unmap_addr(page_info, dma_addr),
->>   			       PAGE_SIZE, DMA_FROM_DEVICE);
->> -		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
->> +		struct skb_shared_info *shinfo = skb_shinfo(skb);
-> you can't declare variables in the middle of a code flow in C, did you
-> compile this?
->
->> +
->> +		if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
->> +			skb_add_rx_frag(skb, shinfo->nr_frags,
->>   				page_info->page, 0, frag_len, PAGE_SIZE);
->> +		}
-
-Is this just dropping the remaining frags without dropping the rest of 
-the skb?  Is this going to leave an incorrect length in the skb?
-
-A single statement after the 'if' doesn't need {}'s
-
-This might be better handled by making sure ahead of time in 
-configuration that the HW doesn't do this, rather than add a test into 
-the fast path.  As it is, between the definitions of shinfo->frags[] and 
-the ionic's rx sg list, I don't think this is a possible error.
-
-As Jesse suggests, I'd like to see the test case so i can add it to our 
-internal testing.
-
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.h b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> index 0e933e7..712176b 100644
+>> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.h
+>> @@ -211,6 +219,167 @@ struct sec_sqe {
+>>  	struct sec_sqe_type2 type2;
+>>  };
+>>  
+>> +#pragma pack(4)
+> 
+> Please don't use pragma pack.  Instead add the attributes as
+> needed to each struct or member.
+> 
+> Cheers,
+> 
+Can I use __attribute__((aligned(n))) instead of #pragma pack(n)?
 Thanks,
-sln
-
->>   		page_info->page = NULL;
->>   		page_info++;
->>   		i--;
->
-
+Longfang.
