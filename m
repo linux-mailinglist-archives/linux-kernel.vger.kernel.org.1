@@ -2,130 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E192D15F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC782D169C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgLGQ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:29:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgLGQ3B (ORCPT
+        id S1727816AbgLGQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:40:35 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50168 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727673AbgLGQke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:29:01 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F484C061749;
-        Mon,  7 Dec 2020 08:28:21 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id x15so12752963ilq.1;
-        Mon, 07 Dec 2020 08:28:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
-        b=vRQotTdQ72iJTBqQPpmsoH+8dVTjUI576M40I4FfCXlRtAESaiSd7YPk3O83pr02ml
-         4/Y2VMY1uZOZB8ZcB5z+IsX5FdltqM1WPZYCkUMVzwEV+AGd9StHtGFKaeHlYUbQob4Y
-         hp9aptvyKZo+tvwG6NE6ORWQfju5M/BNA8l0fAuzCVOroY9EV49heOMWgV6NliaLrGlv
-         5O+zo3NkovEQ2VcQNn7cMZ3Uwz8TTce0D5aP1Ksk+Si588cX5uOwElBJtuJ4o5OnQ1oo
-         9Y0yupH3QuFLjDSvEtDFssQKJ7HRF33F7iv7RnbfnKSgHNeDUYUpljM2zO3DK+1YTaaS
-         roWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
-        b=IsNjxFUgrciSWjNl4LTugic6auNW836JUz+Gld7wg1TUL5kpf3VBJCBrDBLfgsbL9h
-         US2Bzl0IkZ/D7S793bsSOxYjzEGHTFlxJaj9bh9RWgg5ebLMZe3S2suMVCedFs75AdqB
-         FspEblqsRMRrLZGhYXiYHodzBi6uNG7G28L8KwikwvR1uqYrbw77M0a4+wEQpmPni90Y
-         ijK1h8IN7ylwnaTC4pbK4wrXZuSroKugdZMdgUlwJnV/G2E//EW4WB/ex/EkBH08i+Xz
-         O8RoRhJQG7cKztine2vZMSUbavYd7xUO5LvBbgL46cZuw53dgtyauEJ9HDUTJgInDQAf
-         HjsQ==
-X-Gm-Message-State: AOAM533dUfVNFDBFeZZeRDF8LiWehx6r/Yyz674nZ9eE8kymSPyvBOc6
-        SgrgBwaNhCq7btL54ZWEC/WwG2ckfaxGHxAdwHY=
-X-Google-Smtp-Source: ABdhPJzAPIkJv6/oiUZrILoK9k6D0gpWLBTZWT6CddYFBbvPG6eaBCYlqu8ziMMCme2b6s5WI0RSQUsOQ0bE17XczdM=
-X-Received: by 2002:a92:8587:: with SMTP id f129mr22302422ilh.251.1607358500532;
- Mon, 07 Dec 2020 08:28:20 -0800 (PST)
+        Mon, 7 Dec 2020 11:40:34 -0500
+Received: from 89-64-79-106.dynamic.chello.pl (89.64.79.106) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id db8c3b154aa71968; Mon, 7 Dec 2020 17:39:51 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: [PATCH v1 1/4] cpufreq: schedutil: Add util to struct sg_cpu
+Date:   Mon, 07 Dec 2020 17:28:25 +0100
+Message-ID: <2344038.BgO4qI7qUv@kreacher>
+In-Reply-To: <20360841.iInq7taT2Z@kreacher>
+References: <20360841.iInq7taT2Z@kreacher>
 MIME-Version: 1.0
-References: <20201207123720.19111-1-lukas.bulwahn@gmail.com> <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
-In-Reply-To: <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 7 Dec 2020 17:28:15 +0100
-Message-ID: <CAKXUXMxy92jnARL-ibh1BDqSE3VvzKFMpo8YsC+40JMjFpcSHg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: propagate __user annotations properly
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 5:12 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/7/20 4:37 AM, Lukas Bulwahn wrote:
-> > __htab_map_lookup_and_delete_batch() stores a user pointer in the local
-> > variable ubatch and uses that in copy_{from,to}_user(), but ubatch misses a
-> > __user annotation.
-> >
-> > So, sparse warns in the various assignments and uses of ubatch:
-> >
-> >    kernel/bpf/hashtab.c:1415:24: warning: incorrect type in initializer
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1415:24:    expected void *ubatch
-> >    kernel/bpf/hashtab.c:1415:24:    got void [noderef] __user *
-> >
-> >    kernel/bpf/hashtab.c:1444:46: warning: incorrect type in argument 2
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1444:46:    expected void const [noderef] __user *from
-> >    kernel/bpf/hashtab.c:1444:46:    got void *ubatch
-> >
-> >    kernel/bpf/hashtab.c:1608:16: warning: incorrect type in assignment
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1608:16:    expected void *ubatch
-> >    kernel/bpf/hashtab.c:1608:16:    got void [noderef] __user *
-> >
-> >    kernel/bpf/hashtab.c:1609:26: warning: incorrect type in argument 1
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1609:26:    expected void [noderef] __user *to
-> >    kernel/bpf/hashtab.c:1609:26:    got void *ubatch
-> >
-> > Add the __user annotation to repair this chain of propagating __user
-> > annotations in __htab_map_lookup_and_delete_batch().
->
-> Add fix tag?
->
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
->
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Fixes tag can be added by the maintainers when they pick it, but I
-personally am not a fan of adding a Fixes tag for such a minor fix
-here.
+Instead of passing util and max between functions while computing the
+utilization and capacity, store the former in struct sg_cpu (along
+with the latter and bw_dl).
 
-It is purely a syntactic change and change for the sparse semantic
-parser, but it really does not need to be backported and nothing
-observable in the binary was broken.
+This will allow the current utilization value to be compared with the
+one obtained previously (which is requisite for some code changes to
+follow this one), but also it makes the code look slightly more
+consistent and clean.
 
-That is my rationale for not adding a Fixes: tag here. It is your final call.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 22 deletions(-)
 
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Thanks for the fix. LGTM. I guess either bpf or bpf-next tree is fine
-> since this is not a correctness issue.
->
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -53,6 +53,7 @@ struct sugov_cpu {
+ 	unsigned int		iowait_boost;
+ 	u64			last_update;
+ 
++	unsigned long		util;
+ 	unsigned long		bw_dl;
+ 	unsigned long		max;
+ 
+@@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
+ 	return min(max, util);
+ }
+ 
+-static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
++static void sugov_get_util(struct sugov_cpu *sg_cpu)
+ {
+ 	struct rq *rq = cpu_rq(sg_cpu->cpu);
+-	unsigned long util = cpu_util_cfs(rq);
+ 	unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);
+ 
+ 	sg_cpu->max = max;
+ 	sg_cpu->bw_dl = cpu_bw_dl(rq);
+-
+-	return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
++	sg_cpu->util = schedutil_cpu_util(sg_cpu->cpu, cpu_util_cfs(rq), max,
++					  FREQUENCY_UTIL, NULL);
+ }
+ 
+ /**
+@@ -362,8 +362,6 @@ static void sugov_iowait_boost(struct su
+  * sugov_iowait_apply() - Apply the IO boost to a CPU.
+  * @sg_cpu: the sugov data for the cpu to boost
+  * @time: the update time from the caller
+- * @util: the utilization to (eventually) boost
+- * @max: the maximum value the utilization can be boosted to
+  *
+  * A CPU running a task which woken up after an IO operation can have its
+  * utilization boosted to speed up the completion of those IO operations.
+@@ -377,18 +375,17 @@ static void sugov_iowait_boost(struct su
+  * This mechanism is designed to boost high frequently IO waiting tasks, while
+  * being more conservative on tasks which does sporadic IO operations.
+  */
+-static unsigned long sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
+-					unsigned long util, unsigned long max)
++static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
+ {
+ 	unsigned long boost;
+ 
+ 	/* No boost currently required */
+ 	if (!sg_cpu->iowait_boost)
+-		return util;
++		return;
+ 
+ 	/* Reset boost if the CPU appears to have been idle enough */
+ 	if (sugov_iowait_reset(sg_cpu, time, false))
+-		return util;
++		return;
+ 
+ 	if (!sg_cpu->iowait_boost_pending) {
+ 		/*
+@@ -397,18 +394,19 @@ static unsigned long sugov_iowait_apply(
+ 		sg_cpu->iowait_boost >>= 1;
+ 		if (sg_cpu->iowait_boost < IOWAIT_BOOST_MIN) {
+ 			sg_cpu->iowait_boost = 0;
+-			return util;
++			return;
+ 		}
+ 	}
+ 
+ 	sg_cpu->iowait_boost_pending = false;
+ 
+ 	/*
+-	 * @util is already in capacity scale; convert iowait_boost
++	 * sg_cpu->util is already in capacity scale; convert iowait_boost
+ 	 * into the same scale so we can compare.
+ 	 */
+-	boost = (sg_cpu->iowait_boost * max) >> SCHED_CAPACITY_SHIFT;
+-	return max(boost, util);
++	boost = (sg_cpu->iowait_boost * sg_cpu->max) >> SCHED_CAPACITY_SHIFT;
++	if (sg_cpu->util < boost)
++		sg_cpu->util = boost;
+ }
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+@@ -439,9 +437,8 @@ static void sugov_update_single(struct u
+ {
+ 	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
+ 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+-	unsigned long util, max;
+-	unsigned int next_f;
+ 	unsigned int cached_freq = sg_policy->cached_raw_freq;
++	unsigned int next_f;
+ 
+ 	sugov_iowait_boost(sg_cpu, time, flags);
+ 	sg_cpu->last_update = time;
+@@ -451,10 +448,10 @@ static void sugov_update_single(struct u
+ 	if (!sugov_should_update_freq(sg_policy, time))
+ 		return;
+ 
+-	util = sugov_get_util(sg_cpu);
+-	max = sg_cpu->max;
+-	util = sugov_iowait_apply(sg_cpu, time, util, max);
+-	next_f = get_next_freq(sg_policy, util, max);
++	sugov_get_util(sg_cpu);
++	sugov_iowait_apply(sg_cpu, time);
++
++	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+ 	/*
+ 	 * Do not reduce the frequency if the CPU has not been idle
+ 	 * recently, as the reduction is likely to be premature then.
+@@ -491,9 +488,10 @@ static unsigned int sugov_next_freq_shar
+ 		struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
+ 		unsigned long j_util, j_max;
+ 
+-		j_util = sugov_get_util(j_sg_cpu);
++		sugov_get_util(j_sg_cpu);
++		sugov_iowait_apply(j_sg_cpu, time);
++		j_util = j_sg_cpu->util;
+ 		j_max = j_sg_cpu->max;
+-		j_util = sugov_iowait_apply(j_sg_cpu, time, j_util, j_max);
+ 
+ 		if (j_util * max > j_max * util) {
+ 			util = j_util;
 
-Agree, and it is no functional change, nor a change in the object
-code. So risks of regressions are very, very low (zero).
 
-Thanks for the review,
 
-Lukas
