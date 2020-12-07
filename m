@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0042D0DE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EC92D0DF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbgLGKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgLGKUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:20:50 -0500
-Date:   Mon, 7 Dec 2020 10:20:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607336409;
-        bh=Li8eED23jwkjCXrIrIn4+IUiJ6tDcvVO2vCH088mQUY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K0FLanr1uDR47XUL7aujD4qaGGbywqubDEU6lzDVlMfvD//mkVCklE2WbkUreeRsF
-         ncinZWVrT2AwhNXtAEu7udfm5Ra44P7u6N9cLOu/LTTtGgycvdW1qNx4sraOioIoZa
-         Da8B9TcxWiwOV9b6KYOOrEl8DkLL8fOXAlVl3poIBu2FmWmwSifU2/yOUzhHm9V9a5
-         IHbrCePeoiha2DCMfA9Y2DmGUWeOiHG51ryLDmLYje36rUYJpCcefNliCtTfAzSYBy
-         7wY+z4MDM/D1pz+TTNx8Xpg/glPzWozfh9TkevI0IP/OMkug1QZ34pk3+XhTTjugpZ
-         dykDvjQEoh9qQ==
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Fuad Tabba <tabba@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        Android KVM <android-kvm@google.com>
-Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <20201207102002.GA3825@willie-the-truck>
-References: <20201117181607.1761516-1-qperret@google.com>
- <20201117181607.1761516-17-qperret@google.com>
- <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
- <X8p5kLSIq2MoQZ24@google.com>
+        id S1726694AbgLGKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:23:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726396AbgLGKXb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 05:23:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607336525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z29GeURbS80t941pnzdyshdYfYbAY9RA3phQHjsW7+I=;
+        b=XAL5E3XUQIAXlhJKKDc67e0DVtVDYehn4F7SzbGPNdsU24kQKFZJwS2fHzWEoIM8L9Jjgp
+        RbFgwIdXrSi0QUCkjlkI1SXKff5VPaviZbjlv/nvmHPacewP1H3vHTcgOwsULB/oE5b4db
+        rHl5hvVgtwPx6ehK927rcsGYftF39dU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-cMUuWF0qNRmfVZVnlHVCjA-1; Mon, 07 Dec 2020 05:22:01 -0500
+X-MC-Unique: cMUuWF0qNRmfVZVnlHVCjA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 205311005504;
+        Mon,  7 Dec 2020 10:22:00 +0000 (UTC)
+Received: from ovpn-113-92.phx2.redhat.com (ovpn-113-92.phx2.redhat.com [10.3.113.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3798910016FF;
+        Mon,  7 Dec 2020 10:21:59 +0000 (UTC)
+Message-ID: <c707dab0a1ff71117663e9f1e35879f4345cbca4.camel@redhat.com>
+Subject: Re: [PATCH] sched/fair: Don't migrate with src_cpu == dst_cpu
+From:   Scott Wood <swood@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Mon, 07 Dec 2020 04:21:58 -0600
+In-Reply-To: <20201203084723.GG2414@hirez.programming.kicks-ass.net>
+References: <20201203060449.3352126-1-swood@redhat.com>
+         <20201203084723.GG2414@hirez.programming.kicks-ass.net>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8p5kLSIq2MoQZ24@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:01:52PM +0000, Quentin Perret wrote:
-> On Thursday 03 Dec 2020 at 12:57:33 (+0000), Fuad Tabba wrote:
-> <snip>
-> > > +int hyp_create_idmap(void);
-> > > +int hyp_map_vectors(void);
-> > > +int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
-> > > +int hyp_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
-> > > +int hyp_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
-> > > +int __hyp_create_mappings(unsigned long start, unsigned long size,
-> > > +                         unsigned long phys, unsigned long prot);
-> > > +unsigned long __hyp_create_private_mapping(phys_addr_t phys, size_t size,
-> > > +                                          unsigned long prot);
-> > > +
+On Thu, 2020-12-03 at 09:47 +0100, Peter Zijlstra wrote:
+> On Thu, Dec 03, 2020 at 12:04:49AM -0600, Scott Wood wrote:
+> > Besides being a waste of time to try to move tasks to where they already
+> > are, this avoids triggering the WARN_ON_ONCE(is_migration_disabled(p))
+> > in set_task_cpu().
 > > 
-> > nit: I also thought that the hyp_create_mappings function names are a
-> > bit confusing, since there's the create_hyp_mappings functions which
-> > use the aforementioned *hyp_pgtable.
-> 
-> Sure, happy to re-name those (and hyp_pgtable above). Any suggestions?
-> 
-> 
-> <snip>
-> > > +SYM_FUNC_START(__kvm_init_switch_pgd)
-> > > +       /* Turn the MMU off */
-> > > +       pre_disable_mmu_workaround
-> > > +       mrs     x2, sctlr_el2
-> > > +       bic     x3, x2, #SCTLR_ELx_M
-> > > +       msr     sctlr_el2, x3
-> > > +       isb
-> > > +
-> > > +       tlbi    alle2
-> > > +
-> > > +       /* Install the new pgtables */
-> > > +       ldr     x3, [x0, #NVHE_INIT_PGD_PA]
-> > > +       phys_to_ttbr x4, x3
-> > > +alternative_if ARM64_HAS_CNP
-> > > +       orr     x4, x4, #TTBR_CNP_BIT
-> > > +alternative_else_nop_endif
-> > > +       msr     ttbr0_el2, x4
-> > > +
-> > > +       /* Set the new stack pointer */
-> > > +       ldr     x0, [x0, #NVHE_INIT_STACK_HYP_VA]
-> > > +       mov     sp, x0
-> > > +
-> > > +       /* And turn the MMU back on! */
-> > > +       dsb     nsh
-> > > +       isb
-> > > +       msr     sctlr_el2, x2
-> > > +       isb
-> > > +       ret     x1
-> > > +SYM_FUNC_END(__kvm_init_switch_pgd)
-> > > +
+> > Signed-off-by: Scott Wood <swood@redhat.com>
+> > ---
+> > Patch is against tip/master.  Assertion was seen by running rteval on
+> > the
+> > RT tree.
 > > 
-> > Should the instruction cache be flushed here (ic iallu), to discard
-> > speculatively fetched instructions?
+> >  kernel/sched/fair.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index e7e21ac479a2..f443626164d4 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7574,7 +7574,8 @@ int can_migrate_task(struct task_struct *p, struct
+> > lb_env *env)
+> >  
+> >  		/* Prevent to re-select dst_cpu via env's CPUs: */
+> >  		for_each_cpu_and(cpu, env->dst_grpmask, env->cpus) {
+> > -			if (cpumask_test_cpu(cpu, p->cpus_ptr)) {
+> > +			if (cpu != env->src_cpu &&
+> > +			    cpumask_test_cpu(cpu, p->cpus_ptr)) {
+> >  				env->flags |= LBF_DST_PINNED;
+> >  				env->new_dst_cpu = cpu;
+> >  				break;
 > 
-> Hmm, Will? Thoughts?
+> Do we have _any_ clue as to how we ended up in that situation? The above
+> sounds like it should be a WARN and we should avoid getting here in the
+> first place.
 
-The I-cache is physically tagged, so not sure what invalidation would
-achieve here. Fuad -- what do you think could go wrong specifically?
+My initial impression was that there simply wasn't anything stopping it from
+happening, but digging deeper it looks like it's specific to NUMA domains
+with overlapping CPUs.
 
-Will
+-Scott
+
+
