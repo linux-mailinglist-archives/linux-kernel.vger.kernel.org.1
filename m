@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3F32D117F
+	by mail.lfdr.de (Postfix) with ESMTP id DB23A2D1180
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgLGNMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:12:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19226 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725915AbgLGNMp (ORCPT
+        id S1726422AbgLGNMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:12:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgLGNMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:12:45 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7D2Bx4045870;
-        Mon, 7 Dec 2020 08:11:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=WHXphbVjeJDgHgn5XibvhdAbLfM2z0E3WZL+Rif4r44=;
- b=ami/VGSc794gvTQDhcZ41lA3gYpjOV6vQx/ruOr1qmAkOeygTOoocNboiA985grf8YD0
- fww8Jy3ik91krDd1KbqSgk1I0v0UGuNdVA6oiDdJE7hHXb4vqSdL3jnsrhdFfL5Tz/Kx
- 6FCr8R3Hp9FiGgGdGcOxjDXEBUgi8I18TCnoYBTN1ynEdCzYjYKcozOhV+2qjX8GGBKK
- cnOtkqEXmL5/D3OlUYGwiHZt09+O3jLL/Dt1ryx6AWyUptl6hjSq6BG51ZCZlwKbuFMm
- v0zNv+EiXoVfpCMs8BoQrf3MAdol3biYY0X6exTC9C2Lc3+Oz9UxNQ8+fFKyBEmf1nqw hQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 359m8x9mf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 08:11:45 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7D2Bhu045828;
-        Mon, 7 Dec 2020 08:11:45 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 359m8x9mek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 08:11:45 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7D6aDK029563;
-        Mon, 7 Dec 2020 13:11:43 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3581fhjgnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 13:11:43 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7DBfPv9306794
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 13:11:41 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F122A405C;
-        Mon,  7 Dec 2020 13:11:41 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0DBAA4060;
-        Mon,  7 Dec 2020 13:11:38 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  7 Dec 2020 13:11:38 +0000 (GMT)
-Date:   Mon, 7 Dec 2020 18:41:38 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
- map/list for L2 cache
-Message-ID: <20201207131138.GJ528281@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
+        Mon, 7 Dec 2020 08:12:48 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B49C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:12:02 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id y18so12327491qki.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:12:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UcE5sqQFuX7zbL1nqavHvvMNnf0BK4JE9O4ch9ubSJk=;
+        b=F4npyx+rnsewqbDKZv3a+IXXFP1ex+4WBHdOUuLBFP1c5sGv04OM7FPfXUfQ3S+Eg1
+         M0Q9yHtnjmRIpq/F+qRevhdGr3GSMJETAnCb4UDQOBWdrCpsGzxkF5fDzLhjKobt73qL
+         MAFAoD+Fe2tqQqiwLGayOglM0MBSmP68R20P6fzpRVjektibD8ugANtovii7nwJYQRn2
+         urA/thBRsc+4sSHAHYc9S4fdanyGK7Wx49sGU+JkdlsHP8Y9vkK7MUF+WXFIIaTXtgha
+         34EatJvgrspD7CUrldtdB5ONN5tRSNaWQ+BzZ6yDkCnllia18Y4zShcHqej9Rkm0K/Tp
+         FTyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UcE5sqQFuX7zbL1nqavHvvMNnf0BK4JE9O4ch9ubSJk=;
+        b=ebBrcgtHXdzj2WoVnJx4jPZSGefIWR347VeBUfTg1wa/Zi2kYK+F9EY+kZX0IsDer5
+         80rsXXyUXcdtL3dnn6MOcKvaPjcoFrke10DFiUWzhury4MzfDOk9J5JReguD7Yjhv4pc
+         e7FPuhWprKKDfVWRVHhJClkoHaaGoie6+IvoQrjKIZ05MFEPMV41YmUkaMZPFtf8EpEl
+         h22IVLvw/lIRvAUrA/mUVQ0imsS7OlJ42cGXRIigm3j/pvNQITUU/efgEHB/loCJ1uKl
+         dNmUxZ/7IdV9YKt29PUBb3R+djWQeoQvXy/KULIn1MT3Vt1CF+qs/QPSGV+0XdpHABLP
+         2hHg==
+X-Gm-Message-State: AOAM532wVjYlBR9JSLmqCmc75VrxCKqpwC5QZJUgbfsU6P/yvkqx1bmm
+        1HfgRgy14QS1s/NIzI5l5Xt6hw56hbceIfW0V+P57A==
+X-Google-Smtp-Source: ABdhPJxduLV82RIMCUbnIbex5pPl6j3AETJe6rEHxPpIPpP/cJ17P3/ncVyWhWT7aQEgZHs33wCI89K3P8XC7CUsgZE=
+X-Received: by 2002:a37:56c6:: with SMTP id k189mr23060523qkb.501.1607346721279;
+ Mon, 07 Dec 2020 05:12:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_11:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- suspectscore=1 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 adultscore=0 malwarescore=0 phishscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070080
+References: <00000000000028201305b00bfdba@google.com>
+In-Reply-To: <00000000000028201305b00bfdba@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 7 Dec 2020 14:11:49 +0100
+Message-ID: <CACT4Y+aU2T7CCx_EmGG6aL_7WMiHy01cSScZu4gM2C3gvcoROg@mail.gmail.com>
+Subject: Re: WARNING: filesystem loop3 was created with 512 inodes, the real
+ maximum is 511, mounting anyway
+To:     syzbot <syzbot+293714df4fe354fae488@syzkaller.appspotmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:47]:
+#syz fix: bfs: don't use WARNING: string when it's just info.
 
-> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-> 
-> 
-> Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+On Thu, Sep 24, 2020 at 11:40 AM syzbot
+<syzbot+293714df4fe354fae488@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15964ec3900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6f192552d75898a1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=293714df4fe354fae488
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+293714df4fe354fae488@syzkaller.appspotmail.com
+>
+> BFS-fs: bfs_fill_super(): WARNING: filesystem loop3 was created with 512 inodes, the real maximum is 511, mounting anyway
+> BFS-fs: bfs_fill_super(): Inode 0x00000002 corrupted on loop3
+>
+>
 > ---
-> 
-> +extern bool thread_group_shares_l2;
->  /*
->   * On big-core systems, each core has two groups of CPUs each of which
->   * has its own L1-cache. The thread-siblings which share l1-cache with
->   * @cpu can be obtained via cpu_smallcore_mask().
-> + *
-> + * On some big-core systems, the L2 cache is shared only between some
-> + * groups of siblings. This is already parsed and encoded in
-> + * cpu_l2_cache_mask().
->   */
->  static const struct cpumask *get_big_core_shared_cpu_map(int cpu, struct cache *cache)
->  {
->  	if (cache->level == 1)
->  		return cpu_smallcore_mask(cpu);
-> +	if (cache->level == 2 && thread_group_shares_l2)
-> +		return cpu_l2_cache_mask(cpu);
-> 
->  	return &cache->shared_cpu_map;
-
-As pointed with lkp@intel.org, we need to do this only with #CONFIG_SMP,
-even for cache->level = 1 too.
-
-I agree that we are displaying shared_cpu_map correctly. Should we have also
-update /clear shared_cpu_map in the first place. For example:- If for a P9
-core with CPUs 0-7, the cache->shared_cpu_map for L1 would have 0-7 but
-would display 0,2,4,6.
-
-The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
-be released. Is this as expected?
-
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000028201305b00bfdba%40google.com.
