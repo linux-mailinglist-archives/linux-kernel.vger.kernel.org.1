@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311132D1E2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186D82D1E30
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgLGXOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:14:35 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37348 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726563AbgLGXOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:14:35 -0500
-Received: by mail-ot1-f66.google.com with SMTP id o11so11520459ote.4;
-        Mon, 07 Dec 2020 15:14:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FMfWfHv2wzoNIwcVOZya215y7ocesZYjo3SfGqRpwhM=;
-        b=fUeKn9opqLxqzvzwAQv1fyA1ibK1RA/AkWXsrAGUskeOjl4OGuJMO/ycSgBAt4DeSi
-         Pt7pSsZPDWDUMUu8hMZt1MrclX12oti/LtBuEVdttPRxY8RyVgImLRcwe61jBj80TXgD
-         FXJfG2OvuAe2l3z/mAmirPJk1n6elDNHa+Mk2YmgWBaI2YxwjdQQjGkaPfDOVGiXIWab
-         CDN88ISQbKw29o0BMqGFrn4o79qHqazRaEux9qbh8iYPq44nhKuWcJo88nlUmqfc1UVo
-         7IKozqhjJrD98yIzAYQ/2i6lTOclWr9Uve4luiBIHV3kid4/9QPxEUUBoaYckPwg/vfl
-         x3zA==
-X-Gm-Message-State: AOAM532ltOAZwRzmA85VglTwrEP/ua1w8Wrq39mGpCxh3KsprPTSv+c8
-        pMTzpoKAimQ3iRJruR5/FA==
-X-Google-Smtp-Source: ABdhPJwY8L2lCOxVcrhiOYdR2CS5sbwBdDa2uQTR8kVPaHm8lSOS/OSL2o6wOI2e5/FfSmcKyMQdCQ==
-X-Received: by 2002:a9d:3982:: with SMTP id y2mr14597036otb.260.1607382834342;
-        Mon, 07 Dec 2020 15:13:54 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k20sm3315179oig.35.2020.12.07.15.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:13:53 -0800 (PST)
-Received: (nullmailer pid 1030164 invoked by uid 1000);
-        Mon, 07 Dec 2020 23:13:52 -0000
-Date:   Mon, 7 Dec 2020 17:13:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH] dt-bindings: Correct GV11B GPU register sizes
-Message-ID: <20201207231352.GA1028809@robh.at.kernel.org>
-References: <20201124121842.1037035-1-jonathanh@nvidia.com>
+        id S1728216AbgLGXOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:14:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgLGXOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:14:40 -0500
+Date:   Mon, 7 Dec 2020 17:13:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607382839;
+        bh=cXfHp8rY0otTmdq70U0JaHFS3z/C6N9ZE5vVO206Cp8=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=qbNB9JoW4ZS/8QtEILp4RhBYsRb5HjzhEjioX48IF8m3VrzOcJ8ezW4i+tUFQ4as9
+         O4ZUxrjn5HKeeV8mh/UxEAysDRXW00fqrTKwnb8P9rba6Oa2NfAQ6lWapsr4KR2jHL
+         vu65r0vWyZJaU+FOyC9+Grr205v6na0HZPuLJSTJ9Waf17DnMHo0Dwc1i5VaHGIZt3
+         Qza1Jy+dZ+30XgpAtzgXwiLXjHEXmpg7PRZSqHNjKZ8r01ERCjdVs54v05skU4Va1c
+         RoSX/wHf2WWkriqdgzFht8so6P0E0B+C6Lt70Pbh5E8B4/AD46w1572ctuqEGXOD+x
+         v3dTYO7TyKsnA==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid
+Message-ID: <20201207231357.GA2310757@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201124121842.1037035-1-jonathanh@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <672a0bc2-717a-2545-6a19-8ca7e209c523@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 12:18:42 +0000, Jon Hunter wrote:
-> Commit 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
-> added the GV11B GPU device-tree bindings information but incorrectly
-> added an additional 0 to the size of the addresses in the example.
+On Mon, Dec 07, 2020 at 09:44:20AM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> On 12/7/20 5:08 AM, Paul Menzel wrote:
+> > [Bringing the issue up on the list in case the Linux Bugzilla is not monitored/used.]
+> > 
+> > 
+> > Dear Linux folks,
+> > 
+> > 
+> > On Intel Tiger Lake Dell laptop, Linux logs the error below [1].
+> > 
+> >      [    0.507307] pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid
+> >      [    0.508835] pci 0000:00:07.2: DPC: RP PIO log size 0 is invalid
+> > 
+> >      $ lspci -nn -s 00:07
+> >      00:07.0 PCI bridge [0604]: Intel Corporation Tiger Lake-LP
+> > Thunderbolt PCI Express Root Port #0 [8086:9a23] (rev 01)
+> >      00:07.2 PCI bridge [0604]: Intel Corporation Tiger Lake-LP
+> > Thunderbolt PCI Express Root Port #2 [8086:9a27] (rev 01)
+> > 
+> > Commit 2700561817 (PCI/DPC: Cache DPC capabilities in
+> > pci_init_capabilities()) [1] probably introduced it in Linux 5.7.
+> > 
+> > What does this error actually mean?
+> > 
+> >      pdev->dpc_rp_log_size = (cap & PCI_EXP_DPC_RP_PIO_LOG_SIZE) >> 8;
+> >      if (pdev->dpc_rp_log_size < 4 || pdev->dpc_rp_log_size > 9) {
+> >          pci_err(pdev, "RP PIO log size %u is invalid\n",
+> >              pdev->dpc_rp_log_size);
+> >          pdev->dpc_rp_log_size = 0;
+> As per PCIe spec r5.0, sec 7.9.15.2, valid RP log size is 4 or greater. Please see
+> the text copied from spec
 > 
-> Fixes: 90a09178f309 ("dt-bindings: Add documentation for GV11B GPU")
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  Documentation/devicetree/bindings/gpu/nvidia,gk20a.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> - - - -
+> RP PIO Log Size - This field indicates how many DWORDs are allocated for the RP
+> PIO log registers, comprised by the RP PIO Header Log, the RP PIO ImpSpec Log,
+> and RP PIO TLP Prefix Log. If the Root Port supports RP Extensions for DPC, the
+> value of this field must be 4 or greater; otherwise, the value of
+> this field must be 0. See Section 7.9.15.11 , Section 7.9.15.12 , and Section 7.9.15.13 .
+> - - - -
 > 
+> In this case, since "(!(cap & PCI_EXP_DPC_CAP_RP_EXT))" condition is false, RP
+> EXT is supported. If RP EXT is supported, valid log size should be at-least 4.
+> 
+> 
+> >      }
+> > 
+> > (I guess `cap & PCI_EXP_DPC_RP_PIO_LOG_SIZE` is zero too?)
+> > 
+> > Is it a firmware issue or a hardware issue?
+> I think this could be hardware issue.
 
-Applied, thanks!
+I agree, it looks like a hardware issue.  I posted this to the
+bugzilla before I saw this email:
 
-But really, it's just an example and rather than fix trivial things in 
-txt bindings, convert them to schema please.
+  I assume the only problem is the "DPC: RP PIO log size 0 is invalid"
+  message itself?
+
+  It sure looks like the device is out of spec because PCIe r5.0, sec
+  7.9.15.2, says
+
+    RP PIO Log Size - This field indicates how many DWORDs are
+    allocated for the RP PIO log registers, comprised by the RP PIO
+    Header Log, the RP PIO ImpSpec Log, and RP PIO TLP Prefix Log. If
+    the Root Port supports RP Extensions for DPC, the value of this
+    field must be 4 or greater; otherwise, the value of this field
+    must be 0.
+
+  Maybe we just need to tone down the message to pci_info()?  It looks
+  like dpc_process_rp_pio_error() would do the right thing even when
+  dpc_rp_log_size == 0.
+
+  In the attached messages, the firmware retains control of AER, so
+  Linux never tries to use DPC itself anyway.
+
+> > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=209943
+> >       "pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid"
+> > [2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=27005618178ef9e9bf9c42fd91101771c92e9308
+> > 
+> 
+> -- 
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
