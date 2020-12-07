@@ -2,101 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BCB2D1568
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6B12D156D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgLGQAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:00:53 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:36826 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGQAx (ORCPT
+        id S1727274AbgLGQB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:01:56 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12020 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726891AbgLGQBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:00:53 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7FxvtU093883;
-        Mon, 7 Dec 2020 15:59:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=QmE5XGfNVDaXSVhroX5djONqdwv6Tyi1JDRvHNNex3w=;
- b=Yia5WQj0S7TbqPriIuRPI0r9m4Vt6szO5adGMLngXA1Ufs3GPEO9R2/7qU1sS7WQ85tB
- c/odCmBOtH0fNTGi6E11SYi6KigSC4JcquTrjVmfVTIF0o5tfQKiESxutGUmjE2DWC/k
- VIK3KjSKvbdd98TOfcm5RTgPi12O/y/Gv3GRQgRJstBCqTLPyIdrpeDPJvnRZAyhLsvT
- l+UOvrh8fdxdkiYFLweqU1l77aUbdRq/Ep+tclp224jdkBme+74yETrRQiiHkSjf2Anl
- eJ4uCwA2PsHUTtHP2kIKFXDV73YoYVyE8BPVDOSuiKmpoX2fcEv0uyBbl3GhQjlx6Qza kw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3581mqp1b9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 07 Dec 2020 15:59:57 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7FoaQ6078928;
-        Mon, 7 Dec 2020 15:59:57 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 358kyrdpca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Dec 2020 15:59:57 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B7FxtKi020363;
-        Mon, 7 Dec 2020 15:59:55 GMT
-Received: from [10.74.109.38] (/10.74.109.38)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Dec 2020 07:59:55 -0800
-Subject: Re: [PATCH v2 00/19] dmaengine/soc: k3-udma: Add support for BCDMA
- and PKTDMA
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, ssantosh@kernel.org
-Cc:     nm@ti.com, robh+dt@kernel.org, dan.j.williams@intel.com,
-        t-kristo@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, vigneshr@ti.com,
-        grygorii.strashko@ti.com
-References: <20201117105656.5236-1-peter.ujfalusi@ti.com>
- <20201124170856.GR8403@vkoul-mobl>
- <54416232-31b4-e866-82e9-0e9314528a81@ti.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <a1c9189e-0fd1-80b8-8038-cfe556702e60@oracle.com>
-Date:   Mon, 7 Dec 2020 07:59:52 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        Mon, 7 Dec 2020 11:01:55 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7FWp04062929;
+        Mon, 7 Dec 2020 11:00:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=k1wpCQsort0IzYh/DjMW0A6+snT0JIYuzCRTR+TV2H4=;
+ b=IlBG77CHhECNohXSJ7vbdMx4y6/Bb0nbUjONmUvdIPakRhIy8FzBasmfI8eWl58TeyVN
+ Kjtc8pUHgh+2ap1XV+1HEBI0+A2LQX6fYvD1s9/Ee93E3Pt/pEkon88XOPnHqYaV33qG
+ IDmFGTAyeyO0YatqA+ifqGAhT3juO7yNH9ZnqZMiOOcMOb5Flu6zksHQd0UI/0phjlqU
+ KUUjCGjlfeXc00yPS4L3jQSexQSryZYCWacgb0LfNoCHdrwOk5fBrEfZMXNqtop2m89t
+ /SVlnxsj2ypv8tL3Dd2lqptfmVSqPLSJuTwjBOQfO7woEZTjBjelkB6wa+8ncw9vZALb Pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 359pyghad7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 11:00:19 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7FtVmR167099;
+        Mon, 7 Dec 2020 11:00:18 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 359pyghaau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 11:00:18 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7Fs0JH028499;
+        Mon, 7 Dec 2020 16:00:15 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8kvwx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 16:00:15 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7G0Dr845416766
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Dec 2020 16:00:13 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BD254C071;
+        Mon,  7 Dec 2020 16:00:13 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B96F74C070;
+        Mon,  7 Dec 2020 16:00:08 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.50.18])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  7 Dec 2020 16:00:08 +0000 (GMT)
+Date:   Mon, 7 Dec 2020 18:00:06 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Qian Cai <qcai@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v14 09/10] arch, mm: wire up memfd_secret system call
+ were relevant
+Message-ID: <20201207160006.GG1112728@linux.ibm.com>
+References: <20201203062949.5484-1-rppt@kernel.org>
+ <20201203062949.5484-10-rppt@kernel.org>
+ <81631d3391abca3f41f2e19092b97a61d49f4e44.camel@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <54416232-31b4-e866-82e9-0e9314528a81@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9827 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012070101
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9827 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81631d3391abca3f41f2e19092b97a61d49f4e44.camel@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_11:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=849 spamscore=0
+ phishscore=0 bulkscore=0 clxscore=1015 priorityscore=1501 adultscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/20 11:29 PM, Peter Ujfalusi wrote:
-> Hi Santosh,
-> 
-> On 24/11/2020 19.08, Vinod Koul wrote:
->> On 17-11-20, 12:56, Peter Ujfalusi wrote:
->>> Hi,
->>>
->>> The series have build dependency on ti_sci/soc series (v2):
->>> https://urldefense.com/v3/__https://lore.kernel.org/lkml/20201008115224.1591-1-peter.ujfalusi@ti.com/__;!!GqivPVa7Brio!Pr9DZN6u38NBvBa7_OpAJ8CB00wAw4SW4_hXgqWzeI54kvwXsDfntprA-AK9ItxFmM7BaA$
->>>
->>> Santosh kindly created immutable branch holdinf the series:
->>> git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git for_5.11/drivers-soc
->>
->> Santosh, Can I have a signed tag for this please?
-> 
-> Can you please provide a tag for Vinod?
-> 
-I already sent out pull request with tag.
+On Mon, Dec 07, 2020 at 09:45:59AM -0500, Qian Cai wrote:
+> On Thu, 2020-12-03 at 08:29 +0200, Mike Rapoport wrote:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git 
-tags/drivers_soc_for_5.11
+...
+
+> > diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> > index 6d55324363ab..f9d93fbf9b69 100644
+> > --- a/include/linux/syscalls.h
+> > +++ b/include/linux/syscalls.h
+> > @@ -1010,6 +1010,7 @@ asmlinkage long sys_pidfd_send_signal(int pidfd, int sig,
+> >  asmlinkage long sys_pidfd_getfd(int pidfd, int fd, unsigned int flags);
+> >  asmlinkage long sys_watch_mount(int dfd, const char __user *path,
+> >  				unsigned int at_flags, int watch_fd, int watch_id);
+> > +asmlinkage long sys_memfd_secret(unsigned long flags);
+> >  
+> >  /*
+> >   * Architecture-specific system calls
+> > diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> > index 5df46517260e..51151888f330 100644
+> > --- a/include/uapi/asm-generic/unistd.h
+> > +++ b/include/uapi/asm-generic/unistd.h
+> > @@ -861,9 +861,13 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+> >  __SYSCALL(__NR_process_madvise, sys_process_madvise)
+> >  #define __NR_watch_mount 441
+> >  __SYSCALL(__NR_watch_mount, sys_watch_mount)
+> > +#ifdef __ARCH_WANT_MEMFD_SECRET
+> > +#define __NR_memfd_secret 442
+> > +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+> > +#endif
+> 
+> I can't see where was it defined for arm64 after it looks like Andrew has
+> deleted the  above chunk. Thus, we have a warning using this .config:
+> 
+> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+> 
+> <stdin>:1539:2: warning: #warning syscall memfd_secret not implemented [-Wcpp]
+
+I was under the impression that Andrew only removed the #ifdef...
+
+Andrew, can you please restore syscall definition for memfd_secret() in
+include/uapi/asm-generic/unistd.h?
+
+> >  
+> >  #undef __NR_syscalls
+> > -#define __NR_syscalls 442
+> > +#define __NR_syscalls 443
+> >  
+> >  /*
+> >   * 32 bit systems traditionally used different
+> > diff --git a/mm/secretmem.c b/mm/secretmem.c
+> > index 7236f4d9458a..b8a32954ac68 100644
+> > --- a/mm/secretmem.c
+> > +++ b/mm/secretmem.c
+> > @@ -415,6 +415,9 @@ static int __init secretmem_setup(char *str)
+> >  	unsigned long reserved_size;
+> >  	int err;
+> >  
+> > +	if (!can_set_direct_map())
+> > +		return 0;
+> > +
+> >  	reserved_size = memparse(str, NULL);
+> >  	if (!reserved_size)
+> >  		return 0;
+> > diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
+> > index a18b47695f55..b7609958ee36 100755
+> > --- a/scripts/checksyscalls.sh
+> > +++ b/scripts/checksyscalls.sh
+> > @@ -40,6 +40,10 @@ cat << EOF
+> >  #define __IGNORE_setrlimit	/* setrlimit */
+> >  #endif
+> >  
+> > +#ifndef __ARCH_WANT_MEMFD_SECRET
+> > +#define __IGNORE_memfd_secret
+> > +#endif
+> > +
+> >  /* Missing flags argument */
+> >  #define __IGNORE_renameat	/* renameat2 */
+> >  
+> 
+
+-- 
+Sincerely yours,
+Mike.
