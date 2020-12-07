@@ -2,131 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962392D09D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921D62D09D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbgLGEtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 23:49:49 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9388 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727393AbgLGEtt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 23:49:49 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cq9n02f5mz79Sy;
-        Mon,  7 Dec 2020 12:48:36 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 12:48:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] dt-bindings: display: eliminate yamllint warnings
-Date:   Mon, 7 Dec 2020 12:48:30 +0800
-Message-ID: <20201207044830.1551-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201207044830.1551-1-thunder.leizhen@huawei.com>
-References: <20201207044830.1551-1-thunder.leizhen@huawei.com>
+        id S1728842AbgLGEtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 23:49:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726482AbgLGEtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 23:49:22 -0500
+Date:   Sun, 6 Dec 2020 20:48:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607316521;
+        bh=k9A4ZjiahANn8gsfT1SVU57Lhq9aeLLkNBsXD3AhHm0=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VbcIptQzIhzaXEPytXTvpytzksPn7Xww6mGCKxmWI4/rprgPkggobag8zcUiWdBBS
+         p/sSWd2szFuVLeCWyh0CaGVl+5IHnmktPQelC00D8h+c6aB7OgCN/6i2jIsKk4m3zZ
+         jyVKUuEremfmgzIJ1g89SE1w2k4ODkNF+kVckMkEvhio7QW12KvEfo0JN+kXPkrZa/
+         G/ph+InNpZYC9Vug/PJhbu8jtup6RiFJBy+XBYgZeICAgpHNetVUMf5rFrCANjg4dy
+         qA5U1k4ywNzO8ecQv45w9kXThaeq+Jhs7f9awqK5Ka7irtibvuIKJ29cdM/4HP718b
+         aBHWab6/QHb1Q==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20201207044841.GD2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201204192526.0b38fb02@canb.auug.org.au>
+ <20201204192032.GA1437@paulmck-ThinkPad-P72>
+ <20201207083920.2f64f4dc@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207083920.2f64f4dc@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following yamllint warnings:
-./Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-:52:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+On Mon, Dec 07, 2020 at 08:39:20AM +1100, Stephen Rothwell wrote:
+> Hi Paul,
+> 
+> On Fri, 4 Dec 2020 11:20:32 -0800 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >
+> > Does the following patch fix things?  (Sigh.  It won't apply on the
+> > rcu/next that you used.  Or even on this moment's dev branch.  I will
+> > fold it in with attribution and update.  But just to show you what my
+> > thought is.)
+> 
+> Sorry I didn't get the chance to test your patch, but it seems to make
+> sense.  I notice that you have added this to the rcu tree for today, so
+> I guess we will see :-)
 
-./Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
-:42:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
-:45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
+Fair enough!  ;-)
 
-./Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
-:21:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
-
-./Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-:25:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
----
- .../devicetree/bindings/display/bridge/analogix,anx7625.yaml          | 4 ++--
- .../devicetree/bindings/display/bridge/intel,keembay-dsi.yaml         | 4 ++--
- Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml   | 4 ++--
- Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-index 60585a4fc22bc9f..9392b5502a3293c 100644
---- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-@@ -49,8 +49,8 @@ properties:
-           Video port for panel or connector.
- 
-     required:
--        - port@0
--        - port@1
-+      - port@0
-+      - port@1
- 
- required:
-   - compatible
-diff --git a/Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
-index ab5be26252240ea..35c9dfd866501a0 100644
---- a/Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
-@@ -39,10 +39,10 @@ properties:
- 
-     properties:
-       '#address-cells':
--       const: 1
-+        const: 1
- 
-       '#size-cells':
--       const: 0
-+        const: 0
- 
-       port@0:
-         type: object
-diff --git a/Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml b/Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
-index 40caa61188098c2..a222b52d8b8ff6b 100644
---- a/Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
-+++ b/Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
-@@ -18,8 +18,8 @@ description: |
- properties:
-   compatible:
-     items:
--     - const: intel,keembay-msscam
--     - const: syscon
-+      - const: intel,keembay-msscam
-+      - const: syscon
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-index d2170de6b72302f..2f5df1d235aea8a 100644
---- a/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-@@ -22,7 +22,7 @@ properties:
-   compatible:
-     items:
-       - enum:
--         - tianma,fhd-video
-+          - tianma,fhd-video
-       - const: novatek,nt36672a
-     description: This indicates the panel manufacturer of the panel that is
-       in turn using the NT36672A panel driver. This compatible string
--- 
-1.8.3
-
-
+							Thanx, Paul
