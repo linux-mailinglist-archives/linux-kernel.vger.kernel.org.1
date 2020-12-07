@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E212D1181
+	by mail.lfdr.de (Postfix) with ESMTP id D3B612D1182
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgLGNNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        id S1726457AbgLGNNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgLGNNH (ORCPT
+        with ESMTP id S1725928AbgLGNNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Dec 2020 08:13:07 -0500
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BFEC061A4F
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:12:07 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id u4so12346108qkk.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:12:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4BAC061A51
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:12:11 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id 19so4789930qkm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BEj2U7ylaG3BBeiQukN4RTHyiSC0ULWLVpmDe1aNTks=;
-        b=BIWw2aIUS6ti3iqOul+nrQxBrjoH25MNfJKecCMDySAZFinotAZNqhw+a9hZttwW4j
-         sGkuKiW5Bmw5xSw0vCxMZBB6lVUKTe08H0bO7+NJgfTWl4VqUBDGauaRwLvb1bwTHWzd
-         L7CrFpWSpxXi4CBTNbt276nWeK+cGyBw1uGeE66Sr1hJmx1M2KomACtrSc9m0C1Z3Cev
-         d4v3M/zOMCaKNx5HKFt/3Mt58Q60EnAUfGuvFQbz3b+7octMlNteU6yY69Hq4ben7HXf
-         MJ2jWABmHfT5R0zFXp96HodDrY6QK/C53xVV0+emqGkQ6uFDlpYDmXQXFZDgMd72MJZg
-         s1wA==
+        bh=jYzuQDIBhzHHs7CGyfexBprYGsLhGAAdIDsu9AyX34I=;
+        b=I35m56osDFSnlvtlKczrthq7DiJtbNElq2VDBCedmmGwcC5J7yCSMIyyZfuhv3w7kW
+         n3CE6De5NY9/X7uucTD69GVgDwoqnj3H9hvA5MZY2adWYyRjhUHLk91URoy/S9/73s7B
+         0Ny13dSkpMgb0qX4JxeNoQU4RK1cqAwWurYaBBs5hjBwaSSCET3EVn8EjGVj24B7pIlW
+         GNVz7V9zm8bcYHxASpuLksdq76RQAufi/j8m/5cwaD3Koc/Zo3ZKeMzEk2F0bDTQ0SdN
+         Rxmf2UrLTn1jWviuMsCumefe/HLh3G1kdvVGiNvDadR+K1nXPUOggUBSl5rM9mzHaDiW
+         qtdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BEj2U7ylaG3BBeiQukN4RTHyiSC0ULWLVpmDe1aNTks=;
-        b=JO1l27yrpw/uvUvjB08VzFm1MFmblRQVsNK335wWqRs9c9lWIg+gymcvhPtAeVxrU5
-         aOHtoVFI84TjviwBnmQ3Pn6y+HDAIrczFTQS3ihCxqig/97ZQXWgambZwFAbxm41F7ja
-         QuH/DEjOA0K+Mlu2v+gUHJb275EaYrfBS+Ln6ugGoGQJM5PcA8iE6P0a6nkyoM9eoIEJ
-         4f4KpSF3iD/qHdPwDgGk36QPh3/R/b+QGnVmQSiGlPezf6CDFAkXbnkn3t0Gcq1BRFY6
-         GfjQ5gpZ8gXaweLAaR+NjiZlf9enuqJnII9FrDxi2cQI9EFNzP8aL/kljtchIKhEF7ec
-         YGHA==
-X-Gm-Message-State: AOAM530dkApjY0LgExdtno1WsEUc+1Xv6yO5sw6sS8x3+nZK2y9vH0d4
-        ZqxAxDssIHdCk2h/ncA2lfcJlcq/WW1NGn5ItmtkZQjR/P4fFg==
-X-Google-Smtp-Source: ABdhPJyVy4MZnNaRKQAbnh+Dy2R2dmj3Fr2C/AmuwZAbF01ETZlUE0xxAJBxLxAtLQn2as6w+UFfJ9dEYPJYIfntUEU=
-X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr24521607qkm.231.1607346726782;
- Mon, 07 Dec 2020 05:12:06 -0800 (PST)
+        bh=jYzuQDIBhzHHs7CGyfexBprYGsLhGAAdIDsu9AyX34I=;
+        b=WfSenSjwrxDAXuanXLrE76DGzhhHLFgxOlGtBgTHUZf2Tn7V3wt/4LrU2zUPh/J2M6
+         nTF6oH/uU8LOEQAJ7F96L880Z5RNC/eFRKQvAR/fsn0UERWqT8+TKPHee6fVZlConZsq
+         KM8Q4PdNgYp+JICGR7ykN+DU77mai1M8sm40fxw3d8jp0zODpD8qTluNpi8Ne665QT11
+         OMSORPHMqIZnVltCY0i7dGDt0yUqTGHVTgEYTRxVs+Zm0ro0SE3GlpMLAEC6taZSbVet
+         W1Cf9UTTvPY+aGGbI9rAmNcKSJ0FoO0CmSzqM6+MC9ZCD+ZXLt3IVy6GsK8cAOVhCFqx
+         p4dA==
+X-Gm-Message-State: AOAM530sRJcFVmauQHL3GnAm7jfEQmXaba2x8ZyaRGP7zpvhBVcxcuro
+        P6m5YUA0PrUBrJra0yeiimIJABfc4ffGjAC/ojQ1/A==
+X-Google-Smtp-Source: ABdhPJwI+Df+ZRt0f3YBlcf3nYzNpfIeNZ8JN/G/JPgq3cnL5sFjcc/QZ7IbNvA73yWLIBhxbpbImYQ/l6pmIGulW5I=
+X-Received: by 2002:a05:620a:12e4:: with SMTP id f4mr24980065qkl.265.1607346730605;
+ Mon, 07 Dec 2020 05:12:10 -0800 (PST)
 MIME-Version: 1.0
-References: <0000000000006f1f5d05b06394d0@google.com>
-In-Reply-To: <0000000000006f1f5d05b06394d0@google.com>
+References: <000000000000c2f72c05b498f9bd@google.com>
+In-Reply-To: <000000000000c2f72c05b498f9bd@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Dec 2020 14:11:53 +0100
-Message-ID: <CACT4Y+bLRVoC4L5o059Wjw0UGnO9UPbTMMajiYoCVuvD7J2cqA@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop1 was created with 512 inodes, the real
+Date:   Mon, 7 Dec 2020 14:11:57 +0100
+Message-ID: <CACT4Y+Z0NYJ7tk1Xx+b8ox_9k_ZXSimeMcPsJawn3QFpN1-SCQ@mail.gmail.com>
+Subject: Re: WARNING: filesystem loop2 was created with 512 inodes, the real
  maximum is 511, mounting anyway
-To:     syzbot <syzbot+2435de7315366e15f0ca@syzkaller.appspotmail.com>
+To:     syzbot <syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -62,29 +62,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 #syz fix: bfs: don't use WARNING: string when it's just info.
 
-On Mon, Sep 28, 2020 at 8:10 PM syzbot
-<syzbot+2435de7315366e15f0ca@syzkaller.appspotmail.com> wrote:
+On Sat, Nov 21, 2020 at 8:33 AM syzbot
+<syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com> wrote:
 >
 > Hello,
 >
 > syzbot found the following issue on:
 >
-> HEAD commit:    c9c9e6a4 Merge tag 'trace-v5.9-rc5-2' of git://git.kernel...
+> HEAD commit:    09162bc3 Linux 5.10-rc4
 > git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=138b09d9900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2435de7315366e15f0ca
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16e9a486500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e93bbe4ce29223b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ae3ff0bb2a0133596a5b
+> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 >
 > Unfortunately, I don't have any reproducer for this issue yet.
 >
 > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2435de7315366e15f0ca@syzkaller.appspotmail.com
+> Reported-by: syzbot+ae3ff0bb2a0133596a5b@syzkaller.appspotmail.com
 >
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop1 was created with 512 inodes, the real maximum is 511, mounting anyway
-> BFS-fs: bfs_fill_super(): Inode 0x00000002 corrupted on loop1
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop1 was created with 512 inodes, the real maximum is 511, mounting anyway
-> BFS-fs: bfs_fill_super(): Inode 0x00000002 corrupted on loop1
+> BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
+> BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
+> BFS-fs: bfs_fill_super(): WARNING: filesystem loop2 was created with 512 inodes, the real maximum is 511, mounting anyway
+> BFS-fs: bfs_fill_super(): Last block not available on loop2: 1507328
 >
 >
 > ---
@@ -98,4 +98,4 @@ On Mon, Sep 28, 2020 at 8:10 PM syzbot
 > --
 > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
 > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000006f1f5d05b06394d0%40google.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000c2f72c05b498f9bd%40google.com.
