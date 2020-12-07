@@ -2,253 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A612D0C96
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DE12D0C97
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgLGJDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
+        id S1726652AbgLGJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgLGJDi (ORCPT
+        with ESMTP id S1726423AbgLGJDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:03:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47D7C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:03:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y7X/VOkUREDqJ+oEOnQ8Y30+R63q4j0Vz5MUgoySF08=; b=hTq6ZDv6l5PMJzJNzZMoechW6K
-        UtKqAUIeQFtJbJ68ZRWZfGLaNUFDihqlmBR/QBaIgoK+8SfPjD4A3RrtK7l0IRDmfSB7cUmQIb2a2
-        GxYVaVwE3D4kfTMr+2ZJ4oZyis/6Z32vOjEGMybT20E6aQyErNX3vnSvpVp0QXTsUnNdiXRNJj6t6
-        tpaFfJHnfRZAW5Ez+oL9wU+7zn/sh5h+Trsf596Zjvw/G7mihy8QvJKZmYPXLzqGxAx+z2C64ROoc
-        vW1eqAbCsDyg0f+YTSt+scuHSLKUkopIkdBGGlERxqkGXQ3E/OfqinPJvUhvmb7Dx95LX5NR19v6J
-        fQWKRtPg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmCPu-0005Db-My; Mon, 07 Dec 2020 09:02:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68FB2301478;
-        Mon,  7 Dec 2020 10:02:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 51A3F213CFB85; Mon,  7 Dec 2020 10:02:43 +0100 (CET)
-Date:   Mon, 7 Dec 2020 10:02:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
-Message-ID: <20201207090243.GE3040@hirez.programming.kicks-ass.net>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
- <87k0tybqfy.fsf@x220.int.ebiederm.org>
- <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+        Mon, 7 Dec 2020 04:03:41 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015F8C0613D1;
+        Mon,  7 Dec 2020 01:03:04 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id e23so8328388pgk.12;
+        Mon, 07 Dec 2020 01:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MHWu3vtUz9+sanKifpsQifJGmOgcbrGzDyPpGK8ft/8=;
+        b=kIlwtaVgUwEdCxp+IvjS7KCjaf2cg33M1dvudJSOT+GDqjxGnywDiJEFxS/N91bokB
+         dYwRcZX46eqEM/X+hh9dgrGaeNmY4JAqsSqAYOrY5GTuVnqf4+OICv4D5deglMok+sh0
+         IJQlEVwXlKzIgevhEtUBujBAaAtXA3oAflSi4lWGXNi+lGK+35VxLDhfCwHtOSZnqN+e
+         k96O6UkjHMIiEcuiYXta/iGXMokuJXGnmxQKsJOoYwy6IGGXc340rWJmFwA2mYZ6jI7X
+         UMwNFDOXL3RbSlkn8WqIG3QTXhECzVzF6Vk1ezeazPeLbBMV7/rp1JT6XhKyW/oG0j00
+         YfvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MHWu3vtUz9+sanKifpsQifJGmOgcbrGzDyPpGK8ft/8=;
+        b=cIa+qKGyKc0GNa6X0lBdwZFAGzGCAcSs2plEMjFPs/B3V++v8pbXzZN8xe1VaYNOK+
+         e2+asY6QqjIjVsP3H3BNSeVS1wmgVmzFlpuYDMm41EGsQb+86gzSIuV2xHQgGRXzmV0H
+         UQzzVLrs/FCGgmo2YllbkwXAjosPgJRrdZ7UrHazOT4HI2/rTVnSNJ3RXOn3hnNXJBwl
+         L7I86ylryFbSs9qgc53L7JAE07WdmsKNVLMWpXGylj5U9BzbryuA3GzRgQuPQcln0BUu
+         Exn+15EnRrEkCXtxeXsRx/wd0WaVnp78CMa4tcjKxhBhTABvgx6/aD0lrP97v/gchEao
+         9AkA==
+X-Gm-Message-State: AOAM530lZhuSE5xydPoBAlP0/4PleE3i9Obpjh80tVly3Kk28Zxv5N8d
+        5Rn5uJE44nHgpeChm2qgDB1nc4qL7bNv8w==
+X-Google-Smtp-Source: ABdhPJwPZ6U1ffJOj91ZlD0tLv3OUKPUk/dVyEpFXre7GtCcrZ2+BroVuRTQ4WR5LpDDxNl+omoENA==
+X-Received: by 2002:a65:6857:: with SMTP id q23mr6187536pgt.441.1607331783519;
+        Mon, 07 Dec 2020 01:03:03 -0800 (PST)
+Received: from js1304-desktop ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id p6sm9854309pjt.13.2020.12.07.01.02.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 01:03:03 -0800 (PST)
+Date:   Mon, 7 Dec 2020 18:02:53 +0900
+From:   Joonsoo Kim <js1304@gmail.com>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
+Subject: Re: [PATCH sl-b 1/6] mm: Add kmem_last_alloc() to return last
+ allocation for memory block
+Message-ID: <20201207090243.GA20765@js1304-desktop>
+References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+ <20201205004057.32199-1-paulmck@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+In-Reply-To: <20201205004057.32199-1-paulmck@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:59:13PM -0500, Waiman Long wrote:
-> On 12/3/20 3:11 PM, Eric W. Biederman wrote:
+Hello, Paul.
 
-> > +static inline int __down_read_interruptible(struct rw_semaphore *sem)
-> > +{
-> > +	if (!rwsem_read_trylock(sem)) {
-> > +		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_INTERRUPTIBLE)))
-> > +			return -EINTR;
-> > +		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
-> > +	} else {
-> > +		rwsem_set_reader_owned(sem);
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> >   static inline int __down_read_killable(struct rw_semaphore *sem)
-> >   {
-> >   	if (!rwsem_read_trylock(sem)) {
-> > @@ -1495,6 +1507,20 @@ void __sched down_read(struct rw_semaphore *sem)
-> >   }
-> >   EXPORT_SYMBOL(down_read);
-> > +int __sched down_read_interruptible(struct rw_semaphore *sem)
-> > +{
-> > +	might_sleep();
-> > +	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
-> > +
-> > +	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_interruptible)) {
-> > +		rwsem_release(&sem->dep_map, _RET_IP_);
-> > +		return -EINTR;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL(down_read_interruptible);
-> > +
-> >   int __sched down_read_killable(struct rw_semaphore *sem)
-> >   {
-> >   	might_sleep();
+On Fri, Dec 04, 2020 at 04:40:52PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Acked-by: Waiman Long <longman@redhat.com>
+> There are kernel facilities such as per-CPU reference counts that give
+> error messages in generic handlers or callbacks, whose messages are
+> unenlightening.  In the case of per-CPU reference-count underflow, this
+> is not a problem when creating a new use of this facility because in that
+> case the bug is almost certainly in the code implementing that new use.
+> However, trouble arises when deploying across many systems, which might
+> exercise corner cases that were not seen during development and testing.
+> Here, it would be really nice to get some kind of hint as to which of
+> several uses the underflow was caused by.
+> 
+> This commit therefore exposes a new kmem_last_alloc() function that
+> takes a pointer to dynamically allocated memory and returns the return
+> address of the call that allocated it.  This pointer can reference the
+> middle of the block as well as the beginning of the block, as needed
+> by things like RCU callback functions and timer handlers that might not
+> know where the beginning of the memory block is.  These functions and
+> handlers can use the return value from kmem_last_alloc() to give the
+> kernel hacker a better hint as to where the problem might lie.
 
-Yeah, that seems correct.. There's an unfortunate amount of copy-paste
-there though.
+I agree with exposing allocation caller information to the other
+subsystem to help the debugging. Some suggestions...
 
-Do we want to follow that up with something like this?
+1. It's better to separate a slab object check (validity check) and
+retrieving the allocation caller. Someone else would want to check
+only a validity. And, it doesn't depend on the debug configuration so
+it's not good to bind it to the debug function.
 
----
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -275,7 +275,25 @@ static inline bool rwsem_read_trylock(st
- 	long cnt = atomic_long_add_return_acquire(RWSEM_READER_BIAS, &sem->count);
- 	if (WARN_ON_ONCE(cnt < 0))
- 		rwsem_set_nonspinnable(sem);
--	return !(cnt & RWSEM_READ_FAILED_MASK);
-+
-+	if (!(cnt & RWSEM_READ_FAILED_MASK)) {
-+		rwsem_set_reader_owned(sem);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static inline bool rwsem_write_trylock(struct rw_semaphore *sem)
-+{
-+	long tmp = RWSEM_UNLOCKED_VALUE;
-+
-+	if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp, RWSEM_WRITER_LOCKED)) {
-+		rwsem_set_owner(sem);
-+		return true;
-+	}
-+
-+	return false;
- }
- 
- /*
-@@ -1335,38 +1353,29 @@ static struct rw_semaphore *rwsem_downgr
- /*
-  * lock for reading
-  */
--static inline void __down_read(struct rw_semaphore *sem)
-+static inline int __down_read_common(struct rw_semaphore *sem, int state)
- {
- 	if (!rwsem_read_trylock(sem)) {
--		rwsem_down_read_slowpath(sem, TASK_UNINTERRUPTIBLE);
-+		if (IS_ERR(rwsem_down_read_slowpath(sem, state)))
-+			return -EINTR;
- 		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
- 	}
-+	return 0;
- }
- 
--static inline int __down_read_interruptible(struct rw_semaphore *sem)
-+static __always_inline void __down_read(struct rw_semaphore *sem)
- {
--	if (!rwsem_read_trylock(sem)) {
--		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_INTERRUPTIBLE)))
--			return -EINTR;
--		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
--	}
--	return 0;
-+	__down_read_common(sem, TASK_UNINTERRUPTIBLE);
- }
- 
--static inline int __down_read_killable(struct rw_semaphore *sem)
-+static __always_inline int __down_read_interruptible(struct rw_semaphore *sem)
- {
--	if (!rwsem_read_trylock(sem)) {
--		if (IS_ERR(rwsem_down_read_slowpath(sem, TASK_KILLABLE)))
--			return -EINTR;
--		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
--	} else {
--		rwsem_set_reader_owned(sem);
--	}
--	return 0;
-+	return __down_read_common(sem, TASK_INTERRUPTIBLE);
-+}
-+
-+static __always_inline int __down_read_killable(struct rw_semaphore *sem)
-+{
-+	return __down_read_common(sem, TASK_KILLABLE);
- }
- 
- static inline int __down_read_trylock(struct rw_semaphore *sem)
-@@ -1392,44 +1401,29 @@ static inline int __down_read_trylock(st
- /*
-  * lock for writing
-  */
--static inline void __down_write(struct rw_semaphore *sem)
-+static inline int __down_write_common(struct rw_semaphore *sem, int state)
- {
--	long tmp = RWSEM_UNLOCKED_VALUE;
--
--	if (unlikely(!atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
--						      RWSEM_WRITER_LOCKED)))
--		rwsem_down_write_slowpath(sem, TASK_UNINTERRUPTIBLE);
--	else
--		rwsem_set_owner(sem);
-+	if (unlikely(!rwsem_write_trylock(sem))) {
-+		if (IS_ERR(rwsem_down_write_slowpath(sem, state)))
-+			return -EINTR;
-+	}
-+	return 0;
- }
- 
--static inline int __down_write_killable(struct rw_semaphore *sem)
-+static __always_inline void __down_write(struct rw_semaphore *sem)
- {
--	long tmp = RWSEM_UNLOCKED_VALUE;
-+	__down_write_common(sem, TASK_UNINTERRUPTIBLE);
-+}
- 
--	if (unlikely(!atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
--						      RWSEM_WRITER_LOCKED))) {
--		if (IS_ERR(rwsem_down_write_slowpath(sem, TASK_KILLABLE)))
--			return -EINTR;
--	} else {
--		rwsem_set_owner(sem);
--	}
--	return 0;
-+static __always_inline int __down_write_killable(struct rw_semaphore *sem)
-+{
-+	return __down_write_common(sem, TASK_KILLABLE);
- }
- 
- static inline int __down_write_trylock(struct rw_semaphore *sem)
- {
--	long tmp;
--
- 	DEBUG_RWSEMS_WARN_ON(sem->magic != sem, sem);
--
--	tmp  = RWSEM_UNLOCKED_VALUE;
--	if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
--					    RWSEM_WRITER_LOCKED)) {
--		rwsem_set_owner(sem);
--		return true;
--	}
--	return false;
-+	return rwsem_write_trylock(sem);
- }
- 
- /*
+kmem_cache_valid_(obj|ptr)
+kmalloc_valid_(obj|ptr)
+
+2. rename kmem_last_alloc to ...
+
+int kmem_cache_debug_alloc_caller(cache, obj, &ret_addr)
+int kmalloc_debug_alloc_caller(obj, &ret_addr)
+
+or debug_kmem_cache_alloc_caller()
+
+I think that function name need to include the keyword 'debug' to show
+itself as a debugging facility (enabled at the debugging). And, return
+errno and get caller address by pointer argument.
+
+3. If concrete error message is needed, please introduce more functions.
+
+void *kmalloc_debug_error(errno)
+
+Thanks.
