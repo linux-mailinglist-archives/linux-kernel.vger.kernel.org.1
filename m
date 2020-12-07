@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2555A2D0B23
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF8D2D0B26
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgLGHbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 02:31:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:42858 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgLGHbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 02:31:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CCA511D4;
-        Sun,  6 Dec 2020 23:30:35 -0800 (PST)
-Received: from [10.163.86.92] (unknown [10.163.86.92])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27B623F66B;
-        Sun,  6 Dec 2020 23:30:31 -0800 (PST)
-Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
- reserved for the page map
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     "steve.capper@arm.com" <steve.capper@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nsaenzjulienne@suse.de" <nsaenzjulienne@suse.de>,
-        "liwei (CM)" <liwei213@huawei.com>, butao <butao@hisilicon.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        fengbaopeng <fengbaopeng2@hisilicon.com>
-References: <20201204014443.43329-1-liwei213@huawei.com>
- <20201204111347.GA844@willie-the-truck>
- <20201204114400.GT123287@linux.ibm.com>
- <60cb36d5dfcb4f9c904a83b520ecfe84@hisilicon.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <ae384eff-448f-a8d5-a45a-e8a9234d26bb@arm.com>
-Date:   Mon, 7 Dec 2020 13:00:33 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726024AbgLGHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 02:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgLGHem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 02:34:42 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20F6C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 23:34:02 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id p4so3068048pfg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 23:34:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIkKIzRH51h1L8SP1gRvc6+13g2+kyu7Qn+qiqmKw1w=;
+        b=TWoY1ZMoAFOY9e0dzQ3N4Y01kI8BEw2I1EREyo9t7d0T60Yba/xevAfuO4HULhipHB
+         KH+7o3JoXiWZMaTyathl9EQXx3kCq/gTL09EUzBS0Te8K6hAabQMlOvOHMzmpUji13LT
+         FYV4bdcpbLyh7Clr8ITjoTRpMr7chFlDTY7mfImUNWsiA3I7uo6W1aAjgMWyvS7TrTCU
+         enaeitbp/1GUm0jj0oFY+SQ8YfSCxLaI1fjj/AcesJOnffNmSOKRe4BL4BMOsTqZ5VzJ
+         laPDsqxNKT8ygIZo8Vo4PtSztk9qLO8tR4WXK+CJsMHHtQygM6jGYFwuPGZoehavRq8U
+         M9Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIkKIzRH51h1L8SP1gRvc6+13g2+kyu7Qn+qiqmKw1w=;
+        b=XoL1sJHh5IvlW1VO29DAjYsNDjwC8mmrBBSwUtMgXqmxEWA23u/o9nGykWjUphAGUX
+         zxgK6OAVGHe+dzdBcPMnK9hILcWg1+TiO2XUvS8HhGhgx/AjcKegw8ZcvmtmrB5xcSNQ
+         20TxqeUtcdDU2Vu98KqI47ar0F3OX+u2m/b+ZNbGomnKFX7SG9Nl1Jol0q0wXLCjoOF9
+         wcrmUkRTWNNki1R77BRA6t1gQwdaKYfyF0FBA+UALyfjz0y92mXwA4YcZyh2iPQ0kaSS
+         mYFxA0dCm/Km0GGuvAQMG88uWWDK8G/FqQlgYl3GOc91ScgJfTzn5XKfzi1W6TXctHtQ
+         a6nw==
+X-Gm-Message-State: AOAM5315OPCzFR3kGTFInsUfP42qgurI99v/+FjwYuH/w3EUyuYyek1i
+        bIj2mBNKCwGqpQ0wn0m2wK/7bg==
+X-Google-Smtp-Source: ABdhPJyKvzuc7bl+SCli8jULWN87Ooi9a2yfuPQV02o2IviA6SkdwLFoD/KrkkD2zfO3B/wTCepo5g==
+X-Received: by 2002:a05:6a00:1389:b029:18b:2d21:2f1a with SMTP id t9-20020a056a001389b029018b2d212f1amr14893752pfg.1.1607326442216;
+        Sun, 06 Dec 2020 23:34:02 -0800 (PST)
+Received: from localhost.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id t22sm22526279pja.1.2020.12.06.23.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 23:34:01 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     tiwai@suse.com, kailang@realtek.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH] ALSA: hda/realtek - Add support for Memeza EDL03 headset mic
+Date:   Mon,  7 Dec 2020 15:33:46 +0800
+Message-Id: <20201207073346.16571-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <60cb36d5dfcb4f9c904a83b520ecfe84@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Memeza laptop EDL03 with codec ALC256 can't detect the headset
+microphone. The headphone jack sensing works after we add a pin
+definition for it by ALC256_FIXUP_ASUS_MIC_NO_PRESENCE.
 
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 12/7/20 7:10 AM, Song Bao Hua (Barry Song) wrote:
-> 
-> 
->> -----Original Message-----
->> From: Mike Rapoport [mailto:rppt@linux.ibm.com]
->> Sent: Saturday, December 5, 2020 12:44 AM
->> To: Will Deacon <will@kernel.org>
->> Cc: liwei (CM) <liwei213@huawei.com>; catalin.marinas@arm.com; fengbaopeng
->> <fengbaopeng2@hisilicon.com>; nsaenzjulienne@suse.de; steve.capper@arm.com;
->> Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
->> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; butao
->> <butao@hisilicon.com>
->> Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
->> reserved for the page map
->>
->> On Fri, Dec 04, 2020 at 11:13:47AM +0000, Will Deacon wrote:
->>> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
->>>> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
->>>> do not free the reserved memory for the page map, decrease the section
->>>> size can reduce the waste of reserved memory.
->>>>
->>>> Signed-off-by: Wei Li <liwei213@huawei.com>
->>>> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
->>>> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
->>>> ---
->>>>  arch/arm64/include/asm/sparsemem.h | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/sparsemem.h
->> b/arch/arm64/include/asm/sparsemem.h
->>>> index 1f43fcc79738..8963bd3def28 100644
->>>> --- a/arch/arm64/include/asm/sparsemem.h
->>>> +++ b/arch/arm64/include/asm/sparsemem.h
->>>> @@ -7,7 +7,7 @@
->>>>
->>>>  #ifdef CONFIG_SPARSEMEM
->>>>  #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
->>>> -#define SECTION_SIZE_BITS	30
->>>> +#define SECTION_SIZE_BITS	27
->>>
->>> We chose '30' to avoid running out of bits in the page flags. What changed?
->>
->> I think that for 64-bit there are still plenty of free bits. I didn't
->> check now, but when I played with SPARSEMEM on m68k there were 8 bits
->> for section out of 32.
->>
->>> With this patch, I can trigger:
->>>
->>> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds
->> SECTION_SIZE
->>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->>>
->>> if I bump up NR_CPUS and NODES_SHIFT.
->>
->> I don't think it's related to NR_CPUS and NODES_SHIFT.
->> This seems rather 64K pages that cause this.
->>
->> Not that is shouldn't be addressed.
-> 
-> Right now, only 4K PAGES will define ARM64_SWAPPER_USES_SECTION_MAPS.
-> Other cases will use vmemmap_populate_basepages().
-> The original patch should be only addressing the issue in 4K pages:
-> https://lore.kernel.org/lkml/20200812010655.96339-1-liwei213@huawei.com/
-> 
-> would we do something like the below?
-> #ifdef CONFIG_ARM64_4K_PAGE
-> #define SECTION_SIZE_BITS	27
-> #else
-> #define SECTION_SIZE_BITS	30
-> #endif
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d5e4d0ba1008..8b9b94cfc67e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7871,6 +7871,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
+ 	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
++	SND_PCI_QUIRK(0x10ec, 0x115a, "Memeza EDL03", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x10ec, 0x1230, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
+-- 
+2.20.1
 
-This is bit arbitrary. Probably 27 can be further reduced for 4K page size.
-Instead, we should make SECTION_SIZE_BITS explicitly depend upon MAX_ORDER.
-IOW section size should be the same as the highest order page in the buddy.
-CONFIG_FORCE_MAX_ZONEORDER is always defined on arm64. A quick test shows
-SECTION_SIZE_BITS would be 22 on 4K pages and 29 for 64K pages. As a fall
-back SECTION_SIZE_BITS can still be 30 in case CONFIG_FORCE_MAX_ZONEORDER
-is not defined.
-
---- a/arch/arm64/include/asm/sparsemem.h
-+++ b/arch/arm64/include/asm/sparsemem.h
-@@ -7,7 +7,7 @@
- 
- #ifdef CONFIG_SPARSEMEM
- #define MAX_PHYSMEM_BITS       CONFIG_ARM64_PA_BITS
--#define SECTION_SIZE_BITS      30
-+#define SECTION_SIZE_BITS      (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
- #endif
- 
- #endif
-
-A similar approach exists on ia64 platform as well.
