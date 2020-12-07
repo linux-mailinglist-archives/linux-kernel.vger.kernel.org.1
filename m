@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486162D1A1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71022D1A25
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgLGT4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:56:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGT4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:56:54 -0500
-Date:   Mon, 7 Dec 2020 21:56:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607370973;
-        bh=yPs9QDsuXZBj0AnHJQPLKk5uozke+DFy1FCuNPHFJoo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CJywbZ6F2J2n4eSInxwY89uD9zCi+tJPVViTO3691+MbLs7gpFDUgsHVlISgnxaB7
-         c6Q6Gc5kLSk58ing3N17b3+fDpNAMQNcEZ0S6sBLEcJL1qggNTKcDJAaVRHUZJ7vsn
-         IHEfwaOhAARTvu3xTRQhd3uK9sEWHcVC9XY5ot+uwbbn5OfWMOHrZGpShI+dseMtFb
-         uhdRD/+roWdSMfEkiKVnPn4Zy4BvB1jRTFcgHWd8Ncx9goUulpxSHxOczempw61nn7
-         MBvtpw3qDK0eSJ7jesv6ALXVKqqjoiF3kFJ04FAQZaTwKNjNtYaJG/+9sV46cHkFZQ
-         vSDpsnS4WsP/A==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 08/17] driver core: Add fwnode link support
-Message-ID: <20201207195607.GG693271@unreal>
-References: <20201121020232.908850-1-saravanak@google.com>
- <20201121020232.908850-9-saravanak@google.com>
- <20201206074840.GB687065@unreal>
- <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
+        id S1726841AbgLGT72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgLGT71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 14:59:27 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2D7C061749;
+        Mon,  7 Dec 2020 11:58:47 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9E3691280221;
+        Mon,  7 Dec 2020 11:58:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607371125;
+        bh=k/Dd2cYrK28lrZ2qpukQjOHheuWRRxKEAwCopHSG05E=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=oWAhxkXjg6qRXeEQo0LSHh69muuIN//JVI5b76pfiGzTOFOSiSeerHyhJYkd13aLz
+         vV+mTEvXUo0Xm5JPQSxmzIg7QGeHJurbI1samrBMs2MT85XklMBErr+1vtwRlr9RbH
+         Mr1O+RF9DmddGa9u2oJf1yAmPZX/oNkCTcDqY9fQ=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id S1wle3Jxpi4d; Mon,  7 Dec 2020 11:58:45 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E939C128021B;
+        Mon,  7 Dec 2020 11:58:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1607371125;
+        bh=k/Dd2cYrK28lrZ2qpukQjOHheuWRRxKEAwCopHSG05E=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=oWAhxkXjg6qRXeEQo0LSHh69muuIN//JVI5b76pfiGzTOFOSiSeerHyhJYkd13aLz
+         vV+mTEvXUo0Xm5JPQSxmzIg7QGeHJurbI1samrBMs2MT85XklMBErr+1vtwRlr9RbH
+         Mr1O+RF9DmddGa9u2oJf1yAmPZX/oNkCTcDqY9fQ=
+Message-ID: <db6ccb14819c4c7a32e886eade144884fafc55fe.camel@HansenPartnership.com>
+Subject: Re: [PATCH v3 3/4] tpm_tis: Disable interrupts if interrupt storm
+ detected
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Date:   Mon, 07 Dec 2020 11:58:44 -0800
+In-Reply-To: <20201207192803.GH5487@ziepe.ca>
+References: <20201205014340.148235-1-jsnitsel@redhat.com>
+         <20201205014340.148235-4-jsnitsel@redhat.com>
+         <87tusy7n3b.fsf@nanos.tec.linutronix.de> <20201207192803.GH5487@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8296K_v1p2-KAW7ABQjB02P63sBzz2aZoRW3E3WHb4Dg@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:25:03AM -0800, Saravana Kannan wrote:
-> On Sat, Dec 5, 2020 at 11:48 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Nov 20, 2020 at 06:02:23PM -0800, Saravana Kannan wrote:
-> > > Add support for creating supplier-consumer links between fwnodes.  It is
-> > > intended for internal use the driver core and generic firmware support
-> > > code (eg. Device Tree, ACPI), so it is simple by design and the API
-> > > provided is limited.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > ---
-> > >  drivers/base/core.c    | 98 ++++++++++++++++++++++++++++++++++++++++++
-> > >  drivers/of/dynamic.c   |  1 +
-> > >  include/linux/fwnode.h | 14 ++++++
-> > >  3 files changed, 113 insertions(+)
-> > >
-> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > index 401fa7e3505c..e2b246a44d1a 100644
-> > > --- a/drivers/base/core.c
-> > > +++ b/drivers/base/core.c
-> > > @@ -50,6 +50,104 @@ static LIST_HEAD(wait_for_suppliers);
-> > >  static DEFINE_MUTEX(wfs_lock);
-> > >  static LIST_HEAD(deferred_sync);
-> > >  static unsigned int defer_sync_state_count = 1;
-> > > +static DEFINE_MUTEX(fwnode_link_lock);
-> > > +
-> > > +/**
-> > > + * fwnode_link_add - Create a link between two fwnode_handles.
-> > > + * @con: Consumer end of the link.
-> > > + * @sup: Supplier end of the link.
-> > > + *
-> > > + * Create a fwnode link between fwnode handles @con and @sup. The fwnode link
-> > > + * represents the detail that the firmware lists @sup fwnode as supplying a
-> > > + * resource to @con.
-> > > + *
-> > > + * The driver core will use the fwnode link to create a device link between the
-> > > + * two device objects corresponding to @con and @sup when they are created. The
-> > > + * driver core will automatically delete the fwnode link between @con and @sup
-> > > + * after doing that.
-> > > + *
-> > > + * Attempts to create duplicate links between the same pair of fwnode handles
-> > > + * are ignored and there is no reference counting.
-> >
-> > Sorry to ask, but why is that?
-> > Isn't this a programmer error?
->
-> No, not a programmer error.
->
-> One firmware node can point to the same supplier many times. For
-> example, the consumer can be using multiple clocks from the same
-> supplier clock controller. In the context of fw_devlink, there's no
-> reason to keep track of each clock dependency separately because we'll
-> be creating only one device link from fwnode link. So multiple fwnode
-> link attempts between the same two devices are just treated as one
-> instance of dependency. I hope that clarifies things.
+On Mon, 2020-12-07 at 15:28 -0400, Jason Gunthorpe wrote:
+> On Sun, Dec 06, 2020 at 08:26:16PM +0100, Thomas Gleixner wrote:
+> > Just as a side note. I was looking at tpm_tis_probe_irq_single()
+> > and that function is leaking the interrupt request if any of the
+> > checks afterwards fails, except for the final interrupt probe check
+> > which does a cleanup. That means on fail before that the interrupt
+> > handler stays requested up to the point where the module is
+> > removed. If that's a shared interrupt and some other device is
+> > active on the same line, then each interrupt from that device will
+> > call into the TPM code. Something like the below is needed.
+> > 
+> > Also the X86 autoprobe mechanism is interesting:
+> > 
+> > 	if (IS_ENABLED(CONFIG_X86))
+> > 		for (i = 3; i <= 15; i++)
+> > 			if (!tpm_tis_probe_irq_single(chip, intmask, 0,
+> > i))
+> > 				return;
+> > 
+> > The third argument is 'flags' which is handed to request_irq(). So
+> > that won't ever be able to probe a shared interrupt. But if an
+> > interrupt number > 0 is handed to tpm_tis_core_init() the interrupt
+> > is requested with IRQF_SHARED. Same issue when the chip has an
+> > interrupt number in the register. It's also requested exclusive
+> > which is pretty likely to fail on ancient x86 machines.
+> 
+> It is very likely none of this works any more, it has been repeatedly
+> reworked over the years and just left behind out of fear someone
+> needs it. I've thought it should be deleted for a while now.
+> 
+> I suppose the original logic was to try and probe without SHARED
+> because a probe would need exclusive access to the interrupt to tell
+> if the TPM was actually the source, not some other device.
+> 
+> It is all very old and very out of step with current thinking, IMHO.
+> I skeptical that TPM interrupts were ever valuable enough to deserve
+> this in the first place.
 
-Yes, thanks.
+For what it's worth, I agree.  Trying to probe all 15 ISA interrupts is
+last millennium thinking we should completely avoid.  If it's not
+described in ACPI then you don't get an interrupt full stop.
 
->
-> -Saravana
+James
+
+
