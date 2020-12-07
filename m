@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0924A2D1210
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BC22D1217
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgLGNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:30:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47473 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726076AbgLGNaS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:30:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607347731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HmPG+N5jTzzRdIL5s1TNf9yxVHZKpWeydP8k3ZEKz4U=;
-        b=cRkh5x94hpySf7qp4sQp9P5qw4WwYFmWCOi/W8lVSsdjDRQ77U0AIj/w2p+upOlBnFycoC
-        1cGKqJVW86Ml4Yv3pHezaNyXajnvZxJd32gcDb6bKCZMwSXx+eCoZXc1OR+RMQg7bqUGiB
-        Shhhrv/roL8U4ss/cRwmwmECPDXUflI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-QPyZHp8YPHuq4piMgHAKvg-1; Mon, 07 Dec 2020 08:28:47 -0500
-X-MC-Unique: QPyZHp8YPHuq4piMgHAKvg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 929421934100;
-        Mon,  7 Dec 2020 13:28:45 +0000 (UTC)
-Received: from krava (unknown [10.40.195.101])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6D23D10016FB;
-        Mon,  7 Dec 2020 13:28:41 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 14:28:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Chanho Park <chanho61.park@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Chanho Park <parkch98@gmail.com>, mathieu.poirier@linaro.org,
-        suzuki.poulose@arm.com, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Khem Raj <raj.khem@gmail.com>
-Subject: Re: [PATCH] perf arm pmu: fix build error on MUSL libc
-Message-ID: <20201207132840.GA4070632@krava>
-References: <20201206144527.1670483-1-chanho61.park@samsung.com>
- <CGME20201207105410epcas2p3f9210689886172422d27870f25a79df3@epcas2p3.samsung.com>
- <20201207105359.GA4198@willie-the-truck>
- <001101d6cc90$3b491310$b1db3930$@samsung.com>
- <CAM9d7chU0SP79cjuZOBg1Rhe2NYaxAOnKzdQ+XQ65fenTzak0A@mail.gmail.com>
+        id S1726605AbgLGNav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:30:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726076AbgLGNau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:30:50 -0500
+Date:   Mon, 7 Dec 2020 13:30:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607347809;
+        bh=k2URTkzxeMwoISkkN5bsau+WynBK8IIMYqLAxO5uPHo=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EkiSBGDGIUXUBAsl7n0jcDNZQKUWTkQvfstxJ+jZf/uj5r5ILwZ5MF/FZhSJGFVMR
+         6hXL/BvhfSFTFphlMUf4b5JgAy/0+mNbxivH757hLWsEIztFfoev1iDE8d9NrvP1l8
+         MPdInRyMdID5NYfRYnvLAjogzzhLcf4Ji95p0c005MTvM6/u8agd69ffHFeZC3icxn
+         tq+4hjL/amgUD/5YJdBAvdiMZX6ovbb7Tbo6z5k3x57gaJX/XbggoCo6CZkvP1/MJ8
+         BvgdWNbinjiVMeT9buffxbIfdPC1/e6fY+179RJPXvGhj7flpzLSu5/25eS6YN2Rrv
+         jVhiefA4XYQVQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] regulator: Add regulator driver for ATC260x PMICs
+Message-ID: <20201207133003.GC5694@sirena.org.uk>
+References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
+ <f001986493a51fe591cb09a544770651bf589d35.1607216141.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3siQDZowHQqNOShm"
 Content-Disposition: inline
-In-Reply-To: <CAM9d7chU0SP79cjuZOBg1Rhe2NYaxAOnKzdQ+XQ65fenTzak0A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <f001986493a51fe591cb09a544770651bf589d35.1607216141.git.cristian.ciocaltea@gmail.com>
+X-Cookie: Absinthe makes the tart grow fonder.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 09:31:06PM +0900, Namhyung Kim wrote:
-> Hi Chanho,
-> 
-> On Mon, Dec 7, 2020 at 8:58 PM Chanho Park <chanho61.park@samsung.com> wrote:
-> >
-> > Hi Will,
-> >
-> > > Looks like other files just include this unconditionally, but have a
-> > > comment explaining why. See util/branch.h and util/event.h. Maybe we
-> > > should do the same for util/pmu.h, which is already included here?
-> >
-> > I found below files which perf includes <linux/perf_event.h>. Instead of
-> > doing same for all, we'd better put this only for
-> > tools/include/uapi/linux/perf_event.h.
-> 
-> It's a copy of the kernel header, I'm not sure we want to add something there.
 
-right, we want to copy that directly from kernel uapi
-so let's not do any changes in here
+--3siQDZowHQqNOShm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-jirka
+On Sun, Dec 06, 2020 at 03:27:04AM +0200, Cristian Ciocaltea wrote:
 
+> +/*
+> + * ATC2603C notes:
+> + * - LDO8 is not documented in datasheet (v2.4), but supported
+> + *   in the vendor's driver implementation (xapp-le-kernel).
+> + * - LDO12 mentioned in datasheet is not programmable, hence not
+> + *   handled in this driver.
+> + */
+
+No reason not to include LDO12 here, the framework supports fixed
+regulators fine and the bindings should reflect the physical structure
+of the hardware - if something is being supplied by LDO12 on the PMIC
+then you'd expect the binding showing a connection from LDO12.
+
+--3siQDZowHQqNOShm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/OLloACgkQJNaLcl1U
+h9DGdQf5AayPz6I++uKbGeHYLcff0IAmsUsjS4QBP72ZGYTA28F3UvsIbL1ACLco
+prlBF8LC5X/qWiTRWfVd5yEs5/0kHS+L3lp/HXCw665aoJz13Q4jBO6seyWC76Bd
+xNKlouA2lDrKUJ4f/Nxmi4q0F9m+b6h3AgT/kMtvrnLAp+s+3Y7WR6GGUnHBN6V+
+lQT+OjUn9DE3rqjIzZVqB6MLxBSjX/Oy0mZKz1Xn5PS2C9PY2tHY8wx07ytPE3xA
+zqNiMelOGIbE7mYKEB4Pl0b9qDXFe6OIkRgFTRdbpJyr6hiLC+XmhJojcDyUf7Zh
+y6q5jlwVCos1QC1zB8M6z4fEUm57SA==
+=yD4E
+-----END PGP SIGNATURE-----
+
+--3siQDZowHQqNOShm--
