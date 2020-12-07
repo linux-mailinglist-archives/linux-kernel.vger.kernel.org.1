@@ -2,265 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8E12D0D57
+	by mail.lfdr.de (Postfix) with ESMTP id E5E292D0D59
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgLGJr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:47:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:45530 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726296AbgLGJr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:47:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DABE31042;
-        Mon,  7 Dec 2020 01:46:41 -0800 (PST)
-Received: from [10.57.29.223] (unknown [10.57.29.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1968F3F66B;
-        Mon,  7 Dec 2020 01:46:38 -0800 (PST)
-Subject: Re: [PATCH v2 3/5] thermal: devfreq_cooling: add new registration
- functions with Energy Model
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-4-lukasz.luba@arm.com>
- <2eb16ccf-f635-af2d-616f-9cd0cec88ca0@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <103109c4-f7fd-7f53-e336-241b8a2c080e@arm.com>
-Date:   Mon, 7 Dec 2020 09:46:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726653AbgLGJrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgLGJrq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:47:46 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19D9C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:47:00 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id q16so12976187edv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Nh8hmJxQmwGFKjIJpdn8QfXbazqpO8ZVQJAcoMlQ+3o=;
+        b=VNKKV4Fly/daUxewGdtMaBZQ3fo5sOW0ocbXzN6TrjTXhToq3hpHiiGoAZUmsQ4SIV
+         IRBqAx1kcTdaPTKV3LXqS81IP4XzpDKoicUCe/282i82pvW5uEStjqQlvb1GYeEnhhq8
+         IEyENnFrFnku0OSJFb6OPWtjtaEbi7DPuucIeEy9IoK1t66W0bADcmNq66j6VIhqM6C8
+         zYM1oCKvCtNh/r+8goR2quYyQf9pb3LqncA9NWtqyJGam5COz2SpxCAaIo7CsMo/KIEn
+         ztpdnZka7o0zxFFkSgTB9AdDHH62hZpkfbnOClyS+eyXruK1jN2PwqSAKeL+d058UfN5
+         QlAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Nh8hmJxQmwGFKjIJpdn8QfXbazqpO8ZVQJAcoMlQ+3o=;
+        b=ShNeSHfbClEL7BAQ9uFOWF6x1zHW9RLqVMpZgmt8kdl72JGPxYUhE/k27IyRbgyGNJ
+         ktxZgMKWK3jUd1c9t/s8nsCBrIh+KznP8GtVPDCM7M3w+DIR1p3sUDo83ydshMC2353/
+         urNfJ85pqCo1NaoKPXSliULyTXUx0E5gaSpNxJw7eTt4uGhzg5fqwATwlyRh9+/QONWN
+         BS1RJMJCgwwpD5AZV+Y6KAoder8T3dyORwsmiSBXTgsCE503yjObD1ASj4m7622U3RN8
+         aJGETgkuqqgPZT+Mi0PF+nV53r1Krk7oRLczSU/xNiiCQiQKJ4di/D0ci1RF9lGNIrBe
+         EMOA==
+X-Gm-Message-State: AOAM531ET7GvfM443ZNUjHqmPuBzyj232ztN7QPMKjQqv8A/Qv2xwoTZ
+        7J8fbxx8efh2YpC9oknbiZnb9ohJCUuI1zZVyY/45A==
+X-Google-Smtp-Source: ABdhPJzytcBIbxeErCX98lt+bmjf0polBe3qHxsOL8Xewcp2KpuP5PRo8B85e7gd/4P0iLWTCYGrRYSaohcf8g8ew9U=
+X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr12675680edw.52.1607334419167;
+ Mon, 07 Dec 2020 01:46:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2eb16ccf-f635-af2d-616f-9cd0cec88ca0@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201206111555.787862631@linuxfoundation.org>
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 7 Dec 2020 15:16:47 +0530
+Message-ID: <CA+G9fYv++q-swaWAgWifNvoLjMENOgeowwisVEy5Re5CgGSt7Q@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/32] 4.19.162-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 6 Dec 2020 at 17:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.162 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.162-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 12/3/20 3:40 PM, Daniel Lezcano wrote:
-> On 18/11/2020 13:03, Lukasz Luba wrote:
->> The Energy Model (EM) framework supports devices such as Devfreq. Create
->> new registration functions which automatically register EM for the thermal
->> devfreq_cooling devices. This patch prepares the code for coming changes
->> which are going to replace old power model with the new EM.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/devfreq_cooling.c | 99 ++++++++++++++++++++++++++++++-
->>   include/linux/devfreq_cooling.h   | 22 +++++++
->>   2 files changed, 120 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
->> index 925523694462..b354271742c5 100644
->> --- a/drivers/thermal/devfreq_cooling.c
->> +++ b/drivers/thermal/devfreq_cooling.c
->> @@ -50,6 +50,8 @@ static DEFINE_IDA(devfreq_ida);
->>    * @capped_state:	index to cooling state with in dynamic power budget
->>    * @req_max_freq:	PM QoS request for limiting the maximum frequency
->>    *			of the devfreq device.
->> + * @em:		Energy Model for the associated Devfreq device
->> + * @em_registered:	Devfreq cooling registered the EM and should free it.
->>    */
->>   struct devfreq_cooling_device {
->>   	int id;
->> @@ -63,6 +65,8 @@ struct devfreq_cooling_device {
->>   	u32 res_util;
->>   	int capped_state;
->>   	struct dev_pm_qos_request req_max_freq;
->> +	struct em_perf_domain *em;
-> 
-> This pointer is not needed, it is in the struct device.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-It is just a helper pointer, to make the code simpler and avoid nested
-pointers:
+Summary
+------------------------------------------------------------------------
 
-struct device *dev = dfc->devfreq->dev.parent
-and then using dev->em
+kernel: 4.19.162-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 35a4debf26a46be2487f7401acf73ae8b7a4a3f1
+git describe: v4.19.161-33-g35a4debf26a4
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.161-33-g35a4debf26a4
 
-The code is cleaner with dfc->em, but let me have a look if I can
-remove it and still have a clean code.
+No regressions (compared to build v4.19.161)
 
-> 
->> +	bool em_registered;
-> 
-> The boolean em_registered is not needed because of the test in the
-> function em_dev_unregister_perf_domain():
-> 
-> if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
->                  return;
-> 
-> Logically if the 'em' was not initialized, it must be NULL, the
-> corresponding struct device was zero-allocated.
+No fixes (compared to build v4.19.161)
 
-It was needed for devfreq cooling to know who registered the EM.
-If there is 2 frameworks and driver and all could register EM,
-this code cannot blindly unregister EM in it's code. The EM might
-be used still by PowerCap DTM, so the unregister might be called
-explicitly by the driver.
+Ran 42661 total tests in the following environments and test suites.
 
-But I will rewrite the register function and make it way simpler,
-just registration of EM (stopping when it failed) and then cooling
-device. Also unregister will be simpler.
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
 
-Driver will have to keep the order of unregister functions for two
-frameworks and call unregister devfreq cooling device as last one,
-because it will remove the EM.
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* kselftest
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
 
-> 
-> 
->>   };
->>   
->>   static int devfreq_cooling_get_max_state(struct thermal_cooling_device *cdev,
->> @@ -583,22 +587,115 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
->>   }
->>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
->>   
->> +/**
->> + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
->> + *		power information and attempt to register Energy Model (EM)
->> + * @df:		Pointer to devfreq device.
->> + * @dfc_power:	Pointer to devfreq_cooling_power.
->> + * @em_cb:	Callback functions providing the data of the EM
->> + *
->> + * Register a devfreq cooling device and attempt to register Energy Model. The
->> + * available OPPs must be registered for the device.
->> + *
->> + * If @dfc_power is provided, the cooling device is registered with the
->> + * power extensions. If @em_cb is provided it will be called for each OPP to
->> + * calculate power value and cost. If @em_cb is not provided then simple Energy
->> + * Model is going to be used, which requires "dynamic-power-coefficient" a
->> + * devicetree property.
->> + */
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register_power(struct devfreq *df,
->> +				  struct devfreq_cooling_power *dfc_power,
->> +				  struct em_data_callback *em_cb)
->> +{
->> +	struct thermal_cooling_device *cdev;
->> +	struct devfreq_cooling_device *dfc;
->> +	struct device_node *np = NULL;
->> +	struct device *dev;
->> +	int nr_opp, ret;
->> +
->> +	if (IS_ERR_OR_NULL(df))
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	dev = df->dev.parent;
-> 
-> Why the parent ?
-
-The parent has OPPs and we are calling em_perf_domain_register() or
-dev_pm_opp_of_register_em() (which in addition needs DT node) for that
-device.
-
-The old devfreq cooling code also had dev parent, to enable/disenable
-OPPs.
-
-> 
->> +
->> +	if (em_cb) {
->> +		nr_opp = dev_pm_opp_get_opp_count(dev);
->> +		if (nr_opp <= 0) {
->> +			dev_err(dev, "No valid OPPs found\n");
->> +			return ERR_PTR(-EINVAL);
->> +		}
->> +
->> +		ret = em_dev_register_perf_domain(dev, nr_opp, em_cb, NULL, false);
->> +	} else {
->> +		ret = dev_pm_opp_of_register_em(dev, NULL);
->> +	}
->> +
->> +	if (ret)
->> +		dev_warn(dev, "Unable to register EM for devfreq cooling device (%d)\n",
->> +			 ret);
->> +
->> +	if (dev->of_node)
->> +		np = of_node_get(dev->of_node);
->> +
->> +	cdev = of_devfreq_cooling_register_power(np, df, dfc_power);
->> +
->> +	if (np)
->> +		of_node_put(np);> +
->> +	if (IS_ERR_OR_NULL(cdev)) {
->> +		if (!ret)
->> +			em_dev_unregister_perf_domain(dev);
->> +	} else {
->> +		dfc = cdev->devdata;
->> +		dfc->em_registered = !ret;
->> +	}
->> +
->> +	return cdev;
->> +}
->> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register_power);
->> +
->> +/**
->> + * devfreq_cooling_em_register() - Register devfreq cooling device together
->> + *				with Energy Model.
->> + * @df:		Pointer to devfreq device.
->> + * @em_cb:	Callback functions providing the data of the Energy Model
->> + *
->> + * This function attempts to register Energy Model for devfreq device and then
->> + * register the devfreq cooling device.
->> + */
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register(struct devfreq *df, struct em_data_callback *em_cb)
->> +{
->> +	return devfreq_cooling_em_register_power(df, NULL, em_cb);
->> +}
->> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register);
->> +
->>   /**
->>    * devfreq_cooling_unregister() - Unregister devfreq cooling device.
->>    * @cdev: Pointer to devfreq cooling device to unregister.
->> + *
->> + * Unregisters devfreq cooling device and related Energy Model if it was
->> + * present.
->>    */
->>   void devfreq_cooling_unregister(struct thermal_cooling_device *cdev)
->>   {
->>   	struct devfreq_cooling_device *dfc;
->> +	struct device *dev;
->>   
->> -	if (!cdev)
->> +	if (IS_ERR_OR_NULL(cdev))
-> 
-> Why this additional IS_ERR check ?
-
-Not needed too much, but helps if driver doesn't check the
-result of registration function and then just calls unregister
-function, i.e.
-
-	if (pfdev->devfreq.cooling)
-		devfreq_cooling_unregister(pfdev->devfreq.cooling);
-
-> 
->>   		return;
->>   
->>   	dfc = cdev->devdata;
->> +	dev = dfc->devfreq->dev.parent;
->>   
->>   	thermal_cooling_device_unregister(dfc->cdev);
->>   	ida_simple_remove(&devfreq_ida, dfc->id);
->>   	dev_pm_qos_remove_request(&dfc->req_max_freq);
->> +
->> +	if (dfc->em_registered)
->> +		em_dev_unregister_perf_domain(dev);
->> +
-> 
-> As stated before it can be called unconditionally
-
-OK, I will rewrite it. The goal was to be able handle many situations
-in register/unregister function, but I will make them simpler.
-
-Thank you Daniel for review comments. I will address them in next
-version.
-
-Regards,
-Lukasz
+--=20
+Linaro LKFT
+https://lkft.linaro.org
