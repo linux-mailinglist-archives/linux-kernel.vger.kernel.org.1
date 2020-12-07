@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD582D10D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2802D10D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgLGMq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:46:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38490 "EHLO mx2.suse.de"
+        id S1725996AbgLGMre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:47:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:49682 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLGMqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:46:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607345168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=effV4eKUpZhOJaGdMrFLunZTIE1jehrc+23v+ZJ2gRc=;
-        b=Jxz8ur8CMYKEwgIoP/8VeQbLaWeMMP6UZ0/Yv2EBdLdu5S0QwIntjPEFdCChUOzzrPFxGw
-        2UrZcP0qxYe9w35DtYdrYrfVcwnCd7hQc4CaE54kks7KEvLTJ0xHKJ3DSJNKsojz+iSOum
-        tRsRYsnWo4CGvZkwWEYRi8+dN+UYnSQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A68EAD09;
-        Mon,  7 Dec 2020 12:46:08 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 13:46:08 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: vprintk_store: was: [PATCH next v2 3/3] printk: remove
- logbuf_lock, add syslog_lock
-Message-ID: <X84kEEGwMGGELlWt@alley>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-4-john.ogness@linutronix.de>
- <X8pgvA3wKRwAyyaS@alley>
- <87k0tumusi.fsf@jogness.linutronix.de>
+        id S1725774AbgLGMrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:47:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6B401042;
+        Mon,  7 Dec 2020 04:46:47 -0800 (PST)
+Received: from [10.57.61.6] (unknown [10.57.61.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5403D3F718;
+        Mon,  7 Dec 2020 04:46:45 -0800 (PST)
+Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
+To:     zhukeqian <zhukeqian1@huawei.com>, Will Deacon <will@kernel.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>, jiangkunkun@huawei.com,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        iommu@lists.linux-foundation.org, Mark Brown <broonie@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        wanghaibin.wang@huawei.com, Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20201205082957.12544-1-zhukeqian1@huawei.com>
+ <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
+ <20201207120527.GA4474@willie-the-truck>
+ <2b0ec25b-0fa4-65ca-7c1b-109ce766197f@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9a6f31d7-3471-c045-368b-42ece5a2d34d@arm.com>
+Date:   Mon, 7 Dec 2020 12:46:44 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0tumusi.fsf@jogness.linutronix.de>
+In-Reply-To: <2b0ec25b-0fa4-65ca-7c1b-109ce766197f@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2020-12-06 23:36:53, John Ogness wrote:
-> On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
-> >> +	if (facility == 0) {
-> >> +		while (text_len >= 2 && printk_get_level(text)) {
-> >> +			text_len -= 2;
-> >> +			text += 2;
-> >> +		}
-> >
-> > We should avoid two completely different approaches
-> > that handle printk_level prefix.
-> >
-> > One solution is to implement something like:
-> >
-> >      static char *parse_prefix(text, &level, &flags)
-> >
-> > That would return pointer to the text after the prefix.
-> > And fill level and flags only when non-NULL pointers are passed.
+On 2020-12-07 12:15, zhukeqian wrote:
+> Hi,
 > 
-> OK.
+> On 2020/12/7 20:05, Will Deacon wrote:
+>> On Mon, Dec 07, 2020 at 12:01:09PM +0000, Robin Murphy wrote:
+>>> On 2020-12-05 08:29, Keqian Zhu wrote:
+>>>> ... then we have more chance to detect wrong code logic.
+>>>
+>>> I don't follow that justification - it's still the same check with the same
+>>> outcome, so how does moving it have any effect on the chance to detect
+>>> errors?
 > 
-> > Another solution would be to pass this information from
-> > vprintk_store(). The prefix has already been parsed
-> > after all.
+>>>
+>>> AFAICS the only difference it would make is to make some errors *less*
+>>> obvious - if a sufficiently broken caller passes an empty prot value
+>>> alongside an invalid size or already-mapped address, this will now quietly
+>>> hide the warnings from the more serious condition(s).
+>>>
+>>> Yes, it will bail out a bit faster in the specific case where the prot value
+>>> is the only thing wrong, but since when do we optimise for fundamentally
+>>> incorrect API usage?
+>>
+>> I thought it was the other way round -- doesn't this patch move the "empty
+>> prot" check later, so we have a chance to check the size and addresses
+>> first?
 > 
-> Well, there is a vscnprintf() that happens in between and I don't think
-> we should trust the parsed offset from the first vsnprintf().
+> Yes, this is my original idea.
+> For that we treat iommu_prot with no permission as success at early start, defer
+> this early return can expose hidden errors.
 
-Good point!
+...oh dear, my apologies. I've just had a week off and apparently in 
+that time I lost the ability to read :(
 
-> >> +
-> >> +		if (text != orig_text)
-> >> +			memmove(orig_text, text, text_len);
-> >> +	}
-> >
-> > We should clear the freed space to make the ring buffer as
-> > human readable as possible when someone just dumps the memory.
+I was somehow convinced that the existing check happened at the point 
+where we go to install the PTE, and this patch was moving it earlier. 
+Looking at the whole code in context now I see I got it completely 
+backwards. Sorry for being an idiot.
+
+I guess that only goes to show that a more descriptive commit message 
+would definitely be a good thing :)
+
+Robin.
+
 > 
-> Data blocks are currently padded and that padding is not cleared. So it
-> is already not perfectly human readable on a raw dump.
-
-It would be nice to clean up the padding as well. But it is a cosmetic
-improvement that might be done anytime later.
-
-
-> > Sigh, I have to admit that I missed the problem with prefix and
-> > trailing '\n' when I suggested to avoid the temporary buffers.
-> > This memmove() and the space wasting is pity.
-> >
-> > Well, it is typically 3 bytes per message. And the copying would
-> > be necessary even with the temporary buffer. So, I am less convinced
-> > but I would still try to avoid the temporary buffers for now.
+> Thanks,
+> Keqian
+>>
+>> Will
+>>
+>>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>>> ---
+>>>>    drivers/iommu/io-pgtable-arm.c | 8 ++++----
+>>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+>>>> index a7a9bc08dcd1..8ade72adab31 100644
+>>>> --- a/drivers/iommu/io-pgtable-arm.c
+>>>> +++ b/drivers/iommu/io-pgtable-arm.c
+>>>> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>>>>    	arm_lpae_iopte prot;
+>>>>    	long iaext = (s64)iova >> cfg->ias;
+>>>> -	/* If no access, then nothing to do */
+>>>> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+>>>> -		return 0;
+>>>> -
+>>>>    	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+>>>>    		return -EINVAL;
+>>>> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>>>>    	if (WARN_ON(iaext || paddr >> cfg->oas))
+>>>>    		return -ERANGE;
+>>>> +	/* If no access, then nothing to do */
+>>>> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+>>>> +		return 0;
+>>>> +
+>>>>    	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+>>>>    	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
+>>>>    	/*
+>>>>
+>> .
+>>
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
 > 
-> Agreed. I think this approach is better than the temporary buffers I
-> previously used.
-
-Another motivation is that it allows to simply handle recursion/nesting.
-Othrewise, we would need temporary buffers for each allowed recursion
-level or some tricky code.
-
-> Also, if we add a trimming feature to the ringbuffer,
-> it will keep the ringbuffer mostly clean anyway. Something like this:
-> 
-> prb_rec_init_wr(&r, text_len);
-> prb_reserve(&e, prb, &r);
-> text_len = printk_sprint(&r.text_buf[0], text_len, ...);
-> r.info->text_len = text_len;
-> prb_trim_rec(&e, &r); <--- try to reduce datablock size to @text_len
-> prb_commit(&e);
-> 
-> I see no urgency to add such a feature. But I think we should keep it on
-> our radar.
-
-Yup. I thought about it as well. I agree that it is not a priority.
-
-Best Regards,
-Petr
