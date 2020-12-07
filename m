@@ -2,183 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84102D1716
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD922D1717
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgLGRCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:02:50 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38604 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgLGRCt (ORCPT
+        id S1727845AbgLGRDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:03:15 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2214 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgLGRDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:02:49 -0500
-Received: by mail-oi1-f194.google.com with SMTP id o25so16137094oie.5;
-        Mon, 07 Dec 2020 09:02:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WhUIrDtbx95VVaLpPCnUUxF3hbxbXkZibqs0hBKgFBI=;
-        b=eZevYyfy8KW8VoIUfstmAgw4/0QpfXVEz8digP+rTxhu6gmx+NqpQRl71KGdojmkFz
-         GUhxvMwrpyV7ijMGI3qZjwtjaYXcwuoSzSh1aM5c9OXpRW2VSzoACy81EK/2bu+GqzVa
-         Hf5JYzJ4iPRSocbWoKmsxkopvyQULuxJdaqqyAE9t5TNIODqsre0npJ33Athh89WSxkA
-         ioYnTvqzySxrwgAYRDg2AkzAit+qVha+JDKQrhGJbroTsyOFsr8mkpZttI1aQa53q6Qu
-         8rNcLC30nuDo6Pja3PJQDwE3LslUu9c2HdYH8EPXOejxQBTVC2pS/6D7vJTtagUszp2q
-         OAuw==
-X-Gm-Message-State: AOAM530Edd8xi2jbLJH5sY4G4VBpLqC2RDoaH+vLb+nlS2plHttn49HR
-        5YGZFYXQwn3SLDtCa1ZPkg==
-X-Google-Smtp-Source: ABdhPJwoMHlcpltnFQNrr+DMIIKPVZojsPWQGzZZCZM4H/mZ7zsCV2lm7aLdzZNGLecptEp8zSgcjQ==
-X-Received: by 2002:aca:f289:: with SMTP id q131mr12905613oih.159.1607360528354;
-        Mon, 07 Dec 2020 09:02:08 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j126sm3045161oib.13.2020.12.07.09.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 09:02:07 -0800 (PST)
-Received: (nullmailer pid 437794 invoked by uid 1000);
-        Mon, 07 Dec 2020 17:02:06 -0000
-Date:   Mon, 7 Dec 2020 11:02:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
-        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        laurentiu.palcu@oss.nxp.com
-Subject: Re: [PATCH v3 3/6] dt-bindings: display: imx: Add i.MX8qxp/qm DPR
- channel binding
-Message-ID: <20201207170206.GA434964@robh.at.kernel.org>
-References: <1607311260-13983-1-git-send-email-victor.liu@nxp.com>
- <1607311260-13983-4-git-send-email-victor.liu@nxp.com>
+        Mon, 7 Dec 2020 12:03:14 -0500
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CqV0v0pSyz67MMK;
+        Tue,  8 Dec 2020 00:59:59 +0800 (CST)
+Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 18:02:31 +0100
+Received: from [10.47.199.254] (10.47.199.254) by
+ lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 17:02:25 +0000
+Subject: Re: [PATCH 2/3] perf tools: Allow to enable/disable events via
+ control file
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-3-jolsa@kernel.org>
+From:   Alexei Budankov <abudankov@huawei.com>
+Message-ID: <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
+Date:   Mon, 7 Dec 2020 20:02:20 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607311260-13983-4-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <20201206170519.4010606-3-jolsa@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.199.254]
+X-ClientProxiedBy: braeml702-chm.china.huawei.com (10.226.71.46) To
+ lhreml741-chm.china.huawei.com (10.201.108.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:20:57AM +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qxp/qm Display Prefetch Resolve Channel.
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> Note that this depends on the 'two cell binding' clock patch set which has
-> already landed in Shawn's i.MX clk/imx git branch.  Otherwise, imx8-lpcg.h
-> won't be found.
-> 
-> v2->v3:
-> * No change.
-> 
-> v1->v2:
-> * Use new dt binding way to add clocks in the example.
-> 
->  .../bindings/display/imx/fsl,imx8qxp-dprc.yaml     | 87 ++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> new file mode 100644
-> index 00000000..91e9472
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/imx/fsl,imx8qxp-dprc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8qm/qxp Display Prefetch Resolve Channel
-> +
-> +maintainers:
-> +  - Liu Ying <victor.liu@nxp.com>
-> +
-> +description: |
-> +  The i.MX8qm/qxp Display Prefetch Resolve Channel(DPRC) is an engine which
-> +  fetches display data before the display pipeline needs the data to drive
-> +  pixels in the active display region.  This data is transformed, or resolved,
-> +  from a variety of tiled buffer formats into linear format, if needed.
-> +  The DPR works with a double bank memory structure.  This memory structure is
-> +  implemented in the Resolve Tile Memory(RTRAM) and the banks are referred to
-> +  as A and B.  Each bank is either 4 or 8 lines high depending on the source
-> +  frame buffer format.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: fsl,imx8qxp-dpr-channel
-> +      - const: fsl,imx8qm-dpr-channel
+Hi,
 
-enum instead of oneOf+const.
-
-With that,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: apb clock
-> +      - description: b clock
-> +      - description: rtram clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: apb
-> +      - const: b
-> +      - const: rtram
-> +
-> +  fsl,sc-resource:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: The SCU resource ID associated with this DPRC instance.
-> +
-> +  fsl,prgs:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    description: |
-> +      List of phandle which points to Prefetch Resolve Gaskets(PRGs)
-> +      associated with this DPRC instance.
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - fsl,sc-resource
-> +  - fsl,prgs
-> +  - power-domains
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8-lpcg.h>
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    dpr-channel@56100000 {
-> +        compatible = "fsl,imx8qxp-dpr-channel";
-> +        reg = <0x56100000 0x10000>;
-> +        interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&dc0_dpr1_lpcg IMX_LPCG_CLK_4>,
-> +                 <&dc0_dpr1_lpcg IMX_LPCG_CLK_5>,
-> +                 <&dc0_rtram1_lpcg IMX_LPCG_CLK_0>;
-> +        clock-names = "apb", "b", "rtram";
-> +        fsl,sc-resource = <IMX_SC_R_DC_0_VIDEO0>;
-> +        fsl,prgs = <&dc0_prg4>, <&dc0_prg5>;
-> +        power-domains = <&pd IMX_SC_R_DC_0>;
-> +    };
-> -- 
-> 2.7.4
+On 06.12.2020 20:05, Jiri Olsa wrote:
+> Adding new control events to enable/disable specific event.
+> The interface string for control file are:
 > 
+>   'enable-<EVENT NAME>'
+>   'disable-<EVENT NAME>'
+
+<SNIP>
+
+> 
+> when received the command, perf will scan the current evlist
+> for <EVENT NAME> and if found it's enabled/disabled.
+
+<SNIP>
+
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 70aff26612a9..05723227bebf 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+>  		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
+>  
+>  	if (bytes_read > 0) {
+> -		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+> +		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
+> +				    (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
+> +				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+>  			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
+>  			*cmd = EVLIST_CTL_CMD_ENABLE;
+>  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
+> @@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
+>  	int ctlfd_pos = evlist->ctl_fd.pos;
+>  	struct pollfd *entries = evlist->core.pollfd.entries;
+> +	struct evsel *evsel;
+> +	char *evsel_name;
+>  
+>  	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
+>  		return 0;
+> @@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  			case EVLIST_CTL_CMD_DISABLE:
+>  				evlist__disable(evlist);
+>  				break;
+> +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+> +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
+
+It makes sense to check that evsel_name still points
+into cmd_data buffer after assigning to event name.
+
+Regards,
+Alexei
