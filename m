@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46B82D1876
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420482D186E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgLGSXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:23:51 -0500
-Received: from mga02.intel.com ([134.134.136.20]:5050 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgLGSXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:23:51 -0500
-IronPort-SDR: 7U+6VjvvlgE29G6zdeQlgp2yrYz4sFJQD0aN/QzsFGaAIr0jPvvNjO9eZByGKisiBOOJmXbGXJ
- qH5dvWR7JvWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="160792547"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="160792547"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 10:22:05 -0800
-IronPort-SDR: LJpIOl5qR3FbYUO6GpoIFjBgNfoBKfI9nILXpkiVbNmPIE2cwe4CBMx+aKHMiSLNbd9lF6n3GV
- MEf4AfTulbig==
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="551915231"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 10:22:04 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id D3A0A6363;
-        Mon,  7 Dec 2020 10:22:04 -0800 (PST)
-Date:   Mon, 7 Dec 2020 10:22:04 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, shawnguo@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
-Message-ID: <20201207182204.GC49179@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-3-mgross@linux.intel.com>
- <20201207160152.GB351233@robh.at.kernel.org>
+        id S1726348AbgLGSXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:23:10 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43453 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726110AbgLGSXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 13:23:10 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CF1B6580254;
+        Mon,  7 Dec 2020 13:22:03 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 07 Dec 2020 13:22:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=cx4RBmMNs+g2XixyfWd4xJR1Qm6
+        CR1kfc/gqSZmjziU=; b=BNdwJrE1NLNAJfRyIEHVyNsghZNKGKEJTz3FTSwZ6SZ
+        YcVD1U5vfydO6D3/jVPCUorQrkvIqv4QNNtJdry0R8cmVhh9I38VakjY0blBPOa/
+        TvAJuQOT/sW3NHITmjua5WI56Y0G6R9avg9klnWZ5pwZTq2Tg1RG2w5EviHU56V5
+        KQBomrBluXMysCrTtlmzQR6Nle+P+yYc3JalSZYJEakG8V4aUGVgtv7Mcbxr/bT/
+        tRAheBMtKmUDqZdeNE9p4zPpXOMFHPhXWkSAfKHCcYgv92KKP3cuCrQN7tZMMXup
+        QzXWzYO/cf9AbdRJztOpEYtBkvi04vWSXH5RvyfOI1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cx4RBm
+        MNs+g2XixyfWd4xJR1Qm6CR1kfc/gqSZmjziU=; b=PjuVyISfucX4IjZWzYkwYv
+        w9leNZ+O69oyw2bLeEqQJeYy1Br1/dvrjehIqeweFboAjMvj4wtnrai3ZjQp6NNv
+        5h+Tko893n4QxIiKg8rhWkQB6pfnLJ+aJ21988c1h0xR7q9kaZdeVDyiFjhiJA1E
+        YXqJH5aPtj2gK9eob0c57dEmWqXWGbqcqplMo8x0+m40sTWyiifhi4N/25hcH2E/
+        gKkLoFkxG6V4rNBjZuqNEaC+pfhoYsmjfO/GD60fauxE+pLDvH98mOHmEe/lh1Nl
+        xfCOPJuz5Mopko8O9cxBHizKvqrePfn2Wi7Aa9+TGblxPoSWz26ESYQoqMggo9nQ
+        ==
+X-ME-Sender: <xms:yXLOX81WTMsXulGsLAtCweNkN4Vt2IaxxOUkJPHT2mhQklKFSOGlcQ>
+    <xme:yXLOX3Ck7lhr3kwsKgtKDMvuCwM0HJcGDT0Nnjo4eKaBQVGNz-lpkUHUbkqEikuOl
+    bLHSA_hNzRAuw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:ynLOXxyZvZ1qwRZMcOwPe65YVc39gYHUEOAO5Q2mY38qxX-Iu2ouBw>
+    <xmx:ynLOX9lFxLCMd91SMSRz_7IT2JWVGJseI0u_Wh5CliuJaIqnIG8u2g>
+    <xmx:ynLOX-G8XTuMzSC3JW9i2xiu8rmm7EECFp7jLGn32B2Dbn4oRajDUA>
+    <xmx:y3LOX_FzmA4mFz2IhD72AIcEgrp6dl0UjA8Nm6yrXwCg29hmFMiecQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 85CB3240057;
+        Mon,  7 Dec 2020 13:22:01 -0500 (EST)
+Date:   Mon, 7 Dec 2020 19:23:12 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <X85zEFduHeUr4YKR@kroah.com>
+References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
+ <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+ <X85sxxgpdtFXiKsg@kroah.com>
+ <20201207180655.GA30657@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207160152.GB351233@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201207180655.GA30657@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:01:52AM -0600, Rob Herring wrote:
-> On Tue, Dec 01, 2020 at 02:34:51PM -0800, mgross@linux.intel.com wrote:
-> > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+On Mon, Dec 07, 2020 at 06:06:55PM +0000, Christoph Hellwig wrote:
+> On Mon, Dec 07, 2020 at 06:56:23PM +0100, Greg KH wrote:
+> > On Tue, Nov 03, 2020 at 01:40:21PM +0900, Daejun Park wrote:
+> > > Changelog:
+> > > 
+> > > v12 -> v13
+> > > 1. Cleanup codes by comments from Can Guo.
+> > > 2. Add HPB related descriptor/flag/attributes in sysfs.
+> > > 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
 > > 
-> > Add DT binding documentation for the Intel Keem Bay IPC driver, which
-> > enables communication between the Computing Sub-System (CSS) and the
-> > Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
-> > Bay.
-> > 
-> > Cc: devicetree@vger.kernel.org
-> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > ---
-> >  .../bindings/soc/intel/intel,keembay-ipc.yaml | 63 +++++++++++++++++++
-> >  1 file changed, 63 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> > new file mode 100644
-> > index 000000000000..6e21c54d8f34
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-> > @@ -0,0 +1,63 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +# Copyright (C) 2020 Intel Corporation
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Keem Bay IPC
-> > +
-> > +maintainers:
-> > +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > +
-> > +description:
-> > +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
-> > +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
-> > +  Keem Bay.
+> > What ever happened to this patchset?  Did it get merged into a scsi tree
+> > for 5.11-rc1, or is there something still pending that needs to be done
+> > on it to make it acceptable?
 > 
-> Sounds like a mailbox. 
-Its a multi-channel mailbox like thing with priority channel support.
+> I think the problem here is not the code, but that the features is
+> fundamentally a bad idea, and one that so far has not even shown
+> to help real workloads vs the usual benchmarketing.
 
-> 
-> What's the relationship between this and the xlink thing?
-Xlink is a SW abstraction to allow multiple user access to the VPU as well as
-enabling use cases where a Keem Bay is used as an accelerator add in card as
-well as a simple SBC type of design.  The xlink stuff sits on top of the IPC
-stuff.
+What "real workload" test can be run on this to help show if it is
+useful or not?  These vendors seem to think it helps for some reason,
+otherwise they wouldn't have added it to their silicon :)
 
---mark
+Should they run fio?  If so, any hints on a config that would be good to
+show any performance increases?
 
+thanks,
+
+greg k-h
