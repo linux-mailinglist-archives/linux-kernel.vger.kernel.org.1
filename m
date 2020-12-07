@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C5B2D1C3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A01D2D1C44
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgLGVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgLGVnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:43:23 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521B8C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:42:37 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id c4so9999433pgb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 13:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=pDfU68hJbVrMhlby67/fptgGuh7zYii/tAwKwJs5ABQ=;
-        b=XdTC5hS/AEdpujA2auDl0oiHQKAaDQNA+nqMfmnrCYYh60Dkvw/1dR+Uqim2ZTfKsp
-         txd6ggR8/zez7Zopxjyt7hFhg16FOh9vUa/pXxIDhK+3h4EDtFXrjhqL5cntIgghjp78
-         ulJUbMrWsBU+5TEyIgHX8fexxcALt9nHZBo3XCOJPIqefrFS0wzdLA7WXahxLjvxiGkl
-         v0n+2BtTMPhtMBsVBEKn3ddkOgQDAN6kf3O1t4yOqCsAkjcSdX1RYDrxh56ZF07FMCyl
-         cdYnuWXwrQg9M7pCQyE28aW30Zxaev8zo58FYDpaSSNWOoUB952tGlfLyFT5aFK2dMyW
-         hpTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=pDfU68hJbVrMhlby67/fptgGuh7zYii/tAwKwJs5ABQ=;
-        b=pQCfzu2cCV/dXdP2FBrnvelqljvgM8FCuijzTnjB2KIAs5YYBlUvXWZ7pit/8zemAw
-         kPq2s9gWpK93pHOIoPn/+jsC52nSOITgrju0fK/Zq9GFofO2Ki56LwjZZiym0kSsRBda
-         o7p3Wy8A1bGVatsr1+rGhZcUB5qPB3UjVZIJDFE/LaDw3Fbxr/BVwwxQosCtIEpVoJ0o
-         8YvN/tMj2C9/Xx8CBGRAVqO0DXYdWh9dpi4kaHJeps8PBRrF5QtJNMyA2aBz/camZyZ5
-         61GtM72l+tswLpxFRKmMtI9wNpH6zA7LlPTtuRHvrLUkGLuIWOgAkeG8Qsb8AO/6TKQE
-         dx9Q==
-X-Gm-Message-State: AOAM5321ECJZ1w9Hi1o+Oe8NxQpznKA/rU99hXc7eY2+WzM3/RccyT5/
-        psOGFUljovbR6G+EfDvuHmWM2b9g7A==
-X-Google-Smtp-Source: ABdhPJw1DKVB1ysvlps113dHRHd8Gdmd9wuw9y2HR7LIJxoQyNpy8ztEFdTjgj9WPEQ8k+rl387OW7IIVw==
-Sender: "jxgao via sendgmr" <jxgao@jxgao.kir.corp.google.com>
-X-Received: from jxgao.kir.corp.google.com ([2620:0:1008:11:3e52:82ff:fe62:cb61])
- (user=jxgao job=sendgmr) by 2002:a17:902:b70d:b029:da:5196:1181 with SMTP id
- d13-20020a170902b70db02900da51961181mr18297299pls.81.1607377356798; Mon, 07
- Dec 2020 13:42:36 -0800 (PST)
-Date:   Mon,  7 Dec 2020 13:42:04 -0800
-Message-Id: <20201207214204.1839028-1-jxgao@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] [PATCH] Keep offset when mapping data via SWIOTLB.
-From:   Jianxiong Gao <jxgao@google.com>
-To:     kbusch@kernel.org
-Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        konrad.wilk@oracle.com, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jianxiong Gao <jxgao@google.com>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727416AbgLGVoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:44:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgLGVoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:44:18 -0500
+Date:   Mon, 7 Dec 2020 13:43:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607377417;
+        bh=ZdgCiySmxnYeCPG0fk38ET6CeRw/+tGlOaM4V7yjNFY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=inxD7cCzD2PcOzMiozfvnpJXTywf4sbP7Ixew2J9yxnJPBOqWMOQUTo8wbWX+e0PR
+         rUYP5WNZL1iuvOqZ5Gj+QRms+1oYhusPdEE5k3bdTnKkmBbFmGogDsBslccBySLx64
+         KcW21gRyNPnXJN+qVQcRdNRZHAERUcusgYDE/VFx2fdlf2IBypZAtljx0PIen+ncgh
+         HMdpj9+3UuyQ/090OsjCpowU9lM+HNsxoCyVfX+lwwaBIzPXKU0h244QOiOnuoLTQ3
+         TV5OMRm2luTV+2RkGk++nsqsO9vBjTruiFXCROvjlmmHN8tK90dvDtYgBrLJDBvR11
+         /zOP6Q0LPyxQw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     hauke@hauke-m.de, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        robh+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] net: dsa: lantiq: allow to use all GPHYs on
+ xRX300 and xRX330
+Message-ID: <20201207134335.6ef718c9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201206132713.13452-2-olek2@wp.pl>
+References: <20201206132713.13452-1-olek2@wp.pl>
+        <20201206132713.13452-2-olek2@wp.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NVMe driver and other applications depend on the data offset
-to operate correctly. Currently when unaligned data is mapped via
-SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. When
-booting with --swiotlb=force option and using NVMe as interface,
-running mkfs.xfs on Rhel fails because of the unalignment issue.
-This patch makes sure the mapped data preserves
-its offset of the orginal address. Tested on latest kernel that
-this patch fixes the issue.
+On Sun,  6 Dec 2020 14:27:12 +0100 Aleksander Jan Bajkowski wrote:
+> This patch allows to use all PHYs on GRX300 and GRX330. The ARX300 has 3
+> and the GRX330 has 4 integrated PHYs connected to different ports compared
+> to VRX200.
+>=20
+> Port configurations:
+>=20
+> xRX200:
+> GMAC0: RGMII/MII/REVMII/RMII port
+> GMAC1: RGMII/MII/REVMII/RMII port
+> GMAC2: GPHY0 (GMII)
+> GMAC3: GPHY0 (MII)
+> GMAC4: GPHY1 (GMII)
+> GMAC5: GPHY1 (MII) or RGMII port
+>=20
+> xRX300:
+> GMAC0: RGMII port
+> GMAC1: GPHY2 (GMII)
+> GMAC2: GPHY0 (GMII)
+> GMAC3: GPHY0 (MII)
+> GMAC4: GPHY1 (GMII)
+> GMAC5: GPHY1 (MII) or RGMII port
+>=20
+> xRX330:
+> GMAC0: RGMII/GMII/RMII port
+> GMAC1: GPHY2 (GMII)
+> GMAC2: GPHY0 (GMII)
+> GMAC3: GPHY0 (MII) or GPHY3 (GMII)
+> GMAC4: GPHY1 (GMII)
+> GMAC5: GPHY1 (MII) or RGMII/RMII port
+>=20
+> Tested on D-Link DWR966 with OpenWRT.
+>=20
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-Signed-off-by: Jianxiong Gao <jxgao@google.com>
-Acked-by: David Rientjes <rientjes@google.com>
----
- kernel/dma/swiotlb.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Please make sure you don't add W=3D1 C=3D1 build warnings:
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 781b9dca197c..56a35e71b3fd 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -483,6 +483,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
- 	max_slots = mask + 1
- 		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
- 		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
-+ 
-+	/*
-+	 * We need to keep the offset when mapping, so adding the offset
-+	 * to the total set we need to allocate in SWIOTLB
-+	 */
-+	alloc_size += offset_in_page(orig_addr);
- 
- 	/*
- 	 * For mappings greater than or equal to a page, we limit the stride
-@@ -567,6 +573,11 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
- 	 */
- 	for (i = 0; i < nslots; i++)
- 		io_tlb_orig_addr[index+i] = orig_addr + (i << IO_TLB_SHIFT);
-+	/*
-+	 * When keeping the offset of the original data, we need to advance
-+	 * the tlb_addr by the offset of orig_addr.
-+	 */
-+	tlb_addr += orig_addr & (PAGE_SIZE - 1);
- 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
- 	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
- 		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_TO_DEVICE);
--- 
-2.27.0
-
-
+In file included from ../include/linux/kasan-checks.h:5,
+                 from ../include/asm-generic/rwonce.h:26,
+                 from ./arch/x86/include/generated/asm/rwonce.h:1,
+                 from ../include/linux/compiler.h:246,
+                 from ../include/linux/err.h:5,
+                 from ../include/linux/clk.h:12,
+                 from ../drivers/net/dsa/lantiq_gswip.c:28:
+drivers/net/dsa/lantiq_gswip.c: In function =E2=80=98gswip_xrx300_phylink_v=
+alidate=E2=80=99:
+drivers/net/dsa/lantiq_gswip.c:1496:35: warning: unused variable =E2=80=98m=
+ask=E2=80=99 [-Wunused-variable]
+ 1496 |  __ETHTOOL_DECLARE_LINK_MODE_MASK(mask) =3D { 0, };
+      |                                   ^~~~
+include/linux/types.h:11:16: note: in definition of macro =E2=80=98DECLARE_=
+BITMAP=E2=80=99
+   11 |  unsigned long name[BITS_TO_LONGS(bits)]
+      |                ^~~~
+drivers/net/dsa/lantiq_gswip.c:1496:2: note: in expansion of macro =E2=80=
+=98__ETHTOOL_DECLARE_LINK_MODE_MASK=E2=80=99
+ 1496 |  __ETHTOOL_DECLARE_LINK_MODE_MASK(mask) =3D { 0, };
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/dsa/lantiq_gswip.c: At top level:
+drivers/net/dsa/lantiq_gswip.c:2079:9: warning: initialization discards =E2=
+=80=98const=E2=80=99 qualifier from pointer target type [-Wdiscarded-qualif=
+iers]
+ 2079 |  .ops =3D &gswip_xrx200_switch_ops,
+      |         ^
+drivers/net/dsa/lantiq_gswip.c:2085:9: warning: initialization discards =E2=
+=80=98const=E2=80=99 qualifier from pointer target type [-Wdiscarded-qualif=
+iers]
+ 2085 |  .ops =3D &gswip_xrx300_switch_ops,
+      |         ^
+drivers/net/dsa/lantiq_gswip.c:2079:17: warning: incorrect type in initiali=
+zer (different modifiers)
+drivers/net/dsa/lantiq_gswip.c:2079:17:    expected struct dsa_switch_ops *=
+ops
+drivers/net/dsa/lantiq_gswip.c:2079:17:    got struct dsa_switch_ops const *
+drivers/net/dsa/lantiq_gswip.c:2085:17: warning: incorrect type in initiali=
+zer (different modifiers)
+drivers/net/dsa/lantiq_gswip.c:2085:17:    expected struct dsa_switch_ops *=
+ops
+drivers/net/dsa/lantiq_gswip.c:2085:17:    got struct dsa_switch_ops const *
