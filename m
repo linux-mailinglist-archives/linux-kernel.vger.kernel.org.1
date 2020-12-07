@@ -2,162 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C702D0945
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A702D0947
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbgLGDH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:07:27 -0500
-Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:30656
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728520AbgLGDH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:07:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dH+gxyR04BWDdC03G4yYD680P/X+TmYpIXSqI8dxCu9LxTmuLGbqD6ktrfDa6e97TerBdF2UWlbzIvoj1yL7sr641yr6Rh3HIaB5jCaR57Mp3cgkgvAL8i6nTTDSbg9GLUgBGOADqRLZmSFGs1SlqLfvztPKdAsgxexyHYbAw5wJRobchxkYbd6JpK1g2G7AMbaCTEwqH2Jgr0assYLYSpwe18jhiXzMtEdxFpu3XmEBuPlIrpuM/JcyhZP3vymnD3Pu9VqJ1O67E5pvnvG6vIMUAYQD0g4Y+athB4ZogqZQOl++16TMxPKnbrCqUkn4PAxv9KdQSn23VzfdapChig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7STTtvfsAMrbJTeT6y3DnnQuK3tlSmQIMOF9MvmAgOE=;
- b=NE4lY9RcI9ITlp9UYgqSqFC44SdsxV/8bE3l0pJ3KIXZ45HKcJZUDugai+8plvRA3hd7eZJxF42+6Xvy9Ppu5p5fmpMUfvtpC+S5Tp5CIKV5m5dayvNNkTApRJZuWnd0hvQqNxqww51ocoUGpPkPx1gIjI2uCUd0Eddyp85WGRnC1WsINP3a6HA4wS87HC/F4o9YfTpzZEc6bd/9OvAagQTnWICtEaQJ8Segqml7LGyUOdd/3MhvxbxjHFKK45JftEPqrdJhuuSv+lZFUOsHyZNQwy+1pigbr6/0XXQjmVS6bdTZbqFnOBfaFstZnGhZ1day96FtC9mSduAQRQB0og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7STTtvfsAMrbJTeT6y3DnnQuK3tlSmQIMOF9MvmAgOE=;
- b=fcfER/sqIoFASP0lPEtoC+TRx7e0JUhxfN3Q8jhFbpvodq7Sd0PAX6AVUX1NpFJEeXhkS/blOnPJGb5Kr1w11PPCaY+S4KjdnMlrcssz/znADPJeYYDHHxSE6Igsv0Dy7OkEYpZKoE+3fATfGpP6txluZHkMSL59wWMyo+HLg8A=
-Authentication-Results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BYAPR12MB3144.namprd12.prod.outlook.com (2603:10b6:a03:d6::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Mon, 7 Dec
- 2020 03:06:32 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::dd10:efd2:e325:53c7]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::dd10:efd2:e325:53c7%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 03:06:32 +0000
-Subject: Re: [PATCH] iommu/amd: Increase interrupt remapping table limit to
- 512 entries
-To:     Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <20201015025002.87997-1-suravee.suthikulpanit@amd.com>
- <87sg8pkrre.fsf@redhat.com>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <c4c46a93-fa10-5e47-e9d0-dd16e721acbb@amd.com>
-Date:   Mon, 7 Dec 2020 10:06:22 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-In-Reply-To: <87sg8pkrre.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.80.7]
-X-ClientProxiedBy: KL1PR02CA0026.apcprd02.prod.outlook.com
- (2603:1096:820:d::13) To BYAPR12MB4597.namprd12.prod.outlook.com
- (2603:10b6:a03:10b::14)
+        id S1728721AbgLGDKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:10:36 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39345 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726482AbgLGDKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:10:35 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cq7b36XfXz9sVs;
+        Mon,  7 Dec 2020 14:09:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607310593;
+        bh=5bh4tlGoUL+1XncBIhF/LpWGb65TQqPGNgtGe+PXrV0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jxmi+mSGmjZITruorZ0kkMOF9O5pg0Vvo2xrLAVm2Q9Z9gAvfF0FvvoZVENeEgEWt
+         MSFoC7P7inCFz83TsGqzyss4t6MIlGxTjYyiHiWRNckA1LMREDPasGybn6KwsxQfw8
+         z4J5Gawg1XRLDfDfo8j40i4qoUHUQO7peDRBtoJ1mo6CUKTq69ioIFCDPwIObRnaGU
+         XbjhtiwZq93as04l1exa+SSFQihZ9z0rkPhi1IVyELPTBhhBFcfROAEOXDOxWLPfuO
+         RBezhvI3oAIf/io4Gd2xO731hs3iyXcjR0u9zZTXp/FiQwpZq67gk7eZpVjV9V2OsF
+         DUt8YOH9t5+Sw==
+Date:   Mon, 7 Dec 2020 14:09:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Florent Revest <revest@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the block tree
+Message-ID: <20201207140951.4c04f26f@canb.auug.org.au>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (165.204.80.7) by KL1PR02CA0026.apcprd02.prod.outlook.com (2603:1096:820:d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 7 Dec 2020 03:06:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1bcf7546-0f41-4651-2003-08d89a5d19e2
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3144:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB3144333103F7011AB6342A70F3CE0@BYAPR12MB3144.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: biggWecuo1FDO/p0W+mI8gnEwIz5TLDpNvx1GiZbkbEnQ2/M+B1ANpjXgU8MSwQz1uhLaFdioZBUvFIZVe4p0nUOMLfeEF979w/jbIm1NFXTcsLqQW9TOZaPFxY4xzP10X8v0ppauX3fBtb+5toQsmOcQJDbvXDyd1SUgWS+J6nDkRg1Nw0YD4grqH2Uvx5kso3DWIiGzibvLVowjxbL+a7/OTqik3KL3U9yxcniyQscNXQTf8etSNEqx3V7Xh3/tC2DR6trB1zeIaa9raqxAQulqm+92KSgPIeVOYytONurGarg5QK8KqH7kja5U6dXoO0IXGSaYdSpW3bLynvuLE4uQfSaRtQhJ9X+Smsc2YPNX0oAA15U/rbrr11fnFlces+7cbsPzaMuANeTBoEOAk5Z7NJMquHxpyU1RU8R4Nc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(346002)(366004)(376002)(6512007)(2906002)(83380400001)(2616005)(44832011)(66476007)(5660300002)(956004)(6486002)(66556008)(16526019)(186003)(31686004)(6506007)(31696002)(86362001)(66946007)(52116002)(316002)(53546011)(478600001)(26005)(8936002)(36756003)(6916009)(4326008)(6666004)(8676002)(4001150100001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QktJOHlJa1owLy9SYk1pRitaUnNOTC96UHE1b1VYVXBGL2QvNjdQM2lUdG9J?=
- =?utf-8?B?OHI1UmRUMTcrS1NEc0d0TnNXRUsxK0craUg4ZkRJY2hFZlFFUzdrZDlvTzZY?=
- =?utf-8?B?YkQxbHhiQXJLbUhjUng2aVBGbXZlMEMzTkRnaElwL1I2ZFViY2Y1WmJWU1U0?=
- =?utf-8?B?aDRGMGxodGFjbURkMmlCMll4UEhxU1B0dzZDVjEveG9ybHBBQzYyNTlVaU4x?=
- =?utf-8?B?Nmx3Z1prS3B2M2hSa3JFc3RlY2pUa2tESlFtT29sVXp2YkJvL0VBc2g4MVlw?=
- =?utf-8?B?aUJjUkRCelFaYmJyM0gzWDA0eFVmRXhqM1EydmFRNDFvY2xieDdWcVZjNDI3?=
- =?utf-8?B?d014djVnZmtaQlUySEZlOEM3Z2d4cHBBa1RUSW15UytncjNZcFRLenZOZXp5?=
- =?utf-8?B?aVNPb1RRcDJ3engzOU8wTkRZRzNOZXhkRVovdkdUZHRtd0luYTdJZ04yYll1?=
- =?utf-8?B?MWpDWFdPWjROYVNMWlcwQXhLdFJpMWFJZUljOHJMYkJKV2xsY1JKMU91U1JL?=
- =?utf-8?B?VUo5WXdpK0RQKzV2dm5hdDRjSXMzdjlTZnA4NXBFSy9WNCtoa1Y3TE9zY0N2?=
- =?utf-8?B?QzZxbTZEa1NaUmtqek1CbXAzemdoVEhIcWJLUnFDL1c5bnRrcDkyMDBUVk0z?=
- =?utf-8?B?WlMvakhpUkJSd2gxTW5Bc1hSQmFORUxwbzhLSDFVcTdPR0pGQmY1eDU1OERI?=
- =?utf-8?B?Q2RkSEcyVzN6ZmlMT3hYWEFEMnBHenFHNVNJZXpiMFhPZU5TQVRWdDh6L0FM?=
- =?utf-8?B?Yk9tb001REpCWlA1dmtOdTRJMFQxMWwxNWlvamJhOHI3NkdDaERRVFB6UWd0?=
- =?utf-8?B?YlUzemF6WTRla3lkeVJzUXRKUGN6N3lWaE9wTVExUWFTN3pvbTVzdE9VSzdQ?=
- =?utf-8?B?R3NNQUtuQ1hlTUVqN21YeGRMUEFYZjA3aTJ1dEpIVDQyQURkOWNSc2IrYWNh?=
- =?utf-8?B?Uk9vQ0NQUGNyMFpSdXNWbDNDcEtuNnNGdkZuTTVrOUNYSkZjN2ord0NqS2pK?=
- =?utf-8?B?QURDZVdHUGp3cXYrcGl0TEoyM1Z4WTJwS1pRL05HTEFodXgrbHdnVzZJdTla?=
- =?utf-8?B?Zm9aVndSOG8ydWVrTHB2OGp4ajB5WlNNc012Y0YrQk01OFl0aGl3cjY5Q1lm?=
- =?utf-8?B?cGRFR1FXL1RqY2xzRGRzeEhIcmF6eFptclgwaXE3R3AvMlBuWE9uOEVPNi9W?=
- =?utf-8?B?MDhWZDAvUFM4dXZEUUxoWVhQVXFSNy9sQ1BLKzBsUmVHUWVZNCtjQnl3djJY?=
- =?utf-8?B?S3RBZWRseDdIa3piYmZoTm05eWoxaXV0Y0IxWWtJajFVWUVxdnR1QjRMcjc3?=
- =?utf-8?Q?r8FOX2gHsNWgVsR+MCldlvnt2Fth+kg59s?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 03:06:32.8291
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bcf7546-0f41-4651-2003-08d89a5d19e2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZZk9+ByYwKyKAboHWEgQTAd8k9io6dfzKHBqcJP2KichCkStAUt8JrI+O+bMwl1LhDR7Zx1cEaPhzBE+iNItuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3144
+Content-Type: multipart/signed; boundary="Sig_/5kRkZNS/rNEXgq/a/ECeDM6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerry,
+--Sig_/5kRkZNS/rNEXgq/a/ECeDM6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/2/20 6:53 AM, Jerry Snitselaar wrote:
-> 
-> Suravee Suthikulpanit @ 2020-10-14 19:50 MST:
-> 
->> Certain device drivers allocate IO queues on a per-cpu basis.
->> On AMD EPYC platform, which can support up-to 256 cpu threads,
->> this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
->> and result in the error message:
->>
->>      AMD-Vi: Failed to allocate IRTE
->>
->> This has been observed with certain NVME devices.
->>
->> AMD IOMMU hardware can actually support upto 512 interrupt
->> remapping table entries. Therefore, update the driver to
->> match the hardware limit.
->>
->> Please note that this also increases the size of interrupt remapping
->> table to 8KB per device when using the 128-bit IRTE format.
->>
->> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
->> ---
->>   drivers/iommu/amd/amd_iommu_types.h | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
->> index 30a5d412255a..427484c45589 100644
->> --- a/drivers/iommu/amd/amd_iommu_types.h
->> +++ b/drivers/iommu/amd/amd_iommu_types.h
->> @@ -406,7 +406,11 @@ extern bool amd_iommu_np_cache;
->>   /* Only true if all IOMMUs support device IOTLBs */
->>   extern bool amd_iommu_iotlb_sup;
->>   
->> -#define MAX_IRQS_PER_TABLE	256
->> +/*
->> + * AMD IOMMU hardware only support 512 IRTEs despite
->> + * the architectural limitation of 2048 entries.
->> + */
->> +#define MAX_IRQS_PER_TABLE	512
->>   #define IRQ_TABLE_ALIGNMENT	128
->>   
->>   struct irq_remap_table {
-> 
-> With this change should DTE_IRQ_TABLE_LEN be changed to 9? IIUC the spec
-> correctly leaving it at 8 is saying the table is 256 entries long.
+Hi all,
 
-You are correct. Sorry I missed this part. I'll send the fix-up patch ASAP.
+After merging the block tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Thank you,
-Suravee
+fs/io_uring.c: In function 'io_shutdown':
+fs/io_uring.c:3782:9: error: too many arguments to function 'sock_from_file'
+ 3782 |  sock =3D sock_from_file(req->file, &ret);
+      |         ^~~~~~~~~~~~~~
+In file included from fs/io_uring.c:63:
+include/linux/net.h:243:16: note: declared here
+  243 | struct socket *sock_from_file(struct file *file);
+      |                ^~~~~~~~~~~~~~
+
+Caused by commit
+
+  36f4fa6886a8 ("io_uring: add support for shutdown(2)")
+
+interacting with commit
+
+  dba4a9256bb4 ("net: Remove the err argument from sock_from_file")
+
+from the bpf-next tree.
+
+I have applied the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 7 Dec 2020 14:04:10 +1100
+Subject: [PATCH] fixup for "net: Remove the err argument from sock_from_fil=
+e"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/io_uring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index cd997264dbab..91d08408f1fe 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -3779,9 +3779,9 @@ static int io_shutdown(struct io_kiocb *req, bool for=
+ce_nonblock)
+ 	if (force_nonblock)
+ 		return -EAGAIN;
+=20
+-	sock =3D sock_from_file(req->file, &ret);
++	sock =3D sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+=20
+ 	ret =3D __sys_shutdown_sock(sock, req->shutdown.how);
+ 	io_req_complete(req, ret);
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5kRkZNS/rNEXgq/a/ECeDM6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/NnP8ACgkQAVBC80lX
+0Gy0WQf9GaIM5CBSqUjd7N8Mw2U6mjQytrpDmJxXIlAEOic/wBwRrwkQBzjYm4Bh
+qW68SyvoswdL/oYgw3N07QXs3Ktf7P0f3Ul5w70ugh0rHVMW6Q7E7dnuwtxRPCI6
+qKKyBe0yXMHj/jJLSP6L4ki+N5ltUdULO3V22XrqPGbYt0xBs1BSXn3nYlQEHn8L
+MwX8O69VO260FJHPz6+7MglxFW7df2WaRBsprGqfUHMY6QDVcENafpIu9wWyinRH
+lhyCL09pO0l4S21N6JXbJCUbXdY4bDS3EC+fgd3t5FpIzCkCy8XGwlywTmVBc/ow
+2VKP4fiZVOEsoxpbeHA6Bl41dZYeHw==
+=ds5/
+-----END PGP SIGNATURE-----
+
+--Sig_/5kRkZNS/rNEXgq/a/ECeDM6--
