@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9618E2D1818
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17502D1820
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgLGSCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:02:36 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45910 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgLGSCg (ORCPT
+        id S1725939AbgLGSD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:03:27 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2217 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgLGSD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:02:36 -0500
-Received: by mail-ot1-f66.google.com with SMTP id h18so9328081otq.12;
-        Mon, 07 Dec 2020 10:02:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6yo47xkFd96+1uzbs4hUVtKd9yJftEoZWizCC87Sgzo=;
-        b=m8t405D1vF/rtOLXliYgGmfFx9zM4tZhS84KaTaShNk1Ac3GKDNIv0C1gvFGQpakV+
-         ZDwf+LTtsMQUabotK79olF7T4Zmt4K/gG09fyue7j20oxkmqyTxo/INJNx1UthvS623c
-         DChf79XDmU0SRfVviyoX46V/FM5Q2gHvq0x5Q1wyjdHqwLc4x/NgREESbALUJjffBSp0
-         4hL73QfmzXolb1ZmcYeqhl//gjeQJzYH0iBhuAOGjwqGO5gxIM4WToq/+NdeiBP6oPdw
-         SX0Hsa5Dxlkte+VS55C6p14B/INXJ3IIog33HZJWs8Qapp4MYphAOlTl6HF/kNq+4JHS
-         /riw==
-X-Gm-Message-State: AOAM530pSYfyQUNwK7aHkfwNO7oI9hSivhTP0FlSWO8zirNHKhVjpeCN
-        s/NGN/Vh8wP6pwEm/mbAUQ==
-X-Google-Smtp-Source: ABdhPJw0shJl8ArayE//p46EUlSOU5Q2et7NSHa+5b09oa2VHAR5G6ocG2jPI26JO9CVx8E3MajxdA==
-X-Received: by 2002:a9d:3e82:: with SMTP id b2mr5062324otc.329.1607364115404;
-        Mon, 07 Dec 2020 10:01:55 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c21sm172554otd.44.2020.12.07.10.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 10:01:54 -0800 (PST)
-Received: (nullmailer pid 521529 invoked by uid 1000);
-        Mon, 07 Dec 2020 18:01:53 -0000
-Date:   Mon, 7 Dec 2020 12:01:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     devicetree@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] devicetree: phy: rockchip-emmc: pulldown property
-Message-ID: <20201207180128.GA520435@robh.at.kernel.org>
-References: <20201129054416.3980-1-chris.ruehl@gtsys.com.hk>
- <20201129054416.3980-3-chris.ruehl@gtsys.com.hk>
+        Mon, 7 Dec 2020 13:03:26 -0500
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CqWLL6NyGz67M0N;
+        Tue,  8 Dec 2020 02:00:10 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 19:02:43 +0100
+Received: from [10.210.169.98] (10.210.169.98) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 18:02:41 +0000
+Subject: Re: [PATCH v6 06/10] perf metricgroup: Fix metrics using aliases
+ covering multiple PMUs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <will@kernel.org>,
+        <mathieu.poirier@linaro.org>, <leo.yan@linaro.org>,
+        <irogers@google.com>, <qiangqing.zhang@nxp.com>,
+        <kjain@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+        <zhangshaokun@hisilicon.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>,
+        <kan.liang@linux.intel.com>, <kim.phillips@amd.com>,
+        <ak@linux.intel.com>
+References: <1607080216-36968-1-git-send-email-john.garry@huawei.com>
+ <1607080216-36968-7-git-send-email-john.garry@huawei.com>
+ <20201207171914.GC129853@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <af5c5712-c6cf-6b22-12b6-7e7d7672ab13@huawei.com>
+Date:   Mon, 7 Dec 2020 18:02:08 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129054416.3980-3-chris.ruehl@gtsys.com.hk>
+In-Reply-To: <20201207171914.GC129853@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.98]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 01:44:15PM +0800, Chris Ruehl wrote:
-> Update the documentation and add the bool property
-> enable-strobe-pulldown used to enable the internal pull-down for the
-> strobe line.
+On 07/12/2020 17:19, Arnaldo Carvalho de Melo wrote:
+> Next time please try to provides a Fixes: tag to help with
+> backporting/stable@kernel.org  work.
 > 
-> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
-> ---
->  Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt b/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
-> index e728786f21e0..3e4d2d79a65d 100644
-> --- a/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
-> +++ b/Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
-> @@ -16,6 +16,8 @@ Optional properties:
->   - drive-impedance-ohm: Specifies the drive impedance in Ohm.
->                          Possible values are 33, 40, 50, 66 and 100.
->                          If not set, the default value of 50 will be applied.
-> + - enable-strobe-pulldown: Enable internal pull-down for the strobe line.
-> +                           If not set, pull-down is not used.
 
-Needs a vendor prefix.
+Hi Arnaldo,
+
+I know you asked me this before Re. fixes tags ... but I don't know any 
+cases of "metrics using aliases covering multiple PMUs" in mainline 
+today (which this patch addresses). If there are some, then I guess that 
+they are broken and we should seek them out.
+
+Note that this topic was discussed here initially:
+https://lore.kernel.org/linux-perf-users/CAP-5=fUy6FOszNRwJF6ZNpqQSSyrnLPV6GbkEcZMqAhUp3X0ZA@mail.gmail.com/
+
+There has been much churn on the metric code recently, so prob not a 
+straight stable backport; as such, I would prefer to know some metric 
+was broken and verify we fix it.
+
+If you have any better ideas to handle this, then please let me know.
+
+Cheers,
+John
