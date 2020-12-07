@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064422D1468
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5182D146D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgLGPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgLGPHl (ORCPT
+        id S1727247AbgLGPIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:08:47 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37086 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgLGPIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:07:41 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884F4C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:06:55 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 23so5538180lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:06:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6EHGNTCOqzQDyDF6Ur2z/ZJXaKN5/flAOrEQJLIGkas=;
-        b=dOdm47wrW/xk1WQytScoi3uZ/jXVg/t3v4NQrzedMCfdC1qhjLI/DLllqCSNcXIGwn
-         UxpzdAZx3CnDdyjvoW0AEeoCGz96MphzHymNzH93l2C7EDsoQzOYiIg9ujnfndBJvGEF
-         2sb1HbMRbKApf6cdV0EhBPl57Z11L4rRWaUPHQLUHlV1KdFwW6CLg5h0/q6Wou31Ec4h
-         grFaYOU741QAx7NGheIQDANcoR3C1IWXA+HBdhMzFqEKd2FkTMkDP459YmljQejUmy1F
-         eOlqsg0nJaIPfseK0souZK7N/p7pzIt5jGpXBcQxY3+ScVmmii78v8xuIMNS/tOnjoZ7
-         6SLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6EHGNTCOqzQDyDF6Ur2z/ZJXaKN5/flAOrEQJLIGkas=;
-        b=E6uF3HmbRwG4mJy0GKJv14x/BA23NpMbOH1EP4JJqf2e85tPafy+DNFD+iRZvEpqr+
-         brL0bcmE+X60ciG9YPcGTW8r+g6KGK3PvVxqYBcE4nDlC2vRknL8gCENh9zcGQC0juDB
-         n3daCiglba8inHUd3TNXwQP0S6XE1eEtdcwPs5SQqxdoC8NQ5Jgl79z3nwvByU7WMvIP
-         HQ82mmgSwegRvjkxEJPvQPx9BpsjojmoHZGyciZoxTE1lpLLRLZBpM78QV2SvbTkUE72
-         aBhh2C7u3mWmOWO1vQ7ya/h69oEaB60KH0c6fXPQsPIRMLKv0GswJdBy78W3gmMW/N6q
-         Fy8g==
-X-Gm-Message-State: AOAM531zl3ga7+wmxdS/SOPHgi7LqFGnC/Yp8gSzQtNoSnojrcVwznOc
-        IHlEzfJSFaX1THGESsLVF681BSbMJMqu2BSD4iAIbQ==
-X-Google-Smtp-Source: ABdhPJwVF+q0c8iKtovxIeXUdaUK0b2r1vxzSM00uRv4mEoishAR27aRI/4b20wfEXxQH+5ps1UObtvCeBGhzIyHWcU=
-X-Received: by 2002:ac2:43b1:: with SMTP id t17mr8669565lfl.385.1607353614005;
- Mon, 07 Dec 2020 07:06:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201207091516.24683-1-mgorman@techsingularity.net> <20201207091516.24683-4-mgorman@techsingularity.net>
-In-Reply-To: <20201207091516.24683-4-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 7 Dec 2020 16:06:42 +0100
-Message-ID: <CAKfTPtDYvOraCUjs94UCVSOjmJxxJhsF3t1ZNb_h+vSeOC0+VA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] sched/fair: Return an idle cpu if one is found after
- a failed search for an idle core
-To:     Mel Gorman <mgorman@techsingularity.net>
+        Mon, 7 Dec 2020 10:08:46 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607353684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnrHnr5z4bTR9nOXE88DDCJG1jPdD/bbnxuuRi+Jxi8=;
+        b=I0Yp6zf5TNIfafQM3iNcQDsde5tYVKlZw43vWSuUwbUydYaxPnvnBIHr/LF8DKZnekSolz
+        1IbSa10wLpLl3tYHRmW53/4S9neB3C6Ty2GntLQx8/RNLQ4AYA2rIOfxOKt5lLjAaBDNJY
+        UX6RIAJ0e/dsug7VR8zSf48I2PdCSbzCUHC6rSqJCL0vQzcVQhPqrC7B2HDJ4WOXerkwXT
+        yi5RY7Blg8OUpH4VUAO51sCSnspp5rcAlSCRzAFympgg2Q5+37qfhzsFxHIL5/2sQALf7y
+        bs8m0hk5VIB/qvNVPZnMQNs5qDPIa782SXV5xLr3S5O9md1XZHLo4wwavDc5MA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607353684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnrHnr5z4bTR9nOXE88DDCJG1jPdD/bbnxuuRi+Jxi8=;
+        b=a7/L2TkYnB4w+HGE914/SeGqaeXM1/e7/Q2rkUx/lLgRLL3oq7z9yo18fbrk/WbK0V1Uq4
+        /7eXnGN3TAfnlcCg==
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 4/9] softirq: Make softirq control and processing RT aware
+In-Reply-To: <20201207141609.GE122233@lothringen>
+References: <20201204170151.960336698@linutronix.de> <20201204170805.114951971@linutronix.de> <20201207141609.GE122233@lothringen>
+Date:   Mon, 07 Dec 2020 16:08:04 +0100
+Message-ID: <871rg17iy3.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 10:15, Mel Gorman <mgorman@techsingularity.net> wrote:
+On Mon, Dec 07 2020 at 15:16, Frederic Weisbecker wrote:
+> On Fri, Dec 04, 2020 at 06:01:55PM +0100, Thomas Gleixner wrote:
+>> +void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+>> +{
+>> +	unsigned long flags;
+>> +	int newcnt;
+>> +
+>> +	WARN_ON_ONCE(in_hardirq());
+>> +
+>> +	/* First entry of a task into a BH disabled section? */
+>> +	if (!current->softirq_disable_cnt) {
+>> +		if (preemptible()) {
+>> +			local_lock(&softirq_ctrl.lock);
+>> +			/* Required to meet the RCU bottomhalf requirements. */
+>> +			rcu_read_lock();
+>> +		} else {
+>> +			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
 >
-> select_idle_core is called when SMT is active and there is likely a free
-> core available. It may find idle CPUs but this information is simply
-> discarded and the scan starts over again with select_idle_cpu.
->
-> This patch caches information on idle CPUs found during the search for
-> a core and uses one if no core is found. This is a tradeoff. There may
-> be a slight impact when utilisation is low and an idle core can be
-> found quickly. It provides improvements as the number of busy CPUs
-> approaches 50% of the domain size when SMT is enabled.
->
-> With tbench on a 2-socket CascadeLake machine, 80 logical CPUs, HT enabled
->
->                           5.10.0-rc6             5.10.0-rc6
->                            schedstat          idlecandidate
-> Hmean     1        500.06 (   0.00%)      505.67 *   1.12%*
-> Hmean     2        975.90 (   0.00%)      974.06 *  -0.19%*
-> Hmean     4       1902.95 (   0.00%)     1904.43 *   0.08%*
-> Hmean     8       3761.73 (   0.00%)     3721.02 *  -1.08%*
-> Hmean     16      6713.93 (   0.00%)     6769.17 *   0.82%*
-> Hmean     32     10435.31 (   0.00%)    10312.58 *  -1.18%*
-> Hmean     64     12325.51 (   0.00%)    13792.01 *  11.90%*
-> Hmean     128    21225.21 (   0.00%)    20963.44 *  -1.23%*
-> Hmean     256    20532.83 (   0.00%)    20335.62 *  -0.96%*
-> Hmean     320    20334.81 (   0.00%)    20147.25 *  -0.92%*
->
-> Note that there is a significant corner case. As the SMT scan may be
-> terminated early, not all CPUs have been visited and select_idle_cpu()
-> is still called for a full scan. This case is handled in the next
-> patch.
->
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> So, to be clear this adds a new constraint where we can't call
+> local_bh_disable() inside a preempt disabled section? I guess the rest of the
+> RT code chased all the new offenders :-)
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+There are not that many.
 
-> ---
->  kernel/sched/fair.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>> +		}
+>> +	}
+>> +
+>> +	/*
+>> +	 * Track the per CPU softirq disabled state. On RT this is per CPU
+>> +	 * state to allow preemption of bottom half disabled sections.
+>> +	 */
+>> +	newcnt = __this_cpu_add_return(softirq_ctrl.cnt, cnt);
+>> +	/*
+>> +	 * Reflect the result in the task state to prevent recursion on the
+>> +	 * local lock and to make softirq_count() & al work.
+>> +	 */
+>> +	current->softirq_disable_cnt = newcnt;
+>> +
+>> +	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && newcnt == cnt) {
+>> +		raw_local_irq_save(flags);
+>> +		lockdep_softirqs_off(ip);
+>> +		raw_local_irq_restore(flags);
+>> +	}
+>> +}
+>> +EXPORT_SYMBOL(__local_bh_disable_ip);
+>> +
+> [...]
+>> +
+>> +void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>> +{
+>> +	bool preempt_on = preemptible();
+>> +	unsigned long flags;
+>> +	u32 pending;
+>> +	int curcnt;
+>> +
+>> +	WARN_ON_ONCE(in_irq());
+>> +	lockdep_assert_irqs_enabled();
+>> +
+>> +	local_irq_save(flags);
+>> +	curcnt = this_cpu_read(softirq_ctrl.cnt);
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 01b38fc17bca..00c3b526a5bd 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6066,6 +6066,7 @@ void __update_idle_core(struct rq *rq)
->   */
->  static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
->  {
-> +       int idle_candidate = -1;
->         struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
->         int core, cpu;
+> __this_cpu_read() ?
+
+Yes.
+
+>> +
+>> +	/*
+>> +	 * If this is not reenabling soft interrupts, no point in trying to
+>> +	 * run pending ones.
+>> +	 */
+>> +	if (curcnt != cnt)
+>> +		goto out;
 >
-> @@ -6085,6 +6086,11 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
->                                 idle = false;
->                                 break;
->                         }
-> +
-> +                       if (idle_candidate == -1 &&
-> +                           cpumask_test_cpu(cpu, p->cpus_ptr)) {
-> +                               idle_candidate = cpu;
-> +                       }
->                 }
->
->                 if (idle)
-> @@ -6098,7 +6104,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
->          */
->         set_idle_cores(target, 0);
->
-> -       return -1;
-> +       return idle_candidate;
->  }
->
->  /*
-> --
-> 2.26.2
->
+> I guess you could move the local_irq_save() here?
+
+Indeed.
+
