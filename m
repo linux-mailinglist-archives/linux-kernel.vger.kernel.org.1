@@ -2,125 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CBC2D171E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EC22D1724
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgLGRG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:06:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:55888 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGRG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:06:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20881101E;
-        Mon,  7 Dec 2020 09:05:40 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 557EC3F66B;
-        Mon,  7 Dec 2020 09:05:39 -0800 (PST)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH] lkdtm: don't move ctors to .rodata
-Date:   Mon,  7 Dec 2020 17:05:33 +0000
-Message-Id: <20201207170533.10738-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
+        id S1727132AbgLGRIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:08:46 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:40904 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLGRIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:08:45 -0500
+Received: by mail-oo1-f65.google.com with SMTP id 9so678784ooy.7;
+        Mon, 07 Dec 2020 09:08:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SogwgdPzZLs7UQaCL9uSzW/XvOBxKSbmidKt0mKHBqM=;
+        b=aJx5WW/j4od1ZI/UXgIQFLm2qASM/Zs+X/uY5MhumaD91MFNDqkvd9MiesjSNeEj5I
+         Er2DBOTLVDQFtoC36B9IoK4T8E36XK8GGhpLAAOq//BwwysjF+1D0JqBhwc/uk8/STb+
+         EEJUP2CwqOjmG5k4qPBlK0RMUCmWMbQqUocW9FVZg2qEvBliE7TorbiLeNb6U1rH5Tos
+         3EU7+o5LuZFwroRVHLAQeo9z8ris+/bD0yjALGk+v6YcZ8kB/8PRPFMfmj9/bNtupvEO
+         y+CQdxduM94PgLednxPbYnQWEOxFYPtCMZRUXfavaSpp/RIEWnNGSfdHAF7s0ACNq7et
+         dmDQ==
+X-Gm-Message-State: AOAM530Y9xFUfMaI9LVU0z/oICLsfxZwpLme+2w/5dK/RZ8ft77zAjEr
+        Yo8E1vCjagBPbTxA0Igl7A==
+X-Google-Smtp-Source: ABdhPJzmdnrsrHxYVXf/qeAQGbpnlZ7/zYKbrxltqs4VunJ1rWtUE6YSlqOlmfjWhHbswR7eYMS+4w==
+X-Received: by 2002:a4a:3e42:: with SMTP id t63mr1568149oot.32.1607360878900;
+        Mon, 07 Dec 2020 09:07:58 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k13sm2929820otl.72.2020.12.07.09.07.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 09:07:58 -0800 (PST)
+Received: (nullmailer pid 445307 invoked by uid 1000);
+        Mon, 07 Dec 2020 17:07:56 -0000
+Date:   Mon, 7 Dec 2020 11:07:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     ethan.chang@mediatek.com, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] dt-bindings: thermal: Add binding document for
+ mt6873 thermal controller
+Message-ID: <20201207170756.GB439416@robh.at.kernel.org>
+References: <20201207063127.28051-1-michael.kao@mediatek.com>
+ <20201207063127.28051-4-michael.kao@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207063127.28051-4-michael.kao@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with KASAN and LKDTM, clang may implictly generate an
-asan.module_ctor function in the LKDTM rodata object. The Makefile moves
-the lkdtm_rodata_do_nothing() function into .rodata by renaming the
-file's .text section to .rodata, and consequently also moves the ctor
-function into .rodata, leading to a boot time crash (splat below) when
-the ctor is invoked by do_ctors().
+On Mon, Dec 07, 2020 at 02:31:27PM +0800, Michael Kao wrote:
+> This patch adds binding document for mt6873 thermal controller.
+> 
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> ---
+>  .../thermal/mediatek-thermal-lvts.yaml        | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
+> new file mode 100644
+> index 000000000000..745611718c0a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/mediatek-thermal-lvts.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek SoC LVTS thermal controller (DTS) binding
+> +
+> +maintainers:
+> +  - Yu-Chia Chang <ethan.chang@mediatek.com>, Michael Kao <michael.kao@mediatek.com>
 
-Let's prevent this by marking the function as noinstr rather than
-notrace, and renaming the file's .noinstr.text to .rodata. Marking the
-function as noinstr will prevent tracing and kprobes, and will inhibit
-any undesireable compiler instrumentation.
+Not the right format. 1 email per entry.
 
-The ctor function (if any) will be placed in .text and will work
-correctly.
-
-Example splat before this patch is applied:
-
-[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
-[    0.922088] Mem abort info:
-[    0.922828]   ESR = 0x8600000e
-[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    0.925036]   SET = 0, FnV = 0
-[    0.925838]   EA = 0, S1PTW = 0
-[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
-[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
-[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
-[    0.932806] Modules linked in:
-[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
-[    0.935620] Hardware name: linux,dummy-virt (DT)
-[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[    0.938609] pc : asan.module_ctor+0x0/0x14
-[    0.939759] lr : do_basic_setup+0x4c/0x70
-[    0.940889] sp : ffff27b600177e30
-[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
-[    0.943306] x27: 0000000000000000 x26: 0000000000000000
-[    0.944803] x25: 0000000000000000 x24: 0000000000000000
-[    0.946289] x23: 0000000000000001 x22: 0000000000000000
-[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
-[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
-[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
-[    0.952246] x15: 0000000000000000 x14: 0000000000000000
-[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
-[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
-[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
-[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
-[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
-[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
-[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
-[    0.964155] Call trace:
-[    0.964844]  asan.module_ctor+0x0/0x14
-[    0.965895]  kernel_init_freeable+0x158/0x198
-[    0.967115]  kernel_init+0x14/0x19c
-[    0.968104]  ret_from_fork+0x10/0x30
-[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
-[    0.970815] ---[ end trace b5339784e20d015c ]---
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
----
- drivers/misc/lkdtm/Makefile | 2 +-
- drivers/misc/lkdtm/rodata.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
-index c70b3822013f..30c8ac24635d 100644
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@ -16,7 +16,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
- 
- OBJCOPYFLAGS :=
- OBJCOPYFLAGS_rodata_objcopy.o	:= \
--			--rename-section .text=.rodata,alloc,readonly,load
-+			--rename-section .noinstr.text=.rodata,alloc,readonly,load
- targets += rodata.o rodata_objcopy.o
- $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
- 	$(call if_changed,objcopy)
-diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
-index 58d180af72cf..baacb876d1d9 100644
---- a/drivers/misc/lkdtm/rodata.c
-+++ b/drivers/misc/lkdtm/rodata.c
-@@ -5,7 +5,7 @@
-  */
- #include "lkdtm.h"
- 
--void notrace lkdtm_rodata_do_nothing(void)
-+void noinstr lkdtm_rodata_do_nothing(void)
- {
- 	/* Does nothing. We just want an architecture agnostic "return". */
- }
--- 
-2.11.0
-
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6873-lvts
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: lvts_clk
+> +
+> +  "#thermal-sensor-cells":
+> +    const: 0
+> +
+> +required:
+> +  - "#thermal-sensor-cells"
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/thermal/thermal.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +    dts: lvts@1100b000 {
+> +        compatible = "mediatek,mt6873-lvts";
+> +        reg = <0x1100b000 0x1000>;
+> +        clocks = <&infracfg CLK_INFRA_THERM>;
+> +        clock-names = "lvts_clk";
+> +        #thermal-sensor-cells = <0>;
+> +        interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> +
+> +    thermal-zones {
+> +        cpu_thermal: cpu-thermal {
+> +            polling-delay-passive = <0>;
+> +            polling-delay = <0>;
+> +
+> +            thermal-sensors = <&dts>;
+> +            trips {
+> +                cpu_alert1: cpu-alert1 {
+> +                    temperature = <85000>;
+> +                    hysteresis = <0>;
+> +                    type = "passive";
+> +                };
+> +
+> +                cpu_crit: cpu-crit {
+> +                    temperature = <120000>;
+> +                    hysteresis = <0>;
+> +                    type = "critical";
+> +                };
+> +            };
+> +
+> +            cooling-maps {
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.18.0
+> 
