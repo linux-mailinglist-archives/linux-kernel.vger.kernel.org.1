@@ -2,181 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACCC2D0EE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79A92D0EF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgLGLWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:22:21 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:8961 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbgLGLWU (ORCPT
+        id S1726712AbgLGLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:25:35 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:45757 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgLGLZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:22:20 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CqLV24sdGzhmZ7;
-        Mon,  7 Dec 2020 19:21:14 +0800 (CST)
-Received: from [127.0.0.1] (10.65.95.32) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
- 19:21:30 +0800
-Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
- the overflow of HiSilicon ETM
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
- <20201204185551.GB1424711@xps15>
- <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
- <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
-CC:     <mike.leach@linaro.org>, <coresight@lists.linaro.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
-From:   Qi Liu <liuqi115@huawei.com>
-Message-ID: <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
-Date:   Mon, 7 Dec 2020 19:21:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 7 Dec 2020 06:25:34 -0500
+Received: from [192.168.1.155] ([95.114.88.149]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MMY9X-1kTKyR0ddv-00JXzz; Mon, 07 Dec 2020 12:22:52 +0100
+Subject: Re: [PATCH v2 1/2] drivers: gpio: put virtual gpio device into their
+ own submenu
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201203191135.21576-1-info@metux.net>
+ <CAMpxmJVkXeH_B4A_e1Vy4H2LcQnNz0BVoZyXNKEXmG8NvgO6cw@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <169ead3f-8d6a-5de2-772e-707b7cbab635@metux.net>
+Date:   Mon, 7 Dec 2020 12:22:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.95.32]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAMpxmJVkXeH_B4A_e1Vy4H2LcQnNz0BVoZyXNKEXmG8NvgO6cw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:ln1Vk8aZ+xYN6SKVVwyXg/icq2rUNG6aQh3VOfQKle0ytH4nyGl
+ AuDiIa1NR1CbTBRsRm1LRT8KMgL3tFtW9Sd+dTB7zyjB+BP3wlWe5i7vdCN2/uorFtn7n2x
+ +WEAQiCGcEG8YNQDrUbqzJQAzB3/0CfHFk6Sg4QaNVJ2idBfoTvlWDAgcKHlVD5jm6Solmb
+ wmb2e+WBXCjyEjVi2rBnA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ja1UYl5fJlI=:TnURbpt5+bz13c3bg+gtyg
+ QDkV/NyH+je8tGZeHnHcwpToLOhMMMw0bXBq6apc4/rUVNALaCHRSo+VTgD7TWlm8PyM1IByL
+ 6dZRjL2FX2FVOCqnDwFKbIbBUaAiaq/PnlczOkN3vXSs0EVgo+581eD2uLZOdrz8zG1oejWvr
+ sX94szIess39b9Y5QpCzY/5zjSj6h9QOhvKoQjfrk3jW1cRMwojvQnk08ShSkdRq4khvkh6PP
+ srsVXie4+zDVG51ML0m8fLyNfV4GbaXKHNX7+KMg7z/0oE4doQ58XiV8qFDD5zH5TH0HI/yWG
+ 5cSQ2BjAJ5uyvnUcvItsha4f2IiCCeMkiEyBwDBItAfYC5/+izHrh7XIG3FOk+M/mWuMBqQBo
+ 1pI+60cPNqll7ACVHSVxEh2aVxMVEXBiTiajkIFF8OIyTsOznG1j9om4iFvjP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07.12.20 11:31, Bartosz Golaszewski wrote:
 
-Hi Suzuki,
-On 2020/12/7 18:38, Suzuki K Poulose wrote:
-> On 12/7/20 2:08 AM, Qi Liu wrote:
->> Hi Mathieu,
->>
->> On 2020/12/5 2:55, Mathieu Poirier wrote:
->>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
->>>> The ETM device can't keep up with the core pipeline when cpu core
->>>> is at full speed. This may cause overflow within core and its ETM.
->>>> This is a common phenomenon on ETM devices.
->>>>
->>>> On HiSilicon Hip08 platform, a specific feature is added to set
->>>> core pipeline. So commit rate can be reduced manually to avoid ETM
->>>> overflow.
->>>>
->>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->>>> ---
->>>> Change since v1:
->>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
->>>>    to keep specific feature off platforms which don't use it.
->>>> Change since v2:
->>>> - remove some unused variable.
->>>> Change since v3:
->>>> - use read/write_sysreg_s() to access register.
->>>> Change since v4:
->>>> - rename the call back function to a more generic name, and fix some
->>>>    compile warnings.
->>>>
->>>>   drivers/hwtracing/coresight/Kconfig                |  9 +++
->>>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
->>>>   drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
->>>>   3 files changed, 105 insertions(+)
->>>>
->>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
->>>> index c119824..1cc3601 100644
->>>> --- a/drivers/hwtracing/coresight/Kconfig
->>>> +++ b/drivers/hwtracing/coresight/Kconfig
->>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
->>>>         To compile this driver as a module, choose M here: the
->>>>         module will be called coresight-etm4x.
->>>>
->>>> +config ETM4X_IMPDEF_FEATURE
->>>> +    bool "Control overflow impdef support in CoreSight ETM 4.x driver "
->>>> +    depends on CORESIGHT_SOURCE_ETM4X
->>>> +    help
->>>> +      This control provides overflow implement define for CoreSight
->>>> +      ETM 4.x tracer module which could not reduce commit race
->>>> +      automatically, and could avoid overflow within ETM tracer module
->>>> +      and its cpu core.
->>>> +
->>>>   config CORESIGHT_STM
->>>>       tristate "CoreSight System Trace Macrocell driver"
->>>>       depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
->>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>> index abd706b..fcee27a 100644
->>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>> @@ -3,6 +3,7 @@
->>>>    * Copyright (c) 2014, The Linux Foundation. All rights reserved.
->>>>    */
->>>>
->>>> +#include <linux/bitops.h>
->>>>   #include <linux/kernel.h>
->>>>   #include <linux/moduleparam.h>
->>>>   #include <linux/init.h>
->>>> @@ -28,7 +29,9 @@
->>>>   #include <linux/perf_event.h>
->>>>   #include <linux/pm_runtime.h>
->>>>   #include <linux/property.h>
->>>> +
->>>>   #include <asm/sections.h>
->>>> +#include <asm/sysreg.h>
->>>>   #include <asm/local.h>
->>>>   #include <asm/virt.h>
->>>>
->>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
->>>>       int rc;
->>>>   };
->>>>
->>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
->>>> +
->>>> +#define HISI_HIP08_AMBA_ID        0x000b6d01
->>>> +#define ETM4_AMBA_MASK            0xfffff
->>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR    0x3000
->>>
->>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
->>> is set - is this intentional?  What is bit 13 for?
->>>
->> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
->> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
->> reduced to minimum value. So bit 12 and 13 should be cleared together in
->> etm4_hisi_config_core_commit().
-> 
-> Please could you document this in the function.
-> 
-of course, thanks.
->>
->> Qi
->>
->>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT    12
->>>> +#define HISI_HIP08_CORE_COMMIT_REG    sys_reg(3, 1, 15, 2, 5)
->>>> +
->>>> +struct etm4_arch_features {
->>>> +    void (*arch_callback)(bool enable);
->>>> +};
->>>> +
->>>> +static bool etm4_hisi_match_pid(unsigned int id)
->>>> +{
->>>> +    return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
->>>> +}
->>>> +
->>>> +static void etm4_hisi_config_core_commit(bool enable)
->>>> +{
->>>> +    u64 val;
->>>> +
->>>> +    val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
->>>> +    val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
->>>> +    val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
-> 
-> I would use the explicitly masked values when you update
-> a register.
-> 
-ok, how about changing these code to this:
-val &= ~GENMASK(12, 13);
+> I'd call this section "Virtual GPIO drivers" because the code contains
+> drivers not devices.
 
-Thanks
-Qi
+fixed in v2.
 
-> With the above:
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> .
-> 
 
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
