@@ -2,176 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070892D0DBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1D12D0DC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgLGKFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgLGKFh (ORCPT
+        id S1726023AbgLGKG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:06:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42089 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725852AbgLGKG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:05:37 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CEDC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:04:57 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id b73so13024414edf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:04:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b3t3jIgI6hpQGlzQVEB3OyTOWvlTte2ZpFg6vSpZvaQ=;
-        b=S5euiYuGAK8GUznJef4H3eBuwo2+mvjjz1hb8IPp40u1iAiQ3lZRbkzyv8JWedQ1cN
-         WXb388WDDrfH19dKbv+bj8WazUC8ytJ9JLP8H59PdnOwgIFx8uVjEs8TVXhCZPXoxANP
-         l0CRr7DLiCJ9LZHKGlFuiOkm1O/r8TMHV/3FOFLg/QzvJRSM+dXN30mu8Ch/ObNINJHv
-         1e7hAwE1Q22Q4FJl6bbkxiyMcAVvx6rmek4Ol7r15wCYPzbcCE/sbwjPVBqeC9IuIvJE
-         Gg61V+7Zh/BYyEd2rCbz75hpRLQeCicw+jUo/sHdawHyVxh4OxcmFSB9qCgmyTeO87Mk
-         7DbQ==
+        Mon, 7 Dec 2020 05:06:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607335532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zJ0EqwVdDcSntQ8HHIG1G0YXEUcwMRTK4xGx14tFFhk=;
+        b=LsY7DDwlzrJC/7Z7O1uuazGnwlTLtAf46XTHCAP6XDl5BtAG5XcdARJ3I5tdBBRBER/dWF
+        7gJFV9dgU1mgJtkgAShaI0wOkDkdeefTfF5jmRSiw+W47h704v5AmJodAZ+uCq4ZNiBNQg
+        aJmRD3aImMBR3zXvnRA9QAOGmAlxfsk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-UAfhNY01Phy6rMSF4MFlyA-1; Mon, 07 Dec 2020 05:05:30 -0500
+X-MC-Unique: UAfhNY01Phy6rMSF4MFlyA-1
+Received: by mail-wr1-f69.google.com with SMTP id u29so256027wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:05:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b3t3jIgI6hpQGlzQVEB3OyTOWvlTte2ZpFg6vSpZvaQ=;
-        b=uhiSqbSIps7SjgQfN4hYuh7R5/az2IuXH2JY9QSHFgPUlpcmcWbLoQeH1iCE5UKk+m
-         u49XOcjY6KYIisBy6697f7y54KCbPmxkSEYeYdSahSj+qbg34HmdQGOFcdeiPjODEOkw
-         jSecF1LIoplmG/2IA5hwPXmk3LvAEiYy5SUVECiw5KN2yd9FrALS3G84v2BSJ+UbXHrH
-         9tpDH2EH6powGeT/I91hRajqXDqQ2FQD2IzfOokIT66wdaeeDBZj/1Lc8hx1m6VJqNRq
-         ON43VMW4+g6krdv6mp2GMZjW6WJUwTPXvJ2T6TKzE+VRkPkcGxJfSb73ZoAyvJ86mGyE
-         fQyA==
-X-Gm-Message-State: AOAM530C/ZJtlGHZUIryumw9crxVfPNowIm7ptP35jH1oCAz0QePPmCP
-        NERcTjY33IGqWNu9Leb0Q1Hx9ewVsGYGXgKkukVV9g==
-X-Google-Smtp-Source: ABdhPJyRuF3/CkVrrf2pNnKEBpAOWcPwzPm8tJqXn5JWFFeVUQEx2lrYPXECFOpfLcD/f9Px4VNIxLhPKQ5Oz0ziXAQ=
-X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr18902420edb.23.1607335495692;
- Mon, 07 Dec 2020 02:04:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zJ0EqwVdDcSntQ8HHIG1G0YXEUcwMRTK4xGx14tFFhk=;
+        b=YYmCPpB+S8izKCwN1/Fi7ti0iLIM25baMxBl6N/zinZ8LSdtEN0t1KlY1HWVIlYdT2
+         yAsC/DMw3VHRKu7R0c1e5juct1XezehW2XBs8GkFQR0ZIBYWIFIXiw29DL9R+VTpjj6K
+         G+xiTNhvCnZqnGwswwSL3E8RTELLPoO4uZmv0zLVmqy4CjMVDaXV4VaA9XNT0YPzf2gr
+         3FShJ++6m7StM5Xgen7q62u604n3hbW4qIHGKlG/Y3m4ccQ1ap08kddWP99pqVNdjAAo
+         8VnW+jx+3pc1RwsuHlSv3FnZ0v0zJZDCZvly84HBsm3FXNu+cpRbharuK0jZKjDzQLSq
+         QDnw==
+X-Gm-Message-State: AOAM531kSIMvRMSp8eOyK4LwWkSGB0KWBR0X4dSQIOz4po2ZPLjVA1+h
+        NzKi4h2qdgF6Y8yCuBjmSj6GW2huORr4YRjwF/CGkDLCsLhuqlhTmR9Uz1tPDVoxtIgvLrNkyP+
+        wyexLqYEiHpB/xHXlgyMca/Kf
+X-Received: by 2002:adf:c648:: with SMTP id u8mr18813377wrg.215.1607335529595;
+        Mon, 07 Dec 2020 02:05:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxEvKRq05zARKT0OZk4hTLsHMCiWEUHbPzqlj0RKIysUDlMJ2QNt6WpHWi+m/kYzmty+3DFWg==
+X-Received: by 2002:adf:c648:: with SMTP id u8mr18813341wrg.215.1607335529355;
+        Mon, 07 Dec 2020 02:05:29 -0800 (PST)
+Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
+        by smtp.gmail.com with ESMTPSA id m4sm13423080wmi.41.2020.12.07.02.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 02:05:28 -0800 (PST)
+Date:   Mon, 7 Dec 2020 11:05:25 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 0/4] vsock: Add flags field in the vsock
+ address
+Message-ID: <20201207100525.v4z7rlewnwubjphu@steredhat>
+References: <20201204170235.84387-1-andraprs@amazon.com>
 MIME-Version: 1.0
-References: <20201206111555.569713359@linuxfoundation.org>
-In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 7 Dec 2020 15:34:44 +0530
-Message-ID: <CA+G9fYvppziAj5RzG6et2UCX+PWzgmFKGMy0eCMe=eFYaUXxww@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/20] 4.14.211-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201204170235.84387-1-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 6 Dec 2020 at 17:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi Andra,
+
+On Fri, Dec 04, 2020 at 07:02:31PM +0200, Andra Paraschiv wrote:
+>vsock enables communication between virtual machines and the host they are
+>running on. Nested VMs can be setup to use vsock channels, as the multi
+>transport support has been available in the mainline since the v5.5 Linux kernel
+>has been released.
 >
-> This is the start of the stable review cycle for the 4.14.211 release.
-> There are 20 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+>Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
+>are forwarded to the host. This behavior can be used to setup communication
+>channels between sibling VMs that are running on the same host. One example can
+>be the vsock channels that can be established within AWS Nitro Enclaves
+>(see Documentation/virt/ne_overview.rst).
 >
-> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.211-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+>To be able to explicitly mark a connection as being used for a certain use case,
+>add a flags field in the vsock address data structure. The "svm_reserved1" field
+>has been repurposed to be the flags field. The value of the flags will then be
+>taken into consideration when the vsock transport is assigned. This way can
+>distinguish between different use cases, such as nested VMs / local communication
+>and sibling VMs.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+the series seems in a good shape, I left some minor comments.
+I run my test suite (vsock_test, iperf3, nc) with nested VMs (QEMU/KVM), 
+and everything looks good.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Note: I'll be offline today and tomorrow, so I may miss followups.
 
-Summary
-------------------------------------------------------------------------
+Thanks,
+Stefano
 
-kernel: 4.14.211-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: eea918eb2691ce5a9daaeff667dd08ea71687abf
-git describe: v4.14.210-21-geea918eb2691
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.210-21-geea918eb2691
-
-No regressions (compared to build v4.14.210)
-
-No fixes (compared to build v4.14.210)
-
-Ran 38523 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* ltp-syscalls-tests
-* install-android-platform-tools-r2600
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-fs-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
