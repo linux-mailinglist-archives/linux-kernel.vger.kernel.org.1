@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD862D1CD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFECC2D1CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgLGWJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLGWJQ (ORCPT
+        id S1727816AbgLGWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:09:59 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37552 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGWJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:09:16 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA53C061794;
-        Mon,  7 Dec 2020 14:08:35 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id r127so14288406yba.10;
-        Mon, 07 Dec 2020 14:08:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ore45+R2dgdcoUemqYY1WWu++vm7sZbg3Yx7TiVEZtc=;
-        b=SoFolo5ySwToGT3PzECzqIw+MwFmcutA+haZ5AIvzkbKh0QlYGa/bqiUFV8gbF5RAn
-         Q2ZzSVe5kAb/ueiFIdaoY7TDKgRzu8vsRePekyCdw15ODbj9urXrIVzdt2RSEzoJgLac
-         C/NpwEJPSaCf1WcTlpVcv2dM2sob1M28pdSdgFhiMVZPW7P5TBpWxSa6Xa5uDmSTdq2i
-         L/3IW7f+Qf2HJUUAvzF6UCubyLjQjFX3KFDBj5LKJSEc3KkHULCu3B05YorIZRi9IzYy
-         y7sl5E7+aVKnNwtEAalK1HrZShjgkY5RDmfoI6Lxy9QMKMGJfFpD1Hya1dOiRKU4rCfp
-         W4xw==
+        Mon, 7 Dec 2020 17:09:58 -0500
+Received: by mail-ot1-f67.google.com with SMTP id o11so11364944ote.4;
+        Mon, 07 Dec 2020 14:09:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ore45+R2dgdcoUemqYY1WWu++vm7sZbg3Yx7TiVEZtc=;
-        b=RJb8Gtm7/hIYfvCpKe9ik8IDiSHfEiQgXwH7Y0UGy5oE5emrXs8qSJwqODn4O+vHIG
-         5d8TcBFSfD2ASHYEbAJmp6QxGkcBnwVLmaivdFhFvIhRyGqivYRN+FDetH+B06LwJk8W
-         WzTluVotFVFi2I8jcjqefrRR1o58h1XkU2s13SGxQ4fS4gyY0LseC5FtZNTJrLJZeWxx
-         Xe6H+6deFIRiMHzho4hnCVV/gaSfsHI3oFl2FkGWQc/jr8dcKjJWWldCBLpWgwl6l8Xc
-         S0+25h3GlOJWhUbPkPu5UxQVC5jX9N85csekeqTaDR0cwPClUJcWCh/dnVQ3I+cL3CZU
-         7poA==
-X-Gm-Message-State: AOAM533DpewxwraiDlPdDno0NBGSZzKFpHuUZWh5E6FPZF8LbQoCMDaX
-        +IMBWnZf7f6nN8IrTsZ+17fLnVttGuxPAV+QP/Q=
-X-Google-Smtp-Source: ABdhPJxhuuMlbdq1DIxm7H+lh3LgQqT8+7Ip3cdq3l9JYFe6DXYU2+et+VjGWllPCO0nVUxqwd3mdI8mEI/U8cycgKo=
-X-Received: by 2002:a5b:4d2:: with SMTP id u18mr14575636ybp.71.1607378915344;
- Mon, 07 Dec 2020 14:08:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eEyuCq0orrK+zaG7y0s2/donzkzWcAZFmgt/A1f//Yk=;
+        b=oQsNqxXWeRo9cSnUQ1BDDThk5nzLZokrl0l3E6wJk1l7Isgb23jBPUqKDmn0XmJg0I
+         GUV5yeg3egcEr/putvp8O2wSco/x1UuFxlt/RP0dTOPLaqSZbqHsvRd8nBWla3PFlzeW
+         XbVIofLTwm6vOzd01ozmZRpo8JsYocHwYxdNuxQ2tAQ/sUE05l5HSwghgevZw3LAJ4wu
+         GmOeIlBzGWNbTM3JIMwPXAUUd6B8eg5h6ubVncj7wcA4nBgolV+uF/ddR5pBY8bpgaZL
+         8alYtpSafJxnhgPp5FWaGOA82JluVmg8r6zFj2a7A8Bch6Giw9t17wwL3zWLwqs3npnz
+         1lmg==
+X-Gm-Message-State: AOAM531fVdSW2LXCGX06xVkgYYWvIPVYQPfzKISCE7bOdrcN0qzbb6cQ
+        JiplwqnubwisgxG4vKuS9Q==
+X-Google-Smtp-Source: ABdhPJy+Zvpma0/n7ijbAgsnojTNissbUFf8+kWdcn9VvzvovXHlQI/qIhixgouaF2p/sDJ9KdZNsg==
+X-Received: by 2002:a9d:5f03:: with SMTP id f3mr14573953oti.91.1607378951694;
+        Mon, 07 Dec 2020 14:09:11 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 60sm2928735ott.32.2020.12.07.14.09.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 14:09:10 -0800 (PST)
+Received: (nullmailer pid 923974 invoked by uid 1000);
+        Mon, 07 Dec 2020 22:09:09 -0000
+Date:   Mon, 7 Dec 2020 16:09:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [Patch v2 6/6] dt-bindings: crypto: qcom-qce: Add v5.4 to binding
+Message-ID: <20201207220909.GA918596@robh.at.kernel.org>
+References: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+ <20201119155233.3974286-7-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <20201202204649.25314-1-zajec5@gmail.com>
-In-Reply-To: <20201202204649.25314-1-zajec5@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date:   Mon, 7 Dec 2020 23:08:24 +0100
-Message-ID: <CACna6rxAz+WXUSqu9dm2uuQg+Pz_irH-HghHh_4e-pndeRkk9w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: phy: Add binding for BCM4908 USB PHYs
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Simon Arlott <simon@octiron.net>,
-        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119155233.3974286-7-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 at 21:48, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wro=
-te:
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->
-> BCM4908 SoCs have USB 2.0 PHY and USB 3.0 PHY attached to the MDIO bus.
-> Those bindings allow describing them.
->
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+On Thu, Nov 19, 2020 at 10:52:33AM -0500, Thara Gopinath wrote:
+> Add compatible string to support v5.4 crypto engine.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/crypto/qcom-qce.txt | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+> index fdd53b184ba8..ed1ede9c0acc 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+> @@ -2,7 +2,9 @@ Qualcomm crypto engine driver
+>  
+>  Required properties:
+>  
+> -- compatible  : should be "qcom,crypto-v5.1"
+> +- compatible  : should be
+> +		"qcom,crypto-v5.1" for ipq6018
+> +		"qcom,crypto-v5.4" for sdm845
 
-Please drop this patchset for now as Florian pointed that the existing
-driver may be adapted / reused for those PHYs.
+An outstanding example of why to use SoC specific compatibles rather 
+than versions. Keep v5.1, but use SoC compatibles going forward.
+
+>  - reg         : specifies base physical address and size of the registers map
+>  - clocks      : phandle to clock-controller plus clock-specifier pair
+>  - clock-names : "iface" clocks register interface
+> -- 
+> 2.25.1
+> 
