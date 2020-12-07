@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5470E2D1BBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6612D1BBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgLGVJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:09:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLGVJp (ORCPT
+        id S1726897AbgLGVJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:09:39 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41018 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgLGVJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:09:45 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EC1C0617B0;
-        Mon,  7 Dec 2020 13:08:59 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id y24so13912139otk.3;
-        Mon, 07 Dec 2020 13:08:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=P/ijqFbV8KBugVxLlNX1Y58zrs/i9xvHOBeofNv4zLg=;
-        b=FS5Jxu9NzE+gitHHvefNFkAi9gWtnK/8Qje+xEm7QmROmRpVjEeUVS3CM1sEuXNAd0
-         IATXAWwgIOy/dXpXWZpGsLA26HGjj0+zfCtIRlFabIZiE5P30MroKOXwtxoo9g6w9ahJ
-         L13jJXjLAG0/MZl3gNr4Ei1JWo6b5Mp1+8UOmv8UUNO6UAYYUxaX+sjvDzOqsi6jw7Ic
-         tfEfWGLEFkF8/Cy6PBx0DKArdGUPmN0I1I2RMIotWNM3jUiedTbwZCadJ3fqNtSMWOEB
-         vQgm1lKmawiEpbNISuk13M51Aza93wqfoVapAS5o8xu50PNPVLLWUhBwJ1f+RatcaMBW
-         ww1A==
+        Mon, 7 Dec 2020 16:09:37 -0500
+Received: by mail-ot1-f65.google.com with SMTP id x13so6368430oto.8;
+        Mon, 07 Dec 2020 13:09:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=P/ijqFbV8KBugVxLlNX1Y58zrs/i9xvHOBeofNv4zLg=;
-        b=PRNu2jqvs0Cm+ffxFisJ+LETtW6U3upDlN1DTuU8CtUuHNYaoMJ3ryCUkZCWjlMuf5
-         l2pGEjPHOTYaef5VNMpQ/4FmQFunWy6UsyL3upxT9phRJNyAFdNOzQZWD8+nGnUUtLvu
-         3hxHDIL4J7ajOAEZmBxsLIvCwFiFUy32oXcdH90cMcWl0NLozaP8OyhcnxmmeH0Eu+OF
-         gnqIZcaYFXEDDNLtyaLT55G+RtRyrrg5lWLaFVahmoXk7fNCkaHjIzLquNn59djj7+HT
-         sBytafdfn1OSvyTCu03PwBsLXVfQUY8krVQykR5s8u2zQcMLFrJjV+nb40VwWaS+J5ov
-         Alag==
-X-Gm-Message-State: AOAM533r353EicNUF4rrdPV0w2zwDv1AsMetT8jyhxbAC7Yjvsfhc/4Z
-        PDCdpOTARqvtJ57RvPFEToc=
-X-Google-Smtp-Source: ABdhPJxgKZuCmZTt0Ax6qvAwbxYPZNAgvXM6GwzY2RF1seo40AjCWpNPtRf7bYuQ8DFiE+VQgAdO0g==
-X-Received: by 2002:a05:6830:3154:: with SMTP id c20mr15098765ots.286.1607375338793;
-        Mon, 07 Dec 2020 13:08:58 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id t25sm2905926otj.13.2020.12.07.13.08.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UKVvjJWc9OSjiXaprXNkt0WW9iu0RQ9BqZVBt0mZKwo=;
+        b=aUDOrRFafzZ53yRVzHbLg0sFRqaiLhkfuBpWArC7446z7e6ajuJeWMshUSy+pSnCnv
+         T0DzTRAs8YAraQzActQP6iI+B0F4rWcvIgk30TMDC004xUJ3PzkkkVAJ0Ds+ySAHdgdW
+         2etK3Nj5n8ZVVK6ebe6/JmX8/YB2fpjVNjNTdemLVWZvq3HMucoo1C4vXWxLir3nCXIj
+         sxe3XDGEbHAlVrWMvDvQqR6ibjocptuUbj7anzbG/bejfexOO3FTYR1LRs3NxAN87AkW
+         guB0MxWDGhXdiKQFp4R0D7l8uXwhTKp6R8+k11z+rouchn99WARMu5bLopjgYI8Y5m7d
+         kHUg==
+X-Gm-Message-State: AOAM533DMJPjxoSy0rNqJgQlWcUd571o4C7/95Pc7/BdxeIqz6TzAwe5
+        52EofBaO2n4HBsfdAgM24rokx6YIZg==
+X-Google-Smtp-Source: ABdhPJyW44Q0Osq/CeAta5Ib6oxadSRnlEq3jrCH5C95F2V1euHJQ1oB9IyTCUMVdE7v+OJu1/oyTA==
+X-Received: by 2002:a9d:72c4:: with SMTP id d4mr14729969otk.149.1607375337130;
+        Mon, 07 Dec 2020 13:08:57 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n13sm1201668otk.58.2020.12.07.13.08.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:08:58 -0800 (PST)
-Date:   Mon, 07 Dec 2020 13:08:52 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fce99e440d06_5a962088e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-4-jackmanb@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-4-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 03/11] bpf: x86: Factor out a lookup table for
- some ALU opcodes
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Mon, 07 Dec 2020 13:08:56 -0800 (PST)
+Received: (nullmailer pid 827134 invoked by uid 1000);
+        Mon, 07 Dec 2020 21:08:55 -0000
+Date:   Mon, 7 Dec 2020 15:08:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH] dt-bindings: arm: vt8500: remove redundant white-spaces
+Message-ID: <20201207210855.GA827049@robh.at.kernel.org>
+References: <20201117201752.129766-1-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117201752.129766-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brendan Jackman wrote:
-> A later commit will need to lookup a subset of these opcodes. To
-> avoid duplicating code, pull out a table.
+On Tue, 17 Nov 2020 21:17:52 +0100, Krzysztof Kozlowski wrote:
+> Remove redundant white-spaces, no functional change.
 > 
-> The shift opcodes won't be needed by that later commit, but they're
-> already duplicated, so fold them into the table anyway.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
+>  Documentation/devicetree/bindings/arm/vt8500.yaml | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
 
-Acked-byy: John Fastabend <john.fastabend@gmail.com>
+Applied, thanks!
