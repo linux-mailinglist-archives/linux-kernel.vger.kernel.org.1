@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FCB2D1B9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3C12D1B9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgLGVFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:05:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S1726865AbgLGVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgLGVFs (ORCPT
+        with ESMTP id S1726269AbgLGVHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:05:48 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A1AC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:05:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id y15so2936656qtv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 13:05:07 -0800 (PST)
+        Mon, 7 Dec 2020 16:07:09 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A71C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:06:29 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id q1so13555071ilt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 13:06:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nKAI0S93ME7i51hseZ6+wmpHBdg0HI9aWCiEZunfjik=;
-        b=Soxx/3N87PGx3mb5h4nU9Y/1F8HFpxwJU3/MJ0CuDY+YN8OP9ACnbLtyxJ8Tb1X8IU
-         iQYU8f8pjcrD6PDHJKHkthDsupHcCsffWRG14SORf3yzaND07VUUJCr8elCDRf+RQh3K
-         FIei72MzqrbuDO0n+BkP/5R2H64pPI3IwWV9r0/XFeEIkJwupKsKnrxBVgedybjx92vk
-         ROyk2ju1mOewZF/mB/98rKMHu2KDDNnD4PbvV4RZQTfTopE/Jf7GEDq0l8ii8wFssBR7
-         XfSXbdl1azrnUgwDW4U43iXyGjoeYbnD7ymnTH4Oo27RxG0DE0MO1nWLfQdtpTSeCn/J
-         x5nw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p9AfHP9RUgbPOiM4oNtMaqXuhiqhvukbABKjF1a0DOY=;
+        b=R1pYaz95u9Ycvy7npq5FB3fegFBwtX0dGlIsfiplchVOGoGC7Yqe5GI3NAXXv9wKsk
+         5dlmZFhXZ3qFDtXZ1hOBcG34wXJ2WgKDhQPj7SkmO1L9BZTTVVKdGo5Fr7rHeK0ulw+Q
+         c/7BE/oTvJ5i4EPSLEkmH9+lm1WRRSBNUlbg4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nKAI0S93ME7i51hseZ6+wmpHBdg0HI9aWCiEZunfjik=;
-        b=QD5Uubg/SDaGSOXQ//UQL+L2OWhaODXbPVZhCXz7yoEob9jNvAg/A4lJRQs9Oh4Pc8
-         ZsWXoDs1F8HwR4OqI8CNrTX7h9iARwGI2YJLO1d88me5BO5K4bc0ljX44FTcKTJ6Bh3b
-         IVuz3HTwcC3VpeGVKO/PJVSiUMs8zQgNbRfyRxEXNUhjT67fZzwGslllydQzMFKlrZA3
-         IDT/JFLnu3zQ3ED8fBTs3ps6AqTxWSNn2gEitmEchnpIBwhaNYgX3hJjEbWdQuesynMT
-         bJ9jszcRMyWTxaavykBj/1ZdU1EFfEnZ02UA5Lfup0tnWXK4Fy8ZfGFDcSYDXKbmli2J
-         UmlQ==
-X-Gm-Message-State: AOAM532KvYYN/w1pMJDUdWoFqHMHtsiSRSxOUgXevV98YyU/Cq12PVlb
-        UMP/OVVsiFVO/Dv/2bdxesw4Xg==
-X-Google-Smtp-Source: ABdhPJxj04RcFkKycBCmmM8xlj5X137EFzrpVhlQXfFhcfVDinY9DvcLduWOoOwwCNTtmiIK5wSaAw==
-X-Received: by 2002:ac8:5450:: with SMTP id d16mr25669307qtq.33.1607375107115;
-        Mon, 07 Dec 2020 13:05:07 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id h16sm13760997qko.135.2020.12.07.13.05.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:05:06 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kmNgv-007fdg-Qh; Mon, 07 Dec 2020 17:05:05 -0400
-Date:   Mon, 7 Dec 2020 17:05:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 8/8] ntp: Consolidate the RTC update implementation
-Message-ID: <20201207210505.GM5487@ziepe.ca>
-References: <20201206214613.444124194@linutronix.de>
- <20201206220542.355743355@linutronix.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p9AfHP9RUgbPOiM4oNtMaqXuhiqhvukbABKjF1a0DOY=;
+        b=fpJX/JzB79gyONgiZtQbbvL3NMpZbMEFmEWAkzx/RwwqIeuOWFzpEAN+ssQ/8tHvKM
+         Z4tIjAHmSm8Zdkt30/mo3cxJ6sYI2OrU0KVsCAf/dj5T2Jpt64XHWy1R4g+vVV5xTLSY
+         K+5dKJNY2z7vzv9zIqeHY2Em4YUPzu04gbJ47plNtd6KI8ydpWdkSLNdC2to95nOp+9P
+         838iSexEhNktSPcId64wj5Nqd0BzTPRdv1Ns4P1hZdDOfKwVPqb/xQt/GYdy8eqSDHeF
+         ELdO2TM84urK4ZgDS+rQIp1S0yWzoCw0n2VpUHRlW1LURHJDQA+o+JSX47emoj51PjRj
+         F5vg==
+X-Gm-Message-State: AOAM532kH9v5CmXkbjqVNnPMbcoiNP2Uwd6FXdWcOOHTtt/o5e/lKZNc
+        QYkXLmdRbuPtCWd1Hg8PVee2Bg==
+X-Google-Smtp-Source: ABdhPJydL3VULKgg9Z2FRVmDzjQU9ikvjmw3w4ALlIj62YReWcbFROnSQyeqcMdzwNXwlEWww6qHlA==
+X-Received: by 2002:a92:cb52:: with SMTP id f18mr8267036ilq.41.1607375188531;
+        Mon, 07 Dec 2020 13:06:28 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j12sm6694370ioq.24.2020.12.07.13.06.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 13:06:27 -0800 (PST)
+Subject: Re: [PATCH] rseq/selftests: Fix MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+ build error under other arch.
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Xingxing Su <suxingxing@loongson.cn>, shuah <shuah@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1606277097-5853-1-git-send-email-suxingxing@loongson.cn>
+ <1169128156.59953.1606320652393.JavaMail.zimbra@efficios.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <01ffd154-cb45-8538-dd27-8f2de87faee8@linuxfoundation.org>
+Date:   Mon, 7 Dec 2020 14:06:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206220542.355743355@linutronix.de>
+In-Reply-To: <1169128156.59953.1606320652393.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 10:46:21PM +0100, Thomas Gleixner wrote:
->  /*
->   * If we have an externally synchronized Linux clock, then update RTC clock
->   * accordingly every ~11 minutes. Generally RTCs can only store second
-> @@ -686,6 +621,10 @@ static bool sync_cmos_clock(void)
->   */
->  static void sync_hw_clock(struct work_struct *work)
->  {
-> +	static unsigned long offset_nsec = NSEC_PER_SEC / 2;
+On 11/25/20 9:10 AM, Mathieu Desnoyers wrote:
+> ----- On Nov 24, 2020, at 11:04 PM, Xingxing Su suxingxing@loongson.cn wrote:
+> 
+>> Except arch x86, the function rseq_offset_deref_addv is not defined.
+>> The function test_membarrier_manager_thread call rseq_offset_deref_addv
+>> produces a build error.
+>>
+>> The RSEQ_ARCH_HAS_OFFSET_DEREF_ADD should contain all the code
+>> for the MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
+>> If the other Arch implements this feature,
+>> defined RSEQ_ARCH_HAS_OFFSET_DEREF_ADD in the header file
+>> to ensure that this feature is available.
+>>
+>> Following build errors:
+>>
+>> param_test.c: In function ‘test_membarrier_worker_thread’:
+>> param_test.c:1164:10: warning: implicit declaration of function
+>> ‘rseq_offset_deref_addv’
+>>     ret = rseq_offset_deref_addv(&args->percpu_list_ptr,
+>>           ^~~~~~~~~~~~~~~~~~~~~~
+>> /tmp/ccMj9yHJ.o: In function `test_membarrier_worker_thread':
+>> param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
+>> param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
+>> collect2: error: ld returned 1 exit status
+>> make: *** [/selftests/rseq/param_test_benchmark] Error 1
+>>
+>> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+> 
+> Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> 
+> Shuah, can you pick up this fix please ?
+> 
 
-A comment here explaining this is the default: because the platform is
-assumed to use CMOS, and by the way, this whole thing is obsolete
-don't use it, seems appropriate..
+Applying for 5.11-rc1.
 
-The time split is clearer if you think of it from a bus/datasheet
-perspective, less clear if you try to measure the system directly, eg
-from an alarm. But, I think this  has a better chance of some rtclib
-driver authors to fill in the datasheet value at least.
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+thanks,
+-- Shuah
