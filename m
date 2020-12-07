@@ -2,174 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869602D182A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD7D2D182C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgLGSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        id S1726456AbgLGSGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:06:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLGSFf (ORCPT
+        with ESMTP id S1725822AbgLGSGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:05:35 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B5FC061285
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 10:04:48 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c79so10829691pfc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 10:04:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=kbV3WSMn8Z3r9fdGwZbCofxQ8ZlQoCXfrnC4rA/3kXU=;
-        b=BvSGPkk1XV51HulmhP09dGtC50Mqu3r9NSlD6Rtp/fEgFbKCUYHJxoiQ/Lw026a8eV
-         8pkollCNLgLs0UCVhW4o6brcgbS7lvxuFZaOmJ+LJEDtCq8YuLMMQZrtArDfIaA4qRjK
-         1rYEF7M/0093Uw/TQm30akYxGr+J8KFgSt2kBgvDwZmhZx7l1TrKcKnw/BLb64ju6OEZ
-         7uNmPHrSbOS4KEe61x/bBDbhbX48C3Z5YfVlyWUBeqc96naM8cDULIA2yeOq4vSQjPXK
-         LnXlIyvD6dTz28bK9V8o5Ko8tRYCjDgrUKZ2yxSAi3weyMM2+TT4+dd//sg+88u0Yyhh
-         csoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=kbV3WSMn8Z3r9fdGwZbCofxQ8ZlQoCXfrnC4rA/3kXU=;
-        b=n7OkgKUNFWLHnR4tB53NaeVaYM5NmLCjs2MuvvVOrUD114kgQziKB2ewMo4VGo1Pdo
-         GAiIoQFx1yUN09KZtCg7XgzVNR5DyZRzDymnAe9XKFHR64CcRSWe7kxcA8CkP03HaEhE
-         JdPcjebigXE4WJJxBZJHbAaHkyA+xjbXr9UhcD0vrklezzmTMYInV71GYmpSYIx3bKG1
-         SfjRtRgzJPx2YRsPxv+MNR5hjrwoVyRflHuJOw5XYslsnjy9G9kWUntnekVWA/usIW6t
-         i0t8jeCHA0C1YAnX2K7TYWvnkHx/M/93nX9kQJ7W2KsFka1aY/2aeXZeGKbJLQVjle0c
-         SEVQ==
-X-Gm-Message-State: AOAM530Pyu/wfM1zYdXD8wEEv4Y72/H6mXZnz3cx1QwM3wFWEMUIHnxC
-        r8miW6i8J3/rVNCxSPCCTBQl+g==
-X-Google-Smtp-Source: ABdhPJwV3xytw1x+Of85bMOMEIGarLom/VlHMSxobmAAr7XDbFmck2N5F2W7tVz+G+34gQVIMGV2aQ==
-X-Received: by 2002:a62:1c88:0:b029:197:f6e4:bc2b with SMTP id c130-20020a621c880000b0290197f6e4bc2bmr17027674pfc.6.1607364287776;
-        Mon, 07 Dec 2020 10:04:47 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:4be:8206:69d7:62c1? ([2601:646:c200:1ef2:4be:8206:69d7:62c1])
-        by smtp.gmail.com with ESMTPSA id x1sm15247910pfj.95.2020.12.07.10.04.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 10:04:47 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Date:   Mon, 7 Dec 2020 10:04:45 -0800
-Message-Id: <885C1725-B479-47F6-B08D-A7181637A80A@amacapital.net>
-References: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-In-Reply-To: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-X-Mailer: iPhone Mail (18B121)
+        Mon, 7 Dec 2020 13:06:25 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4435C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 10:05:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hqhNNeuHIOFZyPiLNtUO49By4xky1pUdsNSXoohKAXg=; b=V6o30UJoArkIeo6FSY7xxe2CsQ
+        skhbhg6sbfReA+dCDG4LdxWK4i+waESNonbWOmAcdtO6/Bu2adVCYTucd09krKUzA7oIa2g8bwv5u
+        7VgG9xO5hPN+bajkspSigmknhinOL7IUqnmqFdY0KGmpxPEuucTd26CKNCscs8lkSdPfHTP7PCIch
+        OxBb6pkV/j6k/OfPk3NyjBsldB6fGSwbGFyvUkNzFAUNgqq/wEU7LGHLaAhCLdN76x0oJO9qWU0nc
+        X3inzyoY/mlOxXJLhxdKY2IICi5buGVkQ3ZQu6iSJJmFDbDuc0hXSdmcKnlBy+m56HAAlJkNO6o0D
+        lyp9FP7A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmKsz-0007tj-HX; Mon, 07 Dec 2020 18:05:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E24CE304D28;
+        Mon,  7 Dec 2020 19:05:18 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF16E20819142; Mon,  7 Dec 2020 19:05:18 +0100 (CET)
+Date:   Mon, 7 Dec 2020 19:05:18 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        mgorman@techsingularity.net, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20201207180518.GR3040@hirez.programming.kicks-ass.net>
+References: <20201118043113.53128-1-aubrey.li@linux.intel.com>
+ <20201207154838.GP3040@hirez.programming.kicks-ass.net>
+ <jhjtusxtv7b.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjtusxtv7b.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 07, 2020 at 04:52:24PM +0000, Valentin Schneider wrote:
+> 
+> On 07/12/20 15:48, Peter Zijlstra wrote:
+> > On Wed, Nov 18, 2020 at 12:31:13PM +0800, Aubrey Li wrote:
+> >> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> >> index f324dc36fc43..6f5947673e66 100644
+> >> --- a/kernel/sched/idle.c
+> >> +++ b/kernel/sched/idle.c
+> >> @@ -163,6 +163,7 @@ static void cpuidle_idle_call(void)
+> >>       */
+> >>
+> >>      if (cpuidle_not_available(drv, dev)) {
+> >> +		update_idle_cpumask(this_rq(), true);
+> >>              tick_nohz_idle_stop_tick();
+> >>
+> >>              default_idle_call();
+> >> @@ -193,6 +194,7 @@ static void cpuidle_idle_call(void)
+> >>                      max_latency_ns = dev->forced_idle_latency_limit_ns;
+> >>              }
+> >>
+> >> +		update_idle_cpumask(this_rq(), true);
+> >>              tick_nohz_idle_stop_tick();
+> >>
+> >>              next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+> >> @@ -205,10 +207,12 @@ static void cpuidle_idle_call(void)
+> >>               */
+> >>              next_state = cpuidle_select(drv, dev, &stop_tick);
+> >>
+> >> -		if (stop_tick || tick_nohz_tick_stopped())
+> >> +		if (stop_tick || tick_nohz_tick_stopped()) {
+> >> +			update_idle_cpumask(this_rq(), true);
+> >>                      tick_nohz_idle_stop_tick();
+> >
+> > We already have a callback in tick_nohz_idle_stop_tick(), namely
+> > nohz_balance_enter_idle().
+> 
+> That's a no-op for !NO_HZ_COMMON though. For similar reasons, Aubrey moved
+> the clearing of the cpumask to scheduler_tick().
+> 
+> Are you saying this mechanism should only be driven for NO_HZ kernels?
 
-> On Dec 7, 2020, at 9:00 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote:
->=20
-> =EF=BB=BFOn Mon, 2020-12-07 at 08:53 -0800, Andy Lutomirski wrote:
->>>> On Dec 7, 2020, at 8:38 AM, Thomas Gleixner <tglx@linutronix.de> wrote:=
-
->>>=20
->>> =EF=BB=BFOn Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
->>>>> On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
->>>>> =46rom a timekeeping POV and the guests expectation of TSC this is
->>>>> fundamentally wrong:
->>>>>=20
->>>>>     tscguest =3D scaled(hosttsc) + offset
->>>>>=20
->>>>> The TSC has to be viewed systemwide and not per CPU. It's systemwide
->>>>> used for timekeeping and for that to work it has to be synchronized.=20=
-
->>>>>=20
->>>>> Why would this be different on virt? Just because it's virt or what?=20=
-
->>>>>=20
->>>>> Migration is a guest wide thing and you're not migrating single vCPUs.=
-
->>>>>=20
->>>>> This hackery just papers over he underlying design fail that KVM looks=
-
->>>>> at the TSC per vCPU which is the root cause and that needs to be fixed=
-.
->>>>=20
->>>> I don't disagree with you.
->>>> As far as I know the main reasons that kvm tracks TSC per guest are
->>>>=20
->>>> 1. cases when host tsc is not stable=20
->>>> (hopefully rare now, and I don't mind making
->>>> the new API just refuse to work when this is detected, and revert to ol=
-d way
->>>> of doing things).
->>>=20
->>> That's a trainwreck to begin with and I really would just not support it=
-
->>> for anything new which aims to be more precise and correct.  TSC has
->>> become pretty reliable over the years.
->>>=20
->>>> 2. (theoretical) ability of the guest to introduce per core tsc offfset=
-
->>>> by either using TSC_ADJUST (for which I got recently an idea to stop
->>>> advertising this feature to the guest), or writing TSC directly which
->>>> is allowed by Intel's PRM:
->>>=20
->>> For anything halfways modern the write to TSC is reflected in TSC_ADJUST=
-
->>> which means you get the precise offset.
->>>=20
->>> The general principle still applies from a system POV.
->>>=20
->>>    TSC base (systemwide view) - The sane case
->>>=20
->>>    TSC CPU  =3D TSC base + TSC_ADJUST
->>>=20
->>> The guest TSC base is a per guest constant offset to the host TSC.
->>>=20
->>>    TSC guest base =3D TSC host base + guest base offset
->>>=20
->>> If the guest want's this different per vCPU by writing to the MSR or to
->>> TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which=
-
->>> is the offset to the TSC base of the guest.
->>=20
->> How about, if the guest wants to write TSC_ADJUST, it can turn off all pa=
-ravirt features and keep both pieces?
->>=20
->=20
-> This is one of the things I had in mind recently.
->=20
-> Even better, we can stop advertising TSC_ADJUST in CPUID to the guest=20
-> and forbid it from writing it at all.
-
-Seems reasonable to me.
-
-It also seems okay for some MSRs to stop working after the guest enabled new=
- PV timekeeping.
-
-I do have a feature request, though: IMO it would be quite nifty if the new k=
-vmclock structure could also expose NTP corrections. In other words, if you c=
-ould expose enough info to calculate CLOCK_MONOTONIC_RAW, CLOCK_MONOTONIC, a=
-nd CLOCK_REALTIME, then we could have paravirt NTP.
-
-Bonus points if whatever you do for CLOCK_REALTIME also exposes leap seconds=
- in a race free way :). But I suppose that just exposing TAI and letting the=
- guest deal with the TAI - UTC offset itself would get the job done just fin=
-e.
+IFF it keys off of the tick being stopped, then yes. But as said in the
+other email, I think that's a very dubious thing to begin with.
