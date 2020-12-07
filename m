@@ -2,76 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C36C2D1406
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A86D2D1410
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgLGOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:49:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgLGOtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:49:52 -0500
-X-Gm-Message-State: AOAM530ecnSqT59fZ5m+k4Nm9KsR+ZG0Jrj5+auErwkbhba9ZRhjgFct
-        akDK6gXzTTv2g6JqEaXMOuaOMXnxIZ9YSDVVuxg=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607352551;
-        bh=/7uV17ZjcWZRBQZBsaxXCvaCcx8EDJrzmSGwZfIHZBI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z3B5NqZCUFukUOspe1ucdNJwSWpbKS1a3OEv7qGiI+AY5ORP39F5PVuoye/LBPICS
-         teTcw177mtPE15AMkM0+fPHaQLBOVJONa6TkjWV9JSWYjPPTGZyrbSrNUT0vbDWHjH
-         akxCIblLuwb9qhcZ4zQ7Mz2EUB2+k8sJC3rMQynkNKZbWuCzHaizMsWPnK5SmJBAZl
-         9E27x6WEF90tFbsTXEncNltMefT5e5QWoRS766VlwIvl6THvmMjVoaS+4npaAnAU7s
-         0bHD4Ce1PZYmbhxZTCdWu+Su3tIQK/g+j8icvylhE4CHe5wZhz3vSCFA+2Pt/kCgYK
-         bDfcHgHznI9qQ==
-X-Google-Smtp-Source: ABdhPJzazfYYPi5tQ9qZHGKKTiqRYg1UwkAMXPK70lDr0uNGzI5KsYWNMuHafXqRdFME11jw4UVOwQTvauB6kYEvQ1s=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr9525803otm.305.1607352550928;
- Mon, 07 Dec 2020 06:49:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20201204165841.3845589-1-arnd@kernel.org> <CAL_JsqLCWK99AXzCWXpPsRxA+X5OKsHEGZtBhAsaVFhXoeRb9g@mail.gmail.com>
-In-Reply-To: <CAL_JsqLCWK99AXzCWXpPsRxA+X5OKsHEGZtBhAsaVFhXoeRb9g@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 7 Dec 2020 15:48:54 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1UH1O2kWOkHGAmFQ4Ys7MKBiC2OoDs96Ba4yWSf7vyTg@mail.gmail.com>
-Message-ID: <CAK8P3a1UH1O2kWOkHGAmFQ4Ys7MKBiC2OoDs96Ba4yWSf7vyTg@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: exynos: add back MSI dependency
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726923AbgLGOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgLGOvP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:51:15 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540FCC061571;
+        Mon,  7 Dec 2020 06:50:35 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id hk16so7576413pjb.4;
+        Mon, 07 Dec 2020 06:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=C926Zk79WJsFy+LvEVKlKRNyIYSMI/KNpJXHNmmjftQ=;
+        b=hVUuXafh3+mmNByGEy927C6luF/+Y3O1iuKq3m20VIWuk8oG/hEV5sF+YnU5YAXpxQ
+         8QyMiVOnXzHJxjYYyZUgtxi86bgS2+NBpM2VL36xE21Z6IJCt8Dr/MFeWI1ZfrkWFiNv
+         eoqcEziZtltP+i1Oxjm4sjFjm3iQuS94MpanowUA9T3m4FIVyhJ1qkA3sdB1qzx/Cej5
+         5mL8AzhLO+522vfku1hdP2D8fxdK3bbpeTBCIENDZe4w/tBbj/hUneh8v3BcYmixGFS0
+         51nFzfwAv25S0EnNE2fRM1Zb6/v/qWYdPLj2DlIPIPcjTTlGx+ltY5T3gUCg9GbfI4ZL
+         jqPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=C926Zk79WJsFy+LvEVKlKRNyIYSMI/KNpJXHNmmjftQ=;
+        b=C1NjxOvhw/ZswFIXmIy+aDoOPPvVaZDMqwHSNxCmNAFC+Nxp5+m2Ei1rQ8AXiYNs+v
+         fnAF8X9sgq8RzVd4EhOeB3sgzO3Im+fEc9lw81Xs1H4rXVOp/z79iSoH7TaRwhBf0OJM
+         9nvZ7JZFgu+Uy2LEqAQWLUjzqDuchvKrn6OYe7rrFVuOS5MhHH5HDbf5XFQt3E1gGE5W
+         nykDdw2nhp92nIBGqsiBFFvLcQypLNvYWyaiXRXAMbqEzOZGWz2bhP/XXFIz1ZI1XrYE
+         OPcczbBGDLc8YVOhuKcgHRlvXySff27xtPrw3AeLWU8WDlbmdyKluGmbFwHfNNoGNUFe
+         +NTg==
+X-Gm-Message-State: AOAM530vQU1AAoeBzrb3a+WoLNlI6BaRvy8YF/oO9HwLoXXNd4ZB/6i7
+        Y2Z6O9X6q97ss4gIpvxDN9c=
+X-Google-Smtp-Source: ABdhPJxhDFXZxImANZdvPleQPJFn9eKx+mKbvGHYoJqihtr3cild/Lzb8J+tae950vXHYYTUKhzbUQ==
+X-Received: by 2002:a17:90b:4b0a:: with SMTP id lx10mr16597973pjb.205.1607352634801;
+        Mon, 07 Dec 2020 06:50:34 -0800 (PST)
+Received: from nj08008nbu.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id u25sm10360249pgl.68.2020.12.07.06.50.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 06:50:34 -0800 (PST)
+From:   Kevin Tang <kevin3.tang@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, kevin3.tang@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v1 0/6] Add Unisoc's drm kms module
+Date:   Mon,  7 Dec 2020 22:50:20 +0800
+Message-Id: <1607352626-26088-1-git-send-email-kevin3.tang@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 3:23 PM Rob Herring <robh@kernel.org> wrote:
-> On Fri, Dec 4, 2020 at 10:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> > index 020101b58155..e403bb2eeb4c 100644
-> > --- a/drivers/pci/controller/dwc/Kconfig
-> > +++ b/drivers/pci/controller/dwc/Kconfig
-> > @@ -85,6 +85,7 @@ config PCIE_DW_PLAT_EP
-> >  config PCI_EXYNOS
-> >         tristate "Samsung Exynos PCIe controller"
-> >         depends on ARCH_EXYNOS || COMPILE_TEST
-> > +       depends on PCI && PCI_MSI_IRQ_DOMAIN
->
-> PCI isn't needed here.
+ChangeList:
+RFC v1:
+1. only upstream modeset and atomic at first commit. 
+2. remove some unused code;
+3. use alpha and blend_mode properties;
+3. add yaml support;
+4. remove auto-adaptive panel driver;
+5. bugfix
 
-Ah right. I had copied this from PCIE_DW_PLAT_HOST, and
-I'm fairly sure it used to be needed at some point in the past,
-but the Kconfig file has been changed enough over time that
-it clearly is not needed any more, as the entire menu depends on
-PCI nowadays, i.e. you can no longer have an endpoint-only
-configuration.
+RFC v2:
+1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
+2. remove gem drivers, use generic CMA handlers
+3. remove redundant "module_init", all the sub modules loading by KMS
 
-      Arnd
+RFC v3:
+1. multi crtc&encoder design have problem, so rollback to v1
+
+RFC v4:
+1. update to gcc-linaro-7.5.0
+2. update to Linux 5.6-rc3
+3. remove pm_runtime support
+4. add COMPILE_TEST, remove unused kconfig
+5. "drm_dev_put" on drm_unbind
+6. fix some naming convention issue
+7. remove semaphore lock for crtc flip
+8. remove static variables
+
+RFC v5:
+1. optimize encoder and connector code implementation
+2. use "platform_get_irq" and "platform_get_resource"
+3. drop useless function return type, drop unless debug log
+4. custom properties should be separate, so drop it
+5. use DRM_XXX replase pr_xxx
+6. drop dsi&dphy hal callback ops
+7. drop unless callback ops checking
+8. add comments for sprd dpu structure
+
+RFC v6:
+1. Access registers via readl/writel
+2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
+3. Remove always true checks for dpu core ops
+
+RFC v7:
+1. Fix DTC unit name warnings
+2. Fix the problem of maintainers
+3. Call drmm_mode_config_init to mode config init
+4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
+5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
+6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
+7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
+
+v0:
+1. Remove dpu_core_ops stuff layer for sprd drtc driver, but dpu_layer need to keeping.
+   Because all the HW update in crtc->atomic_flush, we need temporary storage all layers for
+   the dpu pageflip of atomic_flush.
+2. Add ports subnode with port@X.
+
+v1:
+1. Remove dphy and dsi graph binding, merge the dphy driver into the dsi.
+2. Add commit messages for Unisoc's virtual nodes.
+
+Kevin Tang (6):
+  dt-bindings: display: add Unisoc's drm master bindings
+  drm/sprd: add Unisoc's drm kms master
+  dt-bindings: display: add Unisoc's dpu bindings
+  drm/sprd: add Unisoc's drm display controller driver
+  dt-bindings: display: add Unisoc's mipi dsi controller bindings
+  drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+
+ .../display/sprd/sprd,display-subsystem.yaml       |   64 +
+ .../bindings/display/sprd/sprd,sharkl3-dpu.yaml    |   83 ++
+ .../display/sprd/sprd,sharkl3-dsi-host.yaml        |  107 ++
+ drivers/gpu/drm/Kconfig                            |    2 +
+ drivers/gpu/drm/Makefile                           |    1 +
+ drivers/gpu/drm/sprd/Kconfig                       |   13 +
+ drivers/gpu/drm/sprd/Makefile                      |   11 +
+ drivers/gpu/drm/sprd/dpu_r2p0.c                    |  598 ++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.c                 |  792 +++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl.h                 | 1475 ++++++++++++++++++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c             |  275 ++++
+ drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h             |   34 +
+ drivers/gpu/drm/sprd/megacores_pll.c               |  316 +++++
+ drivers/gpu/drm/sprd/megacores_pll.h               |  146 ++
+ drivers/gpu/drm/sprd/sprd_dpu.c                    |  457 ++++++
+ drivers/gpu/drm/sprd/sprd_dpu.h                    |  175 +++
+ drivers/gpu/drm/sprd/sprd_drm.c                    |  224 +++
+ drivers/gpu/drm/sprd/sprd_drm.h                    |   19 +
+ drivers/gpu/drm/sprd/sprd_dsi.c                    | 1145 +++++++++++++++
+ drivers/gpu/drm/sprd/sprd_dsi.h                    |  106 ++
+ 20 files changed, 6043 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
+ create mode 100644 drivers/gpu/drm/sprd/Kconfig
+ create mode 100644 drivers/gpu/drm/sprd/Makefile
+ create mode 100644 drivers/gpu/drm/sprd/dpu_r2p0.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
+ create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
+ create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
+ create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
+
+-- 
+2.7.4
+
