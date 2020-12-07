@@ -2,225 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C972D0E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1032D0E62
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgLGKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:43:43 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47743 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726207AbgLGKnl (ORCPT
+        id S1726417AbgLGKs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:48:26 -0500
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:46271 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726214AbgLGKsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:43:41 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id EDF26C85;
-        Mon,  7 Dec 2020 05:42:34 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 07 Dec 2020 05:42:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=4Jwhw2Ic55x6RIMZNlBc3yosIWX
-        o+ErXu4UtPYIfWFQ=; b=toAerI7+j78OPoYkKIEoNUVGn5IQz2SVmmmUGRIW6zp
-        mxj4AA++dILUPK8q5kaGwJOPzJkLuky3MudzLzE9X/ccHE5IElxA/zfZmQj1QVLb
-        0I/pCgjsg9XUccizopowW8N0ZT2pS6AZ7SI+EelyAQWow0PgrVl875kVmDrapEMN
-        0TcJ9J7YJ7hW+uk6ne9bXjm4WrVg+1YVcRm8IG/wn1y/a8jn8+W1HIGGX/+cWNOU
-        Ugkunbaj2tMRZKCna4Ve9dlfMlr8FR3pRsEGhNloI0HDZqc6bfHrUNuY52xJhrPb
-        EHXtz9RyHiHlRsWGEoWnSu52l0IgG+RqCi/PTT+41eQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4Jwhw2
-        Ic55x6RIMZNlBc3yosIWXo+ErXu4UtPYIfWFQ=; b=duIvpOaMo2pUgTWKFcRLSP
-        EQUYf28+4RgyZboq2sbWQBXRpT7bDvRwKYTyVoA54Bn79iTLbL8i1Xg1A0h334tY
-        CnqEgOIgofqhxwrdvdfzFsFlehJij2wkSulxa4lQGKDYGmlLq4oLmx8x5HPefFUe
-        NbnNLSWz8/catzV3Z3uatCQn7b7f//OqbEIA4nv+e9oVxZY9+VfBuYPbReCmRXcx
-        /lNxuqo/OF5rI23CU+VXNJC9pos98pIvL2DmYr/Fu1aA6keTCc6B3AwTvtopXdpP
-        OA4v1m198i/yqtQXn3it8s/4wlZOQTsBIKUvkNx1oSbyr2KnYLMHQPrQVfhcbc2g
-        ==
-X-ME-Sender: <xms:GQfOX4N7upqicD_OmawZyJAMhN1bgm53Rccc_Hty52JjL6mDzFDeIA>
-    <xme:GQfOX-9kGCu1QjPeJlI9nfWRn1eIwyUPEXjtM77wPfkHUzCTaubl6Ga9YOoVvxsyl
-    RuGp1jOpYact8Z1YIU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:GQfOX_QLxokXfRd_K7gNkXjramwIl8ftBkpGCTZcF5VEceZwbi0VIw>
-    <xmx:GQfOXwu743nieHiI2mxuqC6opkLXzJqMaGbVOjZ2lxkoAJeTMTDX_A>
-    <xmx:GQfOXwdKarRCALzNtG4DjtBN1jAL9Y7DIxafX7WJa-B73Pvuw0ke-Q>
-    <xmx:GgfOX-sIsXD8FUGYDB_2z8EmJYxN4aTUXHge2-ewdreRZF3isCSsDA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D53A51080057;
-        Mon,  7 Dec 2020 05:42:32 -0500 (EST)
-Date:   Mon, 7 Dec 2020 11:42:31 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 2/3] drm: Add support for the LogiCVC display
- controller
-Message-ID: <20201207104231.ipa5dccnxxro3xxc@gilmour>
-References: <20201102155308.142691-1-paul.kocialkowski@bootlin.com>
- <20201102155308.142691-3-paul.kocialkowski@bootlin.com>
- <20201103094659.56sdcerwwzqu2gdy@gilmour.lan>
- <X8e7kBx/OYpN2HqB@aptenodytes>
+        Mon, 7 Dec 2020 05:48:25 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id mE3OkFNsIarN7mE3SkzDir; Mon, 07 Dec 2020 11:47:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1607338062; bh=gWVo8YX1VQxSsOSI04pPBsnfOvUw7NtMunA1qyzkVps=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=jKT/DwFs1uxnlPjVbuxcBc5m36tgdSbbBheMmi5rQbE/2Nlq/zWY4tTjVlvcf5Dyz
+         oCr3qxpIELZgr6ldAsAloZ2oU1vnHrpTd5pkVUE7CQhocWJPqJuBC41kWSjhaOnO+H
+         0ZjJ3GJHq0XiHdoiojc8thNUGtjROedHn1s18kAY2k2iKsle5rgDfuG9D3cIyiZ1sl
+         6K+OpjgG8+rnJUk/qzXN5E20ax0F+tVO4OpMKanuUMMqgPj5GtFc8codZ8Z6ynxKDp
+         rzsdp7+WoDml73Y7EzIh3WZpXK+UDL5OBkgGHXxeryJ2vrXFG/4jiGlvcIZQj+16zi
+         e3SVhAVoaW4uw==
+Subject: Re: [PATCH v3 10/13] media: v4l2-fwnode: Update
+ V4L2_FWNODE_CSI2_MAX_DATA_LANES to 8
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        sakari.ailus@iki.fi, robh+dt@kernel.org
+Cc:     bparrot@ti.com, mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <1607022002-26575-1-git-send-email-skomatineni@nvidia.com>
+ <1607022002-26575-11-git-send-email-skomatineni@nvidia.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <845dfd4a-fa11-625c-78a3-cc8adc68bfc7@xs4all.nl>
+Date:   Mon, 7 Dec 2020 11:47:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4dept5ksr44ncocz"
-Content-Disposition: inline
-In-Reply-To: <X8e7kBx/OYpN2HqB@aptenodytes>
+In-Reply-To: <1607022002-26575-11-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKlT91V/9qHoNEbQguLdjtrxEusCqooMka1R1Z25DwFG17wT85odnqoeRsm++0Zzch7a8bH+1di0wpastSoZvVELgKJHd/ZJy5CDBZfTD4bwan22gYMV
+ C7KxBboHLhb1Yptt6u1/jkYzVOvNlqcQQRybr6eFb39d5eGgLihAdmflsBBbDI/pCvtlypxfrRcaEUW8TO+2TXec3MfbNPqzxlYDnOJ1ouBYRK53ergZUGEb
+ 97/E/JWkam3FjIZhszOQPO8hYKAm7GN3JUc2ofaYgv/d4rjS8bYFAB4ADiFkt8kt++1yW3sVIzwHdyNOogRa8Ynr9KKXEWQt4N9VgH3zjhWbZdMR8TZwEdTX
+ aMOtQwlkHub9zJxCo/HQDifMk5m+tep8yWzezayO24YeCUnqtlYlYIKvwtuWZP5PBJR4EXTIcF/GYhAGcjYFP7qZCLb7itRjYKMDmYYrzzLryFSPwYPREY6U
+ oyFjX8XMBNMidSuLoqqaj6wM8cJb5gEfzaze1MzYRaLj2LSzdDXPb61Grf0PBun3ntGl/2OGXTS/58LXblSEQmlH8Mem3aBwPagSPERyztfL6JT9pGiViHJE
+ C8E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/12/2020 19:59, Sowjanya Komatineni wrote:
+> Some CSI2 receivers support 8 data lanes.
+> 
+> So, this patch updates CSI2 maximum data lanes to be 8.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/media/platform/ti-vpe/cal-camerarx.c | 2 +-
+>  include/media/v4l2-fwnode.h                  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/ti-vpe/cal-camerarx.c b/drivers/media/platform/ti-vpe/cal-camerarx.c
+> index 806cbf1..47e2143 100644
+> --- a/drivers/media/platform/ti-vpe/cal-camerarx.c
+> +++ b/drivers/media/platform/ti-vpe/cal-camerarx.c
+> @@ -534,7 +534,7 @@ static int cal_camerarx_parse_dt(struct cal_camerarx *phy)
+>  {
+>  	struct v4l2_fwnode_endpoint *endpoint = &phy->endpoint;
+>  	struct device_node *ep_node;
+> -	char data_lanes[V4L2_FWNODE_CSI2_MAX_DATA_LANES * 2];
+> +	char data_lanes[V4L2_FWNODE_CSI2_MAX_DATA_LANES];
+>  	unsigned int i;
+>  	int ret;
+>  
 
---4dept5ksr44ncocz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not so sure about this change: it relies on the implicit knowledge that
+this cal driver can handle only 4 lanes max, so that doubling
+V4L2_FWNODE_CSI2_MAX_DATA_LANES is the same as the old 'V4L2_FWNODE_CSI2_MAX_DATA_LANES * 2'.
 
-On Wed, Dec 02, 2020 at 05:06:40PM +0100, Paul Kocialkowski wrote:
-> > > +static void logicvc_crtc_atomic_begin(struct drm_crtc *drm_crtc,
-> > > +				      struct drm_atomic_state *state)
-> > > +{
-> > > +	struct logicvc_crtc *crtc =3D logicvc_crtc(drm_crtc);
-> > > +	struct drm_crtc_state *crtc_state =3D
-> > > +		drm_atomic_get_old_crtc_state(state, drm_crtc);
-> > > +	struct drm_device *drm_dev =3D drm_crtc->dev;
-> > > +	unsigned long flags;
-> > > +
-> > > +	/* Register pending event, only if vblank is already on. */
-> > > +	if (drm_crtc->state->event && crtc_state->active) {
-> > > +		spin_lock_irqsave(&drm_dev->event_lock, flags);
-> > > +		WARN_ON(drm_crtc_vblank_get(drm_crtc) !=3D 0);
-> > > +
-> > > +		crtc->event =3D drm_crtc->state->event;
-> > > +		drm_crtc->state->event =3D NULL;
-> > > +
-> > > +		spin_unlock_irqrestore(&drm_dev->event_lock, flags);
-> > > +	}
-> > > +}
-> >=20
-> > That's unusual to do it in atomic_begin, why do you need it?
->=20
-> This is to cover the case where we need to send a page flip event but the
-> crtc is already on. In that case, neither atomic_enable nor atomic_disable
-> will be called so we need to rely on atomic_begin to grab that event.
-> This happens for example when a single plane is updated.
->=20
-> The same thing is done in e.g. sun4i-drm.
+I think we should either keep the existing code (which means data_lanes
+is now larger than needed, so stack usage increases by 8 bytes), or perhaps
+create a new define for this driver like CAL_MAX_DATA_LANES and use that.
 
-Yeah, but I'm not sure why that's needed in the first place on sun4i-drm
-either. This looks to me as either something that should be handled by
-the helpers, or isn't needed at all. Just like the other times you
-fiddle with the vblank in your driver.
+In my opinion the original code should just be kept, but I've CC-ed Laurent
+on this to hear what he thinks.
 
-I looked around and the only drivers that have that logic seem to be ARM
-HDLCD, Atmel HCLDC, Meson, Tegra. This looks like it might be some cargo
-cult.
+Regards,
 
-Daniel, do you know why that would be needed?
+	Hans
 
-> > > +static void logicvc_version_print(struct logicvc_drm *logicvc)
-> > > +{
-> > > +	u32 version;
-> > > +
-> > > +	regmap_read(logicvc->regmap, LOGICVC_IP_VERSION_REG, &version);
-> > > +
-> > > +	DRM_INFO("LogiCVC version %d.%02d.%c\n",
-> > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MAJOR, version),
-> > > +		 (int)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_MINOR, version),
-> > > +		 (char)LOGICVC_FIELD_GET(LOGICVC_IP_VERSION_LEVEL, version) +
-> > > +		 'a');
-> >=20
-> > DRM_DEV_INFO?
->=20
-> Okay but now according to Sam, "DRM_DEV_ERROR() and friends are deprecate=
-d"
-> so I wonder which is the right one to use at this point.
+> diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
+> index 4e1f6e1d..92401c1 100644
+> --- a/include/media/v4l2-fwnode.h
+> +++ b/include/media/v4l2-fwnode.h
+> @@ -25,7 +25,7 @@ struct fwnode_handle;
+>  struct v4l2_async_notifier;
+>  struct v4l2_async_subdev;
+>  
+> -#define V4L2_FWNODE_CSI2_MAX_DATA_LANES	4
+> +#define V4L2_FWNODE_CSI2_MAX_DATA_LANES	8
+>  
+>  /**
+>   * struct v4l2_fwnode_bus_mipi_csi2 - MIPI CSI-2 bus data structure
+> 
 
-AFAIU, it's drm_info / drm_err
-
-> > > +static void logicvc_encoder_enable(struct drm_encoder *drm_encoder)
-> > > +{
-> > > +	struct logicvc_drm *logicvc =3D logicvc_drm(drm_encoder->dev);
-> > > +	struct logicvc_interface *interface =3D
-> > > +		logicvc_interface_from_drm_encoder(drm_encoder);
-> > > +
-> > > +	regmap_update_bits(logicvc->regmap, LOGICVC_POWER_CTRL_REG,
-> > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE,
-> > > +			   LOGICVC_POWER_CTRL_VIDEO_ENABLE);
-> > > +
-> > > +	if (interface->drm_panel) {
-> > > +		drm_panel_prepare(interface->drm_panel);
-> > > +
-> > > +		/* Encoder enable is too early to enable the panel and a white
-> > > +		 * screen will be seen if the panel gets enabled before the
-> > > +		 * first page flip is done (and no other framebuffer
-> > > +		 * configuration remains from the boot software). */
-> > > +		interface->drm_panel_enabled =3D false;
-> > > +	}
-> > > +}
-> >=20
-> > That's fishy (and the similar stuff in commit_tail). Is it because you
-> > need to have the CRTC powered before the encoder?
-> >=20
-> > If so, you should try the commit_tail_rpm variant, it makes sure the
-> > CRTC is powered on before making a commit.
->=20
-> No, this is unrelated to CRTC vs encoder enable order. Instead, it's about
-> panel enable order: I don't want to enable the panel before a buffer was
-> flipped on the CRTC otherwise a blank/white/garbage screen will be shown.
-
-Well, since the encoder will enable the panel, it's kind of related
-though?
-
-> This is why this drm_panel_enabled variable is used to make sure we don't
-> enable the panel before.
->=20
-> This is nothing specific to my hardware, but a general concern that proba=
-bly
-> exists in every DRM driver. Nobody really seems to care about it but I've
-> decided that I would in this driver. Now if you think this is too exotic,
-> I don't mind removing it.
-
-If this is a concern of yours and affects multiple drivers, then it
-should be fixed in the core, not in one particular driver.
-
-> > > +static void logicvc_connector_destroy(struct drm_connector *drm_conn=
-ector)
-> > > +{
-> > > +	drm_connector_cleanup(drm_connector);
-> > > +}
-> >=20
-> > I guess you don't need that intermediate function?
->=20
-> I would need to check if that call is necessary or if some implied mechan=
-ism
-> calls it for me already.
-
-What I meant is that you don't need logicvc_connector_destroy, you can
-directly set the atomic_destroy_state to drm_connector_cleanup.
-
-Maximey
-
---4dept5ksr44ncocz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX84HFwAKCRDj7w1vZxhR
-xbMiAP9dLZJOM3DGmzAPkfzmg8Zd6tJamUGV8IiSAS3VKmzdMgD/YEHQimvZh/De
-Xbwz1yPzxtmWpE79V4vFdE30Mlrz2QA=
-=WXG0
------END PGP SIGNATURE-----
-
---4dept5ksr44ncocz--
