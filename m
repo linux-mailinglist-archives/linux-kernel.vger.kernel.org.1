@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7513D2D1E90
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CDB2D1E93
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgLGXuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S1728231AbgLGXwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgLGXuj (ORCPT
+        with ESMTP id S1725931AbgLGXwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:50:39 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1547C0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:49:58 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id lt17so22102363ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:49:58 -0800 (PST)
+        Mon, 7 Dec 2020 18:52:38 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68E7C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:51:57 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id b8so13904397ila.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:51:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dSGlDbhidPZDKDk+p1AfcvxJW+DI8YFPrPNCgK1gB9g=;
-        b=jQPNXyyXDtq6FwskA2qiUp0rH3o00tsydXaWBYwhxrZzXwg6ROdBBhLAzLLbCOcEKn
-         ks/K+L16TbmyD5D1MULfLAEpQ8l3ZHBFiXGQClAhKOKRpOkiXk88WPHTBuTQpDRNVGjh
-         vaP7U+dJgj3qF+k5Gce4G3KQ2g3VyV0ttsOgok5JTlKhpS6QooayH9i/4rYhb/YdIxCB
-         UE6jCjF0KiykMojJqV3SeOmaY1SC/pShZm3+bxyWl7p518IGZ11PcoDRP68hjib4xONH
-         2M8Ii9WyCgcB8iT0jcarECaRrxt0jTam80xcl2NeSbYu4pBrgQ47xkuJfTjedmo0mQZ7
-         3WDw==
+         :cc:content-transfer-encoding;
+        bh=fnG2AFxrvUAG48qSs+ORV96koVoU7dohtORWA8eYiDk=;
+        b=Ughv+eTB+6CuVvlGH79ocSVBjB4gPWmssmuyaKpJ2qfgkMtfAyPaLMqTSAFN9yOGdu
+         dpzgZ5o7p+SrOaS3Mj/2MUgsAxUwKJFZOgyCUFR6eygIh5bJIIbnD8VqQJjL8PyeHDMV
+         qrRLMHMp/STAYg/6V5od7l4+4bnnOEHkmQS16adp/WHbcubTjfg8Gtbwr90Wj1eCcSXf
+         L47NOmdJDzFS8VsjbUNPrMyh96Nup7wl04myoem01BhADl3oC1g86Lcu3j+SRpbfWdiW
+         JfUQvXZrH3Ei4YL/ldcUH/cIi9Ay0X+9DXireg8VEAovzgYhgvtUEXzcbcJ8JwZpGe0s
+         6B7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dSGlDbhidPZDKDk+p1AfcvxJW+DI8YFPrPNCgK1gB9g=;
-        b=rV5v3eCjGlflZPFZvA+bf4O5MLDNnh2+EZ2NfY/OGmwTelcm3e+TDlHOj2p5hv67d2
-         BU57HyA4kFKF1c1umTDxw/q47DLiX6XobkFdHB3skEwrCICYDLizlC6PVH4jUL4v4YNK
-         aeRKet8FjhCu25e+NWMSQJxfMmOz8MxSZUgTrqAslxuLOxJHudN+JfOlioLFwnlUtpuK
-         JOwDdptubYyBpzJDB1kVs/MxCkuaGg0nPeONOXKaYzbRVyvmjYcdy7X9tDZXFbnPfGV1
-         tyONWsNMSjgkg9nhNv5YOjcp8mydccA5q6hfJOM87G+DfzShRy+ZS8guFXthZV+6vv8I
-         ZOvg==
-X-Gm-Message-State: AOAM530DRB80breJKZBCpaAWtmskPpX1vmdPamB0valQUBq8/euV33SR
-        vNcFGGrbKu/m949A6FNfTQ5+LW7XtzX/U8oa/gAF6Q==
-X-Google-Smtp-Source: ABdhPJxwpm5K/zyXehTQMTg+eHtWfnno+Tx0iVa9ejlNQ9Q5/asDw3VufhH8JZFSKU2SYGwYJJWlwAAq1y62brv+cIU=
-X-Received: by 2002:a17:906:c20f:: with SMTP id d15mr20931926ejz.341.1607384997566;
- Mon, 07 Dec 2020 15:49:57 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fnG2AFxrvUAG48qSs+ORV96koVoU7dohtORWA8eYiDk=;
+        b=Bsr1o9wawp+xvrJFWfafbpOsp9cZQnWI+ChVrGZApDCo7/NhCvcf9IZRa+DNa5Ii9F
+         GGccUUFNUlUsKeovMdeKkatvWbol/PmDGr0eH50BVaZ+NdJpDWJiWr0aNnl7Kda9at1n
+         BSK+CSDJBqpaXiC6M4iGOwZYDc8mg9Di7vNYUWzV+JrVhycjCsdNyqZFBVXVTlK42JH/
+         fy1D0aZNzKcx4S6jIvJu8kzJ61gK9uSZHr/8qG5TQ5oLearroLs9LoxXaJ7BA6dT0Xkr
+         TZDW8lLCufAO0GK+MMoJbGYUb9KRwFEZNxdtyS2eMLxaVFjJx0pSorAaRsGXpcIEy8Ak
+         c7UA==
+X-Gm-Message-State: AOAM532uwBeSJT/y8PCsBe8qTwV9loVUT/PBVTnitCl5dDL8REK2QRUc
+        AgbsK+gsGl4tFna9WpEkSgpJ9ZYhOaVoyz4sGKI=
+X-Google-Smtp-Source: ABdhPJzkjLxuK1omK8MXQpuuZDcqC9/kUdhw8LI+0WymyLmBnla/1il257Ygorq7EJCqBj9Bzbt8/V5eqyjY0oFgr7A=
+X-Received: by 2002:a92:d9cd:: with SMTP id n13mr22632494ilq.96.1607385117001;
+ Mon, 07 Dec 2020 15:51:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207225703.2033611-1-ira.weiny@intel.com> <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org> <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org>
-In-Reply-To: <20201207234008.GE7338@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 7 Dec 2020 15:49:55 -0800
-Message-ID: <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201205042626.1113600-1-daeho43@gmail.com> <X86RJdLhOVRm28Eu@gmail.com>
+In-Reply-To: <X86RJdLhOVRm28Eu@gmail.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 8 Dec 2020 08:51:45 +0900
+Message-ID: <CACOAw_yp0LU-vcT2+NTF3ipibF6GvqfaQ4V=957CDPQLbes92Q@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix race of pending_pages in decompression
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
+Chao, Jaegeuk,
+
+Thanks. I'll update it as your comments. :)
+
+Eric,
+
+Decompression and verity can be executed in different thread contexts
+in different timing, so we need separate counts for each.
+
+We already use STEP_VERITY for non-compression case, so I think using
+this flag in here looks more making sense.
+
+Thanks,
+
+2020=EB=85=84 12=EC=9B=94 8=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 5:31, E=
+ric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
-> > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-> > > > +                            struct page *src_page, size_t src_off,
-> > > > +                            size_t len)
-> > > > +{
-> > > > +     char *dst = kmap_local_page(dst_page);
-> > > > +     char *src = kmap_local_page(src_page);
-> > >
-> > > I appreciate you've only moved these, but please add:
-> > >
-> > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
+> On Sat, Dec 05, 2020 at 01:26:26PM +0900, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
 > >
-> > I imagine it's not outside the realm of possibility that some driver
-> > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
-> > it because kmap_atomic() of contiguous pages "just works (TM)".
-> > Shouldn't this WARN rather than BUG so that the user can report the
-> > buggy driver and not have a dead system?
+> > I found out f2fs_free_dic() is invoked in a wrong timing, but
+> > f2fs_verify_bio() still needed the dic info and it triggered the
+> > below kernel panic. It has been caused by the race condition of
+> > pending_pages value between decompression and verity logic, when
+> > the same compression cluster had been split in different bios.
+> > By split bios, f2fs_verify_bio() ended up with decreasing
+> > pending_pages value before it is reset to nr_cpages by
+> > f2fs_decompress_pages() and caused the kernel panic.
+> >
+> > [ 4416.564763] Unable to handle kernel NULL pointer dereference
+> >                at virtual address 0000000000000000
+> > ...
+> > [ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
+> > [ 4416.908515] pc : fsverity_verify_page+0x20/0x78
+> > [ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
+> > [ 4416.913722] sp : ffffffc019533cd0
+> > [ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
+> > [ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
+> > [ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
+> > [ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
+> > [ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
+> > [ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
+> > [ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
+> > [ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
+> > [ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
+> > [ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
+> > [ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
+> > [ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
+> > [ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
+> > [ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
+> > [ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
+> > [ 4416.929184] Call trace:
+> > [ 4416.929187]  fsverity_verify_page+0x20/0x78
+> > [ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
+> > [ 4416.929192]  f2fs_verity_work+0x58/0x84
+> > [ 4417.050667]  process_one_work+0x270/0x47c
+> > [ 4417.055354]  worker_thread+0x27c/0x4d8
+> > [ 4417.059784]  kthread+0x13c/0x320
+> > [ 4417.063693]  ret_from_fork+0x10/0x18
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > ---
+> > v3: back to v1 and enabled verity in a unit of cluster
+> > v2: merged verity_pages with pending_pages, and increased the
+> >     pending_pages count only if STEP_VERITY is set on bio
 >
-> As opposed to (on a HIGHMEM=y system) silently corrupting data that
-> is on the next page of memory?
-
-Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
-
-> I suppose ideally ...
+> I am trying to review this but it is very hard, as the f2fs compression c=
+ode is
+> very hard to understand.
 >
->         if (WARN_ON(dst_off + len > PAGE_SIZE))
->                 len = PAGE_SIZE - dst_off;
->         if (WARN_ON(src_off + len > PAGE_SIZE))
->                 len = PAGE_SIZE - src_off;
+> It looks like a 'struct decompress_io_ctx' represents the work to decompr=
+ess a
+> particular cluster.  Since the compressed data of the cluster can be read=
+ using
+> multiple bios, there is a reference count of how many pages are remaining=
+ to be
+> read before all the cluster's pages have been read and decompression can =
+start.
 >
-> and then we just truncate the data of the offending caller instead of
-> corrupting innocent data that happens to be adjacent.  Although that's
-> not ideal either ... I dunno, what's the least bad poison to drink here?
-
-Right, if the driver was relying on "corruption" for correct operation.
-
-If corruption actual were happening in practice wouldn't there have
-been screams by now? Again, not necessarily...
-
-At least with just plain WARN the kernel will start screaming on the
-user's behalf, and if it worked before it will keep working.
+> What I don't understand is why that reference counting needs to work diff=
+erently
+> depending on whether verity is enabled or not.  Shouldn't it be exactly t=
+he
+> same?
+>
+> There also seems to be some confusion about the scope of STEP_VERITY.  Be=
+fore
+> f2fs compression was added, it was a per-bio thing.  But now in a compres=
+sed
+> file, it's really a per-cluster thing, since all decompressed pages in a
+> compressed cluster are verified (or not verified) at once.
+>
+> Wouldn't it make a lot more sense to, when a cluster needs both compressi=
+on and
+> verity, *not* set STEP_VERITY on the bios, but rather set a similar flag =
+in the
+> decompress_io_ctx?
+>
+> - Eric
