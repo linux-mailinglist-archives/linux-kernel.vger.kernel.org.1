@@ -2,163 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EC22D1724
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794BF2D171F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgLGRIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:08:46 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:40904 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLGRIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:08:45 -0500
-Received: by mail-oo1-f65.google.com with SMTP id 9so678784ooy.7;
-        Mon, 07 Dec 2020 09:08:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SogwgdPzZLs7UQaCL9uSzW/XvOBxKSbmidKt0mKHBqM=;
-        b=aJx5WW/j4od1ZI/UXgIQFLm2qASM/Zs+X/uY5MhumaD91MFNDqkvd9MiesjSNeEj5I
-         Er2DBOTLVDQFtoC36B9IoK4T8E36XK8GGhpLAAOq//BwwysjF+1D0JqBhwc/uk8/STb+
-         EEJUP2CwqOjmG5k4qPBlK0RMUCmWMbQqUocW9FVZg2qEvBliE7TorbiLeNb6U1rH5Tos
-         3EU7+o5LuZFwroRVHLAQeo9z8ris+/bD0yjALGk+v6YcZ8kB/8PRPFMfmj9/bNtupvEO
-         y+CQdxduM94PgLednxPbYnQWEOxFYPtCMZRUXfavaSpp/RIEWnNGSfdHAF7s0ACNq7et
-         dmDQ==
-X-Gm-Message-State: AOAM530Y9xFUfMaI9LVU0z/oICLsfxZwpLme+2w/5dK/RZ8ft77zAjEr
-        Yo8E1vCjagBPbTxA0Igl7A==
-X-Google-Smtp-Source: ABdhPJzmdnrsrHxYVXf/qeAQGbpnlZ7/zYKbrxltqs4VunJ1rWtUE6YSlqOlmfjWhHbswR7eYMS+4w==
-X-Received: by 2002:a4a:3e42:: with SMTP id t63mr1568149oot.32.1607360878900;
-        Mon, 07 Dec 2020 09:07:58 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k13sm2929820otl.72.2020.12.07.09.07.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 09:07:58 -0800 (PST)
-Received: (nullmailer pid 445307 invoked by uid 1000);
-        Mon, 07 Dec 2020 17:07:56 -0000
-Date:   Mon, 7 Dec 2020 11:07:56 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Kao <michael.kao@mediatek.com>
-Cc:     ethan.chang@mediatek.com, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] dt-bindings: thermal: Add binding document for
- mt6873 thermal controller
-Message-ID: <20201207170756.GB439416@robh.at.kernel.org>
-References: <20201207063127.28051-1-michael.kao@mediatek.com>
- <20201207063127.28051-4-michael.kao@mediatek.com>
+        id S1726499AbgLGRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:08:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725822AbgLGRIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:08:31 -0500
+Date:   Mon, 7 Dec 2020 14:07:59 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607360870;
+        bh=a970EhfEbrk/JJVxpU7b8914DtQrmf35iq1oze/2Jwk=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X33xqTvKYo2ZJ9q8j2VkzanU17YO2fSkwLlPwvJfEl+MXCNEHU8/ng2c0HRrFAgLr
+         0lHMCHvvSePpUKaUIAbNRnImNiimGg2p1SWO8a+NjNt61y0fRwAYO4vnBjLKbamjN8
+         HFkPMhT+m3A+X/zIxGIrC/CFQSHCtk4O9zf292JCEmZs/qJT+1hghdx9jxs+V42UMk
+         sSUqR+8Xz+E6ooDFtj0bvOoejk/P5cMck8iLmX0zZ/8Y6QZTXxp/Qz6LWmTuA8Be9v
+         kbpX18o3kolmvwckfFtSO/7nrj87YVwpYqJZ9FJiklMEFUsaw75OHhvM54T2ANF0jJ
+         mnxZAcCIqN7/Q==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+Subject: Re: [PATCH V2 02/12] perf record: Support new sample type for data
+ page size
+Message-ID: <20201207170759.GB129853@kernel.org>
+References: <20201130172803.2676-1-kan.liang@linux.intel.com>
+ <20201130172803.2676-3-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207063127.28051-4-michael.kao@mediatek.com>
+In-Reply-To: <20201130172803.2676-3-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 02:31:27PM +0800, Michael Kao wrote:
-> This patch adds binding document for mt6873 thermal controller.
+Em Mon, Nov 30, 2020 at 09:27:53AM -0800, kan.liang@linux.intel.com escreveu:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-> ---
->  .../thermal/mediatek-thermal-lvts.yaml        | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
+> Support new sample type PERF_SAMPLE_DATA_PAGE_SIZE for page size.
 > 
-> diff --git a/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-> new file mode 100644
-> index 000000000000..745611718c0a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/thermal/mediatek-thermal-lvts.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/thermal/mediatek-thermal-lvts.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek SoC LVTS thermal controller (DTS) binding
-> +
-> +maintainers:
-> +  - Yu-Chia Chang <ethan.chang@mediatek.com>, Michael Kao <michael.kao@mediatek.com>
+> Add new option --data-page-size to record sample data page size.
 
-Not the right format. 1 email per entry.
+So, trying this on a kernel without this feature I get:
 
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6873-lvts
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: lvts_clk
-> +
-> +  "#thermal-sensor-cells":
-> +    const: 0
-> +
-> +required:
-> +  - "#thermal-sensor-cells"
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/thermal/thermal.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/mt8192-clk.h>
-> +    dts: lvts@1100b000 {
-> +        compatible = "mediatek,mt6873-lvts";
-> +        reg = <0x1100b000 0x1000>;
-> +        clocks = <&infracfg CLK_INFRA_THERM>;
-> +        clock-names = "lvts_clk";
-> +        #thermal-sensor-cells = <0>;
-> +        interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>;
-> +    };
-> +
-> +    thermal-zones {
-> +        cpu_thermal: cpu-thermal {
-> +            polling-delay-passive = <0>;
-> +            polling-delay = <0>;
-> +
-> +            thermal-sensors = <&dts>;
-> +            trips {
-> +                cpu_alert1: cpu-alert1 {
-> +                    temperature = <85000>;
-> +                    hysteresis = <0>;
-> +                    type = "passive";
-> +                };
-> +
-> +                cpu_crit: cpu-crit {
-> +                    temperature = <120000>;
-> +                    hysteresis = <0>;
-> +                    type = "critical";
-> +                };
-> +            };
-> +
-> +            cooling-maps {
-> +            };
-> +        };
-> +    };
-> +...
-> -- 
-> 2.18.0
-> 
+[acme@five perf]$ perf record --data-page-size sleep 1
+Error:
+The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cycles:u).
+/bin/dmesg | grep -i perf may provide additional information.
+
+[acme@five perf]$
+
+I'm adding the following patch right after yours, next time please test
+this and provide a similar error message.
+
+- Arnaldo
+
+commit 2044fec7fcc6070b09f9b6a67922b0b9e4295dba
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Mon Dec 7 14:04:05 2020 -0300
+
+    perf evsel: Emit warning about kernel not supporting the data page size sample_type bit
+    
+    Before we had this unhelpful message:
+    
+      $ perf record --data-page-size sleep 1
+      Error:
+      The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cycles:u).
+      /bin/dmesg | grep -i perf may provide additional information.
+      $
+    
+    Add support to the perf_missing_features variable to remember what
+    caused evsel__open() to fail and then use that information in
+    evsel__open_strerror().
+    
+      $ perf record --data-page-size sleep 1
+      Error:
+      Asking for the data page size isn't supported by this kernel.
+      $
+    
+    Cc: Kan Liang <kan.liang@linux.intel.com>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Andi Kleen <ak@linux.intel.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Michael Ellerman <mpe@ellerman.id.au>
+    Cc: Stephane Eranian <eranian@google.com>
+    Cc: Will Deacon <will@kernel.org>
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 5e6085c3fc761a55..c26ea82220bd8625 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1873,7 +1873,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 	 * Must probe features in the order they were added to the
+ 	 * perf_event_attr interface.
+ 	 */
+-        if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
++        if (!perf_missing_features.data_page_size &&
++	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
++		perf_missing_features.data_page_size = true;
++		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
++		goto out_close;
++	} else if (!perf_missing_features.cgroup && evsel->core.attr.cgroup) {
+ 		perf_missing_features.cgroup = true;
+ 		pr_debug2_peo("Kernel has no cgroup sampling support, bailing out\n");
+ 		goto out_close;
+@@ -2673,6 +2678,8 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 	"We found oprofile daemon running, please stop it and try again.");
+ 		break;
+ 	case EINVAL:
++		if (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE && perf_missing_features.data_page_size)
++			return scnprintf(msg, size, "Asking for the data page size isn't supported by this kernel.");
+ 		if (evsel->core.attr.write_backward && perf_missing_features.write_backward)
+ 			return scnprintf(msg, size, "Reading from overwrite event is not supported by this kernel.");
+ 		if (perf_missing_features.clockid)
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 79a860d8e3eefe23..cd1d8dd431997b84 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -144,6 +144,7 @@ struct perf_missing_features {
+ 	bool aux_output;
+ 	bool branch_hw_idx;
+ 	bool cgroup;
++	bool data_page_size;
+ };
+ 
+ extern struct perf_missing_features perf_missing_features;
