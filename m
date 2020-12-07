@@ -2,80 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276F62D1C31
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87652D1C35
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgLGVcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:32:50 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35374 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727742AbgLGVct (ORCPT
+        id S1727012AbgLGVeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:34:09 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34654 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725885AbgLGVeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:32:49 -0500
-Received: by mail-ot1-f67.google.com with SMTP id i6so7861130otr.2;
-        Mon, 07 Dec 2020 13:32:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0ynb8iLyUqADhkwHS9Qnd7e5/0N0ngWwVvaQV6B/88U=;
-        b=eJ3gZmsavRxrWygZv5xdcQeE3KKpVQUTmwhTvLDxcO0ghAgcd9Up803xYSyomjgC95
-         vtpDRJuaJHWGehB8TiVvrbsdXpyzDNGrcFro9ApTEONepD0gx3cWXPeQhmxm+1bcnb+O
-         SnIaVTVyZZaI5UXpldjtIG99Tp/NIalCXE2oCIHWU27pO9rKQmZMYuejAFa27oxBjAPZ
-         ERLjWMmQ+n5QjtxsN3TnWM8y5ujA/3dEV69nvKGNYZHc7emBBIX29YT8tTXwZy5N5JGH
-         1MMIvFUiaTx+BiZHMJ4yTFq0hbOHi9Y9mNifsAGds+BSjffqlvsm27Wz9VicbmsDnoXQ
-         ZQjg==
-X-Gm-Message-State: AOAM533PWHBqUbidqi5cGmoXL+uLRgHRZmcESs9zTDFQKk3ILfzAo02C
-        PM+RUX6IGS/XeCwGP3zn8VcmL93NUA==
-X-Google-Smtp-Source: ABdhPJwGilcs+3zsB2f6/w9E6wHpMwawQixZFs99uC0mM+0NRsxaeavmnh/Lh9H+XbLxDmBuHdErVA==
-X-Received: by 2002:a9d:4d8b:: with SMTP id u11mr4261161otk.13.1607376728681;
-        Mon, 07 Dec 2020 13:32:08 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o82sm3074342oih.5.2020.12.07.13.32.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:32:07 -0800 (PST)
-Received: (nullmailer pid 864264 invoked by uid 1000);
-        Mon, 07 Dec 2020 21:32:06 -0000
-Date:   Mon, 7 Dec 2020 15:32:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Airlie <airlied@linux.ie>, Arnd Bergmann <arnd@arndb.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>, Mark Brown <broonie@kernel.org>,
-        devicetree@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 6/6] dt-binding: display: mantix: Add compatible for
- panel from YS
-Message-ID: <20201207213206.GA864202@robh.at.kernel.org>
-References: <cover.1605688147.git.agx@sigxcpu.org>
- <eb2a0e50cbb8cfebc27d259607e543fedb8c6b27.1605688147.git.agx@sigxcpu.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Mon, 7 Dec 2020 16:34:08 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7LSMrP004469;
+        Mon, 7 Dec 2020 13:33:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=6C4spxYkgpB6OQBlMNDCcH9ru3sUUiRTCwBIU8gN7wg=;
+ b=SmtLpHC1z5kzttZ1660ZMzTZFFs66mjvVCL1po2OuGTdW1AShxeLPhrqk+8w/kgyE9oU
+ QU1lz5fgNxlQC3vIo9275EGC4e4RdJMDZ5hie4bzV/8Ca+AgY5LwLlMejxW6/IjvgRg3
+ MMFUNf9pTntxXKyML5iXDMJccuHx5EYClDQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3588wp407t-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 07 Dec 2020 13:33:09 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 7 Dec 2020 13:33:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bDyZE3GoL5WXf2g0RFIaQN/QqnF0sM50QdJQ4mK1J6qf3tIRKwIy6oAM1ChREe36D7bTr5e/YpQOC74tX7lLtRjaUY4LzFu7aPoQJh5hZ0/8M3iudXo98V68MDwHUsLg48bCXRsFG7RBGqhGH1+D5KBCgqtrAICB+kerY/DAFJfBZvCLdU23+n7tqBAZjE+j4Wzf1hCl1x5VhadEhFvTEu+tIcqXtEypaVcDrC3X/pHBTe2wV+RrMTXoMwq8Jav1JYwazW/PYo9zRbEOUNVPYBroeIVgi39ZGeeUu+ra/7mIoBW8GBzSnohHSDBFl4X82QE3OZO+rnKPWrs0Gr1lJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6C4spxYkgpB6OQBlMNDCcH9ru3sUUiRTCwBIU8gN7wg=;
+ b=R1OIzqtZwAuaqD+VuClj+MV/tPXKXH6i3LlJWP7J3qpEgwFP26L1T5aHa1OwcTMaHq9cZTYXt5223i206DxBX4DiavzX4j7NZ3wGO8wQiSt2QiIm+fhvoZ4/Li9cnln5egh7yXPOqqqQ5Mxh4hKwe0U5tkpYrskRezVwtsPpFWlsFQXotfckr9qML439b6tKZHlPIiv1Rgxjt5BzLveN5UQEh5A2NwE9ogpeN29cuvW5zhqY+bGymvFvMV3X8uxPEkoLfq36GQX0zxsRNOn2vrx7847zxpijDnFxkLRI0wb0O5u86FHq3wG2qHBjMCO7jzX3EQZZ7/+ceJY0tiKaTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6C4spxYkgpB6OQBlMNDCcH9ru3sUUiRTCwBIU8gN7wg=;
+ b=eEgj79qLjRTioZzWcxSjPyk/bw+wEpLlJxDAxISVIqBJE8t4wzUZ8lo9FMdB/Eygtzb92/PYCt8UYgGsbvDGNwh5xNfLNn7VyWD5UYkMfGjnDpMj5LfImDzI7aK1i67VBYjcVEymev6emxiWMizdzuff3qt+Wgj4GJ/s4j6+F7w=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2245.namprd15.prod.outlook.com (2603:10b6:a02:89::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Mon, 7 Dec
+ 2020 21:33:08 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2831:21bf:8060:a0b]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2831:21bf:8060:a0b%7]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
+ 21:33:08 +0000
+Date:   Mon, 7 Dec 2020 13:33:00 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Florent Revest <revest@chromium.org>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kpsingh@chromium.org>,
+        <rdunlap@infradead.org>, <linux-next@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2] bpf: Only call sock_from_file with CONFIG_NET
+Message-ID: <20201207213300.fy6xevnoidh2vk37@kafai-mbp.dhcp.thefacebook.com>
+References: <20201207200605.650192-1-revest@chromium.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb2a0e50cbb8cfebc27d259607e543fedb8c6b27.1605688147.git.agx@sigxcpu.org>
+In-Reply-To: <20201207200605.650192-1-revest@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:e1c3]
+X-ClientProxiedBy: MW4PR04CA0201.namprd04.prod.outlook.com
+ (2603:10b6:303:86::26) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:e1c3) by MW4PR04CA0201.namprd04.prod.outlook.com (2603:10b6:303:86::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21 via Frontend Transport; Mon, 7 Dec 2020 21:33:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 36a95725-f3c9-44b1-caad-08d89af7b099
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2245:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB224543738F0FD32B7245E1BAD5CE0@BYAPR15MB2245.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IT396mSLvSYdtZcR3iW47HzhMTCL1KZ0pmlINDBKIY8+qrkj8U4/MfL1JQ93bPoqF4kh2AXJSBGnDJ9sdqhfTzdQdB73ugSoOGyFgvkXKK9uptx/PBSqOprBor8w3jRiDDXiywd17XN9Xu1K1dslC75YjL4z0lWPKtt/5nP7gaL/HcJwKeaKBnTWDnLPpq0e66DjbFvb3p9mJeRElZGB0rIEW1Vgw80PoAciWzvY3GsLg31C/1yw80k61jUwj/+7qHcq6HMmjwDIPp4W9xZT+Uu+WKLIhTPW1lifUW3FvdtDe+CgElAyU6I1X47eGCcPLWxxtUmmCxacq5Ucxbz5VQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(366004)(39860400002)(136003)(6916009)(66946007)(186003)(316002)(8936002)(478600001)(5660300002)(8676002)(9686003)(86362001)(66556008)(66476007)(2906002)(6666004)(1076003)(6506007)(4326008)(52116002)(16526019)(7696005)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6iIE1PPGDSwVr1qEE7okVicC8RJb5Dt1rMO6U7CEMQ6VII2mYNruaiMz2JOL?=
+ =?us-ascii?Q?py9/P1K0qX1vP4LijQiVZtbVxr9/g/KU/ujzv7ELm/aIvnoY0+RNEYASlGpz?=
+ =?us-ascii?Q?dvLTj4AH7V4OESxhQ0D+c0Lec+QHeN/bi19jVVhexqRh1oL+By/T5Zc20fRr?=
+ =?us-ascii?Q?gjfBklWhcpyr1GBucNXmUli+QqZHyjSKtUBLGtc+3G4+PFb2cfHO4IS9Df5x?=
+ =?us-ascii?Q?o1CLwTres0wZGdyZDJpJoNMuubbdbgL/Ulzqm85TtlzwmY4QRZPGPigDBawk?=
+ =?us-ascii?Q?Kl7xuBKrQTvhDYa3zHJ3bpB+sfek0am8/Yy+chdBuv2AAJAaQSe4nqIU1skf?=
+ =?us-ascii?Q?wN6G1oqCvMTLcJl40y/wUtli7+E9ejPT0WxkE285kPhvKq+jaNnbRQpBYiRP?=
+ =?us-ascii?Q?q8Oc37acDzj9SkdNthKiSqWdGRCwI0q9K7zOWtzfNWQwW/1GB6DdmhmnNouf?=
+ =?us-ascii?Q?CuGqRa9aqrYeravtQVo33b/82GI3dy+Qeoi8k+rjWIa6VGGGqJcbeydttBSD?=
+ =?us-ascii?Q?s4wOVqhsLfSXYifRYruigatV6q4I/T7+sBaFfvDKSDLiqmX39hYD93FRRKML?=
+ =?us-ascii?Q?fAQtyy/pCb6T9+qZ1lrOEjv//e9cDrWNOyrjoVO5Uuitmlom1HCHhMfqLI7C?=
+ =?us-ascii?Q?UKhWHKuVKveWDTT6k4s4YBF76jTxarTeKZXJlEmPeUZ5qkW0o58KYQ8UbYfU?=
+ =?us-ascii?Q?2+WpvelPcJ3AEGygp8yyRAYsfbLnQPun/7dAOCweb8ZvkBtw4lNmXyEbQ1oX?=
+ =?us-ascii?Q?cBfS2p/eZrM9W/VaKtHhA0x3U+0Mn4KJAWI8NNyLvn4Dsjc1poIB5PKOx2YR?=
+ =?us-ascii?Q?GU/R8fXwMmWAK/9pcUge2CPMQv+cqWASSYKOmHkcS7zR8s66ljuC+5FGtnam?=
+ =?us-ascii?Q?qBW53dnHl/QdcORI/pZs24GArUONFUnTJJGz5PVKF4LikcDmK3bFuvfIySJX?=
+ =?us-ascii?Q?bY5nvRmHsnahUyZk3PxQ9OvsGk5GJ+RVtvPQ9I3wQXS4NW37bYNfvt34LTeJ?=
+ =?us-ascii?Q?sP42H3qlzzplFpEYEKrteRifug=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 21:33:08.1894
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36a95725-f3c9-44b1-caad-08d89af7b099
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E8XC0tGGsrgnknyCbhYXtQQcbmz4aFM1aHqma1htUsQmJw0NxoqOFY7W93p9zNIS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2245
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 adultscore=0 mlxscore=0 suspectscore=1 impostorscore=0
+ clxscore=1011 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012070140
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 09:29:53 +0100, Guido Günther wrote:
-> This panel from Shenzhen Yashi Changhua Intelligent Technology Co
-> uses the same driver IC but a different LCD.
+On Mon, Dec 07, 2020 at 09:06:05PM +0100, Florent Revest wrote:
+> This avoids
+>   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
+>   bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
+> When compiling a kernel with BPF and without NET.
 > 
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Florent Revest <revest@chromium.org>
 > ---
->  .../devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml  | 1 +
->  1 file changed, 1 insertion(+)
+>  kernel/trace/bpf_trace.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 0cf0a6331482..29ec2b3b1cc4 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1272,7 +1272,11 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+>  
+>  BPF_CALL_1(bpf_sock_from_file, struct file *, file)
+>  {
+> +#ifdef CONFIG_NET
+>  	return (unsigned long) sock_from_file(file);
+> +#else
+> +	return 0;
+> +#endif
+>  }
+Should bpf_sock_from_file_proto belong to
+tracing_prog_func_proto() instead of bpf_tracing_func_proto()?
+bpf_skc_to_*_proto is also in tracing_prog_func_proto()
+where there is an existing "#ifdef CONFIG_NET".
 
-Acked-by: Rob Herring <robh@kernel.org>
+>  
+>  BTF_ID_LIST(bpf_sock_from_file_btf_ids)
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
