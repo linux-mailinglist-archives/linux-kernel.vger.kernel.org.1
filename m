@@ -2,258 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709402D1CE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 549CC2D1CE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgLGWLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727977AbgLGWLe (ORCPT
+        id S1727864AbgLGWLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:11:51 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:46852 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgLGWLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:11:34 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7C4C0611CC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 14:10:16 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id z83so19808990ybz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 14:10:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=bOw9j0dUMpy7AXeSO7Vybh8rgZgZSfkPfVMJWfLbDFk=;
-        b=jpKfnihEOJ3JzD742ipH1Jes5cJ47T8rtbGc6jGgsgArUzz8eeJQRi/fi08ldEweRk
-         hEGKGktwBj4mnQFVS1JTnEbTTJ9tjWyf8As/3pPyA94PF+RGEoh79TRUYtwb2MlBDVDk
-         EFVYS+VDSBO0CB8UBa2UqsQzewGtaKvK9ihysCn1i9jT1Yppuql4B1Wb5IB8oFLMPglJ
-         0dTtyqWK1TY9N9f71urtC6IhQcFARTv5rHThTBWcDyW/+/lId40rxPsoiaNknX5AkWOZ
-         oAO2A2/o4y9ted4yZSJ9gHNHBjYinbsXtDQgyTYLI+SM4N/cax/qfDTzuPEo3ZaTtw3N
-         Amgg==
+        Mon, 7 Dec 2020 17:11:50 -0500
+Received: by mail-ot1-f66.google.com with SMTP id w3so13419663otp.13;
+        Mon, 07 Dec 2020 14:11:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=bOw9j0dUMpy7AXeSO7Vybh8rgZgZSfkPfVMJWfLbDFk=;
-        b=HV/iEfSexovOXmpVTZwutjUM9tmtSku5KQ/uDJ1Zmabqrb5mGJeeXy7dC9ZGAuRUqQ
-         Ye+vh8iaoPZVXbZUbkEZtKmbWoeEOcpDp8snDCVJprBf7U0P85zSTGGU5aroUBtgEusr
-         6sUbYLL1A5WEGeoVuIa1qADnnsRApbdOfpKSYnjN/D/4xYTFbB2d43lHHe7xGD2HuGHA
-         Ee1pifbuRkV4ll8z5I3I7GCxQK6BjRzscg0+H0WHCvF7OtM4zdHa5hfLRtRwn4TqkChr
-         Ad/ePLAuf61z1taP6ebKT5+vjLtup6qL31+d1KqsVr2DWGN7pO77tDLIk6bOaEpeoQAH
-         nr6g==
-X-Gm-Message-State: AOAM5310HDdSssBFt3sXeOSp1gDOqQj7JWk6VFLMxbf2bTgLVLgxsv3Q
-        qhdS593WWfl4WAw7zR1ndr+O0An86i4=
-X-Google-Smtp-Source: ABdhPJx1LU2DrQbcr78vSzaIF+5+OB3wODd3u0KeQ5xe/FybZhTw1Qi70c8ZhKenpheZhGDmTkwjYwmaO7Q=
-Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
-X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a25:cf0a:: with SMTP id f10mr26624027ybg.353.1607379015692;
- Mon, 07 Dec 2020 14:10:15 -0800 (PST)
-Date:   Mon,  7 Dec 2020 15:09:49 -0700
-In-Reply-To: <20201207220949.830352-1-yuzhao@google.com>
-Message-Id: <20201207220949.830352-12-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20201207220949.830352-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH 11/11] mm: enlarge the "int nr_pages" parameter of update_lru_size()
-From:   Yu Zhao <yuzhao@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HsQvzdPF2thWUjytjWg/Jash3Lio8upePTuvdwV9ns0=;
+        b=RrEi/EKv91i0uq1u6cGMbdS+ikPv1DvSO2QPjrdwWlq3kr1Xyf0z3GJZtbGUG90kEo
+         c7pX6CrZvGcqzMdA/800sX9oGy/kFGSIZvF0RY5mQ8YrR6jZUmUnbWBznqtwcoRbVKwU
+         clvALs1prenR4cG870PmB6xDYvYWkvimf2JkSGb/ZLRqI95uGNkjhjhEfwx+kgsWRfZh
+         2okNFMe/CL4N0vVTiI1yKJUxjaHHfF7ltUYLBF5N+1rd88mvl2Pr+pbfWMCZ+4VILtAx
+         6n/I7QV5554obj8z6x80/0481ZWs6X6InAqD525vrkX+jF0sgxON53J2yLnLQ0LCN/I9
+         Ky9g==
+X-Gm-Message-State: AOAM533Ab3Yl7rkDuptvtJBtTCacb240mJs3KsDZFyKZKiZy45hbrDhY
+        EzQvdvqwP6bKkz3nYTQFCQ==
+X-Google-Smtp-Source: ABdhPJwY029JGJagNUX9pkBsVi3mAwTfkCxM4O6dOCfWFX5aA90hEQI+/c8P1R9rLD6dCCf6Oh1d8w==
+X-Received: by 2002:a9d:76d7:: with SMTP id p23mr14498167otl.180.1607379069692;
+        Mon, 07 Dec 2020 14:11:09 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m18sm658388ooa.24.2020.12.07.14.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 14:11:08 -0800 (PST)
+Received: (nullmailer pid 927326 invoked by uid 1000);
+        Mon, 07 Dec 2020 22:11:07 -0000
+Date:   Mon, 7 Dec 2020 16:11:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
+ for Actions Semi S500 SoC
+Message-ID: <20201207221107.GA927276@robh.at.kernel.org>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update_lru_sizes() defines an unsigned long argument and passes it as
-nr_pages to update_lru_size(). Though this isn't causing any overflows
-I'm aware of, it's a bad idea to go through the demotion given that we
-have recently stumbled on a related type promotion problem fixed by
-commit 2da9f6305f30 ("mm/vmscan: fix NR_ISOLATED_FILE corruption on 64-bit")
+On Fri, 20 Nov 2020 01:55:58 +0200, Cristian Ciocaltea wrote:
+> Add a new compatible string corresponding to the DMA controller found
+> in the S500 variant of the Actions Semi Owl SoCs family.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
 
-Note that the underlying counters are already in long. This is another
-reason we shouldn't have the demotion.
-
-This patch enlarges all relevant parameters on the path to the final
-underlying counters:
-	update_lru_size(int -> long)
-		if memcg:
-			__mod_lruvec_state(int -> long)
-				if smp:
-					__mod_node_page_state(long)
-				else:
-					__mod_node_page_state(int -> long)
-			__mod_memcg_lruvec_state(int -> long)
-				__mod_memcg_state(int -> long)
-		else:
-			__mod_lruvec_state(int -> long)
-				if smp:
-					__mod_node_page_state(long)
-				else:
-					__mod_node_page_state(int -> long)
-
-		__mod_zone_page_state(long)
-
-		if memcg:
-			mem_cgroup_update_lru_size(int -> long)
-
-Note that __mod_node_page_state() for the smp case and
-__mod_zone_page_state() already use long. So this change also fixes
-the inconsistency.
-
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- include/linux/memcontrol.h | 10 +++++-----
- include/linux/mm_inline.h  |  2 +-
- include/linux/vmstat.h     |  6 +++---
- mm/memcontrol.c            | 10 +++++-----
- 4 files changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3febf64d1b80..1454201abb8d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -810,7 +810,7 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
- int mem_cgroup_select_victim_node(struct mem_cgroup *memcg);
- 
- void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
--		int zid, int nr_pages);
-+		int zid, long nr_pages);
- 
- static inline
- unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
-@@ -896,7 +896,7 @@ static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
- 	return x;
- }
- 
--void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
-+void __mod_memcg_state(struct mem_cgroup *memcg, int idx, long val);
- 
- /* idx can be of type enum memcg_stat_item or node_stat_item */
- static inline void mod_memcg_state(struct mem_cgroup *memcg,
-@@ -948,7 +948,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- }
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
--			      int val);
-+			      long val);
- void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
- 
- static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
-@@ -1346,7 +1346,7 @@ static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
- 
- static inline void __mod_memcg_state(struct mem_cgroup *memcg,
- 				     int idx,
--				     int nr)
-+				     long nr)
- {
- }
- 
-@@ -1369,7 +1369,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- }
- 
- static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
--					    enum node_stat_item idx, int val)
-+					    enum node_stat_item idx, long val)
- {
- }
- 
-diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 355ea1ee32bd..18e85071b44a 100644
---- a/include/linux/mm_inline.h
-+++ b/include/linux/mm_inline.h
-@@ -26,7 +26,7 @@ static inline int page_is_file_lru(struct page *page)
- 
- static __always_inline void update_lru_size(struct lruvec *lruvec,
- 				enum lru_list lru, enum zone_type zid,
--				int nr_pages)
-+				long nr_pages)
- {
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 773135fc6e19..230922179ba0 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -310,7 +310,7 @@ static inline void __mod_zone_page_state(struct zone *zone,
- }
- 
- static inline void __mod_node_page_state(struct pglist_data *pgdat,
--			enum node_stat_item item, int delta)
-+			enum node_stat_item item, long delta)
- {
- 	if (vmstat_item_in_bytes(item)) {
- 		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-@@ -453,7 +453,7 @@ static inline const char *vm_event_name(enum vm_event_item item)
- #ifdef CONFIG_MEMCG
- 
- void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
--			int val);
-+			long val);
- 
- static inline void mod_lruvec_state(struct lruvec *lruvec,
- 				    enum node_stat_item idx, int val)
-@@ -481,7 +481,7 @@ static inline void mod_lruvec_page_state(struct page *page,
- #else
- 
- static inline void __mod_lruvec_state(struct lruvec *lruvec,
--				      enum node_stat_item idx, int val)
-+				      enum node_stat_item idx, long val)
- {
- 	__mod_node_page_state(lruvec_pgdat(lruvec), idx, val);
- }
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index de17f02d27ad..c3fe5880c42d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -758,7 +758,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
-  * @idx: the stat item - can be enum memcg_stat_item or enum node_stat_item
-  * @val: delta to add to the counter, can be negative
-  */
--void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
-+void __mod_memcg_state(struct mem_cgroup *memcg, int idx, long val)
- {
- 	long x, threshold = MEMCG_CHARGE_BATCH;
- 
-@@ -796,7 +796,7 @@ parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
- }
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
--			      int val)
-+			      long val)
- {
- 	struct mem_cgroup_per_node *pn;
- 	struct mem_cgroup *memcg;
-@@ -837,7 +837,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-  * change of state at this level: per-node, per-cgroup, per-lruvec.
-  */
- void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
--			int val)
-+			long val)
- {
- 	/* Update node */
- 	__mod_node_page_state(lruvec_pgdat(lruvec), idx, val);
-@@ -1407,7 +1407,7 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
-  * so as to allow it to check that lru_size 0 is consistent with list_empty).
-  */
- void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
--				int zid, int nr_pages)
-+				int zid, long nr_pages)
- {
- 	struct mem_cgroup_per_node *mz;
- 	unsigned long *lru_size;
-@@ -1424,7 +1424,7 @@ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
- 
- 	size = *lru_size;
- 	if (WARN_ONCE(size < 0,
--		"%s(%p, %d, %d): lru_size %ld\n",
-+		"%s(%p, %d, %ld): lru_size %ld\n",
- 		__func__, lruvec, lru, nr_pages, size)) {
- 		VM_BUG_ON(1);
- 		*lru_size = 0;
--- 
-2.29.2.576.ga3fc446d84-goog
-
+Reviewed-by: Rob Herring <robh@kernel.org>
