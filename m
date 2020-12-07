@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191D12D1BDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E68862D1BE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgLGVQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:16:36 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35882 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgLGVQf (ORCPT
+        id S1727681AbgLGVR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:17:57 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35707 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbgLGVR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:16:35 -0500
-Received: by mail-ot1-f66.google.com with SMTP id y24so13931857otk.3;
-        Mon, 07 Dec 2020 13:16:19 -0800 (PST)
+        Mon, 7 Dec 2020 16:17:56 -0500
+Received: by mail-ot1-f68.google.com with SMTP id i6so7820374otr.2;
+        Mon, 07 Dec 2020 13:17:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rSAFkhpNJQAuz9y5dju0W7uXjODyDSx6iiAnGJorzFE=;
-        b=LabFy7kUaJOrTWpn/CBHBFDaeDjB4dsNcUXA8Qcf1E4f/qFJ/Ai6GA2hazlu+uZytJ
-         GHMswHc7dj6B3XmIWCehObD7ldrgL2/GJDBuEIsgSYGAMnAX/VsH/+aZbZfJDW2BQySb
-         TOQ9ZMpv/NVJdNi8T1IwoDe/6iXUK3zJ8pwW+InL085rp81rS9MfmHhu9jmHPu6eHP7f
-         oMze/1BkFrN80ebN/S+X/h7zKt9MsV/rfUwNFiHp3GsWkxkC49R+9/FUi1DuX8PV5iUw
-         yqefHQZku8SAcjCGtXHC/CoSjY5V44Qhjhb7XRJzeOl4owq9nPi7OLPWNgR2yoOEu0f/
-         bZGA==
-X-Gm-Message-State: AOAM530i1PHfomfi4j+KqYQzIzTz2pHPOPEbJZt7r+z6RZd7gVukMqhq
-        7sVIIAyXfJtne2WH7gbdwA==
-X-Google-Smtp-Source: ABdhPJxQpESfvNGlJAqwTMytNEER2nkmsXBzu8vhDgGPWF4PCnXOQyEU6ub0eGzupCQoCYrmNFRMlQ==
-X-Received: by 2002:a05:6830:128a:: with SMTP id z10mr14708659otp.3.1607375754577;
-        Mon, 07 Dec 2020 13:15:54 -0800 (PST)
+        bh=G1G6ObvJgDI0E7m4Cl1U1Ro4MDrbTLhzH3K0T2+ZbBs=;
+        b=LXphHGOpjCqUv2Tt+M521S8Pu2IaqZG9/tIYqED4G/shP7is5W3Rwp1B87r5bfiINM
+         fy3xVi4eDJdw04KpV1Nc0z4trs0aryYqUZ6djJPfIg2esj3wG19OlPeUyXx4zMZOy+bb
+         +WnWCkqjxWdP/gVyQSusS+GdhJv5y7S1dku5lDYL/3Joy48Wqg/6pEu1PL1AGmtEGvM5
+         ECnCqlfRgXWAHxdx16nnItjA1TBIeHz5IHrEwN7x4OQK3dWYP/JviBkgdU4qqVouz8y6
+         x5AvRvvSXUXR2iVUA83HLj67DpKt7wGcdmcmB/AKVAgAtlMa1Lq3VcqDYb/2VVnUH5zO
+         59MA==
+X-Gm-Message-State: AOAM5338vu9wM+kGxzV0+vvfiE/6UFBYZ2Jn1Kd+Pex0OrsbItE+LGWB
+        6tnAS2aF3TLMG0ClSyKmgw==
+X-Google-Smtp-Source: ABdhPJy/chd0MSu5WIDA3RVAbdxX9aM4h7hyWLwu1dkVGQ1ZVEXEos5cdWB3ekvdjyNJmXERqp4QUg==
+X-Received: by 2002:a05:6830:4036:: with SMTP id i22mr2933425ots.127.1607375835756;
+        Mon, 07 Dec 2020 13:17:15 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b28sm2878493oob.22.2020.12.07.13.15.52
+        by smtp.gmail.com with ESMTPSA id k134sm3203551oib.51.2020.12.07.13.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:15:53 -0800 (PST)
-Received: (nullmailer pid 838684 invoked by uid 1000);
-        Mon, 07 Dec 2020 21:15:52 -0000
-Date:   Mon, 7 Dec 2020 15:15:52 -0600
+        Mon, 07 Dec 2020 13:17:14 -0800 (PST)
+Received: (nullmailer pid 840904 invoked by uid 1000);
+        Mon, 07 Dec 2020 21:17:13 -0000
+Date:   Mon, 7 Dec 2020 15:17:13 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
+Cc:     dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org,
         Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Min Guo <min.guo@mediatek.com>, devicetree@vger.kernel.org,
-        David Airlie <airlied@linux.ie>, linux-usb@vger.kernel.org,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3 03/11] dt-bindings: phy: convert phy-mtk-xsphy.txt to
+        Rob Herring <robh+dt@kernel.org>, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vinod Koul <vkoul@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 04/11] dt-bindings: phy: convert phy-mtk-tphy.txt to
  YAML schema
-Message-ID: <20201207211552.GA838655@robh.at.kernel.org>
+Message-ID: <20201207211713.GA840844@robh.at.kernel.org>
 References: <20201118082126.42701-1-chunfeng.yun@mediatek.com>
- <20201118082126.42701-3-chunfeng.yun@mediatek.com>
+ <20201118082126.42701-4-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118082126.42701-3-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201118082126.42701-4-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Nov 2020 16:21:18 +0800, Chunfeng Yun wrote:
-> Convert phy-mtk-xsphy.txt to YAML schema mediatek,xsphy.yaml
+On Wed, 18 Nov 2020 16:21:19 +0800, Chunfeng Yun wrote:
+> Convert phy-mtk-tphy.txt to YAML schema mediatek,tphy.yaml
 > 
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
 > v3:
->   1. remove type for property with standard unit suffix suggested by Rob
->   2. remove '|' for descritpion
->   3. fix yamllint warning
+>   1. fix dt_binding_check error in example after add mtu3.yaml
+>   Changes suggested by Rob:
+>   2. fix wrong indentation
+>   3. remove '|' due to no formatting to preserve
+>   4. add a space after '#'
+>   5. drop unused labels and status in examples
+>   6. modify file mode
 > 
 > v2:
->   1. modify description and compatible definition suggested by Rob
+>   1. modify description and compatible
 > ---
->  .../bindings/phy/mediatek,xsphy.yaml          | 199 ++++++++++++++++++
->  .../devicetree/bindings/phy/phy-mtk-xsphy.txt | 109 ----------
->  2 files changed, 199 insertions(+), 109 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml
->  delete mode 100644 Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt
+>  .../bindings/phy/mediatek,tphy.yaml           | 260 ++++++++++++++++++
+>  .../devicetree/bindings/phy/phy-mtk-tphy.txt  | 162 -----------
+>  2 files changed, 260 insertions(+), 162 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/phy/phy-mtk-tphy.txt
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
