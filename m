@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE022D1699
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD6A2D15FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727745AbgLGQkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:40:33 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:43374 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbgLGQkc (ORCPT
+        id S1726278AbgLGQcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:32:09 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:41588 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGQcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:40:32 -0500
-Received: from 89-64-79-106.dynamic.chello.pl (89.64.79.106) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id f644db2eefb3634f; Mon, 7 Dec 2020 17:39:50 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: [PATCH v1 2/4] cpufreq: schedutil: Adjust utilization instead of frequency
-Date:   Mon, 07 Dec 2020 17:29:47 +0100
-Message-ID: <1916732.tSaCp9PeQq@kreacher>
-In-Reply-To: <20360841.iInq7taT2Z@kreacher>
-References: <20360841.iInq7taT2Z@kreacher>
+        Mon, 7 Dec 2020 11:32:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607358703; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=GxZ4jGB2NWJelasuf1KTtiksg1FVSU+tebAzvNOIINQ=;
+ b=JmWhF3BesUjaJ+f8fb2ujWCCHeYXbf3NFRkDa4r0gN8VhjBsOoaagfB+GlPSsB6kb4FQ8E11
+ wZvC+K0o8pMuNweRu8yyCtLpv703Jb3gI54w3kr/0OHAsqesAxA5zXf+QiAK+I2ReGPPE65a
+ tYAC/RnkO4nbpYvjTccNr6xs8yQ=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5fce58d5ca03b14965e81976 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:31:17
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 006FFC433C6; Mon,  7 Dec 2020 16:31:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A71F7C433ED;
+        Mon,  7 Dec 2020 16:31:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A71F7C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] brmcfmac: fix compile when DEBUG is defined
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201124142440.67554-1-hby2003@163.com>
+References: <20201124142440.67554-1-hby2003@163.com>
+To:     hby <hby2003@163.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hby <hby2003@163.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201207163117.006FFC433C6@smtp.codeaurora.org>
+Date:   Mon,  7 Dec 2020 16:31:16 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+hby <hby2003@163.com> wrote:
 
-When avoiding reduction of the frequency after the target CPU has
-been busy since the previous frequency update, adjust the utilization
-instead of adjusting the frequency, because doing so is more prudent
-(it is done to counter a possible utilization deficit after all) and
-it will allow some code to be shared after a subsequent change.
+> The steps:
+> 1. add "#define DEBUG" in drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c line 61.
+> 2. make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- O=../Out_Linux bcm2835_defconfig
+> 3. make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- O=../Out_Linux/ zImage modules dtbs -j8
+> 
+> Then, it will fail, the compile log described below:
+> 
+> Kernel: arch/arm/boot/zImage is ready
+> MODPOST Module.symvers
+> ERROR: modpost: "brcmf_debugfs_add_entry" [drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko] undefined!
+> ERROR: modpost: "brcmf_debugfs_get_devdir" [drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko] undefined!
+> ERROR: modpost: "__brcmf_dbg" [drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko] undefined!
+> scripts/Makefile.modpost:111: recipe for target 'Module.symvers' failed
+> make[2]: *** [Module.symvers] Error 1
+> make[2]: *** Deleting file 'Module.symvers'
+> Makefile:1390: recipe for target 'modules' failed
+> make[1]: *** [modules] Error 2
+> make[1]: Leaving directory '/home/hby/gitee/linux_origin/Out_Linux'
+> Makefile:185: recipe for target '__sub-make' failed
+> make: *** [__sub-make] Error 2
+> 
+> Signed-off-by: hby <hby2003@163.com>
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- kernel/sched/cpufreq_schedutil.c |   11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+I checked and brcmd80211/Makefile has:
 
-Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-===================================================================
---- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-+++ linux-pm/kernel/sched/cpufreq_schedutil.c
-@@ -437,7 +437,7 @@ static void sugov_update_single(struct u
- {
- 	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
--	unsigned int cached_freq = sg_policy->cached_raw_freq;
-+	unsigned long prev_util = sg_cpu->util;
- 	unsigned int next_f;
- 
- 	sugov_iowait_boost(sg_cpu, time, flags);
-@@ -451,17 +451,14 @@ static void sugov_update_single(struct u
- 	sugov_get_util(sg_cpu);
- 	sugov_iowait_apply(sg_cpu, time);
- 
--	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
- 	/*
- 	 * Do not reduce the frequency if the CPU has not been idle
- 	 * recently, as the reduction is likely to be premature then.
- 	 */
--	if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
--		next_f = sg_policy->next_freq;
-+	if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-+		sg_cpu->util = prev_util;
- 
--		/* Restore cached freq as next_freq has changed */
--		sg_policy->cached_raw_freq = cached_freq;
--	}
-+	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
- 
- 	/*
- 	 * This code runs under rq->lock for the target CPU, so it won't run
+subdir-ccflags-$(CONFIG_BRCMDBG)	+= -DDEBUG
 
+I don't understand why brcm80211 uses DEBUG flag like that, but I guess there's
+a reason. I think that either _all_ DEBUG uses should be removed from the
+driver, or you shouldn't add "#define DEBUG" on your own to any of the files.
+So this patch is not the best solution.
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201124142440.67554-1-hby2003@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
