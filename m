@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11712D12BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134DF2D12F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgLGN6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:58:38 -0500
-Received: from muru.com ([72.249.23.125]:49820 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726234AbgLGN6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:58:38 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id A8EF98057;
-        Mon,  7 Dec 2020 13:58:04 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 15:57:53 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during
- probe
-Message-ID: <20201207135753.GA26857@atomide.com>
-References: <20201204095539.31705-1-andreas@kemnade.info>
- <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
- <20201204171428.0a011188@aktux>
- <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
+        id S1726839AbgLGOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:01:43 -0500
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:64961 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgLGOBm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:01:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607349702; x=1638885702;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Ms+4paR+HDAhOiISnEPDdfUAZJphPvdvvNfaStExDY8=;
+  b=ICb1zrHM5xQLaEGBfclkOFNLhwfAn9zD++OM3aelZI8cO9jaKOx3Se36
+   gXpQBxXHgRoC7/vPT6uutU+8N9SXZVP8m8lxmFY47rSZRjYYLJVupH6As
+   D9ZMsd2Ans9XExONJrFtQPf3Gnij7Bx2psvzG9wJr0EdXlYu0VomPMMI9
+   0rAYNANhoG8KWbyDWsz02mYoYcmY3Lgb+eO2JOtRyC5Cpbg69YgnmkS9x
+   79U2xnVU9NG284+yeC5YiPz6We6KC7bLs6xn7BNEtlm167tbdgQBAk5iS
+   Qx49/ac5oTO3qPN4wwmc77xciUTJZj4Y3uLmiNTejLwfWVdS2Gd76sSjt
+   Q==;
+IronPort-SDR: dE9nllveeeY16U5gkycSZri5cdfZOA00uFfI3Fk/oVdaoEvtQbjjiigi6gUzmBY9vUL9DfWW7V
+ 7eoHQjtVAnyR05qOXVQu00lWP+7EB79yLDlSPAN+4Y2j5pa/OjumGDyw0RzrMm7EAw+8yRa5Wg
+ 4IJVXOFqNzuCKPBRCpO1dNDyIXG3F7XScfxGQEb9N2b9vEyMRejOHASo+B252A7nNbiEdAjrGQ
+ RYEj5xcUZKEA7XemCyTAaa/umw5DVpSYwhbjT7vmDy+3OwK1FETjnqFAmDrGxny6At13Jhrycz
+ Ffk=
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="96128931"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Dec 2020 07:00:36 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 7 Dec 2020 07:00:36 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 7 Dec 2020 07:00:33 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <broonie@kernel.org>, <linux-spi@vger.kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <bugalski.piotr@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Tudor Ambarus" <tudor.ambarus@microchip.com>
+Subject: [PATCH 0/4] spi: atmel-quadspi: Fix AHB memory accesses
+Date:   Mon, 7 Dec 2020 15:59:55 +0200
+Message-ID: <20201207135959.154124-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Doug Anderson <dianders@chromium.org> [201204 16:43]:
-> Hi,
-> 
-> On Fri, Dec 4, 2020 at 8:14 AM Andreas Kemnade <andreas@kemnade.info> wrote:
-> >
-> > > > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
-> > >
-> > > From the description it sounds like this problem has always existed
-> > > but the async probe just tickled it reliably.  Seems like it'd make
-> > > sense to tag the "Fixes" as some earlier commit so you make sure your
-> > > fix gets picked to kernels even if they don't have the async probe
-> > > patch?
-> > >
-> >
-> > Hmm, maybe
-> > Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
-> > pm_runtime after probe defer")
-> >
-> > But on the other hand to stable branches only such patches are applied
-> > which solve pratical problems not only theoretical problems. But maybe
-> > it solves several random issues where nobody took care to debug them.
-> >
-> > That would be since v4.11.
-> 
-> I guess maybe best is to include both.  Then if someone is debugging
-> why their async probe is failing they will notice this commit, but
-> they also might decide to pick it earlier just to be safe...
+Starting with the move of the atmel-quadspi driver under SPI,
+the following error could be seen when mounting a 16MByte ubifs:
+UBIFS error (ubi0:0 pid 1893): check_lpt_type.constprop.6: invalid type (15) in LPT node type
 
-OK I'll add the above fixes tag too and apply this into fixes.
+1/4 fixes AHB accesses. The rest of the patches are small optimizations.
+Tested on both sama5d2 and sam9x60.
 
-Thanks,
+Tudor Ambarus (4):
+  spi: atmel-quadspi: Fix AHB memory accesses
+  spi: atmel-quadspi: Drop superfluous set of QSPI_IFR_APBTFRTYP_READ
+  spi: atmel-quadspi: Write QSPI_IAR only when needed
+  spi: atmel-quadspi: Move common code outside of if else
 
-Tony
+ drivers/spi/atmel-quadspi.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
