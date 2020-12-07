@@ -2,127 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0152D19A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4222D19AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgLGTc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbgLGTc7 (ORCPT
+        id S1726642AbgLGTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:35:51 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:41234 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgLGTfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:32:59 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953F7C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:32:18 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id m19so21125486ejj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:32:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mEesS3OI54HKVDbciJY01YZ/Otnyn7nILQ7ygAOmgxw=;
-        b=S7HQZhJ9qSfgRFeBQ/VI28rCEZ0AfT+LagJrORVZEpyQI+IsauFJPZPKcstnNe9KqP
-         E9dEdOhjnbRu4qdedgy7a/2Lk+8UBtZYusjrNtGz8GfGYXbaSGsQ+ZBsNFTS1KXCRiM5
-         DFmCco1qg0r2qOoW++FPNbTfOc5F/059ESmISx/fN4YY75Bfn7371RU2sGUPYCt4m19W
-         G0RG1fS35aU8JbtHZL2Z6a5xmnb5OyXlDCHm1gABi6S93ZMK1cROG+DC2DjFpBmHhsD1
-         vUJqCZIB16ZvME9K3ZeQOzqjJOqPlVeyukGq6E4dcYt6HgsPCUv44Ievc2j8VflP2Mu2
-         MjIw==
+        Mon, 7 Dec 2020 14:35:50 -0500
+Received: by mail-oi1-f194.google.com with SMTP id 15so5510012oix.8;
+        Mon, 07 Dec 2020 11:35:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mEesS3OI54HKVDbciJY01YZ/Otnyn7nILQ7ygAOmgxw=;
-        b=ncSs8RHZgTyAW3lx6txL+8j4mqH9CkuUrW0fI2qBqQ5UNtpnfNAGQcuRg6PB8O9ouC
-         Uiei3vGTVvWUJJVQ3K73SusRTE20YOIlgi6/bHf/F3dixXTTWJNtwVyrkkTvFxFmja5z
-         7oJEqm90S8OWl5GrdYXPaDB9B6Yb/Sfjo8A0r06JdWTKYNPlPiCQw+TZnUgqyAW5y5lm
-         5qQ6ZrK0TFubZI9SXkNg34EL/xdC5SgA9Yftuao+nJLqw6ipxS/nXss1xzQKA6iQWVXz
-         f7+Sks/RzOrQbShot1ygeC8wHHEOkZ2loJDNR7bh36ciq/MU7dXRMqF/Z2+WBqFkGwC9
-         DPQw==
-X-Gm-Message-State: AOAM533g1jA4hmGu0JUVT7nQ7FkWivBaP6UtZeMAJTo/+98Pj3+GlYtJ
-        Om/HvCPxsyuao2ro8BxyV2RrOIwew5se1DOuVWmflA==
-X-Google-Smtp-Source: ABdhPJx5TeZNSqN3ip9Hy7T4c21kaCHiRPLpQlPgDb6J2CMXhw6hKQwEMBJ3WgD8dM5pAXawaTU2xRXz3vPlPxQJP7g=
-X-Received: by 2002:a17:906:2707:: with SMTP id z7mr14807988ejc.418.1607369537299;
- Mon, 07 Dec 2020 11:32:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+fQcCWdXugKxwJU7ISQBHOa/TSruKBMJOC0TWO9h64=;
+        b=p+Brfa16kAgEDk8s1k+sn+vvDku3uD182/bfl79zE7SIXFQPOu7c+r7QYKRCIW46fz
+         5zKvqIda9KA6fJbcrfrShPKdgslU6VO23OOwgPq4y++NMxJeQe16N5CNdylr7JON/1Wq
+         PyRyqQzEl05URMnwlw9BHyrr41B/+a42iErh/xWcnSEgPM/SZYr9EexatELe4f5SP7t2
+         uy08t44806gjgbErIaP69cfqaODoWZ0kpd5v6lGMLi8x+S5nf5aEiwO3+UM9SS77pYEq
+         414xpfJee4m/A6OdKGzvD1Y3UrV9+JlKt81osXU2V4PUtTOvHfIYqt5jKFvPM1w7fMiw
+         CQGg==
+X-Gm-Message-State: AOAM5322lHmLvblHTJiO3e9E4dZ5SSQPA4rDqQnp/l8TXQC7R7+bNiuE
+        XyLImHSUbe+65qNvNVDDLA==
+X-Google-Smtp-Source: ABdhPJzr+YAshb71S96cNLAvLimBLklCBnzH+63xgY0/6FocJfgE1XrD4Z5QQx0XzNr/RxBOLdZIhg==
+X-Received: by 2002:aca:b4c2:: with SMTP id d185mr313873oif.124.1607369703359;
+        Mon, 07 Dec 2020 11:35:03 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d15sm2708014otk.62.2020.12.07.11.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 11:35:02 -0800 (PST)
+Received: (nullmailer pid 679274 invoked by uid 1000);
+        Mon, 07 Dec 2020 19:35:01 -0000
+Date:   Mon, 7 Dec 2020 13:35:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, Nemo Han <nemo.han@unisoc.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: input: Convert sc27xx-vibra.txt to
+ json-schema
+Message-ID: <20201207193501.GA679219@robh.at.kernel.org>
+References: <20201117034949.47877-1-zhang.lyra@gmail.com>
+ <20201117034949.47877-3-zhang.lyra@gmail.com>
 MIME-Version: 1.0
-References: <cover.1607332046.git.yuleixzhang@tencent.com> <33a1c4ca-9f78-96ca-a774-3adea64aaed3@redhat.com>
-In-Reply-To: <33a1c4ca-9f78-96ca-a774-3adea64aaed3@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 7 Dec 2020 11:32:15 -0800
-Message-ID: <CAPcyv4jRcT4ySx4DDnyGjM9t+C1y7yR+tVcKahsgGN8jGJB44A@mail.gmail.com>
-Subject: Re: [RFC V2 00/37] Enhance memory utilization with DMEMFS
-To:     David Hildenbrand <david@redhat.com>
-Cc:     yulei zhang <yulei.kernel@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sean J Christopherson <sean.j.christopherson@intel.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201117034949.47877-3-zhang.lyra@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 4:03 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 07.12.20 12:30, yulei.kernel@gmail.com wrote:
-> > From: Yulei Zhang <yuleixzhang@tencent.com>
-> >
-> > In current system each physical memory page is assocaited with
-> > a page structure which is used to track the usage of this page.
-> > But due to the memory usage rapidly growing in cloud environment,
-> > we find the resource consuming for page structure storage becomes
-> > more and more remarkable. So is it possible that we could reclaim
-> > such memory and make it reusable?
-> >
-> > This patchset introduces an idea about how to save the extra
-> > memory through a new virtual filesystem -- dmemfs.
-> >
-> > Dmemfs (Direct Memory filesystem) is device memory or reserved
-> > memory based filesystem. This kind of memory is special as it
-> > is not managed by kernel and most important it is without 'struct page'.
-> > Therefore we can leverage the extra memory from the host system
-> > to support more tenants in our cloud service.
->
-> "is not managed by kernel" well, it's obviously is managed by the
-> kernel. It's not managed by the buddy ;)
->
-> How is this different to using "mem=X" and mapping the relevant memory
-> directly into applications? Is this "simply" a control instance on top
-> that makes sure unprivileged process can access it and not step onto
-> each others feet? Is that the reason why it's called  a "file system"?
-> (an example would have helped here, showing how it's used)
->
-> It's worth noting that memory hotunplug, memory poisoning and probably
-> more is currently fundamentally incompatible with this approach - which
-> should better be pointed out in the cover letter.
->
-> Also, I think something similar can be obtained by using dax/hmat
-> infrastructure with "memmap=", at least I remember a talk where this was
-> discussed (but not sure if they modified the firmware to expose selected
-> memory as soft-reserved - we would only need a cmdline parameter to
-> achieve the same - Dan might know more).
+On Tue, 17 Nov 2020 11:49:48 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> 
+> Convert the sprd sc27xx vibrator binding to DT schema using json-schema.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> ---
+>  .../bindings/input/sprd,sc27xx-vibra.txt      | 23 ----------
+>  .../bindings/input/sprd,sc27xx-vibrator.yaml  | 46 +++++++++++++++++++
+>  2 files changed, 46 insertions(+), 23 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibra.txt
+>  create mode 100644 Documentation/devicetree/bindings/input/sprd,sc27xx-vibrator.yaml
+> 
 
-There is currently the efi_fake_mem parameter that can add the
-"EFI_MEMORY_SP" attribute on EFI platforms:
-
-    efi_fake_mem=4G@9G:0x40000
-
-...this results in a /dev/dax instance that can be further partitioned
-via the device-dax sub-division facility merged for 5.10. That could
-be generalized to something else for non-EFI platforms, but there has
-not been a justification to go that route yet.
-
-Joao pointed this out in a previous posting of DMEMFS, and I have yet
-to see an explanation of incremental benefit the kernel gains from
-having yet another parallel memory management interface.
+Reviewed-by: Rob Herring <robh@kernel.org>
