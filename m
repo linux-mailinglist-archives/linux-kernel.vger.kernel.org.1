@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A9B2D14F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 415872D1500
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgLGPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:42:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S1726660AbgLGPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLGPmQ (ORCPT
+        with ESMTP id S1726055AbgLGPnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:42:16 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F40DC061749;
-        Mon,  7 Dec 2020 07:41:30 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id q3so9221124pgr.3;
-        Mon, 07 Dec 2020 07:41:30 -0800 (PST)
+        Mon, 7 Dec 2020 10:43:07 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25488C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:42:27 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id o8so13786643ioh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:42:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E6bwFpo35es8wLk5NhibYg+TeLN+z3hooUCzqmhyN1U=;
-        b=epAl91DNeg6fZtFYD67aKCCsc1e45j8LLu0urPe3RtMRICJgT8yIOmqvdiT9QTpk2q
-         4HqiE3YE7lbZxRjDxm5QHyb8nvpWaXBWXrBRe457xwlM23WlHLxIRzMhm3bdG9FTfps2
-         ZGm6azTvbvQ/mOr5QRVdaTKljQJfxzLaiiQAdov5bt2Vj17JlMp0FvgP54bIPZIJJd6S
-         h5mrxVR/c8ga3C9+mj9EZLRHJBk/zI0BDEu4IbRrJiUgZPh79OzfSMxwdxZVL0/hwflE
-         0EZ0P5hDyc5NR1YJuUzPpCjXqWWLnlgBWTm5kqvFPxNOdiu57dsOBvK1HAqL5jpOo1g/
-         kRFA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KGuP04Yh5ZseJNv/4+3M6j57gxslXZrgP+sgHsyOAzo=;
+        b=ICznjA1rFsrMyRf9e3LLtRhJfQ0qm9c1oCCwOJhPfwE2Xu9H1e9QG9LzeLCLEdv5Yz
+         X54uDybUb/SL3RLSXbXFP2CCgyFBQtS7VYvLXphgjqqPiibzj6sf/SZ9gtrgcxxfSzTH
+         c5bR/c/CD0R011J1OAjF7wmifZkQNbl+QPMyOmYs1HpSWBp6sOTV060iX14ZxMX3M5Ov
+         5HQ0VOXYbGHsTNFyHnGswcfvgz62MNTpvRv+FPLeOpsC8RFmibZNg6rS0pVp0Z153w+z
+         fJKaWbr6oYMhZWROgqRoHbXANhGLwbp9vlBrRiK8IY2zES0C0rv+zBpxBWMq08baqVS8
+         9yPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E6bwFpo35es8wLk5NhibYg+TeLN+z3hooUCzqmhyN1U=;
-        b=W1Cr1EpgYBlwHmOmpD53O9Sf/KZ+EBRAWfkrZHxvfN9CtfX7McRzK6+jkx36RTXcjx
-         wCzdb28Mgz1nmwVbUyAB4LrGZIS0yhJbZ4zXsLiH7/4Zil6tDylqMOxtx43m7osRRI+q
-         wklM+WwCTjpuahr6hCu1/u+DjkO9uM4TgH2tT8rxuFq6dfW1SttqDEej287fXzQ7crOb
-         rY8c7IkwPSABsAMzpZFHHnCUMBdqfaHvMO/X7QnHSQD1LbZ3gkS1pEwjdVDBWJDtltTe
-         DUQrXg67F2ZO8kfjtXGkpRMPaM59eof9jxRWs24+WFJasDwQGTPX9+tIQI/Pvcjp6/ta
-         tlOw==
-X-Gm-Message-State: AOAM532FZahaPkDiDKWc8Z0iTduZGLuk7NGxNKIWFi8Cyqu4mu/zmj+k
-        CLIWDro2AtI8GOS7YXooGb7YuaQj08cCbaTqKAs=
-X-Google-Smtp-Source: ABdhPJy0J0wMIbx/uoMm5AY9VvNc+405O1p/i7YOAoUKvbaSg//wrHj2iKkiEZQO64u8lwSzUv6UkJyDyibKFQGLj0o=
-X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
- 66-20020a6204450000b029019c162bbbefmr16587022pfe.40.1607355689471; Mon, 07
- Dec 2020 07:41:29 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KGuP04Yh5ZseJNv/4+3M6j57gxslXZrgP+sgHsyOAzo=;
+        b=NWYQOLAY1M3wNQCn9hQhO2GZV4MK+ZIFMyzhvhNSaXivbh+9W/O8DqVLfz+z0L6gdM
+         YOeis6lQHHl7mjuasDIJmcwpcInNnROa+XrGH+k30LcaiQCPdb7vYvd3FgnDWhPAgiWL
+         kYSjgFOEotqBO6BWZbu19QsrXBXIEd5/Agf1HfaOFpOKwoc0f53tBa+u2A5OZPx3EOTP
+         xx9U7xF5ZLGS0TdEmXRYSVJK1SE1N/oz69MdGOVFCsc5XjnFqGFv9nHGdh199ZYLUo06
+         9LLw/+kEHHhHVjrDMiZiYMNF0hBAYUaW516n/2W9C/X0WOxOboTpevPAzzFGMsNgzmBn
+         YsBA==
+X-Gm-Message-State: AOAM532VBwRo+MylJknPZaYdqPk5N/FB6LDBJNcKKb3fsY/upp+GOW6Q
+        qLzN0LPHH7vnvS+2wYoRMH9tjw==
+X-Google-Smtp-Source: ABdhPJxw7qUWgoXa0MWZoyTHrpX/po4qk0rzl9IjAznXpUHq6v3KgIxYzII5z+U7WREDwYXWwNIZzw==
+X-Received: by 2002:a05:6602:26d4:: with SMTP id g20mr9323995ioo.152.1607355746498;
+        Mon, 07 Dec 2020 07:42:26 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id x17sm7497915ilj.67.2020.12.07.07.42.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 07:42:25 -0800 (PST)
+Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20201207081558.2361-1-hdanton@sina.com>
+ <13bd991a-be45-6521-655d-74b8d810b714@kernel.dk>
+Message-ID: <848ad126-c4f7-6dba-24da-d7e29cbcfb67@kernel.dk>
+Date:   Mon, 7 Dec 2020 08:42:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201207112354.13884-1-info@metux.net>
-In-Reply-To: <20201207112354.13884-1-info@metux.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Dec 2020 17:42:18 +0200
-Message-ID: <CAHp75Vd_iiqTYvgD59C7j+btx70s_Ge0UC4JU2uPa33enFW08w@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers: gpio: put virtual gpio device into their own submenu
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <13bd991a-be45-6521-655d-74b8d810b714@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 1:29 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> Since we already have a few virtual GPIO drivers, and more to come,
-> this category deserves its own submenu.
->
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> ---
+On 12/7/20 8:04 AM, Jens Axboe wrote:
+> On 12/7/20 1:15 AM, Hillf Danton wrote:
+>> Put file as part of error handling when setting up io ctx to fix
+>> memory leak like the following one.
+>>
+>>    BUG: memory leak
+>>    unreferenced object 0xffff888101ea2200 (size 256):
+>>      comm "syz-executor355", pid 8470, jiffies 4294953658 (age 32.400s)
+>>      hex dump (first 32 bytes):
+>>        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>>        20 59 03 01 81 88 ff ff 80 87 a8 10 81 88 ff ff   Y..............
+>>      backtrace:
+>>        [<000000002e0a7c5f>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+>>        [<000000002e0a7c5f>] __alloc_file+0x1f/0x130 fs/file_table.c:101
+>>        [<000000001a55b73a>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
+>>        [<00000000fb22349e>] alloc_file+0x33/0x1b0 fs/file_table.c:193
+>>        [<000000006e1465bb>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
+>>        [<000000007118092a>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+>>        [<000000007118092a>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
+>>        [<000000002ae99012>] io_uring_get_fd fs/io_uring.c:9198 [inline]
+>>        [<000000002ae99012>] io_uring_create fs/io_uring.c:9377 [inline]
+>>        [<000000002ae99012>] io_uring_setup+0x1125/0x1630 fs/io_uring.c:9411
+>>        [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>        [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Applied for 5.10, thanks.
 
-You are not a first day contributor, where is the changelog?
+I take that back, this patch is totally broken. Please test your patches
+before sending them out, this cannot have been even put through the most
+basic of tests.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jens Axboe
+
