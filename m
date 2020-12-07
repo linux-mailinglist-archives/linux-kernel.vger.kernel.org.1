@@ -2,198 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B702D0C9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089062D0C9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgLGJEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:04:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726164AbgLGJEl (ORCPT
+        id S1726611AbgLGJGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgLGJGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:04:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607331797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kTBrO+OTon/BmOp3fwNS5rOxfgsjT5TGx0AQt2Ixnks=;
-        b=eBrUsMmB9sJ5hlNtCBFryyg6e+EP5z4+7MEHegKZ1AAx9Xe4cPhq+tcHqvMr41X5bdgmfe
-        LxVr9oXhu6Hd78YjQxitVV/tQtHsfaM0OUiSzM0jv+8J5/HJNwGEkTpD1emjYbvGL0/LWf
-        KfUGkEM7Ui5kXPBoxVh15LP0HlpHRUk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-y1pivGv4M2KB9EywnAwuGA-1; Mon, 07 Dec 2020 04:03:15 -0500
-X-MC-Unique: y1pivGv4M2KB9EywnAwuGA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7B081842140;
-        Mon,  7 Dec 2020 09:03:13 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0898160C4D;
-        Mon,  7 Dec 2020 09:03:11 +0000 (UTC)
-Subject: Re: [RFC V2 3/3] s390/mm: Define arch_get_mappable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
-References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
- <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
- <20201202203233.GB11274@osiris>
- <24905c32-f6c1-97a0-000f-f822b9870ea5@arm.com> <20201203115133.GB9994@osiris>
- <4d6c9ec4-f1be-46b9-5d67-5c53f5afedc5@redhat.com>
- <62c60c9e-20d6-25bd-94d0-78bfed0f2476@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <02dfe6f5-efb6-c04d-c34a-a1e7393625cf@redhat.com>
-Date:   Mon, 7 Dec 2020 10:03:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 7 Dec 2020 04:06:45 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012F3C0613D0;
+        Mon,  7 Dec 2020 01:06:08 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id lb18so4446028pjb.5;
+        Mon, 07 Dec 2020 01:06:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ttg1rgPf81KMFs3MAsw98RgUM6DZxTe/dh3Tbs/2el8=;
+        b=ZFe+vJuxVzwH6L3xGq5RxOLkK6FCo7WC4pnxuzJXiN5yjhDSs/P9z0HpSHzHQMZwHk
+         vojv4LMDJU2lgqID3kGeJeSvDg5jTuBQowGitGi2HAL909530T5mmCadxNGsuM91y0pD
+         2PHQ0GeL9Jr+Fe1OWwp6tSn83DRVy3e/IQHiM+YJ4I7spXpsIwKkmx+xSSFfWnpZiYsp
+         LCuAkZVEkMTh9tQFZDwyZkptVpDghq5IoQXxAUJPaKvu3ZJMe7FitqTrEhGwQvd49gQ8
+         VkqEwWMA+dK1eNzRI+Xm3cqehrPUlHU1+LW6SVOItOREWF8qKljE7xLDx6Fe3QoQ1jDy
+         qlmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ttg1rgPf81KMFs3MAsw98RgUM6DZxTe/dh3Tbs/2el8=;
+        b=TrUDFvushVkgeGooSXIhxEeukgL9rIUJqayS1nt5wyE1QOpcl6J5BXEYL8ts68xal2
+         SQOj1gw7adLyHOaHGet2U9fIa3TfYbht6IwJ1M8yKRC4aFNT6ypiawsjl2kohTOhekmx
+         mb/VDewlx1Vriw85cL0rSVhR9G73/sgHEisA3of5YhGUyBjXusd2GrsfC5FCcMAHLVcq
+         BIyKsJ3SS8vojWxLEyjqhIX6C4R7oPkMRNIfUDxaPSWXJJcix9ZHaB+qJ8kL32Kch7RD
+         rRCTUC2l1SKkMzZj66Q2QZqq8DBBfM+wqBt3UW56CS9kD16WIjrZe9wL3qNCz5IxYT6Y
+         6tug==
+X-Gm-Message-State: AOAM532qiE6E9xB9WrgfV94YkmjqWsB/GZkVvdznz6YaZJj9lxgtWNva
+        qOQuq7oVIrdcedsbIaPD3z7QPR/WPvZQHg==
+X-Google-Smtp-Source: ABdhPJzEn5m248AQgPmsUejwM6smpfpdVRvAV+OT6/3BbNRW9SkbTwoS4BWlRaE1LHutf4OoFJpNTQ==
+X-Received: by 2002:a17:90a:6ac5:: with SMTP id b5mr15929315pjm.210.1607331967547;
+        Mon, 07 Dec 2020 01:06:07 -0800 (PST)
+Received: from localhost ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id j18sm10600078pgk.6.2020.12.07.01.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 01:06:06 -0800 (PST)
+From:   Geliang Tang <geliangtang@gmail.com>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>
+Cc:     Geliang Tang <geliangtang@gmail.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] NFSv4.1: use BITS_PER_LONG macro in nfs4session.h
+Date:   Mon,  7 Dec 2020 17:03:52 +0800
+Message-Id: <0070adebf1d8e260de713537cc2f6c860c9026ed.1607331694.git.geliangtang@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <62c60c9e-20d6-25bd-94d0-78bfed0f2476@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 05:38, Anshuman Khandual wrote:
-> 
-> 
-> On 12/3/20 5:31 PM, David Hildenbrand wrote:
->> On 03.12.20 12:51, Heiko Carstens wrote:
->>> On Thu, Dec 03, 2020 at 06:03:00AM +0530, Anshuman Khandual wrote:
->>>>>> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
->>>>>> index 5060956b8e7d..cc055a78f7b6 100644
->>>>>> --- a/arch/s390/mm/extmem.c
->>>>>> +++ b/arch/s390/mm/extmem.c
->>>>>> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
->>>>>>  		goto out_free_resource;
->>>>>>  	}
->>>>>>  
->>>>>> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
->>>>>> +		rc = -ERANGE;
->>>>>> +		goto out_resource;
->>>>>> +	}
->>>>>> +
->>>>>>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
->>>>>>  	if (rc)
->>>>>>  		goto out_resource;
->>>>>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
->>>>>> index b239f2ba93b0..06dddcc0ce06 100644
->>>>>> --- a/arch/s390/mm/vmem.c
->>>>>> +++ b/arch/s390/mm/vmem.c
->>>>>> @@ -532,14 +532,19 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->>>>>>  	mutex_unlock(&vmem_mutex);
->>>>>>  }
->>>>>>  
->>>>>> +struct range arch_get_mappable_range(void)
->>>>>> +{
->>>>>> +	struct range memhp_range;
->>>>>> +
->>>>>> +	memhp_range.start = 0;
->>>>>> +	memhp_range.end =  VMEM_MAX_PHYS;
->>>>>> +	return memhp_range;
->>>>>> +}
->>>>>> +
->>>>>>  int vmem_add_mapping(unsigned long start, unsigned long size)
->>>>>>  {
->>>>>>  	int ret;
->>>>>>  
->>>>>> -	if (start + size > VMEM_MAX_PHYS ||
->>>>>> -	    start + size < start)
->>>>>> -		return -ERANGE;
->>>>>> -
->>>>>
->>>>> I really fail to see how this could be considered an improvement for
->>>>> s390. Especially I do not like that the (central) range check is now
->>>>> moved to the caller (__segment_load). Which would mean potential
->>>>> additional future callers would have to duplicate that code as well.
->>>>
->>>> The physical range check is being moved to the generic hotplug code
->>>> via arch_get_mappable_range() instead, making the existing check in
->>>> vmem_add_mapping() redundant. Dropping the check there necessitates
->>>> adding back a similar check in __segment_load(). Otherwise there
->>>> will be a loss of functionality in terms of range check.
->>>>
->>>> May be we could just keep this existing check in vmem_add_mapping()
->>>> as well in order avoid this movement but then it would be redundant
->>>> check in every hotplug path.
->>>>
->>>> So I guess the choice is to either have redundant range checks in
->>>> all hotplug paths or future internal callers of vmem_add_mapping()
->>>> take care of the range check.
->>>
->>> The problem I have with this current approach from an architecture
->>> perspective: we end up having two completely different methods which
->>> are doing the same and must be kept in sync. This might be obvious
->>> looking at this patch, but I'm sure this will go out-of-sync (aka
->>> broken) sooner or later.
->>
->> Exactly, there should be one function only that was the whole idea of
->> arch_get_mappable_range().
->>
->>>
->>> Therefore I would really like to see a single method to do the range
->>> checking. Maybe you could add a callback into architecture code, so
->>> that such an architecture specific function could also be used
->>> elsewhere. Dunno.
->>>
->>
->> I think we can just switch to using "memhp_range_allowed()" here then
->> after implementing arch_get_mappable_range().
->>
->> Doesn't hurt to double check in vmem_add_mapping() - especially to keep
->> extmem working without changes. At least for callers of memory hotplug
->> it's then clear which values actually won't fail deep down in arch code.
-> 
-> But there is a small problem here. memhp_range_allowed() is now defined
-> and available with CONFIG_MEMORY_HOTPLUG where as vmem_add_mapping() and
-> __segment_load() are generally available without any config dependency.
-> So if CONFIG_MEMORY_HOTPLUG is not enabled there will be a build failure
-> in vmem_add_mapping() for memhp_range_allowed() symbol.
-> 
-> We could just move VM_BUG_ON(!memhp_range_allowed(start, size, 1)) check
-> from vmem_add_mapping() to arch_add_memory() like on arm64 platform. But
-> then __segment_load() would need that additional new check to compensate
-> as proposed earlier.
-> 
-> Also leaving vmem_add_mapping() and __segment_load() unchanged will cause
-> the address range check to be called three times on the hotplug path i.e
-> 
-> 1. register_memory_resource()
-> 2. arch_add_memory()
-> 3. vmem_add_mapping()
-> 
-> Moving memhp_range_allowed() check inside arch_add_memory() seems better
-> and consistent with arm64. Also in the future, any platform which choose
-> to override arch_get_mappable() will have this additional VM_BUG_ON() in
-> their arch_add_memory().
+Use the existing BITS_PER_LONG macro instead of calculating the value.
 
-Yeah, it might not make sense to add these checks all over the place.
-The important part is that
+Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+---
+ fs/nfs/nfs4session.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1. There is a check somewhere (and if it's deep down in arch code)
-2. There is an obvious way for callers to find out what valid values are.
-
-
-I guess it would be good enough to
-
-a) Factor out getting arch ranges into arch_get_mappable_range()
-b) Provide memhp_get_pluggable_range()
-
-Both changes only make sense with an in-tree user. I'm planning on using
-this functionality in virtio-mem code. I can pickup your patches, drop
-the superfluous checks, and use it from virtio-mem code. Makese sense
-(BTW, looks like we'll see aarch64 support for virtio-mem soon)?
-
+diff --git a/fs/nfs/nfs4session.h b/fs/nfs/nfs4session.h
+index b996ee23f1ba..3de425f59b3a 100644
+--- a/fs/nfs/nfs4session.h
++++ b/fs/nfs/nfs4session.h
+@@ -34,7 +34,7 @@ enum nfs4_slot_tbl_state {
+ 	NFS4_SLOT_TBL_DRAINING,
+ };
+ 
+-#define SLOT_TABLE_SZ DIV_ROUND_UP(NFS4_MAX_SLOT_TABLE, 8*sizeof(long))
++#define SLOT_TABLE_SZ DIV_ROUND_UP(NFS4_MAX_SLOT_TABLE, BITS_PER_LONG)
+ struct nfs4_slot_table {
+ 	struct nfs4_session *session;		/* Parent session */
+ 	struct nfs4_slot *slots;		/* seqid per slot */
 -- 
-Thanks,
-
-David / dhildenb
+2.26.2
 
