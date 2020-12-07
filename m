@@ -2,230 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1412D1291
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B122D1299
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgLGNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgLGNw7 (ORCPT
+        id S1726447AbgLGNx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:53:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39404 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725994AbgLGNx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:52:59 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDC2C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:52:19 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmGvz-0001Lj-4d; Mon, 07 Dec 2020 14:52:11 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kmGvx-0004wY-JA; Mon, 07 Dec 2020 14:52:09 +0100
-Date:   Mon, 7 Dec 2020 14:52:09 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201207135209.htp7plyotjxp37q2@pengutronix.de>
-References: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
- <20201206141941.GA24807@gofer.mess.org>
- <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
- <20201207094320.GA10460@gofer.mess.org>
+        Mon, 7 Dec 2020 08:53:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607349149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o2eDRpg2p3nscNNP24Y5Wwi2J4Ejtn5EoY7jP2IsnBU=;
+        b=Sb555piwauIVRwBB2hC1xw2b/RNQm+JidT7PCSXHT8p7mPfUAHdJDEe7m6V3CJQg8GMLXT
+        2OQQ2JBH9rhuneONRkyNasO2H+os27XEtAU8VywBlMsRhTCjz7Sndy+/jAjVSmZaJ2EyfH
+        s63b0VWVTGAmJtwpE2Iez1reDfUSNxc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-GfxOM3Q9PzypT8vHcO6obw-1; Mon, 07 Dec 2020 08:52:27 -0500
+X-MC-Unique: GfxOM3Q9PzypT8vHcO6obw-1
+Received: by mail-wm1-f70.google.com with SMTP id r1so5368485wmn.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:52:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o2eDRpg2p3nscNNP24Y5Wwi2J4Ejtn5EoY7jP2IsnBU=;
+        b=GLOfD5n8Qt0V/KayU2XMi0zBcB/gOtgMGdEiXMu7SeHe8JJOORXXhAec2LDq71hRQN
+         0U7SKKHFBNQiDLWN8vpSMU4exbJ2BljkNUBYTk+1y1Aj5N31Ev0F/eqkWHgDDZROgVYO
+         PbDVTde9P6kd/p7YwS42aK0+SstgZchOsRVazAghbrJnleUOmO9lydgRkiThj/UXtXQ7
+         Ub4Wb3zN4tHUHVZgqSQQ30Eb2vTeyw9Lxu7ZDNG53gp7sPoEKrCwJMrWPFPp2/z6bvVE
+         D7IMm9PS8mSOIqIXit4IGiR55/M89KvLUInbmUsGt8v90FUB30HmxuMj4RZIGGaj76PA
+         2A/g==
+X-Gm-Message-State: AOAM533tX4/YZvlXrrB22Dd3r7nxFNTzNOdgIzF5jMSkoyTeTjL8Zc7F
+        Pe0SpXIO0opvBKVdCM1977OHlQdbKD+nCJ5VZlcSpyrdMi4FPA/e1vPG2PAa5L8Jl6wUNZjaSB9
+        AnRcO4LOU4T7uIGCzflGFS+Ih
+X-Received: by 2002:a5d:5689:: with SMTP id f9mr19985953wrv.181.1607349145791;
+        Mon, 07 Dec 2020 05:52:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxry8r99XfuZsd9xpT/D3HhTrDgujG2fkSVGb9ILMFpXGDKe10crdm3NpHJ20Ml9kS7Zd7JfA==
+X-Received: by 2002:a5d:5689:: with SMTP id f9mr19985923wrv.181.1607349145521;
+        Mon, 07 Dec 2020 05:52:25 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id h14sm13884316wrx.37.2020.12.07.05.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 05:52:24 -0800 (PST)
+Date:   Mon, 7 Dec 2020 08:52:20 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org, stefanha@redhat.com,
+        msuchanek@suse.de
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+Message-ID: <20201206075131-mutt-send-email-mst@kernel.org>
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
+ <20201205142218-mutt-send-email-mst@kernel.org>
+ <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zwodz2pit7heximm"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201207094320.GA10460@gofer.mess.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Dec 05, 2020 at 09:05:16PM +0100, Enrico Weigelt, metux IT consult wrote:
+> On 05.12.20 20:32, Michael S. Tsirkin wrote:
+> 
+> Hi,
+> 
+> > It seems a bit of a mess, at this point I'm not entirely sure when
+> > should drivers select VIRTIO and when depend on it.
+> 
+> if VIRTIO just enables something that could be seen as library
+> functions, then select should be right, IMHO.
+> 
+> > The text near it says:
+> > 
+> > # SPDX-License-Identifier: GPL-2.0-only
+> > config VIRTIO
+> >         tristate
+> 
+> oh, wait, doesn't have an menu text, so we can't even explicitly enable
+> it (not shown in menu) - only implicitly. Which means that some other
+> option must select it, in order to become availe at all, and in order
+> to make others depending on it becoming available.
+> 
+> IMHO, therefore select is the correct approach.
+> 
+> 
+> >         help
+> >           This option is selected by any driver which implements the virtio
+> >           bus, such as CONFIG_VIRTIO_PCI, CONFIG_VIRTIO_MMIO, CONFIG_RPMSG
+> >           or CONFIG_S390_GUEST.
+> > 
+> > Which seems clear enough and would indicate drivers for devices *behind*
+> > the bus should not select VIRTIO and thus presumably should "depend on" it.
+> > This is violated in virtio console and virtio fs drivers.
+> 
+> See above: NAK. because it can't even be enabled directly (by the user).
+> If it wasn't meant otherwise, we'd have to add an menu text.
 
---zwodz2pit7heximm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Sean,
+The point is that user enables one of the bindings.
+That in turn enables drivers. If we merely select VIRTIO
+there's a chance user won't remember to select any bindings
+and will be surprised not to see any devices.
 
-On Mon, Dec 07, 2020 at 09:43:20AM +0000, Sean Young wrote:
-> Thank you for taking the time to explain your thinking.
 
-I'm happy you have an open ear for it. With this I really enjoy spending
-the time to find the right arguments and examples.
 
-> On Mon, Dec 07, 2020 at 09:16:28AM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
-> > > On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
-> > > > > What real life uses-cases are there for round down? If you want t=
-o round
-> > > > > down, is there any need for round up?
-> > > >=20
-> > > > The scenario I have in mind is for driving a motor. I have to admit
-> > > > however that usually the period doesn't matter much and it's the
-> > > > duty_cycle that defines the motor's speed. So for this case the
-> > > > conservative behaviour is round-down to not make the motor run fast=
-er
-> > > > than expected.
-> > >=20
-> > > I am reading here that for driving motors, only the duty cycle matter=
-s,
-> > > not the period.
-> >=20
-> > There is an upper limit (usually around 1 ms) for the period, but if you
-> > choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
-> >=20
-> > @Thierry: Do you have further use cases in mind?
+> > For console it says:
+> > 
+> > commit 9f30eb29c514589e16f2999ea070598583d1f6ec
+> > Author: Michal Suchanek <msuchanek@suse.de>
+> > Date:   Mon Aug 31 18:58:50 2020 +0200
+> > 
+> >     char: virtio: Select VIRTIO from VIRTIO_CONSOLE.
+> >     
+> >     Make it possible to have virtio console built-in when
+> >     other virtio drivers are modular.
+> >     
+> >     Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> >     Reviewed-by: Amit Shah <amit@kernel.org>
+> >     Link: https://lore.kernel.org/r/20200831165850.26163-1-msuchanek@suse.de
+> >     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > which seems kind of bogus - why do we care about allowing a builtin
+> > virtio console driver if the pci virtio bus driver is a module?
+> > There won't be any devices on the bus to attach to ...
+> 
+> When using other transports ?
 
-I asked in the hardware department of the company I work for and they
-had another usecase: Motors where for example a 1 ms pulse means "move
-forwards" and 2 ms means "move backwards". They had the same idea as I
-had: You want to know beforehand the result of a given
-pwm_apply_state().
+Any transport selects VIRTIO so if you enable that, you get
+VIRTIO and thus it's enough to depend on it.
 
-> > > > For other usecases (fan, backlight, LED) exactness typically doesn't
-> > > > matter that much.
-> > >=20
-> > > So, the use-cases you have are driving motor, fan, backlight, and led.
-> > > And in all these cases the exact Hz does not matter.
-> > >=20
-> > > The only uses case where the exact Hz does matter is pwm-ir-tx.=20
-> > >=20
-> > > So, I gather there are no use-cases for round-down. Yes, should round=
--down
-> > > be needed, then this is more difficult to implement if the driver alw=
-ays
-> > > does a round-closest. But, since there is no reason to have round-dow=
-n,
-> > > this is all academic.
-> > >=20
-> > > Your policy of forcing new pwm drivers to use round-down is breaking
-> > > pwm-ir-tx.
-> >=20
-> > So you're indeed suggesting that the "right" rounding strategy for
-> > lowlevel drivers should be:
-> >=20
-> >  - Use the period length closest to the requested period (in doubt round
-> >    down?)
-> >  - With the chosen period length use the biggest duty_cycle not bigger
-> >    than the requested duty_cycle.
-> >=20
-> > While this seems technically fine I think for maintenance this is a
-> > nightmare.
-> >=20
-> > My preference would be to stick to the rounding strategy we used so far
-> > (i.e.:
-> >=20
-> >  - Use the biggest period length not bigger than the requested period
-> >  - With the chosen period length use the biggest duty_cycle not bigger
-> >    than the requested duty_cycle.
-> >=20
-> > ) and for pwm-ir-tx add support to the PWM API to still make it possible
-> > (and easy) to select the best setting.
-> >=20
-> > The reasons why I think that this rounding-down strategy is the best
-> > are (in order of importance):
-> >=20
-> >  - It is easier to implement correctly [1]
->=20
-> Yes, you are right. You have given a great example where a simple
-> DIV_ROUND_CLOSEST() does not give the result you want.
->=20
-> >  - Same rounding method for period and duty cycle
-> >  - most drivers already do this (I think)
-> >=20
-> > The (IMHO nice) result would then mean:
-> >=20
-> >  - All consumers can get the setting they want; and
->=20
-> Once there is a nice pwm api for selecting round-nearest, then yes.
->=20
-> For the uses cases you've given, fan, backlight, and led a round-nearest
-> is the rounding they would want, I would expect.
+> In my current project, eg. I'm using mmio - my kernel has pci completely
+> disabled.
+> 
+> > I am inclined to fix console and virtio fs to depend on VIRTIO:
+> > select is harder to use correctly ...
+> 
+> I don't thinkt that would be good - instead everybody should just select
+> VIRTIO, never depend on it (maybe depend on VIRTIO_MENU instead)
 
-maybe, yes. Maybe it is also not important enough to spend the extra
-cycles getting round nearest and so sticking to round-down is good
-enough.
+GPU depends on VIRTIO and on VIRTIO_MENU ... which seems even messier
+...
 
-> >  - Code in lowlevel drivers is simple and the complexity is in common
-> >    code and so a single place.
-> >=20
-> > And it would also allow the pwm-ir-tx driver to notice if the PWM to be
-> > used can for example only support frequencies under 400 kHz.
->=20
-> I doubt pwm-ir-tx cares about this, however it is a nice-to-have. It would
-> also be nice if the rounding could be used with atomic configuration
-> as well.
+> 
+> --mtx
+> 
+> -- 
+> ---
+> Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+> werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+> GPG/PGP-Schlüssel zu.
+> ---
+> Enrico Weigelt, metux IT consult
+> Free software and Linux embedded engineering
+> info@metux.net -- +49-151-27565287
 
-I cannot follow, you created 11fc4edc483bea8bf0efa0cc726886d2342f6fa6
-because 476.2 Mhz was too bad. So you seem to be interested in
-deviations and part of the problem is that you don't get feedback about
-how your request is fulfilled.
-
-> Please let me know when/if this new API exists for pwm so that pwm-ir-tx
-> can select the right rounding.
-
-Given that the bcm2835 driver is quite trivial I would be happy to
-create a series that "fixes" the driver to round down and provide a
-prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
-tester and a real use-case were the single two things that stopped me
-investing time here.
-
-> > [1] Consider a PWM with a parent frequency of 66 MHz, to select the
-> >     period you can pick an integer divider "div" resulting in the period
-> >     4096 / (pclk * d). So the obvious implementation for round-nearest
-> >     would be:
-> >=20
-> >     	pclk =3D clk_get_rate(myclk);
-> > 	div =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC * 4096, targetperiod * pclk);
->=20
-> Note NSEC_PER_SEC * 4096 >> 2^32 so this would need to be
-> DIV_ROUND_CLOSEST_ULL.
-
-Yeah, I ignored all these nasty little details like ranges of integers
-and the valid range for div etc. for the sake of simplicity.
-=20
-> >     , right?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---zwodz2pit7heximm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/OM4YACgkQwfwUeK3K
-7AmVKgf+MRSChQ/VXQbRD7/1ldf7VjErIvSxN+a1SuD6OkSOVWqPvalyG0n/nq61
-fkmOQ3zvNnvElDpWUzB4gv+hm4dDKJ600hYG6C0MGGte3rvGdWPQkQveXrPldGZ9
-GqEWGosKq1MzqaYO2gc+cyyKXu14g2ylr0rAEH5SJXLwxRhuX4c1dREMsTVuv2Hj
-aLGMnvxGCBlQBjTQ4Fhc7Ap5TlGI2yD+CYMyHiGj/8aFbRIa/iLJ13HeDVCqLSxU
-2rBIpzaTrHbz13jeZUaG39U8wFyVjY5AwyehRKjOzKVGOrZM5F8edUKh+6LaB/sS
-xvVeTFiCZ69clhkPqCdZVm6wiVvnnw==
-=TYIu
------END PGP SIGNATURE-----
-
---zwodz2pit7heximm--
