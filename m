@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3C12D1B9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658592D1BAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgLGVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S1727681AbgLGVII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgLGVHJ (ORCPT
+        with ESMTP id S1726269AbgLGVIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:07:09 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A71C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:06:29 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id q1so13555071ilt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 13:06:29 -0800 (PST)
+        Mon, 7 Dec 2020 16:08:06 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16D2C061749;
+        Mon,  7 Dec 2020 13:07:26 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id y74so16990511oia.11;
+        Mon, 07 Dec 2020 13:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p9AfHP9RUgbPOiM4oNtMaqXuhiqhvukbABKjF1a0DOY=;
-        b=R1pYaz95u9Ycvy7npq5FB3fegFBwtX0dGlIsfiplchVOGoGC7Yqe5GI3NAXXv9wKsk
-         5dlmZFhXZ3qFDtXZ1hOBcG34wXJ2WgKDhQPj7SkmO1L9BZTTVVKdGo5Fr7rHeK0ulw+Q
-         c/7BE/oTvJ5i4EPSLEkmH9+lm1WRRSBNUlbg4=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=NmTBIYR5a7GHek/f1Tc4SvMiMP/uXzmkTt8oc4bEM8g=;
+        b=AfJ8l2FRPARTTdoMFkfnoCHnLIt4cPht3SzEqokTiewfEZXMfO2lZ83KI2sY/4u+WF
+         re+qMYqwJAwshAEomPRi0L3ZE6sgfL565WS4P2k1l7EYkbvylo3OG3su1amI9QoUVmtI
+         uiMpUiq1vBkoQ8y2riJMTz6vbu/RA2PWdYSrll7w52UFyQICTvGuqqo23kiWMnnhnD4n
+         LM1NLXGngpJ8vMmRSUB7IyhBeI4CXPwoBGVa82hpdSOAWy72g8bwwB4elx4q6HaMx9Fi
+         uGV1tL2TRcXZCTQYfuHpYVhYA2T/mBzbEbjEotFE4v/CN1bl3/rGy4w6NnvLrM9UdYdV
+         uaZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p9AfHP9RUgbPOiM4oNtMaqXuhiqhvukbABKjF1a0DOY=;
-        b=fpJX/JzB79gyONgiZtQbbvL3NMpZbMEFmEWAkzx/RwwqIeuOWFzpEAN+ssQ/8tHvKM
-         Z4tIjAHmSm8Zdkt30/mo3cxJ6sYI2OrU0KVsCAf/dj5T2Jpt64XHWy1R4g+vVV5xTLSY
-         K+5dKJNY2z7vzv9zIqeHY2Em4YUPzu04gbJ47plNtd6KI8ydpWdkSLNdC2to95nOp+9P
-         838iSexEhNktSPcId64wj5Nqd0BzTPRdv1Ns4P1hZdDOfKwVPqb/xQt/GYdy8eqSDHeF
-         ELdO2TM84urK4ZgDS+rQIp1S0yWzoCw0n2VpUHRlW1LURHJDQA+o+JSX47emoj51PjRj
-         F5vg==
-X-Gm-Message-State: AOAM532kH9v5CmXkbjqVNnPMbcoiNP2Uwd6FXdWcOOHTtt/o5e/lKZNc
-        QYkXLmdRbuPtCWd1Hg8PVee2Bg==
-X-Google-Smtp-Source: ABdhPJydL3VULKgg9Z2FRVmDzjQU9ikvjmw3w4ALlIj62YReWcbFROnSQyeqcMdzwNXwlEWww6qHlA==
-X-Received: by 2002:a92:cb52:: with SMTP id f18mr8267036ilq.41.1607375188531;
-        Mon, 07 Dec 2020 13:06:28 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id j12sm6694370ioq.24.2020.12.07.13.06.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 13:06:27 -0800 (PST)
-Subject: Re: [PATCH] rseq/selftests: Fix MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
- build error under other arch.
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Xingxing Su <suxingxing@loongson.cn>, shuah <shuah@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1606277097-5853-1-git-send-email-suxingxing@loongson.cn>
- <1169128156.59953.1606320652393.JavaMail.zimbra@efficios.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <01ffd154-cb45-8538-dd27-8f2de87faee8@linuxfoundation.org>
-Date:   Mon, 7 Dec 2020 14:06:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <1169128156.59953.1606320652393.JavaMail.zimbra@efficios.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=NmTBIYR5a7GHek/f1Tc4SvMiMP/uXzmkTt8oc4bEM8g=;
+        b=BkeH0elXU/NRSdDVSoheHIUimTIEopquHeL0UUGaPi5uZdq6J9kps+a0SfK0LzuXWJ
+         3ywieS7jls/bIt6P0TUaSDGlLOoU74LYjDjDXMvyaV1JClj/3gxb8B2BuRVMkoPG/vjS
+         VX7mhtcsHgBRYc0UrVURsJp13opfEb27okomjdRuap6StXRkvIy6dYy3SlXs6IADrPQv
+         IU8LJFd/KVHrLOi7o0o2PJ5FdibHoQ8XEln811Z5d+hcx9g7/ZNDbnw7QteG6SaTjfam
+         35OMNh71wQ56t3N7odySEtm8BJb8cM4HmpOFxwjzkdXKcA9+iXurKY7aaBKR0uukR0SH
+         +APg==
+X-Gm-Message-State: AOAM530TW0n4oqSqNZp+jHnIKSGFCJVOieM3ELxFDfDiOu7wy/xa1ZGS
+        ZBi6m5CYEM6j3I47Z9xJf1w=
+X-Google-Smtp-Source: ABdhPJwH3tdhoPuogsyMez5WWFd6fp5uz/jljp++auWygVt6V6QcIEZAn9H/VypCHot7x1xqOortyw==
+X-Received: by 2002:aca:5e57:: with SMTP id s84mr542079oib.102.1607375246093;
+        Mon, 07 Dec 2020 13:07:26 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id z14sm546150oot.5.2020.12.07.13.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 13:07:25 -0800 (PST)
+Date:   Mon, 07 Dec 2020 13:07:19 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fce99871ec8c_5a96208eb@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-3-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-3-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 02/11] bpf: x86: Factor out emission of REX
+ byte
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/20 9:10 AM, Mathieu Desnoyers wrote:
-> ----- On Nov 24, 2020, at 11:04 PM, Xingxing Su suxingxing@loongson.cn wrote:
+Brendan Jackman wrote:
+> The JIT case for encoding atomic ops is about to get more
+> complicated. In order to make the review & resulting code easier,
+> let's factor out some shared helpers.
 > 
->> Except arch x86, the function rseq_offset_deref_addv is not defined.
->> The function test_membarrier_manager_thread call rseq_offset_deref_addv
->> produces a build error.
->>
->> The RSEQ_ARCH_HAS_OFFSET_DEREF_ADD should contain all the code
->> for the MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
->> If the other Arch implements this feature,
->> defined RSEQ_ARCH_HAS_OFFSET_DEREF_ADD in the header file
->> to ensure that this feature is available.
->>
->> Following build errors:
->>
->> param_test.c: In function ‘test_membarrier_worker_thread’:
->> param_test.c:1164:10: warning: implicit declaration of function
->> ‘rseq_offset_deref_addv’
->>     ret = rseq_offset_deref_addv(&args->percpu_list_ptr,
->>           ^~~~~~~~~~~~~~~~~~~~~~
->> /tmp/ccMj9yHJ.o: In function `test_membarrier_worker_thread':
->> param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
->> param_test.c:1164: undefined reference to `rseq_offset_deref_addv'
->> collect2: error: ld returned 1 exit status
->> make: *** [/selftests/rseq/param_test_benchmark] Error 1
->>
->> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
-> 
-> Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> Shuah, can you pick up this fix please ?
-> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-Applying for 5.11-rc1.
-
-thanks,
--- Shuah
+Acked-by: John Fastabend <john.fastabend@gmail.com>
