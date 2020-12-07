@@ -2,106 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D566B2D17F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C340D2D1803
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgLGR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:56:01 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50459 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725901AbgLGR4B (ORCPT
+        id S1726278AbgLGR64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:58:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgLGR6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:56:01 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C8579580426;
-        Mon,  7 Dec 2020 12:55:14 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 07 Dec 2020 12:55:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=VRVtGXoQD9AI9Ni8bRVQ2nQ4sFY
-        cJwVAKfRYupJxLUU=; b=IawfgYm7t8a+rzgPkZs+TijYsyyYF7Gr2rn4rDgLHdz
-        s/1hEYdHxh2IyNq67QXPQLZj9CABug1lp8Y1kHEujWr9Lin4R4x2wSRXj4wiShcy
-        A7FPkTQjT19spRBKAYNaH8zWRovXiHq3daNrhB0CL9ZR6OAIrRviOCuP4ESg/DpZ
-        /BG/+OCxVcVYbrL9cW28MNZUIwfdHxQv0r0N/EpC551j1UL5iydy9c9zJ0j8mDay
-        hmrgmWFMCZVv2aLVIUK5+2mIREqtoY8eUZh+sFTdBsJOEs5LuRvMPFW5fcD6uG4t
-        kru7x4Z6G/rLjrCVZVlNGhD5Yq621/oQg97dVR/MO5A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VRVtGX
-        oQD9AI9Ni8bRVQ2nQ4sFYcJwVAKfRYupJxLUU=; b=oRXmzuaCpxxEB9PiGf1WDg
-        2c2tTSUo1kKPSt2SO3wD4PejasA7zEhFsl/Z5Iib7wPy7kade647AqsU2BsnyJo1
-        c6vez71oIiQIr4oqbo1mlHMWXINO0Iy060vmtZPnrp1vp3UVl+Q+h12sSGx8M7pf
-        6gEo/zrx41frl+ZXY3F9VAs40XJ6z+HHiIz3nm2Ccx5nl7LUfg3ApsOtbgP1Ymkw
-        x7eE2YgBr/4NpQ5Zd0nLzLI2DEs4zSXbuSJurvHOPlUQbVanzJokuixmZ0zS3SHK
-        U2alnv6ZHiNOg2hR/mt8ZiaY6kYvwuwe5B/uH12MwXL6M5yHIK6Z047SZmiEw9iw
-        ==
-X-ME-Sender: <xms:gWzOXxBK0R4ipC7ydV5qfprCeTWcVqD_wx-V9aF6m8zD88ZYZo_vSg>
-    <xme:gWzOX_gEXZY0jJbg63OSyGoXXa9Eri_ouIZyk37sZZZj0LR40_-89O2OkGSg085EZ
-    3NcV9I88B4XVQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
-    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:gWzOX8lFEjRDhrCLqfnrmNWzjTBOf59et1G9XkvZ-Fwo7aoUtP7jLQ>
-    <xmx:gWzOX7y4qX63EIfhVNefx0-0DrYdIxPTiavQWBCgwR0173GIMCHhkQ>
-    <xmx:gWzOX2RU0Puw7z8MYrig2DE_y1SUS-mH06JENVgxfCRj5lqA80y2UA>
-    <xmx:gmzOX3I9ZCp_YZf-anQaOdcLskuV6UfLUy-AK67LXRnEdy6NB1LMsw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0A87C24005B;
-        Mon,  7 Dec 2020 12:55:13 -0500 (EST)
-Date:   Mon, 7 Dec 2020 18:56:23 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
-Message-ID: <X85sxxgpdtFXiKsg@kroah.com>
-References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
- <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+        Mon, 7 Dec 2020 12:58:55 -0500
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798EC061749;
+        Mon,  7 Dec 2020 09:58:15 -0800 (PST)
+Received: from allenwind.lan (unknown [IPv6:2a02:169:3df5:0:6d9:f5ff:fe22:28bf])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id D10A55C26E3;
+        Mon,  7 Dec 2020 18:58:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1607363893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=QgiXC+yQQL2nekfa8OvfrMNMROrqRj4G+Xqa0/Q1Jrc=;
+        b=SdSk54xoBtJt2wA7D+FyMl1gy8j99vqSlTwDnx/ptWFpLwzh5Jjsdjf1AXe7NW4YxbCA1h
+        +9GcjZoy3ymlImYNAmwFphfZ3q5pCsFvFsH5xpL4AuJ/fLyRuuWCddfz/hpLT4W71eTs7/
+        dzGIiznrZ2e3LRQnRMCNcVDFLxjw2Fg=
+From:   Stefan Agner <stefan@agner.ch>
+To:     khilman@baylibre.com
+Cc:     robh+dt@kernel.org, narmstrong@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, christianshewitt@gmail.com,
+        jian.hu@amlogic.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v3 1/5] arm64: dts: meson: g12b: odroid-n2: fix PHY deassert timing requirements
+Date:   Mon,  7 Dec 2020 18:57:59 +0100
+Message-Id: <df3f5c4fc6e43c55429fd3662a636036a21eed49.1607363522.git.stefan@agner.ch>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:40:21PM +0900, Daejun Park wrote:
-> Changelog:
-> 
-> v12 -> v13
-> 1. Cleanup codes by comments from Can Guo.
-> 2. Add HPB related descriptor/flag/attributes in sysfs.
-> 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+According to the datasheet (Rev. 1.9) the RTL8211F requires at least
+72ms "for internal circuits settling time" before accessing the PHY
+registers. This fixes an issue where the Ethernet link doesn't come up
+when using ip link set down/up:
+  [   29.360965] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
+  [   34.569012] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
+  [   34.676732] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
+  [   34.678874] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
+  [   34.687850] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
 
-What ever happened to this patchset?  Did it get merged into a scsi tree
-for 5.11-rc1, or is there something still pending that needs to be done
-on it to make it acceptable?
+Fixes: 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 6982632ae646..39a09661c5f6 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -413,7 +413,7 @@ external_phy: ethernet-phy@0 {
+ 		max-speed = <1000>;
+ 
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
+ 
+ 		interrupt-parent = <&gpio_intc>;
+-- 
+2.29.2
 
-greg k-h
