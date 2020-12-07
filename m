@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFECC2D1CD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AC32D1CD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgLGWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:09:59 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37552 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgLGWJ6 (ORCPT
+        id S1727893AbgLGWKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGWKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:09:58 -0500
-Received: by mail-ot1-f67.google.com with SMTP id o11so11364944ote.4;
-        Mon, 07 Dec 2020 14:09:37 -0800 (PST)
+        Mon, 7 Dec 2020 17:10:47 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5972FC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 14:10:01 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id t81so825879qke.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 14:10:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=NUUwU6TjT3HyGB9RueCAB8d5pAXhZlLPodEuPtCiIe8=;
+        b=ObBnEqLPiYhcG3Hu24F75+fiSoOlISDP8AEk2dEwKw8DXQ2no8vwQphsjQeaa8mU21
+         G+yKnsK8H36RdkvZb5ZvjmAshF+j4wymnXefNW9l9NdApT5qh98jXb+mUhSRDMm74EuU
+         c1O+CEyT+xnb6q8cT5uAWvK4n4q7wOzJ37bh0YGWmnTPqM5kT6uzAo7FsYi5HOgAz4T2
+         z6PlOZIbDSdoSTUeLIxCW8gmDH3D8r4jD1JgCUtq5x4vrHj+GL+Al/csWuzsaZw8T7jx
+         J+ue+XHUU7/u8AKvM6jiEDmf+ukbvucUb5gd8qLAFXXtvUjV1s4MW6SpIyrJm4z1jwxo
+         PxfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eEyuCq0orrK+zaG7y0s2/donzkzWcAZFmgt/A1f//Yk=;
-        b=oQsNqxXWeRo9cSnUQ1BDDThk5nzLZokrl0l3E6wJk1l7Isgb23jBPUqKDmn0XmJg0I
-         GUV5yeg3egcEr/putvp8O2wSco/x1UuFxlt/RP0dTOPLaqSZbqHsvRd8nBWla3PFlzeW
-         XbVIofLTwm6vOzd01ozmZRpo8JsYocHwYxdNuxQ2tAQ/sUE05l5HSwghgevZw3LAJ4wu
-         GmOeIlBzGWNbTM3JIMwPXAUUd6B8eg5h6ubVncj7wcA4nBgolV+uF/ddR5pBY8bpgaZL
-         8alYtpSafJxnhgPp5FWaGOA82JluVmg8r6zFj2a7A8Bch6Giw9t17wwL3zWLwqs3npnz
-         1lmg==
-X-Gm-Message-State: AOAM531fVdSW2LXCGX06xVkgYYWvIPVYQPfzKISCE7bOdrcN0qzbb6cQ
-        JiplwqnubwisgxG4vKuS9Q==
-X-Google-Smtp-Source: ABdhPJy+Zvpma0/n7ijbAgsnojTNissbUFf8+kWdcn9VvzvovXHlQI/qIhixgouaF2p/sDJ9KdZNsg==
-X-Received: by 2002:a9d:5f03:: with SMTP id f3mr14573953oti.91.1607378951694;
-        Mon, 07 Dec 2020 14:09:11 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 60sm2928735ott.32.2020.12.07.14.09.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 14:09:10 -0800 (PST)
-Received: (nullmailer pid 923974 invoked by uid 1000);
-        Mon, 07 Dec 2020 22:09:09 -0000
-Date:   Mon, 7 Dec 2020 16:09:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [Patch v2 6/6] dt-bindings: crypto: qcom-qce: Add v5.4 to binding
-Message-ID: <20201207220909.GA918596@robh.at.kernel.org>
-References: <20201119155233.3974286-1-thara.gopinath@linaro.org>
- <20201119155233.3974286-7-thara.gopinath@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119155233.3974286-7-thara.gopinath@linaro.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=NUUwU6TjT3HyGB9RueCAB8d5pAXhZlLPodEuPtCiIe8=;
+        b=cmv0S9BqbzTvXMxN9eRgchmNLQx7NuHq2hQC4oRkUfCEdAbXGgKFX2A7oQ6W/q4bl9
+         XI3j7EJL2vdPWBHc3hXBE8KGUPdjyDo1vn/YTd+bMUN5nvD0UM46ODOGdI+0LtEumdpO
+         7AvV2rjXi/lUaXOptybxp73MvRT+EfEDAhIEWkJoYaE5NUdcmc+BmH50LYHjM+nTQTXp
+         7ubRcirXAQIlAmSgZgoG85PLxJOoFa989GIh6B5VTDwcoj2ZOGcOse9Vb8MeBTW6uN8K
+         6vycH+A6HoDigvEwisdyhC8sGu2ZOjcBijVJYD6OLeSm59pvhyFRNWeE7X2hJBgkjTM6
+         kY/g==
+X-Gm-Message-State: AOAM531zcxmCtzofJyRD3A0BCCXDZwuIWtZw1TfBWetPwarv4MJW3wBW
+        9HtkZnvFV+WbZHG39tM5fHUkDK72f5M=
+X-Google-Smtp-Source: ABdhPJz/8T3IWmeavAxHk+jT7Vw7keSUWRVyXIHJJZI58G9AGi4sgKu7k1sqhZHkTpGeUv/BTJtvpMp4wPU=
+Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+ (user=yuzhao job=sendgmr) by 2002:a0c:f809:: with SMTP id r9mr23244783qvn.17.1607379000338;
+ Mon, 07 Dec 2020 14:10:00 -0800 (PST)
+Date:   Mon,  7 Dec 2020 15:09:38 -0700
+Message-Id: <20201207220949.830352-1-yuzhao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH 00/11] mm: lru related cleanups
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 10:52:33AM -0500, Thara Gopinath wrote:
-> Add compatible string to support v5.4 crypto engine.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  Documentation/devicetree/bindings/crypto/qcom-qce.txt | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> index fdd53b184ba8..ed1ede9c0acc 100644
-> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-> @@ -2,7 +2,9 @@ Qualcomm crypto engine driver
->  
->  Required properties:
->  
-> -- compatible  : should be "qcom,crypto-v5.1"
-> +- compatible  : should be
-> +		"qcom,crypto-v5.1" for ipq6018
-> +		"qcom,crypto-v5.4" for sdm845
+The cleanups are intended to reduce the verbosity in lru list
+operations and make them less error-prone. A typical example
+would be how the patches change __activate_page():
 
-An outstanding example of why to use SoC specific compatibles rather 
-than versions. Keep v5.1, but use SoC compatibles going forward.
+ static void __activate_page(struct page *page, struct lruvec *lruvec)
+ {
+ 	if (!PageActive(page) && !PageUnevictable(page)) {
+-		int lru = page_lru_base_type(page);
+ 		int nr_pages = thp_nr_pages(page);
+ 
+-		del_page_from_lru_list(page, lruvec, lru);
++		del_page_from_lru_list(page, lruvec);
+ 		SetPageActive(page);
+-		lru += LRU_ACTIVE;
+-		add_page_to_lru_list(page, lruvec, lru);
++		add_page_to_lru_list(page, lruvec);
+ 		trace_mm_lru_activate(page);
+ 
+There are a few more places like __activate_page() and they are
+unnecessarily repetitive in terms of figuring out which list a page
+should be added onto or deleted from. And with the duplicated code
+removed, they are easier to read, IMO.
 
->  - reg         : specifies base physical address and size of the registers map
->  - clocks      : phandle to clock-controller plus clock-specifier pair
->  - clock-names : "iface" clocks register interface
-> -- 
-> 2.25.1
-> 
+Patch 1 to 5 basically cover the above. Patch 6 and 7 make code more
+robust by improving bug reporting. Patch 8, 9 and 10 take care of
+some dangling helpers left in header files. Patch 11 isn't strictly a
+clean-up patch, but it seems still relevant to include it here.
+
+Yu Zhao (11):
+  mm: use add_page_to_lru_list()
+  mm: shuffle lru list addition and deletion functions
+  mm: don't pass "enum lru_list" to lru list addition functions
+  mm: don't pass "enum lru_list" to trace_mm_lru_insertion()
+  mm: don't pass "enum lru_list" to del_page_from_lru_list()
+  mm: add __clear_page_lru_flags() to replace page_off_lru()
+  mm: VM_BUG_ON lru page flags
+  mm: fold page_lru_base_type() into its sole caller
+  mm: fold __update_lru_size() into its sole caller
+  mm: make lruvec_lru_size() static
+  mm: enlarge the "int nr_pages" parameter of update_lru_size()
+
+ include/linux/memcontrol.h     |  10 +--
+ include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
+ include/linux/mmzone.h         |   2 -
+ include/linux/vmstat.h         |   6 +-
+ include/trace/events/pagemap.h |  11 ++--
+ mm/compaction.c                |   2 +-
+ mm/memcontrol.c                |  10 +--
+ mm/mlock.c                     |   3 +-
+ mm/swap.c                      |  50 ++++++--------
+ mm/vmscan.c                    |  21 ++----
+ 10 files changed, 91 insertions(+), 139 deletions(-)
+
+-- 
+2.29.2.576.ga3fc446d84-goog
+
