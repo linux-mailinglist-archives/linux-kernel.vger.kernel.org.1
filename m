@@ -2,163 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840092D0ED5
+	by mail.lfdr.de (Postfix) with ESMTP id F02202D0ED6
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgLGLSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:18:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59696 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgLGLSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:18:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607339857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zYgXVMguU9IGzh55RdgeN4vcKUk8bf3s7Y3chc005ks=;
-        b=obbY5TMMBYDA7vyDL3isR7wXHhCSrlsinIEbwqN+kcKamBojxnOu/m2BogAelVlBbqAl73
-        sglZpJBq4VNYQdKWM0MqCe5x3ph3o5q2QDmgKe/E2EuHt+7i4QpwP1JT3/cpwd/qi2KaZK
-        YGhuZr/oV2rImPQ/m2UFgj7GNNjKIs4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DABF8AC90;
-        Mon,  7 Dec 2020 11:17:36 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 12:17:36 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: recursion handling: Re: [PATCH next v2 3/3] printk: remove
- logbuf_lock, add syslog_lock
-Message-ID: <X84PUEXF8dwuMCRM@alley>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-4-john.ogness@linutronix.de>
- <X8pfX/qPBuY360k/@alley>
- <87sg8imwx5.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg8imwx5.fsf@jogness.linutronix.de>
+        id S1726828AbgLGLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgLGLSx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:18:53 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE826C0613D0;
+        Mon,  7 Dec 2020 03:18:12 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id cw27so13290559edb.5;
+        Mon, 07 Dec 2020 03:18:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LzuHMjHqXt98AxqLTSyAQqGYo+32ZS7gzfcD3uCXQW4=;
+        b=nH0ybEha6h0mKYzN4F5umyS6sby7ByHgwez3MrADauhPUEDAi/eVEnr58E6kfkfLCD
+         ZX6EpvQ0OovXbSMoSybu+F5FY2PMD+nkOKqlQzI5p1Dn9L8Mh7vTILMME5LTuJCk5JuL
+         CeiGnTZJJjcReRevzasOGNHEjhsSP0LzS8LsKDSrJF0hpZ6J7sLhQFeOu6A1Z6hf96mc
+         DePi0De/vBGUH5jYQIDA12biyYzv/H1T96mGOhDlti6t1Bjdi+IFOdvy8HviYrRrdmXW
+         4/HHfi0odQKbXaIoPdv/zNcNkW+xZ9uAg9vWpedGcfPhfxMF+yRwy7KMVFTnnKN74I4t
+         5bOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LzuHMjHqXt98AxqLTSyAQqGYo+32ZS7gzfcD3uCXQW4=;
+        b=o6JXFs36l5PdxU+BWQDIO35W/qXE8+TIoki0k6BUGg6z7OFULSnz3nC93v4eVNDDhG
+         dM9xxhUYf2D2zajiqVYuYmWyJkFphlVrq/uN8E5t8qf225OQ9kxMoQLIkQKKayw1aaMt
+         JygEKyyZFa5mDI/Zuq/PGLqTm/u+XhBqK2FIje9aPtVW9zrhs6Q3U3sKiBAGkkWTcu1Q
+         T5aaQLKHSz3uOmJPhtkeMz7muFszx8LHTsXSCb47JLkC02vSamKSKt+SZt4+eyZYouCP
+         eWwNwajvfy0Gq64E1xL0HVGMzynilEmVFg7Tw6sk6C2zXUGHRXVFneq9O/2NzYiD3YM7
+         3naA==
+X-Gm-Message-State: AOAM532kUyJeX6jfZ0OCMGuJhYMWbhpZQ2Y6G1K1GUN0RUG4GsQExfqW
+        j+GhYeQWgpueps6TYnxhhp4=
+X-Google-Smtp-Source: ABdhPJzl+PN+VkJLuyn63SQwtZ1OPssyI9WwqBcUHgDh9IZW4ri99HI4fxdqY9W5GXUBbjc68zEtQQ==
+X-Received: by 2002:a05:6402:1a54:: with SMTP id bf20mr3385270edb.65.1607339891647;
+        Mon, 07 Dec 2020 03:18:11 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id z9sm12090123eju.123.2020.12.07.03.18.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 03:18:11 -0800 (PST)
+Message-ID: <2ef12e328ecdc411e7d145a331d7c8ce668bf2be.camel@gmail.com>
+Subject: Re: [PATCH v2 2/3] scsi: ufs: Keep device active mode only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 07 Dec 2020 12:18:10 +0100
+In-Reply-To: <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201206101335.3418-1-huobean@gmail.com>
+         <20201206101335.3418-3-huobean@gmail.com>
+         <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2020-12-06 22:50:54, John Ogness wrote:
-> On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
-> > On Tue 2020-12-01 21:59:41, John Ogness wrote:
-> >> Since the ringbuffer is lockless, there is no need for it to be
-> >> protected by @logbuf_lock. Remove @logbuf_lock.
-> >> 
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> > What is the exact reason to disable interrupts around the entire
-> > vprintk_store(), please? It should get documented.
+On Mon, 2020-12-07 at 08:02 +0000, Avri Altman wrote:
+> > According to the JEDEC UFS 3.1 Spec, If
+> > fWriteBoosterBufferFlushDuringHibernate
+> > is set to one, the device flushes the WriteBooster Buffer data
+> > automatically
+> > whenever the link enters the hibernate (HIBERN8) state. While the
+> > flushing
+> > operation is in progress, the device should be kept in Active power
+> > mode.
+> > Currently, we set this flag during the UFSHCD probe stage, but we
+> > didn't deal
+> > with its programming failure. Even this failure is less likely to
+> > occur, but
+> > still it is possible.
+> > This patch is to add checkup of
+> > fWriteBoosterBufferFlushDuringHibernate
+> > setting,
+> > keep the device as "active power mode" only when this flag be
+> > successfully
+> > set
+> > to 1.
+> > 
+> > Fixes: 51dd905bd2f6 ("scsi: ufs: Fix WriteBooster flush during
+> > runtime
+> > suspend")
+> > Signed-off-by: Bean Huo <beanhuo@micron.com>
 > 
-> It simplifies the context tracking. Also, in mainline interrupts are
-> already disabled for all of vprintk_store(). AFAIK latencies due to
-> logbuf_lock contention were not an issue.
+> You've added the fixes tag,
+
+yes,it is a bug.
+
+>  but my previous comment is still unanswered:
+> you are adding protection to a single device management command.
+> Why this command in particular? 
+> What makes it so special that it needs this extra care?
 > 
-> I really don't want to touch task_struct. IMHO the usefulness of that
-> struct is limited, considering that printk can be called from scheduling
-> and interrupting contexts.
 
-Fair enough. I am fine with the per-CPU variables and the disabled
-interrupts around vprintk_store().
+see the Spec: 
+"
+If fWriteBoosterBufferFlushDuringHibernate is set to one, the device
+flushes the WriteBooster Buffer data automatically whenever the link
+enters the hibernate (HIBERN8) state.
 
-Note: We should also prevent calling console_trylock() for recursive
-messages to avoid infinite loop or even deadlock in this part of the code.
+The device shall stop the flushing operation if
+fWriteBoosterBufferFlushDuringHibernate are set to zero.
+....
 
-> >> +
-> >> +struct printk_recursion {
-> >> +	char	count[NUM_RECURSION_CTX];
-> >> +};
-> >>
-> >> +static DEFINE_PER_CPU(struct printk_recursion, percpu_printk_recursion);
-> >> +static char printk_recursion_count[NUM_RECURSION_CTX];
-> >
-> > This is pretty confusing. The array is hidden in a struct when per-cpu
-> > variables are used. And a naked array is used for early boot.
-> >
-> > Is the structure really needed? What about?
-> >
-> > static DEFINE_PER_CPU(char [PRINTK_CTX_NUM], printk_count);
-> > static char printk_count_early[NUM_RECURSION_CTX];
-> 
-> OK.
-> 
-> >> +
-> >> +static char *get_printk_count(void)
-> >> +{
-> >> +	struct printk_recursion *rec;
-> >> +	char *count;
-> >> +
-> >> +	if (!printk_percpu_data_ready()) {
-> >> +		count = &printk_recursion_count[0];
-> >
-> > I see why you avoided per-cpu variables for early boot. I am just
-> > curious how printk_context variable works these days. It is used by
-> > any printk(), including early code, see vprintk_func().
-> 
-> IMO printk_context is serving a different purpose. With the existance of
-> logbuf_lock, printk_context exists for the sole purpose of making sure
-> logbuf_lock is not taken recursively or that the CPU does not spin on it
-> in NMI context. printk_context is simply gating calls to the safe
-> buffers.
+"
+If fWriteBoosterBufferFlushDuringHibernate ==0, device will not flush
+WB, even if you keep device as "active mode" and LINK in hibernate
+state.
 
-Well, both printk_count and printk_context are able to count recursion
-in different context. They both are used to decide how printk() will
-behave...
+Bean
+Thanks,
 
-Anyway, it is not necessary to fight over words. You write below that
-the plan is to remove printk_safe, including printk_context. It will
-solve my problem.
 
-I am fine with having both of them for some transition period. I guess
-that it will make our life easier, from the coding and review point
-of view.
-
-> >> +static bool printk_enter(unsigned long *flags)
-> >> +{
-> >> +	char *count;
-> >> +
-> >> +	local_irq_save(*flags);
-> >> +	count = get_printk_count();
-> >> +	/* Only 1 level of recursion allowed. */
-> >
-> > We should allow at least some level of recursion. Otherwise, we would
-> > not see warnings printed from vsprintf code.
-> 
-> With 1 level, you will see warnings from vsprintf code. I'm not sure it
-> makes sense to allow more than 1 level. It causes exponential logging.
-
-Shame on me. I have missed that 1 level was actually enabled.
-
-Anyway, I would like to allow 2 level recursion at least. However, for
-example, 5 level recursion, would be even better.
-
-We need to know when there is problem to store the recursive/nested
-message. And I would rather see the same message repeated 3 times than
-to do not see it at all.
-
-Note that the risk of infinite recursion is pretty low. We have most of
-the code called from vprintk_emit() under control. There are many
-pr_once() or WARN_ONCE(). The error messages have rather simple
-and commonly used formatting, so the risk of recursive errors in
-vsprintf() code is low.
-
-> > Or is there any plan to remove printk_safe and printk_context?
-
-I am feeling relief to read this.
-
-Do not take me wrong. printk_safe() was really great idea and served
-well its purpose. But it is yet another tricky lockless code. There
-is another complexity with flushing the temporary buffers and handling
-panic(). It is nice that we could remove some of this complexity.
-
-Best Regards,
-Petr
