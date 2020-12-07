@@ -2,215 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B5A2D1E24
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F102D1E26
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgLGXLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:11:38 -0500
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:45030 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLGXLi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:11:38 -0500
-Received: by mail-oo1-f68.google.com with SMTP id i13so3609821oou.11;
-        Mon, 07 Dec 2020 15:11:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dfskF783ia3OMw4OOOrEJp2Y2XtFdH1x7H9M26RfBPo=;
-        b=o5V0QWSQUAFJwtldj90D+M7MreQ+yEeY8x6ctX8g+Ur0XtAZTA3/uatYIdonxLXv2J
-         U/2c+3AidwfqWJfZWs9ghtAFiGJK1tVgLp1OYniUX76jyVTAUQ1lglgw43O6OjCl6V71
-         cxD2sYOIBn0EIRhmYAf3AV+obsNAUvvcT+YTYclCyQoQoTvEge7UE/RMlHBnbG3NuWvM
-         dvgNFVZz4kKG/pw4pnngL1WMfBziiNitASX0b29nVQM65cnNFjsSrkyPPrbT53fjzra+
-         a/dUchV6F3vESFmk9lSbdMUicvpWQUBQtPGrf6ClcrFtcHhLNcYh4hSeNsqsc4+z2Jte
-         lItg==
-X-Gm-Message-State: AOAM530gxAf8ah/wwjiNPf4gYUkzOwq5c7nFUcq8PRiYgzwp32tuRlDg
-        GzdzrYFr0QxrzfvolsDDOg==
-X-Google-Smtp-Source: ABdhPJy3SHc3uf9CAtctVkktZ0wF0cHaP6H6KTIyGar9W/HK75hIYztUzZg+9WfTtm3MZ5haFQNiLw==
-X-Received: by 2002:a4a:a785:: with SMTP id l5mr14519981oom.83.1607382656883;
-        Mon, 07 Dec 2020 15:10:56 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k3sm1677318oor.19.2020.12.07.15.10.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:10:55 -0800 (PST)
-Received: (nullmailer pid 1024898 invoked by uid 1000);
-        Mon, 07 Dec 2020 23:10:55 -0000
-Date:   Mon, 7 Dec 2020 17:10:55 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v2 3/3] dt-bindings: reset: convert Hisilicon reset
- controller bindings to json-schema
-Message-ID: <20201207231055.GA1021342@robh.at.kernel.org>
-References: <20201204014236.1158-1-thunder.leizhen@huawei.com>
- <20201204014236.1158-4-thunder.leizhen@huawei.com>
+        id S1728103AbgLGXMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:12:02 -0500
+Received: from mail-dm6nam12on2057.outbound.protection.outlook.com ([40.107.243.57]:46976
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725885AbgLGXMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:12:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nTPaNCgeGnd4M2OvbmfpoIxwj8Q0r95XCyOB+P7xpI7adgvq1A+ZXADCvhwtG1FEeuLktniJqW0VXqdVnbHOziIPVrGQgwykH1Gs1V3zKVtycp3C8bZlLUYtlfO3J/CX5m255u26slE/9HM65FxwxMRC0PCK7Xlsozit+v52Hym4E+vyoeH0V1Ad2KXrM23dMK0soto8RFTCN2ZSQzv66WmUuQbzlPL+Ake4H1YZ98xy4paSrdpp+OMQH19hlgdChscoeB2Wc9XYuElNftkYYtiyZz0rMW/eYpQRKoLX4Jn6pefyVPEt2HKxkMGjJ0L3lSLTkR/OBhpunKm5JS3HyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bdCwui1l+GNYxA7+/kxNthbfGQAwnyuDPScHyVZRZgA=;
+ b=MwLvJ4oN1rX8Gbucsok8lkmTKP1Po4xGbxrjVpHTkFyMkJgwDuR8sqxfM/RxJ3YijFIZdrW4XHHh1zNSLDJkUKtKyl21j+tyKFSPa5Rz7e9qmG09NV4H2F9re0Za+Ren0OV2VAYhdJlIPXjOz2eCIrULIleWDwtU6FsWCTbDiIXTjodG0OgmlyYxb8R/qoE/6ZNk8r2F9EoBz9cR/rXReTvvn6kUZHtRZe7PzRjhlyt890QTPVG08cqHXd/uZJtX0GvAjTNwF8Tw5wABaQwyXwDOvoWKGbCg/WXrDrNVogGfl5PYtaz+JA5G23J5SkiwiCyANHghoyS1chBwUTZn9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bdCwui1l+GNYxA7+/kxNthbfGQAwnyuDPScHyVZRZgA=;
+ b=NeFHTA6vgfOAqKjvXESqwvIpZ72WDub1g02HTAeRiERsp+ghNpbTXLEePiv15CB+Qy8woC4S89YI1HdekAYOq+OaRp+mmaDJKBx5mVYbhoaZwZFZT8FWvwPPjtq9Z+K5Rvm1Sg11ya3f46MLsh2lJaoPpnRK/0mDZ98rZUYCBpI=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4590.namprd12.prod.outlook.com (2603:10b6:806:93::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
+ 2020 23:11:08 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Mon, 7 Dec 2020
+ 23:11:08 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     konrad.wilk@oracle.com
+Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
+        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
+        Thomas.Lendacky@amd.com, Jon.Grimm@amd.com, rientjes@google.com
+Subject: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
+Date:   Mon,  7 Dec 2020 23:10:57 +0000
+Message-Id: <20201207231057.26403-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN6PR2101CA0027.namprd21.prod.outlook.com
+ (2603:10b6:805:106::37) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204014236.1158-4-thunder.leizhen@huawei.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN6PR2101CA0027.namprd21.prod.outlook.com (2603:10b6:805:106::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2 via Frontend Transport; Mon, 7 Dec 2020 23:11:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1b693b12-2c13-4dc8-9c0c-08d89b056185
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4590:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB459039CEBFC1CC226787E6498ECE0@SA0PR12MB4590.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0WQqaBX9jnu8IXRxzjxYklpt4VK/IS/7684vysY3wsUE0akkMTsxDmodF9R4/J/vI30IssGmd7R2nWHwbhniNzXy9J06ifVCfhg5hNpacDc/sWjo8nyi0+4ZsuhPcjC0mBNELF0wGSIqLefxiufONDidoLzhNEF3mpOLu6lT3TwJA63JiCbmfrNKnj+M1DyaWJx+ctsdFOgWXQUiZKYwkrkWRvrP8g3/3jPLWNzUOTN6CT1crm/dgoi1fMqOo2b4hU2KBYLNOcNcXoeC6J1OvoTsLiohPCAP6aOeC5DWYFxh5iVfMOmpb37fIxcgWp/cm2lKJXXMH+hP++cybCSuYA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(8936002)(8676002)(7416002)(478600001)(1076003)(66476007)(2616005)(6916009)(26005)(186003)(6666004)(956004)(16526019)(5660300002)(6486002)(52116002)(316002)(2906002)(86362001)(4326008)(36756003)(66556008)(7696005)(83380400001)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bg4MXBJawuSOQJJhKOK0sQHnPk9qwW82F4n3dclNi956iMrSuLPGEu3Ij8tw?=
+ =?us-ascii?Q?e4gxoMDzf1kLLvnvHHypVCa0qpRHSuCwpiB0rjE9HiecXCfwEdgPGIxLYjon?=
+ =?us-ascii?Q?u9yrRqq6M0qYOHmSNfVAuV9CNcyZKrGBJsJdPvvBAemjyIegEajYhJSDHPMq?=
+ =?us-ascii?Q?YP8umwC+fHOjjUcaUpTeAT9Qj/ANJYTqnJEDh3gMZ0TDW6APvzYRmmO4K/Yl?=
+ =?us-ascii?Q?l3JhfPKck31jT44IebA4hXz89TklK8Y+6GPw9CxvnLyH7CtDFuu5Mu4JohHO?=
+ =?us-ascii?Q?CjAnfJ9Kr5sH3A7ZwMwP3U/Hj5wt7dm5YpzlubvRTGipW6BtObHQMnfgbfOg?=
+ =?us-ascii?Q?0F4wFANJaorBE42zO7iBGUgzVtizHPmqb7v4rAwynes7DcOCXEOOj80UAN4v?=
+ =?us-ascii?Q?AzkqDWDfOI6SCrBYh80DA9cMNghvE0WtWQWu6B7Lgy7VQKtE/mHMawgrIEVq?=
+ =?us-ascii?Q?nSrKtLmycDJ/Zsg0ERjVGLznWQBWGYsubFt11HCfiavGdc48d8XRaybUXKvB?=
+ =?us-ascii?Q?8GBK5O5isjIIAyVvrdA7Cy71LyzbR11hKJdOXrJEh9LLDwDCnODjB4AjEqq7?=
+ =?us-ascii?Q?nEzpjtyo2WsnQkgYeqkfY1OXN7HI5ZiwpijKnusiEROO3olQp1uIC3f6M3Re?=
+ =?us-ascii?Q?xNgXaMIytNE8lYrAuedvFhgUKHuP1HUbGrwz7Xep5muZsqqtDNXUUe1TRn5F?=
+ =?us-ascii?Q?2AWc0SPWfXYVJBT/KVhFF1e8gmfmD4V+B7AacYrS7NSEIBCbY0R7KrtwlRWx?=
+ =?us-ascii?Q?ij4PZoGT7/kFDM70ElsHjODMcd4sX2asdMJJT7ZxHRIeBX1UBVosZWlAhs/x?=
+ =?us-ascii?Q?mDRwvL7f09JSCaElfm2Dgt1jF6k3ld2Vv4XW1UnZv+1/Idd9qWm8U+MFhDhw?=
+ =?us-ascii?Q?m2fgXT+mLRxIwYSFAMh6jaDKxu2B1TPt+Ome74e9+a9oArz6L4VVj3Gt0xhx?=
+ =?us-ascii?Q?hNnUdj1ZhNAl359QuZDFXO3ODFMrNY2Nu+BLHJy4/hWoeMjs0mV6/c///ZG/?=
+ =?us-ascii?Q?9DO8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 23:11:08.5153
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b693b12-2c13-4dc8-9c0c-08d89b056185
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AlkuOX57NZEpV3KBfy3id1cZ/V4dZxEdXsP5d+vgU2+vrjKO7qbZAu+4PpTCf6kbovXPzg7wKkYEL7XpuIYEfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4590
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 09:42:36AM +0800, Zhen Lei wrote:
-> Convert the Hisilicon reset controller binding to DT schema format using
-> json-schema.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../bindings/reset/hisilicon,hi3660-reset.txt      | 44 -------------
->  .../bindings/reset/hisilicon,hi3660-reset.yaml     | 77 ++++++++++++++++++++++
->  2 files changed, 77 insertions(+), 44 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
->  create mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-> deleted file mode 100644
-> index aefd26710f9e87d..000000000000000
-> --- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -Hisilicon System Reset Controller
-> -======================================
-> -
-> -Please also refer to reset.txt in this directory for common reset
-> -controller binding usage.
-> -
-> -The reset controller registers are part of the system-ctl block on
-> -hi3660 and hi3670 SoCs.
-> -
-> -Required properties:
-> -- compatible: should be one of the following:
-> -		 "hisilicon,hi3660-reset" for HI3660
-> -		 "hisilicon,hi3670-reset", "hisilicon,hi3660-reset" for HI3670
-> -- hisilicon,rst-syscon: phandle of the reset's syscon.
-> -- #reset-cells : Specifies the number of cells needed to encode a
-> -  reset source.  The type shall be a <u32> and the value shall be 2.
-> -
-> -	 Cell #1 : offset of the reset assert control
-> -	           register from the syscon register base
-> -		   offset + 4: deassert control register
-> -		   offset + 8: status control register
-> -	 Cell #2 : bit position of the reset in the reset control register
-> -
-> -Example:
-> -	iomcu: iomcu@ffd7e000 {
-> -		compatible = "hisilicon,hi3660-iomcu", "syscon";
-> -		reg = <0x0 0xffd7e000 0x0 0x1000>;
-> -	};
-> -
-> -	iomcu_rst: iomcu_rst_controller {
-> -		compatible = "hisilicon,hi3660-reset";
-> -		hisilicon,rst-syscon = <&iomcu>;
-> -		#reset-cells = <2>;
-> -	};
-> -
-> -Specifying reset lines connected to IP modules
-> -==============================================
-> -example:
-> -
-> -        i2c0: i2c@..... {
-> -                ...
-> -		resets = <&iomcu_rst 0x20 3>; /* offset: 0x20; bit: 3 */
-> -                ...
-> -        };
-> diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> new file mode 100644
-> index 000000000000000..9bf40952e5b7d28
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/reset/hisilicon,hi3660-reset.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Hisilicon System Reset Controller
-> +
-> +maintainers:
-> +  - Wei Xu <xuwei5@hisilicon.com>
-> +
-> +description: |
-> +  Please also refer to reset.txt in this directory for common reset
-> +  controller binding usage.
-> +  The reset controller registers are part of the system-ctl block on
-> +  hi3660 and hi3670 SoCs.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: hisilicon,hi3660-reset
-> +      - items:
-> +          - const: hisilicon,hi3670-reset
-> +          - const: hisilicon,hi3660-reset
-> +
-> +  hisilicon,rst-syscon:
-> +    description: phandle of the reset's syscon.
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  '#reset-cells':
-> +    description: |
-> +      Specifies the number of cells needed to encode a reset source.
-> +      Cell #1 : offset of the reset assert control register from the syscon
-> +                register base
-> +                offset + 4: deassert control register
-> +                offset + 8: status control register
-> +      Cell #2 : bit position of the reset in the reset control register
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/hi3660-clock.h>
-> +
-> +    iomcu: iomcu@ffd7e000 {
-> +        compatible = "hisilicon,hi3660-iomcu", "syscon";
-> +        reg = <0xffd7e000 0x1000>;
-> +    };
-> +
-> +    iomcu_rst: iomcu_rst_controller {
-> +        compatible = "hisilicon,hi3660-reset";
-> +        hisilicon,rst-syscon = <&iomcu>;
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Really, if you are going to break things, this node should be a child of 
-iomcu instead and you don't need this property (just get the parent). Or 
-just add '#reset-cells' to iomcu.
+For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
+SEV uses SWIOTLB to make this happen without requiring changes to device
+drivers.  However, depending on workload being run, the default 64MB of
+SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
+for DMA, resulting in I/O errors and/or performance degradation for
+high I/O workloads.
 
-> +        #reset-cells = <2>;
-> +    };
-> +
-> +    /* Specifying reset lines connected to IP modules */
-> +    i2c@ffd71000 {
-> +        compatible = "snps,designware-i2c";
-> +        reg = <0xffd71000 0x1000>;
-> +        interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        clock-frequency = <400000>;
-> +        clocks = <&crg_ctrl HI3660_CLK_GATE_I2C0>;
-> +        resets = <&iomcu_rst 0x20 3>;
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
-> +        status = "disabled";
-> +    };
-> +...
-> -- 
-> 1.8.3
-> 
-> 
+Adjust the default size of SWIOTLB for SEV guests using a
+percentage of the total memory available to guest for SWIOTLB buffers.
+
+Using late_initcall() interface to invoke swiotlb_adjust() does not
+work as the size adjustment needs to be done before mem_encrypt_init()
+and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
+hence call it explicitly from setup_arch().
+
+The SWIOTLB default size adjustment needs to be added as an architecture
+specific interface/callback to allow architectures such as those supporting
+memory encryption to adjust/expand SWIOTLB size for their use.
+
+v5 fixed build errors and warnings as
+Reported-by: kbuild test robot <lkp@intel.com>
+
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/kernel/setup.c   |  2 ++
+ arch/x86/mm/mem_encrypt.c | 37 +++++++++++++++++++++++++++++++++++++
+ include/linux/swiotlb.h   |  6 ++++++
+ kernel/dma/swiotlb.c      | 22 ++++++++++++++++++++++
+ 4 files changed, 67 insertions(+)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 84f581c91db4..31e24e198061 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1149,6 +1149,8 @@ void __init setup_arch(char **cmdline_p)
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+ 
++	swiotlb_adjust();
++
+ 	/*
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 1bcfbcd2bfd7..d1b8d60040cf 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -485,7 +485,44 @@ static void print_mem_encrypt_feature_info(void)
+ 	pr_cont("\n");
+ }
+ 
++/*
++ * The percentage of guest memory used here for SWIOTLB buffers
++ * is more of an approximation of the static adjustment which
++ * is 128M for <1G guests, 256M for 1G-4G guests and 512M for >4G guests.
++ */
++#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
++
+ /* Architecture __weak replacement functions */
++unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
++{
++	unsigned long size = iotlb_default_size;
++
++	/*
++	 * For SEV, all DMA has to occur via shared/unencrypted pages.
++	 * SEV uses SWOTLB to make this happen without changing device
++	 * drivers. However, depending on the workload being run, the
++	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
++	 * run out of buffers for DMA, resulting in I/O errors and/or
++	 * performance degradation especially with high I/O workloads.
++	 * Adjust the default size of SWIOTLB for SEV guests using
++	 * a percentage of guest memory for SWIOTLB buffers.
++	 * Also as the SWIOTLB bounce buffer memory is allocated
++	 * from low memory, ensure that the adjusted size is within
++	 * the limits of low available memory.
++	 *
++	 */
++	if (sev_active()) {
++		phys_addr_t total_mem = memblock_phys_mem_size();
++
++		size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
++		size = clamp_val(size, iotlb_default_size, SZ_1G);
++		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV",
++			size >> 20);
++	}
++
++	return size;
++}
++
+ void __init mem_encrypt_init(void)
+ {
+ 	if (!sme_me_mask)
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 3bb72266a75a..b5904fa4b67c 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+ extern unsigned long swiotlb_nr_tbl(void);
+ unsigned long swiotlb_size_or_default(void);
++unsigned long __init arch_swiotlb_adjust(unsigned long size);
+ extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+ extern int swiotlb_late_init_with_default_size(size_t default_size);
+ extern void __init swiotlb_update_mem_attributes(void);
+@@ -77,6 +78,7 @@ void __init swiotlb_exit(void);
+ unsigned int swiotlb_max_segment(void);
+ size_t swiotlb_max_mapping_size(struct device *dev);
+ bool is_swiotlb_active(void);
++void __init swiotlb_adjust(void);
+ #else
+ #define swiotlb_force SWIOTLB_NO_FORCE
+ static inline bool is_swiotlb_buffer(phys_addr_t paddr)
+@@ -99,6 +101,10 @@ static inline bool is_swiotlb_active(void)
+ {
+ 	return false;
+ }
++
++static inline void swiotlb_adjust(void)
++{
++}
+ #endif /* CONFIG_SWIOTLB */
+ 
+ extern void swiotlb_print_info(void);
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 781b9dca197c..0150ca2336bc 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -163,6 +163,28 @@ unsigned long swiotlb_size_or_default(void)
+ 	return size ? size : (IO_TLB_DEFAULT_SIZE);
+ }
+ 
++unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
++{
++	return size;
++}
++
++void __init swiotlb_adjust(void)
++{
++	unsigned long size;
++
++	/*
++	 * If swiotlb parameter has not been specified, give a chance to
++	 * architectures such as those supporting memory encryption to
++	 * adjust/expand SWIOTLB size for their use.
++	 */
++	if (!io_tlb_nslabs) {
++		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
++		size = ALIGN(size, 1 << IO_TLB_SHIFT);
++		io_tlb_nslabs = size >> IO_TLB_SHIFT;
++		io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
++	}
++}
++
+ void swiotlb_print_info(void)
+ {
+ 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+-- 
+2.17.1
+
