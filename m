@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160AD2D1AA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2AB2D1AA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgLGUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:37:40 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:45839 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgLGUhk (ORCPT
+        id S1726632AbgLGUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgLGUiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:37:40 -0500
-Received: from [192.168.1.155] ([95.114.88.149]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mum6l-1jvEXL33ml-00rn89; Mon, 07 Dec 2020 21:34:56 +0100
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com,
-        msuchanek@suse.de
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
- <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
- <20201206075131-mutt-send-email-mst@kernel.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <dadc99c5-dd63-9b3e-aa00-c9dc0b622134@metux.net>
-Date:   Mon, 7 Dec 2020 21:34:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 7 Dec 2020 15:38:01 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0AFC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:37:20 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id o144so14096424ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vKsYEQO+hXoC+O9fuIS3DOCrttBDvhwXSXCIpw/9d8w=;
+        b=Eu3YUZ+efcTSPiMjldpqNT8TmByKdSe/auRkmzbcXUYTE9qktC3CcbXxyvz44SanH1
+         0eGhoxAUqRvGek4HcRUVUMnibJnk9EH7MPI4yJG+fU6MsMlD33UrKBZ4+tFxQ5hkKEM8
+         +kzCEl4nlVK81rnB73uBY/z6lg2jpLuxIAvzF6gskk/AovHFKE+1uEGNxbQ495q7b5qn
+         KfnC/cf6OyXu1MPtHNBG+Su3rKPcnqIaJeiZ79v4c5J66B1H5Nx+MMRxLAwhmazt5aUU
+         voP89YpE/HWtLPWZ0D4q45WpURi1h8mtDfrnGNO41lNnCax/2dWhShADQC5qYnR3BbfA
+         r3+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vKsYEQO+hXoC+O9fuIS3DOCrttBDvhwXSXCIpw/9d8w=;
+        b=ZL0jSvr5f6cEJ/AWvDe0tpavc32Syhs+4tYhgCSrRw5JkDEQ+uTkJBrZD5Qq9JPJ4g
+         iDl+7pHYKtBt5dsqx0Et8g+FRLTYn5sVuzEIWvg2bOzCKygrdEs4oFEMXl5i+prFmkCg
+         CeWBVD97sWK3dbdtfOobXvoqnZxx9mpzI9YNhOGJlAa4EPRdblvZtu+n/EsdZpGSbpyr
+         Os3Mmjn2NqruoI2zPZkeEQCexeY+minQqm+ZfVRYJpeFbSrGQ3pLogA9H+CIh3NboRgi
+         KhUxuw3plMq7vJ4BdK78FMP5rGNJ6M/az+QBtYcybqAyxkQep1TEhomkWKcPnXsRXmZF
+         ZiqQ==
+X-Gm-Message-State: AOAM533b0zy+ZLO6fff9wSLsoU08EuVmw+cc2Cx40cU1xb1AEY7Z26C2
+        24wtmXsC5Zqf29xcyVSzXnliidk1bh/wQREci+U5ow==
+X-Google-Smtp-Source: ABdhPJyJLUT7BtS2KbRGhO5/i+SqLWUVWG+N3s91L0Aio7l+Ry1j4uRMoKYqXkaJbXx0oor/SXMSyVMMmpneEAH4JXA=
+X-Received: by 2002:a25:8401:: with SMTP id u1mr26690361ybk.96.1607373439718;
+ Mon, 07 Dec 2020 12:37:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201206075131-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:hbxWK5NoTU1gQ95fGH3BMY4QAmnZBlvFnu9xed6dReXqGP9zoef
- MckleM1vV7HliBSRZ6udkFDg4oyUKSNbZwul7Y66weAy+oon65LCWdmf+dxfK6r3WTQNoS4
- h3/cDg6RD1w561g9mrzJSlidlzrboqRUVJhpHVuHlrVchpYU/bfHn/az49skSDmMNfUtWjr
- zd0PBJPpX1GrxPAxwHQmw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:a1HG/QGb8tY=:0q0pD8h55NgouMf6dv3JD2
- Cmx7N9LkvLMDbG6kymexPbp1HKRzx7Rorroj2ZlFUcC7DgJUW/cKzL/tB4CyNoE0tfadzvgWR
- bKZcQEkxGiiiXDLxGxZN31wPYHCpJE3AnuMMRqhHMlRbsY7l9Gw4vYhc2Z5xyIVpb4d7TX8ar
- lBAAh6lHX5wJL44SeNWREbvfTDEkT8JE0A7/FGxY0QMVapvLqU+tUnES7VA7OVAL/BMcBsZAR
- mUfUnQC5YTSsKej0IiwPX5L7/EhgLUAoJufCr5ePB6QiYs0//YTjXBmuTkPRZ9iMf2WA5LiKE
- EWc75DMdfsNl2sI5I1wAmNtpnkJ7Eh+BIiQNXpFYikpjA2IcRQDXbwBkOmf7j4zJPg4vp0ZmI
- skM9M1UncysVw4xvpgNJA3M80NZgL50I41KvIF5I0T9ArXakC5fAvYc4NfJVv
+References: <20201121020232.908850-1-saravanak@google.com> <20201121020232.908850-8-saravanak@google.com>
+ <20201206072621.GA687065@unreal> <CAGETcx9L0f5HPgunTf_WRsr9yeaYK1Ku5ESzeb0A1pkn3Yy2aw@mail.gmail.com>
+ <20201207195357.GF693271@unreal>
+In-Reply-To: <20201207195357.GF693271@unreal>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 7 Dec 2020 12:36:43 -0800
+Message-ID: <CAGETcx-Y6qdyt7xGfoGg=z9B7VE30AZjodMZzy9hQrDAEd8uYw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] driver core: Add fwnode_init()
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 14:52, Michael S. Tsirkin wrote:
+On Mon, Dec 7, 2020 at 11:54 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Mon, Dec 07, 2020 at 11:25:15AM -0800, Saravana Kannan wrote:
+> > On Sat, Dec 5, 2020 at 11:26 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Fri, Nov 20, 2020 at 06:02:22PM -0800, Saravana Kannan wrote:
+> > > > There are multiple locations in the kernel where a struct fwnode_handle
+> > > > is initialized. Add fwnode_init() so that we have one way of
+> > > > initializing a fwnode_handle.
+> > > >
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > ---
+> > > >  drivers/acpi/property.c         | 2 +-
+> > > >  drivers/acpi/scan.c             | 2 +-
+> > > >  drivers/base/swnode.c           | 2 +-
+> > > >  drivers/firmware/efi/efi-init.c | 8 ++++----
+> > > >  include/linux/fwnode.h          | 6 ++++++
+> > > >  include/linux/of.h              | 2 +-
+> > > >  kernel/irq/irqdomain.c          | 2 +-
+> > > >  7 files changed, 15 insertions(+), 9 deletions(-)
+> > >
+> > > In this series, I didn't find any extension of fwnode_init() to be it more
+> > > than simple assignment. This change looks to me like unnecessary churn and
+> > > obfuscation rather than improvement.
+> > >
+> > > "...ops = &...;" is pretty standard in the kernel to initialize ops
+> > > structures.
+> >
+> > Subsequent patches make fwnode_init() do more stuff.
+>
+> But not in this series, right?
 
->> See above: NAK. because it can't even be enabled directly (by the user).
->> If it wasn't meant otherwise, we'd have to add an menu text.
-> 
-> The point is that user enables one of the bindings.
-> That in turn enables drivers. If we merely select VIRTIO
-> there's a chance user won't remember to select any bindings
-> and will be surprised not to see any devices.
+In this series. The very next patch - Patch 8/17 :)
 
-Not sure what you mean by "bindings" ... transports ?
-
-IMHO, transports and device drivers are entirely orthogonal. Both *use*
-the core, but I don't think they shall only show up, after the core was
-enabled explicitly. Any combination of transports is valid (having none
-at all, of course, isn't actually useful).
-
->> When using other transports ?
-> 
-> Any transport selects VIRTIO so if you enable that, you get
-> VIRTIO and thus it's enough to depend on it.
-
-The combination of 'select VIRTIO' and 'depends on VIRTIO' is what
-caused the recursive dependency. Chaning everything to 'select VIRTIO'
-fixed that.
-
->> I don't thinkt that would be good - instead everybody should just select
->> VIRTIO, never depend on it (maybe depend on VIRTIO_MENU instead)
-> 
-> GPU depends on VIRTIO and on VIRTIO_MENU ... which seems even messier
-> ...
-
-See:
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2404871.html
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+-Saravana
