@@ -2,219 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9A02D1DDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E252D1DE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgLGW6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:58:01 -0500
-Received: from mga05.intel.com ([192.55.52.43]:30904 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726429AbgLGW6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:58:01 -0500
-IronPort-SDR: cmjfE5o6yErC0svfiwh2WX7jE/WSC7jkFXC2mTas5j5KNGNaxKZY42Melw5mtvIOMSQGojextK
- TolMkGiub59g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="258503446"
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="258503446"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:57:20 -0800
-IronPort-SDR: e9d6KgSN55dDPcjiPioCnlFbID2IDa8Hm1l+x2GSqdCoALUss9l/+rB7tpSry9HRuk+hJghrwP
- l+868QZHa2pA==
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="317433222"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:57:20 -0800
-From:   ira.weiny@intel.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Date:   Mon,  7 Dec 2020 14:57:03 -0800
-Message-Id: <20201207225703.2033611-3-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201207225703.2033611-1-ira.weiny@intel.com>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
+        id S1728117AbgLGW7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgLGW7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:59:14 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FE4C061794;
+        Mon,  7 Dec 2020 14:58:33 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id cm17so15606476edb.4;
+        Mon, 07 Dec 2020 14:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vjvSckwg/9T20Pu309povgj0lbCxKiEZh3/BnNhvMto=;
+        b=HMv5SecqHTLhTX8CT8YvNnZlegghRA4XYw9qH4HWjq/wbKQnPUeo/4iTV1IIDcRF73
+         pw8X7Zjf28SXbQsosjX6wuqq/DQuK2Iw0C1dWnBAoXCQYD9OFTQeZGsAA1go6ti9hXrI
+         3V+Q6GZy/igTS5PhgShUaKwdRIa3ut0O9+HZH6wJOTYYULr5M/zaBdyneSLPOqILUpMo
+         aM3zkZUSFhakG5evwtsIvVTEwWVlEMum0JYkASXk8MLgjB4gJ1Y5vKu6TN/JNzHSjleT
+         lb0RGW3YeDsBNqoq8BU0bSvWG9HwaDeiL3cljJEK3wbJgzAyJccq84QYR2W+eNX8iqOR
+         l1Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vjvSckwg/9T20Pu309povgj0lbCxKiEZh3/BnNhvMto=;
+        b=WB5j9YFv09Z2b2HrNaA20jDFwGIc7Vq0X+8JitpBc9xggRwmSJzogiENfeL4Fw0ojy
+         oZ2SxWCJLCJfl1MAo24UBpzr9oawLk/KqrknYjFfXD319b1aMz5HgIszJHW66fHOgGlu
+         qvdmPXLyXbWlDe8pEjJ4v2Bds1fwnMuhNF6g+83XJevsJ3RacXkUd2R9cA3RZWQH36kl
+         z7rvynGhyB09jN/V6NtHHNUcOfdxPcJF6buLaTWUYexyGNQCN8SDXPQkYNhfpTP2XbjA
+         dDGhn+PYFjkGcUhEezzgJFBfeDcWWFwNV+OHmsSP91H3dEhRyfBJC4Lt2znHPscOwXFY
+         RqHQ==
+X-Gm-Message-State: AOAM532MXNgW0rNkDHx499BPh250IKgrSNPH/aX6QPBdf1Nmo/8QBKXN
+        92G70o8Hh1rHQ3Ua+7Ad92z+ki6Pnz2gIw==
+X-Google-Smtp-Source: ABdhPJyRAbX3qdmzUZR/AjIRVe2B7fRWi89/Cq9gL9ELWihRAgUFCMS5giS1IspcSQ61u8tyQLZsnQ==
+X-Received: by 2002:aa7:da01:: with SMTP id r1mr22447029eds.45.1607381912632;
+        Mon, 07 Dec 2020 14:58:32 -0800 (PST)
+Received: from ubuntu2004 ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id v18sm12584636ejw.18.2020.12.07.14.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 14:58:32 -0800 (PST)
+Date:   Tue, 8 Dec 2020 00:58:35 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-actions@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 10/18] dt-bindings: i2c: owl: Convert Actions Semi Owl
+ binding to a schema
+Message-ID: <20201207225835.GD250758@ubuntu2004>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
+ <20201207221214.GA929136@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207221214.GA929136@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Dec 07, 2020 at 04:12:14PM -0600, Rob Herring wrote:
+> On Fri, 20 Nov 2020 01:56:04 +0200, Cristian Ciocaltea wrote:
+> > Convert the Actions Semi Owl I2C DT binding to a YAML schema for
+> > enabling DT validation.
+> > 
+> > Additionally, add a new compatible string corresponding to the I2C
+> > controller found in the S500 variant of the Actions Semi Owl SoCs
+> > family.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> >  .../devicetree/bindings/i2c/i2c-owl.txt       | 29 ---------
+> >  .../devicetree/bindings/i2c/i2c-owl.yaml      | 62 +++++++++++++++++++
+> >  2 files changed, 62 insertions(+), 29 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.txt
+> >  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.yaml
+> > 
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Working through a conversion to a call such as kmap_thread() revealed
-many places where the pattern kmap/memcpy/kunmap occurred.
-
-Eric Biggers, Matthew Wilcox, Christoph Hellwig, Dan Williams, and Al
-Viro all suggested putting this code into helper functions.  Al Viro
-further pointed out that these functions already existed in the iov_iter
-code.[1]
-
-Placing these functions in 'highmem.h' is suboptimal especially with the
-changes being proposed in the functionality of kmap.  From a caller
-perspective including/using 'highmem.h' implies that the functions
-defined in that header are only required when highmem is in use which is
-increasingly not the case with modern processors.  Some headers like
-mm.h or string.h seem ok but don't really portray the functionality
-well.  'pagemap.h', on the other hand, makes sense and is already
-included in many of the places we want to convert.
-
-Another alternative would be to create a new header for the promoted
-memcpy functions, but it masks the fact that these are designed to copy
-to/from pages using the kernel direct mappings and complicates matters
-with a new header.
-
-Lift memcpy_to_page() and memcpy_from_page() to pagemap.h.
-
-Remove memzero_page() in favor of zero_user() to zero a page.
-
-Add a memcpy_page(), memmove_page, and memset_page() to cover more
-kmap/mem*/kunmap. patterns.
-
-Finally use kmap_local_page() in all the new calls.
-
-[1] https://lore.kernel.org/lkml/20201013200149.GI3576660@ZenIV.linux.org.uk/
-    https://lore.kernel.org/lkml/20201013112544.GA5249@infradead.org/
-
-Cc: Dave Hansen <dave.hansen@intel.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Suggested-by: Eric Biggers <ebiggers@kernel.org>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes for V2:
-	From Thomas Gleixner
-		Change kmap_atomic() to kmap_local_page() after basing
-		on tip/core/mm
-	From Joonas Lahtinen
-		Reverse offset/val in memset_page()
----
- include/linux/pagemap.h | 44 +++++++++++++++++++++++++++++++++++++++++
- lib/iov_iter.c          | 26 +++---------------------
- 2 files changed, 47 insertions(+), 23 deletions(-)
-
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index c77b7c31b2e4..9141e5b7b9df 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -1028,4 +1028,48 @@ unsigned int i_blocks_per_page(struct inode *inode, struct page *page)
- {
- 	return thp_size(page) >> inode->i_blkbits;
- }
-+
-+static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-+			       struct page *src_page, size_t src_off,
-+			       size_t len)
-+{
-+	char *dst = kmap_local_page(dst_page);
-+	char *src = kmap_local_page(src_page);
-+	memcpy(dst + dst_off, src + src_off, len);
-+	kunmap_local(src);
-+	kunmap_local(dst);
-+}
-+
-+static inline void memmove_page(struct page *dst_page, size_t dst_off,
-+			       struct page *src_page, size_t src_off,
-+			       size_t len)
-+{
-+	char *dst = kmap_local_page(dst_page);
-+	char *src = kmap_local_page(src_page);
-+	memmove(dst + dst_off, src + src_off, len);
-+	kunmap_local(src);
-+	kunmap_local(dst);
-+}
-+
-+static inline void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
-+{
-+	char *from = kmap_local_page(page);
-+	memcpy(to, from + offset, len);
-+	kunmap_local(from);
-+}
-+
-+static inline void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
-+{
-+	char *to = kmap_local_page(page);
-+	memcpy(to + offset, from, len);
-+	kunmap_local(to);
-+}
-+
-+static inline void memset_page(struct page *page, size_t offset, int val, size_t len)
-+{
-+	char *addr = kmap_local_page(page);
-+	memset(addr + offset, val, len);
-+	kunmap_local(addr);
-+}
-+
- #endif /* _LINUX_PAGEMAP_H */
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 1635111c5bd2..8ed1f846fcc3 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -5,6 +5,7 @@
- #include <linux/fault-inject-usercopy.h>
- #include <linux/uio.h>
- #include <linux/pagemap.h>
-+#include <linux/highmem.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/splice.h>
-@@ -466,27 +467,6 @@ void iov_iter_init(struct iov_iter *i, unsigned int direction,
- }
- EXPORT_SYMBOL(iov_iter_init);
- 
--static void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
--{
--	char *from = kmap_atomic(page);
--	memcpy(to, from + offset, len);
--	kunmap_atomic(from);
--}
--
--static void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
--{
--	char *to = kmap_atomic(page);
--	memcpy(to + offset, from, len);
--	kunmap_atomic(to);
--}
--
--static void memzero_page(struct page *page, size_t offset, size_t len)
--{
--	char *addr = kmap_atomic(page);
--	memset(addr + offset, 0, len);
--	kunmap_atomic(addr);
--}
--
- static inline bool allocated(struct pipe_buffer *buf)
- {
- 	return buf->ops == &default_pipe_buf_ops;
-@@ -964,7 +944,7 @@ static size_t pipe_zero(size_t bytes, struct iov_iter *i)
- 
- 	do {
- 		size_t chunk = min_t(size_t, n, PAGE_SIZE - off);
--		memzero_page(pipe->bufs[i_head & p_mask].page, off, chunk);
-+		zero_user(pipe->bufs[i_head & p_mask].page, off, chunk);
- 		i->head = i_head;
- 		i->iov_offset = off + chunk;
- 		n -= chunk;
-@@ -981,7 +961,7 @@ size_t iov_iter_zero(size_t bytes, struct iov_iter *i)
- 		return pipe_zero(bytes, i);
- 	iterate_and_advance(i, bytes, v,
- 		clear_user(v.iov_base, v.iov_len),
--		memzero_page(v.bv_page, v.bv_offset, v.bv_len),
-+		zero_user(v.bv_page, v.bv_offset, v.bv_len),
- 		memset(v.iov_base, 0, v.iov_len)
- 	)
- 
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+Thanks for reviewing,
+Cristi
