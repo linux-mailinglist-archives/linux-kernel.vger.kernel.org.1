@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BD82D1E7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037F82D1E8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgLGXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:40:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgLGXk5 (ORCPT
+        id S1728000AbgLGXue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:50:34 -0500
+Received: from faui03.informatik.uni-erlangen.de ([131.188.30.103]:43320 "EHLO
+        faui03.informatik.uni-erlangen.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726026AbgLGXud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:40:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8BBC061749;
-        Mon,  7 Dec 2020 15:40:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5AE7BSE6Le8OpJjv+/Aj3F3qvVXYZeWZq3mq2zg0PHQ=; b=fPiiJZs5xU73noEHWcJcm4NTp7
-        QBEqwAjgUw28ab1vCCPxeqXcKGimGpc+CN7lt97fuyKgS71wexBhXgVOKo4pzYDq52SX3HJ/TtS2w
-        VyBaLTV00ttN8I+BYiFMsHM4UgpX8ShWh6PaikCuoS+DGO9ACavqY1i5ZEazpgRfkpvrc6gaMFhO7
-        gz/89aWpUueRFu9BcElEvmaZQrZlnIjyGGtMUgPypMJ+h2HLRXiAhZCTYqzTBvlqvDvn+OzPsxyxO
-        znOwjxoDUqODM2NiXu2tq0AOHX8teaAPgKmjnVWke6VONPMkZcb/ndx0Mugb5EIjhtuS5BznDQsj0
-        Dh9xJ4PQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmQ6z-0002gV-0P; Mon, 07 Dec 2020 23:40:09 +0000
-Date:   Mon, 7 Dec 2020 23:40:08 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201207234008.GE7338@casper.infradead.org>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
- <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org>
- <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+        Mon, 7 Dec 2020 18:50:33 -0500
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 18:50:33 EST
+Received: from cip2b2.informatik.uni-erlangen.de (cip2b2.cip.cs.fau.de [IPv6:2001:638:a000:4130:131:188:30:70])
+        by faui03.informatik.uni-erlangen.de (Postfix) with ESMTP id 9F6EF240B55;
+        Tue,  8 Dec 2020 00:43:40 +0100 (CET)
+Received: by cip2b2.informatik.uni-erlangen.de (Postfix, from userid 68486)
+        id 964B75405DD; Tue,  8 Dec 2020 00:43:40 +0100 (CET)
+From:   Philipp Bruegmann <philipp.bruegmann@fau.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        linux-kernel@i4.cs.fau.de,
+        Philipp Bruegmann <philipp.bruegmann@fau.de>,
+        Tobias Langer <langer@cs.fau.de>,
+        Ferdinand Schober <ferdinand.schober@fau.de>
+Subject: [PATCH] checkpatch: Add checking if from-author sign-off is last
+Date:   Tue,  8 Dec 2020 00:42:12 +0100
+Message-Id: <20201207234212.26008-1-philipp.bruegmann@fau.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
-> On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-> > > +                            struct page *src_page, size_t src_off,
-> > > +                            size_t len)
-> > > +{
-> > > +     char *dst = kmap_local_page(dst_page);
-> > > +     char *src = kmap_local_page(src_page);
-> >
-> > I appreciate you've only moved these, but please add:
-> >
-> >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
-> 
-> I imagine it's not outside the realm of possibility that some driver
-> on CONFIG_HIGHMEM=n is violating this assumption and getting away with
-> it because kmap_atomic() of contiguous pages "just works (TM)".
-> Shouldn't this WARN rather than BUG so that the user can report the
-> buggy driver and not have a dead system?
+Print a check if the last Signed-off-by is by the From: author.
 
-As opposed to (on a HIGHMEM=y system) silently corrupting data that
-is on the next page of memory?  I suppose ideally ...
+submitting-patches.rst states 'the last Signed-off-by: must always be
+that of the developer submitting the patch.'.
+This patch tries to enforce this, under the assumption that the From:
+author is that developer.
 
-	if (WARN_ON(dst_off + len > PAGE_SIZE))
-		len = PAGE_SIZE - dst_off;
-	if (WARN_ON(src_off + len > PAGE_SIZE))
-		len = PAGE_SIZE - src_off;
+Suggested-by: Tobias Langer <langer@cs.fau.de>
+Co-developed-by: Ferdinand Schober <ferdinand.schober@fau.de>
+Signed-off-by: Ferdinand Schober <ferdinand.schober@fau.de>
+Signed-off-by: Philipp Bruegmann <philipp.bruegmann@fau.de>
+---
+ scripts/checkpatch.pl | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-and then we just truncate the data of the offending caller instead of
-corrupting innocent data that happens to be adjacent.  Although that's
-not ideal either ... I dunno, what's the least bad poison to drink here?
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7b086d1cd6c2..e1be1d8bfb6e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2447,6 +2447,7 @@ sub process {
+ 	my $author = '';
+ 	my $authorsignoff = 0;
+ 	my $author_sob = '';
++	my $last_sign_off = '';
+ 	my $is_patch = 0;
+ 	my $is_binding_patch = -1;
+ 	my $in_header_lines = $file ? 0 : 1;
+@@ -2774,8 +2775,9 @@ sub process {
+ 		if ($line =~ /^\s*signed-off-by:\s*(.*)/i) {
+ 			$signoff++;
+ 			$in_commit_log = 0;
++			$last_sign_off = $1;
+ 			if ($author ne ''  && $authorsignoff != 1) {
+-				if (same_email_addresses($1, $author)) {
++				if (same_email_addresses($last_sign_off, $author)) {
+ 					$authorsignoff = 1;
+ 				} else {
+ 					my $ctx = $1;
+@@ -7238,7 +7240,7 @@ sub process {
+ 		if ($signoff == 0) {
+ 			ERROR("MISSING_SIGN_OFF",
+ 			      "Missing Signed-off-by: line(s)\n");
+-		} elsif ($authorsignoff != 1) {
++		} else {
+ 			# authorsignoff values:
+ 			# 0 -> missing sign off
+ 			# 1 -> sign off identical
+@@ -7252,6 +7254,10 @@ sub process {
+ 			if ($authorsignoff == 0) {
+ 				ERROR("NO_AUTHOR_SIGN_OFF",
+ 				      "Missing Signed-off-by: line by nominal patch author '$author'\n");
++			} elsif ($authorsignoff == 1 && $last_sign_off ne $author) {
++				CHK("FROM_SIGN_OFF_NOT_LAST",
++					 "Signed-off-by: line by nominal patch author is not the last signature.\n\
++					  The author submitting the patch should be signing last.\n");
+ 			} elsif ($authorsignoff == 2) {
+ 				CHK("FROM_SIGN_OFF_MISMATCH",
+ 				    "From:/Signed-off-by: email comments mismatch: $sob_msg\n");
+-- 
+2.20.1
+
