@@ -2,58 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5132D0FF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBE12D1043
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbgLGMDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:03:21 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9113 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgLGMDV (ORCPT
+        id S1727482AbgLGMQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:16:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58560 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727055AbgLGMQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:03:21 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqMP14rHLzM1rW;
-        Mon,  7 Dec 2020 20:01:57 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 20:02:26 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] net/mlx5_core: remove unused including <generated/utsrelease.h>
-Date:   Mon, 7 Dec 2020 20:14:00 +0800
-Message-ID: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 7 Dec 2020 07:16:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607343293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6fm4taHsrhx0FnfLCsnkIMNxG4dB07e6BZ5aWQtaC+4=;
+        b=dm/kR0H6NQtj/lbBUog2DVR76XDHDTs3EZxEFsr/mHZ5x/hpbsZYfKhGV+tKqMzSWdSKfc
+        BHH7A2O5M2L4bIaul2P5ZBOS0mUUZqFi0yldG0EWruYJySRaX9K8n0tG7pGWBuV4D4McI/
+        QU+J4erWMclH6FiHEDN/KDuZcRMy6lI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-8TjYEKcmNzeQSizoH8iGCA-1; Mon, 07 Dec 2020 07:14:49 -0500
+X-MC-Unique: 8TjYEKcmNzeQSizoH8iGCA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A1A2800D62;
+        Mon,  7 Dec 2020 12:14:45 +0000 (UTC)
+Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B7EBF60BE2;
+        Mon,  7 Dec 2020 12:14:35 +0000 (UTC)
+Subject: Re: [PATCH v7 02/15] mm/memory_hotplug: Move {get,put}_page_bootmem()
+ to bootmem_info.c
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-3-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3840b0eb-bc65-6ad4-9ef9-f6e1603d1473@redhat.com>
+Date:   Mon, 7 Dec 2020 13:14:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201130151838.11208-3-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove including <generated/utsrelease.h> that don't need it.
+On 30.11.20 16:18, Muchun Song wrote:
+> In the later patch, we will use {get,put}_page_bootmem() to initialize
+> the page for vmemmap or free vmemmap page to buddy. So move them out of
+> CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code movement without any
+> functional change.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  arch/x86/mm/init_64.c          |  2 +-
+>  include/linux/bootmem_info.h   | 13 +++++++++++++
+>  include/linux/memory_hotplug.h |  4 ----
+>  mm/bootmem_info.c              | 25 +++++++++++++++++++++++++
+>  mm/memory_hotplug.c            | 27 ---------------------------
+>  mm/sparse.c                    |  1 +
+>  6 files changed, 40 insertions(+), 32 deletions(-)
+> 
 
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
- 1 file changed, 1 deletion(-)
+I'd squash this into the previous patch and name it like
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-index 989c70c..82ecc161 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-@@ -30,7 +30,6 @@
-  * SOFTWARE.
-  */
- 
--#include <generated/utsrelease.h>
- #include <linux/mlx5/fs.h>
- #include <net/switchdev.h>
- #include <net/pkt_cls.h>
+"mm/memory_hotplug: Factor out bootmem core functions to bootmem_info.c"
+
+
 -- 
-2.6.2
+Thanks,
+
+David / dhildenb
 
