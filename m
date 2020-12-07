@@ -2,192 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954572D09BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E242D09BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgLGEca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 23:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgLGEc3 (ORCPT
+        id S1728839AbgLGEdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 23:33:21 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:15969 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728657AbgLGEdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 23:32:29 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF30C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 20:31:43 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id s21so8522040pfu.13
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 20:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=4gxEaB36cnYBuLLFzSYchCEp0p3wHq7jkMXvHid0lLw=;
-        b=YwT8AHRGUPK+rct8HVEiT0QdSgAjegA+UfbRCjiFk4LYfDNyUqDRCnkx8Y3ZVWBFLv
-         1O+Pc/0itPntpbvU3E7Ihuw1O6k8RCAbH+IiC3JVnazkV6DZf+IgLnhS3pUenlZs65ut
-         wtDJkpaKdSD41c0oSWS92cXAExbKju8hBTu94pK74FmSDX9DW1cTz4fbpn6fyBGdaoFe
-         oNANaYB7F5+JrIUkBK5zTcOJ0AUkkhRqtN9Ue8ms4PhumZfuC0KC0EuuxZr1e9/M9L3L
-         59IslqHwc5e1A0LcgoYYXtLa3vHh5ZA1P+TAAfUISnQ9C+98yl3/Mla/aFZNw0km0/SG
-         4D5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=4gxEaB36cnYBuLLFzSYchCEp0p3wHq7jkMXvHid0lLw=;
-        b=IH9N2MqfTCzXaXLkejTfvdBqbHomtskO+KCDaenNlv2xgiSY6HkqQ4HYBhCNIgV+Qs
-         tT4qP0Rf20TVFPOy8cjEnXRLZwHW6U7OOg+/uEhj7Wlq6wzv4D+eR38MFPLCAfjWf3nf
-         FkkQo1Uki2MGkJDQOif196NfUmSCK/JVWMqf/sHW9HyYCZ9uGgxD20q7xYzakHG3P4CW
-         oLo8KZjdPP4CX2dEhJ42QNO74fcP1WOYRgO14br/7AINrE1CQBVVfBrWHlQ4ykV7Qfym
-         UuWUM0xaSZb/stkd+oJjg8j5fyQZhh0QnW0kf5/IH+jN8JAI2Jb3XOhSPVuwXeoXnAxz
-         WDeA==
-X-Gm-Message-State: AOAM532D28P50cyh/jA3eV5lZ+lIqcp8QB4tQYV3rB8ILjzpI+YcrgrU
-        3r4j5SujF7Nk4lb4ej04dnE=
-X-Google-Smtp-Source: ABdhPJylstN4ygiesT5Z14Y04e4p+JqnYDFElGEENqYrnrzK40waf+eyOucVpBA78CNAk2CEBoBAXw==
-X-Received: by 2002:a17:902:8f83:b029:d7:ec99:d2fd with SMTP id z3-20020a1709028f83b02900d7ec99d2fdmr14458410plo.17.1607315501978;
-        Sun, 06 Dec 2020 20:31:41 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:fc04:46d2:982e:6f95? ([2601:647:4700:9b2:fc04:46d2:982e:6f95])
-        by smtp.gmail.com with ESMTPSA id q35sm8950649pjh.38.2020.12.06.20.31.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 20:31:40 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] userfaultfd: prevent non-cooperative events vs
- mcopy_atomic races
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20201206093703.GY123287@linux.ibm.com>
-Date:   Sun, 6 Dec 2020 20:31:39 -0800
-Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Pavel Emelyanov <xemul@virtuozzo.com>,
-        Andrei Vagin <avagin@virtuozzo.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5921BA80-F263-4F8D-B7E6-316CEB602B51@gmail.com>
-References: <1527061324-19949-1-git-send-email-rppt@linux.vnet.ibm.com>
- <31DA12CC-E9CC-497D-A2EE-B83549D95CE8@gmail.com>
- <20201206093703.GY123287@linux.ibm.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Sun, 6 Dec 2020 23:33:20 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201207043237epoutp04a1d3a90b0c21e43a7991a34bc588825f~OVPvl-q5g2975729757epoutp04E
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:32:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201207043237epoutp04a1d3a90b0c21e43a7991a34bc588825f~OVPvl-q5g2975729757epoutp04E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607315557;
+        bh=Tide8Qzcd1wBEYRq2DlXDubvem7js4dUXECRaFokmXc=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=XtdAxiwbZgdui4X79mt04WVggwG3I+WMz8qpvT3EgwvFvhk9pq+1LUWEWQ0Y1bk6p
+         kkcyMCeeYLhYzjMxE2/e9VCOHhMCn1e05BDX0834JczqkYtvB2MvC55KvBlxVNNsH6
+         iAFRhCUA4EUtbxDgz82zqlpWJIAt5wgSjEo2vluM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201207043236epcas1p383bb508d91e04de0b81786c5f5e515c8~OVPufl6-w2791327913epcas1p36;
+        Mon,  7 Dec 2020 04:32:36 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.166]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Cq9QW5FjZz4x9Ps; Mon,  7 Dec
+        2020 04:32:35 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B8.E8.10463.360BDCF5; Mon,  7 Dec 2020 13:32:35 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201207043235epcas1p1446adf522518089bb229d3aaa91e3f55~OVPs_Nu-D1972719727epcas1p1C;
+        Mon,  7 Dec 2020 04:32:35 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201207043235epsmtrp11ce9e709c29e6221a547d4c89bfc896c~OVPs9kkBX2580925809epsmtrp1P;
+        Mon,  7 Dec 2020 04:32:35 +0000 (GMT)
+X-AuditID: b6c32a38-f11ff700000028df-c3-5fcdb0630ea5
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        56.93.08745.260BDCF5; Mon,  7 Dec 2020 13:32:34 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201207043234epsmtip2da9617598b3c34589b2e32954f381a4f~OVPsxKuWe1231112311epsmtip2N;
+        Mon,  7 Dec 2020 04:32:34 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Artem Labazov'" <123321artyom@gmail.com>
+Cc:     <stable@vger.kernel.org>,
+        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201204133348.555024-1-123321artyom@gmail.com>
+Subject: RE: [PATCH v2] exfat: Avoid allocating upcase table using kcalloc()
+Date:   Mon, 7 Dec 2020 13:32:34 +0900
+Message-ID: <000301d6cc51$fc2b6d10$f4824730$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJLXyJfxD6HCJurO6uIAS3PJP5HfAKOOt2OAQ3muqmo5QRQEA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdlhTTzd5w9l4g7srVCw23fzGarFn70kW
+        i8u75rBZbPl3hNViwcZHjA6sHjtn3WX36NuyitHj8ya5AOaoHJuM1MSU1CKF1Lzk/JTMvHRb
+        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoJVKCmWJOaVAoYDE4mIlfTubovzSklSF
+        jPziElul1IKUnAJDgwK94sTc4tK8dL3k/FwrQwMDI1OgyoScjAvnjrAWnOGumD/pM2MD4yXO
+        LkZODgkBE4l1/fPZuhi5OIQEdjBK/Fi+mwXC+cQoceb+XGYI5zOjxNv509lgWs6074Nq2cUo
+        sf7xHEYI5yWjxK7bv9hBqtgEdCX+/dkP1iEioCdxYucOsFHMAl2MEv+mzmYFSXAK2EpMnn4e
+        rEFYwEdi0982RhCbRUBFYuKcDqAaDg5eAUuJrjUCIGFeAUGJkzOfsIDYzALyEtvfzmGGuEhB
+        4ufTZawQu5wkHm+bwQxRIyIxu7MNbK+EwF92idmHLkO94CJxftFtVghbWOLV8S3sELaUxMv+
+        NnaQvRIC1RIf90PN72CUePHdFsI2lri5fgPYacwCmhLrd+lDhBUldv6eywixlk/i3dceVogp
+        vBIdbUIQJaoSfZcOM0HY0hJd7R/YJzAqzULy2Cwkj81C8sAshGULGFlWMYqlFhTnpqcWGxaY
+        IEf2JkZwctSy2ME49+0HvUOMTByMhxglOJiVRHjVpM7GC/GmJFZWpRblxxeV5qQWH2I0BYb0
+        RGYp0eR8YHrOK4k3NDUyNja2MDEzNzM1VhLn/aPdES8kkJ5YkpqdmlqQWgTTx8TBKdXA5HD5
+        +snUExO8BXSyEraoJp7+ErG23v3QUSclnf17n/5aH77ikQfviTm1Qo0ZMZYfahkdN0R8WiuW
+        vOaoUV1CvUCTQVPtxZbcdf+D11ssuXhUg2vR7MhUzmQ28U+ciru+XxEQ6hfxdHDY3P6zcYqJ
+        zSeOmH0ii72F587fqybWp/dF/rM/i6fRgattD3+F8pm/jdCa9/PFJY13QRsVveuqf87Ie273
+        5/GpQwUqd3eIM62sy3p77PrPH6/lLxxo72m0apsXEeDKpHVrwrv5HFu8L8cX3DxRYX9y5yLf
+        4vzL+7bHH7xZHPxGdmed5NWUjT4hi3fVVHNMXX9ATcB6TcOJzKXTJyrsON0berBl3aRjHkos
+        xRmJhlrMRcWJAOerPCMXBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvG7ShrPxBhsv2lhsuvmN1WLP3pMs
+        Fpd3zWGz2PLvCKvFgo2PGB1YPXbOusvu0bdlFaPH501yAcxRXDYpqTmZZalF+nYJXBkXzh1h
+        LTjDXTF/0mfGBsZLnF2MnBwSAiYSZ9r3sYHYQgI7GCXOrXOBiEtLHDtxhrmLkQPIFpY4fLi4
+        i5ELqOQ5o8SZ//dYQGrYBHQl/v3ZD9YrIqAncWLnDmaQImaBPkaJu7O2QA3dwyjReVgAxOYU
+        sJWYPP08O4gtLOAjselvGyOIzSKgIjFxTgcryDJeAUuJrjVg5bwCghInZz5hAQkzA81v2whW
+        zSwgL7H97RxmiDMVJH4+XcYKcYKTxONtM5ghakQkZne2MU9gFJ6FZNIshEmzkEyahaRjASPL
+        KkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4PjQ0trBuGfVB71DjEwcjIcYJTiYlUR4
+        1aTOxgvxpiRWVqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXAtIJ9
+        3se8KJ/J/i///9OdXHkmKtp01R2hxOr2OLPHigmR7VGda4/qyuo+uLP9xJqH5kdkZE48PKeg
+        k3DF8/Z55tk1r+dyb5fK6s8ViX32s5Nf9AF3mMNXDfMTB+/G2XNP3Ju54OOvV+4aHns/JX1Q
+        DCiJWRu6YIH4sQeTeQ5HvlcMDXwoGvI2m1+L/ezn3S9+L/u6dmLBdtUwj2MN0z78rjV55TvB
+        w8zSrMHEpHb3nlmntribLbHyNBGuLjyidfWhbwpD/cxN/Gd/3g41/G2cKCi346qO288bMa+v
+        +u/xKwq9tGChI9PDMyeOakYWtMj/zJs9xa2zcmNf5Ex2xfhzSXmXLorsjVG76XGoubnokhJL
+        cUaioRZzUXEiAB22hbb+AgAA
+X-CMS-MailID: 20201207043235epcas1p1446adf522518089bb229d3aaa91e3f55
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201204133512epcas1p4381b107d0fc72d92920d336df9683a22
+References: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
+        <CGME20201204133512epcas1p4381b107d0fc72d92920d336df9683a22@epcas1p4.samsung.com>
+        <20201204133348.555024-1-123321artyom@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the detailed answer, Mike. Things are clearer in regard to =
-your
-intention.
-
-> On Dec 6, 2020, at 1:37 AM, Mike Rapoport <rppt@linux.ibm.com> wrote:
->=20
-> The uffd monotor should *know* what is the state of child's memory and
-> without this patch it could only guess.
-
-I see - so mmap_changing is not just about graceful handling of =
-copy-ioctl=E2=80=99s
-(which I think monitors could handle before mmap_changing was =
-introduced)
-but to allow the monitor to know which pages are mapped in each process.
-Makes sense, but I have strong doubts it really works (see below).
-
->> 2. How is memory ordering supposed to work here? IIUC, mmap_changing =
-is not
->> protected by any lock and there are no memory barriers that are =
-associated
->> with the assignment. Indeed, the code calls WRITE_ONCE()/READ_ONCE(), =
-but
->> AFAIK this does not guarantee ordering with non-volatile =
-reads/writes.
->=20
-> There is also mmap_lock involved, so I don't see how copy can start in
-> parallel with fork processing. Fork sets mmap_chaning to true while
-> holding mmap_lock, so copy cannot start in parallel. When mmap_lock is
-> realeased, mmap_chaning remains true until fork event is pushed to
-> userspace and when this is done there is no issue with
-> userfaultfd_copy.
-
-Whenever I run into a non-standard and non-trivial synchronization =
-algorithm
-in the kernel (and elsewhere), I become very confused and concerned. I
-raised my question since I wanted to modify the code and could not =
-figure
-out how to properly do so. Based on your input that the monitor is =
-expected
-to know the child mappings according to userfaultfd events, I now think =
-that
-the kernel does not provide this ability and the locking scheme is =
-broken.
-
-Here are some scenarios that I think are broken - please correct me if I =
-am
-wrong:
-
-* Scenario 1: MADV_DONTNEED racing with userfaultfd page-faults
-
-userfaultfd_remove() only holds the mmap_lock for read, so these events
-cannot be ordered with userfaultfd page-faults.
-
-* Scenario 2: MADV_DONTNEED racing with fork()
-
-As userfaultfd_remove() releases mmap_lock after the user notification =
-and
-before the actual unmapping, concurrent fork() might happen before or =
-after
-the actual unmapping in MADV_DONTNEED and the user therefore has no way =
-of
-knowing whether the actual unmapping took place before or after the =
-fork().
-
-* Scenario 3: Concurrent MADV_DONTNEED can cause userfaultfd_remove() to
-clear mmap_changing cleared before all the notifications are completed.
-
-As mmap_lock is only taken for read, the first thread the completed
-userfaultfd_remove() would clear the indication that was set by the =
-other
-one.
-
-* Scenario 4: Fork starts and ends between copying of two pages.
-
-As mmap_lock might be released during ioctl_copy() (inside
-__mcopy_atomic()), some pages might be mapped in the child and others =
-not:
-
-
-CPU0				CPU1
-----				----
-ioctl_copy():
- __mcopy_atomic()
-  mmap_read_lock()
-  !mmap_changing [ok]
-  mfill_atomic_pte() =3D=3D 0 [page0 copied]
-  mfill_atomic_pte() =3D=3D -ENOENT [page1 will be retried]
-  mmap_read_unlock()
-  goto retry
-
-				fork():
-				 dup_userfaultfd()
-				 -> mmap_changing=3Dtrue
-				 userfaultfd_event_wait_completion()
-				 -> mmap_changing=3Dfalse
-
-  mmap_read_lock()
-  !mmap_changing [ok]
-  mfill_atomic_pte() =3D=3D 0 [page1 copied]
-  mmap_read_unlock()
-=20
- return: 2 pages were mapped, while the first is present in the child =
-and
- the second one is non-present.
-
-Bottom-line: it seems to me that mmap_changing should be a counter (not
-boolean) that is protected by mmap_lock. This counter should be kept
-elevated throughout the entire operation (in regard to MADV_DONTNEED).
-Perhaps mmap_lock does not have to be taken to decrease the counter, but
-then an smp_wmb() would be needed before the counter is decreased.
-
-Let me know whether I am completely off or missing something.
-
-Thanks,
-Nadav
+> The table for Unicode upcase conversion requires an order-5 allocation, which may fail on a highly-
+> fragmented system:
+> 
+>  pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
+> nodemask=(null),cpuset=/,mems_allowed=0
+>  CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
+>  Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019  Call Trace:
+>   dump_stack+0x6b/0x88
+>   warn_alloc.cold+0x75/0xd9
+>   ? _cond_resched+0x16/0x40
+>   ? __alloc_pages_direct_compact+0x144/0x150
+>   __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
+>   ? __schedule+0x28a/0x840
+>   ? __wait_on_bit_lock+0x92/0xa0
+>   __alloc_pages_nodemask+0x2df/0x320
+>   kmalloc_order+0x1b/0x80
+>   kmalloc_order_trace+0x1d/0xa0
+>   exfat_create_upcase_table+0x115/0x390 [exfat]
+>   exfat_fill_super+0x3ef/0x7f0 [exfat]
+>   ? sget_fc+0x1d0/0x240
+>   ? exfat_init_fs_context+0x120/0x120 [exfat]
+>   get_tree_bdev+0x15c/0x250
+>   vfs_get_tree+0x25/0xb0
+>   do_mount+0x7c3/0xaf0
+>   ? copy_mount_options+0xab/0x180
+>   __x64_sys_mount+0x8e/0xd0
+>   do_syscall_64+0x4d/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Make the driver use vzalloc() to eliminate the issue.
+> 
+> Cc: stable@vger.kernel.org # v5.7+
+> Signed-off-by: Artem Labazov <123321artyom@gmail.com>
+> ---
+> v2: replace vmalloc with vzalloc to avoid uninitialized memory access
+Applied.
+Thanks for your work!
 
