@@ -2,103 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9B12D1678
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224B52D168C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgLGQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:37:19 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:55868 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgLGQhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:37:18 -0500
-Received: from zn.tnic (p200300ec2f0a38008a496889bd0f59a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:3800:8a49:6889:bd0f:59a1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91A0E1EC0527;
-        Mon,  7 Dec 2020 17:36:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607358996;
+        id S1726519AbgLGQjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgLGQjT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:39:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBD2C061749;
+        Mon,  7 Dec 2020 08:38:38 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607359117;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=upOLoLwKqFXpg52lafTFF50LNTA779rHuHh39h/2HSE=;
-        b=BXgePymDOQGSm5skSk0I0jU847LQ0R7y2mBf+jrhX06tw4BlOnsG0FtVoFz97jlrH2BiDs
-        ceX3eExwz2o2Kn84EvDSmbF8sgs4yle02DaZ9VMTM5/rk5+krbJ2Zm80dSFjcaAhtufVOb
-        dtAiZAApJA4k60I9lrp4zcsKKdCfHow=
-Date:   Mon, 7 Dec 2020 17:36:32 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+         in-reply-to:in-reply-to:references:references;
+        bh=7l+UILr+JWHc8AnnfIEx57njnbogruA/YdmfJ48nOWQ=;
+        b=QEWCmfVg9WQzZxZMjjUfHb5J5LLN4FF5IbRC778foF8tzrzme+wn/5z/gtWeGMRX3M/d0V
+        06fmWGoVGLJrU4SCAa2kQbzP6hoZvrOYOtVOTrch/w4572yosLo3+qcAmdLs/oFrdj9nX0
+        jvC0TiIEdN9b5Igp1mw/hR3D5TRAdcobKVaUHdK54ZCgFEDZrdUC4VHat/caLcAPxr4SKK
+        Xt9scgAfUS3OTX9eRkTA+s8gB/tbxwxlzMtVTaDc+rs2hBI3G4kFp66JX0CaBioW8PxE5A
+        4jFVRqBZ4ohR1Mix2mfhqLCPPhtZ0qBiwbAoydPgyNmAIrhJFHysMKhY+1EgRA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607359117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7l+UILr+JWHc8AnnfIEx57njnbogruA/YdmfJ48nOWQ=;
+        b=Jl8yYrpCp9vwJobQHJttjXxAiqDTAdR0IBiu1qjmf4qFl/smdAMHpC8SOO7ort40g7LE1V
+        YkLLDTF8x0m0JmCw==
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v15 07/26] x86/mm: Remove _PAGE_DIRTY_HW from kernel RO
- pages
-Message-ID: <20201207163632.GE20489@zn.tnic>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-8-yu-cheng.yu@intel.com>
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <87a6uq9abf.fsf@nanos.tec.linutronix.de> <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+Date:   Mon, 07 Dec 2020 17:38:36 +0100
+Message-ID: <87a6up606r.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201110162211.9207-8-yu-cheng.yu@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:21:52AM -0800, Yu-cheng Yu wrote:
-> Kernel read-only PTEs are setup as _PAGE_DIRTY_HW.  Since these become
-> shadow stack PTEs, remove the dirty bit.
+On Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
+> On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
+>> From a timekeeping POV and the guests expectation of TSC this is
+>> fundamentally wrong:
+>> 
+>>       tscguest = scaled(hosttsc) + offset
+>> 
+>> The TSC has to be viewed systemwide and not per CPU. It's systemwide
+>> used for timekeeping and for that to work it has to be synchronized. 
+>> 
+>> Why would this be different on virt? Just because it's virt or what? 
+>> 
+>> Migration is a guest wide thing and you're not migrating single vCPUs.
+>> 
+>> This hackery just papers over he underlying design fail that KVM looks
+>> at the TSC per vCPU which is the root cause and that needs to be fixed.
+>
+> I don't disagree with you.
+> As far as I know the main reasons that kvm tracks TSC per guest are
+>
+> 1. cases when host tsc is not stable 
+> (hopefully rare now, and I don't mind making
+> the new API just refuse to work when this is detected, and revert to old way
+> of doing things).
 
-This commit message is laconic to say the least. You need to start
-explaining what you're doing because everytime I look at a patch of
-yours, I'm always grepping the SDM and looking forward in the patchset,
-trying to rhyme up what that is all about.
+That's a trainwreck to begin with and I really would just not support it
+for anything new which aims to be more precise and correct.  TSC has
+become pretty reliable over the years.
 
-Like for this one. I had to fast-forward to the next patch where all
-that is explained. But this is not how review works - each patch's
-commit message needs to be understandable on its own because when
-they land upstream, they're not in a patchset like here. And review
-should be done in the order the patches are numbered - not by jumping
-back'n'forth.
+> 2. (theoretical) ability of the guest to introduce per core tsc offfset
+> by either using TSC_ADJUST (for which I got recently an idea to stop
+> advertising this feature to the guest), or writing TSC directly which
+> is allowed by Intel's PRM:
 
-So please think of the readers of your patches when writing those commit
-messages. Latter are *not* write-only and not unimportant.
+For anything halfways modern the write to TSC is reflected in TSC_ADJUST
+which means you get the precise offset.
 
-And those readers haven't spent copious amounts of time on the
-technology so being more verbose and explaining things is a Good
-Thing(tm). Don't worry about explaining too much - better too much than
-too little.
+The general principle still applies from a system POV.
 
-And last but not least, having understandable and properly written
-commit messages increases the chances of your patches landing upstream
-considerably.
+     TSC base (systemwide view) - The sane case
 
-Thx.
+     TSC CPU  = TSC base + TSC_ADJUST
 
--- 
-Regards/Gruss,
-    Boris.
+The guest TSC base is a per guest constant offset to the host TSC.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+     TSC guest base = TSC host base + guest base offset
+
+If the guest want's this different per vCPU by writing to the MSR or to
+TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which
+is the offset to the TSC base of the guest.
+
+    TSC guest CPU = TSC guest base + CPU TSC_ADJUST
+
+==>
+
+    TSC guest CPU = TSC host base + guest base offset + CPU TSC_ADJUST
+
+The normal and sane case is just TSC_ADJUST == 0.
+
+It's very cleanly decomposable.
+
+Thanks,
+
+        tglx
