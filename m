@@ -2,83 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09992D1883
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F032D188A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbgLGS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGS1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:27:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0709DC061749;
-        Mon,  7 Dec 2020 10:26:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=plmldp0jMUbXn4RHhveXniPRGIKOxbNYBpy4Qnxa4iU=; b=ETlnj0o86z0HzG7k/Ffy4FpKV+
-        RxD8HXZnMz7KUNPRGl7hUGWACsCjXPKCHTT8HfIIfvZqkOU8rDDB3ZJJ5RV3SFZuLv5drFrL5TcUp
-        6NmXC9XhlQjgBHmScaJOHYmXBPwS4BWhjHb7TTbLkx9R9Nir0+TSuabkb/Pz1VUXRtBICsXR3t/LF
-        w1IJIcurUZehi4FKxZ20tfFPQHPEWwYQp7nwNo2E2HQ0DU3at6SLTaoDz9hPQR5kNXiEQIZRU0WO9
-        +R8MM5ljxy4Qqyq3A3/CPAX4z74PdAYi/Bjxar4zvAo94ARI2YcMNLiK1R9r6F8Utlq0xgLEolvys
-        LSajCCqw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmLD1-0000sh-TN; Mon, 07 Dec 2020 18:26:03 +0000
-Date:   Mon, 7 Dec 2020 18:26:03 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
-Message-ID: <20201207182603.GA2499@infradead.org>
-References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
- <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
- <X85sxxgpdtFXiKsg@kroah.com>
- <20201207180655.GA30657@infradead.org>
- <X85zEFduHeUr4YKR@kroah.com>
+        id S1726250AbgLGS36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:29:58 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43648 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbgLGS35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 13:29:57 -0500
+Received: from zn.tnic (p200300ec2f0a380064629ff712875f88.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:3800:6462:9ff7:1287:5f88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 37ACB1EC0266;
+        Mon,  7 Dec 2020 19:29:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607365756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UcgJt3nxSKpwchL/iP2ux1Mxz2gg4VyE+PHYmJH7Ers=;
+        b=TINAG4raZW9HXC9+zvnMHq3Hd/A/VIdV6GeOubaoSo9HZGEjZT4pf1/XZlQ5kEWK8sGRp1
+        W69ROu759QdWgoz3ZQDlVyYh/YF2ePApgEt9vm5MZbMIzXFFWkcDLVlDWDWgLlEAupu2kj
+        oyMgjaAzIj8YfJkU9ubfRco9h4ieyXs=
+Date:   Mon, 7 Dec 2020 19:29:12 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        james.morse@arm.com, hpa@zytor.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] x86/resctrl: Move setting task's active CPU in a
+ mask into helpers
+Message-ID: <20201207182912.GF20489@zn.tnic>
+References: <cover.1607036601.git.reinette.chatre@intel.com>
+ <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X85zEFduHeUr4YKR@kroah.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
-> What "real workload" test can be run on this to help show if it is
-> useful or not?  These vendors seem to think it helps for some reason,
-> otherwise they wouldn't have added it to their silicon :)
+On Thu, Dec 03, 2020 at 03:25:48PM -0800, Reinette Chatre wrote:
+> From: Fenghua Yu <fenghua.yu@intel.com>
 > 
-> Should they run fio?  If so, any hints on a config that would be good to
-> show any performance increases?
+> The code of setting the CPU on which a task is running in a CPU mask is
+> moved into a couple of helpers.
 
-A real actual workload that matters.  Then again that was Martins
-request to even justify it.  I don't think the broken addressing that
-breaks a whole in the SCSI addressing has absolutely not business being
-supported in Linux ever.  The vendors should have thought about the
-design before committing transistors to something that fundamentally
-does not make sense.
+Pls read section "2) Describe your changes" in
+Documentation/process/submitting-patches.rst for more details.
+
+More specifically:
+
+"Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+to do frotz", as if you are giving orders to the codebase to change
+its behaviour."
+
+> The new helper task_on_cpu() will be reused shortly.
+
+"reused shortly"? I don't think so.
+
+> 
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Cc: stable@vger.kernel.org
+
+Fixes?
+
+I guess the same commit from the other two:
+
+Fixes: e02737d5b826 ("x86/intel_rdt: Add tasks files")
+
+?
+
+> ---
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 47 +++++++++++++++++++-------
+>  1 file changed, 34 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 6f4ca4bea625..68db7d2dec8f 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -525,6 +525,38 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
+>  	kfree(rdtgrp);
+>  }
+>  
+> +#ifdef CONFIG_SMP
+> +/* Get the CPU if the task is on it. */
+> +static bool task_on_cpu(struct task_struct *t, int *cpu)
+> +{
+> +	/*
+> +	 * This is safe on x86 w/o barriers as the ordering of writing to
+> +	 * task_cpu() and t->on_cpu is reverse to the reading here. The
+> +	 * detection is inaccurate as tasks might move or schedule before
+> +	 * the smp function call takes place. In such a case the function
+> +	 * call is pointless, but there is no other side effect.
+> +	 */
+> +	if (t->on_cpu) {
+> +		*cpu = task_cpu(t);
+
+Why have an I/O parameter when you can make it simply:
+
+static int task_on_cpu(struct task_struct *t)
+{
+	if (t->on_cpu)
+		return task_cpu(t);
+
+	return -1;
+}
+
+> +
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static void set_task_cpumask(struct task_struct *t, struct cpumask *mask)
+> +{
+> +	int cpu;
+> +
+> +	if (mask && task_on_cpu(t, &cpu))
+> +		cpumask_set_cpu(cpu, mask);
+
+And that you can turn into:
+
+	if (!mask)
+		return;
+
+	cpu = task_on_cpu(t);
+	if (cpu < 0)
+		return;
+
+	cpumask_set_cpu(cpu, mask);
+
+Readable and simple.
+
+Hmm?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
