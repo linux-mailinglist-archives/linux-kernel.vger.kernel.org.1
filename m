@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B582D116D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C10E2D1173
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgLGNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGNJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:09:09 -0500
-X-Gm-Message-State: AOAM531nlowu/yVlky6u2pitBwj/AM3Qqn/TU52EeOl3dedNaEO5v30A
-        NgnDRalEUWTeQ4IlBNKZHkgvbAJQkrrfrMDJmQA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607346508;
-        bh=YiXfatZ6lH4pAyul08wZ68jWEXOKruJ8RP71cHFKE7U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DfT+77pJBcQ2Tz59v8I4UyfPu2VZ9kJOjlVYBjLELyOR9ps8CfmynkxvwsF8gtzjI
-         wteAvAxYZSjmljyE8mJsS/y/eyV8RzNK2ArSo0a5p1vfwBdAer+shvPD0ESQZT8gro
-         znbojXG6QvGNoEtJk7v86aFHScfXER5QzZqEt7cgHF1IbYfs1aL5sk2k/ct6wriFPD
-         eKKzP9SJConbTzoCSFFbLv872uxj5X/HAq3YbVvbND+yeS/JjEGD8yKjtkA7Svz5m2
-         xqRlO7x656wxKMlHRRp2QmNpL8xsQOnbQXje8XBGY0J1VNFeudfwihFBPO/8jDWhKL
-         me6vEBbvqQ4ig==
-X-Google-Smtp-Source: ABdhPJzOCttNG+HMmWL4e+OBsb98ZTp2Sv3FvcRmuGSUW/GZMTC2iGL0S6fIlzxpxGDYQ2h6OZ4tshGuqZ+cL5EHurQ=
-X-Received: by 2002:a4a:c60c:: with SMTP id l12mr10949035ooq.45.1607346507298;
- Mon, 07 Dec 2020 05:08:27 -0800 (PST)
+        id S1726055AbgLGNKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgLGNKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:10:23 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0770EC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:09:43 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id b18so2903169qvt.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:09:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvcCZBn3aXlyQvxp2RKKSUFlYCFvdudGS3TR443K+Ag=;
+        b=KLDO7ESjs+7ht/wArFTHYPctQ+pVr/lv9GczQ32GCW2TI3V/QRj+MCyuOhdHW1hc49
+         QJvLr+eQJFItbChaFeFjOnuhxzuwZxgm2GKP476b+luPhRmemqB7kF8VVRR08F2OT7pg
+         gl7FKNSVNbV05lXhAROBsaZBDP0Bq99BEZn+fMylmGdLszkcKQfbQaaWqm0HOlyZT6/o
+         GpX9X57rkFQx4SFi41KUNOYPreFZJGOwqZloxYdd6CKV23HJdYNxsQtaQpsoqdvKVze9
+         TJA1B/4x3cgyXdzsr3Ys2BTyp0a1K/nBui3U58XPprGDQJa15I7uYwlCM8j65hcW04fn
+         mq2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tvcCZBn3aXlyQvxp2RKKSUFlYCFvdudGS3TR443K+Ag=;
+        b=NZCG+AojqZd6T/BSRpFGmIsmW+pzsb4F9wfbaIVraDOkeLo1UP7yHrn/zS0BerO28A
+         SGgStOCDZ1NgX8+xwWP4cASPLWEnwQdku9ihtKT/NQiSAxdSC/1y3PBvoFZjGJhCCSVX
+         tH+mhst1I0Kffg59903ZB12J1YHMZauldJ4tgFyAIf2QXwj9E03VtwI6zsNFnsnw7e/V
+         fGkeQ7Cp2WW+uIJSRrutdwQeK1S3bhkW1vKe45ZrkeHbFjyGPXBR9n1enxAUPf/Wu2mb
+         R8EaeccfVcqNlSY3qGBMeiVqnk/xo91TbiO7l31/gJYPAu/mTlbHjTgN2zIcZo3UoCAM
+         O+/g==
+X-Gm-Message-State: AOAM531C9+PQK2drCcnk5f5u0iz5WpmrmzHHnFVq1k7Gh2xHR/rNc/DC
+        +K1nVEGd2JsgVhaKQQEw8a/0MvjVI/M2bpd4Qmvv6g==
+X-Google-Smtp-Source: ABdhPJzR0ldNDyKak+lbe2d3yP5LJG6//p+2xGQ2sy5DTpK/DVOjloYKnePJHVhjbXRIimUOmpDE9q5S6/d1jrQ8ZwY=
+X-Received: by 2002:a05:6214:20a3:: with SMTP id 3mr21417469qvd.13.1607346581823;
+ Mon, 07 Dec 2020 05:09:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201204154626.GA26255@fieldses.org> <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <118876.1607093975@warthog.procyon.org.uk> <122997.1607097713@warthog.procyon.org.uk>
- <20201204160347.GA26933@fieldses.org> <125709.1607100601@warthog.procyon.org.uk>
- <CAMj1kXEOm_yh478i+dqPiz0eoBxp4eag3j2qHm5eBLe+2kihoQ@mail.gmail.com>
- <127458.1607102368@warthog.procyon.org.uk> <CAMj1kXFe50HvZLxG6Kh-oYBCf5uu51hhuh7mW5UQ62ZSqmu_xA@mail.gmail.com>
- <468625.1607342512@warthog.procyon.org.uk>
-In-Reply-To: <468625.1607342512@warthog.procyon.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 7 Dec 2020 14:08:16 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH_gEjgZKx=8uQgv=ckBqTVoh3vrHj=O-nY-nm5VMgLaA@mail.gmail.com>
-Message-ID: <CAMj1kXH_gEjgZKx=8uQgv=ckBqTVoh3vrHj=O-nY-nm5VMgLaA@mail.gmail.com>
-Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
-To:     David Howells <dhowells@redhat.com>
-Cc:     Bruce Fields <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org
+References: <000000000000fbb4f505b5df4eea@google.com>
+In-Reply-To: <000000000000fbb4f505b5df4eea@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 7 Dec 2020 14:09:28 +0100
+Message-ID: <CACT4Y+aAJSTH_GdG8ZtbtKN_9h4TZHQNi_m+Uc5iWBos_3mezw@mail.gmail.com>
+Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
+ maximum is 511, mounting anywa
+To:     syzbot <syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 13:02, David Howells <dhowells@redhat.com> wrote:
->
-> Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > > Yeah - the problem with that is that for sunrpc, we might be dealing with 1MB
-> > > plus bits of non-contiguous pages, requiring >8K of scatterlist elements
-> > > (admittedly, we can chain them, but we may have to do one or more large
-> > > allocations).
-> > >
-> > > > However, I would recommend against it:
-> > >
-> > > Sorry, recommend against what?
-> > >
-> >
-> > Recommend against the current approach of manipulating the input like
-> > this and feeding it into the skcipher piecemeal.
->
-> Right.  I understand the problem, but as I mentioned above, the scatterlist
-> itself becomes a performance issue as it may exceed two pages in size.  Double
-> that as there may need to be separate input and output scatterlists.
->
+#syz fix: bfs: don't use WARNING: string when it's just info.
 
-I wasn't aware that Herbert's work hadn't been merged yet. So that
-means it is entirely reasonable to split the input like this and feed
-the first part into a cbc(aes) skcipher and the last part into a
-cts(cbc(aes)) skcipher, provided that you ensure that the last part
-covers the final two blocks (one full block and one block that is
-either full or partial)
-
-With Herbert's changes, you will be able to use the same skcipher, and
-pass a flag to all but the final part that more data is coming. But
-for lack of that, the current approach is optimal for cases where
-having to cover the entire input with a single scatterlist is
-undesirable.
-
-> > Herbert recently made some changes for MSG_MORE support in the AF_ALG
-> > code, which permits a skcipher encryption to be split into several
-> > invocations of the skcipher layer without the need for this complexity
-> > on the side of the caller. Maybe there is a way to reuse that here.
-> > Herbert?
+On Mon, Dec 7, 2020 at 1:53 PM syzbot
+<syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com> wrote:
 >
-> I wonder if it would help if the input buffer and output buffer didn't have to
-> correspond exactly in usage - ie. the output buffer could be used at a slower
-> rate than the input to allow for buffering inside the crypto algorithm.
+> Hello,
 >
-
-I don't follow - how could one be used at a slower rate?
-
-> > > Can you also do SHA at the same time in the same loop?
-> >
-> > SHA-1 or HMAC-SHA1? The latter could probably be modeled as an AEAD.
-> > The former doesn't really fit the current API so we'd have to invent
-> > something for it.
+> syzbot found the following issue on:
 >
-> The hashes corresponding to the kerberos enctypes I'm supporting are:
+> HEAD commit:    34816d20 Merge tag 'gfs2-v5.10-rc5-fixes' of git://git.ker..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=157dad07500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=b3a044ccf5b03ac4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=02c44c7f92e70a73730a
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152b05ab500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fc3fad500000
 >
-> HMAC-SHA1 for aes128-cts-hmac-sha1-96 and aes256-cts-hmac-sha1-96.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com
 >
-> HMAC-SHA256 for aes128-cts-hmac-sha256-128
+> BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anywa
 >
-> HMAC-SHA384 for aes256-cts-hmac-sha384-192
 >
-> CMAC-CAMELLIA for camellia128-cts-cmac and camellia256-cts-cmac
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 >
-> I'm not sure you can support all of those with the instructions available.
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 >
-
-It depends on whether the caller can make use of the authenc()
-pattern, which is a type of AEAD we support. There are numerous
-implementations of authenc(hmac(shaXXX),cbc(aes)), including h/w
-accelerated ones, but none that implement ciphertext stealing. So that
-means that, even if you manage to use the AEAD layer to perform both
-at the same time, the generic authenc() template will perform the
-cts(cbc(aes)) and hmac(shaXXX) by calling into skciphers and ahashes,
-respectively, which won't give you any benefit until accelerated
-implementations turn up that perform the whole operation in one pass
-over the input. And even then, I don't think the performance benefit
-will be worth it.
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000fbb4f505b5df4eea%40google.com.
