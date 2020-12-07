@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72ACB2D1B94
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC1E2D1B9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbgLGVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:01:23 -0500
-Received: from mga07.intel.com ([134.134.136.100]:59824 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726614AbgLGVBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:01:22 -0500
-IronPort-SDR: E2OydwAfb5DkA76vyYJyhFqTtqhVWEEWyUk67VvbjAODlEcrW7zn9Rseg5w70n4wzy0HbSQ4xI
- /QRy/vPpsqWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="237880400"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="237880400"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 13:00:40 -0800
-IronPort-SDR: F3bzpdIxvMvLyAAEUqHSDTH19i25/wicm7KFY2x+jLJ4+bklGhRLvwf2cUqo6AJKpURL0jGlqm
- EPU+OUsoxKqA==
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="363307816"
-Received: from sutgikar-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.135.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 13:00:39 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>
-Subject: [PATCH] kernel-doc: Fix example in Nested structs/unions
-Date:   Mon,  7 Dec 2020 13:00:27 -0800
-Message-Id: <20201207210027.1049346-1-ben.widawsky@intel.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726270AbgLGVFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgLGVFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:05:12 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3D2C061749;
+        Mon,  7 Dec 2020 13:04:32 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id k2so16993454oic.13;
+        Mon, 07 Dec 2020 13:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=cJ62JFUhP5zgABSp3fn8pdS4RMxFYvfg32dIjTX9vaU=;
+        b=ZDpsg3E/+Nq7MJ/v7Uxff8IAu/Hm7yxgeE0QUaPWzpJamhxR8d3UiJIUYMzQDlnlY3
+         6x9ncuBw8n1j7tD/FpB18qfl2biiQ7Yzwi2FRl/2bp+s4LinLo8AZux7MBYXpPN6HoH+
+         VgFv92tfCkjIlJXei+R50b5AM/SnEBpMOgZ1JtAITWZCLQzUrePD+UVRkUk5HNShzy2n
+         SU5w/ZqzPyjn6tiEsZz0UpN8mSek9Gt9R+CotzhikWs1MAwkSEaehgusu4tQ2zkNu15k
+         uhOGReyOdW8s/QXUQqOfrRxrfIIhfVLUpvNkGanrjukdtRMH4foAFcxK38uPhopRN+Fh
+         S2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=cJ62JFUhP5zgABSp3fn8pdS4RMxFYvfg32dIjTX9vaU=;
+        b=fdn4yusY1HzyRsVdSFPcpnm5oN9riFjLuV5Soi1uV2JNPyZk8XM0QVEHRfI/acTPCL
+         XYOh72UIXf0s4bfpRVmXwJmkp5V4P7S7PfaDROG1u8dszujn1oeHdngbyMuEgTVK31fF
+         fQUlFhJvo7kOP6etJK37DiprqJzaMdimbIWc95ERctbxbJRjm+NgxSGwyoDK7BDo9Zy/
+         yx60IyLDAJ89HgXqZkAQnAXO95hAGP3eOwRNzWRskFARyVGb0A+yRzG6zGVKkY8heVlx
+         97l/g2M5f6iCjCdKEEaNoqsthnvGxxW6ZXHKkq0AyYvcYNIpgZP6IFyGxAPoEOmgeCpX
+         wllw==
+X-Gm-Message-State: AOAM532eIERWsV7vSdGfKS6dA+NS/uAwkCrlTWWuyXu7G/QFuX5UICrp
+        TsE8BCiJMi7HTqJfNUysw1w=
+X-Google-Smtp-Source: ABdhPJzWtCQg5yyMdVU/c4RdlM2OJkkRnn24xqwAma92VFEXSxwnfQWPvAxl53brmSiaf0wzIlXcWg==
+X-Received: by 2002:aca:5e03:: with SMTP id s3mr493601oib.125.1607375071747;
+        Mon, 07 Dec 2020 13:04:31 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id o21sm1579819otj.1.2020.12.07.13.04.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 13:04:31 -0800 (PST)
+Date:   Mon, 07 Dec 2020 13:04:23 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fce98d7d860e_5a9620833@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-2-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-2-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 01/11] bpf: x86: Factor out emission of ModR/M
+ for *(reg + off)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing ';' as well as fixes the indent for the first struct.
+Brendan Jackman wrote:
+> The case for JITing atomics is about to get more complicated. Let's
+> factor out some common code to make the review and result more
+> readable.
+> 
+> NB the atomics code doesn't yet use the new helper - a subsequent
+> patch will add its use as a side-effect of other changes.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
----
- Documentation/doc-guide/kernel-doc.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Small nit on style preference below.
 
-diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
-index 52a87ab4c99f..79aaa55d6bcf 100644
---- a/Documentation/doc-guide/kernel-doc.rst
-+++ b/Documentation/doc-guide/kernel-doc.rst
-@@ -247,12 +247,12 @@ It is possible to document nested structs and unions, like::
-           struct {
-             int memb1;
-             int memb2;
--        }
-+          };
-           struct {
-             void *memb3;
-             int memb4;
--          }
--        }
-+          };
-+        };
-         union {
-           struct {
-             int memb1;
--- 
-2.29.2
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
+[...]
+
+>  
+> @@ -1240,11 +1250,7 @@ st:			if (is_imm8(insn->off))
+>  			goto xadd;
+>  		case BPF_STX | BPF_XADD | BPF_DW:
+>  			EMIT3(0xF0, add_2mod(0x48, dst_reg, src_reg), 0x01);
+> -xadd:			if (is_imm8(insn->off))
+> -				EMIT2(add_2reg(0x40, dst_reg, src_reg), insn->off);
+> -			else
+> -				EMIT1_off32(add_2reg(0x80, dst_reg, src_reg),
+> -					    insn->off);
+> +xadd:			emit_modrm_dstoff(&prog, dst_reg, src_reg, insn->off);
+
+I at least prefer the xadd on its own line above the emit_*(). That seems
+more consistent with the rest of the code in this file. The only other
+example like this is st:.
