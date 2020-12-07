@@ -2,188 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35C42D102D
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1632D2D1032
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbgLGMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgLGMNd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:13:33 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB45C0613D1;
-        Mon,  7 Dec 2020 04:12:53 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id c7so3934856qke.1;
-        Mon, 07 Dec 2020 04:12:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tGf3xmW5vy1PIB7ezJ7vNPFReodCO4iqcW8JYnZ921E=;
-        b=nO1NspUATMgozvuiB3X7OOHKYGNwSs81tyEGm1u9zVnTz+X45V9Tx2XbP8fqggIYfA
-         qRBXkPUWgGFgiz/CK62y7rsjcDakoQyWrl2AWpJEzJNgH3tPfiLSQ6sBBNIlH1uYaKMd
-         u32Df4ruUqo0zyoEhyW+KbYoZ7lHcyBPR48+f0eouCa4uLJlOY8+wE9dHU7Htjgqfrns
-         s42pmL5NmPUifYq0KK5viuL8tFs2/qr81Kek7uVhCRC4EO1yoB+PbeIh2St8C0JG96ET
-         szoA/Gf6aL2HbGHCe5jkUxhb5pMbvHUe8Kstfyb8bvvJ7mwd2WZN3HN5NsEn1NmdFmHb
-         FI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tGf3xmW5vy1PIB7ezJ7vNPFReodCO4iqcW8JYnZ921E=;
-        b=cDWOk2bqsL+vkO8owAn8JJzEhpX9W+flmHmhmjOHmSzeKvHf+S6/NALJhL6oqZ0ER3
-         J4aRfsm8yLMIwbgMqhtz9/OjRJHG6BRHlFHnkM/ynUvp/dhMamFQjs0PAINuQUN1bled
-         7CtzT/qtB33YryJZGUanZ+h9+EC0zw6THzo4RZsTi8VtppX6nhNmZrm+75iYxyAImS09
-         HCrj70ue0m6w0Q8JsfNkQI+W+IlzbQa3ampYmCqXit/FjqSEuVJjT5GzVN3lBQ17f2qB
-         AcmgGbot8GPFjHz+slIb+o5TsmPdfE1pK8P8DlFjtbd4bCJ14O/Ko7zOm1SGwQp9KD8b
-         iDkw==
-X-Gm-Message-State: AOAM5310O/YQ210diMFYpGAmn0nC0P8cxOc+KqAAcWTmWnALu7U5bBMx
-        Uq7x39+9fFN4DbQgR8kBNcrHQJL0Jw==
-X-Google-Smtp-Source: ABdhPJwjSN6PpfQtAzWn+o33BgBneRpJVvcStp6Noq57YNUSO0jLylY42fKOiLbDr9ONsYJrOZY7ig==
-X-Received: by 2002:a37:8485:: with SMTP id g127mr1443993qkd.233.1607343172297;
-        Mon, 07 Dec 2020 04:12:52 -0800 (PST)
-Received: from presler.lan (a95-94-74-213.cpe.netcabo.pt. [95.94.74.213])
-        by smtp.gmail.com with ESMTPSA id l20sm1711530qkj.19.2020.12.07.04.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 04:12:51 -0800 (PST)
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-To:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rui Salvaterra <rsalvaterra@gmail.com>
-Subject: [PATCH v7] zram: break the strict dependency from lzo
-Date:   Mon,  7 Dec 2020 12:12:45 +0000
-Message-Id: <20201207121245.50529-1-rsalvaterra@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727339AbgLGMN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:13:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49440 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727004AbgLGMN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:13:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607343189; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N5aTOOY1yDto3hlZWd7sMkEsRnR8D/QRsIEYRP0S3jQ=;
+        b=jBO+lhrGUzRYbOAoxA1UXH9qf/XtMGzeReS9iN55wAuBNvNTaz6+xRKs8VHwziT0y73eTI
+        C7aCVZHr9IkrnJhXTGqpPMuyRlCuun0XMA8Gl4MxeXRj5N5uRLg9KPyyPtsv8O0fRya1uS
+        kkffOn+VWKJgCazdeXzSJNcwruVo5yo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 80B41AC90;
+        Mon,  7 Dec 2020 12:13:09 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 13:13:07 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        mike.kravetz@oracle.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH 0/6] prohibit pinning pages in ZONE_MOVABLE
+Message-ID: <20201207121307.GG25569@dhcp22.suse.cz>
+References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
+ <20201204035953.GA17056@js1304-desktop>
+ <CA+CK2bCD7XYyJB9TNZZeUMAuntotZopVYNjDXnyVZyzKe2_A1Q@mail.gmail.com>
+ <20201204161005.GD5487@ziepe.ca>
+ <CA+CK2bCGGoBXg7FbhGMDdWRnePKFgvtsM_PJmA2qtMNsvPMZbg@mail.gmail.com>
+ <20201207071238.GA10731@js1304-desktop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207071238.GA10731@js1304-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the beginning, the zram block device always enabled CRYPTO_LZO, since
-lzo-rle is hardcoded as the fallback compression algorithm. As a consequence, on
-systems where another compression algorithm is chosen (e.g. CRYPTO_ZSTD), the
-lzo kernel module becomes unused, while still having to be built/loaded.
+On Mon 07-12-20 16:12:50, Joonsoo Kim wrote:
+> On Fri, Dec 04, 2020 at 12:50:56PM -0500, Pavel Tatashin wrote:
+> > > > Yes, this indeed could be a problem for some configurations. I will
+> > > > add your comment to the commit log of one of the patches.
+> > >
+> > > It sounds like there is some inherent tension here, breaking THP's
+> > > when doing pin_user_pages() is a really nasty thing to do. DMA
+> > > benefits greatly from THP.
+> > >
+> > > I know nothing about ZONE_MOVABLE, is this auto-setup or an admin
+> > > option? If the result of this patch is standard systems can no longer
+> > > pin > 80% of their memory I have some regression concerns..
+> > 
+> > ZONE_MOVABLE can be configured via kernel parameter, or when memory
+> > nodes are onlined after hot-add; so this is something that admins
+> > configure. ZONE_MOVABLE is designed to gurantee memory hot-plug
+> 
+> Just note, the origin of ZONE_MOVABLE is to provide availability of
+> huge page, especially, hugetlb page. AFAIK, not guarantee memory
+> hot-plug. See following commit that introduces the ZONE_MOVABLE.
+> 
+> 2a1e274 Create the ZONE_MOVABLE zone
+> 
+> > functionality, and not availability of THP, however, I did not know
+> > about the use case where some admins might configure ZONE_MOVABLE to
+> 
+> The usecase is lightly mentioned in previous discussion.
+> 
+> http://lkml.kernel.org/r/alpine.DEB.2.23.453.2011221300100.2830030@chino.kir.corp.google.com
+> 
+> Anyway, I agree with your other arguments and this patchset.
 
-This patch removes the hardcoded lzo-rle dependency and allows the user to
-select the default compression algorithm for zram at build time. The previous
-behaviour is kept, as the default algorithm is still lzo-rle.
+Yes, historically the original motivation for the movable zone was to
+help creating large pages via compaction. I also do remember Mel
+not being particularly happy about that.
 
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Suggested-by: Minchan Kim <minchan@kernel.org>
-Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
----
-v7: rebase against 5.10-rc7 and fix unmet direct dependencies, as reported by
-Stephen Rothwell on linux-next.
-v6: simplify the kconfig as per Minchan's suggestion.
-v5: incorporate Minchan's feedback. Allow the user to choose a default algorithm.
-v4: incorporate Sergey's feedback and fix a small typo.
-v3: fix the default selection when lzo isn't present. Rebase against 5.10-rc1.
-v2: fix the dependency on CRYPTO.
+The thing is that the movability constrain is just too strict for this
+usecases because the movable zone, especially a lot of it, might be
+causing similar to lowmem/highmem problems very well known from 32b
+world. So an admin had to be always very careful when configuring to not
+cause zone pressure problems.
 
-I had to change CRYPTO_LZO from "select" to "depends on", since it had the
-unfortunate effect of causing unmet direct dependencies on some kernel
-configurations. This also means at least one supported compression algorithm
-must be selected in order for the zram block device to appear on the menu,
-which isn't the perfect solution I'd hoped for, but it works for me (and make
-oldconfig doesn't break existing configurations).
+Later on, with a higher demand on the memory hotplug - especially the
+hotremove usecases - it has become clear that the only reliable way for
+the memory offlining is to rule out any unmovable memory out of the way
+and that is why a rather strong properly of movable zone was relied on.
 
- drivers/block/zram/Kconfig    | 42 ++++++++++++++++++++++++++++++++++-
- drivers/block/zram/zcomp.c    |  2 ++
- drivers/block/zram/zram_drv.c |  2 +-
- 3 files changed, 44 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-index fe7a4b7d30cf..668c6bf2554d 100644
---- a/drivers/block/zram/Kconfig
-+++ b/drivers/block/zram/Kconfig
-@@ -2,7 +2,7 @@
- config ZRAM
- 	tristate "Compressed RAM block device support"
- 	depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
--	select CRYPTO_LZO
-+	depends on CRYPTO_LZO || CRYPTO_ZSTD || CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842
- 	help
- 	  Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
- 	  Pages written to these disks are compressed and stored in memory
-@@ -14,6 +14,46 @@ config ZRAM
- 
- 	  See Documentation/admin-guide/blockdev/zram.rst for more information.
- 
-+choice
-+	prompt "Default zram compressor"
-+	default ZRAM_DEF_COMP_LZORLE
-+	depends on ZRAM
-+
-+config ZRAM_DEF_COMP_LZORLE
-+	bool "lzo-rle"
-+	depends on CRYPTO_LZO
-+
-+config ZRAM_DEF_COMP_ZSTD
-+	bool "zstd"
-+	depends on CRYPTO_ZSTD
-+
-+config ZRAM_DEF_COMP_LZ4
-+	bool "lz4"
-+	depends on CRYPTO_LZ4
-+
-+config ZRAM_DEF_COMP_LZO
-+	bool "lzo"
-+	depends on CRYPTO_LZO
-+
-+config ZRAM_DEF_COMP_LZ4HC
-+	bool "lz4hc"
-+	depends on CRYPTO_LZ4HC
-+
-+config ZRAM_DEF_COMP_842
-+	bool "842"
-+	depends on CRYPTO_842
-+
-+endchoice
-+
-+config ZRAM_DEF_COMP
-+	string
-+	default "lzo-rle" if ZRAM_DEF_COMP_LZORLE
-+	default "zstd" if ZRAM_DEF_COMP_ZSTD
-+	default "lz4" if ZRAM_DEF_COMP_LZ4
-+	default "lzo" if ZRAM_DEF_COMP_LZO
-+	default "lz4hc" if ZRAM_DEF_COMP_LZ4HC
-+	default "842" if ZRAM_DEF_COMP_842
-+
- config ZRAM_WRITEBACK
-        bool "Write back incompressible or idle page to backing device"
-        depends on ZRAM
-diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-index 33e3b76c4fa9..052aa3f65514 100644
---- a/drivers/block/zram/zcomp.c
-+++ b/drivers/block/zram/zcomp.c
-@@ -15,8 +15,10 @@
- #include "zcomp.h"
- 
- static const char * const backends[] = {
-+#if IS_ENABLED(CONFIG_CRYPTO_LZO)
- 	"lzo",
- 	"lzo-rle",
-+#endif
- #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
- 	"lz4",
- #endif
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 1b697208d661..9ddccb968c68 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -42,7 +42,7 @@ static DEFINE_IDR(zram_index_idr);
- static DEFINE_MUTEX(zram_index_mutex);
- 
- static int zram_major;
--static const char *default_compressor = "lzo-rle";
-+static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
- 
- /* Module params (documentation at end) */
- static unsigned int num_devices = 1;
+In the end we are in two rather different requirements here. One for
+optimization and one for correctness. In this case I would much rather
+focus on the correctness aspect.
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
