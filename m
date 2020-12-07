@@ -2,282 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C692D1822
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869602D182A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgLGSD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:03:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGSD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:03:56 -0500
-Date:   Mon, 7 Dec 2020 19:04:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607364195;
-        bh=cdncNQlGx8LZ7KThf9OhurJKjQdHVQEX2+x8+UQX9Uk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VcUqI+OBnU1mCoyllz9YklaRcjFZxGKLEKdvcsb8DvmLxJHEQaRQf+oqIBNk6KMlS
-         Wn4zkWLYlbYeja0i6sPyxB31odLbRKBKneLbQKXLMBcA/2up89sK4HnJjBTpl/vqOb
-         pqUmkFQbmXb9z95x4p0XP1wwj9kmRPsv+LPWdwQY=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v13 1/3] scsi: ufs: Introduce HPB feature
-Message-ID: <X85uqapxck6tfrgQ@kroah.com>
-References: <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
- <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p2>
- <1796371666.41604379003890.JavaMail.epsvc@epcpadp3>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1796371666.41604379003890.JavaMail.epsvc@epcpadp3>
+        id S1726422AbgLGSFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLGSFf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 13:05:35 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B5FC061285
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 10:04:48 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c79so10829691pfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 10:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=kbV3WSMn8Z3r9fdGwZbCofxQ8ZlQoCXfrnC4rA/3kXU=;
+        b=BvSGPkk1XV51HulmhP09dGtC50Mqu3r9NSlD6Rtp/fEgFbKCUYHJxoiQ/Lw026a8eV
+         8pkollCNLgLs0UCVhW4o6brcgbS7lvxuFZaOmJ+LJEDtCq8YuLMMQZrtArDfIaA4qRjK
+         1rYEF7M/0093Uw/TQm30akYxGr+J8KFgSt2kBgvDwZmhZx7l1TrKcKnw/BLb64ju6OEZ
+         7uNmPHrSbOS4KEe61x/bBDbhbX48C3Z5YfVlyWUBeqc96naM8cDULIA2yeOq4vSQjPXK
+         LnXlIyvD6dTz28bK9V8o5Ko8tRYCjDgrUKZ2yxSAi3weyMM2+TT4+dd//sg+88u0Yyhh
+         csoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=kbV3WSMn8Z3r9fdGwZbCofxQ8ZlQoCXfrnC4rA/3kXU=;
+        b=n7OkgKUNFWLHnR4tB53NaeVaYM5NmLCjs2MuvvVOrUD114kgQziKB2ewMo4VGo1Pdo
+         GAiIoQFx1yUN09KZtCg7XgzVNR5DyZRzDymnAe9XKFHR64CcRSWe7kxcA8CkP03HaEhE
+         JdPcjebigXE4WJJxBZJHbAaHkyA+xjbXr9UhcD0vrklezzmTMYInV71GYmpSYIx3bKG1
+         SfjRtRgzJPx2YRsPxv+MNR5hjrwoVyRflHuJOw5XYslsnjy9G9kWUntnekVWA/usIW6t
+         i0t8jeCHA0C1YAnX2K7TYWvnkHx/M/93nX9kQJ7W2KsFka1aY/2aeXZeGKbJLQVjle0c
+         SEVQ==
+X-Gm-Message-State: AOAM530Pyu/wfM1zYdXD8wEEv4Y72/H6mXZnz3cx1QwM3wFWEMUIHnxC
+        r8miW6i8J3/rVNCxSPCCTBQl+g==
+X-Google-Smtp-Source: ABdhPJwV3xytw1x+Of85bMOMEIGarLom/VlHMSxobmAAr7XDbFmck2N5F2W7tVz+G+34gQVIMGV2aQ==
+X-Received: by 2002:a62:1c88:0:b029:197:f6e4:bc2b with SMTP id c130-20020a621c880000b0290197f6e4bc2bmr17027674pfc.6.1607364287776;
+        Mon, 07 Dec 2020 10:04:47 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:4be:8206:69d7:62c1? ([2601:646:c200:1ef2:4be:8206:69d7:62c1])
+        by smtp.gmail.com with ESMTPSA id x1sm15247910pfj.95.2020.12.07.10.04.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 10:04:47 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Date:   Mon, 7 Dec 2020 10:04:45 -0800
+Message-Id: <885C1725-B479-47F6-B08D-A7181637A80A@amacapital.net>
+References: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+In-Reply-To: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 01:46:23PM +0900, Daejun Park wrote:
-> This is a patch for the HPB feature.
-> This patch adds HPB function calls to UFS core driver.
 
-Ok, I asked if there was anything left to do, and I see some stuff here.
+> On Dec 7, 2020, at 9:00 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>=20
+> =EF=BB=BFOn Mon, 2020-12-07 at 08:53 -0800, Andy Lutomirski wrote:
+>>>> On Dec 7, 2020, at 8:38 AM, Thomas Gleixner <tglx@linutronix.de> wrote:=
 
-First off, this changelog is really really sparse.  It needs to be much
-more detailed, saying what HPB is, where in the specification it is
-defined, and why Linux needs to support it.
+>>>=20
+>>> =EF=BB=BFOn Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
+>>>>> On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
+>>>>> =46rom a timekeeping POV and the guests expectation of TSC this is
+>>>>> fundamentally wrong:
+>>>>>=20
+>>>>>     tscguest =3D scaled(hosttsc) + offset
+>>>>>=20
+>>>>> The TSC has to be viewed systemwide and not per CPU. It's systemwide
+>>>>> used for timekeeping and for that to work it has to be synchronized.=20=
 
-Please fill all of that out, otherwise people that do not follow UFS do
-not know what this is.
+>>>>>=20
+>>>>> Why would this be different on virt? Just because it's virt or what?=20=
 
+>>>>>=20
+>>>>> Migration is a guest wide thing and you're not migrating single vCPUs.=
 
-> 
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> Acked-by: Avri Altman <Avri.Altman@wdc.com>
-> Tested-by: Bean Huo <beanhuo@micron.com>
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->  drivers/scsi/ufs/Kconfig     |   9 +
->  drivers/scsi/ufs/Makefile    |   1 +
->  drivers/scsi/ufs/ufs-sysfs.c |  18 ++
->  drivers/scsi/ufs/ufs.h       |  13 +
->  drivers/scsi/ufs/ufshcd.c    |  48 +++
->  drivers/scsi/ufs/ufshcd.h    |  23 +-
->  drivers/scsi/ufs/ufshpb.c    | 583 +++++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufshpb.h    | 167 ++++++++++
->  8 files changed, 861 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/scsi/ufs/ufshpb.c
->  create mode 100644 drivers/scsi/ufs/ufshpb.h
-> 
-> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-> index dcdb4eb1f90b..fd1cf7bc0eca 100644
-> --- a/drivers/scsi/ufs/Kconfig
-> +++ b/drivers/scsi/ufs/Kconfig
-> @@ -181,3 +181,12 @@ config SCSI_UFS_CRYPTO
->  	  Enabling this makes it possible for the kernel to use the crypto
->  	  capabilities of the UFS device (if present) to perform crypto
->  	  operations on data being transferred to/from the device.
-> +
-> +config SCSI_UFS_HPB
-> +	bool "Support UFS Host Performance Booster"
-> +	depends on SCSI_UFSHCD
-> +	help
-> +	  The UFS HPB feature improves random read performance. It caches
-> +	  L2P (logical to physical) map of UFS to host DRAM. The driver uses HPB
-> +	  read command by piggybacking physical page number for bypassing FTL (flash
-> +	  translation layer)'s L2P address translation.
-> diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-> index 4679af1b564e..663e17cee359 100644
-> --- a/drivers/scsi/ufs/Makefile
-> +++ b/drivers/scsi/ufs/Makefile
-> @@ -11,6 +11,7 @@ obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
->  ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
->  ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
->  ufshcd-core-$(CONFIG_SCSI_UFS_CRYPTO) += ufshcd-crypto.o
-> +ufshcd-core-$(CONFIG_SCSI_UFS_HPB) += ufshpb.o
->  obj-$(CONFIG_SCSI_UFSHCD_PCI) += ufshcd-pci.o
->  obj-$(CONFIG_SCSI_UFSHCD_PLATFORM) += ufshcd-pltfrm.o
->  obj-$(CONFIG_SCSI_UFS_HISI) += ufs-hisi.o
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-> index bdcd27faa054..6ccda6e57c7f 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> @@ -284,6 +284,8 @@ UFS_DEVICE_DESC_PARAM(device_version, _DEV_VER, 2);
->  UFS_DEVICE_DESC_PARAM(number_of_secure_wpa, _NUM_SEC_WPA, 1);
->  UFS_DEVICE_DESC_PARAM(psa_max_data_size, _PSA_MAX_DATA, 4);
->  UFS_DEVICE_DESC_PARAM(psa_state_timeout, _PSA_TMT, 1);
-> +UFS_DEVICE_DESC_PARAM(hpb_version, _HPB_VER, 2);
-> +UFS_DEVICE_DESC_PARAM(hpb_control, _HPB_CONTROL, 1);
->  UFS_DEVICE_DESC_PARAM(ext_feature_sup, _EXT_UFS_FEATURE_SUP, 4);
->  UFS_DEVICE_DESC_PARAM(wb_presv_us_en, _WB_PRESRV_USRSPC_EN, 1);
->  UFS_DEVICE_DESC_PARAM(wb_type, _WB_TYPE, 1);
-> @@ -316,6 +318,8 @@ static struct attribute *ufs_sysfs_device_descriptor[] = {
->  	&dev_attr_number_of_secure_wpa.attr,
->  	&dev_attr_psa_max_data_size.attr,
->  	&dev_attr_psa_state_timeout.attr,
-> +	&dev_attr_hpb_version.attr,
-> +	&dev_attr_hpb_control.attr,
+>>>>>=20
+>>>>> This hackery just papers over he underlying design fail that KVM looks=
 
-You add a bunch of new sysfs attributes, but I do not see any
-Documentation/ABI/ entries for them.  Why not?  Those are required for
-any new sysfs files added to the kernel.  Please fix that up when you
-resend this.
+>>>>> at the TSC per vCPU which is the root cause and that needs to be fixed=
+.
+>>>>=20
+>>>> I don't disagree with you.
+>>>> As far as I know the main reasons that kvm tracks TSC per guest are
+>>>>=20
+>>>> 1. cases when host tsc is not stable=20
+>>>> (hopefully rare now, and I don't mind making
+>>>> the new API just refuse to work when this is detected, and revert to ol=
+d way
+>>>> of doing things).
+>>>=20
+>>> That's a trainwreck to begin with and I really would just not support it=
 
-> --- /dev/null
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -0,0 +1,583 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>> for anything new which aims to be more precise and correct.  TSC has
+>>> become pretty reliable over the years.
+>>>=20
+>>>> 2. (theoretical) ability of the guest to introduce per core tsc offfset=
 
-Do you really mean "or later"?  I have to ask, sorry.
+>>>> by either using TSC_ADJUST (for which I got recently an idea to stop
+>>>> advertising this feature to the guest), or writing TSC directly which
+>>>> is allowed by Intel's PRM:
+>>>=20
+>>> For anything halfways modern the write to TSC is reflected in TSC_ADJUST=
 
-> +/*
-> + * Universal Flash Storage Host Performance Booster
-> + *
-> + * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
+>>> which means you get the precise offset.
+>>>=20
+>>> The general principle still applies from a system POV.
+>>>=20
+>>>    TSC base (systemwide view) - The sane case
+>>>=20
+>>>    TSC CPU  =3D TSC base + TSC_ADJUST
+>>>=20
+>>> The guest TSC base is a per guest constant offset to the host TSC.
+>>>=20
+>>>    TSC guest base =3D TSC host base + guest base offset
+>>>=20
+>>> If the guest want's this different per vCPU by writing to the MSR or to
+>>> TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which=
 
-This has not been touched since 2018?  I somehow doubt that :(
+>>> is the offset to the TSC base of the guest.
+>>=20
+>> How about, if the guest wants to write TSC_ADJUST, it can turn off all pa=
+ravirt features and keep both pieces?
+>>=20
+>=20
+> This is one of the things I had in mind recently.
+>=20
+> Even better, we can stop advertising TSC_ADJUST in CPUID to the guest=20
+> and forbid it from writing it at all.
 
+Seems reasonable to me.
 
-> +static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
-> +				     struct ufshpb_lu *hpb,
-> +				     struct ufshpb_dev_info *hpb_dev_info,
-> +				     struct ufshpb_lu_info *hpb_lu_info)
-> +{
-> +	u32 entries_per_rgn;
-> +	u64 rgn_mem_size, tmp;
-> +
-> +	hpb->lu_pinned_start = hpb_lu_info->pinned_start;
-> +	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
-> +		(hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
-> +		: PINNED_NOT_SET;
-> +
-> +	rgn_mem_size = (1ULL << hpb_dev_info->rgn_size) * HPB_RGN_SIZE_UNIT
-> +			* HPB_ENTRY_SIZE;
-> +	do_div(rgn_mem_size, HPB_ENTRY_BLOCK_SIZE);
-> +	hpb->srgn_mem_size = (1ULL << hpb_dev_info->srgn_size)
-> +		* HPB_RGN_SIZE_UNIT / HPB_ENTRY_BLOCK_SIZE * HPB_ENTRY_SIZE;
-> +
-> +	tmp = rgn_mem_size;
-> +	do_div(tmp, HPB_ENTRY_SIZE);
-> +	entries_per_rgn = (u32)tmp;
-> +	hpb->entries_per_rgn_shift = ilog2(entries_per_rgn);
-> +	hpb->entries_per_rgn_mask = entries_per_rgn - 1;
-> +
-> +	hpb->entries_per_srgn = hpb->srgn_mem_size / HPB_ENTRY_SIZE;
-> +	hpb->entries_per_srgn_shift = ilog2(hpb->entries_per_srgn);
-> +	hpb->entries_per_srgn_mask = hpb->entries_per_srgn - 1;
-> +
-> +	tmp = rgn_mem_size;
-> +	do_div(tmp, hpb->srgn_mem_size);
-> +	hpb->srgns_per_rgn = (int)tmp;
-> +
-> +	hpb->rgns_per_lu = DIV_ROUND_UP(hpb_lu_info->num_blocks,
-> +				entries_per_rgn);
-> +	hpb->srgns_per_lu = DIV_ROUND_UP(hpb_lu_info->num_blocks,
-> +				(hpb->srgn_mem_size / HPB_ENTRY_SIZE));
-> +
-> +	hpb->pages_per_srgn = DIV_ROUND_UP(hpb->srgn_mem_size, PAGE_SIZE);
-> +
-> +	dev_info(hba->dev, "ufshpb(%d): region memory size - %llu (bytes)\n",
-> +		 hpb->lun, rgn_mem_size);
-> +	dev_info(hba->dev, "ufshpb(%d): subregion memory size - %u (bytes)\n",
-> +		 hpb->lun, hpb->srgn_mem_size);
-> +	dev_info(hba->dev, "ufshpb(%d): total blocks per lu - %d\n",
-> +		 hpb->lun, hpb_lu_info->num_blocks);
-> +	dev_info(hba->dev, "ufshpb(%d): subregions per region - %d, regions per lu - %u\n",
-> +		 hpb->lun, hpb->srgns_per_rgn, hpb->rgns_per_lu);
+It also seems okay for some MSRs to stop working after the guest enabled new=
+ PV timekeeping.
 
-Why all the kernel log spam for when things are working?  Shouldn't
-drivers, if all is working properly, be totally silent?  Who will do
-anything with this?  Worst case, make it dev_dbg(), right?
+I do have a feature request, though: IMO it would be quite nifty if the new k=
+vmclock structure could also expose NTP corrections. In other words, if you c=
+ould expose enough info to calculate CLOCK_MONOTONIC_RAW, CLOCK_MONOTONIC, a=
+nd CLOCK_REALTIME, then we could have paravirt NTP.
 
-> +/* SYSFS functions */
-> +#define ufshpb_sysfs_attr_show_func(__name)				\
-> +static ssize_t __name##_show(struct device *dev,			\
-> +	struct device_attribute *attr, char *buf)			\
-> +{									\
-> +	struct scsi_device *sdev = to_scsi_device(dev);			\
-> +	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);		\
-> +									\
-> +	if (!hpb)							\
-> +		return -ENOENT;						\
-
-How can this ever be true?
-
-> +	return snprintf(buf, PAGE_SIZE, "%d\n",				\
-> +			atomic_read(&hpb->stats.__name));		\
-
-sysfs_emit() is nicer to use now, please use that.
-
-And why are your stats atomic variables?  That feels like a waste and a
-slow-down just for debugging stuff.  What's wrong with a simple u64?
-
-> +void ufshpb_reset_host(struct ufs_hba *hba)
-> +{
-> +	struct ufshpb_lu *hpb;
-> +	struct scsi_device *sdev;
-> +
-> +	dev_dbg(hba->dev, "ufshpb run reset_host\n");
-
-This is what ftrace is for, no need for this here, or in many other
-places you have added it, please remove.
-
-> +void ufshpb_remove(struct ufs_hba *hba)
-> +{
-> +}
-
-An empty remove function?  Are you _SURE_ that is ok?  That always is a
-huge red flag to me...
-
-> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> new file mode 100644
-> index 000000000000..6fa5db94bcae
-> --- /dev/null
-> +++ b/drivers/scsi/ufs/ufshpb.h
-> @@ -0,0 +1,167 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-
-Same license question as before.
-
-> +/*
-> + * Universal Flash Storage Host Performance Booster
-> + *
-> + * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
-
-Again, date?
-
-> + *
-> + * Authors:
-> + *	Yongmyung Lee <ymhungry.lee@samsung.com>
-> + *	Jinyoung Choi <j-young.choi@samsung.com>
-> + */
-> +
-> +#ifndef _UFSHPB_H_
-> +#define _UFSHPB_H_
-> +
-> +/* hpb response UPIU macro */
-> +#define HPB_RSP_NONE				0x0
-> +#define	HPB_RSP_REQ_REGION_UPDATE		0x1
-
-Why a tab after "define" on only 1 line?
-
-thanks,
-
-greg k-h
+Bonus points if whatever you do for CLOCK_REALTIME also exposes leap seconds=
+ in a race free way :). But I suppose that just exposing TAI and letting the=
+ guest deal with the TAI - UTC offset itself would get the job done just fin=
+e.
