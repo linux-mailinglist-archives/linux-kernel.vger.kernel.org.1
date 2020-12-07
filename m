@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE182D0D65
+	by mail.lfdr.de (Postfix) with ESMTP id E98112D0D67
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgLGJvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        id S1726677AbgLGJwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgLGJvu (ORCPT
+        with ESMTP id S1725852AbgLGJwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:51:50 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428CEC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:51:10 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id w79so914100qkb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:51:10 -0800 (PST)
+        Mon, 7 Dec 2020 04:52:12 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758F6C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:51:32 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id a16so18592191ejj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VR9ccj3VZSQzXddm6nlHnfILAXhosyXfLldvzBYO/DY=;
-        b=u15bSG0X1jXZKkUKPXr4OSV5mRVqrVENiAIEb/4bZwToS7erDlBOdigOMm5wl8RQYK
-         Up+j+FNcq0ay82L1iUexGikTW9ujx9BNGzSlyD2XFRIRbwfqO5dk0tyA2LGXy+cI8DIT
-         qkq7PQ6C+q91BC6V7NEkUaVV0xFWsM/gvQXgxgAx4Vg42S7VzgDhCkNL/QiT1a9Ycgm5
-         pDrAFrObzsTTMlEpEtFr7dakHdDEbhSDghSwEo3kAPjO8N2KI/p6DdStsyYV+JJmD6dh
-         /icY7bqV+aBlVklxdBzwLlB0iwF1u5B7sK6X+KwpZlFT/D2oa+opCBqkcLhiKAMKk9X+
-         tv4w==
+        bh=aDproOdcsujjsvAHCgcoIw5qD1NH0yafrww5RZ0rAYo=;
+        b=v/lPNlrI+spy8ENH+siV8TRv9D/gzdb+wn2WpEVq6QujJsT6lP3ViRFQCgOYnAyaVP
+         ouWFjVkBONwwhwcCZGEdxrTB9FPe4ts2NOCY1MuH6bM0Q/ujet6Rf0hJJDbuJDXBqRCA
+         K1dXDnGLuoEsGh2mZq9xWwR1hQTcnlM/s6YDFRPJxbInvrXgi5WaKnwOi1MVind3zo3R
+         AOaDclMHK91OSLU/fNgjh3Tni2jA8UJ91hmcRsC4JfprD4Kd1b6pSOqSXDr0UxMSqolC
+         Jn3BPaYleMhQmUfQ0afwo9/u53/EzPZnq96+BoUThWLAVE8Oz6Eoc5vVFWvyAwWm//0K
+         UvGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VR9ccj3VZSQzXddm6nlHnfILAXhosyXfLldvzBYO/DY=;
-        b=eA6fUEinGRw/UON7V++2rAJyiuvafMMcbCGQ5xZBzDW/jC3I8+qaEg5UdNRR0vJr/F
-         3lATuTpbLFdHjOLe4d79Lw6DkjEsVa1QU5iA76/2IUpuY8dhB4iz/Z5NIGxB6tWwYwSW
-         0K3IL6gwFvtkz8bXwRkjuNdvwZRBzcYBXI4lsC0O76NbspDa1RRGEbfl5lJaMO0VM8FG
-         x2HRocdafqmh4NBr/VqD+KcbBdbf/ihMlu++pR3PuJvsK1aiI4SCeaRZSNa1rKfvmjcq
-         hIbdkJVd1b+avwdj/y+xnaacVjZTHnjw6vdbdV9Q5oHdHl4h0CJV43/+XNhbTF1OExGm
-         PVgw==
-X-Gm-Message-State: AOAM532dkvrlOSsCJ/xM/P794AtvxmBw1Gul9yN1KltkQyZ8alIMcYQN
-        v/f5tFSAXNncVf5938GYYdyDa/WAvgZ0gpn5htCk8w==
-X-Google-Smtp-Source: ABdhPJyeX5PDWFLgbYSZU1JT0BNzdVw8jgRVtz7EdtF+safLiBICjtFMUcoU+XhYCGM//ibi5Ta4pCnsmQCuJK1KaTI=
-X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr23807360qkm.231.1607334669170;
- Mon, 07 Dec 2020 01:51:09 -0800 (PST)
+        bh=aDproOdcsujjsvAHCgcoIw5qD1NH0yafrww5RZ0rAYo=;
+        b=lG27MFIDF9jIH73lE4ooKq4xOKu2Zj4l01sxCsH3inZPzQnV3CNGshPRHjSqv2VkjW
+         FF+mjdB1tbuSWIqGnRXlIgI8lUDiSpcWu6n9+TuLhPAklZ7vqFMdgyIxL70TwGA8DaKF
+         Tu7YaxJ0x+szGiHEZy7djFGAxViiFIu9S4H7NtH66DuKDtZ+aWCYPFJNgSSdEo4Mt7Qq
+         oDvSk3CD5CA5rPiT+jdPN8IFcGDb9hMJQgOSNECDty1/oiITPoSnTwG8481cHnPqU0Fu
+         fGiZaZF3LeHIzKba54adSqk7U1c3CPU49BXs/SNo2lAfx9WpCKXkzWABvFJUWN2vnBKc
+         4USQ==
+X-Gm-Message-State: AOAM530fUoqKCUQMsZ9fYMRuSaHc33SiUoFDq+EK9GtDoqlOzx79U2AI
+        TmzKm3u6p4X43Tv8fw+9yMQ9Ky1I2GQokIlEHr8xZ1IEgRs=
+X-Google-Smtp-Source: ABdhPJypxapTmTppqyHWf55vXCBIa6VWMormBWGK9JMx9Vm58ZVC0/zo0o12BxOItlzJ1ETzsPcPHwClAB/hOa8qJCg=
+X-Received: by 2002:a17:907:2179:: with SMTP id rl25mr17804481ejb.470.1607334691230;
+ Mon, 07 Dec 2020 01:51:31 -0800 (PST)
 MIME-Version: 1.0
-References: <0000000000002ae6eb05b3bd420c@google.com> <000000000000e0aa9a05b5dc86cb@google.com>
-In-Reply-To: <000000000000e0aa9a05b5dc86cb@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Dec 2020 10:50:57 +0100
-Message-ID: <CACT4Y+YnN6dnvfyfTizEbvSuBG2bqhD5n46AYSiTmLmmOQcFkg@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in btrfs_scan_one_device
-To:     syzbot <syzbot+c4b1e5278d93269fd69c@syzkaller.appspotmail.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
-        dsterba@suse.com, johannes.thumshirn@wdc.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <20201205231449.610980-1-alexandre.belloni@bootlin.com>
+In-Reply-To: <20201205231449.610980-1-alexandre.belloni@bootlin.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 7 Dec 2020 10:51:20 +0100
+Message-ID: <CAMpxmJVd7NrCQMq99iGLj7BsKooK0B5qNz3iEE=sPri90zdEAw@mail.gmail.com>
+Subject: Re: [PATCH] rtc: fix RTC removal
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 10:34 AM syzbot
-<syzbot+c4b1e5278d93269fd69c@syzkaller.appspotmail.com> wrote:
+On Sun, Dec 6, 2020 at 12:14 AM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
+> Since the rtc_register_device, removing an RTC device will end with a
+> refcount_t: underflow; use-after-free warning since put_device is called
+> twice in the device tear down path.
 >
-> commit 0697d9a610998b8bdee6b2390836cb2391d8fd1a
-> Author: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Date:   Wed Nov 18 09:03:26 2020 +0000
+> Fixes: fdcfd854333b ("rtc: rework rtc_register_device() resource management")
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
+>  drivers/rtc/class.c | 1 -
+>  1 file changed, 1 deletion(-)
 >
->     btrfs: don't access possibly stale fs_info data for printing duplicate device
+> diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+> index e6b44b7c4ad3..5c6748dfa55d 100644
+> --- a/drivers/rtc/class.c
+> +++ b/drivers/rtc/class.c
+> @@ -335,7 +335,6 @@ static void devm_rtc_unregister_device(void *data)
+>         cdev_device_del(&rtc->char_dev, &rtc->dev);
+>         rtc->ops = NULL;
+>         mutex_unlock(&rtc->ops_lock);
+> -       put_device(&rtc->dev);
+>  }
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10fb0d9b500000
-> start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e791ddf0875adf65
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c4b1e5278d93269fd69c
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16296f5c500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1614e746500000
+>  static void devm_rtc_release_device(void *res)
+> --
+> 2.28.0
 >
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: btrfs: don't access possibly stale fs_info data for printing duplicate device
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-#syz fix:
-btrfs: don't access possibly stale fs_info data for printing duplicate device
+Eek! Thanks for fixing that.
+
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
