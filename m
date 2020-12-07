@@ -2,164 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8097B2D16A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4752D16BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgLGQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:43:31 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33849 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGQna (ORCPT
+        id S1727771AbgLGQqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:46:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43561 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725804AbgLGQqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:43:30 -0500
-Received: by mail-ot1-f68.google.com with SMTP id h19so13066742otr.1;
-        Mon, 07 Dec 2020 08:43:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFlvQN+PdkdlNAjwkdSFmc/z0KRhFnG4zyN2I5c1VZY=;
-        b=o7felVCKA+XYceV3sf/YecLOZ4WdBVH2eX0oSZvfolQ0vl2UN0gkf9JyX6LlCPGcJR
-         ZMFimkDG/Ef56vzP970wWPmWYyVBKs78vkziKlLbDCCOriAa6Q8om8pAdx6PWcYcrnOu
-         dci0RARoJZo6yU64xEmECOmxVap08L9HBaWi+OcxjNM1sEuMr+swWNVQF8Up+kD+Qf8A
-         3Xg+6RGXAMNxGlawCzWcKrywP4Eag4flRX0Cv5SAZFqkDndW6z55A7JHZtAl/sn9l7HH
-         zqvSnnvIk81PRhotOf+unvdLwRJxgP4aGAm4zb9Elhw8mTc2OXYTwDXrS2yn9OGKAsRh
-         HPNg==
-X-Gm-Message-State: AOAM53376WckiBEWbV1CqyZy/7cxCJORbta1yRLTL4XrlCRGFjvk1hav
-        U6ue6L5WUBDJzQiaGfl8SS8XmExXcA==
-X-Google-Smtp-Source: ABdhPJxLzMXfffs9sVwLUZQlyBgmKmK9vxHjiv008VNzfjweUiASreG9xwjpTKq67uv0l6MHRlfn+Q==
-X-Received: by 2002:a9d:38e:: with SMTP id f14mr1134475otf.201.1607359369473;
-        Mon, 07 Dec 2020 08:42:49 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y18sm2686328ooj.20.2020.12.07.08.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:42:48 -0800 (PST)
-Received: (nullmailer pid 411198 invoked by uid 1000);
-        Mon, 07 Dec 2020 16:42:47 -0000
-Date:   Mon, 7 Dec 2020 10:42:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     lee.jones@linaro.org, cy_huang@richtek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] backlight: rt4831: Adds DT binding document for
- Richtek RT4831 backlight
-Message-ID: <20201207164247.GB398093@robh.at.kernel.org>
-References: <1607011595-13603-1-git-send-email-u0084500@gmail.com>
- <1607011595-13603-2-git-send-email-u0084500@gmail.com>
+        Mon, 7 Dec 2020 11:46:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607359477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UgdjE4fKcDjZBY/heUx1DQEDENSCD7DYWWLFE/GwBEg=;
+        b=AiaaUCVjHrh0hsEJDm7XD1DLKeFeODroWOcMEKElNocjWdD6QJiazBUI6e+XlMMrZPnGGr
+        F8O9ilw/PxpDF1ddAFb+1BEL4WknsTAl3iMl/P4/8yg5toi04zaRiuI7HZDq59d6oQgwBj
+        0JTOE9AJxHD1aKb4FGaFjtyH+5jzj9g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-xjKu7mQ6NxSw7npi5lgtfA-1; Mon, 07 Dec 2020 11:44:36 -0500
+X-MC-Unique: xjKu7mQ6NxSw7npi5lgtfA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C09D1922020;
+        Mon,  7 Dec 2020 16:44:34 +0000 (UTC)
+Received: from work-vm (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32D6A60C0F;
+        Mon,  7 Dec 2020 16:44:30 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 16:44:28 +0000
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Steven Price <steven.price@arm.com>, dgibson@redhat.com
+Cc:     Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+Message-ID: <20201207164428.GD3135@work-vm>
+References: <20201119153901.53705-1-steven.price@arm.com>
+ <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+ <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1607011595-13603-2-git-send-email-u0084500@gmail.com>
+In-Reply-To: <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:06:33AM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+* Steven Price (steven.price@arm.com) wrote:
+> On 07/12/2020 15:27, Peter Maydell wrote:
+> > On Mon, 7 Dec 2020 at 14:48, Steven Price <steven.price@arm.com> wrote:
+> > > Sounds like you are making good progress - thanks for the update. Have
+> > > you thought about how the PROT_MTE mappings might work if QEMU itself
+> > > were to use MTE? My worry is that we end up with MTE in a guest
+> > > preventing QEMU from using MTE itself (because of the PROT_MTE
+> > > mappings). I'm hoping QEMU can wrap its use of guest memory in a
+> > > sequence which disables tag checking (something similar will be needed
+> > > for the "protected VM" use case anyway), but this isn't something I've
+> > > looked into.
+> > 
+> > It's not entirely the same as the "protected VM" case. For that
+> > the patches currently on list basically special case "this is a
+> > debug access (eg from gdbstub/monitor)" which then either gets
+> > to go via "decrypt guest RAM for debug" or gets failed depending
+> > on whether the VM has a debug-is-ok flag enabled. For an MTE
+> > guest the common case will be guests doing standard DMA operations
+> > to or from guest memory. The ideal API for that from QEMU's
+> > point of view would be "accesses to guest RAM don't do tag
+> > checks, even if tag checks are enabled for accesses QEMU does to
+> > memory it has allocated itself as a normal userspace program".
 > 
-> Adds DT binding document for Richtek RT4831 backlight.
+> Sorry, I know I simplified it rather by saying it's similar to protected VM.
+> Basically as I see it there are three types of memory access:
 > 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
->  .../leds/backlight/richtek,rt4831-backlight.yaml   | 86 ++++++++++++++++++++++
->  1 file changed, 86 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-backlight.yaml
+> 1) Debug case - has to go via a special case for decryption or ignoring the
+> MTE tag value. Hopefully this can be abstracted in the same way.
 > 
-> diff --git a/Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-backlight.yaml b/Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-backlight.yaml
-> new file mode 100644
-> index 00000000..df1439a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/backlight/richtek,rt4831-backlight.yaml
-> @@ -0,0 +1,86 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/backlight/richtek,rt4831-backlight.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Richtek RT4831 Backlight
-> +
-> +maintainers:
-> +  - ChiYuan Huang <cy_huang@richtek.com>
-> +
-> +description: |
-> +  RT4831 is a mutifunctional device that can provide power to the LCD display
-> +  and LCD backlight.
-> +
-> +  For the LCD backlight, it can provide four channel WLED driving capability.
-> +  Each channel driving current is up to 30mA
-> +
-> +  Datasheet is available at
-> +  https://www.richtek.com/assets/product_file/RT4831A/DS4831A-05.pdf
-> +
-> +properties:
-> +  compatible:
-> +    const: richtek,rt4831-backlight
-> +
-> +  default-brightness:
-> +    description: |
-> +      The default brightness that applied to the system on start-up.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 2048
-> +
-> +  max-brightness:
-> +    description: |
-> +      The max brightness for the H/W limit
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 2048
-> +
-> +  richtek,pwm-enable:
-> +    description: |
-> +      Specify the backlight dimming following by PWM duty or by SW control.
-> +    type: boolean
-> +
-> +  richtek,bled-ovp-sel:
-> +    description: |
-> +      Backlight OVP level selection, currently support 17V/21V/25V/29V.
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    default: 1
-> +    minimum: 0
-> +    maximum: 3
-> +
-> +  richtek,channel-use:
-> +    description: |
-> +      Backlight LED channel to be used.
-> +      BIT 0/1/2/3 is used to indicate led channel 1/2/3/4 enable or disable.
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    minimum: 1
-> +    maximum: 15
-> +
-> +required:
-> +  - compatible
-> +  - richtek,channel-use
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/rt4831-backlight.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      rt4831@11 {
-> +        compatible = "richtek,rt4831";
-> +        reg = <0x11>;
-> +
-> +        backlight {
-> +          compatible = "richtek,rt4831-backlight";
-> +          default-brightness = <1024>;
-> +          max-brightness = <2048>;
-> +          richtek,bled-ovp-sel = /bits/ 8 <RT4831_BLOVPLVL_21V>;
-> +          richtek,channel-use = /bits/ 8 <RT4831_BLED_ALLCHEN>;
-> +        };
-> +      };
+> 2) Migration - for a protected VM there's likely to be a special method to
+> allow the VMM access to the encrypted memory (AFAIK memory is usually kept
+> inaccessible to the VMM). For MTE this again has to be special cased as we
+> actually want both the data and the tag values.
+> 
+> 3) Device DMA - for a protected VM it's usual to unencrypt a small area of
+> memory (with the permission of the guest) and use that as a bounce buffer.
+> This is possible with MTE: have an area the VMM purposefully maps with
+> PROT_MTE. The issue is that this has a performance overhead and we can do
+> better with MTE because it's trivial for the VMM to disable the protection
+> for any memory.
 
-Just do 1 complete example in the mfd binding.
+Those all sound very similar to the AMD SEV world;  there's the special
+case for Debug that Peter mentioned; migration is ...complicated and
+needs special case that's still being figured out, and as I understand
+Device DMA also uses a bounce buffer (and swiotlb in the guest to make
+that happen).
 
-> +    };
-> -- 
-> 2.7.4
+
+I'm not sure about the stories for the IBM hardware equivalents.
+
+Dave
+
+> The part I'm unsure on is how easy it is for QEMU to deal with (3) without
+> the overhead of bounce buffers. Ideally there'd already be a wrapper for
+> guest memory accesses and that could just be wrapped with setting TCO during
+> the access. I suspect the actual situation is more complex though, and I'm
+> hoping Haibo's investigations will help us understand this.
 > 
+> Thanks,
+> 
+> Steve
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
