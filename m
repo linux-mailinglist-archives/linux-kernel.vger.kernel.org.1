@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDA62D10DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818DA2D10DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgLGMtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:49:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51807 "EHLO
+        id S1726076AbgLGMtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:49:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35860 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgLGMtJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726035AbgLGMtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:49:09 -0500
+        Mon, 7 Dec 2020 07:49:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607345262;
+        s=mimecast20190719; t=1607345275;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gj9yTnv0pMQFcNLl2DqcFbB30RkjtniH8pQgiWQVvag=;
-        b=IaeCR2sJifCHM2pujPmFWEz6EpeBPm7k9VNo9UvcSTI9MwLj3n0diBsYBX/QV72prI3D7K
-        HoVF6w+vMxa1tbx4zuTxqLJW/OxKS/2SBCyW3KGnzUFimNB+funPB8krThmXHopVXh9GAZ
-        OXl2/QQLV7nZxkJ5MWL+e+k0LKsEB7M=
+        bh=pYipuZr0KAd/BhmaUO/qQb5XFs2sYSqccrlAuXRJ48w=;
+        b=fK33hkBouGZDbClF2qdS850Yu/ZugCcF/WIQUt4pgTF5qjozHuuc/UtufdwCQPX3x82hmC
+        +z4x1C9L74ezVt7+eoy6Sara19mToB70CcER8POjrYKaLmXbLpJ2cs7vhUTXosGOYOBqmu
+        Ee614Ptp4+Udmd0ErE4L+j8Nvx99/ck=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32--5iskghnOymQqZzHpw-H-w-1; Mon, 07 Dec 2020 07:47:38 -0500
-X-MC-Unique: -5iskghnOymQqZzHpw-H-w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-552--CPdcpaQPRy3huS1qcWC0g-1; Mon, 07 Dec 2020 07:47:53 -0500
+X-MC-Unique: -CPdcpaQPRy3huS1qcWC0g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 646D9800D55;
-        Mon,  7 Dec 2020 12:47:34 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 357EB5D9DE;
-        Mon,  7 Dec 2020 12:47:27 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v7 03/15] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-4-songmuchun@bytedance.com>
- <2ec1d360-c8c8-eb7b-2afe-b75ee61cfcea@redhat.com>
- <CAMZfGtVnw8aJWceLM1UerkAZzcjkObb-ZrCE_Jj6w3EUR=UN3Q@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <ebff035a-a32b-cd7b-f4c1-332ddc1ceaa4@redhat.com>
-Date:   Mon, 7 Dec 2020 13:47:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C665A809DC3;
+        Mon,  7 Dec 2020 12:47:51 +0000 (UTC)
+Received: from localhost (holly.tpb.lab.eng.brq.redhat.com [10.43.134.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8FBCA5D6B1;
+        Mon,  7 Dec 2020 12:47:49 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 13:47:49 +0100
+From:   Miroslav Lichvar <mlichvar@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 5/8] ntp: Make the RTC synchronization more reliable
+Message-ID: <20201207124749.GH2352378@localhost>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220542.062910520@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtVnw8aJWceLM1UerkAZzcjkObb-ZrCE_Jj6w3EUR=UN3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206220542.062910520@linutronix.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 13:42, Muchun Song wrote:
-> On Mon, Dec 7, 2020 at 8:19 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 30.11.20 16:18, Muchun Song wrote:
->>> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
->>> whether to enable the feature of freeing unused vmemmap associated
->>> with HugeTLB pages. And this is just for dependency check. Now only
->>> support x86.
->>
->> x86 - i386 and x86-64? (I assume the latter only ;) )
-> 
-> Yeah, you are right. Only the latter support SPARSEMEM_VMEMMAP.
-> 
->>
->>>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>> ---
->>>  arch/x86/mm/init_64.c |  2 +-
->>>  fs/Kconfig            | 14 ++++++++++++++
->>>  2 files changed, 15 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
->>> index 0a45f062826e..0435bee2e172 100644
->>> --- a/arch/x86/mm/init_64.c
->>> +++ b/arch/x86/mm/init_64.c
->>> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
->>>
->>>  static void __init register_page_bootmem_info(void)
->>>  {
->>> -#ifdef CONFIG_NUMA
->>> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->>>       int i;
->>>
->>
->> Why does this hunk belong into this patch? Looks like this should go
->> into another patch.
-> 
-> Of course can. But Mike suggests that it is better to use it when
-> introducing a new config. Because this config depends on
-> HAVE_BOOTMEM_INFO_NODE. And register_page_bootmem_info
-> is aimed to register bootmem info. So maybe it is reasonable from
-> this point of view. What is your opinion?
->
+On Sun, Dec 06, 2020 at 10:46:18PM +0100, Thomas Gleixner wrote:
+> Switch it to an hrtimer instead which schedules the actual update work. The
+> hrtimer will expire precisely (max 1 jiffie delay when high resolution
+> timers are not available). The actual scheduling delay of the work is the
+> same as before.
 
-Ah, I see. Maybe mention in the patch description, because the
-"Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP" part left me
-clueless. Stumbling over this change only left me rather clueless.
+It works well in my tests.
 
->>
->>>       for_each_online_node(i)
->>> diff --git a/fs/Kconfig b/fs/Kconfig
->>> index 976e8b9033c4..4961dd488444 100644
->>> --- a/fs/Kconfig
->>> +++ b/fs/Kconfig
->>> @@ -245,6 +245,20 @@ config HUGETLBFS
->>>  config HUGETLB_PAGE
->>>       def_bool HUGETLBFS
->>>
->>> +config HUGETLB_PAGE_FREE_VMEMMAP
->>> +     def_bool HUGETLB_PAGE
->>> +     depends on X86
->>> +     depends on SPARSEMEM_VMEMMAP
->>> +     depends on HAVE_BOOTMEM_INFO_NODE
->>> +     help
->>> +       When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
->>> +       memory from pre-allocated HugeTLB pages when they are not used.
->>> +       6 pages per 2MB HugeTLB page and 4094 per 1GB HugeTLB page.
->>
->> Calculations only apply to 4k base pages, no?
+> This becomes now:
 > 
-> No, if the base page is not 4k, we also can free 6 pages.
+>      if (ntp_synced() && !hrtimer_is_queued(&sync_hrtimer))
+>      	queue_work(system_power_efficient_wq, &sync_work, 0);
 > 
-> For example:
+> which is racy when the hrtimer has expired and the work is currently
+> executed and has not yet managed to rearm the hrtimer.
 > 
-> If the base page size is 64k, the PMD huge page size is 512MB. We also
+> Not a big problem as it just schedules work for nothing.
 
-Note that 2MB huge pages on arm64 with 64k base pages are possible as
-well. Also, I think powerpc always has 16MB huge pages, independent of
-base page sizes.
+No more unexpected updates of the RTC observed.
 
+Tested-by: Miroslav Lichvar <mlichvar@redhat.com>
 
--- 
 Thanks,
 
-David / dhildenb
+-- 
+Miroslav Lichvar
 
