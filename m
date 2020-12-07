@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B572D13A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1565D2D13AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgLGO1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:27:47 -0500
-Received: from mga11.intel.com ([192.55.52.93]:20779 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727020AbgLGO1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:27:45 -0500
-IronPort-SDR: lYOEijeGHiU/oWsYpT30vhGWnJm1NwTF/Y9cPzWm0dghL+hzVXjmbztOIVk7ajyq6u4sydcJoQ
- JkSLcN0qoFzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="170199928"
-X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
-   d="scan'208";a="170199928"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 06:27:04 -0800
-IronPort-SDR: 3u0qspbNL9RYOf+BUJACiaWzE7ayCppzCwNwALlmCV5ax3+/nR0LKLoxhzxEQ07XWXM9OnkLYf
- hguk2tqydGwg==
-X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
-   d="scan'208";a="363162186"
-Received: from hrong-mobl2.amr.corp.intel.com (HELO [10.212.14.53]) ([10.212.14.53])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 06:27:02 -0800
-Subject: Re: [NEEDS-REVIEW] [RFC PATCH] do_exit(): panic() recursion detected
-To:     Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <9d601a43-302a-7e26-15e7-53222b832faa@intel.com>
-Date:   Mon, 7 Dec 2020 06:27:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727330AbgLGO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727162AbgLGO2N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:28:13 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9537C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:27:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lc+ijTkBTFJeV4kyAdNcu+rWKSkRs67Ui4faQ+DhIkg=; b=qIRc6Ac0jAizxtddA+Zu5PeRna
+        MNBTXEG+Up8AV2YbU4RQBAPhf1q6l6tAytExYlPlHoBDxctpcMpFlJaY1IX6gw1Er0S5vLxtyug7Z
+        Lh6tjzB9blewYj14ig1yX2Plg/tce0zfFhIwECWd5YqJR0awH8T1P4UJwQSQH5/AXpLAbTG8X3w3f
+        42EzBWPgT3nmqtw6MsDccFXssdA+f7iSffHXZQTntznWEQdve0/HB1vvbAWymYQcoKKyrOSETNF/r
+        YLVh4nRra/oVb9fLuRtDpS2GVDa9X03oRjYrmABMyLKTQWw7NsgT3441LfoAkzpXeH8osjLx/DyQg
+        Mmu6MqWA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmHU9-0007eJ-84; Mon, 07 Dec 2020 14:27:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B81CF303DA0;
+        Mon,  7 Dec 2020 15:27:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A26BC20812955; Mon,  7 Dec 2020 15:27:27 +0100 (CET)
+Date:   Mon, 7 Dec 2020 15:27:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [patch V2 9/9] tasklets: Prevent kill/unlock_wait deadlock on RT
+Message-ID: <20201207142727.GU3021@hirez.programming.kicks-ass.net>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170805.627618080@linutronix.de>
+ <20201207114743.GK3040@hirez.programming.kicks-ass.net>
+ <20201207140040.yrxsu4v4xz43szkk@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207140040.yrxsu4v4xz43szkk@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 4:40 AM, Vladimir Kondratiev wrote:
-> Recursive do_exit() is symptom of compromised kernel integrity.
-> For safety critical systems, it may be better to
-> panic() in this case to minimize risk.
+On Mon, Dec 07, 2020 at 03:00:40PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-12-07 12:47:43 [+0100], Peter Zijlstra wrote:
+> > On Fri, Dec 04, 2020 at 06:02:00PM +0100, Thomas Gleixner wrote:
+> > > @@ -825,7 +848,20 @@ void tasklet_kill(struct tasklet_struct
+> > >  
+> > >  	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
+> > >  		do {
+> > > -			yield();
+> > >  		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
+> > >  	}
+> > >  	tasklet_unlock_wait(t);
+> > 
+> > 
+> > Egads... should we not start by doing something like this?
+> 
+> So we keep the RT part as-is and replace the non-RT bits with this?
 
-This changelog is still woefully inadequate.  It doesn't really describe
-the problem which is being fixed.  Patches are generally not accepted by
-batting around things like "safety-critical".
-
-> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
-
-What's this Change-Id?  Is this for some system outside of Linux?  If
-so, we don't need that in kernel changelogs.
+For RT you probably want to wrap the wait_var_event() in that
+local_bh_disable()/enable() pear. I just figured those unbounded
+spin/yield loops suck and we should get rid of em.
