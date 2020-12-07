@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F502D135F
+	by mail.lfdr.de (Postfix) with ESMTP id 7D36B2D1360
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgLGOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:16:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726785AbgLGOQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:16:52 -0500
-Date:   Mon, 7 Dec 2020 15:16:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607350571;
-        bh=oIbPhMNR4XARO0ja7uESeoODzJpLh1tAKSR4EIr8wdE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=La/mOMIgf1ROy+6yRYs4PrRaRmCr8ULNmKdQ0wbhNi7WBXbrogQenZQ+h9Y3kKEKd
-         R8DY3N2V67yuRg0XcEawacjBzMg1womPRnQ23I74A9PlwxuH72oWKXMWlkyHAxiSgn
-         yMQkioE9mjWIb3hCdP8CUcQAU23DRwnfFkGM1E9jhpyl+B34/RPhBbDRkMqr/ypQGX
-         A0kHuoYZd7G7ehhu7pP8d0k9b/yKPF8hiEf8k3iXA/L1dqOMJj9zHz/me1179AFwgi
-         9Wz8zERTuucoQWYC5/eIyLXa9FGcQFowaHVyWlD+iRYbChgIJRwO5ECcn8/eGsk945
-         XyHPuQqdPsIZw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 4/9] softirq: Make softirq control and processing RT
- aware
-Message-ID: <20201207141609.GE122233@lothringen>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170805.114951971@linutronix.de>
+        id S1727010AbgLGOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:16:59 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:41776 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726785AbgLGOQ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:16:58 -0500
+Received: by mail-lf1-f65.google.com with SMTP id r24so18278150lfm.8;
+        Mon, 07 Dec 2020 06:16:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=De8f5tX14bb8AEEyWxX1ChJ02+bhkDyPCHWdmOL4kMc=;
+        b=qQ7+YOZlUSXWH/siW+RCSsAJzYYIJ7L2Jd2bK76yqxulELh3cEHkPFNcaj5kV3ebTB
+         GY43VGsVvhh33U5H8wySP8JyaMrUrymQTcj0q7SehHE/aT2OxVyQpr9J0pqW/p5UfBsr
+         Xz4v2rv5G0haaK0wDyXnzjo71tu2VuUNjq4b1QkVmv6YaKxxXKYUQSRr67Jy4+bMDUOO
+         KtR9eThfDxV0qaxFnCs9omSAP7WLOWexImekPDAHgtYKlXn5vXtghtAantfiiTidEvbk
+         doWM3u+93pwsUhNbJF9Hi0JvFpKN3OPKgHindtusch/fHAY0aDVFtGR3gDNr5j8n3EWM
+         v55w==
+X-Gm-Message-State: AOAM530PIwDU3qOp06H9uxCMKa2TLbs0kFQs78+f37jhw+zAsnlGMFFa
+        QZfL0HWUdbbhCtLlB7uOEkU=
+X-Google-Smtp-Source: ABdhPJwam/DokCF6LTWM7C91t/CQk0I8bWOaEkegl4L51Lb73wDreP7x6w5mcyhZX8BwjItXTXx1KQ==
+X-Received: by 2002:a19:5ca:: with SMTP id 193mr2110713lff.375.1607350575796;
+        Mon, 07 Dec 2020 06:16:15 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id c19sm2965326lfr.182.2020.12.07.06.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 06:16:14 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kmHJq-0002pK-Fu; Mon, 07 Dec 2020 15:16:50 +0100
+Date:   Mon, 7 Dec 2020 15:16:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/4] gpiolib: cdev: Flag invalid GPIOs as used
+Message-ID: <X845UohmzGM7+FPu@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
+ <20201204164739.781812-2-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204170805.114951971@linutronix.de>
+In-Reply-To: <20201204164739.781812-2-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:01:55PM +0100, Thomas Gleixner wrote:
-> +void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
-> +{
-> +	unsigned long flags;
-> +	int newcnt;
-> +
-> +	WARN_ON_ONCE(in_hardirq());
-> +
-> +	/* First entry of a task into a BH disabled section? */
-> +	if (!current->softirq_disable_cnt) {
-> +		if (preemptible()) {
-> +			local_lock(&softirq_ctrl.lock);
-> +			/* Required to meet the RCU bottomhalf requirements. */
-> +			rcu_read_lock();
-> +		} else {
-> +			DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt));
+On Fri, Dec 04, 2020 at 04:47:36PM +0000, Marc Zyngier wrote:
+> When reporting the state of a GPIO to userspace, we never check
+> for the actual validity of the line, meaning we report invalid
+> lines as being usable. A subsequent request will fail though,
+> which is an inconsistent behaviour from a userspace perspective.
+> 
+> Instead, let's check for the validity of the line and report it
+> as used if it is invalid. This allows a tool such as gpioinfo
+> to report something sensible:
+> 
+> gpiochip3 - 4 lines:
+> 	line   0:      unnamed       unused   input  active-high
+> 	line   1:      unnamed       kernel   input  active-high [used]
+> 	line   2:      unnamed       kernel   input  active-high [used]
+> 	line   3:      unnamed       unused   input  active-high
+> 
+> In this example, lines 1 and 2 are invalid, and cannot be used by
+> userspace.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/gpio/gpiolib-cdev.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index e9faeaf65d14..a0fcb4ccaa02 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -1910,6 +1910,7 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
+>  	    test_bit(FLAG_USED_AS_IRQ, &desc->flags) ||
+>  	    test_bit(FLAG_EXPORT, &desc->flags) ||
+>  	    test_bit(FLAG_SYSFS, &desc->flags) ||
+> +	    !gpiochip_line_is_valid(gc, info->offset) ||
+>  	    !ok_for_pinctrl)
+>  		info->flags |= GPIO_V2_LINE_FLAG_USED;
 
-So, to be clear this adds a new constraint where we can't call
-local_bh_disable() inside a preempt disabled section? I guess the rest of the
-RT code chased all the new offenders :-)
+So this is somewhat separate from the rest of the series in case it
+applies also to gpio chips with reserved ranges (e.g.
+"gpio-reserved-ranges" devicetree property). Are they currently reported
+as available?
 
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Track the per CPU softirq disabled state. On RT this is per CPU
-> +	 * state to allow preemption of bottom half disabled sections.
-> +	 */
-> +	newcnt = __this_cpu_add_return(softirq_ctrl.cnt, cnt);
-> +	/*
-> +	 * Reflect the result in the task state to prevent recursion on the
-> +	 * local lock and to make softirq_count() & al work.
-> +	 */
-> +	current->softirq_disable_cnt = newcnt;
-> +
-> +	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && newcnt == cnt) {
-> +		raw_local_irq_save(flags);
-> +		lockdep_softirqs_off(ip);
-> +		raw_local_irq_restore(flags);
-> +	}
-> +}
-> +EXPORT_SYMBOL(__local_bh_disable_ip);
-> +
-[...]
-> +
-> +void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
-> +{
-> +	bool preempt_on = preemptible();
-> +	unsigned long flags;
-> +	u32 pending;
-> +	int curcnt;
-> +
-> +	WARN_ON_ONCE(in_irq());
-> +	lockdep_assert_irqs_enabled();
-> +
-> +	local_irq_save(flags);
-> +	curcnt = this_cpu_read(softirq_ctrl.cnt);
+Looks like this will work well also for USB gpio controllers with static
+muxing configured in EEPROM, especially as that is how we already report
+pins reported as unavailable by pinctrl (i.e. ok_for_pinctrl).
 
-__this_cpu_read() ?
-
-> +
-> +	/*
-> +	 * If this is not reenabling soft interrupts, no point in trying to
-> +	 * run pending ones.
-> +	 */
-> +	if (curcnt != cnt)
-> +		goto out;
-
-I guess you could move the local_irq_save() here?
-
-> +	pending = local_softirq_pending();
-> +	if (!pending || ksoftirqd_running(pending))
-> +		goto out;
-> +
-> +	/*
-> +	 * If this was called from non preemptible context, wake up the
-> +	 * softirq daemon.
-> +	 */
-> +	if (!preempt_on) {
-> +		wakeup_softirqd();
-> +		goto out;
-> +	}
-> +
-> +	/*
-> +	 * Adjust softirq count to SOFTIRQ_OFFSET which makes
-> +	 * in_serving_softirq() become true.
-> +	 */
-> +	cnt = SOFTIRQ_OFFSET;
-> +	__local_bh_enable(cnt, false);
-> +	__do_softirq();
-> +
-> +out:
-> +	__local_bh_enable(cnt, preempt_on);
-> +	local_irq_restore(flags);
-> +}
-> +EXPORT_SYMBOL(__local_bh_enable_ip);
-
-Thanks.
+Johan
