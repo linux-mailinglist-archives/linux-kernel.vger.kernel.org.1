@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BC32D1DD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8276A2D1DD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgLGW4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:56:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgLGW4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:56:22 -0500
-Date:   Mon, 7 Dec 2020 14:55:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607381742;
-        bh=MTovbSNum3TKJoGnhB5Nq3ImaKuoaau0JkrY19YWFUc=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HzKGZEMulkSmll0/GZq/AdfLDIFFXu0jWuGNZFuyPNxYs1R//yvVMnKlO/5mwZKjs
-         /ZAbDlwKvwO/wiiB4Ul4qbKWGpOSm1pXf8YuzkYl33ng+3l34VseCKXHdxV1jMmFsH
-         HLgYil+3DkGusl593ZglXIa53KUF2SSFBBC6pTT0tx0bTjgIGy+PSMnKTCCOqXcExz
-         7Enr7HlVZDTCrOR46Pzvd7VNv6Y8vupv2Y7AKAbdVoiP1BYwRAKkirVH91HhBR11TV
-         DPjHTdMgAXAHVKWWYJVj3fcC23WefrjIoP1RPCIPi6xFjIThc5AWpF5anO/tL30xwU
-         4Vki12++ZYnFw==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-Message-ID: <20201207225542.GM2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201206211253.919834182@linutronix.de>
- <20201206212002.876987748@linutronix.de>
- <20201207120943.GS3021@hirez.programming.kicks-ass.net>
- <87y2i94igo.fsf@nanos.tec.linutronix.de>
- <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
- <20201207194406.GK2657@paulmck-ThinkPad-P72>
- <87blf547d2.fsf@nanos.tec.linutronix.de>
- <20201207223853.GL2657@paulmck-ThinkPad-P72>
- <878sa944kn.fsf@nanos.tec.linutronix.de>
+        id S1727527AbgLGW5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgLGW5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:57:31 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400CCC061749;
+        Mon,  7 Dec 2020 14:56:45 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id x16so21890442ejj.7;
+        Mon, 07 Dec 2020 14:56:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zU+qQFKdWZjfJ+RDJwbypYwf59sZH0V4V5cKayroUxc=;
+        b=GxaNnbN1FkZTq/Z/73I9lRXWVFnW+6/gYBwPv2syEcdn6WlBBHVR+AoBOIqSLbeYPT
+         +3n43Y0mYeHstt4QuLC17iH5/nAo1GLGnZHD4+kG06HCKc8jdhIJ3dW4i1J3IzUq3Hx0
+         H5z6Iz9fOwFuuqdePTZfasYetoplTN8ewySisDAHccgaIQJF01ewkzMboZkOjswUrM+U
+         vMyoXve7MHdZ11Zk+tVhTwkgNPLbFt+Bi4xm4uEcuKppvmL/xxlgNbVWB5k8Aj1lGtBz
+         rCp5rdSTqXI3ZZuNExxDccnQgyTBP8+w51niWEsrdbQiqg7Mv5iH/c0RmvQPxVa2vvAy
+         b8gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zU+qQFKdWZjfJ+RDJwbypYwf59sZH0V4V5cKayroUxc=;
+        b=lHMp6I2htYDU+FRlmlb+S+ollIySY4rU9F7N7oiNvRP4WolOCU07uGzp+HbNawUVNI
+         HeBb9xxstB3MhFgLqTOkEtPtIQDT8YGbCdcZHylfhhjbwMPou/rMX/CjphrY4JYd6Pjh
+         QamOeywnKcA+5DXAeYD2Pgrt2ShTojmqw0+WSqx6/t7aDz6lqHVcYg8BbPLKvR0wFpaO
+         Uqd4ch0xpKk9q039ONFf3uRn5zB6ouDNfwqLqMnhCcx4z0FGNDRCvNRokTj0EOA4SE9z
+         kd2Ygd5he331A6WY+dvMwYE/KfXrPWt3xst4qZY+QZJWnQWId8/8PMU1oph6jmPF9x3b
+         P4mQ==
+X-Gm-Message-State: AOAM531zxuUDriOUmc+8/2APCdMZswNZLUVU9gYQxLyiixxv31CSaNMZ
+        /5xCfuuAT69mBziL7qn4xKE=
+X-Google-Smtp-Source: ABdhPJyU2elBWQBkZCA9xFi5xpiulFFA1qg9UPLdyBp0aoKvHW1JQnwNR7C0cdx3gNqJgZBYGnBRBg==
+X-Received: by 2002:a17:906:c007:: with SMTP id e7mr20495234ejz.511.1607381804031;
+        Mon, 07 Dec 2020 14:56:44 -0800 (PST)
+Received: from ubuntu2004 ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id ca4sm9115038edb.80.2020.12.07.14.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 14:56:43 -0800 (PST)
+Date:   Tue, 8 Dec 2020 00:56:47 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 04/18] dt-bindings: dma: owl: Add compatible string
+ for Actions Semi S500 SoC
+Message-ID: <20201207225647.GC250758@ubuntu2004>
+References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
+ <0e79dffdf105ded2bb336ab38dc39b4986667683.1605823502.git.cristian.ciocaltea@gmail.com>
+ <20201207221107.GA927276@robh.at.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878sa944kn.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201207221107.GA927276@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:46:48PM +0100, Thomas Gleixner wrote:
-> On Mon, Dec 07 2020 at 14:38, Paul E. McKenney wrote:
+On Mon, Dec 07, 2020 at 04:11:07PM -0600, Rob Herring wrote:
+> On Fri, 20 Nov 2020 01:55:58 +0200, Cristian Ciocaltea wrote:
+> > Add a new compatible string corresponding to the DMA controller found
+> > in the S500 variant of the Actions Semi Owl SoCs family.
+> > 
+> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/dma/owl-dma.yaml | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
 > 
-> > On Mon, Dec 07, 2020 at 10:46:33PM +0100, Thomas Gleixner wrote:
-> >> On Mon, Dec 07 2020 at 11:44, Paul E. McKenney wrote:
-> >> > On Mon, Dec 07, 2020 at 07:19:51PM +0100, Marco Elver wrote:
-> >> >> On Mon, 7 Dec 2020 at 18:46, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> >> I currently don't know what the rule for Peter's preferred variant
-> >> >> would be, without running the risk of some accidentally data_race()'d
-> >> >> accesses.
-> >> >> 
-> >> >> Thoughts?
-> >> >
-> >> > I am also concerned about inadvertently covering code with data_race().
-> >> >
-> >> > Also, in this particular case, why data_race() rather than READ_ONCE()?
-> >> > Do we really expect the compiler to be able to optimize this case
-> >> > significantly without READ_ONCE()?
-> >> 
-> >> That was your suggestion a week or so ago :)
-> >
-> > You expected my suggestion to change?  ;-)
-> 
-> Your suggestion was data_race() IIRC but I might have lost track in that
-> conversation.
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-OK, I am inconsistent after all.  I would have suggested READ_ONCE() given
-no difference between them, so it is probably best to assume that there is
-(or at least was) a good reason for data_race() instead of READ_ONCE().
-Couldn't tell you what it might be, though.  :-/
-
-							Thanx, Paul
+Thanks for reviewing,
+Cristi
