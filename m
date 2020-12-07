@@ -2,142 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E05B2D1012
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABDF2D1016
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbgLGMG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgLGMG5 (ORCPT
+        id S1727331AbgLGMId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:08:33 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4110 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgLGMIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:06:57 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0178EC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:06:16 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id 1Q6C2400C4C55Sk01Q6Ckl; Mon, 07 Dec 2020 13:06:12 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kmFHQ-008giC-4x
-        for linux-kernel@vger.kernel.org; Mon, 07 Dec 2020 13:06:12 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kmFHP-005WJS-NG
-        for linux-kernel@vger.kernel.org; Mon, 07 Dec 2020 13:06:11 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.10-rc7
-Date:   Mon,  7 Dec 2020 13:06:11 +0100
-Message-Id: <20201207120611.1315807-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 7 Dec 2020 07:08:32 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CqMWH1lvWzXkrx;
+        Mon,  7 Dec 2020 20:07:23 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 7 Dec 2020 20:07:49 +0800
+Received: from [10.145.28.31] (10.145.28.31) by dggpemm000001.china.huawei.com
+ (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 7 Dec 2020
+ 20:07:49 +0800
+Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
+ reserved for the page map
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+CC:     Barry Song <song.bao.hua@hisilicon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <butao@hisilicon.com>, Will Deacon <will@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        <fengbaopeng2@hisilicon.com>, <saberlily.xia@hisilicon.com>,
+        <zhaojiapeng@huawei.com>
+References: <20201204014443.43329-1-liwei213@huawei.com>
+ <20201204111347.GA844@willie-the-truck>
+ <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
+ <390f5f441d99a832f4b2425b46f6d971@kernel.org>
+ <20201207094215.GC1112728@linux.ibm.com>
+ <CAMj1kXFdtom+OBJ84he9C5eNw-KJ8zwW04WB0ab6Gp_DCiYkRg@mail.gmail.com>
+ <20201207100426.GE1112728@linux.ibm.com>
+ <39d72e1c-b3b3-89d3-1a1a-3ee222d40761@arm.com>
+From:   Wei Li <liwei213@huawei.com>
+Message-ID: <3d7a68d7-e33a-fd42-3362-5019feade7ce@huawei.com>
+Date:   Mon, 7 Dec 2020 20:07:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <39d72e1c-b3b3-89d3-1a1a-3ee222d40761@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.145.28.31]
+X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.10-rc7[1] compared to v5.9[2].
+(+ saberlily + jiapeng)
 
-Summarized:
-  - build errors: +2/-7
-  - build warnings: +22/-27
-
-JFYI, when comparing v5.10-rc7[1] to v5.10-rc6[3], the summaries are:
-  - build errors: +1/-0
-  - build warnings: +1/-1
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0477e92881850d44910a7e94fc2c46f96faa131f/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/b65054597872ce3aefbc6a666385eabdf9e288da/ (all 192 configs)
-
-
-*** ERRORS ***
-
-2 error regressions:
-  + /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit declaration of function 'cleanup_cpu_mmu_context' [-Werror=implicit-function-declaration]:  => 914:2
-  + {standard input}: Error: inappropriate arguments for opcode 'adc':  => 170
-
-7 error improvements:
-  - error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
-  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/iio/adc/adi-axi-adc.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!: N/A => 
-
-
-*** WARNINGS ***
-
-22 warning regressions:
-  + .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12470, 12456 => 12733, 12728, 12742
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13119
-  + /kisskb/src/arch/nds32/kernel/setup.c: warning: unused variable 'region' [-Wunused-variable]:  => 247:26
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]:  => 22:28
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: (near initialization for 'buf[0]') [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: missing braces around initializer [-Wmissing-braces]:  => 910:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 441:1
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: (near initialization for 'etype.value') [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: missing braces around initializer [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 482:1
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: (near initialization for 'ri.inode') [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation:  => 295:1
-  + /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]:  => 710:13
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation:  => 2295:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation:  => 1992:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation:  => 2363:1
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
-  + warning: unmet direct dependencies detected for MFD_CORE:  => N/A
-
-27 warning improvements:
-  - .config: warning: override: reassigning to symbol VIRTUALIZATION: 4103 => 
-  - /kisskb/src/arch/mips/include/asm/page.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 249:53 => 
-  - /kisskb/src/drivers/crypto/chelsio/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 435:1 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 1486:33 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "in_be32" redefined: 37 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "out_be32" redefined: 36 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'cs_counters.cs_counters') [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 197:33 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 198:32 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]: 62:8, 103:8 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: missing braces around initializer [-Wmissing-braces]: 62:8, 103:8 => 
-  - /kisskb/src/drivers/staging/media/tegra-vde/vde.c: warning: 'tegra_vde_runtime_suspend' defined but not used [-Wunused-function]: 916:12 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.15' uses dynamic stack allocation: 298:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin' uses dynamic stack allocation: 283:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_backward' uses dynamic stack allocation: 275:1 => 
-  - /kisskb/src/kernel/events/ring_buffer.c: warning: 'perf_output_begin_forward' uses dynamic stack allocation: 269:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.59' uses dynamic stack allocation: 2293:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.58' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.57' uses dynamic stack allocation: 2361:1 => 
-  - /kisskb/src/net/bridge/br_device.c: warning: 'br_get_stats64' uses dynamic stack allocation: 230:1 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'add_llc.hd') [-Wmissing-braces]: 1212:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'del_llc.hd') [-Wmissing-braces]: 1245:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'delllc.hd') [-Wmissing-braces]: 1317:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: missing braces around initializer [-Wmissing-braces]: 1212:9, 1317:9, 1245:9 => 
-  - warning: 148 bad relocations: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+On 2020/12/7 18:39, Anshuman Khandual wrote:
+> 
+> 
+> On 12/7/20 3:34 PM, Mike Rapoport wrote:
+>> On Mon, Dec 07, 2020 at 10:49:26AM +0100, Ard Biesheuvel wrote:
+>>> On Mon, 7 Dec 2020 at 10:42, Mike Rapoport <rppt@linux.ibm.com> wrote:
+>>>>
+>>>> On Mon, Dec 07, 2020 at 09:35:06AM +0000, Marc Zyngier wrote:
+>>>>> On 2020-12-07 09:09, Ard Biesheuvel wrote:
+>>>>>> (+ Marc)
+>>>>>>
+>>>>>> On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
+>>>>>>>
+>>>>>>> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
+>>>>>>>> For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+>>>>>>>> do not free the reserved memory for the page map, decrease the section
+>>>>>>>> size can reduce the waste of reserved memory.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Wei Li <liwei213@huawei.com>
+>>>>>>>> Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
+>>>>>>>> Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+>>>>>>>> ---
+>>>>>>>>  arch/arm64/include/asm/sparsemem.h | 2 +-
+>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
+>>>>>>>> index 1f43fcc79738..8963bd3def28 100644
+>>>>>>>> --- a/arch/arm64/include/asm/sparsemem.h
+>>>>>>>> +++ b/arch/arm64/include/asm/sparsemem.h
+>>>>>>>> @@ -7,7 +7,7 @@
+>>>>>>>>
+>>>>>>>>  #ifdef CONFIG_SPARSEMEM
+>>>>>>>>  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
+>>>>>>>> -#define SECTION_SIZE_BITS    30
+>>>>>>>> +#define SECTION_SIZE_BITS    27
+>>>>>>>
+>>>>>>> We chose '30' to avoid running out of bits in the page flags. What
+>>>>>>> changed?
+>>>>>>>
+>>>>>>> With this patch, I can trigger:
+>>>>>>>
+>>>>>>> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds
+>>>>>>> SECTION_SIZE
+>>>>>>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
+>>>>>>>
+>>>>>>> if I bump up NR_CPUS and NODES_SHIFT.
+>>>>>>>
+>>>>>>
+>>>>>> Does this mean we will run into problems with the GICv3 ITS LPI tables
+>>>>>> again if we are forced to reduce MAX_ORDER to fit inside
+>>>>>> SECTION_SIZE_BITS?
+>>>>>
+>>>>> Most probably. We are already massively constraint on platforms
+>>>>> such as TX1, and dividing the max allocatable range by 8 isn't
+>>>>> going to make it work any better...
+>>>>
+>>>> I don't think MAX_ORDER should shrink. Even if SECTION_SIZE_BITS is
+>>>> reduced it should accomodate the existing MAX_ORDER.
+>>>>
+>>>> My two pennies.
+>>>>
+>>>
+>>> But include/linux/mmzone.h:1170 has this:
+>>>
+>>> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
+>>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
+>>> #endif
+>>>
+>>> and Will managed to trigger it after applying this patch.
+>>
+>> Right, because with 64K pages section size of 27 bits is not enough to
+>> accomodate MAX_ORDER (2^13 pages of 64K).
+>>
+>> Which means that definition of SECTION_SIZE_BITS should take MAX_ORDER
+>> into account either statically with 
+>>
+>> #ifdef ARM64_4K_PAGES
+>> #define SECTION_SIZE_BITS <a number>
+>> #elif ARM64_16K_PAGES
+>> #define SECTION_SIZE_BITS <a larger number>
+>> #elif ARM64_64K_PAGES
+>> #define SECTION_SIZE_BITS <even larger number>
+>> #else
+>> #error "and what is the page size?"
+>> #endif
+>>
+>> or dynamically, like e.g. ia64 does:
+>>
+>> #ifdef CONFIG_FORCE_MAX_ZONEORDER
+>> #if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
+>> #undef SECTION_SIZE_BITS
+>> #define SECTION_SIZE_BITS (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
+>> #endif
+> 
+> I had proposed the same on the other thread here. But with this the
+> SECTION_SIZE_BITS becomes 22 in case of 4K page size reducing to an
+> extent where PMD based vmemmap mapping could not be created. Though
+> have not looked into much details yet.
+> 
+> Using CONFIG_FORCE_MAX_ZONEORDER seems to the right thing to do. But
+> if that does not reasonably work for 4K pages, we might have to hard
+> code it as 27 to have huge page vmemmap mappings.
+> .
+> 
