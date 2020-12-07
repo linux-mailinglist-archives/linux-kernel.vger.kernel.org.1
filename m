@@ -2,87 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456232D1E18
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3302D1E1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgLGXEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:04:48 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45468 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728191AbgLGXEr (ORCPT
+        id S1727044AbgLGXHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbgLGXHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:04:47 -0500
-Received: by mail-oi1-f193.google.com with SMTP id f132so2916472oib.12;
-        Mon, 07 Dec 2020 15:04:31 -0800 (PST)
+        Mon, 7 Dec 2020 18:07:13 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F32FC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:06:33 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id x13so6670492oto.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:06:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ulofPqprNeMVYSi4yhjqgNnz5dj3g3XsyO+WHyCMvcw=;
+        b=Eb8aUwdEwvWWaT1AlZL1ZGuuVQiOmuxszXm/lq+dxr8/B147JYxLRZJ5627LTIExfH
+         rqDm5IViR3YpwmNNEmIRSTC6vwsaIwuPceawkJVeRnAro5jEaLiXgMnovOc79c1tL/1R
+         qwEKjSIRCba6j6Dag3jaqp5oVhoG36KBKQ3uUPiryvb2iHWv4mcFV5Xc8n/JeOkamm8j
+         IJTjZOcao55qbf+RFDtndSpWlN5WvY6aNPLqKG9TewNfs7orwoHAM4H/y0WVQXY6vT7U
+         UCKyCKiM1XrvvaoIdOqn5KFZXL8QP/2QM6ubHdZpEjgS845+pYSjX0x0RP+xlQ5nx+BM
+         A8Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FKVOi81QuTxtmvRA/1QQ/i5ym4BvFRsKDGyyquA2QGo=;
-        b=eNBC3eewy9RFGjNbS2oh3m/WrMPSAB2U9aaSe1KIyA0tcsyFsQu6EPjdBPvY015++F
-         UpeS5wtzFGePypwV3LBg61X3S3YYUfHakEInzzUsDwAG5LiNirK0PROcL7GJbhd4paGa
-         81GTx8Joo5Ycje6Icb0ZdrGw+lWFqkSqXr+L2hu3vWqHxIaYpguB8VbYbA7m95zvAuVP
-         qfuuut4CATzgEmEE/V6N6DyQxn507zzmuEjt2Wtuel+Q2k0jG7rbO1mRuHFtQYYTYdHe
-         rRSLvvielgaVOYyKPZ5tQocFaOU6O+uwUWFLukp9v267ZtTacqhi/0M0xEFLl3yYndMm
-         XP3g==
-X-Gm-Message-State: AOAM532mkFbk43pSG1fV4Bg2RFqD3TzzfEd7dYZVznGmh7dhAGptQoj3
-        k5tYOmkAxVbjehW2QLaw+KOqAIVZHw==
-X-Google-Smtp-Source: ABdhPJwPrbY2Mjm4riXSridU15duWihLNezTrBEYDRujhThLF7Qyb60cdAnrlpGQs50eGq37s+lzoA==
-X-Received: by 2002:aca:5548:: with SMTP id j69mr856075oib.32.1607382246438;
-        Mon, 07 Dec 2020 15:04:06 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j204sm952836oih.15.2020.12.07.15.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:04:05 -0800 (PST)
-Received: (nullmailer pid 1014048 invoked by uid 1000);
-        Mon, 07 Dec 2020 23:04:04 -0000
-Date:   Mon, 7 Dec 2020 17:04:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v2 1/1] dt-bindings: display: eliminate yamllint warnings
-Message-ID: <20201207230404.GA1013997@robh.at.kernel.org>
-References: <20201207044830.1551-1-thunder.leizhen@huawei.com>
- <20201207044830.1551-2-thunder.leizhen@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ulofPqprNeMVYSi4yhjqgNnz5dj3g3XsyO+WHyCMvcw=;
+        b=SU81tFq29s3Ttr5yHaF7AsZHAAfEnWLlRlZYl208ZCG6pHPx4grlaqSOVqz5vHOkbO
+         HZBLbsXn+bi7TKpahoSUgpZws6XFJifvndYPEqqlT6bI5gtqa9/T1B0xgngyd7tHbEqE
+         hjgXnVlUWJbdRNKj946mZY/s18A4y7GtsQB/6AIZ+n4cMDecLcD5nm0ehKdFtS+ls8/F
+         sXQCuKko35OEGSDui8lGy86YcWCHvqhOylwNXgs6PDP3tUTDKu/+Vv9MQpzPKb84GBWC
+         IM8lcGQIrCve746Y+JCUNDWpVlKcyvy03w8vmFXzNcRzx8mohhpe15G4fELaHGUcxLw3
+         lPVA==
+X-Gm-Message-State: AOAM532Xwz4EE2m6Mb97oiaIcFh3//cfwVXrEOyCLJfHUWr9KprnAfDF
+        uKFnEvxnoIY2L4ujPpkyoS7Bwn0yCtR97y3YrZGxxw==
+X-Google-Smtp-Source: ABdhPJyrIfCqqsv11cZjIl0Vi/kpxCLyk/QZfiCC4V2m3aU63hwdBTonC+y9wBpD4seSHkAHNNKYcpnyRQagin+INB8=
+X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr8057191oti.241.1607382392473;
+ Mon, 07 Dec 2020 15:06:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207044830.1551-2-thunder.leizhen@huawei.com>
+References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu> <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
+In-Reply-To: <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 7 Dec 2020 15:06:21 -0800
+Message-ID: <CALMp9eRSvWemdiBygMJ18yP9T0UzL0nNbpD__bRis7M5LqOK+g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
+        wei.huang2@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 12:48:30 +0800, Zhen Lei wrote:
-> Eliminate the following yamllint warnings:
-> ./Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> :52:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-> 
-> ./Documentation/devicetree/bindings/display/bridge/intel,keembay-dsi.yaml
-> :42:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
-> :45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
-> 
-> ./Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml
-> :21:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
-> 
-> ./Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-> :25:10: [warning] wrong indentation: expected 10 but found 9 (indentation)
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
+>
+> Newer AMD processors have a feature to virtualize the use of the
+> SPEC_CTRL MSR. When supported, the SPEC_CTRL MSR is automatically
+> virtualized and no longer requires hypervisor intervention.
+>
+> This feature is detected via CPUID function 0x8000000A_EDX[20]:
+> GuestSpecCtrl.
+>
+> Hypervisors are not required to enable this feature since it is
+> automatically enabled on processors that support it.
+>
+> When this feature is enabled, the hypervisor no longer has to
+> intercept the usage of the SPEC_CTRL MSR and no longer is required to
+> save and restore the guest SPEC_CTRL setting when switching
+> hypervisor/guest modes.  The effective SPEC_CTRL setting is the guest
+> SPEC_CTRL setting or'ed with the hypervisor SPEC_CTRL setting. This
+> allows the hypervisor to ensure a minimum SPEC_CTRL if desired.
+>
+> This support also fixes an issue where a guest may sometimes see an
+> inconsistent value for the SPEC_CTRL MSR on processors that support
+> this feature. With the current SPEC_CTRL support, the first write to
+> SPEC_CTRL is intercepted and the virtualized version of the SPEC_CTRL
+> MSR is not updated. When the guest reads back the SPEC_CTRL MSR, it
+> will be 0x0, instead of the actual expected value. There isn=E2=80=99t a
+> security concern here, because the host SPEC_CTRL value is or=E2=80=99ed =
+with
+> the Guest SPEC_CTRL value to generate the effective SPEC_CTRL value.
+> KVM writes with the guest's virtualized SPEC_CTRL value to SPEC_CTRL
+> MSR just before the VMRUN, so it will always have the actual value
+> even though it doesn=E2=80=99t appear that way in the guest. The guest wi=
+ll
+> only see the proper value for the SPEC_CTRL register if the guest was
+> to write to the SPEC_CTRL register again. With Virtual SPEC_CTRL
+> support, the MSR interception of SPEC_CTRL is disabled during
+> vmcb_init, so this will no longer be an issue.
+>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
 > ---
->  .../devicetree/bindings/display/bridge/analogix,anx7625.yaml          | 4 ++--
->  .../devicetree/bindings/display/bridge/intel,keembay-dsi.yaml         | 4 ++--
->  Documentation/devicetree/bindings/display/intel,keembay-msscam.yaml   | 4 ++--
->  Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml | 2 +-
->  4 files changed, 7 insertions(+), 7 deletions(-)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Shouldn't there be some code to initialize a new "guest SPEC_CTRL"
+value in the VMCB, both at vCPU creation, and at virtual processor
+reset?
+
+>  arch/x86/kvm/svm/svm.c |   17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 79b3a564f1c9..3d73ec0cdb87 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1230,6 +1230,14 @@ static void init_vmcb(struct vcpu_svm *svm)
+>
+>         svm_check_invpcid(svm);
+>
+> +       /*
+> +        * If the host supports V_SPEC_CTRL then disable the interception
+> +        * of MSR_IA32_SPEC_CTRL.
+> +        */
+> +       if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +               set_msr_interception(&svm->vcpu, svm->msrpm, MSR_IA32_SPE=
+C_CTRL,
+> +                                    1, 1);
+> +
+>         if (kvm_vcpu_apicv_active(&svm->vcpu))
+>                 avic_init_vmcb(svm);
+>
+> @@ -3590,7 +3598,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kv=
+m_vcpu *vcpu)
+>          * is no need to worry about the conditional branch over the wrms=
+r
+>          * being speculatively taken.
+>          */
+> -       x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +               x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ct=
+rl);
+
+Is this correct for the nested case? Presumably, there is now a "guest
+SPEC_CTRL" value somewhere in the VMCB. If L1 does not intercept this
+MSR, then we need to transfer the "guest SPEC_CTRL" value from the
+vmcb01 to the vmcb02, don't we?
+
+>         svm_vcpu_enter_exit(vcpu, svm);
+>
+> @@ -3609,12 +3618,14 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct =
+kvm_vcpu *vcpu)
+>          * If the L02 MSR bitmap does not intercept the MSR, then we need=
+ to
+>          * save it.
+>          */
+> -       if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
+> +           unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+>                 svm->spec_ctrl =3D native_read_msr(MSR_IA32_SPEC_CTRL);
+
+Is this correct for the nested case? If L1 does not intercept this
+MSR, then it might have changed while L2 is running. Presumably, the
+hardware has stored the new value somewhere in the vmcb02 at #VMEXIT,
+but now we need to move that value into the vmcb01, don't we?
+
+>         reload_tss(vcpu);
+>
+> -       x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +               x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec=
+_ctrl);
+>
+>         vcpu->arch.cr2 =3D svm->vmcb->save.cr2;
+>         vcpu->arch.regs[VCPU_REGS_RAX] =3D svm->vmcb->save.rax;
+>
+
+It would be great if you could add some tests to kvm-unit-tests.
