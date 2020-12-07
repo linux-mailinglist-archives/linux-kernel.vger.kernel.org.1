@@ -2,149 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E242D09BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A002D09C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728839AbgLGEdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 23:33:21 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:15969 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728657AbgLGEdU (ORCPT
+        id S1728471AbgLGEhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 23:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgLGEhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 23:33:20 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201207043237epoutp04a1d3a90b0c21e43a7991a34bc588825f~OVPvl-q5g2975729757epoutp04E
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:32:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201207043237epoutp04a1d3a90b0c21e43a7991a34bc588825f~OVPvl-q5g2975729757epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607315557;
-        bh=Tide8Qzcd1wBEYRq2DlXDubvem7js4dUXECRaFokmXc=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=XtdAxiwbZgdui4X79mt04WVggwG3I+WMz8qpvT3EgwvFvhk9pq+1LUWEWQ0Y1bk6p
-         kkcyMCeeYLhYzjMxE2/e9VCOHhMCn1e05BDX0834JczqkYtvB2MvC55KvBlxVNNsH6
-         iAFRhCUA4EUtbxDgz82zqlpWJIAt5wgSjEo2vluM=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201207043236epcas1p383bb508d91e04de0b81786c5f5e515c8~OVPufl6-w2791327913epcas1p36;
-        Mon,  7 Dec 2020 04:32:36 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4Cq9QW5FjZz4x9Ps; Mon,  7 Dec
-        2020 04:32:35 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.E8.10463.360BDCF5; Mon,  7 Dec 2020 13:32:35 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201207043235epcas1p1446adf522518089bb229d3aaa91e3f55~OVPs_Nu-D1972719727epcas1p1C;
-        Mon,  7 Dec 2020 04:32:35 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201207043235epsmtrp11ce9e709c29e6221a547d4c89bfc896c~OVPs9kkBX2580925809epsmtrp1P;
-        Mon,  7 Dec 2020 04:32:35 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-c3-5fcdb0630ea5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        56.93.08745.260BDCF5; Mon,  7 Dec 2020 13:32:34 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201207043234epsmtip2da9617598b3c34589b2e32954f381a4f~OVPsxKuWe1231112311epsmtip2N;
-        Mon,  7 Dec 2020 04:32:34 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Artem Labazov'" <123321artyom@gmail.com>
-Cc:     <stable@vger.kernel.org>,
-        "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201204133348.555024-1-123321artyom@gmail.com>
-Subject: RE: [PATCH v2] exfat: Avoid allocating upcase table using kcalloc()
-Date:   Mon, 7 Dec 2020 13:32:34 +0900
-Message-ID: <000301d6cc51$fc2b6d10$f4824730$@samsung.com>
+        Sun, 6 Dec 2020 23:37:14 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A40C0613D0
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 20:36:34 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id x13so5940315qvk.8
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 20:36:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PoCu/gkPCtJA4+Ph0vwwuZbEYcCZQAZIGlTEAffIyVI=;
+        b=sj1rdYyCVqWkpObdPWhpFa/9QBhwSqlgONNcnu39rV/TLPr1LHeOAw3kmgirAKUL4H
+         1dwONTaP4p8xTThwJ6DNTYGJ0hqoX9EVhqAO8QRoZ8c7xjSxAdMCVN18aCQbp+ka7k9u
+         B9Qb1sXjzbk7EmpsF9g0Lgy7MpHuKc4hO/K074lncpPrizCDqE6tKWGkQEnVtEfoaLwj
+         ASqqYC1W3fph7zvmGQO0uL1Cl5KLkEaKby1IPOcQp3aLFE2oJqnHpY+jA/tJH4jFXEy/
+         cjGAC2nMbwO0rXA6Ra6Xe3GR6nUYYFHRMoVyymMMU3sCsAT3qnMMV3hNT2O/oVQ+dQ56
+         3FWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PoCu/gkPCtJA4+Ph0vwwuZbEYcCZQAZIGlTEAffIyVI=;
+        b=snCyTxzUYlOJGMswCF1Yw0pRffwMXb0RJNQBPJXUfOGq82zos2dWdQtHsqdC8K5r1d
+         mMYLqhMsU3eK/JnWbgpMs/RCOL2iRYhmBI7gCVVfMuMSFKB4VEsw7aj0dznXhtJmuCGd
+         irSPwkZzNxgjVLz8/JBQ/ux/bK0bx88yZ1iaoM0a/q6OSlRHU7YI+ZrnJtFncICPnpvk
+         bnu/2eeA/Yjv0DmwFHZ+WWGmiGEHyYeKRl3oUxWIrxCIosrwxJDz+HHjBnLcmf4PgQbl
+         Uk5J6ZLM7mb+WdIkcsGOuUIevL6btp5NkcNMr/M6Dy7fThvzoBmlerQTYcMZukDSuOzx
+         W3Pw==
+X-Gm-Message-State: AOAM531u8BQkkk5yTPkZdmWPtCPAHq5iZXVz/WZJii0H0HJSojK6GTay
+        DyVSY4UXX4aqw5xd5wqDpG4=
+X-Google-Smtp-Source: ABdhPJzq3tCSXNMeWUbXyR+2Qn5KB5Tqls4wcIGNtAKTKUq9Q5vjHLwfKZcC2fSoJWus75KfK7LFJA==
+X-Received: by 2002:a05:6214:a69:: with SMTP id ef9mr19584244qvb.50.1607315793282;
+        Sun, 06 Dec 2020 20:36:33 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id 97sm11085298qte.34.2020.12.06.20.36.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Dec 2020 20:36:32 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id DD31527C0054;
+        Sun,  6 Dec 2020 23:36:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 06 Dec 2020 23:36:30 -0500
+X-ME-Sender: <xms:TrHNXz17NTmjBd8wE76nEExPyjVL6lPim4p_iQJ2LiGO9Y3Iv7xrTQ>
+    <xme:TrHNXyFjsDKFbiFgp836LESHmqxShyHh9KpcYDp7FBt3vcXtDdeEbByhK_J2yqfOI
+    ymILOeETSU7JU1Muw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejfedgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepgeekgeffffefudeuhfekveehieevffelteegffehhfelgfevteeukeejfedt
+    keefnecuffhomhgrihhnpehophgvnhhsuhhsvgdrohhrghenucfkphepudefuddruddtje
+    drudegjedruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
+    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
+    ohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:TrHNXz4z9gXfO61knisO6uYhQ3gfwVcQsRbv15dBy9p6pHa8OYd9nA>
+    <xmx:TrHNX43x6AGLWgzDFMqkv2tD-VVYN2W4OrY5Sn4kC8kMLFFRApmYdQ>
+    <xmx:TrHNX2FLc0lMUpaTZq1SbS7OF3dldQ9DDOXaCrAuyFI64YZo890Cnw>
+    <xmx:TrHNX5337Hyf0XU_a0Afmg1VqVFhaO_zWbVePRTYIB0fq28Na57fRQ>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E2F96108005B;
+        Sun,  6 Dec 2020 23:36:29 -0500 (EST)
+Date:   Mon, 7 Dec 2020 12:35:18 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        aryabinin@virtuozzo.com, Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: BUG: Invalid wait context with KMEMLEAK and KASAN enabled
+Message-ID: <20201207043518.GA1819081@boqun-archlinux>
+References: <CAFLxGvwienJ7sU2+QAhFt+ywS9iYkbAXDGviuTC-4CVwLOhXfA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJLXyJfxD6HCJurO6uIAS3PJP5HfAKOOt2OAQ3muqmo5QRQEA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdlhTTzd5w9l4g7srVCw23fzGarFn70kW
-        i8u75rBZbPl3hNViwcZHjA6sHjtn3WX36NuyitHj8ya5AOaoHJuM1MSU1CKF1Lzk/JTMvHRb
-        Je/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoJVKCmWJOaVAoYDE4mIlfTubovzSklSF
-        jPziElul1IKUnAJDgwK94sTc4tK8dL3k/FwrQwMDI1OgyoScjAvnjrAWnOGumD/pM2MD4yXO
-        LkZODgkBE4l1/fPZuhi5OIQEdjBK/Fi+mwXC+cQoceb+XGYI5zOjxNv509lgWs6074Nq2cUo
-        sf7xHEYI5yWjxK7bv9hBqtgEdCX+/dkP1iEioCdxYucOsFHMAl2MEv+mzmYFSXAK2EpMnn4e
-        rEFYwEdi0982RhCbRUBFYuKcDqAaDg5eAUuJrjUCIGFeAUGJkzOfsIDYzALyEtvfzmGGuEhB
-        4ufTZawQu5wkHm+bwQxRIyIxu7MNbK+EwF92idmHLkO94CJxftFtVghbWOLV8S3sELaUxMv+
-        NnaQvRIC1RIf90PN72CUePHdFsI2lri5fgPYacwCmhLrd+lDhBUldv6eywixlk/i3dceVogp
-        vBIdbUIQJaoSfZcOM0HY0hJd7R/YJzAqzULy2Cwkj81C8sAshGULGFlWMYqlFhTnpqcWGxaY
-        IEf2JkZwctSy2ME49+0HvUOMTByMhxglOJiVRHjVpM7GC/GmJFZWpRblxxeV5qQWH2I0BYb0
-        RGYp0eR8YHrOK4k3NDUyNja2MDEzNzM1VhLn/aPdES8kkJ5YkpqdmlqQWgTTx8TBKdXA5HD5
-        +snUExO8BXSyEraoJp7+ErG23v3QUSclnf17n/5aH77ikQfviTm1Qo0ZMZYfahkdN0R8WiuW
-        vOaoUV1CvUCTQVPtxZbcdf+D11ssuXhUg2vR7MhUzmQ28U+ciru+XxEQ6hfxdHDY3P6zcYqJ
-        zSeOmH0ii72F587fqybWp/dF/rM/i6fRgattD3+F8pm/jdCa9/PFJY13QRsVveuqf87Ie273
-        5/GpQwUqd3eIM62sy3p77PrPH6/lLxxo72m0apsXEeDKpHVrwrv5HFu8L8cX3DxRYX9y5yLf
-        4vzL+7bHH7xZHPxGdmed5NWUjT4hi3fVVHNMXX9ATcB6TcOJzKXTJyrsON0berBl3aRjHkos
-        xRmJhlrMRcWJAOerPCMXBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvG7ShrPxBhsv2lhsuvmN1WLP3pMs
-        Fpd3zWGz2PLvCKvFgo2PGB1YPXbOusvu0bdlFaPH501yAcxRXDYpqTmZZalF+nYJXBkXzh1h
-        LTjDXTF/0mfGBsZLnF2MnBwSAiYSZ9r3sYHYQgI7GCXOrXOBiEtLHDtxhrmLkQPIFpY4fLi4
-        i5ELqOQ5o8SZ//dYQGrYBHQl/v3ZD9YrIqAncWLnDmaQImaBPkaJu7O2QA3dwyjReVgAxOYU
-        sJWYPP08O4gtLOAjselvGyOIzSKgIjFxTgcryDJeAUuJrjVg5bwCghInZz5hAQkzA81v2whW
-        zSwgL7H97RxmiDMVJH4+XcYKcYKTxONtM5ghakQkZne2MU9gFJ6FZNIshEmzkEyahaRjASPL
-        KkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M4PjQ0trBuGfVB71DjEwcjIcYJTiYlUR4
-        1aTOxgvxpiRWVqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXAtIJ9
-        3se8KJ/J/i///9OdXHkmKtp01R2hxOr2OLPHigmR7VGda4/qyuo+uLP9xJqH5kdkZE48PKeg
-        k3DF8/Z55tk1r+dyb5fK6s8ViX32s5Nf9AF3mMNXDfMTB+/G2XNP3Ju54OOvV+4aHns/JX1Q
-        DCiJWRu6YIH4sQeTeQ5HvlcMDXwoGvI2m1+L/ezn3S9+L/u6dmLBdtUwj2MN0z78rjV55TvB
-        w8zSrMHEpHb3nlmntribLbHyNBGuLjyidfWhbwpD/cxN/Gd/3g41/G2cKCi346qO288bMa+v
-        +u/xKwq9tGChI9PDMyeOakYWtMj/zJs9xa2zcmNf5Ex2xfhzSXmXLorsjVG76XGoubnokhJL
-        cUaioRZzUXEiAB22hbb+AgAA
-X-CMS-MailID: 20201207043235epcas1p1446adf522518089bb229d3aaa91e3f55
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201204133512epcas1p4381b107d0fc72d92920d336df9683a22
-References: <001101d6c867$ca8c5730$5fa50590$@samsung.com>
-        <CGME20201204133512epcas1p4381b107d0fc72d92920d336df9683a22@epcas1p4.samsung.com>
-        <20201204133348.555024-1-123321artyom@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFLxGvwienJ7sU2+QAhFt+ywS9iYkbAXDGviuTC-4CVwLOhXfA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The table for Unicode upcase conversion requires an order-5 allocation, which may fail on a highly-
-> fragmented system:
-> 
->  pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO),
-> nodemask=(null),cpuset=/,mems_allowed=0
->  CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
->  Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019  Call Trace:
->   dump_stack+0x6b/0x88
->   warn_alloc.cold+0x75/0xd9
->   ? _cond_resched+0x16/0x40
->   ? __alloc_pages_direct_compact+0x144/0x150
->   __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
->   ? __schedule+0x28a/0x840
->   ? __wait_on_bit_lock+0x92/0xa0
->   __alloc_pages_nodemask+0x2df/0x320
->   kmalloc_order+0x1b/0x80
->   kmalloc_order_trace+0x1d/0xa0
->   exfat_create_upcase_table+0x115/0x390 [exfat]
->   exfat_fill_super+0x3ef/0x7f0 [exfat]
->   ? sget_fc+0x1d0/0x240
->   ? exfat_init_fs_context+0x120/0x120 [exfat]
->   get_tree_bdev+0x15c/0x250
->   vfs_get_tree+0x25/0xb0
->   do_mount+0x7c3/0xaf0
->   ? copy_mount_options+0xab/0x180
->   __x64_sys_mount+0x8e/0xd0
->   do_syscall_64+0x4d/0x90
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Make the driver use vzalloc() to eliminate the issue.
-> 
-> Cc: stable@vger.kernel.org # v5.7+
-> Signed-off-by: Artem Labazov <123321artyom@gmail.com>
-> ---
-> v2: replace vmalloc with vzalloc to avoid uninitialized memory access
-Applied.
-Thanks for your work!
+Hi Richard,
 
+On Sun, Dec 06, 2020 at 11:59:16PM +0100, Richard Weinberger wrote:
+> Hi!
+> 
+> With both KMEMLEAK and KASAN enabled, I'm facing the following lockdep
+> splat at random times on Linus' tree as of today.
+> Sometimes it happens at bootup, sometimes much later when userspace has started.
+> 
+> Does this ring a bell?
+> 
+> [    2.298447] =============================
+> [    2.298971] [ BUG: Invalid wait context ]
+> [    2.298971] 5.10.0-rc6+ #388 Not tainted
+> [    2.298971] -----------------------------
+> [    2.298971] ksoftirqd/1/15 is trying to lock:
+> [    2.298971] ffff888100b94598 (&n->list_lock){....}-{3:3}, at:
+> free_debug_processing+0x3d/0x210
+
+I guest you also had CONFIG_PROVE_RAW_LOCK_NESTING=y, right? With that
+config, the wait context detetion of lockdep will treat spinlock_t as
+sleepable locks (considering PREEMPT_RT kernel), and here it complained
+about trying to acquire a sleepable lock (in PREEMPT_RT kernel) inside a
+irq context which cannot be threaded (in this case, it's the IPI). A
+proper fix will be modifying kmem_cache_node->list_lock to
+raw_spinlock_t.
+
+Regards,
+Boqun
+
+> [    2.298971] other info that might help us debug this:
+> [    2.298971] context-{2:2}
+> [    2.298971] 1 lock held by ksoftirqd/1/15:
+> [    2.298971]  #0: ffffffff835f4140 (rcu_callback){....}-{0:0}, at:
+> rcu_core+0x408/0x1040
+> [    2.298971] stack backtrace:
+> [    2.298971] CPU: 1 PID: 15 Comm: ksoftirqd/1 Not tainted 5.10.0-rc6+ #388
+> [    2.298971] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-0-ga698c89-rebuilt.opensuse.org 04/01/2014
+> [    2.298971] Call Trace:
+> [    2.298971]  <IRQ>
+> [    2.298971]  dump_stack+0x9a/0xcc
+> [    2.298971]  __lock_acquire.cold+0xce/0x34b
+> [    2.298971]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
+> [    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [    2.298971]  lock_acquire+0x153/0x4c0
+> [    2.298971]  ? free_debug_processing+0x3d/0x210
+> [    2.298971]  ? lock_release+0x690/0x690
+> [    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [    2.298971]  ? pvclock_clocksource_read+0xd9/0x1a0
+> [    2.298971]  _raw_spin_lock_irqsave+0x3b/0x80
+> [    2.298971]  ? free_debug_processing+0x3d/0x210
+> [    2.298971]  ? qlist_free_all+0x35/0xd0
+> [    2.298971]  free_debug_processing+0x3d/0x210
+> [    2.298971]  __slab_free+0x286/0x490
+> [    2.298971]  ? lockdep_enabled+0x39/0x50
+> [    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [    2.298971]  ? run_posix_cpu_timers+0x256/0x2c0
+> [    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [    2.298971]  ? posix_cpu_timers_exit_group+0x30/0x30
+> [    2.298971]  qlist_free_all+0x59/0xd0
+> [    2.298971]  ? qlist_free_all+0xd0/0xd0
+> [    2.298971]  per_cpu_remove_cache+0x47/0x50
+> [    2.298971]  flush_smp_call_function_queue+0xea/0x2b0
+> [    2.298971]  __sysvec_call_function+0x6c/0x250
+> [    2.298971]  asm_call_irq_on_stack+0x12/0x20
+> [    2.298971]  </IRQ>
+> [    2.298971]  sysvec_call_function+0x84/0xa0
+> [    2.298971]  asm_sysvec_call_function+0x12/0x20
+> [    2.298971] RIP: 0010:__asan_load4+0x1d/0x80
+> [    2.298971] Code: 10 00 75 ee c3 0f 1f 84 00 00 00 00 00 4c 8b 04
+> 24 48 83 ff fb 77 4d 48 b8 ff ff ff ff ff 7f ff ff 48 39 c7 76 3e 48
+> 8d 47 03 <48> 89 c2 83 e2 07 48 83 fa 02 76 17 48 b9 00 00 00 00 00 fc
+> ff df
+> [    2.298971] RSP: 0000:ffff888100e4f858 EFLAGS: 00000216
+> [    2.298971] RAX: ffffffff83c55773 RBX: ffffffff81002431 RCX: dffffc0000000000
+> [    2.298971] RDX: 0000000000000001 RSI: ffffffff83ee8d78 RDI: ffffffff83c55770
+> [    2.298971] RBP: ffffffff83c5576c R08: ffffffff81083433 R09: fffffbfff07e333d
+> [    2.298971] R10: 000000000001803d R11: fffffbfff07e333c R12: ffffffff83c5575c
+> [    2.298971] R13: ffffffff83c55774 R14: ffffffff83c55770 R15: ffffffff83c55770
+> [    2.298971]  ? ret_from_fork+0x21/0x30
+> [    2.298971]  ? __orc_find+0x63/0xc0
+> [    2.298971]  ? stack_access_ok+0x35/0x90
+> [    2.298971]  __orc_find+0x63/0xc0
+> [    2.298971]  unwind_next_frame+0x1ee/0xbd0
+> [    2.298971]  ? ret_from_fork+0x22/0x30
+> [    2.298971]  ? ret_from_fork+0x21/0x30
+> [    2.298971]  ? deref_stack_reg+0x40/0x40
+> [    2.298971]  ? __unwind_start+0x2e8/0x370
+> [    2.298971]  ? create_prof_cpu_mask+0x20/0x20
+> [    2.298971]  arch_stack_walk+0x83/0xf0
+> [    2.298971]  ? ret_from_fork+0x22/0x30
+> [    2.298971]  ? rcu_core+0x488/0x1040
+> [    2.298971]  stack_trace_save+0x8c/0xc0
+> [    2.298971]  ? stack_trace_consume_entry+0x80/0x80
+> [    2.298971]  ? sched_clock_local+0x99/0xc0
+> [    2.298971]  kasan_save_stack+0x1b/0x40
+> [    2.298971]  ? kasan_save_stack+0x1b/0x40
+> [    2.298971]  ? kasan_set_track+0x1c/0x30
+> [    2.298971]  ? kasan_set_free_info+0x1b/0x30
+> [    2.298971]  ? __kasan_slab_free+0x10f/0x150
+> [    2.298971]  ? kmem_cache_free+0xa8/0x350
+> [    2.298971]  ? rcu_core+0x488/0x1040
+> [    2.298971]  ? __do_softirq+0x101/0x573
+> [    2.298971]  ? run_ksoftirqd+0x21/0x50
+> [    2.298971]  ? smpboot_thread_fn+0x1fc/0x380
+> [    2.298971]  ? kthread+0x1c7/0x220
+> [    2.298971]  ? ret_from_fork+0x22/0x30
+> [    2.298971]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
+> [    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [    2.298971]  ? lock_acquire+0x153/0x4c0
+> [    2.298971]  ? rcu_core+0x408/0x1040
+> [    2.298971]  ? lock_release+0x690/0x690
+> [    2.298971]  ? lockdep_enabled+0x39/0x50
+> [    2.298971]  ? mark_held_locks+0x49/0x90
+> [    2.298971]  kasan_set_track+0x1c/0x30
+> [    2.298971]  kasan_set_free_info+0x1b/0x30
+> [    2.298971]  __kasan_slab_free+0x10f/0x150
+> [    2.298971]  ? rcu_core+0x488/0x1040
+> [    2.298971]  kmem_cache_free+0xa8/0x350
+> [    2.298971]  ? __ia32_compat_sys_move_pages+0x130/0x130
+> [    2.298971]  rcu_core+0x488/0x1040
+> [    2.298971]  ? call_rcu+0x5d0/0x5d0
+> [    2.298971]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [    2.298971]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [    2.298971]  __do_softirq+0x101/0x573
+> [    2.298971]  ? trace_event_raw_event_irq_handler_exit+0x150/0x150
+> [    2.298971]  run_ksoftirqd+0x21/0x50
+> [    2.298971]  smpboot_thread_fn+0x1fc/0x380
+> [    2.298971]  ? smpboot_register_percpu_thread+0x180/0x180
+> [    2.298971]  ? __kthread_parkme+0xbb/0xd0
+> [    2.298971]  ? smpboot_register_percpu_thread+0x180/0x180
+> [    2.298971]  kthread+0x1c7/0x220
+> [    2.298971]  ? kthread_create_on_node+0xd0/0xd0
+> [    2.298971]  ret_from_fork+0x22/0x30
+> 
+> -- 
+> Thanks,
+> //richard
