@@ -2,116 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDFA2D1C15
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC132D1C03
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727555AbgLGV1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:27:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgLGV1E (ORCPT
+        id S1727258AbgLGVZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:25:21 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:38151 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbgLGVZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:27:04 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE725C0619D2;
-        Mon,  7 Dec 2020 13:23:52 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id j17so6097348ybt.9;
-        Mon, 07 Dec 2020 13:23:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EJOHc17zvEobDOFxwlnd1L4iMrQot9jcPwqhnGntr9I=;
-        b=PR89FjhyROMYrzNdU/CC1sy61GlJsq1xPP9zXtszWtlNZ1p9hqWSvP2SAeHJOYSl+r
-         nrK2vOZakMjvi20D89GE3y+afmrxePMvpvVuVzav3DjsiGaClZ6l3yvxfuXm7SO3vq7m
-         9PYtA7ZXzMj4Kn2AyiQIdC/rHf3Fnot0r9Ao05CEhVJneTKf8OxQsc7AXdyXdlCEfgiJ
-         utkc38Yit/vo2z7dOgwMtN8EuNG2hfZPE4G4i3EJXcicSD1P53NayKTisC8ahbsqrxzw
-         DhZw5pZLZxEgcqC5CTvR38f/EGBvBTC28qk8a4ro4Ld+r4+WCFDFWQJberhAK2FTaabZ
-         e+Uw==
+        Mon, 7 Dec 2020 16:25:20 -0500
+Received: by mail-oo1-f65.google.com with SMTP id i18so1513654ooh.5;
+        Mon, 07 Dec 2020 13:25:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EJOHc17zvEobDOFxwlnd1L4iMrQot9jcPwqhnGntr9I=;
-        b=El6XLlwdlX+G7iQU9o5gc9wD4w1Am8LuIf1klHXjxiKpYojIQIDMe+4RZDQ0SS/jbw
-         tHFP+dDir8zB4Tu9unGUisV+YEoW79vBJH/CQ3YJwSRCT4DY6irP+xUElS+IyATSpioX
-         UID19Ou6nXTKj7nrwMEkgOh4JMBHuNvJrqCUanSY2eCrrkWf9BMzHgdMUvLQ9xL2Fp+j
-         uT2n778dgdHpTEc2lh+XRldPXWlcS009osfe7vovCMnRad+iXkSZRuRQVZcZ4rE6c+Pm
-         D7iOyejl53TfO4vKB/kcRS5WaLNyF2D9e56VJsg8GFBJ9jEfFc0RXki6jlQssttRjW0h
-         vRHA==
-X-Gm-Message-State: AOAM533FbuVHS8F+2TbMozVKRRuTq9dIGzQlHT9rQrU/jHbKnLW7GILu
-        wrdtgKR69WcHthNV8VQq1NNuW3EYbQiYqhAepTfw56Sj
-X-Google-Smtp-Source: ABdhPJx5qZ+rLue5yDZ0J7fW53DlyRNWKSX802X7XAN4N0j77LPTesms57jetylejWawrq8UlQ0Y7Omr67EaQhDYMHk=
-X-Received: by 2002:a25:cad2:: with SMTP id a201mr25315070ybg.327.1607376232060;
- Mon, 07 Dec 2020 13:23:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GbKFyK+bj3scwp0qwbdvcfXsN5hUceuEsoUppfFf8iM=;
+        b=pE3IgKzsAjkrurZyx7STPkWKWaihWaO6IojpYMMFrdQdYJ1o6FmFhKyi2kjjzBozIu
+         C8Nl5leKKauxoqt6HEm6Xc/U8VZpza+FyqL0Y3sfLEl2FQnt/Z5ViPiVZA6axGDcnyrW
+         cmSOC34DiMXR7K99RJ7iLDX2ag7xsMUaN8IUd3cVQc7MXoLL8mBtOu0TwG6FhmnQm/Px
+         tftOsXgX7vGz0rAPzu6drT2j2RMtSQjWjOnoPg135Hxnog67IONRYYSZ7AGMjBHT9lv3
+         XAO8kR8bzMSTARUIhSEh+C4rp7L99rvN6DUC/pgrnjzAFxiJG4qBzd2cq13VUeZTQvQt
+         F2bg==
+X-Gm-Message-State: AOAM533M40h6kAyscrN0SaJMTkYrtSa9IXQf1l/vUcrAD11RzSJdVt5r
+        y/8goFP7yJY9KqIMlblC+w==
+X-Google-Smtp-Source: ABdhPJxSpRGeFf2aaF9i1HlopKWwPT+FJ2GXD1LT5HXaoNIqwCZ0kxh5jmO+CjFdYKBitYHCs2x5eg==
+X-Received: by 2002:a4a:8f98:: with SMTP id c24mr14164872ooj.27.1607376278430;
+        Mon, 07 Dec 2020 13:24:38 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y35sm2909698otb.5.2020.12.07.13.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 13:24:37 -0800 (PST)
+Received: (nullmailer pid 852485 invoked by uid 1000);
+        Mon, 07 Dec 2020 21:24:36 -0000
+Date:   Mon, 7 Dec 2020 15:24:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 09/11] dt-bindings: usb: convert mediatek,mtk-xhci.txt
+ to YAML schema
+Message-ID: <20201207212436.GA844756@robh.at.kernel.org>
+References: <20201118082126.42701-1-chunfeng.yun@mediatek.com>
+ <20201118082126.42701-9-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-References: <20201027204226.26906-1-pboris@amazon.com> <CAHhKpQ7v_nPwBx2czk7rVXK3ZrmsZrAkcxDFOgq0ABTOVc7iSA@mail.gmail.com>
- <CANT5p=q2YvkEOEa4bS=-nbPOc9Xwa=4gnc09csCcszMmMjYSPg@mail.gmail.com>
- <CAHhKpQ7PwgDysS3nUAA0ALLdMZqnzG6q6wL1tmn3aqOPwZbyyg@mail.gmail.com> <CAKywueSZ5bfOxXVH6dkpjDjDawo-JdHjoSdQBYqrhrg7Zoi=Bw@mail.gmail.com>
-In-Reply-To: <CAKywueSZ5bfOxXVH6dkpjDjDawo-JdHjoSdQBYqrhrg7Zoi=Bw@mail.gmail.com>
-From:   Boris Protopopov <boris.v.protopopov@gmail.com>
-Date:   Mon, 7 Dec 2020 16:23:41 -0500
-Message-ID: <CAHhKpQ7GJK8HMf31Lri8z4khqJtu=nm79Q_A5yUS_5iDFmVj7w@mail.gmail.com>
-Subject: Re: [PATCH] Add support for getting and setting SACLs
-To:     Pavel Shilovsky <piastryyy@gmail.com>
-Cc:     Shyam Prasad N <nspmangalore@gmail.com>,
-        Boris Protopopov <pboris@amazon.com>,
-        Steve French <sfrench@samba.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118082126.42701-9-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI, Pavel,
+On Wed, Nov 18, 2020 at 04:21:24PM +0800, Chunfeng Yun wrote:
+> Convert mediatek,mtk-xhci.txt to YAML schema mediatek,mtk-xhci.yaml
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v3:
+>   1. fix yamllint warning
+>   2. remove pinctrl* properties supported by default suggested by Rob
+>   3. drop unused labels
+>   4. modify description of mediatek,syscon-wakeup
+>   5. remove type of imod-interval-ns
+> 
+> v2: new patch
+> ---
+>  .../bindings/usb/mediatek,mtk-xhci.txt        | 121 -------------
+>  .../bindings/usb/mediatek,mtk-xhci.yaml       | 171 ++++++++++++++++++
+>  2 files changed, 171 insertions(+), 121 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+> deleted file mode 100644
+> index 42d8814f903a..000000000000
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+> +++ /dev/null
+> @@ -1,121 +0,0 @@
+> -MT8173 xHCI
+> -
+> -The device node for Mediatek SOC USB3.0 host controller
+> -
+> -There are two scenarios: the first one only supports xHCI driver;
+> -the second one supports dual-role mode, and the host is based on xHCI
+> -driver. Take account of backward compatibility, we divide bindings
+> -into two parts.
+> -
+> -1st: only supports xHCI driver
+> -------------------------------------------------------------------------
+> -
+> -Required properties:
+> - - compatible : should be "mediatek,<soc-model>-xhci", "mediatek,mtk-xhci",
+> -	soc-model is the name of SoC, such as mt8173, mt2712 etc, when using
+> -	"mediatek,mtk-xhci" compatible string, you need SoC specific ones in
+> -	addition, one of:
+> -	- "mediatek,mt8173-xhci"
+> - - reg : specifies physical base address and size of the registers
+> - - reg-names: should be "mac" for xHCI MAC and "ippc" for IP port control
+> - - interrupts : interrupt used by the controller
+> - - power-domains : a phandle to USB power domain node to control USB's
+> -	mtcmos
+> - - vusb33-supply : regulator of USB avdd3.3v
+> -
+> - - clocks : a list of phandle + clock-specifier pairs, one for each
+> -	entry in clock-names
+> - - clock-names : must contain
+> -	"sys_ck": controller clock used by normal mode,
+> -	the following ones are optional:
+> -	"ref_ck": reference clock used by low power mode etc,
+> -	"mcu_ck": mcu_bus clock for register access,
+> -	"dma_ck": dma_bus clock for data transfer by DMA,
+> -	"xhci_ck": controller clock
+> -
+> - - phys : see usb-hcd.yaml in the current directory
+> -
+> -Optional properties:
+> - - wakeup-source : enable USB remote wakeup;
+> - - mediatek,syscon-wakeup : phandle to syscon used to access the register
+> -	of the USB wakeup glue layer between xHCI and SPM; it depends on
+> -	"wakeup-source", and has two arguments:
+> -	- the first one : register base address of the glue layer in syscon;
+> -	- the second one : hardware version of the glue layer
+> -		- 1 : used by mt8173 etc
+> -		- 2 : used by mt2712 etc
+> - - mediatek,u3p-dis-msk : mask to disable u3ports, bit0 for u3port0,
+> -	bit1 for u3port1, ... etc;
+> - - vbus-supply : reference to the VBUS regulator;
+> - - usb3-lpm-capable : supports USB3.0 LPM
+> - - pinctrl-names : a pinctrl state named "default" must be defined
+> - - pinctrl-0 : pin control group
+> -	See: Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
+> - - imod-interval-ns: default interrupt moderation interval is 5000ns
+> -
+> -additionally the properties from usb-hcd.yaml (in the current directory) are
+> -supported.
+> -
+> -Example:
+> -usb30: usb@11270000 {
+> -	compatible = "mediatek,mt8173-xhci";
+> -	reg = <0 0x11270000 0 0x1000>,
+> -	      <0 0x11280700 0 0x0100>;
+> -	reg-names = "mac", "ippc";
+> -	interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_LOW>;
+> -	power-domains = <&scpsys MT8173_POWER_DOMAIN_USB>;
+> -	clocks = <&topckgen CLK_TOP_USB30_SEL>, <&clk26m>,
+> -		 <&pericfg CLK_PERI_USB0>,
+> -		 <&pericfg CLK_PERI_USB1>;
+> -	clock-names = "sys_ck", "ref_ck";
+> -	phys = <&phy_port0 PHY_TYPE_USB3>,
+> -	       <&phy_port1 PHY_TYPE_USB2>;
+> -	vusb33-supply = <&mt6397_vusb_reg>;
+> -	vbus-supply = <&usb_p1_vbus>;
+> -	usb3-lpm-capable;
+> -	mediatek,syscon-wakeup = <&pericfg 0x400 1>;
+> -	wakeup-source;
+> -	imod-interval-ns = <10000>;
+> -};
+> -
+> -2nd: dual-role mode with xHCI driver
+> -------------------------------------------------------------------------
+> -
+> -In the case, xhci is added as subnode to mtu3. An example and the DT binding
+> -details of mtu3 can be found in:
+> -Documentation/devicetree/bindings/usb/mediatek,mtu3.txt
+> -
+> -Required properties:
+> - - compatible : should be "mediatek,<soc-model>-xhci", "mediatek,mtk-xhci",
+> -	soc-model is the name of SoC, such as mt8173, mt2712 etc, when using
+> -	"mediatek,mtk-xhci" compatible string, you need SoC specific ones in
+> -	addition, one of:
+> -	- "mediatek,mt8173-xhci"
+> - - reg : specifies physical base address and size of the registers
+> - - reg-names: should be "mac" for xHCI MAC
+> - - interrupts : interrupt used by the host controller
+> - - power-domains : a phandle to USB power domain node to control USB's
+> -	mtcmos
+> - - vusb33-supply : regulator of USB avdd3.3v
+> -
+> - - clocks : a list of phandle + clock-specifier pairs, one for each
+> -	entry in clock-names
+> - - clock-names : must contain "sys_ck", and the following ones are optional:
+> -	"ref_ck", "mcu_ck" and "dma_ck", "xhci_ck"
+> -
+> -Optional properties:
+> - - vbus-supply : reference to the VBUS regulator;
+> - - usb3-lpm-capable : supports USB3.0 LPM
+> -
+> -Example:
+> -usb30: usb@11270000 {
+> -	compatible = "mediatek,mt8173-xhci";
+> -	reg = <0 0x11270000 0 0x1000>;
+> -	reg-names = "mac";
+> -	interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_LOW>;
+> -	power-domains = <&scpsys MT8173_POWER_DOMAIN_USB>;
+> -	clocks = <&topckgen CLK_TOP_USB30_SEL>, <&clk26m>;
+> -	clock-names = "sys_ck", "ref_ck";
+> -	vusb33-supply = <&mt6397_vusb_reg>;
+> -	usb3-lpm-capable;
+> -};
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> new file mode 100644
+> index 000000000000..4a36ad5c4d25
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -0,0 +1,171 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/mediatek,mtk-xhci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek USB3 xHCI Device Tree Bindings
+> +
+> +maintainers:
+> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
+> +
+> +allOf:
+> +  - $ref: "usb-hcd.yaml"
+> +
+> +description: |
+> +  There are two scenarios:
+> +  case 1: only supports xHCI driver;
+> +  case 2: supports dual-role mode, and the host is based on xHCI driver.
+> +
+> +properties:
+> +  # common properties for both case 1 and case 2
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt2712-xhci
+> +          - mediatek,mt7622-xhci
+> +          - mediatek,mt7629-xhci
+> +          - mediatek,mt8173-xhci
+> +          - mediatek,mt8183-xhci
+> +      - const: mediatek,mtk-xhci
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: the registers of xHCI MAC
+> +      - description: the registers of IP Port Control
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - const: mac
+> +      - const: ippc  # optional, only needed for case 1.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    description: A phandle to USB power domain node to control USB's MTCMOS
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 5
+> +    items:
+> +      - description: Controller clock used by normal mode
+> +      - description: Reference clock used by low power mode etc
+> +      - description: Mcu bus clock for register access
+> +      - description: DMA bus clock for data transfer
+> +      - description: controller clock
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 5
+> +    items:
+> +      - const: sys_ck  # required, the following ones are optional
+> +      - const: ref_ck
+> +      - const: mcu_ck
+> +      - const: dma_ck
+> +      - const: xhci_ck
+> +
+> +  phys:
+> +    $ref: /usb/usb-hcd.yaml#
 
-yes, thanks for the pointer, will include in the future.
+That's not right.
 
-Boris.
+You need 'items' and list each entry.
 
-On Mon, Dec 7, 2020 at 2:05 PM Pavel Shilovsky <piastryyy@gmail.com> wrote:
->
-> Hi Boris,
->
-> Are you talking about this patch "[PATCH] Extend cifs acl utilities to
-> handle SACLs"?
->
-> Just for the future, I am trying to monitor the samba-dev mailing list
-> but if you would like to get the fastest response to your patches then
-> please include me directly or at least the linux-cifs mailing list.
->
-> I stage pending patches in the "next" branch on my github tree, so,
-> will include the one above.
->
-> https://github.com/piastry/cifs-utils/commits/next
->
-> --
-> Best regards,
-> Pavel Shilovsky
->
-> =D0=BF=D0=BD, 7 =D0=B4=D0=B5=D0=BA. 2020 =D0=B3. =D0=B2 07:28, Boris Prot=
-opopov <boris.v.protopopov@gmail.com>:
-> >
-> > Hello, Shyam,
-> >
-> > sorry for the delayed reply and thanks for looking at this patch. Yes,
-> > the testing was done using the extended versions of
-> > getcifsacl/setcifsacl (added setting owner and SACL support), the
-> > patch for that posted recently via samba-technical (message ID
-> > <20201120214918.12517-1-pboris@amazon.com>). I have tested
-> > setting/getting the owner, DACL, and SACL, for all the DACL/SACL flags
-> > (-a, -D, -M, -S), SACL type SYSTEM_AUDIT. This testing was done
-> > against 5.10.0-rc1 and 4.14.203 (the latter required porting the
-> > user-space patch). I believe this testing has fully exercised the code
-> > changes in question.
-> >
-> > I will look at contributing to the fsxtesting-cifs code, but I think
-> > the setcifsacl/getcifsact patch that enables easy access to the
-> > descriptor components is a pre-requisite for such contributions.
-> >
-> > Thanks!
-> >
-> >
+> +    description: List of all the USB PHYs on this HCD
+> +
+> +  vusb33-supply:
+> +    description: Regulator of USB AVDD3.3v
+> +
+> +  vbus-supply:
+> +    description: Regulator of USB VBUS5v
+> +
+> +  usb3-lpm-capable:
+> +    description: supports USB3.0 LPM
+> +    type: boolean
+> +
+> +  imod-interval-ns:
+> +    description:
+> +      Interrupt moderation interval value, it is 8 times as much as that
+> +      defined in the xHCI spec on MTK's controller.
+> +    default: 5000
+> +
+> +  # the following properties are only used for case 1
+> +  wakeup-source:
+> +    description: enable USB remote wakeup, see power/wakeup-source.txt
+> +    type: boolean
+> +
+> +  mediatek,syscon-wakeup:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 1
+> +    description: |
+> +      A phandle to syscon used to access the register of the USB wakeup glue
+> +      layer between xHCI and SPM, the field should always be 3 cells long.
+> +
+> +      items:
+
+Indentation is wrong here. Should be 2 fewer spaces.
+
+> +        - description:
+> +            The first cell represents a phandle to syscon
+> +        - description:
+> +            The second cell represents the register base address of the glue
+> +            layer in syscon
+> +        - description:
+> +            The third cell represents the hardware version of the glue layer,
+> +            1 is used by mt8173 etc, 2 is used by mt2712 etc
+> +          enum: [1, 2]
+> +
+> +  mediatek,u3p-dis-msk:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The mask to disable u3ports, bit0 for u3port0,
+> +      bit1 for u3port1, ... etc
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^[a-f]+@[0-9a-f]+$":
+> +    $ref: /usb/usb-hcd.yaml#
+
+This $ref isn't right. You already referenced it at the top.
+
+> +    type: object
+> +    description: The hard wired USB devices.
+> +
+> +dependencies:
+> +  wakeup-source: [ 'mediatek,syscon-wakeup' ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/phy/phy.h>
+> +    #include <dt-bindings/power/mt8173-power.h>
+> +
+> +    usb@11270000 {
+> +        compatible = "mediatek,mt8173-xhci", "mediatek,mtk-xhci";
+> +        reg = <0x11270000 0x1000>, <0x11280700 0x0100>;
+> +        reg-names = "mac", "ippc";
+> +        interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_LOW>;
+> +        power-domains = <&scpsys MT8173_POWER_DOMAIN_USB>;
+> +        clocks = <&topckgen CLK_TOP_USB30_SEL>, <&clk26m>;
+> +        clock-names = "sys_ck", "ref_ck";
+> +        phys = <&u3port0 PHY_TYPE_USB3>, <&u2port1 PHY_TYPE_USB2>;
+> +        vusb33-supply = <&mt6397_vusb_reg>;
+> +        vbus-supply = <&usb_p1_vbus>;
+> +        imod-interval-ns = <10000>;
+> +        mediatek,syscon-wakeup = <&pericfg 0x400 1>;
+> +        wakeup-source;
+> +        usb3-lpm-capable;
+> +    };
+> +...
+> -- 
+> 2.18.0
+> 
