@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BC22D1217
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B072D1219
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgLGNav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:30:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45070 "EHLO mail.kernel.org"
+        id S1726948AbgLGNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:31:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34058 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726076AbgLGNau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:30:50 -0500
-Date:   Mon, 7 Dec 2020 13:30:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607347809;
-        bh=k2URTkzxeMwoISkkN5bsau+WynBK8IIMYqLAxO5uPHo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EkiSBGDGIUXUBAsl7n0jcDNZQKUWTkQvfstxJ+jZf/uj5r5ILwZ5MF/FZhSJGFVMR
-         6hXL/BvhfSFTFphlMUf4b5JgAy/0+mNbxivH757hLWsEIztFfoev1iDE8d9NrvP1l8
-         MPdInRyMdID5NYfRYnvLAjogzzhLcf4Ji95p0c005MTvM6/u8agd69ffHFeZC3icxn
-         tq+4hjL/amgUD/5YJdBAvdiMZX6ovbb7Tbo6z5k3x57gaJX/XbggoCo6CZkvP1/MJ8
-         BvgdWNbinjiVMeT9buffxbIfdPC1/e6fY+179RJPXvGhj7flpzLSu5/25eS6YN2Rrv
-         jVhiefA4XYQVQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] regulator: Add regulator driver for ATC260x PMICs
-Message-ID: <20201207133003.GC5694@sirena.org.uk>
-References: <cover.1607216141.git.cristian.ciocaltea@gmail.com>
- <f001986493a51fe591cb09a544770651bf589d35.1607216141.git.cristian.ciocaltea@gmail.com>
+        id S1726276AbgLGNbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:31:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607347829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TlW6LRYzNqv2k8YiMXo4C8ho53DA5MhvO4sDaaIu7G8=;
+        b=Isny2xaeNXr0QwvWgDPZvWhlph9aEdARWAGMR8XD8mIwJQVGDRljPeuqNDCgqaNncogi7U
+        kExKzaMsp3RukRSg9ga3/hbaAlEjkMHMsOZBAa9to1CWegHsRMFs8r6bfuK7vxPsMa92G0
+        EoXiC//R5iM0/X6/MTVWmbjDGY0eTzI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 04B78AB63;
+        Mon,  7 Dec 2020 13:30:29 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH 0/2] xen: fix using ZONE_DEVICE memory for foreign mappings
+Date:   Mon,  7 Dec 2020 14:30:22 +0100
+Message-Id: <20201207133024.16621-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3siQDZowHQqNOShm"
-Content-Disposition: inline
-In-Reply-To: <f001986493a51fe591cb09a544770651bf589d35.1607216141.git.cristian.ciocaltea@gmail.com>
-X-Cookie: Absinthe makes the tart grow fonder.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix an issue found in dom0 when running on a host with NVMe.
 
---3siQDZowHQqNOShm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Juergen Gross (2):
+  xen: add helpers for caching grant mapping pages
+  xen: don't use page->lru for ZONE_DEVICE memory
 
-On Sun, Dec 06, 2020 at 03:27:04AM +0200, Cristian Ciocaltea wrote:
+ drivers/block/xen-blkback/blkback.c |  89 ++++----------------
+ drivers/block/xen-blkback/common.h  |   4 +-
+ drivers/block/xen-blkback/xenbus.c  |   6 +-
+ drivers/xen/grant-table.c           | 123 ++++++++++++++++++++++++++++
+ drivers/xen/unpopulated-alloc.c     |  20 +++--
+ drivers/xen/xen-scsiback.c          |  60 +++-----------
+ include/xen/grant_table.h           |  17 ++++
+ 7 files changed, 182 insertions(+), 137 deletions(-)
 
-> +/*
-> + * ATC2603C notes:
-> + * - LDO8 is not documented in datasheet (v2.4), but supported
-> + *   in the vendor's driver implementation (xapp-le-kernel).
-> + * - LDO12 mentioned in datasheet is not programmable, hence not
-> + *   handled in this driver.
-> + */
+-- 
+2.26.2
 
-No reason not to include LDO12 here, the framework supports fixed
-regulators fine and the bindings should reflect the physical structure
-of the hardware - if something is being supplied by LDO12 on the PMIC
-then you'd expect the binding showing a connection from LDO12.
-
---3siQDZowHQqNOShm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/OLloACgkQJNaLcl1U
-h9DGdQf5AayPz6I++uKbGeHYLcff0IAmsUsjS4QBP72ZGYTA28F3UvsIbL1ACLco
-prlBF8LC5X/qWiTRWfVd5yEs5/0kHS+L3lp/HXCw665aoJz13Q4jBO6seyWC76Bd
-xNKlouA2lDrKUJ4f/Nxmi4q0F9m+b6h3AgT/kMtvrnLAp+s+3Y7WR6GGUnHBN6V+
-lQT+OjUn9DE3rqjIzZVqB6MLxBSjX/Oy0mZKz1Xn5PS2C9PY2tHY8wx07ytPE3xA
-zqNiMelOGIbE7mYKEB4Pl0b9qDXFe6OIkRgFTRdbpJyr6hiLC+XmhJojcDyUf7Zh
-y6q5jlwVCos1QC1zB8M6z4fEUm57SA==
-=yD4E
------END PGP SIGNATURE-----
-
---3siQDZowHQqNOShm--
