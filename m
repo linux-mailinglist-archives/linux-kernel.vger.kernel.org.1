@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140AB2D1472
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232F82D1473
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgLGPJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:09:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33786 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgLGPJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:09:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607353743; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7RsLkVdlKW2JLj2RfGQG78NhVgvfEuANtMbySI98QQQ=;
-        b=FpL5im6xdBPNTwI0VJejyVkNHligc44w05ikwoMOxpq6LgNg3/4lSSlUjejunNBLXOIRIn
-        F0HGr8LRMJYqby5qTOJhh9/p3FqCfVQA74WaKBYtiB99a/gVZp53Wd7MMzQkD7NLJ38uNB
-        b1W+ClaJOZdhrEoN/UrEnHLAZTf4Kcw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEB01ABE9;
-        Mon,  7 Dec 2020 15:09:02 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 16:09:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        alexander.h.duyck@linux.intel.com,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: optimize per-lruvec stats
- counter memory usage
-Message-ID: <20201207150847.GM25569@dhcp22.suse.cz>
-References: <20201206085639.12627-1-songmuchun@bytedance.com>
- <20201207123605.GH25569@dhcp22.suse.cz>
- <CAMZfGtUhG26cTgbSmg4g+rwOtEFhgbE3QXPR_LUf3FS-s=YbOA@mail.gmail.com>
+        id S1726596AbgLGPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:10:29 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:37778 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgLGPK3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:10:29 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kmI8v-0006O4-Im; Mon, 07 Dec 2020 15:09:37 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        chunhui dai <chunhui.dai@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/mediatek: avoid dereferencing a null hdmi_phy on an error message
+Date:   Mon,  7 Dec 2020 15:09:37 +0000
+Message-Id: <20201207150937.170435-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtUhG26cTgbSmg4g+rwOtEFhgbE3QXPR_LUf3FS-s=YbOA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 07-12-20 20:56:58, Muchun Song wrote:
-> On Mon, Dec 7, 2020 at 8:36 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Sun 06-12-20 16:56:39, Muchun Song wrote:
-> > > The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
-> > > of lruvec_stat_cpu is enough. And introduce struct per_cpu_lruvec_stat
-> > > to optimize memory usage.
-> >
-> > How much savings are we talking about here? I am not deeply familiar
-> > with the pcp allocator but can it compact smaller data types much
-> > better?
-> 
-> It is a percpu struct. The size of struct lruvec_stat is 304(tested on the
-> linux-5.5). So we can save 304 / 2 * nproc bytes per memcg where nproc
-> is the number of the possible CPU. If we have n memory cgroup in the
-> system. Finally, we can save (152 * nproc * n) bytes. In some configurations,
-> nproc here may be 512. And if we have a lot of dying cgroup. The n can be
-> 100, 000 (I once saw it on my server).
+From: Colin Ian King <colin.king@canonical.com>
 
-This should be part of the changelog. In general, any optimization
-should come with some numbers showing the effect of the optimization.
+Currently there is a null pointer check for hdmi_phy that implies it
+may be null, however a dev_err messages dereferences this potential null
+pointer.  Avoid a null pointer dereference by only emitting the dev_err
+message if hdmi_phy is non-null.  It is a moot point if the error message
+needs to be printed at all, but since this is a relatively new piece of
+code it may be useful to keep the message in for the moment in case there
+are unforseen errors that need to be reported.
 
-As I've said I am not really familiar with pcp internals and how
-efficiently it can organize smaller objects. Maybe it can really half
-the memory consumption.
+Addresses-Coverity: ("Dereference after null check")
+Fixes: be28b6507c46 ("drm/mediatek: separate hdmi phy to different file")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/phy/mediatek/phy-mtk-hdmi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-My only concern is that using smaller types for these counters can fire
-back later on because we have an inderect dependency between the batch
-size and the data type.  In general I do not really object to the patch
-as long as savings are non trivial so that we are not creating a
-potential trap for something that is practically miniscule
-microptimization.
+diff --git a/drivers/phy/mediatek/phy-mtk-hdmi.c b/drivers/phy/mediatek/phy-mtk-hdmi.c
+index c5c61f5a9ea0..5184054783c7 100644
+--- a/drivers/phy/mediatek/phy-mtk-hdmi.c
++++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
+@@ -84,8 +84,9 @@ mtk_hdmi_phy_dev_get_ops(const struct mtk_hdmi_phy *hdmi_phy)
+ 	    hdmi_phy->conf->hdmi_phy_disable_tmds)
+ 		return &mtk_hdmi_phy_dev_ops;
+ 
+-	dev_err(hdmi_phy->dev, "Failed to get dev ops of phy\n");
+-		return NULL;
++	if (hdmi_phy)
++		dev_err(hdmi_phy->dev, "Failed to get dev ops of phy\n");
++			return NULL;
+ }
+ 
+ static void mtk_hdmi_phy_clk_get_data(struct mtk_hdmi_phy *hdmi_phy,
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
