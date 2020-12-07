@@ -2,128 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6D12D107A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FCA2D107F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgLGMVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:21:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23641 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726817AbgLGMVF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:21:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607343579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Itvlqd0kxvScpcIk5b9oFbJP3emazAwFYL5MTR3etUM=;
-        b=LlZiIGlu50Rhg+aqxUj1BLJW+i/QpbpW73vMrMimR4xj0j2VrBINDucg70rCGVFHOk6ecU
-        G/qtsogj+sGax3qeiku8828fbpa4sYCEeUWffnUQs5KkFiRZkXDqpv+Ib8ZwB//eDvejTy
-        ME94B5tfNSKQcfrGMswucAXxJesMO2I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-rKIvg7AJOtuzNUgkU0omkw-1; Mon, 07 Dec 2020 07:19:35 -0500
-X-MC-Unique: rKIvg7AJOtuzNUgkU0omkw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A23B8107ACE4;
-        Mon,  7 Dec 2020 12:19:31 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FFE35D6AB;
-        Mon,  7 Dec 2020 12:19:26 +0000 (UTC)
-Subject: Re: [PATCH v7 03/15] mm/hugetlb: Introduce a new config
- HUGETLB_PAGE_FREE_VMEMMAP
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-4-songmuchun@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <2ec1d360-c8c8-eb7b-2afe-b75ee61cfcea@redhat.com>
-Date:   Mon, 7 Dec 2020 13:19:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201130151838.11208-4-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S1727308AbgLGMW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:22:28 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:57402 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726748AbgLGMW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:22:28 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutBWHs5fUWAaAA--.43228S2;
+        Mon, 07 Dec 2020 20:21:43 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2] MIPS: Select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL to enable sysfs memblock debug
+Date:   Mon,  7 Dec 2020 20:21:42 +0800
+Message-Id: <1607343702-28318-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxutBWHs5fUWAaAA--.43228S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw1fuFyxJF45trWfKFyfWFg_yoWkGwb_Jw
+        srtw1DGr1fJrW0kr4IgFs3XFyYq3yUur95AFsF9r13Z34xXa43W3yvkr95XrnxG3yDA3yr
+        X3yFv3W5Gw4qgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUJ733UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.20 16:18, Muchun Song wrote:
-> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> whether to enable the feature of freeing unused vmemmap associated
-> with HugeTLB pages. And this is just for dependency check. Now only
-> support x86.
+In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+memblock_discard() will discard memory and reserved arrays if they were
+allocated, select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL to give a chance to
+track "memory" and "reserved" memblocks after early boot, with this patch,
+we can see the following two sysfs interfaces under DEBUG_FS.
 
-x86 - i386 and x86-64? (I assume the latter only ;) )
+/sys/kernel/debug/memblock/memory
+/sys/kernel/debug/memblock/reserved
 
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  arch/x86/mm/init_64.c |  2 +-
->  fs/Kconfig            | 14 ++++++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 0a45f062826e..0435bee2e172 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
->  
->  static void __init register_page_bootmem_info(void)
->  {
-> -#ifdef CONFIG_NUMA
-> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->  	int i;
->  
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-Why does this hunk belong into this patch? Looks like this should go
-into another patch.
+v2:
+  - select ARCH_KEEP_MEMBLOCK only if DEBUG_KERNEL
 
->  	for_each_online_node(i)
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 976e8b9033c4..4961dd488444 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -245,6 +245,20 @@ config HUGETLBFS
->  config HUGETLB_PAGE
->  	def_bool HUGETLBFS
->  
-> +config HUGETLB_PAGE_FREE_VMEMMAP
-> +	def_bool HUGETLB_PAGE
-> +	depends on X86
-> +	depends on SPARSEMEM_VMEMMAP
-> +	depends on HAVE_BOOTMEM_INFO_NODE
-> +	help
-> +	  When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
-> +	  memory from pre-allocated HugeTLB pages when they are not used.
-> +	  6 pages per 2MB HugeTLB page and 4094 per 1GB HugeTLB page.
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Calculations only apply to 4k base pages, no? (maybe generalize this a
-bit or mention 4k base pages - I'm pretty sure we'll see the "depends on
-X86" part fairly soon if this goes upstream)
-
-
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b49a390..85c7b06 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -10,6 +10,7 @@ config MIPS
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
++	select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL
+ 	select ARCH_SUPPORTS_UPROBES
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
 -- 
-Thanks,
-
-David / dhildenb
+2.1.0
 
