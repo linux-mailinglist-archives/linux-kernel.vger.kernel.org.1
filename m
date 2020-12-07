@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD9A2D1655
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C772D160A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727895AbgLGQfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:35:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27900 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727754AbgLGQeh (ORCPT
+        id S1726795AbgLGQdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:33:39 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:35979 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgLGQdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:34:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607358791;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=slnEJYBwmhqKOQO5uk6sWnTW5gdRX2VMxeSBeR8XW8Q=;
-        b=A8aux/tMi/UcrLstNz5wCEjHGNGnUT/jQj8IMN6vXKIeTDimn8c8ukXoDTs3hGAMVEqLra
-        kgGGFnKy/u3e/qjwLRHBOEybm37rOFijQ5/7l2IxvQEtybabOx3K2eORPTkjh9ujMgOvyg
-        QxjSNw/dyTt1yMGF+v6ViiVg6zwEQ1M=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-q6pjIAgCOs-a2g3kQvCVqQ-1; Mon, 07 Dec 2020 11:33:07 -0500
-X-MC-Unique: q6pjIAgCOs-a2g3kQvCVqQ-1
-Received: by mail-ej1-f71.google.com with SMTP id g18so4035700eje.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:33:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=slnEJYBwmhqKOQO5uk6sWnTW5gdRX2VMxeSBeR8XW8Q=;
-        b=PET4qKsGo7ReB7fj17BLKjQb+euAdFLyrov4eKP+FXgXGj5JRdRd5DaRPLM/X9SLcu
-         /xe9/gL/HUV4KiHwdepPSX9Sza4S+A4Rn4/zrL6TsAB5RlXnlaw4zohFRLjEGKdI+y8X
-         JwdAqUxXFFVN6t8LlW9WzS7ZjJ1hN5oQED2r68kmWgedvkPuPYjjzM3eCMcCxsqcP042
-         4da8vGZyKkg+WWOCtpwS2wzOaW2KWAP98xm4sSoFtlWZb9bk2YYbTy5XfeWRh1cKhxrE
-         e0ppHtmG3srEfRMNUHPF2UV8Obx74TgXCveENE4Ux62UU4uSIU2HzpVhLsHxOIMWUJE5
-         vlUA==
-X-Gm-Message-State: AOAM533pfD4lRmC+agqtbUr3eq/g4yj3QuqWfcmdPI7EV6rvMzWex8vp
-        n3AQOoIyslyrZ/1tGjGqa67APJ4JdvbjRzT2uZ1tkWWCwyvZl42GwtO53eTimqpiHZsAQRxIZmR
-        c9nwMB+3UYaVgahjk8rR2GLF7
-X-Received: by 2002:a05:6402:1b1e:: with SMTP id by30mr19432222edb.75.1607358786632;
-        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzx0eatSbnQFhmj8ZAY47IpBzt1G1gtOIufiyiAi4IqzHOg0Ye7dB87LiC49RkGGzdIWq8D8A==
-X-Received: by 2002:a05:6402:1b1e:: with SMTP id by30mr19432206edb.75.1607358786499;
-        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/10] ovl: simplify file splice
-Date:   Mon,  7 Dec 2020 17:32:50 +0100
-Message-Id: <20201207163255.564116-6-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201207163255.564116-1-mszeredi@redhat.com>
-References: <20201207163255.564116-1-mszeredi@redhat.com>
+        Mon, 7 Dec 2020 11:33:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607358808; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=6WOopDI/unQJHf8aMm74k1dhc1OxvbsE01SWfNkNfBs=;
+ b=ZqS+VtB0qStt2PCEfHoRCNt5GJlSQ2i4AZoQRg6PtNt6sS0e6uwalR4RXuNaTjjWNzneSSq+
+ X0Lq1js9zTvmkRMC1LOItCnNm18fLaPLycrIGZG86NHzCIUY94YUPLB33nHHAV8iuiT6tyP6
+ PMyuzBqrkKintixWfghdQAjZXqo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fce5933ae7b105766d749a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:32:51
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 184B6C43463; Mon,  7 Dec 2020 16:32:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46670C433CA;
+        Mon,  7 Dec 2020 16:32:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46670C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [17/17] rtw88: pci: Add prototypes for .probe,
+ .remove and .shutdown
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201126133152.3211309-18-lee.jones@linaro.org>
+References: <20201126133152.3211309-18-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201207163251.184B6C43463@smtp.codeaurora.org>
+Date:   Mon,  7 Dec 2020 16:32:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-generic_file_splice_read() and iter_file_splice_write() will call back into
-f_op->iter_read() and f_op->iter_write() respectively.  These already do
-the real file lookup and cred override.  So the code in ovl_splice_read()
-and ovl_splice_write() is redundant.
+Lee Jones <lee.jones@linaro.org> wrote:
 
-In addition the ovl_file_accessed() call in ovl_splice_write() is
-incorrect, though probably harmless.
+> Also strip out other duplicates from driver specific headers.
+> 
+> Ensure 'main.h' is explicitly included in 'pci.h' since the latter
+> uses some defines from the former.  It avoids issues like:
+> 
+>  from drivers/net/wireless/realtek/rtw88/rtw8822be.c:5:
+>  drivers/net/wireless/realtek/rtw88/pci.h:209:28: error: ‘RTK_MAX_TX_QUEUE_NUM’ undeclared here (not in a function); did you mean ‘RTK_MAX_RX_DESC_NUM’?
+>  209 | DECLARE_BITMAP(tx_queued, RTK_MAX_TX_QUEUE_NUM);
+>  | ^~~~~~~~~~~~~~~~~~~~
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/realtek/rtw88/pci.c:1488:5: warning: no previous prototype for ‘rtw_pci_probe’ [-Wmissing-prototypes]
+>  1488 | int rtw_pci_probe(struct pci_dev *pdev,
+>  | ^~~~~~~~~~~~~
+>  drivers/net/wireless/realtek/rtw88/pci.c:1568:6: warning: no previous prototype for ‘rtw_pci_remove’ [-Wmissing-prototypes]
+>  1568 | void rtw_pci_remove(struct pci_dev *pdev)
+>  | ^~~~~~~~~~~~~~
+>  drivers/net/wireless/realtek/rtw88/pci.c:1590:6: warning: no previous prototype for ‘rtw_pci_shutdown’ [-Wmissing-prototypes]
+>  1590 | void rtw_pci_shutdown(struct pci_dev *pdev)
+>  | ^~~~~~~~~~~~~~~~
+> 
+> Cc: Yan-Hsuan Chuang <yhchuang@realtek.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Fix by calling generic_file_splice_read() and iter_file_splice_write()
-directly.
+Patch applied to wireless-drivers-next.git, thanks.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/overlayfs/file.c | 46 ++-------------------------------------------
- 1 file changed, 2 insertions(+), 44 deletions(-)
+2e86ef413ab3 rtw88: pci: Add prototypes for .probe, .remove and .shutdown
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index 3cd1590f2030..dc767034d37b 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -397,48 +397,6 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	return ret;
- }
- 
--static ssize_t ovl_splice_read(struct file *in, loff_t *ppos,
--			 struct pipe_inode_info *pipe, size_t len,
--			 unsigned int flags)
--{
--	ssize_t ret;
--	struct fd real;
--	const struct cred *old_cred;
--
--	ret = ovl_real_fdget(in, &real);
--	if (ret)
--		return ret;
--
--	old_cred = ovl_override_creds(file_inode(in)->i_sb);
--	ret = generic_file_splice_read(real.file, ppos, pipe, len, flags);
--	revert_creds(old_cred);
--
--	ovl_file_accessed(in);
--	fdput(real);
--	return ret;
--}
--
--static ssize_t
--ovl_splice_write(struct pipe_inode_info *pipe, struct file *out,
--			  loff_t *ppos, size_t len, unsigned int flags)
--{
--	struct fd real;
--	const struct cred *old_cred;
--	ssize_t ret;
--
--	ret = ovl_real_fdget(out, &real);
--	if (ret)
--		return ret;
--
--	old_cred = ovl_override_creds(file_inode(out)->i_sb);
--	ret = iter_file_splice_write(pipe, real.file, ppos, len, flags);
--	revert_creds(old_cred);
--
--	ovl_file_accessed(out);
--	fdput(real);
--	return ret;
--}
--
- static int ovl_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- {
- 	struct fd real;
-@@ -732,8 +690,8 @@ const struct file_operations ovl_file_operations = {
- #ifdef CONFIG_COMPAT
- 	.compat_ioctl	= ovl_compat_ioctl,
- #endif
--	.splice_read    = ovl_splice_read,
--	.splice_write   = ovl_splice_write,
-+	.splice_read    = generic_file_splice_read,
-+	.splice_write   = iter_file_splice_write,
- 
- 	.copy_file_range	= ovl_copy_file_range,
- 	.remap_file_range	= ovl_remap_file_range,
 -- 
-2.26.2
+https://patchwork.kernel.org/project/linux-wireless/patch/20201126133152.3211309-18-lee.jones@linaro.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
