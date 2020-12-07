@@ -2,71 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0373B2D1DC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8232D1DCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgLGWwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:52:02 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45839 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgLGWwB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:52:01 -0500
-Received: by mail-ot1-f65.google.com with SMTP id h18so10172377otq.12;
-        Mon, 07 Dec 2020 14:51:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oGKTxegR211Y4pxTw/c6D3ElM1Y9Rkhy1L6nJUtWY5o=;
-        b=dLwmYPkhqETrGNPB/OkWivsDqSFvxqzzlf55ESlapw83I0jhy4zt9GYEG4sPa1mjFK
-         1wAixU9EnA1b4+pXEDuaWCC9wb4Y1ruJ/cT3g+Znmm2Th+Nwaurvxr6UP3Q8LL7FTutv
-         mQP8dQoMGZXQhrZ/pysj+qnlQhlZjd1R97SQnMpV174Aj/Lipx6BE7Fu5HcrEFHWwuVL
-         k9ZcFdsl6RXPMrlLNZxX8GOnJxd040VN+s/MKf/q1sr6lefg6G0XfILEZbM0UO+hpwdE
-         Dse2pLPczMXHmT92eyS/VsFtjP8SGRoOqiUSoqxg1dLe69eNL9/bz9Ki+20GolMgUy6C
-         t/+A==
-X-Gm-Message-State: AOAM531XRLcIQOg5WvmxePlNWEn15lq9lhE1nXYxixeJixUElFprnfhg
-        xExdEgxvxRacTShxuxANsTM83RnQ3w==
-X-Google-Smtp-Source: ABdhPJzAEyFWBw8aRWodf+kbRFrizaA2A6sKnSxzif1vg6tYA4do5tJjEUn6/sY2OabGg1xZ8r/f8g==
-X-Received: by 2002:a9d:7411:: with SMTP id n17mr14433439otk.262.1607381480806;
-        Mon, 07 Dec 2020 14:51:20 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u10sm2993855otj.31.2020.12.07.14.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 14:51:19 -0800 (PST)
-Received: (nullmailer pid 991883 invoked by uid 1000);
-        Mon, 07 Dec 2020 22:51:18 -0000
-Date:   Mon, 7 Dec 2020 16:51:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     linux-ide@vger.kernel.org, robh+dt@kernel.org,
-        thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
-        pchandru@nvidia.com, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] dt-bindings: ata: tegra: Convert binding
- documentation to YAML
-Message-ID: <20201207225118.GA991823@robh.at.kernel.org>
-References: <1606162645-22326-1-git-send-email-skomatineni@nvidia.com>
- <1606162645-22326-4-git-send-email-skomatineni@nvidia.com>
+        id S1727135AbgLGWye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:54:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36108 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbgLGWye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:54:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 01174AB63;
+        Mon,  7 Dec 2020 22:53:52 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 82A27603C1; Mon,  7 Dec 2020 23:53:51 +0100 (CET)
+Date:   Mon, 7 Dec 2020 23:53:51 +0100
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Justin Forbes <jmforbes@linuxtx.org>, bpf <bpf@vger.kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+Message-ID: <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
+ <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+ <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+ <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1606162645-22326-4-git-send-email-skomatineni@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Nov 2020 12:17:22 -0800, Sowjanya Komatineni wrote:
-> This patch converts text based dt-binding document to YAML based
-> dt-binding document.
+On Mon, Dec 07, 2020 at 02:44:22PM -0800, Alexei Starovoitov wrote:
+> On Mon, Dec 7, 2020 at 10:36 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
+> >
+> > On Mon, Dec 7, 2020 at 2:16 AM Michal Kubecek <mkubecek@suse.cz> wrote:
+> > >
+> > > On Thu, Nov 12, 2020 at 08:18:57AM +0800, Alex Shi wrote:
+> > > >
+> > > >
+> > > > 在 2020/11/11 上午3:50, Andrew Morton 写道:
+> > > > > On Tue, 10 Nov 2020 08:39:24 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> > > > >
+> > > > >> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+> > > > >>>
+> > > > >>> Otherwise it cause gcc warning:
+> > > > >>>           ^~~~~~~~~~~~~~~
+> > > > >>> ../mm/filemap.c:830:14: warning: no previous prototype for
+> > > > >>> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
+> > > > >>>  noinline int __add_to_page_cache_locked(struct page *page,
+> > > > >>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > >>
+> > > > >> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
+> > > > >
+> > > > > hm, yes.
+> > > >
+> > > > When the config enabled, compiling looks good untill pahole tool
+> > > > used to get BTF info, but I still failed on a right version pahole
+> > > > > 1.16. Sorry.
+> > > >
+> > > > >
+> > > > >>>
+> > > > >>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> > > > >>> Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > >>> Cc: linux-mm@kvack.org
+> > > > >>> Cc: linux-kernel@vger.kernel.org
+> > > > >>> ---
+> > > > >>>  mm/filemap.c | 2 +-
+> > > > >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >>>
+> > > > >>> diff --git a/mm/filemap.c b/mm/filemap.c
+> > > > >>> index d90614f501da..249cf489f5df 100644
+> > > > >>> --- a/mm/filemap.c
+> > > > >>> +++ b/mm/filemap.c
+> > > > >>> @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
+> > > > >>>  }
+> > > > >>>  EXPORT_SYMBOL_GPL(replace_page_cache_page);
+> > > > >>>
+> > > > >>> -noinline int __add_to_page_cache_locked(struct page *page,
+> > > > >>> +static noinline int __add_to_page_cache_locked(struct page *page,
+> > > > >>>                                         struct address_space *mapping,
+> > > > >>>                                         pgoff_t offset, gfp_t gfp,
+> > > > >>>                                         void **shadowp)
+> > > > >
+> > > > > It's unclear to me whether BTF_ID() requires that the target symbol be
+> > > > > non-static.  It doesn't actually reference the symbol:
+> > > > >
+> > > > > #define BTF_ID(prefix, name) \
+> > > > >         __BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
+> > > > >
+> > > >
+> > > > The above usage make me thought BTF don't require the symbol, though
+> > > > the symbol still exist in vmlinux with 'static'.
+> > > >
+> > > > So any comments of this, Alexei?
 > 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../devicetree/bindings/ata/nvidia,tegra-ahci.yaml | 138 +++++++++++++++++++++
->  .../bindings/ata/nvidia,tegra124-ahci.txt          |  44 -------
->  2 files changed, 138 insertions(+), 44 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra-ahci.yaml
->  delete mode 100644 Documentation/devicetree/bindings/ata/nvidia,tegra124-ahci.txt
-> 
+> Sorry. I've completely missed this thread.
+> Now I have a hard time finding context in archives.
+> If I understood what's going on the removal of "static" cases issues?
+> Yes. That's expected.
+> noinline alone is not enough to work reliably.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Not removal, commit 3351b16af494 ("mm/filemap: add static for function
+__add_to_page_cache_locked") made the function static which breaks the
+build in btfids phase - but it seems to happen only on some
+architectures. In our case, ppc64, ppc64le and riscv64 are broken,
+x86_64, i586 and s390x succeed. (I made a mistake above, aarch64 did not
+fail - but only because it was not built at all.)
+
+The thread starts with
+http://lkml.kernel.org/r/1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com
+
+Michal
+
