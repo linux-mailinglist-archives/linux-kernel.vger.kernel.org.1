@@ -2,57 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89AF2D0D9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F80D2D0DA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgLGJ7p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 04:59:45 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2521 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgLGJ7p (ORCPT
+        id S1726527AbgLGKAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:00:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52790 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726482AbgLGKAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:59:45 -0500
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CqJfh5ZT0zQpYV;
-        Mon,  7 Dec 2020 17:58:36 +0800 (CST)
-Received: from DGGEML424-HUB.china.huawei.com (10.1.199.41) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 7 Dec 2020 17:59:03 +0800
-Received: from DGGEML502-MBX.china.huawei.com ([169.254.2.32]) by
- dggeml424-hub.china.huawei.com ([10.1.199.41]) with mapi id 14.03.0487.000;
- Mon, 7 Dec 2020 17:58:58 +0800
-From:   "wanqian (D)" <wanqian10@huawei.com>
-To:     "tj@kernel.org" <tj@kernel.org>
-CC:     "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?Windows-1252?Q?Should_link->eh=5Fcontext.i.serror=92s_value_incorporate?=
- =?Windows-1252?Q?_link->eh=5Finfo.serror_before_doning_ata=5Feh=5Fanalyze?=
- =?Windows-1252?Q?=5Fserror()=3F?=
-Thread-Topic: =?Windows-1252?Q?Should_link->eh=5Fcontext.i.serror=92s_value_incorporate?=
- =?Windows-1252?Q?_link->eh=5Finfo.serror_before_doning_ata=5Feh=5Fanalyze?=
- =?Windows-1252?Q?=5Fserror()=3F?=
-Thread-Index: AdbMf4obND2XvjaFTkCc58H3tpRQfA==
-Date:   Mon, 7 Dec 2020 09:58:57 +0000
-Message-ID: <05003591095D3240AA548FBF7CBB20251E8A7327@DGGEML502-MBX.china.huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.102.122]
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
+        Mon, 7 Dec 2020 05:00:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607335152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wZ6b7tmrNj+Z3UgMZscrtE7hUQNOmYAzTygWMxGHxZE=;
+        b=J39gPqRfjDKxV7Q23VRfwrY+hCeBFPbbk7VvwGfHhqGNPAtNrpDpl/Rk9bHUDQBZawptqJ
+        0R/+6wYH8OPnPwrJGDBdCkyrtB6lS7mVzdFDliPk2BwLAX7BsqhDVU5Om6I+jdLZRv/l6w
+        acgok4PGXdRzL4znMoIBBvESJAfK3jU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-3QC3-LGMPGmGqZjSvQwXVg-1; Mon, 07 Dec 2020 04:59:10 -0500
+X-MC-Unique: 3QC3-LGMPGmGqZjSvQwXVg-1
+Received: by mail-wm1-f72.google.com with SMTP id f12so5122757wmf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:59:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wZ6b7tmrNj+Z3UgMZscrtE7hUQNOmYAzTygWMxGHxZE=;
+        b=bFWIdJIl/a2oyHrT4d+RCqHNXjh7qs6B3qwz64F7+V8ClxWL+9HjTkM9poLGTUtUV0
+         2SC4jV6gXcOih1w9vGAhmUK6079MYUCc9mPIhOC5FTZhAY120kkhbU3TI15q79YAqbOM
+         YQpKWneVKF3gT7c1fWAlX+CxzAmHMyo6NfhOL25HquRxWsk3KiFLOtISNH2PM6His3Sm
+         Hc8qEFGSpR4dzjg8TStSVvNVWf1FMRY4UzJmP2UnGTDHBCPSp4tyYgTqrxUuxQMcvQPg
+         5aE4Z3jkETP5gPsy7Rwhr+9meMDuPvMdH/7Nd/5yTGLlRe9PfIy807YuG0kJXJ8aNIVt
+         74Ew==
+X-Gm-Message-State: AOAM533/FszO6EnREmgDGVYlftNvOLwKICYWWmbrjhFmBV4EjFGeSZRy
+        7maFkxNDGSFPZpmCIbFi/wvlC5ZWbD8OTJnvQe9vRBFNNKxqTrqcGudqn/4hVyey+CyzO1KOfuJ
+        Uyc7knKElgqQabkC0jR72xIqV
+X-Received: by 2002:a1c:b657:: with SMTP id g84mr17392381wmf.181.1607335149353;
+        Mon, 07 Dec 2020 01:59:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxCFQaeUZVyXJgZGAWNTmlrtXNDqvE9bdYCTsRkM15YEqF3CEjIzOf1fKC8mI/ujuq8ZgeFaw==
+X-Received: by 2002:a1c:b657:: with SMTP id g84mr17392365wmf.181.1607335149141;
+        Mon, 07 Dec 2020 01:59:09 -0800 (PST)
+Received: from steredhat (host-79-24-227-66.retail.telecomitalia.it. [79.24.227.66])
+        by smtp.gmail.com with ESMTPSA id h98sm15379928wrh.69.2020.12.07.01.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 01:59:08 -0800 (PST)
+Date:   Mon, 7 Dec 2020 10:59:05 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+Message-ID: <20201207095905.q7rczeh54n2zy7fo@steredhat>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+ <20201204170235.84387-2-andraprs@amazon.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201204170235.84387-2-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
-      In SATA EH processing, I found the SERROR register was cleared during interrupt handling in ahci_error_intr(), and its value has been saved to the link->eh_info.serror. 
-But the SERROR register value was read again in the ata_eh_link_autopsy(), and its value was saved to link->eh_context.i.serror which is analyzed by ata_eh_analyze_serror().
-Obviously, the link->eh_context.i.serror’s value will be zero if no host perceptible error is found after it was cleared in interrupt handler. 
-      Why ata_link structure should maintain two ata_eh_info instances: link->eh_info and link->eh_context.i?
-      Should link->eh_context.i.serror’s value incorporate link->eh_info.serror before doing ata_eh_analyze_serror()?
+On Fri, Dec 04, 2020 at 07:02:32PM +0200, Andra Paraschiv wrote:
+>vsock enables communication between virtual machines and the host they
+>are running on. With the multi transport support (guest->host and
+>host->guest), nested VMs can also use vsock channels for communication.
+>
+>In addition to this, by default, all the vsock packets are forwarded to
+>the host, if no host->guest transport is loaded. This behavior can be
+>implicitly used for enabling vsock communication between sibling VMs.
+>
+>Add a flags field in the vsock address data structure that can be used
+>to explicitly mark the vsock connection as being targeted for a certain
+>type of communication. This way, can distinguish between different use
+>cases such as nested VMs and sibling VMs.
+>
+>Use the already available "svm_reserved1" field and mark it as a flags
+>field instead. This field can be set when initializing the vsock address
+>variable used for the connect() call.
+>
+>Changelog
+>
+>v1 -> v2
+>
+>* Update the field name to "svm_flags".
+>* Split the current patch in 2 patches.
 
-Thanks,
-Qian Wan
+Usually the changelog goes after the 3 dashes, but I'm not sure there is 
+a strict rule :-)
+
+Anyway the patch LGTM:
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+
+>
+>Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>---
+> include/uapi/linux/vm_sockets.h | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/include/uapi/linux/vm_sockets.h b/include/uapi/linux/vm_sockets.h
+>index fd0ed7221645d..46735376a57a8 100644
+>--- a/include/uapi/linux/vm_sockets.h
+>+++ b/include/uapi/linux/vm_sockets.h
+>@@ -145,7 +145,7 @@
+>
+> struct sockaddr_vm {
+> 	__kernel_sa_family_t svm_family;
+>-	unsigned short svm_reserved1;
+>+	unsigned short svm_flags;
+> 	unsigned int svm_port;
+> 	unsigned int svm_cid;
+> 	unsigned char svm_zero[sizeof(struct sockaddr) -
+>-- 
+>2.20.1 (Apple Git-117)
+>
+>
+>
+>
+>Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+>
+
