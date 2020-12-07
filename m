@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5292D0A88
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C462D0A8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgLGGIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGGIa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:08:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04DBC0613D0;
-        Sun,  6 Dec 2020 22:07:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jJe1mZNNS4VmFa6XZxq6kbSRFlAAblrXazBVNO87E0U=; b=uN5tH5kZw1K13G/E9Ga8+uktt3
-        ts6DuozVOImyfrqe7ZbFH9UIlsJ1pOWlNLmrfTeRnEvHZrwdJcrNh7Oh2fbBfXo/kqBubai81Zygb
-        01SmeyQ8aSyfKdmdaNBBu30vhz3qGRnVhkCbZghBVObne4ohs37JkIwLXT7zbgZtyfKLJ0AVxaFer
-        8wdPVS+bjhAqd33n8qu5AeaEm75yyFxB9ypSW0I8Xl12VL2qTeHUxSPov3u94X/ZPNeue5C5V7rKl
-        ZFiwsvECSXsn5c3XE9lpXgYiaUPa7rI3g2G7XR18Qoqzp0Lo87vqhrqwehz3Tnx8XCN39AFoeFSmt
-        sDAI8h6Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1km9gZ-0004NJ-05; Mon, 07 Dec 2020 06:07:47 +0000
-Date:   Mon, 7 Dec 2020 06:07:46 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: WARNING: bad unlock balance detected! - mkfs.ext4/426 is trying
- to release lock (rcu_read_lock)
-Message-ID: <20201207060746.GT11935@casper.infradead.org>
-References: <CA+G9fYs=nR-d0n8kV4=OWD+v=GR2ufOEWU9S4oG1_fZRxhGouQ@mail.gmail.com>
+        id S1725924AbgLGGNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:13:06 -0500
+Received: from mga02.intel.com ([134.134.136.20]:34823 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbgLGGNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 01:13:06 -0500
+IronPort-SDR: bGnUaM47eR5x1usXJ+AEXFErgaiaiIpu1TWZnvFEMwML6I1Ijdy8hhTKuItn9Uucd8VpiHZBRh
+ ImB40vjNQN0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="160695450"
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="160695450"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 22:12:23 -0800
+IronPort-SDR: IJbJuU7sjkkWHOn7e7i+gAP84ShePSd9DUEedrnq5OJwzMsXADC4OnJhnuRToW1V33ojPEU+co
+ wPlib+C5B6bA==
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="316974454"
+Received: from ghgarci1-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.136.94])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 22:12:21 -0800
+Date:   Sun, 6 Dec 2020 22:12:20 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 5/9] cxl/mem: Find device capabilities
+Message-ID: <20201207061220.a5tia24yn3x7putm@intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-6-ben.widawsky@intel.com>
+ <CAPcyv4g-hO5yz1bod6X+ZrL_8-6CRBvf==pB3sbuBzZmsT7Kng@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYs=nR-d0n8kV4=OWD+v=GR2ufOEWU9S4oG1_fZRxhGouQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4g-hO5yz1bod6X+ZrL_8-6CRBvf==pB3sbuBzZmsT7Kng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:17:29AM +0530, Naresh Kamboju wrote:
-> While running "mkfs -t ext4" on arm64 juno-r2 device connected with SSD drive
-> the following kernel warning reported on stable rc 5.9.13-rc1 kernel.
+On 20-12-03 23:41:16, Dan Williams wrote:
+> On Tue, Nov 10, 2020 at 9:44 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > CXL devices contain an array of capabilities that describe the
+> > interactions software can interact with the device, or firmware running
+> > on the device. A CXL compliant device must implement the device status
+> > and the mailbox capability. A CXL compliant memory device must implement
+> > the memory device capability.
+> >
+> > Each of the capabilities can [will] provide an offset within the MMIO
+> > region for interacting with the CXL device.
+> >
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > ---
+> >  drivers/cxl/cxl.h | 89 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/cxl/mem.c | 58 +++++++++++++++++++++++++++---
+> >  2 files changed, 143 insertions(+), 4 deletions(-)
+> >  create mode 100644 drivers/cxl/cxl.h
+> >
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > new file mode 100644
+> > index 000000000000..02858ae63d6d
+> > --- /dev/null
+> > +++ b/drivers/cxl/cxl.h
+> [..]
+> > +static inline u32 __cxl_raw_read_reg32(struct cxl_mem *cxlm, u32 reg)
 > 
-> Steps to reproduce:
-> ------------------
-> # boot arm64 Juno-r2 device with stable-rc 5.9.13-rc1.
-> # Connect SSD drive
-> # Format the file system ext4 type
->  mkfs -t ext4 <SSD-drive>
-> # you will notice this warning
+> Going through my reworks and the "raw" jumped out at me. My typical
+> interpretation of "raw" in respect to register access macros is the
+> difference between readl() and __raw_readl()  which means "don't do
+> bus endian swizzling, and don't do a memory clobber barrier". Any
+> heartburn to drop the "raw"?
+> 
+> ...is it only me that reacts that way?
 
-Does it happen easily?  Can you bisect?
+I will drop "raw". Especially given that I intend to reuse the word in v2 for
+something entirely different, it makes sense.
 
-> Crash log:
-> --------------
-> Writing superblocks and filesystem accounting information:   0/895
-> [   86.131095]
-> [   86.132592] =====================================
-> [   86.137300] WARNING: bad unlock balance detected!
-> [   86.142012] 5.9.13-rc1 #1 Not tainted
-> [   86.145675] -------------------------------------
-> [   86.150384] mkfs.ext4/426 is trying to release lock (rcu_read_lock) at:
-> [   86.157020] [<ffff80001063478c>] blk_queue_exit+0xcc/0x1b0
-> [   86.162511] but there are no more locks to release!
-
-This really doesn't make much sense.  blk_queue_exit() in 5.9.12 does:
-
-        percpu_ref_put(&q->q_usage_counter);
-(literally, that's the entire function)
-
-percpu_ref_put() does:
-
-       rcu_read_lock();
-
-        if (__ref_is_percpu(ref, &percpu_count))
-                this_cpu_sub(*percpu_count, nr);
-        else if (unlikely(atomic_long_sub_and_test(nr, &ref->count)))
-                ref->release(ref);
-
-        rcu_read_unlock();
-
-Unless ->release() has an unbalanced rcu_read_unlock(), there definitely
-is a lock to release!  Some archaeology says that ->release is
-blk_queue_usage_counter_release(), which calls
-        wake_up_all(&q->mq_freeze_wq);
-
-which doesn't appear to use RCU at all.  So this trace makes no sense,
-and all I can do is ask you to bisect it.
-
+My idea of "raw" was that it's just unfettered access to the device's MMIO
+space. No offsets, no checks. I'm not sure of a better adjective to describe
+that, but if you have any in mind, I'd like to add it.
