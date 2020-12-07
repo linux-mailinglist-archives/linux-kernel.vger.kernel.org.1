@@ -2,113 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171C42D0D0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215622D0D10
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgLGJcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgLGJcf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:32:35 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26D4C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:31:49 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w206so9148298wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:31:49 -0800 (PST)
+        id S1726134AbgLGJdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:33:36 -0500
+Received: from mail-bn8nam12on2066.outbound.protection.outlook.com ([40.107.237.66]:6895
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725770AbgLGJdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:33:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oB9ebYEm8qK5xaZ8A+c9AWFfTytS4CSbWsYMLXXtU9Wk2uFteksl6tXNl49rcyCfNU/XtuZzZ0rzOoPaBSiRnEZSAtjM6K4Qdgf5QsI84xgV9W/1ZA0iGNtXS4SPG+sVFbXiwpWXbbd66bmWa+QrZftgOf7e8/MmYcj7IQ4KRQCBOh4tJtvjfHAB01Nn9LNrNx4xwIyxJyX7I3/5Uw3uHxmqluI72mat/kv4TzWWo0IOIJi3DWwBgUCuljDroYh+9beU11e+YyYqSKluYeyWHFIsrsa92KTgvT1NBXCHPQ84KT3XxUR5INqMY+CcuLfdS5fbpwFxVUgSuxbCgv+Tew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SM36ayQcHCaLFFqu0SM9P3j/1YmZvVapXgc/9q2MCUY=;
+ b=c0LHR9BgNj69w6MadR5gGCeiSyiBmTx41HzMUtO7at7c3+/h/5rG3G+ZWtA9WQfB/qSzQoQdzyMBXto7bNo2UwMSVlFwCweFiVsP9Tcg75dzuFHKV+ZBU+BVc4xlKyhpNBh1CmAiDe2oe7Aoqj/i0ohWkOVdahhDp4l0xuAac5WJ3FGUyWKGl/3T6pImrhg1x1dnVW9sf/kgy58OFSF9X7Utby9w4bXSha2W2KRwAwbVzhAcCCtp8ewSkQu+MKH1xtUTDoNrpxzq8veWLIYMMOjK63zbwlgFWy+pWvChCsFNO+BIxvR/2TT22GSW2GFXr7uPBKjAsGMj0Cwc1y0yyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=GLuU4c9odSxFrnOuGet4+6CjpgyrMIWPZsUZq/PreGk=;
-        b=i0Yc5QA90bEFBhwG6hH1g28TISmrUpKKqy2tRuXZIKguMBG/kBKv49AJWqGmNlgWXK
-         uUk2WVKjmEgACcqYUvwAdPy7RY+jUaZeSbx5AeFS0JMNUwURxkbW+Kfi+olqbWTFqZnO
-         D2uPXUc2baCQ2KMw//MjQL/+BZ6osDZlgQzE03l/aCcTikXeX9BWQp786HvpJ3N9Vgww
-         S+ImKyqgUny8XZiooKdMpc9pk6opwrdQux/WAQiHKa3ZsvUjBz0bhHJxAkRgzQXZDORw
-         4d8LduMwaP8LaT2vgNQGVSGIn7spsXDHE5r5YwmXJRhq1wCLQjTOjbKgabX3l7wXkeVi
-         ahkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=GLuU4c9odSxFrnOuGet4+6CjpgyrMIWPZsUZq/PreGk=;
-        b=A5Ugz8fPN96PhNzkUe1/d299KlT1zCuJ7z9sb6M1pT8XsqLFcctbEUsyKOPQmT7c/P
-         87+CaTgngNh+xxwL7WGHXqIGICLQBBeLbAaxyT1OkEwr02qcXgEV1rckaBmkiTs9eIVu
-         XmVcyjWHBBjmngIEFKwWP3HNl6eB1969PflCSNezlVNelwed+rpHMF5acRsxpXMPubfK
-         kmOsItGHBNtlz2CkPTnEEFtu/t4N717PRHRG05dj6kyVExWqw73EDD5fRWtIo9iliKp5
-         XJXS3EXvjuDMxF4tYYDJmrc+BAwvIc/CYi7uhHjhW/bJYUMakKD8NhSqDeQg0ZUhVp+0
-         IsYg==
-X-Gm-Message-State: AOAM533HG/kxxD0EnaqkwjeczNzC/a4DGgMcWodHkJIhx7toSQaMXqh8
-        Zr5EHYAZxxmmH2Pc+igJmqe2Dw==
-X-Google-Smtp-Source: ABdhPJw4vyyf2WIkP9E5DrBKTOacvbXpy3jjxOnALxt8z3HsQ49xyCYXLUlrFZfzyjlszQINDzHQYg==
-X-Received: by 2002:a1c:9949:: with SMTP id b70mr17600666wme.85.1607333508343;
-        Mon, 07 Dec 2020 01:31:48 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id k64sm12889681wmb.11.2020.12.07.01.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:31:47 -0800 (PST)
-References: <20201205213207.519341-1-martin.blumenstingl@googlemail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] net: stmmac: dwmac-meson8b: fix mask definition of the
- m250_sel mux
-In-reply-to: <20201205213207.519341-1-martin.blumenstingl@googlemail.com>
-Message-ID: <1jo8j62c8t.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 07 Dec 2020 10:31:46 +0100
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SM36ayQcHCaLFFqu0SM9P3j/1YmZvVapXgc/9q2MCUY=;
+ b=WtkPtfjnNVKCA5Zn/IoWPKaagREE1pbc6kDfvUDhNJlPEVY7JYVfIf6lTOj/6VRobJauJ2kelzd/d2aajNEOHAds8oxI/yWVYLxo+kf+kwJ3WLX0v4ORZwp55fxWlg51gQHJ/6ZM2TOWaXj83L7tQneyYuRUhqdDRN8Z80kykYU=
+Received: from CY4PR18CA0048.namprd18.prod.outlook.com (2603:10b6:903:9a::34)
+ by MWHPR02MB2702.namprd02.prod.outlook.com (2603:10b6:300:107::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
+ 2020 09:32:42 +0000
+Received: from CY1NAM02FT012.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:9a:cafe::b7) by CY4PR18CA0048.outlook.office365.com
+ (2603:10b6:903:9a::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Mon, 7 Dec 2020 09:32:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT012.mail.protection.outlook.com (10.152.75.158) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3632.21 via Frontend Transport; Mon, 7 Dec 2020 09:32:41 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 7 Dec 2020 01:32:38 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 7 Dec 2020 01:32:38 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ rajan.vaja@xilinx.com,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ robh+dt@kernel.org,
+ krzk@kernel.org,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ laurent.pinchart@ideasonboard.com
+Received: from [172.30.17.109] (port=43550)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kmCsn-0005A1-PJ; Mon, 07 Dec 2020 01:32:38 -0800
+Subject: Re: [PATCH 04/12] arm64: dts: zynqmp: Enable and wire reset
+ controller
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>, Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <cover.1606917949.git.michal.simek@xilinx.com>
+ <c0a99c5b0438e34073429624d99a2c3f16532016.1606917949.git.michal.simek@xilinx.com>
+ <X81dXV0uCccZ3360@pendragon.ideasonboard.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <dd199853-71b1-aeef-fe17-57a4110d2da9@xilinx.com>
+Date:   Mon, 7 Dec 2020 10:32:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <X81dXV0uCccZ3360@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc693d36-b507-4d4b-cb31-08d89a930b43
+X-MS-TrafficTypeDiagnostic: MWHPR02MB2702:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <MWHPR02MB270288E9BD85C541112EFF04C6CE0@MWHPR02MB2702.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cItUJR/3T88lBe7D4dOQSR+UDdhbxnIkMCeKEaBoWrSfHhK2RcqvJ2DyW0IFBYFgB7efi1hLbxwiQ4iPggPAI/iKzy2tQMyTEmEweduqVdNUFR4IlV1GG7s1shwYafNHa6kXNBunkOi67ZGdedJrf3C9WWgPPsqnnrQYjPKNSpJY3wJLXXhjAFNVm07/W6N81GNWUqsFkpaVSMzglWvQSkaL1nUniRegqeVrHXl6EQu7bXejAysI0ywWKspzguWoO6tHH9TPP/T5y5CbCx4IDYIyKVc9TUFrH4CjsNenR3Iiag+/gKlZ4TEKgGK7K+U2Nx60SYqnZl6MeJ5mBqva5DQICJvH5vZS1nFQOdlk/SKjiAEeeCV8CPkm0tUPapeXWSMus7tTtlWJnHAzLCgFKCkVDQQd2JHPzbNO4bIUUSlmx6fiBjS6TII6pfnQGVh/
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39850400004)(46966005)(44832011)(36756003)(31686004)(82310400003)(6666004)(478600001)(36906005)(2616005)(83380400001)(316002)(54906003)(2906002)(4326008)(426003)(70206006)(82740400003)(9786002)(47076004)(110136005)(31696002)(356005)(5660300002)(26005)(8676002)(70586007)(8936002)(7636003)(186003)(336012)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 09:32:41.2157
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc693d36-b507-4d4b-cb31-08d89a930b43
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT012.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2702
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sat 05 Dec 2020 at 22:32, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-> The m250_sel mux clock uses bit 4 in the PRG_ETH0 register. Fix this by
-> shifting the PRG_ETH0_CLK_M250_SEL_MASK accordingly as the "mask" in
-> struct clk_mux expects the mask relative to the "shift" field in the
-> same struct.
->
-> While here, get rid of the PRG_ETH0_CLK_M250_SEL_SHIFT macro and use
-> __ffs() to determine it from the existing PRG_ETH0_CLK_M250_SEL_MASK
-> macro.
->
-> Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+On 06. 12. 20 23:38, Laurent Pinchart wrote:
+> Hi Michal,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Dec 02, 2020 at 03:06:03PM +0100, Michal Simek wrote:
+>> Enable reset controller for several IPs.
+>>
+>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+>> ---
+>>
+>>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 29 ++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>> index 68923fbd0e89..4fa820f78d76 100644
+>> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+>> @@ -187,6 +187,11 @@ zynqmp_pcap: pcap {
+>>  			xlnx_aes: zynqmp-aes {
+>>  				compatible = "xlnx,zynqmp-aes";
+>>  			};
+>> +
+>> +			zynqmp_reset: reset-controller {
+>> +				compatible = "xlnx,zynqmp-reset";
+>> +				#reset-cells = <1>;
+>> +			};
+>>  		};
+>>  	};
+>>  
+>> @@ -466,6 +471,8 @@ gem0: ethernet@ff0b0000 {
+>>  			#address-cells = <1>;
+>>  			#size-cells = <0>;
+>>  			power-domains = <&zynqmp_firmware PD_ETH_0>;
+>> +			resets = <&zynqmp_reset ZYNQMP_RESET_GEM0>;
+>> +			reset-names = "gem0_rst";
+> 
+> I don't see any of the reset-names used in this patch defined in DT
+> bindings (or used in drivers). For all devices but the USB controllers
+> it seems they can be dropped. For the USB controllers, the bindings need
+> to be updated first.
 
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Let me double check it. IIRC if there is just one there is likely no
+need to list the name but if there are more then one names should be
+also there. But you are right it should be the part of dt binding.
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> index dc0b8b6d180d..459ae715b33d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> @@ -30,7 +30,6 @@
->  #define PRG_ETH0_EXT_RMII_MODE		4
->  
->  /* mux to choose between fclk_div2 (bit unset) and mpll2 (bit set) */
-> -#define PRG_ETH0_CLK_M250_SEL_SHIFT	4
->  #define PRG_ETH0_CLK_M250_SEL_MASK	GENMASK(4, 4)
->  
->  /* TX clock delay in ns = "8ns / 4 * tx_dly_val" (where 8ns are exactly one
-> @@ -155,8 +154,9 @@ static int meson8b_init_rgmii_tx_clk(struct meson8b_dwmac *dwmac)
->  		return -ENOMEM;
->  
->  	clk_configs->m250_mux.reg = dwmac->regs + PRG_ETH0;
-> -	clk_configs->m250_mux.shift = PRG_ETH0_CLK_M250_SEL_SHIFT;
-> -	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK;
-> +	clk_configs->m250_mux.shift = __ffs(PRG_ETH0_CLK_M250_SEL_MASK);
-> +	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK >>
-> +				     clk_configs->m250_mux.shift;
->  	clk = meson8b_dwmac_register_clk(dwmac, "m250_sel", mux_parents,
->  					 ARRAY_SIZE(mux_parents), &clk_mux_ops,
->  					 &clk_configs->m250_mux.hw);
-
+Thanks,
+Michal
