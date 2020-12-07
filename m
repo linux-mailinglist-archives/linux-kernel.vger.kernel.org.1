@@ -2,136 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06ED52D097E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7BA2D0980
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgLGDhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:37:22 -0500
-Received: from terminus.zytor.com ([198.137.202.136]:38907 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgLGDhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:37:21 -0500
-Received: from [IPv6:2601:646:8680:a581:458a:7aa1:7e4f:150e] ([IPv6:2601:646:8680:a581:458a:7aa1:7e4f:150e])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 0B73aNsS2299624
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Sun, 6 Dec 2020 19:36:25 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 0B73aNsS2299624
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020112401; t=1607312188;
-        bh=wbkAToI/itQ/qNYtHwZIZR/QpPQ/3vZmoTo1c2ql5ks=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=fCnbIQHXFuq8mQbOol2dRg9W8bNR+/a4dfcteKrs0tvV2zKs/1yPVLpxCdpe8/5+f
-         UStv2U3tuz7je57z+evG7sLms9YlFYyg0ZW/VT5gBv3JS6gpVX/U5U4q8qO8zolcLU
-         iLjO7vk9H8MKQFqWC1/SE3cxavJz+V2TNr4BAwwUuMmu7uP62uJixEn95bHoqrqvoq
-         6GHdVn8rRYYGT+/focPsP8EhIh04YeIN2PNNY1YyUlQWjITGwxOWUrlpaDHJ+JLOAF
-         S8+we7tGZbmOGaw8EJhCXDYftHc2XpYCJNxQ5/b1deQykRgQIuU6oTSyDAO8/YTST2
-         GYX+oi/krzRFg==
-Date:   Sun, 06 Dec 2020 19:36:15 -0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20201206032305.GD3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk> <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com> <20201203230336.GC3579531@ZenIV.linux.org.uk> <20201206032305.GD3579531@ZenIV.linux.org.uk>
+        id S1728839AbgLGDkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:40:07 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29768 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbgLGDkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:40:06 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B73SHol031925;
+        Sun, 6 Dec 2020 19:38:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=atQosZhq71m48NiaMRCaP38+6ADpXcs+VsJRsRU7eBI=;
+ b=jQ7m28TD50ebGr+iYtUUN+dI1CVqZigxSCQqSPDhtvd4rlyR5ugJIJ+hwQSOCHN8Prc5
+ 5TOjbqhs8NbGAPo128jbd4oOV0XVZd6AYMdmIUjSDzeTkVhTb7j3s57LocvW4TN6quJB
+ 8VVr9hOJvArmjGyou0kuUv6Xx4UAHBP7PzI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3588wnwnvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 06 Dec 2020 19:38:32 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 6 Dec 2020 19:38:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q7TrqvtL6Sifef6zqCRmkE7uzMAgRKcLYki/YoooeAOWzagftguy6B8ML+bhxape+gVHf6PMq6fgMMvrKnnA+CDmutWBQxOSjOdla+4h7Q6nv7MsDFlZRbgjx7cMDHX/1uGtvcUgawu5Jb4UAUiMXe8iB2V0anXv05kcUp+iFEy/kIYJRhDJ4kQ0kem31dbsrD8Rkj57WI38zK51fwbTvKsuCxtoRI3RIwWgkiGqZqPP/no7lP/c/uy9Ah8qW7+G5GrFS7K39t3kNxWQIev44FTTkfnrTQAbskfEJYMAT2LcHNxfimtrOfNvcObaifvSvlPfCyosSERdCb4yahrcKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=atQosZhq71m48NiaMRCaP38+6ADpXcs+VsJRsRU7eBI=;
+ b=baXlsNcSnj83rGB/dCLN2gYkoAe5makWE+TELB4eTm/ZKpH9FpehcJv5ilXr12nUkQlkEwAAaJ3l1Vqz/HPgkFjeRPol8q4z1C+DzkrB1hmXVolOG2fulTKus96LrcJTXEfVXgBikkKVAQl5QUIlDuQQPf3SHp6TBHr+GDuw+S35hAO5fAdzwPZEo8ORpbiWV2GfiwWbkjcJH04sFbd7ZCTzPc/TeyZcNPJavGfSMgG8hpAHn3pSta4otCELmqSrR/PHOeXP6hkVdE7kCo+q+JDj2k3czAvvkQuj5Lpd/zNVuN5hHZ0miA/scKV/zDp/bPYB2vR0CY11jZBqhcUYSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=atQosZhq71m48NiaMRCaP38+6ADpXcs+VsJRsRU7eBI=;
+ b=I1WZwMb/xVN+hwLVujYCrNMq/QpyUi/5+9LCkdq0oOlI81da7cXWcfIHMI9Ri1UsJF2jmi/DfiNorJ7CPfCkS1Wa2vlMmcvqfB4ijTEk/ICT2EtzG99ub6945Uj/scq2MmPueHzs198gHPVbqjPv1FrklhEkV79sxDmN0tV+Cqw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3302.namprd15.prod.outlook.com (2603:10b6:a03:10f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Mon, 7 Dec
+ 2020 03:38:30 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Mon, 7 Dec 2020
+ 03:38:30 +0000
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: support module BTF in BTF display
+ helpers
+To:     Alan Maguire <alan.maguire@oracle.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <haoluo@google.com>,
+        <jolsa@kernel.org>, <quentin@isovalent.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <shuah@kernel.org>, <lmb@cloudflare.com>,
+        <linux-kselftest@vger.kernel.org>
+References: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
+ <3dce8546-60d4-bb94-2c7a-ed352882cd37@fb.com>
+ <alpine.LRH.2.23.451.2012060038260.1505@localhost>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <a17e79e9-5db1-9ff2-6ffc-71249e7ae3e8@fb.com>
+Date:   Sun, 6 Dec 2020 19:38:26 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <alpine.LRH.2.23.451.2012060038260.1505@localhost>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:209a]
+X-ClientProxiedBy: MW4PR04CA0167.namprd04.prod.outlook.com
+ (2603:10b6:303:85::22) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCHSET] saner elf compat
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-From:   hpa@zytor.com
-Message-ID: <0FF0E78B-6D38-43BD-8E64-CC9360903B2D@zytor.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::113f] (2620:10d:c090:400::5:209a) by MW4PR04CA0167.namprd04.prod.outlook.com (2603:10b6:303:85::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21 via Frontend Transport; Mon, 7 Dec 2020 03:38:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a5acbf51-c8e9-4a17-707b-08d89a61909d
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3302:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB33029D39FE61192C3D9BCFA0D3CE0@BYAPR15MB3302.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zM+6Lm0AQupkGmJuTLVzwh8einsMKi/XRK8DZGY5ubHykPK62IDWsKeSefo4KDVaZaslcXOVVQ4BCLG7/aynkkciWiVsqjgE6MFPBq98TsbSGPHWOMX1jlY80yEs90/Wvsx/eDb+EuX/9yAHbnHieuAvFNLfzkGnupDAt8GU3lS/KvGvhTkENtabeiUKLdeNZNvKKuzfHViHOENQa4OeYnL4M8QHl7b/7Jba9cusn0S5ZvRIc1RMpWfA3RmEPPiPY4C8k94z1SEcutxQWvr4oBKRpOY2Zm8QsWNCD9wisXGV/vKvCdWjZI+ldHXV9XQ7XryPXv4UIEOSCf4HJ+ZawG45T0cYzEWCWCiVjyPP95xNrwwhzZVCZH0mcBmV/6vSiix0xoH35owJKs8lVDJFuVVPmkVefnOrZcpAzh9s+lc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(346002)(396003)(366004)(31686004)(316002)(86362001)(5660300002)(7416002)(6916009)(4326008)(36756003)(53546011)(8936002)(31696002)(16526019)(66556008)(478600001)(83380400001)(66476007)(66946007)(8676002)(52116002)(6486002)(186003)(2616005)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?K1NVQ2RuZTIvQzRhMEhrNUtoMnV4b1BNNDRBTk15QXJnV20vQUVmWkdZbnd2?=
+ =?utf-8?B?aGFlNndNdDhqNlgwZk9BY0dJMll5c01uY1V1V09tSWt1R1p3OGR2MXhOdDBh?=
+ =?utf-8?B?UUFpSm5kYVh5dk1SREJjTEZEcmVBL1hic0NvYXRldlJjUGRFLzZzRmVIbC9l?=
+ =?utf-8?B?SXkxZ2pzcjZCeW1CTVlFTngrbXdIS1Urdkd0YUxndlMyTnFRMjFjME5zWERE?=
+ =?utf-8?B?VENTRTBUTjJoNjZjYnVSV2tOVzl3TnNqaEF0YXZza1ZnMEw0aXpPRzh0dm4x?=
+ =?utf-8?B?dndDbjB2Vzl0VDNIcG82a084R2FUNG1aRjBWWE5lUmRTMUE1Ty9rL29ybERq?=
+ =?utf-8?B?N25WbGJFbzFhSVltNm56cEg5bG84bVg5Y0FxV1JPWnlnRjVpOTQ4a3JweFZn?=
+ =?utf-8?B?RlNOdDl1Q2puUFZva0pXeGg4U1V0REYxRHlCKzdiSFhkQU5qUHRub1V0Vit1?=
+ =?utf-8?B?aDlGMGxGUjhuOEcvU0ZqRnUvU0grbGlkUlYwR0pKN3l1TU5zQWM1MERRMitF?=
+ =?utf-8?B?djIxL3ZhYWlRMDkxTWZlQ0JBVkNSRXJ0KzF3T2h1akpUYSs3N0JFK3RpSFBT?=
+ =?utf-8?B?bjBqUml0QktqQUEwSS9WMlJnWi9MWlhQUDRzTDVmY2h0eDZTOVMyNjBhaVB5?=
+ =?utf-8?B?VmZ6dTJZNVN6ZWtiZnNLSlRpUEZncVhqdEpyUi9icTEyRXJJNWVNN2kxQUpk?=
+ =?utf-8?B?Kzg1SzVWekJ3MEVBOHk3b0tIVXRhcTkzc1hQTjl0NFgza0c1ZDZIK3ZYMk02?=
+ =?utf-8?B?UUw1MzBPa2dIdEJyVWh3QVZBclJyandsaFpuTHUvZnBKYTJadld6dGo3R0Vw?=
+ =?utf-8?B?RnNmeThRenpnb1drTHNwRjFnRXBkWjZvRzNzcEJPL0RxbklOMm5ub2kwM0I3?=
+ =?utf-8?B?Z3ZLbUhLZjFyTDdYWnJxbVJKSzFROWRVaGdBUVlWblVLK09HRXIrbGNidS9o?=
+ =?utf-8?B?cXlUVklyS0cvN2VXenA3ZDFXQS9VREpMY3VaNHkyT1c1MXlWdjZyZkxiWUNa?=
+ =?utf-8?B?RUtGb25uMldxdE93d3pqZ0tqZ1NtVFE1cDNGZjhTMnFBSUJsTitWUFpYdWxm?=
+ =?utf-8?B?ZCtqYXdGZVBZajA2VlFXVDlsZXZjd3BkUDVMVFkyYmpnRGx2K1BvQStuaU42?=
+ =?utf-8?B?bzdseE53YU4waElEZ2VxL2V3eVRlTEh5MC9aa0VMYm1jY1FkUlRNNHFRTksx?=
+ =?utf-8?B?Tjg3RkxmUE1iS0QxRDl4VzJZdWFRR0JUSjcxSmF5K044b09aNC9WeGZKb0Iw?=
+ =?utf-8?B?TXFuNkYvZksrUGdBcjg3dXVISjU1STZKOTh4Rit6Y2E3TmxtdDVsZTRFSVJ1?=
+ =?utf-8?B?U1BXQjVYZ216ci96Mm5aMHQ4dnN4OGFzK3NPQjdRQkZ3b05aNlpzSU1meDJ3?=
+ =?utf-8?B?dkxnMEQrSkVndmc9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 03:38:30.0947
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5acbf51-c8e9-4a17-707b-08d89a61909d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T+2Gpnc42AM4TU4qy+fSwXWPnN3tZh+P9p7mBIRX+hc78XQW+7s+TYvx0a/W8MIY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3302
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-07_02:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012070022
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On December 5, 2020 7:23:05 PM PST, Al Viro <viro@zeniv=2Elinux=2Eorg=2Euk>=
- wrote:
->On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
->> > >  The answer (for mainline) is that mips compat does *NOT* want
->> > > COMPAT_BINFMT_ELF=2E  Not a problem with that series, though, so
->I'd
->> > > retested it (seems to work, both for x86_64 and mips64, execs and
->> > > coredumps for all ABIs alike), with centralization of Kconfig
->logics
->> > > thrown in=2E
->> >=20
->> > Well, the diffstat looks nice:
->> >=20
->> > >  26 files changed, 127 insertions(+), 317 deletions(-)
->> >=20
->> > and the patches didn't trigger anything for me, but how much did
->this
->> > get tested? Do you actually have both kinds of 32-bit elf mips
->> > binaries around and a machine to test on?
->>=20
->> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets
->the toolchain
->> and libraries just fine, and then it's just a matter of -mabi=3Dn32
->passed
->> to gcc)=2E  "Machine" is qemu-system-mips64el -machine malta -m 1024
->-cpu 5KEc
->> and the things appear to work; I hadn't tried that on the actual
->hardware=2E
->> I do have a Loongson-2 box, but it would take a while to dig it out
->and
->> get it up-to-date=2E
->>=20
->> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here
->explicitly
->> > just so that he has a heads-up on this thing and can go and look at
->> > the mailing list in case it goes to a separate mailbox for him=2E=2E
->>=20
->> I would certainly appreciate review and testing - this branch sat
->> around in the "should post it someday" state since June (it was
->> one of the followups grown from regset work back then), and I'm
->> _not_ going to ask pulling it without an explicit OK from mips
->> folks=2E
->
->BTW, there's something curious going on in ELF binary recognition for
->x32=2E  Unlike other 64bit architectures, here we have a 32bit binary
->that successfully passes the native elf_check_arch()=2E  Usually we
->either have different EM_=2E=2E=2E values for 64bit and 32bit (e=2Eg=2E f=
-or ppc
->and sparc) or we have an explicit check for ->e_ident[EI_CLASS]
->having the right value (ELFCLASS32 or ELFCLASS64 for 32bit and 64bit
->binaries resp=2E)
->
->For x32 that's not true - we use EM_X86_64 for ->e_machine and that's
->the only thing the native elf_check_arch() is looking at=2E  IOW,
->it looks like amd64 elf_load_binary() progresses past elf_check_arch()
->for x32 binaries=2E  And gets to load_elf_phdrs(), which would appear
->to have a check of its own that should reject the sucker:
->        /*
->         * If the size of this structure has changed, then punt, since
->         * we will be doing the wrong thing=2E
->         */
->        if (elf_ex->e_phentsize !=3D sizeof(struct elf_phdr))
->                goto out;
->After all, ->e_phentsize is going to be 32 (sizeof(struct elf32_phdr)
->rather than expected 56 (sizeof(struct elf64_phdr)) and off we bugger,
->even though it happens at slightly later point than usual=2E  Except that
->we are looking at struct elf64_hdr ->e_phentsize - in struct elf32_hdr=2E
->I=2Ee=2E at offset 54, two bytes past the end of in-file struct elf32_hdr=
-=2E
->
->Usually we won't find 0x38 0x00 in that location, so everything works,
->but IMO that's too convoluted=2E
->
->Peter, is there any reason not to check ->ei_ident[EI_CLASS] in
->amd64 elf_check_arch()?  It's a 1-byte load from hot cacheline
->(offset 4 and we'd just read the 4 bytes at offsets 0=2E=2E3) +
->compare + branch not taken, so performance impact is pretty much
->nil=2E  I'm not saying it's a security problem or anything of that
->sort, just that it makes the analysis more subtle than it ought
->to be=2E=2E=2E
->
->Is it about some malformed homegrown 64bit binaries with BS value
->at offset 4?  Confused=2E=2E=2E
 
-I can't think of any=2E
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+
+On 12/5/20 4:43 PM, Alan Maguire wrote:
+> 
+> On Sat, 5 Dec 2020, Yonghong Song wrote:
+> 
+>>
+>>
+>> __builtin_btf_type_id() is really only supported in llvm12
+>> and 64bit return value support is pushed to llvm12 trunk
+>> a while back. The builtin is introduced in llvm11 but has a
+>> corner bug, so llvm12 is recommended. So if people use the builtin,
+>> you can assume 64bit return value. libbpf support is required
+>> here. So in my opinion, there is no need to do feature detection.
+>>
+>> Andrii has a patch to support 64bit return value for
+>> __builtin_btf_type_id() and I assume that one should
+>> be landed before or together with your patch.
+>>
+>> Just for your info. The following is an example you could
+>> use to determine whether __builtin_btf_type_id()
+>> supports btf object id at llvm level.
+>>
+>> -bash-4.4$ cat t.c
+>> int test(int arg) {
+>>    return __builtin_btf_type_id(arg, 1);
+>> }
+>>
+>> Compile to generate assembly code with latest llvm12 trunk:
+>>    clang -target bpf -O2 -S -g -mcpu=v3 t.c
+>> In the asm code, you should see one line with
+>>    r0 = 1 ll
+>>
+>> Or you can generate obj code:
+>>    clang -target bpf -O2 -c -g -mcpu=v3 t.c
+>> and then you disassemble the obj file
+>>    llvm-objdump -d --no-show-raw-insn --no-leading-addr t.o
+>> You should see below in the output
+>>    r0 = 1 ll
+>>
+>> Use earlier version of llvm12 trunk, the builtin has
+>> 32bit return value, you will see
+>>    r0 = 1
+>> which is a 32bit imm to r0, while "r0 = 1 ll" is
+>> 64bit imm to r0.
+>>
+> 
+> Thanks for this Yonghong!  I'm thinking the way I'll tackle it
+> is to simply verify that the upper 32 bits specifying the
+> veth module object id are non-zero; if they are zero, we'll skip
+> the test (I think a skip probably makes sense as not everyone will
+> have llvm12). Does that seem reasonable?
+
+This should work too and we do not need to add a note in
+README.rst for this test then.
+
+> 
+> With the additional few minor changes on top of Andrii's patch,
+> the use of __builtin_btf_type_id() worked perfectly. Thanks!
+> 
+> Alan
+> 
