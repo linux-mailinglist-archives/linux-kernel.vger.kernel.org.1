@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AB22D0FD6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0E02D0FD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgLGL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:58:56 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:26344 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgLGL6z (ORCPT
+        id S1727126AbgLGL7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLGL7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:58:55 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201207115812epoutp017b4a8c9ff345dd538d06fac47597f8d5~ObUxsOQ5G2710427104epoutp01S
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:58:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201207115812epoutp017b4a8c9ff345dd538d06fac47597f8d5~ObUxsOQ5G2710427104epoutp01S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607342292;
-        bh=EKU59/ZcPOnYuRcIpLZfbTLpvw0FVbLbHIp7DsjPRyQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=sVq8f6bv1N2ip0dQh/vkIpWLvMf4WjZ0QI8rBF+fkRh5SBVDOEImF0q3Q74uadNLd
-         wkDRWpin2NIgWcDXX+INvgDqtPPL6bfhsg3psCnhq1S2EO2oKo/OnZdf7Wr8OBIJo+
-         AuUC753ST12XvguzlaZT+S1PyEsMIP3n3/yFkF24=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20201207115811epcas2p2d64d4a7a03174285471ff34f1cd767c4~ObUxQFyuj0385403854epcas2p2D;
-        Mon,  7 Dec 2020 11:58:11 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CqMJf2nFyzMqYkZ; Mon,  7 Dec
-        2020 11:58:10 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        63.E8.10621.2D81ECF5; Mon,  7 Dec 2020 20:58:10 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201207115809epcas2p27357338e523393e51399eadb7a2c2351~ObUvj8Re_0385403854epcas2p2-;
-        Mon,  7 Dec 2020 11:58:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201207115809epsmtrp2d89c368dfb86d1163f5f949b4549b4d0~ObUvjDlKj0558405584epsmtrp2F;
-        Mon,  7 Dec 2020 11:58:09 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-b1-5fce18d28ef5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        09.65.13470.1D81ECF5; Mon,  7 Dec 2020 20:58:09 +0900 (KST)
-Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201207115809epsmtip2ce556400882a23e1d17aa05ca33b63b7~ObUvSuX2d1852518525epsmtip2G;
-        Mon,  7 Dec 2020 11:58:09 +0000 (GMT)
-From:   "Chanho Park" <chanho61.park@samsung.com>
-To:     "'Will Deacon'" <will@kernel.org>,
-        "'Chanho Park'" <parkch98@gmail.com>
-Cc:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
-        <coresight@lists.linaro.org>,
+        Mon, 7 Dec 2020 06:59:03 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7592C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:58:16 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w206so9408082wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 03:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QXhe9B9BJ7USSO3oeUBj7EmOBzDk/2v+2B7jxK6gtbg=;
+        b=iG24RCKl+ygINMY1nAhD2uNc0qaaBKZsFX4Z6upKoDJg/x3GJI96vsDzaMEFbfuZf0
+         RaTxdFpfJr4kAP+kSAXP6Hg0yTMoOYnEHeQi5akZjbVsdYl9ibGfpOcHF6hyfP6xE8jH
+         CJFt7ZcPKyrT7z/9Ex7CR5+ExOVXAHf3DjZLIHCDWefWBzFiCrJ2Zfn5TzK1e3SroR9i
+         M7R1jgzQvggjuPkSRMjMrwr8NXriK+ITjyd11nJMWqGln9M4L9U5Q3pTJ1f+6Pk+4gad
+         s1xZ6Mej5NQI2e6fN1kNAmVQrYMIn4gvKSxbeFIrznGNlGAaVeDl+dEWZT44ZzqVD985
+         EUyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QXhe9B9BJ7USSO3oeUBj7EmOBzDk/2v+2B7jxK6gtbg=;
+        b=sq1j6QiyCXv20ONaD2yVdPv9eDmKbl+Ak0EJ/B/XZg15ImqAM3B8fPL1EaoTJXIJ/x
+         7wy11OI0yLKY6445OD5HXv5qjJGvJtnXJBbGD9Uos4a70FO31y+PsLbm3Ibl50ZkKde0
+         i4J/HbsJ7Jnb1P5fveWnsfl1XfVUb3V2l5/T3DinCKThCdTvNN/z2qt71l7Vf19cVaDR
+         neGw6VmK4NL+/4DSrlXn/ELcX55PwCwak+NhkXJLNtKxYk1cJJhl1ptUFy1vU/G/QW2J
+         +pwU6qH+EHWEGwJuzpkFr4ybUpOcSxBY2pT+iUAogHyaFVlGHV0qRjYE6TX2RZtR4p4u
+         Bm3A==
+X-Gm-Message-State: AOAM533MnUezh47zNup/tZuV07TxR5EhcKKOY8hukXGJ+XwKfninfTBB
+        iObzcEiTLl430IYeVx9Eci9/kA==
+X-Google-Smtp-Source: ABdhPJwUzWSoIPl5fmIEWseyZa8uAixbFQ83VDcWjXlOYrOt9eUmIZlDTJNHwBtOScO5fPv4OfgRrw==
+X-Received: by 2002:a1c:49c2:: with SMTP id w185mr10925592wma.184.1607342295377;
+        Mon, 07 Dec 2020 03:58:15 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id m21sm13730406wml.13.2020.12.07.03.58.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 03:58:14 -0800 (PST)
+Date:   Mon, 7 Dec 2020 11:58:11 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "'Mike Leach'" <mike.leach@linaro.org>,
-        "'Leo Yan'" <leo.yan@linaro.org>,
-        "'John Garry'" <john.garry@huawei.com>,
-        "'Peter Zijlstra'" <peterz@infradead.org>,
-        "'Ingo Molnar'" <mingo@redhat.com>,
-        "'Arnaldo Carvalho de Melo'" <acme@kernel.org>,
-        "'Mark Rutland'" <mark.rutland@arm.com>,
-        "'Jiri Olsa'" <jolsa@redhat.com>,
-        "'Namhyung Kim'" <namhyung@kernel.org>,
-        "'Khem Raj'" <raj.khem@gmail.com>
-In-Reply-To: <20201207105359.GA4198@willie-the-truck>
-Subject: RE: [PATCH] perf arm pmu: fix build error on MUSL libc
-Date:   Mon, 7 Dec 2020 20:58:09 +0900
-Message-ID: <001101d6cc90$3b491310$b1db3930$@samsung.com>
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>, kernel-team@android.com,
+        Android KVM <android-kvm@google.com>
+Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
+Message-ID: <X84Y07kbeSL4xcNJ@google.com>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-17-qperret@google.com>
+ <CA+EHjTyJnZ8e=AN7H_k+oZb0VTWAgMicMY8Rqe2Di_3A87hm0A@mail.gmail.com>
+ <X8p5kLSIq2MoQZ24@google.com>
+ <CA+EHjTxW_z-P8bK7gCjGv2eBCAHFsvE873Gr2KyVq5-+_Mdv=g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQL9yUid8Wz8jDy8suCkHfvhsfGAdwJrg0gYATsEmCungEns0A==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc+5tbwvaeikoJx2P5uILlkLLbDmoDKeM3IWZ1WySzCzWDi6U
-        rLRNC0QXjcCE8HDGBny0IoMozCFCeLQ85W3YSwcsQ8LDLAJD2QpEtkXcqmu5NeO/zz3f3zff
-        3/fce/m46FdCzM/QZzEmvUZHEb4cx2C4UjoGH6hlg1YBKnnUTqDOThw19+Zz0b37LgyV2ccI
-        1Dw7zkU/d1YQqObhKIbs3X0YWnl8hYfG+qowlF9r56Dl5WoCDX/pFgof2gCyTk0BdG5accCP
-        rq+sB3SHbYZHnxtycumWWxF0c10xQU+PdxN0y82z9NTLWZxe7vmFoFebQ1S+x3T7tYwmlTFJ
-        GH2KITVDnx5HJX2oPqRWKGVyqTwWxVASvSaTiaMS3ldJEzN07jaUJEejy3YfqTRmMxX19n6T
-        ITuLkWgN5qw4ijGm6oxyuTHSrMk0Z+vTI1MMmXvlMlm0wj15Qqe9Vt6DGRvIk12jLm4uWBKW
-        AB8+JPfApbwbvBLgyxeR7QCO/rsI2IdnAFZVjnqVvwG0rH2Pvbb0T5USrHAXwNqOr9cFEfkE
-        QFdeiIcJMgo+LXJwPRxAJsEeeynuMeCknQMbL90BHsGHVMDzvfd4HvYn4+FCgYXjYQ65HT4q
-        deIeFpCxsHW+i8uyH/zOOrc+g5OhsM1ZgbMbSeDafK037CBseNYC2JkAeK24cD0Ykq/4cL68
-        gcMaEmDXxHUuy/5wcbiVx7IYri7dJVg+C289zveazwP49PJLb1o8tM7XuCvz3QnhsLEzyoOQ
-        DINDk97dhLBo0MVjjwWwqFDEGnfBvrYr3g2CYWnFKvcioGwbmtk2NLNtaGD7P6sKcOrANsZo
-        zkxnzNFG+ca33QzWP/WId9tBmXMlcgBgfDAAIB+nAgQ7xffVIkGq5tTnjMmgNmXrGPMAULjv
-        2oKLt6YY3P+KPkstV0QrlbJYBVIooxEVKDj6zQW1iEzXZDGfMYyRMb32YXwfcS4WE7N7QRBX
-        MFP5jyvp9pwzsglu3d2ReLobk3+QQ25rUrry3hPr/Nqiz9SsyC49P+6aOXhU9cmTP3YGSx0h
-        uabTH1/4dkIoUSqiyjD5Cxg2trTpxSnaGZwjS94VqvO/nD1dWfPTnfi1+E3aI1+9WgmfDYrx
-        mQgsUXHeUZ3465Cjf8tF+Kdlx74Epmrhd8qaXz6kHFHEald+TDtzVSnb51isvl1v+eikoT88
-        +cDkHPeLH3qKreNN1rDMtqCB4Tf2HH9eFzqi3L6lNyhRmtY4Mv3W4eG9ljSh9EbjZmLHtN6v
-        ui7X+VvfkU/b8zfbjvHyyOvJqKAnsBU9EL5pTcBCIqyTiUKKY9Zq5BG4yaz5D+UWJNFzBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRmVeSWpSXmKPExsWy7bCSvO5FiXPxBgf2qVh03dvBZrFrF7PF
-        pv1NrBZHz/5lspi89RKbxabH11gtLu+aw2ax9PpFJoutew4wWXx4NJ3d4tKBBUwWTcu2sli8
-        f7+QzeJ4L1Ci7fosRouZt28zWrTcMXUQ9Fgzbw2jx85Zd9k9Wo68ZfXYvELLY9OqTjaPO9f2
-        sHlsXlLvcfvfY2aP9/uusnl83iQXwBXFZZOSmpNZllqkb5fAlTF7yj6mgnUCFbsv/mVtYHzH
-        18XIySEhYCJx8HY3WxcjF4eQwG5GiXVXZ7FBJGQlnr3bwQ5hC0vcbznCClH0jFHiUPN9FpAE
-        m4C+xMuObawgtoiAr8TCH78YQYqYBQ6zSCy9/4oVbuzyC9vARnEKmEr07D8KZgsL2Es8b50I
-        NolFQEXiXvdbZhCbV8BSYsvT3awQtqDEyZlPgGo4gKbqSbRtZAQJMwvIS2x/O4cZ4joFiZ9P
-        l0Ed4SSx7tNmqBoRidmdbcwTGIVnIZk0C2HSLCSTZiHpWMDIsopRMrWgODc9t9iwwDAvtVyv
-        ODG3uDQvXS85P3cTIzi6tTR3MG5f9UHvECMTB+MhRgkOZiURXjWps/FCvCmJlVWpRfnxRaU5
-        qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0tSC2CyTJxcEo1MO1rCvyvI1lc6iLeGu5ma3bZfZrd
-        9cIiuVu8k9pz+3/f3bzup6Elx781cy6LeD5Mm3ZX4EXdpy8vlry/MUtbfv6V6ynH//xvFazY
-        XqKYX7tz/h15Dk8rkfbSBZ9K7ZtFfJe/zLm1SnXGbzsOVrWshGuz33YdfvNU+MIroeodoX9/
-        +j0TVtPbt7giirNWYt9vpf70PuejIVxequtXnyx7IPdx1epzkc45zjav1x6ZxxfkcXHt3M8H
-        76UmJP7iV+ua/OOepUzXlslNCtc/cpQsu9V6+GP/mms2jUnLnkw2qdRN+OHwfaH7omPxEYvm
-        F+jmXthwas5R5pTYVdZOj/f3v6ra5R/6KuRHl1pWyPZFtjFKLMUZiYZazEXFiQBDfeTeXQMA
-        AA==
-X-CMS-MailID: 20201207115809epcas2p27357338e523393e51399eadb7a2c2351
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201207105410epcas2p3f9210689886172422d27870f25a79df3
-References: <20201206144527.1670483-1-chanho61.park@samsung.com>
-        <CGME20201207105410epcas2p3f9210689886172422d27870f25a79df3@epcas2p3.samsung.com>
-        <20201207105359.GA4198@willie-the-truck>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+EHjTxW_z-P8bK7gCjGv2eBCAHFsvE873Gr2KyVq5-+_Mdv=g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
- 
-> Looks like other files just include this unconditionally, but have a
-> comment explaining why. See util/branch.h and util/event.h. Maybe we
-> should do the same for util/pmu.h, which is already included here?
+On Monday 07 Dec 2020 at 11:16:05 (+0000), Fuad Tabba wrote:
+> On Fri, Dec 4, 2020 at 6:01 PM Quentin Perret <qperret@google.com> wrote:
+> >
+> > On Thursday 03 Dec 2020 at 12:57:33 (+0000), Fuad Tabba wrote:
+> > <snip>
+> > > > +int hyp_create_idmap(void);
+> > > > +int hyp_map_vectors(void);
+> > > > +int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
+> > > > +int hyp_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
+> > > > +int hyp_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
+> > > > +int __hyp_create_mappings(unsigned long start, unsigned long size,
+> > > > +                         unsigned long phys, unsigned long prot);
+> > > > +unsigned long __hyp_create_private_mapping(phys_addr_t phys, size_t size,
+> > > > +                                          unsigned long prot);
+> > > > +
+> > >
+> > > nit: I also thought that the hyp_create_mappings function names are a
+> > > bit confusing, since there's the create_hyp_mappings functions which
+> > > use the aforementioned *hyp_pgtable.
+> >
+> > Sure, happy to re-name those (and hyp_pgtable above). Any suggestions?
+> 
+> Perhaps something to indicate that these are temporary, tmp_ or
+> bootstrap_ maybe?
 
-I found below files which perf includes <linux/perf_event.h>. Instead of
-doing same for all, we'd better put this only for
-tools/include/uapi/linux/perf_event.h.
+Hmm, the thing is these are temporary only in protected mode, they're
+permanent otherwise :/
 
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -17,6 +17,9 @@
- 
- #include <linux/types.h>
- #include <linux/ioctl.h>
-+#if !defined(__GLIBC__)
-+#include <linux/stddef.h>
-+#endif
- #include <asm/byteorder.h>
- 
- /*
+Perhaps I could prefix the protected pgtable (and associated functions)
+with 'pkvm_' or so? Marc, any preferences?
 
-tools/perf/arch/arm/util/pmu.c:#include <linux/perf_event.h>
-tools/perf/arch/x86/util/pmu.c:#include <linux/perf_event.h>
-tools/perf/arch/x86/util/tsc.c:#include <linux/perf_event.h>
-tools/perf/lib/include/internal/evsel.h:#include <linux/perf_event.h>
-tools/perf/lib/include/perf/event.h:#include <linux/perf_event.h>
-tools/perf/lib/tests/test-evlist.c:#include <linux/perf_event.h>
-tools/perf/lib/tests/test-evsel.c:#include <linux/perf_event.h>
-tools/perf/tests/hists_common.c:#include <linux/perf_event.h>
-tools/perf/util/auxtrace.c:#include <linux/perf_event.h>
-tools/perf/util/auxtrace.h:#include <linux/perf_event.h>
-tools/perf/util/branch.h:#include <linux/perf_event.h>
-tools/perf/util/event.c:#include <linux/perf_event.h>
-tools/perf/util/evsel.c:#include <linux/perf_event.h>
-tools/perf/util/evsel.h:#include <linux/perf_event.h>
-tools/perf/util/header.h:#include <linux/perf_event.h>
-tools/perf/util/mem-events.h:#include <linux/perf_event.h>
-tools/perf/util/namespaces.h:#include <linux/perf_event.h>
-tools/perf/util/record.h:#include <linux/perf_event.h>
-tools/perf/util/session.h:#include <linux/perf_event.h>
-tools/perf/util/pmu.h:#include <linux/perf_event.h>
-tools/perf/util/synthetic-events.c:#include <linux/perf_event.h>
-tools/perf/util/parse-events.h:#include <linux/perf_event.h>
-tools/perf/util/perf_event_attr_fprintf.c:#include <linux/perf_event.h>
-
-Best Regards,
-Chanho Park
-
+Thanks,
+Quentin
