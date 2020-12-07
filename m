@@ -2,104 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D05E2D0E2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3D12D0E4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgLGKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgLGKkG (ORCPT
+        id S1726694AbgLGKmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:42:43 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:25929 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726188AbgLGKmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:40:06 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B88EC0613D0;
-        Mon,  7 Dec 2020 02:39:26 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id l23so7202637pjg.1;
-        Mon, 07 Dec 2020 02:39:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fDci9LEkbZBuld4sW/fQVQolVRaWQo6HEweIao+YO5I=;
-        b=ZcYZM8qLWwwsLC8hP8jseED2i9g/3K17WRfv36ZEDTVlHxnP2B19wHuIxrT7AXAQYP
-         NUoWGZkNsIR8bFc/bhVkIsmR57dMMChFY8NImwRQTWM4ztHy/gAXNYbRIJikc9+ZlQ5O
-         mPvcMDmiesW9uloNu4nbOTCZg9F/Mc8Zr45Ha3zGkKC3DBP7gO8YUiHEXorbuIWdo4mS
-         ZBeDoYkaEp31tMi5bbosCpp1Y5VN5sqFpb40mjSXdYuMeXq3XeFhb/z3JDm7EaAhwA21
-         Fe1jP9KXpI4EOBjJCFu68QUn2CdNAn3LupiE3giSVt0bYYiSIMCGiYKxr1HWEAjs6sYE
-         FwPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fDci9LEkbZBuld4sW/fQVQolVRaWQo6HEweIao+YO5I=;
-        b=EVLb19UkKLKMEUFUlhEfDBCjCwfv0K3+xmoajw8zsTT2xfeqbYqGd2RTGeNbLOZOqH
-         QQb2B8z2uks+bYbkVxKTq61ngarzMj2RVBrRSz1cnZDq4NKIsCdn+q1IR54MFwmDcVv5
-         mhfHNirncsnse8jyDFyNroP/cOSUWDRa3oZeclw6InYLbqajBddn5kPualSh7jsQsc63
-         7w3Ao693tKNfYlqIh3hoKYQqLzGE+yXs4A08vRCBpg5rc5XvU1FFe/DMDm0R1rv9LqZq
-         +kPKZ3FeJxWWo0JJtj/G3+PlJOV+I2I7fzwLxEC4z6usQZEZ0QbOvaV012T2GSZ3Q5mb
-         hm/Q==
-X-Gm-Message-State: AOAM532IycZnOolOop9zA0bizhBBrbayXcTU3w6iZEuLLqVXKbsQ+wOs
-        sVLy72PT/y1h6d0g3427hL2j31sVdP0+M3dQabo=
-X-Google-Smtp-Source: ABdhPJw4iT57I8S8JLy3wVMNjx+Vglg02f7unXFwxHibyGY1fqiWXm5Eh4YsMrH5xubVzFTdNjqZfJeIuycCKGx6Jik=
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr16140877pjf.181.1607337565811;
- Mon, 07 Dec 2020 02:39:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
-In-Reply-To: <20201206131036.3780898-1-vladimir.kondratiev@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Dec 2020 12:40:14 +0200
-Message-ID: <CAHp75Vef910QkY6114a_3+AAM8-WXjwYdncgcCJDP9z6+UMirA@mail.gmail.com>
-Subject: Re: [PATCH] do_exit(): panic() when double fault detected
-To:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joe Perches <joe@perches.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 7 Dec 2020 05:42:43 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607337742; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BGNdc2vD2EMhLU2qHKPdKYLk6stKVPG2SBXK5CBPJB4=; b=rl4tRb8g3tMwMQAnu7cEuT6nfhTaERXiYtVD0BnnpdYnbv1TQvg2uzaHVgAp63mHiYhz6UZ+
+ W1Me64cYm/EZLpNRyumGXAUnV1d+Nw/qGyvl5Q7WW4IcEwS46g+tXW+y5VNqwrsMHMNHlcPP
+ a/TcgcG5kMlIivN4Yd64X5foN8I=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fce070b0ce450987a973766 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 10:42:19
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46471C43466; Mon,  7 Dec 2020 10:42:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D6F4C433CA;
+        Mon,  7 Dec 2020 10:42:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D6F4C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     robh@kernel.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jcrouse@codeaurora.org, mka@chromium.org, robdclark@gmail.com,
+        dianders@chromium.org
+Subject: [PATCH v3 1/2] drm/msm: Add speed-bin support to a618 gpu
+Date:   Mon,  7 Dec 2020 16:12:07 +0530
+Message-Id: <1607337728-11398-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 6, 2020 at 3:16 PM Vladimir Kondratiev
-<vladimir.kondratiev@intel.com> wrote:
+Some GPUs support different max frequencies depending on the platform.
+To identify the correct variant, we should check the gpu speedbin
+fuse value. Add support for this speedbin detection to a6xx family
+along with the required fuse details for a618 gpu.
 
-> ---------------------------------------------------------------------
-> Intel Israel (74) Limited
->
-> This e-mail and any attachments may contain confidential material for
-> the sole use of the intended recipient(s). Any review or distribution
-> by others is strictly prohibited. If you are not the intended
-> recipient, please contact the sender and delete all copies.
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+Changes from v2:
+	1. Made the changes a6xx specific to save space.
+Changes from v1:
+	1. Added the changes to support a618 sku to the series.
+	2. Avoid failing probe in case of an unsupported sku. (Rob)
 
-You have a problematic footer. No one will apply or touch this material anyway.
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 74 +++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  2 +
+ 2 files changed, 76 insertions(+)
 
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 1306618..6304578 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -10,10 +10,13 @@
+ 
+ #include <linux/bitfield.h>
+ #include <linux/devfreq.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/soc/qcom/llcc-qcom.h>
+ 
+ #define GPU_PAS_ID 13
+ 
++const u32 a618_speedbins[] = {0, 169, 174};
++
+ static inline bool _a6xx_check_idle(struct msm_gpu *gpu)
+ {
+ 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+@@ -1208,6 +1211,10 @@ static void a6xx_destroy(struct msm_gpu *gpu)
+ 	a6xx_gmu_remove(a6xx_gpu);
+ 
+ 	adreno_gpu_cleanup(adreno_gpu);
++
++	if (a6xx_gpu->opp_table)
++		dev_pm_opp_put_supported_hw(a6xx_gpu->opp_table);
++
+ 	kfree(a6xx_gpu);
+ }
+ 
+@@ -1264,6 +1271,67 @@ static uint32_t a6xx_get_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+ 	return ring->memptrs->rptr = gpu_read(gpu, REG_A6XX_CP_RB_RPTR);
+ }
+ 
++static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
++{
++	int i;
++
++	if (revn == 618) {
++		for (i = 0; i < ARRAY_SIZE(a618_speedbins); i++) {
++			if (fuse == a618_speedbins[i])
++				return  (1 << i);
++		}
++	}
++
++	DRM_DEV_ERROR(dev,
++			"missing support for speed-bin: %u. Some OPPs may not be supported by hardware",
++			fuse);
++	return ~0U;
++}
++
++static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
++		u32 revn)
++{
++
++	struct opp_table *opp_table;
++	struct nvmem_cell *cell;
++	u32 supp_hw = ~0U;
++	void *buf;
++
++	cell = nvmem_cell_get(dev, "speed_bin");
++	/*
++	 * -ENOENT means that the platform doesn't support speedbin which is
++	 * fine
++	 */
++	if (PTR_ERR(cell) == -ENOENT)
++		return 0;
++	else if (IS_ERR(cell)) {
++		DRM_DEV_ERROR(dev,
++				"failed to read speed-bin. Some OPPs may not be supported by hardware");
++		goto done;
++	}
++
++	buf = nvmem_cell_read(cell, NULL);
++	if (IS_ERR(buf)) {
++		nvmem_cell_put(cell);
++		DRM_DEV_ERROR(dev,
++				"failed to read speed-bin. Some OPPs may not be supported by hardware");
++		goto done;
++	}
++
++	supp_hw = fuse_to_supp_hw(dev, revn, *((u32 *) buf));
++
++	kfree(buf);
++	nvmem_cell_put(cell);
++
++done:
++	opp_table = dev_pm_opp_set_supported_hw(dev, &supp_hw, 1);
++	if (IS_ERR(opp_table))
++		return PTR_ERR(opp_table);
++
++	a6xx_gpu->opp_table = opp_table;
++	return 0;
++}
++
+ static const struct adreno_gpu_funcs funcs = {
+ 	.base = {
+ 		.get_param = adreno_get_param,
+@@ -1325,6 +1393,12 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 
+ 	a6xx_llc_slices_init(pdev, a6xx_gpu);
+ 
++	ret = a6xx_set_supported_hw(&pdev->dev, a6xx_gpu, info->revn);
++	if (ret) {
++		a6xx_destroy(&(a6xx_gpu->base.base));
++		return ERR_PTR(ret);
++	}
++
+ 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
+ 	if (ret) {
+ 		a6xx_destroy(&(a6xx_gpu->base.base));
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+index e793d32..ce0610c 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+@@ -33,6 +33,8 @@ struct a6xx_gpu {
+ 	void *llc_slice;
+ 	void *htw_llc_slice;
+ 	bool have_mmu500;
++
++	struct opp_table *opp_table;
+ };
+ 
+ #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
+
