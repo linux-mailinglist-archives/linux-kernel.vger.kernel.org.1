@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381A52D19EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BD72D19EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgLGToE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:44:04 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38484 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgLGToD (ORCPT
+        id S1726663AbgLGToY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgLGToX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:44:03 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607370201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I334otsRnjsdPvZNHbr6PY/AxaoibaWvPiqif0DnRJQ=;
-        b=JZByJyfFmV0EhRPwqzzi+wmjs2CjVeN5+RRB0rc76BuIQQpNTBqr+mZN8qvu5Gmcsn9b2f
-        jWg5sSC4b7/l50RmsuVuDQsYZf7YnUg7sXKrxB2tAppho6b5BJcCAxkJpwx8wUOcx1Ao3o
-        Z5ybNdP7LJS8XNdfyqUpOjGXvMo/EnY5wNwcTENI/G9iYpC+J1bTK52P04DuSFE0OgMpDV
-        XfHO9VrKs54LAq23igdAJtS24Lkq7KtIpl5nJ93NGzifTFNHHHSwqDLpttqTVvap6ClZzS
-        cV0GGL/eNiAMTNgRKrn5IjjpcOO+oYI4Mm8GkTGsaihOPXUNqb+TW7ZCVOqbHg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607370201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I334otsRnjsdPvZNHbr6PY/AxaoibaWvPiqif0DnRJQ=;
-        b=iWz5rZ60m9F4yyaFdHSTlDi1PJXZWUurgulnQya5jua2xiG9HSIYpZLxgOsJ6NJoFVoCQk
-        t1/nYwc2w4hqhCDw==
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-In-Reply-To: <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
-References: <20201206211253.919834182@linutronix.de> <20201206212002.876987748@linutronix.de> <20201207120943.GS3021@hirez.programming.kicks-ass.net> <87y2i94igo.fsf@nanos.tec.linutronix.de> <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
-Date:   Mon, 07 Dec 2020 20:43:21 +0100
-Message-ID: <87eek14d2e.fsf@nanos.tec.linutronix.de>
+        Mon, 7 Dec 2020 14:44:23 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B2FC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:43:43 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id p5so9601073ilm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=newoldbits-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BMbdvaySsQ/4/F+vh9ynJhvabOGmwdOHgWhKJea+J5E=;
+        b=nhu1pkPKF+A7xP7LWBivSxeXgwTFkm0BPjC2BpXaUFRC3OzXKlXBneybvE4NyR/V+Z
+         iG55x3ZRQhXSxmYOSkuIus15TsNahgNny+LNKY8eqG9xGil6rrtTmOFpHWRxAC2r/7ax
+         RxMUkqeO62Jki/xnlAEF/2bPQv729Fpy3pFzwOWYmW2MP7dkfHXlfDYOK42/VDVyYWL0
+         T2BmNgs4DN/zrg8xH0/Rm+YN6EcW6JOj6NAJf9IJ5HxDqVr6/bWEyvcSEwi1pV6aZyNx
+         pktTUBvKBOE7aDG51VSe1FGHHnlgxHA+HFeRnpFLUpben65ueY58i4+dBNz8V/Rk2eFb
+         Zolg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BMbdvaySsQ/4/F+vh9ynJhvabOGmwdOHgWhKJea+J5E=;
+        b=Jbet9fnju7LM4LBKgkvEbHhfSb6yvlxvLp3hzYEi5Usv2WGtv4PUhcgzlpHH66EKWF
+         a5v2EalgUrva1/58WlukVJb5pZHHoYvjV8L4iyIRL6gw8I7P6dsfaE06hfZKfjrrUsIk
+         OBXWVClqkuv0vo4Hz5Wf83pZ3b7CHQJswcFOMxtVktUzOh0o4CjCx/qHVZWju5/Gfc1E
+         q6zKQ9HRg9EHwWPA6ccnrIboRJVX+DkE5KKVhTukqzgesRNT249waUXHPJsIYeirym4X
+         UKIueiX5SOf0mQ2JSQ9Q46QKi/oeUIzHc/jkqav88xYx/S6toL/OovYMk5XGZVrg6QMs
+         9sgw==
+X-Gm-Message-State: AOAM532qkPPDfLHfSX3p9LOemY6HZj9HDcMq2OITGKyB7S7mFQqaSY+v
+        EHnpFOifJ+ccFXd6tH9nf5Cu7cxvdhjdfvk+jKKCXg==
+X-Google-Smtp-Source: ABdhPJxSzCN7dpPUwtvyAaZ683bgE/NifG7xkGeY+vGgUQUI6lSv+uA2jYlkyu3PjCOhc3G/Fci9tB7WFs+l0rCntag=
+X-Received: by 2002:a92:d9cd:: with SMTP id n13mr21850683ilq.96.1607370222948;
+ Mon, 07 Dec 2020 11:43:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201201083408.51006-1-jean.pihet@newoldbits.com>
+ <20201201184100.GN2073444@lunn.ch> <CAORVsuXv5Gw18EeHwP36EkzF4nN5PeGerBQQa-6ruWAQRX+GoQ@mail.gmail.com>
+ <20201201204516.GA2324545@lunn.ch>
+In-Reply-To: <20201201204516.GA2324545@lunn.ch>
+From:   Jean Pihet <jean.pihet@newoldbits.com>
+Date:   Mon, 7 Dec 2020 20:43:32 +0100
+Message-ID: <CAORVsuXtVYKh_nCvCdA7PUWJeJbVJWD43jtkiFwXeg2Qo1mG+A@mail.gmail.com>
+Subject: Re: [PATCH v2] net: dsa: ksz8795: adjust CPU link to host interface
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
+        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
+        Hugo Cornelis <hugo.cornelis@essensium.com>,
+        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 19:19, Marco Elver wrote:
-> On Mon, 7 Dec 2020 at 18:46, Thomas Gleixner <tglx@linutronix.de> wrote:
->> On Mon, Dec 07 2020 at 13:09, Peter Zijlstra wrote:
->> > I prefer the form:
->> >
->> >       if (data_race(tick_do_timer_cpu == TICK_DO_TIMER_BOOT)) {
->> >
->> > But there doesn't yet seem to be sufficient data_race() usage in the
->> > kernel to see which of the forms is preferred. Do we want to bike-shed
->> > this now and document the outcome somewhere?
->>
->> Yes please before we get a gazillion of patches changing half of them
->> half a year from now.
+Hi Andrew,
+
+On Tue, Dec 1, 2020 at 9:45 PM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> That rule should be as simple as possible. The simplest would be:
-> "Only enclose the smallest required expression in data_race(); keep
-> the number of required data_race() expressions to a minimum." (=> want
-> least amount of code inside data_race() with the least number of
-> data_race()s).
+> > Configure the host port of the switch to match the host interface
+> > settings. This is useful when the switch is directly connected to the
+> > host MAC interface.
 >
-> In the case here, that'd be the "if (data_race(tick_do_timer_cpu) ==
-> ..." variant.
+> Why do you need this when no other board does? Why is your board
+> special?
 >
-> Otherwise there's the possibility that we'll end up with accesses
-> inside data_race() that we hadn't planned for. For example, somebody
-> refactors some code replacing constants with variables.
+> As i said before, i'm guessing your board has back to back PHYs
+> between the SoC and the switch and nobody else does. Is that the
+> reason why? Without this, nothing is configuring the switch MAC to the
+> results of the auto-neg between the two PHYs?
+
+Yes that is the case. From here I see this patch is too specific to
+our setup, and so cannot be considered for merging.
+
 >
-> I currently don't know what the rule for Peter's preferred variant
-> would be, without running the risk of some accidentally data_race()'d
-> accesses.
+> Or am i completely wrong?
+No, this is completely right. I will drop this patch then.
 
-I agree. Lets keep it simple and have the data_race() only covering the
-actual access to the racy variable, struct member.
+Thank you very much for reviewing and for the suggestions.
 
-The worst case we could end up with would be
+BR,
+Jean
 
-    if (data_race(A) == data_race(B))
-
-which would still be clearly isolated. The racy part is not the
-comparison, it's the accesses which can cause random results for the
-comparison.
-
-Thanks,
-
-        tglx
-
-
+>
+>    Andrew
+>
