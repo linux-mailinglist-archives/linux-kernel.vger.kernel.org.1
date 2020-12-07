@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C10E2D1173
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558A52D1175
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgLGNKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgLGNKX (ORCPT
+        id S1725996AbgLGNLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:11:16 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9125 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLGNLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:10:23 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0770EC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:09:43 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id b18so2903169qvt.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tvcCZBn3aXlyQvxp2RKKSUFlYCFvdudGS3TR443K+Ag=;
-        b=KLDO7ESjs+7ht/wArFTHYPctQ+pVr/lv9GczQ32GCW2TI3V/QRj+MCyuOhdHW1hc49
-         QJvLr+eQJFItbChaFeFjOnuhxzuwZxgm2GKP476b+luPhRmemqB7kF8VVRR08F2OT7pg
-         gl7FKNSVNbV05lXhAROBsaZBDP0Bq99BEZn+fMylmGdLszkcKQfbQaaWqm0HOlyZT6/o
-         GpX9X57rkFQx4SFi41KUNOYPreFZJGOwqZloxYdd6CKV23HJdYNxsQtaQpsoqdvKVze9
-         TJA1B/4x3cgyXdzsr3Ys2BTyp0a1K/nBui3U58XPprGDQJa15I7uYwlCM8j65hcW04fn
-         mq2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tvcCZBn3aXlyQvxp2RKKSUFlYCFvdudGS3TR443K+Ag=;
-        b=NZCG+AojqZd6T/BSRpFGmIsmW+pzsb4F9wfbaIVraDOkeLo1UP7yHrn/zS0BerO28A
-         SGgStOCDZ1NgX8+xwWP4cASPLWEnwQdku9ihtKT/NQiSAxdSC/1y3PBvoFZjGJhCCSVX
-         tH+mhst1I0Kffg59903ZB12J1YHMZauldJ4tgFyAIf2QXwj9E03VtwI6zsNFnsnw7e/V
-         fGkeQ7Cp2WW+uIJSRrutdwQeK1S3bhkW1vKe45ZrkeHbFjyGPXBR9n1enxAUPf/Wu2mb
-         R8EaeccfVcqNlSY3qGBMeiVqnk/xo91TbiO7l31/gJYPAu/mTlbHjTgN2zIcZo3UoCAM
-         O+/g==
-X-Gm-Message-State: AOAM531C9+PQK2drCcnk5f5u0iz5WpmrmzHHnFVq1k7Gh2xHR/rNc/DC
-        +K1nVEGd2JsgVhaKQQEw8a/0MvjVI/M2bpd4Qmvv6g==
-X-Google-Smtp-Source: ABdhPJzR0ldNDyKak+lbe2d3yP5LJG6//p+2xGQ2sy5DTpK/DVOjloYKnePJHVhjbXRIimUOmpDE9q5S6/d1jrQ8ZwY=
-X-Received: by 2002:a05:6214:20a3:: with SMTP id 3mr21417469qvd.13.1607346581823;
- Mon, 07 Dec 2020 05:09:41 -0800 (PST)
+        Mon, 7 Dec 2020 08:11:16 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqNvY6v4wz15Mkc;
+        Mon,  7 Dec 2020 21:10:01 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
+ 21:10:24 +0800
+Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
+To:     Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Linuxarm <linuxarm@huawei.com>
+References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
+ <20201130112250.GK4077@smile.fi.intel.com>
+ <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
+ <20201205221522.ifjravnir5bzmjff@mobilestation>
+ <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
+ <a18dfb3ef4dd80dddbd038507d9b8b2f@kernel.org>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <1cc78cf1-edfb-4327-c99c-b3603dc0b3be@huawei.com>
+Date:   Mon, 7 Dec 2020 21:10:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <000000000000fbb4f505b5df4eea@google.com>
-In-Reply-To: <000000000000fbb4f505b5df4eea@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 7 Dec 2020 14:09:28 +0100
-Message-ID: <CACT4Y+aAJSTH_GdG8ZtbtKN_9h4TZHQNi_m+Uc5iWBos_3mezw@mail.gmail.com>
-Subject: Re: WARNING: filesystem loop0 was created with 512 inodes, the real
- maximum is 511, mounting anywa
-To:     syzbot <syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a18dfb3ef4dd80dddbd038507d9b8b2f@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: bfs: don't use WARNING: string when it's just info.
 
-On Mon, Dec 7, 2020 at 1:53 PM syzbot
-<syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com> wrote:
+On 2020/12/7 2:50, Marc Zyngier wrote:
+> On 2020-12-06 15:02, Linus Walleij wrote:
+>> On Sat, Dec 5, 2020 at 11:15 PM Serge Semin <fancer.lancer@gmail.com> 
+>> wrote:
+>>
+>>> Hmm, that sounds like a problem, but the explanation is a bit unclear
+>>> to me. AFAICS you are saying that the only callbacks which are
+>>> called during the IRQ request/release are the irq_enable(), right? If
+>>> so then the only reason why we haven't got a problem reported due to
+>>> that so far is that the IRQs actually unmasked by default.
+>>
+>> What we usually do in cases like that (and I have discussed this
+>> with tglx in the past I think) is to simply mask off all IRQs in 
+>> probe().
+>> Then they will be unmasked when requested by drivers.
+>>
+>> See e.g. gpio-pl061 that has this line in probe():
+>> writeb(0, pl061->base + GPIOIE); /* disable irqs */
 >
-> Hello,
+> This should definitely be the default behaviour. The code code
+> expects all interrupt sources to be masked until actively enabled,
+> usually with the IRQ being requested.
+
+
+I think this patch is used for that purpose. I do two things in 
+irq_enable(): unmask irq and then enable IRQ;
+
+and for irq_disable(), it's similar; mask IRQ then disable it.
+
+
+Thanks
+
+Jiaxing
+
+
 >
-> syzbot found the following issue on:
+> Thanks,
 >
-> HEAD commit:    34816d20 Merge tag 'gfs2-v5.10-rc5-fixes' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=157dad07500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b3a044ccf5b03ac4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=02c44c7f92e70a73730a
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152b05ab500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fc3fad500000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com
->
-> BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anywa
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000fbb4f505b5df4eea%40google.com.
+>         M.
+
