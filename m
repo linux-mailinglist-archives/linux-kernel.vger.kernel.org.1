@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B062D11B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DE12D11B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgLGNVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:21:18 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45669 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgLGNVS (ORCPT
+        id S1726098AbgLGNW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:22:26 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53205 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgLGNWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:21:18 -0500
-Received: by mail-lj1-f194.google.com with SMTP id q8so14852049ljc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:21:02 -0800 (PST)
+        Mon, 7 Dec 2020 08:22:25 -0500
+Received: by mail-wm1-f66.google.com with SMTP id a6so11451489wmc.2;
+        Mon, 07 Dec 2020 05:22:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F4QiS8f2BvnfmrQSd7I2HcK6s7v/ucpHKO3Bl6Msd9k=;
-        b=lnNDT7R7cpKWRRp2TIx9qKl6q3pnh7UMRRQbpw2Y4c4lF8O9rhxLI5Y98s5xNMK9RI
-         c5Lo0pcsU4l1MqVdm+CnZyZDaLLhS/jn4efmhcVd+UKYBVWRd3Gf3pr2HPgVHegWqNS6
-         xYTGLTJa2Bx9U1QOmoYXLAReLP12VcTODCIVmgKNm7VOAr9ivaOztobcPaMYlX+VUsSO
-         NuYYKx1Khs8C5fJsup2Lg2i45qEtFojTQUc4VhMjy+x3DeWhkkRBITvnso6ZFHs8wQ1y
-         L0P1WXN0UUXFDDkSL2R/JCONuJMIRS3xFXikl4r//3XhHEfAsHI+Qbk+tPheHlMvm7LC
-         DwWQ==
-X-Gm-Message-State: AOAM5329AiskLPeYBtsgQsdB1zZA1eSYngMdioHh5swmR0JqWpWMnPGS
-        4lSzpmHvG0MYR9mGdOooQ3NA/t1IZ6vw8yV+hbQ=
-X-Google-Smtp-Source: ABdhPJwrxT6CtkxfXqVfe4vU6/3HE2wJ2sFez/0GjTh4iSdAQ8xxRfMp9gUVybkuDuFgCpgr0YBFUMDQonY/RybQI8M=
-X-Received: by 2002:a2e:9ad2:: with SMTP id p18mr8737106ljj.415.1607347236344;
- Mon, 07 Dec 2020 05:20:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MJwMrUj3WNQ0Z6JF3rMMT8PRx7qig2o2mEv5ta9FJhk=;
+        b=iPJwYcwjjFrBn3UILT6Ut20S2nzO+hxf+Kk52/R5f5e0smBaU1Z/PeyVMDiL7t+1kg
+         eg27v6L2dOZ0bHO085FQxYAg7YiZi5AF4Juy6ergY6vTWUj9RGQpVkTYExcghp1u+V+e
+         rSGaCgGQ+HYeDk8P4sfxJ2+mTsx8mmXeM1Xae+ukHaP53SFa0zssqyWA7JEC+zW9wjIc
+         SOtan1b+JH0SmCREKHap6795F9FDJ/++gmkKfRgu0BVAtpviNrnRyMRbLcNQ5SQ82g5E
+         hjxl2UFhX9vKMeQ1leAu5pwrx58rqgE44lcUy72zUV9nFart5We8lg9qMuDZl7aluXwI
+         YHtg==
+X-Gm-Message-State: AOAM533KQJE+Hs+2z0s4iB5Ja83FrQLa/0cTfDCPY3x3sGKSy/HKAXCl
+        U4ZfAdjTMHF6BI1xkziDVgA=
+X-Google-Smtp-Source: ABdhPJyO70ZClWQf3G0rlUyq9BYbIJl9dRorKgaLYiVZ7ua/tO2HTRt3sifgwB+7CESnraCvF7RTjg==
+X-Received: by 2002:a7b:c2e8:: with SMTP id e8mr18172792wmk.103.1607347303289;
+        Mon, 07 Dec 2020 05:21:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id y6sm15005491wmg.39.2020.12.07.05.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 05:21:41 -0800 (PST)
+Date:   Mon, 7 Dec 2020 14:21:40 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx8mn: Fix duplicate node name
+Message-ID: <20201207132140.GA31982@kozik-lap>
+References: <1607324004-12960-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-References: <20201202073953.3811709-1-irogers@google.com> <20201202073953.3811709-2-irogers@google.com>
-In-Reply-To: <20201202073953.3811709-2-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 7 Dec 2020 22:20:25 +0900
-Message-ID: <CAM9d7chQQK2DP_gEFdi-OG5X6wCoouH75Jsg-V=UEFpuB-5bFA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/5] perf metric: Restructure struct expr_parse_ctx.
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1607324004-12960-1-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
-
-On Wed, Dec 2, 2020 at 4:40 PM Ian Rogers <irogers@google.com> wrote:
->
-> A later change to parsing the ids out (in expr__find_other) will
-> potentially drop hashmaps and so it is more convenient to move
-> expr_parse_ctx to have a hashmap pointer rather than a struct value. As
-> this pointer must be freed, rather than just going out of scope,
-> add expr__ctx_new and expr__ctx_free to manage expr_parse_ctx memory.
-> Adjust use of struct expr_parse_ctx accordingly.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Mon, Dec 07, 2020 at 02:53:24PM +0800, Shengjiu Wang wrote:
+> Error log:
+> sysfs: cannot create duplicate filename '/bus/platform/devices/30000000.bus'
+> 
+> The spba bus name is duplicate with aips bus name.
+> Refine spba bus name to fix this issue.
+> 
+> Fixes: 970406eaef3a ("arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 > ---
-[SNIP]
-> -void expr__ctx_init(struct expr_parse_ctx *ctx)
-> +struct expr_parse_ctx *expr__ctx_new(void)
->  {
-> -       hashmap__init(&ctx->ids, key_hash, key_equal, NULL);
-> +       struct expr_parse_ctx *ctx;
-> +
-> +       ctx = malloc(sizeof(struct expr_parse_ctx));
-> +       if (!ctx)
-> +               return NULL;
-> +
-> +       ctx->ids = hashmap__new(key_hash, key_equal, NULL);
-> +       ctx->parent = NULL;
-> +       return ctx;
->  }
->
->  void expr__ctx_clear(struct expr_parse_ctx *ctx)
-> @@ -221,11 +229,23 @@ void expr__ctx_clear(struct expr_parse_ctx *ctx)
->         struct hashmap_entry *cur;
->         size_t bkt;
->
-> -       hashmap__for_each_entry((&ctx->ids), cur, bkt) {
-> +       hashmap__for_each_entry(ctx->ids, cur, bkt) {
-> +               free((char *)cur->key);
-> +               free(cur->value);
-> +       }
-> +       hashmap__clear(ctx->ids);
-> +}
-> +
-> +void expr__ctx_free(struct expr_parse_ctx *ctx)
-> +{
-> +       struct hashmap_entry *cur;
-> +       size_t bkt;
-> +
-> +       hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 free((char *)cur->key);
->                 free(cur->value);
->         }
-> -       hashmap__clear(&ctx->ids);
-> +       hashmap__free(ctx->ids);
->  }
+>  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> index fd669c0f3fe5..30762eb4f0a7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> @@ -246,7 +246,7 @@ aips1: bus@30000000 {
+>  			#size-cells = <1>;
+>  			ranges;
+>  
+> -			spba: bus@30000000 {
+> +			spba: spba-bus@30000000 {
 
-I think this function should free the ctx itself.
+The proper node name is "bus" so basically you introduce wrong name to
+other problem.  Introducing wrong names at least requires a comment.
 
-Thanks,
-Namhyung
+However the actual problem here is not in node names but in addresses:
+
+	aips1: bus@30000000 {
+		spba: bus@30000000 {
+
+You have to devices with the same unit address. How do you share the
+address space?
+
+I think this should be rather fixed.
+
+Best regards,
+Krzysztof
+
+
+>  				compatible = "fsl,spba-bus", "simple-bus";
+>  				#address-cells = <1>;
+>  				#size-cells = <1>;
+> -- 
+> 2.27.0
+> 
