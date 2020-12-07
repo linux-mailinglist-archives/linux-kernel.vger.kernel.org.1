@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E4F2D173F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AAD2D1742
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgLGRMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:12:24 -0500
-Received: from mga17.intel.com ([192.55.52.151]:53267 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgLGRMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:12:24 -0500
-IronPort-SDR: 4WedHcgKxXjpH7+vFiWLGLLHvQtdjRbFfq/ff0xfQJvwW9Li6MPS6UOARPI//UxeLXMA1zEYnH
- N/H9t/zY/2OQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153548837"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="153548837"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 09:11:41 -0800
-IronPort-SDR: gU9g08IhB9QfbewodfyGKJL8AgbLIcT0M6qrKa1Z9jOWOFYTF2mvVDswR7gIVZyojuJ4MByAkr
- BeEAFFkD6PMQ==
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="436903607"
-Received: from nkanakap-mobl1.amr.corp.intel.com (HELO [10.251.12.188]) ([10.251.12.188])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 09:11:39 -0800
-Subject: Re: [PATCH v15 07/26] x86/mm: Remove _PAGE_DIRTY_HW from kernel RO
- pages
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
- <20201110162211.9207-8-yu-cheng.yu@intel.com>
- <20201207163632.GE20489@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <b2deed42-1252-62e1-0d82-beafb917d0ad@intel.com>
-Date:   Mon, 7 Dec 2020 09:11:38 -0800
+        id S1727556AbgLGRNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:13:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2216 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgLGRNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:13:09 -0500
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CqVCY1f5Cz67MXj;
+        Tue,  8 Dec 2020 01:09:13 +0800 (CST)
+Received: from lhreml741-chm.china.huawei.com (10.201.108.191) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 18:12:27 +0100
+Received: from [10.47.199.254] (10.47.199.254) by
+ lhreml741-chm.china.huawei.com (10.201.108.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 7 Dec 2020 17:12:21 +0000
+Subject: Re: [PATCH 1/3] perf tools: Add
+ evlist__disable_evsel/evlist__enable_evsel
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20201206170519.4010606-1-jolsa@kernel.org>
+ <20201206170519.4010606-2-jolsa@kernel.org>
+From:   Alexei Budankov <abudankov@huawei.com>
+Message-ID: <22f91662-7522-f981-54ff-95c7765b6ee0@huawei.com>
+Date:   Mon, 7 Dec 2020 20:12:15 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201207163632.GE20489@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201206170519.4010606-2-jolsa@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.199.254]
+X-ClientProxiedBy: braeml704-chm.china.huawei.com (10.226.71.60) To
+ lhreml741-chm.china.huawei.com (10.201.108.191)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/2020 8:36 AM, Borislav Petkov wrote:
-> On Tue, Nov 10, 2020 at 08:21:52AM -0800, Yu-cheng Yu wrote:
->> Kernel read-only PTEs are setup as _PAGE_DIRTY_HW.  Since these become
->> shadow stack PTEs, remove the dirty bit.
-> 
-> This commit message is laconic to say the least. You need to start
-> explaining what you're doing because everytime I look at a patch of
-> yours, I'm always grepping the SDM and looking forward in the patchset,
-> trying to rhyme up what that is all about.
-> 
-> Like for this one. I had to fast-forward to the next patch where all
-> that is explained. But this is not how review works - each patch's
-> commit message needs to be understandable on its own because when
-> they land upstream, they're not in a patchset like here. And review
-> should be done in the order the patches are numbered - not by jumping
-> back'n'forth.
-> 
-> So please think of the readers of your patches when writing those commit
-> messages. Latter are *not* write-only and not unimportant.
-> 
-> And those readers haven't spent copious amounts of time on the
-> technology so being more verbose and explaining things is a Good
-> Thing(tm). Don't worry about explaining too much - better too much than
-> too little.
-> 
-> And last but not least, having understandable and properly written
-> commit messages increases the chances of your patches landing upstream
-> considerably.
-> 
-> Thx.
-> 
+Hi,
 
-Thanks for your feedback.  I will improve the commit logs.
+On 06.12.2020 20:05, Jiri Olsa wrote:
+> Adding interface to enable/disable single event in the
+> evlist based on its name. It will be used later in new
+> control enable/disable interface.
+> 
+> Keeping the evlist::enabled true when one or more events
+> are enabled so the toggle can work properly and toggle
+> evlist to disabled state.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/util/evlist.c | 69 ++++++++++++++++++++++++++++++++++++++--
+>  tools/perf/util/evlist.h |  2 ++
+>  2 files changed, 68 insertions(+), 3 deletions(-)
 
---
-Yu-cheng
+Acked-by: Alexei Budankov <abudankov@huawei.com>
+
+Regards,
+Alexei
