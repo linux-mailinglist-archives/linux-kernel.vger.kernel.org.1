@@ -2,175 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32392D1288
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1412D1291
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgLGNuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
+        id S1726370AbgLGNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgLGNuj (ORCPT
+        with ESMTP id S1726190AbgLGNw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:50:39 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F325BC0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:49:58 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id y23so2124936wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uicryP5DqWYMSX/kUxMYXJsx+egIU/nQGfjP0pOlsZg=;
-        b=JbvNOVtdhVgKLjSi+/ShdyYSAm4Ai5n6oT2rkcXJbPLua5Yai1F8wZSywLyLquZwdk
-         1QejoTC4Xwgy/22vU86y3NvssJ/HDInsWPqAtHOuzLSNgrKD2kwt5Z2U378GD03FI6cx
-         Kij1s/0BtNJySzQXU8Up0tAqNPyjx5CYaTVSeOBkCs1IB9XqEJnnYNSYKdT9vczOyury
-         pnn+zmNnrfYQxjBiu0vFrUenRBAJQlJLM25fkyQxUXdz9hJCDqZ1FEn9QOiYg9Vp7087
-         IbwBjLjh+tQM8qfPDptHo4tHxj2SLcmmgQcZc+hTfVSbZ6tGDMzMt49ZB+v/MB26FLDe
-         v8ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=uicryP5DqWYMSX/kUxMYXJsx+egIU/nQGfjP0pOlsZg=;
-        b=fCkds+d2IOJwWg4809jeuderM78Rl5kYcFukKwhRYzATE56Mtq/WfFAjNAch2hTxjQ
-         p8r7agAVbTspGhwwzgj2VieZVmfg+lyFleSPjGlPvNxl7SCG0k4MqS33hG2jvy1JWY5+
-         8Toj+ARmr/M7xOvzsfXthiyEHBK8NQhYZairaipK4UY/+asKYby0EJcOIUV4vJCSdZKg
-         DE0+diBVAAcI4szZlIolWljZcaufp070d3PeZc+ZTSnv3ItDAunRU9kscno+pMKWTy5Z
-         xSlD9coGb3md1mvJhgxFc6PNsbUco99y3oKJP/pAhQnHg8T/q4/HyZNHKV6htGsCes/n
-         jVwA==
-X-Gm-Message-State: AOAM533DlopelQ/Eu9GBEPmPULOCPy3RsDQyIV1rsOvD87+W7cgEvfSD
-        sgfWVMzeoWyIabol1iG6Wna3END4qGSOqNUR
-X-Google-Smtp-Source: ABdhPJyfW9TrmG7sHQK4X5oexj5f5HDm1oETRB/F3wukELfmvWvHuX89W+W7AepJ5Dt5BB3rh31vGw==
-X-Received: by 2002:a1c:2c4:: with SMTP id 187mr18978887wmc.187.1607348997381;
-        Mon, 07 Dec 2020 05:49:57 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:f1cb:f203:a46d:37f? ([2a01:e35:2ec0:82b0:f1cb:f203:a46d:37f])
-        by smtp.gmail.com with ESMTPSA id o17sm6046615wrg.32.2020.12.07.05.49.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 05:49:56 -0800 (PST)
-Subject: Re: [PATCH v2 2/2] drm: panel: add Khadas TS050 panel driver
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20201204081949.38418-1-narmstrong@baylibre.com>
- <20201204081949.38418-3-narmstrong@baylibre.com>
- <20201205191502.GB332836@ravnborg.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <c98d17f1-a164-94bf-5fa3-da36e7b6f8c3@baylibre.com>
-Date:   Mon, 7 Dec 2020 14:49:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Dec 2020 08:52:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDC2C0613D2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:52:19 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmGvz-0001Lj-4d; Mon, 07 Dec 2020 14:52:11 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmGvx-0004wY-JA; Mon, 07 Dec 2020 14:52:09 +0100
+Date:   Mon, 7 Dec 2020 14:52:09 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
+        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+Message-ID: <20201207135209.htp7plyotjxp37q2@pengutronix.de>
+References: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204084417.GA2154@gofer.mess.org>
+ <20201204111326.qjux6k2472dmukot@pengutronix.de>
+ <20201204113846.GA6547@gofer.mess.org>
+ <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
+ <20201205173444.GA1265@gofer.mess.org>
+ <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
+ <20201206141941.GA24807@gofer.mess.org>
+ <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
+ <20201207094320.GA10460@gofer.mess.org>
 MIME-Version: 1.0
-In-Reply-To: <20201205191502.GB332836@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zwodz2pit7heximm"
+Content-Disposition: inline
+In-Reply-To: <20201207094320.GA10460@gofer.mess.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 05/12/2020 20:15, Sam Ravnborg wrote:
-> Hi Neil,
-> 
->> +
->> +static int khadas_ts050_panel_probe(struct mipi_dsi_device *dsi)
->> +{
->> +	struct khadas_ts050_panel *khadas_ts050;
->> +	int err;
->> +
->> +	dsi->lanes = 4;
->> +	dsi->format = MIPI_DSI_FMT_RGB888;
->> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
->> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
->> +
->> +	khadas_ts050 = devm_kzalloc(&dsi->dev, sizeof(*khadas_ts050),
->> +				    GFP_KERNEL);
->> +	if (!khadas_ts050)
->> +		return -ENOMEM;
->> +
->> +	mipi_dsi_set_drvdata(dsi, khadas_ts050);
->> +	khadas_ts050->link = dsi;
->> +
->> +	err = khadas_ts050_panel_add(khadas_ts050);
->> +	if (err < 0)
->> +		return err;
->> +
->> +	return mipi_dsi_attach(dsi);
->> +}
-> 
-> If mipi_dsi_attach() failes then da a drm_panel_remove() like this:
-> 
-> 	ret = mipi_dsi_attach(dsi);
-> 	if (ret)
-> 		drm_panel_remove(&khadas_ts050->base);
-> 
-> 	return ret;
-> 
-> This is again something several panels gets wrong.
-> 
-> With this fixed:
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> I assume you will fix it while applying.
+--zwodz2pit7heximm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sure, thanks !
+Hello Sean,
 
-Neil
+On Mon, Dec 07, 2020 at 09:43:20AM +0000, Sean Young wrote:
+> Thank you for taking the time to explain your thinking.
 
-> 
-> 	Sam
-> 
+I'm happy you have an open ear for it. With this I really enjoy spending
+the time to find the right arguments and examples.
 
+> On Mon, Dec 07, 2020 at 09:16:28AM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
+> > > On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-K=F6nig wrote:
+> > > > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
+> > > > > What real life uses-cases are there for round down? If you want t=
+o round
+> > > > > down, is there any need for round up?
+> > > >=20
+> > > > The scenario I have in mind is for driving a motor. I have to admit
+> > > > however that usually the period doesn't matter much and it's the
+> > > > duty_cycle that defines the motor's speed. So for this case the
+> > > > conservative behaviour is round-down to not make the motor run fast=
+er
+> > > > than expected.
+> > >=20
+> > > I am reading here that for driving motors, only the duty cycle matter=
+s,
+> > > not the period.
+> >=20
+> > There is an upper limit (usually around 1 ms) for the period, but if you
+> > choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
+> >=20
+> > @Thierry: Do you have further use cases in mind?
+
+I asked in the hardware department of the company I work for and they
+had another usecase: Motors where for example a 1 ms pulse means "move
+forwards" and 2 ms means "move backwards". They had the same idea as I
+had: You want to know beforehand the result of a given
+pwm_apply_state().
+
+> > > > For other usecases (fan, backlight, LED) exactness typically doesn't
+> > > > matter that much.
+> > >=20
+> > > So, the use-cases you have are driving motor, fan, backlight, and led.
+> > > And in all these cases the exact Hz does not matter.
+> > >=20
+> > > The only uses case where the exact Hz does matter is pwm-ir-tx.=20
+> > >=20
+> > > So, I gather there are no use-cases for round-down. Yes, should round=
+-down
+> > > be needed, then this is more difficult to implement if the driver alw=
+ays
+> > > does a round-closest. But, since there is no reason to have round-dow=
+n,
+> > > this is all academic.
+> > >=20
+> > > Your policy of forcing new pwm drivers to use round-down is breaking
+> > > pwm-ir-tx.
+> >=20
+> > So you're indeed suggesting that the "right" rounding strategy for
+> > lowlevel drivers should be:
+> >=20
+> >  - Use the period length closest to the requested period (in doubt round
+> >    down?)
+> >  - With the chosen period length use the biggest duty_cycle not bigger
+> >    than the requested duty_cycle.
+> >=20
+> > While this seems technically fine I think for maintenance this is a
+> > nightmare.
+> >=20
+> > My preference would be to stick to the rounding strategy we used so far
+> > (i.e.:
+> >=20
+> >  - Use the biggest period length not bigger than the requested period
+> >  - With the chosen period length use the biggest duty_cycle not bigger
+> >    than the requested duty_cycle.
+> >=20
+> > ) and for pwm-ir-tx add support to the PWM API to still make it possible
+> > (and easy) to select the best setting.
+> >=20
+> > The reasons why I think that this rounding-down strategy is the best
+> > are (in order of importance):
+> >=20
+> >  - It is easier to implement correctly [1]
+>=20
+> Yes, you are right. You have given a great example where a simple
+> DIV_ROUND_CLOSEST() does not give the result you want.
+>=20
+> >  - Same rounding method for period and duty cycle
+> >  - most drivers already do this (I think)
+> >=20
+> > The (IMHO nice) result would then mean:
+> >=20
+> >  - All consumers can get the setting they want; and
+>=20
+> Once there is a nice pwm api for selecting round-nearest, then yes.
+>=20
+> For the uses cases you've given, fan, backlight, and led a round-nearest
+> is the rounding they would want, I would expect.
+
+maybe, yes. Maybe it is also not important enough to spend the extra
+cycles getting round nearest and so sticking to round-down is good
+enough.
+
+> >  - Code in lowlevel drivers is simple and the complexity is in common
+> >    code and so a single place.
+> >=20
+> > And it would also allow the pwm-ir-tx driver to notice if the PWM to be
+> > used can for example only support frequencies under 400 kHz.
+>=20
+> I doubt pwm-ir-tx cares about this, however it is a nice-to-have. It would
+> also be nice if the rounding could be used with atomic configuration
+> as well.
+
+I cannot follow, you created 11fc4edc483bea8bf0efa0cc726886d2342f6fa6
+because 476.2 Mhz was too bad. So you seem to be interested in
+deviations and part of the problem is that you don't get feedback about
+how your request is fulfilled.
+
+> Please let me know when/if this new API exists for pwm so that pwm-ir-tx
+> can select the right rounding.
+
+Given that the bcm2835 driver is quite trivial I would be happy to
+create a series that "fixes" the driver to round down and provide a
+prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
+tester and a real use-case were the single two things that stopped me
+investing time here.
+
+> > [1] Consider a PWM with a parent frequency of 66 MHz, to select the
+> >     period you can pick an integer divider "div" resulting in the period
+> >     4096 / (pclk * d). So the obvious implementation for round-nearest
+> >     would be:
+> >=20
+> >     	pclk =3D clk_get_rate(myclk);
+> > 	div =3D DIV_ROUND_CLOSEST(NSEC_PER_SEC * 4096, targetperiod * pclk);
+>=20
+> Note NSEC_PER_SEC * 4096 >> 2^32 so this would need to be
+> DIV_ROUND_CLOSEST_ULL.
+
+Yeah, I ignored all these nasty little details like ranges of integers
+and the valid range for div etc. for the sake of simplicity.
+=20
+> >     , right?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zwodz2pit7heximm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/OM4YACgkQwfwUeK3K
+7AmVKgf+MRSChQ/VXQbRD7/1ldf7VjErIvSxN+a1SuD6OkSOVWqPvalyG0n/nq61
+fkmOQ3zvNnvElDpWUzB4gv+hm4dDKJ600hYG6C0MGGte3rvGdWPQkQveXrPldGZ9
+GqEWGosKq1MzqaYO2gc+cyyKXu14g2ylr0rAEH5SJXLwxRhuX4c1dREMsTVuv2Hj
+aLGMnvxGCBlQBjTQ4Fhc7Ap5TlGI2yD+CYMyHiGj/8aFbRIa/iLJ13HeDVCqLSxU
+2rBIpzaTrHbz13jeZUaG39U8wFyVjY5AwyehRKjOzKVGOrZM5F8edUKh+6LaB/sS
+xvVeTFiCZ69clhkPqCdZVm6wiVvnnw==
+=TYIu
+-----END PGP SIGNATURE-----
+
+--zwodz2pit7heximm--
