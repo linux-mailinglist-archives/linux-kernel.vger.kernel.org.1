@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9132D1A8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AC42D1A8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgLGUcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:32:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgLGUcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:32:16 -0500
-Date:   Mon, 7 Dec 2020 12:31:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607373095;
-        bh=dhTYw5ud5BHG353VDU98B6oku7U8oYVLLb0qfO+807U=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=quqI6HvAxjJmHmIGWgnOEhVqCKxsw2nK1FZAzQbWE3iZbYr1DtYpN4kqYqU0j6K7u
-         EQwBC2bJUgkZMkIwwTXJLHfJpYu9oQ0QtIYsG4hfYDP6yeN3swQXd1dnanC92DmmDC
-         zTU+NpydZswxnwwRiSRSXnBBBXABXnmrpHneONDrtQe7/nKtF2vfR2HRndFEh6EXuY
-         vm0612R4OkJuXEuphzN6Zt74JZ3yxt1g0dm2iue1VQuZ5attVzegJRp+X5NOoMIktI
-         JPG0GF7atd7fwxZd8SRSc9hF6RhFXR1xy3aM1KyR6GFzjX3nDA8Qjk1g2MCiKg7Iro
-         ZQ20RwLhUq9Xw==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix race of pending_pages in
- decompression
-Message-ID: <X86RJdLhOVRm28Eu@gmail.com>
-References: <20201205042626.1113600-1-daeho43@gmail.com>
+        id S1726537AbgLGUc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgLGUc3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:32:29 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2058C061794;
+        Mon,  7 Dec 2020 12:31:48 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id p4so5433480pfg.0;
+        Mon, 07 Dec 2020 12:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lHTBeyJXjU66O9BxCGUEf5eFmr0sgja/xlc/Cb4+iy8=;
+        b=tacYSP7BVuuSfX80iPkfDyg4hs61ja+/uzt1ddXpR00npfn+83F9JQY8TzVYoLr51T
+         wXmo9/XBbAaeSoKVjRi2ArbkF8q0Y9bU+lpfQjg2xY4j1I8ep5F8RfNVvEzomWzx5p/1
+         PAZfbYuH9Y3CLqFLQcLJilZm6173h18/GZV4jepPMdwbzgsAJc5mnH18bwllxVzoijai
+         6r0QL5rZJJZ3rhVFl0XANIF0uhtfo+fhCRJBCX9FPyNEDuWcPuDSrCjYx0JPAzO2WqxP
+         wECxDb1WJxwgIwkloJ47KGmbCNLjffx0nm6qbblW7L00LmPvlJf0pTD0RRJNb8HExZ/0
+         B5nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lHTBeyJXjU66O9BxCGUEf5eFmr0sgja/xlc/Cb4+iy8=;
+        b=XqNLJ/RTyw29BhShaDniS8HgOj8ce03BRmSeoKzxf2h1fVZ9fblqfPzEQPcJe6yWMt
+         Jk4QFLY45BTxYegpp4SBe17Hm9kjG3LaRwstUJYmTB5ETzWbyBWl4ZRtk9dRSLeuhFwR
+         HovGXKkAYZacCOw/9sXOf42Pb70YALqnlxj5J5Kyzf5qEnw6M6NmzN/78yShBySKMYM5
+         OG5Ls1RHM+I4eEJOMUBovyLbVwAjJLzDWd29uHWEQhbZgzr0nVMY21qArk/r7lIIl6eH
+         barv7NrsM2kzNntOUd7TlMMdZ/8npIpOQed+qO6JOiCkb2AV9MkXjz4PnVjMz9w+XWjU
+         omDA==
+X-Gm-Message-State: AOAM533Gvl+df1mj+hLUFM3+JOY06eP4c1MncNvTc4+zV0oh3oLMmPbK
+        tykXBf12YXQEjYdtrjWGkkSSXAmyiTLoiBTqgdM=
+X-Google-Smtp-Source: ABdhPJwLxmI3TVd7HIanQLDPx2X9O3XmK51OmJIZ0N4KJ4x3WSz1f4ojz8VWULiuiT2mJJHKkWGtoSRHwAUinaa7pt8=
+X-Received: by 2002:a17:90a:a090:: with SMTP id r16mr521302pjp.179.1607373108365;
+ Mon, 07 Dec 2020 12:31:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205042626.1113600-1-daeho43@gmail.com>
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-3-mgross@linux.intel.com> <20201207160152.GB351233@robh.at.kernel.org>
+ <ca099c0833dc79f0a88edecd9fb949157eacbf46.camel@linux.intel.com>
+In-Reply-To: <ca099c0833dc79f0a88edecd9fb949157eacbf46.camel@linux.intel.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Mon, 7 Dec 2020 14:31:37 -0600
+Message-ID: <CABb+yY1Qm4G5rHmRbt8Pyno8h4X6EqesLv1=ybup0fHJ+rnPww@mail.gmail.com>
+Subject: Re: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     Rob Herring <robh@kernel.org>, mgross@linux.intel.com,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        markgross@kernel.org, "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de,
+        damien.lemoal@wdc.com, Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 01:26:26PM +0900, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> I found out f2fs_free_dic() is invoked in a wrong timing, but
-> f2fs_verify_bio() still needed the dic info and it triggered the
-> below kernel panic. It has been caused by the race condition of
-> pending_pages value between decompression and verity logic, when
-> the same compression cluster had been split in different bios.
-> By split bios, f2fs_verify_bio() ended up with decreasing
-> pending_pages value before it is reset to nr_cpages by
-> f2fs_decompress_pages() and caused the kernel panic.
-> 
-> [ 4416.564763] Unable to handle kernel NULL pointer dereference
->                at virtual address 0000000000000000
-> ...
-> [ 4416.896016] Workqueue: fsverity_read_queue f2fs_verity_work
-> [ 4416.908515] pc : fsverity_verify_page+0x20/0x78
-> [ 4416.913721] lr : f2fs_verify_bio+0x11c/0x29c
-> [ 4416.913722] sp : ffffffc019533cd0
-> [ 4416.913723] x29: ffffffc019533cd0 x28: 0000000000000402
-> [ 4416.913724] x27: 0000000000000001 x26: 0000000000000100
-> [ 4416.913726] x25: 0000000000000001 x24: 0000000000000004
-> [ 4416.913727] x23: 0000000000001000 x22: 0000000000000000
-> [ 4416.913728] x21: 0000000000000000 x20: ffffffff2076f9c0
-> [ 4416.913729] x19: ffffffff2076f9c0 x18: ffffff8a32380c30
-> [ 4416.913731] x17: ffffffc01f966d97 x16: 0000000000000298
-> [ 4416.913732] x15: 0000000000000000 x14: 0000000000000000
-> [ 4416.913733] x13: f074faec89ffffff x12: 0000000000000000
-> [ 4416.913734] x11: 0000000000001000 x10: 0000000000001000
-> [ 4416.929176] x9 : ffffffff20d1f5c7 x8 : 0000000000000000
-> [ 4416.929178] x7 : 626d7464ff286b6b x6 : ffffffc019533ade
-> [ 4416.929179] x5 : 000000008049000e x4 : ffffffff2793e9e0
-> [ 4416.929180] x3 : 000000008049000e x2 : ffffff89ecfa74d0
-> [ 4416.929181] x1 : 0000000000000c40 x0 : ffffffff2076f9c0
-> [ 4416.929184] Call trace:
-> [ 4416.929187]  fsverity_verify_page+0x20/0x78
-> [ 4416.929189]  f2fs_verify_bio+0x11c/0x29c
-> [ 4416.929192]  f2fs_verity_work+0x58/0x84
-> [ 4417.050667]  process_one_work+0x270/0x47c
-> [ 4417.055354]  worker_thread+0x27c/0x4d8
-> [ 4417.059784]  kthread+0x13c/0x320
-> [ 4417.063693]  ret_from_fork+0x10/0x18
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> v3: back to v1 and enabled verity in a unit of cluster
-> v2: merged verity_pages with pending_pages, and increased the
->     pending_pages count only if STEP_VERITY is set on bio
+On Mon, Dec 7, 2020 at 12:43 PM Daniele Alessandrelli
+<daniele.alessandrelli@linux.intel.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for the feedback.
+>
+> On Mon, 2020-12-07 at 10:01 -0600, Rob Herring wrote:
+> > On Tue, Dec 01, 2020 at 02:34:51PM -0800, mgross@linux.intel.com wrote:
+> > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > >
+> > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> > > enables communication between the Computing Sub-System (CSS) and the
+> > > Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+> > > Bay.
+> > >
+>
+> [cut]
+>
+> > > +
+> > > +description:
+> > > +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
+> > > +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
+> > > +  Keem Bay.
+> >
+> > Sounds like a mailbox.
+>
+> We did consider using the mailbox framework, but eventually decided
+> against it; mainly because of the following two reasons:
+>
+> 1. The channel concept in the Mailbox framework is different than the
+>    channel concept in Keem Bay IPC:
+>
+>    a. My understanding is that Mailbox channels are meant to be SW
+>       representation of physical HW channels, while in Keem Bay IPC
+>       channels are software abstractions to achieve communication
+>       multiplexing over a single HW link
+>
+In mailbox api, that would be a physical channel shared between various clients.
 
-I am trying to review this but it is very hard, as the f2fs compression code is
-very hard to understand.
+>    b. Additionally, Keem Bay IPC has two different classes of channels
+>       (high-speed channels and general-purpose channels) that need to
+>       access the same HW link with different priorities.
+>
+If the priorities are hard (programmed into some register), you could
+do that via dt during channel population.
+If they are soft, that would be handled in the shared channel implementation.
 
-It looks like a 'struct decompress_io_ctx' represents the work to decompress a
-particular cluster.  Since the compressed data of the cluster can be read using
-multiple bios, there is a reference count of how many pages are remaining to be
-read before all the cluster's pages have been read and decompression can start.
+> 2. The blocking / non-blocking TX behavior of mailbox channels is
+>    defined at channel creation time (by the tx_block value of the
+>    mailbox client passed to mbox_request_channel();
+>
+No, that is checked at mbox_send_message()
 
-What I don't understand is why that reference counting needs to work differently
-depending on whether verity is enabled or not.  Shouldn't it be exactly the
-same?
+> my understanding
+>    is that the tx_block value cannot be modified after the channel is
+>    created),
+>
+Again no. If you don't queue more than one message at any time you can
+change it between transfers. To be safe you can always change it
+between channel release - request calls.
 
-There also seems to be some confusion about the scope of STEP_VERITY.  Before
-f2fs compression was added, it was a per-bio thing.  But now in a compressed
-file, it's really a per-cluster thing, since all decompressed pages in a
-compressed cluster are verified (or not verified) at once.
+>  while in Keem Bay IPC the same channel can be used for
+>    both blocking and non-blocking TX (behavior is controlled by the
+>    timeout argument passed to keembay_ipc_send()).
+>
+> Having said that, I guess that it could be possible to create a Mailbox
+> driver implementing the core communication mechanism used by the Keem
+> Bay IPC and then build our API around it (basically having two
+> drivers). But I'm not sure that would make the code simpler or easier
+> to maintain. Any thoughts on this?
+>
+I think so. Most of KeemBay specific behaviour would be implemented in
+the shared channel above the mailbox api.
 
-Wouldn't it make a lot more sense to, when a cluster needs both compression and
-verity, *not* set STEP_VERITY on the bios, but rather set a similar flag in the
-decompress_io_ctx?
-
-- Eric
+cheers!
