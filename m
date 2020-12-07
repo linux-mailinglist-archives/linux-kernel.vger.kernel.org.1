@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF892D1A96
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160AD2D1AA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgLGUeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbgLGUeR (ORCPT
+        id S1726353AbgLGUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:37:40 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:45839 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbgLGUhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:34:17 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5DCC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:33:37 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id j12so13763969ota.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:33:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=VF+dRBuajSL16Efm+Qk9iftapw2E7SOSirPhcnw+PnQ=;
-        b=ZRA2+e52xlSYiJHPZTaBAxFXuVgSCguGt+17cXdyunFJAuKyaHC0N9M0+4wVV+JNu/
-         aS6Ru6m3Y+wnCnDvTaR0B9YOhtU4H+7LE/3LGO0G8PmR1IrdqhucfywKGLBMNQLyMXu/
-         XJSr+UlHYySaZWgshmFkJXhyvI//6ZYqsYHP2wgrjLmT1qlB1JlPb9O13tbr6L0bBWLe
-         GRMCt7godtRnbrHZWJKC5DL6rW4nmuRO1x9OHwbZyq7CAqDi7cjSnTBdGjEjq1IFVhKo
-         fbeRgmd7/Vs61w3QEF43+SBNzMP6YdnFO+5G59r4xPy9OUThCHiccAY3BNCrGBsllVky
-         hvJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=VF+dRBuajSL16Efm+Qk9iftapw2E7SOSirPhcnw+PnQ=;
-        b=tpvpICwGoQ16SoUO3OUY4Dgisc/0pJBte+sxNPxUyP+OCBP/rJWa+nNQHAoWAMeX6O
-         NNrYPFvAs40WmYj03g9n9TrufJcOGk9PnKmDCPh6wKALc5G/sDvdsSuTWMxVHBzux3B5
-         wrFzJBeFcl1vf+ize40vu5ZF0D7200e4u3Co99ZGm70AaKoob2rAIqtJxAzODSj7ZjbN
-         SXMBGfd4p92+wTlXp3DVHD5cgU9rquRafnzNyBulcOUxUg5V2OyanJ5Ookzvnygauvuk
-         z2PQMAHKF971jrRCvfHGMjT9QFq2m+FVm0+xtRYejwEcvrk6hKFroQ+vSAVUbQmPNKxy
-         yLFw==
-X-Gm-Message-State: AOAM530UF/gn0DRb9szQTzAbES5QNdiyblooSqMszFHFTUB9aQ76UmHy
-        DzBYQpo+IiX8yxEOSieM0BQ4+Q==
-X-Google-Smtp-Source: ABdhPJz9sBLcEczItc+x7GzdpccmdUkQq4OA2vpq4vUs629hT03tlx7plX6XLEideED+DfI8x+oGZg==
-X-Received: by 2002:a9d:4588:: with SMTP id x8mr14555151ote.169.1607373216384;
-        Mon, 07 Dec 2020 12:33:36 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n6sm2874818ota.73.2020.12.07.12.33.34
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 07 Dec 2020 12:33:35 -0800 (PST)
-Date:   Mon, 7 Dec 2020 12:33:18 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Roman Gushchin <guro@fb.com>
-cc:     Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat counters
- to pages or bytes
-In-Reply-To: <20201207195141.GB2238414@carbon.dhcp.thefacebook.com>
-Message-ID: <alpine.LSU.2.11.2012071218540.9574@eggly.anvils>
-References: <20201206101451.14706-1-songmuchun@bytedance.com> <20201207130018.GJ25569@dhcp22.suse.cz> <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com> <20201207150254.GL25569@dhcp22.suse.cz>
- <20201207195141.GB2238414@carbon.dhcp.thefacebook.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 7 Dec 2020 15:37:40 -0500
+Received: from [192.168.1.155] ([95.114.88.149]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mum6l-1jvEXL33ml-00rn89; Mon, 07 Dec 2020 21:34:56 +0100
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org, stefanha@redhat.com,
+        msuchanek@suse.de
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
+ <20201205142218-mutt-send-email-mst@kernel.org>
+ <e69569b5-0c45-e072-5de4-81a4acecdae3@metux.net>
+ <20201206075131-mutt-send-email-mst@kernel.org>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <dadc99c5-dd63-9b3e-aa00-c9dc0b622134@metux.net>
+Date:   Mon, 7 Dec 2020 21:34:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20201206075131-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:hbxWK5NoTU1gQ95fGH3BMY4QAmnZBlvFnu9xed6dReXqGP9zoef
+ MckleM1vV7HliBSRZ6udkFDg4oyUKSNbZwul7Y66weAy+oon65LCWdmf+dxfK6r3WTQNoS4
+ h3/cDg6RD1w561g9mrzJSlidlzrboqRUVJhpHVuHlrVchpYU/bfHn/az49skSDmMNfUtWjr
+ zd0PBJPpX1GrxPAxwHQmw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a1HG/QGb8tY=:0q0pD8h55NgouMf6dv3JD2
+ Cmx7N9LkvLMDbG6kymexPbp1HKRzx7Rorroj2ZlFUcC7DgJUW/cKzL/tB4CyNoE0tfadzvgWR
+ bKZcQEkxGiiiXDLxGxZN31wPYHCpJE3AnuMMRqhHMlRbsY7l9Gw4vYhc2Z5xyIVpb4d7TX8ar
+ lBAAh6lHX5wJL44SeNWREbvfTDEkT8JE0A7/FGxY0QMVapvLqU+tUnES7VA7OVAL/BMcBsZAR
+ mUfUnQC5YTSsKej0IiwPX5L7/EhgLUAoJufCr5ePB6QiYs0//YTjXBmuTkPRZ9iMf2WA5LiKE
+ EWc75DMdfsNl2sI5I1wAmNtpnkJ7Eh+BIiQNXpFYikpjA2IcRQDXbwBkOmf7j4zJPg4vp0ZmI
+ skM9M1UncysVw4xvpgNJA3M80NZgL50I41KvIF5I0T9ArXakC5fAvYc4NfJVv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020, Roman Gushchin wrote:
-> On Mon, Dec 07, 2020 at 04:02:54PM +0100, Michal Hocko wrote:
-> > 
-> > As I've said the THP accounting change makes more sense to me because it
-> > allows future changes which are already undergoing so there is more
-> > merit in those.
+On 07.12.20 14:52, Michael S. Tsirkin wrote:
+
+>> See above: NAK. because it can't even be enabled directly (by the user).
+>> If it wasn't meant otherwise, we'd have to add an menu text.
 > 
-> +1
-> And this part is absolutely trivial.
+> The point is that user enables one of the bindings.
+> That in turn enables drivers. If we merely select VIRTIO
+> there's a chance user won't remember to select any bindings
+> and will be surprised not to see any devices.
 
-It does need to be recognized that, with these changes, every THP stats
-update overflows the per-cpu counter, resorting to atomic global updates.
-And I'd like to see that mentioned in the commit message.
+Not sure what you mean by "bindings" ... transports ?
 
-But this change is consistent with 4.7's 8f182270dfec ("mm/swap.c: flush
-lru pvecs on compound page arrival"): we accepted greater overhead for
-greater accuracy back then, so I think it's okay to do so for THP stats.
+IMHO, transports and device drivers are entirely orthogonal. Both *use*
+the core, but I don't think they shall only show up, after the core was
+enabled explicitly. Any combination of transports is valid (having none
+at all, of course, isn't actually useful).
 
-Hugh
+>> When using other transports ?
+> 
+> Any transport selects VIRTIO so if you enable that, you get
+> VIRTIO and thus it's enough to depend on it.
+
+The combination of 'select VIRTIO' and 'depends on VIRTIO' is what
+caused the recursive dependency. Chaning everything to 'select VIRTIO'
+fixed that.
+
+>> I don't thinkt that would be good - instead everybody should just select
+>> VIRTIO, never depend on it (maybe depend on VIRTIO_MENU instead)
+> 
+> GPU depends on VIRTIO and on VIRTIO_MENU ... which seems even messier
+> ...
+
+See:
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2404871.html
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
