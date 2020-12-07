@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F2E2D1438
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028AA2D143C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgLGO7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:59:36 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43202 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725772AbgLGO7g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:59:36 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7EbJNs020191;
-        Mon, 7 Dec 2020 09:58:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=6b/b5Dxe605BC5GsozJi2jrq8Z2Th2EsN7f8+8G/lm4=;
- b=g4rAs4oqnDgqpOwA0rAY9SsZ9PrfQhbHu4niNfOCs8IwbWotJykuqzJMMdLyVQuOKnDc
- WU9npB/Im5C8FmnWEAKtcygzPWeUDlqe05mBomL3LlNwgQRm1Ka+49xGCx7bcUfOWTJ6
- KzXjKODkFlE2AOimM69/O6yIE1l48BDeyAiC0MfrQxUudRxeCnT8RrZ24xkK1+4+S027
- qh7xGl6tfDCP1cMBlj/OSsgZzj4QbXSAG+bX9+qYdOYAOwVIIO9wqUwxivDJnL3b+g4Z
- 1jHVGNSFmobt/I8uCCASgM61Kl6mmB1Fzs5SHVwkq1vpsZTpYxmb+E/ABQfvkGQNpHyn 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359p0dsbts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 09:58:07 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7EbALl019040;
-        Mon, 7 Dec 2020 09:58:06 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359p0dsbst-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 09:58:06 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7EqRFq020474;
-        Mon, 7 Dec 2020 14:58:03 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3581fhjk8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 14:58:03 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7Ew1R364815572
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 14:58:01 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3649DA4064;
-        Mon,  7 Dec 2020 14:58:01 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2ED88A4054;
-        Mon,  7 Dec 2020 14:57:55 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.115.213])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  7 Dec 2020 14:57:55 +0000 (GMT)
-Message-ID: <49408f07b91685e058f94844e73c753bb2033d35.camel@linux.ibm.com>
-Subject: Re: [PATCH v10 7/8] powerpc: Move arch_ima_add_kexec_buffer to ima
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     robh@kernel.org, gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-Date:   Mon, 07 Dec 2020 09:57:54 -0500
-In-Reply-To: <0f60b35e-eff6-20c6-363d-82f0b10a1c1f@linux.microsoft.com>
-References: <20201204195149.611-1-nramas@linux.microsoft.com>
-         <20201204195149.611-8-nramas@linux.microsoft.com>
-         <87k0twlytt.fsf@manicouagan.localdomain>
-         <0f60b35e-eff6-20c6-363d-82f0b10a1c1f@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        id S1726426AbgLGPAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:00:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726000AbgLGPAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:00:01 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6563D23601;
+        Mon,  7 Dec 2020 14:59:20 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmHyw-00Gn4h-61; Mon, 07 Dec 2020 14:59:18 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_11:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- phishscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070094
+Date:   Mon, 07 Dec 2020 14:59:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/4] gpiolib: cdev: Flag invalid GPIOs as used
+In-Reply-To: <X845UohmzGM7+FPu@localhost>
+References: <20201204164739.781812-1-maz@kernel.org>
+ <20201204164739.781812-2-maz@kernel.org> <X845UohmzGM7+FPu@localhost>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <4d00047a5727a8f26d3aa4c54892cc58@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: johan@kernel.org, linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, gregkh@linuxfoundation.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-06 at 18:03 -0800, Lakshmi Ramasubramanian wrote:
-> On 12/5/20 1:36 PM, Thiago Jung Bauermann wrote:
-> > 
-> > Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+On 2020-12-07 14:16, Johan Hovold wrote:
+> On Fri, Dec 04, 2020 at 04:47:36PM +0000, Marc Zyngier wrote:
+>> When reporting the state of a GPIO to userspace, we never check
+>> for the actual validity of the line, meaning we report invalid
+>> lines as being usable. A subsequent request will fail though,
+>> which is an inconsistent behaviour from a userspace perspective.
+>> 
+>> Instead, let's check for the validity of the line and report it
+>> as used if it is invalid. This allows a tool such as gpioinfo
+>> to report something sensible:
+>> 
+>> gpiochip3 - 4 lines:
+>> 	line   0:      unnamed       unused   input  active-high
+>> 	line   1:      unnamed       kernel   input  active-high [used]
+>> 	line   2:      unnamed       kernel   input  active-high [used]
+>> 	line   3:      unnamed       unused   input  active-high
+>> 
+>> In this example, lines 1 and 2 are invalid, and cannot be used by
+>> userspace.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  drivers/gpio/gpiolib-cdev.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+>> index e9faeaf65d14..a0fcb4ccaa02 100644
+>> --- a/drivers/gpio/gpiolib-cdev.c
+>> +++ b/drivers/gpio/gpiolib-cdev.c
+>> @@ -1910,6 +1910,7 @@ static void gpio_desc_to_lineinfo(struct 
+>> gpio_desc *desc,
+>>  	    test_bit(FLAG_USED_AS_IRQ, &desc->flags) ||
+>>  	    test_bit(FLAG_EXPORT, &desc->flags) ||
+>>  	    test_bit(FLAG_SYSFS, &desc->flags) ||
+>> +	    !gpiochip_line_is_valid(gc, info->offset) ||
+>>  	    !ok_for_pinctrl)
+>>  		info->flags |= GPIO_V2_LINE_FLAG_USED;
 > 
-> >> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-> >> index 4d354593aecf..5263dafe8f4d 100644
-> >> --- a/security/integrity/ima/ima_kexec.c
-> >> +++ b/security/integrity/ima/ima_kexec.c
-> >> @@ -74,6 +74,28 @@ static int ima_dump_measurement_list(unsigned long *buffer_size, void **buffer,
-> >>   	return ret;
-> >>   }
-> >>   
-> >> +/**
-> >> + * arch_ima_add_kexec_buffer - do arch-specific steps to add the IMA buffer
-> >> + *
-> >> + * @image: kimage struct to set IMA buffer data
-> >> + * @load_addr: Starting address where IMA buffer is loaded at
-> >> + * @size: Number of bytes in the IMA buffer
-> >> + *
-> >> + * Architectures should use this function to pass on the IMA buffer
-> >> + * information to the next kernel.
-> >> + *
-> >> + * Return: 0 on success, negative errno on error.
-> >> + */
-> >> +static int arch_ima_add_kexec_buffer(struct kimage *image,
-> >> +				     unsigned long load_addr,
-> >> +				     size_t size)
-> >> +{
-> >> +	image->arch.ima_buffer_addr = load_addr;
-> >> +	image->arch.ima_buffer_size = size;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> > 
-> > Both powerpc and arm64 use the definition above for
-> > arch_ima_add_kexec_buffer(), so it makes sense to share them as you do
-> > in this patch. This file isn't the best one to put arch-specific code
-> > which happens to be identical among architectures, but I can't think of
-> > somewhere else to put it.
-> > 
-> > For now this isn't an issue since powerpc and arm64 are the only arches
-> > implementing tihs feature. If a third arch implemented it and also used
-> > the same function definition as above, it wouldn't be an issue either so
-> > perhaps this is good enough for the time being? :-)
-> 
-> If Mimi doesn't have any objection, I'll leave this function in this 
-> file. The other option is to move this function also to 
-> "drivers/of/kexec.c".
-> 
-> Please let me know.
+> So this is somewhat separate from the rest of the series in case it
+> applies also to gpio chips with reserved ranges (e.g.
+> "gpio-reserved-ranges" devicetree property). Are they currently 
+> reported
+> as available?
 
-Defining arch_ima_add_kexec_buffer() function, as static, here in
-ima_kexec.c is weird.  For this reason, I specifically asked Thiago to
-look at it.  Thanks, Thiago, for looking and reviewing the rest of the
-patch set.  Duplicating the code or defining it in drivers/of, doesn't
-make sense either.  As Thiago suggested, define it here until there is
-a reason to move it.
+I don't have any HW that uses this, but gpiolib-of.c makes use of it to
+expose the valid GPIO range. I expect these systems suffer from the same
+issue.
 
-thanks,
+> Looks like this will work well also for USB gpio controllers with 
+> static
+> muxing configured in EEPROM, especially as that is how we already 
+> report
+> pins reported as unavailable by pinctrl (i.e. ok_for_pinctrl).
 
-Mimi
+Thanks,
 
+         M.
+-- 
+Jazz is not dead. It just smells funny...
