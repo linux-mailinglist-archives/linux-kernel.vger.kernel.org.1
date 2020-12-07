@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B322D0FC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DF42D0FCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgLGLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgLGLyu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:54:50 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3913C0613D2;
-        Mon,  7 Dec 2020 03:54:04 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id z11so2988733qkj.7;
-        Mon, 07 Dec 2020 03:54:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E49RW3lCYWJrRHYIOf8r6xoeeHtbQpoKE5fOTw71iZo=;
-        b=SC5cS/hNjMqFSJGp92Czw/Dl4zANswBGyHPMn5sBorqcFfd0xp1WUId65rkdpnvgLJ
-         UDGS4ehZm7nOxE18JRAjnm9uEFr6RdW0SDIcLWxdOcXs74MieegRUh14FNN0eumwNwv3
-         hwNslglXh0I/5vN4zRprw8EjNoLnjYVS1/vP0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E49RW3lCYWJrRHYIOf8r6xoeeHtbQpoKE5fOTw71iZo=;
-        b=th53Yj5MGSWSUwpLBo8/aZLgN2wVRFMqYZXGndFaISNuP7GECtP4//r7EJ/6e0Dbsz
-         n/+NOQga6jxsaqbmRxBhtv3/7phORrvn8dZNKHFTLO40OjnQlT3OQGVY5HM8KfoZLmFl
-         298n81f77hGr0rUKgMQMc+d92K6lSPR+XMTqX6CZx1M+jV5BKTi61o1agGptiSVnL2uA
-         d5kqfWZygD5zbLGXp9UXRq7Ptfz0zMFoNL6A3QZh4qFPWSjBFg2FlYzqVL47DnFBdSq/
-         sQiqfWYFyAG5oxrrqCdTpGiY2y8STN2wg1A8lTKXTBW5tv8VdsjsozT5F8EafRKfkM40
-         7VOQ==
-X-Gm-Message-State: AOAM530LcuUdDkZRgPXDyvbKInU17IdtwBmND6hGrywAnhvii+Rmb8S1
-        DrmUA+t7efNtqEwhHEQwM8R4I3sVaNXvojTfzg4=
-X-Google-Smtp-Source: ABdhPJwMVIarKWFTAT6CPBVIaqd6FKPGstN2lTEsLyCRkC4SMh9VXx5/1AbJYFRigDi1UcqIgH0/ixKSkql6qwp0Tho=
-X-Received: by 2002:a05:620a:2101:: with SMTP id l1mr3530842qkl.55.1607342043919;
- Mon, 07 Dec 2020 03:54:03 -0800 (PST)
+        id S1726931AbgLGL5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:57:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgLGL5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:57:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DB8CFAC9A;
+        Mon,  7 Dec 2020 11:56:32 +0000 (UTC)
+Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-2-tyreld@linux.ibm.com>
+ <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
+ <38903a4f-9253-0b4b-6f67-af78ec86175f@linux.ibm.com>
+ <efbfe9e9-c692-80a1-f5b4-55473d8193e4@linux.vnet.ibm.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <6ce79011-d288-7a49-3d51-262da58d8486@suse.de>
+Date:   Mon, 7 Dec 2020 12:56:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201207090013.14145-1-troy_lee@aspeedtech.com> <20201207090013.14145-3-troy_lee@aspeedtech.com>
-In-Reply-To: <20201207090013.14145-3-troy_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 7 Dec 2020 11:53:51 +0000
-Message-ID: <CACPK8Xdo1Ove0Gysd6g6ke9rk2QED4kCjxKEAdSV9SbbFkViVg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] edac: Supporting AST2400 and AST2600 edac driver
-To:     Troy Lee <troy_lee@aspeedtech.com>
-Cc:     Stefan Schaeckeler <sschaeck@cisco.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:EDAC-CORE" <linux-edac@vger.kernel.org>,
-        leetroy@gmail.com, Ryan Chen <ryan_chen@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <efbfe9e9-c692-80a1-f5b4-55473d8193e4@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 09:01, Troy Lee <troy_lee@aspeedtech.com> wrote:
->
-> Adding AST2400 and AST2600 edac driver support.
->
-> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+On 12/4/20 3:26 PM, Brian King wrote:
+> On 12/2/20 11:27 AM, Tyrel Datwyler wrote:
+>> On 12/2/20 7:14 AM, Brian King wrote:
+>>> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+>>>> Introduce several new vhost fields for managing MQ state of the adapter
+>>>> as well as initial defaults for MQ enablement.
+>>>>
+>>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>>>> ---
+>>>>   drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
+>>>>   drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
+>>>>   2 files changed, 19 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>> index 42e4d35e0d35..f1d677a7423d 100644
+>>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>>>>   	}
+>>>>   
+>>>>   	shost->transportt = ibmvfc_transport_template;
+>>>> -	shost->can_queue = max_requests;
+>>>> +	shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
+>>>
+>>> This doesn't look right. can_queue is the SCSI host queue depth, not the MQ queue depth.
+>>
+>> Our max_requests is the total number commands allowed across all queues. From
+>> what I understand is can_queue is the total number of commands in flight allowed
+>> for each hw queue.
+>>
+>>          /*
+>>           * In scsi-mq mode, the number of hardware queues supported by the LLD.
+>>           *
+>>           * Note: it is assumed that each hardware queue has a queue depth of
+>>           * can_queue. In other words, the total queue depth per host
+>>           * is nr_hw_queues * can_queue. However, for when host_tagset is set,
+>>           * the total queue depth is can_queue.
+>>           */
+>>
+>> We currently don't use the host wide shared tagset.
+> 
+> Ok. I missed that bit... In that case, since we allocate by default only 100
+> event structs. If we slice that across IBMVFC_SCSI_HW_QUEUES (16) queues, then
+> we end up with only about 6 commands that can be outstanding per queue,
+> which is going to really hurt performance... I'd suggest bumping up
+> IBMVFC_MAX_REQUESTS_DEFAULT from 100 to 1000 as a starting point.
+> 
+Before doing that I'd rather use the host-wide shared tagset.
+Increasing the number of requests will increase the memory footprint of 
+the driver (as each request will be statically allocated).
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
