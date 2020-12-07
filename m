@@ -2,74 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37F02D1138
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973572D112B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgLGM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:57:38 -0500
-Received: from aposti.net ([89.234.176.197]:59886 "EHLO aposti.net"
+        id S1726206AbgLGM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:57:12 -0500
+Received: from mga11.intel.com ([192.55.52.93]:13931 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725802AbgLGM5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:57:37 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     od@zcrc.me, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 5/5] ASoC: codecs/jz4770: Add DAPM widget to set HP out to cap-less mode
-Date:   Mon,  7 Dec 2020 12:53:37 +0000
-Message-Id: <20201207125338.119397-5-paul@crapouillou.net>
-In-Reply-To: <20201207125338.119397-1-paul@crapouillou.net>
-References: <20201207125338.119397-1-paul@crapouillou.net>
+        id S1726007AbgLGM5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:57:12 -0500
+IronPort-SDR: 6uIFZvBr8T7kMRWXQ0WNfDZBkXFq4XguGpKlTHCW9Ikozt1XV+D7oDaZvyC2xmDQ31vNKOzlme
+ o5q2fmXKZZ6A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="170183969"
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="170183969"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 04:55:26 -0800
+IronPort-SDR: s70YmdCNIipXNxGDGwpZ8QETuIuy78AlYTbT3UUmyK/Scnw+b594bY7I/f8Ox7XS6WPVvgE8hp
+ qolkEVVMK63w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="407133557"
+Received: from cvg-ubt08.iil.intel.com (HELO [10.185.176.12]) ([10.185.176.12])
+  by orsmga001.jf.intel.com with ESMTP; 07 Dec 2020 04:55:19 -0800
+Subject: Re: [RFC PATCH] do_exit(): panic() recursion detected
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu <chenqiwu@xiaomi.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201207124050.4016994-1-vladimir.kondratiev@linux.intel.com>
+ <20201207125145.GM3040@hirez.programming.kicks-ass.net>
+From:   Vladimir Kondratiev <vladimir.kondratiev@linux.intel.com>
+Message-ID: <8056f890-0297-6fa9-c9a6-c9909e0f24af@linux.intel.com>
+Date:   Mon, 7 Dec 2020 14:55:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201207125145.GM3040@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cap-less mode is useful e.g. if the headphones are used as an antenna
-for a FM radio, so that the signal is not altered. For everything else,
-we want the cap-couple mode.
+We do panic on oops as well. We panic on anything that may point to 
+system stability issues. I can't proof this code can't be reached 
+without oops, so I want to panic here as well.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- sound/soc/codecs/jz4770.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
-index 909b70e817b4..c9fe7f72bfcb 100644
---- a/sound/soc/codecs/jz4770.c
-+++ b/sound/soc/codecs/jz4770.c
-@@ -98,7 +98,7 @@ enum {
- #define REG_CR_HP_MUTE			BIT(7)
- #define REG_CR_HP_LOAD			BIT(6)
- #define REG_CR_HP_SB_OFFSET		4
--#define REG_CR_HP_SB_HPCM		BIT(3)
-+#define REG_CR_HP_SB_HPCM_OFFSET	3
- #define REG_CR_HP_SEL_OFFSET		0
- #define REG_CR_HP_SEL_MASK		(0x3 << REG_CR_HP_SEL_OFFSET)
- 
-@@ -519,6 +519,9 @@ static const struct snd_soc_dapm_widget jz4770_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("MICBIAS", JZ4770_CODEC_REG_CR_MIC,
- 			    REG_CR_MIC_BIAS_SB_OFFSET, 1, NULL, 0),
- 
-+	SND_SOC_DAPM_SUPPLY("Cap-less", JZ4770_CODEC_REG_CR_HP,
-+			    REG_CR_HP_SB_HPCM_OFFSET, 1, NULL, 0),
-+
- 	SND_SOC_DAPM_INPUT("MIC1P"),
- 	SND_SOC_DAPM_INPUT("MIC1N"),
- 	SND_SOC_DAPM_INPUT("MIC2P"),
-@@ -640,7 +643,8 @@ static void jz4770_codec_codec_init_regs(struct snd_soc_component *codec)
- 	regmap_set_bits(regmap, JZ4770_CODEC_REG_CR_ADC, REG_CR_ADC_LRSWAP);
- 
- 	/* default to cap-less mode(0) */
--	regmap_clear_bits(regmap, JZ4770_CODEC_REG_CR_HP, REG_CR_HP_SB_HPCM);
-+	regmap_clear_bits(regmap, JZ4770_CODEC_REG_CR_HP,
-+			  BIT(REG_CR_HP_SB_HPCM_OFFSET));
- 
- 	/* Send collected updates. */
- 	regcache_cache_only(regmap, false);
--- 
-2.29.2
-
+On 12/7/20 2:51 PM, Peter Zijlstra wrote:
+> On Mon, Dec 07, 2020 at 02:40:49PM +0200, Vladimir Kondratiev wrote:
+>> From: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+>>
+>> Recursive do_exit() is symptom of compromised kernel integrity.
+>> For safety critical systems, it may be better to
+>> panic() in this case to minimize risk.
+> 
+> You've not answered the previously posed question on why panic_on_oops
+> isn't more suitable for your type of systems.
+> 
+>> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+>> Change-Id: I42f45900a08c4282c511b05e9e6061360d07db60
+> 
+> This Change-ID crap doesn't belong in kernel patches.
+> 
