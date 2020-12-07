@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722BC2D1153
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A682D1156
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgLGNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:04:55 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9114 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgLGNEy (ORCPT
+        id S1726061AbgLGNFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:05:35 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34206 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgLGNFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:04:54 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqNm435ljzM1ZM;
-        Mon,  7 Dec 2020 21:03:32 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
- 21:04:03 +0800
-Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
- <20201130112250.GK4077@smile.fi.intel.com>
- <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
- <20201205221522.ifjravnir5bzmjff@mobilestation>
- <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <8592c7f0-a9e9-f48c-e9e4-0e24e22b3f57@huawei.com>
-Date:   Mon, 7 Dec 2020 21:04:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Mon, 7 Dec 2020 08:05:34 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kmGCB-00065A-87; Mon, 07 Dec 2020 13:04:51 +0000
+Date:   Mon, 7 Dec 2020 14:04:49 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Kees Cook <keescook@chromium.org>,
+        David Howells <dhowells@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Serge Hallyn <serge@hallyn.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] signal: propagate __user annotations properly
+Message-ID: <20201207130449.nbt23aholqebbvux@wittgenstein>
+References: <20201207123610.18246-1-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201207123610.18246-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 07, 2020 at 01:36:10PM +0100, Lukas Bulwahn wrote:
+> Commit 3eb39f47934f ("signal: add pidfd_send_signal() syscall") introduced
+> copy_siginfo_from_user_any(), but missed to add the __user annotation to
+> the user pointer that is passed as second argument.
+> 
+> Hence, when copy_siginfo_from_user_any() calls copy_siginfo_from_user(),
+> sparse warns:
+> 
+>   kernel/signal.c:3716:46: warning: incorrect type in argument 2 (different address spaces)
+>   kernel/signal.c:3716:46:    expected struct siginfo const [noderef] [usertype] __user *from
+>   kernel/signal.c:3716:46:    got struct siginfo [usertype] *info
+> 
+> And when pidfd_send_signal() calls copy_siginfo_from_user_any(), sparse
+> warns as well:
+> 
+>   kernel/signal.c:3776:58: warning: incorrect type in argument 2 (different address spaces)
+>   kernel/signal.c:3776:58:    expected struct siginfo [usertype] *info
+>   kernel/signal.c:3776:58:    got struct siginfo [noderef] [usertype] __user *info
+> 
+> Add the __user annotation to repair this chain of propagating __user
+> annotations.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on current master (v5.10-rc7) and next-20201204
+> 
+> Christian, please pick this minor non-urgent clean-up patch.
 
-On 2020/12/6 23:02, Linus Walleij wrote:
-> On Sat, Dec 5, 2020 at 11:15 PM Serge Semin <fancer.lancer@gmail.com> wrote:
->
->> Hmm, that sounds like a problem, but the explanation is a bit unclear
->> to me. AFAICS you are saying that the only callbacks which are
->> called during the IRQ request/release are the irq_enable(), right? If
->> so then the only reason why we haven't got a problem reported due to
->> that so far is that the IRQs actually unmasked by default.
-> What we usually do in cases like that (and I have discussed this
-> with tglx in the past I think) is to simply mask off all IRQs in probe().
-> Then they will be unmasked when requested by drivers.
+Thanks for the patch. Unfortunately I already picked up Jann's patch who
+sent it yesterday or this morning:
+https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/commit/?h=pidfd
 
-
-Yes, I agree. but in this case I mean that they will not unmasked when 
-drivers request IRQ.
-
-Drivers request IRQ will only call irq_enable(), so if we mask all IRQ 
-in gpio-dwab.'s probe(),
-
-no one will unmask the IRQ for drivers.
-
-
-Thanks
-
-Jiaxing
-
-
->
-> See e.g. gpio-pl061 that has this line in probe():
-> writeb(0, pl061->base + GPIOIE); /* disable irqs */
->
-> Yours,
-> Linus Walleij
->
-> .
->
-
+Thanks!
+Christian
