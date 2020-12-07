@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EFF2D1548
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79CCD2D154A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgLGP4Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 10:56:25 -0500
-Received: from mga12.intel.com ([192.55.52.136]:47689 "EHLO mga12.intel.com"
+        id S1727260AbgLGP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:56:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726487AbgLGP4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:56:24 -0500
-IronPort-SDR: BqZuJ+0gvy0LLJPbP+ToRxpzPXXbmU+7AThOt5v3EmJjg12VaHV8OEwx0DrO7PfXkmBma9JNlT
- a2a7oOJSJ0MA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="152962714"
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="152962714"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 07:55:44 -0800
-IronPort-SDR: JqljrY7NKgtBF5E9+6jS3K5H6TUX6VVLbAJrVYPKj7ydBZ2garzw5f3kDpSv91V8zX7vC5AqUz
- GsC//KfhRBww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
-   d="scan'208";a="436832912"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Dec 2020 07:55:44 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 7 Dec 2020 07:55:43 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 7 Dec 2020 07:55:43 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Mon, 7 Dec 2020 07:55:43 -0800
-From:   "Jiang, Dave" <dave.jiang@intel.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
-Subject: RE: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local
- or remote side of bridge
-Thread-Topic: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the
- local or remote side of bridge
-Thread-Index: AQHWuEC9OnGPVEaiTUCW+4PBXB6hF6nr8fOg
-Date:   Mon, 7 Dec 2020 15:55:43 +0000
-Message-ID: <f39cf769993541e2a46bfe4d777ccf46@intel.com>
-References: <20201111153559.19050-1-kishon@ti.com>
- <20201111153559.19050-17-kishon@ti.com>
-In-Reply-To: <20201111153559.19050-17-kishon@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726046AbgLGP4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:56:39 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6113423741;
+        Mon,  7 Dec 2020 15:55:58 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmIrk-00Gnm0-3l; Mon, 07 Dec 2020 15:55:56 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 07 Dec 2020 15:55:56 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v6 1/2] arm64: kvm: Save/restore MTE registers
+In-Reply-To: <03566358-21b0-11d9-c4f6-d07d137a1009@arm.com>
+References: <20201127152113.13099-1-steven.price@arm.com>
+ <20201127152113.13099-2-steven.price@arm.com>
+ <946b1e7b06c4d286a78cf61408e0fc8d@kernel.org>
+ <03566358-21b0-11d9-c4f6-d07d137a1009@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <07e40bbcf734e8c63630168406262bb2@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-12-07 14:48, Steven Price wrote:
+> On 03/12/2020 17:07, Marc Zyngier wrote:
+>> 
+>>> diff --git a/arch/arm64/include/asm/sysreg.h 
+>>> b/arch/arm64/include/asm/sysreg.h
+>>> index e2ef4c2edf06..b6668ffa04d9 100644
+>>> --- a/arch/arm64/include/asm/sysreg.h
+>>> +++ b/arch/arm64/include/asm/sysreg.h
+>>> @@ -569,7 +569,8 @@
+>>>  #define SCTLR_ELx_M    (BIT(0))
+>>> 
+>>>  #define SCTLR_ELx_FLAGS    (SCTLR_ELx_M  | SCTLR_ELx_A | SCTLR_ELx_C 
+>>> | \
+>>> -             SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB)
+>>> +             SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB | \
+>>> +             SCTLR_ELx_ITFSB)
+>>> 
+>>>  /* SCTLR_EL2 specific flags. */
+>>>  #define SCTLR_EL2_RES1    ((BIT(4))  | (BIT(5))  | (BIT(11)) | 
+>>> (BIT(16)) | \
+>>> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>> b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>> index cce43bfe158f..45255ba60152 100644
+>>> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>> @@ -18,6 +18,11 @@
+>>>  static inline void __sysreg_save_common_state(struct kvm_cpu_context 
+>>> *ctxt)
+>>>  {
+>>>      ctxt_sys_reg(ctxt, MDSCR_EL1)    = read_sysreg(mdscr_el1);
+>>> +    if (system_supports_mte()) {
+>> 
+>> Please move the per-VM predicate to this patch so that it can be used
+>> not to save/restore the MTE registers if we don't need to.
+> 
+> There isn't a valid struct kvm_vcpu or struct kvm here. I know there's
+> ctx->__hyp_running_vcpu but AFAICT that is only valid with the host
+> context.
+
+We have per-CPU variables for the host context. If 
+ctx->__hyp_running_vcpu
+is non NULL, you know you're on the host.
 
 
-> -----Original Message-----
-> From: Kishon Vijay Abraham I <kishon@ti.com>
-> Sent: Wednesday, November 11, 2020 8:36 AM
-> To: Bjorn Helgaas <bhelgaas@google.com>; Jonathan Corbet
-> <corbet@lwn.net>; Kishon Vijay Abraham I <kishon@ti.com>; Lorenzo
-> Pieralisi <lorenzo.pieralisi@arm.com>; Arnd Bergmann <arnd@arndb.de>;
-> Jon Mason <jdmason@kudzu.us>; Jiang, Dave <dave.jiang@intel.com>;
-> Allen Hubbe <allenbh@gmail.com>; Tom Joseph <tjoseph@cadence.com>;
-> Rob Herring <robh@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
-> pci@vger.kernel.org; linux-doc@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-ntb@googlegroups.com
-> Subject: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local or
-> remote side of bridge
 > 
-> Invoke ntb_link_enable() to enable the NTB/PCIe link on the local or remote
-> side of the bridge.
+>> 
+>>> +        ctxt_sys_reg(ctxt, RGSR_EL1)    = 
+>>> read_sysreg_s(SYS_RGSR_EL1);
+>>> +        ctxt_sys_reg(ctxt, GCR_EL1)    = read_sysreg_s(SYS_GCR_EL1);
+>>> +        ctxt_sys_reg(ctxt, TFSRE0_EL1)    = 
+>>> read_sysreg_s(SYS_TFSRE0_EL1);
+>>> +    }
+>> 
+>> Overall, I still don't understand how this is going to work once
+>> we have MTE in the kernel. You mentioned having the ability to
+>> create turn off the tag checks at times, but I don't see that
+>> in this patch (and I'm not sure we want that either).
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/ntb/test/ntb_tool.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c index
-> b7bf3f863d79..8230ced503e3 100644
-> --- a/drivers/ntb/test/ntb_tool.c
-> +++ b/drivers/ntb/test/ntb_tool.c
-> @@ -1638,6 +1638,7 @@ static int tool_probe(struct ntb_client *self, struct
-> ntb_dev *ntb)
-> 
->  	tool_setup_dbgfs(tc);
-> 
-> +	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
+> Given that this is now highly unlikely to be merged for v5.11, I'll
+> rebase onto of the KASAN MTE series and double check exactly what
+> happens. My thought was that it should be as simple as setting TCO,
+> but your previous comment about moving the save/restore into assembler
+> might be wise in case the compiler starts playing with TCO itself.
 
-The tool expects the user to enable the link via debugfs according to documentation. Is this necessary?
+Indeed.
 
->  	return 0;
-> 
->  err_clear_mws:
-> --
-> 2.17.1
+Thanks,
 
+         M.
+-- 
+Jazz is not dead. It just smells funny...
