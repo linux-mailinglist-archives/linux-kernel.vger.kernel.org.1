@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C772D0AB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9812D0AC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgLGGcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S1726003AbgLGGe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGGcy (ORCPT
+        with ESMTP id S1725681AbgLGGe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:32:54 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FF7C0613D0
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 22:32:13 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w6so8804945pfu.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 22:32:13 -0800 (PST)
+        Mon, 7 Dec 2020 01:34:58 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF34C0613D4;
+        Sun,  6 Dec 2020 22:34:18 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id i38so8062712pgb.5;
+        Sun, 06 Dec 2020 22:34:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gL0NtWagJ51Gx9mXLpW/I2jalcUi5rYsF2xSyQmmfcs=;
-        b=RVDjlbOay78DlQc9N55FmBroQ35hl5d56zVmIYYs+Are/KKEJVAW8HG7A4z/aKmn/p
-         gcR323NH2M+nMR/5sJ3popUJq9Kddc0B2pnbSlkH5PFwvsNT8Y7KeKYxlc7++Ck7WbC/
-         ay0JA2usjySCSy/RirwrQmmHeZzm2Lxfuie40pLfklIgECkyHrFrf/tNHP+RJwayM99/
-         +GiAJwdY1ur9QpOdBTxsY5h6V0hIaCKwuxgf1d1AToEt9yD5nI+6AVTwJvci5ttRYwvx
-         w+biiu/gdtGl5E697jyHyCzqy5byTPph9SkolTL6GaSD2giHMrJ2Y+8ANRrhSxtZ/ir9
-         BnUw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5q1YhPjhi7857jfqqjPqEtMBVeFBPU6hgI2ckukTgPs=;
+        b=TqgqXvQv9OFnZAsRrBCwKfwrdZn2KHcmTkOSjcBzhiZz3J887eVyNns+7SKUvQSgUU
+         u0eJn5yPABA6QjK3Ovbt5FlbFwpV7bL/1o+HigXoQvI1J+LuG+nDZm4ZkRN/Oie+Rb0Y
+         y2murPpzP79jGnsTohdSGMOllYfgAIE972JO30in3N7gLftmFbAis/eDL2UeK+OAtg/g
+         rd5J/Fk4l3TK4MXlXmrBl7Szc5u0tAtJRutMV2R8FsEJEy11OucFTi818nVsFTZAnUrm
+         dWXt1n93TOCUdk4DEJPB2XqoXcvPMl8JoVSwwJHUznKp54aZhbL1FPpzFhoxjflzD+Cu
+         t0NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gL0NtWagJ51Gx9mXLpW/I2jalcUi5rYsF2xSyQmmfcs=;
-        b=fOeu3Pf8dcGjsSzNgaM/1DBXoig4NROptIKxfn6WRpDqt4BaeYbu/IiTosjSXmww3q
-         RDe7xgmoAryX8BY0aBmwC91OMgylK+2W0GRAcBEgVRIcYsYuiRk7RjMzRvClxEma5sn0
-         Lg7DG4Kwc1b7yqxYakUJ+LsKEeS5sOWAjM2Ga/cuFY83Eos83q3bBYTVYENM0o7vP3Ae
-         XngqTtxg5hn5egZWYhxA4ryqp87/i/4t/z/VMgtSz8nRl1FFOI6+sTmPLaati1nhUXh7
-         ukQJ4t8JBIz1/3JmMYfG9dNC0+W56fhaWC2Xj0EI7Z/HTf2cPNKVNXgdjSs7oUz3gT0g
-         JVwg==
-X-Gm-Message-State: AOAM533aAiWT0wet76rb/oYViyixosHmDp5lHVZdc8Ir7EdJaby2uOJi
-        4tjeOk02KprOVhcxl1npHxFblQ==
-X-Google-Smtp-Source: ABdhPJwhmhtGhFNg7LTSkIGaAcj2BYkARySOwHjb+NXANwDfxnxgoneEC76MeC3efb/xq12PBvFsgw==
-X-Received: by 2002:a17:902:d904:b029:da:a830:11b3 with SMTP id c4-20020a170902d904b02900daa83011b3mr14645531plz.74.1607322733367;
-        Sun, 06 Dec 2020 22:32:13 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id g85sm12739373pfb.4.2020.12.06.22.32.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5q1YhPjhi7857jfqqjPqEtMBVeFBPU6hgI2ckukTgPs=;
+        b=etzUDVWUXbWeREmkTx2SguDg/5gN00rhjQ6TZQF7W2m0sCmdJGYzW20biBrJBFKWKV
+         Fi9FoiltZzX955l+/nxRd41APIki/1K++YYe2BHB+PtfFBTr5OndoA471y1b5WieQ4ou
+         0ykLaY0LSMGmWTDCIceKWAUX1IKV9G+LIiPJdVDKewn+/DcI8clOENbhCtlprhXQWh2h
+         HnS9i/czASzunOJwy1USMZS0cwA8YDx6F3J5OFx7z2RcZXTrtyCvStWreUH7HTfi2lUv
+         7Wot93WfAG+pjU/VGP/LTAxlg0UyX27zNYNliK+HkOhvd++Bjqvr90oL3b3qIBse6xpM
+         DzvA==
+X-Gm-Message-State: AOAM530pFdYPIBWfIOmSV/qsr/dcT5iBTWVRvRxbsA8OYcMeBKuEoTkK
+        wHItrnrqEntdIJjmQjRdgoA=
+X-Google-Smtp-Source: ABdhPJyo8hLLPix4fD3YGOUOwNDxD4XD8JygNu7LqBeXssUBABQtI8TVDWF7dpXKHtSrgFYO/NzOhA==
+X-Received: by 2002:a63:f02:: with SMTP id e2mr1945774pgl.148.1607322858140;
+        Sun, 06 Dec 2020 22:34:18 -0800 (PST)
+Received: from AHMLPT1827.ap.corp.arrow.com ([103.85.10.190])
+        by smtp.googlemail.com with ESMTPSA id w2sm1854273pfj.110.2020.12.06.22.34.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 22:32:12 -0800 (PST)
-Date:   Mon, 7 Dec 2020 12:02:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Walter Lozano <walter.lozano@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: imx: fix NVMEM_IMX_OCOTP dependency
-Message-ID: <20201207063209.ujduxednyvkymsx6@vireshk-i7>
-References: <20201203225344.1477350-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203225344.1477350-1-arnd@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+        Sun, 06 Dec 2020 22:34:17 -0800 (PST)
+From:   Parth Y Shah <sparth1292@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     vkoul@kernel.org, dan.j.williams@intel.com,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parth Y Shah <sparth1292@gmail.com>
+Subject: [PATCH] dmaengine: bam_dma: fix return of bam_dma_irq()
+Date:   Mon,  7 Dec 2020 12:03:40 +0530
+Message-Id: <1607322820-7450-1-git-send-email-sparth1292@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-12-20, 23:53, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A driver should not 'select' drivers from another subsystem.
-> If NVMEM is disabled, this one results in a warning:
-> 
-> WARNING: unmet direct dependencies detected for NVMEM_IMX_OCOTP
->   Depends on [n]: NVMEM [=n] && (ARCH_MXC [=y] || COMPILE_TEST [=y]) && HAS_IOMEM [=y]
->   Selected by [y]:
->   - ARM_IMX6Q_CPUFREQ [=y] && CPU_FREQ [=y] && (ARM || ARM64 [=y]) && ARCH_MXC [=y] && REGULATOR_ANATOP [=y]
-> 
-> Change the 'select' to 'depends on' to prevent it from going wrong,
-> and allow compile-testing without that driver, since it is only
-> a runtime dependency.
-> 
-> Fixes: 2782ef34ed23 ("cpufreq: imx: Select NVMEM_IMX_OCOTP")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/cpufreq/Kconfig.arm | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index 0732854d94ec..434ef03d2762 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -94,7 +94,7 @@ config ARM_IMX6Q_CPUFREQ
->  	tristate "Freescale i.MX6 cpufreq support"
->  	depends on ARCH_MXC
->  	depends on REGULATOR_ANATOP
-> -	select NVMEM_IMX_OCOTP
-> +	depends on NVMEM_IMX_OCOTP || COMPILE_TEST
->  	select PM_OPP
->  	help
->  	  This adds cpufreq driver support for Freescale i.MX6 series SoCs.
+While performing suspend/resume, we were getting below kernel crash.
 
-Applied. Thanks.
+[   54.541672] [FTS][Info]gesture suspend...
+[   54.605256] [FTS][Error][GESTURE]Enter into gesture(suspend) failed!
+[   54.605256]
+[   58.345850] irq event 10: bogus return value fffffff3
+......
 
+[   58.345966] [<ffff0000080830f0>] el1_irq+0xb0/0x124
+[   58.345971] [<ffff000008085360>] arch_cpu_idle+0x10/0x18
+[   58.345975] [<ffff0000081077f4>] do_idle+0x1ac/0x1e0
+[   58.345979] [<ffff0000081079c8>] cpu_startup_entry+0x20/0x28
+[   58.345983] [<ffff000008a80ed0>] rest_init+0xd0/0xdc
+[   58.345988] [<ffff0000091c0b48>] start_kernel+0x390/0x3a4
+[   58.345990] handlers:
+[   58.345994] [<ffff0000085120d0>] bam_dma_irq
+
+The reason for the crash we found is, bam_dma_irq() was returning
+negative value when the device resumes in some conditions.
+
+In addition, the irq handler should have one of the below return values.
+
+IRQ_NONE            interrupt was not from this device or was not handled
+IRQ_HANDLED         interrupt was handled by this device
+IRQ_WAKE_THREAD     handler requests to wake the handler thread
+
+Therefore, to resolve this crash, we have changed the return value to
+IRQ_NONE.
+
+Signed-off-by: Parth Y Shah <sparth1292@gmail.com>
+---
+ drivers/dma/qcom/bam_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+index 4eeb8bb..d5773d4 100644
+--- a/drivers/dma/qcom/bam_dma.c
++++ b/drivers/dma/qcom/bam_dma.c
+@@ -875,7 +875,7 @@ static irqreturn_t bam_dma_irq(int irq, void *data)
+ 
+ 	ret = bam_pm_runtime_get_sync(bdev->dev);
+ 	if (ret < 0)
+-		return ret;
++		return IRQ_NONE;
+ 
+ 	if (srcs & BAM_IRQ) {
+ 		clr_mask = readl_relaxed(bam_addr(bdev, 0, BAM_IRQ_STTS));
 -- 
-viresh
+2.7.4
+
