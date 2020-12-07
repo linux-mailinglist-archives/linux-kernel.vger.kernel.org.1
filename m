@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8232D1DCB
+	by mail.lfdr.de (Postfix) with ESMTP id BF3932D1DCC
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbgLGWye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:54:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36108 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbgLGWye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:54:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 01174AB63;
-        Mon,  7 Dec 2020 22:53:52 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 82A27603C1; Mon,  7 Dec 2020 23:53:51 +0100 (CET)
-Date:   Mon, 7 Dec 2020 23:53:51 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Justin Forbes <jmforbes@linuxtx.org>, bpf <bpf@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-Message-ID: <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
-References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
- <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
- <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
- <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
- <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
- <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
- <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+        id S1726540AbgLGWzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:55:08 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:58950 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgLGWzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:55:08 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7MjHPC176755;
+        Mon, 7 Dec 2020 22:54:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=p7XgzgkKK50pzgoOvf1ZcA2bYFRD86gNnJYethpS7tg=;
+ b=t4lqBlkKjf4pShwoN95Pin8iAKAKNnttn42BWjS7+bvqBTLcl6Kkepez0AmykFbAn/3V
+ kjRYSHq4AjHXX9+5BONf96/WU3wzgl5hJ5Cu+SojWuwVgo/fpYYoNLLCCzlZ5ruz9P/o
+ GJewv0pkzpSug05O+Ylkk0/w11b/0Gf0XsNN9FPO3kI0pAzwT5gEKMUiRZ6kpmkMEx9L
+ ftbcFkAaVItKt6GsEF9DVOKmyYkXwgYPr4tmtuZB5iuCOO4efVuR7YKmPtwe/3DiE4Ip
+ BuO2HoKZ8lg8wJMYcMXnQ7p9PqiFkLx1DTw3C9Lk/jhUthBlzetn2/k6CHlCqM6h36pT FQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 357yqbr4wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 22:54:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7MojCb178079;
+        Mon, 7 Dec 2020 22:54:04 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 358ksmt2yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 22:54:04 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B7Ms0fu030714;
+        Mon, 7 Dec 2020 22:54:01 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 14:54:00 -0800
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, <huadian.liu@mediatek.com>
+Subject: Re: [PATCH v5 0/4] scsi: ufs: Refine error history and introduce
+ event_notify vop
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq18sa92pol.fsf@ca-mkp.ca.oracle.com>
+References: <20201205115901.26815-1-stanley.chu@mediatek.com>
+Date:   Mon, 07 Dec 2020 17:53:56 -0500
+In-Reply-To: <20201205115901.26815-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Sat, 5 Dec 2020 19:58:57 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 02:44:22PM -0800, Alexei Starovoitov wrote:
-> On Mon, Dec 7, 2020 at 10:36 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
-> >
-> > On Mon, Dec 7, 2020 at 2:16 AM Michal Kubecek <mkubecek@suse.cz> wrote:
-> > >
-> > > On Thu, Nov 12, 2020 at 08:18:57AM +0800, Alex Shi wrote:
-> > > >
-> > > >
-> > > > 在 2020/11/11 上午3:50, Andrew Morton 写道:
-> > > > > On Tue, 10 Nov 2020 08:39:24 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
-> > > > >
-> > > > >> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> > > > >>>
-> > > > >>> Otherwise it cause gcc warning:
-> > > > >>>           ^~~~~~~~~~~~~~~
-> > > > >>> ../mm/filemap.c:830:14: warning: no previous prototype for
-> > > > >>> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
-> > > > >>>  noinline int __add_to_page_cache_locked(struct page *page,
-> > > > >>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > >>
-> > > > >> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
-> > > > >
-> > > > > hm, yes.
-> > > >
-> > > > When the config enabled, compiling looks good untill pahole tool
-> > > > used to get BTF info, but I still failed on a right version pahole
-> > > > > 1.16. Sorry.
-> > > >
-> > > > >
-> > > > >>>
-> > > > >>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > > > >>> Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > > >>> Cc: linux-mm@kvack.org
-> > > > >>> Cc: linux-kernel@vger.kernel.org
-> > > > >>> ---
-> > > > >>>  mm/filemap.c | 2 +-
-> > > > >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >>>
-> > > > >>> diff --git a/mm/filemap.c b/mm/filemap.c
-> > > > >>> index d90614f501da..249cf489f5df 100644
-> > > > >>> --- a/mm/filemap.c
-> > > > >>> +++ b/mm/filemap.c
-> > > > >>> @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
-> > > > >>>  }
-> > > > >>>  EXPORT_SYMBOL_GPL(replace_page_cache_page);
-> > > > >>>
-> > > > >>> -noinline int __add_to_page_cache_locked(struct page *page,
-> > > > >>> +static noinline int __add_to_page_cache_locked(struct page *page,
-> > > > >>>                                         struct address_space *mapping,
-> > > > >>>                                         pgoff_t offset, gfp_t gfp,
-> > > > >>>                                         void **shadowp)
-> > > > >
-> > > > > It's unclear to me whether BTF_ID() requires that the target symbol be
-> > > > > non-static.  It doesn't actually reference the symbol:
-> > > > >
-> > > > > #define BTF_ID(prefix, name) \
-> > > > >         __BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
-> > > > >
-> > > >
-> > > > The above usage make me thought BTF don't require the symbol, though
-> > > > the symbol still exist in vmlinux with 'static'.
-> > > >
-> > > > So any comments of this, Alexei?
-> 
-> Sorry. I've completely missed this thread.
-> Now I have a hard time finding context in archives.
-> If I understood what's going on the removal of "static" cases issues?
-> Yes. That's expected.
-> noinline alone is not enough to work reliably.
 
-Not removal, commit 3351b16af494 ("mm/filemap: add static for function
-__add_to_page_cache_locked") made the function static which breaks the
-build in btfids phase - but it seems to happen only on some
-architectures. In our case, ppc64, ppc64le and riscv64 are broken,
-x86_64, i586 and s390x succeed. (I made a mistake above, aarch64 did not
-fail - but only because it was not built at all.)
+Stanley,
 
-The thread starts with
-http://lkml.kernel.org/r/1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com
+> This series refines error history functions and introduces a new
+> event_notify vop to allow vendor to get notification of important
+> events.
 
-Michal
+Applied to 5.11/scsi-staging, thanks!
 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
