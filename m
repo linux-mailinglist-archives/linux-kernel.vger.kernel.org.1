@@ -2,134 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638BC2D0E8E
+	by mail.lfdr.de (Postfix) with ESMTP id E83AA2D0E8F
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgLGLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbgLGLAP (ORCPT
+        id S1726557AbgLGLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:00:26 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:51908 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725842AbgLGLA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:00:15 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE3DC0613D0;
-        Mon,  7 Dec 2020 02:59:35 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id n26so18834684eju.6;
-        Mon, 07 Dec 2020 02:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ueepF1yzZbMICZuzK5SyCCKVIYjp8Ub6eatZHwC5SNQ=;
-        b=Uj3sJueNflNH5hUhwt0vjG3oYCYO+JvWwURqSIkaAssBzmL9l0UksVHzWDm3qtz2tJ
-         K2m/NH2IdmMK5JHKkmP1rQvuZ8ND6SqV+WJ7jnZvE5Eyn2HHH+Je5moW1QNHSWCyEpDu
-         v/pxS7OwzqkPBZf9XdCP/TY/+iTf/wAi+/bR4ovxnTn/pvxrSdiEqGpTmENEooWhkXFS
-         YrmBG+XL7/DfLNeH7Csw7rlznTI7736WIW6Y2Bum3XMNeT/Gq4Oua5l8dCecVZSpCWuv
-         D4jzSoJ2ktoxY+57WJj5i5Xo4XKLTKhCr/BZ4yAaOQmrtJIxGFSZxYmr+jZYqJS6tGqN
-         KUXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ueepF1yzZbMICZuzK5SyCCKVIYjp8Ub6eatZHwC5SNQ=;
-        b=thT23nSDShPr2xX/3NpUDpMxhD8gKoOlhwBUCCx2CGBgKgNgyTkWjvcfvr7lpRSS1X
-         Pz+eomatxnB8PT+t1dJxAbApNEFkS+gYT9WkaHAfDBBI/rUKACHNp+518Dad2BuWnMx0
-         iQHN6OkaFeSjqOgeGVVXleH3jl7Y6gnPRVpdg/BBAt8F+my1SM9FeuEh+KysEZFlHI6l
-         rSHkLVmFYdgNX27REs8z4+E561h56aEYmjR2w15btXSATP+MvZmIG2IXnV3vHVjCLpNF
-         xhXhByZCiv+/KymjSLi1bKqJvATo8xgEBFFiwpDAAQqS8mWkLZUdfmPAqzZvZnnXyMfV
-         GmPQ==
-X-Gm-Message-State: AOAM5327hIC8otNbF9ym3IEPjjHUbvLFrDpvfJe4WCOu4BXzjATJRJQH
-        58CTcBu3hoLa64vhr6RAJKY=
-X-Google-Smtp-Source: ABdhPJwdVXVVZBusMiT3eABzfCHMmKAbPpc8SyCWfIQKwVGaIl4aMaqM9p8ahtPH/YufDw7gFzoe9g==
-X-Received: by 2002:a17:906:52d9:: with SMTP id w25mr17646791ejn.504.1607338773893;
-        Mon, 07 Dec 2020 02:59:33 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id h23sm11571690ejg.37.2020.12.07.02.59.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Dec 2020 02:59:33 -0800 (PST)
-Message-ID: <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
-Subject: Re: [PATCH] scsi: ufs: Enable WB flush during suspend only if WB is
- enabled
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Date:   Mon, 07 Dec 2020 11:59:31 +0100
-In-Reply-To: <20201207055006.24471-1-stanley.chu@mediatek.com>
-References: <20201207055006.24471-1-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 7 Dec 2020 06:00:26 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2116129|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0159781-0.000759197-0.983263;FP=11324991882870974183|1|1|4|0|-1|-1|-1;HT=ay29a033018047202;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.J47Legk_1607338777;
+Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.J47Legk_1607338777)
+          by smtp.aliyun-inc.com(10.147.42.253);
+          Mon, 07 Dec 2020 18:59:42 +0800
+From:   liush <liush@allwinnertech.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, tiny.windzz@gmail.com,
+        Shaohua Liu <liush@allwinnertech.com>
+Subject: [PATCH 1/2] f2fs: convert to F2FS_*_INO macro
+Date:   Mon,  7 Dec 2020 18:59:33 +0800
+Message-Id: <1607338774-8541-1-git-send-email-liush@allwinnertech.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 13:50 +0800, Stanley Chu wrote:
-> WriteBootser flush during suspend is not necessary to be enabled if
-> WriteBooster feature is disabled. Simply adding a check to prevent
-> unexpected power drain.
-> 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 4879e87577e1..89fa8b9ac11d 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -5458,7 +5458,7 @@ static bool ufshcd_wb_need_flush(struct ufs_hba
-> *hba)
->         u32 avail_buf;
->         u8 index;
->  
-> -       if (!ufshcd_is_wb_allowed(hba))
-> +       if (!ufshcd_is_wb_allowed(hba) || !hba->wb_enabled)
->                 return false;
->         /*
->          * The ufs device needs the vcc to be ON to flush.
+From: Yangtao Li <tiny.windzz@gmail.com>
 
+Use F2FS_ROOT_INO, F2FS_NODE_INO and F2FS_META_INO macro
+for better code readability.
 
-Hi Stanley
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+Signed-off-by: Shaohua Liu <liush@allwinnertech.com>
+---
+ fs/f2fs/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-In the 3.1 Spec:
-
-"If the fWriteBoosterEn flag is set to zero, data written to any
-logical unit is written in normal storage.
-If the fWriteBoosterEn flag is set to one and the device is configured
-in “shared buffer” mode, data written to any logical unit is written in
-the shared WriteBooster Buffer."
-
-so, IMO, fWriteBoosterEn is independant with WB buffer flush.
-
-as for the flush:
-
-"There are two methods for flushing data from the WriteBooster Buffer
-to the normal storage: one is using an explicit flush command, the
-other enabling the flushing during link hibernate state. If the
-fWriteBoosterBufferFlushEn flag is set to one, the device shall flush
-the data stored in the WriteBooster Buffer to the normal storage. If
-fWriteBoosterBufferFlushDuringHibernate is set to one, the device
-flushes the WriteBooster Buffer data automatically whenever the link
-enters the hibernate (HIBERN8) state."
-
-IMO, for the flush, it is controlled by fWriteBoosterBufferFlushEn and
-fWriteBoosterBufferFlushDuringHibernate.
-
-how do you understand the above two paragraphs from Spec?
-
-
-thanks,
-Bean
-
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f51807..d3ccf89647df 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3071,9 +3071,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 	sbi->total_node_count =
+ 		(le32_to_cpu(raw_super->segment_count_nat) / 2)
+ 			* sbi->blocks_per_seg * NAT_ENTRY_PER_BLOCK;
+-	sbi->root_ino_num = le32_to_cpu(raw_super->root_ino);
+-	sbi->node_ino_num = le32_to_cpu(raw_super->node_ino);
+-	sbi->meta_ino_num = le32_to_cpu(raw_super->meta_ino);
++	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
++	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
++	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+ 	sbi->cur_victim_sec = NULL_SECNO;
+ 	sbi->next_victim_seg[BG_GC] = NULL_SEGNO;
+ 	sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
+-- 
+2.25.1
 
