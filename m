@@ -2,191 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA3F2D0F01
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B392D0F06
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgLGL2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:28:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:47794 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgLGL2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:28:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFF531042;
-        Mon,  7 Dec 2020 03:27:20 -0800 (PST)
-Received: from [10.57.63.221] (unknown [10.57.63.221])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 480A43F66B;
-        Mon,  7 Dec 2020 03:27:19 -0800 (PST)
-Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
- the overflow of HiSilicon ETM
-To:     Qi Liu <liuqi115@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxarm@huawei.com
-References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
- <20201204185551.GB1424711@xps15>
- <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
- <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
- <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d82f1200-c31f-1040-a630-57e132cabf1b@arm.com>
-Date:   Mon, 7 Dec 2020 11:27:16 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726696AbgLGL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbgLGL30 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:29:26 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A01CC061A55
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:28:42 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id v14so11173168wml.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 03:28:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uHU8ebv9ZwzgWtYFikVpZiNJ4prcda3hg71IDSFXm/E=;
+        b=lKZLmN1YLmJ5CMELdnMLtS4Q5UeEj9a5mB0BIZ7rsgDlKVpOB93vBf2NtffgGBnfdq
+         xM026KHpsrhDdmcsFH+GhWXj9aBcw/2LL6A4p+VUu4R/AjGj0E1ZB94aZy2vpBfDUMk/
+         SsqbdQrUSQ8v+V3GC8CkIf2zu+K36lu+vUO9zdZ8hxO5IEBaYf2tHbtGPFgpWukhnruU
+         JVwUeO/W3g4sTbwn5K+r9ehLFHZOYxIF883yledKhYG8XWPNVPoxlNLB6Sqb6TCD175/
+         ggWfSdJncdSACYAgSdTKzlo+s/vTTUJAAtwB0SsQwMoxhFrNWab4d/leaAQ8Bd83txfz
+         pbew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uHU8ebv9ZwzgWtYFikVpZiNJ4prcda3hg71IDSFXm/E=;
+        b=Q5Byq/YIlO7UPVQ+jjjJeoJzx+CWE7oNvAxzje/6htBfoqJiT+ZuYeFmzc/bzojPK4
+         HmVijL++E9h36MnJfnOdxmVWft4S93gM7Ro8M4E1s/rdPOaOzcoFpqvcNTz0QHDd+Dnj
+         GNy37cAQ03bnic9XD52kIXVKT8j8zsKoOFhqP7I2yVcjgTnHPSDWkPryytzeHpU3Y+JQ
+         YBnmNHHCKGvhYiLZKliZ1oq+1gOxP/ji22fDDmE51oj9brnt+IA/DvcCE/S56wJ+vv5t
+         ptFDgbni4JjTCXIccyyhhYYXnHHcv95RtZ85cW5dzNq4hdrH63ME6/Nvb/UVMI22wSXA
+         DVmQ==
+X-Gm-Message-State: AOAM530hJ/rJArsFB1SfoH8/fhiT7y8x4m3vu2pjeiAR6gvZBBJUNwoY
+        yX82STSOS6g3HG26N0IuBtWmFw==
+X-Google-Smtp-Source: ABdhPJyJ9tuZHfKVa7CqR/qTSOyOI7GfCSP46VmGYfbnFlylpaOfb8RbZt+ItLdAEW0Z/P7QNxkVsA==
+X-Received: by 2002:a1c:b742:: with SMTP id h63mr17815588wmf.122.1607340521106;
+        Mon, 07 Dec 2020 03:28:41 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f4sm13449427wmb.47.2020.12.07.03.28.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 03:28:40 -0800 (PST)
+Date:   Mon, 7 Dec 2020 11:28:36 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
+Message-ID: <X84R5DttN3WuHDYo@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-11-jackmanb@google.com>
+ <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com>
+ <X8oDEsEjU059T7+k@google.com>
+ <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 11:21 AM, Qi Liu wrote:
+On Fri, Dec 04, 2020 at 07:21:22AM -0800, Yonghong Song wrote:
 > 
-> Hi Suzuki,
-> On 2020/12/7 18:38, Suzuki K Poulose wrote:
->> On 12/7/20 2:08 AM, Qi Liu wrote:
->>> Hi Mathieu,
->>>
->>> On 2020/12/5 2:55, Mathieu Poirier wrote:
->>>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
->>>>> The ETM device can't keep up with the core pipeline when cpu core
->>>>> is at full speed. This may cause overflow within core and its ETM.
->>>>> This is a common phenomenon on ETM devices.
->>>>>
->>>>> On HiSilicon Hip08 platform, a specific feature is added to set
->>>>> core pipeline. So commit rate can be reduced manually to avoid ETM
->>>>> overflow.
->>>>>
->>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->>>>> ---
->>>>> Change since v1:
->>>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
->>>>>     to keep specific feature off platforms which don't use it.
->>>>> Change since v2:
->>>>> - remove some unused variable.
->>>>> Change since v3:
->>>>> - use read/write_sysreg_s() to access register.
->>>>> Change since v4:
->>>>> - rename the call back function to a more generic name, and fix some
->>>>>     compile warnings.
->>>>>
->>>>>    drivers/hwtracing/coresight/Kconfig                |  9 +++
->>>>>    drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
->>>>>    drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
->>>>>    3 files changed, 105 insertions(+)
->>>>>
->>>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
->>>>> index c119824..1cc3601 100644
->>>>> --- a/drivers/hwtracing/coresight/Kconfig
->>>>> +++ b/drivers/hwtracing/coresight/Kconfig
->>>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
->>>>>          To compile this driver as a module, choose M here: the
->>>>>          module will be called coresight-etm4x.
->>>>>
->>>>> +config ETM4X_IMPDEF_FEATURE
->>>>> +    bool "Control overflow impdef support in CoreSight ETM 4.x driver "
->>>>> +    depends on CORESIGHT_SOURCE_ETM4X
->>>>> +    help
->>>>> +      This control provides overflow implement define for CoreSight
->>>>> +      ETM 4.x tracer module which could not reduce commit race
->>>>> +      automatically, and could avoid overflow within ETM tracer module
->>>>> +      and its cpu core.
->>>>> +
->>>>>    config CORESIGHT_STM
->>>>>        tristate "CoreSight System Trace Macrocell driver"
->>>>>        depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
->>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>>> index abd706b..fcee27a 100644
->>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>>>> @@ -3,6 +3,7 @@
->>>>>     * Copyright (c) 2014, The Linux Foundation. All rights reserved.
->>>>>     */
->>>>>
->>>>> +#include <linux/bitops.h>
->>>>>    #include <linux/kernel.h>
->>>>>    #include <linux/moduleparam.h>
->>>>>    #include <linux/init.h>
->>>>> @@ -28,7 +29,9 @@
->>>>>    #include <linux/perf_event.h>
->>>>>    #include <linux/pm_runtime.h>
->>>>>    #include <linux/property.h>
->>>>> +
->>>>>    #include <asm/sections.h>
->>>>> +#include <asm/sysreg.h>
->>>>>    #include <asm/local.h>
->>>>>    #include <asm/virt.h>
->>>>>
->>>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
->>>>>        int rc;
->>>>>    };
->>>>>
->>>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
->>>>> +
->>>>> +#define HISI_HIP08_AMBA_ID        0x000b6d01
->>>>> +#define ETM4_AMBA_MASK            0xfffff
->>>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR    0x3000
->>>>
->>>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
->>>> is set - is this intentional?  What is bit 13 for?
->>>>
->>> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
->>> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
->>> reduced to minimum value. So bit 12 and 13 should be cleared together in
->>> etm4_hisi_config_core_commit().
->>
->> Please could you document this in the function.
->>
-> of course, thanks.
->>>
->>> Qi
->>>
->>>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT    12
->>>>> +#define HISI_HIP08_CORE_COMMIT_REG    sys_reg(3, 1, 15, 2, 5)
->>>>> +
->>>>> +struct etm4_arch_features {
->>>>> +    void (*arch_callback)(bool enable);
->>>>> +};
->>>>> +
->>>>> +static bool etm4_hisi_match_pid(unsigned int id)
->>>>> +{
->>>>> +    return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
->>>>> +}
->>>>> +
->>>>> +static void etm4_hisi_config_core_commit(bool enable)
->>>>> +{
->>>>> +    u64 val;
->>>>> +
->>>>> +    val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
->>>>> +    val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
->>>>> +    val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
->>
->> I would use the explicitly masked values when you update
->> a register.
->>
-> ok, how about changing these code to this:
-> val &= ~GENMASK(12, 13);
+> 
+> On 12/4/20 1:36 AM, Brendan Jackman wrote:
+> > On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
+> > > 
+> > > 
+> > > On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> > > > This adds instructions for
+> > > > 
+> > > > atomic[64]_[fetch_]and
+> > > > atomic[64]_[fetch_]or
+> > > > atomic[64]_[fetch_]xor
+> > > > 
+> > > > All these operations are isomorphic enough to implement with the same
+> > > > verifier, interpreter, and x86 JIT code, hence being a single commit.
+> > > > 
+> > > > The main interesting thing here is that x86 doesn't directly support
+> > > > the fetch_ version these operations, so we need to generate a CMPXCHG
+> > > > loop in the JIT. This requires the use of two temporary registers,
+> > > > IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
+> > > > 
+> > > > Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
+> > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > > > ---
+> > > >    arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
+> > > >    include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
+> > > >    kernel/bpf/core.c            |  5 ++-
+> > > >    kernel/bpf/disasm.c          | 21 ++++++++++---
+> > > >    kernel/bpf/verifier.c        |  6 ++++
+> > > >    tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
+> > > >    6 files changed, 196 insertions(+), 6 deletions(-)
+> > > > 
+> > [...]
+> > > > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > > > index 6186280715ed..698f82897b0d 100644
+> > > > --- a/include/linux/filter.h
+> > > > +++ b/include/linux/filter.h
+> > > > @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+> > [...]
+> > > > +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
+> > > > +	((struct bpf_insn) {					\
+> > > > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+> > > > +		.dst_reg = DST,					\
+> > > > +		.src_reg = SRC,					\
+> > > > +		.off   = OFF,					\
+> > > > +		.imm   = BPF_XOR | BPF_FETCH })
+> > > > +
+> > > >    /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
+> > > 
+> > > Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
+> > > The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
+> > > 
+> > > I am wondering whether it makes sence to have to
+> > > BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
+> > > BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
+> > > can have less number of macros?
+> > 
+> > Hmm yeah I think that's probably a good idea, it would be consistent
+> > with the macros for non-atomic ALU ops.
+> > 
+> > I don't think 'BOP' would be very clear though, 'ALU' might be more
+> > obvious.
+> 
+> BPF_ATOMIC_ALU and BPF_ATOMIC_FETCH_ALU indeed better.
 
-I would do :
+On second thoughts I think it feels right (i.e. it would be roughly
+consistent with the level of abstraction of the rest of this macro API)
+to go further and just have two macros BPF_ATOMIC64 and BPF_ATOMIC32:
 
-// Rename the HISI_HIP08_CORE_COMMIT_CLEAR to HISI_HIP08_CORE_COMMIT_MASK
-// above.
-#define HISI_HIP08_CORE_COMMIT_MASK		0x3000
+	/*
+	 * Atomic ALU ops:
+	 *
+	 *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+	 *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
+	 *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
+	 *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
+	 *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
+	 *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
+	 *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
+	 *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
+	 *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
+	 *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+	 */
 
-#define HISI_HIP08_CORE_COMMIT_FULL		0b00
-#define HISI_HIP08_CORE_COMMIT_LVL_1		0b01
+	#define BPF_ATOMIC64(OP, DST, SRC, OFF)                         \
+		((struct bpf_insn) {                                    \
+			.code  = BPF_STX | BPF_DW | BPF_ATOMIC,         \
+			.dst_reg = DST,                                 \
+			.src_reg = SRC,                                 \
+			.off   = OFF,                                   \
+			.imm   = OP })
 
+	#define BPF_ATOMIC32(OP, DST, SRC, OFF)                         \
+		((struct bpf_insn) {                                    \
+			.code  = BPF_STX | BPF_W | BPF_ATOMIC,         \
+			.dst_reg = DST,                                 \
+			.src_reg = SRC,                                 \
+			.off   = OFF,                                   \
+			.imm   = OP })
 
-u8 commit = enable ? HISI_HIP08_CORE_COMMIT_LVL_1 : HISI_HIP08_CORE_COMMIT_FULL;
-
-...
-
-val |= commit << HISI_HIP08_CORE_COMMIT_SHIFT;
-
-..
-
-
-Suzuki
+The downside compared to what's currently in the patchset is that the
+user can write e.g. BPF_ATOMIC64(BPF_SUB, BPF_REG_1, BPF_REG_2, 0) and
+it will compile. On the other hand they'll get a pretty clear
+"BPF_ATOMIC uses invalid atomic opcode 10" when they try to load the
+prog, and the valid atomic ops are clearly listed in Documentation as
+well as the comments here.
