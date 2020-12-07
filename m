@@ -2,189 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3302D1E1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7D12D1E1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgLGXHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgLGXHN (ORCPT
+        id S1726574AbgLGXJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:09:05 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41992 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgLGXJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:07:13 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F32FC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:06:33 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id x13so6670492oto.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:06:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ulofPqprNeMVYSi4yhjqgNnz5dj3g3XsyO+WHyCMvcw=;
-        b=Eb8aUwdEwvWWaT1AlZL1ZGuuVQiOmuxszXm/lq+dxr8/B147JYxLRZJ5627LTIExfH
-         rqDm5IViR3YpwmNNEmIRSTC6vwsaIwuPceawkJVeRnAro5jEaLiXgMnovOc79c1tL/1R
-         qwEKjSIRCba6j6Dag3jaqp5oVhoG36KBKQ3uUPiryvb2iHWv4mcFV5Xc8n/JeOkamm8j
-         IJTjZOcao55qbf+RFDtndSpWlN5WvY6aNPLqKG9TewNfs7orwoHAM4H/y0WVQXY6vT7U
-         UCKyCKiM1XrvvaoIdOqn5KFZXL8QP/2QM6ubHdZpEjgS845+pYSjX0x0RP+xlQ5nx+BM
-         A8Fg==
+        Mon, 7 Dec 2020 18:09:05 -0500
+Received: by mail-ot1-f68.google.com with SMTP id 11so14176774oty.9;
+        Mon, 07 Dec 2020 15:08:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ulofPqprNeMVYSi4yhjqgNnz5dj3g3XsyO+WHyCMvcw=;
-        b=SU81tFq29s3Ttr5yHaF7AsZHAAfEnWLlRlZYl208ZCG6pHPx4grlaqSOVqz5vHOkbO
-         HZBLbsXn+bi7TKpahoSUgpZws6XFJifvndYPEqqlT6bI5gtqa9/T1B0xgngyd7tHbEqE
-         hjgXnVlUWJbdRNKj946mZY/s18A4y7GtsQB/6AIZ+n4cMDecLcD5nm0ehKdFtS+ls8/F
-         sXQCuKko35OEGSDui8lGy86YcWCHvqhOylwNXgs6PDP3tUTDKu/+Vv9MQpzPKb84GBWC
-         IM8lcGQIrCve746Y+JCUNDWpVlKcyvy03w8vmFXzNcRzx8mohhpe15G4fELaHGUcxLw3
-         lPVA==
-X-Gm-Message-State: AOAM532Xwz4EE2m6Mb97oiaIcFh3//cfwVXrEOyCLJfHUWr9KprnAfDF
-        uKFnEvxnoIY2L4ujPpkyoS7Bwn0yCtR97y3YrZGxxw==
-X-Google-Smtp-Source: ABdhPJyrIfCqqsv11cZjIl0Vi/kpxCLyk/QZfiCC4V2m3aU63hwdBTonC+y9wBpD4seSHkAHNNKYcpnyRQagin+INB8=
-X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr8057191oti.241.1607382392473;
- Mon, 07 Dec 2020 15:06:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zsVLjp+2xVraSwpotdRQfpDFqATYYtM1FS0Mr8BrZ+c=;
+        b=ZFps8B8N2eu9j4Sbl91kBD5HDxYQ/rlCreJV1ak3WBs/T8yNICMYZHLE+QMS3sr8/M
+         2PFmWJ0nFcvxtD9aEwGZYXtQWfCz8I9ZjW3IwZF8QrHTQea0/IKrZU/e/Q5DJd6zIiws
+         NNCnloQGi0jIyHOS7BomCuQgSj25+bm24+p7Q8tliDv1SlFvVxriDRD0tJBZ17+/cXgf
+         ITCqBhSHDbban9l0r1G+VHoVA0kng3jPyGRxmjV4bPQe73PBLum/OFtHlFo5pwHuyQ+W
+         Q7TjAqa7101JDtqrOI1GkRV0cX7DeQIxfYLA54+8oMzWI3A2D0BIt3D1tV2cepoxLIsc
+         DKHA==
+X-Gm-Message-State: AOAM533ufCDJV4FIPp+f+mYE0NxfRUGsYBvrJEVp3KvmwuAi5arb6PcQ
+        O+W8ArOfxKTi3sltVq07BQ==
+X-Google-Smtp-Source: ABdhPJz4Ez45qvDjUXcFbK2D9LsN06TUB99Be4VmINejvsIBhqWEOY1+GGCCp/E8ICedi7w4b/lemw==
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr14831740ots.336.1607382504412;
+        Mon, 07 Dec 2020 15:08:24 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x72sm3289675oia.16.2020.12.07.15.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 15:08:22 -0800 (PST)
+Received: (nullmailer pid 1021070 invoked by uid 1000);
+        Mon, 07 Dec 2020 23:08:21 -0000
+Date:   Mon, 7 Dec 2020 17:08:21 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v2 1/3] reset: hisilicon: correct vendor prefix
+Message-ID: <20201207230821.GA1015860@robh.at.kernel.org>
+References: <20201204014236.1158-1-thunder.leizhen@huawei.com>
+ <20201204014236.1158-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu> <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
-In-Reply-To: <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 7 Dec 2020 15:06:21 -0800
-Message-ID: <CALMp9eRSvWemdiBygMJ18yP9T0UzL0nNbpD__bRis7M5LqOK+g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
-        wei.huang2@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204014236.1158-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
->
-> Newer AMD processors have a feature to virtualize the use of the
-> SPEC_CTRL MSR. When supported, the SPEC_CTRL MSR is automatically
-> virtualized and no longer requires hypervisor intervention.
->
-> This feature is detected via CPUID function 0x8000000A_EDX[20]:
-> GuestSpecCtrl.
->
-> Hypervisors are not required to enable this feature since it is
-> automatically enabled on processors that support it.
->
-> When this feature is enabled, the hypervisor no longer has to
-> intercept the usage of the SPEC_CTRL MSR and no longer is required to
-> save and restore the guest SPEC_CTRL setting when switching
-> hypervisor/guest modes.  The effective SPEC_CTRL setting is the guest
-> SPEC_CTRL setting or'ed with the hypervisor SPEC_CTRL setting. This
-> allows the hypervisor to ensure a minimum SPEC_CTRL if desired.
->
-> This support also fixes an issue where a guest may sometimes see an
-> inconsistent value for the SPEC_CTRL MSR on processors that support
-> this feature. With the current SPEC_CTRL support, the first write to
-> SPEC_CTRL is intercepted and the virtualized version of the SPEC_CTRL
-> MSR is not updated. When the guest reads back the SPEC_CTRL MSR, it
-> will be 0x0, instead of the actual expected value. There isn=E2=80=99t a
-> security concern here, because the host SPEC_CTRL value is or=E2=80=99ed =
-with
-> the Guest SPEC_CTRL value to generate the effective SPEC_CTRL value.
-> KVM writes with the guest's virtualized SPEC_CTRL value to SPEC_CTRL
-> MSR just before the VMRUN, so it will always have the actual value
-> even though it doesn=E2=80=99t appear that way in the guest. The guest wi=
-ll
-> only see the proper value for the SPEC_CTRL register if the guest was
-> to write to the SPEC_CTRL register again. With Virtual SPEC_CTRL
-> support, the MSR interception of SPEC_CTRL is disabled during
-> vmcb_init, so this will no longer be an issue.
->
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
+On Fri, Dec 04, 2020 at 09:42:34AM +0800, Zhen Lei wrote:
+> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
+> stated in "vendor-prefixes.yaml".
+
+Yes, but you can't fix this as changing it breaks compability between 
+DTBs and kernels.
+
+hisi has to be documented and marked 'deprecated'.
+
+> 
+> Fixes: 1527058736fa ("reset: hisilicon: add reset-hi3660")
+> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
+> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Cc: Chen Feng <puck.chen@hisilicon.com>
+> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
-
-Shouldn't there be some code to initialize a new "guest SPEC_CTRL"
-value in the VMCB, both at vCPU creation, and at virtual processor
-reset?
-
->  arch/x86/kvm/svm/svm.c |   17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 79b3a564f1c9..3d73ec0cdb87 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1230,6 +1230,14 @@ static void init_vmcb(struct vcpu_svm *svm)
->
->         svm_check_invpcid(svm);
->
-> +       /*
-> +        * If the host supports V_SPEC_CTRL then disable the interception
-> +        * of MSR_IA32_SPEC_CTRL.
-> +        */
-> +       if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +               set_msr_interception(&svm->vcpu, svm->msrpm, MSR_IA32_SPE=
-C_CTRL,
-> +                                    1, 1);
-> +
->         if (kvm_vcpu_apicv_active(&svm->vcpu))
->                 avic_init_vmcb(svm);
->
-> @@ -3590,7 +3598,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kv=
-m_vcpu *vcpu)
->          * is no need to worry about the conditional branch over the wrms=
-r
->          * being speculatively taken.
->          */
-> -       x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +               x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ct=
-rl);
-
-Is this correct for the nested case? Presumably, there is now a "guest
-SPEC_CTRL" value somewhere in the VMCB. If L1 does not intercept this
-MSR, then we need to transfer the "guest SPEC_CTRL" value from the
-vmcb01 to the vmcb02, don't we?
-
->         svm_vcpu_enter_exit(vcpu, svm);
->
-> @@ -3609,12 +3618,14 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct =
-kvm_vcpu *vcpu)
->          * If the L02 MSR bitmap does not intercept the MSR, then we need=
- to
->          * save it.
->          */
-> -       if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
-> +           unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
->                 svm->spec_ctrl =3D native_read_msr(MSR_IA32_SPEC_CTRL);
-
-Is this correct for the nested case? If L1 does not intercept this
-MSR, then it might have changed while L2 is running. Presumably, the
-hardware has stored the new value somewhere in the vmcb02 at #VMEXIT,
-but now we need to move that value into the vmcb01, don't we?
-
->         reload_tss(vcpu);
->
-> -       x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +       if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +               x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec=
-_ctrl);
->
->         vcpu->arch.cr2 =3D svm->vmcb->save.cr2;
->         vcpu->arch.regs[VCPU_REGS_RAX] =3D svm->vmcb->save.rax;
->
-
-It would be great if you could add some tests to kvm-unit-tests.
+>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 2 +-
+>  drivers/reset/hisilicon/reset-hi3660.c    | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> index 49c19c6879f95ce..bfb1375426d2b58 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> @@ -345,7 +345,7 @@
+>  		crg_rst: crg_rst_controller {
+>  			compatible = "hisilicon,hi3660-reset";
+>  			#reset-cells = <2>;
+> -			hisi,rst-syscon = <&crg_ctrl>;
+> +			hisilicon,rst-syscon = <&crg_ctrl>;
+>  		};
+>  
+>  
+> @@ -376,7 +376,7 @@
+>  
+>  		iomcu_rst: reset {
+>  			compatible = "hisilicon,hi3660-reset";
+> -			hisi,rst-syscon = <&iomcu>;
+> +			hisilicon,rst-syscon = <&iomcu>;
+>  			#reset-cells = <2>;
+>  		};
+>  
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> index 85b0dfb35d6d396..5c5a5dc964ea848 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> @@ -155,7 +155,7 @@
+>  			compatible = "hisilicon,hi3670-reset",
+>  				     "hisilicon,hi3660-reset";
+>  			#reset-cells = <2>;
+> -			hisi,rst-syscon = <&crg_ctrl>;
+> +			hisilicon,rst-syscon = <&crg_ctrl>;
+>  		};
+>  
+>  		pctrl: pctrl@e8a09000 {
+> diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
+> index a7d4445924e558c..8f1953159a65b31 100644
+> --- a/drivers/reset/hisilicon/reset-hi3660.c
+> +++ b/drivers/reset/hisilicon/reset-hi3660.c
+> @@ -83,7 +83,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
+>  	if (!rc)
+>  		return -ENOMEM;
+>  
+> -	rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-syscon");
+> +	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
+>  	if (IS_ERR(rc->map)) {
+>  		dev_err(dev, "failed to get hi3660,rst-syscon\n");
+>  		return PTR_ERR(rc->map);
+> -- 
+> 1.8.3
+> 
+> 
