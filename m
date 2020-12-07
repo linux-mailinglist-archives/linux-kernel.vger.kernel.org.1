@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1565D2D13AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822792D13AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbgLGO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbgLGO2N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:28:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9537C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 06:27:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lc+ijTkBTFJeV4kyAdNcu+rWKSkRs67Ui4faQ+DhIkg=; b=qIRc6Ac0jAizxtddA+Zu5PeRna
-        MNBTXEG+Up8AV2YbU4RQBAPhf1q6l6tAytExYlPlHoBDxctpcMpFlJaY1IX6gw1Er0S5vLxtyug7Z
-        Lh6tjzB9blewYj14ig1yX2Plg/tce0zfFhIwECWd5YqJR0awH8T1P4UJwQSQH5/AXpLAbTG8X3w3f
-        42EzBWPgT3nmqtw6MsDccFXssdA+f7iSffHXZQTntznWEQdve0/HB1vvbAWymYQcoKKyrOSETNF/r
-        YLVh4nRra/oVb9fLuRtDpS2GVDa9X03oRjYrmABMyLKTQWw7NsgT3441LfoAkzpXeH8osjLx/DyQg
-        Mmu6MqWA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmHU9-0007eJ-84; Mon, 07 Dec 2020 14:27:29 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B81CF303DA0;
-        Mon,  7 Dec 2020 15:27:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A26BC20812955; Mon,  7 Dec 2020 15:27:27 +0100 (CET)
-Date:   Mon, 7 Dec 2020 15:27:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [patch V2 9/9] tasklets: Prevent kill/unlock_wait deadlock on RT
-Message-ID: <20201207142727.GU3021@hirez.programming.kicks-ass.net>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170805.627618080@linutronix.de>
- <20201207114743.GK3040@hirez.programming.kicks-ass.net>
- <20201207140040.yrxsu4v4xz43szkk@linutronix.de>
+        id S1727189AbgLGO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:28:45 -0500
+Received: from mail.zx2c4.com ([192.95.5.64]:58371 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbgLGO2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 09:28:44 -0500
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 7f50630c
+        for <linux-kernel@vger.kernel.org>;
+        Mon, 7 Dec 2020 14:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=rzp53da5aR0WWB/WSnM2Pj0jGdo=; b=QjyMxo
+        HY+PIwmI7zYA/TuYzbl9AehiAJqnMS9R6K5KuH4vSf6q6PRTcGc7nJerbAJ52ts1
+        pJGKONM6bv7fTK4mc4M6ElKFKHifmgV12oHn0G0NuIK46ycWkUVAlQ0PEGIuhNhn
+        5Y0oftqYIgwmHN/6FqR/kbxCiQ761ZJU9ihVhoOw2UaM+kgFKskOiqpK4vdl5PSF
+        hV2IUL+MYq2j0F5Pp+n8A1SlyTeQvRBQ/nA/UKmUsmOdREUw6iORJHC2Ib6/V9se
+        GYq3xtSDXrGBx7qgDLTMkdbB+rRg+m2QUi8DLnE7d+VC6KBD85bdrn+pIncxFxwn
+        CwslDz/Fh+wF+MRQ==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 2f31bb70 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+        for <linux-kernel@vger.kernel.org>;
+        Mon, 7 Dec 2020 14:21:34 +0000 (UTC)
+Received: by mail-yb1-f171.google.com with SMTP id w127so1598081ybw.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 06:28:01 -0800 (PST)
+X-Gm-Message-State: AOAM531+Bh13O+7Ea0DrtlxqaXOLM8D5TO23dSP5AsZTEsrFM0jWooXf
+        8HZBuxicu+NtcTnONUntmkD/qaQ54vd1fF/aNwQ=
+X-Google-Smtp-Source: ABdhPJwGURgCLGvJywrEFq2TcMT37HylTPY/STqpFyon72Qpufi0n2Ed6b9H2wY1SxHRHdRla8K1GsDnnDAfJKpXEJo=
+X-Received: by 2002:a25:df05:: with SMTP id w5mr25622831ybg.20.1607351280649;
+ Mon, 07 Dec 2020 06:28:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207140040.yrxsu4v4xz43szkk@linutronix.de>
+References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
+ <X7dB9GCUeHa+Hosn@sol.localdomain> <CAMj1kXECHnV6zfXOjEfsjgNTWRsXj7V_+T-hkgn8v69EEdWvEQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXECHnV6zfXOjEfsjgNTWRsXj7V_+T-hkgn8v69EEdWvEQ@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 7 Dec 2020 15:27:50 +0100
+X-Gmail-Original-Message-ID: <CAHmME9pzcxQ1aufU7ycTcL+NQYV8P_wMKpetAuSogOw=2N9jRw@mail.gmail.com>
+Message-ID: <CAHmME9pzcxQ1aufU7ycTcL+NQYV8P_wMKpetAuSogOw=2N9jRw@mail.gmail.com>
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
+ IRQ randomness
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 03:00:40PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2020-12-07 12:47:43 [+0100], Peter Zijlstra wrote:
-> > On Fri, Dec 04, 2020 at 06:02:00PM +0100, Thomas Gleixner wrote:
-> > > @@ -825,7 +848,20 @@ void tasklet_kill(struct tasklet_struct
-> > >  
-> > >  	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
-> > >  		do {
-> > > -			yield();
-> > >  		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
-> > >  	}
-> > >  	tasklet_unlock_wait(t);
-> > 
-> > 
-> > Egads... should we not start by doing something like this?
-> 
-> So we keep the RT part as-is and replace the non-RT bits with this?
+Hi Ard,
 
-For RT you probably want to wrap the wait_var_event() in that
-local_bh_disable()/enable() pear. I just figured those unbounded
-spin/yield loops suck and we should get rid of em.
+On Tue, Dec 1, 2020 at 1:24 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > is implemented. In most cases, these are special instructions, but in
+> > > > some cases, such as on ARM, we may want to back this using firmware
+> > > > calls, which are considerably more expensive.
+
+This seems fine. But I suppose I'm curious to learn more about what
+you have in mind for ARM. We've been assuming that arch_get_random is
+not horribly expensive. Usually external RNGs that are horribly
+expensive separate hardware take a different route and aren't hooked
+into arch_get_random. When you say "we may want to back this using
+firmware", does that mean it hasn't happened yet, and you're in a
+position to direct the design otherwise? If so, would it be reasonable
+to take a different route with that hardware, and keep arch_get_random
+for when it's actually implemented by the hardware? Or are there
+actually good reasons for keeping it one and the same?
+
+On the other hand, rdrand on intel is getting slower and slower, to
+the point where we've removed it from a few places that used to use
+it. And I don't see anything terribly wrong with removing the extra
+call in this path here. So need be, I'll offer my Reviewed-by. But I
+wanted to get an understanding of the fuller story first.
+
+Jason
