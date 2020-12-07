@@ -2,129 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478002D1E3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE5C2D1E4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgLGXT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:19:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbgLGXT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:19:58 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A37C23A1C;
-        Mon,  7 Dec 2020 23:19:16 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 18:19:14 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Tom Zanussi <zanussi@kernel.org>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: trace: fix event state structure name
-Message-ID: <20201207181914.370d4016@gandalf.local.home>
-In-Reply-To: <96720ed0aac00653f9359679665d0ed4b2cc346d.camel@kernel.org>
-References: <20201104122113.322452-1-dedekind1@gmail.com>
-        <96720ed0aac00653f9359679665d0ed4b2cc346d.camel@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728184AbgLGXYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728160AbgLGXYe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:24:34 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E38C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:23:48 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id e2so2087113pgi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:23:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OlsYdTjJYBNa/5lQA8sp6yi7kT0DFqLKWOnDvSCcpeM=;
+        b=Ffcr7rtvgmaZtAep7oe1nruEICdWMQX3Rt60Nb+en1n0E/TENKOsd4kG0qLG+mbX0Z
+         g66dkYZyizXm8Fv4gAwJE1ZaRHmErjFKyJqIJhrGuOxOSUqPzvqGBrJfXWoq0cMwmDbA
+         HdlK22kIXcUx5YYgymrtI/WBeLg2CNqZAl0OI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OlsYdTjJYBNa/5lQA8sp6yi7kT0DFqLKWOnDvSCcpeM=;
+        b=eh/H78x7FOwPMdYF5XZtuGhBCVaSTj7TIsvk9ZW3wfTmcmsZFDBHCfh6JcAJZhXAcZ
+         umuHHXBANQ5CEUNf8gMC67iZgXhRt7//uwbN2+A7tA2BWdIkRwQQc8DBvmdyI4pbHqcB
+         EnAR+CaQKB/+dpKhhWrIr9iRXoE9AVP5xkZIlGU10r2GKANRfo9NE8iwVsDpwq5ja+Fz
+         OmvRkc7tlfNmX1o7Ep773CAWb7kTlfYF8oCZrWo1GYu5b7E2OYZHDvjZDlI0x9j54YsC
+         2GlbfPOu1o2Ip49SlBi2s19kaRdyvIDKmlFabUuDFYLC1j0bvaTAzlpI9YmkLJM8OTe4
+         aoNA==
+X-Gm-Message-State: AOAM5311McsYfmCrJOmL+QdgV3V2f1Q88cdevWTZzI0uOAiOMi/QNrBe
+        bE8bmO1z0mXOJFWRCJs4aNbxhg==
+X-Google-Smtp-Source: ABdhPJx7CoEzBXyrzYXVQ2arl2PGTox5WK5z7MX7Wr405c5ksPU8aFNvsvetAsAthBebX5tT5ZqIuQ==
+X-Received: by 2002:a63:805:: with SMTP id 5mr20520725pgi.160.1607383427982;
+        Mon, 07 Dec 2020 15:23:47 -0800 (PST)
+Received: from kuabhs-cdev.c.googlers.com.com (152.33.83.34.bc.googleusercontent.com. [34.83.33.152])
+        by smtp.gmail.com with ESMTPSA id k2sm6342454pgi.47.2020.12.07.15.23.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 15:23:47 -0800 (PST)
+From:   Abhishek Kumar <kuabhs@chromium.org>
+To:     kvalo@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        pillair@codeaurora.org, briannorris@chromium.org,
+        dianders@chromium.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v3] ath10k: add option for chip-id based BDF selection
+Date:   Mon,  7 Dec 2020 23:20:21 +0000
+Message-Id: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020 14:47:46 -0600
-Tom Zanussi <zanussi@kernel.org> wrote:
+In some devices difference in chip-id should be enough to pick
+the right BDF. Add another support for chip-id based BDF selection.
+With this new option, ath10k supports 2 fallback options.
 
-> Hi Artem,
-> 
-> On Wed, 2020-11-04 at 14:21 +0200, Artem Bityutskiy wrote:
-> > From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > 
-> > The documentation refers to a non-existent 'struct synth_trace_state'
-> > structure. The correct name is 'struct synth_event_trace_state'.
-> > 
-> > In other words, this patch is a mechanical substitution:
-> > s/synth_trace_state/synth_event_trace_state/g
-> > 
-> > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>  
-> 
-> Thanks for fixing this!
-> 
-> Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-> 
+The board name with chip-id as option looks as follows
+board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
 
-Jon,
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+---
 
-Can you take this patch?
+Changes in v3:
+- Resurreted Patch V1 because as per discussion we do need two
+fallback board names and refactored ath10k_core_create_board_name.
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+ drivers/net/wireless/ath/ath10k/core.c | 41 +++++++++++++++++++-------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
 
--- Steve
-
-> 
-> > ---
-> >  Documentation/trace/events.rst | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/Documentation/trace/events.rst
-> > b/Documentation/trace/events.rst
-> > index f792b1959a33..bdba7b0e19ef 100644
-> > --- a/Documentation/trace/events.rst
-> > +++ b/Documentation/trace/events.rst
-> > @@ -787,13 +787,13 @@ To trace a synthetic using the piecewise method
-> > described above, the
-> >  synth_event_trace_start() function is used to 'open' the synthetic
-> >  event trace::
-> >  
-> > -       struct synth_trace_state trace_state;
-> > +       struct synth_event_trace_state trace_state;
-> >  
-> >         ret = synth_event_trace_start(schedtest_event_file,
-> > &trace_state);
-> >  
-> >  It's passed the trace_event_file representing the synthetic event
-> >  using the same methods as described above, along with a pointer to a
-> > -struct synth_trace_state object, which will be zeroed before use and
-> > +struct synth_event_trace_state object, which will be zeroed before
-> > use and
-> >  used to maintain state between this and following calls.
-> >  
-> >  Once the event has been opened, which means space for it has been
-> > @@ -805,7 +805,7 @@ lookup per field.
-> >  
-> >  To assign the values one after the other without lookups,
-> >  synth_event_add_next_val() should be used.  Each call is passed the
-> > -same synth_trace_state object used in the synth_event_trace_start(),
-> > +same synth_event_trace_state object used in the
-> > synth_event_trace_start(),
-> >  along with the value to set the next field in the event.  After each
-> >  field is set, the 'cursor' points to the next field, which will be
-> > set
-> >  by the subsequent call, continuing until all the fields have been
-> > set
-> > @@ -834,7 +834,7 @@ this method would be (without error-handling
-> > code)::
-> >         ret = synth_event_add_next_val(395, &trace_state);
-> >  
-> >  To assign the values in any order, synth_event_add_val() should be
-> > -used.  Each call is passed the same synth_trace_state object used in
-> > +used.  Each call is passed the same synth_event_trace_state object
-> > used in
-> >  the synth_event_trace_start(), along with the field name of the
-> > field
-> >  to set and the value to set it to.  The same sequence of calls as in
-> >  the above examples using this method would be (without error-
-> > handling
-> > @@ -856,7 +856,7 @@ can be used but not both at the same time.
-> >  
-> >  Finally, the event won't be actually traced until it's 'closed',
-> >  which is done using synth_event_trace_end(), which takes only the
-> > -struct synth_trace_state object used in the previous calls::
-> > +struct synth_event_trace_state object used in the previous calls::
-> >  
-> >         ret = synth_event_trace_end(&trace_state);
-> >    
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index d73ad60b571c..09d0fdfa6693 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1349,7 +1349,8 @@ static int ath10k_core_search_bd(struct ath10k *ar,
+ 
+ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ 					      const char *boardname,
+-					      const char *fallback_boardname,
++					      const char *fallback_boardname1,
++					      const char *fallback_boardname2,
+ 					      const char *filename)
+ {
+ 	size_t len, magic_len;
+@@ -1398,8 +1399,11 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ 	ret = ath10k_core_search_bd(ar, boardname, data, len);
+ 
+ 	/* if we didn't find it and have a fallback name, try that */
+-	if (ret == -ENOENT && fallback_boardname)
+-		ret = ath10k_core_search_bd(ar, fallback_boardname, data, len);
++	if (ret == -ENOENT && fallback_boardname1)
++		ret = ath10k_core_search_bd(ar, fallback_boardname1, data, len);
++
++	if (ret == -ENOENT && fallback_boardname2)
++		ret = ath10k_core_search_bd(ar, fallback_boardname2, data, len);
+ 
+ 	if (ret == -ENOENT) {
+ 		ath10k_err(ar,
+@@ -1419,7 +1423,8 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
+ }
+ 
+ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+-					 size_t name_len, bool with_variant)
++					 size_t name_len, bool with_variant,
++					 bool with_chip_id)
+ {
+ 	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
+ 	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH] = { 0 };
+@@ -1438,7 +1443,7 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
+ 	}
+ 
+ 	if (ar->id.qmi_ids_valid) {
+-		if (with_variant && ar->id.bdf_ext[0] != '\0')
++		if (with_chip_id)
+ 			scnprintf(name, name_len,
+ 				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
+ 				  ath10k_bus_str(ar->hif.bus),
+@@ -1482,21 +1487,34 @@ static int ath10k_core_create_eboard_name(struct ath10k *ar, char *name,
+ 
+ int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
+ {
+-	char boardname[100], fallback_boardname[100];
++	char boardname[100], fallback_boardname1[100], fallback_boardname2[100];
+ 	int ret;
+ 
+ 	if (bd_ie_type == ATH10K_BD_IE_BOARD) {
++		/* With variant and chip id */
+ 		ret = ath10k_core_create_board_name(ar, boardname,
+-						    sizeof(boardname), true);
++						    sizeof(boardname), true,
++						    true);
+ 		if (ret) {
+ 			ath10k_err(ar, "failed to create board name: %d", ret);
+ 			return ret;
+ 		}
+ 
+-		ret = ath10k_core_create_board_name(ar, fallback_boardname,
+-						    sizeof(boardname), false);
++		/* Without variant and only chip-id */
++		ret = ath10k_core_create_board_name(ar, fallback_boardname1,
++						    sizeof(boardname), false,
++						    true);
++		if (ret) {
++			ath10k_err(ar, "failed to create 1st fallback board name: %d", ret);
++			return ret;
++		}
++
++		/* Without variant and without chip-id */
++		ret = ath10k_core_create_board_name(ar, fallback_boardname2,
++						    sizeof(boardname), false,
++						    false);
+ 		if (ret) {
+-			ath10k_err(ar, "failed to create fallback board name: %d", ret);
++			ath10k_err(ar, "failed to create 2nd fallback board name: %d", ret);
+ 			return ret;
+ 		}
+ 	} else if (bd_ie_type == ATH10K_BD_IE_BOARD_EXT) {
+@@ -1510,7 +1528,8 @@ int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
+ 
+ 	ar->bd_api = 2;
+ 	ret = ath10k_core_fetch_board_data_api_n(ar, boardname,
+-						 fallback_boardname,
++						 fallback_boardname1,
++						 fallback_boardname2,
+ 						 ATH10K_BOARD_API2_FILE);
+ 	if (!ret)
+ 		goto success;
+-- 
+2.29.2.576.ga3fc446d84-goog
 
