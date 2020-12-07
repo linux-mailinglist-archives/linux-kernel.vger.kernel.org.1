@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278612D0D2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E66012D0D19
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgLGJiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgLGJiK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:38:10 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6931AC0613D1;
-        Mon,  7 Dec 2020 01:37:30 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a8so2349574lfb.3;
-        Mon, 07 Dec 2020 01:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RnNkd2vYhvmjED9WJj2Nxdy4XlHuVtV7w1DANTVG2FI=;
-        b=rh1WFl2WLrhE3ofzat0xeXZC+PtATDeAU/P6F9cLERB999UMGkd86Kypyttndnt4BP
-         LnZU+EJi4fy3fOUvRq8ktoo9AnyB/F+f+a/p46GO8fMlfxgHTB4DNwXozokFEf/68ivC
-         jn9JcA54mmpIPxqudMS2g3E5W96QeC8DV2zzTPhjLutcS6XkKa89enWpnq4+oMxDkapI
-         gC0yUPsyK/ZA3stvSKH6RqpPtEpBv05gSTTKDSGFpfhcmfsVjuilhnPqki6znBTFgrQd
-         4LHMzvDtiPAWR4mbwBJTIjzVhJOIxQ3RX9A8ZyRveLwudK8LpTmhNh0Lsp1f6mRQXRcy
-         q3Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RnNkd2vYhvmjED9WJj2Nxdy4XlHuVtV7w1DANTVG2FI=;
-        b=eNTNuEBnxmhkI+z74xTALu8u0RKUsJTj1mXlI9OxrUNcthkG+Srw9OB63GgL9d/f0w
-         +1hiT7eHamvPyimlZQmoae+FlUziKuCfMN8+hyI4zevXbWb1z5IabsSex9OuZRV9yjZk
-         O3MIbuuZi+wBK1+xsSGaUH6uNd7agXNgVJcnDRn5HXR26kADdD7tQpFQGB/oZ26i69WK
-         GTHRvBMDa0nq5sfeO+hE8jX7Lo+pfbNDRpK4Ym97iqjr4liVbjQ+GtXqA3Uv3yYxequX
-         afg7wWrNe2fVdyo3SdIeNuSSv+iRXr0682vFUXrYvnNXDo64dp5ICjIQzamD/JVXUpcU
-         SBOw==
-X-Gm-Message-State: AOAM533bz1kPlqXi/UxbIpDsl3z+iUWdRNGNuBoYn2VRUw21/1XbRXQw
-        48pra/Wj7kqD5YmRQiblWdfFGjjdY3c3xw==
-X-Google-Smtp-Source: ABdhPJxEcaykCb36ckt6dJ+g8AlQOFCGFaGSQjoNu9cPe8H9vffXm0tJ6T4ccMwMHd3yL5xWs/y99A==
-X-Received: by 2002:a19:197:: with SMTP id 145mr7980815lfb.483.1607333848927;
-        Mon, 07 Dec 2020 01:37:28 -0800 (PST)
-Received: from localhost.localdomain ([85.174.193.195])
-        by smtp.gmail.com with ESMTPSA id y15sm397014lfg.209.2020.12.07.01.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:37:27 -0800 (PST)
-From:   Artem Labazov <123321artyom@gmail.com>
-Cc:     123321artyom@gmail.com, stable@vger.kernel.org,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] exfat: Avoid allocating upcase table using kcalloc()
-Date:   Mon,  7 Dec 2020 12:34:23 +0300
-Message-Id: <20201207093424.833542-1-123321artyom@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <40be01d6cc61$7d23cac0$776b6040$@samsung.com>
-References: <40be01d6cc61$7d23cac0$776b6040$@samsung.com>
+        id S1726527AbgLGJfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:35:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726402AbgLGJfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:35:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C02422ADF;
+        Mon,  7 Dec 2020 09:35:09 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmCvD-00GiE8-2h; Mon, 07 Dec 2020 09:35:07 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 07 Dec 2020 09:35:06 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, Wei Li <liwei213@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, fengbaopeng2@hisilicon.com,
+        butao@hisilicon.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
+ reserved for the page map
+In-Reply-To: <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
+References: <20201204014443.43329-1-liwei213@huawei.com>
+ <20201204111347.GA844@willie-the-truck>
+ <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <390f5f441d99a832f4b2425b46f6d971@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: ardb@kernel.org, will@kernel.org, liwei213@huawei.com, song.bao.hua@hisilicon.com, steve.capper@arm.com, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, rppt@linux.ibm.com, fengbaopeng2@hisilicon.com, butao@hisilicon.com, nsaenzjulienne@suse.de, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The table for Unicode upcase conversion requires an order-5 allocation,
-which may fail on a highly-fragmented system:
+On 2020-12-07 09:09, Ard Biesheuvel wrote:
+> (+ Marc)
+> 
+> On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
+>> 
+>> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
+>> > For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+>> > do not free the reserved memory for the page map, decrease the section
+>> > size can reduce the waste of reserved memory.
+>> >
+>> > Signed-off-by: Wei Li <liwei213@huawei.com>
+>> > Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
+>> > Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+>> > ---
+>> >  arch/arm64/include/asm/sparsemem.h | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
+>> > index 1f43fcc79738..8963bd3def28 100644
+>> > --- a/arch/arm64/include/asm/sparsemem.h
+>> > +++ b/arch/arm64/include/asm/sparsemem.h
+>> > @@ -7,7 +7,7 @@
+>> >
+>> >  #ifdef CONFIG_SPARSEMEM
+>> >  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
+>> > -#define SECTION_SIZE_BITS    30
+>> > +#define SECTION_SIZE_BITS    27
+>> 
+>> We chose '30' to avoid running out of bits in the page flags. What 
+>> changed?
+>> 
+>> With this patch, I can trigger:
+>> 
+>> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds 
+>> SECTION_SIZE
+>> #error Allocator MAX_ORDER exceeds SECTION_SIZE
+>> 
+>> if I bump up NR_CPUS and NODES_SHIFT.
+>> 
+> 
+> Does this mean we will run into problems with the GICv3 ITS LPI tables
+> again if we are forced to reduce MAX_ORDER to fit inside
+> SECTION_SIZE_BITS?
 
- pool-udisksd: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
- CPU: 4 PID: 3756880 Comm: pool-udisksd Tainted: G     U            5.8.10-200.fc32.x86_64 #1
- Hardware name: Dell Inc. XPS 13 9360/0PVG6D, BIOS 2.13.0 11/14/2019
- Call Trace:
-  dump_stack+0x6b/0x88
-  warn_alloc.cold+0x75/0xd9
-  ? _cond_resched+0x16/0x40
-  ? __alloc_pages_direct_compact+0x144/0x150
-  __alloc_pages_slowpath.constprop.0+0xcfa/0xd30
-  ? __schedule+0x28a/0x840
-  ? __wait_on_bit_lock+0x92/0xa0
-  __alloc_pages_nodemask+0x2df/0x320
-  kmalloc_order+0x1b/0x80
-  kmalloc_order_trace+0x1d/0xa0
-  exfat_create_upcase_table+0x115/0x390 [exfat]
-  exfat_fill_super+0x3ef/0x7f0 [exfat]
-  ? sget_fc+0x1d0/0x240
-  ? exfat_init_fs_context+0x120/0x120 [exfat]
-  get_tree_bdev+0x15c/0x250
-  vfs_get_tree+0x25/0xb0
-  do_mount+0x7c3/0xaf0
-  ? copy_mount_options+0xab/0x180
-  __x64_sys_mount+0x8e/0xd0
-  do_syscall_64+0x4d/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Most probably. We are already massively constraint on platforms
+such as TX1, and dividing the max allocatable range by 8 isn't
+going to make it work any better...
 
-Convert kcalloc/kfree to their kv* variants to eliminate the issue.
-
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Artem Labazov <123321artyom@gmail.com>
----
-v2: replace vmalloc with vzalloc to avoid uninitialized memory access
-v3: use kv* functions to attempt kmalloc first
-
- fs/exfat/nls.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/exfat/nls.c b/fs/exfat/nls.c
-index 675d0e7058c5..314d5407a1be 100644
---- a/fs/exfat/nls.c
-+++ b/fs/exfat/nls.c
-@@ -659,7 +659,7 @@ static int exfat_load_upcase_table(struct super_block *sb,
- 	unsigned char skip = false;
- 	unsigned short *upcase_table;
- 
--	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
-+	upcase_table = kvcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
- 	if (!upcase_table)
- 		return -ENOMEM;
- 
-@@ -715,7 +715,7 @@ static int exfat_load_default_upcase_table(struct super_block *sb)
- 	unsigned short uni = 0, *upcase_table;
- 	unsigned int index = 0;
- 
--	upcase_table = kcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
-+	upcase_table = kvcalloc(UTBL_COUNT, sizeof(unsigned short), GFP_KERNEL);
- 	if (!upcase_table)
- 		return -ENOMEM;
- 
-@@ -803,5 +803,5 @@ int exfat_create_upcase_table(struct super_block *sb)
- 
- void exfat_free_upcase_table(struct exfat_sb_info *sbi)
- {
--	kfree(sbi->vol_utbl);
-+	kvfree(sbi->vol_utbl);
- }
+         M.
 -- 
-2.26.2
-
+Jazz is not dead. It just smells funny...
