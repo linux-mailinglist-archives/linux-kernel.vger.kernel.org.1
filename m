@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421D22D0CA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E482D0CA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgLGJJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:09:00 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:51997 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgLGJI7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:08:59 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 1D47F60008;
-        Mon,  7 Dec 2020 09:08:15 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 10:08:25 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] dt-bindings: media: eliminate yamllint warnings
-Message-ID: <20201207090825.gbgpqidxyxfujqmg@uno.localdomain>
-References: <20201207042400.1498-1-thunder.leizhen@huawei.com>
+        id S1726395AbgLGJJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:09:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726024AbgLGJJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:09:55 -0500
+X-Gm-Message-State: AOAM530nHokhKR8eObaFxQXK+h6exLOLPkdP94xbHpANhKlUs8yqWl5h
+        avsDJdLK69Evh1j0hd5YArgEhwdlhXlPDcCVzTU=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607332158;
+        bh=zeXLUbD69DJQRxwchh1DPhqWxvriQVslIApvnQjzLYo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fjU/RNO5aHHNlPYZVX2DRu34mv2SubeizvQVnooBZSudvI0DQoSLOuvMjUT3/s2So
+         yu/0PLexNza5xiZqHYfs1djfhNgZ7FqZMngqCcXuWXpzMoHu/OkJswa3oE/OpkFjfb
+         w4WQHncqstL3vqOPzW6Q0J7PrCV8zckQG8ocEStd6hOVyVKec1YQeroU9tZkV+9enk
+         HM+3VPzG6Bh9/AvelLSfKvBIABoowRWbruW3wQzsBvCKnohtWPeBbqzXB+udUwTEKV
+         F+mUSKV6UqVtZKbeLwSKoC02t2S4/ms4/+Tyf7KFLjIT0jFER8F5YVrNNxTMFKEjbC
+         nqSU/tCcPnYpw==
+X-Google-Smtp-Source: ABdhPJxwjkwJV5u54bL3hRS5pTJFBF76tgxwRV6F4pNLnBO+C+fIStqXN7jkJxjGvaI9WN4XMqSBJmy5Et3U9WuxvVg=
+X-Received: by 2002:aca:b809:: with SMTP id i9mr11682796oif.174.1607332157482;
+ Mon, 07 Dec 2020 01:09:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201207042400.1498-1-thunder.leizhen@huawei.com>
+References: <20201204014443.43329-1-liwei213@huawei.com> <20201204111347.GA844@willie-the-truck>
+In-Reply-To: <20201204111347.GA844@willie-the-truck>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 7 Dec 2020 10:09:06 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
+Message-ID: <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
+ reserved for the page map
+To:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     Wei Li <liwei213@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, fengbaopeng2@hisilicon.com,
+        butao@hisilicon.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhen,
+(+ Marc)
 
-On Mon, Dec 07, 2020 at 12:23:56PM +0800, Zhen Lei wrote:
-> These patches are based on the latest linux-next code.
+On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
 >
-> Zhen Lei (4):
->   dt-bindings: media: adv7604: eliminate yamllint warnings
->   dt-bindings: media: nokia,smia: eliminate yamllint warnings
->   dt-bindings: media: ov772x: eliminate yamllint warnings
->   dt-bindings: media: imx214: eliminate yamllint warnings
+> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
+> > For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
+> > do not free the reserved memory for the page map, decrease the section
+> > size can reduce the waste of reserved memory.
+> >
+> > Signed-off-by: Wei Li <liwei213@huawei.com>
+> > Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
+> > Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
+> > ---
+> >  arch/arm64/include/asm/sparsemem.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
+> > index 1f43fcc79738..8963bd3def28 100644
+> > --- a/arch/arm64/include/asm/sparsemem.h
+> > +++ b/arch/arm64/include/asm/sparsemem.h
+> > @@ -7,7 +7,7 @@
+> >
+> >  #ifdef CONFIG_SPARSEMEM
+> >  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
+> > -#define SECTION_SIZE_BITS    30
+> > +#define SECTION_SIZE_BITS    27
+>
+> We chose '30' to avoid running out of bits in the page flags. What changed?
+>
+> With this patch, I can trigger:
+>
+> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds SECTION_SIZE
+> #error Allocator MAX_ORDER exceeds SECTION_SIZE
+>
+> if I bump up NR_CPUS and NODES_SHIFT.
+>
 
-The adv7604, ov772x and imx214 bits have been addressed by:
-https://www.spinics.net/lists/linux-media/msg181093.html
-
-Thanks
-  j
-
->
->  Documentation/devicetree/bindings/media/i2c/adv7604.yaml     |  4 ++--
->  Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml    | 11 ++++++-----
->  Documentation/devicetree/bindings/media/i2c/ovti,ov772x.yaml | 12 ++++++------
->  Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml | 12 ++++++------
->  4 files changed, 20 insertions(+), 19 deletions(-)
->
-> --
-> 1.8.3
->
->
+Does this mean we will run into problems with the GICv3 ITS LPI tables
+again if we are forced to reduce MAX_ORDER to fit inside
+SECTION_SIZE_BITS?
