@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC502D15BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1414B2D15C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgLGQNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:13:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:40042 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725866AbgLGQNQ (ORCPT
+        id S1727657AbgLGQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:13:30 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:19826 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727176AbgLGQNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:13:16 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kmJ7n-0002cW-Da; Mon, 07 Dec 2020 16:12:31 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sched: fix spelling mistake in Kconfig "trys" -> "tries"
-Date:   Mon,  7 Dec 2020 16:12:31 +0000
-Message-Id: <20201207161231.173234-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 11:13:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607357593; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=KBadcv3HX0ZnNLrZaWWM+MlOQr/0v7i1c6cDBo5uKaI=; b=v47P1qWs5M/8cHFRbak/NK1xHCcbONHwBJezSvH1p8z1YOVGz42PA9mGvZDfLM162RnDtLUB
+ FZN2eGq9ATk3aYMvkDWBSpGR/WEfsQLn6AgzMWG/k28qJh+fx4Nvs3XqrYEvLGM5IqA2nC+c
+ FIMx147QBAACIcV3fKyH9wgJGhI=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5fce547af06acf11ab122160 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:12:42
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 999A1C433CA; Mon,  7 Dec 2020 16:12:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E7D05C433C6;
+        Mon,  7 Dec 2020 16:12:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E7D05C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
+        kuabhs@chromium.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        ath10k <ath10k@lists.infradead.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in shutdown path
+References: <20201126171553.2097-1-youghand@codeaurora.org>
+        <CA+ASDXOvnfETrKs2ZbayZsRkUEpUbaeMGRkZNRCXa=M28HHE-w@mail.gmail.com>
+Date:   Mon, 07 Dec 2020 18:12:38 +0200
+In-Reply-To: <CA+ASDXOvnfETrKs2ZbayZsRkUEpUbaeMGRkZNRCXa=M28HHE-w@mail.gmail.com>
+        (Brian Norris's message of "Tue, 1 Dec 2020 11:35:44 -0800")
+Message-ID: <87y2i9egsp.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Brian Norris <briannorris@chromium.org> writes:
 
-There is a spelling mistake in the Kconfig help text. Fix it.
+> On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
+> <youghand@codeaurora.org> wrote:
+>> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+>> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+>> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>>
+>>         reinit_completion(&ar->driver_recovery);
+>>
+>> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+>> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+>
+> Hmm, this is the only instance of waiting for this completion, which
+> means that after this patch, 'ar->driver_recovery' is doing exactly
+> nothing. Should you instead just remove it completely?
+>
+> Also, if your patch is correct, it seems like the completion was never
+> needed in the first place. You should probably address such a claim in
+> the commit message; is there truly no need to wait here? Or was there
+> some purpose here, but that purpose was accomplished some other way?
+> Or was there a purpose, and that purpose was misguided? It feels to me
+> like it is indeed correct to remove this (shutdown should be performed
+> promptly; we don't need to delay it just to try to "finish
+> recovering"), but it's your job to convince the reader.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/nfc/Kconfig   | 2 +-
- net/sched/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Exactly what I was thinking as well. To me this patch was just looks
+racy and all the commit log says that it's "unwanted delay".
 
-diff --git a/net/nfc/Kconfig b/net/nfc/Kconfig
-index 9b27599870e3..96b91674dd37 100644
---- a/net/nfc/Kconfig
-+++ b/net/nfc/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- #
--# NFC sybsystem configuration
-+# NFC subsystem configuration
- #
- 
- menuconfig NFC
-diff --git a/net/sched/Kconfig b/net/sched/Kconfig
-index a3b37d88800e..8a4542387bbd 100644
---- a/net/sched/Kconfig
-+++ b/net/sched/Kconfig
-@@ -281,7 +281,7 @@ config NET_SCH_CHOKE
- 	help
- 	  Say Y here if you want to use the CHOKe packet scheduler (CHOose
- 	  and Keep for responsive flows, CHOose and Kill for unresponsive
--	  flows). This is a variation of RED which trys to penalize flows
-+	  flows). This is a variation of RED which tries to penalize flows
- 	  that monopolize the queue.
- 
- 	  To compile this code as a module, choose M here: the
 -- 
-2.29.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
