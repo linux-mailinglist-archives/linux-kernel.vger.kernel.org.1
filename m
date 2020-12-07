@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20C62D1636
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD9A2D1655
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgLGQej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:34:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37702 "EHLO
+        id S1727895AbgLGQfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:35:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27900 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727724AbgLGQef (ORCPT
+        by vger.kernel.org with ESMTP id S1727754AbgLGQeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:34:35 -0500
+        Mon, 7 Dec 2020 11:34:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607358789;
+        s=mimecast20190719; t=1607358791;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Z9GFPfP4QUc9Eox0SoIdqm6RVWFYT3GmDgPPKwCvoZY=;
-        b=BtehgoyXnmOIRhbF3FzG92Up0VW4JGlEbEwItKs+U+2tIVJOY91xQ643IPaG7pv/O2btre
-        u8bwVYt1lXO9DQEpGKzZqNV/JK7PvJYyJ42r1Upk3IiXFQ/ugC49DdPsS45uaScODIw5hc
-        Ae3KdLkQQtgJGNMv8X4OQnQKcHYoqQ0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-TNbhqQTZPyCIICgLdWFFOg-1; Mon, 07 Dec 2020 11:33:07 -0500
-X-MC-Unique: TNbhqQTZPyCIICgLdWFFOg-1
-Received: by mail-ed1-f71.google.com with SMTP id a9so5357340edy.8
+        bh=slnEJYBwmhqKOQO5uk6sWnTW5gdRX2VMxeSBeR8XW8Q=;
+        b=A8aux/tMi/UcrLstNz5wCEjHGNGnUT/jQj8IMN6vXKIeTDimn8c8ukXoDTs3hGAMVEqLra
+        kgGGFnKy/u3e/qjwLRHBOEybm37rOFijQ5/7l2IxvQEtybabOx3K2eORPTkjh9ujMgOvyg
+        QxjSNw/dyTt1yMGF+v6ViiVg6zwEQ1M=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-q6pjIAgCOs-a2g3kQvCVqQ-1; Mon, 07 Dec 2020 11:33:07 -0500
+X-MC-Unique: q6pjIAgCOs-a2g3kQvCVqQ-1
+Received: by mail-ej1-f71.google.com with SMTP id g18so4035700eje.1
         for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:33:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z9GFPfP4QUc9Eox0SoIdqm6RVWFYT3GmDgPPKwCvoZY=;
-        b=Pn/94xFMBfetMke7dLULE53Gl7LzojwSZbEkdhPwN0nUUPXspfXp9rIhkjUcNzOJd7
-         Y/wda/ODoxJAg9gM+eQpEpWjOAnJB+4Fth0rEL2xwb8BUl64zTSX/I3l6adI9Ub9wi2v
-         yP+ZzuWqs/ynDkF5uMAeSGgjXgWyZi88yHL84+8rwIDof4UGllE/zjm+LFYC1OzCsKtR
-         G+6kJrYoYL9GEAlz6QJ+FV4iIwCFhC/ZwOmERc+rXzF7vCrrCeAxunvd6m4VXT4/F8de
-         wBioDmrWIvMjrDNU7UdxJImiwUTm7px7v3Fp56vy6HcABx1X/Fnzx4ndRBoNGs4MUb72
-         2m0w==
-X-Gm-Message-State: AOAM532uEnCITxhVLvysFUhZASW0CYash5jRId7Wvd8R1gfwaFHG/WQa
-        KqmCsg4X4d7hNFF/E1aJQgmOivknXjBhCFRTxxVWXHBS56N3pHTPveBP5nacya24aP36fDdP2hu
-        vy+wHFET7h5vahqcT6aGyD8vL
-X-Received: by 2002:a50:b243:: with SMTP id o61mr21246724edd.57.1607358785660;
-        Mon, 07 Dec 2020 08:33:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxdoaGF6V93HN0G1oEmt6WxNgh14Oc+j5HptlRhKBAGk7XVmmffsr/juqgIckKEWhSdANFcew==
-X-Received: by 2002:a50:b243:: with SMTP id o61mr21246662edd.57.1607358785086;
-        Mon, 07 Dec 2020 08:33:05 -0800 (PST)
+        bh=slnEJYBwmhqKOQO5uk6sWnTW5gdRX2VMxeSBeR8XW8Q=;
+        b=PET4qKsGo7ReB7fj17BLKjQb+euAdFLyrov4eKP+FXgXGj5JRdRd5DaRPLM/X9SLcu
+         /xe9/gL/HUV4KiHwdepPSX9Sza4S+A4Rn4/zrL6TsAB5RlXnlaw4zohFRLjEGKdI+y8X
+         JwdAqUxXFFVN6t8LlW9WzS7ZjJ1hN5oQED2r68kmWgedvkPuPYjjzM3eCMcCxsqcP042
+         4da8vGZyKkg+WWOCtpwS2wzOaW2KWAP98xm4sSoFtlWZb9bk2YYbTy5XfeWRh1cKhxrE
+         e0ppHtmG3srEfRMNUHPF2UV8Obx74TgXCveENE4Ux62UU4uSIU2HzpVhLsHxOIMWUJE5
+         vlUA==
+X-Gm-Message-State: AOAM533pfD4lRmC+agqtbUr3eq/g4yj3QuqWfcmdPI7EV6rvMzWex8vp
+        n3AQOoIyslyrZ/1tGjGqa67APJ4JdvbjRzT2uZ1tkWWCwyvZl42GwtO53eTimqpiHZsAQRxIZmR
+        c9nwMB+3UYaVgahjk8rR2GLF7
+X-Received: by 2002:a05:6402:1b1e:: with SMTP id by30mr19432222edb.75.1607358786632;
+        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzx0eatSbnQFhmj8ZAY47IpBzt1G1gtOIufiyiAi4IqzHOg0Ye7dB87LiC49RkGGzdIWq8D8A==
+X-Received: by 2002:a05:6402:1b1e:: with SMTP id by30mr19432206edb.75.1607358786499;
+        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.33.03
+        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.33.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:33:03 -0800 (PST)
+        Mon, 07 Dec 2020 08:33:06 -0800 (PST)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     "Eric W . Biederman" <ebiederm@xmission.com>
 Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
-Subject: [PATCH v2 04/10] ovl: make ioctl() safe
-Date:   Mon,  7 Dec 2020 17:32:49 +0100
-Message-Id: <20201207163255.564116-5-mszeredi@redhat.com>
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 05/10] ovl: simplify file splice
+Date:   Mon,  7 Dec 2020 17:32:50 +0100
+Message-Id: <20201207163255.564116-6-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201207163255.564116-1-mszeredi@redhat.com>
 References: <20201207163255.564116-1-mszeredi@redhat.com>
@@ -68,154 +67,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ovl_ioctl_set_flags() does a capability check using flags, but then the
-real ioctl double-fetches flags and uses potentially different value.
+generic_file_splice_read() and iter_file_splice_write() will call back into
+f_op->iter_read() and f_op->iter_write() respectively.  These already do
+the real file lookup and cred override.  So the code in ovl_splice_read()
+and ovl_splice_write() is redundant.
 
-The "Check the capability before cred override" comment misleading: user
-can skip this check by presenting benign flags first and then overwriting
-them to non-benign flags.
+In addition the ovl_file_accessed() call in ovl_splice_write() is
+incorrect, though probably harmless.
 
-Just remove the cred override for now, hoping this doesn't cause a
-regression.
+Fix by calling generic_file_splice_read() and iter_file_splice_write()
+directly.
 
-The proper solution is to create a new setxflags i_op (patches are in the
-works).
-
-Xfstests don't show a regression.
-
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 ---
- fs/overlayfs/file.c | 75 ++-------------------------------------------
- 1 file changed, 3 insertions(+), 72 deletions(-)
+ fs/overlayfs/file.c | 46 ++-------------------------------------------
+ 1 file changed, 2 insertions(+), 44 deletions(-)
 
 diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index efccb7c1f9bc..3cd1590f2030 100644
+index 3cd1590f2030..dc767034d37b 100644
 --- a/fs/overlayfs/file.c
 +++ b/fs/overlayfs/file.c
-@@ -541,46 +541,26 @@ static long ovl_real_ioctl(struct file *file, unsigned int cmd,
- 			   unsigned long arg)
- {
- 	struct fd real;
--	const struct cred *old_cred;
- 	long ret;
- 
- 	ret = ovl_real_fdget(file, &real);
- 	if (ret)
- 		return ret;
- 
--	old_cred = ovl_override_creds(file_inode(file)->i_sb);
- 	ret = security_file_ioctl(real.file, cmd, arg);
- 	if (!ret)
- 		ret = vfs_ioctl(real.file, cmd, arg);
--	revert_creds(old_cred);
- 
- 	fdput(real);
- 
+@@ -397,48 +397,6 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
  	return ret;
  }
  
--static unsigned int ovl_iflags_to_fsflags(unsigned int iflags)
+-static ssize_t ovl_splice_read(struct file *in, loff_t *ppos,
+-			 struct pipe_inode_info *pipe, size_t len,
+-			 unsigned int flags)
 -{
--	unsigned int flags = 0;
+-	ssize_t ret;
+-	struct fd real;
+-	const struct cred *old_cred;
 -
--	if (iflags & S_SYNC)
--		flags |= FS_SYNC_FL;
--	if (iflags & S_APPEND)
--		flags |= FS_APPEND_FL;
--	if (iflags & S_IMMUTABLE)
--		flags |= FS_IMMUTABLE_FL;
--	if (iflags & S_NOATIME)
--		flags |= FS_NOATIME_FL;
--
--	return flags;
--}
--
- static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
--				unsigned long arg, unsigned int flags)
-+				unsigned long arg)
- {
- 	long ret;
- 	struct inode *inode = file_inode(file);
--	unsigned int oldflags;
- 
- 	if (!inode_owner_or_capable(inode))
- 		return -EACCES;
-@@ -591,12 +571,6 @@ static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
- 
- 	inode_lock(inode);
- 
--	/* Check the capability before cred override */
--	oldflags = ovl_iflags_to_fsflags(READ_ONCE(inode->i_flags));
--	ret = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	ret = ovl_real_fdget(in, &real);
 -	if (ret)
--		goto unlock;
+-		return ret;
 -
- 	ret = ovl_maybe_copy_up(file_dentry(file), O_WRONLY);
- 	if (ret)
- 		goto unlock;
-@@ -613,46 +587,6 @@ static long ovl_ioctl_set_flags(struct file *file, unsigned int cmd,
- 
- }
- 
--static long ovl_ioctl_set_fsflags(struct file *file, unsigned int cmd,
--				  unsigned long arg)
--{
--	unsigned int flags;
+-	old_cred = ovl_override_creds(file_inode(in)->i_sb);
+-	ret = generic_file_splice_read(real.file, ppos, pipe, len, flags);
+-	revert_creds(old_cred);
 -
--	if (get_user(flags, (int __user *) arg))
--		return -EFAULT;
--
--	return ovl_ioctl_set_flags(file, cmd, arg, flags);
+-	ovl_file_accessed(in);
+-	fdput(real);
+-	return ret;
 -}
 -
--static unsigned int ovl_fsxflags_to_fsflags(unsigned int xflags)
+-static ssize_t
+-ovl_splice_write(struct pipe_inode_info *pipe, struct file *out,
+-			  loff_t *ppos, size_t len, unsigned int flags)
 -{
--	unsigned int flags = 0;
+-	struct fd real;
+-	const struct cred *old_cred;
+-	ssize_t ret;
 -
--	if (xflags & FS_XFLAG_SYNC)
--		flags |= FS_SYNC_FL;
--	if (xflags & FS_XFLAG_APPEND)
--		flags |= FS_APPEND_FL;
--	if (xflags & FS_XFLAG_IMMUTABLE)
--		flags |= FS_IMMUTABLE_FL;
--	if (xflags & FS_XFLAG_NOATIME)
--		flags |= FS_NOATIME_FL;
+-	ret = ovl_real_fdget(out, &real);
+-	if (ret)
+-		return ret;
 -
--	return flags;
+-	old_cred = ovl_override_creds(file_inode(out)->i_sb);
+-	ret = iter_file_splice_write(pipe, real.file, ppos, len, flags);
+-	revert_creds(old_cred);
+-
+-	ovl_file_accessed(out);
+-	fdput(real);
+-	return ret;
 -}
 -
--static long ovl_ioctl_set_fsxflags(struct file *file, unsigned int cmd,
--				   unsigned long arg)
--{
--	struct fsxattr fa;
--
--	memset(&fa, 0, sizeof(fa));
--	if (copy_from_user(&fa, (void __user *) arg, sizeof(fa)))
--		return -EFAULT;
--
--	return ovl_ioctl_set_flags(file, cmd, arg,
--				   ovl_fsxflags_to_fsflags(fa.fsx_xflags));
--}
--
- long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ static int ovl_fsync(struct file *file, loff_t start, loff_t end, int datasync)
  {
- 	long ret;
-@@ -663,12 +597,9 @@ long ovl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		ret = ovl_real_ioctl(file, cmd, arg);
- 		break;
+ 	struct fd real;
+@@ -732,8 +690,8 @@ const struct file_operations ovl_file_operations = {
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= ovl_compat_ioctl,
+ #endif
+-	.splice_read    = ovl_splice_read,
+-	.splice_write   = ovl_splice_write,
++	.splice_read    = generic_file_splice_read,
++	.splice_write   = iter_file_splice_write,
  
--	case FS_IOC_SETFLAGS:
--		ret = ovl_ioctl_set_fsflags(file, cmd, arg);
--		break;
--
- 	case FS_IOC_FSSETXATTR:
--		ret = ovl_ioctl_set_fsxflags(file, cmd, arg);
-+	case FS_IOC_SETFLAGS:
-+		ret = ovl_ioctl_set_flags(file, cmd, arg);
- 		break;
- 
- 	default:
+ 	.copy_file_range	= ovl_copy_file_range,
+ 	.remap_file_range	= ovl_remap_file_range,
 -- 
 2.26.2
 
