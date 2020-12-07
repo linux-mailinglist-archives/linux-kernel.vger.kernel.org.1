@@ -2,196 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C362D0FD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171322D0FDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgLGL6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:58:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:48514 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgLGL6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:58:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0D011042;
-        Mon,  7 Dec 2020 03:57:21 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 420573F718;
-        Mon,  7 Dec 2020 03:57:17 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:57:14 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH v5 6/9] task_isolation: arch/arm64: enable task
- isolation functionality
-Message-ID: <20201207115714.GB18365@C02TD0UTHF1T.local>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
- <91496c0cf8d24717a2641fc4d02063f3f10dc733.camel@marvell.com>
- <20201202135957.GA66958@C02TD0UTHF1T.local>
- <9dee82d9f9af4fd8a6b8226f4ed190efeb24d5c5.camel@marvell.com>
+        id S1727210AbgLGL7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:59:07 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:18628 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727165AbgLGL7G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:59:06 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7BoDA4020901;
+        Mon, 7 Dec 2020 03:58:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=OC6F28Kj8v0AthC31fezlZ7qeScuyPfyHzdrQxu3o/4=;
+ b=V+iXz+RsLWbFV/9v01SijwWRvDZaRP8HaUdB0sMWI4oien+jwo6K/1PEbAeB5aAo98Ho
+ JTmBUjb4a7HJ9Kbsu58wkgBHfdXiXFZJTxz45VrKBQ2jb7cPFPkNhd13kMoqOZ38uaoA
+ +haauYMnTXp8sflpKr5KdrzNPEr3IKVU4lgc/TKCWTgczT8AuJrvAjISOKXocgEgVqrx
+ v1fmwwzSxPo+f064U2Gc5sbWzobwMfcEtEfDgG1zR7G3Y81kLOKkSlf9ttiKxhMxHCBO
+ n+Y5QYOP7fj+/J1sxLaHxFQfDaTIqefE6o9xvXiq/3p4XUZnYqiNYItipoOK1Qy/BjQb zA== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3588et439t-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 03:58:23 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Dec
+ 2020 03:58:22 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Dec 2020 03:58:22 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id F34B73F7045;
+        Mon,  7 Dec 2020 03:58:17 -0800 (PST)
+From:   Bhaskara Budiredla <bbudiredla@marvell.com>
+To:     <ulf.hansson@linaro.org>, <keescook@chromium.org>,
+        <ccross@android.com>, <tony.luck@intel.com>, <sgoutham@marvell.com>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Bhaskara Budiredla" <bbudiredla@marvell.com>
+Subject: [PATCH v3 0/2] mmc: support crash logging to MMC block devices
+Date:   Mon, 7 Dec 2020 17:27:51 +0530
+Message-ID: <20201207115753.21728-1-bbudiredla@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9dee82d9f9af4fd8a6b8226f4ed190efeb24d5c5.camel@marvell.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_10:2020-12-04,2020-12-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:37:32AM +0000, Alex Belits wrote:
-> On Wed, 2020-12-02 at 13:59 +0000, Mark Rutland wrote:
-> > On Mon, Nov 23, 2020 at 05:58:06PM +0000, Alex Belits wrote:
+This patch introduces to mmcpstore.
 
-> > As a heads-up, the arm64 entry code is changing, as we found that
-> > our lockdep, RCU, and context-tracking management wasn't quite
-> > right. I have a series of patches:
-> > 
-> > https://lore.kernel.org/r/20201130115950.22492-1-mark.rutland@arm.com
-> > 
-> > ... which are queued in the arm64 for-next/fixes branch. I intend to
-> > have some further rework ready for the next cycle.
+v3:
+ - Justify new host ops requirement through commit msg
+ - remove 'default n' in Kconfig
 
-> > That was quite obviously broken if PROVE_LOCKING and NO_HZ_FULL were
-> > chosen and context tracking was in use (e.g. with
-> > CONTEXT_TRACKING_FORCE),
-> 
-> I am not yet sure about TRACE_IRQFLAGS, however NO_HZ_FULL and
-> CONTEXT_TRACKING have to be enabled for it to do anything.
-> 
-> I will check it with PROVE_LOCKING and your patches.
-	
-Thanks. In future, please do test this functionality with PROVE_LOCKING,
-because otherwise bugs with RCU and IRQ state maangement will easily be
-missed (as has been the case until very recently).
+v2:
+ - Fix modpost issue with ARCH=sh
+ - Fix usage of ifdefs in common functions
+ - Add justification of new APIs to mmc_host_ops
+ - Compile mmcpstore as part of mmc blk
 
-Testing with all those debug optiosn enabled (and stating that you have
-done so) will give reviuewers much greater confidence that this works,
-and if that does start spewing errors it save everyone the time
-identifying that.
+v1: https://lore.kernel.org/linux-mmc/20201112062422.32212-1-bbudiredla@marvell.com/T/#t
+v2: https://lore.kernel.org/linux-mmc/6762a763-5284-04dc-e636-486c74dedd34@alum.wpi.edu/T/#u
 
-> Entry code only adds an inline function that, if task isolation is
-> enabled, uses raw_local_irq_save() / raw_local_irq_restore(), low-level 
-> operations and accesses per-CPU variabled by offset, so at very least
-> it should not add any problems. Even raw_local_irq_save() /
-> raw_local_irq_restore() probably should be removed, however I wanted to
-> have something that can be safely called if by whatever reason
-> interrupts were enabled before kernel was fully entered.
+Bhaskara Budiredla (2):
+  mmc: Support kmsg dumper based on pstore/blk
+  mmc: cavium: Add MMC polling method to support kmsg panic/oops write
 
-Sure. In the new flows we have new enter_from_*() and exit_to_*()
-functions where these calls should be able to live (and so we should be
-able to ensure a more consistent environment).
+ drivers/mmc/core/Kconfig           |  14 +-
+ drivers/mmc/core/Makefile          |   1 +
+ drivers/mmc/core/block.c           |  19 ++
+ drivers/mmc/core/block.h           |   9 +
+ drivers/mmc/core/core.c            |  24 +++
+ drivers/mmc/core/mmcpstore.c       | 302 +++++++++++++++++++++++++++++
+ drivers/mmc/host/cavium-thunderx.c |  10 +
+ drivers/mmc/host/cavium.c          |  67 +++++++
+ drivers/mmc/host/cavium.h          |   3 +
+ include/linux/mmc/core.h           |   4 +
+ include/linux/mmc/host.h           |  12 ++
+ 11 files changed, 464 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mmc/core/mmcpstore.c
 
-The near-term plan for arm64 is to migrate more of the exception triage
-assembly to C, then to rework the arm64 entry code and generic entry
-code to be more similar, then to migrate as much as possible to the
-generic entry code. So please bear in mind that anything that adds to
-the differences between the two is goingf to be problematic.
+-- 
+2.17.1
 
-> >  so I'm assuming that this series has not been
-> > tested in that configuration. What sort of testing has this seen?
-> 
-> On various available arm64 hardware, with enabled
-> 
-> CONFIG_TASK_ISOLATION
-> CONFIG_NO_HZ_FULL
-> CONFIG_HIGH_RES_TIMERS
-> 
-> and disabled:
-> 
-> CONFIG_HZ_PERIODIC
-> CONFIG_NO_HZ_IDLE
-> CONFIG_NO_HZ
-
-Ok. I'd recommend looking at the various debug options under the "kernel
-hacking" section in kconfig, and enabling some of those. At the very
-least PROVE_LOCKING, ideally also using the lockup dectors and anything
-else for debugging RCU, etc.
-
-[...]
-
-> > > Functions called from there:
-> > > asm_nmi_enter() -> nmi_enter() -> task_isolation_kernel_enter()
-> > > asm_nmi_exit() -> nmi_exit() -> task_isolation_kernel_return()
-> > > 
-> > > Handlers:
-> > > do_serror() -> nmi_enter() -> task_isolation_kernel_enter()
-> > >   or task_isolation_kernel_enter()
-> > > el1_sync_handler() -> task_isolation_kernel_enter()
-> > > el0_sync_handler() -> task_isolation_kernel_enter()
-> > > el0_sync_compat_handler() -> task_isolation_kernel_enter()
-> > > 
-> > > handle_arch_irq() is irqchip-specific, most call
-> > > handle_domain_irq()
-> > > There is a separate patch for irqchips that do not follow this
-> > > rule.
-> > > 
-> > > handle_domain_irq() -> task_isolation_kernel_enter()
-> > > do_handle_IPI() -> task_isolation_kernel_enter() (may be redundant)
-> > > nmi_enter() -> task_isolation_kernel_enter()
-> > 
-> > The IRQ cases look very odd to me. With the rework I've just done
-> > for arm64, we'll do the regular context tracking accounting before
-> > we ever get into handle_domain_irq() or similar, so I suspect that's
-> > not necessary at all?
-> 
-> The goal is to call task_isolation_kernel_enter() before anything that
-> depends on a CPU state, including pipeline, that could remain un-
-> synchronized when the rest of the kernel was sending synchronization
-> IPIs. Similarly task_isolation_kernel_return() should be called when it
-> is safe to turn off synchronization. If rework allows it to be done
-> earlier, there is no need to touch more specific functions.
-
-Sure; I think that's sorted as a result of the changes I made recently.
-
-> 
-> > --- a/arch/arm64/include/asm/barrier.h
-> > > +++ b/arch/arm64/include/asm/barrier.h
-> > > @@ -49,6 +49,7 @@
-> > >  #define dma_rmb()	dmb(oshld)
-> > >  #define dma_wmb()	dmb(oshst)
-> > >  
-> > > +#define instr_sync()	isb()
-> > 
-> > I think I've asked on prior versions of the patchset, but what is
-> > this for? Where is it going to be used, and what is the expected
-> > semantics?  I'm wary of exposing this outside of arch code because
-> > there aren't strong cross-architectural semantics, and at the least
-> > this requires some documentation.
-> 
-> This is intended as an instruction pipeline flush for the situation
-> when arch-independent code has to synchronize with potential changes
-> that it missed. This is necessary after some other CPUs could modify
-> code (and send IPIs to notify the rest but not isolated CPU) while this
-> one was still running isolated task or, more likely, exiting from it,
-> so it might be unlucky enough to pick the old instructions before that
-> point.
-> 
-> It's only used on kernel entry.
-
-Sure. My point is that instr_sync() is a very generic sounding name
-that doesn't get any of that across, and it's entirely undocumented.
-
-I think something like arch_simulate_kick_cpu() would be better to get
-the intended semantic across, and we should add thorough documentation
-somewhere as to what this is meant to do.
-
-Thanks,
-Mark.
