@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DB12D1E47
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C066B2D1E44
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgLGXW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgLGXW7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:22:59 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34510C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:22:13 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id h18so10242669otq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:22:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ecLFgA6ZVCXrlWighsImjDrXnRjbX/ebIaxkalo6/1w=;
-        b=m9uza9hGO/gEO45Mlbe5J+I8EvvJeJHIkmRVRSp5NbFk4RQSlSp828okY3HqNFwRmC
-         lg6oDYOANzhyajOmaeldvAnga3DuDtJf72t/6jMyIERuC0EYCg8QpUGyahruhT7Eebn5
-         uE1Uj1QZ+pH7wjFxnjU69zipvFLf+HflQkjR/PKvWLN33evvvHJ/vCCxzmD+Y77OipEb
-         A1Uhzily9tuqOO3xODNqNWkiUSO41F/P6jx+hXJeavMGrPBJeJod9kgVEuUv3rsRrP1Y
-         wHCG+XFGYgqDZO0zLbMuJkvx2DI2QisX3UvkfvrKiqwKu2FyPFb/OIs4nwYF8gRZXlGm
-         AtBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ecLFgA6ZVCXrlWighsImjDrXnRjbX/ebIaxkalo6/1w=;
-        b=QTyjck2JrBw4QmOJM+FoWTPn6GKbbxCNa/9NYzIkRuHb1flNkb6xEzsdjX/NlIGEGc
-         vrYsXwG1TDLdUP0cvowSlcJa1madYIV36Xyi3/4E36rPFTQ3NR0n3DUA3qc3Hv2C9x3b
-         wInZKLExNVHZRUNF8+L4zLqsZF2nqttEbi7OeQMF3XBjQ8RD2Y1MPFYjd9SflqoGPYY+
-         O+TIGy2lS3/SQmW7bYSsgn7Ophao2Wqd/Xo7penMTG3mQ7n4UPc/l9TNfP8+bHvGFLq2
-         ocNUFZw8dYBt2M3zPUgf4LpZbgjBU+fyAENy4IwmHvoGAC+rIMiK7EVt2RI+0poDgOqk
-         l3zw==
-X-Gm-Message-State: AOAM530Bi1CsFkow41FgpP/6bgqFuV1NMzGd30K2elE1d1G1m5ESOjWk
-        4E1VSlJn+BRpVxZwzGncZv1xVgJk6j582DdIbCCKOA==
-X-Google-Smtp-Source: ABdhPJx72Bm1nE0g6cD2iqMrP2OAG4RUggDRs+kLGI/Mzm3KLvKIiWvl0+zmUu779zCvhLp7KCnx2Hj9ArckxZjwkJM=
-X-Received: by 2002:a9d:d01:: with SMTP id 1mr14480096oti.295.1607383332277;
- Mon, 07 Dec 2020 15:22:12 -0800 (PST)
+        id S1727415AbgLGXWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:22:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgLGXWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:22:46 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDF4E23A22;
+        Mon,  7 Dec 2020 23:22:03 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 18:22:02 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        luto@kernel.org, me@kylehuey.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        rocallahan@gmail.com, alexandre.chartre@oracle.com,
+        paulmck@kernel.org, frederic@kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, pmladek@suse.com,
+        joel@joelfernandes.org, boris.ostrovsky@oracle.com,
+        jgross@suse.com, brgerst@gmail.com, jpoimboe@redhat.com,
+        daniel.thompson@linaro.org, julliard@winehq.org,
+        pgofman@codeweavers.com
+Subject: Re: [PATCH] x86/kprobes: Restore BTF if the single-stepping is
+ cancelled
+Message-ID: <20201207182202.59c8cdeb@gandalf.local.home>
+In-Reply-To: <160389546985.106936.12727996109376240993.stgit@devnote2>
+References: <20201028211109.a25f52fa6fb0412e3a65ea52@kernel.org>
+        <160389546985.106936.12727996109376240993.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu> <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
-In-Reply-To: <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 7 Dec 2020 15:22:00 -0800
-Message-ID: <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
-        wei.huang2@amd.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
->
-> Newer AMD processors have a feature to virtualize the use of the SPEC_CTRL
-> MSR. This feature is identified via CPUID 0x8000000A_EDX[20]. When present,
-> the SPEC_CTRL MSR is automatically virtualized and no longer requires
-> hypervisor intervention.
->
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
+Did this patch fall through the cracks?
+
+-- Steve
+
+
+On Wed, 28 Oct 2020 23:31:10 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Fix to restore BTF if single-stepping causes a page fault and
+> it is cancelled.
+> 
+> Usually the BTF flag was restored when the single stepping is done
+> (in resume_execution()). However, if a page fault happens on the
+> single stepping instruction, the fault handler is invoked and
+> the single stepping is cancelled. Thus, the BTF flag is not
+> restored.
+> 
+> Fixes: 1ecc798c6764 ("x86: debugctlmsr kprobes")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > ---
->  arch/x86/include/asm/cpufeatures.h |    1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index dad350d42ecf..d649ac5ed7c7 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -335,6 +335,7 @@
->  #define X86_FEATURE_AVIC               (15*32+13) /* Virtual Interrupt Controller */
->  #define X86_FEATURE_V_VMSAVE_VMLOAD    (15*32+15) /* Virtual VMSAVE VMLOAD */
->  #define X86_FEATURE_VGIF               (15*32+16) /* Virtual GIF */
-> +#define X86_FEATURE_V_SPEC_CTRL                (15*32+20) /* Virtual SPEC_CTRL */
+>  arch/x86/kernel/kprobes/core.c |    5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index 547c7abb39f5..39f7d8c3c064 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -937,6 +937,11 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+>  		 * So clear it by resetting the current kprobe:
+>  		 */
+>  		regs->flags &= ~X86_EFLAGS_TF;
+> +		/*
+> +		 * Since the single step (trap) has been cancelled,
+> +		 * we need to restore BTF here.
+> +		 */
+> +		restore_btf();
+>  
+>  		/*
+>  		 * If the TF flag was set before the kprobe hit,
 
-Shouldn't this bit be reported by KVM_GET_SUPPORTED_CPUID when it's
-enumerated on the host?
-
->  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
->  #define X86_FEATURE_AVX512VBMI         (16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
->
