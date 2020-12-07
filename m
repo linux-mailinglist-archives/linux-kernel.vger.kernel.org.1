@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4865B2D09F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FC12D09FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgLGFTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 00:19:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45631 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725783AbgLGFTQ (ORCPT
+        id S1726096AbgLGFUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 00:20:10 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:37563 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725681AbgLGFUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:19:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607318269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4NEmPb1vJdnm+1yHtk70TIfP0G6eCyJYhuhh3SVbKYs=;
-        b=QcHsliStAPyrfP5n+aAYJ9NsgFTopiU8XjWL8kSm1p/t1s0fl3Mby8F7NgUPRvv0mx+yb/
-        2GBMYfZ8y0aYwqTRiXFxDn53w45qpJwwPGLj/ehRJqvyrFWbby7FcJcIxwWblccKKcge7b
-        gGYD7OdEoXhTno8lUSu8a6qQjgqWq1c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-YHvFQFlePI672EkIO4xVIg-1; Mon, 07 Dec 2020 00:17:47 -0500
-X-MC-Unique: YHvFQFlePI672EkIO4xVIg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43ED7100C602;
-        Mon,  7 Dec 2020 05:17:46 +0000 (UTC)
-Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B77D810016FA;
-        Mon,  7 Dec 2020 05:17:36 +0000 (UTC)
-Subject: Re: [PATCH] vhost scsi: fix error return code in
- vhost_scsi_set_endpoint()
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Maurizio Lombardi <mlombard@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <754d3d21-1dfa-6675-5014-2e8fb102c363@redhat.com>
-Date:   Mon, 7 Dec 2020 13:17:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Dec 2020 00:20:10 -0500
+X-UUID: 2a0a26349aa04380bf9ad07260c2bb99-20201207
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=AXgl3v3hUN1KoezVgxjai1p60MW27hu4dKaI+hqPAR4=;
+        b=EJ5uDMOQtenk539xah6gXBy6WeUkP5ZlzUnzD6uQpn6YDHqtpDcm5JYmYYpKQxfIgpL0XK94iRq42c9jQwohqg0MtGOSZDH/C6YKuguAKYqa3ERX44SuKyIgkp4NCwd1Wu1RoGjGXjoJAIly2e553LMMZsroAWoLavhahRhlBfo=;
+X-UUID: 2a0a26349aa04380bf9ad07260c2bb99-20201207
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 838548732; Mon, 07 Dec 2020 13:19:23 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Dec 2020 13:19:21 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Dec 2020 13:19:20 +0800
+Message-ID: <1607318361.3580.3.camel@mtkswgap22>
+Subject: Re: [PATCH v2 3/3] scsi: ufs: Changes comment in the function
+ ufshcd_wb_probe()
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
+        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Mon, 7 Dec 2020 13:19:21 +0800
+In-Reply-To: <20201206101335.3418-4-huobean@gmail.com>
+References: <20201206101335.3418-1-huobean@gmail.com>
+         <20201206101335.3418-4-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <1607071411-33484-1-git-send-email-zhangchangzhong@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/4 下午4:43, Zhang Changzhong wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
->
-> Fixes: 25b98b64e284 ("vhost scsi: alloc cmds per vq instead of session")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->   drivers/vhost/scsi.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-> index 6ff8a5096..4ce9f00 100644
-> --- a/drivers/vhost/scsi.c
-> +++ b/drivers/vhost/scsi.c
-> @@ -1643,7 +1643,8 @@ vhost_scsi_set_endpoint(struct vhost_scsi *vs,
->   			if (!vhost_vq_is_setup(vq))
->   				continue;
->   
-> -			if (vhost_scsi_setup_vq_cmds(vq, vq->num))
-> +			ret = vhost_scsi_setup_vq_cmds(vq, vq->num);
-> +			if (ret)
->   				goto destroy_vq_cmds;
->   		}
->   
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
+T24gU3VuLCAyMDIwLTEyLTA2IGF0IDExOjEzICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gRnJv
+bTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IFVTRkhDRCBzdXBwb3J0cyBX
+cml0ZUJvb3N0ZXIgIkxVIGRlZGljYXRlZCBidWZmZXLigJ0gbW9kZSBhbmQNCj4g4oCcc2hhcmVk
+IGJ1ZmZlcuKAnSBtb2RlIGJvdGgsIHNvIGNoYW5nZXMgdGhlIGNvbW1lbnQgaW4gdGhlDQo+IGZ1
+bmN0aW9uIHVmc2hjZF93Yl9wcm9iZSgpLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQmVhbiBIdW8g
+PGJlYW5odW9AbWljcm9uLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1
+cm9yYS5vcmc+DQoNClJldmlld2VkLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0
+ZWsuY29tPg0K
 
