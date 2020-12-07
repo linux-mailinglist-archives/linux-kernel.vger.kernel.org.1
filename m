@@ -2,95 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BEF2D16A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFD22D16AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgLGQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727701AbgLGQnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:43:03 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2C7C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:42:23 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id 2so9649185ilg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:42:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WUXdGrh7XO4kGUnhKynr9yMqAyjGgxLuT4au2qV1y0o=;
-        b=HCc5USXWzf1C8eAf6bK1vTReDwNU/PDo6KYuEe6K9D5V9nbjxeIucg7fsfdhoYBtr4
-         y7RNvjKs1rlcfVIC/Q9TedCnAbveMdTeqvyWLBOFZq1jOiwJFFm1tUKsiD8QOHWtEZ5z
-         tgvIDlaTMZXMBtjSkgjUcOlW7QucUcTONVY9bQEZPvked4zD8qSgFpTje8ugvjlvr++d
-         ob63I9kqBOQms/k3+Z9pNE3aGlm86cwG5UMLIDWtzH+a0GkG7kqLTzY/9PnQAHp971+N
-         Mh6h4Z1qjfzPV16KgSUoCwpf5ug7B9issBMhwsrL8bBpigWZmADUr2PT/BQMhFMxAHHp
-         7CRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WUXdGrh7XO4kGUnhKynr9yMqAyjGgxLuT4au2qV1y0o=;
-        b=fONAXrzlSzK7Ymy2wt02FBQpRyJHdbVSERMgS3uAEF2pIt+hXnm+z44XRMTKIC5B2F
-         wgMAmzZ+NtQQZmhssuIta5xjo/Ms/HoH4SZ2Owc+36YnmOIbv67Ich/k/1ncA7kRwXxX
-         AbnH6ty2qSHV1tCGf8xYQHlsZFSTG2/XErqeCg/dJlr2NKT/gO3hguPq5wt+m1TlOSwd
-         7jdJjLd9xvS561i1sYZ4FeatQoZL0jOewtWd2JMCFZoP8i7Ke4Dhop5bdORA16rBvHQ5
-         9hILbqz7rI0dIO59WiPcUIHiNr0t7P12wcii7eNxb9HDBs39Qh+7lYyek/iMhb7nEo35
-         ZMIw==
-X-Gm-Message-State: AOAM531P1Lz/YqPxCll2iVY6ZYh6BR92ahArRl5WTkPaJmNjBo8HSE3F
-        29xlB3ZawgWPlBUa/RqHEM57ew==
-X-Google-Smtp-Source: ABdhPJxQ5FNWrRgSa7NB4MPkDzICtRsqAtY2CqKv4oHrMtAQtfJJzkwjvk9c02nQmMaUSqjdzk1yOw==
-X-Received: by 2002:a92:cccb:: with SMTP id u11mr21724011ilq.44.1607359342776;
-        Mon, 07 Dec 2020 08:42:22 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a3sm7493167ilp.5.2020.12.07.08.42.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 08:42:22 -0800 (PST)
-Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
-To:     Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20201207081558.2361-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3466437a-0325-1cb8-6aa9-594527382390@kernel.dk>
-Date:   Mon, 7 Dec 2020 09:42:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727841AbgLGQnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:43:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:55358 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgLGQnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:43:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DAF9101E;
+        Mon,  7 Dec 2020 08:42:53 -0800 (PST)
+Received: from red-moon.arm.com (unknown [10.57.35.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 597773F68F;
+        Mon,  7 Dec 2020 08:42:52 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: aardvark: Update comment about disabling link training
+Date:   Mon,  7 Dec 2020 16:42:40 +0000
+Message-Id: <160735932845.19628.8346560834427451866.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201202184659.3795-1-pali@kernel.org>
+References: <20200924084618.12442-1-pali@kernel.org> <20201202184659.3795-1-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201207081558.2361-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 1:15 AM, Hillf Danton wrote:
-> @@ -9207,12 +9208,14 @@ err_fd:
->  #if defined(CONFIG_UNIX)
->  	ctx->ring_sock->file = file;
->  #endif
-> -	if (unlikely(io_uring_add_task_file(ctx, file))) {
-> -		file = ERR_PTR(-ENOMEM);
-> -		goto err_fd;
-> +	ret = io_uring_add_task_file(ctx, file);
-> +	if (ret) {
-> +		fput(file);
-> +		put_unused_fd(fd);
-> +		goto err;
->  	}
->  	fd_install(ret, file);
-> -	return ret;
-> +	return 0;
+On Wed, 2 Dec 2020 19:46:59 +0100, Pali Rohár wrote:
+> It is not HW bug or workaround for some cards but it is requirement by PCI
+> Express spec. After fundamental reset is needed 100ms delay prior enabling
+> link training. So update comment in code to reflect this requirement.
 
-You're installing the return value from io_uring_add_task_file() in the
-fd table, and then returning '0' for the fd...
+Applied to pci/aardvark, thanks!
 
--- 
-Jens Axboe
+[1/1] PCI: aardvark: Update comment about disabling link training
+      https://git.kernel.org/lpieralisi/pci/c/1d1cd163d0
 
+Thanks,
+Lorenzo
