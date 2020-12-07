@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5C32D17F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D566B2D17F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgLGR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:56:35 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38072 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGR4d (ORCPT
+        id S1726214AbgLGR4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:56:01 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50459 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725901AbgLGR4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:56:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607363752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qx8NAjj5faN33tgthRrp3ZisWVrxrdfyIGRgfm2F/Bg=;
-        b=xpvR+Bob89Uu5/0GcPLivKxa7r0Jx526tziQ4a6zflIXOaCI3WNEBH55cEpcxwr2Nbw7vX
-        rJMvOmXduOwERRmTCuN08YA120FJ+C6ksnLR9szaI285BPkRlXx8beviQM95lCljThEpMM
-        sB7V69xQpjddj0XuWei6cjBNlXHswISvzVUJ46vg3fxHlrxvUDCbWQtwc0cxWUV1YswtVd
-        gf3L4epcK0CU2LS2J+N1C9X6rGAvgyLomIyjeXBcYwocEikolHaVjyH8isRN7ARGIY1j8T
-        Hp16ZoR/FjOqHkLWrAJaB19+oqgtuD9PNcic9BK7wyvJNhXEpiJiMIGnGOXXRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607363752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qx8NAjj5faN33tgthRrp3ZisWVrxrdfyIGRgfm2F/Bg=;
-        b=yI1DWurOsvOjz7kbnFk/ijKYf9T0aK2LP7dqFp0lnB4xevtD6ri5qzGjjug7jT/YQZchCp
-        J4X4gGIaYP3RCNBA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [patch V2 9/9] tasklets: Prevent kill/unlock_wait deadlock on RT
-In-Reply-To: <20201207142727.GU3021@hirez.programming.kicks-ass.net>
-References: <20201204170151.960336698@linutronix.de> <20201204170805.627618080@linutronix.de> <20201207114743.GK3040@hirez.programming.kicks-ass.net> <20201207140040.yrxsu4v4xz43szkk@linutronix.de> <20201207142727.GU3021@hirez.programming.kicks-ass.net>
-Date:   Mon, 07 Dec 2020 18:55:51 +0100
-Message-ID: <87o8j54i1k.fsf@nanos.tec.linutronix.de>
+        Mon, 7 Dec 2020 12:56:01 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C8579580426;
+        Mon,  7 Dec 2020 12:55:14 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 07 Dec 2020 12:55:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=VRVtGXoQD9AI9Ni8bRVQ2nQ4sFY
+        cJwVAKfRYupJxLUU=; b=IawfgYm7t8a+rzgPkZs+TijYsyyYF7Gr2rn4rDgLHdz
+        s/1hEYdHxh2IyNq67QXPQLZj9CABug1lp8Y1kHEujWr9Lin4R4x2wSRXj4wiShcy
+        A7FPkTQjT19spRBKAYNaH8zWRovXiHq3daNrhB0CL9ZR6OAIrRviOCuP4ESg/DpZ
+        /BG/+OCxVcVYbrL9cW28MNZUIwfdHxQv0r0N/EpC551j1UL5iydy9c9zJ0j8mDay
+        hmrgmWFMCZVv2aLVIUK5+2mIREqtoY8eUZh+sFTdBsJOEs5LuRvMPFW5fcD6uG4t
+        kru7x4Z6G/rLjrCVZVlNGhD5Yq621/oQg97dVR/MO5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VRVtGX
+        oQD9AI9Ni8bRVQ2nQ4sFYcJwVAKfRYupJxLUU=; b=oRXmzuaCpxxEB9PiGf1WDg
+        2c2tTSUo1kKPSt2SO3wD4PejasA7zEhFsl/Z5Iib7wPy7kade647AqsU2BsnyJo1
+        c6vez71oIiQIr4oqbo1mlHMWXINO0Iy060vmtZPnrp1vp3UVl+Q+h12sSGx8M7pf
+        6gEo/zrx41frl+ZXY3F9VAs40XJ6z+HHiIz3nm2Ccx5nl7LUfg3ApsOtbgP1Ymkw
+        x7eE2YgBr/4NpQ5Zd0nLzLI2DEs4zSXbuSJurvHOPlUQbVanzJokuixmZ0zS3SHK
+        U2alnv6ZHiNOg2hR/mt8ZiaY6kYvwuwe5B/uH12MwXL6M5yHIK6Z047SZmiEw9iw
+        ==
+X-ME-Sender: <xms:gWzOXxBK0R4ipC7ydV5qfprCeTWcVqD_wx-V9aF6m8zD88ZYZo_vSg>
+    <xme:gWzOX_gEXZY0jJbg63OSyGoXXa9Eri_ouIZyk37sZZZj0LR40_-89O2OkGSg085EZ
+    3NcV9I88B4XVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:gWzOX8lFEjRDhrCLqfnrmNWzjTBOf59et1G9XkvZ-Fwo7aoUtP7jLQ>
+    <xmx:gWzOX7y4qX63EIfhVNefx0-0DrYdIxPTiavQWBCgwR0173GIMCHhkQ>
+    <xmx:gWzOX2RU0Puw7z8MYrig2DE_y1SUS-mH06JENVgxfCRj5lqA80y2UA>
+    <xmx:gmzOX3I9ZCp_YZf-anQaOdcLskuV6UfLUy-AK67LXRnEdy6NB1LMsw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0A87C24005B;
+        Mon,  7 Dec 2020 12:55:13 -0500 (EST)
+Date:   Mon, 7 Dec 2020 18:56:23 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <X85sxxgpdtFXiKsg@kroah.com>
+References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
+ <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 15:27, Peter Zijlstra wrote:
+On Tue, Nov 03, 2020 at 01:40:21PM +0900, Daejun Park wrote:
+> Changelog:
+> 
+> v12 -> v13
+> 1. Cleanup codes by comments from Can Guo.
+> 2. Add HPB related descriptor/flag/attributes in sysfs.
+> 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
 
-> On Mon, Dec 07, 2020 at 03:00:40PM +0100, Sebastian Andrzej Siewior wrote:
->> On 2020-12-07 12:47:43 [+0100], Peter Zijlstra wrote:
->> > On Fri, Dec 04, 2020 at 06:02:00PM +0100, Thomas Gleixner wrote:
->> > > @@ -825,7 +848,20 @@ void tasklet_kill(struct tasklet_struct
->> > >  
->> > >  	while (test_and_set_bit(TASKLET_STATE_SCHED, &t->state)) {
->> > >  		do {
->> > > -			yield();
->> > >  		} while (test_bit(TASKLET_STATE_SCHED, &t->state));
->> > >  	}
->> > >  	tasklet_unlock_wait(t);
->> > 
->> > 
->> > Egads... should we not start by doing something like this?
->> 
->> So we keep the RT part as-is and replace the non-RT bits with this?
->
-> For RT you probably want to wrap the wait_var_event() in that
-> local_bh_disable()/enable() pear.
+What ever happened to this patchset?  Did it get merged into a scsi tree
+for 5.11-rc1, or is there something still pending that needs to be done
+on it to make it acceptable?
 
-Is that a new species local to the Netherlands? Never heard about
-bh-pears before. Are they tasty?
+thanks,
 
-> I just figured those unbounded spin/yield loops suck and we should get
-> rid of em.
-
-Ack.
+greg k-h
