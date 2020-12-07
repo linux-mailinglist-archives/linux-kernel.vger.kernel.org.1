@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65EA2D1385
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7671B2D1399
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgLGOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:24:56 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36648 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgLGOY4 (ORCPT
+        id S1726852AbgLGO1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:27:16 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:60027 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725931AbgLGO1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:24:56 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kmHQw-0003JI-DO; Mon, 07 Dec 2020 14:24:10 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        linux-hwmon@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] hwmon: ltc2992: fix less than zero comparisons with an unsigned integer
-Date:   Mon,  7 Dec 2020 14:24:10 +0000
-Message-Id: <20201207142410.168987-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 09:27:16 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id DD37A5C012B;
+        Mon,  7 Dec 2020 09:26:09 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 07 Dec 2020 09:26:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=+JKVbKtQK/Yw154DgEA/vvstAw
+        x3uCRVJdxZ6QvqULE=; b=JUrEe5rgN8zH1Gmmo6hJ2FQYyIHiNWbOrl6cSMUAYe
+        yb04A2Q5FMHTVgW0FEeBGRWY4R4TOV7ib003/DvCLWE3bkww6T4Sn2a+iih+iJc8
+        7hzbcc3mzWrBRi66cb8K3DrQ5td1I4iek72W0o4DifgnFbVVFpfbYhZgEMeOIknk
+        Hxf/8RYik0vUZQ2L89ii5gTP0GZnR2U7HXMbxjvrl9+tycZDraNLiTl8pzaS5FzQ
+        zLeqthDxFJ0dYL0Fuih/beAfDTEoqQB+NsxNDhwYwJFlU3ECGiiBgwFISfzW90fF
+        7sjoZ1ymXREtS09RlntLidFbbVsZVIP6tiP57ac1NG0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+JKVbKtQK/Yw154Dg
+        EA/vvstAwx3uCRVJdxZ6QvqULE=; b=MoAPougRjMheTLjHEFak2mfQSVuIZ9W0H
+        FE/h/v9xUnEdYQhDKOu0N0CRoxnhGd+yqUO7NdaI6/FAcocIkOKCsX6oc4oY3ea9
+        PvvBSU4uwcosOm/O42NoSNWW78uzW6g93tuIV3QchA6rxLV/fqiIWGFw1k8lbQlR
+        vaC27o343cPi92Dd3nJM4FCoI/TJFiQKLOATnbbeZtdfQ5FlhhnBkDLTPz5Gxmt+
+        7e/f/1HE1upltKSTJ0JwENGIP754/D1sNCywC5cmPWNBDLlslUEFsAyf09f/u8du
+        zBurpEFPwua5RNtPEHcOkm9hRMTxPXif1VRUGL3TZjyyp9xzP9tFw==
+X-ME-Sender: <xms:gDvOX8SGkvS_-dJAM6G_d1sOMruJdqdqELNp3_axlIspQL7B_S-3cA>
+    <xme:gDvOX5yVHUSAGRPvzSD4P_0s3N3ajw2wH-uIv_QhIwEg43StZ2PMhs3V3JHeS-nGD
+    HiUkLV6yWr-PlMzhQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepieetheduveelhfdvvdejleeuhfelteevhe
+    ffgfeitdefgeekjeefieevgfehhefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghen
+    ucfkphepvddtfedrheejrddvtdekrddugeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:gDvOX50zM8CzP5QFD-Usr8TVjQNwVWH8uRRfWgsU3Oxymvsgk7vi6w>
+    <xmx:gDvOXwB0y9XoSPnuqQG32pZ4Oeb69yoHBzrtE0AF_m1gXgdWxulopw>
+    <xmx:gDvOX1goHP47OvHA6UKXG0x3PzNPrTGkemotiu4fXBWG2zBaoGoCkg>
+    <xmx:gTvOX9i-x8PWX7Mkq12OZVHeJ3fqWLcXPMamDq5Av_lpFTPXfCa2Tg>
+Received: from localhost.localdomain (203-57-208-146.dyn.iinet.net.au [203.57.208.146])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 38BDC108006B;
+        Mon,  7 Dec 2020 09:26:03 -0500 (EST)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
+Subject: [PATCH v4 0/6] mmc: sdhci-of-aspeed: Expose phase delay tuning
+Date:   Tue,  8 Dec 2020 00:55:50 +1030
+Message-Id: <20201207142556.2045481-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hello,
 
-There are several occurrances of a less than zero error check on
-a u32 unsigned integer. These will never be true. Fix this by making
-reg_value a plain int.
+This series implements support for the MMC core clk-phase-* devicetree bindings
+in the Aspeed SD/eMMC driver. The relevant register was exposed on the AST2600
+and is present for both the SD/MMC controller and the dedicated eMMC
+controller.
 
-Addresses-Coverity: ("Unsigned comparison against zero")
-Fixes: e126370240e0 ("hwmon: (ltc2992) Add support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/hwmon/ltc2992.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+There are a couple of prominent changes from v3 in v4 of the series:
 
-diff --git a/drivers/hwmon/ltc2992.c b/drivers/hwmon/ltc2992.c
-index 69dbb5aa5dc2..4382105bf142 100644
---- a/drivers/hwmon/ltc2992.c
-+++ b/drivers/hwmon/ltc2992.c
-@@ -480,7 +480,7 @@ static int ltc2992_read_gpios_in(struct device *dev, u32 attr, int nr_gpio, long
- 
- static int ltc2992_read_in_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
- {
--	u32 reg_val;
-+	int reg_val;
- 	u32 mask;
- 
- 	if (attr == hwmon_in_max_alarm)
-@@ -534,7 +534,7 @@ static int ltc2992_read_in(struct device *dev, u32 attr, int channel, long *val)
- 
- static int ltc2992_get_current(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
- {
--	u32 reg_val;
-+	int reg_val;
- 
- 	reg_val = ltc2992_read_reg(st, reg, 2);
- 	if (reg_val < 0)
-@@ -558,7 +558,7 @@ static int ltc2992_set_current(struct ltc2992_state *st, u32 reg, u32 channel, l
- 
- static int ltc2992_read_curr_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
- {
--	u32 reg_val;
-+	int reg_val;
- 	u32 mask;
- 
- 	if (attr == hwmon_curr_max_alarm)
-@@ -609,7 +609,7 @@ static int ltc2992_read_curr(struct device *dev, u32 attr, int channel, long *va
- 
- static int ltc2992_get_power(struct ltc2992_state *st, u32 reg, u32 channel, long *val)
- {
--	u32 reg_val;
-+	int reg_val;
- 
- 	reg_val = ltc2992_read_reg(st, reg, 3);
- 	if (reg_val < 0)
-@@ -633,7 +633,7 @@ static int ltc2992_set_power(struct ltc2992_state *st, u32 reg, u32 channel, lon
- 
- static int ltc2992_read_power_alarm(struct ltc2992_state *st, int channel, long *val, u32 attr)
- {
--	u32 reg_val;
-+	int reg_val;
- 	u32 mask;
- 
- 	if (attr == hwmon_power_max_alarm)
+1. The devicetree phase parsing helper has been moved to the MMC core
+2. KUnit tests have been added for the phase calculations in the ASPEED driver
+
+Other than that I've updated MAINTAINERS to add myself as the maintainer of the
+driver.
+
+v3 can be found here:
+
+https://lore.kernel.org/linux-mmc/20201123063004.337345-1-andrew@aj.id.au/
+
+The series has had light testing on an AST2600-based platform which requires
+180deg of input and output clock phase correction at HS200, as well as some
+synthetic testing under qemu and KUnit.
+
+Please review!
+
+Cheers,
+
+Andrew
+
+Andrew Jeffery (6):
+  mmc: core: Add helper for parsing clock phase properties
+  mmc: sdhci-of-aspeed: Expose clock phase controls
+  mmc: sdhci-of-aspeed: Add AST2600 bus clock support
+  mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
+  MAINTAINERS: Add entry for the ASPEED SD/MMC driver
+  ARM: dts: rainier: Add eMMC clock phase compensation
+
+ MAINTAINERS                                  |   9 +
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |   1 +
+ drivers/mmc/core/host.c                      |  43 ++++
+ drivers/mmc/host/Kconfig                     |  14 ++
+ drivers/mmc/host/Makefile                    |   1 +
+ drivers/mmc/host/sdhci-of-aspeed-test.c      | 100 ++++++++
+ drivers/mmc/host/sdhci-of-aspeed.c           | 251 ++++++++++++++++++-
+ include/linux/mmc/host.h                     |  17 ++
+ 8 files changed, 425 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
+
 -- 
-2.29.2
+2.27.0
 
