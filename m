@@ -2,138 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2102D08CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2BC2D08CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgLGBTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 20:19:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:37880 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728583AbgLGBTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:19:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0800B11D4;
-        Sun,  6 Dec 2020 17:18:26 -0800 (PST)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83E2C3F66B;
-        Sun,  6 Dec 2020 17:18:23 -0800 (PST)
-Subject: Re: [RESEND PATCH 13/19] phy: sun4i-usb: add support for A100 USB PHY
-To:     Frank Lee <frank@allwinnertech.com>, tiny.windzz@gmail.com
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-References: <cover.1604988979.git.frank@allwinnertech.com>
- <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <c118ad12-28b1-b733-484b-6751d1546e37@arm.com>
-Date:   Mon, 7 Dec 2020 01:18:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728683AbgLGBUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 20:20:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9121 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728448AbgLGBUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:20:52 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cq57s0yrGz15YNj;
+        Mon,  7 Dec 2020 09:19:37 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 09:20:06 +0800
+Subject: Re: [PATCH 0/5] crypto: hisilicon - add some new algorithms
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1606357086-9785-1-git-send-email-liulongfang@huawei.com>
+ <20201204070525.GA26479@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <c74d3ea8-4286-b34f-36ef-8e0425b2dd19@huawei.com>
+Date:   Mon, 7 Dec 2020 09:20:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+In-Reply-To: <20201204070525.GA26479@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2020 06:40, Frank Lee wrote:
-
-Hi,
-
-
-> From: Yangtao Li <frank@allwinnertech.com>
+On 2020/12/4 15:05, Herbert Xu wrote:
+> On Thu, Nov 26, 2020 at 10:18:01AM +0800, Longfang Liu wrote:
+>> As the new Kunpeng930 supports some new algorithms,
+>> the driver needs to be updated
+>>
+>> Longfang Liu (4):
+>>   crypto: hisilicon/sec - add new type of sqe for Kunpeng930
+>>   crypto: hisilicon/sec - add new skcipher mode for SEC
+>>   crypto: hisilicon/sec - add new AEAD mode for SEC
+>>   crypto: hisilicon/sec - fixes some coding style
+>>
+>> Meng Yu (1):
+>>   crypto: hisilicon/hpre - add version adapt to new algorithms
 > 
-> Add support for a100's usb phy, which with 2 PHYs.
+> Please include details on whether this has been tested with the
+> self-tests, including the extra fuzz tests.
 > 
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> ---
->  drivers/phy/allwinner/phy-sun4i-usb.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> Thanks,
 > 
-> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-> index a6900495baa5..1a0e403131e7 100644
-> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
-> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-> @@ -107,6 +107,7 @@ enum sun4i_usb_phy_type {
->  	sun8i_r40_phy,
->  	sun8i_v3s_phy,
->  	sun50i_a64_phy,
-> +	sun50i_a100_phy,
->  	sun50i_h6_phy,
->  };
->  
-> @@ -289,7 +290,13 @@ static int sun4i_usb_phy_init(struct phy *_phy)
->  	}
->  
->  	if (data->cfg->type == sun8i_a83t_phy ||
-> +	    data->cfg->type == sun50i_a100_phy ||
->  	    data->cfg->type == sun50i_h6_phy) {
-> +		if (phy->pmu && data->cfg->enable_pmu_unk1) {
-> +			val = readl(phy->pmu + REG_PMU_UNK1);
-> +			writel(val & ~BIT(3), phy->pmu + REG_PMU_UNK1);
-> +		}
-> +
-
-So having a closer look, this does not look right. We should not use
-this very same variable (enable_pmu_unk1) for a different bit.
-
-So what about changing "bool enable_pmu_unk1;" into "u32
-pmu_phy_tune_mask;", and using this to mask bits in this PMU register,
-regardless of the PHY type (above this "if" statement)? We just check it
-for being 0 and possibly skip the R/M/W sequence.
-Then the newer SoCs get .pmu_phy_tune_mask = BIT(1), in their config
-below, and the A100 gets BIT(3). Older PHYs just omit this line at all,
-are initialised to 0, and are skipped.
-
-That would look more cleaner and might even be a bit future proof.
-
-Cheers,
-Andre
-
->  		if (phy->index == 0) {
->  			val = readl(data->base + data->cfg->phyctl_offset);
->  			val |= PHY_CTL_VBUSVLDEXT;
-> @@ -339,6 +346,7 @@ static int sun4i_usb_phy_exit(struct phy *_phy)
->  
->  	if (phy->index == 0) {
->  		if (data->cfg->type == sun8i_a83t_phy ||
-> +		    data->cfg->type == sun50i_a100_phy ||
->  		    data->cfg->type == sun50i_h6_phy) {
->  			void __iomem *phyctl = data->base +
->  				data->cfg->phyctl_offset;
-> @@ -960,6 +968,16 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
->  	.phy0_dual_route = true,
->  };
->  
-> +static const struct sun4i_usb_phy_cfg sun50i_a100_cfg = {
-> +	.num_phys = 2,
-> +	.type = sun50i_a100_phy,
-> +	.disc_thresh = 3,
-> +	.phyctl_offset = REG_PHYCTL_A33,
-> +	.dedicated_clocks = true,
-> +	.enable_pmu_unk1 = true,
-> +	.phy0_dual_route = true,
-> +};
-> +
->  static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
->  	.num_phys = 4,
->  	.type = sun50i_h6_phy,
-> @@ -983,6 +1001,7 @@ static const struct of_device_id sun4i_usb_phy_of_match[] = {
->  	{ .compatible = "allwinner,sun8i-v3s-usb-phy", .data = &sun8i_v3s_cfg },
->  	{ .compatible = "allwinner,sun50i-a64-usb-phy",
->  	  .data = &sun50i_a64_cfg},
-> +	{ .compatible = "allwinner,sun50i-a100-usb-phy", .data = &sun50i_a100_cfg },
->  	{ .compatible = "allwinner,sun50i-h6-usb-phy", .data = &sun50i_h6_cfg },
->  	{ },
->  };
-> 
-
+All of these new algorithms have been fully tested by the project team,
+Did any test case tests fail?
+Thanks.
+Longfang
