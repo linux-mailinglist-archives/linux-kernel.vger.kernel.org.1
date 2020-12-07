@@ -2,104 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A692D0ABC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D452D0AC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgLGGeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGGeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:34:25 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD21C0613D1
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 22:33:44 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id h7so6489581pjk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 22:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=unfBbNCI0m3ptB2CCZebMmZ2Tw9oIvAqWo/oBXmpaOk=;
-        b=c6g8eg9Zquy73mzH0bVNuB3jifwIQLnBnawoOZMdZnDFAOmT2WgFjPn7i7AnxuIRp1
-         Oi9QYTQ3JvTx8Gyf6qX3Rno1iiMHDIJW69Lyjv3ZO6lwM7JL+yKhFEZ/oabzPyPa8X5S
-         ZHsGAsU6Quctd3SEaaNA0sDbyrCwv7xzfIAcgXH/aDd8sJd9C0mVX90AD9tq1Yg9Ritv
-         hw0s9rMX0h3qNFkY7lU18Z24ZY66Vl67pS/c2B4H0KWbgZ7BAy0LuT0yQ9R0Za4/MzUq
-         s+a5bLrGXC7U++7OUziNyBFhuqM7yczFutd2yK76KyRXxwNIe9SJO4ofYjoOWXtlT8UD
-         Qthw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=unfBbNCI0m3ptB2CCZebMmZ2Tw9oIvAqWo/oBXmpaOk=;
-        b=MEfCu92fJ94ST1R4xalZnO4RzCWcUiog/XxYeeyuix6uB3zsVnL5q5RZr3G7KPaZ9s
-         lFmUw492oCHDw8wgr+CA5QyRl/mio1+FHMKc/Td8aLE8EcHvmTlVdl19ybnbVeBu32+M
-         NVaGLjq72LrvggbgE4O9BY72JvxaRF8O954PEDdfixnzkz/wVEeXasbvbarbjUV/4EL0
-         oZEMB9YgzD6C45tM/Gud2bqxHLOSebVlXVc6YIJANJwc44ftFHP3q0cJfHSuG/dRFgeE
-         80SyAoNKYBQFO0N0LkYl57FUA41i9md4RKWUOuCn1zp7MnWVlNcWu44TocOd8K7km8C+
-         xgmg==
-X-Gm-Message-State: AOAM53320TKmYCmrIJiD4fCr5VsFgtM2mSFxrCH9fbkTQFVsfh5wNe/u
-        8mjDlOcodWFXaG+vJYCInGVTdg==
-X-Google-Smtp-Source: ABdhPJxXmYsMI7E+hyqpdvOd5tLHP/tJhmopVByXPoaWhwUHfY20BsFmhK2d9+/88SHFOpRHxyc+uA==
-X-Received: by 2002:a17:90a:5b18:: with SMTP id o24mr1636726pji.120.1607322824487;
-        Sun, 06 Dec 2020 22:33:44 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id m4sm14207689pfd.203.2020.12.06.22.33.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 22:33:43 -0800 (PST)
-Date:   Mon, 7 Dec 2020 12:03:42 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: scmi: add COMMON_CLK dependency
-Message-ID: <20201207063342.fi5ms67wdy4aaqpf@vireshk-i7>
-References: <20201203225550.1478195-1-arnd@kernel.org>
+        id S1726026AbgLGGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:36:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgLGGgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 01:36:09 -0500
+From:   Vinod Koul <vkoul@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl bindings
+Date:   Mon,  7 Dec 2020 12:05:18 +0530
+Message-Id: <20201207063519.3413720-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203225550.1478195-1-arnd@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-12-20, 23:55, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Wtihout CONFIG_COMMON_CLK, the scmi driver fails to link:
-> 
-> arm-linux-gnueabi-ld: drivers/cpufreq/scmi-cpufreq.o: in function `scmi_cpufreq_probe':
-> scmi-cpufreq.c:(.text+0x20c): undefined reference to `devm_of_clk_add_hw_provider'
-> arm-linux-gnueabi-ld: scmi-cpufreq.c:(.text+0x22c): undefined reference to `of_clk_hw_simple_get'
-> 
-> Add a Kconfig dependency for it.
-> 
-> Fixes: 8410e7f3b31e ("cpufreq: scmi: Fix OPP addition failure with a dummy clock provider")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/cpufreq/Kconfig.arm | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-> index 1f73fa75b1a0..434ef03d2762 100644
-> --- a/drivers/cpufreq/Kconfig.arm
-> +++ b/drivers/cpufreq/Kconfig.arm
-> @@ -264,6 +264,7 @@ config ARM_SA1110_CPUFREQ
->  config ARM_SCMI_CPUFREQ
->  	tristate "SCMI based CPUfreq driver"
->  	depends on ARM_SCMI_PROTOCOL || COMPILE_TEST
-> +	depends on COMMON_CLK
->  	select PM_OPP
->  	help
->  	  This adds the CPUfreq driver support for ARM platforms using SCMI
+Add device tree binding Documentation details for Qualcomm SM8350
+pinctrl driver.
 
-This is already fixed by:
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 151 ++++++++++++++++++
+ 1 file changed, 151 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
 
-commit f943849f7206 ("cpufreq: scmi: Fix build for !CONFIG_COMMON_CLK")
-
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+new file mode 100644
+index 000000000000..8ddb347c43da
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+@@ -0,0 +1,151 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. SM8350 TLMM block
++
++maintainers:
++  - Vinod Koul <vkoul@kernel.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer block found in the
++  SM8350 platform.
++
++properties:
++  compatible:
++    const: qcom,sm8350-pinctrl
++
++  reg:
++    description: Specifies the base address and size of the TLMM register space
++    maxItems: 1
++
++  interrupts:
++    description: Specifies the TLMM summary IRQ
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    description: Specifies the PIN numbers and Flags, as defined in
++      include/dt-bindings/interrupt-controller/irq.h
++    const: 2
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    description: Specifying the pin number and flags, as defined in
++      include/dt-bindings/gpio/gpio.h
++    const: 2
++
++  gpio-ranges:
++    maxItems: 1
++
++  gpio-reserved-ranges:
++    maxItems: 1
++
++#PIN CONFIGURATION NODES
++patternProperties:
++  '-pins$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "/schemas/pinctrl/pincfg-node.yaml"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
++            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
++        minItems: 1
++        maxItems: 36
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins. Functions are only valid for gpio pins.
++        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
++                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
++                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
++                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
++                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
++                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
++                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
++                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
++                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
++                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
++                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
++                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
++                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
++                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
++                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
++                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
++                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
++                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
++                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
++                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
++                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
++                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
++                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
++
++
++      drive-strength:
++        enum: [2, 4, 6, 8, 10, 12, 14, 16]
++        default: 2
++        description:
++          Selects the drive strength for the specified pins, in mA.
++
++      bias-pull-down: true
++
++      bias-pull-up: true
++
++      bias-disable: true
++
++      output-high: true
++
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - gpio-controller
++  - '#gpio-cells'
++  - gpio-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        tlmm: pinctrl@f000000 {
++          compatible = "qcom,sm8350-pinctrl";
++          reg = <0x0f100000 0x300000>;
++          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++          gpio-controller;
++          #gpio-cells = <2>;
++          interrupt-controller;
++          #interrupt-cells = <2>;
++          gpio-ranges = <&tlmm 0 0 203>;
++          serial-pins {
++            pins = "gpio18", "gpio19";
++            function = "qup3";
++            drive-strength = <8>;
++            bias-disable;
++          };
++        };
++
++...
 -- 
-viresh
+2.26.2
+
