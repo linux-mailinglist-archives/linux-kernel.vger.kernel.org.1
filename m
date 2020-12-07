@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D0E2D1E6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D162D1E73
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgLGXgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgLGXgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:36:46 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3009C061793;
-        Mon,  7 Dec 2020 15:36:05 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmQ2w-00HHlG-RR; Mon, 07 Dec 2020 23:35:58 +0000
-Date:   Mon, 7 Dec 2020 23:35:58 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH v2 01/24] exec: Move unshare_files to fix posix file
- locking during exec
-Message-ID: <20201207233558.GE3579531@ZenIV.linux.org.uk>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-1-ebiederm@xmission.com>
- <20201207222214.GA4115853@ZenIV.linux.org.uk>
- <87zh2pusdw.fsf@x220.int.ebiederm.org>
+        id S1728122AbgLGXjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:39:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727370AbgLGXjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:39:25 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38B8123998;
+        Mon,  7 Dec 2020 23:38:44 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 18:38:42 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
+Subject: Re: Ftrace startup test and boot-time tracing
+Message-ID: <20201207183842.5374eed6@gandalf.local.home>
+In-Reply-To: <20201208082649.93bdd57eb397296c81baf64c@kernel.org>
+References: <20201207230259.250ecc2a52281def3f8335f4@kernel.org>
+        <20201207152540.2d569a36@gandalf.local.home>
+        <20201208082649.93bdd57eb397296c81baf64c@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zh2pusdw.fsf@x220.int.ebiederm.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:07:55PM -0600, Eric W. Biederman wrote:
+On Tue, 8 Dec 2020 08:26:49 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> My mistake.  I missed that the actual code was highly optimized and only
-> safe in the presence of an unshared files struct.
-
-That's a polite way to spell "overoptimized for no good reason" ;-)
-
-> What I saw and what I thought the comment was talking about was that the
-> result of the test isn't guaranteed to be stable without having an
-> exclusive access to the files.  I figured and if something changes later
-> and it becomes safe to pass the file name to a script later we don't
-> really care.
+> Hi Steve,
 > 
-> In any event thank you for the review.  I will queue up a follow on
-> patch that makes this use get_close_on_exec.
+> On Mon, 7 Dec 2020 15:25:40 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Mon, 7 Dec 2020 23:02:59 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >   
+> > > There will be the 2 options, one is to change kconfig so that user can not
+> > > select FTRACE_STARTUP_TEST if BOOTTIME_TRACING=y, another is to provide
+> > > a flag from trace_boot and all tests checks the flag at runtime.
+> > > (moreover, that flag will be good to be set from other command-line options)
+> > > What would you think?  
+> > 
+> > Yeah, a "disable_ftrace_startup_tests" flag should be implemented. And
+> > something that could also be on the kernel command line itself :-)
+> > 
+> >  "disabe_ftrace_startup_tests"
+> > 
+> > Sometimes when debugging something, I don't want the tests running, even
+> > though the config has them, and I don't want to change the config.  
+> 
+> OK, BTW, I found tracing_selftest_disabled, it seemed what we need.
+> 
 
-I would rather put that switch to get_close_on_exec() first in the queue
-(or fold it into this patch)...
+Yeah, I thought we had something like this. It's getting hard to keep track
+of ;-)
+
+-- Steve
