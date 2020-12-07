@@ -2,197 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC64E2D0A45
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AC52D0A48
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 06:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgLGFhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 00:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgLGFhP (ORCPT
+        id S1726571AbgLGFhY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 00:37:24 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:51824 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgLGFhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:37:15 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD64C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 21:36:34 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ce23so13932422ejb.8
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 21:36:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=G4LlgMCq631UUu8D9rdAHM0/TC7MUROVJ5w6Q0ptdvQ=;
-        b=yJXCOGSm3p0ymlxgXOKyztjN6W5ZdifoYjl35o7SGUmIYWut1Z11DjJfZMzpABPV1t
-         Qic0DKpxqiZ38+DNi2VzVKxmfaRkMRlZWF9fyCCekq9ZO0R4sPoMVQpK5K8ibbWx5+wy
-         6zQ0v3M5dx60KlFccGUIbWyxmD3Z978A+VVyylTGvu9NQPZ82Pqi5lfwOITxA/jZiaVO
-         /vxO9JnEt04Cetx+TddS4KvCbxI6bnq7mf/h0eWbE7SETXDD2y96EummPpUzdTpmST8j
-         BlEUQaJHdW0vhv4cPl0jdSN42S6KPYpJpiCqD4a8k/Lyiu3nAqtS1UO4pef4/F94i7+j
-         WaFg==
+        Mon, 7 Dec 2020 00:37:24 -0500
+Received: from mail-pf1-f200.google.com ([209.85.210.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1km9CT-0000KE-96
+        for linux-kernel@vger.kernel.org; Mon, 07 Dec 2020 05:36:41 +0000
+Received: by mail-pf1-f200.google.com with SMTP id b11so8500061pfi.7
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 21:36:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=G4LlgMCq631UUu8D9rdAHM0/TC7MUROVJ5w6Q0ptdvQ=;
-        b=ddw1Ws/bopfBPYUl59zDAKFzUC6ievlLxZ9Ofc3b4LzZf1So9uwZJD6XeY3ELlYECC
-         V9+UsflMABR35jCIuEgTI9Leg83KfzVpg2vxhhcZ629FYS6bjK/yQajy+Am4KVkjMBe4
-         c2pdJ2X32fIVT0csvGYfOPyU1/k/dgWBjFYaA1CHu8YIuU/WtKWx3SINltGA/a12iHBx
-         N2yFaCEIGfFhTQiJrnjtA2qMcY72yZk4yRPSD8JzXbWGAscbPJR1ASsbnwzq5ARlllQX
-         TkvN6w4NCJBDAHMNwe7KtNRVuv++rBfQQNx/biszVcUVaDdHnj0IcPATk6cZxbM4UH+Y
-         rmxQ==
-X-Gm-Message-State: AOAM5327zHGt+BERBuDfnhEyerqTMle1oUzze3tpLqSG5P89DK1xc81i
-        Ii8fzXXqwxm2JB2gxrwpG03swWizLjVZsyjPC+pr36/YSFmTw/8w
-X-Google-Smtp-Source: ABdhPJyt4XRP1e++zVGdrBo9VE34sMun8PleYjFWZtk2N5cq9n5DW58DGShodjq/71w2TZVf1uE3KS0242gX91q0Ris=
-X-Received: by 2002:a17:907:2070:: with SMTP id qp16mr17307208ejb.503.1607319392893;
- Sun, 06 Dec 2020 21:36:32 -0800 (PST)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 7 Dec 2020 11:06:10 +0530
-Message-ID: <CA+G9fYvhJTwQkGyH7HQzSsDBHT7pm5ziA9VTkRhE_bDSQp3JYg@mail.gmail.com>
-Subject: sched: core.c:7270 Illegal context switch in RCU-bh read-side
- critical section! __alloc_pages_nodemask
-To:     open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=YwGMi9iNd6O/Jb8LuzDIfb7n8JTTcq96cUgR5LZJ6ho=;
+        b=augC6/yloI1L55LkMD7qitOwHN4UW+bVFBduxwaJD72aF4P3QDkjJ05HU81QqKvWcM
+         olxAWV8F3wlXjsyEW5krmOL6fohvN4AeX8YYqLB/cB3xt2YOc2KTn43gExJ9ZjdJtrwm
+         5mvSd3HC5ZJVmJbRg2rdbMuV+kQ2FAx+FxuHIbp9oLENa8HVfeEAbucVG+3RIgqzLmRX
+         r2SGxZhb/NLyNZHNa/BmiHfZb3oiFa0X3g/87c2NHch3FY9h5VlMYfbihiVKPixL2YMU
+         BWVRYMBKuNG0iiguDO0uhdMAoo1GqoUg4f480dUsF4DLcP8dyy7zyRlO57TzV4qIxBd0
+         J4Og==
+X-Gm-Message-State: AOAM532oFFKz8QLIGZLiq4su9BDa+4757z8hG9JT9gkbO0RwvFr0Nztp
+        QXndQC8urFkk39k7YJEIUxc0sS+DC5LOwMKx3Evhj7MArvpjO86S6YyHvTgqk5bTtgGWaeoNNCz
+        AifZSy8f3dRgBDfQiwzpsr7XEc+EpA5gq1otPx+g4RQ==
+X-Received: by 2002:a17:902:830a:b029:da:df3b:459a with SMTP id bd10-20020a170902830ab02900dadf3b459amr8931037plb.75.1607319399824;
+        Sun, 06 Dec 2020 21:36:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOvWqW1KGPx37vxNpQuOkkh0LYbbhwGCUnQvxzO9fmn844rtNnaDBgPn+0nSp9WkuOTdXViQ==
+X-Received: by 2002:a17:902:830a:b029:da:df3b:459a with SMTP id bd10-20020a170902830ab02900dadf3b459amr8931014plb.75.1607319399534;
+        Sun, 06 Dec 2020 21:36:39 -0800 (PST)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id 22sm12021202pfn.190.2020.12.06.21.36.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Dec 2020 21:36:38 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.20.0.2.21\))
+Subject: Re: [PATCH 1/3] thermal: core: Add indication for userspace usage
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <f863f2e1e322a8819c660f5eefbbc4acf7522990.camel@linux.intel.com>
+Date:   Mon, 7 Dec 2020 13:36:35 +0800
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, amitk@kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <FCFE1F21-2EC6-4D3A-8B2E-32C653816D58@canonical.com>
+References: <20201128175450.12456-1-kai.heng.feng@canonical.com>
+ <004fe225-1009-06d8-b297-c03a4c67550f@linaro.org>
+ <860126B8-1152-4EE3-B15E-B4E45EFE879F@canonical.com>
+ <fc67ad02826fb3adfd8457e1a0baf234a8fa3fce.camel@linux.intel.com>
+ <34348B03-5E27-49A0-A704-6332BAC00758@canonical.com>
+ <585bb5d3ee5bea063795682108576c3464ba72b6.camel@linux.intel.com>
+ <D53454A1-5ED0-4B4D-B22F-8663C9970ECD@canonical.com>
+ <f863f2e1e322a8819c660f5eefbbc4acf7522990.camel@linux.intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+X-Mailer: Apple Mail (2.3654.20.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While booting arm64 hikey board with stable-rc 5.9.13-rc1 the following warning
-noticed. This is hard to reproduce.
-
-Step to reproduce:
-------------------------
-# Boot arm64 hikey device with stable-rc 5.9.13-rc1
-# Since it is hard to reproduce you may notice this warning
-
-Crash log :
---------------
-[   10.763081] [drm] Initialized kirin 1.0.0 20150718 for f4100000.ade
-on minor 1
-[   10.764088] Bluetooth: hci0: change remote baud rate command in firmware
-[[0;32m  OK  [0m] Started TEE Supplicant.
-[   10.791741] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-req 400000Hz, actual 400000HZ div = 31)
-E/TC:0 tee_entry_std:545 Bad arg address 0x6b681000
-[[0;32m  OK  [0m] Started Periodic Command Scheduler.
-[   10.846417] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-req 25000000Hz, actual 24800000HZ div = 0)
-[   10.887083]
-[   10.887087]
-[   10.887095] =====================================
-[   10.887098] =============================
-[   10.887101] WARNING: bad unlock balance detected!
-[   10.887107] WARNING: suspicious RCU usage
-[   10.887112] 5.9.13-rc1 #1 Not tainted
-[   10.887120] 5.9.13-rc1 #1 Not tainted
-[   10.887122] -------------------------------------
-[   10.887129] systemd-udevd/306 is trying to release lock (
-[   10.887133] -----------------------------
-[   10.887135] fs_reclaim) at:
-[   10.887144] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
-context switch in RCU-bh read-side critical section!
-[   10.887163] [<ffff80001030f2e8>] __alloc_pages_nodemask+0x250/0x4c0
-[   10.887166]
-[   10.887166] other info that might help us debug this:
-[   10.887166]
-[   10.887170] but there are no more locks to release!
-[   10.887175]
-[   10.887175] other info that might help us debug this:
-[   10.887179]
-[   10.887179] rcu_scheduler_active = 2, debug_locks = 0
-[   10.887182] 1 lock held by systemd-udevd/306:
-[   10.887189] 1 lock held by systemd-sysctl/342:
-[   10.887192]  #0: ffff00007474e518
-[   10.887199]  #0:
-[   10.887202]  (
-[   10.887209] ffff000070c54708
-[   10.887212] &mm->mmap_lock){++++}-{3:3}
-[   10.887219]  (
-[   10.887228] , at: do_page_fault+0x168/0x420
-[   10.887230] &type->i_mutex_dir_key
-[   10.887235]
-[   10.887235] stack backtrace:
-[   10.887237] #3){++++}-{3:3}
-[   10.887246] CPU: 1 PID: 306 Comm: systemd-udevd Not tainted 5.9.13-rc1 #1
-[   10.887255] , at: iterate_dir+0x54/0x1d0
-[   10.887258] Hardware name: HiKey Development Board (DT)
-[   10.887264]
-[   10.887264] stack backtrace:
-[   10.887266] Call trace:
-[   10.887276]  dump_backtrace+0x0/0x1f8
-[   10.887283]  show_stack+0x2c/0x38
-[   10.887292]  dump_stack+0xec/0x158
-[   10.887303]  print_unlock_imbalance_bug+0xec/0xf0
-[   10.887311]  lock_release+0x300/0x388
-[   10.887320]  __alloc_pages_nodemask+0x268/0x4c0
-[   10.887329]  alloc_pages_vma+0x90/0x240
-[   10.887338]  handle_mm_fault+0x8d4/0x12f0
-[   10.887346]  do_page_fault+0x1c4/0x420
-[   10.887353]  do_translation_fault+0xb0/0xcc
-[   10.887363]  do_mem_abort+0x50/0xb0
-[   10.887372]  el1_abort+0x28/0x30
-[   10.887379]  el1_sync_handler+0xc0/0xf0
-[   10.887386]  el1_sync+0x7c/0x100
-[   10.887397]  __arch_copy_to_user+0x1d8/0x310
-[   10.887407]  copy_page_to_iter+0x110/0x3e8
-[   10.887416]  generic_file_buffered_read+0x4b8/0xaa8
-[   10.887423]  generic_file_read_iter+0xd4/0x168
-[   10.887432]  blkdev_read_iter+0x50/0x78
-[   10.887442]  new_sync_read+0x100/0x1a0
-[   10.887449]  vfs_read+0x1b4/0x1d8
-[   10.887457]  ksys_read+0x74/0xf8
-[   10.887465]  __arm64_sys_read+0x24/0x30
-[   10.887472]  el0_svc_common.constprop.3+0x7c/0x198
-[   10.887478]  do_el0_svc+0x34/0xa0
-[   10.887486]  el0_sync_handler+0x16c/0x210
-[   10.887492]  el0_sync+0x140/0x180
-[   10.887504] CPU: 6 PID: 342 Comm: systemd-sysctl Not tainted 5.9.13-rc1 #1
-[   10.887510] Hardware name: HiKey Development Board (DT)
-[   10.887515] Call trace:
-[   10.887524]  dump_backtrace+0x0/0x1f8
-[   10.887531]  show_stack+0x2c/0x38
-[   10.887542]  dump_stack+0xec/0x158
-[   10.887552]  lockdep_rcu_suspicious+0xd4/0xf8
-[   10.887561]  ___might_sleep+0x1e4/0x208
-[   10.887569]  __might_sleep+0x54/0x90
-[   10.887577]  __might_fault+0x58/0xa8
-[   10.887584]  filldir64+0x1f0/0x488
-[   10.887593]  call_filldir+0xb0/0x140
-[   10.887600]  ext4_readdir+0x700/0x900
-[   10.887607]  iterate_dir+0x88/0x1d0
-[   10.887615]  __arm64_sys_getdents64+0x70/0x1a0
-[   10.887622]  el0_svc_common.constprop.3+0x7c/0x198
-[   10.887629]  do_el0_svc+0x34/0xa0
-[   10.887637]  el0_sync_handler+0x16c/0x210
-[   10.887644]  el0_sync+0x140/0x180
-[   10.912334] Console: switching to colour frame buffer device 256x72
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Full boot log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.12-47-g1372e1af58d4/testrun/3538040/suite/linux-log-parser/test/check-kernel-warning-2012813/log
-
-metadata:
-  git branch: linux-5.9.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git commit: 1372e1af58d410676db7917cc3484ca22d471623
-  git describe: v5.9.12-47-g1372e1af58d4
-  make_kernelversion: 5.9.13-rc1
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/hikey/lkft/linux-stable-rc-5.9/47/config
 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+> On Dec 1, 2020, at 02:39, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+> 
+> On Tue, 2020-12-01 at 02:22 +0800, Kai-Heng Feng wrote:
+>>> On Dec 1, 2020, at 02:13, Srinivas Pandruvada <
+>>> srinivas.pandruvada@linux.intel.com> wrote:
+>> 
+>> [snipped] 
+>> 
+>>>>> What about creating an new callback
+>>>>> 
+>>>>> enum thermal_trip_status {
+>>>>> 	THERMAL_TRIP_DISABLED = 0,
+>>>>> 	THERMAL_TRIP_ENABLED,
+>>>>> };
+>>>>> 
+>>>>> int get_trip_status(struct thermal_zone_device *, int trip,
+>>>>> enum
+>>>>> thermal_trip_status *state);
+>>>>> 
+>>>>> Then in 
+>>>>> static void handle_thermal_trip(struct thermal_zone_device *tz,
+>>>>> int
+>>>>> trip)
+>>>>> {
+>>>>> 
+>>>>> /* before tz->ops->get_trip_temp(tz, trip, &trip_temp); */
+>>>>> if (tz->ops->get_trip_status) {
+>>>>> 	enum thermal_trip_status *status;
+>>>>> 
+>>>>> 	if (!tz->ops->get_trip_status(tz, trip, &status)) {
+>>>>> 		if (status == THERMAL_TRIP_DISABLED)
+>>>>> 			return;	
+>>>>> 	}
+>>>>> }
+>>>>> ...
+>>>>> ...
+>>>>> 
+>>>>> }
+>>>>> 
+>>>>> 
+>>>>> This callback will help the cases:
+>>>>> - Allows drivers to selectively disable certain trips during
+>>>>> init
+>>>>> state
+>>>>> or system resume where there can be spikes or always. int340x
+>>>>> drivers
+>>>>> can disable always.
+>>>> 
+>>>> This sounds really great. This is indeed can happen on system
+>>>> resume,
+>>>> before userspace process thaw.
+>>>> 
+>>>>> - Still give options for drivers to handle critical trip even
+>>>>> if
+>>>>> they
+>>>>> are bound to user space governors. User space process may be
+>>>>> dead,
+>>>>> so
+>>>>> still allow kernel to process graceful shutdown
+>>>> 
+>>>> To make the scenario happen, do we need a new sysfs to let
+>>>> usespace
+>>>> enable it with THERMAL_TRIP_ENABLED?
+>>> This should be drivers call not user space.
+>> 
+>> Understood. So after thermal_zone_device_register(), the driver can
+>> decide to what to return on get_trip_temp().
+> get_trip_status()
+> 
+>> Let me work on a new patch if there's no other concern.
+> Better to wait for confirmation from Daniel and others.
+
+Daniel,
+
+Do you like Srinivas' proposed solution?
+
+I hope we can find a solution in upstream kernel soon.
+
+Kai-Heng
+
+> 
+> Thanks,
+> Srinivas
+> 
+>> 
+>> Kai-Heng
+>> 
+>>> Thanks,
+>>> Srinivas
+
