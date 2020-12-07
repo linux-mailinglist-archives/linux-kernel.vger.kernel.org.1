@@ -2,98 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2952D08F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFDF2D08F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 02:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgLGBwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 20:52:39 -0500
-Received: from mga07.intel.com ([134.134.136.100]:58125 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgLGBwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:52:39 -0500
-IronPort-SDR: 0vet0LMhVY8pvDX+I3hPbmCMOrHmddmro/ThQcS3ujHnK/w0wOSVoZlrlNYSqiHaz5mYp/vbeF
- TSsGBMkPojGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="237737234"
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="237737234"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 17:51:58 -0800
-IronPort-SDR: jz/DL1lQ8dyh4nWDBvfo2IKLv0CC3GtIfxAATLJ68hHhediwQ7ZMAs9nqv9qv9b2DNOmq2OX8u
- 3PCUU2mDOrWQ==
-X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
-   d="scan'208";a="362917991"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.16.231])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 17:51:58 -0800
-Date:   Sun, 6 Dec 2020 17:51:57 -0800
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] ionic: fix array overflow on receiving too many
- fragments for a packet
-Message-ID: <20201206175157.0000170d@intel.com>
-In-Reply-To: <20201206133537.30135-1-ruc_zhangxiaohui@163.com>
-References: <20201206133537.30135-1-ruc_zhangxiaohui@163.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S1728673AbgLGBxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 20:53:53 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:49650 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727375AbgLGBxw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 20:53:52 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E484320B717A;
+        Sun,  6 Dec 2020 17:53:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E484320B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607305991;
+        bh=sgdL0j12SkYfd6O2k0i5MCPfASlpZiQl5L2oSTtnExg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lSEaFq24iswnBHkkvOvtSsaHlHv8asqj2zKTAMnEGBveDHAZdaTkxcJn9UzooyBt2
+         pxyxGOpLYYAS1CrbLSve10yadHx92v2EpoEH/flJbYvZA0vL47F94Mo5Y+MQAtmEGo
+         gvMOwf6bn6g27PnVchozZDezvCH/lSqPJ3OXOkGQ=
+Subject: Re: [PATCH v10 3/8] powerpc: Move ima buffer functions to
+ drivers/of/kexec.c
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+References: <20201204195149.611-1-nramas@linux.microsoft.com>
+ <20201204195149.611-4-nramas@linux.microsoft.com>
+ <87zh2sm3tj.fsf@manicouagan.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <0cb40d89-cc0b-25cc-479c-f8269af0346a@linux.microsoft.com>
+Date:   Sun, 6 Dec 2020 17:53:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87zh2sm3tj.fsf@manicouagan.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiaohui Zhang wrote:
-
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+On 12/5/20 11:48 AM, Thiago Jung Bauermann wrote:
 > 
-> If the hardware receives an oversized packet with too many rx fragments,
-> skb_shinfo(skb)->frags can overflow and corrupt memory of adjacent pages.
-> This becomes especially visible if it corrupts the freelist pointer of
-> a slab page.
+> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 > 
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-
-Hi, thanks for your patch.
-
-It appears this is a part of a series of patches (at least this one and
-one to the ice driver) - please send as one series, with a cover letter
-explanation.
-
-Please justify how this is a bug and how this is found / reproduced.
-
-I'll respond separately to the ice driver patch as I don't know this
-hardware and it's limits, but I suspect that you've tried to fix a bug
-where there was none. (It seems like something a code scanner might find
-and be confused about)
-
-> ---
->  drivers/net/ethernet/pensando/ionic/ionic_txrx.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>> The functions do_get_kexec_buffer() and get_addr_size_cells(),
+>> defined in arch/powerpc/kexec/ima.c, retrieve the address and size
+>> of the given property from the device tree blob. These functions do
+>> not have architecture specific code, but are currently limited to
+>> powerpc. do_get_kexec_buffer() correctly handles a device tree property
+>> that is a child node of the root node, but not anything other than
+>> the immediate root child nodes.
+>>
+>> Move architecture independent functions get_ima_kexec_buffer() and
+>> get_root_addr_size_cells() to "drivers/of/kexec.c". These functions
+>> retrieve the chosen node "linux,ima-kexec-buffer" from the device tree,
+>> and return the address and size of the buffer used for carrying forward
+>> the IMA measurement log across kexec system call.
+>>
+>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 > 
-> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> index 169ac4f54..a3e274c65 100644
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_txrx.c
-> @@ -102,8 +102,12 @@ static struct sk_buff *ionic_rx_frags(struct ionic_queue *q,
->  
->  		dma_unmap_page(dev, dma_unmap_addr(page_info, dma_addr),
->  			       PAGE_SIZE, DMA_FROM_DEVICE);
-> -		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> +		struct skb_shared_info *shinfo = skb_shinfo(skb);
+> I'd personally squash this patch with the next one, but I'll leave it
+> just as a suggestion since maintainers are the ones who know best what
+> works well in this regard.
+> 
+> The code is good, except for a nit below:
+> 
+> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-you can't declare variables in the middle of a code flow in C, did you
-compile this?
+Thanks Thiago.
 
-> +
-> +		if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
-> +			skb_add_rx_frag(skb, shinfo->nr_frags,
->  				page_info->page, 0, frag_len, PAGE_SIZE);
-> +		}
->  		page_info->page = NULL;
->  		page_info++;
->  		i--;
+I'll remove "extern" key word in function declarations when I update the 
+patch.
 
+  -lakshmi
+
+> 
+>> ---
+>>   drivers/of/kexec.c    | 70 +++++++++++++++++++++++++++++++++++++++++++
+>>   include/linux/kexec.h |  3 ++
+>>   2 files changed, 73 insertions(+)
+>>
+>> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+>> index b7d59105fcb8..516b86f7113a 100644
+>> --- a/drivers/of/kexec.c
+>> +++ b/drivers/of/kexec.c
+>> @@ -59,3 +59,73 @@ int delete_fdt_mem_rsv(void *fdt, unsigned long start, unsigned long size)
+>>   
+>>   	return -ENOENT;
+>>   }
+>> +
+>> +/**
+>> + * get_root_addr_size_cells - Get address and size of root node
+>> + *
+>> + * @addr_cells: Return address of the root node
+>> + * @size_cells: Return size of the root node
+>> + *
+>> + * Return: 0 on success, or negative errno on error.
+>> + */
+>> +int get_root_addr_size_cells(int *addr_cells, int *size_cells)
+>> +{
+>> +	struct device_node *root;
+>> +
+>> +	if (!IS_ENABLED(CONFIG_HAVE_IMA_KEXEC))
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	root = of_find_node_by_path("/");
+>> +	if (!root)
+>> +		return -EINVAL;
+>> +
+>> +	*addr_cells = of_n_addr_cells(root);
+>> +	*size_cells = of_n_size_cells(root);
+>> +
+>> +	of_node_put(root);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +/**
+>> + * get_ima_kexec_buffer - Get address and size of IMA kexec buffer
+>> + *
+>> + * @fdt: Flattened Device Tree
+>> + * @chosen_node: Offset of chosen node in the FDT
+>> + * @addr: Return address of the node
+>> + * @size: Return size of the node
+>> + *
+>> + * Return: 0 on success, or negative errno on error.
+>> + */
+>> +int get_ima_kexec_buffer(void *fdt, int chosen_node,
+>> +			 unsigned long *addr, size_t *size)
+>> +{
+>> +	const void *prop;
+>> +	int addr_cells, size_cells, prop_len;
+>> +	int rc;
+>> +
+>> +	if (!IS_ENABLED(CONFIG_HAVE_IMA_KEXEC))
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	rc = get_root_addr_size_cells(&addr_cells, &size_cells);
+>> +	if (rc)
+>> +		return rc;
+>> +
+>> +	if (fdt)
+>> +		prop = fdt_getprop(fdt, chosen_node,
+>> +				   "linux,ima-kexec-buffer", &prop_len);
+>> +	else
+>> +		prop = of_get_property(of_chosen,
+>> +				       "linux,ima-kexec-buffer", &prop_len);
+>> +
+>> +	if (!prop)
+>> +		return -ENOENT;
+>> +
+>> +	if (prop_len < 4 * (addr_cells + size_cells))
+>> +		return -EINVAL;
+>> +
+>> +	*addr = of_read_number(prop, addr_cells);
+>> +	*size = of_read_number(prop + 4 * addr_cells, size_cells);
+>> +
+>> +	return 0;
+>> +}
+>> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+>> index d0234c4815da..10ff704ab670 100644
+>> --- a/include/linux/kexec.h
+>> +++ b/include/linux/kexec.h
+>> @@ -408,6 +408,9 @@ static inline int kexec_crash_loaded(void) { return 0; }
+>>   #endif /* CONFIG_KEXEC_CORE */
+>>   
+>>   #if defined(CONFIG_OF_FLATTREE)
+>> +extern int get_root_addr_size_cells(int *addr_cells, int *size_cells);
+>> +extern int get_ima_kexec_buffer(void *fdt, int chosen_node,
+>> +				unsigned long *addr, size_t *size);
+>>   extern int delete_fdt_mem_rsv(void *fdt, unsigned long start,
+>>   			      unsigned long size);
+>>   #endif /* CONFIG_OF_FLATTREE */
+> 
+> The extern keyword on function prototypes doesn't have any meaning.
+> It's better to drop them (I should have mentioned this on the previous
+> patch as well).
+> 
 
