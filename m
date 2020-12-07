@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE182D1669
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0F02D166C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgLGQfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:35:37 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:63558 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727983AbgLGQfc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:35:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607358913; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=IW9DTF4PmF8ZmkQKPvCQah+cT5wir5KBEaelBBw/+SA=;
- b=noeVdR4TrBXAhdEiaznnGyfEgimAgq/y59VuBK8SfQj9WbFgfRrRUOu4ubnPPe6CE1s62brQ
- V2VwbbCOmbfE3t8yGY6M08zfk7UYeibJpbRViAFmDkT+7WZuT9mXQcOOY2y9g+kQ93bwhyBj
- O5/T0Bcx+iy4doA11KgrXa+2a2A=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fce59b6ca03b14965ed328c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:35:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ABA94C43461; Mon,  7 Dec 2020 16:35:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B5B17C433ED;
-        Mon,  7 Dec 2020 16:34:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B5B17C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1728019AbgLGQf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:35:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727673AbgLGQf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:35:56 -0500
+Date:   Mon, 7 Dec 2020 13:35:24 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607358915;
+        bh=MoKNkCCQLssCM2eQlwQkIPKZBt3fQJFl8EPNvdC6uz8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LzX+llb2fn88lHi72wD3wOBn1GRvHwKSBVF0h8wCPxlcREq03ioUhRoc6R31wRisM
+         so0Wt1veq64ZOfktqabaafjDEj+QApOx3ebPTl+8W5YCi7pz8KgrXdfmICj9EMLCEY
+         e8dXFr6zZqkoVpKKK50zON6vPgbbzaQfDvYcz41fY62QS428DIrmgY8kEsps7g+neI
+         6GU4LZGRaiMefDrRcpiqaTfcZ1YoNzqEW4dHtUdB4GH0HJCUrd1H13M5fhVWuvVGkE
+         PRjejGcITeFn9BlVl/yIgdJeR1byvi4CIhSnnO/WAP833YO3BO9+WiwA29peV6KtPF
+         V82GJKvjmuGqQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Cc:     Kajol Jain <kjain@linux.ibm.com>, jolsa@redhat.com,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, irogers@google.com,
+        tmricht@linux.ibm.com, rbernon@codeweavers.com,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com
+Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
+Message-ID: <20201207163524.GF125383@kernel.org>
+References: <20201104082954.57338-1-tmricht@linux.ibm.com>
+ <20201119135022.36340-1-kjain@linux.ibm.com>
+ <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH][next] rtw88: coex: fix missing unitialization of variable
- 'interval'
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201203175142.1071738-1-colin.king@canonical.com>
-References: <20201203175142.1071738-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Yan-Hsuan Chuang <tony0620emma@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Ching-Te Ku <ku920601@realtek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201207163502.ABA94C43461@smtp.codeaurora.org>
-Date:   Mon,  7 Dec 2020 16:35:02 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> wrote:
-
-> From: Colin Ian King <colin.king@canonical.com>
+Em Tue, Nov 24, 2020 at 03:04:53PM +0530, Ravi Bangoria escreveu:
 > 
-> Currently the variable 'interval' is not initialized and is only set
-> to 1 when oex_stat->bt_418_hid_existi is true.  Fix this by inintializing
-> variable interval to 0 (which I'm assuming is the intended default).
 > 
-> Addresses-Coverity: ("Uninitalized scalar variable")
-> Fixes: 5b2e9a35e456 ("rtw88: coex: add feature to enhance HID coexistence performance")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+> On 11/19/20 7:20 PM, Kajol Jain wrote:
+> > Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
+> > adds a WINDOWS EXE file named tests/pe-file.exe, which is
+> > examined by the test case 'PE file support'. As powerpc doesn't support
+> > it, we are skipping this test.
+> > 
+> > Result in power9 platform before this patach:
+> > [command]# ./perf test -F 68
+> > 68: PE file support                               : Failed!
+> > 
+> > Result in power9 platform after this patch:
+> > [command]# ./perf test -F 68
+> > 68: PE file support                               : Skip
+> > 
+> > Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> 
+> Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 
-Patch applied to wireless-drivers-next.git, thanks.
+But why is it failing? I.e. what is that
 
-88c15a6fbd94 rtw88: coex: fix missing unitialization of variable 'interval'
+ perf test -v -F 68
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201203175142.1071738-1-colin.king@canonical.com/
+outputs?
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Using 'perf report' on a perf.data file containing samples in such
+binaries, collected on x86 should work on whatever workstation a
+developer uses.
 
+Say, on a MacBook aarch64 one can look at a perf.data file collected on
+a x86_64 system where Wine running a PE binary was present.
+
+- Arnaldo
