@@ -2,160 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526DE2D109E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D932D10A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgLGMfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgLGMfR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:35:17 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00455C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:34:30 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id q8so14704228ljc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=boKMjDjJa5tRLm1VPCUmtsYmlC2fesJJoaLCTYk8EUo=;
-        b=XRCkYUCdOmvRRAtRW3hi67kI3cSeDfNcypHvLS8jdjZZe/bAI5psCeUuTET6Ap9u/a
-         5vY1eRHmi2x5zg4MXni5dltguovscn5Vx3S8VYcRZaFkS6Xh6yKIhlvAz9GaKMKYZ2jL
-         bypClOGEwkbSDSCtYJUpOdXlkMHCfpDbv5lgyAMEqIRY6tCKHpMjxBMym9nMiaNZpZ4r
-         qkGb4ZLSq7dUPqVo0McnPOil2TXOvm33hPJK/S4rEnAIB7HVJ2nl+1UdMreUuvqDVSgl
-         bAs2J7FdEnjl0ku+0IfuhgiDcU/fYPx1YUxP0BS5VEkva4tHgDXe73Iv5BD+lKX1cXYe
-         hkjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boKMjDjJa5tRLm1VPCUmtsYmlC2fesJJoaLCTYk8EUo=;
-        b=btkjXwz1rcRymkmk6xD78gcIMFoqpILNqL6bgO+Vm1SJIdXrU7n+9o2iut57+p2bYy
-         MQ+TlahqfHoU2Shl3GL88nXp0Z3ZAOZ+Y1bXAo5dGwXs8EK2Gr6B+kDiB1yYvcbzbJVN
-         JLNSfq/z15d2tisjuMc2eweVNBTdFKIZ2/XpSt4TOzZ/q/fUXi2fsAmFtXAcWJzwrskx
-         VgR4WRHnZdbCbmDuD2bt7fCs6UTkWuZnSBpYa1TK8E4i2iTTAn3rLTJB0PG797JK2igR
-         WxNi0IkipOwwX23TIDaBQgcwQWlZn5xIks8mxGWnsg5R0hr5sm6yiO387RNrHnQq4WUw
-         wmFQ==
-X-Gm-Message-State: AOAM5327NdysAlHFdhtAeMCciUeOfekrKbIsSx6qYoH0ToDodUuyQVWG
-        WsGtTaCLA5xp+6r/Vn+khwQAZzuohPpoMYPqxdO2dYfTDctp8WPy
-X-Google-Smtp-Source: ABdhPJxCMdxWp9BFOclJM4l0os50hx76oBCQDWSP9Mz1ISgEte4ORw7PcLsLj6UH4DkqJ6zlcpFPOuTE9rfLfpwTh4Y=
-X-Received: by 2002:a2e:321a:: with SMTP id y26mr8487351ljy.293.1607344469350;
- Mon, 07 Dec 2020 04:34:29 -0800 (PST)
+        id S1725911AbgLGMgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:36:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51428 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbgLGMgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:36:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607344567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rvs081RAGQPaFquBIFuFiPgtjv7glx+tVrBE85otOnw=;
+        b=Eugiw6R2M3d1tGTGOVHNaxSZUo0OJvOH6z4OoBj3eg9W37zRl8JNEYrEQaCdQg7pgiLFRr
+        3nm+3Dm6QgbPfpeXJZBLKD6S3UW6dUUENnu9me6G8pZOi6kOP8DXosWxYHw1VwuKdpS+TB
+        3MJU7FKpT3t/nNHLNSZjswHItP6saVc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 63CDFAC9A;
+        Mon,  7 Dec 2020 12:36:07 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 13:36:05 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        sfr@canb.auug.org.au, alexander.h.duyck@linux.intel.com,
+        chris@chrisdown.name, laoar.shao@gmail.com,
+        richard.weiyang@gmail.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcontrol: optimize per-lruvec stats counter memory
+ usage
+Message-ID: <20201207123605.GH25569@dhcp22.suse.cz>
+References: <20201206085639.12627-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <tencent_220963AF059847E1171B4AB9@qq.com> <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
- <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com> <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
- <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 7 Dec 2020 13:34:18 +0100
-Message-ID: <CACRpkdZmM3GK6mebmm6nT-XXfdTB5KGwArAFk-1Gx6noZDxVAw@mail.gmail.com>
-Subject: Re: 0001-add-amlogic-gpio-to-irq
-To:     Jerome Brunet <jbrunet@baylibre.com>, Marc Zyngier <maz@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>,
-        khilman <khilman@baylibre.com>,
-        narmstrong <narmstrong@baylibre.com>,
-        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic <linux-amlogic@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206085639.12627-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 12:07 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> On Mon 07 Dec 2020 at 11:18, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > On Fri, Dec 4, 2020 at 4:25 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
-> >> On Fri 04 Dec 2020 at 10:13, Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> >> This HW only has 8 irqs that can each be mapped to a pin. No direct
-> >> translation can be made, we have to allocate an irq to monitor the line.
-> >> So when gpio_to_irq() was called, we had to do that allocation dynamically
-> >> to return a valid irq number. Since there was no counter part to
-> >> gpio_to_irq(), those allocation cannot be freed during the lifetime of
-> >> the device.
+On Sun 06-12-20 16:56:39, Muchun Song wrote:
+> The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
+> of lruvec_stat_cpu is enough. And introduce struct per_cpu_lruvec_stat
+> to optimize memory usage.
 
-gpio_to_irq() is just a helper really and should not really be used to allocate
-anything.
+How much savings are we talking about here? I am not deeply familiar
+with the pcp allocator but can it compact smaller data types much
+better?
 
-In device tree systems, the GPIO provider should nominally present itsel
-as a dual-mode gpio-controller and interrupt-controller for example:
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/memcontrol.h | 6 +++++-
+>  mm/memcontrol.c            | 2 +-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index f9a496c4eac7..34cf119976b1 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -92,6 +92,10 @@ struct lruvec_stat {
+>  	long count[NR_VM_NODE_STAT_ITEMS];
+>  };
+>  
+> +struct per_cpu_lruvec_stat {
+> +	s32 count[NR_VM_NODE_STAT_ITEMS];
+> +};
+> +
+>  /*
+>   * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+>   * which have elements charged to this memcg.
+> @@ -111,7 +115,7 @@ struct mem_cgroup_per_node {
+>  	struct lruvec_stat __percpu *lruvec_stat_local;
+>  
+>  	/* Subtree VM stats (batched updates) */
+> -	struct lruvec_stat __percpu *lruvec_stat_cpu;
+> +	struct per_cpu_lruvec_stat __percpu *lruvec_stat_cpu;
+>  	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
+>  
+>  	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 49fbcf003bf5..c874ea37b05d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5184,7 +5184,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+>  		return 1;
+>  	}
+>  
+> -	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
+> +	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct per_cpu_lruvec_stat,
+>  					       GFP_KERNEL_ACCOUNT);
+>  	if (!pn->lruvec_stat_cpu) {
+>  		free_percpu(pn->lruvec_stat_local);
+> -- 
+> 2.11.0
 
-                gpio1: gpio@4e000000 {
-                        compatible = "cortina,gemini-gpio", "faraday,ftgpio010";
-                        reg = <0x4e000000 0x100>;
-                        interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
-                        resets = <&syscon GEMINI_RESET_GPIO1>;
-                        clocks = <&syscon GEMINI_CLK_APB>;
-                        gpio-controller;
-                        #gpio-cells = <2>;
-                        interrupt-controller;
-                        #interrupt-cells = <2>;
-                };
-
-The GPIOs are normally *not* translated to IRQs in this set-up. Rather the
-interrupts are requested by consumers using request_[threaded_]irq()
-which means you should be using the irqchip callbacks such as
-.irq_request_resources() and .irq_release_resources() to allocate one
-of the free irq lines to use. These will be called at the right points if a
-properly written driver requests an IRQ and when the driver is removed.
-
-In some rare cases gpio_to_irq() is used because all the driver knows is
-a GPIO number and it want to try to obtain an IRQ for it, and if a 1-to-1
-mapping exists it returns this number. This is not the norm, but the
-exception.
-
-So maybe the problem is that you need to go back and think about
-updating the DT bindings for this thing to include interrupt-controller
-as well?
-
->  * This HW has to create the mapping between GPIO and irq number
->    dynamically. The number of irqs available is very limited.
-
-This should be done using irq_chip callbacks.
-
->  * We only get to know a mapping is required when gpio_to_irq() is called
-
-No that callback should not be used for that.
-
->  * There is no way to know when it is safe to dispose of the created
->    mapping
-
-The way that is done is when .irq_release_resources() is called.
-
->  * Some drivers require a trigger type we don't support. These will create
->    mappings and not use it because of the failure when .set_type() is
->    called
-
-I don't quite understand this. Do you mean you are bombarded by pointless
-requests for interrupts that will not work anyways? Then do not assign
-interrupts to these drivers in the device tree. These requesting devices
-and their requests are under your control. The drivers should be able to
-back out and work without interrupt if request_irq() fails because it
-can't provide the type on interrupt you want:
-
-int irq = request_irq(irq, my_isr, IRQF_TRIGGER_RISING |
-IRQF_TRIGGER_FALLING, "My ISR", cookie);
-// This results in .irq_request_resources() and .irq_set_type()
-if (irq < 0) {
-   // Oopps out of IRQs or couldn't support double edges, bail out or
-use polling
-}
-
-Just do it like this (you might have to augment your drivers) and you'll
-be fine?
-
-> To answer your question, there an API which lets us know a mapping is
-> needed, but none to inform that it is not required anymore. The GPIO API
-> was not meant to used like this. Not saying it is good or bad, this is
-> just how it is.
-
-So don't use it?
-
-Yours,
-Linus Walleij
+-- 
+Michal Hocko
+SUSE Labs
