@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047692D1005
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD1C2D1010
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgLGMEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:04:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38611 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727096AbgLGMEW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:04:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607342575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VV+E+pdDesJK1ua/OBZSFe/m+EuDUY9iFBTNIzHgamg=;
-        b=ThifjIEcKVv6a0yMxfsCk0fFevCyCjRjNg1nPY1afZmsffxCQbF7gKeo/ZRTewDLaw44im
-        oyr0RUG8tuXvoDVRWJVjgp0+QUJsZIbgs8+c6f7e/DxmvtOfk7dei5ifyD2IU0bp/ASdBS
-        SGpgk4Ubn8stcPMiXrnDoaw/YJJAywQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-219-tlIb3Xe8OLCWM9fm3MzovQ-1; Mon, 07 Dec 2020 07:02:53 -0500
-X-MC-Unique: tlIb3Xe8OLCWM9fm3MzovQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED8511015C88;
-        Mon,  7 Dec 2020 12:02:50 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 879A860BD8;
-        Mon,  7 Dec 2020 12:02:47 +0000 (UTC)
-Subject: Re: [RFC V2 00/37] Enhance memory utilization with DMEMFS
-To:     yulei.kernel@gmail.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk,
-        pbonzini@redhat.com, Dan Williams <dan.j.williams@intel.com>
-Cc:     joao.m.martins@oracle.com, rdunlap@infradead.org,
-        sean.j.christopherson@intel.com, xiaoguangrong.eric@gmail.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        Yulei Zhang <yuleixzhang@tencent.com>
-References: <cover.1607332046.git.yuleixzhang@tencent.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <33a1c4ca-9f78-96ca-a774-3adea64aaed3@redhat.com>
-Date:   Mon, 7 Dec 2020 13:02:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727050AbgLGMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:06:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgLGMGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:06:14 -0500
+Date:   Mon, 7 Dec 2020 12:05:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607342733;
+        bh=xYecpIocncYbomw151SJIMvBkPsNpdC8hHd472+icVw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m6pwNfChCGfEwJgZDaxOPHG38w9DWpq6iTj5WODngrXSZTnR/zZIR1ybJwAKOK96O
+         eNVCDCdxh/MFbRkVEtl9g9AuV33pDZpktiuIyX5Us/43J7fpbreJ1InBv01aRopTjJ
+         3c2mkN/qfPCqvrReEg4ZOB5vuhhP3EqknFaAkDQ21GTgGAzyQ93a5Fn+TD3uXsjSuu
+         wpqNSqiDXWJb3l6nFlgGE1wpC9SlObbPJnBPfu5uNyKrMZw6hYKX1RN6DZ3nyr6fcZ
+         uCZo08hhXvMqfzBV4JbKxQpO7GX0/2TBjDGrdG9X/GfDn5jV11ugt4hUQie1cQurUt
+         AfkL/90K4KKkg==
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, Marc Zyngier <maz@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
+Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
+Message-ID: <20201207120527.GA4474@willie-the-truck>
+References: <20201205082957.12544-1-zhukeqian1@huawei.com>
+ <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1607332046.git.yuleixzhang@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.12.20 12:30, yulei.kernel@gmail.com wrote:
-> From: Yulei Zhang <yuleixzhang@tencent.com>
+On Mon, Dec 07, 2020 at 12:01:09PM +0000, Robin Murphy wrote:
+> On 2020-12-05 08:29, Keqian Zhu wrote:
+> > ... then we have more chance to detect wrong code logic.
 > 
-> In current system each physical memory page is assocaited with
-> a page structure which is used to track the usage of this page.
-> But due to the memory usage rapidly growing in cloud environment,
-> we find the resource consuming for page structure storage becomes
-> more and more remarkable. So is it possible that we could reclaim
-> such memory and make it reusable?
+> I don't follow that justification - it's still the same check with the same
+> outcome, so how does moving it have any effect on the chance to detect
+> errors?
 > 
-> This patchset introduces an idea about how to save the extra
-> memory through a new virtual filesystem -- dmemfs.
+> AFAICS the only difference it would make is to make some errors *less*
+> obvious - if a sufficiently broken caller passes an empty prot value
+> alongside an invalid size or already-mapped address, this will now quietly
+> hide the warnings from the more serious condition(s).
 > 
-> Dmemfs (Direct Memory filesystem) is device memory or reserved
-> memory based filesystem. This kind of memory is special as it
-> is not managed by kernel and most important it is without 'struct page'.
-> Therefore we can leverage the extra memory from the host system
-> to support more tenants in our cloud service.
+> Yes, it will bail out a bit faster in the specific case where the prot value
+> is the only thing wrong, but since when do we optimise for fundamentally
+> incorrect API usage?
 
-"is not managed by kernel" well, it's obviously is managed by the
-kernel. It's not managed by the buddy ;)
+I thought it was the other way round -- doesn't this patch move the "empty
+prot" check later, so we have a chance to check the size and addresses
+first?
 
-How is this different to using "mem=X" and mapping the relevant memory
-directly into applications? Is this "simply" a control instance on top
-that makes sure unprivileged process can access it and not step onto
-each others feet? Is that the reason why it's called  a "file system"?
-(an example would have helped here, showing how it's used)
+Will
 
-It's worth noting that memory hotunplug, memory poisoning and probably
-more is currently fundamentally incompatible with this approach - which
-should better be pointed out in the cover letter.
-
-Also, I think something similar can be obtained by using dax/hmat
-infrastructure with "memmap=", at least I remember a talk where this was
-discussed (but not sure if they modified the firmware to expose selected
-memory as soft-reserved - we would only need a cmdline parameter to
-achieve the same - Dan might know more).
-
-> 
-> As the belowing figure shows, we uses a kernel boot parameter 'dmem='
-> to reserve the system memory when the host system boots up, the
-> remaining system memory is still managed by system memory management
-> which is associated with "struct page", the reserved memory
-> will be managed by dmem and assigned to guest system, the details
-> can be checked in /Documentation/admin-guide/kernel-parameters.txt.
-> 
->    +------------------+--------------------------------------+
->    |  system memory   |     memory for guest system          | 
->    +------------------+--------------------------------------+
->     |                                   |
->     v                                   |
-> struct page                             |
->     |                                   |
->     v                                   v
->     system mem management             dmem  
-> 
-> And during the usage, the dmemfs will handle the memory request to
-> allocate and free the reserved memory on each NUMA node, the user 
-> space application could leverage the mmap interface to access the 
-> memory, and kernel module such as kvm and vfio would be able to pin
-> the memory thongh follow_pfn() and get_user_page() in different given
-> page size granularities.
-
-I cannot say that I really like this approach. I really prefer the
-proposal to free-up most vmemmap pages for huge/gigantic pages instead
-if all this is about is reducing the memmap size.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> > Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> > ---
+> >   drivers/iommu/io-pgtable-arm.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> > index a7a9bc08dcd1..8ade72adab31 100644
+> > --- a/drivers/iommu/io-pgtable-arm.c
+> > +++ b/drivers/iommu/io-pgtable-arm.c
+> > @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+> >   	arm_lpae_iopte prot;
+> >   	long iaext = (s64)iova >> cfg->ias;
+> > -	/* If no access, then nothing to do */
+> > -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+> > -		return 0;
+> > -
+> >   	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+> >   		return -EINVAL;
+> > @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+> >   	if (WARN_ON(iaext || paddr >> cfg->oas))
+> >   		return -ERANGE;
+> > +	/* If no access, then nothing to do */
+> > +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+> > +		return 0;
+> > +
+> >   	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+> >   	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
+> >   	/*
+> > 
