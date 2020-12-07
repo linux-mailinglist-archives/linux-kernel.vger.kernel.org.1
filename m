@@ -2,76 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124B92D1D88
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0EC2D1D94
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgLGWje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
+        id S1727902AbgLGWmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:42:09 -0500
+Received: from mga17.intel.com ([192.55.52.151]:13249 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgLGWje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:39:34 -0500
-Date:   Mon, 7 Dec 2020 14:38:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607380733;
-        bh=0FDK3sfRhL+zaCimlzL6gWXaPTiTkLgCI5cm5rzO33I=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HG3baAYgR5MpiaDHZfbjKVVCuFNnEXlCqIiwsb4qyS7jISjL/9zwELeEdbseQt+lS
-         rw40lySCD0RSluP3xdnF5DeGImS0VASeWOHEHKCH9zPIFbxUk3C3gpzqLDu4onN+Co
-         0H2vkWNVhvgcLcWXvXEeHW/HOYVbAMEXplM2OrUQO8FoOcHi7G6Dn0xG2U2VHuLhy1
-         Ild+FW59BZHtMoG58aphwCqNAMuoS5UA9nn4AENNcUkz25Ew3r3TTQ9t4k0tWuzx59
-         aw6OtZdyH1cxEx5sUyxsi2sz/D35O2aVtHKy8zAwKdnw4EAD46oeV+uVOGIq3oMesS
-         j2JZatbvViCLQ==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-Message-ID: <20201207223853.GL2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201206211253.919834182@linutronix.de>
- <20201206212002.876987748@linutronix.de>
- <20201207120943.GS3021@hirez.programming.kicks-ass.net>
- <87y2i94igo.fsf@nanos.tec.linutronix.de>
- <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
- <20201207194406.GK2657@paulmck-ThinkPad-P72>
- <87blf547d2.fsf@nanos.tec.linutronix.de>
+        id S1725917AbgLGWmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:42:08 -0500
+IronPort-SDR: EcBKmFVhC3VDtbmKQpdydzyzDNblFpWAnYaqVR0Vc0aKDbLPc46YpyW8vr1BU1g+z0P7V1qbdM
+ Rngwc3fZi85w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153602432"
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="153602432"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 14:40:22 -0800
+IronPort-SDR: OBD43kayQ22wHahBPlKpvk/ewoZJu4NUMN4S/xIztFAXm8eE0dmk1qe54iJ+I86MNoCGevXqOb
+ IaHkwawSS8IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="318016353"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Dec 2020 14:40:22 -0800
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 1B56C5805B9;
+        Mon,  7 Dec 2020 14:40:22 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     bhelgaas@google.com, rafael@kernel.org, len.brown@intel.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v2 1/2] Add save/restore of Precision Time Measurement capability
+Date:   Mon,  7 Dec 2020 14:39:50 -0800
+Message-Id: <20201207223951.19667-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87blf547d2.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:46:33PM +0100, Thomas Gleixner wrote:
-> On Mon, Dec 07 2020 at 11:44, Paul E. McKenney wrote:
-> > On Mon, Dec 07, 2020 at 07:19:51PM +0100, Marco Elver wrote:
-> >> On Mon, 7 Dec 2020 at 18:46, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> I currently don't know what the rule for Peter's preferred variant
-> >> would be, without running the risk of some accidentally data_race()'d
-> >> accesses.
-> >> 
-> >> Thoughts?
-> >
-> > I am also concerned about inadvertently covering code with data_race().
-> >
-> > Also, in this particular case, why data_race() rather than READ_ONCE()?
-> > Do we really expect the compiler to be able to optimize this case
-> > significantly without READ_ONCE()?
-> 
-> That was your suggestion a week or so ago :)
+The PCI subsystem does not currently save and restore the configuration
+space for the Precision Time Measurement (PTM) PCIe extended capability
+leading to the possibility of the feature returning disabled on S3 resume.
+This has been observed on Intel Coffee Lake desktops. Add save/restore of
+the PTM control register. This saves the PTM Enable, Root Select, and
+Effective Granularity bits.
 
-You expected my suggestion to change?  ;-)
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+---
 
-							Thanx, Paul
+Changes from V1:
+	- Move save/restore functions to ptm.c
+	- Move pci_add_ext_cap_sve_buffer() to pci_ptm_init in ptm.c
+	
+ drivers/pci/pci.c      |  2 ++
+ drivers/pci/pci.h      |  8 ++++++++
+ drivers/pci/pcie/ptm.c | 43 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 53 insertions(+)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e578d34095e9..12ba6351c05b 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1566,6 +1566,7 @@ int pci_save_state(struct pci_dev *dev)
+ 	pci_save_ltr_state(dev);
+ 	pci_save_dpc_state(dev);
+ 	pci_save_aer_state(dev);
++	pci_save_ptm_state(dev);
+ 	return pci_save_vc_state(dev);
+ }
+ EXPORT_SYMBOL(pci_save_state);
+@@ -1677,6 +1678,7 @@ void pci_restore_state(struct pci_dev *dev)
+ 	pci_restore_vc_state(dev);
+ 	pci_restore_rebar_state(dev);
+ 	pci_restore_dpc_state(dev);
++	pci_restore_ptm_state(dev);
+ 
+ 	pci_aer_clear_status(dev);
+ 	pci_restore_aer_state(dev);
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index f86cae9aa1f4..62cdacba5954 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -516,6 +516,14 @@ static inline int pci_iov_bus_range(struct pci_bus *bus)
+ 
+ #endif /* CONFIG_PCI_IOV */
+ 
++#ifdef CONFIG_PCIE_PTM
++void pci_save_ptm_state(struct pci_dev *dev);
++void pci_restore_ptm_state(struct pci_dev *dev);
++#else
++static inline void pci_save_ptm_state(struct pci_dev *dev) {}
++static inline void pci_restore_ptm_state(struct pci_dev *dev) {}
++#endif
++
+ unsigned long pci_cardbus_resource_alignment(struct resource *);
+ 
+ static inline resource_size_t pci_resource_alignment(struct pci_dev *dev,
+diff --git a/drivers/pci/pcie/ptm.c b/drivers/pci/pcie/ptm.c
+index 357a454cafa0..6b24a1c9327a 100644
+--- a/drivers/pci/pcie/ptm.c
++++ b/drivers/pci/pcie/ptm.c
+@@ -29,6 +29,47 @@ static void pci_ptm_info(struct pci_dev *dev)
+ 		 dev->ptm_root ? " (root)" : "", clock_desc);
+ }
+ 
++void pci_save_ptm_state(struct pci_dev *dev)
++{
++	int ptm;
++	struct pci_cap_saved_state *save_state;
++	u16 *cap;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	ptm = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
++	if (!ptm)
++		return;
++
++	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_PTM);
++	if (!save_state) {
++		pci_err(dev, "no suspend buffer for PTM\n");
++		return;
++	}
++
++	cap = (u16 *)&save_state->cap.data[0];
++	pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
++}
++
++void pci_restore_ptm_state(struct pci_dev *dev)
++{
++	struct pci_cap_saved_state *save_state;
++	int ptm;
++	u16 *cap;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_PTM);
++	ptm = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
++	if (!save_state || !ptm)
++		return;
++
++	cap = (u16 *)&save_state->cap.data[0];
++	pci_write_config_word(dev, ptm + PCI_PTM_CTRL, *cap);
++}
++
+ void pci_ptm_init(struct pci_dev *dev)
+ {
+ 	int pos;
+@@ -65,6 +106,8 @@ void pci_ptm_init(struct pci_dev *dev)
+ 	if (!pos)
+ 		return;
+ 
++	pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_PTM, sizeof(u16));
++
+ 	pci_read_config_dword(dev, pos + PCI_PTM_CAP, &cap);
+ 	local_clock = (cap & PCI_PTM_GRANULARITY_MASK) >> 8;
+ 
+-- 
+2.20.1
+
