@@ -2,218 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAD42D0918
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7533E2D091A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbgLGCHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 21:07:21 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60898 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726484AbgLGCHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 21:07:21 -0500
-X-UUID: 1d920fce115943199f348517e9c42b71-20201207
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qxhSLKgKbXN693ZglsgKIMP65QasHS5TaIkBLPe+YKo=;
-        b=IRzpj717JLc0eNsEqao3DryxG6jHX+KT3VJdJn+8AidVm6ZoyzcZZQT6A/b67JmK95IAHoUjgY3DAA9erbG9XlpaLjFg/E2wpeojorGMBHFq9lgXDVr/0nkOCjuYPbTlLTOpaOlEozljFFRqA9iU0EANGe6Kf6OAwD8JecVk29w=;
-X-UUID: 1d920fce115943199f348517e9c42b71-20201207
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1935966801; Mon, 07 Dec 2020 10:06:33 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Dec 2020 10:06:29 +0800
-Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Dec 2020 10:06:32 +0800
-Message-ID: <1607306792.22062.62.camel@mtksdccf07>
-Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "andreyknvl@google.com" <andreyknvl@google.com>,
-        "qcai@redhat.com" <qcai@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S1728583AbgLGCIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 21:08:50 -0500
+Received: from mail-eopbgr140040.outbound.protection.outlook.com ([40.107.14.40]:35906
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726400AbgLGCIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 21:08:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dCkAv/nZItMP2ONUTdP3gSPBEFBZol1INYUae7s3jEyxsryt68SvwEQ272zvh0Fx4ySiSjxXfmIWdCFWY/PNyFuF+p/6aT+VZxqoECyDhJL/ivXzxDjmQBJzDnAo0H/3LFTvGAIbuFoWgUE5lx5q9nwEG+teieTt6YeTFn6uVhNuggd9PAmQAOBuYgCnVTpC5EhVMRng5Alh6Jy5ZvtYcR9Mi/ojKT9EFoqc8k7qCXr4M1Iafq14RRrA59SOKaf+YdlWEsW/1Fs/sBmtQWfmTLDMtMNbEUnB8VIcRqXqhY1Qw2dt21kaV3dzF6uL1s9gFy6/rKsr3ILusNzeckaIrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0yXibgIwLbBPA59C4z0TrpwALwK18Tt/m/ZDD33jPOU=;
+ b=G9wLyuoT7uDvZmM9DIzyOoQGVS29ds/A4v6dpnuh7Tbvhr4xQpbuHiBdCJ9SE3xhXhfc5mf+tCl4pwX2HE++0kmc0iqVryRwi0iO4s/XJDFaPDP8MoZlyzxRgOVcpmmvbovOGJEYpTAO5wczfSrFZr2VvCxNJnZFmpqMl/DeDj9wIL/OFiBuhwsF+W67MAZ1Ji5lFH77FhtOghoRXPfILLwQ/0iWLQs4oObnP/NFaeTQ2v4k0nroXPb/WB9yAVlYdrT9zOYOQSRU4s67flO+vG9hmyNqilnxwbN6g/5o3fJeAek8wl5lf3tBJHfEiVNElPUQnwi5tMxmhf8EebH5kA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0yXibgIwLbBPA59C4z0TrpwALwK18Tt/m/ZDD33jPOU=;
+ b=I+IdQ26U/kNTWEHJxNBx6Q4glZ3QJA6WLELjcoLz4F/7DTKyYADRPCc01Py/fL6PeDPxjuE5y8gCu2+H+jI2xwYJjAEMRepe5YyxhQnv3gAvCpZSICSLVhiSUqsmmyRlJn5rbXBtbOoF9+TV+VJCUXOf9wRqhVWWJRcUoV02B3s=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4633.eurprd04.prod.outlook.com (2603:10a6:5:36::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Mon, 7 Dec
+ 2020 02:07:57 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3632.018; Mon, 7 Dec 2020
+ 02:07:57 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <walter-zh.wu@mediatek.com>
-Date:   Mon, 7 Dec 2020 10:06:32 +0800
-In-Reply-To: <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
-References: <20201204102206.20237-1-qiang.zhang@windriver.com>
-         <1607083295.22062.15.camel@mtksdccf07>
-         <20201204172521.ed9f77164ff9f9fc91f35ee0@linux-foundation.org>
-         <1607185035.22062.42.camel@mtksdccf07>
-         <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: RE: [PATCH V3 1/7] remoteproc: elf: support platform specific memory
+ hook
+Thread-Topic: [PATCH V3 1/7] remoteproc: elf: support platform specific memory
+ hook
+Thread-Index: AQHWygzgCpXjE6CrJEiplG2nzloV+anno8iAgANDaRA=
+Date:   Mon, 7 Dec 2020 02:07:57 +0000
+Message-ID: <DB6PR0402MB276056A300BD72EA59FC429488CE0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20201204074036.23870-1-peng.fan@oss.nxp.com>
+ <20201204074036.23870-2-peng.fan@oss.nxp.com> <X8rRedNHet9gm5lJ@builder.lan>
+In-Reply-To: <X8rRedNHet9gm5lJ@builder.lan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 67590e74-89b4-4a30-19bd-08d89a54ea91
+x-ms-traffictypediagnostic: DB7PR04MB4633:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB46332C836F621A984EB4A8D788CE0@DB7PR04MB4633.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1265;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: f7Cdh9yVm00Te+eXAUV0n8bV6GD9d6ZC2CxltU3O40z9XDGU0Tci6XOetR+Ld7XLYYQtS5kbeTcwk8wCMP84LHlUHxxqepv4+KkB1wbMvXtX1x8pnVhwB2BV4Q9BU0cveDcb8VKCYLO3WcVayTrEGj35apgXSB/r8mt7+A4TG/k86tf2g6YwYRqGUMDN1fT45vNTe2UNd9FlaQimWWNWyAZiWjpNhb8iEjM8+wTooavRYkb3uZG6cNYB/P/bOKeykZrPvM+hF0pu9f9hJAZuV5UwLkpNc/bwQj7AhQcvqSD+MVw5hfjaOio7GsJEabnL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(366004)(136003)(64756008)(4326008)(66556008)(71200400001)(76116006)(66946007)(86362001)(8936002)(478600001)(55016002)(26005)(66476007)(83380400001)(52536014)(9686003)(5660300002)(2906002)(6506007)(7696005)(186003)(7416002)(110136005)(54906003)(33656002)(66446008)(8676002)(316002)(44832011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9CKdH9FFlh+tUF7B6mJGWBd+Oelu1w0sNAogJiJSPXFADSX+vbGoruGyt80A?=
+ =?us-ascii?Q?6qgHAZcDCVZBkWqKwkaE+W9RGclI61czczyF6Kn0zbKiL/dhIQlMPZBKR98P?=
+ =?us-ascii?Q?CPEZNyBdVOiIsnujULvfVTqaYIUSzJUKNm6ksdKT0RfECA9JTRzL6MxNj0Rd?=
+ =?us-ascii?Q?jy9+KpYCZ/Zq8WqcnhgBR6Rwrg9mUFOhhVxPWklmFeuK/TRcvWWwBtlYHI/M?=
+ =?us-ascii?Q?Luu5UlnNvPqvkiNs+4rLlv2FC98SILxEegbqmj95Nj6/jQlVQHmTtBy0XpeE?=
+ =?us-ascii?Q?6vbdFdfupME89UlgzKDN6RFnFm+S9aaV7BZ8zxqH7CDyCfMCoOA5qm7A+PLM?=
+ =?us-ascii?Q?aAmV5CutOodfC10w+jQGUUV3mFyJduJo4E6iTKi/mDghYj3lQJ/9lCCUftQn?=
+ =?us-ascii?Q?PUQn/D5UKz92AH/u/wotkbQbvN5XmdUDZ4Z6VfqS2MTrn0O8G/2HUOTUU7As?=
+ =?us-ascii?Q?RufALZf6Tmt3QKSSqaT9hL2LuucFFs9sPWdgrCt/5ETjc1oZ9GlkGLbLwrqY?=
+ =?us-ascii?Q?kR9914pAfY1jhjINirsAUvMPTJGM7yCmeFBoimhn5RbUDM8dPoD5uDxj7TF7?=
+ =?us-ascii?Q?OGyx4/y305BXYkvLt2vPNJJjOOuqZWdWm0YUjT0CRvgLaHtpzyyF+blM3O03?=
+ =?us-ascii?Q?a8tCh7GVchka1q5QNzjoJXIswYUhbyaDoMaZlbBuVIlA4OTzZJKmYoq1yJkD?=
+ =?us-ascii?Q?ritoE4BqjL4lcjswF9D7vE8bZePynsDDrZAyWIaSJx/E91zC42JSOoaJy1p7?=
+ =?us-ascii?Q?gCRZU8zIk/cOEiKBG2g8wANl2CtlRXJ117gkuf1TdCjlEKyEwcHHzUO7qDJ9?=
+ =?us-ascii?Q?UvUpiTXB67IP0iKBnasTlXQtkyF44AA+SsTVbGIE2J13A/vyTELxj7XXsXE7?=
+ =?us-ascii?Q?QIKVxFY6om/dUCR+p9a/Tft9CWWtBq5WcbNiAzWtdMOneaKJg+LE4y4sU0nt?=
+ =?us-ascii?Q?ZILjpLr1rJtbajNwXSQNkojajcVPv1Y1kABgsS10mo8=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67590e74-89b4-4a30-19bd-08d89a54ea91
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Dec 2020 02:07:57.5353
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NBl2HdlS2UQDGRNXR3XqmMXBNtG0502gP9nmI0VMaGQoaGsmTYzDlfHzybnIJQrNM0HY+lLumuYyjcbNdPXcLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4633
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIwLTEyLTA1IGF0IDE3OjA5IC0wODAwLCBBbmRyZXcgTW9ydG9uIHdyb3RlOg0K
-PiBPbiBTdW4sIDYgRGVjIDIwMjAgMDA6MTc6MTUgKzA4MDAgS3Vhbi1ZaW5nIExlZSA8S3Vhbi1Z
-aW5nLkxlZUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPiBPbiBGcmksIDIwMjAtMTItMDQg
-YXQgMTc6MjUgLTA4MDAsIEFuZHJldyBNb3J0b24gd3JvdGU6DQo+ID4gPiBPbiBGcmksIDQgRGVj
-IDIwMjAgMjA6MDE6MzUgKzA4MDAgS3Vhbi1ZaW5nIExlZSA8S3Vhbi1ZaW5nLkxlZUBtZWRpYXRl
-ay5jb20+IHdyb3RlOg0KPiA+ID4gDQo+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL3F1
-YXJhbnRpbmUuYyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ID4gPiA+IGluZGV4IGQ5OGI1
-MTZmMzcyZi4uNTU3ODMxMjVhNzY3IDEwMDY0NA0KPiA+ID4gPiA+IC0tLSBhL21tL2thc2FuL3F1
-YXJhbnRpbmUuYw0KPiA+ID4gPiA+ICsrKyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ID4g
-PiA+IEBAIC0xOTQsNyArMTk0LDYgQEAgYm9vbCBxdWFyYW50aW5lX3B1dChzdHJ1Y3Qga21lbV9j
-YWNoZSAqY2FjaGUsIHZvaWQgKm9iamVjdCkNCj4gPiA+ID4gPiAgDQo+ID4gPiA+ID4gIAlxID0g
-dGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGluZSk7DQo+ID4gPiA+ID4gIAlpZiAocS0+b2ZmbGlu
-ZSkgew0KPiA+ID4gPiA+IC0JCXFsaW5rX2ZyZWUoJm1ldGEtPnF1YXJhbnRpbmVfbGluaywgY2Fj
-aGUpOw0KPiA+ID4gPiA+ICAJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gPiA+ID4gPiAg
-CQlyZXR1cm4gZmFsc2U7DQo+ID4gDQo+ID4gSGkgQW5kcmV3LA0KPiA+IA0KPiA+IFJldHVybiBm
-YWxzZSB3aWxsIGNhdXNlIHNsYWIgYWxsb2NhdG9yIHRvIGZyZWUgdGhlIG9iamVjdC4NCj4gPiBU
-aHVzLCB3ZSBkbyBub3QgbmVlZCB0byBxbGlua19mcmVlIGhlcmUgdG8gZnJlZSBvYmplY3QgdHdp
-Y2UuDQo+ID4gDQo+ID4gVGhlIHJldHVybiB2YWx1ZSBpcyBpbnRyb2R1Y2VkIGZyb20gQW5kcmV5
-J3MgcGF0Y2guDQo+ID4gImthc2FuOiBzYW5pdGl6ZSBvYmplY3RzIHdoZW4gbWV0YWRhdGEgZG9l
-c24ndCBmaXQiDQo+ID4gDQo+ID4gDQo+ID4gPiA+ID4gIAl9DQo+ID4gPiA+IA0KPiA+ID4gPiBI
-aSBRaWFuZywNCj4gPiA+ID4gDQo+ID4gPiA+IFRoYW5rcyBmb3IgZml4aW5nIHRoaXMuDQo+ID4g
-PiA+IER1ZSB0byB0aGF0IGlzc3VlLCBteSBjb21taXQgaGFzIGJlZW4gcmVtb3ZlZCBieSBTdGVw
-aGVuIGZyb20NCj4gPiA+ID4gbGludXgtbmV4dC4NCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4g
-PiBIaSBTdGVwaGVuLCBBbmRyZXcsDQo+ID4gPiA+IA0KPiA+ID4gPiBTaG91bGQgSSBkaXJlY3Rs
-eSB1cGxvYWQgdGhlIHY0IG9yIFN0ZXBoZW4gY2FuIHBpY2sgdGhlIGNvbW1pdCB3aGljaCANCj4g
-PiA+ID4gaGFzIGJlZW4gcmVtb3ZlZCBiYWNrIHRvIHRoZSBsaW51eC1uZXh0Lg0KPiA+ID4gDQo+
-ID4gPiBJIHRvb2sgY2FyZSBvZiBpdC4gIFJlc3RvcmVkIHRoZSBvcmlnaW5hbCBwYXRjaCBhbmQg
-YWRkZWQgdGhpcyBvbmUgYXMgYQ0KPiA+ID4gLWZpeC4NCj4gPiANCj4gPiBUaGFua3MgZm9yIHRh
-a2luZyBjYXJlIG9mIGl0Lg0KPiA+IA0KPiA+IEkgdGhpbmsgdGhlcmUgYXJlIHNvbWUgcHJvYmxl
-bSBpbiB0aGUgcGF0Y2ggeW91IGp1c3QgcmVzdG9yZWQuDQo+ID4gSSBzYXcgdGhlIHJlc3RvcmVk
-IHBhdGNoIGlzIG5vdCBiYXNlZCBvbiBBbmRyZXkncyBwYXRjaCBhbmQgU3RlcGhlbidzDQo+ID4g
-Zml4IGNvbmZsaWN0IHBhdGNoLg0KPiA+IA0KPiA+IEJ1dCB0aGUgaXNzdWUgUWlhbmcgZml4ZWQg
-bmVlZCB0byBiZSBiYXNlZCBvbiB0aGUgQW5kcmV5J3MgcGF0Y2ggYW5kDQo+ID4gU3RlcGhlbidz
-IGZpeCBjb25mbGljdCBwYXRjaC4NCj4gPiAia2FzYW46IHNhbml0aXplIG9iamVjdHMgd2hlbiBt
-ZXRhZGF0YSBkb2Vzbid0IGZpdCINCj4gPiAia2FzYW4tcmVuYW1lLWdldF9hbGxvYy1mcmVlX2lu
-Zm8tZml4Ig0KPiA+IA0KPiA+IElmIHRoZSByZXN0b3JlZCBwYXRjaCBpcyBub3QgYmFzZWQgb24g
-dGhhdCwgaXQgbWF5IGNhdXNlIHNvbWUgcHJvYmxlbXMNCj4gPiBhbmQgY29uZmxpY3RzLg0KPiA+
-IA0KPiA+IEkgdGhpbmsgSSBjYW4gcHJlcGFyZSBhIHBhdGNoIHY0IGJhc2VkIG9uIEFuZHJleSdz
-IHBhdGNoLCBmaXggdGhlDQo+ID4gY29uZmxpY3QgYW5kIGluY2x1ZGUgdGhlIFFpYW5nJ3MgbW9k
-aWZpY2F0aW9uLg0KPiANCj4gSSdtIG5vdCBzdXJlIHdoYXQgeW91IG1lYW4gaGVyZS4gIFdoZW4g
-YXBweWluZyB0aGlzIGZpeCwgeWVzLCBJIGhhZCB0bw0KPiByZXBsYWNlICJtZXRhIiB3aXRoICJp
-bmZvIiwgb2YgY291cnNlLg0KPiANCj4gU28gdGhlIGNvbWJpbmVkIHBhdGNoLCB3aGljaCBJJ2Qg
-bGlrZSB0byBzZW5kIHRvIExpbnVzIG5leHQgd2VlayBpcyBhcw0KPiBiZWxvdy4gIElzIHRoZXJl
-IHNvbWV0aGluZyB3cm9uZyB3aXRoIGl0Pw0KPiANCg0KSXMgdGhpcyBjb21iaW5lZCBwYXRjaCBi
-YXNlZCBvbiBBbmRyZXkncyBwYXRjaD8NCg0KSWYgeWVzLCBBbmRyZXkncyBwYXRjaCBub3Qgb25s
-eSBjaGFuZ2UgdGhlICJpbmZvIiB0byAibWV0YSIgYnV0IGFsc28NCmludHJvZHVjZSB0aGUgcmV0
-dXJuIHZhbHVlLg0KSSB0aGluayB3ZSBuZWVkIHRvIGFkZCByZXR1cm4gdmFsdWUgb3IgaXQgd2ls
-bCBidWlsZCBlcnJvci4NCg0KPiANCj4gRnJvbTogS3Vhbi1ZaW5nIExlZSA8S3Vhbi1ZaW5nLkxl
-ZUBtZWRpYXRlay5jb20+DQo+IFN1YmplY3Q6IGthc2FuOiBmaXggb2JqZWN0IHJlbWFpbmluZyBp
-biBvZmZsaW5lIHBlci1jcHUgcXVhcmFudGluZQ0KPiANCj4gV2UgaGl0IHRoaXMgaXNzdWUgaW4g
-b3VyIGludGVybmFsIHRlc3QuICBXaGVuIGVuYWJsaW5nIGdlbmVyaWMga2FzYW4sIGENCj4ga2Zy
-ZWUoKSdkIG9iamVjdCBpcyBwdXQgaW50byBwZXItY3B1IHF1YXJhbnRpbmUgZmlyc3QuICBJZiB0
-aGUgY3B1IGdvZXMNCj4gb2ZmbGluZSwgb2JqZWN0IHN0aWxsIHJlbWFpbnMgaW4gdGhlIHBlci1j
-cHUgcXVhcmFudGluZS4gIElmIHdlIGNhbGwNCj4ga21lbV9jYWNoZV9kZXN0cm95KCkgbm93LCBz
-bHViIHdpbGwgcmVwb3J0ICJPYmplY3RzIHJlbWFpbmluZyIgZXJyb3IuDQo+IA0KPiBbICAgNzQu
-OTgyNjI1XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiBbICAgNzQuOTgzMzgwXSBCVUcgdGVzdF9t
-b2R1bGVfc2xhYiAoTm90IHRhaW50ZWQpOiBPYmplY3RzIHJlbWFpbmluZyBpbiB0ZXN0X21vZHVs
-ZV9zbGFiIG9uIF9fa21lbV9jYWNoZV9zaHV0ZG93bigpDQo+IFsgICA3NC45ODQxNDVdIC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tDQo+IFsgICA3NC45ODQxNDVdDQo+IFsgICA3NC45ODQ4ODNdIERpc2Fi
-bGluZyBsb2NrIGRlYnVnZ2luZyBkdWUgdG8ga2VybmVsIHRhaW50DQo+IFsgICA3NC45ODU1NjFd
-IElORk86IFNsYWIgMHgoX19fX3B0cnZhbF9fX18pIG9iamVjdHM9MzQgdXNlZD0xIGZwPTB4KF9f
-X19wdHJ2YWxfX19fKSBmbGFncz0weDJmZmZmMDAwMDAwMTAyMDANCj4gWyAgIDc0Ljk4NjYzOF0g
-Q1BVOiAzIFBJRDogMTc2IENvbW06IGNhdCBUYWludGVkOiBHICAgIEIgICAgICAgICAgICAgNS4x
-MC4wLXJjMS0wMDAwNy1nNDUyNWM4NzgxZWMwLWRpcnR5ICMxMA0KPiBbICAgNzQuOTg3MjYyXSBI
-YXJkd2FyZSBuYW1lOiBsaW51eCxkdW1teS12aXJ0IChEVCkNCj4gWyAgIDc0Ljk4NzYwNl0gQ2Fs
-bCB0cmFjZToNCj4gWyAgIDc0Ljk4NzkyNF0gIGR1bXBfYmFja3RyYWNlKzB4MC8weDJiMA0KPiBb
-ICAgNzQuOTg4Mjk2XSAgc2hvd19zdGFjaysweDE4LzB4NjgNCj4gWyAgIDc0Ljk4ODY5OF0gIGR1
-bXBfc3RhY2srMHhmYy8weDE2OA0KPiBbICAgNzQuOTg5MDMwXSAgc2xhYl9lcnIrMHhhYy8weGQ0
-DQo+IFsgICA3NC45ODkzNDZdICBfX2ttZW1fY2FjaGVfc2h1dGRvd24rMHgxZTQvMHgzYzgNCj4g
-WyAgIDc0Ljk4OTc3OV0gIGttZW1fY2FjaGVfZGVzdHJveSsweDY4LzB4MTMwDQo+IFsgICA3NC45
-OTAxNzZdICB0ZXN0X3ZlcnNpb25fc2hvdysweDg0LzB4ZjANCj4gWyAgIDc0Ljk5MDY3OV0gIG1v
-ZHVsZV9hdHRyX3Nob3crMHg0MC8weDYwDQo+IFsgICA3NC45OTEyMThdICBzeXNmc19rZl9zZXFf
-c2hvdysweDEyOC8weDFjMA0KPiBbICAgNzQuOTkxNjU2XSAga2VybmZzX3NlcV9zaG93KzB4YTAv
-MHhiOA0KPiBbICAgNzQuOTkyMDU5XSAgc2VxX3JlYWQrMHgxZjAvMHg3ZTgNCj4gWyAgIDc0Ljk5
-MjQxNV0gIGtlcm5mc19mb3BfcmVhZCsweDcwLzB4MzM4DQo+IFsgICA3NC45OTMwNTFdICB2ZnNf
-cmVhZCsweGU0LzB4MjUwDQo+IFsgICA3NC45OTM0OThdICBrc3lzX3JlYWQrMHhjOC8weDE4MA0K
-PiBbICAgNzQuOTkzODI1XSAgX19hcm02NF9zeXNfcmVhZCsweDQ0LzB4NTgNCj4gWyAgIDc0Ljk5
-NDIwM10gIGVsMF9zdmNfY29tbW9uLmNvbnN0cHJvcC4wKzB4YWMvMHgyMjgNCj4gWyAgIDc0Ljk5
-NDcwOF0gIGRvX2VsMF9zdmMrMHgzOC8weGEwDQo+IFsgICA3NC45OTUwODhdICBlbDBfc3luY19o
-YW5kbGVyKzB4MTcwLzB4MTc4DQo+IFsgICA3NC45OTU0OTddICBlbDBfc3luYysweDE3NC8weDE4
-MA0KPiBbICAgNzQuOTk2MDUwXSBJTkZPOiBPYmplY3QgMHgoX19fX3B0cnZhbF9fX18pIEBvZmZz
-ZXQ9MTU4NDgNCj4gWyAgIDc0Ljk5Njc1Ml0gSU5GTzogQWxsb2NhdGVkIGluIHRlc3RfdmVyc2lv
-bl9zaG93KzB4OTgvMHhmMCBhZ2U9ODE4OCBjcHU9NiBwaWQ9MTcyDQo+IFsgICA3NS4wMDA4MDJd
-ICBzdGFja190cmFjZV9zYXZlKzB4OWMvMHhkMA0KPiBbICAgNzUuMDAyNDIwXSAgc2V0X3RyYWNr
-KzB4NjQvMHhmMA0KPiBbICAgNzUuMDAyNzcwXSAgYWxsb2NfZGVidWdfcHJvY2Vzc2luZysweDEw
-NC8weDFhMA0KPiBbICAgNzUuMDAzMTcxXSAgX19fc2xhYl9hbGxvYysweDYyOC8weDY0OA0KPiBb
-ICAgNzUuMDA0MjEzXSAgX19zbGFiX2FsbG9jLmlzcmEuMCsweDJjLzB4NTgNCj4gWyAgIDc1LjAw
-NDc1N10gIGttZW1fY2FjaGVfYWxsb2MrMHg1NjAvMHg1ODgNCj4gWyAgIDc1LjAwNTM3Nl0gIHRl
-c3RfdmVyc2lvbl9zaG93KzB4OTgvMHhmMA0KPiBbICAgNzUuMDA1NzU2XSAgbW9kdWxlX2F0dHJf
-c2hvdysweDQwLzB4NjANCj4gWyAgIDc1LjAwNzAzNV0gIHN5c2ZzX2tmX3NlcV9zaG93KzB4MTI4
-LzB4MWMwDQo+IFsgICA3NS4wMDc0MzNdICBrZXJuZnNfc2VxX3Nob3crMHhhMC8weGI4DQo+IFsg
-ICA3NS4wMDc4MDBdICBzZXFfcmVhZCsweDFmMC8weDdlOA0KPiBbICAgNzUuMDA4MTI4XSAga2Vy
-bmZzX2ZvcF9yZWFkKzB4NzAvMHgzMzgNCj4gWyAgIDc1LjAwODUwN10gIHZmc19yZWFkKzB4ZTQv
-MHgyNTANCj4gWyAgIDc1LjAwODk5MF0gIGtzeXNfcmVhZCsweGM4LzB4MTgwDQo+IFsgICA3NS4w
-MDk0NjJdICBfX2FybTY0X3N5c19yZWFkKzB4NDQvMHg1OA0KPiBbICAgNzUuMDEwMDg1XSAgZWww
-X3N2Y19jb21tb24uY29uc3Rwcm9wLjArMHhhYy8weDIyOA0KPiBbICAgNzUuMDExMDA2XSBrbWVt
-X2NhY2hlX2Rlc3Ryb3kgdGVzdF9tb2R1bGVfc2xhYjogU2xhYiBjYWNoZSBzdGlsbCBoYXMgb2Jq
-ZWN0cw0KPiANCj4gUmVnaXN0ZXIgYSBjcHUgaG90cGx1ZyBmdW5jdGlvbiB0byByZW1vdmUgYWxs
-IG9iamVjdHMgaW4gdGhlIG9mZmxpbmUNCj4gcGVyLWNwdSBxdWFyYW50aW5lIHdoZW4gY3B1IGlz
-IGdvaW5nIG9mZmxpbmUuICBTZXQgYSBwZXItY3B1IHZhcmlhYmxlIHRvDQo+IGluZGljYXRlIHRo
-aXMgY3B1IGlzIG9mZmxpbmUuDQo+IA0KPiBbcWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbTogZml4
-IHNsYWIgZG91YmxlIGZyZWUgd2hlbiBjcHUtaG90cGx1Z10NCj4gICBMaW5rOiBodHRwczovL2xr
-bWwua2VybmVsLm9yZy9yLzIwMjAxMjA0MTAyMjA2LjIwMjM3LTEtcWlhbmcuemhhbmdAd2luZHJp
-dmVyLmNvbQ0KPiBMaW5rOiBodHRwczovL2xrbWwua2VybmVsLm9yZy9yLzE2MDY4OTU1ODUtMTcz
-ODItMi1naXQtc2VuZC1lbWFpbC1LdWFuLVlpbmcuTGVlQG1lZGlhdGVrLmNvbQ0KPiBTaWduZWQt
-b2ZmLWJ5OiBLdWFuLVlpbmcgTGVlIDxLdWFuLVlpbmcuTGVlQG1lZGlhdGVrLmNvbT4NCj4gU2ln
-bmVkLW9mZi1ieTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPg0KPiBTdWdnZXN0
-ZWQtYnk6IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gUmVwb3J0ZWQtYnk6
-IEd1YW5neWUgWWFuZyA8Z3Vhbmd5ZS55YW5nQG1lZGlhdGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6
-IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gQ2M6IEFuZHJleSBSeWFiaW5p
-biA8YXJ5YWJpbmluQHZpcnR1b3p6by5jb20+DQo+IENjOiBBbGV4YW5kZXIgUG90YXBlbmtvIDxn
-bGlkZXJAZ29vZ2xlLmNvbT4NCj4gQ2M6IE1hdHRoaWFzIEJydWdnZXIgPG1hdHRoaWFzLmJnZ0Bn
-bWFpbC5jb20+DQo+IENjOiBOaWNob2xhcyBUYW5nIDxuaWNob2xhcy50YW5nQG1lZGlhdGVrLmNv
-bT4NCj4gQ2M6IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiBDYzogUWlh
-biBDYWkgPHFjYWlAcmVkaGF0LmNvbT4NCj4gQ2M6IFN0ZXBoZW4gUm90aHdlbGwgPHNmckBjYW5i
-LmF1dWcub3JnLmF1Pg0KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4
-LWZvdW5kYXRpb24ub3JnPg0KPiAtLS0NCj4gDQo+ICBtbS9rYXNhbi9xdWFyYW50aW5lLmMgfCAg
-IDM5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNo
-YW5nZWQsIDM5IGluc2VydGlvbnMoKykNCj4gDQo+IC0tLSBhL21tL2thc2FuL3F1YXJhbnRpbmUu
-Y35rYXNhbi1maXgtb2JqZWN0LXJlbWFpbi1pbi1vZmZsaW5lLXBlci1jcHUtcXVhcmFudGluZQ0K
-PiArKysgYS9tbS9rYXNhbi9xdWFyYW50aW5lLmMNCj4gQEAgLTI5LDYgKzI5LDcgQEANCj4gICNp
-bmNsdWRlIDxsaW51eC9zcmN1Lmg+DQo+ICAjaW5jbHVkZSA8bGludXgvc3RyaW5nLmg+DQo+ICAj
-aW5jbHVkZSA8bGludXgvdHlwZXMuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9jcHVob3RwbHVnLmg+
-DQo+ICANCj4gICNpbmNsdWRlICIuLi9zbGFiLmgiDQo+ICAjaW5jbHVkZSAia2FzYW4uaCINCj4g
-QEAgLTQzLDYgKzQ0LDcgQEAgc3RydWN0IHFsaXN0X2hlYWQgew0KPiAgCXN0cnVjdCBxbGlzdF9u
-b2RlICpoZWFkOw0KPiAgCXN0cnVjdCBxbGlzdF9ub2RlICp0YWlsOw0KPiAgCXNpemVfdCBieXRl
-czsNCj4gKwlib29sIG9mZmxpbmU7DQo+ICB9Ow0KPiAgDQo+ICAjZGVmaW5lIFFMSVNUX0lOSVQg
-eyBOVUxMLCBOVUxMLCAwIH0NCj4gQEAgLTE4OCw2ICsxOTAsMTAgQEAgdm9pZCBxdWFyYW50aW5l
-X3B1dChzdHJ1Y3Qga2FzYW5fZnJlZV9tZQ0KDQpBbmRyZXkncyBwYXRjaCBjaGFuZ2VzIHRoZSBy
-ZXR1cm4gdmFsdWUgZnJvbSAidm9pZCIgdG8gImJvb2wiLg0KV2UgbmVlZCB0byByZXBsYWNlIHZv
-aWQgd2l0aCBib29sLg0KDQo+ICAJbG9jYWxfaXJxX3NhdmUoZmxhZ3MpOw0KPiAgDQo+ICAJcSA9
-IHRoaXNfY3B1X3B0cigmY3B1X3F1YXJhbnRpbmUpOw0KPiArCWlmIChxLT5vZmZsaW5lKSB7DQo+
-ICsJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gKwkJcmV0dXJuOw0KDQpJIHRoaW5rIHdl
-IG5lZWQgdG8gcmV0dXJuIGZhbHNlIGhlcmUuIE90aGVyd2lzZSwgaXQgd2lsbCBsYWNrIHJldHVy
-bg0KdmFsdWUgYW5kIGNhdXNlIGJ1aWxkIGVycm9yLg0KDQo+ICsJfQ0KPiAgCXFsaXN0X3B1dChx
-LCAmaW5mby0+cXVhcmFudGluZV9saW5rLCBjYWNoZS0+c2l6ZSk7DQoNClRoaXMgImluZm8iIG1h
-eSBjYXVzZSBjb25mbGljdCBiZWNhdXNlIEFuZHJleSdzIHBhdGNoIGhhcyBhbHJlYWR5DQpjaGFu
-Z2VkIGl0IHRvICJtZXRhIi4NCg0KVGhhbmtzLg0KS3Vhbi1ZaW5nDQoNCj4gIAlpZiAodW5saWtl
-bHkocS0+Ynl0ZXMgPiBRVUFSQU5USU5FX1BFUkNQVV9TSVpFKSkgew0KPiAgCQlxbGlzdF9tb3Zl
-X2FsbChxLCAmdGVtcCk7DQo+IEBAIC0zMjgsMyArMzM0LDM2IEBAIHZvaWQgcXVhcmFudGluZV9y
-ZW1vdmVfY2FjaGUoc3RydWN0IGttZW0NCj4gIA0KPiAgCXN5bmNocm9uaXplX3NyY3UoJnJlbW92
-ZV9jYWNoZV9zcmN1KTsNCj4gIH0NCj4gKw0KPiArc3RhdGljIGludCBrYXNhbl9jcHVfb25saW5l
-KHVuc2lnbmVkIGludCBjcHUpDQo+ICt7DQo+ICsJdGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGlu
-ZSktPm9mZmxpbmUgPSBmYWxzZTsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGlj
-IGludCBrYXNhbl9jcHVfb2ZmbGluZSh1bnNpZ25lZCBpbnQgY3B1KQ0KPiArew0KPiArCXN0cnVj
-dCBxbGlzdF9oZWFkICpxOw0KPiArDQo+ICsJcSA9IHRoaXNfY3B1X3B0cigmY3B1X3F1YXJhbnRp
-bmUpOw0KPiArCS8qIEVuc3VyZSB0aGUgb3JkZXJpbmcgYmV0d2VlbiB0aGUgd3JpdGluZyB0byBx
-LT5vZmZsaW5lIGFuZA0KPiArCSAqIHFsaXN0X2ZyZWVfYWxsLiBPdGhlcndpc2UsIGNwdV9xdWFy
-YW50aW5lIG1heSBiZSBjb3JydXB0ZWQNCj4gKwkgKiBieSBpbnRlcnJ1cHQuDQo+ICsJICovDQo+
-ICsJV1JJVEVfT05DRShxLT5vZmZsaW5lLCB0cnVlKTsNCj4gKwliYXJyaWVyKCk7DQo+ICsJcWxp
-c3RfZnJlZV9hbGwocSwgTlVMTCk7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRp
-YyBpbnQgX19pbml0IGthc2FuX2NwdV9xdWFyYW50aW5lX2luaXQodm9pZCkNCj4gK3sNCj4gKwlp
-bnQgcmV0ID0gMDsNCj4gKw0KPiArCXJldCA9IGNwdWhwX3NldHVwX3N0YXRlKENQVUhQX0FQX09O
-TElORV9EWU4sICJtbS9rYXNhbjpvbmxpbmUiLA0KPiArCQkJCWthc2FuX2NwdV9vbmxpbmUsIGth
-c2FuX2NwdV9vZmZsaW5lKTsNCj4gKwlpZiAocmV0IDwgMCkNCj4gKwkJcHJfZXJyKCJrYXNhbiBj
-cHUgcXVhcmFudGluZSByZWdpc3RlciBmYWlsZWQgWyVkXVxuIiwgcmV0KTsNCj4gKwlyZXR1cm4g
-cmV0Ow0KPiArfQ0KPiArbGF0ZV9pbml0Y2FsbChrYXNhbl9jcHVfcXVhcmFudGluZV9pbml0KTsN
-Cj4gXw0KPiANCg0K
+Hi Bjorn,
 
+> Subject: Re: [PATCH V3 1/7] remoteproc: elf: support platform specific
+> memory hook
+>=20
+> On Fri 04 Dec 01:40 CST 2020, Peng Fan (OSS) wrote:
+>=20
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > To arm64, "dc      zva, dst" is used in memset.
+> > Per ARM DDI 0487A.j, chapter C5.3.8 DC ZVA, Data Cache Zero by VA,
+> >
+> > "If the memory region being zeroed is any type of Device memory, this
+> > instruction can give an alignment fault which is prioritized in the
+> > same way as other alignment faults that are determined by the memory
+> > type."
+> >
+> > On i.MX platforms, when elf is loaded to onchip TCM area, the region
+> > is ioremapped, so "dc zva, dst" will trigger abort. And ioremap_wc()
+> > on i.MX not able to write correct data to TCM area.
+> >
+> > So we need to use io helpers, and extend the elf loader to support
+> > platform specific memory functions.
+> >
+> > Acked-by: Richard Zhu <hongxing.zhu@nxp.com>
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  drivers/remoteproc/remoteproc_elf_loader.c | 20
+> ++++++++++++++++++--
+> >  include/linux/remoteproc.h                 |  4 ++++
+> >  2 files changed, 22 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/remoteproc/remoteproc_elf_loader.c
+> > b/drivers/remoteproc/remoteproc_elf_loader.c
+> > index df68d87752e4..6cb71fe47261 100644
+> > --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> > +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> > @@ -129,6 +129,22 @@ u64 rproc_elf_get_boot_addr(struct rproc *rproc,
+> > const struct firmware *fw)  }
+> EXPORT_SYMBOL(rproc_elf_get_boot_addr);
+> >
+> > +static void rproc_elf_memcpy(struct rproc *rproc, void *dest, const
+> > +void *src, size_t count) {
+> > +	if (!rproc->ops->elf_memcpy)
+> > +		memcpy(dest, src, count);
+> > +
+> > +	rproc->ops->elf_memcpy(rproc, dest, src, count);
+>=20
+> Looking at the current set of remoteproc drivers I get a feeling that we'=
+ll end
+> up with a while bunch of functions that all just wraps memcpy_toio(). And=
+ the
+> reason for this is that we are we're "abusing" the carveout to carry the
+> __iomem pointer without keeping track of it.
+>=20
+> And this is not the only time we're supposed to use an io-accessor, anoth=
+er
+> example is rproc_copy_segment() in rproc_coredump.c
+>=20
+> It also means that if a platform driver for some reason where to support =
+both
+> ioremap and normal carveouts the elf_memcpy op would be quite quirky.
+>=20
+>=20
+> So I would prefer if we track the knowledge about void *va being a __iome=
+m
+> or not in the struct rproc_mem_entry and make rproc_da_to_va() return thi=
+s
+> information as well.
+>=20
+> Then instead of extending the ops we can make this simply call memcpy or
+> memcpy_toio() depending on this.
+
+A draft proposal as below, are you ok with the approach?
+
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remo=
+teproc_core.c
+index 46c2937ebea9..bbb6e0613c1b 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -189,13 +189,13 @@ EXPORT_SYMBOL(rproc_va_to_pa);
+  * here the output of the DMA API for the carveouts, which should be more
+  * correct.
+  */
+-void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len)
++void *rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *iomem)
+ {
+        struct rproc_mem_entry *carveout;
+        void *ptr =3D NULL;
+
+        if (rproc->ops->da_to_va) {
+-               ptr =3D rproc->ops->da_to_va(rproc, da, len);
++               ptr =3D rproc->ops->da_to_va(rproc, da, len, iomem);
+                if (ptr)
+                        goto out;
+        }
+@@ -217,6 +217,9 @@ void *rproc_da_to_va(struct rproc *rproc, u64 da, size_=
+t len)
+
+                ptr =3D carveout->va + offset;
+
++               if (iomem)
++                       iomem =3D carveout->iomem;
++
+                break;
+        }
+
+diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/=
+remoteproc_coredump.c
+index 34530dc20cb4..5ff9389e6319 100644
+--- a/drivers/remoteproc/remoteproc_coredump.c
++++ b/drivers/remoteproc/remoteproc_coredump.c
+@@ -153,18 +153,22 @@ static void rproc_copy_segment(struct rproc *rproc, v=
+oid *dest,
+                               size_t offset, size_t size)
+ {
+        void *ptr;
++       bool iomem;
+
+        if (segment->dump) {
+                segment->dump(rproc, segment, dest, offset, size);
+        } else {
+-               ptr =3D rproc_da_to_va(rproc, segment->da + offset, size);
++               ptr =3D rproc_da_to_va(rproc, segment->da + offset, size, &=
+iomem);
+                if (!ptr) {
+                        dev_err(&rproc->dev,
+                                "invalid copy request for segment %pad with=
+ offset %zu and size %zu)\n",
+                                &segment->da, offset, size);
+                        memset(dest, 0xff, size);
+                } else {
+-                       memcpy(dest, ptr, size);
++                       if (iomem)
++                               memcpy_fromio(dest, ptr, size);
++                       else
++                               memcpy(dest, ptr, size);
+                }
+        }
+ }
+diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remotepro=
+c/remoteproc_elf_loader.c
+index df68d87752e4..20538143249e 100644
+--- a/drivers/remoteproc/remoteproc_elf_loader.c
++++ b/drivers/remoteproc/remoteproc_elf_loader.c
+@@ -175,6 +175,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const =
+struct firmware *fw)
+                u64 offset =3D elf_phdr_get_p_offset(class, phdr);
+                u32 type =3D elf_phdr_get_p_type(class, phdr);
+                void *ptr;
++               bool iomem;
+
+                if (type !=3D PT_LOAD)
+                        continue;
+@@ -204,7 +205,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const =
+struct firmware *fw)
+                }
+
+                /* grab the kernel address for this device address */
+-               ptr =3D rproc_da_to_va(rproc, da, memsz);
++               ptr =3D rproc_da_to_va(rproc, da, memsz, &iomem);
+                if (!ptr) {
+                        dev_err(dev, "bad phdr da 0x%llx mem 0x%llx\n", da,
+                                memsz);
+@@ -213,8 +214,12 @@ int rproc_elf_load_segments(struct rproc *rproc, const=
+ struct firmware *fw)
+                }
+
+                /* put the segment where the remote processor expects it */
+-               if (filesz)
+-                       memcpy(ptr, elf_data + offset, filesz);
++               if (filesz) {
++                       if (iomem)
++                               memcpy_fromio(ptr, elf_data + offset, files=
+z);
++                       else
++                               memcpy(ptr, elf_data + offset, filesz);
++               }
+
+                /*
+                 * Zero out remaining memory for this segment.
+@@ -223,8 +228,12 @@ int rproc_elf_load_segments(struct rproc *rproc, const=
+ struct firmware *fw)
+                 * did this for us. albeit harmless, we may consider removi=
+ng
+                 * this.
+                 */
+-               if (memsz > filesz)
+-                       memset(ptr + filesz, 0, memsz - filesz);
++               if (memsz > filesz) {
++                       if (iomem)
++                               memset_toio(ptr + filesz, 0, memsz - filesz=
+);
++                       else
++                               memset(ptr + filesz, 0, memsz - filesz);
++               }
+        }
+
+        return ret;
+diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+index e8ac041c64d9..01bb9fa12784 100644
+--- a/include/linux/remoteproc.h
++++ b/include/linux/remoteproc.h
+@@ -329,6 +329,7 @@ struct rproc;
+  */
+ struct rproc_mem_entry {
+        void *va;
++       bool iomem;
+        dma_addr_t dma;
+        size_t len;
+        u32 da;
+diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+index d6473a72a336..dfa0bd7812a5 100644
+--- a/include/linux/uaccess.h
++++ b/include/linux/uaccess.h
+@@ -194,7 +194,7 @@ copy_from_user(void *to, const void __user *from, unsig=
+ned long n)
+ }
+
+ static __always_inline unsigned long __must_check
+-copy_to_user(void __user *to, const void *from, unsigned long n)
++copy_to_user(void __user *to, const void *_toiofrom, unsigned long n)
+ {
+        if (likely(check_copy_size(from, n, true)))
+                n =3D _copy_to_user(to, from, n);
+
+Thanks,
+Peng.
+
+>=20
+> Regards,
+> Bjorn
+>=20
+> > +}
+> > +
+> > +static void rproc_elf_memset(struct rproc *rproc, void *s, int c,
+> > +size_t count) {
+> > +	if (!rproc->ops->elf_memset)
+> > +		memset(s, c, count);
+> > +
+> > +	rproc->ops->elf_memset(rproc, s, c, count); }
+> > +
+> >  /**
+> >   * rproc_elf_load_segments() - load firmware segments to memory
+> >   * @rproc: remote processor which will be booted using these fw
+> > segments @@ -214,7 +230,7 @@ int rproc_elf_load_segments(struct rproc
+> > *rproc, const struct firmware *fw)
+> >
+> >  		/* put the segment where the remote processor expects it */
+> >  		if (filesz)
+> > -			memcpy(ptr, elf_data + offset, filesz);
+> > +			rproc_elf_memcpy(rproc, ptr, elf_data + offset, filesz);
+> >
+> >  		/*
+> >  		 * Zero out remaining memory for this segment.
+> > @@ -224,7 +240,7 @@ int rproc_elf_load_segments(struct rproc *rproc,
+> const struct firmware *fw)
+> >  		 * this.
+> >  		 */
+> >  		if (memsz > filesz)
+> > -			memset(ptr + filesz, 0, memsz - filesz);
+> > +			rproc_elf_memset(rproc, ptr + filesz, 0, memsz - filesz);
+> >  	}
+> >
+> >  	return ret;
+> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> > index e8ac041c64d9..06c52f88a3fd 100644
+> > --- a/include/linux/remoteproc.h
+> > +++ b/include/linux/remoteproc.h
+> > @@ -373,6 +373,8 @@ enum rsc_handling_status {
+> >   *			expects to find it
+> >   * @sanity_check:	sanity check the fw image
+> >   * @get_boot_addr:	get boot address to entry point specified in
+> firmware
+> > + * @elf_memcpy:		platform specific elf loader memcpy
+> > + * @elf_memset:		platform specific elf loader memset
+> >   * @panic:	optional callback to react to system panic, core will delay
+> >   *		panic at least the returned number of milliseconds
+> >   */
+> > @@ -392,6 +394,8 @@ struct rproc_ops {
+> >  	int (*load)(struct rproc *rproc, const struct firmware *fw);
+> >  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+> >  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware
+> > *fw);
+> > +	void (*elf_memcpy)(struct rproc *rproc, void *dest, const void *src,
+> size_t count);
+> > +	void (*elf_memset)(struct rproc *rproc, void *s, int c, size_t
+> > +count);
+> >  	unsigned long (*panic)(struct rproc *rproc);  };
+> >
+> > --
+> > 2.28.0
+> >
