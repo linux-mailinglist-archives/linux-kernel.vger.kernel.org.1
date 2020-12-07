@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27A52D0D8F
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0972D0D8E
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgLGJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:57:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8717 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgLGJ5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:57:11 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqJbV3t5gzklX5;
-        Mon,  7 Dec 2020 17:55:50 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 17:56:19 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH RESEND] f2fs: compress: deny setting unsupported compress algorithm
-Date:   Mon, 7 Dec 2020 17:56:09 +0800
-Message-ID: <20201207095609.73825-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S1726862AbgLGJ44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:56:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48434 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726377AbgLGJ44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:56:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607334970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lQyzA5+NXpFmy9fbV5Tah+/VeSmBxhEmKcAcR9AvhBA=;
+        b=PGuun+nN4TTe702tCxdhe/LZ2pBb6EyIBjspS71guWj53BmRDDiKqz7MQu+Q+g2HYu/rbh
+        UppGzUQSl7KSn5hZn+3mYCO44J/CXjJ2Y/EDFVPp30xGCbWf3lor4fB2C9cNFDopaKLZWs
+        DsCO+aSb0+eiq36TVyTDr3VuRYQ8UaQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 59D3EAD41;
+        Mon,  7 Dec 2020 09:56:10 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 10:56:09 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: devkmsg: was [PATCH next v2 3/3] printk: remove logbuf_lock, add
+ syslog_lock
+Message-ID: <X838OXY46bA2ozuo@alley>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
+ <X8pbQ94Buqxhlqsk@alley>
+ <87y2iamzdp.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2iamzdp.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If kernel doesn't support certain kinds of compress algorithm, deny to set
-them as compress algorithm of f2fs via 'compress_algorithm=%s' mount option.
+On Sun 2020-12-06 21:57:46, John Ogness wrote:
+> On 2020-12-04, Petr Mladek <pmladek@suse.com> wrote:
+> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> >> index e9018c4e1b66..7385101210be 100644
+> >> --- a/kernel/printk/printk.c
+> >> +++ b/kernel/printk/printk.c
+> >> @@ -785,7 +749,6 @@ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+> >>  	if (offset)
+> >>  		return -ESPIPE;
+> >>  
+> >> -	logbuf_lock_irq();
+> >
+> > user->seq manipulation is not longer safe from the atomicity point of
+> > view.
+> >
+> > One solution would be to use atomic variable in struct devkmsg_user().
+> > Another solution would be to synchronize it with user->lock like we do
+> > in devkmsg_read().
+> >
+> > user->lock looks like an overhead. But it actually would make sense to
+> > prevent seek in the middle of a read.
+> 
+> I would prefer using atomic64_t. Using user->lock could introduce some
+> wacky regression.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-no changes, just rebase on dev branch.
- fs/f2fs/super.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+OK, fair enough. User space might do crazy stuff.
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index e0fe72f1d2c8..662e59f32645 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -936,9 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			if (!name)
- 				return -ENOMEM;
- 			if (!strcmp(name, "lzo")) {
-+#ifdef CONFIG_F2FS_FS_LZO
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZO;
-+#else
-+				f2fs_info(sbi, "Image doesn't support lzo compression");
-+#endif
- 			} else if (!strncmp(name, "lz4", 3)) {
-+#ifdef CONFIG_F2FS_FS_LZ4
- 				ret = f2fs_compress_set_level(sbi, name,
- 								COMPRESS_LZ4);
- 				if (ret) {
-@@ -947,7 +952,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZ4;
-+#else
-+				f2fs_info(sbi, "Image doesn't support lz4 compression");
-+#endif
- 			} else if (!strncmp(name, "zstd", 4)) {
-+#ifdef CONFIG_F2FS_FS_ZSTD
- 				ret = f2fs_compress_set_level(sbi, name,
- 								COMPRESS_ZSTD);
- 				if (ret) {
-@@ -956,9 +965,16 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_ZSTD;
-+#else
-+				f2fs_info(sbi, "Image doesn't support zstd compression");
-+#endif
- 			} else if (!strcmp(name, "lzo-rle")) {
-+#ifdef CONFIG_F2FS_FS_LZORLE
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZORLE;
-+#else
-+				f2fs_info(sbi, "Image doesn't support lzorle compression");
-+#endif
- 			} else {
- 				kfree(name);
- 				return -EINVAL;
--- 
-2.29.2
-
+Best Regards,
+Petr
