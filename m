@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094A42D1084
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4372D2D1087
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgLGMXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:23:43 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:27130 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727182AbgLGMXm (ORCPT
+        id S1727558AbgLGMYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727505AbgLGMYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:23:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607343804; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1SikiSOLDWxZ6yMf43VC0ekizit3Ea0q7Thf5whM7Ok=; b=g1M7+W6SnsrQSwoXr42O9Y1b1cqlgWZ+F4SCT4Olp4msxAjhvth4QUXou+jwh8v7OZVVPcj+
- exTqM7twS8GxPmi6Rlnf+x9alKg0oMJHmpCIS/z6Vrj722XQo7RoRKoIOoZDcAuDMTQM64hV
- OigxrvSbFsLX0LXEJVrbEpwgtIo=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fce1e9896285165cdc18dff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 12:22:48
- GMT
-Sender: akashast=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 11A68C433ED; Mon,  7 Dec 2020 12:22:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.43.89] (unknown [106.205.31.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2072C433CA;
-        Mon,  7 Dec 2020 12:22:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2072C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH 3/3] Serial: Separate out earlycon support
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        mka@chromium.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, saravanak@google.com
-References: <1607330847-15522-1-git-send-email-akashast@codeaurora.org>
- <1607330847-15522-4-git-send-email-akashast@codeaurora.org>
- <X83x0BZmGYtQSMUU@kroah.com>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <ab693e13-0478-5301-5ccb-9d8b1191afa1@codeaurora.org>
-Date:   Mon, 7 Dec 2020 17:52:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 7 Dec 2020 07:24:24 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD440C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:23:37 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id o11so9557917ote.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:23:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E6pk4jhfaBDxagsrjqdb98OOZTNvh3pSgPws7wibwpo=;
+        b=b/Javx/Yso5ETEG1DyHBm95cEnc1pUIgVv1H2AJva36lbgk43gZb16ZvdcRcUTnLud
+         b5iEOhXaTFCR3ZSOlhZLS0yhJdJy3zyssHm9MiqV67y1moqxd8392AB3tUo3GSropJ0g
+         XepIRQyg03EgSZlWraWQgMFWab4oIeEpD8LyMhT9tazpjWTeqn6NJPUs7am/MPWZYL7A
+         QPV0Nd8CfztiThSkiKTUbVtfcN2ZY1WWOxTIuiSFdeaenOUFuujh7/ujtDmbi6PH1WBL
+         jtnwjjRnEwl0LIKdI6TfbKxQAQET9iKeEgH1+HkQilE7H0XkdFMnXCPTSoyJ6+eGx9c/
+         wO0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E6pk4jhfaBDxagsrjqdb98OOZTNvh3pSgPws7wibwpo=;
+        b=d4U9QE5EkN2/tQtPxV/qDYP9/2raHc4clZ1irHOaYLrsInzWGcJzOM7secTVjZA9So
+         BFwVrSLMtSzQgoRypNFYZBFnAA7yHmCghjo0pcngBywfom8UR5rzRpHRQUA7BI8swJF5
+         JUK1z0987RqXxVLI873v3AJkPK3iClBIwZenR05EiMkcQs37bBlAZJgyyzyN5I1Hm2g2
+         1mPi8Koa3SmhOV7IBdxbJ8yQu5QK/hoW+fqmdU43NJDocZMXYZhUcdWlY+Sk47ZJftfn
+         Ln/W7rX2PsKPSLpT6/YSukBWFFEURjT1xZYU19GdNi8oC8yaUzTnPatobGRvmlQTe61e
+         WxNQ==
+X-Gm-Message-State: AOAM533AJd7W6mrPSpEJK1sphw3Iusc/fYdJE3oaiJZl5eQ/jvoQbtzt
+        6TnvXD4TK1CsyyoKSTDGM5HF30B34KuQHSXoXioXOA==
+X-Google-Smtp-Source: ABdhPJxPu5BAYHCw8QYIy3IuypqC5dWWHnHvVd/9Dp2o3b6w+EXFELpPjZhRtxrNOEDF+wITXXmjPKiLvzouwbef5bQ=
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr13034529otk.251.1607343816907;
+ Mon, 07 Dec 2020 04:23:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X83x0BZmGYtQSMUU@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CA+G9fYsHo-9tmxCKGticDowF8e3d1RkcLamapOgMQqeP6OdEEg@mail.gmail.com>
+ <CANpmjNPpOym1eHYQBK4TyGgsDA=WujRJeR3aMpZPa6Y7ahtgKA@mail.gmail.com>
+ <87wnxw86bv.fsf@nanos.tec.linutronix.de> <87eek395oe.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87eek395oe.fsf@nanos.tec.linutronix.de>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 7 Dec 2020 13:23:25 +0100
+Message-ID: <CANpmjNNdothEQfz6LFN_HHYFQPa6679+WoodMBvsZiPSLndEdw@mail.gmail.com>
+Subject: Re: BUG: KCSAN: data-race in tick_nohz_next_event / tick_nohz_stop_tick
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, fweisbec@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On 12/7/2020 2:41 PM, Greg KH wrote:
-> On Mon, Dec 07, 2020 at 02:17:27PM +0530, Akash Asthana wrote:
->> Separate out earlycon support from serial driver and remove it's
->> dependency on QUP wrapper driver.
->>
->> This enable us to manage earlycon independently and we can re-use the
->> same earlycon driver for android project which currently uses
->> downstream version of QUP drivers.
-> What do you mean by "downstream" here?
+On Sun, 6 Dec 2020 at 00:47, Thomas Gleixner <tglx@linutronix.de> wrote:
+> On Sat, Dec 05 2020 at 19:18, Thomas Gleixner wrote:
+> > On Fri, Dec 04 2020 at 20:53, Marco Elver wrote:
+> > It might be useful to find the actual variable, data member or whatever
+> > which is involved in the various reports and if there is a match then
+> > the reports could be aggregated. The 3 patterns here are not even the
+> > complete possible picture.
+> >
+> > So if you sum them up: 58 + 148 + 205 instances then their weight
+> > becomes more significant as well.
 >
->> Signed-off-by: Akash Asthana <akashast@codeaurora.org>
->> ---
->>   drivers/tty/serial/Kconfig              |   9 +
->>   drivers/tty/serial/Makefile             |   1 +
->>   drivers/tty/serial/qcom_geni_earlycon.c | 649 ++++++++++++++++++++++++++++++++
->>   drivers/tty/serial/qcom_geni_serial.c   |  97 -----
-> So you are replacing 97 lines of code with 649 lines?  How is this
-> benefiting anyone?
+> I just looked into the moderation queue and picked stuff which I'm
+> familiar with from the subject line.
+
+We managed to push (almost) everything that was still in private
+moderation to public moderation, so now there's even more to look at:
+https://syzkaller.appspot.com/upstream?manager=ci2-upstream-kcsan-gce
+:-)
+
+> There are quite some reports which have a different trigger scenario,
+> but are all related to the same issue.
 >
-> confused,
+>   https://syzkaller.appspot.com/bug?id=f5a5ed5b2b6c3e92bc1a9dadc934c44ee3ba4ec5
+>   https://syzkaller.appspot.com/bug?id=36fc4ad4cac8b8fc8a40713f38818488faa9e9f4
+>
+> are just variations of the same problem timer_base->running_timer being
+> set to NULL without holding the base lock. Safe, but insanely hard to
+> explain why :)
+>
+> Next:
+>
+>   https://syzkaller.appspot.com/bug?id=e613fc2458de1c8a544738baf46286a99e8e7460
+>   https://syzkaller.appspot.com/bug?id=55bc81ed3b2f620f64fa6209000f40ace4469bc0
+>   https://syzkaller.appspot.com/bug?id=972894de81731fc8f62b8220e7cd5153d3e0d383
+>   .....
+>
+> That's just the ones which caught my eye and all are related to
+> task->flags usage. There are tons more judging from the subject
+> lines.
+>
+> So you really want to look at them as classes of problems and not as
+> individual scenarios.
 
-We have 2 versions of QUP driver, upstream version(Present in linus 
-tree, mostly used for chromium project) and downstream version(belong to 
-vendor part of code in GKI design, used for all the other project).
+Regarding auto-dedup: as you suggest, it'd make this straightforward
+if we had the variable name -- it turns out that's not so trivial. I
+think we need compiler support for that, or is there some existing
+infrastructure that can just tell us the canonical variable name if it
+points into a struct or global? For globals it's fine, but for
+arbitrary pointers that point into structs, I don't see how we could
+do it without compiler support e.g. mapping PC->variable name (we need
+to map instructions back to the variable names they access).
 
-There is need to enable geni earlycon in Google provided boot image for 
-GKI to facilitate the debug until real console(belong to vendor code) is up.
+Any precedence for this? [+Cc linux-toolchains@vger.kernel.org]
 
-Currently it won't be possible because geni earlycon cannot be enabled 
-independently, it depends on upstream QUP wrapper driver 
-(soc/qcom/qcom-geni-se.c) and upstream serial 
-driver(serial/qcom_geni_serial.c).
-
-With this patch I am trying to break any dependency btw earlycon hook 
-and QUP kernel drivers, so it can be managed independently.
-
-Regards,
-
-Akash
-
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
-
+Thanks,
+-- Marco
