@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5A62D191E
+	by mail.lfdr.de (Postfix) with ESMTP id 11D9A2D191C
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgLGTGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S1726819AbgLGTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgLGTGm (ORCPT
+        with ESMTP id S1726788AbgLGTGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:06:42 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373B4C0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:05:56 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r7so2594592wrc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:05:56 -0800 (PST)
+        Mon, 7 Dec 2020 14:06:35 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5680AC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:05:55 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t3so9692043pgi.11
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:05:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=UI14tg3SGBkYGbg6Pqk9K057841s9DbKHhwnpKgE5MI=;
-        b=pKx+MyG41dms/4j23nNZ3/iUylLDFBjR6zjZE8BchspCPgUCDWcLc90uB9rE36O+Ez
-         aqf4pfnfMht4Yqb0boRP3IrxsjsESBQWS4bYeBWdE/R32M4YVuvue32iyiELLGguaFLj
-         4qTlZGeC2LMHE34f/F3/rH6KunfXyouDgDMtLLiiQMrrc+CAxUujKIaJDpwj1T1D0nbN
-         2ZfvWQmpLgTBbMiUbJAm/Vgexa9N4jWfjRqsGY5Zy+97OqkEaxkMtgJ7XLekrEL4d4eJ
-         sCWizb1v4PT0IpMtWhLEBPulI9/VTu7UDTKykoyAzkbQuHyD7npY9LHg5FAs6tPJnDLA
-         YLzA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m4BmF9Og147J/tDCMb/xyUBIR3sMZyzlByWbiiAL4/g=;
+        b=c4qvy96xbMXp9+Lbo1+N+phXvHd+9cUPooDaRH2/qZXcUUukPzjFmD/J7aroSOVjXE
+         bAAxyXG9T/WF2KjovDZUAtFNuAFkGHD22DxmgJMFPg/yhHMdvPUg6lU4gRruJ2euQs9v
+         Eiv3Q77kSZOuQsSYa9wiF+CUe8b7HjrQGDL+3Mk+b+mXnjKHg74/koim0E1B3ubB5vsp
+         all6LfDScScW0GLuPvS3gJa6YdoggMff9smhQMdW7vtajfIwIrDr/JPknzQcbmYlhHKH
+         +APk0yuosXxZiOygIJXPNFYZ62nqLcLXGiAOWaDnGabzgwHtvZSDo6wblt5AkX6IYIGX
+         58Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UI14tg3SGBkYGbg6Pqk9K057841s9DbKHhwnpKgE5MI=;
-        b=J7MEiQzKBduo07FgbZ8QNB4BvnQxy5Kzo7CT8wsDlH/M/vLElb3C0zuykjbL08P8ma
-         E/xnEpvVmcMvXVnTKYx8jnGfdHRdjf183RS7b+HNhxZ95pEFMgGW3pJL2Wkg+pIAKQcT
-         OtSak31oYIcPBAH4XXETSSdJ6NJ+nlBXbjGR2VmKi2LdFdbnLSijZ4mKL+rhWSWm0RWW
-         UZvZIw/ejUKsCvmlMncH7VLHm51udaO46DZMMh0OUeOVQWYWsVwoPTJzLJkjKrpr2xXg
-         34hkV7gpRXowBN2/oTGCwt4AsiwIwAx+DRMggrC9g4pjo+JRpiSCgmoKdAOe+fhZUIsY
-         d9YA==
-X-Gm-Message-State: AOAM531hhH0+FnJmvM/zKjC4belFyDzfqd9emGv9x46d0/XhHYiWA9oO
-        rGTczYHfmYTPaur0ONhKTryKsg==
-X-Google-Smtp-Source: ABdhPJxHlboYN9ZsdYwuXvc9ho5FJzzeaFH+p3W6D13RLecafmX6lJtPJUz5zSyorCxNVdOaBSedOw==
-X-Received: by 2002:a5d:634d:: with SMTP id b13mr21597532wrw.310.1607367954657;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m4BmF9Og147J/tDCMb/xyUBIR3sMZyzlByWbiiAL4/g=;
+        b=no+cr/O+lm6He/t1IteEK+yUw20N0sJax6IyOqcnHx+6ga7BxCm9ghHp64YU/buewR
+         4+xariabzgiRlTJkcoNpLZfhIXv0ck9THeTHlnL7GHPAnm6iZ+9Fxww6XfquPCwlCFrV
+         A9xou3PWyvdbTZNGgDn9AUQlucd4JanrrmSnUsutQeildytBuEelxDjFVs7bHVZg0rH9
+         Z0nO6Ono9cZ4WgceIAnmZMsGjliOUk0wALoJ4subzsTsRo+lIlR1QuU/X1IcP9jT/90F
+         LhMEZie7hEIJorILfLDqKo1YYzM5d1ayvok91Rv3XKuZnat2rjJ73XAje9x+RsRjHZN/
+         EIAA==
+X-Gm-Message-State: AOAM530QGjYqGyc8pw6Tuu+LG8RJBMKNZhr5fXTXV857Ycoo2iV64EXG
+        olsOpfFClqSVg7nYsR1dgcZrgg==
+X-Google-Smtp-Source: ABdhPJxJQW87+WZC2h+rzvUjxo8PQkSvHvGPd1Pqcch6g48eEqmVKa3eZ5Ey3YfHA0J+uyHbYvtv1w==
+X-Received: by 2002:a17:902:a982:b029:da:e252:78d8 with SMTP id bh2-20020a170902a982b02900dae25278d8mr11511281plb.16.1607367954705;
         Mon, 07 Dec 2020 11:05:54 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
-        by smtp.gmail.com with ESMTPSA id e17sm6252886wrw.84.2020.12.07.11.05.53
+Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
+        by smtp.gmail.com with ESMTPSA id f7sm14905105pfe.30.2020.12.07.11.05.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 07 Dec 2020 11:05:53 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal/core: Emit a warning if the thermal zone is updated without ops
-Date:   Mon,  7 Dec 2020 20:05:30 +0100
-Message-Id: <20201207190530.30334-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+Date:   Mon, 7 Dec 2020 11:05:51 -0800
+From:   Will McVicker <willmcvicker@google.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        security@kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Will Coster <willcoster@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
+Message-ID: <X859DwaYr/GtYDHN@google.com>
+References: <20201205004848.2541215-1-willmcvicker@google.com>
+ <X8tMDQTls/RcTSAy@kroah.com>
+ <X85spIzp1/gRxvKr@google.com>
+ <X85zUOmQ6e6T8wqQ@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X85zUOmQ6e6T8wqQ@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The actual code is silently ignoring a thermal zone update when a
-driver is requesting it without a get_temp ops set.
+On Mon, Dec 07, 2020 at 07:24:16PM +0100, Greg KH wrote:
+> On Mon, Dec 07, 2020 at 09:55:48AM -0800, Will McVicker wrote:
+> > On Sat, Dec 05, 2020 at 09:59:57AM +0100, Greg KH wrote:
+> > > On Sat, Dec 05, 2020 at 12:48:48AM +0000, Will McVicker wrote:
+> > > > The HID subsystem allows an "HID report field" to have a different
+> > > > number of "values" and "usages" when it is allocated. When a field
+> > > > struct is created, the size of the usage array is guaranteed to be at
+> > > > least as large as the values array, but it may be larger. This leads to
+> > > > a potential out-of-bounds write in
+> > > > __hidinput_change_resolution_multipliers() and an out-of-bounds read in
+> > > > hidinput_count_leds().
+> > > > 
+> > > > To fix this, let's make sure that both the usage and value arrays are
+> > > > the same size.
+> > > > 
+> > > > Signed-off-by: Will McVicker <willmcvicker@google.com>
+> > > 
+> > > Any reason not to also add a cc: stable on this?
+> > No reason not to include stable. CC'd here.
+> > 
+> > > 
+> > > And, has this always been the case, or was this caused by some specific
+> > > commit in the past?  If so, a "Fixes:" tag is always nice to included.
+> > I dug into the history and it's been like this for the past 10 years. So yeah
+> > pretty much always like this.
+> > 
+> > > 
+> > > And finally, as you have a fix for this already, no need to cc:
+> > > security@k.o as there's nothing the people there can do about it now :)
+> > Is that short for security@kernel.org? If yes, then I did include them. If no,
+> > do you mind explaining?
+> 
+> Yes, I see you included it, my point was that once you have a patch,
+> there is no need to include this email address as all we do at this
+> address is work to match up a problem with a developer that can create a
+> fix.  You already did this, so no need for us to get involved at all! :)
+> 
+> thanks,
+> 
+> greg k-h
+Ah okay, thanks for the explanation!
 
-That looks not correct, as the caller should not have called this
-function if the thermal zone is unable to read the temperature.
-
-That makes the code less robust as the check won't detect the driver
-is inconsistently using the thermal API and that does not help to
-improve the framework as these circumvolutions hide the problem at the
-source.
-
-In order to detect the situation when it happens, let's add a warning
-when the update is requested without the get_temp() ops set.
-
-Any warning emitted will have to be fixed at the source of the
-problem: the caller must not call thermal_zone_device_update if there
-is not get_temp callback set.
-
-As the check is done in thermal_zone_get_temperature() via the
-update_temperature() function, it is pointless to have the check and
-the WARN in the thermal_zone_device_update() function. Just remove the
-check and let the next call to raise the warning.
-
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Amit Kucheria <amitk@kernel.org>
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/thermal_core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 90e38cc199f4..1bd23ff2247b 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -448,17 +448,17 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
- 	monitor_thermal_zone(tz);
- }
- 
--static void update_temperature(struct thermal_zone_device *tz)
-+static int update_temperature(struct thermal_zone_device *tz)
- {
- 	int temp, ret;
- 
- 	ret = thermal_zone_get_temp(tz, &temp);
- 	if (ret) {
- 		if (ret != -EAGAIN)
--			dev_warn(&tz->device,
--				 "failed to read out thermal zone (%d)\n",
--				 ret);
--		return;
-+			dev_warn_once(&tz->device,
-+				      "failed to read out thermal zone (%d)\n",
-+				      ret);
-+		return ret;
- 	}
- 
- 	mutex_lock(&tz->lock);
-@@ -469,6 +469,8 @@ static void update_temperature(struct thermal_zone_device *tz)
- 	trace_thermal_temperature(tz);
- 
- 	thermal_genl_sampling_temp(tz->id, temp);
-+
-+	return 0;
- }
- 
- static void thermal_zone_device_init(struct thermal_zone_device *tz)
-@@ -553,11 +555,9 @@ void thermal_zone_device_update(struct thermal_zone_device *tz,
- 	if (atomic_read(&in_suspend))
- 		return;
- 
--	if (!tz->ops->get_temp)
-+	if (update_temperature(tz))
- 		return;
- 
--	update_temperature(tz);
--
- 	thermal_zone_set_trips(tz);
- 
- 	tz->notify_event = event;
--- 
-2.17.1
-
+--Will
