@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6D12D124A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098352D125A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgLGNjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgLGNjy (ORCPT
+        id S1725960AbgLGNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:41:57 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:33642 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGNl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:39:54 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A1BC0613D0;
-        Mon,  7 Dec 2020 05:39:14 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id s30so18105175lfc.4;
-        Mon, 07 Dec 2020 05:39:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=haYuw1U4BccfG85AJy6UKy/JEpo0rY/0T3AlACW5eW4=;
-        b=lceDpgpB9ECdPjkXDCjqSD76y2sf7IL7RnMhU+Ifuy7i3KpyVwh2imPRzT0C+BgeYg
-         /iiQm7H6G7jPx9csy3+70wnE1XutohYO7T4sQ08F1D8U0DB7yhYSDTTNKhE0ucw3OafR
-         2Kl0Kr1g7qI6+yNQEIuz/TprMqtZ0S/HhLi9Ezv61z+GSOn2Q2V3IUZR+Hq+1NxZ+qjI
-         VY8JlFUYxk3S0Hmg14AN6rxEleYI2P+KJILLG6iAWF9GYi6bySFK3jNPYu1lTQjc4+0R
-         uFtcwq+GmqHAo4D7Pnk0YS6NqvVFuz+MYbuNbGEaRWc1EkObGXQXAbE0fctyr+/jQoaR
-         iD2Q==
+        Mon, 7 Dec 2020 08:41:56 -0500
+Received: by mail-ot1-f67.google.com with SMTP id b18so12469595ots.0;
+        Mon, 07 Dec 2020 05:41:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=haYuw1U4BccfG85AJy6UKy/JEpo0rY/0T3AlACW5eW4=;
-        b=AFeUW+4WaF0s4RL1BezdUcJjZPNVqrnJa67vFX0g5eRnugoh0JNtLd0sa0UpRqpRQM
-         WKI8IWFpUCY7sypyc6rdzjvkF9xn9ckFz0sd5H9r4ZqPXaIqHUIQABjCkVtdSIot0BAp
-         tUarrCTsU5K+d7mvRzD2OpjON/jNc2e2LMC4TRQwFKiGd+lOBmbVkUMaupzXsi2yJ5WZ
-         4yMOaJWo7VtGxJGSy1qwuZsHjNUPo1k0gkpdGOWRIQAgw8OtlMNgvbPKSy1brYV8upDa
-         1TMBrqLCf+lPFceWxYvVDPtzESYz4WE/Aaxx9T4PYe7MoIQmycvZVFD8vi0TTMpRK4nW
-         ULAg==
-X-Gm-Message-State: AOAM533t8hf2lXJuC8ExnJIzoZPLRnUsMR0pQrCrQfj7upiw6iScpEKu
-        ohRjeecSEt2us970BsqDiMm8klbCKhRDl35fXZiohfLXdQM=
-X-Google-Smtp-Source: ABdhPJwoN1WM78qhNmeSV1jQdAIJRuuMdGsVjs9ehZ8oLCLbit/50ecVgvmX0kPu1ATZkmyjnG387KSnFyzc3iJpyDA=
-X-Received: by 2002:a19:384d:: with SMTP id d13mr5444839lfj.548.1607348352610;
- Mon, 07 Dec 2020 05:39:12 -0800 (PST)
+        bh=Sajsa5hnD4/l7bV/fF2j2mLOSef/O2Ms1lr8tdESjSo=;
+        b=K/w/A7eLcqbSNTzQIZKEt83wwglQ241ARxP16ueFuuRJ5pAX6KC9Kqbo42Kn3gB/K7
+         yJSUGkapkoIyd6tm1uQTUAehOU124VhgFA5LPlv8IoY6SNKib8dFHC9hnzUrfXwfYq4v
+         CdzUWeBRSDGfpQcmtpegHw4bnhfLZ/PBRSPFKI+nV9XSSRRZ7HikYux6hA28/K28yDqm
+         nuY0WdLdqfJezLZM93IZ/Xyk4k4yuRVKVzVSxvhcyJ8t7PyZE7AGuSIOyJss1RBIHhT+
+         ND/j8Ro4CUaf1vG/OAclmFjy33lyU4NPi7rdB0g7GcaJ5Cwn2p2CG7pOs4oPev1YphuE
+         o33A==
+X-Gm-Message-State: AOAM532RuwTrjzdh+t3U+07Xk+CxvU7penk9LipqH0AhgzPHaYtvO55e
+        5U4vgsepMNMefdaW7ziljjQ6Y2CtCEqBonQCzwo=
+X-Google-Smtp-Source: ABdhPJx3dLzEghwd0BjIRF1O1W3UAcd1cMqWifXAspvtKG8rUP90q4qF3kjF3M3XCqG2meUkVW9siofXR2718aVuTcA=
+X-Received: by 2002:a9d:67da:: with SMTP id c26mr6057544otn.321.1607348469598;
+ Mon, 07 Dec 2020 05:41:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207113827.2902-1-bongsu.jeon@samsung.com> <20201207115147.GA26206@kozik-lap>
-In-Reply-To: <20201207115147.GA26206@kozik-lap>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Mon, 7 Dec 2020 22:39:01 +0900
-Message-ID: <CACwDmQDHXwqzmUE_jEmPcJnCcPrzn=7qT=4rp1MF3s30OM7uTQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] nfc: s3fwrn5: Change irqflags
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+References: <1817571.2o5Kk4Ohv2@kreacher> <2174134.tL5yAn4CWt@kreacher> <20201207074615.kmvy5afoolhv5cgq@vireshk-i7>
+In-Reply-To: <20201207074615.kmvy5afoolhv5cgq@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Dec 2020 14:40:52 +0100
+Message-ID: <CAJZ5v0havcy_SZ6yUqjn4KK8=8SMJRSkhgaTm==eMeEinxDN2w@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/2] cpufreq: Add special-purpose fast-switching
+ callback for drivers
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 8:51 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Mon, Dec 7, 2020 at 8:47 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> On Mon, Dec 07, 2020 at 08:38:27PM +0900, Bongsu Jeon wrote:
-> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> >
-> > change irqflags from IRQF_TRIGGER_HIGH to IRQF_TRIGGER_RISING for stable
-> > Samsung's nfc interrupt handling.
+> On 30-11-20, 19:37, Rafael J. Wysocki wrote:
+> > Index: linux-pm/include/linux/cpufreq.h
+> > ===================================================================
+> > --- linux-pm.orig/include/linux/cpufreq.h
+> > +++ linux-pm/include/linux/cpufreq.h
+> > @@ -320,6 +320,15 @@ struct cpufreq_driver {
+> >                                       unsigned int index);
+> >       unsigned int    (*fast_switch)(struct cpufreq_policy *policy,
+> >                                      unsigned int target_freq);
+> > +     /*
+> > +      * ->fast_switch() replacement for drivers that use an internal
+> > +      * representation of performance levels and can pass hints other than
+> > +      * the target performance level to the hardware.
+> > +      */
+> > +     void            (*adjust_perf)(unsigned int cpu, bool busy,
 >
-> 1. Describe in commit title/subject the change. Just a word "change irqflags" is
->    not enough.
+> Maybe this should still take policy as an argument (like other calls)
+> instead of CPU, even if it is going to be used for single-cpu per
+> policy case for now.
+
+That can be changed in the future if need be.
+
+Otherwise this path doesn't need to look at the policy object at all
+and I'd rather keep it this way.
+
 >
-Ok. I'll update it.
-
-> 2. Describe in commit message what you are trying to fix. Before was not
->    stable? The "for stable interrupt handling" is a little bit vauge.
+> > +                                    unsigned long min_perf,
+> > +                                    unsigned long target_perf,
+> > +                                    unsigned long capacity);
 >
-Usually, Samsung's NFC Firmware sends an i2c frame as below.
-
-1. NFC Firmware sets the gpio(interrupt pin) high when there is an i2c
-frame to send.
-2. If the CPU's I2C master has received the i2c frame, NFC F/W sets
-the gpio low.
-
-NFC driver's i2c interrupt handler would be called in the abnormal case
-as the NFC F/W task of number 2 is delayed because of other high
-priority tasks.
-In that case, NFC driver will try to receive the i2c frame but there
-isn't any i2c frame
-to send in NFC. It would cause an I2C communication problem.
-This case would hardly happen.
-But, I changed the interrupt as a defense code.
-If Driver uses the TRIGGER_RISING not LEVEL trigger, there would be no problem
-even if the NFC F/W task is delayed.
-
-> 3. This is contradictory to the bindings and current DTS. I think the
->    driver should not force the specific trigger type because I could
->    imagine some configuration that the actual interrupt to the CPU is
->    routed differently.
->
->    Instead, how about removing the trigger flags here and fixing the DTS
->    and bindings example?
->
-
-As I mentioned before,
-I changed this code because of Samsung NFC's I2C Communication way.
-So, I think that it is okay for the nfc driver to force the specific
-trigger type( EDGE_RISING).
-
-What do you think about it?
-
-> Best regards,
-> Krzysztof
->
-> >
-> > Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-> > ---
-> >  drivers/nfc/s3fwrn5/i2c.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/nfc/s3fwrn5/i2c.c b/drivers/nfc/s3fwrn5/i2c.c
-> > index e1bdde105f24..016f6b6df849 100644
-> > --- a/drivers/nfc/s3fwrn5/i2c.c
-> > +++ b/drivers/nfc/s3fwrn5/i2c.c
-> > @@ -213,7 +213,7 @@ static int s3fwrn5_i2c_probe(struct i2c_client *client,
-> >               return ret;
-> >
-> >       ret = devm_request_threaded_irq(&client->dev, phy->i2c_dev->irq, NULL,
-> > -             s3fwrn5_i2c_irq_thread_fn, IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> > +             s3fwrn5_i2c_irq_thread_fn, IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-> >               S3FWRN5_I2C_DRIVER_NAME, phy);
-> >       if (ret)
-> >               s3fwrn5_remove(phy->common.ndev);
-> > --
-> > 2.17.1
-> >
+> --
