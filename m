@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3822D0CBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B492D0CBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgLGJMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:12:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726677AbgLGJMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:12:06 -0500
-Date:   Mon, 7 Dec 2020 10:12:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607332289;
-        bh=pVcQnzFdOBdk2G2zSGbi6yAHzkwoQI7eBtrtT4e8Gk8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tocgW9/ZyJWYiEYa4KssrRl5HhEvRADojlLiDNxdpZFIBoEFdowIeJ34n671JFHA3
-         fSB+Em92Tm4ThDbPeYos1NroDMEoxpzHGtvPqdHt7tqav59vBUKFFLRKTm9W/dX1d5
-         O9+qIzi4fMSld3PcefFR0YpVuw8EGUNwREUa6pnI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] Add support for Microsoft Surface System
- Aggregator Module
-Message-ID: <X83yB9/RbosOIdbm@kroah.com>
-References: <20201203212640.663931-1-luzmaximilian@gmail.com>
- <20201206070705.GA686270@unreal>
- <9dd05a66-efb7-74d2-4f5b-347655b710be@gmail.com>
- <aecfdbf2-32bf-1ee5-fe72-0c0923773507@redhat.com>
+        id S1726753AbgLGJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:13:22 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:45856 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgLGJNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:13:21 -0500
+Received: by mail-lj1-f193.google.com with SMTP id q8so14111146ljc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:13:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ebfi/Zi/zHoTJbwW/sWNc/qX2n8nnjwkVcAcnVx56Kk=;
+        b=NQaJ6c3U1KjOd8wNgB9eoW4X+cVMORayfMGUwV8Xclst9fgE7UYUajJLmmw7eaNSyx
+         0iCF/LuZwa9E0QYDx72E/+DxPF/Pnc6se8Cmum1T+u7IB9A3saHi3SencOLpESxJbl5M
+         iZ0/YhXSepJnQhRJLXqZKy0V1w5nvgf1Fyky4tUR190sk/Tz+ZuYpmE92fqu1MrRMlZL
+         DxoXo5Z/QFI878KhCY52HIn4oe3aSnm3mUpN6QiozgjY5Qb/5s5LQVQLavbA+XoENNXF
+         gN+nI8zrrnrpSp1bSKi+pWUHglLzUbF9tJ6EVlF/cigWlz1+pAVpg87zsqap2xts0m8U
+         T66g==
+X-Gm-Message-State: AOAM531+5cBYiXMg+jhJKFyY4k75vnfpkR8hVgo7rsoDhLtsKIvyZg5s
+        3/i0U8/Rr6psj3EQ9dAg82gDycjNGrdp8A==
+X-Google-Smtp-Source: ABdhPJzsbYAEiO5bhQ0R4i11fNvOJJa1CaJFi6yn/wm1KY6/fdmNU08A5bmWo3v2qvSowQes9sIv0w==
+X-Received: by 2002:a2e:8750:: with SMTP id q16mr8780622ljj.53.1607332363039;
+        Mon, 07 Dec 2020 01:12:43 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id m26sm552998lfb.288.2020.12.07.01.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 01:12:42 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1kmCa4-0000nr-Kk; Mon, 07 Dec 2020 10:13:17 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH] module: drop semicolon from version macro
+Date:   Mon,  7 Dec 2020 10:13:08 +0100
+Message-Id: <20201207091308.1217-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aecfdbf2-32bf-1ee5-fe72-0c0923773507@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 09:49:03AM +0100, Hans de Goede wrote:
-> Note if in the future you do see benefit in switching the auxiliary bus
-> I have no problems with that. But atm I don't really see any benefits of
-> doing so, so then we would just be switching over for the sake of switching
-> over which does not seem productive.
+Drop the trailing semicolon from the MODULE_VERSION() macro definition
+which was left when removing the array-of-pointer indirection.
 
-I too do not see the benefit at this time to switch either.
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ include/linux/module.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/include/linux/module.h b/include/linux/module.h
+index ebe2641d7b0b..b63db970fd26 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -279,7 +279,7 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
+ 			},						\
+ 			.module_name	= KBUILD_MODNAME,		\
+ 			.version	= _version,			\
+-		};
++		}
+ #endif
+ 
+ /* Optional firmware file (or files) needed by the module
+-- 
+2.26.2
 
-greg k-h
