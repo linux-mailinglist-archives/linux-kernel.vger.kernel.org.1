@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27692D0944
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C702D0945
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgLGDGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:06:20 -0500
-Received: from smtprelay0107.hostedemail.com ([216.40.44.107]:55494 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727375AbgLGDGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:06:20 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 6D4761730841;
-        Mon,  7 Dec 2020 03:05:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2895:2901:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3873:3874:4250:4321:5007:6737:7576:7901:8603:8660:10004:10400:10471:10482:10848:11026:11232:11473:11658:11783:11914:12043:12048:12109:12296:12297:12438:12740:12895:12986:13148:13230:13255:13439:13894:14181:14659:14721:19901:19997:21080:21451:21627:21795:21939:21987:21990:30029:30051:30054:30064:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: mask08_1a0dff5273db
-X-Filterd-Recvd-Size: 3549
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  7 Dec 2020 03:05:35 +0000 (UTC)
-Message-ID: <3595d2e5e5de009730b3374bf65e96359c02392d.camel@perches.com>
-Subject: Re: [PATCH 22/22] xlink-core: factorize xlink_ioctl function by
- creating sub-functions for each ioctl command
-From:   Joe Perches <joe@perches.com>
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Seamus Kelly <seamus.kelly@intel.com>
-Date:   Sun, 06 Dec 2020 19:05:34 -0800
-In-Reply-To: <20201201223511.65542-23-mgross@linux.intel.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
-         <20201201223511.65542-23-mgross@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1728673AbgLGDH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:07:27 -0500
+Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:30656
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728520AbgLGDH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:07:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dH+gxyR04BWDdC03G4yYD680P/X+TmYpIXSqI8dxCu9LxTmuLGbqD6ktrfDa6e97TerBdF2UWlbzIvoj1yL7sr641yr6Rh3HIaB5jCaR57Mp3cgkgvAL8i6nTTDSbg9GLUgBGOADqRLZmSFGs1SlqLfvztPKdAsgxexyHYbAw5wJRobchxkYbd6JpK1g2G7AMbaCTEwqH2Jgr0assYLYSpwe18jhiXzMtEdxFpu3XmEBuPlIrpuM/JcyhZP3vymnD3Pu9VqJ1O67E5pvnvG6vIMUAYQD0g4Y+athB4ZogqZQOl++16TMxPKnbrCqUkn4PAxv9KdQSn23VzfdapChig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7STTtvfsAMrbJTeT6y3DnnQuK3tlSmQIMOF9MvmAgOE=;
+ b=NE4lY9RcI9ITlp9UYgqSqFC44SdsxV/8bE3l0pJ3KIXZ45HKcJZUDugai+8plvRA3hd7eZJxF42+6Xvy9Ppu5p5fmpMUfvtpC+S5Tp5CIKV5m5dayvNNkTApRJZuWnd0hvQqNxqww51ocoUGpPkPx1gIjI2uCUd0Eddyp85WGRnC1WsINP3a6HA4wS87HC/F4o9YfTpzZEc6bd/9OvAagQTnWICtEaQJ8Segqml7LGyUOdd/3MhvxbxjHFKK45JftEPqrdJhuuSv+lZFUOsHyZNQwy+1pigbr6/0XXQjmVS6bdTZbqFnOBfaFstZnGhZ1day96FtC9mSduAQRQB0og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7STTtvfsAMrbJTeT6y3DnnQuK3tlSmQIMOF9MvmAgOE=;
+ b=fcfER/sqIoFASP0lPEtoC+TRx7e0JUhxfN3Q8jhFbpvodq7Sd0PAX6AVUX1NpFJEeXhkS/blOnPJGb5Kr1w11PPCaY+S4KjdnMlrcssz/znADPJeYYDHHxSE6Igsv0Dy7OkEYpZKoE+3fATfGpP6txluZHkMSL59wWMyo+HLg8A=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
+ by BYAPR12MB3144.namprd12.prod.outlook.com (2603:10b6:a03:d6::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Mon, 7 Dec
+ 2020 03:06:32 +0000
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::dd10:efd2:e325:53c7]) by BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::dd10:efd2:e325:53c7%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
+ 03:06:32 +0000
+Subject: Re: [PATCH] iommu/amd: Increase interrupt remapping table limit to
+ 512 entries
+To:     Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+References: <20201015025002.87997-1-suravee.suthikulpanit@amd.com>
+ <87sg8pkrre.fsf@redhat.com>
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-ID: <c4c46a93-fa10-5e47-e9d0-dd16e721acbb@amd.com>
+Date:   Mon, 7 Dec 2020 10:06:22 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
+In-Reply-To: <87sg8pkrre.fsf@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.80.7]
+X-ClientProxiedBy: KL1PR02CA0026.apcprd02.prod.outlook.com
+ (2603:1096:820:d::13) To BYAPR12MB4597.namprd12.prod.outlook.com
+ (2603:10b6:a03:10b::14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Suravees-MacBook-Pro.local (165.204.80.7) by KL1PR02CA0026.apcprd02.prod.outlook.com (2603:1096:820:d::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Mon, 7 Dec 2020 03:06:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1bcf7546-0f41-4651-2003-08d89a5d19e2
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3144:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB3144333103F7011AB6342A70F3CE0@BYAPR12MB3144.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: biggWecuo1FDO/p0W+mI8gnEwIz5TLDpNvx1GiZbkbEnQ2/M+B1ANpjXgU8MSwQz1uhLaFdioZBUvFIZVe4p0nUOMLfeEF979w/jbIm1NFXTcsLqQW9TOZaPFxY4xzP10X8v0ppauX3fBtb+5toQsmOcQJDbvXDyd1SUgWS+J6nDkRg1Nw0YD4grqH2Uvx5kso3DWIiGzibvLVowjxbL+a7/OTqik3KL3U9yxcniyQscNXQTf8etSNEqx3V7Xh3/tC2DR6trB1zeIaa9raqxAQulqm+92KSgPIeVOYytONurGarg5QK8KqH7kja5U6dXoO0IXGSaYdSpW3bLynvuLE4uQfSaRtQhJ9X+Smsc2YPNX0oAA15U/rbrr11fnFlces+7cbsPzaMuANeTBoEOAk5Z7NJMquHxpyU1RU8R4Nc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(346002)(366004)(376002)(6512007)(2906002)(83380400001)(2616005)(44832011)(66476007)(5660300002)(956004)(6486002)(66556008)(16526019)(186003)(31686004)(6506007)(31696002)(86362001)(66946007)(52116002)(316002)(53546011)(478600001)(26005)(8936002)(36756003)(6916009)(4326008)(6666004)(8676002)(4001150100001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QktJOHlJa1owLy9SYk1pRitaUnNOTC96UHE1b1VYVXBGL2QvNjdQM2lUdG9J?=
+ =?utf-8?B?OHI1UmRUMTcrS1NEc0d0TnNXRUsxK0craUg4ZkRJY2hFZlFFUzdrZDlvTzZY?=
+ =?utf-8?B?YkQxbHhiQXJLbUhjUng2aVBGbXZlMEMzTkRnaElwL1I2ZFViY2Y1WmJWU1U0?=
+ =?utf-8?B?aDRGMGxodGFjbURkMmlCMll4UEhxU1B0dzZDVjEveG9ybHBBQzYyNTlVaU4x?=
+ =?utf-8?B?Nmx3Z1prS3B2M2hSa3JFc3RlY2pUa2tESlFtT29sVXp2YkJvL0VBc2g4MVlw?=
+ =?utf-8?B?aUJjUkRCelFaYmJyM0gzWDA0eFVmRXhqM1EydmFRNDFvY2xieDdWcVZjNDI3?=
+ =?utf-8?B?d014djVnZmtaQlUySEZlOEM3Z2d4cHBBa1RUSW15UytncjNZcFRLenZOZXp5?=
+ =?utf-8?B?aVNPb1RRcDJ3engzOU8wTkRZRzNOZXhkRVovdkdUZHRtd0luYTdJZ04yYll1?=
+ =?utf-8?B?MWpDWFdPWjROYVNMWlcwQXhLdFJpMWFJZUljOHJMYkJKV2xsY1JKMU91U1JL?=
+ =?utf-8?B?VUo5WXdpK0RQKzV2dm5hdDRjSXMzdjlTZnA4NXBFSy9WNCtoa1Y3TE9zY0N2?=
+ =?utf-8?B?QzZxbTZEa1NaUmtqek1CbXAzemdoVEhIcWJLUnFDL1c5bnRrcDkyMDBUVk0z?=
+ =?utf-8?B?WlMvakhpUkJSd2gxTW5Bc1hSQmFORUxwbzhLSDFVcTdPR0pGQmY1eDU1OERI?=
+ =?utf-8?B?Q2RkSEcyVzN6ZmlMT3hYWEFEMnBHenFHNVNJZXpiMFhPZU5TQVRWdDh6L0FM?=
+ =?utf-8?B?Yk9tb001REpCWlA1dmtOdTRJMFQxMWwxNWlvamJhOHI3NkdDaERRVFB6UWd0?=
+ =?utf-8?B?YlUzemF6WTRla3lkeVJzUXRKUGN6N3lWaE9wTVExUWFTN3pvbTVzdE9VSzdQ?=
+ =?utf-8?B?R3NNQUtuQ1hlTUVqN21YeGRMUEFYZjA3aTJ1dEpIVDQyQURkOWNSc2IrYWNh?=
+ =?utf-8?B?Uk9vQ0NQUGNyMFpSdXNWbDNDcEtuNnNGdkZuTTVrOUNYSkZjN2ord0NqS2pK?=
+ =?utf-8?B?QURDZVdHUGp3cXYrcGl0TEoyM1Z4WTJwS1pRL05HTEFodXgrbHdnVzZJdTla?=
+ =?utf-8?B?Zm9aVndSOG8ydWVrTHB2OGp4ajB5WlNNc012Y0YrQk01OFl0aGl3cjY5Q1lm?=
+ =?utf-8?B?cGRFR1FXL1RqY2xzRGRzeEhIcmF6eFptclgwaXE3R3AvMlBuWE9uOEVPNi9W?=
+ =?utf-8?B?MDhWZDAvUFM4dXZEUUxoWVhQVXFSNy9sQ1BLKzBsUmVHUWVZNCtjQnl3djJY?=
+ =?utf-8?B?S3RBZWRseDdIa3piYmZoTm05eWoxaXV0Y0IxWWtJajFVWUVxdnR1QjRMcjc3?=
+ =?utf-8?Q?r8FOX2gHsNWgVsR+MCldlvnt2Fth+kg59s?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 03:06:32.8291
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bcf7546-0f41-4651-2003-08d89a5d19e2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZZk9+ByYwKyKAboHWEgQTAd8k9io6dfzKHBqcJP2KichCkStAUt8JrI+O+bMwl1LhDR7Zx1cEaPhzBE+iNItuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-01 at 14:35 -0800, mgross@linux.intel.com wrote:
-> From: Seamus Kelly <seamus.kelly@intel.com>
+Jerry,
+
+On 12/2/20 6:53 AM, Jerry Snitselaar wrote:
 > 
-> Refactor the too large IOCTL function to call helper functions.
-
-This should not be sent as a known poor patch as patch 21 of 22
-and then updated in patch 22 of 22 with a better style.
-
-This should be sent in the as desired final form the first time
-so that people don't give you useless notes.
-
-> @@ -342,427 +323,84 @@ static int kmb_xlink_remove(struct platform_device *pdev)
->   * IOCTL function for User Space access to xlink kernel functions
->   *
->   */
-> +int ioctl_connect(unsigned long arg);
->  
+> Suravee Suthikulpanit @ 2020-10-14 19:50 MST:
 > 
->  static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->  {
-> -	struct xlink_handle		devh	= {0};
-> -	struct xlinkopenchannel		op	= {0};
-> -	struct xlinkwritedata		wr	= {0};
-> -	struct xlinkreaddata		rd	= {0};
-> -	struct xlinkreadtobuffer	rdtobuf = {0};
-> -	struct xlinkconnect		con	= {0};
-> -	struct xlinkrelease		rel	= {0};
-> -	struct xlinkstartvpu		startvpu = {0};
-> -	struct xlinkcallback		cb	= {0};
-> -	struct xlinkgetdevicename	devn	= {0};
-> -	struct xlinkgetdevicelist	devl	= {0};
-> -	struct xlinkgetdevicestatus	devs	= {0};
-> -	struct xlinkbootdevice		boot	= {0};
-> -	struct xlinkresetdevice		res	= {0};
-> -	struct xlinkdevmode		devm	= {0};
-> -	struct xlinkregdevevent		regdevevent = {0};
-> -	u32 sw_device_id_list[XLINK_MAX_DEVICE_LIST_SIZE];
-> -	char name[XLINK_MAX_DEVICE_NAME_SIZE];
-> -	int interface = NULL_INTERFACE;
-> -	u32 device_status = 0;
-> -	u32 num_devices = 0;
-> -	u32 device_mode = 0;
-> -	u32 num_events = 0;
-> -	char filename[64];
-> -	u32 *ev_list;
-> -	u8 reladdr;
-> -	u8 *rdaddr;
-> -	u32 size;
->  	int rc;
->  
+>> Certain device drivers allocate IO queues on a per-cpu basis.
+>> On AMD EPYC platform, which can support up-to 256 cpu threads,
+>> this can exceed the current MAX_IRQ_PER_TABLE limit of 256,
+>> and result in the error message:
+>>
+>>      AMD-Vi: Failed to allocate IRTE
+>>
+>> This has been observed with certain NVME devices.
+>>
+>> AMD IOMMU hardware can actually support upto 512 interrupt
+>> remapping table entries. Therefore, update the driver to
+>> match the hardware limit.
+>>
+>> Please note that this also increases the size of interrupt remapping
+>> table to 8KB per device when using the 128-bit IRTE format.
+>>
+>> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+>> ---
+>>   drivers/iommu/amd/amd_iommu_types.h | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+>> index 30a5d412255a..427484c45589 100644
+>> --- a/drivers/iommu/amd/amd_iommu_types.h
+>> +++ b/drivers/iommu/amd/amd_iommu_types.h
+>> @@ -406,7 +406,11 @@ extern bool amd_iommu_np_cache;
+>>   /* Only true if all IOMMUs support device IOTLBs */
+>>   extern bool amd_iommu_iotlb_sup;
+>>   
+>> -#define MAX_IRQS_PER_TABLE	256
+>> +/*
+>> + * AMD IOMMU hardware only support 512 IRTEs despite
+>> + * the architectural limitation of 2048 entries.
+>> + */
+>> +#define MAX_IRQS_PER_TABLE	512
+>>   #define IRQ_TABLE_ALIGNMENT	128
+>>   
+>>   struct irq_remap_table {
 > 
->  	switch (cmd) {
->  	case XL_CONNECT:
-> -		if (copy_from_user(&con, (void __user *)arg,
-> -				   sizeof(struct xlinkconnect)))
-> -			return -EFAULT;
-> -		if (copy_from_user(&devh, (void __user *)con.handle,
-> -				   sizeof(struct xlink_handle)))
-> -			return -EFAULT;
-> -		rc = xlink_connect(&devh);
-> -		if (rc == X_LINK_SUCCESS) {
-> -			if (copy_to_user((void __user *)con.handle,
-> -					 &devh, sizeof(struct xlink_handle)))
-> -				return -EFAULT;
-> -		}
-> -		if (copy_to_user((void __user *)con.return_code, (void *)&rc,
-> -				 sizeof(rc)))
-> -			return -EFAULT;
-> +		rc = ioctl_connect(arg);
->  		break;
+> With this change should DTE_IRQ_TABLE_LEN be changed to 9? IIUC the spec
+> correctly leaving it at 8 is saying the table is 256 entries long.
 
-etc...
+You are correct. Sorry I missed this part. I'll send the fix-up patch ASAP.
 
+Thank you,
+Suravee
