@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EBB2D1AB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCE82D1AB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgLGUkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:40:21 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12205 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLGUkV (ORCPT
+        id S1726733AbgLGUmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgLGUmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:40:21 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fce930c0003>; Mon, 07 Dec 2020 12:39:40 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Dec
- 2020 20:39:40 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 7 Dec 2020 20:39:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z1WysXiZa+/k3mfeII9pn1TguS7HPwxT1lXn6EaVBriET69GrZubo18L0OIZE2bJJ3pTDo8ed6y7BrDbowMoU7CQxa6rwCqEttorTRmR04vQ/rZKOlaX4auXqkCyG2qTjvqPAYsy3rrRgFsw3gj1i/EfitT5iyla7+9h0njqZ7u6boVOYGRT714WMLN+y2nC+w5xwuFM3sCxQpbWO4zFXPSk2S8RFj0QaLgLNR5Eps4JoK+cQuGy4jCwxxv/KWzjSJZ6KTJ36VyP4FTg2KzXIRfAAcr8V+jJMu6uPm2eZZuBrTm4ktSQrjr9nHQDquY2yPZ+mzd1BE5StB+mIZzCQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x43gJJk2IG3c0yCWNgMXjRYyR6jyn1sl3LYfZgfmK1Q=;
- b=P+7KFAV1jZVQ6ng50FDT1XHPTArsgXVgMc0erLVrZocAYHjClmZ894HnHNgt24/sNLQBvS987Ud2PjOMkhc4/B3ESmpEpq7wA/cwtEotLgk5uN/Hqs1s8TvyLbUi2msgN9vOBpAiZ8NsQjGEjv/vYNG2dYAwdzdlX4dnHBjxQ0I6QmlxA8G/KNJqx1Wm7ieGmcfJZZWdx6MCJxzXJ3c51KA7ke9XPZ/pSExDEO/LQpfQV+fBoVVyVDCDqPQbsbsS4675Z31nXDW6ltThN444yB+uY3IEjg4eRu3XspKXN7Zscs9sO5PpvBfkIGRACP4jR2N/reQ3wKYg80OGimvqRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2604.namprd12.prod.outlook.com (2603:10b6:5:4d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Mon, 7 Dec
- 2020 20:39:38 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 20:39:38 +0000
-Date:   Mon, 7 Dec 2020 16:39:37 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH -tip v1 2/3] seqlock: Prefix internal seqcount_t-only
- macros with a "do_"
-Message-ID: <20201207203937.GE552508@nvidia.com>
-References: <20201206162143.14387-1-a.darwish@linutronix.de>
- <20201206162143.14387-3-a.darwish@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201206162143.14387-3-a.darwish@linutronix.de>
-X-ClientProxiedBy: BL1PR13CA0467.namprd13.prod.outlook.com
- (2603:10b6:208:2c4::22) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 7 Dec 2020 15:42:46 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00788C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:42:05 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c12so4263697pfo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CH8YCzhb8HI7GBPHk9uPWdpCDz/yeRpmZct4IBChnGg=;
+        b=INO5DAYmf8kU6q7ciFzTXnbrg8EDg6/9S1FUKBhoWy1nhBNtbNIzi460u9jYxCVXrS
+         Y13KL66BKD//SCrnvGOE65/CnrI7nyehabbSB4V9frlRqlK7v8Pqe/Rr2CkTUr/iUbPN
+         HLj15A9VGpPv3UiG8B3tIOvTdf2GyuEbcfu3GND7Ooaag/rLr4fboKCs9kVP1V1nvhv+
+         9LlGNncJnfi0tuZo6ZAmv9is5VXRVjlSKQjKPBkoC5obeYR8zQjDmpT0UC5kCZLXComY
+         NT7UjeSi1IW0sVdgegcvnHQZ+2XRZPol4tCwS8QDakqqxcgbHFd+GbCza6b7VOA69mZH
+         oSLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CH8YCzhb8HI7GBPHk9uPWdpCDz/yeRpmZct4IBChnGg=;
+        b=N5VNgtPR7+nbGZUbEkebrXGFqysCeOjZLx/U62sFedNtq2/Ib9LYkGvoeIWmz2N1GZ
+         sGbvWtcwKLkJ39f1QzbIDtQLsj09s8JKWir4GbAzI7Y8aTyoblAYmFs4jVJ+rZhxref7
+         g71vkn5yeY8aR/xomVfLKfUpuChO5ORiNrr0zsVm9F1r0l3dmUd84xhEEOAvxTRzdqg7
+         rD/ocVb5zD3nLSobVOgxVUppUkwqax05a6v5OTjAhBZ5ebOH8611ENUReUaW0gF7ybCB
+         9JnbaAOiOYgoSJfRMR619XiEej6tGieMxe0zq8dPxaCif7xUzi7CUCgWyFYdx+Q9ETo9
+         iVug==
+X-Gm-Message-State: AOAM532iV3XwIHOZ/XK7uwU4dh+SWGai2VxnoAvtrtaJfJ7JqxA01MMN
+        mMzvVDuVlroUocYNGeWI51j26w==
+X-Google-Smtp-Source: ABdhPJxKnvYSQUDE2dtTbW4EIlJgai5ChGkpNkdcQ1jvxCZKFuMEspMLKN57sXKhzppEB0rLjEUYug==
+X-Received: by 2002:a17:90a:193:: with SMTP id 19mr187238pjc.45.1607373725342;
+        Mon, 07 Dec 2020 12:42:05 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id x18sm3663814pfr.158.2020.12.07.12.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 12:42:04 -0800 (PST)
+Date:   Mon, 7 Dec 2020 12:41:58 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        brijesh.singh@amd.com, dovmurik@linux.vnet.ibm.com, tobin@ibm.com,
+        jejb@linux.ibm.com, frankeh@us.ibm.com, dgilbert@redhat.com
+Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
+Message-ID: <X86Tlin14Ct38zDt@google.com>
+References: <cover.1606782580.git.ashish.kalra@amd.com>
+ <b6bc54ed6c8ae4444f3acf1ed4386010783ad386.1606782580.git.ashish.kalra@amd.com>
+ <X8gyhCsEMf8QU9H/@google.com>
+ <d63529ce-d613-9f83-6cfc-012a8b333e38@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0467.namprd13.prod.outlook.com (2603:10b6:208:2c4::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.5 via Frontend Transport; Mon, 7 Dec 2020 20:39:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmNIH-007fE8-G5; Mon, 07 Dec 2020 16:39:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607373580; bh=x43gJJk2IG3c0yCWNgMXjRYyR6jyn1sl3LYfZgfmK1Q=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=AkiChL6sREKpWbOg+xMxG9grLwrFNvlvVF8NJfbjhWH3goaemfakT8mPxxbJlmKrA
-         q5Kv9unWUtQTfrc30noYZbWH+JxlV4Z4NDvWHqbmwQzrJc7Yzis2tubDelc2zVmp/+
-         d1Iic3yGn3jXaUv7ffcyY2Q+2utqdpje8Y34mKi/gkFFIRACJk5VfwAw2vfstRM9Nq
-         6AzMw1ybDhqGFgIXqKoHI8XqVdvpvU1LYy2o58ZGBRzsBlHslcW+DfFOyYwTMGgTEP
-         UcdN90yRpH+UxOLgfKOMLpMPNF6SLmN0DKUyayUbBeNxrjX8/eqs11eC0HM9l4ud+1
-         n0fDeE73YzSaQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d63529ce-d613-9f83-6cfc-012a8b333e38@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 05:21:42PM +0100, Ahmed S. Darwish wrote:
-> When the seqcount_LOCKNAME_t group of data types were introduced, two
-> classes of seqlock.h sequence counter macros were added:
+On Sun, Dec 06, 2020, Paolo Bonzini wrote:
+> On 03/12/20 01:34, Sean Christopherson wrote:
+> > On Tue, Dec 01, 2020, Ashish Kalra wrote:
+> > > From: Brijesh Singh <brijesh.singh@amd.com>
+> > > 
+> > > KVM hypercall framework relies on alternative framework to patch the
+> > > VMCALL -> VMMCALL on AMD platform. If a hypercall is made before
+> > > apply_alternative() is called then it defaults to VMCALL. The approach
+> > > works fine on non SEV guest. A VMCALL would causes #UD, and hypervisor
+> > > will be able to decode the instruction and do the right things. But
+> > > when SEV is active, guest memory is encrypted with guest key and
+> > > hypervisor will not be able to decode the instruction bytes.
+> > > 
+> > > Add SEV specific hypercall3, it unconditionally uses VMMCALL. The hypercall
+> > > will be used by the SEV guest to notify encrypted pages to the hypervisor.
+> > 
+> > What if we invert KVM_HYPERCALL and X86_FEATURE_VMMCALL to default to VMMCALL
+> > and opt into VMCALL?  It's a synthetic feature flag either way, and I don't
+> > think there are any existing KVM hypercalls that happen before alternatives are
+> > patched, i.e. it'll be a nop for sane kernel builds.
+> > 
+> > I'm also skeptical that a KVM specific hypercall is the right approach for the
+> > encryption behavior, but I'll take that up in the patches later in the series.
 > 
->   - An external public API which can either take a plain seqcount_t or
->     any of the seqcount_LOCKNAME_t variants.
-> 
->   - An internal API which takes only a plain seqcount_t.
-> 
-> To distinguish between the two groups, the "*_seqcount_t_*" pattern was
-> used for the latter. This confused a number of mm/ call-site developers,
-> and Linus also commented that it was not a standard practice for marking
-> seqlock.h internal APIs.
-> 
-> Distinguish the latter group of macros by prefixing a "do_".
-> 
-> Link: https://lkml.kernel.org/r/CAHk-=wgB8nyOQufpn0o6a5BpJCJPnXvH+kRxApujhsgG+7qAwQ@mail.gmail.com
-> Link: https://lkml.kernel.org/r/CAHk-=wikhGExmprXgaW+MVXG1zsGpztBbVwOb23vetk41EtTBQ@mail.gmail.com
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> ---
->  include/linux/seqlock.h | 66 ++++++++++++++++++++---------------------
->  1 file changed, 33 insertions(+), 33 deletions(-)
+> Do you think that it's the guest that should "donate" memory for the bitmap
+> instead?
 
-It is clearer, thank you
+No.  Two things I'd like to explore:
 
-Jason
+  1. Making the hypercall to announce/request private vs. shared common across
+     hypervisors (KVM, Hyper-V, VMware, etc...) and technologies (SEV-* and TDX).
+     I'm concerned that we'll end up with multiple hypercalls that do more or
+     less the same thing, e.g. KVM+SEV, Hyper-V+SEV, TDX, etc...  Maybe it's a
+     pipe dream, but I'd like to at least explore options before shoving in KVM-
+     only hypercalls.
+
+  2. Tracking shared memory via a list of ranges instead of a using bitmap to
+     track all of guest memory.  For most use cases, the vast majority of guest
+     memory will be private, most ranges will be 2mb+, and conversions between
+     private and shared will be uncommon events, i.e. the overhead to walk and
+     split/merge list entries is hopefully not a big concern.  I suspect a list
+     would consume far less memory, hopefully without impacting performance.
