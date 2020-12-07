@@ -2,202 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D952D0FE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C279B2D0FD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgLGL7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:59:15 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:11384 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727050AbgLGL7N (ORCPT
+        id S1727106AbgLGL7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:59:00 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8719 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLGL7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:59:13 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B7BsvS4028254;
-        Mon, 7 Dec 2020 03:58:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=3TXqj1IKWDJvWf7QNtGMDFnQ22mG8KVQZxTTv7BIfm4=;
- b=aVRu2h4DIs9l4VsUo8H83JAbaNMokSD6Xs23l+V79SNHWO756ismGJOpiZE1wp/J1gA2
- YA3L8CfFiO8Mi50UUYFG8ftKnG5dzN3MKlzc3P9Yzstx1tCYOYMFGzhKZpyWqPbvtKvE
- Bmps4rRJNuX9uOmd/kcj6J9LzDYNgxr1LbmQzIg0JiAmI3nCJPKavxFcv8l69dQOep6E
- a0q/AddlG+NFaEXOmsjiwU4lUzDa7HOqO+4VlbJ5LN+/zJPFfU75CMQA6KSUW8L/eMZT
- 967P7lYPUfRIRO3nSuA9TMILUvSd3xwfwbvT45FlEhXLoTOpLlsn63R2wqc2yq+91vuV TA== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 358akr3tkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 03:58:30 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Dec
- 2020 03:58:28 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Dec 2020 03:58:28 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id C77B83F703F;
-        Mon,  7 Dec 2020 03:58:25 -0800 (PST)
-From:   Bhaskara Budiredla <bbudiredla@marvell.com>
-To:     <ulf.hansson@linaro.org>, <keescook@chromium.org>,
-        <ccross@android.com>, <tony.luck@intel.com>, <sgoutham@marvell.com>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Bhaskara Budiredla" <bbudiredla@marvell.com>
-Subject: [PATCH 2/2] mmc: cavium: Add MMC polling method to support kmsg panic/oops write
-Date:   Mon, 7 Dec 2020 17:27:53 +0530
-Message-ID: <20201207115753.21728-3-bbudiredla@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201207115753.21728-1-bbudiredla@marvell.com>
-References: <20201207115753.21728-1-bbudiredla@marvell.com>
+        Mon, 7 Dec 2020 06:59:00 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqMHz0MXpzklsJ;
+        Mon,  7 Dec 2020 19:57:35 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.37) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 19:58:06 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>
+CC:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+Subject: [PATCH v2] iommu: Defer the early return in arm_(v7s/lpae)_map
+Date:   Mon, 7 Dec 2020 19:57:58 +0800
+Message-ID: <20201207115758.9400-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_10:2020-12-04,2020-12-07 signatures=0
+X-Originating-IP: [10.174.187.37]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable the writing of panic and oops logs, a cavium specific MMC
-polling method is defined and thereby ensure the functioning of mmcpstore.
+Although handling a mapping request with no permissions is a
+trivial no-op, defer the early return until after the size/range
+checks so that we are consistent with other mapping requests.
 
-Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 ---
- drivers/mmc/host/cavium-thunderx.c | 10 +++++
- drivers/mmc/host/cavium.c          | 67 ++++++++++++++++++++++++++++++
- drivers/mmc/host/cavium.h          |  3 ++
- 3 files changed, 80 insertions(+)
+ drivers/iommu/io-pgtable-arm-v7s.c | 8 ++++----
+ drivers/iommu/io-pgtable-arm.c     | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/cavium-thunderx.c b/drivers/mmc/host/cavium-thunderx.c
-index 76013bbbcff3..83f25dd6820a 100644
---- a/drivers/mmc/host/cavium-thunderx.c
-+++ b/drivers/mmc/host/cavium-thunderx.c
-@@ -19,12 +19,22 @@
+diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+index a688f22cbe3b..359b96b0fa3e 100644
+--- a/drivers/iommu/io-pgtable-arm-v7s.c
++++ b/drivers/iommu/io-pgtable-arm-v7s.c
+@@ -522,14 +522,14 @@ static int arm_v7s_map(struct io_pgtable_ops *ops, unsigned long iova,
+ 	struct io_pgtable *iop = &data->iop;
+ 	int ret;
  
- static void thunder_mmc_acquire_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		down(&host->mmc_serializer);
-+#else
- 	down(&host->mmc_serializer);
-+#endif
- }
+-	/* If no access, then nothing to do */
+-	if (!(prot & (IOMMU_READ | IOMMU_WRITE)))
+-		return 0;
+-
+ 	if (WARN_ON(iova >= (1ULL << data->iop.cfg.ias) ||
+ 		    paddr >= (1ULL << data->iop.cfg.oas)))
+ 		return -ERANGE;
  
- static void thunder_mmc_release_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		up(&host->mmc_serializer);
-+#else
- 	up(&host->mmc_serializer);
-+#endif
- }
++	/* If no access, then nothing to do */
++	if (!(prot & (IOMMU_READ | IOMMU_WRITE)))
++		return 0;
++
+ 	ret = __arm_v7s_map(data, iova, paddr, size, prot, 1, data->pgd, gfp);
+ 	/*
+ 	 * Synchronise all PTE updates for the new mapping before there's
+diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+index a7a9bc08dcd1..8ade72adab31 100644
+--- a/drivers/iommu/io-pgtable-arm.c
++++ b/drivers/iommu/io-pgtable-arm.c
+@@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+ 	arm_lpae_iopte prot;
+ 	long iaext = (s64)iova >> cfg->ias;
  
- static void thunder_mmc_int_enable(struct cvm_mmc_host *host, u64 val)
-diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-index c5da3aaee334..708bec9d0345 100644
---- a/drivers/mmc/host/cavium.c
-+++ b/drivers/mmc/host/cavium.c
-@@ -510,6 +510,66 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	return IRQ_RETVAL(emm_int != 0);
- }
+-	/* If no access, then nothing to do */
+-	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+-		return 0;
+-
+ 	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+ 		return -EINVAL;
  
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+static int cvm_req_completion_poll(struct mmc_host *host, unsigned long msecs)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 emm_int;
-+
-+	while (msecs) {
-+		emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+		if (emm_int & MIO_EMM_INT_DMA_DONE)
-+			return 0;
-+		else if (emm_int & MIO_EMM_INT_DMA_ERR)
-+			return -EIO;
-+		mdelay(1);
-+		msecs--;
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static void cvm_req_cleanup_pending(struct mmc_host *host)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 fifo_cfg;
-+	u64 dma_cfg;
-+	u64 emm_int;
-+
-+	cvm_host->pstore = 1;
-+
-+	/* Clear pending DMA FIFO queue */
-+	fifo_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+	if (FIELD_GET(MIO_EMM_DMA_FIFO_CFG_COUNT, fifo_cfg))
-+		writeq(MIO_EMM_DMA_FIFO_CFG_CLR,
-+			cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+
-+	/* Clear ongoing DMA, if there is any */
-+	dma_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_CFG(cvm_host));
-+	if (dma_cfg & MIO_EMM_DMA_CFG_EN) {
-+		dma_cfg |= MIO_EMM_DMA_CFG_CLR;
-+		writeq(dma_cfg, cvm_host->dma_base +
-+				MIO_EMM_DMA_CFG(cvm_host));
-+		do {
-+			dma_cfg = readq(cvm_host->dma_base +
-+					MIO_EMM_DMA_CFG(cvm_host));
-+		} while (dma_cfg & MIO_EMM_DMA_CFG_EN);
-+	}
-+
-+	/* Clear pending DMA interrupts */
-+	emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+	if (emm_int)
-+		writeq(emm_int, cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+	/* Clear prepared and yet to be fired DMA requests */
-+	cvm_host->current_req = NULL;
-+	cvm_host->dma_active = false;
-+}
-+#endif
-+
- /*
-  * Program DMA_CFG and if needed DMA_ADR.
-  * Returns 0 on error, DMA address otherwise.
-@@ -901,6 +961,10 @@ static const struct mmc_host_ops cvm_mmc_ops = {
- 	.set_ios        = cvm_mmc_set_ios,
- 	.get_ro		= mmc_gpio_get_ro,
- 	.get_cd		= mmc_gpio_get_cd,
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	.req_cleanup_pending = cvm_req_cleanup_pending,
-+	.req_completion_poll = cvm_req_completion_poll,
-+#endif
- };
+@@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+ 	if (WARN_ON(iaext || paddr >> cfg->oas))
+ 		return -ERANGE;
  
- static void cvm_mmc_set_clock(struct cvm_mmc_slot *slot, unsigned int clock)
-@@ -1058,6 +1122,9 @@ int cvm_mmc_of_slot_probe(struct device *dev, struct cvm_mmc_host *host)
- 	slot->bus_id = id;
- 	slot->cached_rca = 1;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	host->pstore = 0;
-+#endif
- 	host->acquire_bus(host);
- 	host->slot[id] = slot;
- 	cvm_mmc_switch_to(slot);
-diff --git a/drivers/mmc/host/cavium.h b/drivers/mmc/host/cavium.h
-index f3eea5eaa678..248a5a6e3522 100644
---- a/drivers/mmc/host/cavium.h
-+++ b/drivers/mmc/host/cavium.h
-@@ -75,6 +75,9 @@ struct cvm_mmc_host {
- 	spinlock_t irq_handler_lock;
- 	struct semaphore mmc_serializer;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	bool pstore;
-+#endif
- 	struct gpio_desc *global_pwr_gpiod;
- 	atomic_t shared_power_users;
- 
++	/* If no access, then nothing to do */
++	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
++		return 0;
++
+ 	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+ 	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
+ 	/*
 -- 
-2.17.1
+2.23.0
 
