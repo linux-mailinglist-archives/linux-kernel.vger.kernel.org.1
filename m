@@ -2,141 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DCF2D0EA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663BD2D0EA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgLGLHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
+        id S1726648AbgLGLI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgLGLHJ (ORCPT
+        with ESMTP id S1726296AbgLGLIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:07:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926A1C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:06:29 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kmELT-0006rA-MA; Mon, 07 Dec 2020 12:06:19 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kmELQ-0003OA-J2; Mon, 07 Dec 2020 12:06:16 +0100
-Date:   Mon, 7 Dec 2020 12:06:16 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 1/8] dt-bindings: display: simple: fix alphabetical
- order for EDT compatibles
-Message-ID: <20201207110616.r47utgzdkw3wrply@pengutronix.de>
-References: <20201202081826.29512-1-o.rempel@pengutronix.de>
- <20201202081826.29512-2-o.rempel@pengutronix.de>
- <20201205193229.GF332836@ravnborg.org>
+        Mon, 7 Dec 2020 06:08:25 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F4DC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:07:39 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id t4so12313716wrr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 03:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=fXKwSDv16AOh+KVLgtrXO8MP7h/qcJpU35hR/cYiidI=;
+        b=jjnXwZBExlA+jNskPXLyHx7XlGVcvXHpeqhzK23So8UPP9i4SLl+29SBBR1OC3jx2Y
+         Mdkyc1ZYxIu4Et9sLTH6EZXbgx9uArDCx8jEIof72bFGkK0fhZYPozBlYBgV/lUTimlH
+         I83tCvHVqEDYW8bgeVw3ypLeVgjiMqXQmcKPbiy0kavnPaYpVq2jIS+0X7e61k6Pa6Io
+         qELk+CxcR3vLs5iFwAC2C2eGWvRKVXH+g6wpyZICUKpeeenQ3369Rpo9dilWdThI3sbB
+         uOK1lNPy9BSvx8m3Rj4mlj3axQwZIWQQwIU3Tj0W+iudvHQcndDWsjsr46o3X1fi5Mol
+         5vrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=fXKwSDv16AOh+KVLgtrXO8MP7h/qcJpU35hR/cYiidI=;
+        b=rF8FbXgQq5ne7CQU+eGDkdRrVIyATAxOwyWKazPwelxIkLYp1hKNhaVE1mpDg0gSck
+         Ff0Yk+r4sj16F2nf5VbXXPAIzIDkjvYR5nOH/824P9xyc4hNh8/U9d1QgubP/2n+Y6oa
+         II9kQUURuz6buQhH986gWNVxtA2M2J8R3+uNqAwPvf+f3Sejc9dohDGFC8leAzbTtasd
+         taG5jHukD+B+AMqwK3pcFiwleYIRYvm/0+V2HW4LvYcTWcsyOYZr1HUBzNLgLtvsvSCk
+         d7duCJ0Oxa21wHAhTOTQ6PWd64kF0qCW5c9N8pr326WDNENqw1HmaEXOi92byDwwpt4P
+         zPMg==
+X-Gm-Message-State: AOAM533OyWtoHjoV2ideNmm8JdSmtalYdn+xtgPoqQ8OVKERLIVx/P1Z
+        OU7X+LjIsBBH7Or35N1i6HxxrA==
+X-Google-Smtp-Source: ABdhPJwE5n6HwO553Bm7gWNTT5QYa/KtHJFapNmhnaLnMoSS1kVbdYU3iWE4x2cOCWZAYF0xz/NpCg==
+X-Received: by 2002:adf:8503:: with SMTP id 3mr2072019wrh.56.1607339258533;
+        Mon, 07 Dec 2020 03:07:38 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id m2sm13399888wml.34.2020.12.07.03.07.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 03:07:37 -0800 (PST)
+References: <tencent_220963AF059847E1171B4AB9@qq.com>
+ <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
+ <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com>
+ <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        =?utf-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>,
+        khilman <khilman@baylibre.com>,
+        narmstrong <narmstrong@baylibre.com>,
+        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic <linux-amlogic@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: 0001-add-amlogic-gpio-to-irq
+In-reply-to: <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
+Message-ID: <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
+Date:   Mon, 07 Dec 2020 12:07:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201205193229.GF332836@ravnborg.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:59:39 up 5 days,  1:06, 24 users,  load average: 0.11, 0.08, 0.07
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 08:32:29PM +0100, Sam Ravnborg wrote:
-> Hi Oleksij
 
-> Thanks for fixing this, but something is not correct.
-> I think you switched around the order of comment and compatible.
+On Mon 07 Dec 2020 at 11:18, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Ack, i confused my self with comments like:
-> > -      - edt,etm0700g0dh6
-> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> > -        # Same as ETM0700G0DH6 but with inverted pixel clock.
-> >        - edt,etm070080bdh6
+> On Fri, Dec 4, 2020 at 4:25 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>> On Fri 04 Dec 2020 at 10:13, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+>> This HW only has 8 irqs that can each be mapped to a pin. No direct
+>> translation can be made, we have to allocate an irq to monitor the line.
+>> So when gpio_to_irq() was called, we had to do that allocation dynamically
+>> to return a valid irq number. Since there was no counter part to
+>> gpio_to_irq(), those allocation cannot be freed during the lifetime of
+>> the device.
+>
+> I'm not sure why we are talking about legacy API which should not be
+> used.
 
-Do this comments actually make any sense? All of this devices are kind
-of similar to each other.
+I would have been happy to forget about it, but it seems to be the topic
+of the thread :)
 
-> On Wed, Dec 02, 2020 at 09:18:19AM +0100, Oleksij Rempel wrote:
-> > Reorder it alphabetically and remove one double entry.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  .../bindings/display/panel/panel-simple.yaml     | 16 +++++++---------
-> >  1 file changed, 7 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> > index edb53ab0d9eb..428b03342fea 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-> > @@ -106,26 +106,24 @@ properties:
-> >          # Emerging Display Technology Corp. 3.5" QVGA TFT LCD panel
-> >        - edt,et035012dm6
-> >          # Emerging Display Technology Corp. 480x272 TFT Display with capacitive touch
-> > +      - edt,et057090dhu
-> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> >        - edt,etm043080dh6gp
-> >          # Emerging Display Technology Corp. 480x272 TFT Display
-> >        - edt,etm0430g0dh6
-> >          # Emerging Display Technology Corp. 5.7" VGA TFT LCD panel
-> > -      - edt,et057090dhu
-> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> > -      - edt,etm070080dh6
-> > -        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
+> Besides that I didn't get what you meant under counterpart API (IRQ
+> descriptor has a mapping to the IRQ chip which keeps the mapping to
+> whatever hardware wants).
 
+ * This HW has to create the mapping between GPIO and irq number
+   dynamically. The number of irqs available is very limited.
+ * We only get to know a mapping is required when gpio_to_irq() is called
+ * There is no way to know when it is safe to dispose of the created
+   mapping
+ * Some drivers require a trigger type we don't support. These will create
+   mappings and not use it because of the failure when .set_type() is
+   called
 
-> >          # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> >          # Same display as the ETM0700G0BDH6, but with changed hardware for the
-> >          # backlight and the touch interface.
-> > +      - edt,etm070080dh6
-> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> >        - edt,etm070080edh6
-> >          # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> >          # Same timings as the ETM0700G0DH6, but with resistive touch.
-> > -      - edt,etm070080dh6
-> > -        # Evervision Electronics Co. Ltd. VGG804821 5.0" WVGA TFT LCD Panel
-> > +      - edt,etm0700g0dh6
-> > +        # Emerging Display Technology Corp. WVGA TFT Display with capacitive touch
-> > +        # Same as ETM0700G0DH6 but with inverted pixel clock.
-> >        - evervision,vgg804821
-> >          # Foxlink Group 5" WVGA TFT LCD panel
-> >        - foxlink,fl500wvr00-a0t
-> 
-> It goes like this
-> 
-> 	  # This is the comment
-> 	- compatible,for-the-comment
-> 
-> I always look at the first entry when I need to check the order.
-> Also the comment for evervision,vgg804821 seems to be lost in the above.
+To answer your question, there an API which lets us know a mapping is
+needed, but none to inform that it is not required anymore. The GPIO API
+was not meant to used like this. Not saying it is good or bad, this is
+just how it is.
 
-ack.
+If there was a way to know it is safe to dispose of the mapping, then
+letting users of gpio_to_irq() try and fail would be OK, but we don't
+have that AFAIK.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+This is why gpio_to_irq() or gpiolib irqchip had not been added so far
+on this HW. I don't think it is worth fixing, especially if the API is
+considered to be legacy.
+
+On this HW, getting an interupt from a pin is done by going directly
+after the interrupt controller, like here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts#n173
+
+AFAICT, making pps-gpio parse an "interrupt" property should be doable
+too.
