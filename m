@@ -2,230 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2612D11E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFD92D11F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgLGN0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:26:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgLGN0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:26:21 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E0BC061A54
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:25:22 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id g25so9561408wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:25:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=saexyCJf1GbqWUkiP2yMQP3x3pHqTsfM/ykC2r7v4yE=;
-        b=GnkapeRVF5Nkadd2mPkjPfgvA2XcIFLcl5ecBTO8innbDyqonlubd1adXncBQ4QqN1
-         2/HhRJcHLErWRxS5DlCrDG8kU8BbPxh523SoUHdmuZH5Dt0tPOS96eYKvMuv3a5mFDOU
-         We2WuGHdxRRNDgvI6RBld6jYoWMMxNIJXvKjKEG4S8ARaQJR5q9P75IQPkSQoCbA39Pc
-         gDnmmvF+GPK4he2i6D9b5Z4nuJl9KnLpzHOkBQrmUJ2blQmvWgiT0Tj6XXiT1bwLdh1l
-         E7YfFD3GE74HTMu+g898b+FfPKjaFfB9lY8CW+ANp+0tdWNsw7zei/ueGfqcIYIjz0z1
-         KyyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=saexyCJf1GbqWUkiP2yMQP3x3pHqTsfM/ykC2r7v4yE=;
-        b=rkEkoCEe4GcG6hBWDc8L1myNkhNXhrtJxatq7Fra+AT8gsCfj4nzviwcl5GwHyy8CV
-         KlFcfoPPUvj5csUtF6rEwvPaDsaXTE+15TS0RdBBeKrhma74nj2j/nc7oWNFrX/VwVsi
-         vGCvLPvIUSzwhUXs/g6Spwg6EEvoocdRiLpSS7mLB1wxZ7JUJSLF+aHcKmjSNWlqqLgI
-         SukVnbPCmti1qUy5J1sgQZqh8SCPcU9PQKWC3Wvl+h6rdUfD2GF7pxEyuL/Xq+CHxfGp
-         jrLWYeO2sqnevhGgW+mIX7VGy0NNF3CLc6737NiiPvZOGnm994pRI2BJJrUtrJL7msWH
-         xyEg==
-X-Gm-Message-State: AOAM531r5bylooilXyPhtjhS0OXrKFrVY9FwRclN07TAyQsPbc3rLPpj
-        ViDtLMMZUv14H07GB/ulosrt+ts/9lHqYFLm
-X-Google-Smtp-Source: ABdhPJx33fRb/hFSGTHG5aiJYDcuF4kPeym+Gd8dMK8baE94WXb262rD9EDNnhmMAbLNcNHw7Ln0WA==
-X-Received: by 2002:a05:600c:208:: with SMTP id 8mr3891023wmi.143.1607347521332;
-        Mon, 07 Dec 2020 05:25:21 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id l11sm13497956wmh.46.2020.12.07.05.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 05:25:20 -0800 (PST)
-References: <tencent_220963AF059847E1171B4AB9@qq.com>
- <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
- <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com>
- <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
- <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
- <CACRpkdZmM3GK6mebmm6nT-XXfdTB5KGwArAFk-1Gx6noZDxVAw@mail.gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?utf-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>,
-        khilman <khilman@baylibre.com>,
-        narmstrong <narmstrong@baylibre.com>,
-        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic <linux-amlogic@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: 0001-add-amlogic-gpio-to-irq
-In-reply-to: <CACRpkdZmM3GK6mebmm6nT-XXfdTB5KGwArAFk-1Gx6noZDxVAw@mail.gmail.com>
-Message-ID: <1jr1o1katc.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 07 Dec 2020 14:25:19 +0100
+        id S1726769AbgLGN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726426AbgLGN1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:27:46 -0500
+Date:   Mon, 7 Dec 2020 14:27:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607347625;
+        bh=Qvq3h6d1Gy5E6Tnj5vXRnTSeMKnHR2i8+PXsH+/t4JM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iuhOirZm5bjMHTZ7KthSr+UdTicVFIDA3Sz5dPvUDlkx5eSXha7mx5f4tGud2i89w
+         M0m9WZH71Ff2zgpD7e+j6P5p/SEknkaZIaSvhbrTc+bq8pyC/csMjcmW4KoTsVu0Jm
+         xVHAkWxNiXFif2SOOMZakaM4JV3y9EGl170fSbV7C1GvxdP7g9nZII1ByweJSmcujs
+         +3cW9k3rse1JUpSiJcDaNQ1/iI653arX4kgi2+t31DQabY10FrmNb5Rbf0xwVWcIfE
+         ROJuJj7rNm/f1Gtf0gMtI+wtX8S2sz7q0nPoNOOunaQp2Wl4Uvu+FIqdMnNR6ZbaV3
+         vyF8cZE1hSH0Q==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 2/9] irqtime: Make accounting correct on RT
+Message-ID: <20201207132702.GC122233@lothringen>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170804.889561591@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204170804.889561591@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 04, 2020 at 06:01:53PM +0100, Thomas Gleixner wrote:
+> vtime_account_irq and irqtime_account_irq() base checks on preempt_count()
+> which fails on RT because preempt_count() does not contain the softirq
+> accounting which is seperate on RT.
+> 
+> These checks do not need the full preempt count as they only operate on the
+> hard and softirq sections.
+> 
+> Use irq_count() instead which provides the correct value on both RT and non
+> RT kernels. The compiler is clever enough to fold the masking for !RT:
+> 
+>        99b:	65 8b 05 00 00 00 00 	mov    %gs:0x0(%rip),%eax
+>  -     9a2:	25 ff ff ff 7f       	and    $0x7fffffff,%eax
+>  +     9a2:	25 00 ff ff 00       	and    $0xffff00,%eax
+> 
+> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-On Mon 07 Dec 2020 at 13:34, Linus Walleij <linus.walleij@linaro.org> wrote:
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-> On Mon, Dec 7, 2020 at 12:07 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
->> On Mon 07 Dec 2020 at 11:18, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->> > On Fri, Dec 4, 2020 at 4:25 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
->> >> On Fri 04 Dec 2020 at 10:13, Linus Walleij <linus.walleij@linaro.org> wrote:
->> >
->> >> This HW only has 8 irqs that can each be mapped to a pin. No direct
->> >> translation can be made, we have to allocate an irq to monitor the line.
->> >> So when gpio_to_irq() was called, we had to do that allocation dynamically
->> >> to return a valid irq number. Since there was no counter part to
->> >> gpio_to_irq(), those allocation cannot be freed during the lifetime of
->> >> the device.
->
-> gpio_to_irq() is just a helper really and should not really be used to allocate
-> anything.
+Also I'm seeing a few other explicit SOFTIRQ_MASK checks on top
+of preempt_count(), especially on RCU:
 
-Agreed
+   $ git grep SOFTIRQ_MASK
+   arch/sh/kernel/irq.c:                   (irqctx->tinfo.preempt_count & ~SOFTIRQ_MASK) |
+   arch/sh/kernel/irq.c:                   (curctx->tinfo.preempt_count & SOFTIRQ_MASK);
+   kernel/rcu/rcutorture.c:                if (preempt_count() & (SOFTIRQ_MASK | HARDIRQ_MASK))
+   kernel/rcu/tree_exp.h:          if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
+   kernel/rcu/tree_plugin.h:                       !!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
+   kernel/rcu/tree_plugin.h:           (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
 
->
-> In device tree systems, the GPIO provider should nominally present itsel
-> as a dual-mode gpio-controller and interrupt-controller for example:
->
->                 gpio1: gpio@4e000000 {
->                         compatible = "cortina,gemini-gpio", "faraday,ftgpio010";
->                         reg = <0x4e000000 0x100>;
->                         interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
->                         resets = <&syscon GEMINI_RESET_GPIO1>;
->                         clocks = <&syscon GEMINI_CLK_APB>;
->                         gpio-controller;
->                         #gpio-cells = <2>;
->                         interrupt-controller;
->                         #interrupt-cells = <2>;
->                 };
->
-> The GPIOs are normally *not* translated to IRQs in this set-up. Rather the
-> interrupts are requested by consumers using request_[threaded_]irq()
-> which means you should be using the irqchip callbacks such as
-> .irq_request_resources() and .irq_release_resources() to allocate one
-> of the free irq lines to use. These will be called at the right points if a
-> properly written driver requests an IRQ and when the driver is removed.
->
-> In some rare cases gpio_to_irq() is used because all the driver knows is
-> a GPIO number and it want to try to obtain an IRQ for it, and if a 1-to-1
-> mapping exists it returns this number. This is not the norm, but the
-> exception.
+I guess some RT RCU config take care of that?
 
-Sure
+Also tracing:
 
->
-> So maybe the problem is that you need to go back and think about
-> updating the DT bindings for this thing to include interrupt-controller
-> as well?
+     kernel/trace/ring_buffer.c:     if (!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+     kernel/trace/trace.c:           ((pc & SOFTIRQ_OFFSET) ? TRACE_FLAG_SOFTIRQ : 0)
 
-We do
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-meson-gpio.c
-
-That's actually the only thing we provide, on purpose.
-
->
->>  * This HW has to create the mapping between GPIO and irq number
->>    dynamically. The number of irqs available is very limited.
->
-> This should be done using irq_chip callbacks.
->
-
-Yes
-
->>  * We only get to know a mapping is required when gpio_to_irq() is called
->
-> No that callback should not be used for that.
-
-Agreed ... I was trying explain why we did *not* push a patch similar to what
-was proposed here, or use gpiolib irqchip.
-
->
->>  * There is no way to know when it is safe to dispose of the created
->>    mapping
->
-> The way that is done is when .irq_release_resources() is called.
->
->>  * Some drivers require a trigger type we don't support. These will create
->>    mappings and not use it because of the failure when .set_type() is
->>    called
->
-> I don't quite understand this. Do you mean you are bombarded by pointless
-> requests for interrupts that will not work anyways?
-
-When we tried the approach suggested in this patch (again I agree it is
-bad, which is why I'm against it), some drivers out there (I don't
-remember which one TBH - that was 3 years ago) parsed the "gpio"
-property and tried gpio_to_irq() and if it did not work then go
-something else (like polling).
-
-However the allocation stayed behind. It does not take much
-"bombardment" when you only have 8.
-
-> Then do not assign
-> interrupts to these drivers in the device tree.
-
-We don't.
-
-> These requesting devices and their requests are under your control.
-
-We control the ressources of the devices through DT, not the necessarily
-drivers (which may be generic)
-
-Some device needs the gpio, even if we don't want the irq.
-We can't always prevent the driver to try gpio_to_irq().
-
-This why I don't want gpio_to_irq() to be enabled on this HW, because it
-would not be under our control anymore.
-
-
-> The drivers should be able to
-> back out and work without interrupt if request_irq() fails because it
-> can't provide the type on interrupt you want:
->
-> int irq = request_irq(irq, my_isr, IRQF_TRIGGER_RISING |
-> IRQF_TRIGGER_FALLING, "My ISR", cookie);
-> // This results in .irq_request_resources() and .irq_set_type()
-> if (irq < 0) {
->    // Oopps out of IRQs or couldn't support double edges, bail out or
-> use polling
-> }
->
-> Just do it like this (you might have to augment your drivers) and you'll
-> be fine?
->
-
-Again agreed. I'm really sorry if I have been that unclear about my
-motive here. We already had that discussion 3 years ago, I totally
-understand your point and agree. I was trying (and failing) to tell the
-author of the patch that this approach had already been discussed in
-past and that, unless gpiolib dramatically changed since then,
-gpio_to_irq() should be used in this way and he should use irqchip we
-already provide.
-
->> To answer your question, there an API which lets us know a mapping is
->> needed, but none to inform that it is not required anymore. The GPIO API
->> was not meant to used like this. Not saying it is good or bad, this is
->> just how it is.
->
-> So don't use it?
-
-Exactly
-
->
-> Yours,
-> Linus Walleij
-
+Thanks.
