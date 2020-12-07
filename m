@@ -2,202 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFA82D0C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 881D52D0C28
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgLGIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:54:35 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8712 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgLGIye (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:54:34 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqHCF02K4zkmH9;
-        Mon,  7 Dec 2020 16:53:13 +0800 (CST)
-Received: from DESKTOP-8N3QUD5.china.huawei.com (10.67.101.227) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 16:53:43 +0800
-From:   Guohua Zhong <zhongguohua1@huawei.com>
-To:     <patrick@baymotion.com>, <joern@lazybastard.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangle6@huawei.com>,
-        <young.liuyang@huawei.com>, <zhongguohua1@huawei.com>
-Subject: [PATCH v3] phram: Allow the user to set the erase page size.
-Date:   Mon, 7 Dec 2020 16:53:42 +0800
-Message-ID: <20201207085342.24852-1-zhongguohua1@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1726422AbgLGIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:54:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbgLGIys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 03:54:48 -0500
+X-Gm-Message-State: AOAM532bf0mTlIcQiqy8JRW8zlHdC3mrX2OzwzX3etiMlwCgC/irJDNe
+        KfDHvi+YYd4aQ3JJSFSg+ngh+Ehra90zSPWC9pQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607331247;
+        bh=gktlC3Key3lXSzbUIGuLemDVm9H2ePTn7aVTjMDQFuE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DFI+nyf+K475BNkwyXDokcxaGZTORl6vN4iYe5TO3AV5H0HeNN1sDglHXfsI//bnV
+         oCJu+Q9GnKU12cNLQAbICZXBmwHRU/g2JOdHjvjcaGLCvyuGM6fXAuE1EtpJLJFRcd
+         EjZc+Tot75mfEZBZMi+3W4x0MwZ2MlUQrUXQhELzHjq5J6aIofqHCM5siyq38Lcofs
+         RlijJlWCXCAvP8Fjc0olhidpKysI6pUo/1oYYFUtHjYRun0k8HkB43r/PoipZ+CZrU
+         7N/pcvJLpcRcnUe8Lae3+06gvthYHo4zP+VucYy22o5dHbgO6JAkUV+sEM0Ruc1/qf
+         /ntaycMoPBWww==
+X-Google-Smtp-Source: ABdhPJzEcm/AgtolbUOC3c+Nxy6pAlXPqCeo3FBjcFuAbi/LOMj4VOdKOBChywJ9sEMQJUkixB1RHEMv19toUcXXEi0=
+X-Received: by 2002:aca:b809:: with SMTP id i9mr11642773oif.174.1607331246914;
+ Mon, 07 Dec 2020 00:54:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.227]
-X-CFilter-Loop: Reflected
+References: <20201203230955.1482058-1-arnd@kernel.org> <CAK7LNAR50sq8O-5yg1O7760JAd3-GPHSLGGG=7kPtm9dbDDqwg@mail.gmail.com>
+In-Reply-To: <CAK7LNAR50sq8O-5yg1O7760JAd3-GPHSLGGG=7kPtm9dbDDqwg@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 7 Dec 2020 09:53:55 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGUxTf_Mezgna0S1LAQ4ANMHtCqUqc995NPwAiOp+-6Eg@mail.gmail.com>
+Message-ID: <CAMj1kXGUxTf_Mezgna0S1LAQ4ANMHtCqUqc995NPwAiOp+-6Eg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: avoid static_assert for genksyms
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@arndb.de>, stable <stable@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick O'Grady <patrick@baymotion.com>
+On Sun, 6 Dec 2020 at 03:49, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Dec 4, 2020 at 8:10 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > genksyms does not know or care about the _Static_assert() built-in,
+> > and sometimes falls back to ignoring the later symbols, which causes
+> > undefined behavior such as
+> >
+> > WARNING: modpost: EXPORT symbol "ethtool_set_ethtool_phy_ops" [vmlinux] version generation failed, symbol will not be versioned.
+> > ld: net/ethtool/common.o: relocation R_AARCH64_ABS32 against `__crc_ethtool_set_ethtool_phy_ops' can not be used when making a shared object
+> > net/ethtool/common.o:(_ftrace_annotated_branch+0x0): dangerous relocation: unsupported relocation
+> >
+> > Redefine static_assert for genksyms to avoid that.
+>
+>
+> Please tell the CONFIG options needed to reproduce this.
+> I do not see it.
+>
 
-Permit the user to specify the erase page size as a parameter.
-This solves two problems:
-
-- phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
-create images with erase sizes less than 8KiB; many architectures
-define PAGE_SIZE as 4KiB.
-
-- Allows more effective use of small capacity devices.  JFFS2
-needs somewhere between 2 and 5 empty pages for garbage collection;
-and for an NVRAM part with only 32KiB of space, a smaller erase page
-allows much better utilization in applications where garbage collection
-is important.
-
-Signed-off-by: Patrick O'Grady <patrick@baymotion.com>
-Reviewed-by: Joern Engel <joern@logfs.org>
-Link: https://lore.kernel.org/lkml/CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com/
-[Guohua Zhong: fix token array index out of bounds and update patch for kernel master branch]
-Signed-off-by: Guohua Zhong <zhongguohua1@huawei.com>
-
-v3:
- update authorship for Patrick O'Grady and remove the reported-by tag for kernel test robot
-
-v2: https://lore.kernel.org/lkml/20201204080821.46868-1-zhongguohua1@huawei.com/
- fix build error which is reported by kernel test robot
-
-v1: https://lore.kernel.org/lkml/20201124061053.10812-1-zhongguohua1@huawei.com/
- 1.fix token array index out of bounds
- 2.update patch for kernel master branch
----
- drivers/mtd/devices/phram.c | 52 +++++++++++++++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 087b5e86d1bf..1729b94b2abf 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -6,14 +6,14 @@
-  * Usage:
-  *
-  * one commend line parameter per device, each in the form:
-- *   phram=<name>,<start>,<len>
-+ *   phram=<name>,<start>,<len>[,<erasesize>]
-  * <name> may be up to 63 characters.
-- * <start> and <len> can be octal, decimal or hexadecimal.  If followed
-+ * <start>, <len>, and <erasesize> can be octal, decimal or hexadecimal.  If followed
-  * by "ki", "Mi" or "Gi", the numbers will be interpreted as kilo, mega or
-- * gigabytes.
-+ * gigabytes. <erasesize> is optional and defaults to PAGE_SIZE.
-  *
-  * Example:
-- *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
-+ *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi,64Ki
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -26,6 +26,7 @@
- #include <linux/moduleparam.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
-+#include <asm/div64.h>
- 
- struct phram_mtd_list {
- 	struct mtd_info mtd;
-@@ -88,7 +89,7 @@ static void unregister_devices(void)
- 	}
- }
- 
--static int register_device(char *name, phys_addr_t start, size_t len)
-+static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
- {
- 	struct phram_mtd_list *new;
- 	int ret = -ENOMEM;
-@@ -115,7 +116,7 @@ static int register_device(char *name, phys_addr_t start, size_t len)
- 	new->mtd._write = phram_write;
- 	new->mtd.owner = THIS_MODULE;
- 	new->mtd.type = MTD_RAM;
--	new->mtd.erasesize = PAGE_SIZE;
-+	new->mtd.erasesize = erasesize;
- 	new->mtd.writesize = 1;
- 
- 	ret = -EAGAIN;
-@@ -204,22 +205,23 @@ static inline void kill_final_newline(char *str)
- static int phram_init_called;
- /*
-  * This shall contain the module parameter if any. It is of the form:
-- * - phram=<device>,<address>,<size> for module case
-- * - phram.phram=<device>,<address>,<size> for built-in case
-- * We leave 64 bytes for the device name, 20 for the address and 20 for the
-- * size.
-- * Example: phram.phram=rootfs,0xa0000000,512Mi
-+ * - phram=<device>,<address>,<size>[,<erasesize>] for module case
-+ * - phram.phram=<device>,<address>,<size>[,<erasesize>] for built-in case
-+ * We leave 64 bytes for the device name, 20 for the address , 20 for the
-+ * size and 20 for the erasesize.
-+ * Example: phram.phram=rootfs,0xa0000000,512Mi,65536
-  */
--static char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[64 + 20 + 20 + 20];
- #endif
- 
- static int phram_setup(const char *val)
- {
--	char buf[64 + 20 + 20], *str = buf;
--	char *token[3];
-+	char buf[64 + 20 + 20 + 20], *str = buf;
-+	char *token[4];
- 	char *name;
- 	uint64_t start;
- 	uint64_t len;
-+	uint64_t erasesize = PAGE_SIZE;
- 	int i, ret;
- 
- 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
-@@ -228,7 +230,7 @@ static int phram_setup(const char *val)
- 	strcpy(str, val);
- 	kill_final_newline(str);
- 
--	for (i = 0; i < 3; i++)
-+	for (i = 0; i < 4; i++)
- 		token[i] = strsep(&str, ",");
- 
- 	if (str)
-@@ -253,11 +255,25 @@ static int phram_setup(const char *val)
- 		goto error;
- 	}
- 
--	ret = register_device(name, start, len);
-+	if (token[3]) {
-+		ret = parse_num64(&erasesize, token[3]);
-+		if (ret) {
-+			parse_err("illegal erasesize\n");
-+			goto error;
-+		}
-+	}
-+
-+	if (len == 0 || erasesize == 0 || erasesize > len
-+	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
-+		parse_err("illegal erasesize or len\n");
-+		goto error;
-+	}
-+
-+	ret = register_device(name, start, len, (uint32_t)erasesize);
- 	if (ret)
- 		goto error;
- 
--	pr_info("%s device: %#llx at %#llx\n", name, len, start);
-+	pr_info("%s device: %#llx at %#llx for erasesize %#llx\n", name, len, start, erasesize);
- 	return 0;
- 
- error:
-@@ -298,7 +314,7 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
- }
- 
- module_param_call(phram, phram_param_call, NULL, NULL, 0200);
--MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>\"");
-+MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
- 
- 
- static int __init init_phram(void)
--- 
-2.12.3
-
+https://people.linaro.org/~ard.biesheuvel/randconfig-modversions-error
