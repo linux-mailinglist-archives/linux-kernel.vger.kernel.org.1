@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AFD2D1113
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD102D1119
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgLGMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:53:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47480 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgLGMxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:53:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607345572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T2DF9O2lPDvLvfews6H05qh+q6mo2ifpg+3z0NLWOmU=;
-        b=JkyuanwBZGAl7RP5f3fJExBD/P0ZzLwtz+Af1nqTdRM3Vqs5oNB+EEsHDGtrTVSpPOhWIT
-        sNA4l1XPtCSQT2s6qIAKvQrQ+DT6mTBBlatmSjeQBjVhCzIyESGcTijKtlEwsRd+JHmLPl
-        foGxCrElXFdr6rIbq4+xwnMSquqGoBc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 21EDBAC90;
-        Mon,  7 Dec 2020 12:52:52 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 13:52:50 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
-Message-ID: <20201207125250.GI25569@dhcp22.suse.cz>
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201206101451.14706-2-songmuchun@bytedance.com>
+        id S1726286AbgLGMxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:53:52 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:39121 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgLGMxw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:53:52 -0500
+Received: by mail-io1-f70.google.com with SMTP id n9so11712887iog.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:53:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+nM8VzOwV9aXnMQK6VuN4DTI8rAunYvK4sRH3TS2zJI=;
+        b=lpRmF6U7wr5u8y2yUbEIs/5C+h6kkMFYE9xNTOJRoRyUoYzQO4g86gBdWfOHQ4OLH8
+         4EUJAyG/wU7xTmWFH3RgS8xlcipnw19dhsnSG2zkW7x6RGgKFWs0+dBZRqAQ1w9PDH3R
+         Ksmck/Q27HWQ+YqXWHg+XzqPFNfIv+qNl2Mn6i6WFuFQrEsfUwMeja+c6nLi4rd8cM6L
+         02abfriH+UjHefA8FtYhZAxxjVr7BXrelC7q3gAPwsgRAnHovkjNFeyLDvP2wFzat1PM
+         /w/YLpJL/NcKUUSEhscP0dlicUlLmClFbQ6kDsBh9l6xmoIcqd9P5GknYwRjg3/h2CJ+
+         je9w==
+X-Gm-Message-State: AOAM5305ocIc7/FkRsKapk1KLZPnkKZ3KTdXE7XhU0I2WVNCDmihk4DD
+        UmxvzlpDucHUrgldfsUDB/gZv5DMm1HjUvTi3NebjRTpPCW2
+X-Google-Smtp-Source: ABdhPJwU4RzUM+3z0JAPb294r60lcKT4s8Q8B+nKG/meTsQUJhlZTLP6BrL9ghkjgdpOdpVwHdzIbK+lPPYka9e+mzJ1i7IpVye1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206101451.14706-2-songmuchun@bytedance.com>
+X-Received: by 2002:a6b:6f07:: with SMTP id k7mr20326623ioc.48.1607345591003;
+ Mon, 07 Dec 2020 04:53:11 -0800 (PST)
+Date:   Mon, 07 Dec 2020 04:53:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fbb4f505b5df4eea@google.com>
+Subject: WARNING: filesystem loop0 was created with 512 inodes, the real
+ maximum is 511, mounting anywa
+From:   syzbot <syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 06-12-20 18:14:40, Muchun Song wrote:
-> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
-> by one rather than nr_pages.
-> 
-> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Hello,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+syzbot found the following issue on:
 
-> ---
->  mm/memcontrol.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 22d9bd688d6d..695dedf8687a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5634,10 +5634,8 @@ static int mem_cgroup_move_account(struct page *page,
->  			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
->  			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
->  			if (PageTransHuge(page)) {
-> -				__mod_lruvec_state(from_vec, NR_ANON_THPS,
-> -						   -nr_pages);
-> -				__mod_lruvec_state(to_vec, NR_ANON_THPS,
-> -						   nr_pages);
-> +				__dec_lruvec_state(from_vec, NR_ANON_THPS);
-> +				__inc_lruvec_state(to_vec, NR_ANON_THPS);
->  			}
->  
->  		}
-> -- 
-> 2.11.0
+HEAD commit:    34816d20 Merge tag 'gfs2-v5.10-rc5-fixes' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=157dad07500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b3a044ccf5b03ac4
+dashboard link: https://syzkaller.appspot.com/bug?extid=02c44c7f92e70a73730a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152b05ab500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fc3fad500000
 
--- 
-Michal Hocko
-SUSE Labs
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+02c44c7f92e70a73730a@syzkaller.appspotmail.com
+
+BFS-fs: bfs_fill_super(): WARNING: filesystem loop0 was created with 512 inodes, the real maximum is 511, mounting anywa
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
