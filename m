@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02B2D16D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE2D2D16DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgLGQwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:52:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45170 "EHLO mail.kernel.org"
+        id S1727530AbgLGQxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:53:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:55560 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgLGQwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:52:34 -0500
-Date:   Mon, 7 Dec 2020 13:52:02 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607359913;
-        bh=//0K9RBmvFiwzCncH8BL+Ewt2josOBCPAEbsulY5Jek=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePUllLk5sPJs1AlGFP12HIFMARptegb0c1zihV0R4CEWjTVZxQwaIaOlb5jkeM6Ur
-         THXsP0WTM3xw5BFi/EN2La6nvJzT27zWWKSU91fUdAq8MvgSwfKIpB7hTHjsHr7OdZ
-         H2QkqPsZ6IOY7GY3BegsH6obrBRgP2cMxZOlvNkOPZbInc+UJXs/IGJ+Cblej9tCvJ
-         KQM1DPxCNTmeVhpN+WHkYklhbFmT4W4wtwpc/1Lh5Z+9B/cKfBVv6q3Sm4pOyhfoW6
-         D5eMWPXrH9oRsES+Da32qEfUoFw9sgMS43VTRxXL31XEMOkGzFsN72DA7xIHy3y2mx
-         KLCy2wKWy5Ewg==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V2 01/12] tools headers UAPI: Update tools's copy of
- linux/perf_event.h
-Message-ID: <20201207165202.GA129853@kernel.org>
-References: <20201130172803.2676-1-kan.liang@linux.intel.com>
- <20201130172803.2676-2-kan.liang@linux.intel.com>
+        id S1725832AbgLGQxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:53:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 879BA101E;
+        Mon,  7 Dec 2020 08:52:30 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF3013F66B;
+        Mon,  7 Dec 2020 08:52:28 -0800 (PST)
+References: <20201118043113.53128-1-aubrey.li@linux.intel.com> <20201207154838.GP3040@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        mgorman@techsingularity.net, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v5] sched/fair: select idle cpu from idle cpumask for task wakeup
+In-reply-to: <20201207154838.GP3040@hirez.programming.kicks-ass.net>
+Date:   Mon, 07 Dec 2020 16:52:24 +0000
+Message-ID: <jhjtusxtv7b.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130172803.2676-2-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Nov 30, 2020 at 09:27:52AM -0800, kan.liang@linux.intel.com escreveu:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> To get the changes in:
-> 
->    commit 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
->    commit 995f088efebe ("perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE")
-> 
-> This silences this perf tools build warning:
 
-Thanks, this is in tip/perf/core, so I'm applying it to my perf/core
-branch.
+On 07/12/20 15:48, Peter Zijlstra wrote:
+> On Wed, Nov 18, 2020 at 12:31:13PM +0800, Aubrey Li wrote:
+>> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+>> index f324dc36fc43..6f5947673e66 100644
+>> --- a/kernel/sched/idle.c
+>> +++ b/kernel/sched/idle.c
+>> @@ -163,6 +163,7 @@ static void cpuidle_idle_call(void)
+>>       */
+>>
+>>      if (cpuidle_not_available(drv, dev)) {
+>> +		update_idle_cpumask(this_rq(), true);
+>>              tick_nohz_idle_stop_tick();
+>>
+>>              default_idle_call();
+>> @@ -193,6 +194,7 @@ static void cpuidle_idle_call(void)
+>>                      max_latency_ns = dev->forced_idle_latency_limit_ns;
+>>              }
+>>
+>> +		update_idle_cpumask(this_rq(), true);
+>>              tick_nohz_idle_stop_tick();
+>>
+>>              next_state = cpuidle_find_deepest_state(drv, dev, max_latency_ns);
+>> @@ -205,10 +207,12 @@ static void cpuidle_idle_call(void)
+>>               */
+>>              next_state = cpuidle_select(drv, dev, &stop_tick);
+>>
+>> -		if (stop_tick || tick_nohz_tick_stopped())
+>> +		if (stop_tick || tick_nohz_tick_stopped()) {
+>> +			update_idle_cpumask(this_rq(), true);
+>>                      tick_nohz_idle_stop_tick();
+>
+> We already have a callback in tick_nohz_idle_stop_tick(), namely
+> nohz_balance_enter_idle().
 
-- Arnaldo
- 
->   Warning: Kernel ABI header at 'tools/include/uapi/linux/perf_event.h'
-> differs from latest version at 'include/uapi/linux/perf_event.h'
->   diff -u tools/include/uapi/linux/perf_event.h
-> include/uapi/linux/perf_event.h
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> ---
->  tools/include/uapi/linux/perf_event.h | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> index b95d3c485d27..b15e3447cd9f 100644
-> --- a/tools/include/uapi/linux/perf_event.h
-> +++ b/tools/include/uapi/linux/perf_event.h
-> @@ -143,8 +143,10 @@ enum perf_event_sample_format {
->  	PERF_SAMPLE_PHYS_ADDR			= 1U << 19,
->  	PERF_SAMPLE_AUX				= 1U << 20,
->  	PERF_SAMPLE_CGROUP			= 1U << 21,
-> +	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
-> +	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
->  
-> -	PERF_SAMPLE_MAX = 1U << 22,		/* non-ABI */
-> +	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
->  
->  	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
->  };
-> @@ -896,6 +898,8 @@ enum perf_event_type {
->  	 *	{ u64			phys_addr;} && PERF_SAMPLE_PHYS_ADDR
->  	 *	{ u64			size;
->  	 *	  char			data[size]; } && PERF_SAMPLE_AUX
-> +	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
-> +	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
->  	 * };
->  	 */
->  	PERF_RECORD_SAMPLE			= 9,
-> -- 
-> 2.17.1
-> 
+That's a no-op for !NO_HZ_COMMON though. For similar reasons, Aubrey moved
+the clearing of the cpumask to scheduler_tick().
 
--- 
+Are you saying this mechanism should only be driven for NO_HZ kernels? I
+would tend to agree with Vincent that this could still be useful for idling
+without cutting the tick (!NO_HZ or shallow idle state); see:
 
-- Arnaldo
+  20201124170136.GA26613@vingu-book
