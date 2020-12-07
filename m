@@ -2,182 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE5C2D1E4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC15B2D1E42
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgLGXYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        id S1726770AbgLGXVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728160AbgLGXYe (ORCPT
+        with ESMTP id S1726196AbgLGXVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:24:34 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E38C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:23:48 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id e2so2087113pgi.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:23:48 -0800 (PST)
+        Mon, 7 Dec 2020 18:21:45 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482C6C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:21:05 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id x13so6700660oto.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:21:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OlsYdTjJYBNa/5lQA8sp6yi7kT0DFqLKWOnDvSCcpeM=;
-        b=Ffcr7rtvgmaZtAep7oe1nruEICdWMQX3Rt60Nb+en1n0E/TENKOsd4kG0qLG+mbX0Z
-         g66dkYZyizXm8Fv4gAwJE1ZaRHmErjFKyJqIJhrGuOxOSUqPzvqGBrJfXWoq0cMwmDbA
-         HdlK22kIXcUx5YYgymrtI/WBeLg2CNqZAl0OI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=edbZ2+l1MblK0BZAl+T/FCWMuTNbLUVokY+QPVK2mX4=;
+        b=Rcly/dyFCNQ4lyyFprCAU/lXdZFd+ySy9hRgc31aa5GMyT/jVNjPuPSHrKnm+aEotO
+         sI2FffHUbXZtsPmxRyIVXXQrbpHh3N1DNt67TDAmNWFNVzbdT3I/umQvR5UAZ1kwAEDK
+         F3awwK1PlHuovJWeoV1+uMp1n2uEI43X3cC9IQNV1Ul5uB8XI7L3WMjyvnJ8DfxOtl7i
+         lmj8t/rykQcp8nB153WWKNt0ybBObvKsxdfx6ZZDmEliJYeJgodIsnTUkI1NBiQRu++b
+         4mQulta309fUpSLGoCwj11YXKnOGf2HcF1FCM6W+0c5Kn3qw7KAjG5o+cZqkaMFQGW05
+         6eRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OlsYdTjJYBNa/5lQA8sp6yi7kT0DFqLKWOnDvSCcpeM=;
-        b=eh/H78x7FOwPMdYF5XZtuGhBCVaSTj7TIsvk9ZW3wfTmcmsZFDBHCfh6JcAJZhXAcZ
-         umuHHXBANQ5CEUNf8gMC67iZgXhRt7//uwbN2+A7tA2BWdIkRwQQc8DBvmdyI4pbHqcB
-         EnAR+CaQKB/+dpKhhWrIr9iRXoE9AVP5xkZIlGU10r2GKANRfo9NE8iwVsDpwq5ja+Fz
-         OmvRkc7tlfNmX1o7Ep773CAWb7kTlfYF8oCZrWo1GYu5b7E2OYZHDvjZDlI0x9j54YsC
-         2GlbfPOu1o2Ip49SlBi2s19kaRdyvIDKmlFabUuDFYLC1j0bvaTAzlpI9YmkLJM8OTe4
-         aoNA==
-X-Gm-Message-State: AOAM5311McsYfmCrJOmL+QdgV3V2f1Q88cdevWTZzI0uOAiOMi/QNrBe
-        bE8bmO1z0mXOJFWRCJs4aNbxhg==
-X-Google-Smtp-Source: ABdhPJx7CoEzBXyrzYXVQ2arl2PGTox5WK5z7MX7Wr405c5ksPU8aFNvsvetAsAthBebX5tT5ZqIuQ==
-X-Received: by 2002:a63:805:: with SMTP id 5mr20520725pgi.160.1607383427982;
-        Mon, 07 Dec 2020 15:23:47 -0800 (PST)
-Received: from kuabhs-cdev.c.googlers.com.com (152.33.83.34.bc.googleusercontent.com. [34.83.33.152])
-        by smtp.gmail.com with ESMTPSA id k2sm6342454pgi.47.2020.12.07.15.23.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:23:47 -0800 (PST)
-From:   Abhishek Kumar <kuabhs@chromium.org>
-To:     kvalo@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, kuabhs@chromium.org,
-        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        pillair@codeaurora.org, briannorris@chromium.org,
-        dianders@chromium.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v3] ath10k: add option for chip-id based BDF selection
-Date:   Mon,  7 Dec 2020 23:20:21 +0000
-Message-Id: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=edbZ2+l1MblK0BZAl+T/FCWMuTNbLUVokY+QPVK2mX4=;
+        b=UdXiYam5WmPIDmYF5Z8GVjfgO1RvwxOptfG9FREGNN3XST4j31ILPxHfcGxFka8Ekz
+         GCn1XI63NafPi5dg9GmOFYlJQgxOaTi2uOUWaBDiAyl+SWDv4avbOccK6/f/09dg0snS
+         lm3oAVfVDYHou12IqcK7D7ZiLCdglHSZph67BmS/TcHqXYPgy+fLB7TfjDfwOXFyb1vS
+         8gaOvEpTT9I4pa4feOS5nHrDfZ7lK9ZQwZixUtLBps6opURnHuYHQ8SiGqc4tihqgd6/
+         6wxXEPieFNCM1P6RdAmbqMwXh9UUp/UErNPKYE2ocx2yDecXLnsu/lUw7SThyEeO492g
+         ssYw==
+X-Gm-Message-State: AOAM533N56UIF5tbzKkcMZyic9qXfgtqa01cewan0szm9lf4v4Ap33os
+        OwXGIgE14+Stc1tU7KMIuwm+xhzDPD6RwEGw97E=
+X-Google-Smtp-Source: ABdhPJz0LTQfzPn68GwM+TvRci1apQbH1YT2kFBQny+zO3s0aS+RV3wXHxfUQHKdy93d8dnZwcppok+nSnLdVnLAvlE=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr12629023ote.132.1607383264756;
+ Mon, 07 Dec 2020 15:21:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201207084616.411531-1-conmanx360@gmail.com> <s5hzh2q0z8o.wl-tiwai@suse.de>
+In-Reply-To: <s5hzh2q0z8o.wl-tiwai@suse.de>
+From:   Connor McAdams <conmanx360@gmail.com>
+Date:   Mon, 7 Dec 2020 18:20:53 -0500
+Message-ID: <CAM8Agx0c6xGh4M_j8GHtfZ1MjzyV1dmbh=EWfASL_SBYgR6UVw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some devices difference in chip-id should be enough to pick
-the right BDF. Add another support for chip-id based BDF selection.
-With this new option, ath10k supports 2 fallback options.
+Will do, thanks for the info.
 
-The board name with chip-id as option looks as follows
-board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-
-Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
----
-
-Changes in v3:
-- Resurreted Patch V1 because as per discussion we do need two
-fallback board names and refactored ath10k_core_create_board_name.
-
- drivers/net/wireless/ath/ath10k/core.c | 41 +++++++++++++++++++-------
- 1 file changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d73ad60b571c..09d0fdfa6693 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1349,7 +1349,8 @@ static int ath10k_core_search_bd(struct ath10k *ar,
- 
- static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 					      const char *boardname,
--					      const char *fallback_boardname,
-+					      const char *fallback_boardname1,
-+					      const char *fallback_boardname2,
- 					      const char *filename)
- {
- 	size_t len, magic_len;
-@@ -1398,8 +1399,11 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 	ret = ath10k_core_search_bd(ar, boardname, data, len);
- 
- 	/* if we didn't find it and have a fallback name, try that */
--	if (ret == -ENOENT && fallback_boardname)
--		ret = ath10k_core_search_bd(ar, fallback_boardname, data, len);
-+	if (ret == -ENOENT && fallback_boardname1)
-+		ret = ath10k_core_search_bd(ar, fallback_boardname1, data, len);
-+
-+	if (ret == -ENOENT && fallback_boardname2)
-+		ret = ath10k_core_search_bd(ar, fallback_boardname2, data, len);
- 
- 	if (ret == -ENOENT) {
- 		ath10k_err(ar,
-@@ -1419,7 +1423,8 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- }
- 
- static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
--					 size_t name_len, bool with_variant)
-+					 size_t name_len, bool with_variant,
-+					 bool with_chip_id)
- {
- 	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
- 	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH] = { 0 };
-@@ -1438,7 +1443,7 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 	}
- 
- 	if (ar->id.qmi_ids_valid) {
--		if (with_variant && ar->id.bdf_ext[0] != '\0')
-+		if (with_chip_id)
- 			scnprintf(name, name_len,
- 				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
- 				  ath10k_bus_str(ar->hif.bus),
-@@ -1482,21 +1487,34 @@ static int ath10k_core_create_eboard_name(struct ath10k *ar, char *name,
- 
- int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
- {
--	char boardname[100], fallback_boardname[100];
-+	char boardname[100], fallback_boardname1[100], fallback_boardname2[100];
- 	int ret;
- 
- 	if (bd_ie_type == ATH10K_BD_IE_BOARD) {
-+		/* With variant and chip id */
- 		ret = ath10k_core_create_board_name(ar, boardname,
--						    sizeof(boardname), true);
-+						    sizeof(boardname), true,
-+						    true);
- 		if (ret) {
- 			ath10k_err(ar, "failed to create board name: %d", ret);
- 			return ret;
- 		}
- 
--		ret = ath10k_core_create_board_name(ar, fallback_boardname,
--						    sizeof(boardname), false);
-+		/* Without variant and only chip-id */
-+		ret = ath10k_core_create_board_name(ar, fallback_boardname1,
-+						    sizeof(boardname), false,
-+						    true);
-+		if (ret) {
-+			ath10k_err(ar, "failed to create 1st fallback board name: %d", ret);
-+			return ret;
-+		}
-+
-+		/* Without variant and without chip-id */
-+		ret = ath10k_core_create_board_name(ar, fallback_boardname2,
-+						    sizeof(boardname), false,
-+						    false);
- 		if (ret) {
--			ath10k_err(ar, "failed to create fallback board name: %d", ret);
-+			ath10k_err(ar, "failed to create 2nd fallback board name: %d", ret);
- 			return ret;
- 		}
- 	} else if (bd_ie_type == ATH10K_BD_IE_BOARD_EXT) {
-@@ -1510,7 +1528,8 @@ int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
- 
- 	ar->bd_api = 2;
- 	ret = ath10k_core_fetch_board_data_api_n(ar, boardname,
--						 fallback_boardname,
-+						 fallback_boardname1,
-+						 fallback_boardname2,
- 						 ATH10K_BOARD_API2_FILE);
- 	if (!ret)
- 		goto success;
--- 
-2.29.2.576.ga3fc446d84-goog
-
+On Mon, Dec 7, 2020 at 3:58 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Mon, 07 Dec 2020 09:46:13 +0100,
+> Connor McAdams wrote:
+> >
+> > The Windows driver sets the pincfg for the AE-5's rear-headphone to
+> > report as a microphone. This causes issues with Pulseaudio mistakenly
+> > believing there is no headphone plugged in. In Linux, we should instead
+> > set it to be a headphone.
+> >
+> > Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+>
+> Those patches are relevant with your previous patches, right?
+> If it's a fix for a specific commit, it'd be appreciated to have a
+> "Fixes:" tag with the commit id and "Cc:" tag to stable in the patch.
+>
+>
+> thanks,
+>
+> Takashi
