@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322F72D0BC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82E92D0BC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 09:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgLGIbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 03:31:48 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:45302 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgLGIbn (ORCPT
+        id S1726216AbgLGIbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 03:31:40 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59818 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgLGIbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:31:43 -0500
-Received: from relay2-d.mail.gandi.net (unknown [217.70.183.194])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id A3C3F3B6CD8;
-        Mon,  7 Dec 2020 08:15:51 +0000 (UTC)
-X-Originating-IP: 84.44.14.226
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id AEF254001C;
-        Mon,  7 Dec 2020 08:14:41 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] net: tipc: prevent possible null deref of link
-Date:   Mon,  7 Dec 2020 11:14:24 +0300
-Message-Id: <20201207081423.67313-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 03:31:40 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7C3EE1C0B93; Mon,  7 Dec 2020 09:30:43 +0100 (CET)
+Date:   Mon, 7 Dec 2020 09:30:42 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/32] 4.19.162-rc1 review
+Message-ID: <20201207083042.GA26438@amd>
+References: <20201206111555.787862631@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Disposition: inline
+In-Reply-To: <20201206111555.787862631@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`tipc_node_apply_property` does a null check on a `tipc_link_entry`
-pointer but also accesses the same pointer out of the null check block.
 
-This triggers a warning on Coverity Static Analyzer because we're
-implying that `e->link` can BE null.
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Move "Update MTU for node link entry" line into if block to make sure
-that we're not in a state that `e->link` is null.
+Hi!
 
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
- net/tipc/node.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> This is the start of the stable review cycle for the 4.19.162 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
+> Anything received after that time might be too late.
 
-diff --git a/net/tipc/node.c b/net/tipc/node.c
-index c95d037fde51..83978d5dae59 100644
---- a/net/tipc/node.c
-+++ b/net/tipc/node.c
-@@ -2181,9 +2181,11 @@ void tipc_node_apply_property(struct net *net, struct tipc_bearer *b,
- 							&xmitq);
- 			else if (prop == TIPC_NLA_PROP_MTU)
- 				tipc_link_set_mtu(e->link, b->mtu);
-+
-+			/* Update MTU for node link entry */
-+			e->mtu = tipc_link_mss(e->link);
- 		}
--		/* Update MTU for node link entry */
--		e->mtu = tipc_link_mss(e->link);
-+
- 		tipc_node_write_unlock(n);
- 		tipc_bearer_xmit(net, bearer_id, &xmitq, &e->maddr, NULL);
- 	}
--- 
-2.29.2
+CIP testing did not find any problems here:
 
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl/N6DIACgkQMOfwapXb+vKFfQCgtuHNGW6ZR2Tu6yrDkNVj7XDR
+HMcAnielZ+oCDnXBklxFNSOAT+kiXoTN
+=tiiV
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
