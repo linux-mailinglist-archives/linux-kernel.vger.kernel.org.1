@@ -2,96 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D84F2D1645
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F11802D1617
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgLGQep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:34:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727798AbgLGQen (ORCPT
+        id S1727415AbgLGQeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:34:07 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:41588 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727352AbgLGQeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:34:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607358796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RE0m3vgq1/OaRAwZjvKOK2ey/mE38mR/q+wtN6wib9s=;
-        b=Eg87k5igU07VVyU7gpntFf3poClRUjMOlw7v0GBPEorMtynYOXsofThHhUeLdb1V6DxNjI
-        /JLlV88aynvZQ5Dc5aj3pw0U1aLb3J69TrXmEQScAGoinIL6+JScwpbTn+6XSdKges5l1t
-        DaAC9Bu+/wJggHOT4WG4Ej477iq1RCQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-5Xebz-HJNlu29d1tfFK85A-1; Mon, 07 Dec 2020 11:33:14 -0500
-X-MC-Unique: 5Xebz-HJNlu29d1tfFK85A-1
-Received: by mail-ed1-f69.google.com with SMTP id z20so5971992edl.21
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:33:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RE0m3vgq1/OaRAwZjvKOK2ey/mE38mR/q+wtN6wib9s=;
-        b=spsLpfDDLjVsthWl0nADf5wXmA1dtyE3TfjOto96KJyDegtgiE8dMlZzQ17KLUKQz5
-         3ASUpYY273d/cprX+HdbXq5GH0YlRKbwnbvlX1F9nNy+XBw2ibOOIiPW4SIQuxMdQPm4
-         n++gQxoF33OJPFvSJeIXEeG3UAkxtQYKaG1jQJP48gkIFZY/EVKwmcVKZPgauWcqDNY3
-         3tvAZVrSbUll6ZN17ZkPzy2gdblv4Fv4pAvgE1aGBRhx3sDPgMukDLOKJ96rk9p4beNR
-         dPlBu7LYiIvqdYmpeARwdiKypN4JmqkaT1qZ4S6ZonlK2PQg++OxTIUWMDU0+Ne0OQN7
-         cutA==
-X-Gm-Message-State: AOAM531wPNuBncv3VUPDipRBrH4YqSXC1CMfLiQHAULkDim4kSpjy612
-        vKsvvTfU45cnHixk5FvcOH0TAIyT9jyfKiaiQE3lZrbMY5U5LzBcFtAPMQ/x/RrWTd5Sx4RUwBc
-        NRZima0RLiujov3kzXjL5JSzT
-X-Received: by 2002:a50:d74c:: with SMTP id i12mr20512776edj.236.1607358793437;
-        Mon, 07 Dec 2020 08:33:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzZo9cLo2B/sr3LytBzOfhCP7NvepbgDDGPqp8OuSqAKVtWfqlfy6nWwFOViRsEnP4mLzJm9A==
-X-Received: by 2002:a50:d74c:: with SMTP id i12mr20512764edj.236.1607358793260;
-        Mon, 07 Dec 2020 08:33:13 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.33.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:33:12 -0800 (PST)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/10] ovl: unprivieged mounts
-Date:   Mon,  7 Dec 2020 17:32:55 +0100
-Message-Id: <20201207163255.564116-11-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201207163255.564116-1-mszeredi@redhat.com>
-References: <20201207163255.564116-1-mszeredi@redhat.com>
+        Mon, 7 Dec 2020 11:34:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607358821; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ico9IvVAbAZJRLgJ0lWDYNQ0+PGG5zMZE68TFAiT+oY=;
+ b=JoN3+tnRiUdUZnqOI96yhWwPJu81rLKSLQevqlWvYyOx02OYQkkdpsMtxg6DoJztJ0LBrgo5
+ zpLqH4U/MrV0A0eOfJW9snNdneWXIMfrTu7aWp+2vIwO64IF4OfkK8vYe9CRTqDE+NazFDfy
+ QS8lgAEBSUSgbubQ8EBCbaWOLys=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fce5960ed9d5dfa89520a2e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:33:36
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 044DEC433ED; Mon,  7 Dec 2020 16:33:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 022CDC433CA;
+        Mon,  7 Dec 2020 16:33:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 022CDC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mwl8k: switch from 'pci_' to 'dma_' API
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201129150844.1466214-1-christophe.jaillet@wanadoo.fr>
+References: <20201129150844.1466214-1-christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     buytenh@wantstofly.org, davem@davemloft.net, kuba@kernel.org,
+        gustavoars@kernel.org, allen.lkml@gmail.com,
+        romain.perier@gmail.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201207163336.044DEC433ED@smtp.codeaurora.org>
+Date:   Mon,  7 Dec 2020 16:33:36 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable unprivileged user namespace mounts of overlayfs.  Overlayfs's
-permission model (*) ensures that the mounter itself cannot gain additional
-privileges by the act of creating an overlayfs mount.
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-This feature request is coming from the "rootless" container crowd.
+> he wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
+> 
+> When memory is allocated in 'mwl8k_rxq_init()' and 'mwl8k_txq_init()'
+> GFP_KERNEL can be used because this flag is already used in a 'kcalloc()'
+> call, just a few line below.
+> 
+> When memory is allocated in 'mwl8k_firmware_load_success()' GFP_KERNEL can
+> be used because this flag is already used within 'ieee80211_register_hw()'
+> which is called just a few line below.
+> 
+> @@
+> @@
+> -    PCI_DMA_BIDIRECTIONAL
+> +    DMA_BIDIRECTIONAL
+> 
+> @@
+> @@
+> -    PCI_DMA_TODEVICE
+> +    DMA_TO_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_FROMDEVICE
+> +    DMA_FROM_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_NONE
+> +    DMA_NONE
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_alloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_zalloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_free_consistent(e1, e2, e3, e4)
+> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_single(e1, e2, e3, e4)
+> +    dma_map_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_single(e1, e2, e3, e4)
+> +    dma_unmap_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4, e5;
+> @@
+> -    pci_map_page(e1, e2, e3, e4, e5)
+> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_page(e1, e2, e3, e4)
+> +    dma_unmap_page(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_sg(e1, e2, e3, e4)
+> +    dma_map_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_sg(e1, e2, e3, e4)
+> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_dma_mapping_error(e1, e2)
+> +    dma_mapping_error(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-(*) Documentation/filesystems/overlayfs.txt#Permission model
+Patch applied to wireless-drivers-next.git, thanks.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
----
- fs/overlayfs/super.c | 1 +
- 1 file changed, 1 insertion(+)
+01b660b87ebe mwl8k: switch from 'pci_' to 'dma_' API
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 189380b946be..019e6f1834b0 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -2073,6 +2073,7 @@ static struct dentry *ovl_mount(struct file_system_type *fs_type, int flags,
- static struct file_system_type ovl_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "overlay",
-+	.fs_flags	= FS_USERNS_MOUNT,
- 	.mount		= ovl_mount,
- 	.kill_sb	= kill_anon_super,
- };
 -- 
-2.26.2
+https://patchwork.kernel.org/project/linux-wireless/patch/20201129150844.1466214-1-christophe.jaillet@wanadoo.fr/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
