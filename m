@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483D92D1040
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6B12D104F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgLGMQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:16:14 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9027 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgLGMQO (ORCPT
+        id S1727673AbgLGMQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:16:53 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:29293 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgLGMQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:16:14 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqMh45cdtzhntL;
-        Mon,  7 Dec 2020 20:15:00 +0800 (CST)
-Received: from [10.174.187.37] (10.174.187.37) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 20:15:22 +0800
-Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
-References: <20201205082957.12544-1-zhukeqian1@huawei.com>
- <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
- <20201207120527.GA4474@willie-the-truck>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, Marc Zyngier <maz@kernel.org>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "James Morse" <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-From:   zhukeqian <zhukeqian1@huawei.com>
-Message-ID: <2b0ec25b-0fa4-65ca-7c1b-109ce766197f@huawei.com>
-Date:   Mon, 7 Dec 2020 20:15:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 7 Dec 2020 07:16:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607343413; x=1638879413;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=q6qR+M14sEQGT5M/G/pwCC67yLfxNrDN5aaMrQcZb60=;
+  b=voN4BSh/9Vfmj1+y+/Zqz3eat8TJclt24CU87ydtFoLTzue2D1fN22EE
+   csZJfKBJ5dGc53sdV9+LyFhDFfWlPeCpWuGFZZ5NLjBXB3si7GqyQ5/bR
+   6ClQNVGwGGS6f7ukc4SM2+bQ2xD3vPsjug0GAtfVIDNTLXKJBI6XAkABK
+   +QpIxHiQh1s3mIXi5djEf20xTxBxtPluk9embVVuy/VUxSvUJhdnCE/lg
+   snFbsuNnycUr/AwjAeVGIWTPGx9gH9X8D+1YvwxgD0ldle9T3a3SJOyLZ
+   rEAY6bJBAsS3KMuLE3+VMWPLsoZVuGRxynctT5iWVSTVYNFcj545/z4lP
+   w==;
+IronPort-SDR: R+zNuVLp06ABWbW733aDqxBUVgaZ6DsrsjDsEp8uW8mSj0fzQLGiT1QXOz9wkAiAJ5I3IE8ALo
+ 6fXIPkG53nWvWzSbJmYxxm3fBRxVsrdSSSqzmXHYuI9ddYsM8t1XUrCr4YJUOGdCOl/cpsQws+
+ qk5T+ln4OAyhphXM1ycOdGLDDatvJd5+oPv2WsoFFmDB3iOY0gUzqWOhEUVOlEZqEWi4VOwhNN
+ 86BYQWnoSrnZk28DN5VpAu64yuhAhQojrSb/ZmtkqGDGxsSBFagKmnhrchJRpooLjJbtK/Prxv
+ NlQ=
+X-IronPort-AV: E=Sophos;i="5.78,399,1599548400"; 
+   d="scan'208";a="101191972"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Dec 2020 05:15:47 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 7 Dec 2020 05:15:46 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 7 Dec 2020 05:15:37 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <linux@armlinux.org.uk>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>
+CC:     <yash.shah@sifive.com>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/8] net: macb: add support for sama7g5
+Date:   Mon, 7 Dec 2020 14:15:25 +0200
+Message-ID: <1607343333-26552-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20201207120527.GA4474@willie-the-truck>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.37]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 2020/12/7 20:05, Will Deacon wrote:
-> On Mon, Dec 07, 2020 at 12:01:09PM +0000, Robin Murphy wrote:
->> On 2020-12-05 08:29, Keqian Zhu wrote:
->>> ... then we have more chance to detect wrong code logic.
->>
->> I don't follow that justification - it's still the same check with the same
->> outcome, so how does moving it have any effect on the chance to detect
->> errors?
+This series adds support for SAMA7G5 Ethernet interfaces: one 10/100Mbps
+and one 1Gbps interfaces.
 
->>
->> AFAICS the only difference it would make is to make some errors *less*
->> obvious - if a sufficiently broken caller passes an empty prot value
->> alongside an invalid size or already-mapped address, this will now quietly
->> hide the warnings from the more serious condition(s).
->>
->> Yes, it will bail out a bit faster in the specific case where the prot value
->> is the only thing wrong, but since when do we optimise for fundamentally
->> incorrect API usage?
-> 
-> I thought it was the other way round -- doesn't this patch move the "empty
-> prot" check later, so we have a chance to check the size and addresses
-> first?
+Along with it I also included a fix to disable clocks for SiFive FU540-C000
+on failure path of fu540_c000_clk_init().
 
-Yes, this is my original idea.
-For that we treat iommu_prot with no permission as success at early start, defer
-this early return can expose hidden errors.
+Thank you,
+Claudiu Beznea
 
-Thanks,
-Keqian
-> 
-> Will
-> 
->>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>> ---
->>>   drivers/iommu/io-pgtable-arm.c | 8 ++++----
->>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
->>> index a7a9bc08dcd1..8ade72adab31 100644
->>> --- a/drivers/iommu/io-pgtable-arm.c
->>> +++ b/drivers/iommu/io-pgtable-arm.c
->>> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->>>   	arm_lpae_iopte prot;
->>>   	long iaext = (s64)iova >> cfg->ias;
->>> -	/* If no access, then nothing to do */
->>> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
->>> -		return 0;
->>> -
->>>   	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
->>>   		return -EINVAL;
->>> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
->>>   	if (WARN_ON(iaext || paddr >> cfg->oas))
->>>   		return -ERANGE;
->>> +	/* If no access, then nothing to do */
->>> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
->>> +		return 0;
->>> +
->>>   	prot = arm_lpae_prot_to_pte(data, iommu_prot);
->>>   	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
->>>   	/*
->>>
-> .
-> 
+Changes in v2:
+- introduced patch "net: macb: add function to disable all macb clocks" and
+  update patch "net: macb: unprepare clocks in case of failure" accordingly
+- collected tags
+
+Claudiu Beznea (8):
+  net: macb: add userio bits as platform configuration
+  net: macb: add capability to not set the clock rate
+  net: macb: add function to disable all macb clocks
+  net: macb: unprepare clocks in case of failure
+  dt-bindings: add documentation for sama7g5 ethernet interface
+  dt-bindings: add documentation for sama7g5 gigabit ethernet interface
+  net: macb: add support for sama7g5 gem interface
+  net: macb: add support for sama7g5 emac interface
+
+ Documentation/devicetree/bindings/net/macb.txt |   2 +
+ drivers/net/ethernet/cadence/macb.h            |  11 ++
+ drivers/net/ethernet/cadence/macb_main.c       | 158 +++++++++++++++++--------
+ 3 files changed, 122 insertions(+), 49 deletions(-)
+
+-- 
+2.7.4
+
