@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BF02D1965
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702B42D196A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgLGTWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:22:03 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43231 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGTWC (ORCPT
+        id S1726385AbgLGTZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgLGTZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:22:02 -0500
-Received: by mail-ot1-f68.google.com with SMTP id q25so1771746otn.10;
-        Mon, 07 Dec 2020 11:21:41 -0800 (PST)
+        Mon, 7 Dec 2020 14:25:36 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59631C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:24:56 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id lt17so21196026ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IVD1p2kuvVXrBfr0DQp8uX8UYpU8DuPwPA/j+U9iw7o=;
+        b=BT+NDgyuc4B9FYRdUmCPvz8gjOkn6+mHA6vCDn6QzeHfUUeVlC9fv9qefVr60Fi4o8
+         N+o33ru5BmuDsrganRp9xPYlw9T4COKiKzJVIiibRWtkGYUeWzfA+vwEjIThXkXCM/Ob
+         v+IduKCrHlR2/fbICCriKjUrIp3nu1m1Yjdr6Q9zzZw8wQ+/MzIoQ+PIjpI2AHX08tNF
+         o79x236sD+eQzaNCTTmeXMydo7bCcfYZv2T91v+5zWh9xA1eXU1ksRhuj/YKDJDQ4LB1
+         0EJPtboMkRXu+WFzXkzP01egTvP5VfJha5u1lyfPXyF4vmUc1wpvHu9UBb6KiowaNlCa
+         iHoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UZgORA5KR4d2Ulyzhg3uaqqusHH2ln4StUCf3f0D5pc=;
-        b=H5OOu+3CoZCdCs+R+wOOwTkM58R+rmeCCKWX+0/cuyQ1N5RScTrKQdvzGNcu6nFBtu
-         7cQZuz4fOvh+Tv+Os5jrJ8O7iV1gKI/u9W/qnE25vKqNFsBc3wq9yGsKjbP2tkWaxvoh
-         jTDAaFXF/0qMA7f/Wac4gafEp8TTnH9t5NwW5awVTJVQtf9GvyD+19f0lG81gj4kpqgk
-         dunSc+kux743yixWtdc47NvvUxGpcDglv+szqidsZoeelEzLTCZipzMcqNGPkL32Q7vv
-         dql1/gSVJDNuvYE8pdS2VLPJZpq6iPrDUEQlWeV7Bb2UTvzxJp5adG0jolGi+sSvRAQK
-         AXNA==
-X-Gm-Message-State: AOAM533w1TBugX81aWOLa23oOTz29UWB/hw/FF5FflA79FNqq0HB6z5M
-        AY/2JuWy+erCbNhB9kMjgQ==
-X-Google-Smtp-Source: ABdhPJzqTplc21iPoj/nP2BP0XxA54gpXMwd82ge1pBBTIaiH5hFCOE2KPQ2ZQTVk+CCxOuLMJ9ViA==
-X-Received: by 2002:a05:6830:1d8c:: with SMTP id y12mr13935119oti.34.1607368875973;
-        Mon, 07 Dec 2020 11:21:15 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 189sm2799830oob.26.2020.12.07.11.21.14
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IVD1p2kuvVXrBfr0DQp8uX8UYpU8DuPwPA/j+U9iw7o=;
+        b=EhBXXRl4UHe/ZLVWj6WE1Nt6kQTw/IeIrj5eTJw3Wxaa03lnSLqfzB2MfraeeUQFXT
+         jhgxXXWJpX9weaCdGlxh3TjJ0sxHUmavZeFoWodyYZ8n1GIrDVrhe431POCMnrsx7BNT
+         74E5gq1lSxLeLym4jNMOVLH9om+iZHc96+UjoJ/DwGrNJ/sXg01y2Z7pG/o8et/V0qS8
+         3ZINPXMyZ/YJwJ7vytN8nOrhO2TiAN/I22PPG3Tosynik//aYdoyhzvgDy1ayG2BGvpf
+         n6VZgA5vGFX6Th3kuvPyeo5LKo6i+rv0EyR8Pvrudhamc0mCG+0xmTWamUW/3l/Ci/9J
+         Yd7w==
+X-Gm-Message-State: AOAM530gSVghdMyIH0gzZ4uEga5z7rsB47TXh2iWX+oEk6p5mNtJrC+U
+        hUvALXBwXclwwcGAwOnKgaTyFw==
+X-Google-Smtp-Source: ABdhPJz9bYSQy3NHjmWx84lzpD6uTWLsBYmyjEhdoYT4EzGm+iefSEkI4OwWBZ212/zNmk1iIBD9rw==
+X-Received: by 2002:a17:906:b08b:: with SMTP id x11mr20225762ejy.302.1607369095020;
+        Mon, 07 Dec 2020 11:24:55 -0800 (PST)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id b17sm13218700eju.76.2020.12.07.11.24.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:21:14 -0800 (PST)
-Received: (nullmailer pid 657194 invoked by uid 1000);
-        Mon, 07 Dec 2020 19:21:13 -0000
-Date:   Mon, 7 Dec 2020 13:21:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] dt-bindings: phy: bcm-ns-usb2-phy: convert to yaml
-Message-ID: <20201207192113.GA657118@robh.at.kernel.org>
-References: <20201116074650.16070-1-zajec5@gmail.com>
- <20201116074650.16070-2-zajec5@gmail.com>
+        Mon, 07 Dec 2020 11:24:54 -0800 (PST)
+From:   "Javier =?utf-8?B?R29uesOhbGV6?=" <javier@javigon.com>
+X-Google-Original-From: Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
+Date:   Mon, 7 Dec 2020 20:24:53 +0100
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        nj.shetty@samsung.com, joshi.k@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201207192453.vc6clbdhz73hzs7l@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <20201207141123.GC31159@lst.de>
+ <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201116074650.16070-2-zajec5@gmail.com>
+In-Reply-To: <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Nov 2020 08:46:50 +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> 1. Convert from txt to yaml
-> 2. Drop "Driver for" from the title
-> 3. Document "#phy-cells"
-> 4. Fix example node name (noticed by dt_binding_check)
-> 5. Add #include to example (noticed by dt_binding_check)
-> 6. Specify license
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> I think this should go through linux-phy tree. Kishon, Vinod, can you
-> take this patch?
-> 
-> This patch generates a false positive checkpatch.pl warning [0].
-> Please ignore:
-> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
-> 
-> [0] https://lkml.org/lkml/2020/2/18/1084
-> ---
->  .../bindings/phy/bcm-ns-usb2-phy.txt          | 21 -------
->  .../bindings/phy/bcm-ns-usb2-phy.yaml         | 59 +++++++++++++++++++
->  2 files changed, 59 insertions(+), 21 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/bcm-ns-usb2-phy.yaml
-> 
+On 07.12.2020 15:56, Hannes Reinecke wrote:
+>On 12/7/20 3:11 PM, Christoph Hellwig wrote:
+>>So, I'm really worried about:
+>>
+>>  a) a good use case.  GC in f2fs or btrfs seem like good use cases, as
+>>     does accelating dm-kcopyd.  I agree with Damien that lifting dm-kcopyd
+>>     to common code would also be really nice.  I'm not 100% sure it should
+>>     be a requirement, but it sure would be nice to have
+>>     I don't think just adding an ioctl is enough of a use case for complex
+>>     kernel infrastructure.
+>>  b) We had a bunch of different attempts at SCSI XCOPY support form IIRC
+>>     Martin, Bart and Mikulas.  I think we need to pull them into this
+>>     discussion, and make sure whatever we do covers the SCSI needs.
+>>
+>And we shouldn't forget that the main issue which killed all previous 
+>implementations was a missing QoS guarantee.
+>It's nice to have simply copy, but if the implementation is _slower_ 
+>than doing it by hand from the OS there is very little point in even 
+>attempting to do so.
+>I can't see any provisions for that in the TPAR, leading me to the 
+>assumption that NVMe simple copy will suffer from the same issue.
+>
+>So if we can't address this I guess this attempt will fail, too.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Good point. We can share some performance data on how Simple Copy scales
+in terms of bw / latency and the CPU usage. Do you have anything else in
+mind?
