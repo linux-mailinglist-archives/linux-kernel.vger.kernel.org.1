@@ -2,79 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CBB2D187E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09992D1883
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgLGSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:25:13 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34674 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgLGSZN (ORCPT
+        id S1726110AbgLGS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:27:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgLGS1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:25:13 -0500
-Received: by mail-ot1-f65.google.com with SMTP id h19so13416858otr.1;
-        Mon, 07 Dec 2020 10:24:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m1O1G+zV2kO4jk3UbACjeCYJhnQE4kkHKnxZUsOPyjY=;
-        b=mr0o34oRBfSeXLdU2RoWQ4MF38NSLlRafowY4qK2CLf+5GQ+4qtjU0NQsEKI3cAGPD
-         hSi6tsqGimrz2XVoJHly4PQJUvIbYhBzKxqB0sV9PNy1R+osia1WxD74kP05ITi2CtoA
-         pwFX4Ese4z21imbrKIxEEFqF9Pct8azXig4ZSjT2PHbQRx6Xy9MEQdQ3XzcUeW3hhCtZ
-         9/KfKMR6VfxzSZoWUs6v9JslK32MddX8bYYdf94SLXu0iK+xjdMZqE7kY+HaXmavArYa
-         YBw++IiY3dRjOg/C/iRO7ibQD4qmltz+7LxJyILoNY6BvpgQbSqMLnGF+UVd/eLBlyJC
-         zQqg==
-X-Gm-Message-State: AOAM530K0d2vdj0BAJjbnfi3bsQPrMfbpu+WXLOLKgZLxaSnvvAAM7t0
-        POYmvRYuXRlCuhl+XC38Nvqep0OGWg==
-X-Google-Smtp-Source: ABdhPJxz8l5V6AoslKS7WfaMbptPHMhc+UKpkt9mGl2UWR9QoeurNfGZkTa6je/yL6Zl+ljC/+/udw==
-X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr10195901ott.223.1607365471542;
-        Mon, 07 Dec 2020 10:24:31 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k63sm3091682oia.14.2020.12.07.10.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 10:24:30 -0800 (PST)
-Received: (nullmailer pid 567087 invoked by uid 1000);
-        Mon, 07 Dec 2020 18:24:29 -0000
-Date:   Mon, 7 Dec 2020 12:24:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     netdev@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Device Tree List <devicetree@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v9 1/4] dt-bindings: phy: Add sparx5-serdes bindings
-Message-ID: <20201207182429.GA566994@robh.at.kernel.org>
-References: <20201207121345.3818234-1-steen.hegelund@microchip.com>
- <20201207121345.3818234-2-steen.hegelund@microchip.com>
+        Mon, 7 Dec 2020 13:27:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0709DC061749;
+        Mon,  7 Dec 2020 10:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=plmldp0jMUbXn4RHhveXniPRGIKOxbNYBpy4Qnxa4iU=; b=ETlnj0o86z0HzG7k/Ffy4FpKV+
+        RxD8HXZnMz7KUNPRGl7hUGWACsCjXPKCHTT8HfIIfvZqkOU8rDDB3ZJJ5RV3SFZuLv5drFrL5TcUp
+        6NmXC9XhlQjgBHmScaJOHYmXBPwS4BWhjHb7TTbLkx9R9Nir0+TSuabkb/Pz1VUXRtBICsXR3t/LF
+        w1IJIcurUZehi4FKxZ20tfFPQHPEWwYQp7nwNo2E2HQ0DU3at6SLTaoDz9hPQR5kNXiEQIZRU0WO9
+        +R8MM5ljxy4Qqyq3A3/CPAX4z74PdAYi/Bjxar4zvAo94ARI2YcMNLiK1R9r6F8Utlq0xgLEolvys
+        LSajCCqw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmLD1-0000sh-TN; Mon, 07 Dec 2020 18:26:03 +0000
+Date:   Mon, 7 Dec 2020 18:26:03 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <20201207182603.GA2499@infradead.org>
+References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
+ <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+ <X85sxxgpdtFXiKsg@kroah.com>
+ <20201207180655.GA30657@infradead.org>
+ <X85zEFduHeUr4YKR@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207121345.3818234-2-steen.hegelund@microchip.com>
+In-Reply-To: <X85zEFduHeUr4YKR@kroah.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 13:13:42 +0100, Steen Hegelund wrote:
-> Document the Sparx5 ethernet serdes phy driver bindings.
+On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
+> What "real workload" test can be run on this to help show if it is
+> useful or not?  These vendors seem to think it helps for some reason,
+> otherwise they wouldn't have added it to their silicon :)
 > 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> ---
->  .../bindings/phy/microchip,sparx5-serdes.yaml | 100 ++++++++++++++++++
->  1 file changed, 100 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
-> 
+> Should they run fio?  If so, any hints on a config that would be good to
+> show any performance increases?
 
-
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
+A real actual workload that matters.  Then again that was Martins
+request to even justify it.  I don't think the broken addressing that
+breaks a whole in the SCSI addressing has absolutely not business being
+supported in Linux ever.  The vendors should have thought about the
+design before committing transistors to something that fundamentally
+does not make sense.
