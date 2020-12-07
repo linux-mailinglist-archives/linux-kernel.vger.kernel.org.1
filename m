@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03E62D0E7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2542D0E87
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgLGK4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLGK4g (ORCPT
+        id S1726346AbgLGK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:58:56 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:50948 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726076AbgLGK64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:56:36 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02E8C0613D2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:55:55 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id q5so12035782qkc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5ia12m9uDX+0LNlAEFwkrOarHwftjJKLgewl2oTIgrE=;
-        b=lzzmt0CZmK2Jmd7kyroYw+RWFtJX3ikmVxwIpkx+vZ/gCDKMah0PBZ3pRvKxqo8lN4
-         eStRjgjM4ibwnew31RMzb0hOwrT6uiFAFmqPXGWbPGnLbol0VBIpkeSQGAMsmcvQpOll
-         n6xniOcxXcDXSYxpEDnLx9saK/zqAazjt5HMY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5ia12m9uDX+0LNlAEFwkrOarHwftjJKLgewl2oTIgrE=;
-        b=GvVjTvElir4xcEqeA2o2nzi60WKf7/dxd6iVY9XAHlKfQ8Bw4PYwV6IdLbOPWIRQTJ
-         0bfMQUfTM3EOz2s6K/Gl7bSjVLkSFmeBTeqkdHSv7lWErnmKG9ybQ896bYoIsFM0Oqf2
-         XBmisKK2Jeynjl4eEiJH9BryE2iBdLHPdPUOu07RBW0AY+PbEfT4p+utgcTayYlFIWv6
-         4mrAuMfEoNqPoOkD39TMGMdSyN7fqyxYYBjS2yfkMt17UZCnAGvuxImVb+9v7k3fabPT
-         5aJGw+JFSLIuxNpsSAUDOQYqcSKObM4ct2SqT64uSAyp6/TP+RpwTFzWtGaL+jo05Lbg
-         keUA==
-X-Gm-Message-State: AOAM532EO4WWDK8DEsrhFGwkrH6X9f4ROReoQBkU5vzFJZjI4bWFWA5b
-        bAZLigovNqEC6uadgIsobFx8XcpNQMKRhVFNqKYDEw==
-X-Google-Smtp-Source: ABdhPJz5LN12jxi1tLmMe+C2qEWEij3QetZAtETxe63ezdGfiuGGd8prNeyfZ8+OZ//s1SFdN8nthpHV6T5ni1agtns=
-X-Received: by 2002:a37:8681:: with SMTP id i123mr22759135qkd.54.1607338554890;
- Mon, 07 Dec 2020 02:55:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201129110803.2461700-1-daniel@0x0f.com> <CACRpkdYEzFYw=CbBFCs9=DfarsCQKD0zA2WvE95nF8ehA_2i1g@mail.gmail.com>
-In-Reply-To: <CACRpkdYEzFYw=CbBFCs9=DfarsCQKD0zA2WvE95nF8ehA_2i1g@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 7 Dec 2020 19:55:44 +0900
-Message-ID: <CAFr9PXmx1XZmVOp8mLygnDUfEKPpo6=ZQPMKSCnZf0i23mNqVw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] Add GPIO support for MStar/SigmaStar ARMv7
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@kernel.org>, olof@lixom.net
-Cc:     SoC Team <soc@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 7 Dec 2020 05:58:56 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2116129|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0159781-0.000759197-0.983263;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J48LPz9_1607338688;
+Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.J48LPz9_1607338688)
+          by smtp.aliyun-inc.com(10.147.41.143);
+          Mon, 07 Dec 2020 18:58:12 +0800
+From:   liush <liush@allwinnertech.com>
+To:     jaegeuk@kernel.org, chao@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, iny.windzz@gmail.com,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Shaohua Liu <liush@allwinnertech.com>
+Subject: [PATCH 1/2] f2fs: convert to F2FS_*_INO macro
+Date:   Mon,  7 Dec 2020 18:58:06 +0800
+Message-Id: <1607338687-8477-1-git-send-email-liush@allwinnertech.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Yangtao Li <tiny.windzz@gmail.com>
 
-On Sun, 6 Dec 2020 at 06:43, Linus Walleij <linus.walleij@linaro.org> wrote:
+Use F2FS_ROOT_INO, F2FS_NODE_INO and F2FS_META_INO macro
+for better code readability.
 
-> OK finished!
-> Patches 1, 2 & 3 applied to the GPIO tree for v5.11.
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+Signed-off-by: Shaohua Liu <liush@allwinnertech.com>
+---
+ fs/f2fs/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Awesome! Thank you Linus. :)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f51807..d3ccf89647df 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3071,9 +3071,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+ 	sbi->total_node_count =
+ 		(le32_to_cpu(raw_super->segment_count_nat) / 2)
+ 			* sbi->blocks_per_seg * NAT_ENTRY_PER_BLOCK;
+-	sbi->root_ino_num = le32_to_cpu(raw_super->root_ino);
+-	sbi->node_ino_num = le32_to_cpu(raw_super->node_ino);
+-	sbi->meta_ino_num = le32_to_cpu(raw_super->meta_ino);
++	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
++	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
++	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+ 	sbi->cur_victim_sec = NULL_SECNO;
+ 	sbi->next_victim_seg[BG_GC] = NULL_SEGNO;
+ 	sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
+-- 
+2.25.1
 
-Arnd and Olof: Sorry for being a noob.. Is there anything I need to do
-for patches 4 and 5 (device tree bits)?
-They are in the Linux SoC patchwork.
-
-Thanks,
-
-Daniel
