@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E252D1DE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D05F2D1DEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgLGW7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgLGW7O (ORCPT
+        id S1728137AbgLGW7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:59:40 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:42747 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgLGW7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:59:14 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FE4C061794;
-        Mon,  7 Dec 2020 14:58:33 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id cm17so15606476edb.4;
-        Mon, 07 Dec 2020 14:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vjvSckwg/9T20Pu309povgj0lbCxKiEZh3/BnNhvMto=;
-        b=HMv5SecqHTLhTX8CT8YvNnZlegghRA4XYw9qH4HWjq/wbKQnPUeo/4iTV1IIDcRF73
-         pw8X7Zjf28SXbQsosjX6wuqq/DQuK2Iw0C1dWnBAoXCQYD9OFTQeZGsAA1go6ti9hXrI
-         3V+Q6GZy/igTS5PhgShUaKwdRIa3ut0O9+HZH6wJOTYYULr5M/zaBdyneSLPOqILUpMo
-         aM3zkZUSFhakG5evwtsIvVTEwWVlEMum0JYkASXk8MLgjB4gJ1Y5vKu6TN/JNzHSjleT
-         lb0RGW3YeDsBNqoq8BU0bSvWG9HwaDeiL3cljJEK3wbJgzAyJccq84QYR2W+eNX8iqOR
-         l1Dg==
+        Mon, 7 Dec 2020 17:59:39 -0500
+Received: by mail-oi1-f193.google.com with SMTP id l200so17335436oig.9;
+        Mon, 07 Dec 2020 14:59:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vjvSckwg/9T20Pu309povgj0lbCxKiEZh3/BnNhvMto=;
-        b=WB5j9YFv09Z2b2HrNaA20jDFwGIc7Vq0X+8JitpBc9xggRwmSJzogiENfeL4Fw0ojy
-         oZ2SxWCJLCJfl1MAo24UBpzr9oawLk/KqrknYjFfXD319b1aMz5HgIszJHW66fHOgGlu
-         qvdmPXLyXbWlDe8pEjJ4v2Bds1fwnMuhNF6g+83XJevsJ3RacXkUd2R9cA3RZWQH36kl
-         z7rvynGhyB09jN/V6NtHHNUcOfdxPcJF6buLaTWUYexyGNQCN8SDXPQkYNhfpTP2XbjA
-         dDGhn+PYFjkGcUhEezzgJFBfeDcWWFwNV+OHmsSP91H3dEhRyfBJC4Lt2znHPscOwXFY
-         RqHQ==
-X-Gm-Message-State: AOAM532MXNgW0rNkDHx499BPh250IKgrSNPH/aX6QPBdf1Nmo/8QBKXN
-        92G70o8Hh1rHQ3Ua+7Ad92z+ki6Pnz2gIw==
-X-Google-Smtp-Source: ABdhPJyRAbX3qdmzUZR/AjIRVe2B7fRWi89/Cq9gL9ELWihRAgUFCMS5giS1IspcSQ61u8tyQLZsnQ==
-X-Received: by 2002:aa7:da01:: with SMTP id r1mr22447029eds.45.1607381912632;
-        Mon, 07 Dec 2020 14:58:32 -0800 (PST)
-Received: from ubuntu2004 ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id v18sm12584636ejw.18.2020.12.07.14.58.31
+        bh=dDAvG00SrOftyhEZu/9QMTjp5fmGYTX2yGfHUYcWWzY=;
+        b=hLqydeoTXyQfCzrL7qOaWZsmMdeeJuPkFul1rTyjSkRcIl8guFyP4OwQTInmKEVTVJ
+         QveQhVIWH7dYxdDAazgCqBpFCor/irnxl6BlvWIw3lC9BFsC2bh4/iaBIRCcxQu8Yajo
+         dUU9QEdHzw5ErTHiRAJN7d7J3SqYhAykUw6lNQiVlVfQY00xEJh9YK1FPlQ2Cg0MyzJc
+         B49GL9YN1yRmeNIMs/RcAvuAHPBsrcFH3k8I8XqzfOHXxgUKYvdTxcoxzpGtP1KuQ40n
+         9X6cH84EDLkriWAKk4BN5yJPXouqvE5TlTZ1mkHD5Awb6ck6B51OU9PcC5yel7QDVbHb
+         GzpA==
+X-Gm-Message-State: AOAM531D+gAtGuZk58VxlQ6XVqW+bNYAoemDm8JeNshS9Z5E4xKRtnjF
+        bWrLbRUNEGNuWru3cDN3+w==
+X-Google-Smtp-Source: ABdhPJx+ZRhYn1sd/H/ieyNhhCTI4YoNfNdq4GrSu3H1BIPquWZr7UzN5bnmTYDnd8/TDp6CMdWojg==
+X-Received: by 2002:aca:bb43:: with SMTP id l64mr812393oif.52.1607381938769;
+        Mon, 07 Dec 2020 14:58:58 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u141sm67076oie.46.2020.12.07.14.58.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 14:58:32 -0800 (PST)
-Date:   Tue, 8 Dec 2020 00:58:35 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, devicetree@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-actions@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 10/18] dt-bindings: i2c: owl: Convert Actions Semi Owl
- binding to a schema
-Message-ID: <20201207225835.GD250758@ubuntu2004>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <2521d2e63efcd125a4fe93ee55435f399157ab39.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201207221214.GA929136@robh.at.kernel.org>
+        Mon, 07 Dec 2020 14:58:57 -0800 (PST)
+Received: (nullmailer pid 1004451 invoked by uid 1000);
+        Mon, 07 Dec 2020 22:58:56 -0000
+Date:   Mon, 7 Dec 2020 16:58:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 2/5] dt-bindings: serial: add the required property
+ 'additionalProperties'
+Message-ID: <20201207225856.GA1004420@robh.at.kernel.org>
+References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
+ <20201204093813.1275-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207221214.GA929136@robh.at.kernel.org>
+In-Reply-To: <20201204093813.1275-3-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 04:12:14PM -0600, Rob Herring wrote:
-> On Fri, 20 Nov 2020 01:56:04 +0200, Cristian Ciocaltea wrote:
-> > Convert the Actions Semi Owl I2C DT binding to a YAML schema for
-> > enabling DT validation.
-> > 
-> > Additionally, add a new compatible string corresponding to the I2C
-> > controller found in the S500 variant of the Actions Semi Owl SoCs
-> > family.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  .../devicetree/bindings/i2c/i2c-owl.txt       | 29 ---------
-> >  .../devicetree/bindings/i2c/i2c-owl.yaml      | 62 +++++++++++++++++++
-> >  2 files changed, 62 insertions(+), 29 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.txt
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-owl.yaml
-> > 
+On Fri, 04 Dec 2020 17:38:10 +0800, Zhen Lei wrote:
+> When I do dt_binding_check for any YAML file, below wanring is always
+> reported:
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> xxx/serial/litex,liteuart.yaml: 'additionalProperties' is a required property
+> xxx/serial/litex,liteuart.yaml: ignoring, error in schema:
+> warning: no schema found in file: xxx/serial/litex,liteuart.yaml
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/serial/litex,liteuart.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Thanks for reviewing,
-Cristi
+Reviewed-by: Rob Herring <robh@kernel.org>
