@@ -2,179 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104132D0DC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 070892D0DBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgLGKGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:06:16 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10178 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgLGKGL (ORCPT
+        id S1726497AbgLGKFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgLGKFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:06:11 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7A4kkQ129799;
-        Mon, 7 Dec 2020 05:05:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=QiPMOQuCk2zUPq//oBZGAxumwdDBB5FUYlyVGE+xieI=;
- b=RTIeNpFtqxNW7BWGoGzBG9medrSpAD9BVbsnzuOy2NNVsf8mZ56ZNM7pCoF6KsRAqCgO
- Xc8EKih3r+d/Dw9fD++CE70zuAbfeTG0dksT+rfWilKppeQMNOQYq/UxeWHoChsvelYU
- Ii1B38zMgUq808he/89HYMSc9L1MK+tmbCJvBEGh9nxqvqcr3E0XEH3RAlYbXIrW/gHZ
- AoTsDlc88IHXtIr+ws/z/OTfjjexz4J/N+p0TQx2MKkurc6YRtaBWakGQ7QSwMgho5Ux
- as0dP3SmuNaAfYyyWiIyxQp3KaGZCicDNYz0Rn5yh/4YlVERa3Emg5rwQtzUAL+D54gv 2A== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359h7t25bg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 05:05:08 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7A2Pku008581;
-        Mon, 7 Dec 2020 10:04:32 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3581fhjc11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 07 Dec 2020 10:04:32 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7A4Uxw24576444
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 7 Dec 2020 10:04:30 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21308AE055;
-        Mon,  7 Dec 2020 10:04:30 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7BAFAE053;
-        Mon,  7 Dec 2020 10:04:28 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.50.18])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon,  7 Dec 2020 10:04:28 +0000 (GMT)
-Date:   Mon, 7 Dec 2020 12:04:26 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Wei Li <liwei213@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Steve Capper <steve.capper@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fengbaopeng2@hisilicon.com, butao@hisilicon.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the
- memory reserved for the page map
-Message-ID: <20201207100426.GE1112728@linux.ibm.com>
-References: <20201204014443.43329-1-liwei213@huawei.com>
- <20201204111347.GA844@willie-the-truck>
- <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
- <390f5f441d99a832f4b2425b46f6d971@kernel.org>
- <20201207094215.GC1112728@linux.ibm.com>
- <CAMj1kXFdtom+OBJ84he9C5eNw-KJ8zwW04WB0ab6Gp_DCiYkRg@mail.gmail.com>
+        Mon, 7 Dec 2020 05:05:37 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CEDC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:04:57 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id b73so13024414edf.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=b3t3jIgI6hpQGlzQVEB3OyTOWvlTte2ZpFg6vSpZvaQ=;
+        b=S5euiYuGAK8GUznJef4H3eBuwo2+mvjjz1hb8IPp40u1iAiQ3lZRbkzyv8JWedQ1cN
+         WXb388WDDrfH19dKbv+bj8WazUC8ytJ9JLP8H59PdnOwgIFx8uVjEs8TVXhCZPXoxANP
+         l0CRr7DLiCJ9LZHKGlFuiOkm1O/r8TMHV/3FOFLg/QzvJRSM+dXN30mu8Ch/ObNINJHv
+         1e7hAwE1Q22Q4FJl6bbkxiyMcAVvx6rmek4Ol7r15wCYPzbcCE/sbwjPVBqeC9IuIvJE
+         Gg61V+7Zh/BYyEd2rCbz75hpRLQeCicw+jUo/sHdawHyVxh4OxcmFSB9qCgmyTeO87Mk
+         7DbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=b3t3jIgI6hpQGlzQVEB3OyTOWvlTte2ZpFg6vSpZvaQ=;
+        b=uhiSqbSIps7SjgQfN4hYuh7R5/az2IuXH2JY9QSHFgPUlpcmcWbLoQeH1iCE5UKk+m
+         u49XOcjY6KYIisBy6697f7y54KCbPmxkSEYeYdSahSj+qbg34HmdQGOFcdeiPjODEOkw
+         jSecF1LIoplmG/2IA5hwPXmk3LvAEiYy5SUVECiw5KN2yd9FrALS3G84v2BSJ+UbXHrH
+         9tpDH2EH6powGeT/I91hRajqXDqQ2FQD2IzfOokIT66wdaeeDBZj/1Lc8hx1m6VJqNRq
+         ON43VMW4+g6krdv6mp2GMZjW6WJUwTPXvJ2T6TKzE+VRkPkcGxJfSb73ZoAyvJ86mGyE
+         fQyA==
+X-Gm-Message-State: AOAM530C/ZJtlGHZUIryumw9crxVfPNowIm7ptP35jH1oCAz0QePPmCP
+        NERcTjY33IGqWNu9Leb0Q1Hx9ewVsGYGXgKkukVV9g==
+X-Google-Smtp-Source: ABdhPJyRuF3/CkVrrf2pNnKEBpAOWcPwzPm8tJqXn5JWFFeVUQEx2lrYPXECFOpfLcD/f9Px4VNIxLhPKQ5Oz0ziXAQ=
+X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr18902420edb.23.1607335495692;
+ Mon, 07 Dec 2020 02:04:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFdtom+OBJ84he9C5eNw-KJ8zwW04WB0ab6Gp_DCiYkRg@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-07_08:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 suspectscore=5
- mlxlogscore=999 phishscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012070063
+References: <20201206111555.569713359@linuxfoundation.org>
+In-Reply-To: <20201206111555.569713359@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 7 Dec 2020 15:34:44 +0530
+Message-ID: <CA+G9fYvppziAj5RzG6et2UCX+PWzgmFKGMy0eCMe=eFYaUXxww@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/20] 4.14.211-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:49:26AM +0100, Ard Biesheuvel wrote:
-> On Mon, 7 Dec 2020 at 10:42, Mike Rapoport <rppt@linux.ibm.com> wrote:
-> >
-> > On Mon, Dec 07, 2020 at 09:35:06AM +0000, Marc Zyngier wrote:
-> > > On 2020-12-07 09:09, Ard Biesheuvel wrote:
-> > > > (+ Marc)
-> > > >
-> > > > On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
-> > > > > > For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-> > > > > > do not free the reserved memory for the page map, decrease the section
-> > > > > > size can reduce the waste of reserved memory.
-> > > > > >
-> > > > > > Signed-off-by: Wei Li <liwei213@huawei.com>
-> > > > > > Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
-> > > > > > Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
-> > > > > > ---
-> > > > > >  arch/arm64/include/asm/sparsemem.h | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
-> > > > > > index 1f43fcc79738..8963bd3def28 100644
-> > > > > > --- a/arch/arm64/include/asm/sparsemem.h
-> > > > > > +++ b/arch/arm64/include/asm/sparsemem.h
-> > > > > > @@ -7,7 +7,7 @@
-> > > > > >
-> > > > > >  #ifdef CONFIG_SPARSEMEM
-> > > > > >  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
-> > > > > > -#define SECTION_SIZE_BITS    30
-> > > > > > +#define SECTION_SIZE_BITS    27
-> > > > >
-> > > > > We chose '30' to avoid running out of bits in the page flags. What
-> > > > > changed?
-> > > > >
-> > > > > With this patch, I can trigger:
-> > > > >
-> > > > > ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds
-> > > > > SECTION_SIZE
-> > > > > #error Allocator MAX_ORDER exceeds SECTION_SIZE
-> > > > >
-> > > > > if I bump up NR_CPUS and NODES_SHIFT.
-> > > > >
-> > > >
-> > > > Does this mean we will run into problems with the GICv3 ITS LPI tables
-> > > > again if we are forced to reduce MAX_ORDER to fit inside
-> > > > SECTION_SIZE_BITS?
-> > >
-> > > Most probably. We are already massively constraint on platforms
-> > > such as TX1, and dividing the max allocatable range by 8 isn't
-> > > going to make it work any better...
-> >
-> > I don't think MAX_ORDER should shrink. Even if SECTION_SIZE_BITS is
-> > reduced it should accomodate the existing MAX_ORDER.
-> >
-> > My two pennies.
-> >
-> 
-> But include/linux/mmzone.h:1170 has this:
-> 
-> #if (MAX_ORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS
-> #error Allocator MAX_ORDER exceeds SECTION_SIZE
-> #endif
-> 
-> and Will managed to trigger it after applying this patch.
+On Sun, 6 Dec 2020 at 17:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.211 release.
+> There are 20 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.211-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Right, because with 64K pages section size of 27 bits is not enough to
-accomodate MAX_ORDER (2^13 pages of 64K).
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Which means that definition of SECTION_SIZE_BITS should take MAX_ORDER
-into account either statically with 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-#ifdef ARM64_4K_PAGES
-#define SECTION_SIZE_BITS <a number>
-#elif ARM64_16K_PAGES
-#define SECTION_SIZE_BITS <a larger number>
-#elif ARM64_64K_PAGES
-#define SECTION_SIZE_BITS <even larger number>
-#else
-#error "and what is the page size?"
-#endif
+Summary
+------------------------------------------------------------------------
 
-or dynamically, like e.g. ia64 does:
+kernel: 4.14.211-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: eea918eb2691ce5a9daaeff667dd08ea71687abf
+git describe: v4.14.210-21-geea918eb2691
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.210-21-geea918eb2691
 
-#ifdef CONFIG_FORCE_MAX_ZONEORDER
-#if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
-#undef SECTION_SIZE_BITS
-#define SECTION_SIZE_BITS (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
-#endif
+No regressions (compared to build v4.14.210)
 
+No fixes (compared to build v4.14.210)
 
--- 
-Sincerely yours,
-Mike.
+Ran 38523 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-syscalls-tests
+* install-android-platform-tools-r2600
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-fs-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
