@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBE12D1043
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483D92D1040
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbgLGMQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:16:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58560 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727055AbgLGMQT (ORCPT
+        id S1727468AbgLGMQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:16:14 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9027 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbgLGMQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:16:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607343293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6fm4taHsrhx0FnfLCsnkIMNxG4dB07e6BZ5aWQtaC+4=;
-        b=dm/kR0H6NQtj/lbBUog2DVR76XDHDTs3EZxEFsr/mHZ5x/hpbsZYfKhGV+tKqMzSWdSKfc
-        BHH7A2O5M2L4bIaul2P5ZBOS0mUUZqFi0yldG0EWruYJySRaX9K8n0tG7pGWBuV4D4McI/
-        QU+J4erWMclH6FiHEDN/KDuZcRMy6lI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-8TjYEKcmNzeQSizoH8iGCA-1; Mon, 07 Dec 2020 07:14:49 -0500
-X-MC-Unique: 8TjYEKcmNzeQSizoH8iGCA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A1A2800D62;
-        Mon,  7 Dec 2020 12:14:45 +0000 (UTC)
-Received: from [10.36.114.33] (ovpn-114-33.ams2.redhat.com [10.36.114.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7EBF60BE2;
-        Mon,  7 Dec 2020 12:14:35 +0000 (UTC)
-Subject: Re: [PATCH v7 02/15] mm/memory_hotplug: Move {get,put}_page_bootmem()
- to bootmem_info.c
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-3-songmuchun@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3840b0eb-bc65-6ad4-9ef9-f6e1603d1473@redhat.com>
-Date:   Mon, 7 Dec 2020 13:14:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 7 Dec 2020 07:16:14 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqMh45cdtzhntL;
+        Mon,  7 Dec 2020 20:15:00 +0800 (CST)
+Received: from [10.174.187.37] (10.174.187.37) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 20:15:22 +0800
+Subject: Re: [PATCH] iommu: Up front sanity check in the arm_lpae_map
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
+References: <20201205082957.12544-1-zhukeqian1@huawei.com>
+ <b85e98c8-0117-49c5-97ad-896ff88f7b88@arm.com>
+ <20201207120527.GA4474@willie-the-truck>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, Marc Zyngier <maz@kernel.org>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "James Morse" <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   zhukeqian <zhukeqian1@huawei.com>
+Message-ID: <2b0ec25b-0fa4-65ca-7c1b-109ce766197f@huawei.com>
+Date:   Mon, 7 Dec 2020 20:15:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20201130151838.11208-3-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20201207120527.GA4474@willie-the-truck>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Originating-IP: [10.174.187.37]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.11.20 16:18, Muchun Song wrote:
-> In the later patch, we will use {get,put}_page_bootmem() to initialize
-> the page for vmemmap or free vmemmap page to buddy. So move them out of
-> CONFIG_MEMORY_HOTPLUG_SPARSE. This is just code movement without any
-> functional change.
+Hi,
+
+On 2020/12/7 20:05, Will Deacon wrote:
+> On Mon, Dec 07, 2020 at 12:01:09PM +0000, Robin Murphy wrote:
+>> On 2020-12-05 08:29, Keqian Zhu wrote:
+>>> ... then we have more chance to detect wrong code logic.
+>>
+>> I don't follow that justification - it's still the same check with the same
+>> outcome, so how does moving it have any effect on the chance to detect
+>> errors?
+
+>>
+>> AFAICS the only difference it would make is to make some errors *less*
+>> obvious - if a sufficiently broken caller passes an empty prot value
+>> alongside an invalid size or already-mapped address, this will now quietly
+>> hide the warnings from the more serious condition(s).
+>>
+>> Yes, it will bail out a bit faster in the specific case where the prot value
+>> is the only thing wrong, but since when do we optimise for fundamentally
+>> incorrect API usage?
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> ---
->  arch/x86/mm/init_64.c          |  2 +-
->  include/linux/bootmem_info.h   | 13 +++++++++++++
->  include/linux/memory_hotplug.h |  4 ----
->  mm/bootmem_info.c              | 25 +++++++++++++++++++++++++
->  mm/memory_hotplug.c            | 27 ---------------------------
->  mm/sparse.c                    |  1 +
->  6 files changed, 40 insertions(+), 32 deletions(-)
-> 
+> I thought it was the other way round -- doesn't this patch move the "empty
+> prot" check later, so we have a chance to check the size and addresses
+> first?
 
-I'd squash this into the previous patch and name it like
+Yes, this is my original idea.
+For that we treat iommu_prot with no permission as success at early start, defer
+this early return can expose hidden errors.
 
-"mm/memory_hotplug: Factor out bootmem core functions to bootmem_info.c"
-
-
--- 
 Thanks,
-
-David / dhildenb
-
+Keqian
+> 
+> Will
+> 
+>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>>> ---
+>>>   drivers/iommu/io-pgtable-arm.c | 8 ++++----
+>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+>>> index a7a9bc08dcd1..8ade72adab31 100644
+>>> --- a/drivers/iommu/io-pgtable-arm.c
+>>> +++ b/drivers/iommu/io-pgtable-arm.c
+>>> @@ -444,10 +444,6 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>>>   	arm_lpae_iopte prot;
+>>>   	long iaext = (s64)iova >> cfg->ias;
+>>> -	/* If no access, then nothing to do */
+>>> -	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+>>> -		return 0;
+>>> -
+>>>   	if (WARN_ON(!size || (size & cfg->pgsize_bitmap) != size))
+>>>   		return -EINVAL;
+>>> @@ -456,6 +452,10 @@ static int arm_lpae_map(struct io_pgtable_ops *ops, unsigned long iova,
+>>>   	if (WARN_ON(iaext || paddr >> cfg->oas))
+>>>   		return -ERANGE;
+>>> +	/* If no access, then nothing to do */
+>>> +	if (!(iommu_prot & (IOMMU_READ | IOMMU_WRITE)))
+>>> +		return 0;
+>>> +
+>>>   	prot = arm_lpae_prot_to_pte(data, iommu_prot);
+>>>   	ret = __arm_lpae_map(data, iova, paddr, size, prot, lvl, ptep, gfp);
+>>>   	/*
+>>>
+> .
+> 
