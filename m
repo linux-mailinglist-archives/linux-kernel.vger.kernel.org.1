@@ -2,199 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F632D1B52
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179972D1B5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbgLGUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:51:47 -0500
-Received: from mail-dm6nam11on2043.outbound.protection.outlook.com ([40.107.223.43]:64012
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726092AbgLGUvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:51:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GoztSgcPf3QkkvIqraZgZ9cydD+6AcCTPLq+OPM2iO4JCImz10VgCM5AqWJEBGj7UFsPMQ9Ho2Q3CkWv91tqOmy7UHK7+0v1m/9EJ3oJitMtr9gf/6wOgewevMIZ9fjlPW5OPJNXx4/QcdKBXWLLsbwu3ggOPM+FGq6pmu6sFYOgrkyyQUiFzvmES+ynXKICOe/q+8SbBYyhOL3WCtTh33GR0MmWkYntTEaHL9n5AP3/Ilf3ix0PyZomsQXKsvw6+rdCAfl4AA5PIO9hkVQxGBF7/brlUKikY1hFIHuZEhbi2uiXUeuctLs6rSJsec0aGvJrdYkNyjBMwO/FYeliMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fjx/MIoaiG8Yt+cof0s3jmnXd2XcKaDshZxVg5+irn0=;
- b=Qd3qt5pjQI0V3sQz6Xw9KQu7825g/Y74GbdALBsDXHiav+GKEDY6s7EoPrI/wJEL+/HNlosIEjN1L6RviIneh8qiwfpYVJMEjra0Jfr53SY4CQpCOkmX2S0AmcKuZI1CdhdLu791neZ9bBa8SSC70eGCli94H/XrT0+TDrrfgYl84hSL7Hgk+E5aeLpRLK/+dM+rKwVyySJbnScoEoUhWKHS3xDK0hBwPmu7d3Q3gOKdq8w6MSTc58Qgej949Vk34H/SJvIj2G9jR4u1tPtxPFFD9BUUeh5cLXmTF61piCp50fJ8chOti0wNdCdiiG1UPLUbMqWXIkJojWCkuSoyxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726405AbgLGU4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgLGU4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:56:20 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0D4C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 12:55:34 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id y15so2913770qtv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 12:55:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fjx/MIoaiG8Yt+cof0s3jmnXd2XcKaDshZxVg5+irn0=;
- b=Sq0oit98QJ0cyOCvwxc03orkpFMBDWWmPKQsWWbWcI7JnP5myB1CSIdUbJCeV1STYawSzEwslEGfSNRwN1/1xq6z1su1utyCfwDUe09F0Z8te+IN9zyE+rYTjzirxvbPEE9YzUMHM5Vmf42AIiZnMwSdV+AFf12EuRIEMO0dvYc=
-Authentication-Results: raptorengineering.com; dkim=none (message not signed)
- header.d=none;raptorengineering.com; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4690.namprd12.prod.outlook.com (2603:10b6:208:8e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Mon, 7 Dec
- 2020 20:50:48 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3632.021; Mon, 7 Dec 2020
- 20:50:48 +0000
-Subject: Re: [PATCH] drm/amdgpu: make DRM_AMD_DC x86-only again
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roman Li <Roman.Li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Timothy Pearson <tpearson@raptorengineering.com>
-References: <20201204081349.1182302-1-arnd@kernel.org>
- <CADnq5_OmAVZGuz=xHRyST4hE4w1g10wNBQ6iMgfpQD16-9QSiQ@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <b9d7e33c-4dcd-0075-d0ca-d22b2488c354@amd.com>
-Date:   Mon, 7 Dec 2020 21:50:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CADnq5_OmAVZGuz=xHRyST4hE4w1g10wNBQ6iMgfpQD16-9QSiQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM3PR07CA0064.eurprd07.prod.outlook.com
- (2603:10a6:207:4::22) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8YG17SSVuJgwGIpcMzN3dn+GzIecfAXIsWVzJqr65Eo=;
+        b=bx3a+7hnV5LT/kqYVdT/TYircF3A/nA6pobjdaX4CXPT71sS2M93+H8cYoE6NRq6nH
+         dbDaA+ipjTXrMvbdOKldYE6u2IP2g1UFYHdInsXPkJkdZspLGr1BBViziQOQ8vh4d1Au
+         WzYlv0B/WATw0N7iLClEkCdZEEY8CtaH+vnF302zpZjthE27WyJGlJrel1OQT9j5goqS
+         ph5UqukiK0DmRvBFW1Zrn3tZQOTFt+ck/1GGKwP3H5QNi7f3p+Brc9Ev70bpJ20oQh3d
+         bKzauvvdfKl1IverjIvLAIhXIqTLFBBRrfJgka5QmvsH37rncm3b/1k0YIlv5Ehoas9R
+         zF0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8YG17SSVuJgwGIpcMzN3dn+GzIecfAXIsWVzJqr65Eo=;
+        b=EGkhMKnW8yf1ck/Toacd8BzXRolvMjuOmFlJZv1qx8Txo5TTsSaRXZp0gJoFRhCnP9
+         PCLgmYU0cXaumdkLJHdUUXmTU0zU13SRyrctSiDeFK3z7ZJfsduZaStPugeSodfbDTWi
+         Qz2ohx0USBD536h5YilYg7EzhpYmTC8OSIKG6l17+FLBIdunHIpRoT4uQstA8s41JNSv
+         Mkfbq0+7EDfsFCnVq7qp2/6eWDS3rTJnf2smq7XgLgQYSNT+G6RlbDq/FZU3BlVbDdZj
+         GD/6dePzpaUKqDYyK5Dk8fSjqtf4s1CSOmogv1xAETKA2aC3bs0t2AHES3AkDy5OvRRa
+         j99A==
+X-Gm-Message-State: AOAM532Pk1sXbGU32wKfhnBb5wFoc3ZVr9knqosAattyZHKgBM6325mt
+        pGWK171IeCt0sS/mmDo6ohTk2A==
+X-Google-Smtp-Source: ABdhPJxOcXpXlDcawq9tZgp+iCVWNpOhONjyCg6buQCyscdYrGLh8Fiwu6M5+4B9lu3uq9sCquUVhg==
+X-Received: by 2002:a05:622a:182:: with SMTP id s2mr25463960qtw.147.1607374533698;
+        Mon, 07 Dec 2020 12:55:33 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id w7sm12573425qkd.92.2020.12.07.12.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 12:55:32 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kmNXg-007fV6-3E; Mon, 07 Dec 2020 16:55:32 -0400
+Date:   Mon, 7 Dec 2020 16:55:32 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 4/8] rtc: core: Make the sync offset default more
+ realistic
+Message-ID: <20201207205532.GJ5487@ziepe.ca>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220541.960333166@linutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR07CA0064.eurprd07.prod.outlook.com (2603:10a6:207:4::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.8 via Frontend Transport; Mon, 7 Dec 2020 20:50:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 810267c6-ce82-48f1-0c3c-08d89af1c69f
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4690:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4690886153E83497B5A1685983CE0@BL0PR12MB4690.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RXb95/eKC6EPkszjv3pTXmb4+tBk7IQ2bDClx86DFpANPj/goU2znlIzZRAp1TSO/RLxKC0/PTf20Ij7NZuwbA4nGsPI+CEqH4etTpV3zTwkUxyJHCr6h2/TxZQuFOnxjsALSFT8HA2DkzB02W5u8wFLs/DIeIIJeGQY36CgqSlr2JSBzcpI/jo22X2jEwvkVRkIy2LuYZPsI0CYt95rt+5bn4MnfOWsJlHDppg3MmoynxqLrkl0mh26yUHcPTmCIbl8bh6B2YN0Zyt05TaFeE8x0PuHHxcfs2O7m0pvgwmYhbKbPcAAYEUgd6Nxnbz/JVe7mQJyOFvMQ7uJyJis2DrEKdFke+gKympr0hPzQ4mSB/19KwIT7CU8R1v4SB/LH8UP7Rg4DTrq0q4UPgZmNqjTECSYVGVp3dRHk238uLzUpd9+8kWiu9y3k8+jouyKL/UcLm6W1rspWNLuopqo/w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(366004)(346002)(2906002)(31686004)(478600001)(110136005)(316002)(16526019)(36756003)(52116002)(54906003)(7416002)(8936002)(2616005)(4326008)(186003)(53546011)(5660300002)(6486002)(8676002)(86362001)(83380400001)(45080400002)(31696002)(66476007)(6666004)(66946007)(66556008)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z1pJeEt3cnVPdEV2TFpRTXFpc2NOL0tYN2t3RVlVUkNRSWRpeHNVNFdBSDds?=
- =?utf-8?B?RHdqZmFhZUF1eERrdHJEWFhXMWNqZU02Y25qNjFsOENBN1NiZEw5K0s0S08r?=
- =?utf-8?B?alRFQjBEZFlJL25GSFZocngwZkwzNy9McDFnWVFrajY5V0pRemtwZE9ISWhM?=
- =?utf-8?B?WXBnK1huQlgyYjdnT0hHUDhaWXd0ZEFMOTYvMUhpWkVZanFzSkMxbkhWM1Bh?=
- =?utf-8?B?aitMUWtQNSs0R2lvS1VkQWpiUHA1NXByRkMvRUpyMkYyTnpEZ3pCTUpkVndo?=
- =?utf-8?B?NDZydzdvcVRJaGsyMTB1OHJic1VhanRTdkx3RWxFMU1CRXNjVUR2MnZ6OGdW?=
- =?utf-8?B?a1o3QXRsMmN2ZlZTODBRNW1JTzQ4dmxkQmcwVlgyZDVGREZIZWtObkRuZTJj?=
- =?utf-8?B?YVlwZlAxalhYUWVWNEkvQ1FMLzJvSElQYVZ6RkU0YWFRL1Y0disxQ2ZOOFZL?=
- =?utf-8?B?VTl2T2pKRGtTaGJEdHR6L3JHZFRacW45amR2UDFDVmtSZEp0d3hGTENNVjZM?=
- =?utf-8?B?Wkh3dEt0a1pGakl4WFd0d3lsMjZoSHhsTkNiMEJHSjJXbDRJaGdubjc0NUhB?=
- =?utf-8?B?RnEvQUliM1FzZ3EzVjNKVmYvWWJjTnJWR3ZPQXpOTWVZaFVrTktlWC9KSDV6?=
- =?utf-8?B?TzVETWNHTjZyanRKSnY2ZWlPTGI1UXZhdGUwOFQvSWRvbVM2RWZuKzk5NUNP?=
- =?utf-8?B?ZnlVaExVT21pUG15c21XT1hwWURkaFFYRUNxZ3BIZFFPMmZqWkpPOThralYv?=
- =?utf-8?B?aERzU2JIazBRWU9aZU85bHRLYjdpN3dRWVNlSW9IVThtelZlMk94SllJNmx0?=
- =?utf-8?B?cWdWMGo1c0RxeGc0R2d5Y3cyYi9wYk5IWmVFNTljek5xb1JHOVZGcyswa0Rz?=
- =?utf-8?B?MXExazUwL0IyV1NqVllPQWVxVTlOcVYzcmptdWcxUGl0YUthdGxveWNBRmhq?=
- =?utf-8?B?STlRdklHbU5mTXQwcEZZODUvS2dnWUsxM3dQdHd5WjlHS2cxWTBEcElpNE9a?=
- =?utf-8?B?UGpLbUtxQ2gwR3ZlWDhWV25mWE90bkZCT3VJbjFGVklmUlRQUGhYQVdVbXVR?=
- =?utf-8?B?R3U3OW5pMXdnS0xrZWt6byt6MHBlQkNxSUZVWjRid3I5VGVVRExJSjlZZ09x?=
- =?utf-8?B?dE1wWEg0VnVkK1lCaU5jVzRoZDVITVVVTnNXZFdNWUZ0YUsxbEZhSkhYVjhx?=
- =?utf-8?B?OWtrVmlOc0ZVWkorSjB0L3RLQ3lJbWhMeno0dHZ0STA3QVNWb1BaTHpPL3RK?=
- =?utf-8?B?bld5dERoWDdVYUdJSWNDQzg4TWdzRWtacjlTMjlYbE9yamNIZ3A4eE51RFRY?=
- =?utf-8?B?WkFudnF1VXN2Skgxb3pRYnJRN0hTWURGdU93Tk9rNmJGcGFRc0lDb0hsTEhm?=
- =?utf-8?B?Z1RPb2pzcHkyclNFaCtDWVpGbFplU1FXYUg4VlpONVhkc1ZZdjFhWnpudEx0?=
- =?utf-8?Q?jLVN/1Zt?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 20:50:48.1743
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 810267c6-ce82-48f1-0c3c-08d89af1c69f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tWHZuWwC+2GN7WTRj3aHnOUAziHwcwk3SRgOWbGP/TimkZT9ck2HgxJIXBv+tp5u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4690
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206220541.960333166@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.12.20 um 21:47 schrieb Alex Deucher:
-> On Fri, Dec 4, 2020 at 3:13 AM Arnd Bergmann <arnd@kernel.org> wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> As the DRM_AMD_DC_DCN3_0 code was x86-only and fails to build on
->> arm64, merging it into DRM_AMD_DC means that the top-level symbol
->> is now x86-only as well.
->>
->> Compilation fails on arm64 with clang-12 with
->>
->> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_mode_vba_30.c:3641:6: error: stack frame size of 2416 bytes in function 'dml30_ModeSupportAndSystemConfigurationFull' [-Werror,-Wframe-larger-than=]
->> void dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_lib)
->>
->> I tried to see if the stack usage can be reduced, but this is code
->> that is described as "This file is gcc-parsable HW gospel, coming
->> straight from HW engineers." and is written in a way that is inherently
->> nonportable and not meant to be understood by humans.
->>
->> There are probably no non-x86 users of this code, so simplify
->> the dependency list accordingly.
-> + Daniel, Timothy
->
-> Others contributed code to enable this on PPC64 and ARM64.
-> Unfortunately, we don't have these platforms to test with within AMD.
-> Does PPC64 have the same stack limitations as ARM64?  Harry, Leo, can
-> you take a look at fixing the stack usage?
+On Sun, Dec 06, 2020 at 10:46:17PM +0100, Thomas Gleixner wrote:
+> The offset which is used to steer the start of an RTC synchronization
+> update via rtc_set_ntp_time() is huge. The math behind this is:
+> 
+>   tsched       twrite(t2.tv_sec - 1) 	 t2 (seconds increment)
+> 
+> twrite - tsched is the transport time for the write to hit the device.
+> 
+> t2 - twrite depends on the chip and is for most chips one second.
+> 
+> The rtc_set_ntp_time() calculation of tsched is:
+> 
+>     tsched = t2 - 1sec - (t2 - twrite)
+> 
+> The default for the sync offset is 500ms which means that twrite - tsched
+> is 500ms assumed that t2 - twrite is one second.
+> 
+> This is 0.5 seconds off for RTCs which are directly accessible by IO writes
+> and probably for the majority of i2C/SPI based RTC off by an order of
+> magnitude. Set it to 10ms which should bring it closer to reality.
+> 
+> The default can be adjusted by drivers (rtc_cmos does so) and could be
+> adjusted further by a calibration method which is an orthogonal problem.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>  drivers/rtc/class.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> +++ b/drivers/rtc/class.c
+> @@ -201,7 +201,7 @@ static struct rtc_device *rtc_allocate_d
+>  	device_initialize(&rtc->dev);
+>  
+>  	/* Drivers can revise this default after allocating the device. */
+> -	rtc->set_offset_nsec =  NSEC_PER_SEC / 2;
+> +	rtc->set_offset_nsec =  10 * NSEC_PER_MSEC;
 
-This reminds me that I wanted to reply on this.
+So the old value is clearly wrong for CMOS, and I have a strong
+feeling this was an error and it should have been -NSEC_PER_SEC/2
 
-2416 is even to much on x86 if you add -Werror :)
+I have no idea if CMOS behavior or 0s behavior is more common in the
+rtclib drivers, but it seems since nobody noticed the huge offset
+mistake in 3 years it doesn't actually really matter.
 
-So this needs to be fixed anyway.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Christian.
-
->
-> Thanks,
->
-> Alex
->
->> Fixes: 20f2ffe50472 ("drm/amdgpu: fold CONFIG_DRM_AMD_DC_DCN3* into CONFIG_DRM_AMD_DC_DCN (v3)")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->>   drivers/gpu/drm/amd/display/Kconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/amd/display/Kconfig b/drivers/gpu/drm/amd/display/Kconfig
->> index 797b5d4b43e5..54aa50d4deba 100644
->> --- a/drivers/gpu/drm/amd/display/Kconfig
->> +++ b/drivers/gpu/drm/amd/display/Kconfig
->> @@ -6,7 +6,7 @@ config DRM_AMD_DC
->>          bool "AMD DC - Enable new display engine"
->>          default y
->>          select SND_HDA_COMPONENT if SND_HDA_CORE
->> -       select DRM_AMD_DC_DCN if (X86 || PPC64 || (ARM64 && KERNEL_MODE_NEON)) && !(KCOV_INSTRUMENT_ALL && KCOV_ENABLE_COMPARISONS)
->> +       select DRM_AMD_DC_DCN if X86 && !(KCOV_INSTRUMENT_ALL && KCOV_ENABLE_COMPARISONS)
->>          help
->>            Choose this option if you want to use the new display engine
->>            support for AMDGPU. This adds required support for Vega and
->> --
->> 2.27.0
->>
->> _______________________________________________
->> amd-gfx mailing list
->> amd-gfx@lists.freedesktop.org
->> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.freedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cba72f82a98a4443b0dd108d89af15c1e%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C1%7C637429708726258711%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=EU1LuB3uxSCrtAw%2BgwD%2FFWsYpZMp1FbffZvkerQ7WVs%3D&amp;reserved=0
-
+Jason
