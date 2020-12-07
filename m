@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 046DB2D1CE4
+	by mail.lfdr.de (Postfix) with ESMTP id 709402D1CE5
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgLGWLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
+        id S1727866AbgLGWLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727967AbgLGWLd (ORCPT
+        with ESMTP id S1727977AbgLGWLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:11:33 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1413C0611CB
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 14:10:14 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id e74so6741121ybh.19
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 14:10:14 -0800 (PST)
+        Mon, 7 Dec 2020 17:11:34 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7C4C0611CC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 14:10:16 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id z83so19808990ybz.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 14:10:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=Kf9dTc+9mbcjPQrEvILlWLhCJdkwYGqBYb+/1iUw0zE=;
-        b=fSSoLvefvFm3BrkZIbU4dDZtvcdRjAbXGzkjbBOWFvbteEjxfMfEe3atbDOlGPpCal
-         FEHCiJlJRf7w6/pYh5y4rTOykCqMEaML2dFZjkMKxxJ5FkYQyaJAHzvjroaBd87owmpE
-         kudzsHm17VQAsY2OiJXmTUh1mif77MvhegWi5Sm2voaEhwXng3qWQZEfZtZmPOdR9l9W
-         GggqxJbGNB/skBYYM4PMsGeJD3aPJo6pQ9HzAcqbssmf9HwXBEOMQ3m8z1rTmL3zAFEf
-         1mawzw3XWZuFgj6NgueTNj7LUy/Zl+l/vh7z7/FrSNXEUW3VpLZck59vzoTi3XzgGXZG
-         uzcw==
+        bh=bOw9j0dUMpy7AXeSO7Vybh8rgZgZSfkPfVMJWfLbDFk=;
+        b=jpKfnihEOJ3JzD742ipH1Jes5cJ47T8rtbGc6jGgsgArUzz8eeJQRi/fi08ldEweRk
+         hEGKGktwBj4mnQFVS1JTnEbTTJ9tjWyf8As/3pPyA94PF+RGEoh79TRUYtwb2MlBDVDk
+         EFVYS+VDSBO0CB8UBa2UqsQzewGtaKvK9ihysCn1i9jT1Yppuql4B1Wb5IB8oFLMPglJ
+         0dTtyqWK1TY9N9f71urtC6IhQcFARTv5rHThTBWcDyW/+/lId40rxPsoiaNknX5AkWOZ
+         oAO2A2/o4y9ted4yZSJ9gHNHBjYinbsXtDQgyTYLI+SM4N/cax/qfDTzuPEo3ZaTtw3N
+         Amgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Kf9dTc+9mbcjPQrEvILlWLhCJdkwYGqBYb+/1iUw0zE=;
-        b=bKTTwFVVDE6L1YEVB/3GtmSnkhUtMXVidLzewmK6qHr5NGL3xR/duD/2tn+s2jXzPF
-         ZoS+Vt781KtPRgdVngIvGJBZ3Ka+rHqRJqEsQWG/CFicXb2o02FqNZNviiMTnHJ0pAnz
-         bPeV8dMfSBMNRhegCnE/TlM33HKUK7tB46C0mMsxQHyragUsTIdZpBdCKySL71ee/imH
-         qPmXpxJkFIpaMSouvihUUR4ZXIh3wvhvp8wXbAEtxcukwpK0n60uSKXymHXh1kPFTPTx
-         hCxQNQmh7o+olb0JHxn1LqNrUFZRdyNultvsNkPBq2q4dQbJwARlsYMrP/SANzFIye7a
-         thsg==
-X-Gm-Message-State: AOAM533XZRsG51xW0shRmlyH1PBZKcQRulZ4OaF7HD+Nt+r3/ScAFKuT
-        8XDmxzMu8UBlQF4lgYMJr0M8nT7ocVM=
-X-Google-Smtp-Source: ABdhPJxbDdiXhRgZfRl/qZ9cRUyAS3tHwdQh9kxPcNbivuTcOuJWGJfVGb6Wpd+AhWxop71Knc8AuAp1I8M=
+        bh=bOw9j0dUMpy7AXeSO7Vybh8rgZgZSfkPfVMJWfLbDFk=;
+        b=HV/iEfSexovOXmpVTZwutjUM9tmtSku5KQ/uDJ1Zmabqrb5mGJeeXy7dC9ZGAuRUqQ
+         Ye+vh8iaoPZVXbZUbkEZtKmbWoeEOcpDp8snDCVJprBf7U0P85zSTGGU5aroUBtgEusr
+         6sUbYLL1A5WEGeoVuIa1qADnnsRApbdOfpKSYnjN/D/4xYTFbB2d43lHHe7xGD2HuGHA
+         Ee1pifbuRkV4ll8z5I3I7GCxQK6BjRzscg0+H0WHCvF7OtM4zdHa5hfLRtRwn4TqkChr
+         Ad/ePLAuf61z1taP6ebKT5+vjLtup6qL31+d1KqsVr2DWGN7pO77tDLIk6bOaEpeoQAH
+         nr6g==
+X-Gm-Message-State: AOAM5310HDdSssBFt3sXeOSp1gDOqQj7JWk6VFLMxbf2bTgLVLgxsv3Q
+        qhdS593WWfl4WAw7zR1ndr+O0An86i4=
+X-Google-Smtp-Source: ABdhPJx1LU2DrQbcr78vSzaIF+5+OB3wODd3u0KeQ5xe/FybZhTw1Qi70c8ZhKenpheZhGDmTkwjYwmaO7Q=
 Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a25:ac25:: with SMTP id w37mr12499169ybi.522.1607379014242;
- Mon, 07 Dec 2020 14:10:14 -0800 (PST)
-Date:   Mon,  7 Dec 2020 15:09:48 -0700
+ (user=yuzhao job=sendgmr) by 2002:a25:cf0a:: with SMTP id f10mr26624027ybg.353.1607379015692;
+ Mon, 07 Dec 2020 14:10:15 -0800 (PST)
+Date:   Mon,  7 Dec 2020 15:09:49 -0700
 In-Reply-To: <20201207220949.830352-1-yuzhao@google.com>
-Message-Id: <20201207220949.830352-11-yuzhao@google.com>
+Message-Id: <20201207220949.830352-12-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20201207220949.830352-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH 10/11] mm: make lruvec_lru_size() static
+Subject: [PATCH 11/11] mm: enlarge the "int nr_pages" parameter of update_lru_size()
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Hugh Dickins <hughd@google.com>,
@@ -68,42 +68,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All other references to the function were removed after
-commit b910718a948a ("mm: vmscan: detect file thrashing at the reclaim root")
+update_lru_sizes() defines an unsigned long argument and passes it as
+nr_pages to update_lru_size(). Though this isn't causing any overflows
+I'm aware of, it's a bad idea to go through the demotion given that we
+have recently stumbled on a related type promotion problem fixed by
+commit 2da9f6305f30 ("mm/vmscan: fix NR_ISOLATED_FILE corruption on 64-bit")
+
+Note that the underlying counters are already in long. This is another
+reason we shouldn't have the demotion.
+
+This patch enlarges all relevant parameters on the path to the final
+underlying counters:
+	update_lru_size(int -> long)
+		if memcg:
+			__mod_lruvec_state(int -> long)
+				if smp:
+					__mod_node_page_state(long)
+				else:
+					__mod_node_page_state(int -> long)
+			__mod_memcg_lruvec_state(int -> long)
+				__mod_memcg_state(int -> long)
+		else:
+			__mod_lruvec_state(int -> long)
+				if smp:
+					__mod_node_page_state(long)
+				else:
+					__mod_node_page_state(int -> long)
+
+		__mod_zone_page_state(long)
+
+		if memcg:
+			mem_cgroup_update_lru_size(int -> long)
+
+Note that __mod_node_page_state() for the smp case and
+__mod_zone_page_state() already use long. So this change also fixes
+the inconsistency.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/mmzone.h | 2 --
- mm/vmscan.c            | 3 ++-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ include/linux/memcontrol.h | 10 +++++-----
+ include/linux/mm_inline.h  |  2 +-
+ include/linux/vmstat.h     |  6 +++---
+ mm/memcontrol.c            | 10 +++++-----
+ 4 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index b593316bff3d..2fc54e269eaf 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -872,8 +872,6 @@ static inline struct pglist_data *lruvec_pgdat(struct lruvec *lruvec)
- #endif
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3febf64d1b80..1454201abb8d 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -810,7 +810,7 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
+ int mem_cgroup_select_victim_node(struct mem_cgroup *memcg);
+ 
+ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+-		int zid, int nr_pages);
++		int zid, long nr_pages);
+ 
+ static inline
+ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
+@@ -896,7 +896,7 @@ static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+ 	return x;
  }
  
--extern unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx);
--
- #ifdef CONFIG_HAVE_MEMORYLESS_NODES
- int local_memory_node(int node_id);
- #else
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 95e581c9d9af..fd0c2313bee4 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -310,7 +310,8 @@ unsigned long zone_reclaimable_pages(struct zone *zone)
-  * @lru: lru to use
-  * @zone_idx: zones to consider (use MAX_NR_ZONES for the whole LRU list)
-  */
--unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx)
-+static unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
-+				     int zone_idx)
+-void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
++void __mod_memcg_state(struct mem_cgroup *memcg, int idx, long val);
+ 
+ /* idx can be of type enum memcg_stat_item or node_stat_item */
+ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+@@ -948,7 +948,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ }
+ 
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			      int val);
++			      long val);
+ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
+ 
+ static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+@@ -1346,7 +1346,7 @@ static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+ 
+ static inline void __mod_memcg_state(struct mem_cgroup *memcg,
+ 				     int idx,
+-				     int nr)
++				     long nr)
  {
- 	unsigned long size = 0;
- 	int zid;
+ }
+ 
+@@ -1369,7 +1369,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ }
+ 
+ static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+-					    enum node_stat_item idx, int val)
++					    enum node_stat_item idx, long val)
+ {
+ }
+ 
+diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+index 355ea1ee32bd..18e85071b44a 100644
+--- a/include/linux/mm_inline.h
++++ b/include/linux/mm_inline.h
+@@ -26,7 +26,7 @@ static inline int page_is_file_lru(struct page *page)
+ 
+ static __always_inline void update_lru_size(struct lruvec *lruvec,
+ 				enum lru_list lru, enum zone_type zid,
+-				int nr_pages)
++				long nr_pages)
+ {
+ 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+ 
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 773135fc6e19..230922179ba0 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -310,7 +310,7 @@ static inline void __mod_zone_page_state(struct zone *zone,
+ }
+ 
+ static inline void __mod_node_page_state(struct pglist_data *pgdat,
+-			enum node_stat_item item, int delta)
++			enum node_stat_item item, long delta)
+ {
+ 	if (vmstat_item_in_bytes(item)) {
+ 		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+@@ -453,7 +453,7 @@ static inline const char *vm_event_name(enum vm_event_item item)
+ #ifdef CONFIG_MEMCG
+ 
+ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			int val);
++			long val);
+ 
+ static inline void mod_lruvec_state(struct lruvec *lruvec,
+ 				    enum node_stat_item idx, int val)
+@@ -481,7 +481,7 @@ static inline void mod_lruvec_page_state(struct page *page,
+ #else
+ 
+ static inline void __mod_lruvec_state(struct lruvec *lruvec,
+-				      enum node_stat_item idx, int val)
++				      enum node_stat_item idx, long val)
+ {
+ 	__mod_node_page_state(lruvec_pgdat(lruvec), idx, val);
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index de17f02d27ad..c3fe5880c42d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -758,7 +758,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+  * @idx: the stat item - can be enum memcg_stat_item or enum node_stat_item
+  * @val: delta to add to the counter, can be negative
+  */
+-void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
++void __mod_memcg_state(struct mem_cgroup *memcg, int idx, long val)
+ {
+ 	long x, threshold = MEMCG_CHARGE_BATCH;
+ 
+@@ -796,7 +796,7 @@ parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
+ }
+ 
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			      int val)
++			      long val)
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	struct mem_cgroup *memcg;
+@@ -837,7 +837,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+  * change of state at this level: per-node, per-cgroup, per-lruvec.
+  */
+ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			int val)
++			long val)
+ {
+ 	/* Update node */
+ 	__mod_node_page_state(lruvec_pgdat(lruvec), idx, val);
+@@ -1407,7 +1407,7 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+  * so as to allow it to check that lru_size 0 is consistent with list_empty).
+  */
+ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+-				int zid, int nr_pages)
++				int zid, long nr_pages)
+ {
+ 	struct mem_cgroup_per_node *mz;
+ 	unsigned long *lru_size;
+@@ -1424,7 +1424,7 @@ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+ 
+ 	size = *lru_size;
+ 	if (WARN_ONCE(size < 0,
+-		"%s(%p, %d, %d): lru_size %ld\n",
++		"%s(%p, %d, %ld): lru_size %ld\n",
+ 		__func__, lruvec, lru, nr_pages, size)) {
+ 		VM_BUG_ON(1);
+ 		*lru_size = 0;
 -- 
 2.29.2.576.ga3fc446d84-goog
 
