@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B492D0CBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC292D0CC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgLGJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:13:22 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45856 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgLGJNV (ORCPT
+        id S1726531AbgLGJNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgLGJNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:13:21 -0500
-Received: by mail-lj1-f193.google.com with SMTP id q8so14111146ljc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:13:08 -0800 (PST)
+        Mon, 7 Dec 2020 04:13:53 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783B0C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:13:16 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id h7so6687584pjk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 01:13:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xXyGHqMNoAToiZLip7CsylqLRv6dmkkfS4SqiTDrHnA=;
+        b=RfA3pAHf0uB8kDYYj9jVtdiymX8U2HGk2Oz6idjWPU0gtUzxQH7entwmB9yomr7zwF
+         PxVpEMh6Rjj9hBkLtQRKjZpGGUidn/XPCCZ/Tv0TYLu3hA2YcXPN5CRvls74eXc92Z5M
+         ctb4S3aMmOZcrUPY5RdPVzaQsEr40wKSSxlpQcmvm2gvvPNB6oEdrZOhF2Cb9q2ZYo4W
+         iDiK4aeyj+8wXV+rUeOKKUzZLibsm2gAcvzj9lKXgXPl5h5sf2KhTQoovbwMEZIOb6u/
+         MSLtG2i6vTQmmgJXsxlCuVvMovUDwKG1s9YlCNqH8xiyJ+Bds7m026rAZeJFYJDQ53Ny
+         6NZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ebfi/Zi/zHoTJbwW/sWNc/qX2n8nnjwkVcAcnVx56Kk=;
-        b=NQaJ6c3U1KjOd8wNgB9eoW4X+cVMORayfMGUwV8Xclst9fgE7UYUajJLmmw7eaNSyx
-         0iCF/LuZwa9E0QYDx72E/+DxPF/Pnc6se8Cmum1T+u7IB9A3saHi3SencOLpESxJbl5M
-         iZ0/YhXSepJnQhRJLXqZKy0V1w5nvgf1Fyky4tUR190sk/Tz+ZuYpmE92fqu1MrRMlZL
-         DxoXo5Z/QFI878KhCY52HIn4oe3aSnm3mUpN6QiozgjY5Qb/5s5LQVQLavbA+XoENNXF
-         gN+nI8zrrnrpSp1bSKi+pWUHglLzUbF9tJ6EVlF/cigWlz1+pAVpg87zsqap2xts0m8U
-         T66g==
-X-Gm-Message-State: AOAM531+5cBYiXMg+jhJKFyY4k75vnfpkR8hVgo7rsoDhLtsKIvyZg5s
-        3/i0U8/Rr6psj3EQ9dAg82gDycjNGrdp8A==
-X-Google-Smtp-Source: ABdhPJzsbYAEiO5bhQ0R4i11fNvOJJa1CaJFi6yn/wm1KY6/fdmNU08A5bmWo3v2qvSowQes9sIv0w==
-X-Received: by 2002:a2e:8750:: with SMTP id q16mr8780622ljj.53.1607332363039;
-        Mon, 07 Dec 2020 01:12:43 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id m26sm552998lfb.288.2020.12.07.01.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 01:12:42 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1kmCa4-0000nr-Kk; Mon, 07 Dec 2020 10:13:17 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH] module: drop semicolon from version macro
-Date:   Mon,  7 Dec 2020 10:13:08 +0100
-Message-Id: <20201207091308.1217-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xXyGHqMNoAToiZLip7CsylqLRv6dmkkfS4SqiTDrHnA=;
+        b=it/9e+1gRC7E4DRgHEX8iBlHZ+Lh9Kapekxy9bziUtz63EypnH4NOrvPc7swk/j6NV
+         nyVF7tNfLHBgZ8Y2Fm0Qnqzix1+b3O5S7umKvR/Heg+5FfvtsY73nPYNJaYantm/wIAa
+         R6K4GA0bVJ7TDSy4huQFcbc72u43D6XYDOhJprIb2GzO8pKbFa2Jwc/fy6bA2/XYHzvw
+         TrSCvlPJlrwrAI7qrwDU9s4+LkudGdGQ5uWLHqK3dPWlPpzNOF3KCJxfvAsSZTwzuzyC
+         I9iMZN9Q3bhrs0WfpfcFPm+mFqqv506F1zYetnhdcrdGR9/GOX1TrO9V9QRhGvCwYopp
+         l8xw==
+X-Gm-Message-State: AOAM5318wtaHXc1C98Z1W03+kkCMlmN9vZkRyrs2pZ+uI5ZFEFgZcn2A
+        N4IwtxiUzhWcwj4IyLSgM66/0Q==
+X-Google-Smtp-Source: ABdhPJzBRx7PrG7qtbioRHziCz+qPK7rVoQ62jUWugl/HEXUxpKFu7ssRkYNkjaYqXmqItxJgvSK5w==
+X-Received: by 2002:a17:90a:8b8b:: with SMTP id z11mr15577306pjn.117.1607332395854;
+        Mon, 07 Dec 2020 01:13:15 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id l10sm9616503pjg.3.2020.12.07.01.13.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 01:13:15 -0800 (PST)
+Date:   Mon, 7 Dec 2020 14:43:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
+ for SMP platforms
+Message-ID: <20201207091312.cyi6rkt3owlkwsew@vireshk-i7>
+References: <cover.1605770951.git.viresh.kumar@linaro.org>
+ <1fa9994395764ba19cfe6240d8b3c1ce390e8f82.1605770951.git.viresh.kumar@linaro.org>
+ <jhjzh2xtp45.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjzh2xtp45.mognet@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the trailing semicolon from the MODULE_VERSION() macro definition
-which was left when removing the array-of-pointer indirection.
+Hi Valentin,
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- include/linux/module.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 01-12-20, 17:25, Valentin Schneider wrote:
+> PELT time-scaling can make the util signals behave strangely from an
+> external PoV. For instance, on a big.LITTLE system, the rq util of a LITTLE
+> CPU may suddenly drop if it was stuck on a too-low OPP for some time and
+> eventually reached the "right" OPP (i.e. got idle time). 
+> 
+> Also, as Peter pointed out in [1], task migrations can easily confuse an
+> external observer that considers util to be "an image of the recent past".
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index ebe2641d7b0b..b63db970fd26 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -279,7 +279,7 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
- 			},						\
- 			.module_name	= KBUILD_MODNAME,		\
- 			.version	= _version,			\
--		};
-+		}
- #endif
- 
- /* Optional firmware file (or files) needed by the module
+I agree with what you wrote and such issues may happen here as they
+can in case of schedutil as well. The idea behind this patchset was to
+get the allocator (IPA) and consumer (schedutil) in sync with respect
+to frequency and power. It is better to allocate the power that
+schedutil is going to request, then to allocate something based on
+different metrics. If there is a problem with PELT signal then I will
+let both the entities suffer with that.
+
 -- 
-2.26.2
-
+viresh
