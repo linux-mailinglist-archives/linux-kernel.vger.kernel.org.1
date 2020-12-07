@@ -2,129 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47732D1250
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC982D125C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgLGNlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:41:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48608 "EHLO mail.kernel.org"
+        id S1726042AbgLGNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:42:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41974 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726187AbgLGNlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:41:39 -0500
-Date:   Mon, 7 Dec 2020 13:40:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607348458;
-        bh=Wi5SMyGM9uyVoSdAy74aJh2UMPtwUKtUU8CMK6gezcY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n1w8OR/NmXAqtAa8TG0UjI7ivuFVDdh99zrbuXxuXdjaJj31CB7VBLOirM/bAJS89
-         xZI/TZofhOEFLT6hz7Bk9ZaQRideoWzX2+ceTsmxQgkWdvi87rbOTrMpCMx+kCBXu8
-         ohFnUg0gTLdgsT+hsR7Ld4Udy3oVEjXZQIZ8gydCMrLFbfTOkd6pZuZkfxQay6joup
-         itjjEC/PMT5kDwTSX3fvlmV8E+DjjuptXAA/gVhFZu/ndKJH5USQFbUN5ZC6zMNDVw
-         KG3BYjdAXn9UQ7OyFx2gj1KuApgM81+6T38W6F5JY/+flBam8HAwROhu0ndJP40J/d
-         PX1/VsdBJSkug==
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>, kernel-team@android.com,
-        android-kvm@google.com
-Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <20201207134052.GA4563@willie-the-truck>
-References: <20201117181607.1761516-1-qperret@google.com>
- <20201117181607.1761516-17-qperret@google.com>
+        id S1725800AbgLGNmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:42:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACE32AD18;
+        Mon,  7 Dec 2020 13:42:10 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 14:42:08 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2] mm/page_isolation: do not isolate the max order page
+Message-ID: <20201207134208.GB12191@linux>
+References: <20201203162237.21885-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117181607.1761516-17-qperret@google.com>
+In-Reply-To: <20201203162237.21885-1-songmuchun@bytedance.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
-
-On Tue, Nov 17, 2020 at 06:15:56PM +0000, Quentin Perret wrote:
-> When memory protection is enabled, the Hyp code needs the ability to
-> create and manage its own page-table. To do so, introduce a new set of
-> hypercalls to initialize Hyp memory protection.
+On Fri, Dec 04, 2020 at 12:22:37AM +0800, Muchun Song wrote:
+> The max order page has no buddy page and never merge to other order.
+> So isolating and then freeing it is pointless. And if order == MAX_ORDER
+> - 1, then the buddy can actually be a !pfn_valid() in some corner case?
+> pfn_valid_within(buddy_pfn) that follows would only catch it on archs
+> with holes in zone. Then is_migrate_isolate_page(buddy) might access an
+> invalid buddy. So this is also a bug fix.
 > 
-> During the init hcall, the hypervisor runs with the host-provided
-> page-table and uses the trivial early page allocator to create its own
-> set of page-tables, using a memory pool that was donated by the host.
-> Specifically, the hypervisor creates its own mappings for __hyp_text,
-> the Hyp memory pool, the __hyp_bss, the portion of hyp_vmemmap
-> corresponding to the Hyp pool, among other things. It then jumps back in
-> the idmap page, switches to use the newly-created pgd (instead of the
-> temporary one provided by the host) and then installs the full-fledged
-> buddy allocator which will then be the only one in used from then on.
+> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+> ---
+> Changes in v2:
+>  - Add Fixes tag in the commit log.
 > 
-> Note that for the sake of symplifying the review, this only introduces
-> the code doing this operation, without actually being called by anyhing
-> yet. This will be done in a subsequent patch, which will introduce the
-> necessary host kernel changes.
+>  mm/page_isolation.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index a254e1f370a3..bddf788f45bf 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -88,7 +88,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>  	 */
+>  	if (PageBuddy(page)) {
+>  		order = buddy_order(page);
+> -		if (order >= pageblock_order) {
+> +		if (order >= pageblock_order && order < MAX_ORDER - 1) {
+>  			pfn = page_to_pfn(page);
+>  			buddy_pfn = __find_buddy_pfn(pfn, order);
+>  			buddy = page + (buddy_pfn - pfn);
+> -- 
+> 2.11.0
+> 
+> 
 
-[...]
-
-> diff --git a/arch/arm64/kvm/hyp/reserved_mem.c b/arch/arm64/kvm/hyp/reserved_mem.c
-> new file mode 100644
-> index 000000000000..02b0b18006f5
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/reserved_mem.c
-
-[...]
-
-> +extern bool enable_protected_kvm;
-> +void __init reserve_kvm_hyp(void)
-> +{
-> +	u64 nr_pages, prev;
-> +
-> +	if (!enable_protected_kvm)
-> +		return;
-> +
-> +	if (!is_hyp_mode_available() || is_kernel_in_hyp_mode())
-> +		return;
-> +
-> +	if (kvm_nvhe_sym(hyp_memblock_nr) <= 0)
-> +		return;
-> +
-> +	hyp_mem_size += num_possible_cpus() << PAGE_SHIFT;
-> +	hyp_mem_size += hyp_s1_pgtable_size();
-> +
-> +	/*
-> +	 * The hyp_vmemmap needs to be backed by pages, but these pages
-> +	 * themselves need to be present in the vmemmap, so compute the number
-> +	 * of pages needed by looking for a fixed point.
-> +	 */
-> +	nr_pages = 0;
-> +	do {
-> +		prev = nr_pages;
-> +		nr_pages = (hyp_mem_size >> PAGE_SHIFT) + prev;
-> +		nr_pages = DIV_ROUND_UP(nr_pages * sizeof(struct hyp_page), PAGE_SIZE);
-> +		nr_pages += __hyp_pgtable_max_pages(nr_pages);
-> +	} while (nr_pages != prev);
-> +	hyp_mem_size += nr_pages << PAGE_SHIFT;
-> +
-> +	hyp_mem_base = memblock_find_in_range(0, memblock_end_of_DRAM(),
-> +					      hyp_mem_size, SZ_2M);
-> +	if (!hyp_mem_base) {
-> +		kvm_err("Failed to reserve hyp memory\n");
-> +		return;
-> +	}
-> +	memblock_reserve(hyp_mem_base, hyp_mem_size);
-
-Why not use the RESERVEDMEM_OF_DECLARE() interface for the hypervisor
-memory? That way, the hypervisor memory can either be statically partitioned
-as a carveout or allocated dynamically for us -- we wouldn't need to care.
-
-Will
+-- 
+Oscar Salvador
+SUSE L3
