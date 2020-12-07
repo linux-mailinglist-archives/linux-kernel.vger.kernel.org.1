@@ -2,375 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5E62D098C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F802D0995
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 04:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbgLGDuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 22:50:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33042 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726482AbgLGDuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 22:50:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607312949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UAtUjz5a2aQCr+DW94a/DkJ+FddnQ5fghxolrmXkarA=;
-        b=Omjz9e6Xh3Ddt/1ShXcIjnLncOrAoAD2tJ+az7qoXA80b+celNoGfNGu7q9AjMjXtwL/tS
-        JGN9TT0O6AmFYLaEm0lCmXlEkhRR35PePy3YcOOsw8lgJrfaMgqsP3kU9xup6pYWrVU41G
-        p6tcoqhi+W4tKS6Ng5+StkWwA6QJGJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-pXbhSBVXOsKN31RmPaLm3Q-1; Sun, 06 Dec 2020 22:49:04 -0500
-X-MC-Unique: pXbhSBVXOsKN31RmPaLm3Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC5C651DB;
-        Mon,  7 Dec 2020 03:49:02 +0000 (UTC)
-Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CD4A55D9DC;
-        Mon,  7 Dec 2020 03:48:55 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     corbet@lwn.net, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, mst@redhat.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <37a9fbc6-d75f-f6cd-f052-0dd416594a84@redhat.com>
-Date:   Mon, 7 Dec 2020 11:48:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728657AbgLGDzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 22:55:09 -0500
+Received: from mga18.intel.com ([134.134.136.126]:43162 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgLGDzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 6 Dec 2020 22:55:09 -0500
+IronPort-SDR: 31fWwcq0mBw96R2/pdvO4Em2NLr+AqV3sfeNGtT8lp10P4C0msbyjVwBqSKsvDQ8BIYw9weyxp
+ RxC0JmNvNsag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9827"; a="161407652"
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="161407652"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2020 19:54:28 -0800
+IronPort-SDR: iYHCXU721k6JYWNRMB744LVoeoX2cJcK497PrUvCdSJ+fgRVds5hWONO0grKxbMLw7krlmnJQN
+ c6KE97Vs4O8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,398,1599548400"; 
+   d="scan'208";a="362947455"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga008.jf.intel.com with ESMTP; 06 Dec 2020 19:54:26 -0800
+Date:   Mon, 7 Dec 2020 11:49:51 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     trix@redhat.com
+Cc:     gregkh@linuxfoundation.org, hao.wu@intel.com, mdf@kernel.org,
+        linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org
+Subject: Re: [RFC] fpga: dfl: a prototype uio driver
+Message-ID: <20201207034950.GA29754@yilunxu-OptiPlex-7050>
+References: <20201206215554.350230-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206215554.350230-1-trix@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 06, 2020 at 01:55:54PM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> >From [PATCH 0/2] UIO support for dfl devices
+> https://lore.kernel.org/linux-fpga/1602828151-24784-1-git-send-email-yilun.xu@intel.com/
+> 
+> Here is an idea to have uio support with no driver override.
+> 
+> This makes UIO the primary driver interface because every feature
+> will have one and makes the existing platform driver interface
+> secondary.  There will be a new burden for locking write access when
+> they compete.
+> 
+> Example shows finding the fpga's temperture.
 
-On 2020/12/4 下午5:36, Enrico Weigelt, metux IT consult wrote:
-> On 04.12.20 04:35, Jason Wang wrote:
->
-> Hi,
->
->> Is the plan to keep this doc synced with the one in the virtio
->> specification?
-> Yes, of course. I'm still in progress of doing the beaurocratic stuff w/
-> virtio-tc folks (ID registration, ...) - yet have to see whether they
-> wanna add it to their spec documents ...
->
-> BTW: if you feel, sometings not good w/ the current spec, please raise
-> your voice now.
+Hi Tom:
 
+Thanks for the idea and detailed illustrate with the patch. I see it
+abandons the driver_override and expose all the DFL devices to userspace
+by UIO. I'd like to see if we could get some more comments on it.
 
-But, has the spec path posted?
+Thanks,
+Yilun
 
-
->
->> I think it's better to use u8 ot uint8_t here.Git grep told me the
->> former is more popular under Documentation/.
-> thx, I'll fix that
->
->>> +- for version field currently only value 1 supported.
->>> +- the line names block holds a stream of zero-terminated strings,
->>> +  holding the individual line names.
->> I'm not sure but does this mean we don't have a fixed length of config
->> space? Need to check whether it can bring any trouble to
->> migration(compatibility).
-> Yes, it depends on how many gpio lines are present and how much space
-> their names take up.
->
-> A fixed size would either put unpleasent limits on the max number of
-> lines or waste a lot space when only few lines present.
->
-> Not that virtio-gpio is also meant for small embedded workloads running
-> under some hypervisor.
->
->>> +- unspecified fields are reserved for future use and should be zero.
->>> +
->>> +------------------------
->>> +Virtqueues and messages:
->>> +------------------------
->>> +
->>> +- Queue #0: transmission from host to guest
->>> +- Queue #1: transmission from guest to host
->>
->> Virtio became more a popular in the area without virtualization. So I
->> think it's better to use "device/driver" instead of "host/guest" here.
-> Good point. But I'd prefer "cpu" instead of "driver" in that case.
->
->> Not a native speaker but event sounds like something driver read from
->> device. Looking at the below lists, most of them except for
->> VIRTIO_GPIO_EV_HOST_LEVEL looks more like a command.
-> okay, shall I name it "message" ?
-
-
-It might be better.
-
-
->
->> Another question is, what's the benefit of unifying the message format
->> of the two queues. E.g VIRTIO_GPIO_EV_HOST_LEVEL can only works fro rxq.
-> Simplicity. Those fields that aren't really relevant (eg. replies also
-> carry the line id), can just be ignored.
->
->> Not familiar with GPIO but I wonder the value of a standalone
->> VIRTIO_GPIO_EV_GUEST_DIRECTION_INPUT/OUTPUT. Can we simply imply them in
->> SET/GET_VALUE?
-> Would introduce more complexity. Somewhere I'd have to fit in some extra
-> bit for differenciating between line state and line direction. The
-> direction tells whether the line currently acts as input or output. The
-> "value" (hmm, maybe I should rethink terminology here) is the current
-> line level (high/low or active/inactive).
-
-
-Ok.
-
-
->
->>> +----------------------
->>> +Data flow:
->>> +----------------------
->>> +
->>> +- all operations, except ``VIRTIO_GPIO_EV_HOST_LEVEL``, are
->>> guest-initiated
->>> +- host replies ``VIRTIO_GPIO_EV_HOST_LEVEL`` OR'ed to the ``type`` field
->>> +- ``VIRTIO_GPIO_EV_HOST_LEVEL`` is only sent asynchronically from
->>> host to guest
->>> +- in replies, a negative ``value`` field denotes an unix-style errno
->>> code
->>
->> Virtio is in a different scope, so we need to define the error code on
->> our own.
->>
->> E.g for virtio-net we define:
->>
->>
->> #define VIRTIO_NET_OK     0
->> #define VIRTIO_NET_ERR    1
-> hmm, so I'd need to define all the error codes that possibly could happen ?
-
-
-Yes, I think you need.
-
-
->
->>>    +config GPIO_VIRTIO
->>> +    tristate "VirtIO GPIO support"
->>> +    depends on VIRTIO
->>
->> Let's use select, since there's no prompt for VIRTIO and it doesn't have
->> any dependencies.
-> Ok. I just was under the impression that subsystems and busses should
-> not be select'ed, but depends on (eg. some time ago tried that w/ gpio
-> subsys and failed).
->
->>> +    help
->>> +      Say Y here to enable guest support for virtio-based GPIOs.
->>> +
->>> +      These virtual GPIOs can be routed to real GPIOs or attached to
->>> +      simulators on the host (qemu).
->>
->> It's better to avoid talking host and qemu here for new virtio devices.
-> Ok, dropped that line.
->
->>> +static int virtio_gpio_xmit(struct virtio_gpio_priv *priv, int type,
->>> +                int pin, int value, struct virtio_gpio_event *ev)
->>> +{
->>> +    struct scatterlist sg[1];
->>> +    int ret;
->>> +    unsigned long flags;
->>> +
->>> +    WARN_ON(!ev);
->>> +
->>> +    ev->type = type;
->>> +    ev->pin = pin;
->>> +    ev->value = value;
->>> +
->>> +    sg_init_table(sg, 1);
->>> +    sg_set_buf(&sg[0], ev, sizeof(struct virtio_gpio_event));
->>> +
->>> +    spin_lock_irqsave(&priv->vq_lock, flags);
->>> +    ret = virtqueue_add_outbuf(priv->vq_tx, sg, ARRAY_SIZE(sg),
->>> +                   priv, GFP_KERNEL);
->>> +    if (ret < 0) {
->>> +        dev_err(&priv->vdev->dev,
->>> +            "virtqueue_add_outbuf() failed: %d\n", ret);
->>> +        goto out;
->>
->> So except for the error log, the failure is silently ignored by the
->> caller. Is this intended?
-> ups, I've forgotten the error handling in the caller. fixed in v3.
->
->>> +static int virtio_gpio_req(struct virtio_gpio_priv *priv, int type,
->>> +               int pin, int value)
->>> +{
->>> +    struct virtio_gpio_event *ev
->>> +        = kzalloc(&priv->vdev->dev, sizeof(struct virtio_gpio_event),
->>> +              GFP_KERNEL);
->>> +
->>> +    if (!ev)
->>> +        return -ENOMEM;
->>> +
->>> +    clear_event(priv, type);
->>> +    virtio_gpio_xmit(priv, type, pin, value, ev);
->>> +    wait_event_interruptible(priv->waitq, check_event(priv, type));
->>
->> If I read the code correctly, this expects there will be at most a
->> single type of event that can be processed at the same time. E.g can
->> upper layer want to read from different lines in parallel? If yes, we
->> need to deal with that.
-> @Linus @Bartosz: can that happen or does gpio subsys already serialize
-> requests ?
->
-> Initially, I tried to protect it by spinlock (so, only one request may
-> run at a time, other calls just wait until the first is finished), but
-> it crashed when gpio cdev registration calls into the driver (fetches
-> the status) while still in bootup.
->
-> Don't recall the exact error anymore, but something like an
-> inconsistency in the spinlock calls.
->
-> Did I just use the wrong type of lock ?
-
-
-I'm not sure since I am not familiar with GPIO. But a question is, if at 
-most one request is allowed, I'm not sure virtio is the best choice here 
-since we don't even need a queue(virtqueue) here.
-
-
->
->>> +static void virtio_gpio_data_rx(struct virtqueue *vq)
->>> +{
->>> +    struct virtio_gpio_priv *priv = vq->vdev->priv;
->>> +    void *data;
->>> +    unsigned int len;
->>> +    struct virtio_gpio_event *ev;
->>> +
->>> +    data = virtqueue_get_buf(priv->vq_rx, &len);
->>> +    if (!data || !len) {
->>> +        dev_warn(&vq->vdev->dev, "RX received no data ! %d\n", len);
->>> +        return;
->>> +    }
->>> +
->>> +    ev = data;
->>> +    WARN_ON(data != &priv->rcv_buf);
->>> +
->>> +    memcpy(&priv->last, &priv->rcv_buf, sizeof(struct
->>> virtio_gpio_event));
->>> +
->>> +    switch (ev->type) {
->>> +    case VIRTIO_GPIO_EV_HOST_LEVEL:
->>> +        virtio_gpio_signal(priv, ev->type, ev->pin, ev->value);
->>> +        break;
->>> +    default:
->>> +        wakeup_event(priv, ev->type & ~VIRTIO_GPIO_EV_REPLY);
->>
->> This looks suspicious, it looks to me what is done here is, consider we
->> want to do VIRTIO_GPIO_EV_GUEST_SET_VALUE
->>
->> 1) put the event in txq, wait
->> 2) the result is returned from rxq, wakeup
->>
->> It looks to me this is racy since the device should be able to process a
->> batch of descriptors and there's no guarantee that the descriptor is
->> processed in order from the virtio level.
-> Not sure whether we're on the same page, but:
->
-> VIRTIO_GPIO_EV_HOST_LEVEL is kinda interrupt - it tells cpu when the
-> input has changed level. We can receive this async event, it shouldn't
-> matter whether somebody else (another thread) is doing a regular call,
-> thus waiting for reply at the same time. The reply will be next in
-> queue.
->
-> What could go wrong here ?
-
-
-I think it's still about whether or not we need allow a batch of 
-requests via a queue. Consider you've submitted two request A and B, and 
-if B is done first, current code won't work. This is because, the reply 
-is transported via rxq buffers not just reuse the txq buffer if I read 
-the code correctly.
-
-
->
->
->> I wonder why not introduce two virtqueues:
->>
->> 1) command vq
->> 2) event vq
->>
->> All commands were sent via command vq and then device can write back to
->> the command buffer as other virtio device did. Then there's no worries
->> of batching or out of order completion.
-> I've been under the impression that queues only work in only one
-> direction. (at least that's what my web research was telling).
->
-> Could you please give an example how bi-directional transmission within
-> the same queue could look like ?
-
-
-You can check how virtio-blk did this in:
-
-https://docs.oasis-open.org/virtio/virtio/v1.1/csprd01/virtio-v1.1-csprd01.html#x1-2500006
-
-
->
->>> +        break;
->>> +    }
->>> +    virtio_gpio_prepare_inbuf(priv);
->>
->> This assumes at most one event could be generated, is this how GPIO
->> device expect to behave? I think level could change several times.
-> Should I add more buffers ?
->
-> Maybe add one new buffer per request and one new per received async
-> signal ?
-
-
-It would be safe to fill the whole rxq and do the refill e.g when half 
-of the queue is used.
-
-
->
->>> +static int virtio_gpio_probe(struct virtio_device *vdev)
->>> +{
->>> +    struct virtio_gpio_priv *priv;
->>> +    struct virtio_gpio_config cf = {};
->>> +    char *name_buffer;
->>> +    const char **gpio_names = NULL;
->>> +    struct device *dev = &vdev->dev;
->>> +
->>> +    priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->>> +    if (!priv)
->>> +        return -ENOMEM;
->>
->> Is devres guaranteed to be enabled here?
-> How should it not ? Could virtio probing so early that even devm
-> isn't working yet ?
-
-
-I think you are right, I misread the patch.
-
-Thanks
-
-
->
->
-> --mtx
->
-
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/fpga/dfl-fme-main.c |  9 +++-
+>  drivers/fpga/dfl-uio.c      | 96 +++++++++++++++++++++++++++++++++++++
+>  drivers/fpga/dfl.c          | 44 ++++++++++++++++-
+>  drivers/fpga/dfl.h          |  9 ++++
+>  uio.c                       | 56 ++++++++++++++++++++++
+>  5 files changed, 212 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/fpga/dfl-uio.c
+>  create mode 100644 uio.c
+> 
+> diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
+> index 037dc4f946f0..3323e90a18c4 100644
+> --- a/drivers/fpga/dfl-fme-main.c
+> +++ b/drivers/fpga/dfl-fme-main.c
+> @@ -709,12 +709,18 @@ static int fme_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto dev_destroy;
+>  
+> -	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
+> +	ret = dfl_fpga_dev_feature_init_uio(pdev, DFH_TYPE_FIU);
+>  	if (ret)
+>  		goto feature_uinit;
+>  
+> +	ret = dfl_fpga_dev_ops_register(pdev, &fme_fops, THIS_MODULE);
+> +	if (ret)
+> +		goto feature_uinit_uio;
+> +
+>  	return 0;
+>  
+> +feature_uinit_uio:
+> +	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
+>  feature_uinit:
+>  	dfl_fpga_dev_feature_uinit(pdev);
+>  dev_destroy:
+> @@ -726,6 +732,7 @@ exit:
+>  static int fme_remove(struct platform_device *pdev)
+>  {
+>  	dfl_fpga_dev_ops_unregister(pdev);
+> +	dfl_fpga_dev_feature_uinit_uio(pdev, DFH_TYPE_FIU);
+>  	dfl_fpga_dev_feature_uinit(pdev);
+>  	fme_dev_destroy(pdev);
+>  
+> diff --git a/drivers/fpga/dfl-uio.c b/drivers/fpga/dfl-uio.c
+> new file mode 100644
+> index 000000000000..7610ee0b19dc
+> --- /dev/null
+> +++ b/drivers/fpga/dfl-uio.c
+> @@ -0,0 +1,96 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * prototype dfl uio driver
+> + *
+> + * Copyright Tom Rix 2020
+> + */
+> +#include <linux/module.h>
+> +#include "dfl.h"
+> +
+> +static irqreturn_t dfl_uio_handler(int irq, struct uio_info *info)
+> +{
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int dfl_uio_mmap(struct uio_info *info, struct vm_area_struct *vma)
+> +{
+> +	int ret = -ENODEV;
+> +	return ret;
+> +}
+> +
+> +static int dfl_uio_open(struct uio_info *info, struct inode *inode)
+> +{
+> +	int ret = -ENODEV;
+> +	struct dfl_feature *feature = container_of(info, struct dfl_feature, uio);
+> +	if (feature->dev)
+> +		mutex_lock(&feature->lock);
+> +
+> +	ret = 0;
+> +	return ret;
+> +}
+> +
+> +static int dfl_uio_release(struct uio_info *info, struct inode *inode)
+> +{
+> +	int ret = -ENODEV;
+> +	struct dfl_feature *feature = container_of(info, struct dfl_feature, uio);
+> +	if (feature->dev)
+> +		mutex_unlock(&feature->lock);
+> +
+> +	ret = 0;
+> +	return ret;
+> +}
+> +
+> +static int dfl_uio_irqcontrol(struct uio_info *info, s32 irq_on)
+> +{
+> +	int ret = -ENODEV;
+> +	return ret;
+> +}
+> +
+> +int dfl_uio_add(struct dfl_feature *feature)
+> +{
+> +	struct uio_info *uio = &feature->uio;
+> +	struct resource *res =
+> +		&feature->dev->resource[feature->resource_index];
+> +	int ret = 0;
+> +
+> +	uio->name = kasprintf(GFP_KERNEL, "dfl-uio-%llx", feature->id);
+> +	if (!uio->name) {
+> +		ret = -ENOMEM;
+> +		goto exit;
+> +	}
+> +
+> +	uio->version = "0.1";
+> +	uio->mem[0].memtype = UIO_MEM_PHYS;
+> +	uio->mem[0].addr = res->start & PAGE_MASK;
+> +	uio->mem[0].offs = res->start & ~PAGE_MASK;
+> +	uio->mem[0].size = (uio->mem[0].offs + resource_size(res)
+> +			    + PAGE_SIZE - 1) & PAGE_MASK;
+> +	/* How are nr_irqs > 1 handled ??? */
+> +	if (feature->nr_irqs == 1)
+> +		uio->irq = feature->irq_ctx[0].irq;
+> +	uio->handler = dfl_uio_handler;
+> +	//uio->mmap = dfl_uio_mmap;
+> +	uio->open = dfl_uio_open;
+> +	uio->release = dfl_uio_release;
+> +	uio->irqcontrol = dfl_uio_irqcontrol;
+> +
+> +	ret = uio_register_device(&feature->dev->dev, uio);
+> +	if (ret)
+> +		goto err_register;
+> +
+> +exit:
+> +	return ret;
+> +err_register:
+> +	kfree(uio->name);
+> +	goto exit;
+> +}
+> +EXPORT_SYMBOL_GPL(dfl_uio_add);
+> +
+> +int dfl_uio_remove(struct dfl_feature *feature)
+> +{
+> +	uio_unregister_device(&feature->uio);
+> +	kfree(feature->uio.name);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(dfl_uio_remove);
+> +
+> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> index 1305be48037d..af2cd3d1b5f6 100644
+> --- a/drivers/fpga/dfl.c
+> +++ b/drivers/fpga/dfl.c
+> @@ -603,6 +603,7 @@ static int dfl_feature_instance_init(struct platform_device *pdev,
+>  	}
+>  
+>  	feature->ops = drv->ops;
+> +	mutex_init(&feature->lock);
+>  
+>  	return ret;
+>  }
+> @@ -663,10 +664,51 @@ exit:
+>  }
+>  EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init);
+>  
+> +int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type) {
+> +	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> +	struct dfl_feature *feature;
+> +	int ret;
+> +
+> +	dfl_fpga_dev_for_each_feature(pdata, feature) {
+> +		if (dfh_type == DFH_TYPE_FIU) {
+> +			if (feature->id == FEATURE_ID_FIU_HEADER ||
+> +			    feature->id == FEATURE_ID_AFU)
+> +			    continue;
+> +
+> +			ret = dfl_uio_add(feature);
+> +			if (ret)
+> +				goto exit;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +exit:
+> +	dfl_fpga_dev_feature_uinit_uio(pdev, dfh_type);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_init_uio);
+> +
+> +int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type) {
+> +	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
+> +	struct dfl_feature *feature;
+> +	int ret = 0;
+> +
+> +	dfl_fpga_dev_for_each_feature(pdata, feature) {
+> +		if (dfh_type == DFH_TYPE_FIU) {
+> +			if (feature->id == FEATURE_ID_FIU_HEADER ||
+> +			    feature->id == FEATURE_ID_AFU)
+> +				continue;
+> +
+> +			ret |= dfl_uio_remove(feature);
+> +		}
+> +	}
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(dfl_fpga_dev_feature_uinit_uio);
+> +
+>  static void dfl_chardev_uinit(void)
+>  {
+>  	int i;
+> -
+>  	for (i = 0; i < DFL_FPGA_DEVT_MAX; i++)
+>  		if (MAJOR(dfl_chrdevs[i].devt)) {
+>  			unregister_chrdev_region(dfl_chrdevs[i].devt,
+> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> index a85d1cd7a130..fde0fc902d4d 100644
+> --- a/drivers/fpga/dfl.h
+> +++ b/drivers/fpga/dfl.h
+> @@ -26,6 +26,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  #include <linux/uuid.h>
+> +#include <linux/uio_driver.h>
+>  #include <linux/fpga/fpga-region.h>
+>  
+>  /* maximum supported number of ports */
+> @@ -232,6 +233,7 @@ struct dfl_feature_irq_ctx {
+>   * struct dfl_feature - sub feature of the feature devices
+>   *
+>   * @dev: ptr to pdev of the feature device which has the sub feature.
+> + * @uio: uio interface for feature.
+>   * @id: sub feature id.
+>   * @index: unique identifier for an sub feature within the feature device.
+>   *	   It is possible that multiply sub features with same feature id are
+> @@ -248,6 +250,8 @@ struct dfl_feature_irq_ctx {
+>   */
+>  struct dfl_feature {
+>  	struct platform_device *dev;
+> +	struct uio_info uio;
+> +	struct mutex lock; /* serialize dev and uio */
+>  	u64 id;
+>  	int index;
+>  	int resource_index;
+> @@ -360,6 +364,11 @@ void dfl_fpga_dev_feature_uinit(struct platform_device *pdev);
+>  int dfl_fpga_dev_feature_init(struct platform_device *pdev,
+>  			      struct dfl_feature_driver *feature_drvs);
+>  
+> +int dfl_fpga_dev_feature_init_uio(struct platform_device *pdev, int dfh_type);
+> +int dfl_fpga_dev_feature_uinit_uio(struct platform_device *pdev, int dfh_type);
+> +int dfl_uio_add(struct dfl_feature *feature);
+> +int dfl_uio_remove(struct dfl_feature *feature);
+> +
+>  int dfl_fpga_dev_ops_register(struct platform_device *pdev,
+>  			      const struct file_operations *fops,
+>  			      struct module *owner);
+> diff --git a/uio.c b/uio.c
+> new file mode 100644
+> index 000000000000..50210aab4822
+> --- /dev/null
+> +++ b/uio.c
+> @@ -0,0 +1,56 @@
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <sys/mman.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +#include <errno.h>
+> +#include <stdint.h>
+> +
+> +int main()
+> +{
+> +	int fd;
+> +	uint64_t *ptr;
+> +	unsigned page_size=sysconf(_SC_PAGESIZE);
+> +	struct stat sb;
+> +
+> +	/*
+> +	 * this is fid 1, thermal mgt
+> +	 * ex/ 
+> +	 * # cat /sys/class/hwmon/hwmon3/temp1_input
+> +	 * 39000
+> +	 */
+> +	fd = open("/dev/uio0", O_RDONLY|O_SYNC);
+> +	if (fd < 0) {
+> +		perror("uio open:");
+> +		return errno;
+> +	}
+> +
+> +	ptr = (uint64_t *) mmap(NULL, page_size, PROT_READ, MAP_SHARED, fd, 0);
+> +	if (!ptr) {
+> +		perror("uio mmap:");
+> +	} else {
+> +
+> +		/* from dfl-fme-main.c :
+> +		 * 
+> +		 * #define FME_THERM_RDSENSOR_FMT1	0x10
+> +		 * #define FPGA_TEMPERATURE	GENMASK_ULL(6, 0)
+> +		 *
+> +		 * case hwmon_temp_input:
+> +		 * v = readq(feature->ioaddr + FME_THERM_RDSENSOR_FMT1);
+> +		 * *val = (long)(FIELD_GET(FPGA_TEMPERATURE, v) * 1000);
+> +		 * break;
+> +		 */
+> +		uint64_t v = ptr[2];
+> +		v &= (1 << 6) -1;
+> +		v *= 1000;
+> +		printf("Temperature %d\n", v);
+> +	    
+> +		munmap(ptr, page_size);
+> +	}
+> +	if (close(fd))
+> +		perror("uio close:");
+> +
+> +	return errno;
+> +}
+> -- 
+> 2.18.4
