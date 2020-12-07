@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687C12D1E52
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E482D1E5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgLGXZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:25:20 -0500
-Received: from mail.pqgruber.com ([52.59.78.55]:37054 "EHLO mail.pqgruber.com"
+        id S1727985AbgLGX1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:27:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbgLGXZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:25:19 -0500
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id F1E15C89267;
-        Tue,  8 Dec 2020 00:24:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1607383477;
-        bh=Q/A+34G5azvLVAZzItgJc85p8GcJ5sBbiHPF0QxmJ30=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Spmsib/FDvuF4031BVT+j5DAbyWmFvh7w7gIafR1NUkkzYeOKQXfy8q7kw/MAgUFG
-         34Bfr1CQR6jBz4eLZQnVUYIqbV3c1M5TBU1iXEadt6eT+nWm37h3c4kY64qkAiegdI
-         K+F2+i6QLg9fkkbgwB6RQstkiBiGDL1qw2YiP98o=
-Date:   Tue, 8 Dec 2020 00:24:35 +0100
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
-Message-ID: <X865s8SRLEn4EAIi@workstation.tuxnet>
-References: <20201207193629.493241-1-clemens.gruber@pqgruber.com>
- <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
- <CAGngYiW6_T8GjLvHrzNk+nUN5L81BwivBTRQ4GofF8LOf1qexA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGngYiW6_T8GjLvHrzNk+nUN5L81BwivBTRQ4GofF8LOf1qexA@mail.gmail.com>
+        id S1727468AbgLGX1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:27:34 -0500
+Date:   Tue, 8 Dec 2020 08:26:49 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607383613;
+        bh=5zNEx2PxyOOMXy7TjK1GRXG1D3Jwjiy1cQkIBAZ0HAQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bz9MIH4534r36sqh5mdjAinyZ33lWqf/d6HPF98g5tknLOb/xcOEqrG8qwcImzuul
+         GDgP5KntBedgvR/a/3IztB4vi4+Xprq0QFV2DWtjal1stYC94DeivynIfg+/qrGbW9
+         O3Fj0/iiYeGjD8FR2kEqITU1kcQjKF0ZtDUiWukyE0s9IR21KDtBYdV7KEHu88Jxcx
+         EW00jqW1k2McSgia4qIJkORRaIeuUTDuOXkARDnyniQUAa4jucPSzDVJAGEpCjdULV
+         Ef+ndZtu5sQ6vpdH+MbVzgTrSaZ0Hw18eaVjmh5mrodlYyO0JgN8hOb0bQD0q7OnLE
+         04xNFwuVZ/Big==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
+Subject: Re: Ftrace startup test and boot-time tracing
+Message-Id: <20201208082649.93bdd57eb397296c81baf64c@kernel.org>
+In-Reply-To: <20201207152540.2d569a36@gandalf.local.home>
+References: <20201207230259.250ecc2a52281def3f8335f4@kernel.org>
+        <20201207152540.2d569a36@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:34:58PM -0500, Sven Van Asbroeck wrote:
-> Hi Uwe,
-> 
-> On Mon, Dec 7, 2020 at 5:00 PM Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> >
-> > This is not acceptable, if you have two PWM outputs and a consumer
-> > modifies one of them the other must change. So if this chip only
-> > supports a single period length of all channels, the first consumer
-> > enabling a channel defines the period to be used. All later consumers
-> > must live with that. (Also the first must be denied modifying the period
-> > if a second consumer has enabled its PWM.)
-> 
-> That makes sense. However, a possible wrinkle: when more than one pwm channel
-> is requested, which one is able to change the period?
-> 
-> Example:
-> 1. start with all pwms free
-> 2. pwm_request(0), pwm_apply(period=200Hz)
-> 3. pwm_request(1)
-> 4. pwm_apply(1, period=400Hz) fails?
-> 5. pwm_apply(0, period=400Hz) succeeds?
-> 
-> And if (5) succeeds, then pwm_get_state(1) will still return period=200Hz,
-> because the pwm core doesn't realize anything has changed. Are you ok
-> with this behaviour?
+Hi Steve,
 
-I think we'd have to deny the pwm_apply in step 5 as well. So, only the
-first consumer is allowed to change the period and only as long as it is
-the only one that is in use / was requested.
+On Mon, 7 Dec 2020 15:25:40 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-But that's definitely a breaking change.
+> On Mon, 7 Dec 2020 23:02:59 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > There will be the 2 options, one is to change kconfig so that user can not
+> > select FTRACE_STARTUP_TEST if BOOTTIME_TRACING=y, another is to provide
+> > a flag from trace_boot and all tests checks the flag at runtime.
+> > (moreover, that flag will be good to be set from other command-line options)
+> > What would you think?
+> 
+> Yeah, a "disable_ftrace_startup_tests" flag should be implemented. And
+> something that could also be on the kernel command line itself :-)
+> 
+>  "disabe_ftrace_startup_tests"
+> 
+> Sometimes when debugging something, I don't want the tests running, even
+> though the config has them, and I don't want to change the config.
 
-Thanks,
-Clemens
+OK, BTW, I found tracing_selftest_disabled, it seemed what we need.
+
+Thank you,
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
