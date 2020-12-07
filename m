@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942672D0B14
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90F02D0B1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 08:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgLGHZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 02:25:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33738 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725888AbgLGHZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 02:25:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD949AC9A;
-        Mon,  7 Dec 2020 07:24:54 +0000 (UTC)
+        id S1726012AbgLGH3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 02:29:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgLGH3V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 02:29:21 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A58FC0613D1
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 23:28:40 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id t22so13921214ljk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 23:28:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xssgPHeMTAo4K6R4jN7ETP4Q6QWs4ur+getv3Nc7VYo=;
+        b=RVBYcnQxwT/pyLzbrXk4X8TqpF8sst1fcXHN1zeAh9yFuAOusAum/OOyqoIeeiblxe
+         99g3ymYK0jfqG1541u3I2AuHqe6NeWXjSJt2YjTQj+NohRfnxu76dySCvHEhMR2SWEIr
+         74WHfOZq+r4b+EWTe4P0DAQ3K/OHVXwXTyMypif/XzYCBV+Te3d3vSeY7ulCBq1jVvuM
+         Zridh148X/G2RFMuinQndxF9GmFKYXcpSbqfb7EttjNDirTWBN+ZMdJj49PbHBRrzyBa
+         zRspjgpEihHTPm9OgU9RZVpWV3aojQfAJHIKFvcEqT/8kGaGkDEE/FvtGXvVrwUhPN16
+         03JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xssgPHeMTAo4K6R4jN7ETP4Q6QWs4ur+getv3Nc7VYo=;
+        b=QKbrmy32vuw9APRC7yDpWAiSfJi13EZU1TFyWZpvGk/ID7tc/PIjwKaKNwjO2rpHDm
+         NPuiGdxH0jjhyAyDrHu5ugSWEvajShi8nDVSVj3t7NrmNtfGTFVnPeMYBHXcm9J6XLFH
+         O06QR0hfdcAprIn+IFbu5AyP9kMxvn28tJgmmcxAPcSBt32qQbPbgUx25gtKGIQVoVxP
+         CoOB6beORtZn/8Qv2E9XsTVVDWfMs5r9GERCOLM3zqEPEY5yvOmCni850Vv+O/3ZQkdq
+         cPR4OuLVK/+UN+C/bjm1fM1TPhHMcPN6YuDsNcDHiU2oVQ9eMf0z14yh6TVdGKimF7oT
+         YVaQ==
+X-Gm-Message-State: AOAM531qdyfSP4LFre4GqEGSnLghg643tkDcSzBcAfdy5YbRhuw+4AWs
+        3sS5VsyEivBNqwaCFqAMJsLsgke3u2ycrwkSs+vA4o1Cm6w=
+X-Google-Smtp-Source: ABdhPJxzPJi4K7+p3JPjqKY/jWGalH0s5b2CuMKAaiB334oGPBo/t+1qeWzUEJPowrS0ap4PYOUUh5lEWBFsJOGaVrQ=
+X-Received: by 2002:a2e:bc16:: with SMTP id b22mr8595524ljf.166.1607326119032;
+ Sun, 06 Dec 2020 23:28:39 -0800 (PST)
 MIME-Version: 1.0
-Date:   Mon, 07 Dec 2020 08:24:54 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3=E3=80=80=E7=9B=B4?=
-         =?UTF-8?Q?=E4=B9=9F=29?= <naoya.horiguchi@nec.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH 3/7] mm,madvise: call soft_offline_page() without
- MF_COUNT_INCREASED
-In-Reply-To: <20201207023429.GA8986@hori.linux.bs1.fc.nec.co.jp>
-References: <20201119105716.5962-1-osalvador@suse.de>
- <20201119105716.5962-4-osalvador@suse.de>
- <2aa4bf71-443b-9b9b-b761-12761263dfec@suse.cz>
- <20201201113511.GA22242@linux>
- <840d4669-ae3f-b7c4-6132-e20d1bf9e952@suse.cz>
- <20201205153423.GA4108@localhost.localdomain>
- <20201207023429.GA8986@hori.linux.bs1.fc.nec.co.jp>
-User-Agent: Roundcube Webmail
-Message-ID: <9e15f4980654717f52733c56c33a3bdd@suse.de>
-X-Sender: osalvador@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20201205042626.1113600-1-daeho43@gmail.com> <c3c41d53-2a99-17a2-223a-3d674613a417@huawei.com>
+In-Reply-To: <c3c41d53-2a99-17a2-223a-3d674613a417@huawei.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Mon, 7 Dec 2020 16:28:28 +0900
+Message-ID: <CACOAw_zwbmYHbUVUmzGMci9SaSVSrP8NXXavHBSSLxbAEOrMcw@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix race of pending_pages in decompression
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-07 03:34, HORIGUCHI NAOYA wrote:
->> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
->> index 869ece2a1de2..ba861169c9ae 100644
->> --- a/mm/memory-failure.c
->> +++ b/mm/memory-failure.c
->> @@ -1269,6 +1269,12 @@ static int memory_failure_dev_pagemap(unsigned 
->> long pfn, int flags,
->>  	if (!cookie)
->>  		goto out;
->> 
->> +	if (flags & MF_COUNT_INCREASED)
->> +		/*
->> +		 * Drop the extra refcount in case we come from madvise().
->> +		 */
->> +		put_page(page);
->> +
-> 
-> Should this if-block come before dax_lock_page() block?
+> It looks like it will be better to move this into merge condition?
+>
+>                 if (bio && (!page_is_mergeable(sbi, bio,
+>                                         *last_block_in_bio, blkaddr) ||
+>                     !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL) ||
+>                         f2fs_verify_mergeable_bio())) {
+>
 
-Yeah, it should go first thing since as you noticed we kept the refcount 
-if we fail.
-Saturday brain... I will fix it.
-
-Thanks Naoya
-
--- 
-Oscar Salvador
-SUSE L3
+I tried this for the first time, but it requires unnecessary checks
+within the compression cluster.
+I wanted to just check one time in the beginning of the cluster.
+What do you think?
