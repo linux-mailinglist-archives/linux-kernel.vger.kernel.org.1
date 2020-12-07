@@ -2,51 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BD52D1A7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158A72D1A7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 21:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgLGU0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 15:26:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbgLGU0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 15:26:22 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726572AbgLGU06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 15:26:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgLGU06 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:26:58 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7106C061794;
+        Mon,  7 Dec 2020 12:26:17 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0a38006ee8d6334d641c12.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:3800:6ee8:d633:4d64:1c12])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA5A523406;
-        Mon,  7 Dec 2020 20:25:41 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 15:25:40 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>
-Subject: Re: Ftrace startup test and boot-time tracing
-Message-ID: <20201207152540.2d569a36@gandalf.local.home>
-In-Reply-To: <20201207230259.250ecc2a52281def3f8335f4@kernel.org>
-References: <20201207230259.250ecc2a52281def3f8335f4@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 110961EC03FA;
+        Mon,  7 Dec 2020 21:26:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607372775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vO6PKikDefqjDt62fS1pdunv7loD9uEoyKIDr3CH+VQ=;
+        b=o5bdf7vDyG47AykQbRsUbL4Iu3GqYemZwoMloKa9DOv7JCWbhhOT9e93jfR3J2uMJD97Xm
+        uH86C/S+F2CnPfrRAbqKMO3sRnDWRfzYzp4xKt2lDsTKo+NPWOjC+MG0tEulRrKEekgTkb
+        hOGseHz0N9pRkl/pJaNZMtkBUuJ0OSM=
+Date:   Mon, 7 Dec 2020 21:26:10 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Wei Huang <whuang2@amd.com>
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, rjw@rjwysocki.net,
+        wei.huang2@amd.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, x86@kernel.org
+Subject: Re: [RFC PATCH 2/4] cpufreq: acpi-cpufreq: Add processor to the
+ ignore PSD override list
+Message-ID: <20201207202610.GG20489@zn.tnic>
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+ <20201125144847.3920-3-punitagrawal@gmail.com>
+ <cadb5d57-5aaf-79bc-e30e-502d5e522689@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cadb5d57-5aaf-79bc-e30e-502d5e522689@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 23:02:59 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Dec 07, 2020 at 02:20:55PM -0600, Wei Huang wrote:
+> In summary, this patch is fine if Punit already verified it. My only
+> concern is the list can potentially increase over the time, and we will
+> keep coming back to fix override_acpi_psd() function.
 
-> There will be the 2 options, one is to change kconfig so that user can not
-> select FTRACE_STARTUP_TEST if BOOTTIME_TRACING=y, another is to provide
-> a flag from trace_boot and all tests checks the flag at runtime.
-> (moreover, that flag will be good to be set from other command-line options)
-> What would you think?
+Can the detection be done by looking at those _PSD things instead of
+comparing f/m/s?
 
-Yeah, a "disable_ftrace_startup_tests" flag should be implemented. And
-something that could also be on the kernel command line itself :-)
+And, alternatively, what is this fixing?
 
- "disabe_ftrace_startup_tests"
+So what if some zen2 boxes have correct _PSD objects? Why do they need
+to ignore the override?
 
-Sometimes when debugging something, I don't want the tests running, even
-though the config has them, and I don't want to change the config.
+Hmmm?
 
--- Steve
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
