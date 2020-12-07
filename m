@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068F22D12B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866602D129B
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgLGN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:56:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgLGN4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:56:37 -0500
-Date:   Mon, 7 Dec 2020 13:55:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607349356;
-        bh=aR/NRdBp/XTaHY/Lbtre73wBwiC7h9vzC9/Oqrv1lPc=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qmYCI9Ua3j27G+ZVFuL74cZKEsHUncnzriJeaNgXWdg5PXNtiS0jhSZCHy5JFdm+h
-         8GfUeOzQBcKwx5BBwI5i+Vla43gx6hBUVPJoRDndrbi+ZR2nKubFniGzDVH6P1srRB
-         4RGCceW4hL35l5PpQT0PKn1kKHdCt49xY1EEZcOHomsu44U3HHaVIS1z3L5JPXsaKf
-         cQ0S7ObEN5RlU8SH62D/+9D7fsifto55+OqHm9UfDh9Z9+/4ikQOgvjH13g4H82ZDf
-         O+OWPgsEY9YEKN/6TBsfEMmUMjy3HGpd+xAlpwGh4VRAR0dOrGlu2VhfY6qJOaS7lg
-         YEDGzlismANEw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        troy.kisky@boundarydevices.com, gary.bisson@boundarydevices.com
-Subject: Re: [PATCH 1/2] dt-bindings: regulator: Add pf8x00 regulator
-Message-ID: <20201207135551.GE5694@sirena.org.uk>
-References: <20201206002629.12872-1-adrien.grassein@gmail.com>
+        id S1726524AbgLGNyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:54:04 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9029 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGNyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:54:04 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqPry4HVtzhkhd;
+        Mon,  7 Dec 2020 21:52:50 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
+ 21:53:13 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH v2] btrfs: free-space-cache: Fix error return code in __load_free_space_cache
+Date:   Mon, 7 Dec 2020 21:56:12 +0800
+Message-ID: <20201207135612.4132398-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="G6nVm6DDWH/FONJq"
-Content-Disposition: inline
-In-Reply-To: <20201206002629.12872-1-adrien.grassein@gmail.com>
-X-Cookie: Absinthe makes the tart grow fonder.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix to return the error code(instead always 0) when memory allocating
+failed in __load_free_space_cache().
 
---G6nVm6DDWH/FONJq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This lacks the analysis of consequences, so there's only one caller and
+that will treat values <=0 as 'cache not loaded'. There's no functional
+change but otherwise the error values should be there for clarity.
 
-On Sun, Dec 06, 2020 at 01:26:28AM +0100, Adrien Grassein wrote:
-> Add dt-bindings for the pf8x00 driver.
+Fixes: a67509c30079f4c50 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/btrfs/free-space-cache.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index af0013d3df63..ae4059ce2f84 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -744,8 +744,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 	while (num_entries) {
+ 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
+ 				      GFP_NOFS);
+-		if (!e)
++		if (!e) {
++			ret = -ENOMEM;
+ 			goto free_cache;
++		}
+ 
+ 		ret = io_ctl_read_entry(&io_ctl, e, &type);
+ 		if (ret) {
+@@ -764,6 +766,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			e->trim_state = BTRFS_TRIM_STATE_TRIMMED;
+ 
+ 		if (!e->bytes) {
++			ret = -1;
+ 			kmem_cache_free(btrfs_free_space_cachep, e);
+ 			goto free_cache;
+ 		}
+@@ -784,6 +787,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			e->bitmap = kmem_cache_zalloc(
+ 					btrfs_free_space_bitmap_cachep, GFP_NOFS);
+ 			if (!e->bitmap) {
++				ret = -ENOMEM;
+ 				kmem_cache_free(
+ 					btrfs_free_space_cachep, e);
+ 				goto free_cache;
+-- 
+2.25.4
 
-> +  compatible:
-> +    enum:
-> +      - nxp,pf8x00
-
-Compatible strings should be for specific devices not wildcards.
-
-> +          nxp,hw-en:
-> +            $ref: /schemas/types.yaml#definitions/flag
-> +            description: |
-> +              Only available for ldo2. Used to enable or disable ld02.
-
-I don't understand what this is documenting - what is "hw-en" and how is
-it used to enable or disable LDO2?
-
-> +          nxp,vselect-en:
-> +            $ref: /schemas/types.yaml#definitions/flag
-> +            description: |
-> +              Only available for ldo2. When specified, use the VSELECT p=
-in
-> +              of the chip to control the output voltage of the ldo02 reg=
-ulator.
-
-Shouldn't there be a GPIO specified somewhere or something so that the
-VSELECT pin can be controlled? =20
-
-> +          nxp,ilim-ma:
-> +            $ref: /schemas/types.yaml#definitions/uint32
-> +            minimum: 2100
-> +            maximum: 4500
-> +            default: 2100
-> +            enum: [ 2100, 2600, 3000, 4500 ]
-> +            description: |
-> +              Defines the maximum current delivered by the regulator (in=
- mA).
-
-Is this not a fixed property of the regulator?
-
-> +          nxp,quad-phase:
-> +            $ref: /schemas/types.yaml#definitions/flag
-> +            description: |
-> +              This allow regulators  sw1 and sw2, or sw3 and sw4 or sw4 =
-and sw5
-> +              to work together to deliver a maximum 10A current.
-
-Presumably this must be set on both the regulators being grouped
-together?
-
---G6nVm6DDWH/FONJq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/ONGYACgkQJNaLcl1U
-h9ALMgf/S3CUgMICMMHH6IBVaLN/WVSxyeihoNEW60F6OBxUO0Y7Ru0S8Q1PnMzm
-VLK/6pN5hXe73lDyZD2bOD2UMeU9mrb6uUWDuBeTC0wJ6fRXkLKOm/TmUFEkAPZW
-Bwa1GwZKaWm6TMw8FeenA07jQX6Wmj9PtOXdsxHmXVAeEts5VXBHRkapKVuUesWx
-B3Ly6tGRU1xm/mt/9abrvEZmiKuc+RkLooIrM3Fbw9yyxyElhBvHAVDYDGbW3hWi
-BFLDZkQ3Mhv5F7YVjOjD4tzD7L0O9UgnV31eXAJBN8DMvFoSTlaCJKzlFJ7L+4ZB
-lL/TCFraAyLpsHcZ3Da62A+qrDAsMQ==
-=nRAA
------END PGP SIGNATURE-----
-
---G6nVm6DDWH/FONJq--
