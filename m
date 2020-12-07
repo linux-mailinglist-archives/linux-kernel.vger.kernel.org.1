@@ -2,343 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E382D0D6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E550F2D0D6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgLGJwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:52:55 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8714 "EHLO
+        id S1726722AbgLGJxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:53:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8715 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgLGJwy (ORCPT
+        with ESMTP id S1726133AbgLGJxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:52:54 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqJVT1lt2zkm62;
-        Mon,  7 Dec 2020 17:51:29 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 17:51:59 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v8] f2fs: compress: support compress level
-Date:   Mon, 7 Dec 2020 17:51:45 +0800
-Message-ID: <20201207095145.72937-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 04:53:13 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqJVs14LFzkm8R;
+        Mon,  7 Dec 2020 17:51:49 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.20) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 17:52:19 +0800
+From:   <zhongjubin@huawei.com>
+To:     <helgaas@kernel.org>
+CC:     <bhelgaas@google.com>, <liuwenliang@huawei.com>,
+        <wangfangpeng1@huawei.com>, <nixiaoming@huawei.com>,
+        <gregkh@linuxfoundation.org>, <wu000273@umn.edu>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH v2] PCI: Fix Oops caused by uninitialized slot->list in pci_slot_release()
+Date:   Mon, 7 Dec 2020 17:52:17 +0800
+Message-ID: <1607334737-10730-1-git-send-email-zhongjubin@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
+In-Reply-To: <20201204233755.GA1983086@bjorn-Precision-5520>
+References: <20201204233755.GA1983086@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
+Content-Type: text/plain
+X-Originating-IP: [10.67.189.20]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand 'compress_algorithm' mount option to accept parameter as format of
-<algorithm>:<level>, by this way, it gives a way to allow user to do more
-specified config on lz4 and zstd compression level, then f2fs compression
-can provide higher compress ratio.
+>On Wed, Dec 02, 2020 at 10:33:42AM +0800, Jubin Zhong wrote:
+>> Once kobject_init_and_add() failed, pci_slot_release() is called to 
+>> delete slot->list from parent->slots. But slot->list is intialized 
+>> afterwards, so we ran into the following crash:
+>> 
+>>   Unable to handle kernel NULL pointer dereference at virtual address
+>> 00000000
+>>   ...
+>>   CPU: 10 PID: 1 Comm: swapper/0 Not tainted 4.4.240 #197
+>>   task: ffffeb398a45ef10 task.stack: ffffeb398a470000
+>>   PC is at __list_del_entry_valid+0x5c/0xb0
+>>   LR is at pci_slot_release+0x84/0xe4
+>>   ...
+>>   __list_del_entry_valid+0x5c/0xb0
+>>   pci_slot_release+0x84/0xe4
+>>   kobject_put+0x184/0x1c4
+>>   pci_create_slot+0x17c/0x1b4
+>>   __pci_hp_initialize+0x68/0xa4
+>>   pciehp_probe+0x1a4/0x2fc
+>>   pcie_port_probe_service+0x58/0x84
+>>   driver_probe_device+0x320/0x470
+>>   __driver_attach+0x54/0xb8
+>>   bus_for_each_dev+0xc8/0xf0
+>>   driver_attach+0x30/0x3c
+>>   bus_add_driver+0x1b0/0x24c
+>>   driver_register+0x9c/0xe0
+>>   pcie_port_service_register+0x64/0x7c
+>>   pcied_init+0x44/0xa4
+>>   do_one_initcall+0x1d0/0x1f0
+>>   kernel_init_freeable+0x24c/0x254
+>>   kernel_init+0x18/0xe8
+>>   ret_from_fork+0x10/0x20
+>> 
+>> Fixes: 8a94644b440e ("PCI: Fix pci_create_slot() reference count 
+>> leak")
+>> Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
+>> Cc: stable@vger.kernel.org #v4.4.235
 
-In order to set compress level for lz4 algorithm, it needs to set
-CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
-compress algorithm.
+>I'm curious how you noticed this.  Did kobject_init_and_add() fail for some reason?  Is there a bug there that we need to fix also?
 
-CR and performance number on lz4/lz4hc algorithm:
+Actually not.
+In the very beginning, Coverity reported a RESOURCE_LEAK warning of slot memory. It should be a false alarm because pci_slot_release() is already called to free slot memory as a function hook (which Coverity could not recognize). After code review I prepared to cancel the warning, that's when I noticed the unintialized slot list is also deleted by pci_slot_release().
 
-dd if=enwik9 of=compressed_file conv=fsync
+>And why did you mention v4.4.235 in the stable tag?  8a94644b440e wasn't merged until v5.9.  If 8a94644b440e was backported to older kernels, we can't know that in general, so I think whoever backported it is responsible for watching for Fixes tags that mention it.
 
-Original blocks:	244382
+The Coverity warning was reported on v4.4.240. I also did a little test on v4.4.240 by forcing kobject_init_and_add() to fail, that's how I got the above call stack. Since 8a94644b440e was backported to v4.4.235, I thought it should be necessary to fix it on v4.4 too.
 
-			lz4			lz4hc-9
-compressed blocks	170647			163270
-compress ratio		69.8%			66.8%
-speed			16.4207 s, 60.9 MB/s	26.7299 s, 37.4 MB/s
-
-compress ratio = after / before
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v8:
-- rebase on dev branch.
-- cover LZ4HC_MEM_COMPRESS with CONFIG_F2FS_FS_LZ4HC
- Documentation/filesystems/f2fs.rst |  5 +++
- fs/f2fs/Kconfig                    | 10 +++++
- fs/f2fs/compress.c                 | 41 +++++++++++++++--
- fs/f2fs/f2fs.h                     |  9 ++++
- fs/f2fs/super.c                    | 71 +++++++++++++++++++++++++++++-
- include/linux/f2fs_fs.h            |  3 ++
- 6 files changed, 134 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index fd413d319e93..73ab31bbf694 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
- 			 This space is reclaimed once checkpoint=enable.
- compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
- 			 "lz4", "zstd" and "lzo-rle" algorithm.
-+compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
-+			 "lz4" and "zstd" support compress level config.
-+			 algorithm	level range
-+			 lz4		3 - 16
-+			 zstd		1 - 22
- compress_log_size=%u	 Support configuring compress cluster size, the size will
- 			 be 4KB * (1 << %u), 16KB is minimum size, also it's
- 			 default size.
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index d13c5c6a9787..63c1fc1a0e3b 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -119,6 +119,16 @@ config F2FS_FS_LZ4
- 	help
- 	  Support LZ4 compress algorithm, if unsure, say Y.
+>>I updated the stable tag to "v5.9+" and applied this to pci/hotplug for v5.11, thanks!
  
-+config F2FS_FS_LZ4HC
-+	bool "LZ4HC compression support"
-+	depends on F2FS_FS_COMPRESSION
-+	depends on F2FS_FS_LZ4
-+	select LZ4HC_COMPRESS
-+	default y
-+	help
-+	  Support LZ4HC compress algorithm, LZ4HC has compatible on-disk
-+	  layout with LZ4, if unsure, say Y.
-+
- config F2FS_FS_ZSTD
- 	bool "ZSTD compression support"
- 	depends on F2FS_FS_COMPRESSION
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 191f93711f25..fa646c94ddec 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -254,8 +254,14 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
- #ifdef CONFIG_F2FS_FS_LZ4
- static int lz4_init_compress_ctx(struct compress_ctx *cc)
- {
--	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
--				LZ4_MEM_COMPRESS, GFP_NOFS);
-+	unsigned int size = LZ4_MEM_COMPRESS;
-+
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+	if (F2FS_I(cc->inode)->i_compress_flag >> COMPRESS_LEVEL_OFFSET)
-+		size = LZ4HC_MEM_COMPRESS;
-+#endif
-+
-+	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
- 	if (!cc->private)
- 		return -ENOMEM;
- 
-@@ -274,10 +280,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
- 	cc->private = NULL;
- }
- 
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+static int lz4hc_compress_pages(struct compress_ctx *cc)
-+{
-+	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
-+						COMPRESS_LEVEL_OFFSET;
-+	int len;
-+
-+	if (level)
-+		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
-+					cc->clen, level, cc->private);
-+	else
-+		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
-+						cc->clen, cc->private);
-+	if (!len)
-+		return -EAGAIN;
-+
-+	cc->clen = len;
-+	return 0;
-+}
-+#endif
-+
- static int lz4_compress_pages(struct compress_ctx *cc)
- {
- 	int len;
- 
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+	return lz4hc_compress_pages(cc);
-+#endif
- 	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
- 						cc->clen, cc->private);
- 	if (!len)
-@@ -327,8 +357,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
- 	ZSTD_CStream *stream;
- 	void *workspace;
- 	unsigned int workspace_size;
-+	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
-+						COMPRESS_LEVEL_OFFSET;
-+
-+	if (!level)
-+		level = F2FS_ZSTD_DEFAULT_CLEVEL;
- 
--	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
-+	params = ZSTD_getParams(level, cc->rlen, 0);
- 	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
- 
- 	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 383b96ff60f7..92fd83d84b91 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -147,6 +147,7 @@ struct f2fs_mount_info {
- 	/* For compression */
- 	unsigned char compress_algorithm;	/* algorithm type */
- 	unsigned char compress_log_size;	/* cluster log size */
-+	unsigned char compress_level;		/* compress level */
- 	bool compress_chksum;			/* compressed data chksum */
- 	unsigned char compress_ext_cnt;		/* extension count */
- 	int compress_mode;			/* compression mode */
-@@ -734,6 +735,7 @@ struct f2fs_inode_info {
- 	atomic_t i_compr_blocks;		/* # of compressed blocks */
- 	unsigned char i_compress_algorithm;	/* algorithm type */
- 	unsigned char i_log_cluster_size;	/* log of cluster size */
-+	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
- 	unsigned short i_compress_flag;		/* compress flag */
- 	unsigned int i_cluster_size;		/* cluster size */
- };
-@@ -1312,6 +1314,8 @@ struct compress_data {
- 
- #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
- 
-+#define	COMPRESS_LEVEL_OFFSET	8
-+
- /* compress context */
- struct compress_ctx {
- 	struct inode *inode;		/* inode the context belong to */
-@@ -3963,6 +3967,11 @@ static inline void set_compress_context(struct inode *inode)
- 				1 << COMPRESS_CHKSUM : 0;
- 	F2FS_I(inode)->i_cluster_size =
- 			1 << F2FS_I(inode)->i_log_cluster_size;
-+	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
-+			F2FS_OPTION(sbi).compress_level)
-+		F2FS_I(inode)->i_compress_flag |=
-+				F2FS_OPTION(sbi).compress_level <<
-+				COMPRESS_LEVEL_OFFSET;
- 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
- 	set_inode_flag(inode, FI_COMPRESSED_FILE);
- 	stat_inc_compr_inode(inode);
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 59229889db3c..e0fe72f1d2c8 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -25,6 +25,8 @@
- #include <linux/quota.h>
- #include <linux/unicode.h>
- #include <linux/part_stat.h>
-+#include <linux/zstd.h>
-+#include <linux/lz4.h>
- 
- #include "f2fs.h"
- #include "node.h"
-@@ -466,6 +468,56 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
- 	return 0;
- }
- 
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+static int f2fs_compress_set_level(struct f2fs_sb_info *sbi, const char *str,
-+						int type)
-+{
-+	unsigned int level;
-+	int len;
-+
-+	if (type == COMPRESS_LZ4)
-+		len = 3;
-+	else if (type == COMPRESS_ZSTD)
-+		len = 4;
-+	else
-+		return 0;
-+
-+	if (strlen(str) == len)
-+		return 0;
-+
-+	str += len;
-+
-+	if (str[0] != ':') {
-+		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
-+		return -EINVAL;
-+	}
-+	if (kstrtouint(str + 1, 10, &level))
-+		return -EINVAL;
-+	if (type == COMPRESS_LZ4) {
-+#ifdef CONFIG_F2FS_FS_LZ4HC
-+		if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
-+			f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
-+			return -EINVAL;
-+		}
-+#else
-+		f2fs_info(sbi, "doesn't support lz4hc compression");
-+		return 0;
-+#endif
-+	} else if (type == COMPRESS_ZSTD) {
-+#ifdef CONFIG_F2FS_FS_ZSTD
-+		if (!level || level > ZSTD_maxCLevel()) {
-+			f2fs_info(sbi, "invalid zstd compress level: %d", level);
-+			return -EINVAL;
-+		}
-+#else
-+		f2fs_info(sbi, "doesn't support zstd compression");
-+#endif
-+	}
-+	F2FS_OPTION(sbi).compress_level = level;
-+	return 0;
-+}
-+#endif
-+
- static int parse_options(struct super_block *sb, char *options, bool is_remount)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-@@ -886,10 +938,22 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 			if (!strcmp(name, "lzo")) {
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZO;
--			} else if (!strcmp(name, "lz4")) {
-+			} else if (!strncmp(name, "lz4", 3)) {
-+				ret = f2fs_compress_set_level(sbi, name,
-+								COMPRESS_LZ4);
-+				if (ret) {
-+					kfree(name);
-+					return -EINVAL;
-+				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_LZ4;
--			} else if (!strcmp(name, "zstd")) {
-+			} else if (!strncmp(name, "zstd", 4)) {
-+				ret = f2fs_compress_set_level(sbi, name,
-+								COMPRESS_ZSTD);
-+				if (ret) {
-+					kfree(name);
-+					return -EINVAL;
-+				}
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_ZSTD;
- 			} else if (!strcmp(name, "lzo-rle")) {
-@@ -1547,6 +1611,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 	}
- 	seq_printf(seq, ",compress_algorithm=%s", algtype);
- 
-+	if (F2FS_OPTION(sbi).compress_level)
-+		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
-+
- 	seq_printf(seq, ",compress_log_size=%u",
- 			F2FS_OPTION(sbi).compress_log_size);
- 
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index 55be7afeee90..2dcc63fe8494 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -275,6 +275,9 @@ struct f2fs_inode {
- 			__u8 i_compress_algorithm;	/* compress algorithm */
- 			__u8 i_log_cluster_size;	/* log of cluster size */
- 			__le16 i_compress_flag;		/* compress flag */
-+						/* 0 bit: chksum flag
-+						 * [10,15] bits: compress level
-+						 */
- 			__le32 i_extra_end[0];	/* for attribute size calculation */
- 		} __packed;
- 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
--- 
-2.29.2
+>> ----
+>> v2:
+>>   Since both slot memory and slot->list would be handled by 
+>> pci_slot_release(), we need to make sure slot->list is properly 
+>> initialized beforehand.
+>> 
+>> v1: https://lore.kernel.org/lkml/1606288971-47927-1-git-send-email-zhongjubin@huawei.com/
+>>   Two things need to be cleaned up on pci_create_slot's error path:
+>>   1. free slot memory
+>>   2. remove slot->list from its parent->slots
+>>   This patch mistakenly took slot memory as unfreed (which is not), 
+>> and would introduce double free problem.
+>> ---
+>>  drivers/pci/slot.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c index 
+>> 3861505..ed2077e 100644
+>> --- a/drivers/pci/slot.c
+>> +++ b/drivers/pci/slot.c
+>> @@ -272,6 +272,9 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+>>  		goto err;
+>>  	}
+>>  
+>> +	INIT_LIST_HEAD(&slot->list);
+>> +	list_add(&slot->list, &parent->slots);
+>> +
+>>  	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+>>  				   "%s", slot_name);
+>>  	if (err) {
+>> @@ -279,9 +282,6 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+>>  		goto err;
+>>  	}
+>>  
+>> -	INIT_LIST_HEAD(&slot->list);
+>> -	list_add(&slot->list, &parent->slots);
+>> -
+>>  	down_read(&pci_bus_sem);
+>>  	list_for_each_entry(dev, &parent->devices, bus_list)
+>>  		if (PCI_SLOT(dev->devfn) == slot_nr)
+>> --
+>> 1.8.5.6
+>> 
 
