@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3459A2D1870
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46B82D1876
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgLGSXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:23:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726102AbgLGSXU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:23:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607365314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9sdDUmxzObkvlmtgXKPhQxtpEVX8JbdclTJVfFITbFQ=;
-        b=KSCCZVzuiSnQdYHVsbxa7OSvyWD/O9GyiTAxEeh3YI3nayOj+sA9OInRtCv/NNiGtLjMxC
-        msRpWo5QMMeizWuoC/R8Kjbyylz5jLHShOgdvSDqyqtG+n63or6x8OJQ9Mac1dZj14knA3
-        q0ZohvSNza5kyhNKee+dmnN1S03x65k=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-HzzdBzWLNWSyBfoyUQ96QA-1; Mon, 07 Dec 2020 13:21:52 -0500
-X-MC-Unique: HzzdBzWLNWSyBfoyUQ96QA-1
-Received: by mail-ej1-f71.google.com with SMTP id ny19so3333881ejb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 10:21:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9sdDUmxzObkvlmtgXKPhQxtpEVX8JbdclTJVfFITbFQ=;
-        b=C1t76XVawARKMgQmrgXNcwNcN6jPBpbwFO0whbn+9+C6dEcvg1H83FCqkw83+ykt8w
-         w+juZjG/VjIAz1hSFY8V7izsYb3H4TVpx8ssxEj0ZJZ+L7aaAaUCNqW16mlUfKllHQ0R
-         RGiKs7kSVSO09tW/3t59u9GEfdg4a14zsilGeahX81+OgKh2EeRE9ptlu7LFHPcosoyx
-         3u30bQo9xqwpvXBH1l++bbEtHSULcDhIpHVNJfE8ZsUtban6bVCqAxwtnH2Dyrz+UbzD
-         dXalD1Lb5Or4LWvzYpZo0y9/EbivOZZDc3PGs0oIfsvvdFukXedMeJKAcGdRzXLWNP70
-         LSaQ==
-X-Gm-Message-State: AOAM53342LgMNDZLKQSwoJpvMgq1sgUrSTUEz27YN3mUZjh/U7XCcrCm
-        Vu3QvHgEXp1+DUcJg3u3EztHNpOnL9U2PVBbYoIj6XjGI1D4bK8rsxaPtyw5Ev/RYsWvYIVpd/S
-        4ABK/baXP5kslwbo1xignF9lA
-X-Received: by 2002:a17:906:4bd2:: with SMTP id x18mr19721833ejv.464.1607365311272;
-        Mon, 07 Dec 2020 10:21:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysF62b/9EGmsRFN0aGkV9U90I0qPEfB39SdKUggYcDeLV+AkT7k5X5iH/EBJ9lML6lAu1cSg==
-X-Received: by 2002:a17:906:4bd2:: with SMTP id x18mr19721820ejv.464.1607365311099;
-        Mon, 07 Dec 2020 10:21:51 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id u5sm14291209edp.5.2020.12.07.10.21.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 10:21:50 -0800 (PST)
-Subject: Re: [PATCH] ACPI: scan: Fix up _DEP-related terminology with
- supplier/consumer
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-References: <6314382.p3e4rEhblS@kreacher>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <054cc790-bebb-9c84-e14c-16b9460d1636@redhat.com>
-Date:   Mon, 7 Dec 2020 19:21:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726559AbgLGSXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:23:51 -0500
+Received: from mga02.intel.com ([134.134.136.20]:5050 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgLGSXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 13:23:51 -0500
+IronPort-SDR: 7U+6VjvvlgE29G6zdeQlgp2yrYz4sFJQD0aN/QzsFGaAIr0jPvvNjO9eZByGKisiBOOJmXbGXJ
+ qH5dvWR7JvWA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="160792547"
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="160792547"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 10:22:05 -0800
+IronPort-SDR: LJpIOl5qR3FbYUO6GpoIFjBgNfoBKfI9nILXpkiVbNmPIE2cwe4CBMx+aKHMiSLNbd9lF6n3GV
+ MEf4AfTulbig==
+X-IronPort-AV: E=Sophos;i="5.78,400,1599548400"; 
+   d="scan'208";a="551915231"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 10:22:04 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id D3A0A6363;
+        Mon,  7 Dec 2020 10:22:04 -0800 (PST)
+Date:   Mon, 7 Dec 2020 10:22:04 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, shawnguo@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
+Message-ID: <20201207182204.GC49179@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-3-mgross@linux.intel.com>
+ <20201207160152.GB351233@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6314382.p3e4rEhblS@kreacher>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207160152.GB351233@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/7/20 6:46 PM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Dec 07, 2020 at 10:01:52AM -0600, Rob Herring wrote:
+> On Tue, Dec 01, 2020 at 02:34:51PM -0800, mgross@linux.intel.com wrote:
+> > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > 
+> > Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> > enables communication between the Computing Sub-System (CSS) and the
+> > Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+> > Bay.
+> > 
+> > Cc: devicetree@vger.kernel.org
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > ---
+> >  .../bindings/soc/intel/intel,keembay-ipc.yaml | 63 +++++++++++++++++++
+> >  1 file changed, 63 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > new file mode 100644
+> > index 000000000000..6e21c54d8f34
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> > @@ -0,0 +1,63 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (C) 2020 Intel Corporation
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Keem Bay IPC
+> > +
+> > +maintainers:
+> > +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > +
+> > +description:
+> > +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
+> > +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
+> > +  Keem Bay.
 > 
-> The ACPI namespace scanning code uses the terms master/slave when
-> populating the list of _DEP dependencies, but that use has no
-> external exposures and is not mandated by nor associated with any
-> external specifications.
-> 
-> Change the language used through-out to supplier/consumer.
-> 
-> No functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Sounds like a mailbox. 
+Its a multi-channel mailbox like thing with priority channel support.
 
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/acpi/scan.c |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> Index: linux-pm/drivers/acpi/scan.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/scan.c
-> +++ linux-pm/drivers/acpi/scan.c
-> @@ -51,8 +51,8 @@ static u64 spcr_uart_addr;
->  
->  struct acpi_dep_data {
->  	struct list_head node;
-> -	acpi_handle master;
-> -	acpi_handle slave;
-> +	acpi_handle supplier;
-> +	acpi_handle consumer;
->  };
->  
->  void acpi_scan_lock_acquire(void)
-> @@ -1881,8 +1881,8 @@ static void acpi_device_dep_initialize(s
->  		if (!dep)
->  			return;
->  
-> -		dep->master = dep_devices.handles[i];
-> -		dep->slave  = adev->handle;
-> +		dep->supplier = dep_devices.handles[i];
-> +		dep->consumer  = adev->handle;
->  		adev->dep_unmet++;
->  
->  		mutex_lock(&acpi_dep_list_lock);
-> @@ -2058,8 +2058,8 @@ void acpi_walk_dep_device_list(acpi_hand
->  
->  	mutex_lock(&acpi_dep_list_lock);
->  	list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
-> -		if (dep->master == handle) {
-> -			acpi_bus_get_device(dep->slave, &adev);
-> +		if (dep->supplier == handle) {
-> +			acpi_bus_get_device(dep->consumer, &adev);
->  			if (!adev)
->  				continue;
->  
-> 
-> 
-> 
+> What's the relationship between this and the xlink thing?
+Xlink is a SW abstraction to allow multiple user access to the VPU as well as
+enabling use cases where a Keem Bay is used as an accelerator add in card as
+well as a simple SBC type of design.  The xlink stuff sits on top of the IPC
+stuff.
+
+--mark
 
