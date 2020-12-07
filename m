@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732372D1093
+	by mail.lfdr.de (Postfix) with ESMTP id E37102D1094
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgLGMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:32:00 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43065 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgLGMcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:32:00 -0500
-Received: by mail-lj1-f193.google.com with SMTP id e7so4508954ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:31:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CegbQ8ICiCzl54W3L4/51QGOQ8lnKvui2ZpRWTC454E=;
-        b=cneFBIVU3UmrxRGyq3slaPdFCjF3r/PQQF164qx10v7wg4laNd7xAdOB0K+Kh8tkr4
-         JGeJ5s7t04AsaCd9iO02NopAC9JBkCdAxW4mtzAxuhHRYcWIuyLfS3I1ZY3DSAFtQwIO
-         MOd39IzABFvKoyEDvz05xM7ZrExwjQW/eDaAniBJiXhX5jFKkEbrnaa52Y7DCi1dbXrL
-         J8It3myjE62+ALJCoCoQ/JECZuz4mNwsWzXp7j4AJWVpTr7VFJSrMTckVpT9yTShi2Lv
-         ix1ysMcZKL5tRBqMa4rY2QwkYLBT0U2epFJonP1nU/R5eqphtoeb4OWekEGFR9HyR6Yt
-         re3A==
-X-Gm-Message-State: AOAM531bbT2Qr/FZ97yi72DLR2XSd9qMzdmNiiDDiTCgk1u4Zwt48ksD
-        uLx7MApeO6kR6+1kASp3a9ktkA01P4z2XsHiKY0=
-X-Google-Smtp-Source: ABdhPJzaNUger+DRoF/C5Yjhv4RtYDEQzWKrvCWcC8NyTCLjixXDCaz0BBQ+htAqCzKget1+G+ACKBZ1Q6Zk0NbFZXM=
-X-Received: by 2002:a2e:b013:: with SMTP id y19mr8672135ljk.50.1607344278275;
- Mon, 07 Dec 2020 04:31:18 -0800 (PST)
+        id S1727070AbgLGMcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:32:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgLGMcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:32:18 -0500
+Date:   Mon, 7 Dec 2020 12:31:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607344298;
+        bh=ulIWSf4fu0+15UAYDWnox9feOF++im/0KyFh/WPgyL8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WGKKjDz4bvE/H1goWqMdH74Vdm9C+N+78Q8HLgaCX+L91VkwYRKARNpCtSkM4H74M
+         jh/DtsrNfJXeZUF/RUbvq+/GQdVFD7QaqjP2zUSS2DOJkweCqBbXw8WlBtZVMKmewn
+         F5p4h6Vs0Bi6qhRvxOeOHjwWMvdR7R5mWiWI7r/T4dKqMOzVQS6NIEbdAC4mbwEqHs
+         4afPuls5Efdf/ngfEa2IZKA3v8MKCHHVo42X7+9INGwtzvirwsJ0KM8o5q7LK9A1yC
+         cvMwvje+8xslOTIhZ1C9WuPwggAPp596Szi2RWi6g5QVts/R1pqQTZhKVjU3UgN/q2
+         eIgGqsCrdkEJA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, sharadg@nvidia.com,
+        jonathanh@nvidia.com, kuninori.morimoto.gx@renesas.com,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v6 0/6] Tegra210 audio graph card
+Message-ID: <20201207123131.GB5694@sirena.org.uk>
+References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
+ <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
+ <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
 MIME-Version: 1.0
-References: <20201206144527.1670483-1-chanho61.park@samsung.com>
- <CGME20201207105410epcas2p3f9210689886172422d27870f25a79df3@epcas2p3.samsung.com>
- <20201207105359.GA4198@willie-the-truck> <001101d6cc90$3b491310$b1db3930$@samsung.com>
-In-Reply-To: <001101d6cc90$3b491310$b1db3930$@samsung.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 7 Dec 2020 21:31:06 +0900
-Message-ID: <CAM9d7chU0SP79cjuZOBg1Rhe2NYaxAOnKzdQ+XQ65fenTzak0A@mail.gmail.com>
-Subject: Re: [PATCH] perf arm pmu: fix build error on MUSL libc
-To:     Chanho Park <chanho61.park@samsung.com>
-Cc:     Will Deacon <will@kernel.org>, Chanho Park <parkch98@gmail.com>,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Khem Raj <raj.khem@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
+Content-Disposition: inline
+In-Reply-To: <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
+X-Cookie: Absinthe makes the tart grow fonder.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chanho,
 
-On Mon, Dec 7, 2020 at 8:58 PM Chanho Park <chanho61.park@samsung.com> wrote:
->
-> Hi Will,
->
-> > Looks like other files just include this unconditionally, but have a
-> > comment explaining why. See util/branch.h and util/event.h. Maybe we
-> > should do the same for util/pmu.h, which is already included here?
->
-> I found below files which perf includes <linux/perf_event.h>. Instead of
-> doing same for all, we'd better put this only for
-> tools/include/uapi/linux/perf_event.h.
+--/NkBOFFp2J2Af1nK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's a copy of the kernel header, I'm not sure we want to add something there.
+On Mon, Dec 07, 2020 at 10:22:38AM +0530, Sameer Pujar wrote:
 
-Thanks,
-Namhyung
+> > [1/3] ASoC: dt-bindings: tegra: Add graph bindings
+> >        (no commit info)
+> > [2/3] ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
+> >        (no commit info)
+> > [3/3] ASoC: tegra: Add audio graph based card driver
+> >        (no commit info)
+
+> I don't see above patches in linux-next yet. Should I wait some more time
+> for this to appear?
+
+No, this was sent by a b4 bug - notice the "no commit info" there, they
+weren't applied.
+
+--/NkBOFFp2J2Af1nK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/OIKMACgkQJNaLcl1U
+h9Bergf/R2n7B5AV+c3qA138O8l+XMSdm7bZ8noJM7ZoaPj/A1jX9Br56e38tOjq
+QfofOwv/rAGQG82FVgB9rPGHZRFzz3kvQwb35JO1eQV+TLbSOnGkYFpC28buXymj
+SGYm9ncc7OeN30WV4e3NymMTcOFe8ggwR05zMzc6amXV2163NQl1sN64tlkKbFSA
+yAcctZJeDD5B3TlcILu+yZp5SidHHV7gdk57QDd+A3Ut6sggbj9EBcQamZsKUmkJ
+LwQPdeqesq/WJqs33a3sFL1xDXMLwISR7isCX/6CRO1cd6evcivRf+Wmcgr7k0MJ
+6yR+VP1OIr+ecpxbGAm4CMYD++Cntw==
+=r0dO
+-----END PGP SIGNATURE-----
+
+--/NkBOFFp2J2Af1nK--
