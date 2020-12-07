@@ -2,88 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707192D09DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597F02D09E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 05:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgLGEx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 23:53:27 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18726 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgLGEx0 (ORCPT
+        id S1728854AbgLGE4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 23:56:47 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:8957 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgLGE4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 23:53:26 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcdb51e0000>; Sun, 06 Dec 2020 20:52:46 -0800
-Received: from [10.25.96.159] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 7 Dec
- 2020 04:52:42 +0000
-Subject: Re: [PATCH v6 0/6] Tegra210 audio graph card
-To:     Mark Brown <broonie@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>
-CC:     <sharadg@nvidia.com>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
- <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
-Date:   Mon, 7 Dec 2020 10:22:38 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 6 Dec 2020 23:56:46 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cq9x411sXzhnbV;
+        Mon,  7 Dec 2020 12:55:36 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.9) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 7 Dec 2020 12:55:49 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/1] dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint warnings
+Date:   Mon, 7 Dec 2020 12:55:26 +0800
+Message-ID: <20201207045527.1607-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607316766; bh=a4fExwYSCzW8iKIEs03t5hkl0PLY9U5HKC1J+84tRhM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=cjwm6O4NAxb/W+maQk/2sGdGDRj4MpwGSnFYip4dmHyIRdfKxdqAw/xMxz3lPIaB6
-         tLB0lnQiIr1cMTQDDHiKSwnYghiJpu2OKoCa2kVanUMKZyN0/24hDqGPzHflFuxKgx
-         2wFJ1gRnNmxbTgKwa0/yorMDiZDK/p7CkowMZnGcrSGWwghPt4RnLehYoTER3mSq8H
-         pDWqZRHCQWgR9JlB0dOlCKGwii311NIadAqnWIIiOLzBqx3aqb4lVXEZ6QHuO6BOq9
-         aKZGq/3HYqVneBKvj62EYkUQ21rVhcspyam7+DeemDjwNLZnNXeCpncclxMTSh+KxS
-         9CIlMFhlLXK5w==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+This patch is based on the latest linux-next code.
 
->> This series adds audio graph based sound card support for Tegra210
->> platforms like Jetson-TX1 an Jetson-Nano. The following preparatory
->> audio graph enhancement series is already merged.
->>   * https://patchwork.kernel.org/project/alsa-devel/list/?series=375629&state=*
->>
->> Following are the summary of changes:
->>   * Add graph/audio-graph based schemas or schema updates for Tegra210
->>     component and machine drivers.
->>   * Add Tegra audio graph machine driver.
->>   * Add required DT support for Jetson-TX1/Nano.
->>
->> [...]
-> Applied to
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
->
-> Thanks!
->
-> [1/3] ASoC: dt-bindings: tegra: Add graph bindings
->        (no commit info)
-> [2/3] ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
->        (no commit info)
-> [3/3] ASoC: tegra: Add audio graph based card driver
->        (no commit info)
+Zhen Lei (1):
+  dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint warnings
 
-I don't see above patches in linux-next yet. Should I wait some more 
-time for this to appear?
+ .../devicetree/bindings/clock/imx8qxp-lpcg.yaml      | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+-- 
+1.8.3
 
 
-Thanks,
-Sameer.
