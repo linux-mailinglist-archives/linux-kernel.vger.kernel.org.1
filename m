@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7792D182F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E492D1833
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgLGSHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S1726489AbgLGSII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLGSHO (ORCPT
+        with ESMTP id S1726314AbgLGSIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:07:14 -0500
+        Mon, 7 Dec 2020 13:08:07 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D09C061793;
-        Mon,  7 Dec 2020 10:06:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8147CC061794;
+        Mon,  7 Dec 2020 10:07:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=cU2izUF0U8oU/+JZ+FI/5fLEHzSRensvQxJYfR5QiZQ=; b=hlu0NKeSRiaunpXlOfiiZEyuI5
-        RAb/zNImj0jipcbI154rSJqDnJus5Qxscf2/NDuwF3KWJSvwc2Zs+7f6DmcwMv/mHx7zOiwvdHK0F
-        8J3LwKyGYt7fdVS7iMCe6GhquEh7Cn0EIXFn6a8JgPIWrgRzGopY7l81ij6ZFbiZJgnjbVqIv3g7Y
-        +0vUaASyaNNLEyuWLMweRzYVlI3nUMX9xpQftseJcmBx0aImRtyAUQtUChmBxu+4zsxmxs7A+q/07
-        ac/jY0/dRs5mvC137MQTc7ZtVtdjcTcxr4Kr078a5PRmTh0+oJMwTINzTaUbx44cu8yHRpw2Gt+aO
-        Do9FwEew==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmKu7-00080m-Ea; Mon, 07 Dec 2020 18:06:31 +0000
-Subject: Re: [PATCH] arch: fix spelling mistakes in Kconfig
-To:     Colin King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org
-References: <20201207155004.171962-1-colin.king@canonical.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <da56a602-7d36-e141-04dc-799f7a0fa04a@infradead.org>
-Date:   Mon, 7 Dec 2020 10:06:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xeFJmOIDufW34ETJisVrK6EvU//eljbrPd80Wffmy7c=; b=IL1Rn3H3sOwVBVgF107DDFcwNO
+        GpsD4NWkiVYOXKVhDUsqV683Api7FNwRfEI/ZEgbOrVUhzTJ26P8sIAKg2yUqtIWYtjx84RupQ0fG
+        DxuYZ5oNeVo7iRXeFgbJJlEovw1TI7UNbA6AQJ4EZ5jSjYE4MRdoO8YFkw1oUm0dyqmtDaDKMhlnv
+        BGjdhcl0LgCVqfzOvSsbqTTCsmEHRyJBIbrUwBaP4gKkoxFAFcf2qh13fmMPTS4PCgUAJ3VB3QSEY
+        VHMQQXLNWcKWrzedYTggMB3izLKNIEC+P+fmtic/JwlFmgu5/GG8Q0ZCGehAFfjlwtWbqsBzWjlRx
+        JI/GCwfw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmKuV-00082C-Lt; Mon, 07 Dec 2020 18:06:55 +0000
+Date:   Mon, 7 Dec 2020 18:06:55 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster Support
+Message-ID: <20201207180655.GA30657@infradead.org>
+References: <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p8>
+ <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+ <X85sxxgpdtFXiKsg@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207155004.171962-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X85sxxgpdtFXiKsg@kroah.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 7:50 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Dec 07, 2020 at 06:56:23PM +0100, Greg KH wrote:
+> On Tue, Nov 03, 2020 at 01:40:21PM +0900, Daejun Park wrote:
+> > Changelog:
+> > 
+> > v12 -> v13
+> > 1. Cleanup codes by comments from Can Guo.
+> > 2. Add HPB related descriptor/flag/attributes in sysfs.
+> > 3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
 > 
-> There are a few spelling mistakes in the Kconfig comments and help
-> text. Fix these.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  arch/Kconfig | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> What ever happened to this patchset?  Did it get merged into a scsi tree
+> for 5.11-rc1, or is there something still pending that needs to be done
+> on it to make it acceptable?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
--- 
-~Randy
+I think the problem here is not the code, but that the features is
+fundamentally a bad idea, and one that so far has not even shown
+to help real workloads vs the usual benchmarketing.
