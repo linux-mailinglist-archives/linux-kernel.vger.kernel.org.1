@@ -2,180 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82372D1A13
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B12132D1A1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 20:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgLGTyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 14:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S1727010AbgLGT5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 14:57:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbgLGTyw (ORCPT
+        with ESMTP id S1725995AbgLGT5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:54:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00312C061749;
-        Mon,  7 Dec 2020 11:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=1b61RvH52vfjnAKlEJGNRv8bKm9R+jIRDMCUhpsedCo=; b=t6a9Qyx+keIz4kVcMBsxIsG4y2
-        xSGihNgl4eERBjSHOktovQU5G1BYHpw31g7SbPpq+CRaXPmCXYWTbKCKaOBMCbZQX68ZXb4Lc7IBK
-        XpWCacp85QfytgZlahv3+Q6lvmLYNXBqa5MYgzMRN7hHFzXNuUHzKmvnFtJQPQ3rVclS+82y7eGGJ
-        Dm4CiXSff4v5BVMnyt7QXTk+OTZNB7hafM0n8n2UNDgIw6E9JBGlVAkanvSITq83YSSvBascy3hd2
-        6YJE5yLxo+flQmkLEi5dc7JEk4uOtf86QdXkaEBuEHGTITOSt9MwpHPoBU3tJ6Nxkag6JGe7dJYs7
-        AxJm9SOg==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmMaE-000486-Ac; Mon, 07 Dec 2020 19:54:06 +0000
-Subject: Re: [PATCH 16/22] xlink-ipc: Add xlink ipc driver
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Seamus Kelly <seamus.kelly@intel.com>,
-        linux-doc@vger.kernel.org,
-        Ryan Carnaghi <ryan.r.carnaghi@intel.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-17-mgross@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0177c5ba-58cc-cef6-9970-044d8655ea5d@infradead.org>
-Date:   Mon, 7 Dec 2020 11:53:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 7 Dec 2020 14:57:17 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE8BC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 11:56:31 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id q75so377241wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 11:56:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
+        b=Rx2kkCmZ+FgKln8FUJd506TxOlujIx2a854tc5Lv/wbSoF4I3D5Y3UTDvOiPf4BEU0
+         9b9A8fmyTZZ/BvEcc6/iQ4yZ7S4SkzfURcxY6jir+78TKz30w2hxqARUgdOrkXfeOUB9
+         OUjSXC+UW2mecPfAlRcn4bc31TC7dogLu/4Xs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
+        b=TpghuYW1DO7b7ZGVQGPTxLDneLiYO9fRqb9b6MmpBf7vjP7tJcPAplhlMylKYzSIo4
+         WfKXphDLJEHybKt/SjuJnZYsmuqISQ8bGjvb8led0XTKXIQ4q+lc0UF+GIpfCaKVOfBf
+         WT5lRuFSs/SUScAu3uQb0bKbOlt+6wDnDB7OdP9xeK3EK2cSmaGL8eGvBhnovca3S2xC
+         wp5uSRtmsRZ3ku17wzpqy+nX+5U3sChbOm6sS2sgZBOT/NKE3TCv2UTTiWt7D2EzIYNN
+         +OyebFL4BUZIHG3m4LVnBdLGDBQHOhmJZaoOMRXbLNk5oUfmjNmb5uTXsONLQuI+gFe8
+         p50w==
+X-Gm-Message-State: AOAM5335jDt2KerxnKzpfT+4D/J8UGVItBU9CtmYQRjHaEopXFM9YrH3
+        l+kzDyJ7HYfSKRynBYazlNnV1Q==
+X-Google-Smtp-Source: ABdhPJwRr3c35YwXYieC6vSlSfluvpB8QKErxv59vR3tfD4WwjdeDPBfFZj0sPyFG8L9BtVzgSKjvA==
+X-Received: by 2002:a1c:2ec6:: with SMTP id u189mr469286wmu.31.1607370990290;
+        Mon, 07 Dec 2020 11:56:30 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id v20sm325722wml.34.2020.12.07.11.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 11:56:29 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, rdunlap@infradead.org,
+        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next] bpf: Only call sock_from_file with CONFIG_NET
+Date:   Mon,  7 Dec 2020 20:55:39 +0100
+Message-Id: <20201207195539.609787-1-revest@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-In-Reply-To: <20201201223511.65542-17-mgross@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ahoy--
+This avoids
+  ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
+  bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
+When compiling a kernel with BPF and without NET.
 
-On 12/1/20 2:35 PM, mgross@linux.intel.com wrote:
-> From: Seamus Kelly <seamus.kelly@intel.com>
-> 
-> Add xLink driver, which interfaces the xLink Core driver with the Keem
-> Bay VPU IPC driver, thus enabling xLink to control and communicate with
-> the VPU IP present on the Intel Keem Bay SoC.
-> 
-> Specifically the driver enables xLink Core to:
-> 
-> * Boot / Reset the VPU IP
-> * Register to VPU IP event notifications (device connected, device
->   disconnected, WDT event)
-> * Query the status of the VPU IP (OFF, BUSY, READY, ERROR, RECOVERY)
-> * Exchange data with the VPU IP, using the Keem Bay IPC mechanism
->   - Including the ability to send 'volatile' data (i.e., small amount of
->     data, up to 128-bytes that was not allocated in the CPU/VPU shared
->     memory region)
-> 
-> Cc: linux-doc@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
-> Signed-off-by: Ryan Carnaghi <ryan.r.carnaghi@intel.com>
-> ---
->  Documentation/vpu/index.rst        |   1 +
->  Documentation/vpu/xlink-ipc.rst    |  50 ++
->  MAINTAINERS                        |   6 +
->  drivers/misc/Kconfig               |   1 +
->  drivers/misc/Makefile              |   1 +
->  drivers/misc/xlink-ipc/Kconfig     |   7 +
->  drivers/misc/xlink-ipc/Makefile    |   4 +
->  drivers/misc/xlink-ipc/xlink-ipc.c | 879 +++++++++++++++++++++++++++++
->  include/linux/xlink-ipc.h          |  48 ++
->  9 files changed, 997 insertions(+)
->  create mode 100644 Documentation/vpu/xlink-ipc.rst
->  create mode 100644 drivers/misc/xlink-ipc/Kconfig
->  create mode 100644 drivers/misc/xlink-ipc/Makefile
->  create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
->  create mode 100644 include/linux/xlink-ipc.h
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ kernel/trace/bpf_trace.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> diff --git a/Documentation/vpu/xlink-ipc.rst b/Documentation/vpu/xlink-ipc.rst
-> new file mode 100644
-> index 000000000000..af583579e70d
-> --- /dev/null
-> +++ b/Documentation/vpu/xlink-ipc.rst
-> @@ -0,0 +1,50 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +
-> +Kernel driver: xLink IPC driver
-> +=================================
-> +Supported chips:
-> +
-> +* | Intel Edge.AI Computer Vision platforms: Keem Bay
-> +  | Suffix: Bay
-> +  | Datasheet: (not yet publicly available)
-> +
-> +------------
-> +Introduction
-> +------------
-> +
-> +The xLink IPC driver interfaces the xLink Core driver with the Keem Bay VPU IPC
-> +driver, thus enabling xLink to control and communicate with the VPU IP present
-> +on the Intel Keem Bay SoC.
-> +
-> +Specifically the driver enables xLink Core to:
-> +
-> +* Boot / Reset the VPU IP
-> +* Register to VPU IP event notifications (device connected, device disconnected,
-> +  WDT event)
-> +* Query the status of the VPU IP (OFF, BUSY, READY, ERROR, RECOVERY)
-> +* Exchange data with the VPU IP, using the Keem Bay IPC mechanism
-> +
-> +  * Including the ability to send 'volatile' data (i.e., small amount of data,
-> +    up to 128-bytes that was not allocated in the CPU/VPU shared memory region)
-> +
-> +Sending / Receiving 'volatile' data
-> +-----------------------------------
-> +
-> +Data to be exchanged with Keem Bay IPC needs to be allocated in the portion of
-> +DDR shared between the CPU and VPU.
-> +
-> +This can be impractical for small amount of data that user code can allocate
-
-                                     amounts
-
-> +on the stack.
-> +
-> +To reduce the burden on user code, xLink Core provides special send / receive
-> +functions to send up to 128 bytes of 'volatile data', i.e., data that is not
-> +allocated in the shared memory and that might also disappear after the xLink
-> +API is called (e.g., because allocated on the stack).
-> +
-> +The xLink IPC driver implements support for transferring such 'volatile data'
-> +to the VPU using Keem Bay IPC. To this end, the driver reserved some memory in
-
-better:                                                   reserves
-
-> +the shared memory region.
-> +
-> +When volatile data is to be sent, xLink IPC allocates a buffer from the
-> +reserved memory region and copies the volatile data to the buffer. The buffer
-> +is then transferred to the VPU using Keem Bay IPC.
-
-> diff --git a/drivers/misc/xlink-ipc/Kconfig b/drivers/misc/xlink-ipc/Kconfig
-> new file mode 100644
-> index 000000000000..6aa2592fe9a3
-> --- /dev/null
-> +++ b/drivers/misc/xlink-ipc/Kconfig
-> @@ -0,0 +1,7 @@
-> +config XLINK_IPC
-> +	tristate "Support for XLINK IPC"
-> +	depends on KEEMBAY_VPU_IPC
-> +	help
-> +	  XLINK IPC enables the communication/control IPC Sub-System.
-> +
-> +	  Select M if you have an Intel SoC with a Vision Processing Unit (VPU)
-
-End that sentence with a '.', please.
-
-
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 0cf0a6331482..877123bae71f 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1272,7 +1272,11 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+ 
+ BPF_CALL_1(bpf_sock_from_file, struct file *, file)
+ {
++#ifdef CONFIG_NET
+ 	return (unsigned long) sock_from_file(file);
++#else
++	return NULL;
++#endif
+ }
+ 
+ BTF_ID_LIST(bpf_sock_from_file_btf_ids)
 -- 
-~Randy
+2.29.2.576.ga3fc446d84-goog
 
