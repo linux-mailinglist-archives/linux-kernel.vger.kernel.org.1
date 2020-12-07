@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2BE2D18A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AD12D18AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 19:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgLGSjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 13:39:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40950 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgLGSjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 13:39:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89856AD63;
-        Mon,  7 Dec 2020 18:38:19 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 19:38:14 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, bp@alien8.de, mingo@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        pawan.kumar.gupta@linux.intel.com, mchehab+huawei@kernel.org,
-        paulmck@kernel.org, viro@zeniv.linux.org.uk,
-        Peter Zijlstra <peterz@infradead.org>, luto@kernel.org,
-        oneukum@suse.com, jroedel@suse.de,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        anshuman.khandual@arm.com, Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v7 00/15] Free some vmemmap pages of
- hugetlb page
-Message-ID: <20201207183814.GA3786@localhost.localdomain>
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com>
- <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com>
- <CAMZfGtX2mu1tyE_898mQeEpmP4Pd+rEKOHpYF=KN=5v4WExpig@mail.gmail.com>
+        id S1726247AbgLGSkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 13:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgLGSkp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 13:40:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783C1C061749;
+        Mon,  7 Dec 2020 10:40:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=1vZ+rI2iiIkY3a+Mw7R3JaM5l1xXBwwdB8QTDmpgIbI=; b=Sn5wnNn2SXWUTTqQWS31UZMqZ3
+        TJuoqvmlY/Athf3xpxDn5aBX86hfgaIbPlCzrLdz3AxizeimhDjsxn0/bKOd+R4U2tDLU7xqwH3Cn
+        bhRZUSjdOjz/v+vpJRSieqYQFLyjX270ePMDCtFMDMrF/Sa0c7Zm5miRiOWH+KXQJyfvHUPJrbhRH
+        gQc6WppM8dfhQAQ7qwPxuPSyw+rnWzoPn8+O2KWDtuOV0qK8FOhuWUooo1Q1y9+nvEWD/KBTmA4c+
+        0fKjbuaoIxnTB7t/0kfOyxCzNQ29fd6SC3GOpBe0q3Vi8yuEwo+dM/2Re7qbslb/bEKMmoqyABZ4d
+        2nNdD5+Q==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmLQY-0001eA-Bb; Mon, 07 Dec 2020 18:40:02 +0000
+Subject: Re: linux-next: Tree for Dec 7 (bpf: sock_from_file)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florent Revest <revest@google.com>, bpf <bpf@vger.kernel.org>
+References: <20201207202520.3ced306c@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b8f2e76b-a35e-55c5-e937-eea81700c994@infradead.org>
+Date:   Mon, 7 Dec 2020 10:39:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtX2mu1tyE_898mQeEpmP4Pd+rEKOHpYF=KN=5v4WExpig@mail.gmail.com>
+In-Reply-To: <20201207202520.3ced306c@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 11:39:31AM +0800, Muchun Song wrote:
-> On Fri, Dec 4, 2020 at 7:49 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> > As previously mentioned, I feel qualified to review the hugetlb changes
-> > and some other closely related changes.  However, this patch set is
-> > touching quite a few areas and I do not feel qualified to make authoritative
-> > statements about them all.  I too hope others will take a look.
+On 12/7/20 1:25 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Agree. I also hope others can take a look at other modules(e.g.
-> sparse-vmemmap, memory-hotplug). Thanks for everyone's efforts
-> on this.
+> Changes since 20201204:
+> 
 
-I got sidetracked by some other stuff but I plan to continue reviewing
-this series.
 
-One thing that came to my mind is that if we do as David suggested in
-patch#4, and we move it towards the end to actually __enable__ this
-once all the infrastructure is there (unless hstate->nr_vmemmap_pages
-differs from 0 we should not be doing any work AFAIK), we could also
-move patch#6 to the end (right before the enablement), kill patch#7
-and only leave patch#13.
+on i386:
+# CONFIG_NET is not set
 
-The reason for that (killing patch#7 and leaving patch#13 only)
-is that it does not make much sense to me to disable PMD-mapped vmemmap
-depending on the CONFIG_HUGETLB_xxxxx as that is enabled by default
-to replace that later by the boot kernel parameter.
-It looks more natural to me to disable it when we introduce the kernel
-boot parameter, before the actual enablement of the feature.
+ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
+bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
 
-As I said, I plan to start the review again, but the order above would
-make more sense to me.
-
-thanks
 
 -- 
-Oscar Salvador
-SUSE L3
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
