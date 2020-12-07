@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CF82D14E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A632D14ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgLGPhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:37:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725774AbgLGPhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:37:52 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07AE4233CF;
-        Mon,  7 Dec 2020 15:37:10 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 10:37:08 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     Bean Huo <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-Message-ID: <20201207103708.66897ef3@gandalf.local.home>
-In-Reply-To: <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
-        <20201206164226.6595-4-huobean@gmail.com>
-        <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727096AbgLGPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:39:41 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38785 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgLGPjl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:39:41 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kmIbL-00006O-G8; Mon, 07 Dec 2020 15:38:59 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arch: fix spelling mistakes in Kconfig
+Date:   Mon,  7 Dec 2020 15:38:59 +0000
+Message-Id: <20201207153859.171441-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 07:57:27 +0000
-Avri Altman <Avri.Altman@wdc.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> > 
-> >         TP_printk(
-> > -               "%s: %s: HDR:%s, CDB:%s",
-> > +               "%s: %s: HDR:%s, %s:%s",
-> >                 __get_str(str), __get_str(dev_name),
-> >                 __print_hex(__entry->hdr, sizeof(__entry->hdr)),
-> > +               __get_str(tsf_type),  
-> This breaks what current parsers expects.
-> Why str is not enough to distinguish between the command?
+There are a few spelling mistakes in the Kconfig comments and help
+text. Fix these.
 
-Hopefully it shouldn't. Reading from user space should use the
-libtraceevent library, that reads the format files and extracts the raw
-data to find the fields. As long as the field exists, it should not break
-user space parsers. If it does, please let me know, and I'll gladly help
-change the user space code to use libtraceevent :-)
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/Kconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
--- Steve
+diff --git a/arch/Kconfig b/arch/Kconfig
+index f7f246e68ff5..a52f8e8d16ad 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -261,7 +261,7 @@ config ARCH_HAS_SET_DIRECT_MAP
+ 
+ #
+ # Select if the architecture provides the arch_dma_set_uncached symbol to
+-# either provide an uncached segement alias for a DMA allocation, or
++# either provide an uncached segment alias for a DMA allocation, or
+ # to remap the page tables in place.
+ #
+ config ARCH_HAS_DMA_SET_UNCACHED
+@@ -314,14 +314,14 @@ config ARCH_32BIT_OFF_T
+ config HAVE_ASM_MODVERSIONS
+ 	bool
+ 	help
+-	  This symbol should be selected by an architecure if it provides
++	  This symbol should be selected by an architecture if it provides
+ 	  <asm/asm-prototypes.h> to support the module versioning for symbols
+ 	  exported from assembly code.
+ 
+ config HAVE_REGS_AND_STACK_ACCESS_API
+ 	bool
+ 	help
+-	  This symbol should be selected by an architecure if it supports
++	  This symbol should be selected by an architecture if it supports
+ 	  the API needed to access registers and stack entries from pt_regs,
+ 	  declared in asm/ptrace.h
+ 	  For example the kprobes-based event tracer needs this API.
+@@ -336,7 +336,7 @@ config HAVE_RSEQ
+ config HAVE_FUNCTION_ARG_ACCESS_API
+ 	bool
+ 	help
+-	  This symbol should be selected by an architecure if it supports
++	  This symbol should be selected by an architecture if it supports
+ 	  the API needed to access function arguments from pt_regs,
+ 	  declared in asm/ptrace.h
+ 
+-- 
+2.29.2
+
