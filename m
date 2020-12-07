@@ -2,71 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C87C2D0EFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA3F2D0F01
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgLGL0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:26:15 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51912 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgLGL0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:26:15 -0500
-Received: by mail-wm1-f67.google.com with SMTP id v14so11164814wml.1;
-        Mon, 07 Dec 2020 03:25:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mfmcboZckOdLWRQK3WBau3Vthufoea/kKtobK7JGmPg=;
-        b=nz/Ct9zxqnbCtzBG32DKW/ZRMCWM74SOz2j7Ql3k18eT73mxqxcWHUuCQisNdKf4DC
-         fzaCCoMNzrxjr2Y5jzATAWfiv9dEHBaJ5LQSuVn2Lart+o2zTGsWcb5lM98ordP4eIZW
-         3PXnE36VayOYTdzGqbIAzPczWIyh57nE6lbNGRIWQBc1+zCVOapKbkT8XODtxxNPX7GP
-         Dj1qQiB2bCxUIaFecIxFQNVxCzkcuv3HgCkMQa5KF+qAQ0C73pXL0vObX7xAkUFe+lt9
-         yDOKWCcbSXpckufRugTPR9QQqg6bk6P49XAJefTUXoI359W3BpBAoKnq8vU1Afcoyvc9
-         rqgg==
-X-Gm-Message-State: AOAM533xjb4RWMtoYAurbhGcc4OH7FcVFa1Vrwl/UgJ0XPTZnlELdPP/
-        Wr2jqzYTFKNyHPctcdRzNSE=
-X-Google-Smtp-Source: ABdhPJw8llf8dkv6OsfI4BSs0d83qov7QbuSlkh81Aa8V9j8dJ3pqUUYa50qOUvlMXdH7p8UzAXWAg==
-X-Received: by 2002:a1c:ba07:: with SMTP id k7mr18110994wmf.34.1607340333953;
-        Mon, 07 Dec 2020 03:25:33 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id h15sm9690339wru.4.2020.12.07.03.25.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 03:25:33 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:25:31 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Stefan Eschenbacher <stefan.eschenbacher@fau.de>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        Max Stolze <max.stolze@fau.de>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kernel@i4.cs.fau.de
-Subject: Re: [PATCH] drivers/hv: remove obsolete TODO and fix misleading typo
- in comment
-Message-ID: <20201207112531.uyacqporhjk26hki@liuwe-devbox-debian-v2>
-References: <MW2PR2101MB1052B86A1C6C9A64E8DDBA6ED7F01@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <20201206104850.24843-1-stefan.eschenbacher@fau.de>
+        id S1726617AbgLGL2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:28:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:47794 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgLGL2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:28:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFF531042;
+        Mon,  7 Dec 2020 03:27:20 -0800 (PST)
+Received: from [10.57.63.221] (unknown [10.57.63.221])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 480A43F66B;
+        Mon,  7 Dec 2020 03:27:19 -0800 (PST)
+Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
+ the overflow of HiSilicon ETM
+To:     Qi Liu <liuqi115@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxarm@huawei.com
+References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
+ <20201204185551.GB1424711@xps15>
+ <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
+ <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
+ <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <d82f1200-c31f-1040-a630-57e132cabf1b@arm.com>
+Date:   Mon, 7 Dec 2020 11:27:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201206104850.24843-1-stefan.eschenbacher@fau.de>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 11:48:50AM +0100, Stefan Eschenbacher wrote:
-> Removes an obsolete TODO in the VMBus module and fixes a misleading typo
-> in the comment for the macro MAX_NUM_CHANNELS, where two digits have been
-> twisted.
+On 12/7/20 11:21 AM, Qi Liu wrote:
 > 
-> Signed-off-by: Stefan Eschenbacher <stefan.eschenbacher@fau.de>
-> Co-developed-by: Max Stolze <max.stolze@fau.de>
-> Signed-off-by: Max Stolze <max.stolze@fau.de>
+> Hi Suzuki,
+> On 2020/12/7 18:38, Suzuki K Poulose wrote:
+>> On 12/7/20 2:08 AM, Qi Liu wrote:
+>>> Hi Mathieu,
+>>>
+>>> On 2020/12/5 2:55, Mathieu Poirier wrote:
+>>>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
+>>>>> The ETM device can't keep up with the core pipeline when cpu core
+>>>>> is at full speed. This may cause overflow within core and its ETM.
+>>>>> This is a common phenomenon on ETM devices.
+>>>>>
+>>>>> On HiSilicon Hip08 platform, a specific feature is added to set
+>>>>> core pipeline. So commit rate can be reduced manually to avoid ETM
+>>>>> overflow.
+>>>>>
+>>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>>>> ---
+>>>>> Change since v1:
+>>>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+>>>>>     to keep specific feature off platforms which don't use it.
+>>>>> Change since v2:
+>>>>> - remove some unused variable.
+>>>>> Change since v3:
+>>>>> - use read/write_sysreg_s() to access register.
+>>>>> Change since v4:
+>>>>> - rename the call back function to a more generic name, and fix some
+>>>>>     compile warnings.
+>>>>>
+>>>>>    drivers/hwtracing/coresight/Kconfig                |  9 +++
+>>>>>    drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
+>>>>>    drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
+>>>>>    3 files changed, 105 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+>>>>> index c119824..1cc3601 100644
+>>>>> --- a/drivers/hwtracing/coresight/Kconfig
+>>>>> +++ b/drivers/hwtracing/coresight/Kconfig
+>>>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+>>>>>          To compile this driver as a module, choose M here: the
+>>>>>          module will be called coresight-etm4x.
+>>>>>
+>>>>> +config ETM4X_IMPDEF_FEATURE
+>>>>> +    bool "Control overflow impdef support in CoreSight ETM 4.x driver "
+>>>>> +    depends on CORESIGHT_SOURCE_ETM4X
+>>>>> +    help
+>>>>> +      This control provides overflow implement define for CoreSight
+>>>>> +      ETM 4.x tracer module which could not reduce commit race
+>>>>> +      automatically, and could avoid overflow within ETM tracer module
+>>>>> +      and its cpu core.
+>>>>> +
+>>>>>    config CORESIGHT_STM
+>>>>>        tristate "CoreSight System Trace Macrocell driver"
+>>>>>        depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+>>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> index abd706b..fcee27a 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> @@ -3,6 +3,7 @@
+>>>>>     * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+>>>>>     */
+>>>>>
+>>>>> +#include <linux/bitops.h>
+>>>>>    #include <linux/kernel.h>
+>>>>>    #include <linux/moduleparam.h>
+>>>>>    #include <linux/init.h>
+>>>>> @@ -28,7 +29,9 @@
+>>>>>    #include <linux/perf_event.h>
+>>>>>    #include <linux/pm_runtime.h>
+>>>>>    #include <linux/property.h>
+>>>>> +
+>>>>>    #include <asm/sections.h>
+>>>>> +#include <asm/sysreg.h>
+>>>>>    #include <asm/local.h>
+>>>>>    #include <asm/virt.h>
+>>>>>
+>>>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
+>>>>>        int rc;
+>>>>>    };
+>>>>>
+>>>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+>>>>> +
+>>>>> +#define HISI_HIP08_AMBA_ID        0x000b6d01
+>>>>> +#define ETM4_AMBA_MASK            0xfffff
+>>>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR    0x3000
+>>>>
+>>>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
+>>>> is set - is this intentional?  What is bit 13 for?
+>>>>
+>>> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
+>>> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
+>>> reduced to minimum value. So bit 12 and 13 should be cleared together in
+>>> etm4_hisi_config_core_commit().
+>>
+>> Please could you document this in the function.
+>>
+> of course, thanks.
+>>>
+>>> Qi
+>>>
+>>>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT    12
+>>>>> +#define HISI_HIP08_CORE_COMMIT_REG    sys_reg(3, 1, 15, 2, 5)
+>>>>> +
+>>>>> +struct etm4_arch_features {
+>>>>> +    void (*arch_callback)(bool enable);
+>>>>> +};
+>>>>> +
+>>>>> +static bool etm4_hisi_match_pid(unsigned int id)
+>>>>> +{
+>>>>> +    return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
+>>>>> +}
+>>>>> +
+>>>>> +static void etm4_hisi_config_core_commit(bool enable)
+>>>>> +{
+>>>>> +    u64 val;
+>>>>> +
+>>>>> +    val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
+>>>>> +    val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
+>>>>> +    val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
+>>
+>> I would use the explicitly masked values when you update
+>> a register.
+>>
+> ok, how about changing these code to this:
+> val &= ~GENMASK(12, 13);
 
-Applied to hyperv-next. Thanks.
+I would do :
 
-Wei.
+// Rename the HISI_HIP08_CORE_COMMIT_CLEAR to HISI_HIP08_CORE_COMMIT_MASK
+// above.
+#define HISI_HIP08_CORE_COMMIT_MASK		0x3000
+
+#define HISI_HIP08_CORE_COMMIT_FULL		0b00
+#define HISI_HIP08_CORE_COMMIT_LVL_1		0b01
+
+
+u8 commit = enable ? HISI_HIP08_CORE_COMMIT_LVL_1 : HISI_HIP08_CORE_COMMIT_FULL;
+
+...
+
+val |= commit << HISI_HIP08_CORE_COMMIT_SHIFT;
+
+..
+
+
+Suzuki
