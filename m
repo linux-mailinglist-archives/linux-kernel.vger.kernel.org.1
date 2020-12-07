@@ -2,185 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59BF2D0D41
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C752D0D46
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgLGJoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:44:03 -0500
-Received: from gofer.mess.org ([88.97.38.141]:45065 "EHLO gofer.mess.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgLGJoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:44:02 -0500
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 3F95FC63E5; Mon,  7 Dec 2020 09:43:20 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1607334200; bh=DZlMLoq4qsBnYniUp6Q77rn7ISx5VdIDUqFrvh/AOEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C+xHZ+8qF17KHekNtmRqS2tbivtDM9fWuBXML8c90oFI1R3OhmOl06zuZnP5dtimq
-         mc2xtpGxcjOFVeBFBU8vvm5oGnYb/XgXL+br2Zgo04nYiVvsKta64Xb6qMHodaq8oE
-         dULjdVMELCLHys+VpxUJj99GUhMrg+NLTgW2Qsao8nAw+ICop+BQWTKEFEn5zYw0eg
-         USwlhTI1zPwyLeqYABhGjrY4hdS8VBgmfXH0ydYG3ZmpwyAaVcURYMge9kgszs84vU
-         EKulVtGWYjdKgLuke56HXNPknrRAVXnD50bQeWLPpgJaprX2bJlXLLbAWjxpRQIlho
-         NOSnPBMfVBdKw==
-Date:   Mon, 7 Dec 2020 09:43:20 +0000
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, thierry.reding@gmail.com,
-        lee.jones@linaro.org, nsaenzjulienne@suse.de, f.fainelli@gmail.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201207094320.GA10460@gofer.mess.org>
-References: <20201129181050.p6rkif5vjoumvafm@pengutronix.de>
- <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
- <20201206141941.GA24807@gofer.mess.org>
- <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
+        id S1726492AbgLGJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:44:52 -0500
+Received: from mail-bn8nam11on2051.outbound.protection.outlook.com ([40.107.236.51]:11040
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725770AbgLGJow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:44:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lkL/HVRiNdVktu7svvCURwyfPWPG0/QjOepqfH/jqmbMqz24+M01+DF9AaFbPuawrz3Z2LPI3obathbFVQRlvj4IIdmwW6nd4ZJpV8UuoAGBC1KBMVIhlh/qGCLCbRK5J5jw3bdkrYmo8VdUF3ajYiRoM5FnJaqHbq2cvtAam5JwBMZ13hoEfCa3AHYCPX8mM63SVTCIuwsZP4krVCp9oyWqG3f4TTF0uNEE6Qc6Ibgr8gVRMX8LludCL1HsWesaVGDHybuywiiRabti3gYEN+Tu2xYZtiG1Fa13ozgK8yeWS7XBtoXH9qYh/z/Y+mmZEnxkgPR1hc2mQy4LboM3UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x/Yy1WOLNI7WGFe6bTMWyBcgy56mDktoCKquvexUJ8g=;
+ b=Ji1LyPUgsZUZY7RTFnq5tE3iLo+8KRf9fIVmnRFlnv7lEYWsjtt4Mu9TIHqBI2s7sKzVyL9jTjiljFrRZY/aQE7cRhovlSmy2ccJ9FBhxmdCK9+3LujjSorHJEYvH8UYd3Uykg+zGs0+UUJ2EbDozMFU8vgdmEP53oYUjbV8nj1HBW/64buzSC0jRJ4c1FYq8fzhGkPx9a9aAS87Q7639zwmpBkqYEmT72jpk7KD1UHHM09m6Ilf3glVkwIDC45Bsda306bIctJRNCuo884Tc2bO35bjSxvaFaP+nx/VLQ8KsnwpYY4551BrZe5hfxDthcmxs/Z033+LsI5CBBamEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x/Yy1WOLNI7WGFe6bTMWyBcgy56mDktoCKquvexUJ8g=;
+ b=LePS8ZAg+NkkQ78Ll0JtfUYBg4NnxNw/MtB66Ww76+KMvEk5tLobYYbI5I/b7Td/Vh06UVxaeCumUOu4rKYfbNzO7sqLmCKZTogB3LVmt7QP0NPQu89pMNuHTCB61SGeJJoOk+fhVM/oeggWqLy1p7ii06S/6L02HccAzPv7U4Y=
+Received: from BL1PR13CA0481.namprd13.prod.outlook.com (2603:10b6:208:2c7::6)
+ by MWHPR02MB2799.namprd02.prod.outlook.com (2603:10b6:300:107::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Mon, 7 Dec
+ 2020 09:43:59 +0000
+Received: from BL2NAM02FT009.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:2c7:cafe::a5) by BL1PR13CA0481.outlook.office365.com
+ (2603:10b6:208:2c7::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.10 via Frontend
+ Transport; Mon, 7 Dec 2020 09:43:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT009.mail.protection.outlook.com (10.152.77.68) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3632.21 via Frontend Transport; Mon, 7 Dec 2020 09:43:58 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 7 Dec 2020 01:43:43 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 7 Dec 2020 01:43:43 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ rajan.vaja@xilinx.com,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ robh+dt@kernel.org,
+ krzk@kernel.org,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ laurent.pinchart@ideasonboard.com
+Received: from [172.30.17.109] (port=44528)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kmD3W-0003T2-S1; Mon, 07 Dec 2020 01:43:43 -0800
+Subject: Re: [PATCH 06/12] arm64: dts: zynqmp: Add label for zynqmp_ipi
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>, Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <cover.1606917949.git.michal.simek@xilinx.com>
+ <272e23e0123f02c559bfa4ada9de73eb197aced8.1606917949.git.michal.simek@xilinx.com>
+ <X81fXtxvsc7KE7cK@pendragon.ideasonboard.com>
+ <X81forerb/QuXB2U@pendragon.ideasonboard.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <0c35fcf0-145e-b3a9-9af9-a5f60ede10c2@xilinx.com>
+Date:   Mon, 7 Dec 2020 10:43:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X81forerb/QuXB2U@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4659a6d8-e9c2-4380-33ec-08d89a949f25
+X-MS-TrafficTypeDiagnostic: MWHPR02MB2799:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <MWHPR02MB27995F94016BDF404AF6EEE4C6CE0@MWHPR02MB2799.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AandRqEsTWom7sbyi9PQ4dgf/Xi8DPaKi/j8oqfPjnEMpHcSWD/LD9DKZDalinXHKkn1vL/DzI52KUGPgtv2X1e2ZeblfzbVoepOlVozq1sBrhV5PJy7IcjEkWTKvT2Q2S0Em+5ZnAK+EiGxmKUojetvp29lGPJmMjZKttF9ZSu8SKNJAbQFAG4dOZkkJS4KQ1ew7W/azn+6tv7aINCxuu6O4mhLKBQhHum9ORT78yAkW8FSUo0GMPahZLDhaLFowk6Q2y6QKzwLelAOhYGkmfpoQWugRvXEkq2qaSsSI+lM8MUydegxCj4oZ8QL0fCXvAX7Q4Zrjturms6UUWai6iwHG5mv1iT0D2rgoUOgroJ5IRl7MD0mIfHGtuDtwM7cYJ9BGOHr99alzy7QkQdB3jYa48BgW9eDxdFldRzVtd0PdNC7puGCv9IXf2PFBtzxFqS2AZR409vMLg1UuXQlEw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39850400004)(136003)(376002)(396003)(346002)(46966005)(36756003)(26005)(8936002)(186003)(9786002)(44832011)(31686004)(316002)(36906005)(426003)(6666004)(478600001)(82310400003)(5660300002)(2906002)(336012)(82740400003)(110136005)(2616005)(70586007)(54906003)(4326008)(70206006)(47076004)(8676002)(356005)(7636003)(31696002)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 09:43:58.7358
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4659a6d8-e9c2-4380-33ec-08d89a949f25
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT009.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB2799
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hello Uwe,
 
-Thank you for taking the time to explain your thinking.
+On 06. 12. 20 23:48, Laurent Pinchart wrote:
+> On Mon, Dec 07, 2020 at 12:46:56AM +0200, Laurent Pinchart wrote:
+>> Hi Michal,
+>>
+>> Thank you for the patch.
+>>
+>> On Wed, Dec 02, 2020 at 03:06:05PM +0100, Michal Simek wrote:
+>>> Add label which is used by bootloader for adding bootloader specific flag.
+>>>
+>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+>>> ---
+>>>
+>>> U-Boot needs to add u-boot,dm-pre-reloc; property
+>>
+>> I'm not entirely sure what best practice rules are in this area, but
+>> shouldn't U-Boot locate the node by name instead of label ?
+> 
+> And regardless of what mechanism is used, it should be documented in the
+> bindings.
 
-On Mon, Dec 07, 2020 at 09:16:28AM +0100, Uwe Kleine-König wrote:
-> On Sun, Dec 06, 2020 at 02:19:41PM +0000, Sean Young wrote:
-> > On Sat, Dec 05, 2020 at 08:25:10PM +0100, Uwe Kleine-König wrote:
-> > > On Sat, Dec 05, 2020 at 05:34:44PM +0000, Sean Young wrote:
-> > > > What real life uses-cases are there for round down? If you want to round
-> > > > down, is there any need for round up?
-> > > 
-> > > The scenario I have in mind is for driving a motor. I have to admit
-> > > however that usually the period doesn't matter much and it's the
-> > > duty_cycle that defines the motor's speed. So for this case the
-> > > conservative behaviour is round-down to not make the motor run faster
-> > > than expected.
-> > 
-> > I am reading here that for driving motors, only the duty cycle matters,
-> > not the period.
-> 
-> There is an upper limit (usually around 1 ms) for the period, but if you
-> choose 0.1 ms or 0.001 ms doesn't matter much AFAICT.
-> 
-> @Thierry: Do you have further use cases in mind?
-> 
-> > > For other usecases (fan, backlight, LED) exactness typically doesn't
-> > > matter that much.
-> > 
-> > So, the use-cases you have are driving motor, fan, backlight, and led.
-> > And in all these cases the exact Hz does not matter.
-> > 
-> > The only uses case where the exact Hz does matter is pwm-ir-tx. 
-> > 
-> > So, I gather there are no use-cases for round-down. Yes, should round-down
-> > be needed, then this is more difficult to implement if the driver always
-> > does a round-closest. But, since there is no reason to have round-down,
-> > this is all academic.
-> > 
-> > Your policy of forcing new pwm drivers to use round-down is breaking
-> > pwm-ir-tx.
-> 
-> So you're indeed suggesting that the "right" rounding strategy for
-> lowlevel drivers should be:
-> 
->  - Use the period length closest to the requested period (in doubt round
->    down?)
->  - With the chosen period length use the biggest duty_cycle not bigger
->    than the requested duty_cycle.
-> 
-> While this seems technically fine I think for maintenance this is a
-> nightmare.
-> 
-> My preference would be to stick to the rounding strategy we used so far
-> (i.e.:
-> 
->  - Use the biggest period length not bigger than the requested period
->  - With the chosen period length use the biggest duty_cycle not bigger
->    than the requested duty_cycle.
-> 
-> ) and for pwm-ir-tx add support to the PWM API to still make it possible
-> (and easy) to select the best setting.
-> 
-> The reasons why I think that this rounding-down strategy is the best
-> are (in order of importance):
-> 
->  - It is easier to implement correctly [1]
+I don't think we should be documenting labels because names can be
+whatever. DT binding spec is just talking about name rules.
 
-Yes, you are right. You have given a great example where a simple
-DIV_ROUND_CLOSEST() does not give the result you want.
+6.2 chapter.
 
->  - Same rounding method for period and duty cycle
->  - most drivers already do this (I think)
-> 
-> The (IMHO nice) result would then mean:
-> 
->  - All consumers can get the setting they want; and
+A label shall be between - 1 to 31 characters in length, be composed
+only of the characters in the set Table 6.1, and must not start with a
+number.
 
-Once there is a nice pwm api for selecting round-nearest, then yes.
+- Table 6.1: Valid characters for DTS labels
+Character	Description
+0-9		digit
+a-z		lowercase letter
+A-Z		uppercase letter
+_		underscore
 
-For the uses cases you've given, fan, backlight, and led a round-nearest
-is the rounding they would want, I would expect.
-
->  - Code in lowlevel drivers is simple and the complexity is in common
->    code and so a single place.
-> 
-> And it would also allow the pwm-ir-tx driver to notice if the PWM to be
-> used can for example only support frequencies under 400 kHz.
-
-I doubt pwm-ir-tx cares about this, however it is a nice-to-have. It would
-also be nice if the rounding could be used with atomic configuration
-as well.
-
-Please let me know when/if this new API exists for pwm so that pwm-ir-tx
-can select the right rounding.
-
-> [1] Consider a PWM with a parent frequency of 66 MHz, to select the
->     period you can pick an integer divider "div" resulting in the period
->     4096 / (pclk * d). So the obvious implementation for round-nearest
->     would be:
-> 
->     	pclk = clk_get_rate(myclk);
-> 	div = DIV_ROUND_CLOSEST(NSEC_PER_SEC * 4096, targetperiod * pclk);
-
-Note NSEC_PER_SEC * 4096 >> 2^32 so this would need to be
-DIV_ROUND_CLOSEST_ULL.
-
->     , right?
-> 
->     With targetperiod = 2641 ns this picks div = 23 and so a period of
->     2698.2872200263505 ns (delta = 57.2872200263505 ns).
->     The optimal divider however is div = 24. (implemented period =
->     2585.8585858585857 ns, delta = 55.14141414141448 ns)
-> 
->     For round-down the correct implementation is:
-> 
->     	pclk = clk_get_rate(myclk);
-> 	div = DIV_ROUND_UP(NSEC_PER_SEC * 4096, targetperiod * pclk);
-> 
->     Exercise for the reader: Come up with a correct implementation for
->     "round-nearest" and compare its complexity to the round-down code.
-
-To be fair, I haven't been been able to come up with a solution without
-control flow.
-
-Thank you for an interesting conversation about this.
-
- 
-Sean
+Thanks,
+Michal
