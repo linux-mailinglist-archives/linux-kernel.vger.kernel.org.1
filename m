@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99AF2D1D7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB862D1D75
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgLGWik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:38:40 -0500
-Received: from mail-eopbgr760058.outbound.protection.outlook.com ([40.107.76.58]:62457
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727785AbgLGWik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:38:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N52ZQHCJ55NCsLxUSD8ESC9XVCqFZ5z69hlVqvnWOy2EkvaY1vjJyt4JHU8fexQz4IndfwmbOloIeeIwfZq45oifjN9zFupDyAVzHACWkwP/PCg7E4bpvHZH+PLHWPllgT0MpFAP9uAr8L1ra4/Cqsb0RDV8fYNUW8/zJW8IjNitCG4f3L5N0blxmou/Za+5SxLlACegFVUdyzWle+HlVDpmDN4HsuiZ49DFvPRp9O9pJkmH5p+z68gLMz763wrDPMc/TJwtW0GnH2Wzq8x4wBLDwfUHUOgoBOtAlb/oUsNrDWuHfYLsXJvIRL7J/N2MW7hdSe5dCqjsO+Fi057e3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEQ0wqp9bp9VQT35GabU9pffixk7osnVtkmYsDMiSjg=;
- b=HJ8SD7tz381Vo1LgkMTkP2uiFTtBil64IGaNcJeFQ6catISCo8GgUYvYnVXZvkVvIIiUopQZEoUl84qVBEaMH3ePHFnDT2AmQSeV12yN/jWKfjyJgGfafjeHSAQI/TbclF/MudWTORaV/oWMOifsAt/a7BrDYmIKUc2gTej6s02IsPb919tkJEVU7Jqu/6t6egwb6/zxZiI9uMMKtx/xj4EGN5ZH3aZe+FP8OUEWrlsDVOM120r95Y81FVJXIEI3wo+0cWPPhOdBTMNCsT0HgT7IIwr3bFQp/e+bJwbG7cFx2tI4GyKWmcD3l0PXJ8MqNMd7mDUY3+JCPilhQOrkQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEQ0wqp9bp9VQT35GabU9pffixk7osnVtkmYsDMiSjg=;
- b=qLk+3Rn8A1AU765csXPukI//kMRtdwuL0zvSwFvKtT7cJbRWe7EusYNbo6YzF5kNbypUk0t84abh/TcNZ6afXywwGplOyzhw2y80JDd4WzXqFH2DM64RzkONYJfbh8KiOxJHRA64f4o7ZN2N5s7zgtlZ24fFOsbdouISCzB5QqE=
-Authentication-Results: tencent.com; dkim=none (message not signed)
- header.d=none;tencent.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN6PR12MB2624.namprd12.prod.outlook.com (2603:10b6:805:70::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Mon, 7 Dec
- 2020 22:37:46 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece%3]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
- 22:37:45 +0000
-Subject: [PATCH 0/2] x86: Add the feature Virtual SPEC_CTRL
-From:   Babu Moger <babu.moger@amd.com>
-To:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de
-Cc:     fenghua.yu@intel.com, tony.luck@intel.com, wanpengli@tencent.com,
-        kvm@vger.kernel.org, thomas.lendacky@amd.com, peterz@infradead.org,
-        seanjc@google.com, joro@8bytes.org, x86@kernel.org,
-        kyung.min.park@intel.com, linux-kernel@vger.kernel.org,
-        krish.sadhukhan@oracle.com, hpa@zytor.com, mgross@linux.intel.com,
-        vkuznets@redhat.com, kim.phillips@amd.com, wei.huang2@amd.com,
-        jmattson@google.com
-Date:   Mon, 07 Dec 2020 16:37:42 -0600
-Message-ID: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
-User-Agent: StGit/0.17.1-dirty
+        id S1727898AbgLGWi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgLGWiZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 17:38:25 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3165AC061749;
+        Mon,  7 Dec 2020 14:37:45 -0800 (PST)
+Date:   Mon, 07 Dec 2020 22:37:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607380663;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NiWpngYQqA3mJsocQ433sIYBnMyXSWCQGbbHEOQ9Z34=;
+        b=ol2RgoFwwI2s4oCAQPdJGoKYr5IqWVLXOO3eM8XhPjhbJOntohVrXQ6+DfCcyDdLdy3I0l
+        ZSqoUCIxTlYv/dwK4hUuUzayD97iozsvViP0s9ttwCN3DRsfs2MiK2Bk1XOgYnICUNpyQw
+        28LPL3t7x3ERtiujrum4xKJyUrf11dKSs8TmTd+xJ5agcpMFAak3kkk84zLXCuq2hrjdbA
+        m6VNZjL4gEpsmKpEU7MxjuY5dt/eokNTan4nfmL/IsySRrbuJw5MfwAUvqPzq8WBY/MU3O
+        PDJQPr/aIFdoSAXcqz3Y6CziUZG86oa68/aK1CSEf0iF/Kieik/y3lU3VYD3Gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607380663;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NiWpngYQqA3mJsocQ433sIYBnMyXSWCQGbbHEOQ9Z34=;
+        b=zdcvIqRfb9Nooj/FwZIrh4krswJPxMi66guvlZvWUKYY3vh8f0Jun5gYOCNrtjVDn9UEBp
+        0R1SOM6zNc5xheDQ==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/uv: Update sysfs documentation
+Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201128034227.120869-6-mike.travis@hpe.com>
+References: <20201128034227.120869-6-mike.travis@hpe.com>
+MIME-Version: 1.0
+Message-ID: <160738066226.3364.16068740086522542201.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR14CA0017.namprd14.prod.outlook.com
- (2603:10b6:610:60::27) To SN1PR12MB2560.namprd12.prod.outlook.com
- (2603:10b6:802:26::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [127.0.1.1] (165.204.77.1) by CH2PR14CA0017.namprd14.prod.outlook.com (2603:10b6:610:60::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Mon, 7 Dec 2020 22:37:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c59130bc-2708-47ff-c9c7-08d89b00b7d1
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2624:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB262488E28B70D62F8307E0C095CE0@SN6PR12MB2624.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c18iB9MIl2TbT3iyCC6YDC28IfS4RA4uiVgR4zN+vvh/MyLW4bdF6Vrgl4tynzwJqYI9exnC4NG2P7/8lNC8RvLucUdnyXqGYK/qiOlbJCwk2rpuOBpdwhyUt4rZTAe8NZddye6BoMf9nMWKxndoSUwyNLyrcmoqMlkYzHWD/ID1IzE3t0A6sdbgwFKCvaIojK0Mh6zPKqe1b4btvCEU4PNtF99YsRJkI1qmCx1A/0rKn8T+QiFbmym7WHqaZtTI8P6vpMGpp8WU1jMydCQe55WaGvFER2YKi/tmw0vPze3VoaIQi9/RtBwH+w4UECXp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(366004)(346002)(136003)(376002)(39860400002)(7416002)(8676002)(66946007)(5660300002)(66556008)(86362001)(478600001)(66476007)(83380400001)(16526019)(33716001)(8936002)(26005)(52116002)(103116003)(6486002)(44832011)(9686003)(316002)(2906002)(956004)(4326008)(4744005)(186003)(16576012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eWZuYWJkM3k0NHZJQzdHcDJNOE5QUjlUNEFEbG8reXBhcmx6WDZtQmFjL29C?=
- =?utf-8?B?VzRQL0o4WjRJUzJad2QyRTB1R2JkQi9wcU5HbXBZMUNlT0g2TDkzSkp2c0ln?=
- =?utf-8?B?aDJpYjI0ZWdmQXd4ZGEvRzYyNWVtWnRCb2haOGhlanBzY05Xdk1yQXhiS21U?=
- =?utf-8?B?K080VU5iamtxdDVEWFVqL3ZFd1l3UHMrK1NPU3k4WitjeElIZHhtZzJDdXZO?=
- =?utf-8?B?RFBKTStGeTNSTG05dDlZV3FZQk9Memc4Q29NcjE0Wmp1ekg3ZytJeGVOOEQr?=
- =?utf-8?B?eE9KTDBVV1U2VmhjSVplNFpnSW5kSTRPcjd1OHl1Qm5GbVRKbW9FaDBObHRF?=
- =?utf-8?B?NDhpeUFsY2s0dDdLUUVMWXZmOUk2T1gzWjhuTGlVNFArV1FOd3ppU2hKV2No?=
- =?utf-8?B?UjVpaFFZTzJNRlNqRzk3VGg2cm9jU3dwNjNoS1JXaVRJbDFjazdFSzRCbER1?=
- =?utf-8?B?M0tlQ3JkV2xsNUtFYUdZTFk1djZVZTdiNVk1bE9VL0JhS0R6RDJqMGRob1h6?=
- =?utf-8?B?V1RFMkVZeVRXMy9EM0ord3N3MWFiWUlJYklzOW51b09RVXoyUEpqc2ZZdnoy?=
- =?utf-8?B?SmpMbmtCZDY3T0VWWkM3WFdBYUE5L1hYUSt3a3NwK0RXQ1Y4eGludjhLV0Yx?=
- =?utf-8?B?OGM1TUFiZ0xOKzhqL0w1M2FNYUk1UDVpMEZMNTNSc1ZMVjZONTdhc2dUOGVK?=
- =?utf-8?B?cmNzMVNLNk4xN1FCV2JpRmpOVENBbGxwSnZsMkQ0aEE2WXhUTVlDMzZLaGhn?=
- =?utf-8?B?R0dDMFRXR1E2ci94NFN5WEZrZmJvNmpvWkxTRVNnSjUzaFFYbksvMk9zMUs5?=
- =?utf-8?B?bmZsdDAyZVZjM3Q3SHdVVVJwNGlNMVBJektYZklBYVdaV0Z0a0RMNmlnd3FK?=
- =?utf-8?B?WHdQbHNlSmduZlllY3ZqblpqZnlCQWxCUjlqaWduS0tXamNlMExBWkJNRjlQ?=
- =?utf-8?B?Q0xCa2JQc1d0Wnd5MnZWUnJrN3pWRXlZM2ZnVXg4eHdmKzlVTjA4b1docjI5?=
- =?utf-8?B?LzVuOXozc0R3RHN3clUzTE5SaFlvZVNIUEgwbkJ4a3ZmMXNiTE52WEg1ZEZO?=
- =?utf-8?B?OW44L25wbTdNSGRGaGd2emhwTmxMUDM0c0N1NGxRZjFMY085bDlhcENoWnFt?=
- =?utf-8?B?YlY0VkJEL3dyQmdhcXZWcEtDK05KM3Jsb1d6djg1RHB4MjVQMEhwY1lscDdw?=
- =?utf-8?B?N0hYektLWGw0bk96OTBRT0JyWFdqbWRUcEVQdDZMcVpqRmd4VzFEMUoxZzAy?=
- =?utf-8?B?Wm9mMmRqaGlpK1M1R2JFSWJIaXZOdjFXS2paeE5xWFpBZ21WSU5ocVhwS0xD?=
- =?utf-8?Q?D+B99xwCaD3nXgIn6yld36zWYku9k7rla7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 22:37:45.7680
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: c59130bc-2708-47ff-c9c7-08d89b00b7d1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /GsrYGQ0v/a9LFFjy6s0LZiaF9etV2IqhhDohHxJpHUhR+SH2tx1miMfcnB66Ikt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2624
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newer AMD processors have a feature to virtualize the use of
-the SPEC_CTRL MSR. The series adds the feature support and
-enables the feature on SVM.
+The following commit has been merged into the x86/platform branch of tip:
+
+Commit-ID:     c9624cb7db1c418cbdc8fd2cde6835f83cd0f8a2
+Gitweb:        https://git.kernel.org/tip/c9624cb7db1c418cbdc8fd2cde6835f83cd0f8a2
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Fri, 27 Nov 2020 21:42:27 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 07 Dec 2020 21:19:20 +01:00
+
+x86/platform/uv: Update sysfs documentation
+
+Update sysfs documentation file to include moved /proc leaves.
+
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lkml.kernel.org/r/20201128034227.120869-6-mike.travis@hpe.com
 ---
+ Documentation/ABI/testing/sysfs-firmware-sgi_uv | 16 ++++++++++++++++-
+ 1 file changed, 16 insertions(+)
 
-Babu Moger (2):
-      x86/cpufeatures: Add the Virtual SPEC_CTRL feature
-      KVM: SVM: Add support for Virtual SPEC_CTRL
-
-
- arch/x86/include/asm/cpufeatures.h |    1 +
- arch/x86/kvm/svm/svm.c             |   17 ++++++++++++++---
- 2 files changed, 15 insertions(+), 3 deletions(-)
-
---
+diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+index 351b1f4..637c668 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
++++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+@@ -7,10 +7,25 @@ Description:
+ 
+ 		Under that directory are a number of read-only attributes::
+ 
++			archtype
++			hub_type
++			hubless
+ 			partition_id
+ 			coherence_id
+ 			uv_type
+ 
++		The archtype entry contains the UV architecture type that
++		is used to select arch-dependent addresses and features.
++		It can be set via the OEM_ID in the ACPI MADT table or by
++		UVsystab entry both passed from UV BIOS.
++
++		The hub_type entry is used to select the type of hub which is
++		similar to uv_type but encoded in a binary format.  Include
++		the file uv_hub.h to get the definitions.
++
++		The hubless entry basically is present and set only if there
++		is no hub.  In this case the hub_type entry is not present.
++
+ 		The partition_id entry contains the partition id.
+ 		UV systems can be partitioned into multiple physical
+ 		machines, which each partition running a unique copy
+@@ -24,6 +39,7 @@ Description:
+ 
+ 		The uv_type entry contains the hub revision number.
+ 		This value can be used to identify the UV system version::
++			"0.*" = Hubless UV ('*' is subtype)
+ 
+ 			"3.0" = UV2
+ 			"5.0" = UV3
