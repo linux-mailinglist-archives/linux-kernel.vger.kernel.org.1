@@ -2,251 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183CD2D117C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3F32D117F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgLGNMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLGNMc (ORCPT
+        id S1726406AbgLGNMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:12:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19226 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725915AbgLGNMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:12:32 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDF0C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 05:11:52 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id e23so8822062pgk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xr2Bcp6E+mmoL8y2467sdPkluiPUdvKaThS4YyY4J9c=;
-        b=K0epKsTZU+gLms7McnmepszSabhIoYU0zdwL0UKK1d+felGnBD0CH+ZdkS4HeiiO/l
-         uDqKR5u/TKZao2Dzv3DZL/jQ9/MntB3uozS/zyfezOJIHOUKT/e1ftRmCZPamUDHx6f7
-         /A49te3pHnt1lrsXZaiSH1+3Somyck6aHOxIxNEIPwt2BidbLFhsiYJ74ICw4nT4hlE9
-         lmx6ibRuk1XVKY8brpow1UX+5s9m9oKBUaQF3NeJsX8NhgZzSgOZ9N/7UUBoEk+rARZF
-         qMaiBRxMSqmHeAZkBkkkwL2UrWERydhEZzbQPRpXnaT2rT+B74UfmHjrpig/fEODMAED
-         1ZLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xr2Bcp6E+mmoL8y2467sdPkluiPUdvKaThS4YyY4J9c=;
-        b=pRAG30qc16SKvB8g6hjNlHIIoAZhqlxC1JwbC9sEewlnIdXX1QSLexDHPFBbpgy17w
-         BIaW/tj+A2G4C2eblsg+CwGDh9FaX5TxZ73kDoR0Lff/kM1fI053GQJ0jcoZWXmDa3cc
-         BPrq8mlSydCXuUCCbW7ZuIn0t39E5i+lYH4VIp3IHCeWZMEj3FCr24E31pcFguS4o9BE
-         URsh7vdKl/xlhBW/9QITqJnr41Eev+h06nYsykq7Pzeclw6uFXUfRQyNtZglNkWk+u9k
-         p3YaGwFHVLmciPJ4NLgQmzaMamTrtxpysXqHWgwZDXmYQfgKvMxHHkqF0z+X8DJbZru3
-         pXwQ==
-X-Gm-Message-State: AOAM533oT8d+x3BBfXpeXfKc3mUKL4sYw9DDMxjvT7VkoiRPjp91CdJA
-        QC8tgnIwkV/oHIcceR3YxaWD4+dQjfFibu171OzslQ==
-X-Google-Smtp-Source: ABdhPJwFQJZwos1WHpu2T1DlTqj0rkNPRW85TAeseGcC3/az3B3qPL6ZDfmEThgrDNp/pQC7ZQiLk8EnliD9tn22E10=
-X-Received: by 2002:a63:1203:: with SMTP id h3mr14789369pgl.273.1607346711799;
- Mon, 07 Dec 2020 05:11:51 -0800 (PST)
+        Mon, 7 Dec 2020 08:12:45 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7D2Bx4045870;
+        Mon, 7 Dec 2020 08:11:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=WHXphbVjeJDgHgn5XibvhdAbLfM2z0E3WZL+Rif4r44=;
+ b=ami/VGSc794gvTQDhcZ41lA3gYpjOV6vQx/ruOr1qmAkOeygTOoocNboiA985grf8YD0
+ fww8Jy3ik91krDd1KbqSgk1I0v0UGuNdVA6oiDdJE7hHXb4vqSdL3jnsrhdFfL5Tz/Kx
+ 6FCr8R3Hp9FiGgGdGcOxjDXEBUgi8I18TCnoYBTN1ynEdCzYjYKcozOhV+2qjX8GGBKK
+ cnOtkqEXmL5/D3OlUYGwiHZt09+O3jLL/Dt1ryx6AWyUptl6hjSq6BG51ZCZlwKbuFMm
+ v0zNv+EiXoVfpCMs8BoQrf3MAdol3biYY0X6exTC9C2Lc3+Oz9UxNQ8+fFKyBEmf1nqw hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 359m8x9mf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 08:11:45 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7D2Bhu045828;
+        Mon, 7 Dec 2020 08:11:45 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 359m8x9mek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 08:11:45 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7D6aDK029563;
+        Mon, 7 Dec 2020 13:11:43 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3581fhjgnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 13:11:43 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7DBfPv9306794
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Dec 2020 13:11:41 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F122A405C;
+        Mon,  7 Dec 2020 13:11:41 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0DBAA4060;
+        Mon,  7 Dec 2020 13:11:38 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon,  7 Dec 2020 13:11:38 +0000 (GMT)
+Date:   Mon, 7 Dec 2020 18:41:38 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
+ map/list for L2 cache
+Message-ID: <20201207131138.GJ528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-5-songmuchun@bytedance.com> <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
-In-Reply-To: <8505f01c-ad26-e571-b464-aedfd1bd9280@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 7 Dec 2020 21:11:15 +0800
-Message-ID: <CAMZfGtXXHnso53-OZNotOnkZu1VX8WbBY66z2ynwVzcTZb44tQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v7 04/15] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_11:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ suspectscore=1 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 malwarescore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 8:36 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 30.11.20 16:18, Muchun Song wrote:
-> > Every HugeTLB has more than one struct page structure. The 2M HugeTLB
-> > has 512 struct page structure and 1G HugeTLB has 4096 struct page
-> > structures. We __know__ that we only use the first 4(HUGETLB_CGROUP_MIN_ORDER)
-> > struct page structures to store metadata associated with each HugeTLB.
-> >
-> > There are a lot of struct page structures(8 page frames for 2MB HugeTLB
-> > page and 4096 page frames for 1GB HugeTLB page) associated with each
-> > HugeTLB page. For tail pages, the value of compound_head is the same.
-> > So we can reuse first page of tail page structures. We map the virtual
-> > addresses of the remaining pages of tail page structures to the first
-> > tail page struct, and then free these page frames. Therefore, we need
-> > to reserve two pages as vmemmap areas.
-> >
-> > So we introduce a new nr_free_vmemmap_pages field in the hstate to
-> > indicate how many vmemmap pages associated with a HugeTLB page that we
-> > can free to buddy system.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > ---
-> >  include/linux/hugetlb.h |   3 ++
-> >  mm/Makefile             |   1 +
-> >  mm/hugetlb.c            |   3 ++
-> >  mm/hugetlb_vmemmap.c    | 129 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  mm/hugetlb_vmemmap.h    |  20 ++++++++
-> >  5 files changed, 156 insertions(+)
-> >  create mode 100644 mm/hugetlb_vmemmap.c
-> >  create mode 100644 mm/hugetlb_vmemmap.h
-> >
-> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > index ebca2ef02212..4efeccb7192c 100644
-> > --- a/include/linux/hugetlb.h
-> > +++ b/include/linux/hugetlb.h
-> > @@ -492,6 +492,9 @@ struct hstate {
-> >       unsigned int nr_huge_pages_node[MAX_NUMNODES];
-> >       unsigned int free_huge_pages_node[MAX_NUMNODES];
-> >       unsigned int surplus_huge_pages_node[MAX_NUMNODES];
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +     unsigned int nr_free_vmemmap_pages;
-> > +#endif
-> >  #ifdef CONFIG_CGROUP_HUGETLB
-> >       /* cgroup control files */
-> >       struct cftype cgroup_files_dfl[7];
-> > diff --git a/mm/Makefile b/mm/Makefile
-> > index ed4b88fa0f5e..056801d8daae 100644
-> > --- a/mm/Makefile
-> > +++ b/mm/Makefile
-> > @@ -71,6 +71,7 @@ obj-$(CONFIG_FRONTSWAP)     += frontswap.o
-> >  obj-$(CONFIG_ZSWAP)  += zswap.o
-> >  obj-$(CONFIG_HAS_DMA)        += dmapool.o
-> >  obj-$(CONFIG_HUGETLBFS)      += hugetlb.o
-> > +obj-$(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)      += hugetlb_vmemmap.o
-> >  obj-$(CONFIG_NUMA)   += mempolicy.o
-> >  obj-$(CONFIG_SPARSEMEM)      += sparse.o
-> >  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 1f3bf1710b66..25f9e8e9fc4a 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -42,6 +42,7 @@
-> >  #include <linux/userfaultfd_k.h>
-> >  #include <linux/page_owner.h>
-> >  #include "internal.h"
-> > +#include "hugetlb_vmemmap.h"
-> >
-> >  int hugetlb_max_hstate __read_mostly;
-> >  unsigned int default_hstate_idx;
-> > @@ -3206,6 +3207,8 @@ void __init hugetlb_add_hstate(unsigned int order)
-> >       snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
-> >                                       huge_page_size(h)/1024);
-> >
-> > +     hugetlb_vmemmap_init(h);
-> > +
-> >       parsed_hstate = h;
-> >  }
-> >
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > new file mode 100644
-> > index 000000000000..51152e258f39
-> > --- /dev/null
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -0,0 +1,129 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Free some vmemmap pages of HugeTLB
-> > + *
-> > + * Copyright (c) 2020, Bytedance. All rights reserved.
-> > + *
-> > + *     Author: Muchun Song <songmuchun@bytedance.com>
-> > + *
-> > + * The struct page structures (page structs) are used to describe a physical
-> > + * page frame. By default, there is a one-to-one mapping from a page frame to
-> > + * it's corresponding page struct.
-> > + *
-> > + * The HugeTLB pages consist of multiple base page size pages and is supported
-> > + * by many architectures. See hugetlbpage.rst in the Documentation directory
-> > + * for more details. On the x86 architecture, HugeTLB pages of size 2MB and 1GB
-> > + * are currently supported. Since the base page size on x86 is 4KB, a 2MB
-> > + * HugeTLB page consists of 512 base pages and a 1GB HugeTLB page consists of
-> > + * 4096 base pages. For each base page, there is a corresponding page struct.
-> > + *
-> > + * Within the HugeTLB subsystem, only the first 4 page structs are used to
-> > + * contain unique information about a HugeTLB page. HUGETLB_CGROUP_MIN_ORDER
-> > + * provides this upper limit. The only 'useful' information in the remaining
-> > + * page structs is the compound_head field, and this field is the same for all
-> > + * tail pages.
-> > + *
-> > + * By removing redundant page structs for HugeTLB pages, memory can returned to
-> > + * the buddy allocator for other uses.
-> > + *
-> > + * When the system boot up, every 2M HugeTLB has 512 struct page structs which
-> > + * size is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
->
->
-> You should try to generalize all descriptions regarding differing base
-> page sizes. E.g., arm64 supports 4k, 16k, and 64k base pages.
+* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:47]:
 
-Will do. Thanks.
+> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+> 
+> 
+> Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+> ---
+> 
+> +extern bool thread_group_shares_l2;
+>  /*
+>   * On big-core systems, each core has two groups of CPUs each of which
+>   * has its own L1-cache. The thread-siblings which share l1-cache with
+>   * @cpu can be obtained via cpu_smallcore_mask().
+> + *
+> + * On some big-core systems, the L2 cache is shared only between some
+> + * groups of siblings. This is already parsed and encoded in
+> + * cpu_l2_cache_mask().
+>   */
+>  static const struct cpumask *get_big_core_shared_cpu_map(int cpu, struct cache *cache)
+>  {
+>  	if (cache->level == 1)
+>  		return cpu_smallcore_mask(cpu);
+> +	if (cache->level == 2 && thread_group_shares_l2)
+> +		return cpu_l2_cache_mask(cpu);
+> 
+>  	return &cache->shared_cpu_map;
 
->
-> [...]
->
-> > @@ -0,0 +1,20 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Free some vmemmap pages of HugeTLB
-> > + *
-> > + * Copyright (c) 2020, Bytedance. All rights reserved.
-> > + *
-> > + *     Author: Muchun Song <songmuchun@bytedance.com>
-> > + */
-> > +#ifndef _LINUX_HUGETLB_VMEMMAP_H
-> > +#define _LINUX_HUGETLB_VMEMMAP_H
-> > +#include <linux/hugetlb.h>
-> > +
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +void __init hugetlb_vmemmap_init(struct hstate *h);
-> > +#else
-> > +static inline void hugetlb_vmemmap_init(struct hstate *h)
-> > +{
-> > +}
-> > +#endif /* CONFIG_HUGETLB_PAGE_FREE_VMEMMAP */
-> > +#endif /* _LINUX_HUGETLB_VMEMMAP_H */
-> >
->
-> This patch as it stands is rather sub-optimal. I mean, all it does is
-> add documentation and print what could be done.
->
-> Can we instead introduce the basic infrastructure and enable it via this
-> patch on top, where we glue all the pieces together? Or is there
-> something I am missing?
+As pointed with lkp@intel.org, we need to do this only with #CONFIG_SMP,
+even for cache->level = 1 too.
 
-Maybe we can make the config of CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-default n in the Kconfig. When everything is ready, then make it
-default to y. Right?
+I agree that we are displaying shared_cpu_map correctly. Should we have also
+update /clear shared_cpu_map in the first place. For example:- If for a P9
+core with CPUs 0-7, the cache->shared_cpu_map for L1 would have 0-7 but
+would display 0,2,4,6.
+
+The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
+be released. Is this as expected?
 
 
->
-> --
-> Thanks,
->
-> David / dhildenb
->
-
-
---
-Yours,
-Muchun
+-- 
+Thanks and Regards
+Srikar Dronamraju
