@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4502D12B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11712D12BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgLGN4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:56:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55280 "EHLO mail.kernel.org"
+        id S1726862AbgLGN6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:58:38 -0500
+Received: from muru.com ([72.249.23.125]:49820 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgLGN4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:56:45 -0500
-Date:   Mon, 7 Dec 2020 14:57:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607349365;
-        bh=j86uMV4nyGVtSMouy6rinWH1bQBectAHXQddmRlgCYE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yvf2FXmbvhSfU3lAlqtKMVjqPy8dj8msx3z87M9FMABLA4qNe1fID7Yb5BSLYmYGr
-         MK3qeZTi1wf55JabHQVoST0ArIR/CcOQbHeKEJQCjAbUNMmoGs17QwxrvTVcuBX+4V
-         K9n33H95RReOfR/ah0mbNgYtDHqeOt/3V/BufnJc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Adam Borowski <kilobyte@angband.pl>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Jann Horn <jannh@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: Remove dead termiox code
-Message-ID: <X840u5K1Y2kIHnQR@kroah.com>
-References: <20201203020331.2394754-1-jannh@google.com>
- <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
- <X8nwnXQKOYWBWBZ+@kroah.com>
- <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
- <X8n1JiDS8ZVA6e6o@kroah.com>
- <8e993706-46e2-cbed-265f-1ba63cc9274d@kernel.org>
- <X8n8+Dhi9RT4bfHk@kroah.com>
- <20201207101904.GC2265@angband.pl>
+        id S1726234AbgLGN6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:58:38 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id A8EF98057;
+        Mon,  7 Dec 2020 13:58:04 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 15:57:53 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during
+ probe
+Message-ID: <20201207135753.GA26857@atomide.com>
+References: <20201204095539.31705-1-andreas@kemnade.info>
+ <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
+ <20201204171428.0a011188@aktux>
+ <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207101904.GC2265@angband.pl>
+In-Reply-To: <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:19:04AM +0100, Adam Borowski wrote:
-> On Fri, Dec 04, 2020 at 10:10:16AM +0100, Greg Kroah-Hartman wrote:
-> > On Fri, Dec 04, 2020 at 09:51:07AM +0100, Jiri Slaby wrote:
-> > > > > > On Fri, Dec 04, 2020 at 08:22:41AM +0100, Jiri Slaby wrote:
-> > > > > > > On 03. 12. 20, 3:03, Jann Horn wrote:
-> > > > > > > > Delete this dead code; but leave the definition of struct termiox in the
-> > > > > > > > UAPI headers intact.
-> [was snipped]
-> > > > > > > I am thinking -- can/should we mark the structure as deprecated so that                                 
-> > > > > > > userspace stops using it eventually?   
+* Doug Anderson <dianders@chromium.org> [201204 16:43]:
+> Hi,
 > 
-> > > Note this ^^^^^. He is talking about _not_ touching the definition in the
-> > > UAPI header. Does the rest below makes more sense now?
-> > 
-> > No, I'm still confused :)
-> > 
-> > We can't touch the UAPI definitions, but the fact that this api never
-> > did anything still is ok as after this patch it continues to not do
-> > anything.
-> > 
-> > I'm confused as to what you are proposing...
+> On Fri, Dec 4, 2020 at 8:14 AM Andreas Kemnade <andreas@kemnade.info> wrote:
+> >
+> > > > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
+> > >
+> > > From the description it sounds like this problem has always existed
+> > > but the async probe just tickled it reliably.  Seems like it'd make
+> > > sense to tag the "Fixes" as some earlier commit so you make sure your
+> > > fix gets picked to kernels even if they don't have the async probe
+> > > patch?
+> > >
+> >
+> > Hmm, maybe
+> > Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
+> > pm_runtime after probe defer")
+> >
+> > But on the other hand to stable branches only such patches are applied
+> > which solve pratical problems not only theoretical problems. But maybe
+> > it solves several random issues where nobody took care to debug them.
+> >
+> > That would be since v4.11.
 > 
-> The UAPI definition can't be removed, but it would be nice to issue a
-> compiler _warning_ if it's ever used.
-> 
-> Like eg. __attribute__ ((deprecated))
+> I guess maybe best is to include both.  Then if someone is debugging
+> why their async probe is failing they will notice this commit, but
+> they also might decide to pick it earlier just to be safe...
 
-Don't add build warnings for no good reasons, that's not nice.  As the
-feature just doesn't work, anyone who tries to use it will very quickly
-realize that :)
+OK I'll add the above fixes tag too and apply this into fixes.
 
-thanks,
+Thanks,
 
-greg k-h
+Tony
