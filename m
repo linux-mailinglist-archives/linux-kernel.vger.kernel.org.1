@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43FA2D1DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CCC2D1DF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgLGXBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgLGXBE (ORCPT
+        id S1728182AbgLGXBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:01:03 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:42653 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgLGXBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:01:04 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C06C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:00:18 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id w6so11867284pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Dh1XEUZFU0rBKI4unyY9sbzctjuDcRhFnopkgAiigbE=;
-        b=Crdm1AuR/AUnMxd5S5qi2l8vPo/5dlF+feJsw3b7wSKRiNdN04dm9KZrnr8Cn1zyNC
-         1o/hOb87HC2zstxizFekv2tddydn4uwp6g+OUuqaUiaS+Sq9GyHJ/O0no7iE93aBJURv
-         ajY/+Xj7QnrzP4hceOLgjF/nNm1K6KvhVCovmoMdHu/zISTXDpfvbM7P3tJdfZ4IG3KI
-         u1SWpWB7Y4T/FKzAA7Q3LsMv5TSK2SCkkyCaIgggtValFKjnBj4qP96KjZbHVR+6pufJ
-         vDjOGK2CDUQWY6ExsyBHQnKd0wWGXMdMBPKxWMEHyYeaQ6L7f29YSdH8jVewc6U/BDn3
-         Sh3A==
+        Mon, 7 Dec 2020 18:01:03 -0500
+Received: by mail-oo1-f67.google.com with SMTP id g20so1733349oos.9;
+        Mon, 07 Dec 2020 15:00:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=Dh1XEUZFU0rBKI4unyY9sbzctjuDcRhFnopkgAiigbE=;
-        b=Wjo29uN63aHFoIvZXQm4u+gyIh06P/S1/Mim/9tQKSFsLNFuwKn35jm93ufV+gyXDV
-         O0aNGBjSLXx+hJOI+j6+D6sA3sEVzsCdSyKturpHb5V0eugLcyfkA9JD8PFVNEl90Yqw
-         zgSPwE6Qu5JkawGUQ8bx3lBFdQv6JN0uU0xSw3NKECJN0tkkwjWR5XIch1wvOugH3Qae
-         joapmvEwf+dnV///l58t3ynFkC4jiuCpYQYu4h5kTSOfS4vW1XiEIAt2Sifp4Lpefy68
-         dyL1JH6bzaPu+WkF9zmst3FWXQrEcdIcqShjUnOMK4N3nYRHlqvit9UBxDYUxHMHHubu
-         Fulw==
-X-Gm-Message-State: AOAM533bixW0hqySwk7pFmhgGtIOcJ8Cc0RGkw1MeggLaY9H2y2yKD2W
-        jvduL/3cit84ojBOX4LBMk/w7RsXX3RSaw==
-X-Google-Smtp-Source: ABdhPJyUEc2S6n+542AJ3SAwDElOHrAh2Bj8EgIz8EGoisOW/S6Z1jMcUNRPMByv9TBjaIOyM4ETFg==
-X-Received: by 2002:aa7:8d8b:0:b029:19e:1081:77af with SMTP id i11-20020aa78d8b0000b029019e108177afmr6461153pfr.78.1607382018107;
-        Mon, 07 Dec 2020 15:00:18 -0800 (PST)
-Received: from [192.168.1.9] ([122.174.249.115])
-        by smtp.gmail.com with ESMTPSA id i14sm13522636pgm.35.2020.12.07.15.00.16
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CFy+nG4iS5p2yYyKX/b5kvW6hcT/gqROUK6GrSdahRU=;
+        b=Y3RsbRbEEsyUaQJFowhv2rA2/Cd+vbJNuOoMj9BI+wYBS9SD3HGqSvPJuGSZ8fHW9T
+         CkQf/vc9xKvqd/NRY3+8AKni7UJLMU+R1oeL5zsQv4WBN1M3mBUUNZ9Cqmlyg+4U/+O+
+         q3XIURZqzHe3M7cTkQEsKlk9/SeE2YSHxxEvWhf8bWo2hplg9n1IZN6x1wbRpn6Oeidc
+         P4fkcLksuzDHBYxPM4FNmQxjPjrRBRCbcvj1XgHp/nikVcaF4qGUjaEZ7bAawzBKnSYw
+         1p3ElGuj1lec9s0/eOHnbGX00IjxYVWxLG2YjAaBUdjT6Hoq+TMFgVXSdxEIIk0uGjf7
+         donw==
+X-Gm-Message-State: AOAM530JAyZJ86fSfirIxtLV5b+Yj/y9lBpA0G7Adl/GUGkLkKhRnyAX
+        HxaTXxyhsTvhAz3jUYJ3TA==
+X-Google-Smtp-Source: ABdhPJzE//ECqTKe9WJx+3uBk86ScLYklU5dwJEKbOkkShMp6z+xNxpE+bs9r/ycNubVmOVXfDg91Q==
+X-Received: by 2002:a4a:a3cb:: with SMTP id t11mr8596364ool.30.1607382021970;
+        Mon, 07 Dec 2020 15:00:21 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o63sm2978041ooa.10.2020.12.07.15.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:00:17 -0800 (PST)
-Message-ID: <b65ca811947006b04e6027e30649c263a787323d.camel@rajagiritech.edu.in>
-Subject: [PROBLEM] kmemleak: 2 new suspected memory leaks
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     lkml <linux-kernel@vger.kernel.org>
-Date:   Tue, 08 Dec 2020 04:30:15 +0530
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Mon, 07 Dec 2020 15:00:20 -0800 (PST)
+Received: (nullmailer pid 1006890 invoked by uid 1000);
+        Mon, 07 Dec 2020 23:00:18 -0000
+Date:   Mon, 7 Dec 2020 17:00:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-mediatek <linux-mediatek@lists.infradead.org>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 5/5] dt-bindings: mfd: correct the node name of the panel
+ led
+Message-ID: <20201207230018.GA1006838@robh.at.kernel.org>
+References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
+ <20201204093813.1275-6-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204093813.1275-6-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello,
+On Fri, 04 Dec 2020 17:38:13 +0800, Zhen Lei wrote:
+> According to the definition in leds-pwm.yaml, the node name of each led
+> must match the regular expression "^led(-[0-9a-f]+)?$". "led" or "led-"
+> followed by a decimal or hexadecimal ID number.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-
-kmemleaks  found. see related information below...
-
-------------x------------------x------------------------>
-cat /sys/kernel/debug/kmemleak 
-unreferenced object 0xffff8881105d2348 (size 8):
-  comm "kunit_try_catch", pid 139, jiffies 4294898877 (age 6055.628s)
-  hex dump (first 8 bytes):
-    74 65 73 74 69 6e 67 00                          testing.
-  backtrace:
-    [<000000001d6f9546>] kmemdup+0x23/0x50
-    [<000000007157804e>] unpack_strdup+0xc7/0x140
-    [<000000000fcb0a94>]
-policy_unpack_test_unpack_strdup_with_null_name+0xd0/0x350
-    [<0000000043df290a>] kunit_try_run_case+0xa6/0x150
-    [<00000000c069ee6a>] kunit_generic_run_threadfn_adapter+0x2e/0x50
-    [<00000000929a25ad>] kthread+0x232/0x260
-    [<00000000e5de2862>] ret_from_fork+0x22/0x30
-unreferenced object 0xffff8881105d2bb8 (size 8):
-  comm "kunit_try_catch", pid 140, jiffies 4294898878 (age 6055.624s)
-  hex dump (first 8 bytes):
-    74 65 73 74 69 6e 67 00                          testing.
-  backtrace:
-    [<000000001d6f9546>] kmemdup+0x23/0x50
-    [<000000007157804e>] unpack_strdup+0xc7/0x140
-    [<00000000ba70df5f>]
-policy_unpack_test_unpack_strdup_with_name+0xc3/0x340
-    [<0000000043df290a>] kunit_try_run_case+0xa6/0x150
-    [<00000000c069ee6a>] kunit_generic_run_threadfn_adapter+0x2e/0x50
-    [<00000000929a25ad>] kthread+0x232/0x260
-    [<00000000e5de2862>] ret_from_fork+0x22/0x30
---------------------x------------------x--------------->
-
-Reported-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
+Reviewed-by: Rob Herring <robh@kernel.org>
