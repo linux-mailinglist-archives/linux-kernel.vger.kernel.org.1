@@ -2,207 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98DB2D0919
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAD42D0918
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 03:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgLGCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Dec 2020 21:05:54 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51378 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgLGCFy (ORCPT
+        id S1728690AbgLGCHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Dec 2020 21:07:21 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60898 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726484AbgLGCHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Dec 2020 21:05:54 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id ACA5220B717A;
-        Sun,  6 Dec 2020 18:05:11 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ACA5220B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607306712;
-        bh=/wrLiBA9WsJkzgbLLWy+FFywGFAHppwoQHpx39RlPbU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hx/3Fb0z7xtSOt/H40q4k6kFCruEzFQN6Lf3toiiC7pnKfQsG1fpaFsFM/VBSjC4+
-         5UHzHq4nmg5pcNJMTZdRDp05Oxm+fYqKNxVwm+xMWaaANwMcz+KxGe4Wis0occJIpB
-         qxjlvT1sai/3YN8+b++suj9Tc4UcqSte+WGjZhgw=
-Subject: Re: [PATCH v10 8/8] arm64: Add IMA log information in kimage used for
- kexec
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
-        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20201204195149.611-1-nramas@linux.microsoft.com>
- <20201204195149.611-9-nramas@linux.microsoft.com>
- <87ft4klyg7.fsf@manicouagan.localdomain>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <62543957-337a-aa23-4a09-b76ab82debd4@linux.microsoft.com>
-Date:   Sun, 6 Dec 2020 18:05:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 6 Dec 2020 21:07:21 -0500
+X-UUID: 1d920fce115943199f348517e9c42b71-20201207
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qxhSLKgKbXN693ZglsgKIMP65QasHS5TaIkBLPe+YKo=;
+        b=IRzpj717JLc0eNsEqao3DryxG6jHX+KT3VJdJn+8AidVm6ZoyzcZZQT6A/b67JmK95IAHoUjgY3DAA9erbG9XlpaLjFg/E2wpeojorGMBHFq9lgXDVr/0nkOCjuYPbTlLTOpaOlEozljFFRqA9iU0EANGe6Kf6OAwD8JecVk29w=;
+X-UUID: 1d920fce115943199f348517e9c42b71-20201207
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1935966801; Mon, 07 Dec 2020 10:06:33 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 7 Dec 2020 10:06:29 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Dec 2020 10:06:32 +0800
+Message-ID: <1607306792.22062.62.camel@mtksdccf07>
+Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "andreyknvl@google.com" <andreyknvl@google.com>,
+        "qcai@redhat.com" <qcai@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <walter-zh.wu@mediatek.com>
+Date:   Mon, 7 Dec 2020 10:06:32 +0800
+In-Reply-To: <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
+References: <20201204102206.20237-1-qiang.zhang@windriver.com>
+         <1607083295.22062.15.camel@mtksdccf07>
+         <20201204172521.ed9f77164ff9f9fc91f35ee0@linux-foundation.org>
+         <1607185035.22062.42.camel@mtksdccf07>
+         <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <87ft4klyg7.fsf@manicouagan.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/20 1:44 PM, Thiago Jung Bauermann wrote:
-> 
-> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-> 
->> Address and size of the buffer containing the IMA measurement log need
->> to be passed from the current kernel to the next kernel on kexec.
->>
->> Any existing "linux,ima-kexec-buffer" property in the device tree
->> needs to be removed and its corresponding memory reservation in
->> the currently running kernel needs to be freed. The address and
->> size of the current kernel's IMA measurement log need to be added
->> to the device tree's IMA kexec buffer node and memory for the buffer
->> needs to be reserved for the log to be carried over to the next kernel
->> on the kexec call.
->>
->> Add address and size fields to "struct kimage_arch" for ARM64 platform
->> to hold the address and size of the IMA measurement log buffer. Remove
->> any existing "linux,ima-kexec-buffer" property in the device tree and
->> free the corresponding memory reservation in the currently running
->> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
->> reserve the memory for storing the IMA log that needs to be passed from
->> the current kernel to the next one.
->>
->> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
->> that the IMA measurement log information is present in the device tree
->> for ARM64.
->>
->> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> 
-> Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> 
->> ---
->>   arch/arm64/Kconfig                     |  1 +
->>   arch/arm64/include/asm/ima.h           | 22 ++++++++++++++
->>   arch/arm64/include/asm/kexec.h         |  5 ++++
->>   arch/arm64/kernel/Makefile             |  1 +
->>   arch/arm64/kernel/ima.c                | 41 ++++++++++++++++++++++++++
->>   arch/arm64/kernel/machine_kexec_file.c |  8 +++++
->>   6 files changed, 78 insertions(+)
->>   create mode 100644 arch/arm64/include/asm/ima.h
->>   create mode 100644 arch/arm64/kernel/ima.c
->>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index 1515f6f153a0..bcca4a467eda 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -1094,6 +1094,7 @@ config KEXEC
->>   config KEXEC_FILE
->>   	bool "kexec file based system call"
->>   	select KEXEC_CORE
->> +	select HAVE_IMA_KEXEC
->>   	help
->>   	  This is new version of kexec system call. This system call is
->>   	  file based and takes file descriptors as system call argument
->> diff --git a/arch/arm64/include/asm/ima.h b/arch/arm64/include/asm/ima.h
->> new file mode 100644
->> index 000000000000..354adc8b444c
->> --- /dev/null
->> +++ b/arch/arm64/include/asm/ima.h
->> @@ -0,0 +1,22 @@
->> +/* SPDX-License-Identifier: GPL-2.0-or-later */
->> +/*
->> + * Copyright (C) 2019 Microsoft Corporation
-> 
-> Shouldn't the year here be 2020?
-
-Yes - will update.
-
->> + *
->> + * Author: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> + *
->> + */
->> +#ifndef _ASM_ARCH_IMA_H
->> +#define _ASM_ARCH_IMA_H
->> +
->> +struct kimage;
->> +
->> +#ifdef CONFIG_IMA_KEXEC
->> +extern int setup_ima_buffer(struct kimage *image, void *dtb, int off);
->> +#else
->> +static inline int setup_ima_buffer(struct kimage *image, void *dtb, int off)
->> +{
->> +	return 0;
->> +}
->> +#endif /* CONFIG_IMA_KEXEC */
->> +
->> +#endif /* _ASM_ARCH_IMA_H */
-> 
-> <snip>
-> 
->> diff --git a/arch/arm64/kernel/ima.c b/arch/arm64/kernel/ima.c
->> new file mode 100644
->> index 000000000000..d65bdbe1adf6
->> --- /dev/null
->> +++ b/arch/arm64/kernel/ima.c
->> @@ -0,0 +1,41 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * Copyright (C) 2016 IBM Corporation
-> 
-> Same question: shouldn't the year here be 2020?
-Yes. Also, should be "Copyright (C) 2020 Microsoft Corporation"
-Will make these changes.
-
-thanks,
-  -lakshmi
-
-> 
->> + *
->> + * Authors:
->> + * Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> + */
->> +
->> +#include <linux/kexec.h>
->> +#include <linux/of.h>
->> +#include <linux/libfdt.h>
->> +#include <asm/ima.h>
->> +
->> +/**
->> + * setup_ima_buffer - add IMA buffer information to the fdt
->> + *
->> + * @image:	kexec image being loaded.
->> + * @dtb:	Flattened device tree for the next kernel.
->> + * @off:	Offset to the chosen node.
->> + *
->> + * Return: 0 on success, or negative errno on error.
->> + */
->> +int setup_ima_buffer(struct kimage *image, void *dtb, int off)
->> +{
->> +	int ret = 0;
->> +
->> +	/* add ima-kexec-buffer */
->> +	if (image->arch.ima_buffer_size > 0) {
->> +		ret = fdt_appendprop_addrrange(dtb, 0, off,
->> +				"linux,ima-kexec-buffer",
->> +				image->arch.ima_buffer_addr,
->> +				image->arch.ima_buffer_size);
->> +		if (ret)
->> +			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
->> +
->> +		ret = fdt_add_mem_rsv(dtb, image->arch.ima_buffer_addr,
->> +				      image->arch.ima_buffer_size);
->> +	}
->> +
->> +	return ret;
->> +}
-> 
+T24gU2F0LCAyMDIwLTEyLTA1IGF0IDE3OjA5IC0wODAwLCBBbmRyZXcgTW9ydG9uIHdyb3RlOg0K
+PiBPbiBTdW4sIDYgRGVjIDIwMjAgMDA6MTc6MTUgKzA4MDAgS3Vhbi1ZaW5nIExlZSA8S3Vhbi1Z
+aW5nLkxlZUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPiBPbiBGcmksIDIwMjAtMTItMDQg
+YXQgMTc6MjUgLTA4MDAsIEFuZHJldyBNb3J0b24gd3JvdGU6DQo+ID4gPiBPbiBGcmksIDQgRGVj
+IDIwMjAgMjA6MDE6MzUgKzA4MDAgS3Vhbi1ZaW5nIExlZSA8S3Vhbi1ZaW5nLkxlZUBtZWRpYXRl
+ay5jb20+IHdyb3RlOg0KPiA+ID4gDQo+ID4gPiA+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL3F1
+YXJhbnRpbmUuYyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ID4gPiA+IGluZGV4IGQ5OGI1
+MTZmMzcyZi4uNTU3ODMxMjVhNzY3IDEwMDY0NA0KPiA+ID4gPiA+IC0tLSBhL21tL2thc2FuL3F1
+YXJhbnRpbmUuYw0KPiA+ID4gPiA+ICsrKyBiL21tL2thc2FuL3F1YXJhbnRpbmUuYw0KPiA+ID4g
+PiA+IEBAIC0xOTQsNyArMTk0LDYgQEAgYm9vbCBxdWFyYW50aW5lX3B1dChzdHJ1Y3Qga21lbV9j
+YWNoZSAqY2FjaGUsIHZvaWQgKm9iamVjdCkNCj4gPiA+ID4gPiAgDQo+ID4gPiA+ID4gIAlxID0g
+dGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGluZSk7DQo+ID4gPiA+ID4gIAlpZiAocS0+b2ZmbGlu
+ZSkgew0KPiA+ID4gPiA+IC0JCXFsaW5rX2ZyZWUoJm1ldGEtPnF1YXJhbnRpbmVfbGluaywgY2Fj
+aGUpOw0KPiA+ID4gPiA+ICAJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gPiA+ID4gPiAg
+CQlyZXR1cm4gZmFsc2U7DQo+ID4gDQo+ID4gSGkgQW5kcmV3LA0KPiA+IA0KPiA+IFJldHVybiBm
+YWxzZSB3aWxsIGNhdXNlIHNsYWIgYWxsb2NhdG9yIHRvIGZyZWUgdGhlIG9iamVjdC4NCj4gPiBU
+aHVzLCB3ZSBkbyBub3QgbmVlZCB0byBxbGlua19mcmVlIGhlcmUgdG8gZnJlZSBvYmplY3QgdHdp
+Y2UuDQo+ID4gDQo+ID4gVGhlIHJldHVybiB2YWx1ZSBpcyBpbnRyb2R1Y2VkIGZyb20gQW5kcmV5
+J3MgcGF0Y2guDQo+ID4gImthc2FuOiBzYW5pdGl6ZSBvYmplY3RzIHdoZW4gbWV0YWRhdGEgZG9l
+c24ndCBmaXQiDQo+ID4gDQo+ID4gDQo+ID4gPiA+ID4gIAl9DQo+ID4gPiA+IA0KPiA+ID4gPiBI
+aSBRaWFuZywNCj4gPiA+ID4gDQo+ID4gPiA+IFRoYW5rcyBmb3IgZml4aW5nIHRoaXMuDQo+ID4g
+PiA+IER1ZSB0byB0aGF0IGlzc3VlLCBteSBjb21taXQgaGFzIGJlZW4gcmVtb3ZlZCBieSBTdGVw
+aGVuIGZyb20NCj4gPiA+ID4gbGludXgtbmV4dC4NCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4g
+PiBIaSBTdGVwaGVuLCBBbmRyZXcsDQo+ID4gPiA+IA0KPiA+ID4gPiBTaG91bGQgSSBkaXJlY3Rs
+eSB1cGxvYWQgdGhlIHY0IG9yIFN0ZXBoZW4gY2FuIHBpY2sgdGhlIGNvbW1pdCB3aGljaCANCj4g
+PiA+ID4gaGFzIGJlZW4gcmVtb3ZlZCBiYWNrIHRvIHRoZSBsaW51eC1uZXh0Lg0KPiA+ID4gDQo+
+ID4gPiBJIHRvb2sgY2FyZSBvZiBpdC4gIFJlc3RvcmVkIHRoZSBvcmlnaW5hbCBwYXRjaCBhbmQg
+YWRkZWQgdGhpcyBvbmUgYXMgYQ0KPiA+ID4gLWZpeC4NCj4gPiANCj4gPiBUaGFua3MgZm9yIHRh
+a2luZyBjYXJlIG9mIGl0Lg0KPiA+IA0KPiA+IEkgdGhpbmsgdGhlcmUgYXJlIHNvbWUgcHJvYmxl
+bSBpbiB0aGUgcGF0Y2ggeW91IGp1c3QgcmVzdG9yZWQuDQo+ID4gSSBzYXcgdGhlIHJlc3RvcmVk
+IHBhdGNoIGlzIG5vdCBiYXNlZCBvbiBBbmRyZXkncyBwYXRjaCBhbmQgU3RlcGhlbidzDQo+ID4g
+Zml4IGNvbmZsaWN0IHBhdGNoLg0KPiA+IA0KPiA+IEJ1dCB0aGUgaXNzdWUgUWlhbmcgZml4ZWQg
+bmVlZCB0byBiZSBiYXNlZCBvbiB0aGUgQW5kcmV5J3MgcGF0Y2ggYW5kDQo+ID4gU3RlcGhlbidz
+IGZpeCBjb25mbGljdCBwYXRjaC4NCj4gPiAia2FzYW46IHNhbml0aXplIG9iamVjdHMgd2hlbiBt
+ZXRhZGF0YSBkb2Vzbid0IGZpdCINCj4gPiAia2FzYW4tcmVuYW1lLWdldF9hbGxvYy1mcmVlX2lu
+Zm8tZml4Ig0KPiA+IA0KPiA+IElmIHRoZSByZXN0b3JlZCBwYXRjaCBpcyBub3QgYmFzZWQgb24g
+dGhhdCwgaXQgbWF5IGNhdXNlIHNvbWUgcHJvYmxlbXMNCj4gPiBhbmQgY29uZmxpY3RzLg0KPiA+
+IA0KPiA+IEkgdGhpbmsgSSBjYW4gcHJlcGFyZSBhIHBhdGNoIHY0IGJhc2VkIG9uIEFuZHJleSdz
+IHBhdGNoLCBmaXggdGhlDQo+ID4gY29uZmxpY3QgYW5kIGluY2x1ZGUgdGhlIFFpYW5nJ3MgbW9k
+aWZpY2F0aW9uLg0KPiANCj4gSSdtIG5vdCBzdXJlIHdoYXQgeW91IG1lYW4gaGVyZS4gIFdoZW4g
+YXBweWluZyB0aGlzIGZpeCwgeWVzLCBJIGhhZCB0bw0KPiByZXBsYWNlICJtZXRhIiB3aXRoICJp
+bmZvIiwgb2YgY291cnNlLg0KPiANCj4gU28gdGhlIGNvbWJpbmVkIHBhdGNoLCB3aGljaCBJJ2Qg
+bGlrZSB0byBzZW5kIHRvIExpbnVzIG5leHQgd2VlayBpcyBhcw0KPiBiZWxvdy4gIElzIHRoZXJl
+IHNvbWV0aGluZyB3cm9uZyB3aXRoIGl0Pw0KPiANCg0KSXMgdGhpcyBjb21iaW5lZCBwYXRjaCBi
+YXNlZCBvbiBBbmRyZXkncyBwYXRjaD8NCg0KSWYgeWVzLCBBbmRyZXkncyBwYXRjaCBub3Qgb25s
+eSBjaGFuZ2UgdGhlICJpbmZvIiB0byAibWV0YSIgYnV0IGFsc28NCmludHJvZHVjZSB0aGUgcmV0
+dXJuIHZhbHVlLg0KSSB0aGluayB3ZSBuZWVkIHRvIGFkZCByZXR1cm4gdmFsdWUgb3IgaXQgd2ls
+bCBidWlsZCBlcnJvci4NCg0KPiANCj4gRnJvbTogS3Vhbi1ZaW5nIExlZSA8S3Vhbi1ZaW5nLkxl
+ZUBtZWRpYXRlay5jb20+DQo+IFN1YmplY3Q6IGthc2FuOiBmaXggb2JqZWN0IHJlbWFpbmluZyBp
+biBvZmZsaW5lIHBlci1jcHUgcXVhcmFudGluZQ0KPiANCj4gV2UgaGl0IHRoaXMgaXNzdWUgaW4g
+b3VyIGludGVybmFsIHRlc3QuICBXaGVuIGVuYWJsaW5nIGdlbmVyaWMga2FzYW4sIGENCj4ga2Zy
+ZWUoKSdkIG9iamVjdCBpcyBwdXQgaW50byBwZXItY3B1IHF1YXJhbnRpbmUgZmlyc3QuICBJZiB0
+aGUgY3B1IGdvZXMNCj4gb2ZmbGluZSwgb2JqZWN0IHN0aWxsIHJlbWFpbnMgaW4gdGhlIHBlci1j
+cHUgcXVhcmFudGluZS4gIElmIHdlIGNhbGwNCj4ga21lbV9jYWNoZV9kZXN0cm95KCkgbm93LCBz
+bHViIHdpbGwgcmVwb3J0ICJPYmplY3RzIHJlbWFpbmluZyIgZXJyb3IuDQo+IA0KPiBbICAgNzQu
+OTgyNjI1XSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiBbICAgNzQuOTgzMzgwXSBCVUcgdGVzdF9t
+b2R1bGVfc2xhYiAoTm90IHRhaW50ZWQpOiBPYmplY3RzIHJlbWFpbmluZyBpbiB0ZXN0X21vZHVs
+ZV9zbGFiIG9uIF9fa21lbV9jYWNoZV9zaHV0ZG93bigpDQo+IFsgICA3NC45ODQxNDVdIC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tDQo+IFsgICA3NC45ODQxNDVdDQo+IFsgICA3NC45ODQ4ODNdIERpc2Fi
+bGluZyBsb2NrIGRlYnVnZ2luZyBkdWUgdG8ga2VybmVsIHRhaW50DQo+IFsgICA3NC45ODU1NjFd
+IElORk86IFNsYWIgMHgoX19fX3B0cnZhbF9fX18pIG9iamVjdHM9MzQgdXNlZD0xIGZwPTB4KF9f
+X19wdHJ2YWxfX19fKSBmbGFncz0weDJmZmZmMDAwMDAwMTAyMDANCj4gWyAgIDc0Ljk4NjYzOF0g
+Q1BVOiAzIFBJRDogMTc2IENvbW06IGNhdCBUYWludGVkOiBHICAgIEIgICAgICAgICAgICAgNS4x
+MC4wLXJjMS0wMDAwNy1nNDUyNWM4NzgxZWMwLWRpcnR5ICMxMA0KPiBbICAgNzQuOTg3MjYyXSBI
+YXJkd2FyZSBuYW1lOiBsaW51eCxkdW1teS12aXJ0IChEVCkNCj4gWyAgIDc0Ljk4NzYwNl0gQ2Fs
+bCB0cmFjZToNCj4gWyAgIDc0Ljk4NzkyNF0gIGR1bXBfYmFja3RyYWNlKzB4MC8weDJiMA0KPiBb
+ICAgNzQuOTg4Mjk2XSAgc2hvd19zdGFjaysweDE4LzB4NjgNCj4gWyAgIDc0Ljk4ODY5OF0gIGR1
+bXBfc3RhY2srMHhmYy8weDE2OA0KPiBbICAgNzQuOTg5MDMwXSAgc2xhYl9lcnIrMHhhYy8weGQ0
+DQo+IFsgICA3NC45ODkzNDZdICBfX2ttZW1fY2FjaGVfc2h1dGRvd24rMHgxZTQvMHgzYzgNCj4g
+WyAgIDc0Ljk4OTc3OV0gIGttZW1fY2FjaGVfZGVzdHJveSsweDY4LzB4MTMwDQo+IFsgICA3NC45
+OTAxNzZdICB0ZXN0X3ZlcnNpb25fc2hvdysweDg0LzB4ZjANCj4gWyAgIDc0Ljk5MDY3OV0gIG1v
+ZHVsZV9hdHRyX3Nob3crMHg0MC8weDYwDQo+IFsgICA3NC45OTEyMThdICBzeXNmc19rZl9zZXFf
+c2hvdysweDEyOC8weDFjMA0KPiBbICAgNzQuOTkxNjU2XSAga2VybmZzX3NlcV9zaG93KzB4YTAv
+MHhiOA0KPiBbICAgNzQuOTkyMDU5XSAgc2VxX3JlYWQrMHgxZjAvMHg3ZTgNCj4gWyAgIDc0Ljk5
+MjQxNV0gIGtlcm5mc19mb3BfcmVhZCsweDcwLzB4MzM4DQo+IFsgICA3NC45OTMwNTFdICB2ZnNf
+cmVhZCsweGU0LzB4MjUwDQo+IFsgICA3NC45OTM0OThdICBrc3lzX3JlYWQrMHhjOC8weDE4MA0K
+PiBbICAgNzQuOTkzODI1XSAgX19hcm02NF9zeXNfcmVhZCsweDQ0LzB4NTgNCj4gWyAgIDc0Ljk5
+NDIwM10gIGVsMF9zdmNfY29tbW9uLmNvbnN0cHJvcC4wKzB4YWMvMHgyMjgNCj4gWyAgIDc0Ljk5
+NDcwOF0gIGRvX2VsMF9zdmMrMHgzOC8weGEwDQo+IFsgICA3NC45OTUwODhdICBlbDBfc3luY19o
+YW5kbGVyKzB4MTcwLzB4MTc4DQo+IFsgICA3NC45OTU0OTddICBlbDBfc3luYysweDE3NC8weDE4
+MA0KPiBbICAgNzQuOTk2MDUwXSBJTkZPOiBPYmplY3QgMHgoX19fX3B0cnZhbF9fX18pIEBvZmZz
+ZXQ9MTU4NDgNCj4gWyAgIDc0Ljk5Njc1Ml0gSU5GTzogQWxsb2NhdGVkIGluIHRlc3RfdmVyc2lv
+bl9zaG93KzB4OTgvMHhmMCBhZ2U9ODE4OCBjcHU9NiBwaWQ9MTcyDQo+IFsgICA3NS4wMDA4MDJd
+ICBzdGFja190cmFjZV9zYXZlKzB4OWMvMHhkMA0KPiBbICAgNzUuMDAyNDIwXSAgc2V0X3RyYWNr
+KzB4NjQvMHhmMA0KPiBbICAgNzUuMDAyNzcwXSAgYWxsb2NfZGVidWdfcHJvY2Vzc2luZysweDEw
+NC8weDFhMA0KPiBbICAgNzUuMDAzMTcxXSAgX19fc2xhYl9hbGxvYysweDYyOC8weDY0OA0KPiBb
+ICAgNzUuMDA0MjEzXSAgX19zbGFiX2FsbG9jLmlzcmEuMCsweDJjLzB4NTgNCj4gWyAgIDc1LjAw
+NDc1N10gIGttZW1fY2FjaGVfYWxsb2MrMHg1NjAvMHg1ODgNCj4gWyAgIDc1LjAwNTM3Nl0gIHRl
+c3RfdmVyc2lvbl9zaG93KzB4OTgvMHhmMA0KPiBbICAgNzUuMDA1NzU2XSAgbW9kdWxlX2F0dHJf
+c2hvdysweDQwLzB4NjANCj4gWyAgIDc1LjAwNzAzNV0gIHN5c2ZzX2tmX3NlcV9zaG93KzB4MTI4
+LzB4MWMwDQo+IFsgICA3NS4wMDc0MzNdICBrZXJuZnNfc2VxX3Nob3crMHhhMC8weGI4DQo+IFsg
+ICA3NS4wMDc4MDBdICBzZXFfcmVhZCsweDFmMC8weDdlOA0KPiBbICAgNzUuMDA4MTI4XSAga2Vy
+bmZzX2ZvcF9yZWFkKzB4NzAvMHgzMzgNCj4gWyAgIDc1LjAwODUwN10gIHZmc19yZWFkKzB4ZTQv
+MHgyNTANCj4gWyAgIDc1LjAwODk5MF0gIGtzeXNfcmVhZCsweGM4LzB4MTgwDQo+IFsgICA3NS4w
+MDk0NjJdICBfX2FybTY0X3N5c19yZWFkKzB4NDQvMHg1OA0KPiBbICAgNzUuMDEwMDg1XSAgZWww
+X3N2Y19jb21tb24uY29uc3Rwcm9wLjArMHhhYy8weDIyOA0KPiBbICAgNzUuMDExMDA2XSBrbWVt
+X2NhY2hlX2Rlc3Ryb3kgdGVzdF9tb2R1bGVfc2xhYjogU2xhYiBjYWNoZSBzdGlsbCBoYXMgb2Jq
+ZWN0cw0KPiANCj4gUmVnaXN0ZXIgYSBjcHUgaG90cGx1ZyBmdW5jdGlvbiB0byByZW1vdmUgYWxs
+IG9iamVjdHMgaW4gdGhlIG9mZmxpbmUNCj4gcGVyLWNwdSBxdWFyYW50aW5lIHdoZW4gY3B1IGlz
+IGdvaW5nIG9mZmxpbmUuICBTZXQgYSBwZXItY3B1IHZhcmlhYmxlIHRvDQo+IGluZGljYXRlIHRo
+aXMgY3B1IGlzIG9mZmxpbmUuDQo+IA0KPiBbcWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbTogZml4
+IHNsYWIgZG91YmxlIGZyZWUgd2hlbiBjcHUtaG90cGx1Z10NCj4gICBMaW5rOiBodHRwczovL2xr
+bWwua2VybmVsLm9yZy9yLzIwMjAxMjA0MTAyMjA2LjIwMjM3LTEtcWlhbmcuemhhbmdAd2luZHJp
+dmVyLmNvbQ0KPiBMaW5rOiBodHRwczovL2xrbWwua2VybmVsLm9yZy9yLzE2MDY4OTU1ODUtMTcz
+ODItMi1naXQtc2VuZC1lbWFpbC1LdWFuLVlpbmcuTGVlQG1lZGlhdGVrLmNvbQ0KPiBTaWduZWQt
+b2ZmLWJ5OiBLdWFuLVlpbmcgTGVlIDxLdWFuLVlpbmcuTGVlQG1lZGlhdGVrLmNvbT4NCj4gU2ln
+bmVkLW9mZi1ieTogWnFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29tPg0KPiBTdWdnZXN0
+ZWQtYnk6IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gUmVwb3J0ZWQtYnk6
+IEd1YW5neWUgWWFuZyA8Z3Vhbmd5ZS55YW5nQG1lZGlhdGVrLmNvbT4NCj4gUmV2aWV3ZWQtYnk6
+IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gQ2M6IEFuZHJleSBSeWFiaW5p
+biA8YXJ5YWJpbmluQHZpcnR1b3p6by5jb20+DQo+IENjOiBBbGV4YW5kZXIgUG90YXBlbmtvIDxn
+bGlkZXJAZ29vZ2xlLmNvbT4NCj4gQ2M6IE1hdHRoaWFzIEJydWdnZXIgPG1hdHRoaWFzLmJnZ0Bn
+bWFpbC5jb20+DQo+IENjOiBOaWNob2xhcyBUYW5nIDxuaWNob2xhcy50YW5nQG1lZGlhdGVrLmNv
+bT4NCj4gQ2M6IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiBDYzogUWlh
+biBDYWkgPHFjYWlAcmVkaGF0LmNvbT4NCj4gQ2M6IFN0ZXBoZW4gUm90aHdlbGwgPHNmckBjYW5i
+LmF1dWcub3JnLmF1Pg0KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4
+LWZvdW5kYXRpb24ub3JnPg0KPiAtLS0NCj4gDQo+ICBtbS9rYXNhbi9xdWFyYW50aW5lLmMgfCAg
+IDM5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNo
+YW5nZWQsIDM5IGluc2VydGlvbnMoKykNCj4gDQo+IC0tLSBhL21tL2thc2FuL3F1YXJhbnRpbmUu
+Y35rYXNhbi1maXgtb2JqZWN0LXJlbWFpbi1pbi1vZmZsaW5lLXBlci1jcHUtcXVhcmFudGluZQ0K
+PiArKysgYS9tbS9rYXNhbi9xdWFyYW50aW5lLmMNCj4gQEAgLTI5LDYgKzI5LDcgQEANCj4gICNp
+bmNsdWRlIDxsaW51eC9zcmN1Lmg+DQo+ICAjaW5jbHVkZSA8bGludXgvc3RyaW5nLmg+DQo+ICAj
+aW5jbHVkZSA8bGludXgvdHlwZXMuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9jcHVob3RwbHVnLmg+
+DQo+ICANCj4gICNpbmNsdWRlICIuLi9zbGFiLmgiDQo+ICAjaW5jbHVkZSAia2FzYW4uaCINCj4g
+QEAgLTQzLDYgKzQ0LDcgQEAgc3RydWN0IHFsaXN0X2hlYWQgew0KPiAgCXN0cnVjdCBxbGlzdF9u
+b2RlICpoZWFkOw0KPiAgCXN0cnVjdCBxbGlzdF9ub2RlICp0YWlsOw0KPiAgCXNpemVfdCBieXRl
+czsNCj4gKwlib29sIG9mZmxpbmU7DQo+ICB9Ow0KPiAgDQo+ICAjZGVmaW5lIFFMSVNUX0lOSVQg
+eyBOVUxMLCBOVUxMLCAwIH0NCj4gQEAgLTE4OCw2ICsxOTAsMTAgQEAgdm9pZCBxdWFyYW50aW5l
+X3B1dChzdHJ1Y3Qga2FzYW5fZnJlZV9tZQ0KDQpBbmRyZXkncyBwYXRjaCBjaGFuZ2VzIHRoZSBy
+ZXR1cm4gdmFsdWUgZnJvbSAidm9pZCIgdG8gImJvb2wiLg0KV2UgbmVlZCB0byByZXBsYWNlIHZv
+aWQgd2l0aCBib29sLg0KDQo+ICAJbG9jYWxfaXJxX3NhdmUoZmxhZ3MpOw0KPiAgDQo+ICAJcSA9
+IHRoaXNfY3B1X3B0cigmY3B1X3F1YXJhbnRpbmUpOw0KPiArCWlmIChxLT5vZmZsaW5lKSB7DQo+
+ICsJCWxvY2FsX2lycV9yZXN0b3JlKGZsYWdzKTsNCj4gKwkJcmV0dXJuOw0KDQpJIHRoaW5rIHdl
+IG5lZWQgdG8gcmV0dXJuIGZhbHNlIGhlcmUuIE90aGVyd2lzZSwgaXQgd2lsbCBsYWNrIHJldHVy
+bg0KdmFsdWUgYW5kIGNhdXNlIGJ1aWxkIGVycm9yLg0KDQo+ICsJfQ0KPiAgCXFsaXN0X3B1dChx
+LCAmaW5mby0+cXVhcmFudGluZV9saW5rLCBjYWNoZS0+c2l6ZSk7DQoNClRoaXMgImluZm8iIG1h
+eSBjYXVzZSBjb25mbGljdCBiZWNhdXNlIEFuZHJleSdzIHBhdGNoIGhhcyBhbHJlYWR5DQpjaGFu
+Z2VkIGl0IHRvICJtZXRhIi4NCg0KVGhhbmtzLg0KS3Vhbi1ZaW5nDQoNCj4gIAlpZiAodW5saWtl
+bHkocS0+Ynl0ZXMgPiBRVUFSQU5USU5FX1BFUkNQVV9TSVpFKSkgew0KPiAgCQlxbGlzdF9tb3Zl
+X2FsbChxLCAmdGVtcCk7DQo+IEBAIC0zMjgsMyArMzM0LDM2IEBAIHZvaWQgcXVhcmFudGluZV9y
+ZW1vdmVfY2FjaGUoc3RydWN0IGttZW0NCj4gIA0KPiAgCXN5bmNocm9uaXplX3NyY3UoJnJlbW92
+ZV9jYWNoZV9zcmN1KTsNCj4gIH0NCj4gKw0KPiArc3RhdGljIGludCBrYXNhbl9jcHVfb25saW5l
+KHVuc2lnbmVkIGludCBjcHUpDQo+ICt7DQo+ICsJdGhpc19jcHVfcHRyKCZjcHVfcXVhcmFudGlu
+ZSktPm9mZmxpbmUgPSBmYWxzZTsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGlj
+IGludCBrYXNhbl9jcHVfb2ZmbGluZSh1bnNpZ25lZCBpbnQgY3B1KQ0KPiArew0KPiArCXN0cnVj
+dCBxbGlzdF9oZWFkICpxOw0KPiArDQo+ICsJcSA9IHRoaXNfY3B1X3B0cigmY3B1X3F1YXJhbnRp
+bmUpOw0KPiArCS8qIEVuc3VyZSB0aGUgb3JkZXJpbmcgYmV0d2VlbiB0aGUgd3JpdGluZyB0byBx
+LT5vZmZsaW5lIGFuZA0KPiArCSAqIHFsaXN0X2ZyZWVfYWxsLiBPdGhlcndpc2UsIGNwdV9xdWFy
+YW50aW5lIG1heSBiZSBjb3JydXB0ZWQNCj4gKwkgKiBieSBpbnRlcnJ1cHQuDQo+ICsJICovDQo+
+ICsJV1JJVEVfT05DRShxLT5vZmZsaW5lLCB0cnVlKTsNCj4gKwliYXJyaWVyKCk7DQo+ICsJcWxp
+c3RfZnJlZV9hbGwocSwgTlVMTCk7DQo+ICsJcmV0dXJuIDA7DQo+ICt9DQo+ICsNCj4gK3N0YXRp
+YyBpbnQgX19pbml0IGthc2FuX2NwdV9xdWFyYW50aW5lX2luaXQodm9pZCkNCj4gK3sNCj4gKwlp
+bnQgcmV0ID0gMDsNCj4gKw0KPiArCXJldCA9IGNwdWhwX3NldHVwX3N0YXRlKENQVUhQX0FQX09O
+TElORV9EWU4sICJtbS9rYXNhbjpvbmxpbmUiLA0KPiArCQkJCWthc2FuX2NwdV9vbmxpbmUsIGth
+c2FuX2NwdV9vZmZsaW5lKTsNCj4gKwlpZiAocmV0IDwgMCkNCj4gKwkJcHJfZXJyKCJrYXNhbiBj
+cHUgcXVhcmFudGluZSByZWdpc3RlciBmYWlsZWQgWyVkXVxuIiwgcmV0KTsNCj4gKwlyZXR1cm4g
+cmV0Ow0KPiArfQ0KPiArbGF0ZV9pbml0Y2FsbChrYXNhbl9jcHVfcXVhcmFudGluZV9pbml0KTsN
+Cj4gXw0KPiANCg0K
 
