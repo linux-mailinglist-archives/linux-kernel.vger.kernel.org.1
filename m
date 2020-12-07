@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745AB2D1151
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:05:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 722BC2D1153
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgLGNEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:04:43 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:34928 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725887AbgLGNEm (ORCPT
+        id S1726174AbgLGNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:04:55 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9114 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgLGNEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:04:42 -0500
-Received: by mail-oi1-f193.google.com with SMTP id s2so5805283oij.2;
-        Mon, 07 Dec 2020 05:04:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ut/OIWcow1J1PvHgj0c7ammj9jk0luua/Mc152cxEy4=;
-        b=EfZN0d/Z6zQ44rfFsUdAR7X8lHd6vfsgkpXfgT6HPyqTSOpXdtciZn9jk1wsL2FKfc
-         KHQOwtdzkxr7cul7lvFHwikMWizZmRvgUjLHO0x2F4hIlw1g1ooOBVbImVqiCN6qkJwZ
-         s4xlq0NtdG7zHIAc92Jyj1Ack/cL7Ha/MeTU6LZXb1YQhuT3GEswKm9ROZXo6MkU8vMf
-         Dp9BRdMUE/G87AToUy8TWC+emN69yOKt3qsrdrfOYMj8hNpKIYPmCD4+g9RhNbeGyDD5
-         L8g/g5R8bZt1VFRkxC0Vhp0aojlTaop62FnqM52MGM1m+k7LuRLnFySAE5eGTBJrmePs
-         72tw==
-X-Gm-Message-State: AOAM533lmEKYkrK+tyluNOMRVvS0jmAOfatwJbq4ECQ2hqd1SnYppmKP
-        ZQLMT60TkpcyxIjQzSj+Zy6pxmnwp74bmycEVZQ=
-X-Google-Smtp-Source: ABdhPJwV+W1n5BWDJ0nTI3mLI5J0M90gUs6wmLPAH66XyN1CQ6Eq5MlP79FHkY8HpNBQ29hMlMw42dagE5GAch7qZ0A=
-X-Received: by 2002:aca:5a42:: with SMTP id o63mr11747869oib.69.1607346235827;
- Mon, 07 Dec 2020 05:03:55 -0800 (PST)
+        Mon, 7 Dec 2020 08:04:54 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqNm435ljzM1ZM;
+        Mon,  7 Dec 2020 21:03:32 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
+ 21:04:03 +0800
+Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Serge Semin <fancer.lancer@gmail.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
+ <20201130112250.GK4077@smile.fi.intel.com>
+ <63f7dcc4-a924-515a-2fea-31ec80f3353e@huawei.com>
+ <20201205221522.ifjravnir5bzmjff@mobilestation>
+ <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <8592c7f0-a9e9-f48c-e9e4-0e24e22b3f57@huawei.com>
+Date:   Mon, 7 Dec 2020 21:04:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <20201205170403.31827-1-djrscally@gmail.com>
-In-Reply-To: <20201205170403.31827-1-djrscally@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 7 Dec 2020 14:03:39 +0100
-Message-ID: <CAJZ5v0hWD0BgHQPZXqpzpVq2hfLnt3vmK2tOeNFyKdUNMYdSQw@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to
- terminate resources walks"
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACRpkdawv2NUahn2gniH=29T6qqqFYSa53giC01PS1wq91+Ksg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 7:42 PM Daniel Scally <djrscally@gmail.com> wrote:
->
-> This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
->
-> Switching this function to AE_CTRL_TERMINATE broke the documented
-> behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
-> fact, terminate the resource walk because acpi_walk_resource_buffer()
-> ignores it (specifically converting it to AE_OK), referring to that
-> value as "an OK termination by the user function". This means that
-> acpi_dev_get_resources() does not abort processing when the preproc
-> function returns a negative value.
->
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
->  drivers/acpi/resource.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-> index ad04824ca3ba..f2f5f1dc7c61 100644
-> --- a/drivers/acpi/resource.c
-> +++ b/drivers/acpi/resource.c
-> @@ -541,7 +541,7 @@ static acpi_status acpi_dev_process_resource(struct acpi_resource *ares,
->                 ret = c->preproc(ares, c->preproc_data);
->                 if (ret < 0) {
->                         c->error = ret;
-> -                       return AE_CTRL_TERMINATE;
-> +                       return AE_ABORT_METHOD;
->                 } else if (ret > 0) {
->                         return AE_OK;
->                 }
-> --
 
-Applied as 5.11 material, thanks!
+On 2020/12/6 23:02, Linus Walleij wrote:
+> On Sat, Dec 5, 2020 at 11:15 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+>
+>> Hmm, that sounds like a problem, but the explanation is a bit unclear
+>> to me. AFAICS you are saying that the only callbacks which are
+>> called during the IRQ request/release are the irq_enable(), right? If
+>> so then the only reason why we haven't got a problem reported due to
+>> that so far is that the IRQs actually unmasked by default.
+> What we usually do in cases like that (and I have discussed this
+> with tglx in the past I think) is to simply mask off all IRQs in probe().
+> Then they will be unmasked when requested by drivers.
+
+
+Yes, I agree. but in this case I mean that they will not unmasked when 
+drivers request IRQ.
+
+Drivers request IRQ will only call irq_enable(), so if we mask all IRQ 
+in gpio-dwab.'s probe(),
+
+no one will unmask the IRQ for drivers.
+
+
+Thanks
+
+Jiaxing
+
+
+>
+> See e.g. gpio-pl061 that has this line in probe():
+> writeb(0, pl061->base + GPIOIE); /* disable irqs */
+>
+> Yours,
+> Linus Walleij
+>
+> .
+>
+
