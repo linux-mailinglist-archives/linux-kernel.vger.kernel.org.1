@@ -2,80 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9902D15C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2982D15CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgLGQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:13:56 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:22651 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgLGQNz (ORCPT
+        id S1727518AbgLGQOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgLGQOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:13:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607357615; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=H803Z0R7dhayR0kWE4+s9SS+7NVSNXeDXAosN8Vh0gI=;
- b=j0Dt3aEcg/Y10ioNH1pfR439YVB2n+9Gi2ETRi90/hojMaCQ58S0+7yPSnXp98S0Ob0hFX5X
- cEY0WqDVDigaWAU6clR5+ehld9PkmgfnNP20+sCvlYWRVsboFsfeP5dBcVF6HH98BgRiATY0
- 6F6v/izpD1DI8DIfOPwcvm+dQs4=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fce54afaac94550973d15cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 07 Dec 2020 16:13:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 310C9C43467; Mon,  7 Dec 2020 16:13:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE1CEC43461;
-        Mon,  7 Dec 2020 16:13:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE1CEC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Mon, 7 Dec 2020 11:14:55 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93695C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:14:14 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m5so3675505wrx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xM+aZywcBdvQBaUe17dR3sYjKTkJecfKmvE4vEcfQUk=;
+        b=tyrt6UO/mpDDN7h9qGocCXtFmEhnc4MsX7ndpcelJWl+gHXXz8IoS8fRe76cY3QwvN
+         MSfJbywxm5/M33t3zJWC3YJ0dqEeGV0Mjse8/YEjj+1BvyVWThtDalGlZkPD1G3/yLiq
+         mS0ds8bXBwbD1ZMxGjvr/GLn8jMy4jn3lbIpMWqevsTnV7m5283G/F/l1/0vJfzKkhI4
+         OaATnaI9l6deeQ8rPUGaMn6DecsgkB3G8tYi43OvpWxzhcDQvEpAjZ9tjBo6q0rki7eu
+         VPvFmh9i+ejUShkiZ9ZLu6jblbKJiigp+lGuKEErFVnMVkkikVDbgcoPg/dCQicLT+Dw
+         VNag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xM+aZywcBdvQBaUe17dR3sYjKTkJecfKmvE4vEcfQUk=;
+        b=ZMZ5psfHth5PckNdtfIuMM/XC9CCZA30JvWe75GLf903F9pj8cS0mErFOclwIelmjs
+         JAd7ssPHLC5XQaVhLVHx8wJZDHpF+Tst9XsIVanyY7JXqDDFH/g6Pxx8yPLf6KrCFqWc
+         U+TbIPJ6ukTT0IUEu8L3XbEFihY1mYbE7ayECnlYEHudxkQCjyKzGUn/x+2ObSGW6RGi
+         9GkCNyjqyk5qmv4p6Yqg4v/tkhLhJZXfxeI8DF9OC8E2yGdmAjsCh8XxpN/6v4s2HZiE
+         PmeHKEXPu/X477UwWW/DocaU3hGMgG9+MLwMrKHk0fPANwqJEP46TGxrDEA2PAJQ65K0
+         j0Pw==
+X-Gm-Message-State: AOAM532ARv4d25BceZzFo5NqYzOpIRZsdAeJN9Z8sJ07dKViQOdGzPEK
+        VBTvcoVdRxFwru1S0ynndvfsNw==
+X-Google-Smtp-Source: ABdhPJw0SotK4YNvCfpZ+5ItfAFM5DVAoZ/JbPzjaIaeIRWGg0MQWlQOsHvzuoyKJnyjG5tfP7LUKA==
+X-Received: by 2002:adf:8b8f:: with SMTP id o15mr20750726wra.311.1607357653084;
+        Mon, 07 Dec 2020 08:14:13 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f7sm357577wmc.1.2020.12.07.08.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 08:14:12 -0800 (PST)
+Date:   Mon, 7 Dec 2020 16:14:08 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
+Message-ID: <X85U0AcIbTdw7UAO@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-11-jackmanb@google.com>
+ <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com>
+ <X8oDEsEjU059T7+k@google.com>
+ <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
+ <X84R5DttN3WuHDYo@google.com>
+ <881f46d7-b8c1-d718-660b-b4db61b98e29@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] net: ath9k: remove trailing semicolon in macro definition
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201127175336.2752730-1-trix@redhat.com>
-References: <20201127175336.2752730-1-trix@redhat.com>
-To:     trix@redhat.com
-Cc:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201207161334.310C9C43467@smtp.codeaurora.org>
-Date:   Mon,  7 Dec 2020 16:13:34 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <881f46d7-b8c1-d718-660b-b4db61b98e29@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trix@redhat.com wrote:
-
-> The macro use will already have a semicolon.
+On Mon, Dec 07, 2020 at 07:58:09AM -0800, Yonghong Song wrote:
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> 
+> On 12/7/20 3:28 AM, Brendan Jackman wrote:
+> > On Fri, Dec 04, 2020 at 07:21:22AM -0800, Yonghong Song wrote:
+> > > 
+> > > 
+> > > On 12/4/20 1:36 AM, Brendan Jackman wrote:
+> > > > On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
+> > > > > 
+> > > > > 
+> > > > > On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> > > > > > This adds instructions for
+> > > > > > 
+> > > > > > atomic[64]_[fetch_]and
+> > > > > > atomic[64]_[fetch_]or
+> > > > > > atomic[64]_[fetch_]xor
+> > > > > > 
+> > > > > > All these operations are isomorphic enough to implement with the same
+> > > > > > verifier, interpreter, and x86 JIT code, hence being a single commit.
+> > > > > > 
+> > > > > > The main interesting thing here is that x86 doesn't directly support
+> > > > > > the fetch_ version these operations, so we need to generate a CMPXCHG
+> > > > > > loop in the JIT. This requires the use of two temporary registers,
+> > > > > > IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
+> > > > > > 
+> > > > > > Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
+> > > > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > > > > > ---
+> > > > > >     arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
+> > > > > >     include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
+> > > > > >     kernel/bpf/core.c            |  5 ++-
+> > > > > >     kernel/bpf/disasm.c          | 21 ++++++++++---
+> > > > > >     kernel/bpf/verifier.c        |  6 ++++
+> > > > > >     tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
+> > > > > >     6 files changed, 196 insertions(+), 6 deletions(-)
+> > > > > > 
+> > > > [...]
+> > > > > > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > > > > > index 6186280715ed..698f82897b0d 100644
+> > > > > > --- a/include/linux/filter.h
+> > > > > > +++ b/include/linux/filter.h
+> > > > > > @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+> > > > [...]
+> > > > > > +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
+> > > > > > +	((struct bpf_insn) {					\
+> > > > > > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+> > > > > > +		.dst_reg = DST,					\
+> > > > > > +		.src_reg = SRC,					\
+> > > > > > +		.off   = OFF,					\
+> > > > > > +		.imm   = BPF_XOR | BPF_FETCH })
+> > > > > > +
+> > > > > >     /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
+> > > > > 
+> > > > > Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
+> > > > > The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
+> > > > > 
+> > > > > I am wondering whether it makes sence to have to
+> > > > > BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
+> > > > > BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
+> > > > > can have less number of macros?
+> > > > 
+> > > > Hmm yeah I think that's probably a good idea, it would be consistent
+> > > > with the macros for non-atomic ALU ops.
+> > > > 
+> > > > I don't think 'BOP' would be very clear though, 'ALU' might be more
+> > > > obvious.
+> > > 
+> > > BPF_ATOMIC_ALU and BPF_ATOMIC_FETCH_ALU indeed better.
+> > 
+> > On second thoughts I think it feels right (i.e. it would be roughly
+> > consistent with the level of abstraction of the rest of this macro API)
+> > to go further and just have two macros BPF_ATOMIC64 and BPF_ATOMIC32:
+> > 
+> > 	/*
+> > 	 * Atomic ALU ops:
+> > 	 *
+> > 	 *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+> > 	 *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
+> > 	 *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
+> > 	 *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
+> 
+> "uint *" => "size_type *"?
+> and give an explanation that "size_type" is either "u32" or "u64"?
 
-Patch applied to ath-next branch of ath.git, thanks.
+"uint *" is already used in the file so I'll follow the precedent there.
 
-5a5b820d18c7 ath9k: remove trailing semicolon in macro definition
+> 
+> > 	 *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
+> > 	 *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
+> > 	 *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
+> > 	 *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
+> > 	 *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
+> > 	 *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+> > 	 */
+> > 
+> > 	#define BPF_ATOMIC64(OP, DST, SRC, OFF)                         \
+> > 		((struct bpf_insn) {                                    \
+> > 			.code  = BPF_STX | BPF_DW | BPF_ATOMIC,         \
+> > 			.dst_reg = DST,                                 \
+> > 			.src_reg = SRC,                                 \
+> > 			.off   = OFF,                                   \
+> > 			.imm   = OP })
+> > 
+> > 	#define BPF_ATOMIC32(OP, DST, SRC, OFF)                         \
+> > 		((struct bpf_insn) {                                    \
+> > 			.code  = BPF_STX | BPF_W | BPF_ATOMIC,         \
+> > 			.dst_reg = DST,                                 \
+> > 			.src_reg = SRC,                                 \
+> > 			.off   = OFF,                                   \
+> > 			.imm   = OP })
+> 
+> You could have
+>   BPF_ATOMIC(OP, SIZE, DST, SRC, OFF)
+> where SIZE is BPF_DW or BPF_W.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201127175336.2752730-1-trix@redhat.com/
+Ah sorry, I didn't see this mail and have just posted v4 with the 2
+separate macros. Let's see if anyone else has an opinion on
+this point.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+> > 
+> > The downside compared to what's currently in the patchset is that the
+> > user can write e.g. BPF_ATOMIC64(BPF_SUB, BPF_REG_1, BPF_REG_2, 0) and
+> > it will compile. On the other hand they'll get a pretty clear
+> > "BPF_ATOMIC uses invalid atomic opcode 10" when they try to load the
+> > prog, and the valid atomic ops are clearly listed in Documentation as
+> > well as the comments here.
+> 
+> This should be fine. As you mentioned, documentation has mentioned
+> what is supported and what is not...
