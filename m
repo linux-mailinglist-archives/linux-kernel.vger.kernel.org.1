@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED032D1709
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB042D170F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgLGRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:00:29 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:43792 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgLGRA3 (ORCPT
+        id S1727827AbgLGRBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:01:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726660AbgLGRBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:00:29 -0500
-Received: by mail-oi1-f196.google.com with SMTP id q25so8028131oij.10;
-        Mon, 07 Dec 2020 09:00:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/SkJ+y4JbdE9Xwej35tShvVwA0lpKmxCFraHeH0nWHU=;
-        b=gm58I5AL9EvwinzQATnkjF5PfTQzYZ90Q0MMaJwgiCeoT4d9wPjvKwzdNbiaX8HLyz
-         TYPnQRy2FdGfYuxfskio672z0u4NplQCF8VJFDnzjRIprHRhyByEVZrgzjyYzlaHOYpi
-         xbQ94ACc1VZ3OFOV5X1H3GVhWC7JyspQdFM1y+ZayiyEXVAgx9AFMdNJt20VtOnqRa3n
-         F9Rptpycwvl7nlQWgjj8nui08NdjBrBv3W7NRApW1CWotwlw+YFir5X2eikeT05zfi0q
-         Sq0/Fp6pbAPNPzp8viMDqPlZMjJCKtv0Jae52NmgzEFJenN6uuhGQPDgtkaleyyztOs2
-         hKuQ==
-X-Gm-Message-State: AOAM5336ItB7zIepYtb7b08PHD1OCRGfneDVHS285LXBFZCQ3jU7cO/1
-        VgBSMBJ4VnnbFt/kmna5YA==
-X-Google-Smtp-Source: ABdhPJw/vjdojTgl/o7v8d/67obyPy8N0PY1fH5WpiG2P28+XiZRLIfp/vBt4qFEzO6Ba3m9FScZNg==
-X-Received: by 2002:aca:6087:: with SMTP id u129mr13372577oib.173.1607360387662;
-        Mon, 07 Dec 2020 08:59:47 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s9sm2749031otb.6.2020.12.07.08.59.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:59:46 -0800 (PST)
-Received: (nullmailer pid 434629 invoked by uid 1000);
-        Mon, 07 Dec 2020 16:59:45 -0000
-Date:   Mon, 7 Dec 2020 10:59:45 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
-        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de,
-        laurentiu.palcu@oss.nxp.com
-Subject: Re: [PATCH v3 2/6] dt-bindings: display: imx: Add i.MX8qxp/qm PRG
- binding
-Message-ID: <20201207165945.GA430214@robh.at.kernel.org>
-References: <1607311260-13983-1-git-send-email-victor.liu@nxp.com>
- <1607311260-13983-3-git-send-email-victor.liu@nxp.com>
+        Mon, 7 Dec 2020 12:01:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607360418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SV/hIsDwJYVX6YU/tL2dTTOcKgpjOzj0CM+MQSPzMH4=;
+        b=gfyM+TiN/EZiJ/KTA6z0vr2fIW5+SFgzI5ATe/S7dKsw/Z4loeo0BkS9vDrMDPuLItSelx
+        0nyPA1/Ap2f7s/4+E/SH0smoG3U7QrXsnUJo73ONamgq6gJoA2tss8T5/Tx6CEIAPzyVvp
+        yhBmyuVksVR5h2wH4v1bBn7Crv2Qi5M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-18tooxLWMoi3xlNtL3C4cQ-1; Mon, 07 Dec 2020 12:00:17 -0500
+X-MC-Unique: 18tooxLWMoi3xlNtL3C4cQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C4BD100E421;
+        Mon,  7 Dec 2020 17:00:13 +0000 (UTC)
+Received: from starship (unknown [10.35.206.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA79B60BD8;
+        Mon,  7 Dec 2020 17:00:02 +0000 (UTC)
+Message-ID: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Mon, 07 Dec 2020 19:00:01 +0200
+In-Reply-To: <905DFDCE-71A5-4711-A31B-9FCFEA2CFC52@amacapital.net>
+References: <87a6up606r.fsf@nanos.tec.linutronix.de>
+         <905DFDCE-71A5-4711-A31B-9FCFEA2CFC52@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607311260-13983-3-git-send-email-victor.liu@nxp.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 11:20:56AM +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qxp/qm Display Prefetch Resolve Gasket.
+On Mon, 2020-12-07 at 08:53 -0800, Andy Lutomirski wrote:
+> > On Dec 7, 2020, at 8:38 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > 
+> > ﻿On Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
+> > > > On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
+> > > > From a timekeeping POV and the guests expectation of TSC this is
+> > > > fundamentally wrong:
+> > > > 
+> > > >      tscguest = scaled(hosttsc) + offset
+> > > > 
+> > > > The TSC has to be viewed systemwide and not per CPU. It's systemwide
+> > > > used for timekeeping and for that to work it has to be synchronized. 
+> > > > 
+> > > > Why would this be different on virt? Just because it's virt or what? 
+> > > > 
+> > > > Migration is a guest wide thing and you're not migrating single vCPUs.
+> > > > 
+> > > > This hackery just papers over he underlying design fail that KVM looks
+> > > > at the TSC per vCPU which is the root cause and that needs to be fixed.
+> > > 
+> > > I don't disagree with you.
+> > > As far as I know the main reasons that kvm tracks TSC per guest are
+> > > 
+> > > 1. cases when host tsc is not stable 
+> > > (hopefully rare now, and I don't mind making
+> > > the new API just refuse to work when this is detected, and revert to old way
+> > > of doing things).
+> > 
+> > That's a trainwreck to begin with and I really would just not support it
+> > for anything new which aims to be more precise and correct.  TSC has
+> > become pretty reliable over the years.
+> > 
+> > > 2. (theoretical) ability of the guest to introduce per core tsc offfset
+> > > by either using TSC_ADJUST (for which I got recently an idea to stop
+> > > advertising this feature to the guest), or writing TSC directly which
+> > > is allowed by Intel's PRM:
+> > 
+> > For anything halfways modern the write to TSC is reflected in TSC_ADJUST
+> > which means you get the precise offset.
+> > 
+> > The general principle still applies from a system POV.
+> > 
+> >     TSC base (systemwide view) - The sane case
+> > 
+> >     TSC CPU  = TSC base + TSC_ADJUST
+> > 
+> > The guest TSC base is a per guest constant offset to the host TSC.
+> > 
+> >     TSC guest base = TSC host base + guest base offset
+> > 
+> > If the guest want's this different per vCPU by writing to the MSR or to
+> > TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which
+> > is the offset to the TSC base of the guest.
 > 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> Note that this depends on the 'two cell binding' clock patch set which has
-> already landed in Shawn's i.MX clk/imx git branch.  Otherwise, imx8-lpcg.h
-> won't be found.
+> How about, if the guest wants to write TSC_ADJUST, it can turn off all paravirt features and keep both pieces?
 > 
-> v2->v3:
-> * No change.
-> 
-> v1->v2:
-> * Use new dt binding way to add clocks in the example.
-> 
->  .../bindings/display/imx/fsl,imx8qxp-prg.yaml      | 60 ++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-> new file mode 100644
-> index 00000000..d59e2db
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/imx/fsl,imx8qxp-prg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8qm/qxp Display Prefetch Resolve Gasket
-> +
-> +maintainers:
-> +  - Liu Ying <victor.liu@nxp.com>
-> +
-> +description: |
-> +  The i.MX8qm/qxp Prefetch Resolve Gasket (PRG) is a gasket interface between
-> +  RTRAM controller and Display Controller.  The main function is to convert
-> +  the AXI interface to the RTRAM interface, which includes re-mapping the
-> +  ARADDR to a RTRAM address.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: fsl,imx8qxp-prg
-> +      - const: fsl,imx8qm-prg
 
-Use enum instead of oneOf+const.
+This is one of the things I had in mind recently.
 
-With that,
+Even better, we can stop advertising TSC_ADJUST in CPUID to the guest 
+and forbid it from writing it at all.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+And if the guest insists and writes to the TSC itself, 
+then indeed let it keep both pieces (or invoke some failback code).
+ 
+I have nothing against this solution.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: rtram clock
-> +      - description: apb clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: rtram
-> +      - const: apb
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - power-domains
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8-lpcg.h>
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    prg@56040000 {
-> +        compatible = "fsl,imx8qxp-prg";
-> +        reg = <0x56040000 0x10000>;
-> +        clocks = <&dc0_prg0_lpcg IMX_LPCG_CLK_0>,
-> +                 <&dc0_prg0_lpcg IMX_LPCG_CLK_4>;
-> +        clock-names = "rtram", "apb";
-> +        power-domains = <&pd IMX_SC_R_DC_0>;
-> +    };
-> -- 
-> 2.7.4
-> 
+
+Best regards,
+	Maxim Levitsky
+
+
