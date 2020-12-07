@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB912D1395
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC07F2D13A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 15:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgLGO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 09:27:12 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40249 "EHLO
+        id S1727073AbgLGO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 09:27:45 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42867 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725931AbgLGO1L (ORCPT
+        by vger.kernel.org with ESMTP id S1727018AbgLGO1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 09:27:11 -0500
+        Mon, 7 Dec 2020 09:27:45 -0500
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id E28325C011C;
-        Mon,  7 Dec 2020 09:26:24 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 8B9695C0106;
+        Mon,  7 Dec 2020 09:26:28 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 07 Dec 2020 09:26:24 -0500
+  by compute1.internal (MEProxy); Mon, 07 Dec 2020 09:26:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=jXa4aKo3nx/dV
-        s37gK3g9kjteXpswH4afUKCgGV0MKg=; b=FGrw06NMzEk19w5OLMVmyeabRqty8
-        bULlhTKWlNRmDB7KuXYfiqws/AWwof9/H84cebJ4bYqjfB/cLZUdsUXKxI73RINl
-        sSCxHWlrUkGYv+I/zBo3MapMP+Tz+lCeNwapAvpiSgGUbHd8xorA94E1qJZhHngg
-        Q81tjHb4k4c6cjTxtb2Ru53Mc2IRQbemgipwIuNPGP2j+nOVKT5ySp/9KJjHeOaU
-        mCp2T/bZ5talA8aAooG2ovmjjm2JZiNDGErIrHs7r1ifG0iSCWjxf8mZC9nAxaw8
-        yBOIfSjpsuaX7QZq8mLPrHGBlsWjaF4XZvaMLSSiTY+cvQ/tWYIQPDGEA==
+        :mime-version:content-transfer-encoding; s=fm1; bh=3IBtn55EkJHpw
+        BMNVFMzrRkc/Dri1oJfvyFIx80EIec=; b=HKGlpZwgfkD+3mI4G6pHi4YYxLKiv
+        a2gxRrHz3kWnMZLiCAfzmtdfj5O3VxnbqlZyHZbpc9+shNer5IUs9dfODfDbDwqU
+        Lo3cLt4PrERWoH6NO1r4yc8q9y3nlP6IlYKb7XVMWtvRlI4L1gY/4U4yZ2IZ6Y9R
+        ZrDsweyEgh6upeOQMPWCuKMy9CdUASw3KKJuYVzaTiy9lwIZCcMcIUJaXdlh+nhQ
+        oQogx0TZxmjYwcsrAzLsrR4UPMbPb+h9OMINEzdpBcPxx23KMeC0R8AcWf+8/bsc
+        7gYWDWSJQ4LkY8WHbrHtlEvrF0hRyH5LwfVtCcrv1ZVnlNcunSS0vSPUA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=jXa4aKo3nx/dVs37gK3g9kjteXpswH4afUKCgGV0MKg=; b=Q23Zjskl
-        okBRu4lhBypfrEZ4g43WzZjAPSDpH0htXLSolWuPZ2XhIhb4JfZZCK/VQTwKwfxr
-        uk129XcfFI8WuG+qa2n2opwZbVJeMLYmiouBf/XblH1er54j0niMxIKmSd7Q0X0x
-        FcIg8JzJNy+xTi4JA8SdKRTZv6wI+2vXyz0ZXed5V3C8nx6Ibn9pv1k9K+Lm5VYk
-        GlYFHD6acSkw354WiL9FyTQJlxYL1B+rQslk4vRFxxevXH4HG/z843aonHDAaCuI
-        1yxY/SKKqf1ri3EOxSUxqsIGRPrCgF4f+L5j1yRW3FSb1UVSwWNIAuuU3d1oQTHH
-        AJMco1EMNaSR/Q==
-X-ME-Sender: <xms:kDvOX1gFv6Gw9Hc9P7hXmnXR9VWQ-Ii2ThVoUvRCA43PwSxPYVCBDg>
-    <xme:kDvOX6rGJRtB1tyC9dszq72d65acWbPMcmLJ8W_fylm5OXnDKswILPMJHfmt-XLAe
-    Nd77K1IcvacifxhNQ>
+        fm1; bh=3IBtn55EkJHpwBMNVFMzrRkc/Dri1oJfvyFIx80EIec=; b=ejjyHRBw
+        q/OEzNxYnwNv3XHwPA90+tNsXTZub7YDKSsf8k7EzkVV6P6NNa+e4DJ+seGfTKaF
+        L18QPCS0ZDGPT3qh2mgupwsTDFwF7JTfgaJLr4tDD4ZiacEClA0mlJQOms6qnv2f
+        OehKlw/HR/N35n4+UOw7D5xdMPVmILeLkyWTD/mPrR/YeklJ88bTUuwnvPGEbgoM
+        D1IJG6NGGp8hEyTcxPsMHv3Nm9/kaDfpvS4/aSkNeAkjtMe1Tc3GTY0eu5njUlv5
+        +na1FXVFQH4ewXzt14qrvm/+zg+5GWLfqaUiAflDhGXevMwrkyu6cyXaAdh2t9SW
+        ZGwXnjkOkTBYYw==
+X-ME-Sender: <xms:lDvOXyC3qVhuqURbhlF4d7_aGpObGPrbVQN4sUsn3KK2e7YEB3lMVQ>
+    <xme:lDvOX1XGA0s5MOb0DQiU2SY94LM0b9vR2kLVRPmwARXPh3UTO3SQLaupUEZ-n-mnc
+    7kAZxAISPEKuA8wTA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejgedgieegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
     jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
     etjeffleffvdduudevieffgeetleevhfetnecukfhppedvtdefrdehjedrvddtkedrudeg
-    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnh
+    ieenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnh
     gurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:kDvOXwMi3GZDS74QkTXYUVObxb0gU-lr6UOsUR5qyoKgbi3ZpsU7EA>
-    <xmx:kDvOX-03uKEKyrXC7KPe9yOY2pv5t84PZ_ArKWlseydicsEldGOxng>
-    <xmx:kDvOX2od3iWVZlHlkU8zPSfnf0848apb7zkMMoyADwEf6oEWDC2ayQ>
-    <xmx:kDvOXxUrRL3RGitq8fmhQLeW5OhftKgqzabY0s3VWWG-qFnrzdW0qA>
+X-ME-Proxy: <xmx:lDvOX26B-X7JWIyz0NYtHR588UJRKZPchluDWPXLPM8a_bsLLV4QJw>
+    <xmx:lDvOX2D0G4vVmkHnRXi6-KLwAIhGRQxwADcMsM5zeCS3R8aU1uuaeg>
+    <xmx:lDvOX7D0sItBSAJe36oaO5Zkqno1nrRn_y4bhclpwa2z1-zgxSyrlA>
+    <xmx:lDvOX1Kz4QjMg2abqf7mBZEUFKSHTauOc56G45XZ0ZpFAO_aT68nBw>
 Received: from localhost.localdomain (203-57-208-146.dyn.iinet.net.au [203.57.208.146])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BD0C3108005C;
-        Mon,  7 Dec 2020 09:26:20 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id C71CE108005B;
+        Mon,  7 Dec 2020 09:26:24 -0500 (EST)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     linux-mmc@vger.kernel.org
 Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
         adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-Subject: [PATCH v4 4/6] mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
-Date:   Tue,  8 Dec 2020 00:55:54 +1030
-Message-Id: <20201207142556.2045481-5-andrew@aj.id.au>
+Subject: [PATCH v4 5/6] MAINTAINERS: Add entry for the ASPEED SD/MMC driver
+Date:   Tue,  8 Dec 2020 00:55:55 +1030
+Message-Id: <20201207142556.2045481-6-andrew@aj.id.au>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201207142556.2045481-1-andrew@aj.id.au>
 References: <20201207142556.2045481-1-andrew@aj.id.au>
@@ -73,160 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converting degrees of phase to logic delays is irritating to test on
-hardware, so lets exercise the function using KUnit.
+Add myself as the maintainer.
 
 Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 ---
- drivers/mmc/host/Kconfig                |  14 ++++
- drivers/mmc/host/Makefile               |   1 +
- drivers/mmc/host/sdhci-of-aspeed-test.c | 100 ++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 596f32637315..9f910655d6ea 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -168,6 +168,20 @@ config MMC_SDHCI_OF_ASPEED
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e451dcce054f..eae4322aae67 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2826,6 +2826,15 @@ F:	Documentation/devicetree/bindings/interrupt-controller/aspeed,ast2xxx-scu-ic.
+ F:	drivers/irqchip/irq-aspeed-scu-ic.c
+ F:	include/dt-bindings/interrupt-controller/aspeed-scu-ic.h
  
- 	  If unsure, say N.
- 
-+config MMC_SDHCI_OF_ASPEED_TEST
-+	bool "Test for the ASPEED SDHCI controller"
-+	depends on MMC_SDHCI_OF_ASPEED && KUNIT
-+	help
-+	  Enable KUnit tests for the ASPEED SDHCI driver. Select this
-+	  option only if you will boot the kernel for the purpose of running
-+	  unit tests (e.g. under UML or qemu).
++ASPEED SD/MMC DRIVER
++M:	Andrew Jeffery <andrew@aj.id.au>
++L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
++L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
++L:	linux-mmc@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
++F:	drivers/mmc/host/sdhci-of-aspeed*
 +
-+	  The KUnit tests generally exercise parts of the driver that do not
-+	  directly touch the hardware, for example, the phase correction
-+	  calculations.
-+
-+	  If unsure, say N.
-+
- config MMC_SDHCI_OF_AT91
- 	tristate "SDHCI OF support for the Atmel SDMMC controller"
- 	depends on MMC_SDHCI_PLTFM
-diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 451c25fc2c69..3ee59d5802cf 100644
---- a/drivers/mmc/host/Makefile
-+++ b/drivers/mmc/host/Makefile
-@@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
- obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
- obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
- obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
-+obj-$(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)	+= sdhci-of-aspeed-test.o
- obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
- obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
- obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
-diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
-new file mode 100644
-index 000000000000..fb79b278fb81
---- /dev/null
-+++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* Copyright (C) 2020 IBM Corp. */
-+
-+#include <kunit/test.h>
-+
-+#include "sdhci-of-aspeed.c"
-+
-+static void aspeed_sdhci_phase_ddr52(struct kunit *test)
-+{
-+	int rate = 52000000;
-+
-+	KUNIT_EXPECT_EQ(test, 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 0));
-+	KUNIT_EXPECT_EQ(test, 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 1));
-+	KUNIT_EXPECT_EQ(test, 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 2));
-+	KUNIT_EXPECT_EQ(test, 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 3));
-+	KUNIT_EXPECT_EQ(test, 2,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 4));
-+	KUNIT_EXPECT_EQ(test, 3,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 5));
-+	KUNIT_EXPECT_EQ(test, 14,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 23));
-+	KUNIT_EXPECT_EQ(test, 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 24));
-+	KUNIT_EXPECT_EQ(test, 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 25));
-+
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 180));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 181));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 182));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 183));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 184));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 185));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 203));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 204));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 205));
-+}
-+
-+static void aspeed_sdhci_phase_hs200(struct kunit *test)
-+{
-+	int rate = 200000000;
-+
-+	KUNIT_EXPECT_EQ(test, 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 0));
-+	KUNIT_EXPECT_EQ(test, 0,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 5));
-+	KUNIT_EXPECT_EQ(test, 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 6));
-+	KUNIT_EXPECT_EQ(test, 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 7));
-+	KUNIT_EXPECT_EQ(test, 14,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 89));
-+	KUNIT_EXPECT_EQ(test, 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 90));
-+	KUNIT_EXPECT_EQ(test, 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 91));
-+	KUNIT_EXPECT_EQ(test, 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 96));
-+
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 180));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 185));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 186));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 187));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 269));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 270));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 271));
-+	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-+			aspeed_sdhci_phase_to_tap(NULL, rate, 276));
-+}
-+
-+static struct kunit_case aspeed_sdhci_test_cases[] = {
-+	KUNIT_CASE(aspeed_sdhci_phase_ddr52),
-+	KUNIT_CASE(aspeed_sdhci_phase_hs200),
-+	{}
-+};
-+
-+static struct kunit_suite aspeed_sdhci_test_suite = {
-+	.name = "sdhci-of-aspeed",
-+	.test_cases = aspeed_sdhci_test_cases,
-+};
-+kunit_test_suite(aspeed_sdhci_test_suite);
+ ASPEED VIDEO ENGINE DRIVER
+ M:	Eddie James <eajames@linux.ibm.com>
+ L:	linux-media@vger.kernel.org
 -- 
 2.27.0
 
