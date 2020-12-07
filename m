@@ -2,181 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1062D1E29
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4001A2D1E2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgLGXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgLGXOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:14:04 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A94C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:13:23 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id o5so10395219pgm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:13:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Gbbh4ibxUFpi3OAKBtYtSpm5Z1JaNbGkY8hc3Ov1OeA=;
-        b=rQuROwycmhYuaF7TU7X0pJ/7xgAKppbha0BqNqI/sLgV4WGQtuvMyx/qz4/M6diqaM
-         4yf4lx3yMt5uuRfdfcWpaRMCphkexOi4D552m/ygiWSe6uLCLJxxpRtLSxWw0NXKf6MQ
-         I54+XaVd9b0lekf+QJbUGZtHpZ82agD2LA9P+yl19No7qjTNsXYYXMfeSa+xaU8mMFEi
-         uLrDoqpU20YTcJTGOaA1cj2Op/n7hQuB+LEPk1gLvyx8DoeLtoiy2GNrITZQoJeo5jUB
-         IaDgnyi+LRWPnIpDRD7nUL3A1fFkN71X5vkdgCoq2/zAz32iDISvdGw7DTfMZxG1dzG1
-         IEKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Gbbh4ibxUFpi3OAKBtYtSpm5Z1JaNbGkY8hc3Ov1OeA=;
-        b=eIjzD+bQzbVhqQcUx/fpSxa0VQvryQyjwVsxIYIhoRXqzMDljCsqQ24oaIBbm2Vfte
-         HwHiO+uhC21i9pXNbxMrzVCrbLYw1wlIDfty7PjUAL83UMhk7oDxVbr3b9gXIlcx62RI
-         NXLpe+cNoBlGOPdztwPR5I2BtIPPsMAW9cuvu4TlFf8VgBvpYaFHSMVxBiXZJ59ZoZop
-         Lmweh5SWep1p6cWcX/fpPCpS1MjIJHPXxkPaYLK5b9nK4adfDZWfOeJDeId7FMJoZRDh
-         BN3Eh2512fx0yvrZX2mlSK94B3Z6rQCNQreMdiUJVz+C8tGNUOGw69OVkGphoaVUdnzC
-         vf/w==
-X-Gm-Message-State: AOAM533FKg6w3YH8LVHeAV5DGZMqAa8I6JxlRTOInUHRppI5bV0d9Fub
-        uTGMQpRn3gzcAobTPppzeRZ/CA==
-X-Google-Smtp-Source: ABdhPJzgZm8lZG6NLh0a3gHZKxqCco0EwwEK2TdtHU5AGRJyE33wH6Jn7x6sYZJjVFNbqYCNbs1S4A==
-X-Received: by 2002:a17:902:6b45:b029:d6:c43e:ad13 with SMTP id g5-20020a1709026b45b02900d6c43ead13mr18461110plt.77.1607382802822;
-        Mon, 07 Dec 2020 15:13:22 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id c3sm13598807pgm.41.2020.12.07.15.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 15:13:22 -0800 (PST)
-Date:   Mon, 7 Dec 2020 15:13:15 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
-        wanpengli@tencent.com, kvm@vger.kernel.org,
-        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
-        x86@kernel.org, kyung.min.park@intel.com,
-        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
-        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
-        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
-Subject: Re: [PATCH 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
-Message-ID: <X863C6ikshtMHemk@google.com>
-References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
- <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
+        id S1728172AbgLGXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:14:28 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:36924 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727723AbgLGXO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:14:28 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id D6851C89267;
+        Tue,  8 Dec 2020 00:13:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1607382826;
+        bh=bval0ZHQCjvevq9TbYQlvh+Mg28E3XwHRGLYW8SRBDM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sp6pfa1uU7xXPlqzVIRlcfftxJR75yvOPvGfWOAmlJwqLTSMv/dznlwlZI57NRlC0
+         QaOdP9TkhxvTmPAFaWhZlzgYXouTbsHO5VX8EMuc1FM7ijDVoJwaA5rSZXGkNx9XcO
+         BrzPNAy14Kn69z5zw9SiLXDt/zQ18XWEwzBn6V7k=
+Date:   Tue, 8 Dec 2020 00:13:44 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <X863KNo0IaekkU7q@workstation.tuxnet>
+References: <20201207193629.493241-1-clemens.gruber@pqgruber.com>
+ <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
+In-Reply-To: <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020, Babu Moger wrote:
-> Newer AMD processors have a feature to virtualize the use of the
-> SPEC_CTRL MSR. When supported, the SPEC_CTRL MSR is automatically
-> virtualized and no longer requires hypervisor intervention.
-
-Hrm, is MSR_AMD64_VIRT_SPEC_CTRL only for SSBD?  Should that MSR be renamed to
-avoid confusion with the new form of VIRT_SPEC_CTRL?
-
-> This feature is detected via CPUID function 0x8000000A_EDX[20]:
-> GuestSpecCtrl.
+On Mon, Dec 07, 2020 at 11:00:25PM +0100, Uwe Kleine-K�nig wrote:
+> On Mon, Dec 07, 2020 at 08:36:27PM +0100, Clemens Gruber wrote:
+> > The switch to the atomic API goes hand in hand with a few fixes to
+> > previously experienced issues:
+> > - The duty cycle is no longer lost after disable/enable (previously the
+> >   OFF registers were cleared in disable and the user was required to
+> >   call config to restore the duty cycle settings)
+> > - If one sets a period resulting in the same prescale register value,
+> >   the sleep and write to the register is now skipped
+> > - The prescale register is now set to the default value in probe. On
+> >   systems without CONFIG_PM, the chip is woken up at probe time.
+> > 
+> > The hardware readout may return slightly different values than those
+> > that were set in apply due to the limited range of possible prescale and
+> > counter register values. If one channel is reconfigured with new duty
+> > cycle and period, the others will keep the same relative duty cycle to
+> > period ratio as they had before, even though the per-chip / global
+> > frequency changed. (The PCA9685 has only one prescaler!)
 > 
-> Hypervisors are not required to enable this feature since it is
-> automatically enabled on processors that support it.
+> This is not acceptable, if you have two PWM outputs and a consumer
+> modifies one of them the other must change. So if this chip only
+> supports a single period length of all channels, the first consumer
+> enabling a channel defines the period to be used. All later consumers
+> must live with that. (Also the first must be denied modifying the period
+> if a second consumer has enabled its PWM.)
+
+Good idea, but is it OK to potentially break users relying on the old
+behavior ("the last one who changes the period wins") ?
+
 > 
-> When this feature is enabled, the hypervisor no longer has to
-> intercept the usage of the SPEC_CTRL MSR and no longer is required to
-> save and restore the guest SPEC_CTRL setting when switching
-> hypervisor/guest modes.
-
-Well, it's still required if the hypervisor wanted to allow the guest to turn
-off mitigations that are enabled in the host.  I'd omit this entirely and focus
-on what hardware does and how Linux/KVM utilize the new feature.
-
-> The effective SPEC_CTRL setting is the guest SPEC_CTRL setting or'ed with the
-> hypervisor SPEC_CTRL setting. 
-
-This line needs to be higher in the changelog, it's easily the most relevant
-info for understanding the mechanics.  Please also explicitly state the context
-switching mechanics, e.g. is it tracked in the VMCB, loaded on VMRUN, saved on
-VM-Exit, etc...
-
-> This allows the hypervisor to ensure a minimum SPEC_CTRL if desired.
->
-> This support also fixes an issue where a guest may sometimes see an
-> inconsistent value for the SPEC_CTRL MSR on processors that support
-> this feature. With the current SPEC_CTRL support, the first write to
-> SPEC_CTRL is intercepted and the virtualized version of the SPEC_CTRL
-> MSR is not updated. When the guest reads back the SPEC_CTRL MSR, it
-> will be 0x0, instead of the actual expected value. There isn’t a
-> security concern here, because the host SPEC_CTRL value is or’ed with
-> the Guest SPEC_CTRL value to generate the effective SPEC_CTRL value.
-> KVM writes with the guest's virtualized SPEC_CTRL value to SPEC_CTRL
-> MSR just before the VMRUN, so it will always have the actual value
-> even though it doesn’t appear that way in the guest. The guest will
-> only see the proper value for the SPEC_CTRL register if the guest was
-> to write to the SPEC_CTRL register again. With Virtual SPEC_CTRL
-> support, the MSR interception of SPEC_CTRL is disabled during
-> vmcb_init, so this will no longer be an issue.
+> > Note that although the datasheet mentions 200 Hz as default frequency
+> > when using the internal 25 MHz oscillator, the calculated period from
+> > the default prescaler register setting of 30 is 5079040ns.
 > 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/kvm/svm/svm.c |   17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 79b3a564f1c9..3d73ec0cdb87 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1230,6 +1230,14 @@ static void init_vmcb(struct vcpu_svm *svm)
->  
->  	svm_check_invpcid(svm);
->  
-> +	/*
-> +	 * If the host supports V_SPEC_CTRL then disable the interception
-> +	 * of MSR_IA32_SPEC_CTRL.
-> +	 */
-> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		set_msr_interception(&svm->vcpu, svm->msrpm, MSR_IA32_SPEC_CTRL,
-> +				     1, 1);
-> +
->  	if (kvm_vcpu_apicv_active(&svm->vcpu))
->  		avic_init_vmcb(svm);
->  
-> @@ -3590,7 +3598,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  	 * is no need to worry about the conditional branch over the wrmsr
->  	 * being speculatively taken.
->  	 */
-> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
->  
->  	svm_vcpu_enter_exit(vcpu, svm);
->  
-> @@ -3609,12 +3618,14 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
->  	 * save it.
->  	 */
-> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
-> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
-> +	    unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> That means the datasheet is lax because 5079040ns corresponds to
+> 196.88760080645162 Hz but it calls that 200 Hz, right?
 
-This will break migration, or maybe just cause wierdness, as userspace will
-always see '0' when reading SPEC_CTRL and its writes will be ignored.  Is there
-a VMCB field that holds the guest's value?  If so, this read can be skipped, and
-instead the MSR set/get flows probably need to poke into the VMCB.
+Yes, it calls prescale setting 0x1E 200 Hz, but calculating the
+period from that prescaler setting leads to 5079040ns (196.9 Hz) as you
+mentioned.
+Also, the datasheet does not specify frequency accuracy / internal
+oscillator specifications. I measured about 207 Hz on one chip and about
+205 Hz on another with the scope today, when configuring a 5079040ns
+period.
 
->  		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
->  
->  	reload_tss(vcpu);
->  
-> -	x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
-> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
-> +		x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
->  
->  	vcpu->arch.cr2 = svm->vmcb->save.cr2;
->  	vcpu->arch.regs[VCPU_REGS_RAX] = svm->vmcb->save.rax;
 > 
+> I didn't look in the patch in detail, but get the impression it is more
+> complicated than necessary. For example adding improved PM behaviour
+> should probably go into a separate patch, also adding the .get_state
+> callback should be split out.
+
+Agreed. I'll split it up more in the next revision!
+
+Thanks,
+Clemens
