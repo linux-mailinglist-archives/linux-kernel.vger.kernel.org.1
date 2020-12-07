@@ -2,242 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B252D1569
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72092D1572
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgLGQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGQBe (ORCPT
+        id S1727393AbgLGQCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:02:38 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:40937 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbgLGQCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:01:34 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3060AC061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 08:00:54 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id i3so6833180pfd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:00:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lM0WuLFezI4DgUVIv9tHFek9mZlL8JVIYtiPTuIe1i8=;
-        b=kbfciW8e8c9iyJrhOcz17nhJT7qYBlGk+2u/n/iqhnv89bEa5UC9/Eg7M8JV0AHKtL
-         P+22D6mGIRBKQ3E4jVWW+ee2L9iNRiie72mWT3+mnBdbz9J0GNy12tSn/FVTLErdtKSf
-         exPhKr/Q13rphwK/XVwASyIhTDokUbrY2sY840Bqc8XgOrjOrik16SQclTjZ++wUBcqI
-         amQPV+e2AInJbV+1S3arjvmuxun3mPpOVIA8AnuffExVIz7wFrTCL2lzMwHVZQbyBCV2
-         1QLLZfVHpzixCH4AXc79AYhtoTqDqYBOBNgW2Op2NzRn9xkbJATvm1ZVb0Hn5Xy09XBt
-         5EWg==
+        Mon, 7 Dec 2020 11:02:37 -0500
+Received: by mail-ot1-f68.google.com with SMTP id j12so12876742ota.7;
+        Mon, 07 Dec 2020 08:02:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lM0WuLFezI4DgUVIv9tHFek9mZlL8JVIYtiPTuIe1i8=;
-        b=ICW4OgF2vdGpN4YlmKY/+0nxKTGxiq4WOOMBXQCgMXIVQGdMac8gKWfgFuSgrqamlj
-         /i75nAxI4+AAnbF2OWg495pXSevq0ZLaincKTt8eioh0NEuNg8F5O+EDhP1ysPccWQFJ
-         tnHRWYHQlKVTERiI95pVP9uhweDjpwHGwWSyKUJVwdlYly8ECecykxwQ/jwKIX7gs2Kv
-         VbyWmsVUm8yN4TFuKXBJ2VSwAJWmCasn1U+3VlHAtvN5BhKSpVNwMpAoYIG0Lo9sWC+E
-         /H747BdawM7V1cMmLVmluj7EwwvdPOgIRqgqKORDfpSXhOZu2xJZAlU83+5A/Lw0HcGU
-         0DVg==
-X-Gm-Message-State: AOAM530oD6319B7xZO7ZrhlK4ZEgsgvxp+OHWEOKd5HD65E7ZepLHLGZ
-        VRjtNnsxSgJJJYYmQHYJqApPZQ==
-X-Google-Smtp-Source: ABdhPJyV4rYEnm55TXN93aP5Cqfz+sqaDms9fAkSfQdIJHYDMAGBBvylNH/P/lbMQZrVW+9O8adjjA==
-X-Received: by 2002:a62:b50f:0:b029:19e:2974:b7a4 with SMTP id y15-20020a62b50f0000b029019e2974b7a4mr3023076pfe.61.1607356853504;
-        Mon, 07 Dec 2020 08:00:53 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gm2sm11296944pjb.35.2020.12.07.08.00.52
+        bh=0Up7sXnB2c6vZaz+m2PrHh/xp7KLftn1PV5oTPnNyZ0=;
+        b=Vrl3h02Cs3GxGqmL/JN3jHnCmTW7z03V8EP/uhYPVIhZObdZ4z2k1wrDA6p43PCZZ8
+         OI2dgmyYqs4B5KQlW/D4xemRI6tLg7ZeVGubZEy1SnsdefEHu6rwZwktALRCMz5mUc68
+         RBJwU+1RPRqXh7TTJllxXqTAViDe1OUIZWOVAyEbWY0/RDqmgjvPLhNL2G/y0HP7X1kp
+         LQhXvVh4KwV5e+UrJ5zQFb8YIKMKmQlujWO2gJbvs84Pa0S6FWzWPNhwvW1A6t41l1mQ
+         TdhPqdNB1ap6WkU6hP7H09IMXP1DHh0C3jg8FjT01B1HtaGMjpzslm+EbSEwMesphIqD
+         tOUg==
+X-Gm-Message-State: AOAM532Mb2/YY/S4CrCr1TQWBlcA+EkFo/8kssJaxQThxwWu/3XBPaYY
+        w4jzYvKLUv32oxDtFc1BLg==
+X-Google-Smtp-Source: ABdhPJzX49ljwwVCcQiMRTpBUmb3BRoUJUDj2ur/KpbeWgXI+1yHRVzcpuP9OtpUpqeht1RiCXQFGA==
+X-Received: by 2002:a9d:4588:: with SMTP id x8mr13647618ote.169.1607356915199;
+        Mon, 07 Dec 2020 08:01:55 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r7sm2978913oih.21.2020.12.07.08.01.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:00:52 -0800 (PST)
-Date:   Mon, 7 Dec 2020 09:00:51 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        mike.leach@linaro.org
-Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
- the overflow of HiSilicon ETM
-Message-ID: <20201207160051.GA1506562@xps15>
-References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
- <20201204185551.GB1424711@xps15>
- <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
- <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
- <0e56f56e-157e-ecf2-bb21-74b79ffdf2ac@huawei.com>
- <d82f1200-c31f-1040-a630-57e132cabf1b@arm.com>
- <6078c05c-273d-a9cb-6dcb-68009260a581@huawei.com>
+        Mon, 07 Dec 2020 08:01:54 -0800 (PST)
+Received: (nullmailer pid 356839 invoked by uid 1000);
+        Mon, 07 Dec 2020 16:01:52 -0000
+Date:   Mon, 7 Dec 2020 10:01:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     mgross@linux.intel.com
+Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, shawnguo@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 02/22] dt-bindings: Add bindings for Keem Bay IPC driver
+Message-ID: <20201207160152.GB351233@robh.at.kernel.org>
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-3-mgross@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6078c05c-273d-a9cb-6dcb-68009260a581@huawei.com>
+In-Reply-To: <20201201223511.65542-3-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 07:32:21PM +0800, Qi Liu wrote:
+On Tue, Dec 01, 2020 at 02:34:51PM -0800, mgross@linux.intel.com wrote:
+> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 > 
+> Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> enables communication between the Computing Sub-System (CSS) and the
+> Multimedia Sub-System (MSS) of the Intel Movidius SoC code named Keem
+> Bay.
 > 
-> On 2020/12/7 19:27, Suzuki K Poulose wrote:
-> > On 12/7/20 11:21 AM, Qi Liu wrote:
-> >>
-> >> Hi Suzuki,
-> >> On 2020/12/7 18:38, Suzuki K Poulose wrote:
-> >>> On 12/7/20 2:08 AM, Qi Liu wrote:
-> >>>> Hi Mathieu,
-> >>>>
-> >>>> On 2020/12/5 2:55, Mathieu Poirier wrote:
-> >>>>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
-> >>>>>> The ETM device can't keep up with the core pipeline when cpu core
-> >>>>>> is at full speed. This may cause overflow within core and its ETM.
-> >>>>>> This is a common phenomenon on ETM devices.
-> >>>>>>
-> >>>>>> On HiSilicon Hip08 platform, a specific feature is added to set
-> >>>>>> core pipeline. So commit rate can be reduced manually to avoid ETM
-> >>>>>> overflow.
-> >>>>>>
-> >>>>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> >>>>>> ---
-> >>>>>> Change since v1:
-> >>>>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
-> >>>>>>     to keep specific feature off platforms which don't use it.
-> >>>>>> Change since v2:
-> >>>>>> - remove some unused variable.
-> >>>>>> Change since v3:
-> >>>>>> - use read/write_sysreg_s() to access register.
-> >>>>>> Change since v4:
-> >>>>>> - rename the call back function to a more generic name, and fix some
-> >>>>>>     compile warnings.
-> >>>>>>
-> >>>>>>    drivers/hwtracing/coresight/Kconfig                |  9 +++
-> >>>>>>    drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
-> >>>>>>    drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
-> >>>>>>    3 files changed, 105 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-> >>>>>> index c119824..1cc3601 100644
-> >>>>>> --- a/drivers/hwtracing/coresight/Kconfig
-> >>>>>> +++ b/drivers/hwtracing/coresight/Kconfig
-> >>>>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
-> >>>>>>          To compile this driver as a module, choose M here: the
-> >>>>>>          module will be called coresight-etm4x.
-> >>>>>>
-> >>>>>> +config ETM4X_IMPDEF_FEATURE
-> >>>>>> +    bool "Control overflow impdef support in CoreSight ETM 4.x driver "
-> >>>>>> +    depends on CORESIGHT_SOURCE_ETM4X
-> >>>>>> +    help
-> >>>>>> +      This control provides overflow implement define for CoreSight
-> >>>>>> +      ETM 4.x tracer module which could not reduce commit race
-> >>>>>> +      automatically, and could avoid overflow within ETM tracer module
-> >>>>>> +      and its cpu core.
-> >>>>>> +
-> >>>>>>    config CORESIGHT_STM
-> >>>>>>        tristate "CoreSight System Trace Macrocell driver"
-> >>>>>>        depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
-> >>>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>>>>> index abd706b..fcee27a 100644
-> >>>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> >>>>>> @@ -3,6 +3,7 @@
-> >>>>>>     * Copyright (c) 2014, The Linux Foundation. All rights reserved.
-> >>>>>>     */
-> >>>>>>
-> >>>>>> +#include <linux/bitops.h>
-> >>>>>>    #include <linux/kernel.h>
-> >>>>>>    #include <linux/moduleparam.h>
-> >>>>>>    #include <linux/init.h>
-> >>>>>> @@ -28,7 +29,9 @@
-> >>>>>>    #include <linux/perf_event.h>
-> >>>>>>    #include <linux/pm_runtime.h>
-> >>>>>>    #include <linux/property.h>
-> >>>>>> +
-> >>>>>>    #include <asm/sections.h>
-> >>>>>> +#include <asm/sysreg.h>
-> >>>>>>    #include <asm/local.h>
-> >>>>>>    #include <asm/virt.h>
-> >>>>>>
-> >>>>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
-> >>>>>>        int rc;
-> >>>>>>    };
-> >>>>>>
-> >>>>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
-> >>>>>> +
-> >>>>>> +#define HISI_HIP08_AMBA_ID        0x000b6d01
-> >>>>>> +#define ETM4_AMBA_MASK            0xfffff
-> >>>>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR    0x3000
-> >>>>>
-> >>>>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
-> >>>>> is set - is this intentional?  What is bit 13 for?
-> >>>>>
-> >>>> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
-> >>>> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
-> >>>> reduced to minimum value. So bit 12 and 13 should be cleared together in
-> >>>> etm4_hisi_config_core_commit().
-> >>>
-> >>> Please could you document this in the function.
-> >>>
-> >> of course, thanks.
-> >>>>
-> >>>> Qi
-> >>>>
-> >>>>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT    12
-> >>>>>> +#define HISI_HIP08_CORE_COMMIT_REG    sys_reg(3, 1, 15, 2, 5)
-> >>>>>> +
-> >>>>>> +struct etm4_arch_features {
-> >>>>>> +    void (*arch_callback)(bool enable);
-> >>>>>> +};
-> >>>>>> +
-> >>>>>> +static bool etm4_hisi_match_pid(unsigned int id)
-> >>>>>> +{
-> >>>>>> +    return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
-> >>>>>> +}
-> >>>>>> +
-> >>>>>> +static void etm4_hisi_config_core_commit(bool enable)
-> >>>>>> +{
-> >>>>>> +    u64 val;
-> >>>>>> +
-> >>>>>> +    val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
-> >>>>>> +    val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
-> >>>>>> +    val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
-> >>>
-> >>> I would use the explicitly masked values when you update
-> >>> a register.
-> >>>
-> >> ok, how about changing these code to this:
-> >> val &= ~GENMASK(12, 13);
-> > 
-> > I would do :
-> > 
-> > // Rename the HISI_HIP08_CORE_COMMIT_CLEAR to HISI_HIP08_CORE_COMMIT_MASK
-> > // above.
-> > #define HISI_HIP08_CORE_COMMIT_MASK        0x3000
-> > 
-> > #define HISI_HIP08_CORE_COMMIT_FULL        0b00
-> > #define HISI_HIP08_CORE_COMMIT_LVL_1        0b01
-> > 
-> > 
-> > u8 commit = enable ? HISI_HIP08_CORE_COMMIT_LVL_1 : HISI_HIP08_CORE_COMMIT_FULL;
-> > 
-> > ...
-> > 
-> > val |= commit << HISI_HIP08_CORE_COMMIT_SHIFT;
-> > 
-> > ..
-> > 
-> > 
-> > Suzuki
-> > 
-> > .
-> ok, I'll send a new version. :)
+> Cc: devicetree@vger.kernel.org
+> Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> ---
+>  .../bindings/soc/intel/intel,keembay-ipc.yaml | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> new file mode 100644
+> index 000000000000..6e21c54d8f34
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2020 Intel Corporation
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-ipc.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Keem Bay IPC
+> +
+> +maintainers:
+> +  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> +
+> +description:
+> +  The Keem Bay IPC driver enables Inter-Processor Communication (IPC) with the
+> +  Visual Processor Unit (VPU) embedded in the Intel Movidius SoC code named
+> +  Keem Bay.
 
-Please do so by tomorrow morning (North America time) if you want to see this
-going in the v5.11 merge window.  Otherwise it will be another 3 months.
+Sounds like a mailbox. 
 
-> Thanks
-> Qi
-> > 
+What's the relationship between this and the xlink thing?
+
+> +
+> +properties:
+> +  compatible:
+> +    const: intel,keembay-ipc
+> +
+> +  reg:
+> +    items:
+> +      - description: The CSS (CPU) FIFO registers
+> +      - description: The MSS (VPU) FIFO registers
+> +
+> +  reg-names:
+> +    items:
+> +      - const: css_fifo
+> +      - const: mss_fifo
+> +
+> +  interrupts:
+> +    items:
+> +      - description: CSS FIFO not-empty interrupt
+> +
+> +  interrupt-controller: true
+> +
+> +  memory-region:
+> +    items:
+> +      - description: Reserved memory region used for CSS IPC buffers
+> +      - description: Reserved memory region used for MSS IPC buffers
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - memory-region
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    ipc@203300f0 {
+> +          compatible = "intel,keembay-ipc";
+> +          reg = <0x203300f0 0x310>, /* CPU TIM FIFO */
+> +                <0x208200f0 0x310>; /* VPU TIM FIFO */
+> +          reg-names = "css_fifo", "mss_fifo";
+> +          interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+> +          memory-region = <&css_ipc_reserved>, <&mss_ipc_reserved>;
+> +    };
+> -- 
+> 2.17.1
 > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
