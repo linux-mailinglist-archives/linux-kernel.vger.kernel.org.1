@@ -2,111 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834162D102B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E26F2D1037
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgLGMNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726980AbgLGMND (ORCPT
+        id S1727384AbgLGMO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:14:27 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42030 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726874AbgLGMO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:13:03 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD4EC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:12:23 -0800 (PST)
-Received: from zn.tnic (p4fed31e1.dip0.t-ipconnect.de [79.237.49.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D1DB31EC03D5;
-        Mon,  7 Dec 2020 13:12:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607343142;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=TdtSOyTOpTjTSBOSgG4WDCQi7gPbDzXTXixxH5iz0PY=;
-        b=eX7eg8p0nul6zE+SUdm2p04WXKmuUIInXYNksw2VWei44SQTwFAk42XavAhC//9uYU+wNm
-        GebsHHz8Oe9bQ/Lm38I/L1EHhlw4LskTSgUhcpmdrausspGRD4auhVlnGB/GbIIsGlzeuA
-        7cMICkJACDC6Df/fOQBHai9ejX6ggyo=
-Date:   Mon, 7 Dec 2020 13:10:07 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, dave.hansen@linux-intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
-        rientjes@google.com
-Subject: Re: [PATCH v7] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
- guests.
-Message-ID: <20201207121007.GD20489@zn.tnic>
-References: <20201203032559.3388-1-Ashish.Kalra@amd.com>
+        Mon, 7 Dec 2020 07:14:27 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7C2HPJ173170;
+        Mon, 7 Dec 2020 07:13:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=p2hrgGkKKslMC+KJ70GZbtkYBRpjtOL62PnROiS3A9k=;
+ b=RIF6jAXZoX1h2jo7ep39VWsB1IiBKrY8bI7is+K5KbMRFxdKxeoa7FiW8rHWeVMjHx/n
+ /lxz/jmBV1OeRY3LKrk7ysIH7+r1nEVhlFyYI1xJgvi+9LNkMC6soJplPZQznqzxW7Rk
+ hSeWyrlvCSMPdhHqvbjy4kFqNBbQGgkHg7SXsXHSbYppcqL8hX0irqOSSiAOMPZe6XIe
+ 4xllLvlYZbZxdRXB1wrmy/bUyjka8HkaDiaS9bFZOaWrLAKUQTC9DtKKCILVTeX4oa44
+ iZJV5vnqQLFGBbNwtBm/UFjIs/clv2e76XH+7efnqLR3KIJXAdPH9dn/pDAQrMUnr3Lm 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 359m0jrffv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 07:13:19 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7C2f1G175650;
+        Mon, 7 Dec 2020 07:13:18 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 359m0jrff6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 07:13:18 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7C7Wox031428;
+        Mon, 7 Dec 2020 12:13:17 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3581u8kmp1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 12:13:16 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B7CAi9156885606
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Dec 2020 12:10:45 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5F68A405C;
+        Mon,  7 Dec 2020 12:10:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE0CAA4064;
+        Mon,  7 Dec 2020 12:10:42 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon,  7 Dec 2020 12:10:42 +0000 (GMT)
+Date:   Mon, 7 Dec 2020 17:40:42 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] powerpc/smp: Parse ibm,thread-groups with multiple
+ properties
+Message-ID: <20201207121042.GH528281@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607057327-29822-2-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201203032559.3388-1-Ashish.Kalra@amd.com>
+In-Reply-To: <1607057327-29822-2-git-send-email-ego@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_10:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=999 lowpriorityscore=0 suspectscore=5 malwarescore=0
+ mlxscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 03:25:59AM +0000, Ashish Kalra wrote:
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index 1bcfbcd2bfd7..46549bd3d840 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -485,7 +485,38 @@ static void print_mem_encrypt_feature_info(void)
->  	pr_cont("\n");
+* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:45]:
+
+> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+
+<snipped>
+
+> 
+>  static int parse_thread_groups(struct device_node *dn,
+> -			       struct thread_groups *tg,
+> -			       unsigned int property)
+> +			       struct thread_groups_list *tglp)
+>  {
+> -	int i;
+> -	u32 thread_group_array[3 + MAX_THREAD_LIST_SIZE];
+> +	int i = 0;
+> +	u32 *thread_group_array;
+>  	u32 *thread_list;
+>  	size_t total_threads;
+> -	int ret;
+> +	int ret = 0, count;
+> +	unsigned int property_idx = 0;
+
+NIT:
+tglx mentions in one of his recent comments to try keep a reverse fir tree
+ordering of variables where possible.
+
+> 
+> +	count = of_property_count_u32_elems(dn, "ibm,thread-groups");
+> +	thread_group_array = kcalloc(count, sizeof(u32), GFP_KERNEL);
+>  	ret = of_property_read_u32_array(dn, "ibm,thread-groups",
+> -					 thread_group_array, 3);
+> +					 thread_group_array, count);
+>  	if (ret)
+> -		return ret;
+> -
+> -	tg->property = thread_group_array[0];
+> -	tg->nr_groups = thread_group_array[1];
+> -	tg->threads_per_group = thread_group_array[2];
+> -	if (tg->property != property ||
+> -	    tg->nr_groups < 1 ||
+> -	    tg->threads_per_group < 1)
+> -		return -ENODATA;
+> +		goto out_free;
+> 
+> -	total_threads = tg->nr_groups * tg->threads_per_group;
+> +	while (i < count && property_idx < MAX_THREAD_GROUP_PROPERTIES) {
+> +		int j;
+> +		struct thread_groups *tg = &tglp->property_tgs[property_idx++];
+
+NIT: same as above.
+
+> 
+> -	ret = of_property_read_u32_array(dn, "ibm,thread-groups",
+> -					 thread_group_array,
+> -					 3 + total_threads);
+> -	if (ret)
+> -		return ret;
+> +		tg->property = thread_group_array[i];
+> +		tg->nr_groups = thread_group_array[i + 1];
+> +		tg->threads_per_group = thread_group_array[i + 2];
+> +		total_threads = tg->nr_groups * tg->threads_per_group;
+> +
+> +		thread_list = &thread_group_array[i + 3];
+> 
+> -	thread_list = &thread_group_array[3];
+> +		for (j = 0; j < total_threads; j++)
+> +			tg->thread_list[j] = thread_list[j];
+> +		i = i + 3 + total_threads;
+
+	Can't we simply use memcpy instead?
+
+> +	}
+> 
+> -	for (i = 0 ; i < total_threads; i++)
+> -		tg->thread_list[i] = thread_list[i];
+> +	tglp->nr_properties = property_idx;
+> 
+> -	return 0;
+> +out_free:
+> +	kfree(thread_group_array);
+> +	return ret;
 >  }
+> 
+>  /*
+> @@ -805,24 +827,39 @@ static int get_cpu_thread_group_start(int cpu, struct thread_groups *tg)
+>  	return -1;
+>  }
+> 
+> -static int init_cpu_l1_cache_map(int cpu)
+> +static int init_cpu_cache_map(int cpu, unsigned int cache_property)
+> 
+>  {
+>  	struct device_node *dn = of_get_cpu_node(cpu, NULL);
+> -	struct thread_groups tg = {.property = 0,
+> -				   .nr_groups = 0,
+> -				   .threads_per_group = 0};
+> +	struct thread_groups *tg = NULL;
+>  	int first_thread = cpu_first_thread_sibling(cpu);
+>  	int i, cpu_group_start = -1, err = 0;
+> +	cpumask_var_t *mask;
+> +	struct thread_groups_list *cpu_tgl = &tgl[cpu];
 
-Any text about why 6% was chosen? A rule of thumb or so? Measurements?
+NIT: same as 1st comment.
 
-> +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
+> 
+>  	if (!dn)
+>  		return -ENODATA;
+> 
+> -	err = parse_thread_groups(dn, &tg, THREAD_GROUP_SHARE_L1);
+> -	if (err)
+> -		goto out;
+> +	if (!(cache_property == THREAD_GROUP_SHARE_L1))
+> +		return -EINVAL;
+> 
+> -	cpu_group_start = get_cpu_thread_group_start(cpu, &tg);
+> +	if (!cpu_tgl->nr_properties) {
+> +		err = parse_thread_groups(dn, cpu_tgl);
+> +		if (err)
+> +			goto out;
+> +	}
 > +
->  /* Architecture __weak replacement functions */
-> +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-> +{
-> +	unsigned long size = iotlb_default_size;
+> +	for (i = 0; i < cpu_tgl->nr_properties; i++) {
+> +		if (cpu_tgl->property_tgs[i].property == cache_property) {
+> +			tg = &cpu_tgl->property_tgs[i];
+> +			break;
+> +		}
+> +	}
 > +
-> +	/*
-> +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-> +	 * SEV uses SWOTLB to make this happen without changing device
-> +	 * drivers. However, depending on the workload being run, the
-> +	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
-> +	 * run out of buffers for DMA, resulting in I/O errors and/or
-> +	 * performance degradation especially with high I/O workloads.
-> +	 * Adjust the default size of SWIOTLB for SEV guests using
-> +	 * a percentage of guest memory for SWIOTLB buffers.
-> +	 * Also as the SWIOTLB bounce buffer memory is allocated
-> +	 * from low memory, ensure that the adjusted size is within
-> +	 * the limits of low available memory.
-> +	 *
-> +	 */
-> +	if (sev_active()) {
-> +		phys_addr_t total_mem = memblock_phys_mem_size();
+> +	if (!tg)
+> +		return -EINVAL;
+> +
+> +	cpu_group_start = get_cpu_thread_group_start(cpu, tg);
 
-Please integrate scripts/checkpatch.pl into your patch creation
-workflow. Some of the warnings/errors *actually* make sense:
+This whole hunk should be moved to a new function and called before
+init_cpu_cache_map. It will simplify the logic to great extent.
 
-WARNING: Missing a blank line after declarations
-#95: FILE: arch/x86/mm/mem_encrypt.c:511:
-+               phys_addr_t total_mem = memblock_phys_mem_size();
-+               size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
+> 
+>  	if (unlikely(cpu_group_start == -1)) {
+>  		WARN_ON_ONCE(1);
+> @@ -830,11 +867,12 @@ static int init_cpu_l1_cache_map(int cpu)
+>  		goto out;
+>  	}
+> 
+> -	zalloc_cpumask_var_node(&per_cpu(cpu_l1_cache_map, cpu),
+> -				GFP_KERNEL, cpu_to_node(cpu));
+> +	mask = &per_cpu(cpu_l1_cache_map, cpu);
+> +
+> +	zalloc_cpumask_var_node(mask, GFP_KERNEL, cpu_to_node(cpu));
+> 
 
-But no need to resend now - just a hint for the future.
+This hunk (and the next hunk) should be moved to next patch.
 
-Konrad, ack?
-
-On a 2G guest here, it says:
-
-[    0.018373] SWIOTLB bounce buffer size adjusted to 122MB for SEV
-
-so it makes sense to me.
-
-Thx.
+>  	for (i = first_thread; i < first_thread + threads_per_core; i++) {
+> -		int i_group_start = get_cpu_thread_group_start(i, &tg);
+> +		int i_group_start = get_cpu_thread_group_start(i, tg);
+> 
+>  		if (unlikely(i_group_start == -1)) {
+>  			WARN_ON_ONCE(1);
+> @@ -843,7 +881,7 @@ static int init_cpu_l1_cache_map(int cpu)
+>  		}
+> 
+>  		if (i_group_start == cpu_group_start)
+> -			cpumask_set_cpu(i, per_cpu(cpu_l1_cache_map, cpu));
+> +			cpumask_set_cpu(i, *mask);
+>  	}
+> 
+>  out:
+> @@ -924,7 +962,7 @@ static int init_big_cores(void)
+>  	int cpu;
+> 
+>  	for_each_possible_cpu(cpu) {
+> -		int err = init_cpu_l1_cache_map(cpu);
+> +		int err = init_cpu_cache_map(cpu, THREAD_GROUP_SHARE_L1);
+> 
+>  		if (err)
+>  			return err;
+> -- 
+> 1.9.4
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks and Regards
+Srikar Dronamraju
