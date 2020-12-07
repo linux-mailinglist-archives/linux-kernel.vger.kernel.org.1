@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F15F2D0A9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1A82D0AA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 07:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgLGGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 01:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        id S1725971AbgLGGUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 01:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgLGGRj (ORCPT
+        with ESMTP id S1725783AbgLGGUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 01:17:39 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0159DC0613D2
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Dec 2020 22:16:59 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id p4so2884205pfg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Dec 2020 22:16:58 -0800 (PST)
+        Mon, 7 Dec 2020 01:20:49 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05453C0613D0;
+        Sun,  6 Dec 2020 22:20:08 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so8778303pfu.1;
+        Sun, 06 Dec 2020 22:20:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UEC9Ey1YiH340yAKzQI3EtE+5vtsPcOD/FPejTWMx7w=;
-        b=o2XJfSqzzn/rOiBwbGH3UlxuQOAZHr1UBqmeed/0e1fhHWgdPw6g+ghmTazVGrsStv
-         xkevCH2AQ7+K/XZLzzcsjSvlO0O7DLennpdrtQrst0GNuG2SDEQzN8OagNsOcQ2iHC7V
-         mJcdwfJfIDeOfJ21ncaNFhmUpNXUGGJvMjH00MOIjG1GofWmdRrnx3Q5MwsmYJ7/iY9V
-         t7gJLYvSQdLwijIivyfKz2E+YVr2QP0DavK6leUlPvH5LydY+s2kK9SNDVC14Sx4+jja
-         gJgaYojnzfDgCp9o7J8KP+Ip67NP1k/O7pj+e1AtktY7/ujymtidRkxNl2Y0sVymBZM/
-         qMqQ==
+         :content-disposition:in-reply-to;
+        bh=9W24MISDYMrf+PTfgXdHrPRsxaG7wT01UWQ5LLKP26o=;
+        b=YjIVjcfwMpqeHp6DVQXDINBA9CsGQeLF8kFxeU2dQwhhG2md44pPRuGj4CINIkxNCl
+         Zij36sPUekeXmSxBEh+hFwLQX2hWSnJFDMgGL72lj8ONTSH6CzgNjGirp6W/6SLhmUJ9
+         kpVeB+o44fdM8HSfffBfp1sM9BBdU8eFBqofSKfNjpjctmhsMIbliEO9I4CuOSdsL3nI
+         kpnn5szHsxVRKwW+HK00R1eLLvV0TC0f42mnvaJc6ryY5QHy/Cx3uhStRrZc21gs9uYF
+         EkD0c/TLuGNNnG5o/USbLwnEHkIqJL/t83T+l7YtcQcG7ByyS9AdG7X97/P/oFxnyQPW
+         VP5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UEC9Ey1YiH340yAKzQI3EtE+5vtsPcOD/FPejTWMx7w=;
-        b=EOz1UNTmCOpsA5/4bNFGzhbP0RTjPr2wH1R5cgYuNe5G6eFQZGZlUcJ8qJe2BoRv3n
-         i8zqFk73MNTJ107D3eXBIs8kx+ORiNxvPRoe2D1BQYp5uM+7U+C0K21ua9UyCDA7MGfA
-         LlfiaGQTI8eZdNTBWgZBfmSETod6TVMGTG6moKN0h+FS2x7lZMLMeefh40GLpAdrKfMy
-         6jADfLGQFXAK+7stLuqXoxlA8DSSBIIIcowpzaFJev3fG0m1hOELpE5+tW+o+6YH4EbX
-         HQnyk5TVnh4svoyL8pK77gevNBee2RIJfItzdIdU6gdlo/7/Bx0r7taSzB+aucqtPRKA
-         wnzQ==
-X-Gm-Message-State: AOAM530sMUXzc5qVQxEUPclEGDvCF156Axyjjf8Rgqnhd4y0vDd20666
-        kGTodfFnvLyWttH1fYTBkBvY1w==
-X-Google-Smtp-Source: ABdhPJwdp0AMyfk/pmIqlkdR+aP4sWvB2SM7Y4KiUHk4mVRdafw8sT/5YRZ5fNVVa99pp8VKO1yWig==
-X-Received: by 2002:a63:b910:: with SMTP id z16mr7549604pge.358.1607321818276;
-        Sun, 06 Dec 2020 22:16:58 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id a12sm9089777pjm.44.2020.12.06.22.16.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 22:16:57 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:46:54 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-Message-ID: <20201207061654.btlgobmsljdqbb2u@vireshk-i7>
-References: <20201027113532.nriqqws7gdcu5su6@vireshk-i7>
- <20201103054715.4l5j57pyjz6zd6ed@vireshk-i7>
- <CAF6AEGtgUVXm6Wwod0FC38g91Q8CotLFSoC4NmXx7GzcA=1mOA@mail.gmail.com>
- <20201104030353.ny7zvakgb4fsye6r@vireshk-i7>
- <CAF6AEGv215ixcAWmaOWs7UKAqmbMs=aFyTBBYLU-bt8XBnWb7g@mail.gmail.com>
- <20201106071621.j732gt4nqifjrccd@vireshk-i7>
- <CAF6AEGt_wbWuQA7gBw4yn4f2x0SVbfub4eRDX59PCvnd_0uFxg@mail.gmail.com>
- <20201118052829.ugt7i7ac6eqsj4l6@vireshk-i7>
- <CAF6AEGv=-h7GFj5LR97FkeBBn+gk6TNS5hZkwBwufpE4yO7GyA@mail.gmail.com>
- <20201119060528.qscedvc4jlmxakqo@vireshk-i7>
+         :mime-version:content-disposition:in-reply-to;
+        bh=9W24MISDYMrf+PTfgXdHrPRsxaG7wT01UWQ5LLKP26o=;
+        b=rqI/PoTDS740BNkKn++bbUI4hfuY1n37lmlbC0chzWKjvQKsx/iGH/71zlubPN4ubt
+         kY/hUhWQSxFNYnZeU3EuDyB7nepMAvoai3FocxvFD+LYoAwACCsL+0MhoYQcfZhDJPk0
+         guhtbewmp8wxxbiY2o6C3uUKMxkK1ZpFSuPldBReSU90SMzTQUlGG5uaZq2z1DGQzJi/
+         oCoAPkgDxW4wU03FXbjKO3TYLhlo912+ora42/PI4upTsB+rHRKAG17P7boUVUPx9k2w
+         18fyKnFcVwfNW7+NyXaTF63/0s31vUFrMJH8DdXjz1eej1pRIlCgWRzORV8a9d3AJboS
+         yjnw==
+X-Gm-Message-State: AOAM531Yq9+z4WPfe0v+XeDVU8u4HXRLa3JF2NeDhCXxKt0mWlPNFY/c
+        SjjSOn6HNajkOnVUy83PAfA=
+X-Google-Smtp-Source: ABdhPJwWQvDOHeiG235GD3pRY5ogib9ZJOu46mPiNCHwmj2LuwMsbCaxu6JG95aQqzQmk6ndcMqFoA==
+X-Received: by 2002:a63:1758:: with SMTP id 24mr17272571pgx.170.1607322008430;
+        Sun, 06 Dec 2020 22:20:08 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id x6sm10328920pgr.20.2020.12.06.22.20.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Dec 2020 22:20:07 -0800 (PST)
+Date:   Sun, 6 Dec 2020 22:20:05 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Furquan Shaikh <furquan@google.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] input: raydium_ts_i2c: Do not split tx transactions
+Message-ID: <X83Jld+Ga1ahuve2@google.com>
+References: <CAEGmHFFuJHNpXOjzmBZ0Sjgsz-x19QFdSuns2v_uMFQyPQis=g@mail.gmail.com>
+ <20201205005941.1427643-1-furquan@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201119060528.qscedvc4jlmxakqo@vireshk-i7>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201205005941.1427643-1-furquan@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-11-20, 11:35, Viresh Kumar wrote:
-> On 18-11-20, 08:53, Rob Clark wrote:
-> > On Tue, Nov 17, 2020 at 9:28 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > On 17-11-20, 09:02, Rob Clark wrote:
-> > > > With that on top of the previous patch,
-> > >
-> > > Don't you still have this ? Which fixed the lockdep in the remove path.
-> > >
-> > > https://lore.kernel.org/lkml/20201022080644.2ck4okrxygmkuatn@vireshk-i7/
-> > >
-> > > To make it clear you need these patches to fix the OPP stuff:
-> > >
-> > > //From 5.10-rc3 (the one from the above link).
-> > > commit e0df59de670b ("opp: Reduce the size of critical section in _opp_table_kref_release()")
+On Fri, Dec 04, 2020 at 04:59:41PM -0800, Furquan Shaikh wrote:
+> Raydium device does not like splitting of tx transactions into
+> multiple messages - one for the register address and one for the
+> actual data. This results in incorrect behavior on the device side.
 > 
-> This fixes debugfs stuff while the OPP table is removed.
+> This change updates raydium_i2c_read and raydium_i2c_write to create
+> i2c_msg arrays separately and passes those arrays into
+> raydium_i2c_xfer which decides based on the address whether the bank
+> switch command should be sent. The bank switch header is still added
+> by raydium_i2c_read and raydium_i2c_write to ensure that all these
+> operations are performed as part of a single I2C transfer. It
+> guarantees that no other transactions are initiated to any other
+> device on the same bus after the bank switch command is sent.
 > 
-> > > //Below two from linux-next
-> > > commit ef43f01ac069 ("opp: Always add entries in dev_list with opp_table->lock held")
-> > > commit 27c09484dd3d ("opp: Allocate the OPP table outside of opp_table_lock")
-> 
-> This fixes debugfs stuff while the OPP table is added.
-> 
-> > > This matches the diff I gave you earlier.
-> > >
-> > 
-> > no, I did not have all three, only "opp: Allocate the OPP table
-> > outside of opp_table_lock" plus the fixup.  But with all three:
-> 
-> And looking at the lockdep you gave now, it looks like we have a
-> problem with OPP table's internal lock (opp_table->lock) as well apart
-> from the global opp_table_lock.
-> 
-> I wish there was a way for me to reproduce the lockdep :(
-> 
-> I know this is exhausting for both of us and I really want to be over
-> with it as soon as possible, this really should be the last patch
-> here, please try this along with other two. This fixes the debugfs
-> thing while the OPPs in the OPP table are removed (they are already
-> added without a lock around debugfs stuff).
-> 
-> AFAIU, there is no further debugfs stuff that happens from within the
-> locks and so this really should be the last patch unless I missed
-> something.
+> Signed-off-by: Furquan Shaikh <furquan@google.com>
 
-Rob, were you able to test this patch ?
+Applied, thank you.
 
 -- 
-viresh
+Dmitry
