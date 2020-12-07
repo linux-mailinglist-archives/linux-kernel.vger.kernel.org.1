@@ -2,93 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7D42D0E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCDC2D0E29
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgLGKii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 05:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgLGKih (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:38:37 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D51C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:37:57 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id x16so18744936ejj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VXIL/mPGOivAPpqwxpyRTpp5LeodAai3f6shhhCJSvc=;
-        b=epBZnYHYL+3atS7whj+dOGTaots4l4EmX2hejtWFeS/V33LeDhxYyPAz/HJjznLv7Q
-         8tsFzOXpbq98t0RuB0fEK6P0GIQc1hP/GlQctUsRkYtM6qaPtfx4HUIIQz5F6C5IYSri
-         +HjDh2eHZvBqxDEaeYBIO51faVdgqbYBTm0oNR+7hDI0lja7XI5qbGFOYZhXZzqorLB0
-         GzKoNHZgFXO4G6TxJtxKHqo/bfJz+8ucTLBMqksXtdfb6Coy33JUz5Lodn7px8eNyS5B
-         Ggi2HVNL/QrCC/omoO4tbOaf+8v+uRRGjAZ9r91a1Z4hePh7An+vGZ34zsuE8zOcijjs
-         iJdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VXIL/mPGOivAPpqwxpyRTpp5LeodAai3f6shhhCJSvc=;
-        b=T4NrtOUBHrilObbgHFPtXEWikfjhw5ifBWSmy3lArGLhSo9sV5GlIlPSITsmUo9gJo
-         HJNC+4lH43O50UUDXij0z3Zvk+kIJ45iXeEzPrAOX1I7668LpaqGelLG3PWhP1/iaYak
-         KARBtWsxJg/zTWTcjiUrjHXbvk6flbYoZVEdGgY+Pjy/c48YsdzGVR/KNCXwOfSqZ8C/
-         2UNebmKezvGFKqYkRvNYxxcq+yiv86f/sNn/ycPtXY4zwsW7P9yufYJrWMr1AVKWZST3
-         PT6UnxwYRiYDtjJfMHC3lc3FfhImQ6g7qE+RUSyDKuRvdu/hMGO+Qmh61b0FqMpSb5Pt
-         lJsg==
-X-Gm-Message-State: AOAM533DeVC3n9/613GBJVbaCZYWp+P/4bDM6+hb7bPmbRPccUmP/7uz
-        UjRrD6Eh/NoyxIjHjBTbPLSIMQO31/KpObw1DFxWvQ==
-X-Google-Smtp-Source: ABdhPJyS8NPxP/N8yUAkByj94DqmhT5XJMlOeyUF6KVf2Vx2H9TvyJW2H/KEgzqT4En6ecuhA0MrYltatpFPfGUXBLo=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr18025326eju.375.1607337475996;
- Mon, 07 Dec 2020 02:37:55 -0800 (PST)
+        id S1726244AbgLGKjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:39:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:46632 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726195AbgLGKjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 05:39:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 854FF1042;
+        Mon,  7 Dec 2020 02:38:14 -0800 (PST)
+Received: from [10.57.63.221] (unknown [10.57.63.221])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AF4F3F66B;
+        Mon,  7 Dec 2020 02:38:13 -0800 (PST)
+Subject: Re: [PATCH v5] coresight: etm4x: Modify core-commit of cpu to avoid
+ the overflow of HiSilicon ETM
+To:     Qi Liu <liuqi115@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxarm@huawei.com
+References: <1606397670-15657-1-git-send-email-liuqi115@huawei.com>
+ <20201204185551.GB1424711@xps15>
+ <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <07243eef-dbcf-6500-a66b-5c0e1689ece9@arm.com>
+Date:   Mon, 7 Dec 2020 10:38:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <CA+G9fYs=nR-d0n8kV4=OWD+v=GR2ufOEWU9S4oG1_fZRxhGouQ@mail.gmail.com>
- <20201207060746.GT11935@casper.infradead.org>
-In-Reply-To: <20201207060746.GT11935@casper.infradead.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 7 Dec 2020 16:07:44 +0530
-Message-ID: <CA+G9fYvQaBVRjxwQ0=+09RCVi-sExv4LAAXpH3-TSGNL29EY7g@mail.gmail.com>
-Subject: Re: WARNING: bad unlock balance detected! - mkfs.ext4/426 is trying
- to release lock (rcu_read_lock)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org,
-        lkft-triage@lists.linaro.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <448eb009-da3e-b918-984d-cf563a64f31d@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 at 11:37, Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Dec 07, 2020 at 11:17:29AM +0530, Naresh Kamboju wrote:
-> > While running "mkfs -t ext4" on arm64 juno-r2 device connected with SSD drive
-> > the following kernel warning reported on stable rc 5.9.13-rc1 kernel.
-> >
-> > Steps to reproduce:
-> > ------------------
-> > # boot arm64 Juno-r2 device with stable-rc 5.9.13-rc1.
-> > # Connect SSD drive
-> > # Format the file system ext4 type
-> >  mkfs -t ext4 <SSD-drive>
-> > # you will notice this warning
->
-> Does it happen easily?  Can you bisect?
+On 12/7/20 2:08 AM, Qi Liu wrote:
+> Hi Mathieu,
+> 
+> On 2020/12/5 2:55, Mathieu Poirier wrote:
+>> On Thu, Nov 26, 2020 at 09:34:30PM +0800, Qi Liu wrote:
+>>> The ETM device can't keep up with the core pipeline when cpu core
+>>> is at full speed. This may cause overflow within core and its ETM.
+>>> This is a common phenomenon on ETM devices.
+>>>
+>>> On HiSilicon Hip08 platform, a specific feature is added to set
+>>> core pipeline. So commit rate can be reduced manually to avoid ETM
+>>> overflow.
+>>>
+>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>> ---
+>>> Change since v1:
+>>> - add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+>>>    to keep specific feature off platforms which don't use it.
+>>> Change since v2:
+>>> - remove some unused variable.
+>>> Change since v3:
+>>> - use read/write_sysreg_s() to access register.
+>>> Change since v4:
+>>> - rename the call back function to a more generic name, and fix some
+>>>    compile warnings.
+>>>
+>>>   drivers/hwtracing/coresight/Kconfig                |  9 +++
+>>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 88 ++++++++++++++++++++++
+>>>   drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
+>>>   3 files changed, 105 insertions(+)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+>>> index c119824..1cc3601 100644
+>>> --- a/drivers/hwtracing/coresight/Kconfig
+>>> +++ b/drivers/hwtracing/coresight/Kconfig
+>>> @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+>>>   	  To compile this driver as a module, choose M here: the
+>>>   	  module will be called coresight-etm4x.
+>>>
+>>> +config ETM4X_IMPDEF_FEATURE
+>>> +	bool "Control overflow impdef support in CoreSight ETM 4.x driver "
+>>> +	depends on CORESIGHT_SOURCE_ETM4X
+>>> +	help
+>>> +	  This control provides overflow implement define for CoreSight
+>>> +	  ETM 4.x tracer module which could not reduce commit race
+>>> +	  automatically, and could avoid overflow within ETM tracer module
+>>> +	  and its cpu core.
+>>> +
+>>>   config CORESIGHT_STM
+>>>   	tristate "CoreSight System Trace Macrocell driver"
+>>>   	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> index abd706b..fcee27a 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>> @@ -3,6 +3,7 @@
+>>>    * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+>>>    */
+>>>
+>>> +#include <linux/bitops.h>
+>>>   #include <linux/kernel.h>
+>>>   #include <linux/moduleparam.h>
+>>>   #include <linux/init.h>
+>>> @@ -28,7 +29,9 @@
+>>>   #include <linux/perf_event.h>
+>>>   #include <linux/pm_runtime.h>
+>>>   #include <linux/property.h>
+>>> +
+>>>   #include <asm/sections.h>
+>>> +#include <asm/sysreg.h>
+>>>   #include <asm/local.h>
+>>>   #include <asm/virt.h>
+>>>
+>>> @@ -103,6 +106,87 @@ struct etm4_enable_arg {
+>>>   	int rc;
+>>>   };
+>>>
+>>> +#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+>>> +
+>>> +#define HISI_HIP08_AMBA_ID		0x000b6d01
+>>> +#define ETM4_AMBA_MASK			0xfffff
+>>> +#define HISI_HIP08_CORE_COMMIT_CLEAR	0x3000
+>>
+>> Here bit 12 and 13 are cleared but in etm4_hisi_config_core_commit() only bit 12
+>> is set - is this intentional?  What is bit 13 for?
+>>
+> bit 12 and 13 are used together to set core-commit, 2'b00 means cpu is at full speed,
+> 2'b01, 2'b10, 2'b11 means reduce the speed of cpu pipeline, and 2'b01 means speed is
+> reduced to minimum value. So bit 12 and 13 should be cleared together in
+> etm4_hisi_config_core_commit().
 
-I have been running multi test loops to reproduce this problem but no
-luck yet :(
-Since it is hard to reproduce we can not bisect.
+Please could you document this in the function.
 
-- Naresh
+> 
+> Qi
+> 
+>>> +#define HISI_HIP08_CORE_COMMIT_SHIFT	12
+>>> +#define HISI_HIP08_CORE_COMMIT_REG	sys_reg(3, 1, 15, 2, 5)
+>>> +
+>>> +struct etm4_arch_features {
+>>> +	void (*arch_callback)(bool enable);
+>>> +};
+>>> +
+>>> +static bool etm4_hisi_match_pid(unsigned int id)
+>>> +{
+>>> +	return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
+>>> +}
+>>> +
+>>> +static void etm4_hisi_config_core_commit(bool enable)
+>>> +{
+>>> +	u64 val;
+>>> +
+>>> +	val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
+>>> +	val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
+>>> +	val |= enable << HISI_HIP08_CORE_COMMIT_SHIFT;
+
+I would use the explicitly masked values when you update
+a register.
+
+With the above:
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
