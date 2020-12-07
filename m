@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BE32D1661
+	by mail.lfdr.de (Postfix) with ESMTP id 8293B2D1662
 	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 17:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgLGQfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 11:35:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59796 "EHLO
+        id S1727948AbgLGQfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 11:35:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31882 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727654AbgLGQec (ORCPT
+        by vger.kernel.org with ESMTP id S1727660AbgLGQec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 7 Dec 2020 11:34:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -18,46 +18,46 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wrGV7hqd0sY6Ndza0dri1YXg1lEmApvh0CGfKm2LK30=;
-        b=i9Auspi9NJNxmnxWLqQckB2jARWw+hvv9he1EL6KXK7K2aLLKAvrDu+pIdS9vplXup8kOD
-        RqlokXbNDHrNsHoLbae/9fIzLycqy2mesSvEAyDAyDk8cA65G5ZIwsh19ssfp/lznmwv3o
-        abs4VuHNzypZxzzoNOdg/A5c9LO69lY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-tQ9QjDQXOOedfGjMzCZWTg-1; Mon, 07 Dec 2020 11:33:02 -0500
-X-MC-Unique: tQ9QjDQXOOedfGjMzCZWTg-1
-Received: by mail-ej1-f69.google.com with SMTP id dv25so4021505ejb.15
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:33:02 -0800 (PST)
+        bh=otYj369xse9R2kbOApLqBDn6NdlRsKHBl6lYbw3xZEw=;
+        b=iRBYEDZ5TcYh8gOy7m4RTWnNIoebpQCuqYbCb4djgaqxlaYvqsFfry2hidLYKloUG3zlgb
+        4kwpujHI/F4/R6InTYpDGKjzSsu/YLQ0DQg0BXbu4AjwDn/7qx+Zdte8V+sMMwe0cGvOgB
+        hzCIhfizlEQZiggUkoQ+Ma5CCGPbziM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-idMyDOxRMhiYd4VoPOEeMw-1; Mon, 07 Dec 2020 11:33:03 -0500
+X-MC-Unique: idMyDOxRMhiYd4VoPOEeMw-1
+Received: by mail-ej1-f71.google.com with SMTP id dv25so4021524ejb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 08:33:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wrGV7hqd0sY6Ndza0dri1YXg1lEmApvh0CGfKm2LK30=;
-        b=UY82aTAz2wiGIGC84yJdOiCm4CdfVCCJR9N6785ajhg1GyLut4O17VGe1SS1qtKvLQ
-         uAPEfkPlgxsbn0C72g3Np3cJ+s76SoYeoYNIRo5vfAGSXKmCg8jXnkq6G8vici5aitxU
-         Esm07yxRTmSOn3DcPg24hh57U4yb7FclJRpUZlBXpMoF2sWgoBl588foOOXTyHtO5L/t
-         NKqW55v0E+MEMlhFEZzBuJ0la4egzwkjYhXPxl7u0kCfXU5MBc8k7fK1tSFlnAigB+RP
-         2j34LeZ+eyWzuLJuNcdMIx0i4asXYev8Z+yTe2R+2vtOtLpfwfc9GS+DL+PN1HSDdCAU
-         Is7Q==
-X-Gm-Message-State: AOAM531l7zMqJrMEoSgrJu0aGlUjo29IR8a2AQrBRpvaQ/Y+XxQ3iwEU
-        daBmtcLjF6P1S8cVPdp28NEZA2qNIcwvAsNFZAvXpTV2GTQg+IlseU94YWzNPYBYubfEbwv81Lp
-        mH4g4eGMFwzMDxNbzpzThpwcg
-X-Received: by 2002:a50:a694:: with SMTP id e20mr20629149edc.261.1607358781219;
-        Mon, 07 Dec 2020 08:33:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzacwDTqVI9lhkLtXTTX/Z6WL5s00t1gChOyqFQ1tlVS8dmeqyNuXCDk11RK7mg8BFu3gh98Q==
-X-Received: by 2002:a50:a694:: with SMTP id e20mr20629136edc.261.1607358781059;
-        Mon, 07 Dec 2020 08:33:01 -0800 (PST)
+        bh=otYj369xse9R2kbOApLqBDn6NdlRsKHBl6lYbw3xZEw=;
+        b=EGNUOwdV8jRo5sonwqlRwIyBWNjxHG/59tWOEjMT1jrnegRJ6iShD6QefcojVK3yiW
+         mRmXseCyK4yNEZolK7mzU5sVmh/88hfC6Yda20YMsvHqF/JltYv1jCeE1ZgD48lAxAc3
+         qGHkXDkavrpX/UzLgtQXX9lHlwF1RygSKk04/ENvLX5WzFoBUxN7RZlvkwVOU8W48zB9
+         qqVrw0B/+piHXNDQwpX+M9Rst169VcrdK5o4pN8lRvPVZ9UGdF7GPnP1s6eCs37xQzC7
+         Hbsao2fif7cXWYUHJFyNgXHw18KgOHWI9SneC1O9BkrFBvPejLudkwaNElS8SIBZhY00
+         OSdA==
+X-Gm-Message-State: AOAM533l9Gh2yLcJQwVxW3bP3OZ/F//EqpHzOvy31iVjvr8qbBZq9KCo
+        Q9ZHYuxxw+OOH5gM9VdIJ+VQLtvPDk6fl/kunf3RZ/F8tqXuFJqh0AaqO2cmt32suMpBx/zm6Sx
+        +Q1EH0faQ0C+wue7vOSHQftPF
+X-Received: by 2002:a17:906:c83b:: with SMTP id dd27mr19881672ejb.356.1607358782442;
+        Mon, 07 Dec 2020 08:33:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJygw9J/iNohcy2imBMmRfiewi1ytt2qnsha6UorIQb1JISBnH+1nxrUZXhES5TAxxlwjwkJkQ==
+X-Received: by 2002:a17:906:c83b:: with SMTP id dd27mr19881657ejb.356.1607358782244;
+        Mon, 07 Dec 2020 08:33:02 -0800 (PST)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.32.59
+        by smtp.gmail.com with ESMTPSA id op5sm12801964ejb.43.2020.12.07.08.33.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 08:33:00 -0800 (PST)
+        Mon, 07 Dec 2020 08:33:01 -0800 (PST)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     "Eric W . Biederman" <ebiederm@xmission.com>
 Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
         linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/10] vfs: move cap_convert_nscap() call into vfs_setxattr()
-Date:   Mon,  7 Dec 2020 17:32:46 +0100
-Message-Id: <20201207163255.564116-2-mszeredi@redhat.com>
+Subject: [PATCH v2 02/10] vfs: verify source area in vfs_dedupe_file_range_one()
+Date:   Mon,  7 Dec 2020 17:32:47 +0100
+Message-Id: <20201207163255.564116-3-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201207163255.564116-1-mszeredi@redhat.com>
 References: <20201207163255.564116-1-mszeredi@redhat.com>
@@ -67,96 +67,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cap_convert_nscap() does permission checking as well as conversion of the
-xattr value conditionally based on fs's user-ns.
+Call remap_verify_area() on the source file as well as the destination.
 
-This is needed by overlayfs and probably other layered fs (ecryptfs) and is
-what vfs_foo() is supposed to do anyway.
+When called from vfs_dedupe_file_range() the check as already been
+performed, but not so if called from layered fs (overlayfs, etc...)
+
+Could ommit the redundant check in vfs_dedupe_file_range(), but leave for
+now to get error early (for fear of breaking backward compatibility).
+
+This call shouldn't be performance sensitive.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 ---
- fs/xattr.c                 | 17 +++++++++++------
- include/linux/capability.h |  2 +-
- security/commoncap.c       |  3 +--
- 3 files changed, 13 insertions(+), 9 deletions(-)
+ fs/remap_range.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/xattr.c b/fs/xattr.c
-index cd7a563e8bcd..fd57153b1f61 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -276,8 +276,16 @@ vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
- {
- 	struct inode *inode = dentry->d_inode;
- 	struct inode *delegated_inode = NULL;
-+	const void  *orig_value = value;
- 	int error;
+diff --git a/fs/remap_range.c b/fs/remap_range.c
+index e6099beefa97..77dba3a49e65 100644
+--- a/fs/remap_range.c
++++ b/fs/remap_range.c
+@@ -456,8 +456,16 @@ loff_t vfs_dedupe_file_range_one(struct file *src_file, loff_t src_pos,
+ 	if (ret)
+ 		return ret;
  
-+	if (size && strcmp(name, XATTR_NAME_CAPS) == 0) {
-+		error = cap_convert_nscap(dentry, &value, size);
-+		if (error < 0)
-+			return error;
-+		size = error;
-+	}
++	/*
++	 * This is redundant if called from vfs_dedupe_file_range(), but other
++	 * callers need it and it's not performance sesitive...
++	 */
++	ret = remap_verify_area(src_file, src_pos, len, false);
++	if (ret)
++		goto out_drop_write;
 +
- retry_deleg:
- 	inode_lock(inode);
- 	error = __vfs_setxattr_locked(dentry, name, value, size, flags,
-@@ -289,6 +297,9 @@ vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
- 		if (!error)
- 			goto retry_deleg;
- 	}
-+	if (value != orig_value)
-+		kfree(value);
-+
- 	return error;
- }
- EXPORT_SYMBOL_GPL(vfs_setxattr);
-@@ -537,12 +548,6 @@ setxattr(struct dentry *d, const char __user *name, const void __user *value,
- 		if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
- 		    (strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
- 			posix_acl_fix_xattr_from_user(kvalue, size);
--		else if (strcmp(kname, XATTR_NAME_CAPS) == 0) {
--			error = cap_convert_nscap(d, &kvalue, size);
--			if (error < 0)
--				goto out;
--			size = error;
--		}
- 	}
+ 	ret = remap_verify_area(dst_file, dst_pos, len, true);
+-	if (ret < 0)
++	if (ret)
+ 		goto out_drop_write;
  
- 	error = vfs_setxattr(d, kname, kvalue, size, flags);
-diff --git a/include/linux/capability.h b/include/linux/capability.h
-index 1e7fe311cabe..b2f698915c0f 100644
---- a/include/linux/capability.h
-+++ b/include/linux/capability.h
-@@ -270,6 +270,6 @@ static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
- /* audit system wants to get cap info from files as well */
- extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
- 
--extern int cap_convert_nscap(struct dentry *dentry, void **ivalue, size_t size);
-+extern int cap_convert_nscap(struct dentry *dentry, const void **ivalue, size_t size);
- 
- #endif /* !_LINUX_CAPABILITY_H */
-diff --git a/security/commoncap.c b/security/commoncap.c
-index 59bf3c1674c8..bacc1111d871 100644
---- a/security/commoncap.c
-+++ b/security/commoncap.c
-@@ -473,7 +473,7 @@ static bool validheader(size_t size, const struct vfs_cap_data *cap)
-  *
-  * If all is ok, we return the new size, on error return < 0.
-  */
--int cap_convert_nscap(struct dentry *dentry, void **ivalue, size_t size)
-+int cap_convert_nscap(struct dentry *dentry, const void **ivalue, size_t size)
- {
- 	struct vfs_ns_cap_data *nscap;
- 	uid_t nsrootid;
-@@ -516,7 +516,6 @@ int cap_convert_nscap(struct dentry *dentry, void **ivalue, size_t size)
- 	nscap->magic_etc = cpu_to_le32(nsmagic);
- 	memcpy(&nscap->data, &cap->data, sizeof(__le32) * 2 * VFS_CAP_U32);
- 
--	kvfree(*ivalue);
- 	*ivalue = nscap;
- 	return newsize;
- }
+ 	ret = -EPERM;
 -- 
 2.26.2
 
