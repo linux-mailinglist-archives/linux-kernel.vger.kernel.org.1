@@ -2,263 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F102D1E26
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1062D1E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 00:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgLGXMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 18:12:02 -0500
-Received: from mail-dm6nam12on2057.outbound.protection.outlook.com ([40.107.243.57]:46976
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725885AbgLGXMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:12:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nTPaNCgeGnd4M2OvbmfpoIxwj8Q0r95XCyOB+P7xpI7adgvq1A+ZXADCvhwtG1FEeuLktniJqW0VXqdVnbHOziIPVrGQgwykH1Gs1V3zKVtycp3C8bZlLUYtlfO3J/CX5m255u26slE/9HM65FxwxMRC0PCK7Xlsozit+v52Hym4E+vyoeH0V1Ad2KXrM23dMK0soto8RFTCN2ZSQzv66WmUuQbzlPL+Ake4H1YZ98xy4paSrdpp+OMQH19hlgdChscoeB2Wc9XYuElNftkYYtiyZz0rMW/eYpQRKoLX4Jn6pefyVPEt2HKxkMGjJ0L3lSLTkR/OBhpunKm5JS3HyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bdCwui1l+GNYxA7+/kxNthbfGQAwnyuDPScHyVZRZgA=;
- b=MwLvJ4oN1rX8Gbucsok8lkmTKP1Po4xGbxrjVpHTkFyMkJgwDuR8sqxfM/RxJ3YijFIZdrW4XHHh1zNSLDJkUKtKyl21j+tyKFSPa5Rz7e9qmG09NV4H2F9re0Za+Ren0OV2VAYhdJlIPXjOz2eCIrULIleWDwtU6FsWCTbDiIXTjodG0OgmlyYxb8R/qoE/6ZNk8r2F9EoBz9cR/rXReTvvn6kUZHtRZe7PzRjhlyt890QTPVG08cqHXd/uZJtX0GvAjTNwF8Tw5wABaQwyXwDOvoWKGbCg/WXrDrNVogGfl5PYtaz+JA5G23J5SkiwiCyANHghoyS1chBwUTZn9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728157AbgLGXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 18:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgLGXOE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:14:04 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A94C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:13:23 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id o5so10395219pgm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bdCwui1l+GNYxA7+/kxNthbfGQAwnyuDPScHyVZRZgA=;
- b=NeFHTA6vgfOAqKjvXESqwvIpZ72WDub1g02HTAeRiERsp+ghNpbTXLEePiv15CB+Qy8woC4S89YI1HdekAYOq+OaRp+mmaDJKBx5mVYbhoaZwZFZT8FWvwPPjtq9Z+K5Rvm1Sg11ya3f46MLsh2lJaoPpnRK/0mDZ98rZUYCBpI=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4590.namprd12.prod.outlook.com (2603:10b6:806:93::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Mon, 7 Dec
- 2020 23:11:08 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Mon, 7 Dec 2020
- 23:11:08 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     konrad.wilk@oracle.com
-Cc:     hch@lst.de, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
-        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
-        Thomas.Lendacky@amd.com, Jon.Grimm@amd.com, rientjes@google.com
-Subject: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
-Date:   Mon,  7 Dec 2020 23:10:57 +0000
-Message-Id: <20201207231057.26403-1-Ashish.Kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN6PR2101CA0027.namprd21.prod.outlook.com
- (2603:10b6:805:106::37) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Gbbh4ibxUFpi3OAKBtYtSpm5Z1JaNbGkY8hc3Ov1OeA=;
+        b=rQuROwycmhYuaF7TU7X0pJ/7xgAKppbha0BqNqI/sLgV4WGQtuvMyx/qz4/M6diqaM
+         4yf4lx3yMt5uuRfdfcWpaRMCphkexOi4D552m/ygiWSe6uLCLJxxpRtLSxWw0NXKf6MQ
+         I54+XaVd9b0lekf+QJbUGZtHpZ82agD2LA9P+yl19No7qjTNsXYYXMfeSa+xaU8mMFEi
+         uLrDoqpU20YTcJTGOaA1cj2Op/n7hQuB+LEPk1gLvyx8DoeLtoiy2GNrITZQoJeo5jUB
+         IaDgnyi+LRWPnIpDRD7nUL3A1fFkN71X5vkdgCoq2/zAz32iDISvdGw7DTfMZxG1dzG1
+         IEKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Gbbh4ibxUFpi3OAKBtYtSpm5Z1JaNbGkY8hc3Ov1OeA=;
+        b=eIjzD+bQzbVhqQcUx/fpSxa0VQvryQyjwVsxIYIhoRXqzMDljCsqQ24oaIBbm2Vfte
+         HwHiO+uhC21i9pXNbxMrzVCrbLYw1wlIDfty7PjUAL83UMhk7oDxVbr3b9gXIlcx62RI
+         NXLpe+cNoBlGOPdztwPR5I2BtIPPsMAW9cuvu4TlFf8VgBvpYaFHSMVxBiXZJ59ZoZop
+         Lmweh5SWep1p6cWcX/fpPCpS1MjIJHPXxkPaYLK5b9nK4adfDZWfOeJDeId7FMJoZRDh
+         BN3Eh2512fx0yvrZX2mlSK94B3Z6rQCNQreMdiUJVz+C8tGNUOGw69OVkGphoaVUdnzC
+         vf/w==
+X-Gm-Message-State: AOAM533FKg6w3YH8LVHeAV5DGZMqAa8I6JxlRTOInUHRppI5bV0d9Fub
+        uTGMQpRn3gzcAobTPppzeRZ/CA==
+X-Google-Smtp-Source: ABdhPJzgZm8lZG6NLh0a3gHZKxqCco0EwwEK2TdtHU5AGRJyE33wH6Jn7x6sYZJjVFNbqYCNbs1S4A==
+X-Received: by 2002:a17:902:6b45:b029:d6:c43e:ad13 with SMTP id g5-20020a1709026b45b02900d6c43ead13mr18461110plt.77.1607382802822;
+        Mon, 07 Dec 2020 15:13:22 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id c3sm13598807pgm.41.2020.12.07.15.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 15:13:22 -0800 (PST)
+Date:   Mon, 7 Dec 2020 15:13:15 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        wanpengli@tencent.com, kvm@vger.kernel.org,
+        thomas.lendacky@amd.com, peterz@infradead.org, joro@8bytes.org,
+        x86@kernel.org, kyung.min.park@intel.com,
+        linux-kernel@vger.kernel.org, krish.sadhukhan@oracle.com,
+        hpa@zytor.com, mgross@linux.intel.com, vkuznets@redhat.com,
+        kim.phillips@amd.com, wei.huang2@amd.com, jmattson@google.com
+Subject: Re: [PATCH 2/2] KVM: SVM: Add support for Virtual SPEC_CTRL
+Message-ID: <X863C6ikshtMHemk@google.com>
+References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
+ <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN6PR2101CA0027.namprd21.prod.outlook.com (2603:10b6:805:106::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2 via Frontend Transport; Mon, 7 Dec 2020 23:11:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1b693b12-2c13-4dc8-9c0c-08d89b056185
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4590:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB459039CEBFC1CC226787E6498ECE0@SA0PR12MB4590.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0WQqaBX9jnu8IXRxzjxYklpt4VK/IS/7684vysY3wsUE0akkMTsxDmodF9R4/J/vI30IssGmd7R2nWHwbhniNzXy9J06ifVCfhg5hNpacDc/sWjo8nyi0+4ZsuhPcjC0mBNELF0wGSIqLefxiufONDidoLzhNEF3mpOLu6lT3TwJA63JiCbmfrNKnj+M1DyaWJx+ctsdFOgWXQUiZKYwkrkWRvrP8g3/3jPLWNzUOTN6CT1crm/dgoi1fMqOo2b4hU2KBYLNOcNcXoeC6J1OvoTsLiohPCAP6aOeC5DWYFxh5iVfMOmpb37fIxcgWp/cm2lKJXXMH+hP++cybCSuYA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(8936002)(8676002)(7416002)(478600001)(1076003)(66476007)(2616005)(6916009)(26005)(186003)(6666004)(956004)(16526019)(5660300002)(6486002)(52116002)(316002)(2906002)(86362001)(4326008)(36756003)(66556008)(7696005)(83380400001)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bg4MXBJawuSOQJJhKOK0sQHnPk9qwW82F4n3dclNi956iMrSuLPGEu3Ij8tw?=
- =?us-ascii?Q?e4gxoMDzf1kLLvnvHHypVCa0qpRHSuCwpiB0rjE9HiecXCfwEdgPGIxLYjon?=
- =?us-ascii?Q?u9yrRqq6M0qYOHmSNfVAuV9CNcyZKrGBJsJdPvvBAemjyIegEajYhJSDHPMq?=
- =?us-ascii?Q?YP8umwC+fHOjjUcaUpTeAT9Qj/ANJYTqnJEDh3gMZ0TDW6APvzYRmmO4K/Yl?=
- =?us-ascii?Q?l3JhfPKck31jT44IebA4hXz89TklK8Y+6GPw9CxvnLyH7CtDFuu5Mu4JohHO?=
- =?us-ascii?Q?CjAnfJ9Kr5sH3A7ZwMwP3U/Hj5wt7dm5YpzlubvRTGipW6BtObHQMnfgbfOg?=
- =?us-ascii?Q?0F4wFANJaorBE42zO7iBGUgzVtizHPmqb7v4rAwynes7DcOCXEOOj80UAN4v?=
- =?us-ascii?Q?AzkqDWDfOI6SCrBYh80DA9cMNghvE0WtWQWu6B7Lgy7VQKtE/mHMawgrIEVq?=
- =?us-ascii?Q?nSrKtLmycDJ/Zsg0ERjVGLznWQBWGYsubFt11HCfiavGdc48d8XRaybUXKvB?=
- =?us-ascii?Q?8GBK5O5isjIIAyVvrdA7Cy71LyzbR11hKJdOXrJEh9LLDwDCnODjB4AjEqq7?=
- =?us-ascii?Q?nEzpjtyo2WsnQkgYeqkfY1OXN7HI5ZiwpijKnusiEROO3olQp1uIC3f6M3Re?=
- =?us-ascii?Q?xNgXaMIytNE8lYrAuedvFhgUKHuP1HUbGrwz7Xep5muZsqqtDNXUUe1TRn5F?=
- =?us-ascii?Q?2AWc0SPWfXYVJBT/KVhFF1e8gmfmD4V+B7AacYrS7NSEIBCbY0R7KrtwlRWx?=
- =?us-ascii?Q?ij4PZoGT7/kFDM70ElsHjODMcd4sX2asdMJJT7ZxHRIeBX1UBVosZWlAhs/x?=
- =?us-ascii?Q?mDRwvL7f09JSCaElfm2Dgt1jF6k3ld2Vv4XW1UnZv+1/Idd9qWm8U+MFhDhw?=
- =?us-ascii?Q?m2fgXT+mLRxIwYSFAMh6jaDKxu2B1TPt+Ome74e9+a9oArz6L4VVj3Gt0xhx?=
- =?us-ascii?Q?hNnUdj1ZhNAl359QuZDFXO3ODFMrNY2Nu+BLHJy4/hWoeMjs0mV6/c///ZG/?=
- =?us-ascii?Q?9DO8?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 23:11:08.5153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b693b12-2c13-4dc8-9c0c-08d89b056185
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AlkuOX57NZEpV3KBfy3id1cZ/V4dZxEdXsP5d+vgU2+vrjKO7qbZAu+4PpTCf6kbovXPzg7wKkYEL7XpuIYEfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4590
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <160738067970.28590.1275116532320186155.stgit@bmoger-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+On Mon, Dec 07, 2020, Babu Moger wrote:
+> Newer AMD processors have a feature to virtualize the use of the
+> SPEC_CTRL MSR. When supported, the SPEC_CTRL MSR is automatically
+> virtualized and no longer requires hypervisor intervention.
 
-For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
-SEV uses SWIOTLB to make this happen without requiring changes to device
-drivers.  However, depending on workload being run, the default 64MB of
-SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
-for DMA, resulting in I/O errors and/or performance degradation for
-high I/O workloads.
+Hrm, is MSR_AMD64_VIRT_SPEC_CTRL only for SSBD?  Should that MSR be renamed to
+avoid confusion with the new form of VIRT_SPEC_CTRL?
 
-Adjust the default size of SWIOTLB for SEV guests using a
-percentage of the total memory available to guest for SWIOTLB buffers.
+> This feature is detected via CPUID function 0x8000000A_EDX[20]:
+> GuestSpecCtrl.
+> 
+> Hypervisors are not required to enable this feature since it is
+> automatically enabled on processors that support it.
+> 
+> When this feature is enabled, the hypervisor no longer has to
+> intercept the usage of the SPEC_CTRL MSR and no longer is required to
+> save and restore the guest SPEC_CTRL setting when switching
+> hypervisor/guest modes.
 
-Using late_initcall() interface to invoke swiotlb_adjust() does not
-work as the size adjustment needs to be done before mem_encrypt_init()
-and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
-hence call it explicitly from setup_arch().
+Well, it's still required if the hypervisor wanted to allow the guest to turn
+off mitigations that are enabled in the host.  I'd omit this entirely and focus
+on what hardware does and how Linux/KVM utilize the new feature.
 
-The SWIOTLB default size adjustment needs to be added as an architecture
-specific interface/callback to allow architectures such as those supporting
-memory encryption to adjust/expand SWIOTLB size for their use.
+> The effective SPEC_CTRL setting is the guest SPEC_CTRL setting or'ed with the
+> hypervisor SPEC_CTRL setting. 
 
-v5 fixed build errors and warnings as
-Reported-by: kbuild test robot <lkp@intel.com>
+This line needs to be higher in the changelog, it's easily the most relevant
+info for understanding the mechanics.  Please also explicitly state the context
+switching mechanics, e.g. is it tracked in the VMCB, loaded on VMRUN, saved on
+VM-Exit, etc...
 
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
----
- arch/x86/kernel/setup.c   |  2 ++
- arch/x86/mm/mem_encrypt.c | 37 +++++++++++++++++++++++++++++++++++++
- include/linux/swiotlb.h   |  6 ++++++
- kernel/dma/swiotlb.c      | 22 ++++++++++++++++++++++
- 4 files changed, 67 insertions(+)
+> This allows the hypervisor to ensure a minimum SPEC_CTRL if desired.
+>
+> This support also fixes an issue where a guest may sometimes see an
+> inconsistent value for the SPEC_CTRL MSR on processors that support
+> this feature. With the current SPEC_CTRL support, the first write to
+> SPEC_CTRL is intercepted and the virtualized version of the SPEC_CTRL
+> MSR is not updated. When the guest reads back the SPEC_CTRL MSR, it
+> will be 0x0, instead of the actual expected value. There isn’t a
+> security concern here, because the host SPEC_CTRL value is or’ed with
+> the Guest SPEC_CTRL value to generate the effective SPEC_CTRL value.
+> KVM writes with the guest's virtualized SPEC_CTRL value to SPEC_CTRL
+> MSR just before the VMRUN, so it will always have the actual value
+> even though it doesn’t appear that way in the guest. The guest will
+> only see the proper value for the SPEC_CTRL register if the guest was
+> to write to the SPEC_CTRL register again. With Virtual SPEC_CTRL
+> support, the MSR interception of SPEC_CTRL is disabled during
+> vmcb_init, so this will no longer be an issue.
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>  arch/x86/kvm/svm/svm.c |   17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 79b3a564f1c9..3d73ec0cdb87 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1230,6 +1230,14 @@ static void init_vmcb(struct vcpu_svm *svm)
+>  
+>  	svm_check_invpcid(svm);
+>  
+> +	/*
+> +	 * If the host supports V_SPEC_CTRL then disable the interception
+> +	 * of MSR_IA32_SPEC_CTRL.
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		set_msr_interception(&svm->vcpu, svm->msrpm, MSR_IA32_SPEC_CTRL,
+> +				     1, 1);
+> +
+>  	if (kvm_vcpu_apicv_active(&svm->vcpu))
+>  		avic_init_vmcb(svm);
+>  
+> @@ -3590,7 +3598,8 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  	 * is no need to worry about the conditional branch over the wrmsr
+>  	 * being speculatively taken.
+>  	 */
+> -	x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		x86_spec_ctrl_set_guest(svm->spec_ctrl, svm->virt_spec_ctrl);
+>  
+>  	svm_vcpu_enter_exit(vcpu, svm);
+>  
+> @@ -3609,12 +3618,14 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  	 * If the L02 MSR bitmap does not intercept the MSR, then we need to
+>  	 * save it.
+>  	 */
+> -	if (unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
+> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL) &&
+> +	    unlikely(!msr_write_intercepted(vcpu, MSR_IA32_SPEC_CTRL)))
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 84f581c91db4..31e24e198061 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1149,6 +1149,8 @@ void __init setup_arch(char **cmdline_p)
- 	if (boot_cpu_has(X86_FEATURE_GBPAGES))
- 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
- 
-+	swiotlb_adjust();
-+
- 	/*
- 	 * Reserve memory for crash kernel after SRAT is parsed so that it
- 	 * won't consume hotpluggable memory.
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 1bcfbcd2bfd7..d1b8d60040cf 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -485,7 +485,44 @@ static void print_mem_encrypt_feature_info(void)
- 	pr_cont("\n");
- }
- 
-+/*
-+ * The percentage of guest memory used here for SWIOTLB buffers
-+ * is more of an approximation of the static adjustment which
-+ * is 128M for <1G guests, 256M for 1G-4G guests and 512M for >4G guests.
-+ */
-+#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
-+
- /* Architecture __weak replacement functions */
-+unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
-+{
-+	unsigned long size = iotlb_default_size;
-+
-+	/*
-+	 * For SEV, all DMA has to occur via shared/unencrypted pages.
-+	 * SEV uses SWOTLB to make this happen without changing device
-+	 * drivers. However, depending on the workload being run, the
-+	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
-+	 * run out of buffers for DMA, resulting in I/O errors and/or
-+	 * performance degradation especially with high I/O workloads.
-+	 * Adjust the default size of SWIOTLB for SEV guests using
-+	 * a percentage of guest memory for SWIOTLB buffers.
-+	 * Also as the SWIOTLB bounce buffer memory is allocated
-+	 * from low memory, ensure that the adjusted size is within
-+	 * the limits of low available memory.
-+	 *
-+	 */
-+	if (sev_active()) {
-+		phys_addr_t total_mem = memblock_phys_mem_size();
-+
-+		size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
-+		size = clamp_val(size, iotlb_default_size, SZ_1G);
-+		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV",
-+			size >> 20);
-+	}
-+
-+	return size;
-+}
-+
- void __init mem_encrypt_init(void)
- {
- 	if (!sme_me_mask)
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 3bb72266a75a..b5904fa4b67c 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -33,6 +33,7 @@ extern void swiotlb_init(int verbose);
- int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
- extern unsigned long swiotlb_nr_tbl(void);
- unsigned long swiotlb_size_or_default(void);
-+unsigned long __init arch_swiotlb_adjust(unsigned long size);
- extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
- extern int swiotlb_late_init_with_default_size(size_t default_size);
- extern void __init swiotlb_update_mem_attributes(void);
-@@ -77,6 +78,7 @@ void __init swiotlb_exit(void);
- unsigned int swiotlb_max_segment(void);
- size_t swiotlb_max_mapping_size(struct device *dev);
- bool is_swiotlb_active(void);
-+void __init swiotlb_adjust(void);
- #else
- #define swiotlb_force SWIOTLB_NO_FORCE
- static inline bool is_swiotlb_buffer(phys_addr_t paddr)
-@@ -99,6 +101,10 @@ static inline bool is_swiotlb_active(void)
- {
- 	return false;
- }
-+
-+static inline void swiotlb_adjust(void)
-+{
-+}
- #endif /* CONFIG_SWIOTLB */
- 
- extern void swiotlb_print_info(void);
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 781b9dca197c..0150ca2336bc 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -163,6 +163,28 @@ unsigned long swiotlb_size_or_default(void)
- 	return size ? size : (IO_TLB_DEFAULT_SIZE);
- }
- 
-+unsigned long __init __weak arch_swiotlb_adjust(unsigned long size)
-+{
-+	return size;
-+}
-+
-+void __init swiotlb_adjust(void)
-+{
-+	unsigned long size;
-+
-+	/*
-+	 * If swiotlb parameter has not been specified, give a chance to
-+	 * architectures such as those supporting memory encryption to
-+	 * adjust/expand SWIOTLB size for their use.
-+	 */
-+	if (!io_tlb_nslabs) {
-+		size = arch_swiotlb_adjust(IO_TLB_DEFAULT_SIZE);
-+		size = ALIGN(size, 1 << IO_TLB_SHIFT);
-+		io_tlb_nslabs = size >> IO_TLB_SHIFT;
-+		io_tlb_nslabs = ALIGN(io_tlb_nslabs, IO_TLB_SEGSIZE);
-+	}
-+}
-+
- void swiotlb_print_info(void)
- {
- 	unsigned long bytes = io_tlb_nslabs << IO_TLB_SHIFT;
--- 
-2.17.1
+This will break migration, or maybe just cause wierdness, as userspace will
+always see '0' when reading SPEC_CTRL and its writes will be ignored.  Is there
+a VMCB field that holds the guest's value?  If so, this read can be skipped, and
+instead the MSR set/get flows probably need to poke into the VMCB.
 
+>  		svm->spec_ctrl = native_read_msr(MSR_IA32_SPEC_CTRL);
+>  
+>  	reload_tss(vcpu);
+>  
+> -	x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+> +	if (!static_cpu_has(X86_FEATURE_V_SPEC_CTRL))
+> +		x86_spec_ctrl_restore_host(svm->spec_ctrl, svm->virt_spec_ctrl);
+>  
+>  	vcpu->arch.cr2 = svm->vmcb->save.cr2;
+>  	vcpu->arch.regs[VCPU_REGS_RAX] = svm->vmcb->save.rax;
+> 
