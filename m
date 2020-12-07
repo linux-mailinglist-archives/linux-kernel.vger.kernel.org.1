@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E22E2D0EE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97252D0EFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgLGLYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:24:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9112 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgLGLYL (ORCPT
+        id S1726855AbgLGL02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 06:26:28 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:47763 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgLGL01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:24:11 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqLWm1h5RzM1Tb;
-        Mon,  7 Dec 2020 19:22:44 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 19:23:15 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <jean-philippe@linaro.org>, <Jonathan.Cameron@huawei.com>,
-        <song.bao.hua@hisilicon.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] iommu/arm-smmu-v3: Fix not checking return value about devm_add_action
-Date:   Mon, 7 Dec 2020 19:23:29 +0800
-Message-ID: <1607340209-51539-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+        Mon, 7 Dec 2020 06:26:27 -0500
+Received: from orion.localdomain ([95.114.88.149]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mzyi6-1jyNnJ1PQk-00x1YA; Mon, 07 Dec 2020 12:23:55 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH v2] drivers: gpio: put virtual gpio device into their own submenu
+Date:   Mon,  7 Dec 2020 12:23:54 +0100
+Message-Id: <20201207112354.13884-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:vXs3ufNNxVIBLADw+fS7GRAFOKyDWCH5wh6co6se6r2Eh9pELot
+ 7Bz11dU9v4IqaYUGgsNTmNSlL1gCmInj4kNmev9MGf+goPe/tPVfDfKHQ+2/4llRDIOOOyX
+ IpKlD+aFPgCxtBp4jtnrYF4j0UghEL/huTXZSbrNDeVqmhCOg4UrQXrcgKhptdnt/rfbyQL
+ FDv5GH5dzbA0hoAI6pzcw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:75VhAbi4Upw=:Szu1c02QnxJ1kAFb8gW0F7
+ y2Df3OTq3/HLX6eNOwLv0FwQ4uAsBMJyc0mVqLf+9cHyQhTkPm4c0WIfdTElDdEHyFcdivTzJ
+ hZALmLIM7x0I+A37BaMTxUBPM/4LLe2vjSeJ4ZE91euLw0zEipgoKUHR0AEb2EacvAnsvLL05
+ ObKVdo4/7tptWnin6s1Gq8sh6E7NtqicPTqmigyi8QAlYH9aks5CBWgAG+AKsndgVye/Nira4
+ a1KGOsO5+vZxcgbGlJmFXqUVNBxIdh4zXjyBnRRnMaGQbb1SCuqrh2dUB5ftvKfvFfYsjLCSy
+ lYlZnrn4ECd1kGM2U3mXWrsefvvHBVgpCVsXOMQeDE0qNQl/X3Nqcngb+An3d+paW9IM2m1si
+ DpLV2rQeMOhhnVRoyG4OjIDAeaRliNyRVw+OAIPEuKT/pSvsaldx+QURSG1Pb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_add_action_or_reset to avoid the situation where the release
-function is not called when devm_add_action returns an error.
+Since we already have a few virtual GPIO drivers, and more to come,
+this category deserves its own submenu.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-
-v2:
-check the return value about evm_add_action_or_reset()
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpio/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 2ddf5ec..76c28e7 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2680,7 +2680,8 @@ static int arm_smmu_cmdq_init(struct arm_smmu_device *smmu)
- 		ret = -ENOMEM;
- 	} else {
- 		cmdq->valid_map = bitmap;
--		devm_add_action(smmu->dev, arm_smmu_cmdq_free_bitmap, bitmap);
-+		ret = devm_add_action_or_reset(smmu->dev,
-+					       arm_smmu_cmdq_free_bitmap, bitmap);
- 	}
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 5d4de5cd6759..8596f9320971 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -1590,6 +1590,8 @@ config GPIO_VIPERBOARD
  
- 	return ret;
-@@ -2938,7 +2939,7 @@ static void arm_smmu_setup_msis(struct arm_smmu_device *smmu)
- 	}
+ endmenu
  
- 	/* Add callback to free MSIs on teardown */
--	devm_add_action(dev, arm_smmu_free_msis, dev);
-+	devm_add_action_or_reset(dev, arm_smmu_free_msis, dev);
- }
++menu "Virtual GPIO drivers"
++
+ config GPIO_AGGREGATOR
+ 	tristate "GPIO Aggregator"
+ 	help
+@@ -1613,4 +1615,6 @@ config GPIO_MOCKUP
+ 	  tools/testing/selftests/gpio/gpio-mockup.sh. Reference the usage in
+ 	  it.
  
- static void arm_smmu_setup_unique_irqs(struct arm_smmu_device *smmu)
++endmenu
++
+ endif
 -- 
-2.7.4
+2.11.0
 
