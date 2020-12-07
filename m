@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1D52D0FDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 12:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78142D0FEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgLGL7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 06:59:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:48556 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727096AbgLGL7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:59:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B28BF1042;
-        Mon,  7 Dec 2020 03:58:19 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 771DD3F718;
-        Mon,  7 Dec 2020 03:58:15 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:58:12 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alex Belits <abelits@marvell.com>
-Cc:     Prasun Kapoor <pkapoor@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "nitesh@redhat.com" <nitesh@redhat.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "leon@sidebranch.com" <leon@sidebranch.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH v5 7/9] task_isolation: don't interrupt CPUs
- with tick_nohz_full_kick_cpu()
-Message-ID: <20201207115812.GC18365@C02TD0UTHF1T.local>
-References: <8d887e59ca713726f4fcb25a316e1e932b02823e.camel@marvell.com>
- <76ed0b222d2f16fb5aebd144ac0222a7f3b87fa1.camel@marvell.com>
- <20201202142033.GD66958@C02TD0UTHF1T.local>
- <0c56e388c18187874ff23167d6927fed97e106b7.camel@marvell.com>
+        id S1726912AbgLGMAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgLGMAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:00:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57AAC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 03:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ruiN8SJtTuUIP3pb9sg0hgod0TOT8rORb9N8dDgUyWY=; b=XL/kUxg7Xe4176O/HRpN2kny/5
+        TJiIqz86OTre+mFJndMNODpqB4aHUfhinHIrg8jS+bDklZWmvwbm9I3SWG2rnEHd7Rv3FrcyriZPy
+        K75vmVfi55l3vjbd7Mr19j4uQriwVeX4YmH8QcC6EhdrSkA4cvAbmjcp4SyjYElfd8nVaVN4EvAyd
+        1ouQCoDWJwecMzcJ8QwVDVRHUdkbuvJsfphnZLwkmpbl+fkRas8+5JEn90S+p3+4VQ8GAPfxAL6Lg
+        yyRmBFyDJw6zmp1S0HmoQJd60hT6SyzfOyNkSuydc2bpEFW0kxNtbDNwUYnj4S0rYj+HSuZhkFWAK
+        6TesbQEg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmFBJ-0000rG-MP; Mon, 07 Dec 2020 11:59:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48A5730700B;
+        Mon,  7 Dec 2020 12:59:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2E8A52081294F; Mon,  7 Dec 2020 12:59:53 +0100 (CET)
+Date:   Mon, 7 Dec 2020 12:59:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [patch 1/3] tick: Remove pointless cpu valid check in hotplug
+ code
+Message-ID: <20201207115953.GR3021@hirez.programming.kicks-ass.net>
+References: <20201206211253.919834182@linutronix.de>
+ <20201206212002.582579516@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c56e388c18187874ff23167d6927fed97e106b7.camel@marvell.com>
+In-Reply-To: <20201206212002.582579516@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 12:54:29AM +0000, Alex Belits wrote:
-> 
-> On Wed, 2020-12-02 at 14:20 +0000, Mark Rutland wrote:
-> > External Email
-> > 
-> > -------------------------------------------------------------------
-> > ---
-> > On Mon, Nov 23, 2020 at 05:58:22PM +0000, Alex Belits wrote:
-> > > From: Yuri Norov <ynorov@marvell.com>
-> > > 
-> > > For nohz_full CPUs the desirable behavior is to receive interrupts
-> > > generated by tick_nohz_full_kick_cpu(). But for hard isolation it's
-> > > obviously not desirable because it breaks isolation.
-> > > 
-> > > This patch adds check for it.
-> > > 
-> > > Signed-off-by: Yuri Norov <ynorov@marvell.com>
-> > > [abelits@marvell.com: updated, only exclude CPUs running isolated
-> > > tasks]
-> > > Signed-off-by: Alex Belits <abelits@marvell.com>
-> > > ---
-> > >  kernel/time/tick-sched.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> > > index a213952541db..6c8679e200f0 100644
-> > > --- a/kernel/time/tick-sched.c
-> > > +++ b/kernel/time/tick-sched.c
-> > > @@ -20,6 +20,7 @@
-> > >  #include <linux/sched/clock.h>
-> > >  #include <linux/sched/stat.h>
-> > >  #include <linux/sched/nohz.h>
-> > > +#include <linux/isolation.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/irq_work.h>
-> > >  #include <linux/posix-timers.h>
-> > > @@ -268,7 +269,8 @@ static void tick_nohz_full_kick(void)
-> > >   */
-> > >  void tick_nohz_full_kick_cpu(int cpu)
-> > >  {
-> > > -	if (!tick_nohz_full_cpu(cpu))
-> > > +	smp_rmb();
-> > 
-> > What does this barrier pair with? The commit message doesn't mention
-> > it,
-> > and it's not clear in-context.
-> 
-> With barriers in task_isolation_kernel_enter()
-> and task_isolation_exit_to_user_mode().
+On Sun, Dec 06, 2020 at 10:12:54PM +0100, Thomas Gleixner wrote:
 
-Please add a comment in the code as to what it pairs with.
+>  void tick_handover_do_timer(void)
+>  {
+> +	if (tick_do_timer_cpu == smp_processor_id())
+> +		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
 
-Thanks,
-Mark.
+For the paranoid amongst us, would it make sense to add something like:
+
+	/*
+	 * There must always be at least one online CPU.
+	 */
+	WARN_ON_ONCE(tick_do_timer_cpu >= nr_cpu_ids);
+
+>  }
