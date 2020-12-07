@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB34E2D10A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526DE2D109E
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgLGMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:36:07 -0500
-Received: from mout.gmx.net ([212.227.15.18]:59463 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgLGMgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:36:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607344442;
-        bh=0d1+Dzo1u/9nlI5Vu2HRoIjjB7ZSUOHMPNkpO7nwQYg=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Y7S/hbp1SKISw1ufN7WFJgTRMtCHIK3oVG6G1OUknkvdkqfzk89X/Cyr2wSsDMxAW
-         0Kqi1L95wYKzN7AVhPFU1p+DKWnUrVS0H3kK/e7C0V3ehC76S9X1UME+nOZzcgfu8Z
-         OFUyb3YzRO2EGcrgfVFH86U8Kw2EoaBCXl3A80+8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.4]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBUmD-1krSMw3Xqh-00Cynv; Mon, 07
- Dec 2020 13:34:01 +0100
-Message-ID: <3ec93680c6a27626b23e99d552aa778be7b2ecec.camel@gmx.de>
-Subject: Re: scheduling while atomic in z3fold
-From:   Mike Galbraith <efault@gmx.de>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-Date:   Mon, 07 Dec 2020 13:34:00 +0100
-In-Reply-To: <CAM4kBBL5+xNWq6DWHY6nQjwDTj8PZKem-rGuFvimi7jekjA+Xw@mail.gmail.com>
-References: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
-         <20201130132014.mlvxeyiub3fpwyw7@linutronix.de>
-         <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
-         <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
-         <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
-         <20201130160327.ov32m4rapk4h432a@linutronix.de>
-         <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
-         <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
-         <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
-         <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de>
-         <20201203133934.37aotbdjnd36lrxv@linutronix.de>
-         <10d5088861ba219f3f7cd657fc95b0bedc19010a.camel@gmx.de>
-         <cad7848c-7fd3-b4a4-c079-5896bb47ee49@konsulko.com>
-         <3ffed6172820f2e8e821e1b8817dbd0bdd693c26.camel@gmx.de>
-         <CAM4kBBL5+xNWq6DWHY6nQjwDTj8PZKem-rGuFvimi7jekjA+Xw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1727106AbgLGMfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:35:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgLGMfR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 07:35:17 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00455C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:34:30 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id q8so14704228ljc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=boKMjDjJa5tRLm1VPCUmtsYmlC2fesJJoaLCTYk8EUo=;
+        b=XRCkYUCdOmvRRAtRW3hi67kI3cSeDfNcypHvLS8jdjZZe/bAI5psCeUuTET6Ap9u/a
+         5vY1eRHmi2x5zg4MXni5dltguovscn5Vx3S8VYcRZaFkS6Xh6yKIhlvAz9GaKMKYZ2jL
+         bypClOGEwkbSDSCtYJUpOdXlkMHCfpDbv5lgyAMEqIRY6tCKHpMjxBMym9nMiaNZpZ4r
+         qkGb4ZLSq7dUPqVo0McnPOil2TXOvm33hPJK/S4rEnAIB7HVJ2nl+1UdMreUuvqDVSgl
+         bAs2J7FdEnjl0ku+0IfuhgiDcU/fYPx1YUxP0BS5VEkva4tHgDXe73Iv5BD+lKX1cXYe
+         hkjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=boKMjDjJa5tRLm1VPCUmtsYmlC2fesJJoaLCTYk8EUo=;
+        b=btkjXwz1rcRymkmk6xD78gcIMFoqpILNqL6bgO+Vm1SJIdXrU7n+9o2iut57+p2bYy
+         MQ+TlahqfHoU2Shl3GL88nXp0Z3ZAOZ+Y1bXAo5dGwXs8EK2Gr6B+kDiB1yYvcbzbJVN
+         JLNSfq/z15d2tisjuMc2eweVNBTdFKIZ2/XpSt4TOzZ/q/fUXi2fsAmFtXAcWJzwrskx
+         VgR4WRHnZdbCbmDuD2bt7fCs6UTkWuZnSBpYa1TK8E4i2iTTAn3rLTJB0PG797JK2igR
+         WxNi0IkipOwwX23TIDaBQgcwQWlZn5xIks8mxGWnsg5R0hr5sm6yiO387RNrHnQq4WUw
+         wmFQ==
+X-Gm-Message-State: AOAM5327NdysAlHFdhtAeMCciUeOfekrKbIsSx6qYoH0ToDodUuyQVWG
+        WsGtTaCLA5xp+6r/Vn+khwQAZzuohPpoMYPqxdO2dYfTDctp8WPy
+X-Google-Smtp-Source: ABdhPJxCMdxWp9BFOclJM4l0os50hx76oBCQDWSP9Mz1ISgEte4ORw7PcLsLj6UH4DkqJ6zlcpFPOuTE9rfLfpwTh4Y=
+X-Received: by 2002:a2e:321a:: with SMTP id y26mr8487351ljy.293.1607344469350;
+ Mon, 07 Dec 2020 04:34:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:e2CuKsVCIq1wO8Gyf47ggrWJwiV1KEEQde9dViGUgPjRcDUEE5r
- NCJiMn3ocxzTghgRjCHq5OiEPfJt//iNw1qttvfGfzTi1ZAa9/GhNI0uoh8Ik3eOlFtlJ26
- OFFkHRuRnoskDwK52D8lpsH2S3Xgyv9qa4QEkAgwI7r4iCjDNgPx0JNgXzz6PJY5MFBhgvu
- JRuoLqsLkdbbP0aBipFNw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OV65OwFGK3I=:YKyr6c3slvGtZo4SANrQt7
- rNdKyHcMeAsjOl1dPNzzmBsfNAi211xhkO5LrNHq9zssL6FGdEYq4Qex4sVimR3M/bGqn5lyo
- nAJaUzTadWPVDp7bqMEZQBetoM0+b06LHyJ5iHfePf22VEuvWzLkbglGRucHIpsSCsoNnNudz
- 5H2NeW6SJ8YPZGjb3z6NemcDaQfMDFY40+pcOHjxUwPQx7WBu8X7jBgiYCjYYW73JhJyg2ezD
- PpXx/duS07dxaThYVNZABtaz9wSUql9DB3yMareD0eq+xRZNttqgLK/OhcDL+Br/pzzvaw0lK
- rtJqNYPWe+EY7NjAcelqZFhL2ZkYepGTaWWAP6lVpZtlgVoD/VfgM8b7IFbQmM9F0ZjrjnJzD
- 26keiuS1HeS8Cq9qacH4Q/TKvG84/CycWP4V/aUiaPMhurATqDkXEOCpoviQHGR4/0WaJs5I6
- 0Q5andS/aWdC8I7CxEie5d2JR8FX79zdhR1oqiVO48lhGRcpAUTTl1ZAsj3dAqr+27bS2tbhy
- YhQ/SzJxmlJG0YRd+SccVZ/D7BmoFxk3uqGqp/TAgEe6OrlzPgdwXZBfbkPC1UkCeLz514R2v
- QiezfSaTmUAQ0LF7Pt4g/V2BDRtps05tS5TSw+0j3Yd3v2BF6ZI7RaYRHe7TjHOXMx6qS4EJ4
- 36AQhscPFBY4FjMbNo9iEA/7bqHFqVJ0UvMbH2BE3mKxA/NV4D8dQK20+7IQpVGoNrrGfUxnQ
- yH0/rMiH18WgFdmqovrJOE3abwBq284htWi/fYeia7C2AezPy1ZrqES0RrB7NPGMQ/WjLxTGr
- A10JofJcnstYL3hLtT4nuPmtAGzIaWi+xr2X4KeHqZF3v9g71O7ZThFk88NOi9HZk/AmfugWx
- b2Q4o1FqR/OF/OUw892w==
+References: <tencent_220963AF059847E1171B4AB9@qq.com> <CACRpkdbvKWcD04SLLBOBuZWzN64xpVv1nfCXZGcSp9cs0MPivQ@mail.gmail.com>
+ <1jeek5ps3b.fsf@starbuckisacylon.baylibre.com> <CAHp75VeQGxnGO4o5a1vFzS9XAMjmvwoJ3=pWLvNQT6mXEKcqWQ@mail.gmail.com>
+ <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jtusxkh6v.fsf@starbuckisacylon.baylibre.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 7 Dec 2020 13:34:18 +0100
+Message-ID: <CACRpkdZmM3GK6mebmm6nT-XXfdTB5KGwArAFk-1Gx6noZDxVAw@mail.gmail.com>
+Subject: Re: 0001-add-amlogic-gpio-to-irq
+To:     Jerome Brunet <jbrunet@baylibre.com>, Marc Zyngier <maz@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?B?5p6X5Zyj5qyi?= <linshenghuan@hangtu-china.com>,
+        khilman <khilman@baylibre.com>,
+        narmstrong <narmstrong@baylibre.com>,
+        "martin.blumenstingl" <martin.blumenstingl@googlemail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic <linux-amlogic@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 12:52 +0100, Vitaly Wool wrote:
->
-> Thanks. This trace beats me because I don't quite get how this could
-> have happened.
+On Mon, Dec 7, 2020 at 12:07 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+> On Mon 07 Dec 2020 at 11:18, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Dec 4, 2020 at 4:25 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+> >> On Fri 04 Dec 2020 at 10:13, Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> >> This HW only has 8 irqs that can each be mapped to a pin. No direct
+> >> translation can be made, we have to allocate an irq to monitor the line.
+> >> So when gpio_to_irq() was called, we had to do that allocation dynamically
+> >> to return a valid irq number. Since there was no counter part to
+> >> gpio_to_irq(), those allocation cannot be freed during the lifetime of
+> >> the device.
 
-I swear there's a mythical creature loose in there somewhere ;-)
-Everything looks just peachy up to the instant it goes boom, then you
-find in the wreckage that which was most definitely NOT there just a
-few ns ago.
+gpio_to_irq() is just a helper really and should not really be used to allocate
+anything.
 
-> Hitting write_unlock at line 341 would mean that HANDLES_ORPHANED bit
-> is set but obviously it isn't.
-> Could you please comment out the ".shrink =3D z3fold_zpool_shrink" line
-> and retry?
+In device tree systems, the GPIO provider should nominally present itsel
+as a dual-mode gpio-controller and interrupt-controller for example:
 
-Unfortunately, that made zero difference.
+                gpio1: gpio@4e000000 {
+                        compatible = "cortina,gemini-gpio", "faraday,ftgpio010";
+                        reg = <0x4e000000 0x100>;
+                        interrupts = <23 IRQ_TYPE_LEVEL_HIGH>;
+                        resets = <&syscon GEMINI_RESET_GPIO1>;
+                        clocks = <&syscon GEMINI_CLK_APB>;
+                        gpio-controller;
+                        #gpio-cells = <2>;
+                        interrupt-controller;
+                        #interrupt-cells = <2>;
+                };
 
-	-Mike
+The GPIOs are normally *not* translated to IRQs in this set-up. Rather the
+interrupts are requested by consumers using request_[threaded_]irq()
+which means you should be using the irqchip callbacks such as
+.irq_request_resources() and .irq_release_resources() to allocate one
+of the free irq lines to use. These will be called at the right points if a
+properly written driver requests an IRQ and when the driver is removed.
 
+In some rare cases gpio_to_irq() is used because all the driver knows is
+a GPIO number and it want to try to obtain an IRQ for it, and if a 1-to-1
+mapping exists it returns this number. This is not the norm, but the
+exception.
+
+So maybe the problem is that you need to go back and think about
+updating the DT bindings for this thing to include interrupt-controller
+as well?
+
+>  * This HW has to create the mapping between GPIO and irq number
+>    dynamically. The number of irqs available is very limited.
+
+This should be done using irq_chip callbacks.
+
+>  * We only get to know a mapping is required when gpio_to_irq() is called
+
+No that callback should not be used for that.
+
+>  * There is no way to know when it is safe to dispose of the created
+>    mapping
+
+The way that is done is when .irq_release_resources() is called.
+
+>  * Some drivers require a trigger type we don't support. These will create
+>    mappings and not use it because of the failure when .set_type() is
+>    called
+
+I don't quite understand this. Do you mean you are bombarded by pointless
+requests for interrupts that will not work anyways? Then do not assign
+interrupts to these drivers in the device tree. These requesting devices
+and their requests are under your control. The drivers should be able to
+back out and work without interrupt if request_irq() fails because it
+can't provide the type on interrupt you want:
+
+int irq = request_irq(irq, my_isr, IRQF_TRIGGER_RISING |
+IRQF_TRIGGER_FALLING, "My ISR", cookie);
+// This results in .irq_request_resources() and .irq_set_type()
+if (irq < 0) {
+   // Oopps out of IRQs or couldn't support double edges, bail out or
+use polling
+}
+
+Just do it like this (you might have to augment your drivers) and you'll
+be fine?
+
+> To answer your question, there an API which lets us know a mapping is
+> needed, but none to inform that it is not required anymore. The GPIO API
+> was not meant to used like this. Not saying it is good or bad, this is
+> just how it is.
+
+So don't use it?
+
+Yours,
+Linus Walleij
