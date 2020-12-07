@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415872D1500
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0932D1509
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 16:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgLGPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 10:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgLGPnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 10:43:07 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25488C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 07:42:27 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id o8so13786643ioh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 07:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KGuP04Yh5ZseJNv/4+3M6j57gxslXZrgP+sgHsyOAzo=;
-        b=ICznjA1rFsrMyRf9e3LLtRhJfQ0qm9c1oCCwOJhPfwE2Xu9H1e9QG9LzeLCLEdv5Yz
-         X54uDybUb/SL3RLSXbXFP2CCgyFBQtS7VYvLXphgjqqPiibzj6sf/SZ9gtrgcxxfSzTH
-         c5bR/c/CD0R011J1OAjF7wmifZkQNbl+QPMyOmYs1HpSWBp6sOTV060iX14ZxMX3M5Ov
-         5HQ0VOXYbGHsTNFyHnGswcfvgz62MNTpvRv+FPLeOpsC8RFmibZNg6rS0pVp0Z153w+z
-         fJKaWbr6oYMhZWROgqRoHbXANhGLwbp9vlBrRiK8IY2zES0C0rv+zBpxBWMq08baqVS8
-         9yPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KGuP04Yh5ZseJNv/4+3M6j57gxslXZrgP+sgHsyOAzo=;
-        b=NWYQOLAY1M3wNQCn9hQhO2GZV4MK+ZIFMyzhvhNSaXivbh+9W/O8DqVLfz+z0L6gdM
-         YOeis6lQHHl7mjuasDIJmcwpcInNnROa+XrGH+k30LcaiQCPdb7vYvd3FgnDWhPAgiWL
-         kYSjgFOEotqBO6BWZbu19QsrXBXIEd5/Agf1HfaOFpOKwoc0f53tBa+u2A5OZPx3EOTP
-         xx9U7xF5ZLGS0TdEmXRYSVJK1SE1N/oz69MdGOVFCsc5XjnFqGFv9nHGdh199ZYLUo06
-         9LLw/+kEHHhHVjrDMiZiYMNF0hBAYUaW516n/2W9C/X0WOxOboTpevPAzzFGMsNgzmBn
-         YsBA==
-X-Gm-Message-State: AOAM532VBwRo+MylJknPZaYdqPk5N/FB6LDBJNcKKb3fsY/upp+GOW6Q
-        qLzN0LPHH7vnvS+2wYoRMH9tjw==
-X-Google-Smtp-Source: ABdhPJxw7qUWgoXa0MWZoyTHrpX/po4qk0rzl9IjAznXpUHq6v3KgIxYzII5z+U7WREDwYXWwNIZzw==
-X-Received: by 2002:a05:6602:26d4:: with SMTP id g20mr9323995ioo.152.1607355746498;
-        Mon, 07 Dec 2020 07:42:26 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id x17sm7497915ilj.67.2020.12.07.07.42.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 07:42:25 -0800 (PST)
-Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20201207081558.2361-1-hdanton@sina.com>
- <13bd991a-be45-6521-655d-74b8d810b714@kernel.dk>
-Message-ID: <848ad126-c4f7-6dba-24da-d7e29cbcfb67@kernel.dk>
-Date:   Mon, 7 Dec 2020 08:42:25 -0700
+        id S1726190AbgLGPq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 10:46:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:53942 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgLGPq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 10:46:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CB1431B;
+        Mon,  7 Dec 2020 07:45:43 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62E4A3F68F;
+        Mon,  7 Dec 2020 07:45:41 -0800 (PST)
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+References: <20201119153901.53705-1-steven.price@arm.com>
+ <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+Date:   Mon, 7 Dec 2020 15:45:40 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <13bd991a-be45-6521-655d-74b8d810b714@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 8:04 AM, Jens Axboe wrote:
-> On 12/7/20 1:15 AM, Hillf Danton wrote:
->> Put file as part of error handling when setting up io ctx to fix
->> memory leak like the following one.
->>
->>    BUG: memory leak
->>    unreferenced object 0xffff888101ea2200 (size 256):
->>      comm "syz-executor355", pid 8470, jiffies 4294953658 (age 32.400s)
->>      hex dump (first 32 bytes):
->>        00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->>        20 59 03 01 81 88 ff ff 80 87 a8 10 81 88 ff ff   Y..............
->>      backtrace:
->>        [<000000002e0a7c5f>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
->>        [<000000002e0a7c5f>] __alloc_file+0x1f/0x130 fs/file_table.c:101
->>        [<000000001a55b73a>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
->>        [<00000000fb22349e>] alloc_file+0x33/0x1b0 fs/file_table.c:193
->>        [<000000006e1465bb>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
->>        [<000000007118092a>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
->>        [<000000007118092a>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
->>        [<000000002ae99012>] io_uring_get_fd fs/io_uring.c:9198 [inline]
->>        [<000000002ae99012>] io_uring_create fs/io_uring.c:9377 [inline]
->>        [<000000002ae99012>] io_uring_setup+0x1125/0x1630 fs/io_uring.c:9411
->>        [<000000008280baad>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->>        [<00000000685d8cf0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On 07/12/2020 15:27, Peter Maydell wrote:
+> On Mon, 7 Dec 2020 at 14:48, Steven Price <steven.price@arm.com> wrote:
+>> Sounds like you are making good progress - thanks for the update. Have
+>> you thought about how the PROT_MTE mappings might work if QEMU itself
+>> were to use MTE? My worry is that we end up with MTE in a guest
+>> preventing QEMU from using MTE itself (because of the PROT_MTE
+>> mappings). I'm hoping QEMU can wrap its use of guest memory in a
+>> sequence which disables tag checking (something similar will be needed
+>> for the "protected VM" use case anyway), but this isn't something I've
+>> looked into.
 > 
-> Applied for 5.10, thanks.
+> It's not entirely the same as the "protected VM" case. For that
+> the patches currently on list basically special case "this is a
+> debug access (eg from gdbstub/monitor)" which then either gets
+> to go via "decrypt guest RAM for debug" or gets failed depending
+> on whether the VM has a debug-is-ok flag enabled. For an MTE
+> guest the common case will be guests doing standard DMA operations
+> to or from guest memory. The ideal API for that from QEMU's
+> point of view would be "accesses to guest RAM don't do tag
+> checks, even if tag checks are enabled for accesses QEMU does to
+> memory it has allocated itself as a normal userspace program".
 
-I take that back, this patch is totally broken. Please test your patches
-before sending them out, this cannot have been even put through the most
-basic of tests.
+Sorry, I know I simplified it rather by saying it's similar to protected 
+VM. Basically as I see it there are three types of memory access:
 
--- 
-Jens Axboe
+1) Debug case - has to go via a special case for decryption or ignoring 
+the MTE tag value. Hopefully this can be abstracted in the same way.
 
+2) Migration - for a protected VM there's likely to be a special method 
+to allow the VMM access to the encrypted memory (AFAIK memory is usually 
+kept inaccessible to the VMM). For MTE this again has to be special 
+cased as we actually want both the data and the tag values.
+
+3) Device DMA - for a protected VM it's usual to unencrypt a small area 
+of memory (with the permission of the guest) and use that as a bounce 
+buffer. This is possible with MTE: have an area the VMM purposefully 
+maps with PROT_MTE. The issue is that this has a performance overhead 
+and we can do better with MTE because it's trivial for the VMM to 
+disable the protection for any memory.
+
+The part I'm unsure on is how easy it is for QEMU to deal with (3) 
+without the overhead of bounce buffers. Ideally there'd already be a 
+wrapper for guest memory accesses and that could just be wrapped with 
+setting TCO during the access. I suspect the actual situation is more 
+complex though, and I'm hoping Haibo's investigations will help us 
+understand this.
+
+Thanks,
+
+Steve
