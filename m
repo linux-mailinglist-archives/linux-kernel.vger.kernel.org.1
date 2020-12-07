@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5867E2D101E
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696392D1022
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 13:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgLGMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 07:10:20 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:36866 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgLGMKT (ORCPT
+        id S1727089AbgLGMKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 07:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgLGMKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:10:19 -0500
-Received: by mail-oi1-f179.google.com with SMTP id l207so12224842oib.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 04:10:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gf4f4C3kkK3xkC5PEHsF24NiLGtD172vjUD1vi5tQTc=;
-        b=h1R90lYqlQeeq7ejT/nvdxtxLPKhs5LIAnRGnT2EBYdskUqfWt0CVRk775MC2PUL4x
-         JMTDp9ORCIQuQk3Pl5hmCHHx5giMJl1fOemA3KFe5KjgekKk72+zSsmhA2mLHyc8hG1H
-         SHFeKqjJkdpryxNLxydO/BjjISX/DPyKnrw7x/SPPu1jwUzE59pdpZ/pbLRdmtmVwxE0
-         NsAorEXtSe4hVJ0JOZFMC9Rsj7Bi2JL3CB54u6Iqx76hAoZp7cJMG79Fv1V+N/qmhLmR
-         W5xH3IRv2MMC4U33yM0d8nd9iGL3OazUpJa1sTLOhadIHOVQEoEP6yhVK9y0TUwTi11/
-         ENbg==
-X-Gm-Message-State: AOAM532AOolHa4aroNU00NSQqlQkNvbzFKQhUBYAJlpK8102pmA/3bpo
-        mLMo35Wd/zORtrefBUjIripwQRW3HDHSFi8PqUSRABvlf7o=
-X-Google-Smtp-Source: ABdhPJzYI6ZoWUYeRuiEWXBzV3L2dm+taMvez/yyxn0R4kK5f/y0seWKWMF7FQ1S68gN4HNmvqlbVLDaRfoSXkn00BI=
-X-Received: by 2002:aca:4cd8:: with SMTP id z207mr12066693oia.148.1607342979004;
- Mon, 07 Dec 2020 04:09:39 -0800 (PST)
+        Mon, 7 Dec 2020 07:10:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83273C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 04:09:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BbTSzr0ekrkrwUMtMIVfByGKajgzqxX+9tYinOrH+wI=; b=Ob9akebTGAMG8y7oW+eJRc4sl1
+        93P/BxcpZ/dtnKpq6iJQenFcW1a+fDFFbcG10H+UHcU0KUpWdYf+Qw6cPnCYqdNSS/kzkCgodzt1m
+        nFIF7xYvbpKcWyL0Wp1agANSbPP9r/K593EJ2vLMHamXRBBNeGSBvKHKpmzyDl0Wdm4Ha7M01TYNJ
+        SJ8+gzTIBHORQkgm7RGfC0eY6HcM9YCPn9ONonBmFaN2qXXdzGG/zglHnNTyxzbsxRhBQi3ZybeY7
+        tCK727rrldmksbFIi/zn8hSCGXtwO9KREMm+hKZ3jC7ud2c3KjpuJkqW++HDA1qltFY8DBmcdXshq
+        zpTtRTCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmFKs-0001ZN-8N; Mon, 07 Dec 2020 12:09:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D4703304D28;
+        Mon,  7 Dec 2020 13:09:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8A1020812B4B; Mon,  7 Dec 2020 13:09:43 +0100 (CET)
+Date:   Mon, 7 Dec 2020 13:09:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
+        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
+        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
+Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
+Message-ID: <20201207120943.GS3021@hirez.programming.kicks-ass.net>
+References: <20201206211253.919834182@linutronix.de>
+ <20201206212002.876987748@linutronix.de>
 MIME-Version: 1.0
-References: <20201207120611.1315807-1-geert@linux-m68k.org>
-In-Reply-To: <20201207120611.1315807-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 7 Dec 2020 13:09:28 +0100
-Message-ID: <CAMuHMdWJVgWmAOVDVcLfA7Hsv5h1tzqOt6EfgyB_eO_Jn+ESZg@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.10-rc7
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206212002.876987748@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 1:08 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> JFYI, when comparing v5.10-rc7[1] to v5.10-rc6[3], the summaries are:
->   - build errors: +1/-0
+On Sun, Dec 06, 2020 at 10:12:56PM +0100, Thomas Gleixner wrote:
+> +		if (data_race(tick_do_timer_cpu) == TICK_DO_TIMER_BOOT) {
 
-  + /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit
-declaration of function 'cleanup_cpu_mmu_context'
-[-Werror=implicit-function-declaration]:  => 914:2
+I prefer the form:
 
-v5.10-rc7/powerpc-gcc4.9/pmac32_defconfig+SMP
+	if (data_race(tick_do_timer_cpu == TICK_DO_TIMER_BOOT)) {
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0477e92881850d44910a7e94fc2c46f96faa131f/ (all 192 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/b65054597872ce3aefbc6a666385eabdf9e288da/ (all 192 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+But there doesn't yet seem to be sufficient data_race() usage in the
+kernel to see which of the forms is preferred. Do we want to bike-shed
+this now and document the outcome somewhere?
