@@ -2,115 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AF42D1C53
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743BB2D1C59
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 22:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgLGVtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 16:49:14 -0500
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:34424 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgLGVtO (ORCPT
+        id S1727113AbgLGVvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 16:51:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgLGVvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:49:14 -0500
-Received: by mail-oo1-f68.google.com with SMTP id t63so1002380ooa.1;
-        Mon, 07 Dec 2020 13:48:58 -0800 (PST)
+        Mon, 7 Dec 2020 16:51:18 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8779C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 13:50:37 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id u4so14202024qkk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 13:50:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/ZcCG7pADF2Oan3XaaLEvoIyvCq89Mhc+GwW8vVvIrY=;
+        b=Lozzj4GfI580ONqAuCJKC3AAbdqg1jhqs2wm7PT4W0lBO7ssjToZ1C5s6xMzXBuy2Q
+         RANmCAIdVLZ8U6O5cFiEnSTK/M3L+2NbtbQNUHJLTwHedrzizOas4aZSk09mnrHh2fO6
+         J1Lq1zy1/7zESVTeOQjjTpj7b3wkCAVA4oQPI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y6rotUD5Cj+cOu4ib1zm9pX2uBxofrZ/rn0cCo8FKQg=;
-        b=ty8FMyyZknRfYKlMFsRVQgW59dPbJ6nB4JndaP1HUHagODGAW7nPSCY5ivO1tYQGW6
-         29G8h/anGz70iqWqHv/gRNU92prnluSuwXqqStWZJsEWBCwpg6d11aGd9pW4tgZLtEVU
-         fZ9ZJgB9QDOjcIGdRJcQjNmx11GJIq4oL3nTfSbx028ZKl5LCedbI+NMIIhAZiiQIC0F
-         qW1Vqv2IJby1QmbEBJFrdzs5ve7RU8TStKFcCtDbKjXUQ7S3F9zPkUYLtWEqOlWQ1m5D
-         T4GEeiNVy/o87PHstCHN+fcdfMwQk5cE87Q6Wz3sqJY0QLU/ibO82YlodA9KRGBqYQiW
-         PeiA==
-X-Gm-Message-State: AOAM532RL0axAw1+NlzldsnujckoFSo/8ltiuMzzbD5tfHBP3h8DoxUM
-        GrL68dbaa0t6H41mCTPE1A==
-X-Google-Smtp-Source: ABdhPJxYnT7cshF6Zi8wxXFgBu4YMG41wgnDt8hCnJoZDrb6JW3QdAREx42BPwjF74M4vQiwVauOAg==
-X-Received: by 2002:a4a:a785:: with SMTP id l5mr14316996oom.83.1607377712962;
-        Mon, 07 Dec 2020 13:48:32 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i25sm185808oto.56.2020.12.07.13.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:48:32 -0800 (PST)
-Received: (nullmailer pid 890312 invoked by uid 1000);
-        Mon, 07 Dec 2020 21:48:31 -0000
-Date:   Mon, 7 Dec 2020 15:48:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] dt-bindings: Fix error in 'make dtbs_check' when
- using DT_SCHEMA_FILES
-Message-ID: <20201207214831.GA865971@robh.at.kernel.org>
-References: <2519b8bde507ca6ccea9765ea197adaaa69a66d5.1605712328.git.cristian.ciocaltea@gmail.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/ZcCG7pADF2Oan3XaaLEvoIyvCq89Mhc+GwW8vVvIrY=;
+        b=XTwts8Ns+YypVAjZiJWc1Wx6stUiDwhHuFSfYMNakdbDcrsBL8DrkQGDgPZZ29IIQV
+         Zo9HKTZH7kzQATUO2OkcQ7MzenmtpOAF1RDkuYglvp+FYzNJQqH3wtoJeD2ZOy5956WQ
+         9/ezz3101PCbyOqJemEyycw2MW7hXqFN55wyzy8dCvbeChz8Acfzl7a3Pwv2exeK/ah5
+         f+Dm6AlMHhMnkbvFgTqrQBAtlZQhJ3+EmiEVKuOpenwXzEaeHw+PbGHZi3sutTjLRB7w
+         AfIWAOd7/JnFydqMDEvbFLRnF1lcIkPgP31N/T875HqAUZCsdjoJMg7ueLqLUChMHmFD
+         aGZA==
+X-Gm-Message-State: AOAM531FIrVYEwpz4NJ2frFa5Z1AxIu7WQeJx5fqc759Jp2nHRs0yFDX
+        TXyKnqpD2JPKSZCMecXxKJ+zAoyHXGDGIQ==
+X-Google-Smtp-Source: ABdhPJz6FCbeMXa2G2maw67GOiOFfbP8/C/NR5x0geY5gSM9+hW8KXY+f/apvUvqCtKzzryrb+b0Nw==
+X-Received: by 2002:a05:620a:6c8:: with SMTP id 8mr963037qky.176.1607377837079;
+        Mon, 07 Dec 2020 13:50:37 -0800 (PST)
+Received: from bill-the-cat (cpe-65-184-135-175.ec.res.rr.com. [65.184.135.175])
+        by smtp.gmail.com with ESMTPSA id b14sm11970109qtx.36.2020.12.07.13.50.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 13:50:36 -0800 (PST)
+Date:   Mon, 7 Dec 2020 16:50:32 -0500
+From:   Tom Rini <trini@konsulko.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Wim Vervoorn <wvervoorn@eltan.com>,
+        The development of GNU GRUB <grub-devel@gnu.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>, coreboot@coreboot.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        systemd-devel@lists.freedesktop.org,
+        trenchboot-devel@googlegroups.com,
+        U-Boot Mailing List <u-boot@lists.denx.de>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, alecb@umass.edu,
+        alexander.burmashev@oracle.com, allen.cryptic@gmail.com,
+        andrew.cooper3@citrix.com, ard.biesheuvel@linaro.org,
+        "btrotter@gmail.com" <btrotter@gmail.com>,
+        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
+        eric.snowberg@oracle.com, hpa@zytor.com, hun@n-dimensional.de,
+        javierm@redhat.com, joao.m.martins@oracle.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        krystian.hebel@3mdeb.com, leif@nuviainc.com,
+        lukasz.hawrylko@intel.com, luto@amacapital.net,
+        michal.zygowski@3mdeb.com, Matthew Garrett <mjg59@google.com>,
+        mtottenh@akamai.com,
+        Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>,
+        piotr.krol@3mdeb.com, pjones@redhat.com, roger.pau@citrix.com,
+        ross.philipson@oracle.com, tyhicks@linux.microsoft.com,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
+Message-ID: <20201207215032.GN32272@bill-the-cat>
+References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
+ <CAODwPW9dxvMfXY=92pJNGazgYqcynAk72EkzOcmF7JZXhHTwSQ@mail.gmail.com>
+ <6c1e79be210549949c30253a6cfcafc1@Eltsrv03.Eltan.local>
+ <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/HtAX+RUajEpU4A/"
 Content-Disposition: inline
-In-Reply-To: <2519b8bde507ca6ccea9765ea197adaaa69a66d5.1605712328.git.cristian.ciocaltea@gmail.com>
+In-Reply-To: <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 05:20:50PM +0200, Cristian Ciocaltea wrote:
-> If DT_SCHEMA_FILES is specified and contains more than one file paths,
 
-If that worked before, it was by chance. :) Yes, it's called '_FILES', 
-but more than one was on my todo list.
+--/HtAX+RUajEpU4A/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Anyways, I'll apply it.
+On Fri, Dec 04, 2020 at 02:23:23PM +0100, Paul Menzel wrote:
+> Dear Wim, dear Daniel,
+>=20
+>=20
+> First, thank you for including all parties in the discussion.
+> Am 04.12.20 um 13:52 schrieb Wim Vervoorn:
+>=20
+> > I agree with you. Using an existing standard is better than inventing
+> > a new one in this case. I think using the coreboot logging is a good
+> > idea as there is indeed a lot of support already available and it is
+> > lightweight and simple.
+> In my opinion coreboot=E2=80=99s format is lacking, that it does not reco=
+rd the
+> timestamp, and the log level is not stored as metadata, but (in coreboot)
+> only used to decide if to print the message or not.
+>=20
+> I agree with you, that an existing standard should be used, and in my
+> opinion it=E2=80=99s Linux message format. That is most widely supported,=
+ and
+> existing tools could then also work with pre-Linux messages.
+>=20
+> Sean Hudson from Mentor Graphics presented that idea at Embedded Linux
+> Conference Europe 2016 [1]. No idea, if anything came out of that effort.
+> (Unfortunately, I couldn=E2=80=99t find an email. Does somebody have cont=
+acts at
+> Mentor to find out, how to reach him?)
 
-> 'make dtbs_check' fails with the following message:
-> 
->   $ make dtbs_check DT_SCHEMA_FILES="path/to/schema1.yaml path/to/schema2.yaml"
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   Documentation/devicetree/bindings/Makefile:77: recipe for target 'Documentation/devicetree/bindings/processed-schema.json' failed
->   make[1]: *** [Documentation/devicetree/bindings/processed-schema.json] Error 255
->   make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema.json'
->   Makefile:1364: recipe for target 'dt_binding_check' failed
->   make: *** [dt_binding_check] Error 2
-> 
-> The error code 255 is returned by 'dt-mk-schema' when invoked as
-> 'dt-mk-schema -j -u @<tmp-file>', where '<tmp-file>' is a temporary
-> file that is generated to contain a list of SPACE delimited schema
-> file paths, as indicated via DT_SCHEMA_FILES.
-> 
-> However, it seems the file format has been recently changed in
-> 'dt-mk-schema', which now expects each schema path to be provided on
-> a separate line:
-> 
->  $ dt-mk-schema --version
->  2020.12.dev4+g6de1c45
-> 
-> Therefore, let's change '<tmp-file>' content format from
-> 
->  path/to/schema1.yaml path/to/schema2.yaml ... path/to/schemaN.yaml
-> 
-> to
-> 
->  path/to/schema1.yaml
->  path/to/schema2.yaml
->  ...
->  path/to/schemaN.yaml
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
->  Documentation/devicetree/bindings/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-> index f50420099a55..643eb873fd51 100644
-> --- a/Documentation/devicetree/bindings/Makefile
-> +++ b/Documentation/devicetree/bindings/Makefile
-> @@ -37,7 +37,7 @@ quiet_cmd_chk_bindings = CHKDT   $@
->  quiet_cmd_mk_schema = SCHEMA  $@
->        cmd_mk_schema = f=$$(mktemp) ; \
->                        $(if $(DT_MK_SCHEMA_FLAGS), \
-> -                           echo $(real-prereqs), \
-> +                           printf '%s\n' $(real-prereqs), \
->                             $(find_cmd)) > $$f ; \
->                        $(DT_MK_SCHEMA) -j $(DT_MK_SCHEMA_FLAGS) @$$f > $@ ; \
->  		      rm -f $$f
-> -- 
-> 2.29.2
-> 
+I believe the main thing that came out of this was the reminder that
+there was an even older attempt by U-Boot to have such a mechanism, and
+that at the time getting the work accepted in Linux faced some hurdles
+or another.
+
+That said, I too agree with taking what's already a de facto standard,
+the coreboot logging, and expand on it as needed.
+
+--=20
+Tom
+
+--/HtAX+RUajEpU4A/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAl/Oo6UACgkQFHw5/5Y0
+tywf8Qv+L4APGvoo04UfMbodnLWALTyJgHeFXO5lXNUc1MVcmDGlZImiPdj72ky9
+E8YqQQS1D5zoRlQrHXefKqKxUHPcmHnSYGkwC3xfBX7yrvxB8ggEbbrA1uWBZm+2
+mXpJhP9wPwUzAJYGriknNOA4Ly6UVpgSljQCwKSRPSVAOXr90A9bWsQLktAqrkH5
+QdWwrpKAS1XaOPvnWYWyFs6dTQjqxfGngG+9zWio8JFwj9tFHTvZgI3Nqzi+8+N5
+7bBRqyvEkpni2VoQi20RQSiWwdVw21r8ezlP4Zx8HkW4LqoqZIEpY2pa2UVkDb8b
+phjIxsZqG4lCy9sP4byqcAQnu1h0FFzSdKFuBpRJi3VJaQ0gJ2g0ySPzBSCDu4Va
+5qIVE/64uMhIhgU3cYr+7pi/bgw8LoGNnjOBh9d4CVYh61M2EWSEA9f227tlAWlJ
+YK0wpz6REoq0TRpRHwr313pkdMHefe9dWaJ2ul4tSud420mQ+zzFZ+ghLywLSo0w
+vAPmRdwM
+=tVGW
+-----END PGP SIGNATURE-----
+
+--/HtAX+RUajEpU4A/--
