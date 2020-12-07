@@ -2,66 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306A22D0E59
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7D42D0E25
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 11:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgLGKpA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Dec 2020 05:45:00 -0500
-Received: from [183.90.58.236] ([183.90.58.236]:53360 "EHLO ns1.zackeruz.tk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726148AbgLGKo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 05:44:59 -0500
-X-Greylist: delayed 610 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 05:44:58 EST
-Received: from johnlewis.com (unknown [192.168.20.1])
-        by ns1.zackeruz.tk (Postfix) with ESMTPSA id DF1FC841522
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 18:34:10 +0800 (+08)
-Reply-To: robturner.procurement@johnlewis-trade.com, rob76295@gmail.com
-From:   John Lewis Plc <robert_turner01@johnlewis.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Order Inquiry (JL) 12/07/2020-
-Date:   07 Dec 2020 10:34:09 +0000
-Message-ID: <20201207093435.7C77B6E7B3D9C619@johnlewis.com>
+        id S1726187AbgLGKii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 05:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgLGKih (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 05:38:37 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D51C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 02:37:57 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id x16so18744936ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 02:37:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VXIL/mPGOivAPpqwxpyRTpp5LeodAai3f6shhhCJSvc=;
+        b=epBZnYHYL+3atS7whj+dOGTaots4l4EmX2hejtWFeS/V33LeDhxYyPAz/HJjznLv7Q
+         8tsFzOXpbq98t0RuB0fEK6P0GIQc1hP/GlQctUsRkYtM6qaPtfx4HUIIQz5F6C5IYSri
+         +HjDh2eHZvBqxDEaeYBIO51faVdgqbYBTm0oNR+7hDI0lja7XI5qbGFOYZhXZzqorLB0
+         GzKoNHZgFXO4G6TxJtxKHqo/bfJz+8ucTLBMqksXtdfb6Coy33JUz5Lodn7px8eNyS5B
+         Ggi2HVNL/QrCC/omoO4tbOaf+8v+uRRGjAZ9r91a1Z4hePh7An+vGZ34zsuE8zOcijjs
+         iJdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VXIL/mPGOivAPpqwxpyRTpp5LeodAai3f6shhhCJSvc=;
+        b=T4NrtOUBHrilObbgHFPtXEWikfjhw5ifBWSmy3lArGLhSo9sV5GlIlPSITsmUo9gJo
+         HJNC+4lH43O50UUDXij0z3Zvk+kIJ45iXeEzPrAOX1I7668LpaqGelLG3PWhP1/iaYak
+         KARBtWsxJg/zTWTcjiUrjHXbvk6flbYoZVEdGgY+Pjy/c48YsdzGVR/KNCXwOfSqZ8C/
+         2UNebmKezvGFKqYkRvNYxxcq+yiv86f/sNn/ycPtXY4zwsW7P9yufYJrWMr1AVKWZST3
+         PT6UnxwYRiYDtjJfMHC3lc3FfhImQ6g7qE+RUSyDKuRvdu/hMGO+Qmh61b0FqMpSb5Pt
+         lJsg==
+X-Gm-Message-State: AOAM533DeVC3n9/613GBJVbaCZYWp+P/4bDM6+hb7bPmbRPccUmP/7uz
+        UjRrD6Eh/NoyxIjHjBTbPLSIMQO31/KpObw1DFxWvQ==
+X-Google-Smtp-Source: ABdhPJyS8NPxP/N8yUAkByj94DqmhT5XJMlOeyUF6KVf2Vx2H9TvyJW2H/KEgzqT4En6ecuhA0MrYltatpFPfGUXBLo=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr18025326eju.375.1607337475996;
+ Mon, 07 Dec 2020 02:37:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+References: <CA+G9fYs=nR-d0n8kV4=OWD+v=GR2ufOEWU9S4oG1_fZRxhGouQ@mail.gmail.com>
+ <20201207060746.GT11935@casper.infradead.org>
+In-Reply-To: <20201207060746.GT11935@casper.infradead.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 7 Dec 2020 16:07:44 +0530
+Message-ID: <CA+G9fYvQaBVRjxwQ0=+09RCVi-sExv4LAAXpH3-TSGNL29EY7g@mail.gmail.com>
+Subject: Re: WARNING: bad unlock balance detected! - mkfs.ext4/426 is trying
+ to release lock (rcu_read_lock)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear linux-kernel
+On Mon, 7 Dec 2020 at 11:37, Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Dec 07, 2020 at 11:17:29AM +0530, Naresh Kamboju wrote:
+> > While running "mkfs -t ext4" on arm64 juno-r2 device connected with SSD drive
+> > the following kernel warning reported on stable rc 5.9.13-rc1 kernel.
+> >
+> > Steps to reproduce:
+> > ------------------
+> > # boot arm64 Juno-r2 device with stable-rc 5.9.13-rc1.
+> > # Connect SSD drive
+> > # Format the file system ext4 type
+> >  mkfs -t ext4 <SSD-drive>
+> > # you will notice this warning
+>
+> Does it happen easily?  Can you bisect?
 
-The famous brand John Lewis PLC, is UK's largest multi-channel 
-retailer with over 76 shops and multiple expansion in Africa 
-furnished by European/Asian/American products. We are sourcing 
-for new products to attract new customers and also retain our 
-existing ones, create new partnerships with companies dealing  
-with different kinds of goods.
+I have been running multi test loops to reproduce this problem but no
+luck yet :(
+Since it is hard to reproduce we can not bisect.
 
-Your company was shortlisted by our team to collaborate with as 
-we have a great market for your companies lines based on our 
-research.
-
-Send us your current catalog through email to review more about 
-your recent company's products and wholesale quote. We hope to be 
-able to order with you and start a long-term friendly, 
-respectable and solid business partnership. Please we would 
-appreciate it if you could send us your stock availability via 
-email.
-
-Our payment terms are 15 days net in Europe, 30 days Net in UK 
-and 30 days net in Asia/USA as we operate with over 2640 
-suppliers around the globe for the past 50 years now. Send your 
-reply to robturner.procurement@johnlewis-trade.com for us to be 
-able to treat with care and urgency.
-
-Best Regards
-
-Rob Turner
-Head Of Procurement Operations
-John Lewis PLC
-robturner.procurement@johnlewis-trade.com
-Tel: +44-7451-274090
-WhatsApp: +447497483925
-www.johnlewis.com
-REGISTERED OFFICE: 171 VICTORIA STREET, LONDON SW1E 5NN
+- Naresh
