@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D827F2D1DB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DDF2D1DB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 23:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbgLGWrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 17:47:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39396 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgLGWrb (ORCPT
+        id S1728148AbgLGWrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 17:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbgLGWrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 17:47:31 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607381209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DF7s5pk4Zw7F4Z2nppe0ZuFvyidXGsr6pkOHRZYg040=;
-        b=z6h2Skd6Npw6+UOW47F4wiFBtAPxZNXBfKkjPDYXIY+em1Iu2EMMtdlgJLp7nq3MeQzG8h
-        oFy82ZG6DqhcJ0rM6YSXZhSdU9a71vzi2Ure7bmyfXdSTcjVKxczPBqNAkwpA7LzUfuIYj
-        Xk+SzGF56zatuASCFWXgzX/MShBS3Gcykho5iu91a+Z6A5hAIF70N6VsPW15PCY5xSMh20
-        r67/fp2pdSG0ZXaGCniMWypCTCsCB92q+003FtxmjZsVwa4/DbdJMAC7EaAXsN6rj9zUmG
-        XkCEeTlCLiGhO9Xf8uf4I9v1TlZ5RAbFzjExcVQDasbU+HMt/4qlw0W1beTuEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607381209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DF7s5pk4Zw7F4Z2nppe0ZuFvyidXGsr6pkOHRZYg040=;
-        b=CeWqBvqQZSg4eFg2hQfpVHwHizWRr6ZhqODicAjGwNBL3A0aqsxbjIyBNu8+zte/q6gaBW
-        frVmiJRylI/MBICA==
-To:     paulmck@kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-In-Reply-To: <20201207223853.GL2657@paulmck-ThinkPad-P72>
-References: <20201206211253.919834182@linutronix.de> <20201206212002.876987748@linutronix.de> <20201207120943.GS3021@hirez.programming.kicks-ass.net> <87y2i94igo.fsf@nanos.tec.linutronix.de> <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com> <20201207194406.GK2657@paulmck-ThinkPad-P72> <87blf547d2.fsf@nanos.tec.linutronix.de> <20201207223853.GL2657@paulmck-ThinkPad-P72>
-Date:   Mon, 07 Dec 2020 23:46:48 +0100
-Message-ID: <878sa944kn.fsf@nanos.tec.linutronix.de>
+        Mon, 7 Dec 2020 17:47:45 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EED9C061749;
+        Mon,  7 Dec 2020 14:47:05 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmPHU-00HH8r-Ua; Mon, 07 Dec 2020 22:46:57 +0000
+Date:   Mon, 7 Dec 2020 22:46:56 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chris Wright <chrisw@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 09/24] file: Replace fcheck_files with
+ files_lookup_fd_rcu
+Message-ID: <20201207224656.GC4115853@ZenIV.linux.org.uk>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+ <20201120231441.29911-9-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120231441.29911-9-ebiederm@xmission.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07 2020 at 14:38, Paul E. McKenney wrote:
+On Fri, Nov 20, 2020 at 05:14:26PM -0600, Eric W. Biederman wrote:
 
-> On Mon, Dec 07, 2020 at 10:46:33PM +0100, Thomas Gleixner wrote:
->> On Mon, Dec 07 2020 at 11:44, Paul E. McKenney wrote:
->> > On Mon, Dec 07, 2020 at 07:19:51PM +0100, Marco Elver wrote:
->> >> On Mon, 7 Dec 2020 at 18:46, Thomas Gleixner <tglx@linutronix.de> wrote:
->> >> I currently don't know what the rule for Peter's preferred variant
->> >> would be, without running the risk of some accidentally data_race()'d
->> >> accesses.
->> >> 
->> >> Thoughts?
->> >
->> > I am also concerned about inadvertently covering code with data_race().
->> >
->> > Also, in this particular case, why data_race() rather than READ_ONCE()?
->> > Do we really expect the compiler to be able to optimize this case
->> > significantly without READ_ONCE()?
->> 
->> That was your suggestion a week or so ago :)
->
-> You expected my suggestion to change?  ;-)
+>  /*
+>   * Check whether the specified fd has an open file.
+>   */
+> -#define fcheck(fd)	fcheck_files(current->files, fd)
+> +#define fcheck(fd)	files_lookup_fd_rcu(current->files, fd)
 
-Your suggestion was data_race() IIRC but I might have lost track in that
-conversation.
+Huh?
+fs/file.c:1113: file = fcheck(oldfd);
+	dup3(), under ->file_lock, no rcu_read_lock() in sight
+
+fs/locks.c:2548:                f = fcheck(fd);
+	fcntl_setlk(), ditto
+
+fs/locks.c:2679:                f = fcheck(fd);
+	fcntl_setlk64(), ditto
+
+fs/notify/dnotify/dnotify.c:330:        f = fcheck(fd);
+	fcntl_dirnotify(); this one _is_ under rcu_read_lock().
+
+
+IOW, unless I've missed something earlier in the series, this is wrong.
