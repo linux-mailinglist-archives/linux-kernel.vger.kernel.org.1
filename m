@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E482D0CA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9DF2D0CAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 10:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLGJJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 04:09:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgLGJJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 04:09:55 -0500
-X-Gm-Message-State: AOAM530nHokhKR8eObaFxQXK+h6exLOLPkdP94xbHpANhKlUs8yqWl5h
-        avsDJdLK69Evh1j0hd5YArgEhwdlhXlPDcCVzTU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607332158;
-        bh=zeXLUbD69DJQRxwchh1DPhqWxvriQVslIApvnQjzLYo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fjU/RNO5aHHNlPYZVX2DRu34mv2SubeizvQVnooBZSudvI0DQoSLOuvMjUT3/s2So
-         yu/0PLexNza5xiZqHYfs1djfhNgZ7FqZMngqCcXuWXpzMoHu/OkJswa3oE/OpkFjfb
-         w4WQHncqstL3vqOPzW6Q0J7PrCV8zckQG8ocEStd6hOVyVKec1YQeroU9tZkV+9enk
-         HM+3VPzG6Bh9/AvelLSfKvBIABoowRWbruW3wQzsBvCKnohtWPeBbqzXB+udUwTEKV
-         F+mUSKV6UqVtZKbeLwSKoC02t2S4/ms4/+Tyf7KFLjIT0jFER8F5YVrNNxTMFKEjbC
-         nqSU/tCcPnYpw==
-X-Google-Smtp-Source: ABdhPJxwjkwJV5u54bL3hRS5pTJFBF76tgxwRV6F4pNLnBO+C+fIStqXN7jkJxjGvaI9WN4XMqSBJmy5Et3U9WuxvVg=
-X-Received: by 2002:aca:b809:: with SMTP id i9mr11682796oif.174.1607332157482;
- Mon, 07 Dec 2020 01:09:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20201204014443.43329-1-liwei213@huawei.com> <20201204111347.GA844@willie-the-truck>
-In-Reply-To: <20201204111347.GA844@willie-the-truck>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 7 Dec 2020 10:09:06 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
-Message-ID: <CAMj1kXGQ-CeYcbS-hc+Yy8DKHm2t-RYsLu4+7wOG1bWuJqkjGQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: decrease the section size to reduce the memory
- reserved for the page map
-To:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>
-Cc:     Wei Li <liwei213@huawei.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Steve Capper <steve.capper@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S1726557AbgLGJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 04:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726016AbgLGJKs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:10:48 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407BBC0613D2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 01:10:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8szot9NMsCuJ25GCKgI3M1SToKjGBecHZsxjwxUUwM0=; b=hUDKwgNQe/SqOvdmSCIXhtArSc
+        gyojb2EO2V4ivTWuP20LiVRE9xTqmeCKRiw7L3B93qfRszcIrcGeXmZ0PAyim16UJFuKErXAg68nZ
+        W6fob7YT3JjuCUj3CLTDq58dQrWEm81ffMOgjsbBqkJgN3T+J3WBy/kgfjlNOtWOze+YfFjjPyuYD
+        UVDp0w6xuopowg3xQoBeW8pvCixXnxoent1721BfxEVtnWfrrTCkDA2uYx36c89UqDsxbExOtpGI/
+        aNAkAyWicNhAmtg+mMa00GqwrohHs7OO7M00Fr03tKCQcnAUbXMab1HOf1T+AVhd3ggROPXCYc/yZ
+        5GYe8s7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmCWp-00082k-C2; Mon, 07 Dec 2020 09:09:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 607E1301478;
+        Mon,  7 Dec 2020 10:09:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4358D200E0BA7; Mon,  7 Dec 2020 10:09:53 +0100 (CET)
+Date:   Mon, 7 Dec 2020 10:09:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, fengbaopeng2@hisilicon.com,
-        butao@hisilicon.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [PATCH 3/3] exec: Transform exec_update_mutex into a rw_semaphore
+Message-ID: <20201207090953.GF3040@hirez.programming.kicks-ass.net>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+ <875z5h4b7a.fsf@x220.int.ebiederm.org>
+ <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+ <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Marc)
+On Fri, Dec 04, 2020 at 12:48:18PM -0800, Linus Torvalds wrote:
+> On Fri, Dec 4, 2020 at 12:30 PM Bernd Edlinger
+> <bernd.edlinger@hotmail.de> wrote:
+> >>
+> > >    perf_event_open  (exec_update_mutex -> ovl_i_mutex)
+> 
+> Side note: this one looks like it should be easy to fix.
 
-On Fri, 4 Dec 2020 at 12:14, Will Deacon <will@kernel.org> wrote:
->
-> On Fri, Dec 04, 2020 at 09:44:43AM +0800, Wei Li wrote:
-> > For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-> > do not free the reserved memory for the page map, decrease the section
-> > size can reduce the waste of reserved memory.
-> >
-> > Signed-off-by: Wei Li <liwei213@huawei.com>
-> > Signed-off-by: Baopeng Feng <fengbaopeng2@hisilicon.com>
-> > Signed-off-by: Xia Qing <saberlily.xia@hisilicon.com>
-> > ---
-> >  arch/arm64/include/asm/sparsemem.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
-> > index 1f43fcc79738..8963bd3def28 100644
-> > --- a/arch/arm64/include/asm/sparsemem.h
-> > +++ b/arch/arm64/include/asm/sparsemem.h
-> > @@ -7,7 +7,7 @@
-> >
-> >  #ifdef CONFIG_SPARSEMEM
-> >  #define MAX_PHYSMEM_BITS     CONFIG_ARM64_PA_BITS
-> > -#define SECTION_SIZE_BITS    30
-> > +#define SECTION_SIZE_BITS    27
->
-> We chose '30' to avoid running out of bits in the page flags. What changed?
->
-> With this patch, I can trigger:
->
-> ./include/linux/mmzone.h:1170:2: error: Allocator MAX_ORDER exceeds SECTION_SIZE
-> #error Allocator MAX_ORDER exceeds SECTION_SIZE
->
-> if I bump up NR_CPUS and NODES_SHIFT.
->
+> PeterZ, is there something I'm missing?
 
-Does this mean we will run into problems with the GICv3 ITS LPI tables
-again if we are forced to reduce MAX_ORDER to fit inside
-SECTION_SIZE_BITS?
+Like this?
+
+  https://lkml.kernel.org/r/20200828123720.GZ1362448@hirez.programming.kicks-ass.net
