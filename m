@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB8E2D1265
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBE52D1287
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgLGNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:44:32 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60535 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726187AbgLGNoc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:44:32 -0500
-X-UUID: ff3f90193e6b4f1182c6b23973cee090-20201207
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4Ii3UID8fse2i4ieiqVMLnoGaYyiqaOaZASNr1fmU3o=;
-        b=CuO11Iff6rYrBhIN5hgz70qM7QtKLODbhYYcSUfzZZ4nk1nachc+L4g8e1riCv2kxxMSt15PFauTT+S2m7Ko0k1E5aiFLlNZSpjWtZjx3ubcvwnMtBxloYVO2flFrxiU8qqZ4KiVcM4yQVKTjxcFIdOLScZyWMz9qrLsq7Tx/DU=;
-X-UUID: ff3f90193e6b4f1182c6b23973cee090-20201207
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1611850613; Mon, 07 Dec 2020 21:43:44 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 7 Dec 2020 21:43:38 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 7 Dec 2020 21:43:38 +0800
-Message-ID: <1607348620.3580.18.camel@mtkswgap22>
-Subject: Re: [PATCH] scsi: ufs: Enable WB flush during suspend only if WB is
- enabled
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
-        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>
-Date:   Mon, 7 Dec 2020 21:43:40 +0800
-In-Reply-To: <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
-References: <20201207055006.24471-1-stanley.chu@mediatek.com>
-         <062aa9e8f37c2e50032241ff8ddc1dcbc8051ba9.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726412AbgLGNus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:50:48 -0500
+Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:64215
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726263AbgLGNur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:50:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GgnfxlE3dJ6nkF3k1boNsBOJKSWJUhZ6ehsUnQDwjldeGsNWDp8mkQIZC53oKW0jiwYNOmF2JnifNAAogPzA7FTSdWsDN8J/8RPo/xDezEwxus1CHbD0UPGXnMnnnkcKonosDLEucRxzkldo0+rw3is6AyJjUUvA9RYFOdU16/VVAAZMIBIxSyppsxMPltVPZct6xSxvEvq4rjMEYAhO90tGngdi2p15JHSrb2fYEGZvdBaXmf1xoPpHqe5szvxZhOMwYL8KcDADyOA8xMBEAYPIQuCtFMpgnbj57vfKbnlLx3zgcJlSeEpl+48zeapDxKPgMJ/g68SjB7zLz9Y6Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9DRXR6B0cDi8YtCe3y2fF1ZlTXpJ2YNO/kjha88KaZU=;
+ b=k3LmmajcVrRjV8IZkMrelbAdNHIhEhMjTIVWgSd0ZGJKlCBvUFPi0mQqnZamavGU0CvKEtI53ZKWvuLwVXkBFSQQ3XZ68eXILWag7677hSe4e023uaZ42xxyTMX/My8VbN71DCOEv8ZSmoyVTubkQvc+VLIALUkrlvAf0wAUjnT2ejlr2IdaSru/EVyOkG68nhOmAjkvk5KJYMq7FrbkNu2HRyD5jbI6ii7ncNeSiHNt788S9M0J5LZy4Ma82yVetIms06WZfV8rmbfAP65tTLsqOnjmRdfEn892uydKxHTK4OFg0Gwfkg2MgozjbhT6USt4FJHwHD1DlixMxhHpjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9DRXR6B0cDi8YtCe3y2fF1ZlTXpJ2YNO/kjha88KaZU=;
+ b=KxERO9FYq98pHx/gjKD50AII6Cke+63PP8GArWvcrJlaRzLaG2aoG9oiu5Fp++Lotp7RWSKviQpk+/Y7N75PatK0Ma/WRcFgWrUOLhE05ZftYByw8GiXyeto00jXwRRHCVTNNJIpL2MlW1hH6h5Gk406B68ApSBv9W5mG0usJwg=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB7085.eurprd04.prod.outlook.com (2603:10a6:800:122::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Mon, 7 Dec
+ 2020 13:49:58 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::3cd1:fe15:f8d4:ac32]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::3cd1:fe15:f8d4:ac32%5]) with mapi id 15.20.3632.023; Mon, 7 Dec 2020
+ 13:49:58 +0000
+Subject: Re: [RFC PATCH 0/4] crypto: add CRYPTO_TFM_REQ_DMA flag
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <20201125211311.2179-1-iuliana.prodan@oss.nxp.com>
+ <CAMj1kXH=gyCz7NQXaAoNC4cf37t9E8znngyLFVPv+dO79=Z9oQ@mail.gmail.com>
+ <20b1493d-bfb6-d0bc-3b73-740b216db5f2@nxp.com>
+ <CAMj1kXGBa7st9duOu1Z1y28_-Xci3ur7kevAP+pPFp6+xvcy2Q@mail.gmail.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <6ab2e280-a699-67c6-2066-af0b7ea9b709@nxp.com>
+Date:   Mon, 7 Dec 2020 15:49:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+In-Reply-To: <CAMj1kXGBa7st9duOu1Z1y28_-Xci3ur7kevAP+pPFp6+xvcy2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [78.97.206.147]
+X-ClientProxiedBy: AM0PR01CA0122.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:168::27) To VI1PR04MB4046.eurprd04.prod.outlook.com
+ (2603:10a6:803:4d::29)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (78.97.206.147) by AM0PR01CA0122.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Mon, 7 Dec 2020 13:49:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9f19273e-4c5b-4c93-6f29-08d89ab6fc82
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7085:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB70852A86B28FFB948825B09798CE0@VI1PR04MB7085.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rYOfU84aqMCApxf796vq1lwVQfwkQ5gdR2exArBihbr56/kfnDvMJcUGXzJHfQ4GNnTvbUVKljl/pK89hIuA6+nGu8AV4Q29uFDCYHISF5y27QQ6Djqwnq9ME8rgKoBvi+LcgliARw63kctKo0LK65o0C0iFg0DR0mPykAR8HY8kcDwnh5IZVnwrM5tVYEtb9YurxtLsZB7I3wMLQzbIIZMLwMtqy3x91potaE9EhWvTPAuPQEUtzP4xWUH+YqtemDFAiEP0MUFKFK5lMECBntzBqvlXflzxvtDxhCa0UUe0zBxgh9ubqKPNw0N3i4UXior8FGeQIhhvZNvYgBClgYGvEbCvtuw+f88nsEDMxPUzWnYd9FsNrIzcpf2VqxN1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(66556008)(4326008)(956004)(36756003)(8936002)(8676002)(6636002)(6486002)(31686004)(83380400001)(2906002)(16576012)(53546011)(316002)(66476007)(5660300002)(2616005)(54906003)(66946007)(31696002)(26005)(110136005)(86362001)(52116002)(16526019)(478600001)(186003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RXVvUndCZWJYUHp6bVp4bndjZnNLRVhBN2tla3FLb0E3bjg4SWJpSXJTaUll?=
+ =?utf-8?B?RXBqVG9Qa1VMaUEraWE4Q0lzNXlSV3dyNk5LZUd1V2lFSWVTTGkxT1lFZ3M1?=
+ =?utf-8?B?UHRNNGFtZ3hYVVE1VkZJTE5QdzRhOVlpNlhyUUVxeUYzMjRzU2p4ckRkRWJI?=
+ =?utf-8?B?YmlFZmNHSlhXQm5scmF3N0prbmg5SjlReE9JenpVOEdlNUtuaFJaVlRSalRW?=
+ =?utf-8?B?eE1McUpHSGFRZTlvTkVjK21nck1Vd0E1T3RhYWVxeGYwS2tpY1pQUWpDelNo?=
+ =?utf-8?B?K3pqbG1nUzc3NUlOOGlzbFhxOThmUlF0N3JDcldJSFQ3eE9kd05uOWN2bGc1?=
+ =?utf-8?B?NkRha1JiWVZNYWsvTEtxcGpiZkRnQTE0S3VJQkhzK21Ed1ZWSU1JV09GdjFJ?=
+ =?utf-8?B?THBjZSs3Mk9LN0sxRmJ3UEJ1V0RXSXp0VDVKdXVFbEtZMm9tMjRvcUtEbWFL?=
+ =?utf-8?B?TXNnS0hESS9HU2RZUG9xZlRseWx6R3FyeU01bjR2UEVqMEZrRWlhc1Z3ZU5m?=
+ =?utf-8?B?ZFJyS1lBcUxOU3lYV3ovK0Y1ZE15SitJM0I3Vml5S2l5ZUJ6eVlQT2FJeEZI?=
+ =?utf-8?B?cGpkVUVCbmJTbXN1RkNtZzVpRDVvUzlUcFRDaHpQL2RCQnM5ZGFYV2kyNW1o?=
+ =?utf-8?B?UG5VRmRIQ3Axa0x6bFZyWFN0bEpCVjRaNUFUbnlFbHNsMFNqSWVsSmRWKytk?=
+ =?utf-8?B?Q29Va0NtUlFlUWR0aFF3Rno0QWpkMTJrKzNxcFhhYzFjRjVSM2lua0dVeWZO?=
+ =?utf-8?B?d3NRMm85Y3hOUlZGNEpLNFQ1SEEzK2Y2Tm53a1dINFdxSVl6enVWMlpPOW9n?=
+ =?utf-8?B?TVNCNUFiNGhDcW5jU1JlT2ZlUmorQ0hTYUgzUHQ3Q1NISlorcnptdDJkVWhT?=
+ =?utf-8?B?SkFmYnNYVk45TG5GL0hXOWpWdHhLQm1zWnVpTysxTU5vZWZwY2Z3SFg4RUFv?=
+ =?utf-8?B?dzdrS2xlL2ZIZGltMGV5eGk1QjZ5ZlpvSW5tS1ltblQ3M0FGY0RSek02R0pN?=
+ =?utf-8?B?S2NpUVpsdHZENVk3SDk1ZUM5RjdoME9DbGpWYnVnWEs2RFl2Z2J1Q3B5c29y?=
+ =?utf-8?B?ZVJFb3NwSVlIaXU0VVBtQzlsUXp1TGdRYVdFT0xDREV1N2FSY1ZLTzVKL3U1?=
+ =?utf-8?B?VVRuYW1QKzB6VkhiRlVYcDZnT1ViL3FnN3k0RkI5WEZkZlRoL09FeFEzbXVE?=
+ =?utf-8?B?cWF4Yk5YZEZrT0pIKzI0d0lJNEVMUy9aVmpKNDJ1YXArZ0Vad1FRd1Y4K0M2?=
+ =?utf-8?B?TWFrZkpJU24rMXd4bUtrYlBnbnIzd05EKzNGN2Z1YWpTblNVVkhzdzBrbWZr?=
+ =?utf-8?Q?MfI0051IoBAFomG52CsGeUB1FFBRubedju?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f19273e-4c5b-4c93-6f29-08d89ab6fc82
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2020 13:49:58.6505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r+f6wL0F5GbT8XJ5OkaGEsQ5T/xKB3TTZnpDxt8icYuOx8tpwU+XJANudadUMeW50ZbYcJtnq9pix+TpzpOC3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmVhbiwNCg0KT24gTW9uLCAyMDIwLTEyLTA3IGF0IDExOjU5ICswMTAwLCBCZWFuIEh1byB3
-cm90ZToNCj4gT24gTW9uLCAyMDIwLTEyLTA3IGF0IDEzOjUwICswODAwLCBTdGFubGV5IENodSB3
-cm90ZToNCj4gPiBXcml0ZUJvb3RzZXIgZmx1c2ggZHVyaW5nIHN1c3BlbmQgaXMgbm90IG5lY2Vz
-c2FyeSB0byBiZSBlbmFibGVkIGlmDQo+ID4gV3JpdGVCb29zdGVyIGZlYXR1cmUgaXMgZGlzYWJs
-ZWQuIFNpbXBseSBhZGRpbmcgYSBjaGVjayB0byBwcmV2ZW50DQo+ID4gdW5leHBlY3RlZCBwb3dl
-ciBkcmFpbi4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5j
-aHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5j
-IHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
-LSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyBiL2Ry
-aXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPiBpbmRleCA0ODc5ZTg3NTc3ZTEuLjg5ZmE4Yjlh
-YzExZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ID4gKysr
-IGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiA+IEBAIC01NDU4LDcgKzU0NTgsNyBAQCBz
-dGF0aWMgYm9vbCB1ZnNoY2Rfd2JfbmVlZF9mbHVzaChzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEp
-DQo+ID4gICAgICAgICB1MzIgYXZhaWxfYnVmOw0KPiA+ICAgICAgICAgdTggaW5kZXg7DQo+ID4g
-IA0KPiA+IC0gICAgICAgaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpKQ0KPiA+ICsgICAg
-ICAgaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8ICFoYmEtPndiX2VuYWJsZWQpDQo+
-ID4gICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCj4gPiAgICAgICAgIC8qDQo+ID4gICAg
-ICAgICAgKiBUaGUgdWZzIGRldmljZSBuZWVkcyB0aGUgdmNjIHRvIGJlIE9OIHRvIGZsdXNoLg0K
-PiANCj4gDQo+IEhpIFN0YW5sZXkNCj4gDQo+IEluIHRoZSAzLjEgU3BlYzoNCj4gDQo+ICJJZiB0
-aGUgZldyaXRlQm9vc3RlckVuIGZsYWcgaXMgc2V0IHRvIHplcm8sIGRhdGEgd3JpdHRlbiB0byBh
-bnkNCj4gbG9naWNhbCB1bml0IGlzIHdyaXR0ZW4gaW4gbm9ybWFsIHN0b3JhZ2UuDQo+IElmIHRo
-ZSBmV3JpdGVCb29zdGVyRW4gZmxhZyBpcyBzZXQgdG8gb25lIGFuZCB0aGUgZGV2aWNlIGlzIGNv
-bmZpZ3VyZWQNCj4gaW4g4oCcc2hhcmVkIGJ1ZmZlcuKAnSBtb2RlLCBkYXRhIHdyaXR0ZW4gdG8g
-YW55IGxvZ2ljYWwgdW5pdCBpcyB3cml0dGVuIGluDQo+IHRoZSBzaGFyZWQgV3JpdGVCb29zdGVy
-IEJ1ZmZlci4iDQo+IA0KPiBzbywgSU1PLCBmV3JpdGVCb29zdGVyRW4gaXMgaW5kZXBlbmRhbnQg
-d2l0aCBXQiBidWZmZXIgZmx1c2guDQo+IA0KPiBhcyBmb3IgdGhlIGZsdXNoOg0KPiANCj4gIlRo
-ZXJlIGFyZSB0d28gbWV0aG9kcyBmb3IgZmx1c2hpbmcgZGF0YSBmcm9tIHRoZSBXcml0ZUJvb3N0
-ZXIgQnVmZmVyDQo+IHRvIHRoZSBub3JtYWwgc3RvcmFnZTogb25lIGlzIHVzaW5nIGFuIGV4cGxp
-Y2l0IGZsdXNoIGNvbW1hbmQsIHRoZQ0KPiBvdGhlciBlbmFibGluZyB0aGUgZmx1c2hpbmcgZHVy
-aW5nIGxpbmsgaGliZXJuYXRlIHN0YXRlLiBJZiB0aGUNCj4gZldyaXRlQm9vc3RlckJ1ZmZlckZs
-dXNoRW4gZmxhZyBpcyBzZXQgdG8gb25lLCB0aGUgZGV2aWNlIHNoYWxsIGZsdXNoDQo+IHRoZSBk
-YXRhIHN0b3JlZCBpbiB0aGUgV3JpdGVCb29zdGVyIEJ1ZmZlciB0byB0aGUgbm9ybWFsIHN0b3Jh
-Z2UuIElmDQo+IGZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaER1cmluZ0hpYmVybmF0ZSBpcyBzZXQg
-dG8gb25lLCB0aGUgZGV2aWNlDQo+IGZsdXNoZXMgdGhlIFdyaXRlQm9vc3RlciBCdWZmZXIgZGF0
-YSBhdXRvbWF0aWNhbGx5IHdoZW5ldmVyIHRoZSBsaW5rDQo+IGVudGVycyB0aGUgaGliZXJuYXRl
-IChISUJFUk44KSBzdGF0ZS4iDQo+IA0KPiBJTU8sIGZvciB0aGUgZmx1c2gsIGl0IGlzIGNvbnRy
-b2xsZWQgYnkgZldyaXRlQm9vc3RlckJ1ZmZlckZsdXNoRW4gYW5kDQo+IGZXcml0ZUJvb3N0ZXJC
-dWZmZXJGbHVzaER1cmluZ0hpYmVybmF0ZS4NCj4gDQo+IGhvdyBkbyB5b3UgdW5kZXJzdGFuZCB0
-aGUgYWJvdmUgdHdvIHBhcmFncmFwaHMgZnJvbSBTcGVjPw0KDQpUaGFua3MgZm9yIHlvdXIgcmV2
-aWV3IGFuZCBmZWVkYmFjayEgOiApDQoNCkFjdHVhbGx5IHRoaXMgcGF0Y2ggaXMgbm90IG1vdGl2
-YXRlZCBieSBhbnkgbGltaXRhdGlvbiBpbiBzcGVjLiBJIHdhcw0KdGhpbmtpbmcgdGhhdCBpZiBo
-b3N0IGRpc2FibGVzIFdyaXRlQm9vc3Rlciwgd2hpY2ggbWF5IGltcGx5IHRoYXQgaG9zdA0KZG9l
-cyBub3Qgd2FudCBhbnkgV0IgcmVsYXRlZCBvcGVyYXRpb25zIGluIGRldmljZSBkdXJpbmcgdGhl
-IGRpc2FibGVkDQpwZXJpb2QuDQoNCkhvd2V2ZXIgSSBtYXkgYmUgd3JvbmcgYmVjYXVzZSBob3N0
-IG1heSBvbmx5IHdhbnQgbm90IGNvbnN1bWluZyBhbnkgV0INCmJ1ZmZlciBpbiBkZXZpY2UgZHVy
-aW5nIHRoZSBkaXNhYmxlZCB0aW1lLCBidXQgc3RpbGwgd2FudCB0aGUgImZsdXNoIg0Kb3BlcmF0
-aW9uIGluIGRldmljZSB0byBjbGVhbiBXQiBidWZmZXIgYXMgcXVpY2tseSBhcyBwb3NzaWJsZSB0
-byBmdWxmaWxsDQpmdXR1cmUgaGlnaC10aHJvdWdocHV0IHJlcXVpcmVtZW50IGFmdGVyIFdCIGlz
-IHJlLWVuYWJsZWQuDQoNClNvLCBJIHdvdWxkIGRyb3AgdGhpcyBwYXRjaC4NCg0KVGhhbmtzLA0K
-U3RhbmxleSBDaHUNCj4gDQo+IA0KPiB0aGFua3MsDQo+IEJlYW4NCj4gDQo+IA0KDQo=
+On 11/26/2020 9:09 AM, Ard Biesheuvel wrote:
+> On Wed, 25 Nov 2020 at 22:39, Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
+>>
+>> On 11/25/2020 11:16 PM, Ard Biesheuvel wrote:
+>>> On Wed, 25 Nov 2020 at 22:14, Iuliana Prodan (OSS)
+>>> <iuliana.prodan@oss.nxp.com> wrote:
+>>>>
+>>>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+>>>>
+>>>> Add the option to allocate the crypto request object plus any extra space
+>>>> needed by the driver into a DMA-able memory.
+>>>>
+>>>> Add CRYPTO_TFM_REQ_DMA flag to be used by backend implementations to
+>>>> indicate to crypto API the need to allocate GFP_DMA memory
+>>>> for private contexts of the crypto requests.
+>>>>
+>>>
+>>> These are always directional DMA mappings, right? So why can't we use
+>>> bounce buffering here?
+>>>
+>> The idea was to avoid allocating any memory in crypto drivers.
+>> We want to be able to use dm-crypt with CAAM, which needs DMA-able
+>> memory and increasing reqsize is not enough.
+> 
+> But what does 'needs DMA-able memory' mean? DMA operations are
+> asynchronous by definition, and so the DMA layer should be able to
+> allocate bounce buffers when needed. This will cost some performance
+> in cases where the hardware cannot address all of memory directly, but
+> this is a consequence of the design, and I don't think we should
+> burden the generic API with this.
+> 
+The performance loss due to bounce buffering is non-negligible.
+Previous experiments we did showed a 35% gain (when forcing all data,
+including I/O buffers, in ZONE_DMA32).
 
+I don't have the exact numbers for bounce buffering introduced by allowing
+only by the control data structures (descriptors etc.) in high memory,
+but I don't think it's fair to easily dismiss this topic,
+given the big performance drop and relatively low impact
+on the generic API.
+
+Thanks,
+Horia
