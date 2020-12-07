@@ -2,80 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFD92D11F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7BB2D120C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 14:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgLGN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 08:27:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbgLGN1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 08:27:46 -0500
-Date:   Mon, 7 Dec 2020 14:27:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607347625;
-        bh=Qvq3h6d1Gy5E6Tnj5vXRnTSeMKnHR2i8+PXsH+/t4JM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iuhOirZm5bjMHTZ7KthSr+UdTicVFIDA3Sz5dPvUDlkx5eSXha7mx5f4tGud2i89w
-         M0m9WZH71Ff2zgpD7e+j6P5p/SEknkaZIaSvhbrTc+bq8pyC/csMjcmW4KoTsVu0Jm
-         xVHAkWxNiXFif2SOOMZakaM4JV3y9EGl170fSbV7C1GvxdP7g9nZII1ByweJSmcujs
-         +3cW9k3rse1JUpSiJcDaNQ1/iI653arX4kgi2+t31DQabY10FrmNb5Rbf0xwVWcIfE
-         ROJuJj7rNm/f1Gtf0gMtI+wtX8S2sz7q0nPoNOOunaQp2Wl4Uvu+FIqdMnNR6ZbaV3
-         vyF8cZE1hSH0Q==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 2/9] irqtime: Make accounting correct on RT
-Message-ID: <20201207132702.GC122233@lothringen>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170804.889561591@linutronix.de>
+        id S1726912AbgLGN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 08:29:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32248 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726618AbgLGN3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 08:29:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607347687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zmWE4Di/SrsoSOSW6qXuYa1KIu/jIAKq7DifFwoMfwo=;
+        b=jRXrn7CzyHYB4rYN7cyWuY8mL4Ehw0D7nnpZFNK5HSTO28hdMB+2ZnlKsxKAJZKhtHrq9x
+        txmdFwaqIjP+Mga3M1A1Ly1ZVGo1YYKzfDtLWJUshuthrd2k4wMNB1Ei+LXfme1fXgsAoM
+        eGjPwXA41RysXmG8fRHjoMOGJRxSF0M=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-87-XKq_uyNUN0KJkhEA7WGbpg-1; Mon, 07 Dec 2020 08:28:03 -0500
+X-MC-Unique: XKq_uyNUN0KJkhEA7WGbpg-1
+Received: by mail-ej1-f70.google.com with SMTP id dc13so3840515ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 05:28:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zmWE4Di/SrsoSOSW6qXuYa1KIu/jIAKq7DifFwoMfwo=;
+        b=fkMUVr4iXl/iix5Ve0XRgKNLrNVaz7VNdm05bqROm/eIQnowErEYWet1gtewHQ7lzb
+         jg+2eJepIvxQeK7AAUeF0IvD2GYcHEOC/RiUGnUu46F0nUMPMxv1QWZZuoqqgiXJb6fI
+         CyhJdlzfbkSvhWaAX3t6g/YlHjir4HlkK0VBF+zOSodftCLBQ6BBxhfhY+RNFpOtBH7g
+         mr7sudG9UmH6MVJ5W04RxaP+N4fn+cszJd+o9u+OiIGpu5hrGwmVkA/d9f6TJq3KqhOT
+         A8cTbPYxwKenuXL2EA8B6WtM+naXImRopLnhDKlFXxeZP8p7fyZQIVXAxnpQ0sUHICHr
+         g85A==
+X-Gm-Message-State: AOAM533Po9jUaWJU49FCNtIkVvivMDDhmlzLd4nR1RiwvYlJa7pEctOX
+        kxpmKn4de+r0jc6J10rL1HU5Juj8sezsnsZ0imBbsLvpSLyzXI35XrKtZ8SFA2moxFRX2dZHr5+
+        DwhVV6Jvr5WGBmmDj9WP/u+Oc
+X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr18854677eja.486.1607347681961;
+        Mon, 07 Dec 2020 05:28:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwEorJ0sLId/xL9w8EuO0JL3r6cc0kBtMY1HiSGC5kejytn+C5L/ToMHIPmo2of6ILKDTvCoA==
+X-Received: by 2002:a17:906:22c7:: with SMTP id q7mr18854658eja.486.1607347681764;
+        Mon, 07 Dec 2020 05:28:01 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id oq27sm3461543ejb.108.2020.12.07.05.28.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 05:28:01 -0800 (PST)
+Subject: Re: [PATCH v3 0/7] Improve s0ix flows for systems i219LM
+To:     Mario Limonciello <mario.limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     linux-kernel@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>, darcari@redhat.com,
+        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
+        anthony.wong@canonical.com
+References: <20201204200920.133780-1-mario.limonciello@dell.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d0f7e565-05e1-437e-4342-55eb73daa907@redhat.com>
+Date:   Mon, 7 Dec 2020 14:28:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204170804.889561591@linutronix.de>
+In-Reply-To: <20201204200920.133780-1-mario.limonciello@dell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:01:53PM +0100, Thomas Gleixner wrote:
-> vtime_account_irq and irqtime_account_irq() base checks on preempt_count()
-> which fails on RT because preempt_count() does not contain the softirq
-> accounting which is seperate on RT.
+Hi,
+
+On 12/4/20 9:09 PM, Mario Limonciello wrote:
+> commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+> disabled s0ix flows for systems that have various incarnations of the
+> i219-LM ethernet controller.  This was done because of some regressions
+> caused by an earlier
+> commit 632fbd5eb5b0e ("e1000e: fix S0ix flows for cable connected case")
+> with i219-LM controller.
 > 
-> These checks do not need the full preempt count as they only operate on the
-> hard and softirq sections.
+> Performing suspend to idle with these ethernet controllers requires a properly
+> configured system.  To make enabling such systems easier, this patch
+> series allows determining if enabled and turning on using ethtool.
 > 
-> Use irq_count() instead which provides the correct value on both RT and non
-> RT kernels. The compiler is clever enough to fold the masking for !RT:
+> The flows have also been confirmed to be configured correctly on Dell's Latitude
+> and Precision CML systems containing the i219-LM controller, when the kernel also
+> contains the fix for s0i3.2 entry previously submitted here and now part of this
+> series.
+> https://marc.info/?l=linux-netdev&m=160677194809564&w=2
 > 
->        99b:	65 8b 05 00 00 00 00 	mov    %gs:0x0(%rip),%eax
->  -     9a2:	25 ff ff ff 7f       	and    $0x7fffffff,%eax
->  +     9a2:	25 00 ff ff 00       	and    $0xffff00,%eax
+> Patches 4 through 7 will turn the behavior on by default for some of Dell's
+> CML and TGL systems.
+
+First of all thank you for working on this.
+
+I must say though that I don't like the approach taken here very
+much.
+
+This is not so much a criticism of this series as it is a criticism
+of the earlier decision to simply disable s0ix on all devices
+with the i219-LM + and active ME.
+
+AFAIK there was a perfectly acceptable patch to workaround those
+broken devices, which increased a timeout:
+https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20200323191639.48826-1-aaron.ma@canonical.com/
+
+That patch was nacked because it increased the resume time
+*on broken devices*.
+
+So it seems to me that we have a simple choice here:
+
+1. Longer resume time on devices with an improperly configured ME
+2. Higher power-consumption on all non-buggy devices
+
+Your patches 4-7 try to workaround 2. but IMHO those are just
+bandaids for getting the initial priorities *very* wrong.
+
+Instead of penalizing non-buggy devices with a higher power-consumption,
+we should default to penalizing the buggy devices with a higher
+resume time. And if it is decided that the higher resume time is
+a worse problem then the higher power-consumption, then there
+should be a list of broken devices and s0ix can be disabled on those.
+
+The current allow-list approach is simply never going to work well
+leading to too high power-consumption on countless devices.
+This is going to be an endless game of whack-a-mole and as
+such really is a bad idea.
+
+A deny-list for broken devices is a much better approach, esp.
+since missing devices on that list will still work fine, they
+will just have a somewhat larger resume time.
+
+So what needs to happen IMHO is:
+
+1. Merge your fix from patch 1 of this set
+2. Merge "e1000e: bump up timeout to wait when ME un-configure ULP mode"
+3. Drop the e1000e_check_me check.
+
+Then we also do not need the new "s0ix-enabled" ethertool flag
+because we do not need userspace to work-around us doing the
+wrong thing by default.
+
+Note a while ago I had access to one of the devices having suspend/resume
+issues caused by the S0ix support (a Lenovo Thinkpad X1 Carbon gen 7)
+and I can confirm that the "e1000e: bump up timeout to wait when ME
+un-configure ULP mode" patch fixes the suspend/resume problem without
+any noticeable negative side-effects.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+
+
+
 > 
-> Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Changes from v2 to v3:
+>  - Correct some grammar and spelling issues caught by Bjorn H.
+>    * s/s0ix/S0ix/ in all commit messages
+>    * Fix a typo in commit message
+>    * Fix capitalization of proper nouns
+>  - Add more pre-release systems that pass
+>  - Re-order the series to add systems only at the end of the series
+>  - Add Fixes tag to a patch in series.
+> 
+> Changes from v1 to v2:
+>  - Directly incorporate Vitaly's dependency patch in the series
+>  - Split out s0ix code into it's own file
+>  - Adjust from DMI matching to PCI subsystem vendor ID/device matching
+>  - Remove module parameter and sysfs, use ethtool flag instead.
+>  - Export s0ix flag to ethtool private flags
+>  - Include more people and lists directly in this submission chain.
+> 
+> Mario Limonciello (6):
+>   e1000e: Move all S0ix related code into its own source file
+>   e1000e: Export S0ix flags to ethtool
+>   e1000e: Add Dell's Comet Lake systems into S0ix heuristics
+>   e1000e: Add more Dell CML systems into S0ix heuristics
+>   e1000e: Add Dell TGL desktop systems into S0ix heuristics
+>   e1000e: Add another Dell TGL notebook system into S0ix heuristics
+> 
+> Vitaly Lifshits (1):
+>   e1000e: fix S0ix flow to allow S0i3.2 subset entry
+> 
+>  drivers/net/ethernet/intel/e1000e/Makefile  |   2 +-
+>  drivers/net/ethernet/intel/e1000e/e1000.h   |   4 +
+>  drivers/net/ethernet/intel/e1000e/ethtool.c |  40 +++
+>  drivers/net/ethernet/intel/e1000e/netdev.c  | 272 +----------------
+>  drivers/net/ethernet/intel/e1000e/s0ix.c    | 311 ++++++++++++++++++++
+>  5 files changed, 361 insertions(+), 268 deletions(-)
+>  create mode 100644 drivers/net/ethernet/intel/e1000e/s0ix.c
+> 
+> --
+> 2.25.1
+> 
+> 
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-
-Also I'm seeing a few other explicit SOFTIRQ_MASK checks on top
-of preempt_count(), especially on RCU:
-
-   $ git grep SOFTIRQ_MASK
-   arch/sh/kernel/irq.c:                   (irqctx->tinfo.preempt_count & ~SOFTIRQ_MASK) |
-   arch/sh/kernel/irq.c:                   (curctx->tinfo.preempt_count & SOFTIRQ_MASK);
-   kernel/rcu/rcutorture.c:                if (preempt_count() & (SOFTIRQ_MASK | HARDIRQ_MASK))
-   kernel/rcu/tree_exp.h:          if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
-   kernel/rcu/tree_plugin.h:                       !!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK));
-   kernel/rcu/tree_plugin.h:           (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
-
-I guess some RT RCU config take care of that?
-
-Also tracing:
-
-     kernel/trace/ring_buffer.c:     if (!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
-     kernel/trace/trace.c:           ((pc & SOFTIRQ_OFFSET) ? TRACE_FLAG_SOFTIRQ : 0)
-
-Thanks.
