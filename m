@@ -2,74 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCD92D177B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B67A2D177D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Dec 2020 18:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgLGRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 12:23:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38660 "EHLO mail.kernel.org"
+        id S1727496AbgLGRX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 12:23:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726866AbgLGRXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 12:23:06 -0500
-From:   Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        linux-spi@vger.kernel.org
-Cc:     ludovic.desroches@microchip.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alexandre.belloni@bootlin.com, bugalski.piotr@gmail.com
-In-Reply-To: <20201207135959.154124-1-tudor.ambarus@microchip.com>
-References: <20201207135959.154124-1-tudor.ambarus@microchip.com>
-Subject: Re: [PATCH 0/4] spi: atmel-quadspi: Fix AHB memory accesses
-Message-Id: <160736172966.53398.17804745115147014736.b4-ty@kernel.org>
-Date:   Mon, 07 Dec 2020 17:22:09 +0000
+        id S1726311AbgLGRX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 12:23:57 -0500
+Date:   Mon, 7 Dec 2020 14:23:19 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607361792;
+        bh=YrqZt2cDoscNlEkZs4KxklqlELsS6ZtXkd5YDE69okg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eliy9dGroa3le3PI/eDyWHKT6OBCSNVvMYpNcKkkgMihQiuaCIwVmiofvI+LJBqBv
+         mniHhRirQuBUXbhWEQSI07KCafa3zW6NcT/PrzJyoydKfmboogdFeUeqqwdwMAwQNt
+         rKT2LK4BushosHMZZywwQIfmrpvHRal5ET330n0Tq7aimXi66xztmM7UqogVvqCmvc
+         wdh1u4CSPFvhbfr77718F/SAtvVV67sTOaH1av9dhCGJpClUooFG149W2occxgkaXY
+         isr6yptLUiUGBzkkUO7ZoFb4KjNeTDCLPiNcBNeamlS7LbQ5mFPVzBC/KJjlRB1FeZ
+         kGdwVwZfa/eQA==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, will@kernel.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, irogers@google.com, qiangqing.zhang@nxp.com,
+        kjain@linux.ibm.com, linux-kernel@vger.kernel.org,
+        zhangshaokun@hisilicon.com, linux-arm-kernel@lists.infradead.org,
+        linuxarm@huawei.com, kan.liang@linux.intel.com,
+        kim.phillips@amd.com, ak@linux.intel.com
+Subject: Re: [PATCH v6 08/10] perf metricgroup: Support printing metric
+ groups for system PMUs
+Message-ID: <20201207172319.GD129853@kernel.org>
+References: <1607080216-36968-1-git-send-email-john.garry@huawei.com>
+ <1607080216-36968-9-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607080216-36968-9-git-send-email-john.garry@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 15:59:55 +0200, Tudor Ambarus wrote:
-> Starting with the move of the atmel-quadspi driver under SPI,
-> the following error could be seen when mounting a 16MByte ubifs:
-> UBIFS error (ubi0:0 pid 1893): check_lpt_type.constprop.6: invalid type (15) in LPT node type
+Em Fri, Dec 04, 2020 at 07:10:14PM +0800, John Garry escreveu:
+> Currently printing metricgroups for core- or uncore-based events matched
+> by CPUID is supported.
 > 
-> 1/4 fixes AHB accesses. The rest of the patches are small optimizations.
-> Tested on both sama5d2 and sam9x60.
+> Extend this for system events.
 > 
-> [...]
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Acked-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>  tools/perf/util/metricgroup.c | 64 ++++++++++++++++++++++++++++++++---
+>  1 file changed, 60 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 4c6a686b08eb..abc5d0e28d0f 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -559,6 +559,49 @@ static int metricgroup__print_pmu_event(struct pmu_event *pe,
+>  	return 0;
+>  }
+>  
+> +struct metricgroup_print_sys_idata {
+> +	struct strlist *metriclist;
+> +	bool metricgroups;
+> +	char *filter;
+> +	bool raw;
+> +	bool details;
+> +	struct rblist *groups;
+> +};
 
-Applied to
+I'm doing some reorg to avoid these holes:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+[acme@five perf]$ pahole -C metricgroup_print_sys_idata ~/bin/perf
+struct metricgroup_print_sys_idata {
+	struct strlist *           metriclist;           /*     0     8 */
+	_Bool                      metricgroups;         /*     8     1 */
 
-Thanks!
+	/* XXX 7 bytes hole, try to pack */
 
-[1/4] spi: atmel-quadspi: Fix AHB memory accesses
-      commit: cac8c821059639b015586abf61623c62cc549a13
-[2/4] spi: atmel-quadspi: Drop superfluous set of QSPI_IFR_APBTFRTYP_READ
-      commit: a6ff3a784ff9975dc77676827a2f448203511d19
-[3/4] spi: atmel-quadspi: Write QSPI_IAR only when needed
-      commit: d00364b6a60475cd75fd07e847ad6f955952638b
-[4/4] spi: atmel-quadspi: Move common code outside of if else
-      commit: c066efb07d1e8b801ea9d0727119958c9904e63d
+	char *                     filter;               /*    16     8 */
+	_Bool                      raw;                  /*    24     1 */
+	_Bool                      details;              /*    25     1 */
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+	/* XXX 6 bytes hole, try to pack */
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+	struct rblist *            groups;               /*    32     8 */
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+	/* size: 40, cachelines: 1, members: 6 */
+	/* sum members: 27, holes: 2, sum holes: 13 */
+	/* last cacheline: 40 bytes */
+};
+[acme@five perf]$
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+It ended up as:
 
-Thanks,
-Mark
+[acme@five perf]$ pahole -C metricgroup_print_sys_idata ~/bin/perf
+struct metricgroup_print_sys_idata {
+	struct strlist *           metriclist;           /*     0     8 */
+	char *                     filter;               /*     8     8 */
+	struct rblist *            groups;               /*    16     8 */
+	_Bool                      metricgroups;         /*    24     1 */
+	_Bool                      raw;                  /*    25     1 */
+	_Bool                      details;              /*    26     1 */
+
+	/* size: 32, cachelines: 1, members: 6 */
+	/* padding: 5 */
+	/* last cacheline: 32 bytes */
+};
+[acme@five perf]$o
+
+- Arnaldo
+
+> +typedef int (*metricgroup_sys_event_iter_fn)(struct pmu_event *pe, void *);
+> +
+> +struct metricgroup_iter_data {
+> +	metricgroup_sys_event_iter_fn fn;
+> +	void *data;
+> +};
+> +
+> +static int metricgroup__sys_event_iter(struct pmu_event *pe, void *data)
+> +{
+> +	struct metricgroup_iter_data *d = data;
+> +	struct perf_pmu *pmu = NULL;
+> +
+> +	if (!pe->metric_expr || !pe->compat)
+> +		return 0;
+> +
+> +	while ((pmu = perf_pmu__scan(pmu))) {
+> +
+> +		if (!pmu->id || strcmp(pmu->id, pe->compat))
+> +			continue;
+> +
+> +		return d->fn(pe, d->data);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int metricgroup__print_sys_event_iter(struct pmu_event *pe, void *data)
+> +{
+> +	struct metricgroup_print_sys_idata *d = data;
+> +
+> +	return metricgroup__print_pmu_event(pe, d->metricgroups, d->filter, d->raw,
+> +				     d->details, d->groups, d->metriclist);
+> +}
+> +
+>  void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+>  			bool raw, bool details)
+>  {
+> @@ -569,9 +612,6 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+>  	struct rb_node *node, *next;
+>  	struct strlist *metriclist = NULL;
+>  
+> -	if (!map)
+> -		return;
+> -
+>  	if (!metricgroups) {
+>  		metriclist = strlist__new(NULL, NULL);
+>  		if (!metriclist)
+> @@ -582,7 +622,7 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+>  	groups.node_new = mep_new;
+>  	groups.node_cmp = mep_cmp;
+>  	groups.node_delete = mep_delete;
+> -	for (i = 0; ; i++) {
+> +	for (i = 0; map; i++) {
+>  		pe = &map->table[i];
+>  
+>  		if (!pe->name && !pe->metric_group && !pe->metric_name)
+> @@ -595,6 +635,22 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+>  			return;
+>  	}
+>  
+> +	{
+> +		struct metricgroup_iter_data data = {
+> +			.fn = metricgroup__print_sys_event_iter,
+> +			.data = (void *) &(struct metricgroup_print_sys_idata){
+> +				.metriclist = metriclist,
+> +				.metricgroups = metricgroups,
+> +				.filter = filter,
+> +				.raw = raw,
+> +				.details = details,
+> +				.groups = &groups,
+> +			},
+> +		};
+> +
+> +		pmu_for_each_sys_event(metricgroup__sys_event_iter, &data);
+> +	}
+> +
+>  	if (!filter || !rblist__empty(&groups)) {
+>  		if (metricgroups && !raw)
+>  			printf("\nMetric Groups:\n\n");
+> -- 
+> 2.26.2
+> 
+
+-- 
+
+- Arnaldo
