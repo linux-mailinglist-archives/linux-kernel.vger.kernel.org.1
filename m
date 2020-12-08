@@ -2,269 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DBE2D2796
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB1A2D279A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgLHJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgLHJ1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:27:36 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BEBC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:26:56 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id x6so11580715wro.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:26:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YXgYA9CeIM+j5i7wHnRUH6RMd2r+QbmdOpQX79NtK20=;
-        b=mqYC7iQ7YUDJkvX3hxzjnG724VOSfrqn1/fCQ70RUDrjVMya7Nvg+O5VWKT2jO8zfa
-         GVIhxGGGD0dNn3aLIkneJuFy2vtgiWfQf4t1HqBnXTp9h74DNgV3ljygWwyhjzKgDE2B
-         eUDUyiZXEOjvNMMF+Wo0Gwia+0qRFkWXepoTmgUZp3JhvY8DnX30VUzjONykGjKeMCPT
-         L+DEnJkf2fdRx5h9De345u7aRYQZYg/pw/lqhxPQHnkESIvWB/9kSyi5v8l69C0kJExZ
-         t7+BKjx1yMwVqTazbgIOp2S2roy4Rv0JRpop+3GyqZ6VvK22ZLIaZSwhZffRvAohXB/n
-         q0GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YXgYA9CeIM+j5i7wHnRUH6RMd2r+QbmdOpQX79NtK20=;
-        b=HAjj+2I9R9WX/xzRiYdMe09FCtfDNfJNUvHhGEsf3D/SWR5pNhDVUI5BkcFokXN8Ax
-         vkkC7AyG1gXClE29c4OwU35qUClugLK0+O0kXPnhnCHsHaj688qIgmG+twgzEiUs6P18
-         RfjTRubl2uCZHVjn23uHYS34V7CWHUWt11L7PqoYTpwlJmf5FVg+tPClIdmKSlXNZSXb
-         Y4ELHCyzXg6uZmmlazx1GG1rkUmBqj67GMRj6wRCxWAYWCCFmqrxiEVmBxmF9q2sj61t
-         rmdW1INNXYkidTpBGVOR8R6YXj20swCeFq+cZ75SMoWq2LOl5jsAVgNyssM/6DNQMUSd
-         LnFw==
-X-Gm-Message-State: AOAM531aWe1Tip2UGIupJ1/+RskezczoKGemAUpSrpsJcG85TR9KL010
-        IDR60vTUaevBlrFPCelbYYpPSw==
-X-Google-Smtp-Source: ABdhPJxnjG8DP3SGg0ussYjOKPxpckG9YCL0g57TL1TOTJglEEcL6p54WHOJyjPXm0ueQrY/nQzJbQ==
-X-Received: by 2002:a5d:554e:: with SMTP id g14mr7078158wrw.264.1607419614931;
-        Tue, 08 Dec 2020 01:26:54 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id i9sm12810706wrs.70.2020.12.08.01.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:26:54 -0800 (PST)
-Date:   Tue, 8 Dec 2020 09:26:50 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v4 04/11] bpf: Rename BPF_XADD and prepare to
- encode other atomics in .imm
-Message-ID: <X89G2kItO2o60+A6@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-5-jackmanb@google.com>
- <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
+        id S1728825AbgLHJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:29:15 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:56968 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgLHJ3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:29:15 -0500
+Received: from zn.tnic (p200300ec2f0f0800de4a64cb7778f3c5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:de4a:64cb:7778:f3c5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C635D1EC026D;
+        Tue,  8 Dec 2020 10:28:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607419712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SEzL2nzNk/FXsFQuILd9v1nxUDIDI7trIhGNE78qaZg=;
+        b=VtoYDb5/xfmPAZW6FtfIjHxr9xcDkPYw6D98p7wT+gjKkDx9IvMv4CFazt5NQaAsXmSQQp
+        NsoI8wdhslS+FkU5lLbOKwqQ1GICl0CgZNEqteUCzhcZr7HooUrkWLEYZwIFfMmM3gUPQF
+        U96V1TZ0l1UDF29TewJ01QVl1heuf9c=
+Date:   Tue, 8 Dec 2020 10:28:28 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kyung Min Park <kyung.min.park@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, cathy.zhang@intel.com
+Subject: Re: [PATCH 1/2] Enumerate AVX512 FP16 CPUID feature flag
+Message-ID: <20201208092828.GA27920@zn.tnic>
+References: <20201208033441.28207-1-kyung.min.park@intel.com>
+ <20201208033441.28207-2-kyung.min.park@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201208033441.28207-2-kyung.min.park@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, thanks a lot for the reviews!
+On Mon, Dec 07, 2020 at 07:34:40PM -0800, Kyung Min Park wrote:
+> Enumerate AVX512 Half-precision floating point (FP16) CPUID feature
+> flag. Compared with using FP32, using FP16 cut the number of bits
+> required for storage in half, reducing the exponent from 8 bits to 5,
+> and the mantissa from 23 bits to 10. Using FP16 also enables developers
+> to train and run inference on deep learning models fast when all
+> precision or magnitude (FP32) is not needed.
+> 
+> A processor supports AVX512 FP16 if CPUID.(EAX=7,ECX=0):EDX[bit 23]
+> is present. The AVX512 FP16 requires AVX512BW feature be implemented
+> since the instructions for manipulating 32bit masks are associated with
+> AVX512BW.
+> 
+> The only in-kernel usage of this is kvm passthrough. The CPU feature
+> flag is shown as "avx512_fp16" in /proc/cpuinfo.
+> 
+> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+> Acked-by: Dave Hansen <dave.hansen@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index b6b9b3407c22..bec37ec7101e 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -375,6 +375,7 @@
+>  #define X86_FEATURE_TSXLDTRK		(18*32+16) /* TSX Suspend Load Address Tracking */
+>  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+>  #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
+> +#define X86_FEATURE_AVX512_FP16		(18*32+23) /* AVX512 FP16 */
+>  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+>  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+>  #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
+> diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+> index d502241995a3..42af31b64c2c 100644
+> --- a/arch/x86/kernel/cpu/cpuid-deps.c
+> +++ b/arch/x86/kernel/cpu/cpuid-deps.c
+> @@ -69,6 +69,7 @@ static const struct cpuid_dep cpuid_deps[] = {
+>  	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
+>  	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
+>  	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
+> +	{ X86_FEATURE_AVX512_FP16,		X86_FEATURE_AVX512BW  },
+>  	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
+>  	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
+>  	{}
+> -- 
 
-On Mon, Dec 07, 2020 at 01:56:53PM -0800, John Fastabend wrote:
-> Brendan Jackman wrote:
-> > A subsequent patch will add additional atomic operations. These new
-> > operations will use the same opcode field as the existing XADD, with
-> > the immediate discriminating different operations.
-> > 
-> > In preparation, rename the instruction mode BPF_ATOMIC and start
-> > calling the zero immediate BPF_ADD.
-> > 
-> > This is possible (doesn't break existing valid BPF progs) because the
-> > immediate field is currently reserved MBZ and BPF_ADD is zero.
-> > 
-> > All uses are removed from the tree but the BPF_XADD definition is
-> > kept around to avoid breaking builds for people including kernel
-> > headers.
-> > 
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >  Documentation/networking/filter.rst           | 30 ++++++++-----
-> >  arch/arm/net/bpf_jit_32.c                     |  7 ++-
-> >  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++--
-> >  arch/mips/net/ebpf_jit.c                      | 11 +++--
-> >  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++---
-> >  arch/riscv/net/bpf_jit_comp32.c               | 20 +++++++--
-> >  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++--
-> >  arch/s390/net/bpf_jit_comp.c                  | 27 ++++++-----
-> >  arch/sparc/net/bpf_jit_comp_64.c              | 17 +++++--
-> >  arch/x86/net/bpf_jit_comp.c                   | 45 ++++++++++++++-----
-> >  arch/x86/net/bpf_jit_comp32.c                 |  6 +--
-> >  drivers/net/ethernet/netronome/nfp/bpf/jit.c  | 14 ++++--
-> >  drivers/net/ethernet/netronome/nfp/bpf/main.h |  4 +-
-> >  .../net/ethernet/netronome/nfp/bpf/verifier.c | 15 ++++---
-> >  include/linux/filter.h                        | 29 ++++++++++--
-> >  include/uapi/linux/bpf.h                      |  5 ++-
-> >  kernel/bpf/core.c                             | 31 +++++++++----
-> >  kernel/bpf/disasm.c                           |  6 ++-
-> >  kernel/bpf/verifier.c                         | 24 +++++-----
-> >  lib/test_bpf.c                                | 14 +++---
-> >  samples/bpf/bpf_insn.h                        |  4 +-
-> >  samples/bpf/cookie_uid_helper_example.c       |  6 +--
-> >  samples/bpf/sock_example.c                    |  2 +-
-> >  samples/bpf/test_cgrp2_attach.c               |  5 ++-
-> >  tools/include/linux/filter.h                  | 28 ++++++++++--
-> >  tools/include/uapi/linux/bpf.h                |  5 ++-
-> >  .../bpf/prog_tests/cgroup_attach_multi.c      |  4 +-
-> >  .../selftests/bpf/test_cgroup_storage.c       |  2 +-
-> >  tools/testing/selftests/bpf/verifier/ctx.c    |  7 ++-
-> >  .../bpf/verifier/direct_packet_access.c       |  4 +-
-> >  .../testing/selftests/bpf/verifier/leak_ptr.c | 10 ++---
-> >  .../selftests/bpf/verifier/meta_access.c      |  4 +-
-> >  tools/testing/selftests/bpf/verifier/unpriv.c |  3 +-
-> >  .../bpf/verifier/value_illegal_alu.c          |  2 +-
-> >  tools/testing/selftests/bpf/verifier/xadd.c   | 18 ++++----
-> >  35 files changed, 317 insertions(+), 149 deletions(-)
-> > 
-> 
-> [...]
-> 
-> > +++ a/arch/mips/net/ebpf_jit.c
-> 
-> [...]
-> 
-> > -		if (BPF_MODE(insn->code) == BPF_XADD) {
-> > +		if (BPF_MODE(insn->code) == BPF_ATOMIC) {
-> > +			if (insn->imm != BPF_ADD) {
-> > +				pr_err("ATOMIC OP %02x NOT HANDLED\n", insn->imm);
-> > +				return -EINVAL;
-> > +			}
-> > +
-> >  			/*
-> [...]
-> > +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> 
-> > -		case BPF_STX | BPF_XADD | BPF_W:
-> > +		case BPF_STX | BPF_ATOMIC | BPF_W:
-> > +			if (insn->imm != BPF_ADD) {
-> > +				pr_err_ratelimited(
-> > +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
-> > +					code, i);
-> > +				return -ENOTSUPP;
-> > +			}
-> [...]
-> > @@ -699,8 +707,15 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
-> > -		case BPF_STX | BPF_XADD | BPF_DW:
-> > +		case BPF_STX | BPF_ATOMIC | BPF_DW:
-> > +			if (insn->imm != BPF_ADD) {
-> > +				pr_err_ratelimited(
-> > +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
-> > +					code, i);
-> > +				return -ENOTSUPP;
-> > +			}
-> [...]
-> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
-> > +		if (insn->imm != BPF_ADD) {
-> > +			pr_info_once(
-> > +				"bpf-jit: not supported: atomic operation %02x ***\n",
-> > +				insn->imm);
-> > +			return -EFAULT;
-> > +		}
-> [...]
-> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
-> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
-> > +		if (insn->imm != BPF_ADD) {
-> > +			pr_err("bpf-jit: not supported: atomic operation %02x ***\n",
-> > +			       insn->imm);
-> > +			return -EINVAL;
-> > +		}
-> 
-> Can we standardize the error across jits and the error return code? It seems
-> odd that we use pr_err, pr_info_once, pr_err_ratelimited and then return
-> ENOTSUPP, EFAULT or EINVAL.
+Acked-by: Borislav Petkov <bp@suse.de>
 
-That would be a noble cause but I don't think it makes sense in this
-patchset: they are already inconsistent, so here I've gone for intra-JIT
-consistency over inter-JIT consistency.
+Paolo, you can pick those up if you prefer.
 
-I think it would be more annoying, for example, if the s390 JIT returned
--EOPNOTSUPP for a bad atomic but -1 for other unsupported ops, than it
-is already that the s390 JIT returns -1 where the MIPS returns -EINVAL.
+Thx.
 
-> granted the error codes might not propagate all the way out at the moment but
-> still shouldn't hurt.
-> 
-> > diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-> > index 0a4182792876..f973e2ead197 100644
-> > --- a/arch/s390/net/bpf_jit_comp.c
-> > +++ b/arch/s390/net/bpf_jit_comp.c
-> > @@ -1205,18 +1205,23 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
-> 
-> For example this will return -1 regardless of error from insn->imm != BPF_ADD.
-> [...]
-> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
-> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
-> > +		if (insn->imm != BPF_ADD) {
-> > +			pr_err("Unknown atomic operation %02x\n", insn->imm);
-> > +			return -1;
-> > +		}
-> > +
-> [...]
-> 
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -259,15 +259,38 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
-> >  		.off   = OFF,					\
-> >  		.imm   = 0 })
-> >  
-> > -/* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
-> > +
-> > +/*
-> > + * Atomic operations:
-> > + *
-> > + *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
-> > + */
-> > +
-> > +#define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
-> > +	((struct bpf_insn) {					\
-> > +		.code  = BPF_STX | BPF_DW | BPF_ATOMIC,		\
-> > +		.dst_reg = DST,					\
-> > +		.src_reg = SRC,					\
-> > +		.off   = OFF,					\
-> > +		.imm   = OP })
-> > +
-> > +#define BPF_ATOMIC32(OP, DST, SRC, OFF)				\
-> > +	((struct bpf_insn) {					\
-> > +		.code  = BPF_STX | BPF_W | BPF_ATOMIC,		\
-> > +		.dst_reg = DST,					\
-> > +		.src_reg = SRC,					\
-> > +		.off   = OFF,					\
-> > +		.imm   = OP })
-> > +
-> > +/* Legacy equivalent of BPF_ATOMIC{64,32}(BPF_ADD, ...) */
-> 
-> Not sure I care too much. Does seem more natural to follow
-> below pattern and use,
-> 
->   BPF_ATOMIC(OP, SIZE, DST, SRC, OFF)
-> 
-> >  
-> >  #define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
-> >  	((struct bpf_insn) {					\
-> > -		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_XADD,	\
-> > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> >  		.dst_reg = DST,					\
-> >  		.src_reg = SRC,					\
-> >  		.off   = OFF,					\
-> > -		.imm   = 0 })
-> > +		.imm   = BPF_ADD })
-> >  
-> >  /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
-> >  
-> 
-> [...]
-> 
-> Otherwise LGTM, I'll try to get the remaining patches reviewed tonight
-> I need to jump onto something else this afternoon. Thanks!
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
