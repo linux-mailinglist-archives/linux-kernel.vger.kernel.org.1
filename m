@@ -2,144 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586D82D2EA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FBA2D2EC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgLHPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729938AbgLHPvo (ORCPT
+        id S1730136AbgLHPy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:54:57 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:54616 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgLHPy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:51:44 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFBCC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:50:58 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id 81so17274515ioc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qvM7VaQOJMIgrDXRaJiMwzUNtVEGM98Cplm0mV8PJ+o=;
-        b=mb7mTrD+u196f1zL1WQTA452gEBzJfKE8I6lchPxVqpUmWxd74MgUUDh6xJwUWLDQk
-         L4dKbpJbGyxtluOaAlx5bFIdXq1puJLS7WReZz8WMYGAeXuLcfAkmAWK31CER+zs7erJ
-         ELkCXanIm8WXaoVtIHUjQSPGfATpYi/VFX3eyIrMM0GmGXbSiCFRKe8fmerkGWM0dk8X
-         MR+MnbQ2upaEAWQ8OyJD4XGv3etT6l6Xhefwr00ecdzBJ1PcR9zrgQw081/d9kghnl8u
-         SGaNRuFIbDH3RqYof4WayLgRpaGK+kPe+next9FdM8qmLNs20O3x0jnVxS68LigWSYI7
-         l+ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qvM7VaQOJMIgrDXRaJiMwzUNtVEGM98Cplm0mV8PJ+o=;
-        b=iFCavOnAh5WLbwxgjb5SuQLrJsCuMfvKenYEGpv8IPBE0atU2vaD5RDwqUbjmonFfu
-         Psg0LSf3+j3za99PhbNbwsRqUDRwBd7CtoMqQzmwj0x2occKfE63eM1JwyV9GQ0VH028
-         Mp0slpA+jAcQhx5rgY7CGQ6Gci8j9AdO0OsXFQPX5zE+Uep016e8Am4JkQFKOmnSJF4x
-         qbsZJ2Q6NnpoVhjruiAVW3HbyhrhHXwpjfOaaxFR4mrg3ZnhBVcXOh8+QQdgN8xH68u6
-         JytIF4ctpR8yiigiUqaja64lvFYM/cDl2aa3jOJwEW91XB52VnizLvFnXztiLxeF/lYd
-         O53Q==
-X-Gm-Message-State: AOAM531d75Z1tn1zm2g2B2DRiavFOPWMFmmxyrSmgYRrdkrScYakh/aU
-        7X2JZD/nWBASS6SeyVWnN67+Tw==
-X-Google-Smtp-Source: ABdhPJxew2H6oPImcx1UTFqAlaOtXnq/TVGpa4KV6v/19nXkgo6WmAWea0voBxMMS6Z1a48AfR5mOQ==
-X-Received: by 2002:a6b:f112:: with SMTP id e18mr25313535iog.195.1607442657838;
-        Tue, 08 Dec 2020 07:50:57 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n1sm9820485ilm.72.2020.12.08.07.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 07:50:57 -0800 (PST)
-Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
-To:     Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20201207081558.2361-1-hdanton@sina.com>
- <20201208102851.2585-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <439d735f-3cbb-a84e-4c43-0a6841f76615@kernel.dk>
-Date:   Tue, 8 Dec 2020 08:50:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 10:54:57 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2320BDD;
+        Tue,  8 Dec 2020 16:54:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1607442854;
+        bh=2wSB8O5zUgCIQWkapYaxFspc1mBFwMYFfabVRDPm1t0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WfKn4IZeFo1Y/MHn2sLSge6lxkPK86xhuM1Q+Cdv7q6vuRom5xv7BapdOdF6BIjP4
+         NGZim3dov53o8MOvg6Z4no3/XlygBCr5P/P0FWjN6Sylg5GYZAP+v1CUpJvaKVc0Ct
+         z5Jmmy2sEhmIvsfdWWvzTdx6JcpqZ82c2lbltZ2U=
+Date:   Tue, 8 Dec 2020 17:54:11 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, balbi@kernel.org, leoyang.li@nxp.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] drivers: usb: gadget: prefer pr_*() functions over raw
+ printk()
+Message-ID: <X8+howyVRiTR9gv/@pendragon.ideasonboard.com>
+References: <20201208144403.22097-1-info@metux.net>
 MIME-Version: 1.0
-In-Reply-To: <20201208102851.2585-1-hdanton@sina.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201208144403.22097-1-info@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/20 3:28 AM, Hillf Danton wrote:
-> On Mon, 7 Dec 2020 09:42:21 -0700 Jens Axboe wrote:
->> On 12/7/20 1:15 AM, Hillf Danton wrote:
->>> @@ -9207,12 +9208,14 @@ err_fd:
->>>  #if defined(CONFIG_UNIX)
->>>  	ctx->ring_sock->file = file;
->>>  #endif
->>> -	if (unlikely(io_uring_add_task_file(ctx, file))) {
->>> -		file = ERR_PTR(-ENOMEM);
->>> -		goto err_fd;
->>> +	ret = io_uring_add_task_file(ctx, file);
->>> +	if (ret) {
->>> +		fput(file);
->>> +		put_unused_fd(fd);
->>> +		goto err;
->>>  	}
->>>  	fd_install(ret, file);
->>> -	return ret;
->>> +	return 0;
->>
->> You're installing the return value from io_uring_add_task_file() in the
->> fd table, and then returning '0' for the fd...
+Hi Enrico,
+
+Thank you for the patch.
+
+On Tue, Dec 08, 2020 at 03:44:03PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Reduce a bit logging boilerplate by using the preferred pr_*()
+> macros instead of raw printk().
 > 
-> I canot find phrases to describe the stupid mistake in my patch.
-> Thank you so much for pointing it out.
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
+>  drivers/usb/gadget/function/uvc.h       |  2 +-
+>  drivers/usb/gadget/udc/atmel_usba_udc.c |  2 +-
+>  drivers/usb/gadget/udc/fsl_udc_core.c   |  4 +--
+>  drivers/usb/gadget/udc/fsl_usb2_udc.h   |  4 +--
+>  drivers/usb/gadget/udc/fusb300_udc.c    | 64 ++++++++++++++++-----------------
+>  drivers/usb/gadget/udc/goku_udc.c       |  2 +-
+>  drivers/usb/gadget/udc/r8a66597-udc.h   |  2 +-
+>  7 files changed, 40 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+> index 23ee25383c1f..d546eb7c348c 100644
+> --- a/drivers/usb/gadget/function/uvc.h
+> +++ b/drivers/usb/gadget/function/uvc.h
+> @@ -49,7 +49,7 @@ extern unsigned int uvc_gadget_trace_param;
+>  #define uvc_trace(flag, msg...) \
+>  	do { \
+>  		if (uvc_gadget_trace_param & flag) \
+> -			printk(KERN_DEBUG "uvcvideo: " msg); \
+> +			pr_debug("uvcvideo: " msg); \
+>  	} while (0)
+>  
+>  #define uvcg_dbg(f, fmt, args...) \
+> diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> index 2b893bceea45..4834fafb3f70 100644
+> --- a/drivers/usb/gadget/udc/atmel_usba_udc.c
+> +++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> @@ -1573,7 +1573,7 @@ static void usba_control_irq(struct usba_udc *udc, struct usba_ep *ep)
+>  		 * generate or receive a reply right away. */
+>  		usba_ep_writel(ep, CLR_STA, USBA_RX_SETUP);
+>  
+> -		/* printk(KERN_DEBUG "setup: %d: %02x.%02x\n",
+> +		/* pr_debug("setup: %d: %02x.%02x\n",
+>  			ep->state, crq.crq.bRequestType,
+>  			crq.crq.bRequest); */
 
-This one is still utterly broken, and (again) cannot have been even
-tested in the most basic way. So let's focus on not how things are
-phrased, but proper patch etiquette:
+I wonder if this shouldn't be dropped instead, commented-out code isn't
+very useful.
 
-- Always (ALWAYS) test your patches. There's no excuse for not doing
-  so, and you are blacklisting yourself and ruining your reputation
-  by sending garbage that doesn't even pass basic functionality.
-
-- If something isn't tested at all, make it VERY clear that this is
-  the case. Generally that's done by putting RFC in there and also
-  stating that this is just for discussion, it's not a patch that
-  is proposed for inclusion.
-
-- Slow down! I see you sent a patch 10 min after this one, with no
-  extra notice in there why that was the case. It's clearly because
-  you figured out that this hasty send was bad.
-
-I'd really like to get this in for 5.10, but I'd almost feel better
-just redoing the patch myself to ensure it doesn't have other silly
-errors in there. Don't put yourself in that position.
-
-
-> @@ -9207,12 +9208,14 @@ err_fd:
->  #if defined(CONFIG_UNIX)
->  	ctx->ring_sock->file = file;
->  #endif
-> -	if (unlikely(io_uring_add_task_file(ctx, file))) {
-> -		file = ERR_PTR(-ENOMEM);
-> -		goto err_fd;
-> +	ret = io_uring_add_task_file(ctx, file);
-> +	if (ret) {
-> +		fput(file);
-> +		put_unused_fd(fd);
-> +		goto err;
+>  
+> diff --git a/drivers/usb/gadget/udc/fsl_udc_core.c b/drivers/usb/gadget/udc/fsl_udc_core.c
+> index ad6ff9c4188e..cab4def04f9f 100644
+> --- a/drivers/usb/gadget/udc/fsl_udc_core.c
+> +++ b/drivers/usb/gadget/udc/fsl_udc_core.c
+> @@ -1474,7 +1474,7 @@ __acquires(udc->lock)
+>  			mdelay(10);
+>  			tmp = fsl_readl(&dr_regs->portsc1) | (ptc << 16);
+>  			fsl_writel(tmp, &dr_regs->portsc1);
+> -			printk(KERN_INFO "udc: switch to test mode %d.\n", ptc);
+> +			pr_info("udc: switch to test mode %d.\n", ptc);
+>  		}
+>  
+>  		return;
+> @@ -1952,7 +1952,7 @@ static int fsl_udc_start(struct usb_gadget *g,
+>  	if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+>  		/* Suspend the controller until OTG enable it */
+>  		udc_controller->stopped = 1;
+> -		printk(KERN_INFO "Suspend udc for OTG auto detect\n");
+> +		pr_info("Suspend udc for OTG auto detect\n");
+>  
+>  		/* connect to bus through transceiver */
+>  		if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+> diff --git a/drivers/usb/gadget/udc/fsl_usb2_udc.h b/drivers/usb/gadget/udc/fsl_usb2_udc.h
+> index 4ba651ae9048..b180bf14dd0c 100644
+> --- a/drivers/usb/gadget/udc/fsl_usb2_udc.h
+> +++ b/drivers/usb/gadget/udc/fsl_usb2_udc.h
+> @@ -509,7 +509,7 @@ struct fsl_udc {
+>  /*-------------------------------------------------------------------------*/
+>  
+>  #ifdef DEBUG
+> -#define DBG(fmt, args...) 	printk(KERN_DEBUG "[%s]  " fmt "\n", \
+> +#define DBG(fmt, args...) 	pr_debug("[%s]  " fmt "\n", \
+>  				__func__, ## args)
+>  #else
+>  #define DBG(fmt, args...)	do{}while(0)
+> @@ -535,7 +535,7 @@ static void dump_msg(const char *label, const u8 * buf, unsigned int length)
+>  			p += 3;
+>  		}
+>  		*p = 0;
+> -		printk(KERN_DEBUG "%6x: %s\n", start, line);
+> +		pr_debug("%6x: %s\n", start, line);
+>  		buf += num;
+>  		start += num;
+>  		length -= num;
+> diff --git a/drivers/usb/gadget/udc/fusb300_udc.c b/drivers/usb/gadget/udc/fusb300_udc.c
+> index 9af8b415f303..c4e7e4b8e46f 100644
+> --- a/drivers/usb/gadget/udc/fusb300_udc.c
+> +++ b/drivers/usb/gadget/udc/fusb300_udc.c
+> @@ -352,24 +352,24 @@ static void fusb300_wrcxf(struct fusb300_ep *ep,
+>  		for (i = length >> 2; i > 0; i--) {
+>  			data = *tmp | *(tmp + 1) << 8 | *(tmp + 2) << 16 |
+>  				*(tmp + 3) << 24;
+> -			printk(KERN_DEBUG "    0x%x\n", data);
+> +			pr_debug("    0x%x\n", data);
+>  			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+>  			tmp = tmp + 4;
+>  		}
+>  		switch (length % 4) {
+>  		case 1:
+>  			data = *tmp;
+> -			printk(KERN_DEBUG "    0x%x\n", data);
+> +			pr_debug("    0x%x\n", data);
+>  			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+>  			break;
+>  		case 2:
+>  			data = *tmp | *(tmp + 1) << 8;
+> -			printk(KERN_DEBUG "    0x%x\n", data);
+> +			pr_debug("    0x%x\n", data);
+>  			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+>  			break;
+>  		case 3:
+>  			data = *tmp | *(tmp + 1) << 8 | *(tmp + 2) << 16;
+> -			printk(KERN_DEBUG "    0x%x\n", data);
+> +			pr_debug("    0x%x\n", data);
+>  			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+>  			break;
+>  		default:
+> @@ -390,7 +390,7 @@ static void fusb300_clear_epnstall(struct fusb300 *fusb300, u8 ep)
+>  	u32 reg = ioread32(fusb300->reg + FUSB300_OFFSET_EPSET0(ep));
+>  
+>  	if (reg & FUSB300_EPSET0_STL) {
+> -		printk(KERN_DEBUG "EP%d stall... Clear!!\n", ep);
+> +		pr_debug("EP%d stall... Clear!!\n", ep);
+>  		reg |= FUSB300_EPSET0_STL_CLR;
+>  		iowrite32(reg, fusb300->reg + FUSB300_OFFSET_EPSET0(ep));
 >  	}
-> -	fd_install(ret, file);
-> -	return ret;
-> +	fd_install(fd, file);
-> +	return 0;
+> @@ -402,7 +402,7 @@ static void ep0_queue(struct fusb300_ep *ep, struct fusb300_request *req)
+>  		if (req->req.length) {
+>  			fusb300_wrcxf(ep, req);
+>  		} else
+> -			printk(KERN_DEBUG "%s : req->req.length = 0x%x\n",
+> +			pr_debug("%s : req->req.length = 0x%x\n",
+>  				__func__, req->req.length);
+>  		if ((req->req.length == req->req.actual) ||
+>  		    (req->req.actual < ep->ep.maxpacket))
+> @@ -565,7 +565,7 @@ static void fusb300_rdcxf(struct fusb300 *fusb300,
+>  
+>  	for (i = (length >> 2); i > 0; i--) {
+>  		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+> -		printk(KERN_DEBUG "    0x%x\n", data);
+> +		pr_debug("    0x%x\n", data);
+>  		*tmp = data & 0xFF;
+>  		*(tmp + 1) = (data >> 8) & 0xFF;
+>  		*(tmp + 2) = (data >> 16) & 0xFF;
+> @@ -576,18 +576,18 @@ static void fusb300_rdcxf(struct fusb300 *fusb300,
+>  	switch (length % 4) {
+>  	case 1:
+>  		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+> -		printk(KERN_DEBUG "    0x%x\n", data);
+> +		pr_debug("    0x%x\n", data);
+>  		*tmp = data & 0xFF;
+>  		break;
+>  	case 2:
+>  		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+> -		printk(KERN_DEBUG "    0x%x\n", data);
+> +		pr_debug("    0x%x\n", data);
+>  		*tmp = data & 0xFF;
+>  		*(tmp + 1) = (data >> 8) & 0xFF;
+>  		break;
+>  	case 3:
+>  		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+> -		printk(KERN_DEBUG "    0x%x\n", data);
+> +		pr_debug("    0x%x\n", data);
+>  		*tmp = data & 0xFF;
+>  		*(tmp + 1) = (data >> 8) & 0xFF;
+>  		*(tmp + 2) = (data >> 16) & 0xFF;
+> @@ -610,7 +610,7 @@ static void fusb300_rdfifo(struct fusb300_ep *ep,
+>  	req->req.actual += length;
+>  
+>  	if (req->req.actual > req->req.length)
+> -		printk(KERN_DEBUG "req->req.actual > req->req.length\n");
+> +		pr_debug("req->req.actual > req->req.length\n");
+>  
+>  	for (i = (length >> 2); i > 0; i--) {
+>  		data = ioread32(fusb300->reg +
+> @@ -649,7 +649,7 @@ static void fusb300_rdfifo(struct fusb300_ep *ep,
+>  		reg = ioread32(fusb300->reg + FUSB300_OFFSET_IGR1);
+>  		reg &= FUSB300_IGR1_SYNF0_EMPTY_INT;
+>  		if (i)
+> -			printk(KERN_INFO "sync fifo is not empty!\n");
+> +			pr_info("sync fifo is not empty!\n");
+>  		i++;
+>  	} while (!reg);
+>  }
+> @@ -677,7 +677,7 @@ static u8 fusb300_get_cxstall(struct fusb300 *fusb300)
+>  static void request_error(struct fusb300 *fusb300)
+>  {
+>  	fusb300_set_cxstall(fusb300);
+> -	printk(KERN_DEBUG "request error!!\n");
+> +	pr_debug("request error!!\n");
+>  }
+>  
+>  static void get_status(struct fusb300 *fusb300, struct usb_ctrlrequest *ctrl)
+> @@ -999,7 +999,7 @@ static void check_device_mode(struct fusb300 *fusb300)
+>  		fusb300->gadget.speed = USB_SPEED_UNKNOWN;
+>  		break;
+>  	}
+> -	printk(KERN_INFO "dev_mode = %d\n", (reg & FUSB300_GCR_DEVEN_MSK));
+> +	pr_info("dev_mode = %d\n", (reg & FUSB300_GCR_DEVEN_MSK));
+>  }
+>  
+>  
+> @@ -1076,14 +1076,14 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  	if (int_grp1 & FUSB300_IGR1_WARM_RST_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_WARM_RST_INT);
+> -		printk(KERN_INFO"fusb300_warmreset\n");
+> +		pr_info("fusb300_warmreset\n");
+>  		fusb300_reset();
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_HOT_RST_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_HOT_RST_INT);
+> -		printk(KERN_INFO"fusb300_hotreset\n");
+> +		pr_info("fusb300_hotreset\n");
+>  		fusb300_reset();
+>  	}
+>  
+> @@ -1097,13 +1097,13 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  	if (int_grp1 & FUSB300_IGR1_CX_COMABT_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_CX_COMABT_INT);
+> -		printk(KERN_INFO"fusb300_ep0abt\n");
+> +		pr_info("fusb300_ep0abt\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_VBUS_CHG_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_VBUS_CHG_INT);
+> -		printk(KERN_INFO"fusb300_vbus_change\n");
+> +		pr_info("fusb300_vbus_change\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_U3_EXIT_FAIL_INT) {
+> @@ -1134,25 +1134,25 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  	if (int_grp1 & FUSB300_IGR1_U3_EXIT_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U3_EXIT_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U3_EXIT_INT\n");
+> +		pr_info("FUSB300_IGR1_U3_EXIT_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_U2_EXIT_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U2_EXIT_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U2_EXIT_INT\n");
+> +		pr_info("FUSB300_IGR1_U2_EXIT_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_U1_EXIT_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U1_EXIT_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U1_EXIT_INT\n");
+> +		pr_info("FUSB300_IGR1_U1_EXIT_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_U3_ENTRY_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U3_ENTRY_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U3_ENTRY_INT\n");
+> +		pr_info("FUSB300_IGR1_U3_ENTRY_INT\n");
+>  		fusb300_enable_bit(fusb300, FUSB300_OFFSET_SSCR1,
+>  				   FUSB300_SSCR1_GO_U3_DONE);
+>  	}
+> @@ -1160,31 +1160,31 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  	if (int_grp1 & FUSB300_IGR1_U2_ENTRY_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U2_ENTRY_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U2_ENTRY_INT\n");
+> +		pr_info("FUSB300_IGR1_U2_ENTRY_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_U1_ENTRY_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_U1_ENTRY_INT);
+> -		printk(KERN_INFO "FUSB300_IGR1_U1_ENTRY_INT\n");
+> +		pr_info("FUSB300_IGR1_U1_ENTRY_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_RESM_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_RESM_INT);
+> -		printk(KERN_INFO "fusb300_resume\n");
+> +		pr_info("fusb300_resume\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_SUSP_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_SUSP_INT);
+> -		printk(KERN_INFO "fusb300_suspend\n");
+> +		pr_info("fusb300_suspend\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_HS_LPM_INT) {
+>  		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+>  				  FUSB300_IGR1_HS_LPM_INT);
+> -		printk(KERN_INFO "fusb300_HS_LPM_INT\n");
+> +		pr_info("fusb300_HS_LPM_INT\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_DEV_MODE_CHG_INT) {
+> @@ -1195,11 +1195,11 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  
+>  	if (int_grp1 & FUSB300_IGR1_CX_COMFAIL_INT) {
+>  		fusb300_set_cxstall(fusb300);
+> -		printk(KERN_INFO "fusb300_ep0fail\n");
+> +		pr_info("fusb300_ep0fail\n");
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_CX_SETUP_INT) {
+> -		printk(KERN_INFO "fusb300_ep0setup\n");
+> +		pr_info("fusb300_ep0setup\n");
+>  		if (setup_packet(fusb300, &ctrl)) {
+>  			spin_unlock(&fusb300->lock);
+>  			if (fusb300->driver->setup(&fusb300->gadget, &ctrl) < 0)
+> @@ -1209,16 +1209,16 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_CX_CMDEND_INT)
+> -		printk(KERN_INFO "fusb300_cmdend\n");
+> +		pr_info("fusb300_cmdend\n");
+>  
+>  
+>  	if (int_grp1 & FUSB300_IGR1_CX_OUT_INT) {
+> -		printk(KERN_INFO "fusb300_cxout\n");
+> +		pr_info("fusb300_cxout\n");
+>  		fusb300_ep0out(fusb300);
+>  	}
+>  
+>  	if (int_grp1 & FUSB300_IGR1_CX_IN_INT) {
+> -		printk(KERN_INFO "fusb300_cxin\n");
+> +		pr_info("fusb300_cxin\n");
+>  		fusb300_ep0in(fusb300);
+>  	}
+>  
+> diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
+> index 3e1267d38774..4f225552861a 100644
+> --- a/drivers/usb/gadget/udc/goku_udc.c
+> +++ b/drivers/usb/gadget/udc/goku_udc.c
+> @@ -1748,7 +1748,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	int			retval;
+>  
+>  	if (!pdev->irq) {
+> -		printk(KERN_ERR "Check PCI %s IRQ setup!\n", pci_name(pdev));
+> +		pr_err("Check PCI %s IRQ setup!\n", pci_name(pdev));
 
-You're still returning '0' for the fd. 
+When a pointer to a struct device is available, dev_err() would be much
+better. That's however out of scope for this patch, but it would be nice
+to address it. This would become
 
+		dev_err(&pdev->dev, "Check IRQ setup!\n");
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  		retval = -ENODEV;
+>  		goto err;
+>  	}
+> diff --git a/drivers/usb/gadget/udc/r8a66597-udc.h b/drivers/usb/gadget/udc/r8a66597-udc.h
+> index 9a115caba661..fa4d62c32ea1 100644
+> --- a/drivers/usb/gadget/udc/r8a66597-udc.h
+> +++ b/drivers/usb/gadget/udc/r8a66597-udc.h
+> @@ -247,7 +247,7 @@ static inline u16 get_xtal_from_pdata(struct r8a66597_platdata *pdata)
+>  		clock = XTAL48;
+>  		break;
+>  	default:
+> -		printk(KERN_ERR "r8a66597: platdata clock is wrong.\n");
+> +		pr_err("r8a66597: platdata clock is wrong.\n");
+>  		break;
+>  	}
+>  
 
 -- 
-Jens Axboe
+Regards,
 
+Laurent Pinchart
