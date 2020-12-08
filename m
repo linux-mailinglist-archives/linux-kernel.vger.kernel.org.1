@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFF32D265B
+	by mail.lfdr.de (Postfix) with ESMTP id C377B2D265C
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728466AbgLHIhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:37:50 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:63419 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728194AbgLHIht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:37:49 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Cqtp46r9Pz9txrl;
-        Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id KmuiiPrfh2XO; Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cqtp44RWLz9txrj;
-        Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC71E8B7B1;
-        Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id tIZWp25fx-mL; Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8128A8B773;
-        Tue,  8 Dec 2020 09:37:00 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4F02466928; Tue,  8 Dec 2020 08:37:00 +0000 (UTC)
-Message-Id: <6afaac2495248d68f94c438c5ec36b6010931de5.1607416578.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
-References: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 3/5] powerpc/fault: Unnest definition of
- page_fault_is_write() and page_fault_is_bad()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        aneesh.kumar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  8 Dec 2020 08:37:00 +0000 (UTC)
+        id S1728481AbgLHIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:37:52 -0500
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:46033 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728194AbgLHIhv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:37:51 -0500
+Received: by mail-ot1-f42.google.com with SMTP id h18so11189350otq.12;
+        Tue, 08 Dec 2020 00:37:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aXDyhPzCieRdhaMthbBXKCwOlq6T9ABtAlajnQOA5AM=;
+        b=jwm037JpRGY64ZC6PTPZ+uFpQfsy1vTw9BsYrhHOvKef8ZuQClWjFICKS8s+h/BY3y
+         2nVcB8XuBX+3CSRZsTm5L/K5GoeN65JQdJUjcJkoUerjpvW+6JukYhBLI/cMO2UE4rYF
+         AABduVI6LSjQXF5i8HRCATdGpAU7z6hPIs1k+7rjkKdjW74NqtRWkfg3wcu3GRkhcVwz
+         94F2ANe9x4MMO6G+EXBhtZkJSUUqHRmfbzXZOABxrQTjBEAxh3HMLAPwYGYAtNZ+hKqv
+         Ug9hcunuBHXQISK9rWvR4bM9tb9gDp56OjX+kfxK7jX1AMIYYMqFI4aabcHRslWiU4wC
+         ho/Q==
+X-Gm-Message-State: AOAM531a2es07/w5dZJlH/5A67Wd4ofRRcowXnjhgG2L5vnK+5jX84uo
+        TN2w0j6/F0dMPM5utp6BS9XdJwCFDctrLeyCQ28=
+X-Google-Smtp-Source: ABdhPJwWi/EZNXz2SL/GMnB/3DnxeKJphp+46T0VmWUZdjOnLvhzG+mxughwd3GBz26RT6HuqDjLxuNa3YH2C0DDS1I=
+X-Received: by 2002:a9d:2203:: with SMTP id o3mr16002385ota.107.1607416631045;
+ Tue, 08 Dec 2020 00:37:11 -0800 (PST)
+MIME-Version: 1.0
+References: <20201208090555.7159b138@canb.auug.org.au>
+In-Reply-To: <20201208090555.7159b138@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 8 Dec 2020 09:37:00 +0100
+Message-ID: <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the clk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make it more readable, separate page_fault_is_write() and page_fault_is_bad()
-to avoir several levels of #ifdefs
+Hi Stephen,
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/fault.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+On Mon, Dec 7, 2020 at 11:06 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> In commit
+>
+>   c3f207f6d23d ("clk: renesas: r8a779a0: Make rcar_r8a779a0_cpg_clk_register() static")
+>
+> Fixes tag
+>
+>   Fixes: c07439dea94050b6 ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
+>
+> has these problem(s):
+>
+>   - Target SHA1 does not exist
 
-diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index f6ae56a0d7a3..3fcd34c28e10 100644
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -363,17 +363,19 @@ static void sanity_check_fault(bool is_write, bool is_user,
-  */
- #if (defined(CONFIG_4xx) || defined(CONFIG_BOOKE))
- #define page_fault_is_write(__err)	((__err) & ESR_DST)
--#define page_fault_is_bad(__err)	(0)
- #else
- #define page_fault_is_write(__err)	((__err) & DSISR_ISSTORE)
--#if defined(CONFIG_PPC_8xx)
-+#endif
-+
-+#if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
-+#define page_fault_is_bad(__err)	(0)
-+#elif defined(CONFIG_PPC_8xx)
- #define page_fault_is_bad(__err)	((__err) & DSISR_NOEXEC_OR_G)
- #elif defined(CONFIG_PPC64)
- #define page_fault_is_bad(__err)	((__err) & DSISR_BAD_FAULT_64S)
- #else
- #define page_fault_is_bad(__err)	((__err) & DSISR_BAD_FAULT_32S)
- #endif
--#endif
- 
- /*
-  * For 600- and 800-family processors, the error_code parameter is DSISR
+Oops, my bad.
+
+> Maybe you meant
+>
+> Fixes: 17bcc8035d2d ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
+
+Yes I did.
+
+Mike/Stephen: do you want me to respin my pull requests?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
