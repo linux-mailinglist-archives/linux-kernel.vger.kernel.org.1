@@ -2,670 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6CD2D2232
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC702D2235
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgLHEmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:42:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbgLHEmn (ORCPT
+        id S1726883AbgLHEog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:44:36 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34296 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgLHEog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:42:43 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9810FC0613D6;
-        Mon,  7 Dec 2020 20:42:03 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id p12so11193046qtp.7;
-        Mon, 07 Dec 2020 20:42:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Df5cAkEaWkCbSQLcb2lO5BFyTqQ3xRKCfL9Pc3j7JA8=;
-        b=PzCblkFqQHWqTSEMonflLudcVodO09b2cw09ji4xXIPpiE/snfdc0G9GIOhNFTpuYM
-         W0i2P8Etvz8ltE/zaMFYWUpKZwLITcKvkAmcZK37RxdpWt2nKarh+oLojWRgMqcXB3Dy
-         /HodbC5Bcgp6o0ccfP8X+r1zWOsYqvB/FtQTQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Df5cAkEaWkCbSQLcb2lO5BFyTqQ3xRKCfL9Pc3j7JA8=;
-        b=oyVMdWxdc3lstec4GZtkCbB5JGnE5EFgp4zu2SPDBvr3G1fY8MLQX7e6+ZHcSPdlui
-         7q5dTz2cx/oM8v3GUkAGR98vca9JdNGo2lIYxiYLk+isAtL4b2NWMfINzr41TFw6FQnO
-         VJWDZbe7cXhv9+Edfrtjc3Nz6IiQhe4iNdL3p09DkXo4rNv2A9eNhn27S+rAZYuunblj
-         H+8WEtVoHb5Yo9rPJueQYkIobjD1lJP3QqXx81hJzwzD9JdvRrC4eGfDBOHT9IsZ7rsk
-         W8JlxvD223/MQ+vubNAwN3kCIXG0owMEl86p8yIl4yO3slJQfkg+Rk1vrW2U/wv2LzUP
-         LtDg==
-X-Gm-Message-State: AOAM532tXv1T7b4X1EouGMp9Bg/s4ZSVQr5dYLEuxmuf0CoZIR4J7uUQ
-        Yp6ypIXgMcMrs0d6coJgPIa2liRPe1hBZw4j6Yrxw4jEpihAVw==
-X-Google-Smtp-Source: ABdhPJxi+PWiDkxMWG5tP4a1wr5udBFVCwz45uZzTC5naECKCWAdxRbVePJlztwJJSxzf7qHyq1Cf7Cb7kodg0+zWQ0=
-X-Received: by 2002:aed:2d65:: with SMTP id h92mr11101445qtd.263.1607402522784;
- Mon, 07 Dec 2020 20:42:02 -0800 (PST)
+        Mon, 7 Dec 2020 23:44:36 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B84hPmG038350;
+        Mon, 7 Dec 2020 22:43:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607402605;
+        bh=aORTlvK3UG1DVvDgM/DY4UvAIqUGSMoDP1mLzm2o8/E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ZEH0SmMB1/sWUZdA2qDBQTtntXB4EsPmwuzFughSfEqDa8F628rj/PpXuuS3Tc9kk
+         NBz5XI0+KhWFsSXCT+Y5r9GPkZaHhYhzIj8/uPrEoG3iodfndpVGzs7NuojZF99dHU
+         6Vc+qAs3KCOft8uSkZqaoXuH640DBQ5RJfTLGm9E=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B84hPGj113582
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Dec 2020 22:43:25 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Dec
+ 2020 22:43:24 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Dec 2020 22:43:24 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B84hJbo107231;
+        Mon, 7 Dec 2020 22:43:20 -0600
+Subject: Re: [PATCH v8 15/18] NTB: Add support for EPF PCI-Express
+ Non-Transparent Bridge
+To:     "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
+References: <20201111153559.19050-1-kishon@ti.com>
+ <20201111153559.19050-16-kishon@ti.com>
+ <b63d37bccd4f4afc833fd0b9078c3b89@intel.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <8611fcad-9af7-857e-5aa1-b680aef28db6@ti.com>
+Date:   Tue, 8 Dec 2020 10:13:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201208043700.23098-1-quan@os.amperecomputing.com> <20201208043700.23098-3-quan@os.amperecomputing.com>
-In-Reply-To: <20201208043700.23098-3-quan@os.amperecomputing.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 8 Dec 2020 04:41:48 +0000
-Message-ID: <CACPK8XdsbgKKr=icLxV=PZB9U03ZGWXQwCWgFvoqgCj9K_fbVg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add device tree for Ampere's Mt.
- Jade BMC
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b63d37bccd4f4afc833fd0b9078c3b89@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 04:37, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->
-> The Mt. Jade BMC is an ASPEED AST2500-based BMC for the Mt. Jade
-> hardware reference platform with Ampere's Altra Processor Family.
->
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> Signed-off-by: Phong Vo <phong@os.amperecomputing.com>
-> Signed-off-by: Thang Q. Nguyen <thang@os.amperecomputing.com>
+Hi Dave,
 
-Thanks, I've applied this to the aspeed tree.
+On 07/12/20 9:27 pm, Jiang, Dave wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Kishon Vijay Abraham I <kishon@ti.com>
+>> Sent: Wednesday, November 11, 2020 8:36 AM
+>> To: Bjorn Helgaas <bhelgaas@google.com>; Jonathan Corbet
+>> <corbet@lwn.net>; Kishon Vijay Abraham I <kishon@ti.com>; Lorenzo
+>> Pieralisi <lorenzo.pieralisi@arm.com>; Arnd Bergmann <arnd@arndb.de>;
+>> Jon Mason <jdmason@kudzu.us>; Jiang, Dave <dave.jiang@intel.com>;
+>> Allen Hubbe <allenbh@gmail.com>; Tom Joseph <tjoseph@cadence.com>;
+>> Rob Herring <robh@kernel.org>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
+>> pci@vger.kernel.org; linux-doc@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-ntb@googlegroups.com
+>> Subject: [PATCH v8 15/18] NTB: Add support for EPF PCI-Express Non-
+>> Transparent Bridge
+>>
+>> Add support for EPF PCI-Express Non-Transparent Bridge (NTB) device.
+>> This driver is platform independent and could be used by any platform which
+>> have multiple PCIe endpoint instances configured using the pci-epf-ntb
+>> driver. The driver connnects to the standard NTB sub-system interface. The
+>> EPF NTB device has configurable number of memory windows (Max 4),
+>> configurable number of doorbell (Max 32), and configurable number of
+>> scratch-pad registers.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/ntb/hw/Kconfig          |   1 +
+>>  drivers/ntb/hw/Makefile         |   1 +
+>>  drivers/ntb/hw/epf/Kconfig      |   6 +
+>>  drivers/ntb/hw/epf/Makefile     |   1 +
+>>  drivers/ntb/hw/epf/ntb_hw_epf.c | 755
+>> ++++++++++++++++++++++++++++++++
+>>  5 files changed, 764 insertions(+)
+>>  create mode 100644 drivers/ntb/hw/epf/Kconfig  create mode 100644
+>> drivers/ntb/hw/epf/Makefile  create mode 100644
+>> drivers/ntb/hw/epf/ntb_hw_epf.c
+>>
+>> diff --git a/drivers/ntb/hw/Kconfig b/drivers/ntb/hw/Kconfig index
+>> e77c587060ff..c325be526b80 100644
+>> --- a/drivers/ntb/hw/Kconfig
+>> +++ b/drivers/ntb/hw/Kconfig
+>> @@ -2,4 +2,5 @@
+>>  source "drivers/ntb/hw/amd/Kconfig"
+>>  source "drivers/ntb/hw/idt/Kconfig"
+>>  source "drivers/ntb/hw/intel/Kconfig"
+>> +source "drivers/ntb/hw/epf/Kconfig"
+>>  source "drivers/ntb/hw/mscc/Kconfig"
+>> diff --git a/drivers/ntb/hw/Makefile b/drivers/ntb/hw/Makefile index
+>> 4714d6238845..223ca592b5f9 100644
+>> --- a/drivers/ntb/hw/Makefile
+>> +++ b/drivers/ntb/hw/Makefile
+>> @@ -2,4 +2,5 @@
+>>  obj-$(CONFIG_NTB_AMD)	+= amd/
+>>  obj-$(CONFIG_NTB_IDT)	+= idt/
+>>  obj-$(CONFIG_NTB_INTEL)	+= intel/
+>> +obj-$(CONFIG_NTB_EPF)	+= epf/
+>>  obj-$(CONFIG_NTB_SWITCHTEC) += mscc/
+>> diff --git a/drivers/ntb/hw/epf/Kconfig b/drivers/ntb/hw/epf/Kconfig new
+>> file mode 100644 index 000000000000..6197d1aab344
+>> --- /dev/null
+>> +++ b/drivers/ntb/hw/epf/Kconfig
+>> @@ -0,0 +1,6 @@
+>> +config NTB_EPF
+>> +	tristate "Generic EPF Non-Transparent Bridge support"
+>> +	depends on m
+>> +	help
+>> +	  This driver supports EPF NTB on configurable endpoint.
+>> +	  If unsure, say N.
+>> diff --git a/drivers/ntb/hw/epf/Makefile b/drivers/ntb/hw/epf/Makefile
+>> new file mode 100644 index 000000000000..2f560a422bc6
+>> --- /dev/null
+>> +++ b/drivers/ntb/hw/epf/Makefile
+>> @@ -0,0 +1 @@
+>> +obj-$(CONFIG_NTB_EPF) += ntb_hw_epf.o
+>> diff --git a/drivers/ntb/hw/epf/ntb_hw_epf.c
+>> b/drivers/ntb/hw/epf/ntb_hw_epf.c new file mode 100644 index
+>> 000000000000..3855bb0ecacd
+>> --- /dev/null
+>> +++ b/drivers/ntb/hw/epf/ntb_hw_epf.c
+>> @@ -0,0 +1,755 @@
+.
+.
+<snip>
+.
+.
+>> +static void ntb_epf_cleanup_isr(struct ntb_epf_dev *ndev) {
+>> +	struct pci_dev *pdev = ndev->ntb.pdev;
+>> +	struct device *dev = &pdev->dev;
+>> +	int i;
+>> +
+>> +	ntb_epf_send_command(ndev, CMD_TEARDOWN_DOORBELL,
+>> ndev->db_count + 1);
+>> +
+>> +	for (i = 0; i < ndev->db_count + 1; i++)
+>> +		devm_free_irq(dev, pci_irq_vector(pdev, i), ndev);
+> 
+> This is called during shutdown. Does that defeats the purpose of using devm API?
 
-Cheers,
+Yeah, here devm_* API is not required since we have to invoke free_irq()
+before invoking pci_free_irq_vectors(). Will change this to non devm API.
 
-Joel
+Thank You,
+Kishon
 
-> ---
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 558 ++++++++++++++++++
->  2 files changed, 559 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 9f9f3e49132a..5da5e8f93554 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1398,6 +1398,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->         aspeed-ast2500-evb.dtb \
->         aspeed-ast2600-evb.dtb \
->         aspeed-bmc-amd-ethanolx.dtb \
-> +       aspeed-bmc-ampere-mtjade.dtb \
->         aspeed-bmc-arm-centriq2400-rep.dtb \
->         aspeed-bmc-arm-stardragon4800-rep2.dtb \
->         aspeed-bmc-bytedance-g220a.dtb \
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-> new file mode 100644
-> index 000000000000..8f5ec22e51c2
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-> @@ -0,0 +1,558 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/dts-v1/;
-> +#include "aspeed-g5.dtsi"
-> +#include <dt-bindings/gpio/aspeed-gpio.h>
-> +
-> +/ {
-> +       model = "Ampere Mt. Jade BMC";
-> +       compatible = "ampere,mtjade-bmc", "aspeed,ast2500";
-> +
-> +       chosen {
-> +               stdout-path = &uart5;
-> +               bootargs = "console=ttyS4,115200 earlyprintk";
-> +       };
-> +
-> +       memory@80000000 {
-> +               reg = <0x80000000 0x20000000>;
-> +       };
-> +
-> +       reserved-memory {
-> +               #address-cells = <1>;
-> +               #size-cells = <1>;
-> +               ranges;
-> +
-> +               vga_memory: framebuffer@9f000000 {
-> +                       no-map;
-> +                       reg = <0x9f000000 0x01000000>; /* 16M */
-> +               };
-> +
-> +               gfx_memory: framebuffer {
-> +                       size = <0x01000000>;
-> +                       alignment = <0x01000000>;
-> +                       compatible = "shared-dma-pool";
-> +                       reusable;
-> +               };
-> +
-> +               video_engine_memory: jpegbuffer {
-> +                       size = <0x02000000>;    /* 32M */
-> +                       alignment = <0x01000000>;
-> +                       compatible = "shared-dma-pool";
-> +                       reusable;
-> +               };
-> +       };
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +
-> +               fault {
-> +                       gpios = <&gpio ASPEED_GPIO(B, 6) GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               identify {
-> +                       gpios = <&gpio ASPEED_GPIO(Q, 6) GPIO_ACTIVE_HIGH>;
-> +               };
-> +       };
-> +
-> +       gpio-keys {
-> +               compatible = "gpio-keys";
-> +
-> +               shutdown_ack {
-> +                       label = "SHUTDOWN_ACK";
-> +                       gpios = <&gpio ASPEED_GPIO(G, 2) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(G, 2)>;
-> +               };
-> +
-> +               reboot_ack {
-> +                       label = "REBOOT_ACK";
-> +                       gpios = <&gpio ASPEED_GPIO(J, 3) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(J, 3)>;
-> +               };
-> +
-> +               S0_overtemp {
-> +                       label = "S0_OVERTEMP";
-> +                       gpios = <&gpio ASPEED_GPIO(G, 3) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(G, 3)>;
-> +               };
-> +
-> +               S0_hightemp {
-> +                       label = "S0_HIGHTEMP";
-> +                       gpios = <&gpio ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(J, 0)>;
-> +               };
-> +
-> +               S0_cpu_fault {
-> +                       label = "S0_CPU_FAULT";
-> +                       gpios = <&gpio ASPEED_GPIO(J, 1) GPIO_ACTIVE_HIGH>;
-> +                       linux,code = <ASPEED_GPIO(J, 1)>;
-> +               };
-> +
-> +               S1_overtemp {
-> +                       label = "S1_OVERTEMP";
-> +                       gpios = <&gpio ASPEED_GPIO(Z, 6) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(Z, 6)>;
-> +               };
-> +
-> +               S1_hightemp {
-> +                       label = "S1_HIGHTEMP";
-> +                       gpios = <&gpio ASPEED_GPIO(AB, 0) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(AB, 0)>;
-> +               };
-> +
-> +               S1_cpu_fault {
-> +                       label = "S1_CPU_FAULT";
-> +                       gpios = <&gpio ASPEED_GPIO(Z, 1) GPIO_ACTIVE_HIGH>;
-> +                       linux,code = <ASPEED_GPIO(Z, 1)>;
-> +               };
-> +
-> +               id_button {
-> +                       label = "ID_BUTTON";
-> +                       gpios = <&gpio ASPEED_GPIO(Q, 5) GPIO_ACTIVE_LOW>;
-> +                       linux,code = <ASPEED_GPIO(Q, 5)>;
-> +               };
-> +
-> +       };
-> +
-> +       gpioA0mux: mux-controller {
-> +               compatible = "gpio-mux";
-> +               #mux-control-cells = <0>;
-> +               mux-gpios = <&gpio ASPEED_GPIO(A, 0) GPIO_ACTIVE_LOW>;
-> +       };
-> +
-> +       adc0mux: adc0mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 0>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc1mux: adc1mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 1>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc2mux: adc2mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 2>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc3mux: adc3mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 3>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc4mux: adc4mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 4>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc5mux: adc5mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 5>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc6mux: adc6mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 6>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc7mux: adc7mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 7>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc8mux: adc8mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 8>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc9mux: adc9mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 9>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc10mux: adc10mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 10>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc11mux: adc11mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 11>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc12mux: adc12mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 12>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       adc13mux: adc13mux {
-> +               compatible = "io-channel-mux";
-> +               io-channels = <&adc 13>;
-> +               #io-channel-cells = <1>;
-> +               io-channel-names = "parent";
-> +               mux-controls = <&gpioA0mux>;
-> +               channels = "s0", "s1";
-> +       };
-> +
-> +       iio-hwmon {
-> +               compatible = "iio-hwmon";
-> +               io-channels = <&adc0mux 0>, <&adc0mux 1>,
-> +                       <&adc1mux 0>, <&adc1mux 1>,
-> +                       <&adc2mux 0>, <&adc2mux 1>,
-> +                       <&adc3mux 0>, <&adc3mux 1>,
-> +                       <&adc4mux 0>, <&adc4mux 1>,
-> +                       <&adc5mux 0>, <&adc5mux 1>,
-> +                       <&adc6mux 0>, <&adc6mux 1>,
-> +                       <&adc7mux 0>, <&adc7mux 1>,
-> +                       <&adc8mux 0>, <&adc8mux 1>,
-> +                       <&adc9mux 0>, <&adc9mux 1>,
-> +                       <&adc10mux 0>, <&adc10mux 1>,
-> +                       <&adc11mux 0>, <&adc11mux 1>,
-> +                       <&adc12mux 0>, <&adc12mux 1>,
-> +                       <&adc13mux 0>, <&adc13mux 1>;
-> +       };
-> +
-> +       iio-hwmon-adc14 {
-> +               compatible = "iio-hwmon";
-> +               io-channels = <&adc 14>;
-> +       };
-> +
-> +       iio-hwmon-battery {
-> +               compatible = "iio-hwmon";
-> +               io-channels = <&adc 15>;
-> +       };
-> +};
-> +
-> +&fmc {
-> +       status = "okay";
-> +       flash@0 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "bmc";
-> +               /* spi-max-frequency = <50000000>; */
-> +#include "openbmc-flash-layout.dtsi"
-> +       };
-> +};
-> +
-> +&spi1 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_spi1_default>;
-> +
-> +       flash@0 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "pnor";
-> +               /* spi-max-frequency = <100000000>; */
-> +       };
-> +};
-> +
-> +&uart1 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_txd1_default
-> +                        &pinctrl_rxd1_default
-> +                        &pinctrl_ncts1_default
-> +                        &pinctrl_nrts1_default>;
-> +};
-> +
-> +&uart2 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_txd2_default
-> +                        &pinctrl_rxd2_default>;
-> +};
-> +
-> +&uart3 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_txd3_default
-> +                        &pinctrl_rxd3_default>;
-> +};
-> +
-> +&uart4 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_txd4_default
-> +                        &pinctrl_rxd4_default>;
-> +};
-> +
-> +/* The BMC's uart */
-> +&uart5 {
-> +       status = "okay";
-> +};
-> +
-> +&mac1 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
-> +};
-> +
-> +&i2c0 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c1 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c2 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c3 {
-> +       status = "okay";
-> +       eeprom@50 {
-> +               compatible = "microchip,24c64", "atmel,24c64";
-> +               reg = <0x50>;
-> +               pagesize = <32>;
-> +       };
-> +
-> +       inlet_mem2: tmp175@28 {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x28>;
-> +       };
-> +
-> +       inlet_cpu: tmp175@29 {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x29>;
-> +       };
-> +
-> +       inlet_mem1: tmp175@2a {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x2a>;
-> +       };
-> +
-> +       outlet_cpu: tmp175@2b {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x2b>;
-> +       };
-> +
-> +       outlet1: tmp175@2c {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x2c>;
-> +       };
-> +
-> +       outlet2: tmp175@2d {
-> +               compatible = "ti,tmp175";
-> +               reg = <0x2d>;
-> +       };
-> +};
-> +
-> +&i2c4 {
-> +       status = "okay";
-> +       rtc@51 {
-> +               compatible = "nxp,pcf85063a";
-> +               reg = <0x51>;
-> +       };
-> +};
-> +
-> +&i2c5 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c6 {
-> +       status = "okay";
-> +       psu@58 {
-> +               compatible = "pmbus";
-> +               reg = <0x58>;
-> +       };
-> +
-> +       psu@59 {
-> +               compatible = "pmbus";
-> +               reg = <0x59>;
-> +       };
-> +};
-> +
-> +&i2c7 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c8 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c9 {
-> +       status = "okay";
-> +};
-> +
-> +&gfx {
-> +       status = "okay";
-> +       memory-region = <&gfx_memory>;
-> +};
-> +
-> +&pinctrl {
-> +       aspeed,external-nodes = <&gfx &lhc>;
-> +};
-> +
-> +&pwm_tacho {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_pwm2_default &pinctrl_pwm3_default
-> +                       &pinctrl_pwm4_default &pinctrl_pwm5_default
-> +                       &pinctrl_pwm6_default &pinctrl_pwm7_default>;
-> +
-> +       fan@0 {
-> +               reg = <0x02>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x04>;
-> +       };
-> +
-> +       fan@1 {
-> +               reg = <0x02>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x05>;
-> +       };
-> +
-> +       fan@2 {
-> +               reg = <0x03>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x06>;
-> +       };
-> +
-> +       fan@3 {
-> +               reg = <0x03>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x07>;
-> +       };
-> +
-> +       fan@4 {
-> +               reg = <0x04>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x08>;
-> +       };
-> +
-> +       fan@5 {
-> +               reg = <0x04>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x09>;
-> +       };
-> +
-> +       fan@6 {
-> +               reg = <0x05>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0a>;
-> +       };
-> +
-> +       fan@7 {
-> +               reg = <0x05>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0b>;
-> +       };
-> +
-> +       fan@8 {
-> +               reg = <0x06>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0c>;
-> +       };
-> +
-> +       fan@9 {
-> +               reg = <0x06>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0d>;
-> +       };
-> +
-> +       fan@10 {
-> +               reg = <0x07>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0e>;
-> +       };
-> +
-> +       fan@11 {
-> +               reg = <0x07>;
-> +               aspeed,fan-tach-ch = /bits/ 8 <0x0f>;
-> +       };
-> +
-> +};
-> +
-> +&vhub {
-> +       status = "okay";
-> +};
-> +
-> +&adc {
-> +       status = "okay";
-> +};
-> +
-> +&video {
-> +       status = "okay";
-> +       memory-region = <&video_engine_memory>;
-> +};
-> +
-> +&gpio {
-> +       gpio-line-names =
-> +       /*A0-A7*/       "","","","S0_BMC_SPECIAL_BOOT","","","","",
-> +       /*B0-B7*/       "BMC_SELECT_EEPROM","","","",
-> +                       "POWER_BUTTON","","","",
-> +       /*C0-C7*/       "","","","","","","","",
-> +       /*D0-D7*/       "","","","","","","","",
-> +       /*E0-E7*/       "","","","","","","","",
-> +       /*F0-F7*/       "","","BMC_SYS_PSON_L","S0_DDR_SAVE","PGOOD",
-> +                       "S1_DDR_SAVE","","",
-> +       /*G0-G7*/       "S0_FW_BOOT_OK","SHD_REQ_L","","S0_OVERTEMP_L","","",
-> +                       "","",
-> +       /*H0-H7*/       "","","","","","","","",
-> +       /*I0-I7*/       "","","S1_BMC_SPECIAL_BOOT","","","","","",
-> +       /*J0-J7*/       "S0_HIGHTEMP_L","S0_FAULT_L","S0_SCP_AUTH_FAIL_L","",
-> +                       "","","","",
-> +       /*K0-K7*/       "","","","","","","","",
-> +       /*L0-L7*/       "","","","BMC_SYSRESET_L","SPI_AUTH_FAIL_L","","","",
-> +       /*M0-M7*/       "","","","","","","","",
-> +       /*N0-N7*/       "","","","","","","","",
-> +       /*O0-O7*/       "","","","","","","","",
-> +       /*P0-P7*/       "","","","","","","","",
-> +       /*Q0-Q7*/       "","","","","","UID_BUTTON","","",
-> +       /*R0-R7*/       "","","BMC_EXT_HIGHTEMP_L","","","RESET_BUTTON","","",
-> +       /*S0-S7*/       "","","","","","","","",
-> +       /*T0-T7*/       "","","","","","","","",
-> +       /*U0-U7*/       "","","","","","","","",
-> +       /*V0-V7*/       "","","","","","","","",
-> +       /*W0-W7*/       "","","","","","","","",
-> +       /*X0-X7*/       "","","","","","","","",
-> +       /*Y0-Y7*/       "","","","","","","","",
-> +       /*Z0-Z7*/       "S0_BMC_PLIMIT","S1_FAULT_L","S1_FW_BOOT_OK","","",
-> +                       "S1_SCP_AUTH_FAIL_L","S1_OVERTEMP_L","",
-> +       /*AA0-AA7*/     "","","","","","","","",
-> +       /*AB0-AB7*/     "S1_HIGHTEMP_L","S1_BMC_PLIMIT","S0_BMC_DDR_ADDR",
-> +                       "S1_BMC_DDR_ADR","","","","",
-> +       /*AC0-AC7*/     "SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
-> +                       "BMC_OCP_PG";
-> +};
-> --
-> 2.28.0
->
+> 
+> - Dave
+> 
+>> +	pci_free_irq_vectors(pdev);
+>> +}
+>> +
+>> +static int ntb_epf_pci_probe(struct pci_dev *pdev,
+>> +			     const struct pci_device_id *id) {
+>> +	enum pci_barno peer_spad_reg_bar = BAR_1;
+>> +	enum pci_barno ctrl_reg_bar = BAR_0;
+>> +	enum pci_barno db_reg_bar = BAR_2;
+>> +	struct device *dev = &pdev->dev;
+>> +	struct ntb_epf_data *data;
+>> +	struct ntb_epf_dev *ndev;
+>> +	int ret;
+>> +
+>> +	if (pci_is_bridge(pdev))
+>> +		return -ENODEV;
+>> +
+>> +	ndev = devm_kzalloc(dev, sizeof(*ndev), GFP_KERNEL);
+>> +	if (!ndev)
+>> +		return -ENOMEM;
+>> +
+>> +	data = (struct ntb_epf_data *)id->driver_data;
+>> +	if (data) {
+>> +		if (data->peer_spad_reg_bar)
+>> +			peer_spad_reg_bar = data->peer_spad_reg_bar;
+>> +		if (data->ctrl_reg_bar)
+>> +			ctrl_reg_bar = data->ctrl_reg_bar;
+>> +		if (data->db_reg_bar)
+>> +			db_reg_bar = data->db_reg_bar;
+>> +	}
+>> +
+>> +	ndev->peer_spad_reg_bar = peer_spad_reg_bar;
+>> +	ndev->ctrl_reg_bar = ctrl_reg_bar;
+>> +	ndev->db_reg_bar = db_reg_bar;
+>> +	ndev->dev = dev;
+>> +
+>> +	ntb_epf_init_struct(ndev, pdev);
+>> +	mutex_init(&ndev->cmd_lock);
+>> +
+>> +	ret = ntb_epf_init_pci(ndev, pdev);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to init PCI\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = ntb_epf_init_dev(ndev);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to init device\n");
+>> +		goto err_init_dev;
+>> +	}
+>> +
+>> +	ret = ntb_register_device(&ndev->ntb);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to register NTB device\n");
+>> +		goto err_register_dev;
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +err_register_dev:
+>> +	ntb_epf_cleanup_isr(ndev);
+>> +
+>> +err_init_dev:
+>> +	ntb_epf_deinit_pci(ndev);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void ntb_epf_pci_remove(struct pci_dev *pdev) {
+>> +	struct ntb_epf_dev *ndev = pci_get_drvdata(pdev);
+>> +
+>> +	ntb_unregister_device(&ndev->ntb);
+>> +	ntb_epf_cleanup_isr(ndev);
+>> +	ntb_epf_deinit_pci(ndev);
+>> +	kfree(ndev);
+>> +}
+>> +
+>> +static const struct ntb_epf_data j721e_data = {
+>> +	.ctrl_reg_bar = BAR_0,
+>> +	.peer_spad_reg_bar = BAR_1,
+>> +	.db_reg_bar = BAR_2,
+>> +};
+>> +
+>> +static const struct pci_device_id ntb_epf_pci_tbl[] = {
+>> +	{
+>> +		PCI_DEVICE(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_J721E),
+>> +		.class = PCI_CLASS_MEMORY_RAM << 8, .class_mask =
+>> 0xffff00,
+>> +		.driver_data = (kernel_ulong_t)&j721e_data,
+>> +	},
+>> +	{ },
+>> +};
+>> +
+>> +static struct pci_driver ntb_epf_pci_driver = {
+>> +	.name		= KBUILD_MODNAME,
+>> +	.id_table	= ntb_epf_pci_tbl,
+>> +	.probe		= ntb_epf_pci_probe,
+>> +	.remove		= ntb_epf_pci_remove,
+>> +};
+>> +module_pci_driver(ntb_epf_pci_driver);
+>> +
+>> +MODULE_DESCRIPTION("PCI ENDPOINT NTB HOST DRIVER");
+>> +MODULE_AUTHOR("Kishon Vijay Abraham I <kishon@ti.com>");
+>> +MODULE_LICENSE("GPL v2");
+>> --
+>> 2.17.1
+> 
