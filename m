@@ -2,297 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B562D356C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2E2D355F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730124AbgLHVhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:37:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730078AbgLHVhX (ORCPT
+        id S1729981AbgLHVgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:36:23 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:44774 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728137AbgLHVgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:37:23 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540C3C0611C5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:36:12 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id l7so73988pgq.16
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=UEByDBKZVfTm3zy0Um+iwW/BbeQm2aD/QnGz0kihyFg=;
-        b=W3NdpQJzPiJZvI/6fFLeodj/HhxNDIAkFPpOhBeJiCCK8Jdz8YDdSjQ8vs13VBQVOG
-         BMyujz8LRlhnQV4SlDwFstUz7qSSiCV7QEOB0Zp0Kn6Eqxj9j2JSoH0Laqk+rzEoYb93
-         kiD7RZWwUaR2h3vpffnGwZ81F+t030NVz9XoYNeMsxdo0jW4D0GT6sXnJdF2eXn/pEGS
-         a/0aWKRE6iSnMShkHkCFOYyaqb1vkOnP/50B2jxlEgoSoAODV7Y/cnmMPsw3T4q9m1Z1
-         HnxNU5w2ufkg0GmRW19x5HFMGnKXMsv0QUm1tQv1I8rMSlyYk+ALy1dmdJ2dQKn5A+gg
-         U/Gw==
+        Tue, 8 Dec 2020 16:36:23 -0500
+Received: by mail-oo1-f68.google.com with SMTP id n20so729270ooq.11;
+        Tue, 08 Dec 2020 13:36:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UEByDBKZVfTm3zy0Um+iwW/BbeQm2aD/QnGz0kihyFg=;
-        b=F67J3EkHd1/sx9YoTk6hBmvt3MMj5L0FROotTl157WxMWfAdvJGICCKsJiu4Eg3RQP
-         x1C/EkpasRV44TtgCIabw8NBAfoC3oeR+ALoVvRV2U6Ev5z8RdjzaIAOsXjQRx4jqSmm
-         MZhFET3VR/xlmL+q0IywpFBfPEiHPxWXOVd/qMUt9gug5Nh0PUTDMjqPusPvzcP2k4gn
-         tbq3eVgusUsXBI3ZAGEMYjxtxJiIUM7QbN81zNhlbZNHSMHcPcoRXotGfrttO94DJbBR
-         TjeK/IFHSO30zzuApFk+vp1B+OeuybhCO1HUluJDsr+YsrWTKIgUYBktZi3YSaG7e6+j
-         NRWw==
-X-Gm-Message-State: AOAM530osS2+jCfaIBrRQ9jDKX2ZNad562y3LPSLYn+09TOBZl7fyQVy
-        aTofOCZnLCBWlJqHzkNrrFGfMFhYJtoa
-X-Google-Smtp-Source: ABdhPJzaPgMZEMT9lZlWOcI4nOAwkQ9UrM7pCYKAlU3coXMD/+QoLXKYKRcT4VT/gGDyOTo08ODO6/D8cS5N
-Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
- (user=vipinsh job=sendgmr) by 2002:aa7:838b:0:b029:18c:42ad:7721 with SMTP id
- u11-20020aa7838b0000b029018c42ad7721mr21520922pfm.15.1607463371759; Tue, 08
- Dec 2020 13:36:11 -0800 (PST)
-Date:   Tue,  8 Dec 2020 13:35:31 -0800
-In-Reply-To: <20201208213531.2626955-1-vipinsh@google.com>
-Message-Id: <20201208213531.2626955-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20201208213531.2626955-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [Patch v2 2/2] cgroup: SVM: Encryption IDs cgroup documentation.
-From:   Vipin Sharma <vipinsh@google.com>
-To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
-Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Tx2n1+BiRWFNoCwoT4oiyZWIIS4oc7pPhFRuSqFDJQ=;
+        b=ujf/wvn9FCIjC27LuZHwjDIIBGQe07/G8o3NhNyyCamaZtKCyFDxA5XDzSBxnXMnfb
+         B6QyS8Ds2K2I+DpMg+dp2vy92AL0n0QJmxhDrzxDZ0KsgeMSIqGV3RlCKFdGseyKBLzl
+         3tDMelKaCwvfDqLwk8KyAYEslawC3zrEmRR+bbTWZpQnerVbrc0LMZzTJzYX+ifd7cBu
+         IsutQnKtON6S5Fao8e8/AiGxjm4RgXQci+jW8wZP8HLjgy/PA+Ys8UU8VKil6Hrba5UC
+         bIX4c4MXyV+VZ35QChexNBbwzxBu9lK1zx7U5G8dlbKSxYQK+lvUX9mthLfGBCU3fBB4
+         UvWw==
+X-Gm-Message-State: AOAM533I3u8BN87s9OfJN7gJsutS5GwLiZxwupEvHI87x+pzsJt3AUM9
+        GwC5CcJ5EVc/OCOiwgo7Ig==
+X-Google-Smtp-Source: ABdhPJwmcCWc5YrP3tKm8MswwqglBxCMPkIJznnvpI780s4aAFXt8epPr2NxLFvPINqpFZ+Sl5Bu0g==
+X-Received: by 2002:a4a:c293:: with SMTP id b19mr18206821ooq.74.1607463342205;
+        Tue, 08 Dec 2020 13:35:42 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h62sm5151oia.9.2020.12.08.13.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 13:35:41 -0800 (PST)
+Received: (nullmailer pid 3137391 invoked by uid 1000);
+        Tue, 08 Dec 2020 21:35:39 -0000
+Date:   Tue, 8 Dec 2020 15:35:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        devicetree@vger.kernel.org,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v3 03/10] dt-bindings:iio:adc:remove atmel, adc-res and
+ atmel, adc-res-names
+Message-ID: <20201208213539.GA3137337@robh.at.kernel.org>
+References: <20201128222818.1910764-1-alexandre.belloni@bootlin.com>
+ <20201128222818.1910764-4-alexandre.belloni@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201128222818.1910764-4-alexandre.belloni@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation for both cgroup versions, v1 and v2, of Encryption IDs
-controller. This new controller is used to track and limit usage of
-hardware memory encryption capabilities on the CPUs.
+On Sat, 28 Nov 2020 23:28:11 +0100, Alexandre Belloni wrote:
+> Remove atmel,adc-res and atmel,adc-res-names as they are not necessary and
+> are handled by the driver. Also add sama5d3 to the list of possible chips.
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
+>  .../devicetree/bindings/iio/adc/at91_adc.txt        | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+> 
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
-Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
----
- .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 ++++++++++++++++++
- Documentation/admin-guide/cgroup-v2.rst       |  78 ++++++++++++-
- 2 files changed, 184 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-
-diff --git a/Documentation/admin-guide/cgroup-v1/encryption_ids.rst b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-new file mode 100644
-index 000000000000..891143b4e229
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-@@ -0,0 +1,108 @@
-+=========================
-+Encryption IDs Controller
-+=========================
-+
-+Overview
-+========
-+There are multiple hardware memory encryption capabilities provided by the
-+hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-+State (SEV-ES) from AMD.
-+
-+These features are being used in encrypting virtual machines (VMs) and user
-+space programs. However, only a small number of keys/IDs can be used
-+simultaneously.
-+
-+This limited availability of these IDs requires system admin to optimize
-+allocation, control, and track the usage of the resources in the cloud
-+infrastructure. This resource also needs to be protected from getting exhausted
-+by some malicious program and causing starvation for other programs.
-+
-+Encryption IDs controller provides capability to register the resource for
-+controlling and tracking through the cgroups.
-+
-+How to Enable Controller
-+========================
-+
-+- Enable Encryption controller::
-+
-+        CONFIG_CGROUP_ENCRYPTION_IDS=y
-+
-+- Above options will build Encryption controller support in the kernel.
-+  To mount the Encryption controller::
-+
-+        mount -t cgroup -o encryption none /sys/fs/cgroup/encryption
-+
-+
-+Interface Files
-+===============
-+Each encryption ID type have their own interface files,
-+encryption_id.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
-+sev-es.
-+
-+  encryption_ids.[ID TYPE].stat
-+        A read-only flat-keyed single value file. This file exists only in the
-+        root cgroup.
-+
-+        It shows the total number of encryption IDs available and currently in
-+        use on the platform::
-+          # cat encryption.sev.stat
-+          total 509
-+          used 0
-+
-+  encryption_ids.[ID TYPE].max
-+        A read-write file which exists on the non-root cgroups. File is used to
-+        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-+
-+        Limit can be set to max by::
-+          # echo max > encryption.sev.max
-+
-+        Limit can be set by::
-+          # echo 100 > encryption.sev.max
-+
-+        This file shows the max limit of the encryption ID in the cgroup::
-+          # cat encryption.sev.max
-+          max
-+
-+        OR::
-+          # cat encryption.sev.max
-+          100
-+
-+        Limits can be set more than the "total" capacity value in the
-+        encryption_ids.[ID TYPE].stat file, however, the controller ensures
-+        that the usage never exceeds the "total" and the max limit.
-+
-+  encryption_ids.[ID TYPE].current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        Shows the total number of encrypted IDs being used in the cgroup.
-+
-+Hierarchy
-+=========
-+
-+Encryption IDs controller supports hierarchical accounting. It supports
-+following features:
-+
-+1. Current usage in the cgroup shows IDs used in the cgroup and its descendent cgroups.
-+2. Current usage can never exceed the corresponding max limit set in the cgroup
-+   and its ancestor's chain up to the root.
-+
-+Suppose the following example hierarchy::
-+
-+                        root
-+                        /  \
-+                       A    B
-+                       |
-+                       C
-+
-+1. A will show the count of IDs used in A and C.
-+2. C's current IDs usage may not exceed any of the max limits set in C, A, or
-+   root.
-+
-+Migration and ownership
-+=======================
-+
-+An encryption ID is charged to the cgroup in which it is used first, and
-+stays charged to that cgroup until that ID is freed. Migrating a process
-+to a different cgroup do not move the charge to the destination cgroup
-+where the process has moved.
-+
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 608d7c279396..7938bb7c6e1c 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9. Encryption IDs
-+       5.9-1 Encryption IDs Interface Files
-+       5.9-2 Migration and Ownership
-+     5-10. Misc
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2149,6 +2152,77 @@ HugeTLB Interface Files
- 	are local to the cgroup i.e. not hierarchical. The file modified event
- 	generated on this file reflects only the local events.
- 
-+Encryption IDs
-+--------------
-+
-+There are multiple hardware memory encryption capabilities provided by the
-+hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-+State (SEV-ES) from AMD.
-+
-+These features are being used in encrypting virtual machines (VMs) and user
-+space programs. However, only a small number of keys/IDs can be used
-+simultaneously.
-+
-+This limited availability of these IDs requires system admin to optimize
-+allocation, control, and track the usage of the resources in the cloud
-+infrastructure. This resource also needs to be protected from getting exhausted
-+by some malicious program and causing starvation for other programs.
-+
-+Encryption IDs controller provides capability to register the resource for
-+controlling and tracking through the cgroups.
-+
-+Encryption IDs Interface Files
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Each encryption ID type have their own interface files,
-+encryption_id.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
-+sev-es.
-+
-+  encryption_ids.[ID TYPE].stat
-+        A read-only flat-keyed single value file. This file exists only in the
-+        root cgroup.
-+
-+        It shows the total number of encryption IDs available and currently in
-+        use on the platform::
-+          # cat encryption.sev.stat
-+          total 509
-+          used 0
-+
-+  encryption_ids.[ID TYPE].max
-+        A read-write file which exists on the non-root cgroups. File is used to
-+        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-+
-+        Limit can be set to max by::
-+          # echo max > encryption.sev.max
-+
-+        Limit can be set by::
-+          # echo 100 > encryption.sev.max
-+
-+        This file shows the max limit of the encryption ID in the cgroup::
-+          # cat encryption.sev.max
-+          max
-+
-+        OR::
-+          # cat encryption.sev.max
-+          100
-+
-+        Limits can be set more than the "total" capacity value in the
-+        encryption_ids.[ID TYPE].stat file, however, the controller ensures
-+        that the usage never exceeds the "total" and the max limit.
-+
-+  encryption_ids.[ID TYPE].current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        Shows the total number of encrypted IDs being used in the cgroup.
-+
-+Migration and Ownership
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+An encryption ID is charged to the cgroup in which it is used first, and
-+stays charged to that cgroup until that ID is freed. Migrating a process
-+to a different cgroup do not move the charge to the destination cgroup
-+where the process has moved.
-+
- Misc
- ----
- 
--- 
-2.29.2.576.ga3fc446d84-goog
-
+Reviewed-by: Rob Herring <robh@kernel.org>
