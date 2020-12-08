@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9602D26BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7682D2642
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:35:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgLHJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:00:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S1728169AbgLHIe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:34:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728192AbgLHJAH (ORCPT
+        with ESMTP id S1727943AbgLHIe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:00:07 -0500
-X-Greylist: delayed 1682 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Dec 2020 00:59:27 PST
-Received: from centrum.lixper.it (centrum.lixper.it [IPv6:2a01:4f8:221:3c81::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DC9C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:59:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sguazz.it; s=centrum;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=y2w05WLUaDoLIJEGFosg2qYKD3kDFIU2iQVDte6m0a0=;
-        b=I1RSCRZSLLHT0s8V9eSBIvJYbmBxtWQImegAo8x+ZlXV0WA9l0B5Q/7WG/+zs7eMuQdlqage6FwBAtatE2woQpdfUbj5PPGKISK+MbaSieDBkGFhQcq92UBfJ56BeqzhhzNhr+qKGhbkQwATWwtfnj7JKNKFS/YKpHRSNa/FLD0=;
-Received: by centrum.lixper.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.84_2)
-        (envelope-from <giuseppe@sguazz.it>)
-        id 1kmYOe-0000Rp-JM; Tue, 08 Dec 2020 09:30:58 +0100
-Message-ID: <45348197b657d9051a7dcdf711a110388ab41900.camel@sguazz.it>
-Subject: Re: [PATCH v2] powerpc/powermac: Fix low_sleep_handler with
- CONFIG_VMAP_STACK
-From:   Giuseppe Sacco <giuseppe@sguazz.it>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 08 Dec 2020 09:30:50 +0100
-In-Reply-To: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
-References: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Tue, 8 Dec 2020 03:34:28 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F647C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:33:48 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id 4so6624929plk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:33:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Gjlk/jLtNyUeazDdibe5U/NgLr5RcEOaHOigFIrgjeQ=;
+        b=OCylihwq7Lr5YIGlbD2kaf6/40QC0sTHW78aJsoFmHE03MNa1w24Gwx7iPgKqOuMiW
+         dr1Fs5D8hBgnHMLti9ou6c9x3yky5vgVa72hOXjS6nmiYup1XgMyBr6LPJJhB+t5MxUL
+         7mqR1RvunHbJ9ijFWcJQe2u+zs60a+3gWFYIb0nEkE/MbHLL0hxR9ZDTaPJqZv0fi8C8
+         jscJmQ2gm1Wmkc6gdui2bOmIehjxPsmM6yXpSACpZ7jgQ7tQJLfNjs6sFhbyjsPLK6MC
+         XjBRdR9R81z5whkK8AWEg+WDvrp5jDcl/vrjpQEkNWUYnFH37g9O39jzEvm+uJ8qEngU
+         b6xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Gjlk/jLtNyUeazDdibe5U/NgLr5RcEOaHOigFIrgjeQ=;
+        b=pxvk208uhr4hl2Ne3s1w8EUJ3KNHW9EbndxZgVpYYdKrJ7hQbIv044c+2yiUBBrYgW
+         ICHMHjwACFFbW0ljzvvRaNlsPNcnyPnXIq4Ez4Y3euMtNcsiORGPbjK5G4/x0L0drrey
+         3dM9tnJa1XF/TvqGyF/XnHa//adX924HE7IlfDTU8p0SmAzSRNa4fMvseFAx5RrpNDBI
+         iFsUsyRrFRG+LmMfRrSqt4Eg/GR4qNjtB27jMORbQADpcSUoffD7SKOmlinGJkopdqgz
+         YISkkDV/2DCwBg7X5ofGIwrlLnjAQK7/tC1ZfFtKb32D7tiIDOJxYYyEFxkQ9AbC/q5f
+         9ztA==
+X-Gm-Message-State: AOAM530KBZLNdPeaDze42/r2HmKY+fexq/y7+HQZHm+s/uL3y61rncC5
+        4asBdf/jZIIT2gterB9hTejhug==
+X-Google-Smtp-Source: ABdhPJzY0+766oi0+74mYEbdymuuxI+2nI3fPnl7VRjTC2pW8nnX+qsLQ4JACq+CUkg+5IvstN2a/A==
+X-Received: by 2002:a17:902:6b8c:b029:d6:d32e:4a8c with SMTP id p12-20020a1709026b8cb02900d6d32e4a8cmr20100699plk.28.1607416427728;
+        Tue, 08 Dec 2020 00:33:47 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id k21sm16105066pfu.77.2020.12.08.00.33.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 00:33:46 -0800 (PST)
+Date:   Tue, 8 Dec 2020 14:03:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: Re: [PATCH v1 1/4] cpufreq: schedutil: Add util to struct sg_cpu
+Message-ID: <20201208083344.s67kalyxuui3ia4q@vireshk-i7>
+References: <20360841.iInq7taT2Z@kreacher>
+ <2344038.BgO4qI7qUv@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GeoIP: IT
-X-SRS:  Sender address rewritten from <giuseppe@sguazz.it> to <SRS0=S1CN=FM=sguazz.it=giuseppe@centrum.lixper.it> by centrum.lixper.it.
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2344038.BgO4qI7qUv@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Christophe,
-
-Il giorno mar, 08/12/2020 alle 05.24 +0000, Christophe Leroy ha
-scritto:
-> low_sleep_handler() can't restore the context from standard
-> stack because the stack can hardly be accessed with MMU OFF.
+On 07-12-20, 17:28, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Store everything in a global storage area instead of storing
-> a pointer to the stack in that global storage area.
+> Instead of passing util and max between functions while computing the
+> utilization and capacity, store the former in struct sg_cpu (along
+> with the latter and bw_dl).
 > 
-> To avoid a complete churn of the function, still use r1 as
-> the pointer to the storage area during restore.
+> This will allow the current utilization value to be compared with the
+> one obtained previously (which is requisite for some code changes to
+> follow this one), but also it makes the code look slightly more
+> consistent and clean.
 > 
-> Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
-> Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
-> This is only build tested. Giuseppe can you test it ? Thanks.
+>  kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
+>  1 file changed, 20 insertions(+), 22 deletions(-)
 > 
-> v2: Changed an erroneous 'addis' to 'addi' ; Using bss instead of
-> data section
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/platforms/Kconfig.cputype  |   2 +-
->  arch/powerpc/platforms/powermac/sleep.S | 132 +++++++++++-----------
-> --
->  2 files changed, 60 insertions(+), 74 deletions(-)
-[...]
+> Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> ===================================================================
+> --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> @@ -53,6 +53,7 @@ struct sugov_cpu {
+>  	unsigned int		iowait_boost;
+>  	u64			last_update;
+>  
+> +	unsigned long		util;
+>  	unsigned long		bw_dl;
+>  	unsigned long		max;
+>  
+> @@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
+>  	return min(max, util);
+>  }
+>  
+> -static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
+> +static void sugov_get_util(struct sugov_cpu *sg_cpu)
 
-I just tested the v2 patch against latest kernel. Please note that
-yesterday patch was on a kernel named 5.10.0-rc6+, while today's patch
-is on a kernel named 5.10.0-rc7+. Even with the latest kernel updates,
-the patch apply correctly and machine boots normally, fixing the
-problem.
+Maybe name it sugov_update_util() ?
 
-$ uname -a
-Linux titanium4 5.10.0-rc7+ #3 Tue Dec 8 09:11:20 CET 2020 ppc GNU/Linux
-$ grep VMAP /boot/config-5.10.0-rc7+
-CONFIG_HAVE_ARCH_VMAP_STACK=y
-CONFIG_VMAP_STACK=y
+Otherwise,
 
-Thank you again.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Bye,
-Giuseppe
-
-
+-- 
+viresh
