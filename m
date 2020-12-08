@@ -2,168 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D127C2D2E37
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12F52D2E3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgLHP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:28:10 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49230 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730004AbgLHP2J (ORCPT
+        id S1730077AbgLHP3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:29:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22504 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729936AbgLHP3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:28:09 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8Ewv9r066396;
-        Tue, 8 Dec 2020 10:27:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=W85YL1dcXF/cQQmTjiYg+YSjrvyToTPW+4OEJYW2+9o=;
- b=F4V5NpO/CqmYNlXWS9VKX3Xpyi0G6EfTCSFiyG1vjjUoB8Ye5gUtxXIM9HriAGf0wDKw
- RQxhp9f+gMcs9AVnJ5iESE1VncHImvYPuEW4E/E4o/7E/ue9/8usggc8urEAvf2nnQdv
- H/ARpNjWlmgG9rrDl2f0D9MlHFR9fSTCY4Wuk1LDVVQZHwhHLQ+WYLv7otTNg0BF5SSr
- CJCiSxB4M7hmGWaaij8Q2BtjZAVpYOVRH1odLD8EueVkl7a7Qure0l09e9WWcLkDFzgH
- bzA6oDwQcrSfG8O+kS+7rhpFLKHn6ZrSxuDhJZeNlnAIHMsVpl6GVV7tSK1O0wMMILrv Wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35aany3cjb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 10:27:17 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8ExBQk068063;
-        Tue, 8 Dec 2020 10:27:17 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35aany3chb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 10:27:17 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8FGSRh031607;
-        Tue, 8 Dec 2020 15:27:14 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3581fhkps2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 15:27:14 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8FRCe230474644
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 15:27:12 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1C51AE045;
-        Tue,  8 Dec 2020 15:27:12 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CA6DAE053;
-        Tue,  8 Dec 2020 15:27:11 +0000 (GMT)
-Received: from osiris (unknown [9.171.80.71])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  8 Dec 2020 15:27:11 +0000 (GMT)
-Date:   Tue, 8 Dec 2020 16:27:09 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-Message-ID: <20201208152709.GA26979@osiris>
-References: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
- <1607400978-31595-4-git-send-email-anshuman.khandual@arm.com>
+        Tue, 8 Dec 2020 10:29:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607441268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xr5jQ17tI5rLCWomlbBlC+vVMUJYwNJfuplB6ldKqjw=;
+        b=fpLSsQ3jCfZNSIwzpel2zxvDuetQQ1WHk9mjrG2vUe90nIxGw1iE2XLFy1UCVKM+YQXYVf
+        fsI7T7FbhmJF6jR2c11A6zcwXXlXoQX+TZB55PTRpxSwhjFZaQj26JO3GaqQVaBvxTb5VV
+        ldZ5I2/EIYS/QxAzUwTHm7N6glh8ghI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-vxPK1_rsOaqVVeAbgTnPJQ-1; Tue, 08 Dec 2020 10:27:45 -0500
+X-MC-Unique: vxPK1_rsOaqVVeAbgTnPJQ-1
+Received: by mail-ej1-f72.google.com with SMTP id k15so5299635ejg.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:27:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xr5jQ17tI5rLCWomlbBlC+vVMUJYwNJfuplB6ldKqjw=;
+        b=aZ8Wf4uql6iBMrlz+K1sbmllelTlDX5lzW56zMijXWNRcrVg62Y2k7/swl44zKdrtf
+         8tyvBJmuk8aCoFGXwYMxNfXXVpi0fCNP0O5yxwdh7l+zgdYS6d55Pae85q0PCO7wsvG2
+         GDGqzWSmW3Csz3bH2JaBqLLFRFd91CtkpJi/YnZ11Op4QWB1dqJpUhW+fUldiLE9Pn8F
+         40AzJSF1MvHskqomO8OIafoCjyt17GTs8hCTux/UEfC3+sH3iNUaOkccmYM5TMKPYi8M
+         j2AXudTIytO7BX/zjgKXNgaF4ojfs4LwWwKmxAB03l09eX8FYCYk8BJFL26cdGR8+D8I
+         /Hug==
+X-Gm-Message-State: AOAM531j6rr6mKJhQcxDaEK4h9woAg/PgEmPrvAo1/8k6SoFwS3Fimty
+        AzECyEGoMZ3QujGSjXObHYH6jLZaaht+RI9sFoTH1FXrly/tQpET7rndHEv/4l3SzeSwPyCJCns
+        YSRGdh982hzvL+6lfN7nvEVAY6++gY+ckyJvNQk2w2S8AxF3FHAjYGsJbd5ykg9Oqga9PAl1yEJ
+        UV
+X-Received: by 2002:a17:906:b20f:: with SMTP id p15mr9459754ejz.542.1607441264319;
+        Tue, 08 Dec 2020 07:27:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwXjJbN5M9gONlp70KY56vz5xTWbiybJRXvIYLl+C7UFgBkWJVGw26sjytDWrUHJwlOqWECGw==
+X-Received: by 2002:a17:906:b20f:: with SMTP id p15mr9459731ejz.542.1607441264052;
+        Tue, 08 Dec 2020 07:27:44 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id a10sm14794203ejk.92.2020.12.08.07.27.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:27:43 -0800 (PST)
+Subject: Re: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
+ mmio_range_devid_1 with static keyword
+To:     "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
+ <194d5a3c2c0f99345454004eb81c08d94181b7d7.camel@intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <179b9e9c-5f38-b6e9-2135-636bdb275989@redhat.com>
+Date:   Tue, 8 Dec 2020 16:27:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607400978-31595-4-git-send-email-anshuman.khandual@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_09:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=5 phishscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080086
+In-Reply-To: <194d5a3c2c0f99345454004eb81c08d94181b7d7.camel@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:46:18AM +0530, Anshuman Khandual wrote:
-> This overrides arch_get_mappabble_range() on s390 platform which will be
-> used with recently added generic framework. It drops a redundant similar
-> check in vmem_add_mapping() while compensating __segment_load() with a new
-> address range check to preserve the existing functionality. It also adds a
-> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
-> been called on the hotplug path.
-> 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/s390/mm/extmem.c |  5 +++++
->  arch/s390/mm/init.c   | 10 ++++++++++
->  arch/s390/mm/vmem.c   |  4 ----
->  3 files changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
-> index 5060956b8e7d..cc055a78f7b6 100644
-> --- a/arch/s390/mm/extmem.c
-> +++ b/arch/s390/mm/extmem.c
-> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
->  		goto out_free_resource;
->  	}
->  
-> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
-> +		rc = -ERANGE;
-> +		goto out_resource;
-> +	}
-> +
->  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
->  	if (rc)
->  		goto out_resource;
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 77767850d0d0..64937baabf93 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -278,6 +278,15 @@ device_initcall(s390_cma_mem_init);
->  
->  #endif /* CONFIG_CMA */
->  
-> +struct range arch_get_mappable_range(void)
-> +{
-> +	struct range memhp_range;
-> +
-> +	memhp_range.start = 0;
-> +	memhp_range.end =  VMEM_MAX_PHYS;
-> +	return memhp_range;
-> +}
-> +
->  int arch_add_memory(int nid, u64 start, u64 size,
->  		    struct mhp_params *params)
->  {
-> @@ -291,6 +300,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->  		return -EINVAL;
->  
-> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
->  	rc = vmem_add_mapping(start, size);
->  	if (rc)
->  		return rc;
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index b239f2ba93b0..749eab43aa93 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -536,10 +536,6 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
->  {
->  	int ret;
->  
-> -	if (start + size > VMEM_MAX_PHYS ||
-> -	    start + size < start)
-> -		return -ERANGE;
-> -
+Hi,
 
-Is there a reason why you added the memhp_range_allowed() check call
-to arch_add_memory() instead of vmem_add_mapping()? If you would do
-that, then the extra code in __segment_load() wouldn't be
-required.
-Even though the error message from memhp_range_allowed() might be
-highly confusing.
+On 12/8/20 4:22 PM, Pandruvada, Srinivas wrote:
+> On Tue, 2020-12-08 at 20:28 +0800, Zou Wei wrote:
+>> Fix the following sparse warnings:
+>>
+>> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:23:24:
+>> warning: symbol 'mmio_range_devid_0' was not declared. Should it be
+>> static?
+>> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:28:24:
+>> warning: symbol 'mmio_range_devid_1' was not declared. Should it be
+>> static?
+>>
+> Yesterday I sent a patch "[PATCH v2 2/3] platform/x86: ISST: Allow
+> configurable offset range" to fix.
+
+And I replied to that v2 with the following:
+
+"I've already added v1 of these to the for-next branch of:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/
+
+Please send the changes in this v2 as (a) follow-up
+patch(es)."
+
+https://lore.kernel.org/platform-driver-x86/2f663d89-184b-f52e-6156-f485205f27f5@redhat.com/T/#t
+
+But I guess you may not have seen this because Intel's mail-servers
+seem to have gone completely foobar lately and are bouncing most
+of my emails it seems. I strongly suggest that you subscribe to
+the platform-driver-x86 lists, so that you at least get replies
+to your patches through the list.
+
+So are the changes in this patch from Zou Wei the only changes in v2
+of your ISST changes? If that is the case then I'll just merge
+Zou Wei's patch and then we're done.
+
+Regards,
+
+Hans
+
+
+
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>> ---
+>>  drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git
+>> a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+>> b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+>> index 2906cfe..ff49025 100644
+>> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+>> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+>> @@ -20,12 +20,12 @@ struct isst_mmio_range {
+>>         int end;
+>>  };
+>>  
+>> -struct isst_mmio_range mmio_range_devid_0[] = {
+>> +static struct isst_mmio_range mmio_range_devid_0[] = {
+>>         {0x04, 0x14},
+>>         {0x20, 0xD0},
+>>  };
+>>  
+>> -struct isst_mmio_range mmio_range_devid_1[] = {
+>> +static struct isst_mmio_range mmio_range_devid_1[] = {
+>>         {0x04, 0x14},
+>>         {0x20, 0x11C},
+>>  };
+> 
+
