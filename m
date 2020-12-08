@@ -2,146 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA562D279D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EDA2D27CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbgLHJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:29:40 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37347 "EHLO ozlabs.org"
+        id S1728789AbgLHJhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:37:33 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:58643 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbgLHJ3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:29:40 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqvxy3PWHz9sWC;
-        Tue,  8 Dec 2020 20:28:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607419736;
-        bh=ZIwefV1ijdrVyr9jXrKWDROeAatEmGo9ATyFcJRUVnA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Gt2ZEpq6nGT33L3okHfa3xKZP+ahtmQwTKY2Ak2k7V90QM0jwPiJisSehytWN5ey4
-         /lL3A7EPZpmig9CFHEChTGXFRkYV+9elTPi8sN8a6CVg9Vjh7TyHhwFUx1+A+zbKMq
-         CLhcPW3UbpP2VrSgBTpVcvEUZeMsFhu8CK6f3u5YcrL3qrajTD5/0On4ofeLmQ7Clx
-         SFo7Ym4R5WpoVqTasOwDGYwP8lqgWvkL/1jESSCqd3ycLNLHok1yRN3gXabALlCDTD
-         5afI/kFgMIoxB3FlcD4O1+ulg+iX5bqhkAfDG+uPFOko56hXeZn1ePi5wf4FFEyGY6
-         kitVWhCXAp6PA==
-Date:   Tue, 8 Dec 2020 20:28:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scsi-mkp tree
-Message-ID: <20201208202853.186ae136@canb.auug.org.au>
+        id S1727132AbgLHJhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:37:33 -0500
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 0B87owop066652;
+        Tue, 8 Dec 2020 15:50:58 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTP id 0B87oVLF065626;
+        Tue, 8 Dec 2020 15:50:31 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 15:50:34 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
+Date:   Tue, 8 Dec 2020 15:40:02 +0800
+Message-ID: <20201208074002.31539-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TgGmYSiCvy6LQk_oEJFuOEW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0B87oVLF065626
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TgGmYSiCvy6LQk_oEJFuOEW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+As no one cares about the return value of blk_mq_tag_busy() and
+__blk_mq_tag_busy(), so make them return void.
 
-Hi all,
-
-After merging the scsi-mkp tree, today's linux-next build (sparc64
-defconfig) failed like this:
-
-drivers/mtd/nand/raw/intel-nand-controller.c:17:10: fatal error: linux/mtd/=
-nand_ecc.h: No such file or directory
-   17 | #include <linux/mtd/nand_ecc.h>
-      |          ^~~~~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  81a395cdc176 ("scsi: block: Do not accept any requests while suspended")
-
-# CONFIG_PM is not set
-
-I have applied the following patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 8 Dec 2020 20:12:33 +1100
-Subject: [PATCH] scsi: block: fix for "scsi: block: Do not accept any reque=
-sts while suspended"
-
-Fixes: 81a395cdc176 ("scsi: block: Do not accept any requests while suspend=
-ed")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
- block/blk-core.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ block/blk-mq-tag.c | 4 ++--
+ block/blk-mq-tag.h | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index a71a5c9429d6..9c9aec1382be 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -421,6 +421,18 @@ void blk_cleanup_queue(struct request_queue *q)
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 9c92053e7..21ff7d156 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -21,7 +21,7 @@
+  * to get tag when first time, the other shared-tag users could reserve
+  * budget for it.
+  */
+-bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+ 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+ 		struct request_queue *q = hctx->queue;
+@@ -36,7 +36,7 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ 			atomic_inc(&hctx->tags->active_queues);
+ 	}
+ 
+-	return true;
++	return;
  }
- EXPORT_SYMBOL(blk_cleanup_queue);
-=20
-+#ifdef CONFIG_PM
-+static bool rq_suspended(struct request_queue *q)
-+{
-+	return q->rpm_status =3D=3D RPM_SUSPENDED;
-+}
-+#else
-+static bool rq_suspended(struct request_queue *q)
-+{
-+	return false;
-+}
-+#endif
-+
- /**
-  * blk_queue_enter() - try to increase q->q_usage_counter
-  * @q: request queue pointer
-@@ -440,12 +452,10 @@ int blk_queue_enter(struct request_queue *q, blk_mq_r=
-eq_flags_t flags)
- 			 * responsible for ensuring that that counter is
- 			 * globally visible before the queue is unfrozen.
- 			 */
--			if ((pm && q->rpm_status !=3D RPM_SUSPENDED) ||
--			    !blk_queue_pm_only(q)) {
-+			if ((pm && !rq_suspended(q)) || !blk_queue_pm_only(q))
- 				success =3D true;
--			} else {
-+			else
- 				percpu_ref_put(&q->q_usage_counter);
--			}
- 		}
- 		rcu_read_unlock();
-=20
---=20
-2.29.2
+ 
+ /*
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 7d3e6b333..dd80e5a85 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -60,15 +60,15 @@ enum {
+ 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
+ };
+ 
+-extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
++extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
+ extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
+ 
+-static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
++static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
+ 	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
+-		return false;
++		return;
+ 
+-	return __blk_mq_tag_busy(hctx);
++	__blk_mq_tag_busy(hctx);
+ }
+ 
+ static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+-- 
+2.17.1
 
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TgGmYSiCvy6LQk_oEJFuOEW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PR1UACgkQAVBC80lX
-0GxP0Af/bWpugxzTg9UEnaXMq/YocIVlc5gOTgBFR9OC3eaVR2xNT7kid6ieeQ/u
-HJNsR1hnIcjb2enGJ9peC6eflgQ0Uu+xS6so9asa3Y+CbVakdsOvS55bqdcqBa1l
-l0ee5FoE9Zv5ZWtg6+rA1gnM2TnmTp0KzBUUnK6o7DExYa6GsmOKvx0zJ3dtNGvK
-s42imF1znP+kAToQBX3ZcIS8tAwzVVMoDhsHyIU6b/9hpsg9hnPdDPoXW7uHmNnu
-5SpFG4WKMeyaF8B8t8uExSphLQ9syFXcfYWM/4amzHrJFBlUo6gWeagUfbjrtFov
-EEJJTpzd+I76oq2xwhWSJIXNrHcrBg==
-=x9ij
------END PGP SIGNATURE-----
-
---Sig_/TgGmYSiCvy6LQk_oEJFuOEW--
