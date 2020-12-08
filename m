@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7A62D31C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7802F2D31CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbgLHSK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:10:59 -0500
-Received: from maynard.decadent.org.uk ([95.217.213.242]:46066 "EHLO
-        maynard.decadent.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730468AbgLHSK7 (ORCPT
+        id S1730934AbgLHSL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:11:56 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2226 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730456AbgLHSLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:10:59 -0500
-Received: from [2a02:1811:d05:2600:ba82:33db:3e5e:d545] (helo=deadeye)
-        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1kmhRJ-0004ID-4G; Tue, 08 Dec 2020 19:10:17 +0100
-Received: from ben by deadeye with local (Exim 4.94)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1kmhRH-000fd8-77; Tue, 08 Dec 2020 19:10:15 +0100
-Message-ID: <4286b16c32116b6844eccacdd6a9ec567738f696.camel@decadent.org.uk>
-Subject: Re: Pass modules to Linux kernel without initrd
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Date:   Tue, 08 Dec 2020 19:10:10 +0100
-In-Reply-To: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
-References: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-PrJRV1+3dqjqHCVQ6LJf"
-User-Agent: Evolution 3.38.1-2 
+        Tue, 8 Dec 2020 13:11:55 -0500
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cr7Tf5QqNz67Nc1;
+        Wed,  9 Dec 2020 02:08:38 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 19:11:13 +0100
+Received: from [10.210.169.98] (10.210.169.98) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 18:11:12 +0000
+Subject: Re: [PATCH 1/1] hisi_sas: Fix possible buffer overflows in
+ prep_ssp_v3_hw
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201208164011.13866-1-ruc_zhangxiaohui@163.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <07831891-58ab-1147-e5b0-a62cca243769@huawei.com>
+Date:   Tue, 8 Dec 2020 18:10:37 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a02:1811:d05:2600:ba82:33db:3e5e:d545
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
+In-Reply-To: <20201208164011.13866-1-ruc_zhangxiaohui@163.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.98]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/12/2020 16:40, Xiaohui Zhang wrote:
+> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+> 
+> prep_ssp_v3_hw() calls memcpy() without checking the
+> destination size may trigger a buffer overflower, which a
+> local user could use to cause denial of service or the
+> execution of arbitrary code.
+> Fix it by putting the length check before calling memcpy().
+> 
+> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+> ---
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> index 7133ca859..2664c36d3 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> @@ -1267,7 +1267,8 @@ static void prep_ssp_v3_hw(struct hisi_hba *hisi_hba,
+>   	memcpy(buf_cmd, &task->ssp_task.LUN, 8);
+>   	if (!tmf) {
+>   		buf_cmd[9] = ssp_task->task_attr | (ssp_task->task_prio << 3);
+> -		memcpy(buf_cmd + 12, scsi_cmnd->cmnd, scsi_cmnd->cmd_len);
+> +		memcpy(buf_cmd + 12, scsi_cmnd->cmnd,
+> +		       min_t(unsigned short, scsi_cmnd->cmd_len, strlen(buf_cmd)-12));
 
---=-PrJRV1+3dqjqHCVQ6LJf
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+buf_cmd is not a NULL-terminated string, it's actually a pointer to a 
+structure.
 
-On Tue, 2020-12-08 at 10:24 +0100, Paul Menzel wrote:
-Dear Linux folks,
+And you can see that we set buf_cmd[9] previously (which could set as 
+0), so how can you possibly rely on a strlen(buf_cmd) - 12 being sane?
 
+Thanks,
+john
 
-Trying to reduce the boot time of standard distributions, I would like=20
-to get rid of the initrd. The initrd is for mounting the root file=20
-system and on most end user systems with standard distributions that=20
-means loading the bus driver for the drive and the file system driver.
-[...]
+>   	} else {
+>   		buf_cmd[10] = tmf->tmf;
+>   		switch (tmf->tmf) {
+> 
 
-I would expect most end user systems to use at least one of LVM and
-cryptsetup, which need user-space to configure them.
-
-Debian has the "tiny-initramfs" package that covers the simple cases
-you're targetting, and can be used instead of initramfs-tools or
-dracut.  The upstream of that is:
-<https://github.com/chris-se/tiny-initramfs/>.
-
-But I don't anticipate that we would change the default initramfs
-builder any time soon.
-
-Ben.
-
---=20
-Ben Hutchings
-The world is coming to an end.	Please log off.
-
---=-PrJRV1+3dqjqHCVQ6LJf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAl/PwYIACgkQ57/I7JWG
-EQnZmxAAmDO/by7aheXTXo7TePm82TYaQMzeK2H4WbeiJsfGg6M2JRfzytgtav+S
-DQvLn6qhlU+XSnkSNxER3EGCsDJenh0XTFtfmdUHKoYFFLBivhXApCbfPM+GCee1
-bSodvJ+FKstnSapukK4mvzhEgGGXC2CI6DV3pZ96zzRHpZaq76QkBHfKmGvnlaKy
-6ZsOhhl0EBDpuwIg68tPx2Fav4G2u+GnqIFMAz5+hYzfnNaL3SVqtWvhJ4ySI6cR
-6cgvlfbCQs5B6T/xKv+seYhb/VITMt7lPS1urExn4ZP8PEwsn9IyExeZxOjwqYz3
-rcXyKS4RyopVTMbbAxSu/N8ncokuQIdhZ5ZAFPr2CpfuCMKKu7c4K8ZKdc8bNKAN
-C0GyY8bBsSBqm4t4FknmYwBRg7JUePN2XiFSjbY12faXYOXUK6fT9hYmQP2hh+TH
-75EYf0YdPU0A9dmovq1q/A1ETbxsddXwkJeTv+0mXRf4NzXHcKOYxET283lCRCnz
-+QLcOoaV4oj0uzSVvGSqql70MARs9cTmsJQbWkIRnBOVqd/IkAwKbrlaO6XhSYpP
-OqjULpE7FG/D6/AtD/9SVQ1Ov/h9t3KAXkCMyRLzl5OGsG3nsayG1LzchWBpBsLc
-DCbpcTSIqEgp8mqUvsrqWPBgmdl8yys5E7qocbweao/NIbE7OAQ=
-=lbIp
------END PGP SIGNATURE-----
-
---=-PrJRV1+3dqjqHCVQ6LJf--
