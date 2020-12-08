@@ -2,67 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D517E2D2DAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8332D2DAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgLHO6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:58:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729441AbgLHO6a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:58:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555BDC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:57:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QhrUYq49bSuAo1dMLqIMqOl4H3E7qyXyy50oBZwc848=; b=vzyXrRgssGaCQwAHJHtWWK2e7K
-        2DTPj0ahGGdUc13MoKFzt18oHHAWdSbbtez31WOfnrIbZJfF9sxzrLBJvw1R7O7tp/H+ZZ38C5w9g
-        rBR2IvWaVCnWUNXaCyH1/c3bdULS/HzqwBVdqSwCrRs6G0nK5BE7mwVa5OkuDZvNjfefP75y3oghf
-        jHyr+8hEVCb/zIixPwS070eS9UZDXcKB4qL+QmfZ2ruMWMjV41teFaFIa4s3VbIQRwCDJgvw0zbU+
-        xVP5AxNB5TrFv0Evhy1sEQoxa9gxfWcXUZGPx74Ts5amdibEmMxwKssmfpydIsegdaWW16Rja8IIl
-        HY3oM8sw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmeQy-0002BJ-S7; Tue, 08 Dec 2020 14:57:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E92B304BAE;
-        Tue,  8 Dec 2020 15:57:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 63DED21ADBEA0; Tue,  8 Dec 2020 15:57:43 +0100 (CET)
-Date:   Tue, 8 Dec 2020 15:57:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v2 0/5] locking/rwsem: Rework reader optimistic spinning
-Message-ID: <20201208145743.GF2414@hirez.programming.kicks-ass.net>
-References: <20201121041416.12285-1-longman@redhat.com>
+        id S1729983AbgLHO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:58:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729971AbgLHO6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:58:51 -0500
+Date:   Tue, 8 Dec 2020 06:58:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607439490;
+        bh=2DK5VJbB1dLxPU5eq82tpm0Zqe5mMOFjP1U3f6Jru40=;
+        h=From:To:Cc:Subject:Reply-To:From;
+        b=kf71kpUiFeZL6OJWEiBf/Ws8izbgwiovyXTtRpkPowtWc/LlGJqsHAZk3fsFL9VZb
+         A9eM3y/pHEIxHNrLjLgMzwn8VOxy3YRAJWKz3dpgmTspj85npP4gAXkJtWhMNCFXXe
+         NwwKq58BZe4WjDkqAyRtrnmCY7kQvZBMW3CZnpIh2UcNQ44poLNGnN/6Fv9p4xAUTi
+         ttXKNqJFoQ/iFsKS11BRhvQpj++cSxwxfyLJCewDMdvbgehWVdU4Xp2vH3LlWKwPau
+         oCZQxrhUVwqAjaZUuU1kwrP10jj+rUNzshTNYiXKXR3syNn+2CneEHkucKjUTfKJU1
+         wi0u9tgb9v3lw==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     frederic@kernel.org
+Cc:     boqun.feng@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: One potential issue with concurrent execution of RCU callbacks...
+Message-ID: <20201208145810.GA4875@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121041416.12285-1-longman@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:14:11PM -0500, Waiman Long wrote:
-> Waiman Long (5):
->   locking/rwsem: Pass the current atomic count to
->     rwsem_down_read_slowpath()
->   locking/rwsem: Prevent potential lock starvation
->   locking/rwsem: Enable reader optimistic lock stealing
->   locking/rwsem: Wake up all waiting readers if RWSEM_WAKE_READ_OWNED
->   locking/rwsem: Remove reader optimistic spinning
+Hello, Frederic,
 
-So I've munged the lot onto the other rwsem patches and skipped #4, I've
-not even boot tested them (will go do so shortly).
+Boqun just asked if RCU callbacks ran in BH-disabled context to avoid
+concurrent execution of the same callback.  Of course, this raises the
+question of whether a self-posting callback can have two instances of
+itself running concurrently while a CPU is in the process of transitioning
+between softirq and rcuo invocation of callbacks.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/core
+I believe that the answer is "no" because BH-disabled context is
+an implicit RCU read-side critical section.  Therefore, the initial
+invocation of the RCU callback must complete in order for a new grace
+period to complete, and a new grace period must complete before the
+second invocation of that same callback to start.
 
+Does that make sense, or am I missing something?
+
+							Thanx, Paul
