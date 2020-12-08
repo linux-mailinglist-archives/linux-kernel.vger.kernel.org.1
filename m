@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD9F2D3701
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD8C2D370A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731795AbgLHXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:40:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731780AbgLHXki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:40:38 -0500
-Date:   Wed, 9 Dec 2020 08:39:54 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607470798;
-        bh=rmI61EeHQCwVKLL9Ck31mxKDUHSt9NowP0gnU42nxHA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j+skt7UhugtkoFr7WzkfFKWMnjeRMW1Q6/O/iw/3aJP3lkz2Q7VGs9HHJWqro1wLo
-         WSb+hd5ZThSqwPz38lFCUfIFJGp7yO98q3tA81g9WDZnOrSzeRUCMuT07rYTHW0PaE
-         u0sv6uUXtoSeU4OChX4v2ixKGEsKGj8Pc8iIHa+iL/IxZOCyVJQDBiuYhto/AqMgeu
-         go4iadkkIlyBktZzQsbSM3DJRiKgKqlcEo1kDLJaE+2vvqMzbLEPzQRVOUk4p7nU1O
-         gE2+Vfh/WvYRW3SL7UB5WUw8lJgAT8lQU795N4k2wElEjSMj/1/XsOAZbttOopyA9+
-         ImE9I/4IUl/Rw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
- buffer timestamps
-Message-Id: <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
-In-Reply-To: <20201208100024.42bbcd23@gandalf.local.home>
-References: <20201201160656.7cc6a5e8@gandalf.local.home>
-        <20201208211411.e41849908381eb493adce0f5@kernel.org>
-        <20201208100024.42bbcd23@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731751AbgLHXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLHXlb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 18:41:31 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E266C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:40:50 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id m13so217463ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SiRldqdmzeS1Mv5WIXPh/peTbx9BtSi92k54Z67KE4M=;
+        b=J8WFN1IBnvwJjf12CXxBMDGUB3Y35X5pWzS6o8L22oagYz7MBuIqKJ8M3+uxSnnwBm
+         Qu19kBkNmE+C0LfknE96xiDXXmhtG+u8kyfhxt8dQ593nkLH3ITnJMkIWnK14JzgSBby
+         DCJOmGaR1qXvUi9NfH0pd00gvvLN3R8OAMXFHW7RKsD945aTqQzk+FRpyxj5XmZ02K7b
+         H0ggvh86gYSgUGmJ/tlOgvZWXLYkifZ+Pjzy8ucCtSVXYw+IQZZRqkNq9yMsqRYHmWYt
+         9HJGf1WAYXzgov4yYFec1982+NIcdtZPBf8Sy/LRPsvlZ/P+y8WShE//ElA4TAFmLI+z
+         ZzKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SiRldqdmzeS1Mv5WIXPh/peTbx9BtSi92k54Z67KE4M=;
+        b=mSqk8cYY/nRZxd5RFZLGYEkBCrwQeTmJH1wuB6wfkCa4KOghkv62Et2E3Keman0xL3
+         6JAr3t1c32fk/OjDrQSryUx/2iHNx16G9gUUbaRYa7f1Ul69vf/klzFOcr00gnWHjiz+
+         DJJ/AJRtQ7QDynevGqpHCaBZ+Xq7dsZgSLCg/GDAeZb7GbMdmNKz2Df7JF8pVdGvA8UB
+         UDt/uRwzC9yzeE4e7XveonXcA+rvPWvfIEhyAETgURmkd54b3/kXL9ov/8atZRdEEyuW
+         gENlVAGAkf+mzO2c+OSPUsK/NZHJI9kpTwugMtmU+vk/IjNOgwA8j9UEGQXTh+8Fz1u7
+         6+Rw==
+X-Gm-Message-State: AOAM533Hig/FBt3sYqV4M8wToCpMGqrLO1Bk3gPR8RKyu01Ea+3Iri4C
+        FeacOrq7jnVFIU0XrT052qzysiRBz9d5t5xwnPPMTw==
+X-Google-Smtp-Source: ABdhPJzMw3FBB9dkB8UpPSjMu0vXES+Fd7QlsOOkEOw3dcInEyxdT6BtmJ4I838fJVgg/iRcwJCA3XFDJD8xaoO+mtg=
+X-Received: by 2002:a2e:50c:: with SMTP id 12mr24546ljf.226.1607470848935;
+ Tue, 08 Dec 2020 15:40:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-3-surenb@google.com>
+In-Reply-To: <20201124053943.1684874-3-surenb@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 9 Dec 2020 00:40:22 +0100
+Message-ID: <CAG48ez1M5tT=4T2RREhs1U3yMJH2N7HPWySBnMJyMSg0WtdD2A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/madvise: add process_madvise MADV_DONTNEER support
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 10:00:24 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Nov 24, 2020 at 6:50 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> In modern systems it's not unusual to have a system component monitoring
+> memory conditions of the system and tasked with keeping system memory
+> pressure under control. One way to accomplish that is to kill
+> non-essential processes to free up memory for more important ones.
+> Examples of this are Facebook's OOM killer daemon called oomd and
+> Android's low memory killer daemon called lmkd.
+> For such system component it's important to be able to free memory
+> quickly and efficiently. Unfortunately the time process takes to free
+> up its memory after receiving a SIGKILL might vary based on the state
+> of the process (uninterruptible sleep), size and OPP level of the core
+> the process is running.
+> In such situation it is desirable to be able to free up the memory of the
+> process being killed in a more controlled way.
+> Enable MADV_DONTNEED to be used with process_madvise when applied to a
+> dying process to reclaim its memory. This would allow userspace system
+> components like oomd and lmkd to free memory of the target process in
+> a more predictable way.
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+[...]
+> @@ -1239,6 +1256,23 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
+>                 goto release_task;
+>         }
+>
+> +       if (madvise_destructive(behavior)) {
+> +               /* Allow destructive madvise only on a dying processes */
+> +               if (!signal_group_exit(task->signal)) {
+> +                       ret = -EINVAL;
+> +                       goto release_mm;
+> +               }
 
-> On Tue, 8 Dec 2020 21:14:11 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > On Tue, 1 Dec 2020 16:06:56 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > 
-> > > A bug was reported about the ftrace ring buffer going backwards:
-> > > 
-> > > Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
-> > > 
-> > > In debugging this code, I wrote a C program that uses libtracefs to enable
-> > > all events and function tracing (if it exits), and then read the raw ring
-> > > buffer binary data and make sure that all the events never go backwards. If
-> > > they do, then it does a dump of the ring buffer sub buffer page and shows
-> > > the layout of the events and their deltas.
-> > > 
-> > > This was a very useful tool, and can be used to make sure that the ring
-> > > buffer's timestamps are consistently monotonic.  
-> > 
-> > Yeah, this sounds good to me.
-> > 
-> > > 
-> > > Adding this to the ftrace selftests seems to be a way that this can be
-> > > tested more often. But this would introduce the first binary code to the
-> > > ftracetests.  
-> > 
-> > No problem. I think it is better to be placed under ftracetest/bin/ and
-> > add a PATH before running testcases.
-> 
-> OK.
-> 
-> > 
-> > > To make sure that the tests still work on embedded devices (where a
-> > > compiler may not even exist), and also since this binary incorporates the
-> > > yet-to-be-released libtracefs library, if the make fails, the test exits
-> > > with UNTESTED. The UNTESTED is documented as being a place holder which
-> > > this would be if the make does not work.  
-> > 
-> > Hmm, in some embedded environment, we may not have make nor gcc.
-> > So it would be better to be build in the kselftest build process as similar
-> > to the other kselftests.
-> > 
-> > What about putting the source code under ftracetest/src/. For the embedded
-> > devices, it can be built with cross-tools (and make it static binary if
-> > needed) and install it under ftracetest/bin. If we have no cross-build
-> > tool etc. we just skip building the binary under ftracetest/bin. And if 
-> > the testcase finds there is no binary, it just returns UNRESOLVED or UNTESTED.
-> > 
-> 
-> OK. I'll look at how to make this for both cases (embedded and not).
-> Because, my current case is to copy the selftests to the machine and run
-> them there. So my use case requires the build to happen at test time. But I
-> can make it where it wont build if the binary already exists.
-
-For that case, what about just "make clean" before copy, then the binary
-will be removed? 
-
-> 
-> > (currently I returns UNRESOLVED when the test target kmodule is not found)
-> 
-> I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
-> lack of kernel features or modules. But this is not a lack of the kernel,
-> but a lack of user space. If something in user space is lacking (a tool,
-> library, or binary), then I thought UNTESTED would be a better option. But
-> if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
-> I'll keep UNTESTED.
-
-The idea of UNTESTED/UNRESOLVED (and UNSUPPORTED) came from POSIX standard,
-it is expained in dejagnu's manual:
-
-https://www.gnu.org/software/dejagnu/manual/A-POSIX-Conforming-Test-Framework.html
-
-In this case, user can build the user space binary for the environment but
-does't, so I think UNRESOLVED will fit to that case.
-
-So strictly speaking, UNTESTED is just a placeholder which will be implemented
-in the future. (hmm, it will be a good chance to write a document for it)
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Technically Linux allows processes to share mm_struct without being in
+the same thread group, so I'm not sure whether this check is good
+enough? AFAICS the normal OOM killer deals with this case by letting
+__oom_kill_process() always kill all tasks that share the mm_struct.
