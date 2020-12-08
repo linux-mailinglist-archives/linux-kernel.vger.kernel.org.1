@@ -2,158 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07B32D2987
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA602D298F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgLHLFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S1729011AbgLHLH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728752AbgLHLFO (ORCPT
+        with ESMTP id S1728287AbgLHLH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:05:14 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEA0C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 03:04:34 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c1so3843332wrq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:04:34 -0800 (PST)
+        Tue, 8 Dec 2020 06:07:58 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B23C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 03:07:18 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id k10so1755668wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:07:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oVdto4l/iQFOE/jcGLfjaxzoGzq2Ps5a3Ie3KVUxu1I=;
-        b=qb024noJnAcaD4FrKPkd4Ne8IhxPQM8AlFz92r4A6tTwucH6MQXOpPuRiJdwTukbJK
-         J+1ZPm8YX5jCZaEvyjJ6vpn4lAMa7UFXjLoCTOLFc501Hrx1cNiVd+Z8WluLCJc96MuN
-         lG3zsMPbMQ7hm6N6VfWocnn+bbRnLm+Gti9iZ1XUFKkrwPa52L+7FuO98JnyIATsKAvJ
-         zhHBZaGpGCQf8SOU7RWmdoMsg25XwH8LXk3+VNnowPQbs0YR6Fbl8kFUTCijvApbHnRT
-         x/2pY4XAtfUyMd/mC2HSFBNTO0FPeKDCdLVM3JnPGjoXBVpvqs5FD3afdifAdwB7tAmT
-         gSLg==
+        bh=2NnCE+nkCzmC8SJdxfDZNmmoxjUO7CAw3RZJC+yBn6Q=;
+        b=P7004MFuh+TIp0PuvsmG20j7fXiRGd54xOlEnHkLKNWL0nTqhJQHm/RcK7i6FsCzws
+         hlNbSubFctUSyvRA3/YGpEAcrUbrxVX7hgD2OfC9w1fUoiAey+Flqe0UWcSy1V71FMrF
+         WhvyOoLOspo+SxjSS13cYIjJ6yaBYp3jSLA1zpvQS/GL5c1uQ0b3IpAGcKC89J9LDoGo
+         mm2bWOhcSwGGqbbTSwgcii2MLdgk1gZgi2f0F0/fzGB9oAsBJaOMM3pxtasN0Vd/C02h
+         B2SRcAewskzNZ1a1XkoruteKxBO5phGT3s/D+MuRpukM1Ya4UmpE67jBzRdqaSp7M0cm
+         PFIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=oVdto4l/iQFOE/jcGLfjaxzoGzq2Ps5a3Ie3KVUxu1I=;
-        b=glg/dyLMMofCYsZnkiw30PUk7YklgV7Ehw2FkS6s9ukgy3ZtEQi8mRfNHparBCE7NK
-         Zt1P+bNvudoynKIpb6dlC9QQ8ysXk/TvMhO6b5imvZbzBTIc7dxBSrSO/50WuHSbCQqF
-         K/OGOsC27eZQA7X6Fc4oLmbiS6kEXoX8zPESeh3vtWmsKL9jWU8F90mVQaOw7ENdbet7
-         HbrdGxDdHWcFqq2OoBxOi1hlyt0gV7WHCeavXVxlPeNGaD5irnkv1Br5T21FN89z66sS
-         Itl0xuT/kDq8QE8D9zy98HXoN+8bbMUwW1CsbfpzRJYjW9YMLr11cwTmDKVIXSzG37i/
-         9OyQ==
-X-Gm-Message-State: AOAM531qDX5C3QDgJeVVGCFdlfwMRB4RXqh8N8PISzCmOrobrKssjytt
-        +cH7vf+bQCmf3iRsaMg1uY+6Jg==
-X-Google-Smtp-Source: ABdhPJxArhPoyEic163xkIJznknOhIaG8ofGldEM/e3Q9Bok2a5xIQOzLIt+OejlKTMEWByALsMqsw==
-X-Received: by 2002:adf:f7c2:: with SMTP id a2mr24125501wrq.11.1607425473108;
-        Tue, 08 Dec 2020 03:04:33 -0800 (PST)
+        bh=2NnCE+nkCzmC8SJdxfDZNmmoxjUO7CAw3RZJC+yBn6Q=;
+        b=o6X7vVapdZN4X8tDXlom+Nn0GBbk22AynJRjMwfpj+dWp43LzoVXcqWIrmv+LLqQpU
+         4ruUwwWP3vjvYuHA1VYWnpzp718vhQj78Hno6yPLqNhGXARpCk4BKRq2OUVk62NoWcEN
+         MpTmL8tuXx2un5WN8AvjklDHPazWTk7uClvasdb2QgaM1mNYbRDS5GuyiDdL1V/Z94NM
+         7/JXx9RX80sgoqettXx8GtAo2X5Sg/JvcXWLTk0vYRQXaZrJoc36BvMwBqxyeAgUT955
+         gDrrxGCNdsEAw6lRRAGylN8qLsecmh2C+yT273Jw7W+qAo9XGstWN0MRtYp2uDRyiwft
+         tPhA==
+X-Gm-Message-State: AOAM532oyQNc3ftbWGxJcaowv59mBRK99AVYiHzslMdxQiSJ4uv+wcJM
+        1i+j3EDEyLs1a+qRKzZZFoa3Xg==
+X-Google-Smtp-Source: ABdhPJzM/cXN+ywswkURy4kyudPj+jpqw6iKygOl10+1E4y8ipwMdhQ45wzk2yuZOfVEpkLcT4832w==
+X-Received: by 2002:a7b:cb04:: with SMTP id u4mr3000935wmj.74.1607425636802;
+        Tue, 08 Dec 2020 03:07:16 -0800 (PST)
 Received: from dell ([91.110.221.209])
-        by smtp.gmail.com with ESMTPSA id h20sm2925583wmb.29.2020.12.08.03.04.31
+        by smtp.gmail.com with ESMTPSA id j15sm14612745wrr.85.2020.12.08.03.07.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 03:04:32 -0800 (PST)
-Date:   Tue, 8 Dec 2020 11:04:30 +0000
+        Tue, 08 Dec 2020 03:07:16 -0800 (PST)
+Date:   Tue, 8 Dec 2020 11:07:14 +0000
 From:   Lee Jones <lee.jones@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>, ohad@wizery.com,
-        bjorn.andersson@linaro.org, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        praneeth@ti.com, rogerq@ti.com
-Subject: Re: [PATCH v3 3/6] remoteproc: pru: Add support for PRU specific
- interrupt configuration
-Message-ID: <20201208110430.GS4801@dell>
-References: <20201204201807.14716-1-grzegorz.jaszczyk@linaro.org>
- <20201204201807.14716-4-grzegorz.jaszczyk@linaro.org>
- <20201207173731.GA1509079@xps15>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, Maya Erez <merez@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 01/17] wil6210: wmi: Correct misnamed function parameter
+ 'ptr_'
+Message-ID: <20201208110714.GT4801@dell>
+References: <20201126133152.3211309-2-lee.jones@linaro.org>
+ <20201202185044.AD737C43460@smtp.codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201207173731.GA1509079@xps15>
+In-Reply-To: <20201202185044.AD737C43460@smtp.codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020, Mathieu Poirier wrote:
+On Wed, 02 Dec 2020, Kalle Valo wrote:
 
-> On Fri, Dec 04, 2020 at 09:18:04PM +0100, Grzegorz Jaszczyk wrote:
-> > The firmware blob can contain optional ELF sections: .resource_table
-> > section and .pru_irq_map one. The second one contains the PRUSS
-> > interrupt mapping description, which needs to be setup before powering
-> > on the PRU core. To avoid RAM wastage this ELF section is not mapped to
-> > any ELF segment (by the firmware linker) and therefore is not loaded to
-> > PRU memory.
-> > 
-> > The PRU interrupt configuration is handled within the PRUSS INTC irqchip
-> > driver and leverages the system events to interrupt channels and host
-> > interrupts mapping configuration. Relevant irq routing information is
-> > passed through a special .pru_irq_map ELF section (for interrupts routed
-> > to and used by PRU cores) or via the PRU application's device tree node
-> > (for interrupts routed to and used by the main CPU). The mappings are
-> > currently programmed during the booting/shutdown of the PRU.
-> > 
-> > The interrupt configuration passed through .pru_irq_map ELF section is
-> > optional. It varies on specific firmware functionality and therefore
-> > have to be unwinded during PRU stop and performed again during
-> > PRU start.
-> > 
-> > Co-developed-by: Suman Anna <s-anna@ti.com>
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > ---
-
-[...]
-
-> >  drivers/remoteproc/pru_rproc.c | 180 +++++++++++++++++++++++++++++++++
-> >  drivers/remoteproc/pru_rproc.h |  46 +++++++++
-> >  2 files changed, 226 insertions(+)
-> >  create mode 100644 drivers/remoteproc/pru_rproc.h
-> > 
-> > diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-> > index d33392bbd8af..4ef59d15d888 100644
-> > --- a/drivers/remoteproc/pru_rproc.c
-> > +++ b/drivers/remoteproc/pru_rproc.c
-> > @@ -11,13 +11,16 @@
-> >   */
-
-[...]
-
-> > +static int pru_handle_intrmap(struct rproc *rproc)
-> > +{
-> > +	struct device *dev = rproc->dev.parent;
-> > +	struct pru_rproc *pru = rproc->priv;
-> > +	struct pru_irq_rsc *rsc = pru->pru_interrupt_map;
-> > +	struct irq_fwspec fwspec;
-> > +	struct device_node *irq_parent;
-> > +	int i, ret = 0;
-> > +
-> > +	/* not having pru_interrupt_map is not an error */
-> > +	if (!rsc)
-> > +		return 0;
-> > +
-> > +	/* currently supporting only type 0 */
-> > +	if (rsc->type != 0) {
-> > +		dev_err(dev, "unsupported rsc type: %d\n", rsc->type);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	if (rsc->num_evts > MAX_PRU_SYS_EVENTS)
-> > +		return -EINVAL;
-> > +
-> > +	if (sizeof(*rsc) + rsc->num_evts * sizeof(struct pruss_int_map) !=
-> > +	    pru->pru_interrupt_map_sz)
-> > +		return -EINVAL;
-> > +
-> > +	pru->evt_count = rsc->num_evts;
-> > +	pru->mapped_irq = kcalloc(pru->evt_count, sizeof(int), GFP_KERNEL);
+> Lee Jones <lee.jones@linaro.org> wrote:
 > 
-> sizeof(unsigned int)
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/net/wireless/ath/wil6210/wmi.c:279: warning: Function parameter or member 'ptr_' not described in 'wmi_buffer_block'
+> >  drivers/net/wireless/ath/wil6210/wmi.c:279: warning: Excess function parameter 'ptr' description in 'wmi_buffer_block'
+> > 
+> > Cc: Maya Erez <merez@codeaurora.org>
+> > Cc: Kalle Valo <kvalo@codeaurora.org>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: linux-wireless@vger.kernel.org
+> > Cc: wil6210@qti.qualcomm.com
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Failed to apply:
+> 
+> error: patch failed: drivers/net/wireless/ath/wil6210/wmi.c:262
+> error: drivers/net/wireless/ath/wil6210/wmi.c: patch does not apply
+> stg import: Diff does not apply cleanly
+> 
+> Patch set to Changes Requested.
 
-Would you mind trimming your replies please?
+That's so strange.
 
-Brain grepping through 200+ lines of quote for a one line review
-comment is a little frustrating.
+I just rebased my branch onto the latest -next with no issue.
 
-TIA.
+I will re-submit after the merge-window closes.
 
 -- 
 Lee Jones [李琼斯]
