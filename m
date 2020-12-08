@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EDA2D27CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D992D27A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgLHJhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:37:33 -0500
-Received: from smtp.h3c.com ([60.191.123.56]:58643 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgLHJhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:37:33 -0500
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 0B87owop066652;
-        Tue, 8 Dec 2020 15:50:58 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTP id 0B87oVLF065626;
-        Tue, 8 Dec 2020 15:50:31 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 8 Dec 2020 15:50:34 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] blk-mq-tag: make blk_mq_tag_busy() return void
-Date:   Tue, 8 Dec 2020 15:40:02 +0800
-Message-ID: <20201208074002.31539-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729005AbgLHJaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:30:17 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40768 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727845AbgLHJaQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:30:16 -0500
+Received: by mail-lj1-f193.google.com with SMTP id x23so11314467lji.7;
+        Tue, 08 Dec 2020 01:29:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bl1BpzFHK81haaQNi3dHDZIBtyotDgiUUbLCQGH6GfI=;
+        b=SQBhODFnNvXBiJfUCF9Uwf1e+3Lk9eLuJRYWOODP2VPL4hre93105NtZmTq6F4aFHf
+         gomzq23ms1ACmm+OrwURakYdLdtnPilbRjNxT75vfUVau7nmT8yOIFW6YwKMco0dCSpl
+         /X/2nTrYymYfjzzcYh159xUeA4T+KiM247MZSkgfTCu6C4p3shXqpjOKpbVuE29zV/X1
+         zWu/balRE2gpUMSddvqwKbTPDZjPizbmCXptFGusM1WmCxfbc3uc4Yl1e8o2QST32/qE
+         REyv9x8iVZVuw7bbkCHgtWvsoal4IrXKaZvX/aV4mrX7JV4pdfCRXgcgtcH46mbWAfbT
+         DMpw==
+X-Gm-Message-State: AOAM532V78+ywnX4O/bESjXHBZXGODNsrIbXJAfzwQwt/yFEgWfNZFVE
+        kEJtmGqDBbOAO3hwLjhjyc6ahzoB4qh2/g==
+X-Google-Smtp-Source: ABdhPJzHrVV9YWmfaaFMMWTV5pgu/BNkM/0NoXuaq4HsnWzuDQU6v34rrJi6vLLFiflu1MxTNKokfA==
+X-Received: by 2002:a2e:9990:: with SMTP id w16mr10427297lji.111.1607419767923;
+        Tue, 08 Dec 2020 01:29:27 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id e10sm3172455lfn.115.2020.12.08.01.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 01:29:27 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kmZJs-0002TL-Vz; Tue, 08 Dec 2020 10:30:05 +0100
+Date:   Tue, 8 Dec 2020 10:30:04 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Mychaela Falconia <mychaela.falconia@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mychaela N . Falconia" <falcon@freecalypso.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] tty: add flag to suppress ready signalling on open
+Message-ID: <X89HnHOUy9519yhU@localhost>
+References: <20201130153742.9163-1-johan@kernel.org>
+ <CA+uuBqYmzJMiY75LrA_uKb_uL2=7oQTrzCFksb2ehT0XMXxrbw@mail.gmail.com>
+ <c8f3e485-54c6-99c7-4888-6eef2e174bf6@kernel.org>
+ <X8d/Ac5Z4bT/W7ZA@localhost>
+ <a58e3a7b-58bb-0430-2344-8e8155758e45@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0B87oVLF065626
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a58e3a7b-58bb-0430-2344-8e8155758e45@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As no one cares about the return value of blk_mq_tag_busy() and
-__blk_mq_tag_busy(), so make them return void.
+On Fri, Dec 04, 2020 at 07:58:53AM +0100, Jiri Slaby wrote:
+> On 02. 12. 20, 12:48, Johan Hovold wrote:
+> >>> but I question the
+> >>> usefulness of doing so, as it is a chicken and egg problem: one needs
+> >>> to open the tty device in order to do termios ioctls on it, and if
+> >>> that initial open triggers DTR/RTS hardware actions, then the end user
+> >>> is still screwed.  If Johan or someone else can see a potential use
+> >>> case for manipulating this new flag via termios (as opposed to sysfs
+> >>> or USB-ID-based driver quirks), perhaps you could elaborate on it?
+> >>
+> >> We would need to (ab)use another open flag (e.g. O_DIRECT). I am not
+> >> biased to either of solutions.
+> > 
+> > Forgot to mention that using open-flags would prevent using standard
+> > utilities like cat, echo and terminal programs. So for that reason a
+> > termios and/or sysfs interface is also preferred.
+> 
+> Nope, I meant it differently. You set it up once using the special open 
+> flag. Like with setserial, one sets I/O port, irqs etc. and then uses 
+> standard tools as the port is already set up (marked as NORDY in this
+> case).
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-mq-tag.c | 4 ++--
- block/blk-mq-tag.h | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Ok, but leaving the open flag abuse aside, that would still require a
+custom tool to do the setup.
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 9c92053e7..21ff7d156 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -21,7 +21,7 @@
-  * to get tag when first time, the other shared-tag users could reserve
-  * budget for it.
-  */
--bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
-+void __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
- {
- 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
- 		struct request_queue *q = hctx->queue;
-@@ -36,7 +36,7 @@ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
- 			atomic_inc(&hctx->tags->active_queues);
- 	}
- 
--	return true;
-+	return;
- }
- 
- /*
-diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
-index 7d3e6b333..dd80e5a85 100644
---- a/block/blk-mq-tag.h
-+++ b/block/blk-mq-tag.h
-@@ -60,15 +60,15 @@ enum {
- 	BLK_MQ_TAG_MAX		= BLK_MQ_NO_TAG - 1,
- };
- 
--extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
-+extern void __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
- extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
- 
--static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
-+static inline void blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
- {
- 	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
--		return false;
-+		return;
- 
--	return __blk_mq_tag_busy(hctx);
-+	__blk_mq_tag_busy(hctx);
- }
- 
- static inline void blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
--- 
-2.17.1
+There are also no other examples of such an interface with a "sticky"
+open flag affecting later opens. But you probably meant that the open
+flag only affects the current open, and then the termios flag is used
+to make the setting stick. 
 
+Note that having a udev rule handle this at boot using a sysfs interface
+does not require any custom tools at all.
+
+And in theory nothing prevents extending/abusing POSIX with such an open
+behaviour later.
+
+Johan
