@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DA82D3434
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3AC2D342E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbgLHUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:32:20 -0500
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:38452 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgLHUcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:32:19 -0500
-Received: by mail-ua1-f68.google.com with SMTP id y26so6039804uan.5;
-        Tue, 08 Dec 2020 12:32:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cNHSp0D/J2N3eQe2/F62j75KmvD1PhSAJf5wH19lqxQ=;
-        b=rnzsmpBCUu0pzhuxS7hgfoEbi4SuC51s4/jCisUM6/zP5fJdoQMjONMqlv2gHWwvMr
-         ThpUl28RqS/I2QYTTPKv7uTWRlxXgradHx81r4ZXm4OMacn182gvuveSe0yCI2byuWf/
-         wLqqzeJqQZxRB2mbQI87cRqpzMSijG+sMD1IuHv6bfSWogVch1UKtOWrxNl7NGb/9HuW
-         xMxefTAAxM7gBJFzL4U7iD6xn5FcPPl4Jyt3bzN6dQoOKwKVlF8M7pOanA0J8p2p38GK
-         KM70Y3szjKvWreDhDaBxspGCuyDBEqxTbvuGZvFoRsg8+/tgCXSPcJVOntIHNVHifxxf
-         kikw==
-X-Gm-Message-State: AOAM532cwoOOOvSn0/yReNfDIa9CQpkAls+sUv1z6p5sZAFecj5Mn+Er
-        6oogxlFU4ArUhwuI4clNsjZprH8oYA==
-X-Google-Smtp-Source: ABdhPJwqzkWqp7NG8pv3hYLzFGCV5M4/HK+Rdc7I43X1WJ+it5ihK+cV87nmhrLL5tXoLhppZo73pw==
-X-Received: by 2002:a05:6820:54c:: with SMTP id n12mr17807858ooj.79.1607455383095;
-        Tue, 08 Dec 2020 11:23:03 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 30sm2980770oth.7.2020.12.08.11.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 11:23:01 -0800 (PST)
-Received: (nullmailer pid 2923083 invoked by uid 1000);
-        Tue, 08 Dec 2020 19:23:00 -0000
-Date:   Tue, 8 Dec 2020 13:23:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH v4 1/3] media: dt-bindings: media: Document Rockchip VIP
- bindings
-Message-ID: <20201208192300.GA2922694@robh.at.kernel.org>
-References: <20201208161509.655862-1-maxime.chevallier@bootlin.com>
- <20201208161509.655862-2-maxime.chevallier@bootlin.com>
+        id S1730136AbgLHUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:32:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:9234 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726697AbgLHUcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:32:03 -0500
+IronPort-SDR: LzMBVq1Ey1fd9+7nnwuV7N7TpPXukRIUFX1KZZYRNs07xl2z6Mrf4c8o9wQYWclU4moncwkBQz
+ HZQ1cJEVA6KQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="258665284"
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="258665284"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 11:24:17 -0800
+IronPort-SDR: uTi/Mmkl/xKuBC/AXfiazJdiwWLlLG6xSH3fWQdFdTUbXRcuwFtEp5b5pUVtQ+yM50I5q+Vvf8
+ X9TzX8nXSQNQ==
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="317940844"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.139.184]) ([10.209.139.184])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 11:24:16 -0800
+Subject: Re: [PATCH v15 08/26] x86/mm: Introduce _PAGE_COW
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-9-yu-cheng.yu@intel.com>
+ <20201208175014.GD27920@zn.tnic>
+ <218503f6-eec1-94b0-8404-6f92c55799e3@intel.com>
+ <20201208184727.GF27920@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <cddc2cc5-a04e-ce9c-6fdf-2e7a29346cf7@intel.com>
+Date:   Tue, 8 Dec 2020 11:24:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208161509.655862-2-maxime.chevallier@bootlin.com>
+In-Reply-To: <20201208184727.GF27920@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 17:15:07 +0100, Maxime Chevallier wrote:
-> Add a documentation for the Rockchip Camera Interface controller
-> binding.
+On 12/8/2020 10:47 AM, Borislav Petkov wrote:
+> On Tue, Dec 08, 2020 at 10:25:15AM -0800, Yu, Yu-cheng wrote:
+>>> Both are "R/O + _PAGE_COW". Where's the difference? The dirty bit?
+>>
+>> The PTEs are the same for both (a) and (b), but come from different routes.
 > 
-> This controller can be found on platforms such as the PX30 or the
-> RK3288, the PX30 being the only platform supported so far.
+> Do not be afraid to go into detail and explain to me what those routes
+> are please.
+
+Case (a) is a normal writable data page that has gone through fork(). 
+So it has W=0, D=1.  But here, the software chooses not to use the D 
+bit, and instead, W=0, COW=1.
+
+Case (b) is a normal read-only data page.  Since it is read-only, fork() 
+won't affect it.  In __get_user_pages(), a copy of the read-only page is 
+needed, and the page is duplicated.  The software sets COW=1 for the new 
+copy.
+
+>>>> (e) A page where the processor observed a Write=1 PTE, started a write, set
+>>>>       Dirty=1, but then observed a Write=0 PTE.
+>>>
+>>> How does that happen? Something changed the PTE's W bit to 0 in-between?
+>>
+>> Yes.
 > 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> ---
-> v3: Renmed the controller to "vip"
+> Also do not scare from going into detail and explaining what you mean
+> here. Example?
+
+Thread-A is writing to a writable page, and the page's PTE is becoming 
+W=1, D=1.  In the middle of it, Thread-B is changing the PTE to W=0.
+
+>>> Does _PAGE_COW mean dirty too?
+>>
+>> Yes.  Basically [read-only & dirty] is created by software.  Now the
+>> software uses a different bit.
 > 
-> v4: fixed the binding to get a compiling example
+> That convention:
 > 
->  .../bindings/media/rockchip-vip.yaml          | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/rockchip-vip.yaml
+> "[read-only & dirty] is created by software."
+> 
+> needs some prominent writeup somewhere explaining what it is.
+> 
+> Thx.
 > 
 
+I will put these into the comments.
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/media/rockchip-vip.yaml:59:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-vip.yaml: properties:port:properties:required: ['remote-endpoint'] is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-vip.yaml: properties:port:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'required'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-vip.yaml: ignoring, error in schema: properties: port: properties: required
-warning: no schema found in file: ./Documentation/devicetree/bindings/media/rockchip-vip.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/rockchip-vip.example.dt.yaml: example-0: vip@ff490000:reg:0: [0, 4282974208, 0, 512] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1412765
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+--
+Yu-cheng
