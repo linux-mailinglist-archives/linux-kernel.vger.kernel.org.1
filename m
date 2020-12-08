@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030C02D3679
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09342D367D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731343AbgLHWvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgLHWvh (ORCPT
+        id S1731415AbgLHWwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:52:10 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:52328 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728147AbgLHWwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:51:37 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1299C0613CF;
-        Tue,  8 Dec 2020 14:50:57 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id t37so13598616pga.7;
-        Tue, 08 Dec 2020 14:50:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czPRgCP4Rbvj8nQm8kV+1nNwcp4eHqLkAIVxs9WjDpk=;
-        b=VXzD6wwNroEMOtTsjKAFrXV3Ykmq11SgT6QT0T+yMgGu3gUnx9joMIFzmJ0oQMo7TD
-         Y5zrQy4AqY3a4iWw4A9W6JapbweHMdHprj+tNKbhbmUVCwwVXDTDKbBJ+IqVFXL34dCv
-         +q5rmn7SjQ77tXvhz0niCCqULV+ynvw+ss4Pvqswb/ABCLgp/VFdbUlfvyO5umzwfebV
-         J0YMrDVHBQI7WG0314/DMIqNeyZ4oGKFvsOAdEE2UMaSxqZtwjTWsRFpmI3INj3VU9ok
-         3KxfDDr/DC5KbpF6lVuHTb1/R6MS3Ow6n6n+iRYSrSPyeO8iRxhr19mR44oDzZdN00yH
-         ncEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czPRgCP4Rbvj8nQm8kV+1nNwcp4eHqLkAIVxs9WjDpk=;
-        b=A1jSbT1UUKxVjdz62X5bXXZpomzoByDv3zs9lXxjqAzqKsJ2qoZl7hA/2EdiGNjlhI
-         afsVmh1WEOf7SgOHoHmaV+2f6gWJ9pq0jakyyhaDUgaGVibNBk3Hv0blxG20mrC2z9nb
-         R/EIjoICeWVtN3eH4hBUAflIMsz+vVIbgNh1xCzwcD0RoaduyYuKgOYj0TU0jrpCjDqj
-         4Gz447Vxv1xyMRp9bO3ofUH8RKt3wCpOqO8revQQIizydcY2c3/JmUYvhRTdnEhQhDP8
-         0LYIccRsoaDSUuzHMFyi+7ERiYH96Ljg8ax+M/+gQDQCQ3OWgIWSvtXqBSABZvk+WyO0
-         NDsQ==
-X-Gm-Message-State: AOAM533dbHZD0Sdpse3aYvbwiGSI7wy+B0vNfmnVRvXqhob0eexCDnFj
-        DyH2SVqlVnr1csmsDxXfk6E=
-X-Google-Smtp-Source: ABdhPJzmnlwG1nSzxgXgEJFyCnxe2OHLK9eZDpCtUOcjYeK4XTm8lup1A/VwsyO5pFxGEDNEPMP/oQ==
-X-Received: by 2002:a63:1c53:: with SMTP id c19mr261553pgm.392.1607467857445;
-        Tue, 08 Dec 2020 14:50:57 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:55ef:9b8b:7388:ced5])
-        by smtp.gmail.com with ESMTPSA id dw16sm194135pjb.35.2020.12.08.14.50.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 14:50:56 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net: lapbether: Consider it successful if (dis)connecting when already (dis)connected
-Date:   Tue,  8 Dec 2020 14:50:44 -0800
-Message-Id: <20201208225044.5522-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 8 Dec 2020 17:52:09 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MnJ4h167149;
+        Tue, 8 Dec 2020 22:51:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=3+QUZSt2q2jWmzvwsgmOVm1eKlyky2fgihAM4ea9S5I=;
+ b=yBJMH4oZbyn/4+iPwjViFVp2Zl4jHs29sXx9X1EaGJn3ya6cN8MlCQbmXrABTdEpPz/3
+ MFpg6gLFNe5LqG3zdoTIriY/LX50N57vjRmAUJivn0J2PnkpgDN1sgy/kUAD0zGn6HHP
+ NCImuuwuiMGPaE14DJAq4mDpOJ4JBhmi+OYjjw98GOhcKuckG9z/KQ+noaCg/4ZfQhKx
+ d6UsTKZlWtAM2IFt8xh0q405PJ3OGpDCoWa7wp+CWEPhjx7secUq0NYPSj4i6YGf4Haq
+ OQVQVJ15kw6v2b3dUv8IsUTtWlbKLHgzEpsEffnh40n8Q/iobcmkKqZIYgr+Rnr6/l37 eQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35825m5dm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 22:51:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MofZP046160;
+        Tue, 8 Dec 2020 22:51:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 358kytmpc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 22:51:15 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8MpAZq015951;
+        Tue, 8 Dec 2020 22:51:11 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 14:51:10 -0800
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: problem booting 5.10
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+        <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
+        <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+        <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
+        <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+        <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
+Date:   Tue, 08 Dec 2020 17:51:07 -0500
+In-Reply-To: <alpine.DEB.2.22.394.2012082339470.16458@hadrien> (Julia Lawall's
+        message of "Tue, 8 Dec 2020 23:40:44 +0100 (CET)")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=1 mlxlogscore=852 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=863 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the upper layer instruct us to connect (or disconnect), but we have
-already connected (or disconnected), consider this operation successful
-rather than failed.
 
-This can help the upper layer to correct its record about whether we are
-connected or not here in layer 2.
+Julia,
 
-The upper layer may not have the correct information about whether we are
-connected or not. This can happen if this driver has already been running
-for some time when the "x25" module gets loaded.
+> This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
+> get a kernel that boots.
 
-Another X.25 driver (hdlc_x25) is already doing this, so we make this
-driver do this, too.
+Thanks for testing!
 
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/lapbether.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+I'll go ahead and revert 103fbf8e4020 in 5.10/scsi-fixes. We can revisit
+this change in 5.11 when Ming's fixes are in place.
 
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index b6be2454b8bd..605fe555e157 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -55,6 +55,9 @@ struct lapbethdev {
- 
- static LIST_HEAD(lapbeth_devices);
- 
-+static void lapbeth_connected(struct net_device *dev, int reason);
-+static void lapbeth_disconnected(struct net_device *dev, int reason);
-+
- /* ------------------------------------------------------------------------ */
- 
- /*
-@@ -167,11 +170,17 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
- 	case X25_IFACE_DATA:
- 		break;
- 	case X25_IFACE_CONNECT:
--		if ((err = lapb_connect_request(dev)) != LAPB_OK)
-+		err = lapb_connect_request(dev);
-+		if (err == LAPB_CONNECTED)
-+			lapbeth_connected(dev, LAPB_OK);
-+		else if (err != LAPB_OK)
- 			pr_err("lapb_connect_request error: %d\n", err);
- 		goto drop;
- 	case X25_IFACE_DISCONNECT:
--		if ((err = lapb_disconnect_request(dev)) != LAPB_OK)
-+		err = lapb_disconnect_request(dev);
-+		if (err == LAPB_NOTCONNECTED)
-+			lapbeth_disconnected(dev, LAPB_OK);
-+		else if (err != LAPB_OK)
- 			pr_err("lapb_disconnect_request err: %d\n", err);
- 		fallthrough;
- 	default:
 -- 
-2.27.0
-
+Martin K. Petersen	Oracle Linux Engineering
