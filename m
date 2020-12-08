@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AA82D224D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7DA2D2252
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbgLHEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgLHEvl (ORCPT
+        id S1727245AbgLHExU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:53:20 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:38372 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbgLHExU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:51:41 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F7DC061749;
-        Mon,  7 Dec 2020 20:51:01 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id i24so8352583edj.8;
-        Mon, 07 Dec 2020 20:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LpBxApSP8rCkKlkJaOOFJxIK7H0arGSthSf/Abqc1f0=;
-        b=VcYmqqFkZcsz7ruK90wqwWcXsd76SC0LUJJ98io9ZKofQcbxNTMBIXLdfU/iaC0MpG
-         /VDzjogKNREO57usDtzHJ5gBV4zXFWKvPbBmfiunp5uKqvt31DFaAN0vY/72GVkNbbG3
-         odiQjoM5lrXpeu7ExSfIl20XVCYp4/NHEqEu83rUF03bAXO7U4Y9RLIQNWMrbVzYINiY
-         kOSvwzl/VpcNjHA0CYD9MlE1gTm4uvu/hxPOw6d6682gqYIS1xNgEeIrCGo5E5Rlkhqt
-         CucT/2rIdbGpjmIxyJoIJPyCIgF9ij8TShnlQJc8TjPXrz/98fvgKpaPRQSwOXPFEo2w
-         rCKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LpBxApSP8rCkKlkJaOOFJxIK7H0arGSthSf/Abqc1f0=;
-        b=EZ35Eh9aRC/0hVRdxRy2FEgylUovJ6FEzGcHS00Sverftg7nZ0Ln25vqJNJiDWNkrL
-         JMDhyrsTJLjjBUgAYhXV92Ebv9WTxpG5gp11KOy/x5DDDnjT9B7S0/QH648w8uaah1lH
-         M8fjqdZmGP8ned2sno7wr6Ze/Hy5NjyAJg/fuC2vkJzmpZefz1A3tgC3a6Px2v21dGCo
-         iM7jUr5pj8G/lg1OzmrzaBmJHkw0qnyLgoiCoY3GfPr7xRhg1o5Kp0vJNsv1BDWPB8q9
-         80zoEsz0MnnZ0q15OI6MlbH1mQMEEu8kv2qUyN29dOIkebgb1+9PviqOvZNqqsFOkDwq
-         HiLg==
-X-Gm-Message-State: AOAM530lF1tb/fOY6bngMZrPrPCKfFJ3R9UP48ahoDLPkmkU6bLl0ziJ
-        oGCKTF0k/jWXc+F958bdCH8=
-X-Google-Smtp-Source: ABdhPJwJWwskX0ehYSyo/1zgQiqkcF4qXSsR/UjOZTLyj1endimvm9CQVWDIrjMNDUJyKgV7JIh+rg==
-X-Received: by 2002:a05:6402:b57:: with SMTP id bx23mr22763851edb.191.1607403060074;
-        Mon, 07 Dec 2020 20:51:00 -0800 (PST)
-Received: from andrea (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
-        by smtp.gmail.com with ESMTPSA id t26sm14439420eji.22.2020.12.07.20.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 20:50:59 -0800 (PST)
-Date:   Tue, 8 Dec 2020 05:50:50 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Mon, 7 Dec 2020 23:53:20 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84o0Wa134051;
+        Tue, 8 Dec 2020 04:52:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Z5gANhFzEDcQn1CLVh1lPm7JVtP3YdJZL0uddwjJ3mo=;
+ b=Y4be0dQcMOGqn7I70h/kVwtW0Ed9zgdqqcycWbcZU+UgFT4mXq8DVVkmUO/QZDs4C1ve
+ I22PgUg/0DENrp0SCEcfgy5gaOVaY1+7Kc2NozgyvjdTSPPsWweXdL5kMP3zlmOww2a+
+ HLuMAxyNiz88hm0J2xofl4C3RqvM18PjJkeGKQSRhNgu1JLD/3cf0cX06OwPxJB4iqop
+ B4fOxA44iss6CYC0OgySrd4MLFwm7xGc/937H1CI85Xdh1ivTA42a3j8Z503yr/FYSb+
+ VoxpZeFRh0ZxtS84cZVQ/aytIUdLYnOEivqqogJMhjfEKUPyx0ufnQnSTlXkUrdbxLBH 3w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mqrrp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 04:52:13 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84ojxc008196;
+        Tue, 8 Dec 2020 04:52:12 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 358ksn26uc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 04:52:12 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B84q7xM014550;
+        Tue, 8 Dec 2020 04:52:08 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 20:52:07 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     rnayak@codeaurora.org, salyzyn@google.com, hongwus@codeaurora.org,
+        saravanak@google.com, asutoshd@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: Re: [PATCH v2] Drivers: hv: vmbus: Copy packets sent by Hyper-V out
- of the ring buffer
-Message-ID: <20201208045050.GA9609@andrea>
-References: <20201109100727.9207-1-parri.andrea@gmail.com>
- <MW2PR2101MB1052B7CBB14283AA066BF125D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH 1/1] scsi: ufs: Remove scale down gear hard code
+Date:   Mon,  7 Dec 2020 23:51:59 -0500
+Message-Id: <160740299785.710.4686167036921392934.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
+References: <1606442334-22641-1-git-send-email-cang@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052B7CBB14283AA066BF125D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -419,17 +446,52 @@ static u32 hv_pkt_iter_avail(const struct hv_ring_buffer_info *rbi)
-> >  struct vmpacket_descriptor *hv_pkt_iter_first(struct vmbus_channel *channel)
-> >  {
-> >  	struct hv_ring_buffer_info *rbi = &channel->inbound;
-> > -	struct vmpacket_descriptor *desc;
-> > +	struct vmpacket_descriptor *desc, *desc_copy;
-> > +	u32 bytes_avail, pkt_len, pkt_offset;
-> > 
-> > -	hv_debug_delay_test(channel, MESSAGE_DELAY);
-> > -	if (hv_pkt_iter_avail(rbi) < sizeof(struct vmpacket_descriptor))
-> > +	desc = hv_pkt_iter_first_raw(channel);
-> > +	if (!desc)
-> >  		return NULL;
-> > 
-> > -	desc = hv_get_ring_buffer(rbi) + rbi->priv_read_index;
-> > -	if (desc)
-> > -		prefetch((char *)desc + (desc->len8 << 3));
-> > +	bytes_avail = hv_pkt_iter_avail(rbi);
-> > +
-> > +	/*
-> > +	 * Ensure the compiler does not use references to incoming Hyper-V values (which
-> > +	 * could change at any moment) when reading local variables later in the code
-> > +	 */
-> > +	pkt_len = READ_ONCE(desc->len8) << 3;
-> > +	pkt_offset = READ_ONCE(desc->offset8) << 3;
-> > +
-> > +	/*
-> > +	 * If pkt_len is invalid, set it to the smaller of hv_pkt_iter_avail() and
-> > +	 * rbi->pkt_buffer_size
-> > +	 */
-> > +	if (rbi->pkt_buffer_size < bytes_avail)
-> > +		bytes_avail = rbi->pkt_buffer_size;
-> 
-> I think the above could be combined with the earlier call to hv_pkt_iter_avail(),
-> and more logically expressed as:
-> 
-> 	bytes_avail = min(rbi->pkt_buffer_size, hv_pkt_iter_avail(rbi));
-> 
-> 
-> This is a minor nit.  Everything else in this patch looks good to me.
+On Thu, 26 Nov 2020 17:58:48 -0800, Can Guo wrote:
 
-Thanks for the feedback, Michael; I'll send v3 to address it shortly.
+> Instead of making the scale down gear a hard code, make it a member of
+> ufs_clk_scaling struct.
 
-  Andrea
+Applied to 5.11/scsi-queue, thanks!
+
+[1/1] scsi: ufs: Remove scale down gear hard code
+      https://git.kernel.org/mkp/scsi/c/29b87e92a216
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
