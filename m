@@ -2,296 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279AA2D2164
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64CD2D2166
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727692AbgLHDUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 22:20:14 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30652 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727037AbgLHDUN (ORCPT
+        id S1727794AbgLHDXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:23:34 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:43315 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727752AbgLHDXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 22:20:13 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B83AZx2018533;
-        Mon, 7 Dec 2020 19:19:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=7IM57sWt05CdhrpvYla4q6VzUgEPAofhtX/8EnspQQA=;
- b=BR96Ry825WzW0XckMy80QOiXF7vz5I5NOP8FSIbByNxqBBRMUkjbzQUNkMWUotnTHCQh
- dIlCUI1/XcSoo1SIykYNrrsRQWK5D3406w8JmqOgBwF3SW97E63u2b4oclSmxMz3oLoM
- Yq+RC97DYHbGhPZbcBzeIgalEDUu8WAxZYc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3588ktx5qx-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 07 Dec 2020 19:19:16 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 7 Dec 2020 19:19:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=elYHSin9wczQaBqdZuSBXjHiOMVroSDzllnqmpxkeVlxlKqTZ0TUiNCWvDAlWEyUYoh0gVXNATMYYWrE5iox3hZPHpZDjPSonPWsrsR623oZ+t8+244ypHVfGuKvLNoT+BV6vRLa7SFRxLK7qMZjmncN5Qes2nMY4a832MQ5jpkelwTa+5dZdaco17lWyKCbfC/7Zh6n2WOnZRz1jCfqJXqdw0VZH+3Kbz0GElyA/hsbE+NONrvNhTR1bcOEuzikB3RAYephpvxtqJqkExN/1D1lNyP5mcSaEL5aFyJFq+BIopMDNSCUhQfhBCF41Ga1qYAZ398ui+gMH4bAT6VBvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=llWD5eWnwG+/KFjMab4a0eQQKousje0qg//wP+e/128=;
- b=dFUvLXpTq+XYSZSdVEK6LVBxPNmOr52KjI4MQjOcc1yXtpG2S0DXaZE+OMEeAhreRYwbpU5efNOLPrSRmdbNcji5QRximhM2do6EmmVw62Yzxpu+OIimDLnZo13bM7G66p+rUXPf7jLJzZEXRM5zVANLeN90ci5tAIe4MfJUkysXG80X19nWF9/nCFen6we8K7D7WKHXzhoQEb4WKnDahChw6oJxusDpKWeSk/l/1oFlpNmagqP1yoluvypI2CV4ZnhAiiMnauXWZF60W5SQoU6dVF3H68LRh4bTx1kvvplK5hVmdn5y1TGNk5pWuZHmd5ctIA+WBVOJ8ZgqKKegqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=llWD5eWnwG+/KFjMab4a0eQQKousje0qg//wP+e/128=;
- b=RXHoDPOeP2MZSU5xh9HZY/HELYASyiSIXfyGGhzAT5+A8YfmLiHBuXdoMrBqAbpzfXfHAkq6mmKZL+c6DfCkHhGSrfJ8OTp+N91Oz1iUl3nLScLF9fY0zr5J5VbmgyFjt+4BV/cNsGTdkPEcf87paoqrBCwhHmQHJeUjZbfax1c=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3620.namprd15.prod.outlook.com (2603:10b6:a03:1f8::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Tue, 8 Dec
- 2020 03:19:00 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
- 03:19:00 +0000
-Subject: Re: [PATCH bpf-next v4 10/11] bpf: Add tests for new BPF atomic
- operations
-To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-11-jackmanb@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3adb88d5-b8d8-9c15-a988-7c10f86686fd@fb.com>
-Date:   Mon, 7 Dec 2020 19:18:57 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201207160734.2345502-11-jackmanb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:4c73]
-X-ClientProxiedBy: MW4PR03CA0369.namprd03.prod.outlook.com
- (2603:10b6:303:114::14) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::113f] (2620:10d:c090:400::5:4c73) by MW4PR03CA0369.namprd03.prod.outlook.com (2603:10b6:303:114::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 8 Dec 2020 03:18:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98ebc467-ac3d-40ab-0c3b-08d89b28021c
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3620:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB36201F5A8307C5778DCA751CD3CD0@BY5PR15MB3620.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:561;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: haM4k5DZ716Jeqc5dsgfBKpzPCwuthBB0ddRSc8NckUfjGyhXJJH+Y9stxvwadrqp7VKUiwjpcurBus/sBKm+XDZkOlAEFfGDPFmBuVhDDID2Y+HH5231e6tn6IyHftDd65MkkLu2Q1Wk00aY85twHl/ZXuQrX598qP8/9BDaXyOKUbamDQshMjY3GRE5d0THLLK7e4wOnd58etRSfWEbLKiea3XbJMPK/MBWH8jW/FWyWWZGUOWRl0++0FS8IFkJT8nc1Z3t0dbCalbQVI8Swhtoc+t/W3Lqw1TOjRqX3ZyuOwSBD4sJd5P8UGNajJCc9aivKTFnkRYg2kez7Uum9KGQK6BRvNQjfazgw8z2lij1AJZMVQBkjSYj6ZCtibE+fkdavNqO0EVlHcsobi2CTbFPMyc512j66lOSon1Y5vwFN//O1+txPh13RhAq4C0qaFzW5tYxucXPQMlnhqnQoeiiPRWAe6/oMMR4lod4k4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(396003)(376002)(39860400002)(366004)(66476007)(8676002)(53546011)(66946007)(4326008)(16526019)(66556008)(8936002)(2906002)(31686004)(52116002)(2616005)(186003)(54906003)(31696002)(478600001)(316002)(6486002)(966005)(83380400001)(36756003)(5660300002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RzlIWDJCSmUwVUNIelNoMGFFOVRzTXVwNUdaR0Z2R3BxbFFwaUJOVGJhVkFF?=
- =?utf-8?B?eHhPK084TVFUbVkzQm9MdDljeGkzZWVXYm96OGh0cHdSVUR6Um9NNlRzdGhI?=
- =?utf-8?B?V2RnR20vWnVVNHRiNVI2MjA4Tmh5Wk45a3FBcXJlRW1DRUhMNVVFZTk4ZGd2?=
- =?utf-8?B?YXhsNHdZYWhUYmlXWURaRWhvUjEwclp6cEQ0V29yU1BIcDRyYmtSbXY2eUpw?=
- =?utf-8?B?UVFFcEhHcTFZTGZ2aExUOGFVN1JsNHg1aUUrUGVSWWxJbGZuZ0JTRXQvR1BT?=
- =?utf-8?B?YTU4dndHd2xOL0NkMW5OTkJ1a1QrRk9CRDVkRTJhWThyeDNkMjExeE0vR24w?=
- =?utf-8?B?YmVoZmlUeVQ1R2JPUUJoVE9hQjNBS2ZsODJtcHNOOEFaQmR6Rm9WeU5QNmtN?=
- =?utf-8?B?OU1jVlFDOTM0cUhJTlk2aU44Q0ZHd2NjVERjZGdXbTE0M21wQXpLTFc1T04r?=
- =?utf-8?B?RnRrVjZWcjUydW5OOS84ZzJkYWNta0hqOGphYzl0aUJWcmpoTVdrOFdxQkMz?=
- =?utf-8?B?bjZzVFFmZG5kdzlNVWI2RVpCeElkSWNUdXowNExkdDhnaVdWbmU5dm9QaGpV?=
- =?utf-8?B?Q2NWNGFkYmhPR3hGQlVucWdwdVgvTVhjK3NqMk9kSzBtRE9JNUh0bHZZSU1x?=
- =?utf-8?B?aTVIbldaWG1yZHlxOHFuQlhtR0xOZ3VxSC9jZ2k4b3lDZHdKVjkxK09Dd0pk?=
- =?utf-8?B?TTBsZDNkc2hKOFMvaSs4eVhmZm92TjFUTTNRelk1L2pTRC85RExrYU9vK1I1?=
- =?utf-8?B?U29oaUY1eHZLSG14MDcydG5CWXl3L2tzcTQzQURGZkRZdmgyZkFrTHNpdHlP?=
- =?utf-8?B?ZFc3NVQ1Vk5qbVp5WDdBN1hGcFRHM0wrcHVMbXJtZVd5RUR2bFR3VEJuQ0xS?=
- =?utf-8?B?N05scWF5dkJrYTdlQ0tHdy81VUJ1YWE0TUUrUnJHT29xUlZyZmcyT3UreXA2?=
- =?utf-8?B?K3Z5VDlSaDMzY2s1UTRZZjFja09RUTFrRVBhZXFqZGwxaFp4WTIxVXVrb0hl?=
- =?utf-8?B?T0Uxc1NQZW1HblVXalhIbWNtTzMzMU80dGozNFBwUFEwdGVmYmRwc3FKSlh4?=
- =?utf-8?B?UjZaVGQ4VC9pOHR2V0Z0MTBrMThYSG9CbjYvT1VUU2dtVWtNSjNDaXloREcw?=
- =?utf-8?B?N2U3L3BMNHhUQVBYMWkyY0FGREszRXc0TnRKQTMzbE9uN2FWM2Z5YlVBQ2Fu?=
- =?utf-8?B?SW9iNFYxU0YvY0xrWmVnZTRXajR6bGtPUWovc0RCcnNDK2Y5WHNmNEN5N09h?=
- =?utf-8?B?c0p4dCtqbzhaSFZncDZZdTN0VFpPS0R1emF2SFhIdDRCVDJ4Y2JvZnExMW9x?=
- =?utf-8?B?Y0R1NmxCdU5qWUN3cHljdzZ2REVHRnVobkhUd3pVSFh0Ulh0TFI1emJqOFR0?=
- =?utf-8?B?YjNBRmQ3OXZ1Nmc9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 03:19:00.8375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98ebc467-ac3d-40ab-0c3b-08d89b28021c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pVF/5YGawrHu+PA/UvJp+oaV9DWklKR+PR5C2iltFkYOorj7xa3d6RnbHjuMYexR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3620
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        Mon, 7 Dec 2020 22:23:33 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DD9C0B55;
+        Mon,  7 Dec 2020 22:22:26 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 07 Dec 2020 22:22:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=A
+        WJEf3NATbEAZn6vc+u0d+euLXDOTbcdSQLfQpbv+D8=; b=AJIBxBFn1zwh5OklU
+        2yAb06Ubfc380YjoHEyi7xfYk02jq4tAxzJhi+s8xE0PWR0RczC1MGm1quNnaY+y
+        GSLYJ0fo7r44rNlPxmfPUMvYCKNY/82e/XEm3y+t+GGzrZsWHrrAJ2SG4IUso5zg
+        lkbreOESegZ3dzmkFr+P/bpwy+x+90njDd8/uXB/KOLvS3+VCyB/ba3jUNzYi4yh
+        diDd+e/K14o9xR6vtl7TLfrOQUZDa8ZmMv3UXXPPHy7+ka7aWR5pZXoHO8tkRcI0
+        PJ/PNjkpkaB2GWL/SUdxrcg1ra8dDsOUXbSbY6HeRNrnT/Ydwbkx47bNNZmFZqvm
+        5nhXA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=AWJEf3NATbEAZn6vc+u0d+euLXDOTbcdSQLfQpbv+
+        D8=; b=JByOyJ43iz1aGOeu4+C1hjBdgBJZHmxev0Iisg/yO+FVUHRS/rJCcvKUX
+        3/Cc5f4FRVKQNUkQrLXUdanjpC7aDVuzZeL7tBjrwc9tYdBH3qJ6adiSoEbXSugw
+        moU75IJE1xurv7zNvO4W9k8Ll1OCmCphpwzjQDHB2ZHoHi/e8xI3YzLUXx2F1TAS
+        1FGod+UIj7rLfTwviowyddOmT22IlgDtu51N4Gws0ypXXuxXvUHKB6XkD6rBRieo
+        yrxOdXyU0GngTChLBEZBmDEAVYJJP3PRXiSqr2uGtEEh798dhyyvK8hTMG7VqjcX
+        2Ej3/JPIszOo6OrlizEk/KTGkNMLg==
+X-ME-Sender: <xms:cPHOX_WHHSaH-ldAJ_bPwDjYNUBNWCf_QhDQHjzc_NnuGIukSVy46Q>
+    <xme:cPHOX3kdi9Y1Y-EZ-X5wrDxtqh_Ac4B3P3M7FV58uJ63a4187Or-SFxjT4_HxYY9b
+    nukfgTJmsfBju2f7g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedgheekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefheenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepgfekheeileeiudehfeeutdfggedvffdvieejheeileeujeeftdeh
+    gfegteeiheeinecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepje
+    dtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:cfHOX7aaombx1_GPiKns3e8a2SZ3kphcnFHXkBY25zjfYOIfRKq6xQ>
+    <xmx:cfHOX6XP5oLs-R-NR7ys47pFdX_FlmoMAZ3PuKOvU367RjHo6Fn2qg>
+    <xmx:cfHOX5lrNNmCsp1rDV0Nc4cPOqkvlbxfyKnG2h_6B1Tvd7sraHb8zQ>
+    <xmx:cvHOX3bUAA-zXccOap6wS5gQYInQL_6f855Ca7NyP-cPdnXWOPIHXg>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 947EB24005A;
+        Mon,  7 Dec 2020 22:22:24 -0500 (EST)
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+References: <cover.1607353274.git.wilken.gottwalt@posteo.net>
+ <ac2c2b279be52876d66c91826a1ccebd08fe4810.1607353274.git.wilken.gottwalt@posteo.net>
+ <20201207161259.z6no7m2xqwb2jrju@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwlock: add sun8i_hwspinlock
+ documentation
+Message-ID: <4ceaf71c-dbac-4dc3-7921-d59a40fbece7@sholland.org>
+Date:   Mon, 7 Dec 2020 21:22:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_19:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015
- phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080019
-X-FB-Internal: deliver
+In-Reply-To: <20201207161259.z6no7m2xqwb2jrju@gilmour>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> The prog_test that's added depends on Clang/LLVM features added by
-> Yonghong in commit 286daafd6512 (was https://reviews.llvm.org/D72184 ).
+On 12/7/20 10:12 AM, Maxime Ripard wrote:
+> Hi,
 > 
-> Note the use of a define called ENABLE_ATOMICS_TESTS: this is used
-> to:
+> On Mon, Dec 07, 2020 at 05:05:03PM +0100, Wilken Gottwalt wrote:
+>> Adds documentation on how to use the sun8i_hwspinlock driver for sun8i
+>> compatible SoCs.
+>>
+>> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+>> ---
+>>  .../bindings/hwlock/sun8i-hwspinlock.yaml     | 63 +++++++++++++++++++
+>>  1 file changed, 63 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+>> new file mode 100644
+>> index 000000000000..2954ee0b36a7
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+>> @@ -0,0 +1,63 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwlock/sun8i-hwspinlock.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: SUN8I hardware spinlock driver for Allwinner sun8i compatible SoCs
+>> +
+>> +maintainers:
+>> +  - Wilken Gottwalt <wilken.gottwalt@posteo.net>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - allwinner,sun8i-hwspinlock
 > 
->   - Avoid breaking the build for people on old versions of Clang
->   - Avoid needing separate lists of test objects for no_alu32, where
->     atomics are not supported even if Clang has the feature.
+> This can be a const instead of an enum, and since it was introduced with
+> the A33 it should be sun8i-a33-hwspinlock. There's a lot of SoCs in that
+> family, some without that IP, and we could even see new SoCs in that
+> family with a different IP at some point.
+
+I just looked at the A31 ARISC blob, and it uses the hwspinlock hardware
+as well, with the same MMIO address and gate/reset bits as A33-H3. So
+the first compatible would actually be sun6i-a31-hwspinlock.
+
+Cheers,
+Samuel
+
+>> +
+>> +    reg:          # 0x01C18000 (H2+, H3, H5), 0x03004000 (H6), length 0x1000
+>> +      maxItems: 1
 > 
-> The atomics_test.o BPF object is built unconditionally both for
-> test_progs and test_progs-no_alu32. For test_progs, if Clang supports
-> atomics, ENABLE_ATOMICS_TESTS is defined, so it includes the proper
-> test code. Otherwise, progs and global vars are defined anyway, as
-> stubs; this means that the skeleton user code still builds.
+> There's no need for those comments
 > 
-> The atomics_test.o userspace object is built once and used for both
-> test_progs and test_progs-no_alu32. A variable called skip_tests is
-> defined in the BPF object's data section, which tells the userspace
-> object whether to skip the atomics test.
+>> +
+>> +    clocks:       # phandle to the reference clock
 > 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-
-Ack with minor comments below.
-
-Acked-by: Yonghong Song <yhs@fb.com>
-
-> ---
->   tools/testing/selftests/bpf/Makefile          |  10 +
->   .../selftests/bpf/prog_tests/atomics.c        | 246 ++++++++++++++++++
->   tools/testing/selftests/bpf/progs/atomics.c   | 154 +++++++++++
->   .../selftests/bpf/verifier/atomic_and.c       |  77 ++++++
->   .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++++
->   .../selftests/bpf/verifier/atomic_fetch_add.c | 106 ++++++++
->   .../selftests/bpf/verifier/atomic_or.c        |  77 ++++++
->   .../selftests/bpf/verifier/atomic_xchg.c      |  46 ++++
->   .../selftests/bpf/verifier/atomic_xor.c       |  77 ++++++
->   9 files changed, 889 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics.c
->   create mode 100644 tools/testing/selftests/bpf/progs/atomics.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
->   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
+> This should be the description, and it's fairly obvious so you don't
+> really need that comment.
 > 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index ac25ba5d0d6c..13bc1d736164 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -239,6 +239,12 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
->   	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
->   	     -I$(abspath $(OUTPUT)/../usr/include)
->   
-> +# BPF atomics support was added to Clang in llvm-project commit 286daafd6512
-> +# (release 12.0.0).
-> +BPF_ATOMICS_SUPPORTED = $(shell \
-> +	echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
-> +	| $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
+>> +      maxItems: 1
+>> +
+>> +    clock-names:  # name of the bus ("ahb")
+>> +      maxItems: 1
+> 
+> You don't need clock-names if there's a single clock
+> 
+>> +
+>> +    resets:       # phandle to the reset control
+>> +      maxItems: 1
+> 
+> Same thing than for the clocks
+> 
+>> +
+>> +    reset-names:  # name of the bus ("ahb")
+>> +      maxItems: 1
+>> +
+> 
+> Ditto
+> 
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - clock-names
+>> +  - resets
+>> +  - reset-names
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +
+>> +  - |
+>> +    /* H2+ based OrangePi Zero */
+>> +    hwspinlock: hwspinlock@1C18000 {
+> 
+> Unit-address's are lowercase
+> 
+>> +      compatible = "allwinner,sun8i-hwspinlock";
+>> +      reg = <0x01c18000 0x1000>;
+>> +      clocks = <&ccu CLK_BUS_SPINLOCK>;
+>> +      clock-names = "ahb";
+>> +      resets = <&ccu RST_BUS_SPINLOCK>;
+>> +      reset-names = "ahb";
+>> +    };
+>> +
+>> +    /* H6 based OrangePi 3 */
+>> +    hwspinlock: hwspinlock@3004000 {
+>> +      compatible = "allwinner,sun8i-hwspinlock";
+>> +      reg = <0x03004000 0x1000>;
+>> +      clocks = <&ccu CLK_BUS_SPINLOCK>;
+>> +      clock-names = "ahb";
+>> +      resets = <&ccu RST_BUS_SPINLOCK>;
+>> +      reset-names = "ahb";
+>> +    };
+> 
+> Different examples should be different items on that list, but both are
+> essentially the same binding so you can drop one.
+> 
+> Maxime
+> 
 
-'-x c' here more intuitive?
-
-> +
->   CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
->   	       -Wno-compare-distinct-pointer-types
->   
-> @@ -399,11 +405,15 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
->   		       $(wildcard progs/btf_dump_test_case_*.c)
->   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
->   TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> +ifeq ($(BPF_ATOMICS_SUPPORTED),1)
-> +  TRUNNER_BPF_CFLAGS += -DENABLE_ATOMICS_TESTS
-> +endif
->   TRUNNER_BPF_LDFLAGS := -mattr=+alu32
->   $(eval $(call DEFINE_TEST_RUNNER,test_progs))
->   
->   # Define test_progs-no_alu32 test runner.
->   TRUNNER_BPF_BUILD_RULE := CLANG_NOALU32_BPF_BUILD_RULE
-> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
->   TRUNNER_BPF_LDFLAGS :=
->   $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
->   
-> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> new file mode 100644
-> index 000000000000..c841a3abc2f7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> @@ -0,0 +1,246 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <test_progs.h>
-> +
-> +#include "atomics.skel.h"
-> +
-> +static void test_add(struct atomics *skel)
-> +{
-> +	int err, prog_fd;
-> +	__u32 duration = 0, retval;
-> +	struct bpf_link *link;
-> +
-> +	link = bpf_program__attach(skel->progs.add);
-> +	if (CHECK(IS_ERR(link), "attach(add)", "err: %ld\n", PTR_ERR(link)))
-> +		return;
-> +
-> +	prog_fd = bpf_program__fd(skel->progs.add);
-> +	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> +				NULL, NULL, &retval, &duration);
-> +	if (CHECK(err || retval, "test_run add",
-> +		  "err %d errno %d retval %d duration %d\n", err, errno, retval, duration))
-> +		goto cleanup;
-> +
-> +	ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
-> +	ASSERT_EQ(skel->bss->add64_result, 1, "add64_result");
-> +
-> +	ASSERT_EQ(skel->data->add32_value, 3, "add32_value");
-> +	ASSERT_EQ(skel->bss->add32_result, 1, "add32_result");
-> +
-> +	ASSERT_EQ(skel->bss->add_stack_value_copy, 3, "add_stack_value");
-> +	ASSERT_EQ(skel->bss->add_stack_result, 1, "add_stack_result");
-> +
-> +	ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
-> +
-> +cleanup:
-> +	bpf_link__destroy(link);
-> +}
-> +
-[...]
-> +
-> +__u64 xchg64_value = 1;
-> +__u64 xchg64_result = 0;
-> +__u32 xchg32_value = 1;
-> +__u32 xchg32_result = 0;
-> +
-> +SEC("fentry/bpf_fentry_test1")
-> +int BPF_PROG(xchg, int a)
-> +{
-> +#ifdef ENABLE_ATOMICS_TESTS
-> +	__u64 val64 = 2;
-> +	__u32 val32 = 2;
-> +
-> +	__atomic_exchange(&xchg64_value, &val64, &xchg64_result, __ATOMIC_RELAXED);
-> +	__atomic_exchange(&xchg32_value, &val32, &xchg32_result, __ATOMIC_RELAXED);
-
-Interesting to see this also works. I guess we probably won't advertise 
-this, right? Currently for LLVM, the memory ordering parameter is ignored.
-
-> +#endif
-> +
-> +	return 0;
-> +}
-[...]
