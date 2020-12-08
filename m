@@ -2,161 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA49C2D2767
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A37B2D276A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgLHJVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:21:51 -0500
-Received: from m9785.mail.qiye.163.com ([220.181.97.85]:8979 "EHLO
-        m9785.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgLHJVu (ORCPT
+        id S1728767AbgLHJWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728617AbgLHJWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:21:50 -0500
-Received: from localhost (unknown [117.48.120.186])
-        by m9785.mail.qiye.163.com (Hmail) with ESMTPA id 779595C1D0C;
-        Tue,  8 Dec 2020 17:20:38 +0800 (CST)
-Date:   Tue, 8 Dec 2020 17:20:35 +0800
-From:   WANG Chao <chao.wang@ucloud.cn>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        artem.savkov@gmail.com, joe.lawrence@redhat.com
-Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
-Message-ID: <20201208092035.GA96434@MacBook-Pro-2.local>
-References: <20201103054425.59251-1-chao.wang@ucloud.cn>
- <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
- <20201123150452.GA68187@MacBook-Pro-2>
- <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZSEgdHk8aTEMYH0lPVkpNS0xPSkJJSENNTk9VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSo6Tjo5Cj04Nio3C1YqGi0W
-        NzkKChxVSlVKTUtMT0pCSUhDQ0hMVTMWGhIXVRgTGhRVDBoVHDsOGBcUDh9VGBVFWVdZEgtZQVlK
-        SkxVT0NVSklLVUpDTVlXWQgBWUFPQkJDNwY+
-X-HM-Tid: 0a7641a7188e2087kuqy779595c1d0c
+        Tue, 8 Dec 2020 04:22:51 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF5DC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:22:11 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id p6so6679477plo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:22:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Z5PVIm5f40Ykr9jrfkxQ9QiDEmPvmPkwevbJQJktVLc=;
+        b=T5HkCUzFavECBYHXL00oNX4J7+4PnugKfPimRhmXUjZ4/coPgoNA0da8MuofvF3M1s
+         91fOhEEbfwmAvWaZSlGJRbeV2I6v855qe8seBFfw2aZnuIIkX3oJqRJdProcateDOQVT
+         DyPFs9e++5mrex5buyLmdLjqVqIW0h91bK0LcDSGFi17MpqjP6qLE0GmQZaPVkHZ35HJ
+         RSDQonVD+ia1OQK73bYeDJhxgfntA9+XxmFOsegR41E4zlVCtPmh1L6lwqz7chSy0Ap9
+         YsElhuK3z39Ae97d0TL1iFbnmpbxjMtADXIEpgGgwE7ROoJGJekCtbq+bJyDf8C2sMmI
+         8eVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Z5PVIm5f40Ykr9jrfkxQ9QiDEmPvmPkwevbJQJktVLc=;
+        b=EuypwtAytvwe4uD3rAZFoFKovB6xMLF2i06o9n59PRXCHsyKD3nE2X6oJHRUtyc+wx
+         52iKnS7/pcj+XxcSUfpY4QfoI5RbqpFHavlleZx5I3IqgInmGQFs564AEjoUUP+u/Rjq
+         uvPhscOe/OCjOP8MeyWReU0Boar0iLChNUzRFnmorqRZ5imtqN+DbAD3pf8z+t/lzyp5
+         /g+1nNN+VGzWxlNx0uhKjWPPoqfzSrbsQG38yanvzZ7zOPIZe+bjL0Ehgd7C31g5o2U5
+         UmsKmEV1bqQtFNYeVXCOnLOJ2UOEusP3JRR/Yiy+HRwD5dwE9qKX5b6ANV/jBW/XU2U+
+         JBiQ==
+X-Gm-Message-State: AOAM533pTE8Vqq1o6ii6aX+ngPeFHj9CMVsw2ns19/JLdg1H9idr1XUQ
+        CmqViiREAZ6wB06ornJ/RXz/8hCNpXXw
+X-Google-Smtp-Source: ABdhPJxm6roTwt1s1DaAPuWAXFLMeWuQaDcztKu3ME1XYrJ/J2QBWjzx5hvQ23Bz5IazSWxNUKZ+4w==
+X-Received: by 2002:a17:902:8d8b:b029:da:b943:dcf2 with SMTP id v11-20020a1709028d8bb02900dab943dcf2mr20142422plo.1.1607419331263;
+        Tue, 08 Dec 2020 01:22:11 -0800 (PST)
+Received: from mylaptop.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b22sm11524157pfo.163.2020.12.08.01.21.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 01:22:10 -0800 (PST)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/irq: report bug if NR_IPI greater than max SGI during compile time
+Date:   Tue,  8 Dec 2020 17:21:44 +0800
+Message-Id: <1607419304-26140-1-git-send-email-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.7.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late reply.
+Although there is a runtime WARN_ON() when NR_IPR > max SGI, it had better
+do the check during built time, and associate these related code together.
 
-On 11/25/20 at 10:42P, Masahiro Yamada wrote:
-> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
-> >
-> > On 11/23/20 at 02:23P, Masahiro Yamada wrote:
-> > > On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
-> > > >
-> > > > extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
-> > > > ("kbuild: do not create built-in objects for external module builds").
-> > > >
-> > > > This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
-> > > > and 'make M=...' to build livepatch patch module.
-> > > >
-> > > > Add extra-y to targets-for-modules so that such kind of build works
-> > > > properly.
-> > > >
-> > > > Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
-> > > > ---
-> > > >  scripts/Makefile.build | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> > > > index ae647379b579..0113a042d643 100644
-> > > > --- a/scripts/Makefile.build
-> > > > +++ b/scripts/Makefile.build
-> > > > @@ -86,7 +86,7 @@ ifdef need-builtin
-> > > >  targets-for-builtin += $(obj)/built-in.a
-> > > >  endif
-> > > >
-> > > > -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > > > +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > > >
-> > > >  ifdef need-modorder
-> > > >  targets-for-modules += $(obj)/modules.order
-> > > > --
-> > > > 2.29.1
-> > > >
-> > >
-> > > NACK.
-> > >
-> > > Please fix your Makefile.
-> > >
-> > > Hint:
-> > > https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
-> > >
-> > >
-> > > Probably what you should use is 'targets'.
-> >
-> > I tried with 'targets' and 'always-y'. Both doesn't work for me.
-> >
-> > I narraw it down to the following example:
-> >
-> > cat > Makefile << _EOF_
-> > obj-m += foo.o
-> >
-> > ldflags-y += -T $(src)/kpatch.lds
-> > always-y += kpatch.lds
-> >
-> > foo-objs += bar.o
-> >
-> > all:
-> >         make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
-> > clean:
-> >         make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-> > _EOF_
-> >
-> > Take a look into scripts/Makefile.build:488:
-> >
-> > __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
-> >          $(if $(KBUILD_MODULES), $(targets-for-modules)) \
-> >          $(subdir-ym) $(always-y)
-> >         @:
-> >
-> > 'always-y' is built after 'targets-for-modules'. This makes
-> > 'targets-for-modules' fails because kpatch.lds isn't there.
-> 
-> 
-> Heh, you rely on the targets built from left to right,
-> and you have never thought Make supports the parallel option -j.
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/arm64/kernel/smp.c                | 2 ++
+ drivers/irqchip/irq-gic-v3.c           | 2 +-
+ drivers/irqchip/irq-gic.c              | 2 +-
+ include/linux/irqchip/arm-gic-common.h | 2 ++
+ 4 files changed, 6 insertions(+), 2 deletions(-)
 
-You're right. I missed that.
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 18e9727..9fc383c 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -33,6 +33,7 @@
+ #include <linux/kernel_stat.h>
+ #include <linux/kexec.h>
+ #include <linux/kvm_host.h>
++#include <linux/irqchip/arm-gic-common.h>
+ 
+ #include <asm/alternative.h>
+ #include <asm/atomic.h>
+@@ -76,6 +77,7 @@ enum ipi_msg_type {
+ 	IPI_WAKEUP,
+ 	NR_IPI
+ };
++static_assert(NR_IPI <= MAX_SGI_NUM);
+ 
+ static int ipi_irq_base __read_mostly;
+ static int nr_ipi __read_mostly = NR_IPI;
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 16fecc0..ee13f85 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1162,7 +1162,7 @@ static void __init gic_smp_init(void)
+ 				  gic_starting_cpu, NULL);
+ 
+ 	/* Register all 8 non-secure SGIs */
+-	base_sgi = __irq_domain_alloc_irqs(gic_data.domain, -1, 8,
++	base_sgi = __irq_domain_alloc_irqs(gic_data.domain, -1, MAX_SGI_NUM,
+ 					   NUMA_NO_NODE, &sgi_fwspec,
+ 					   false, NULL);
+ 	if (WARN_ON(base_sgi <= 0))
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index 6053245..07d36de 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -845,7 +845,7 @@ static __init void gic_smp_init(void)
+ 				  "irqchip/arm/gic:starting",
+ 				  gic_starting_cpu, NULL);
+ 
+-	base_sgi = __irq_domain_alloc_irqs(gic_data[0].domain, -1, 8,
++	base_sgi = __irq_domain_alloc_irqs(gic_data[0].domain, -1, MAX_SGI_NUM,
+ 					   NUMA_NO_NODE, &sgi_fwspec,
+ 					   false, NULL);
+ 	if (WARN_ON(base_sgi <= 0))
+diff --git a/include/linux/irqchip/arm-gic-common.h b/include/linux/irqchip/arm-gic-common.h
+index fa8c045..7e45a9f 100644
+--- a/include/linux/irqchip/arm-gic-common.h
++++ b/include/linux/irqchip/arm-gic-common.h
+@@ -16,6 +16,8 @@
+ 					(GICD_INT_DEF_PRI << 8) |\
+ 					GICD_INT_DEF_PRI)
+ 
++#define MAX_SGI_NUM			8
++
+ enum gic_type {
+ 	GIC_V2,
+ 	GIC_V3,
+-- 
+2.7.5
 
-> 
-> 
-> You need to specify the dependency if you expect objects
-> are built in the particular order.
-> 
-> However, in this case, using ldflags-y looks wrong
-> in the first place.
-> 
-> The linker script is used when combining the object
-> as well as the final link of *.ko
-
-I don't have a clean fix to kpatch right now.
-
-I'm looping kpatch forks in. They're also looking at this right now:
-
-https://github.com/dynup/kpatch/pull/1149
-
-Thanks
-WANG Chao
-
-> 
-> 
-> > For 'targets', in case of OOT, does not seem to be useful.
-> >
-> > What change do you suggest to make to fix this kind of Makefile?
-> >
-> > Thanks,
-> > WANG Chao
-> 
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
-> 
