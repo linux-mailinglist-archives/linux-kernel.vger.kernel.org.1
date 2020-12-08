@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C092D29CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C86C2D29CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgLHLan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:30:43 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9035 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbgLHLam (ORCPT
+        id S1729175AbgLHLcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:32:16 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:34462 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729031AbgLHLcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:30:42 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cqyd41XvCzhnJb;
-        Tue,  8 Dec 2020 19:29:28 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.9) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 8 Dec 2020
- 19:29:48 +0800
-Subject: Re: [PATCH v2 1/3] reset: hisilicon: correct vendor prefix
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-References: <20201204014236.1158-1-thunder.leizhen@huawei.com>
- <20201204014236.1158-2-thunder.leizhen@huawei.com>
- <07c0b7a0caf47ddef27e55e6d6887fa55305d9d5.camel@pengutronix.de>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <abdb7179-5187-b515-7a9d-5a4d13608e40@huawei.com>
-Date:   Tue, 8 Dec 2020 19:29:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 8 Dec 2020 06:32:16 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8BU1e6148438;
+        Tue, 8 Dec 2020 11:31:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=n9Vzzz9JyUSKWqhgwt+EcBwNm7sdSMdz33I19pCtH/8=;
+ b=t4cCHBz9eHE/WDlGePsNoEnPl5t+XFViu5hyoUA3zHnVuFOesb01E44hHPoW1MIf+8Xh
+ xKMZ7oWhffbC/mlj8aZC5ZaQn/EwY1sntTRTz1TylvdxZz8VkEscXJwr6ydhrBQZPtDS
+ IwIq+2zJMk/BSHzpU31RrYQtGxaeIclVu3QZSbTiV323glTyQsI6fdsjkYRmteyojztm
+ CGekIinEdrIhhdO3osV/YbD0IpxJZ5rQymdKhXUH6mMLVtDxgeZXVS/Fhymvi3cQmKEo
+ xZ5C8+i27K9S2i0ybr0I1KcjXIF3zFQdvC2Yg6Svru/ZhxMR6rXcE4icUjN1hOT6FRMI 8Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35825m2ah3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 11:31:12 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8BUe94104196;
+        Tue, 8 Dec 2020 11:31:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 358kysr2nj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 11:31:11 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B8BV1oC016947;
+        Tue, 8 Dec 2020 11:31:01 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 03:31:01 -0800
+Date:   Tue, 8 Dec 2020 14:30:53 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@i4.cs.fau.de, gregkh@linuxfoundation.org,
+        ij72uhux@stud.informatik.uni-erlangen.de,
+        sakari.ailus@linux.intel.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 06/12] media: atomisp: Add parentheses
+Message-ID: <20201208113053.GB2767@kadam>
+References: <20201207192638.15219-1-Philipp.Gerlesberger@fau.de>
+ <20201207192638.15219-7-Philipp.Gerlesberger@fau.de>
 MIME-Version: 1.0
-In-Reply-To: <07c0b7a0caf47ddef27e55e6d6887fa55305d9d5.camel@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207192638.15219-7-Philipp.Gerlesberger@fau.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 07, 2020 at 08:26:33PM +0100, Philipp Gerlesberger wrote:
+> ERROR:COMPLEX_MACRO: Macros with complex values should be
+> enclosed in parentheses
+> 
+> Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
+> ---
+>  .../media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h    | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h b/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
+> index 9cd3d92b34c9..2c02dd1cf27a 100644
+> --- a/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
+> +++ b/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
+> @@ -22,8 +22,8 @@
+>  #define STORAGE_CLASS_RMGR_H extern
+>  #define STORAGE_CLASS_RMGR_C
+>  #else				/* __INLINE_RMGR__ */
+> -#define STORAGE_CLASS_RMGR_H static inline
+> -#define STORAGE_CLASS_RMGR_C static inline
+> +#define STORAGE_CLASS_RMGR_H (static inline)
+> +#define STORAGE_CLASS_RMGR_C (static inline)
 
+This will break the build.
 
-On 2020/12/8 17:25, Philipp Zabel wrote:
-> Hi Zhen,
-> 
-> On Fri, 2020-12-04 at 09:42 +0800, Zhen Lei wrote:
->> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
->> stated in "vendor-prefixes.yaml".
->>
->> Fixes: 1527058736fa ("reset: hisilicon: add reset-hi3660")
->> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
->> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>
->> Cc: Chen Feng <puck.chen@hisilicon.com>
->> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->> ---
->>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
->>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 2 +-
->>  drivers/reset/hisilicon/reset-hi3660.c    | 2 +-
-> 
-> Please keep device tree patches and reset driver patch separate, as they
-> were in v1.
+You should just remove these defines.  They don't make any sort of
+sense.  The programmer should know what things need to be static and
+what not.  Generally leave "inline" out, and let the compiler decide.
+If you have a legit reason to think you are smarter than the compiler
+(benchmarking data) then probably __always_inline is more appropriate.
 
-OK
-
-> 
->>  3 files changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
->> index 49c19c6879f95ce..bfb1375426d2b58 100644
->> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
->> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
->> @@ -345,7 +345,7 @@
->>  		crg_rst: crg_rst_controller {
->>  			compatible = "hisilicon,hi3660-reset";
->>  			#reset-cells = <2>;
->> -			hisi,rst-syscon = <&crg_ctrl>;
->> +			hisilicon,rst-syscon = <&crg_ctrl>;
->>  		};
->>  
->>  
->> @@ -376,7 +376,7 @@
->>  
->>  		iomcu_rst: reset {
->>  			compatible = "hisilicon,hi3660-reset";
->> -			hisi,rst-syscon = <&iomcu>;
->> +			hisilicon,rst-syscon = <&iomcu>;
->>  			#reset-cells = <2>;
->>  		};
->>  
->> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
->> index 85b0dfb35d6d396..5c5a5dc964ea848 100644
->> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
->> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
->> @@ -155,7 +155,7 @@
->>  			compatible = "hisilicon,hi3670-reset",
->>  				     "hisilicon,hi3660-reset";
->>  			#reset-cells = <2>;
->> -			hisi,rst-syscon = <&crg_ctrl>;
->> +			hisilicon,rst-syscon = <&crg_ctrl>;
->>  		};
->>  
->>  		pctrl: pctrl@e8a09000 {
->> diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
->> index a7d4445924e558c..8f1953159a65b31 100644
->> --- a/drivers/reset/hisilicon/reset-hi3660.c
->> +++ b/drivers/reset/hisilicon/reset-hi3660.c
->> @@ -83,7 +83,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
->>  	if (!rc)
->>  		return -ENOMEM;
->>  
->> -	rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-syscon");
->> +	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
-> 
-> This should fall back to the deprecated compatible, for example:
-> 
-> 	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
-> 	if (PTR_ERR(rc->map) == -ENODEV)
-> 		rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-
-> syscon");
-
-Oh, thanks. I misunderstood your suggestion the other day. I'll fix it right away.
-
-> 
->>  	if (IS_ERR(rc->map)) {
->>  		dev_err(dev, "failed to get hi3660,rst-syscon\n");
->>  		return PTR_ERR(rc->map);
-> 
-> regards
-> Philipp
-> 
-> .
-> 
+regards,
+dan carpenter
 
