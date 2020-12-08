@@ -2,79 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9992D364F
+	by mail.lfdr.de (Postfix) with ESMTP id B74DF2D3650
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731066AbgLHWbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        id S1731512AbgLHWdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgLHWbc (ORCPT
+        with ESMTP id S1731360AbgLHWd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:31:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A3CC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:30:46 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607466645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=75XIg+ZJ7vXwfOxh4mfZVbFzoFN2Q4G9QbYqnFjSG9E=;
-        b=A1Nz0fwN0RmE7nkQCeVtAdRK9Fp5J/cc0VItqE+6Y7ssc5nfSb29Z/8sL6eNiF2I9vmFKy
-        0dnrrhMqEcv/tQR4USLUQrGVKit9lqQ0Ig5IckSZ2j5JTPjJo1cQ2HLA6sfYwdeYY7tJ+S
-        3ggfNRJfP6/R6kiGBH5Mfzs/4+E55KzFoNRME0kzLGQ0vfwgDVbze+lJYpaKp/3h/6yC/o
-        ZxwvGUyBtaWHLQxkvOy1q/TLSrRH6qCeKjclQEW231NMhGOLuxqxQFAcGKL1hlhhMGsDrV
-        D9XUaHzrbeWSxy9B5oXPic1voW29EtSNLmsUcLzpfrFs2sVEWEyLTBGL+KOVqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607466645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=75XIg+ZJ7vXwfOxh4mfZVbFzoFN2Q4G9QbYqnFjSG9E=;
-        b=lxQ6PPi8VY3UiDkGHT3VY5H8IEHbdv5lVgE58r7eJjHqq8tm8fP1GrwUG9ziPkfjV+v4sC
-        +NNZZFN62//vMrBA==
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Tue, 8 Dec 2020 17:33:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D30C06179C;
+        Tue,  8 Dec 2020 14:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oG/4qARIpIqwPn3JDJp2L5H722CyvkwsVOzVPLJGO78=; b=OHA5TjZOy3nv/I5736PEGJUwf/
+        sKOe/T2fdzhi73h+PkB+ULW7vzzj1i9sdKXh9BDImMVpmkGInEs4wAnJGKpICCV6rAR2A6SkFzazJ
+        qUfbSqnOllZ54KOSqGZT8YQPTVNcXK8NrHId1QeJIy3zIsSR0+BYpaU04s+XZaE6AA4G8DdnVi2a1
+        d1xpI6KMkuRhTPDt8/X9tXI0ZJkcktnvSYlT1qTNaiHK1DWLbUMa0gRxRXrae6lFcCxjkWAPu3DAD
+        g4jInOihf3tMHo8qLtnHZBBs+ES759we8Z5kh1XArUN7COnHY+pzW+chupNynvitrrbX9q9ElRm6g
+        8YByxTYw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmlX8-0006dj-DZ; Tue, 08 Dec 2020 22:32:34 +0000
+Date:   Tue, 8 Dec 2020 22:32:34 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-In-Reply-To: <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
-References: <20201201205341.3871-1-john.ogness@linutronix.de> <20201201205341.3871-3-john.ogness@linutronix.de> <X8n9a2DWUFE/giyB@alley> <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
-Date:   Tue, 08 Dec 2020 23:36:44 +0106
-Message-ID: <875z5c9bhn.fsf@jogness.linutronix.de>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201208223234.GL7338@casper.infradead.org>
+References: <20201207225703.2033611-1-ira.weiny@intel.com>
+ <20201207225703.2033611-3-ira.weiny@intel.com>
+ <20201207232649.GD7338@casper.infradead.org>
+ <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+ <20201207234008.GE7338@casper.infradead.org>
+ <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+ <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+ <20201208215028.GK7338@casper.infradead.org>
+ <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
->> Sigh, atomic64_read() uses a spin lock in the generic implementation
->> that is used on some architectures.
->
-> Oh... So on those archs prb is not lockless in fact, it actually
-> takes the spin_lock each time we read the descriptor state?
->
-> 	desc_read()
-> 	  atomic_long_read(state_var)
-> 	    atomic64_read()
-> 	      raw_spin_lock_irqsave(lock, flags)
-> 	        << NMI panic >>
->
-> Am I missing something?
+On Tue, Dec 08, 2020 at 02:23:10PM -0800, Dan Williams wrote:
+> On Tue, Dec 8, 2020 at 1:51 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Tue, Dec 08, 2020 at 01:32:55PM -0800, Ira Weiny wrote:
+> > > On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
+> > > > On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > >
+> > > > > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
+> > > > > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > > >
+> > > > > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
+> > > > > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
+> > > > > > > > +                            struct page *src_page, size_t src_off,
+> > > > > > > > +                            size_t len)
+> > > > > > > > +{
+> > > > > > > > +     char *dst = kmap_local_page(dst_page);
+> > > > > > > > +     char *src = kmap_local_page(src_page);
+> > > > > > >
+> > > > > > > I appreciate you've only moved these, but please add:
+> > > > > > >
+> > > > > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
+> > > > > >
+> > > > > > I imagine it's not outside the realm of possibility that some driver
+> > > > > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
+> > > > > > it because kmap_atomic() of contiguous pages "just works (TM)".
+> > > > > > Shouldn't this WARN rather than BUG so that the user can report the
+> > > > > > buggy driver and not have a dead system?
+> > > > >
+> > > > > As opposed to (on a HIGHMEM=y system) silently corrupting data that
+> > > > > is on the next page of memory?
+> > > >
+> > > > Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
+> > > >
+> > > > > I suppose ideally ...
+> > > > >
+> > > > >         if (WARN_ON(dst_off + len > PAGE_SIZE))
+> > > > >                 len = PAGE_SIZE - dst_off;
+> > > > >         if (WARN_ON(src_off + len > PAGE_SIZE))
+> > > > >                 len = PAGE_SIZE - src_off;
+> > > > >
+> > > > > and then we just truncate the data of the offending caller instead of
+> > > > > corrupting innocent data that happens to be adjacent.  Although that's
+> > > > > not ideal either ... I dunno, what's the least bad poison to drink here?
+> > > >
+> > > > Right, if the driver was relying on "corruption" for correct operation.
+> > > >
+> > > > If corruption actual were happening in practice wouldn't there have
+> > > > been screams by now? Again, not necessarily...
+> > > >
+> > > > At least with just plain WARN the kernel will start screaming on the
+> > > > user's behalf, and if it worked before it will keep working.
+> > >
+> > > So I decided to just sleep on this because I was recently told to not introduce
+> > > new WARN_ON's[1]
+> > >
+> > > I don't think that truncating len is worth the effort.  The conversions being
+> > > done should all 'work'  At least corrupting users data in the same way as it
+> > > used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
+> > > to do so while I work through the 0-day issues.  (not sure what is going on
+> > > there.)
+> > >
+> > > However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
+> > > is a bit more critical than the PKS API in that it could result in corrupt
+> > > data.
+> >
+> > zero_user_segments contains:
+> >
+> >         BUG_ON(end1 > page_size(page) || end2 > page_size(page));
+> >
+> > These should be consistent.  I think we've demonstrated that there is
+> > no good option here.
+> 
+> True, but these helpers are being deployed to many new locations where
+> they were not used before.
 
-For the state variable we chose atomic_long_t instead of atomic64_t for
-this reason. atomic_long_t operations are available atomically on all
-architectures. However, for clear_seq we need 64-bit (even on 32-bit
-machines). The seqcount_latch is an excellent solution here since
-clear_seq does not require lockless writers.
+So what's your preferred poison?
 
-John Ogness
+1. Corrupt random data in whatever's been mapped into the next page (which
+   is what the helpers currently do)
+2. Copy less data than requested
+3. Crash
+4. Something else
