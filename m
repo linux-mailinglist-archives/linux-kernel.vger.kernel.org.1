@@ -2,79 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4CF2D218A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993592D218E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgLHDmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 22:42:06 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:64042 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725863AbgLHDmG (ORCPT
+        id S1726949AbgLHDnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgLHDnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 22:42:06 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UHwrZ-V_1607398881;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UHwrZ-V_1607398881)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Dec 2020 11:41:22 +0800
-Subject: Re: [PATCH 01/11] mm: use add_page_to_lru_list()
-To:     Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201207220949.830352-1-yuzhao@google.com>
- <20201207220949.830352-2-yuzhao@google.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <cf290655-5353-1fd3-e57f-452b7662b458@linux.alibaba.com>
-Date:   Tue, 8 Dec 2020 11:41:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Mon, 7 Dec 2020 22:43:11 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39683C0613D6;
+        Mon,  7 Dec 2020 19:42:31 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id w127so3412768ybw.8;
+        Mon, 07 Dec 2020 19:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rVF0ZTpG4KyKSrWlbeJiAw2aw7KsjahNGWMZr7fhkHk=;
+        b=BPa3/BjB+L6D2YqA9dPlyXktUcodacMyngTKOJWFJk7ozjZiZ8WaFDP1g65futKeDn
+         jFCXr3S+1EpOHmwW7kUhz/X19KmZZDq+Av+tWHU82lzEMKu30IeH8IVmLyvlAN5CvVT6
+         g8NYlRnHhHCun/UoIluyV+FpDWwZ5yUsvN3/qTpeuy8cSKXmyHGGTXFHs5M1SUAuwnrF
+         jRhu0q6CUItI1S1axL2FuB1sF9IASYLF3SHJ8mEs7xSXJAmH11hkhp2mIBq9ERZWPMD7
+         UZszu2w+0ZW/F/ki25Of6Tp9I1+tT1wuHRNEsQAU6RaBVVYWsPTwRyaoyhYEPIg68iEA
+         YWGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rVF0ZTpG4KyKSrWlbeJiAw2aw7KsjahNGWMZr7fhkHk=;
+        b=oXOCdL3P26HU2X96iOgKUEts8cGs5fUoq2MYCFgAQIBQOcVvAPbLadYYJGGspjMbS4
+         e3UR4iKzmKD0JjNGrUTeqsEEESkFguC3E73eZbaIUN0BrH7YyX5exGvMf4yXqBov8SQW
+         qPi1YlgG8BJyELdW6+lwm+mGYAd9TQa8Sf6Zvq8ylvX2/XELHs+gkkQn+XaU+IHfg6It
+         JEWmB6fzEzw7uhQ+348zOTfRRac4gjafOo+NQe2k9UK/5bnC5K+gBfz+h+8BmPnCz7g6
+         pA2CK2b/feWHOjYzIbDGFO9rtQZ22O6t0pgRJFLVvNozcQkql7MGB2PIdEFQ5jWQAWaq
+         ymqA==
+X-Gm-Message-State: AOAM53202hSYdlt+ZF6qLDj6LF+uJDIXxbpRfBwR1YnVXPUFcJdRIOyu
+        zvZvGv/ZKmK84BamWGIh256lsN1GBDi5WIMNo+8=
+X-Google-Smtp-Source: ABdhPJx8F2SwxSvT6CvUqSpa4NJjcxoee7gCMdq75xz/NayiKTXs/2afKhPU+7rA6Jf+xlNlUnGeXChrAdKN+jBObqw=
+X-Received: by 2002:a25:df8e:: with SMTP id w136mr26537481ybg.230.1607398950542;
+ Mon, 07 Dec 2020 19:42:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201207220949.830352-2-yuzhao@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
+ <3dce8546-60d4-bb94-2c7a-ed352882cd37@fb.com> <alpine.LRH.2.23.451.2012060038260.1505@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2012060038260.1505@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Dec 2020 19:42:19 -0800
+Message-ID: <CAEf4BzYmDZVnHRYFJk+J90s-GKUt_Sa2HPNs6mKxyZ8Bm6TN3w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: support module BTF in BTF display helpers
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+On Sat, Dec 5, 2020 at 4:44 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+>
+> On Sat, 5 Dec 2020, Yonghong Song wrote:
+>
+> >
+> >
+> > __builtin_btf_type_id() is really only supported in llvm12
+> > and 64bit return value support is pushed to llvm12 trunk
+> > a while back. The builtin is introduced in llvm11 but has a
+> > corner bug, so llvm12 is recommended. So if people use the builtin,
+> > you can assume 64bit return value. libbpf support is required
+> > here. So in my opinion, there is no need to do feature detection.
+> >
+> > Andrii has a patch to support 64bit return value for
+> > __builtin_btf_type_id() and I assume that one should
+> > be landed before or together with your patch.
+> >
+> > Just for your info. The following is an example you could
+> > use to determine whether __builtin_btf_type_id()
+> > supports btf object id at llvm level.
+> >
+> > -bash-4.4$ cat t.c
+> > int test(int arg) {
+> >   return __builtin_btf_type_id(arg, 1);
+> > }
+> >
+> > Compile to generate assembly code with latest llvm12 trunk:
+> >   clang -target bpf -O2 -S -g -mcpu=v3 t.c
+> > In the asm code, you should see one line with
+> >   r0 = 1 ll
+> >
+> > Or you can generate obj code:
+> >   clang -target bpf -O2 -c -g -mcpu=v3 t.c
+> > and then you disassemble the obj file
+> >   llvm-objdump -d --no-show-raw-insn --no-leading-addr t.o
+> > You should see below in the output
+> >   r0 = 1 ll
+> >
+> > Use earlier version of llvm12 trunk, the builtin has
+> > 32bit return value, you will see
+> >   r0 = 1
+> > which is a 32bit imm to r0, while "r0 = 1 ll" is
+> > 64bit imm to r0.
+> >
+>
+> Thanks for this Yonghong!  I'm thinking the way I'll tackle it
+> is to simply verify that the upper 32 bits specifying the
+> veth module object id are non-zero; if they are zero, we'll skip
 
-在 2020/12/8 上午6:09, Yu Zhao 写道:
-> There is add_page_to_lru_list(), and move_pages_to_lru() should reuse
-> it, not duplicate it.
-> 
-> Signed-off-by: Yu Zhao <yuzhao@google.com>
-> ---
->  mm/vmscan.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 469016222cdb..a174594e40f8 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1821,7 +1821,6 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  	int nr_pages, nr_moved = 0;
->  	LIST_HEAD(pages_to_free);
->  	struct page *page;
-> -	enum lru_list lru;
->  
->  	while (!list_empty(list)) {
->  		page = lru_to_page(list);
-> @@ -1866,11 +1865,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		 * inhibits memcg migration).
->  		 */
->  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-> -		lru = page_lru(page);
-> +		add_page_to_lru_list(page, lruvec, page_lru(page));
->  		nr_pages = thp_nr_pages(page);
-> -
-> -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
-> -		list_add(&page->lru, &lruvec->lists[lru]);
->  		nr_moved += nr_pages;
->  		if (PageActive(page))
->  			workingset_age_nonresident(lruvec, nr_pages);
-> 
+Let's instead of the real veth module use selftests's bpf_testmod,
+which I added specifically to use for tests like these. We can define
+whatever types we need in there.
+
+> the test (I think a skip probably makes sense as not everyone will
+> have llvm12). Does that seem reasonable?
+>
+> With the additional few minor changes on top of Andrii's patch,
+> the use of __builtin_btf_type_id() worked perfectly. Thanks!
+>
+> Alan
