@@ -2,62 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F70C2D28D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9A62D28F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgLHK2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:28:36 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:60237 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgLHK2g (ORCPT
+        id S1728708AbgLHKby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:31:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbgLHKbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:28:36 -0500
-Received: from fsav110.sakura.ne.jp (fsav110.sakura.ne.jp [27.133.134.237])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0B8ARD1X008734;
-        Tue, 8 Dec 2020 19:27:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav110.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp);
- Tue, 08 Dec 2020 19:27:13 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0B8ARDxs008729
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 8 Dec 2020 19:27:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2 00/10] allow unprivileged overlay mounts
-To:     Miklos Szeredi <mszeredi@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>
-References: <20201207163255.564116-1-mszeredi@redhat.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <1725e01a-4d4d-aecb-bad6-54aa220b4cd2@i-love.sakura.ne.jp>
-Date:   Tue, 8 Dec 2020 19:27:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 8 Dec 2020 05:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607423427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wTTs5k06KawVFBsrzimy1ln5wExel7K+JmVgKzEhQOY=;
+        b=J/UqyKYpEBLuq9v2S2461h4lEdx99lG51e0TLpT+SX9ncbQPJnDvJUrgOZJEb4VA+qeOrI
+        xjOXViW+ItcY5PatG4oNgPa3cGJy6rIq0F9xzhjKripXKyr033NYXNM6JQV9lp2N/QkITO
+        BEkqoeVrYIpQj/6fec7zhkARhBKVKIw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-AW8qbANlORSGoDUt7EcDjg-1; Tue, 08 Dec 2020 05:30:24 -0500
+X-MC-Unique: AW8qbANlORSGoDUt7EcDjg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86481393B9;
+        Tue,  8 Dec 2020 10:29:47 +0000 (UTC)
+Received: from krava (unknown [10.40.193.58])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A117C5D9DD;
+        Tue,  8 Dec 2020 10:29:44 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 11:29:43 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
+Subject: Re: [PATCH V2 06/12] perf mem: Clean up output format
+Message-ID: <20201208102943.GB4135722@krava>
+References: <20201130172803.2676-1-kan.liang@linux.intel.com>
+ <20201130172803.2676-7-kan.liang@linux.intel.com>
+ <20201204232756.GK3613628@krava>
+ <978f0cb9-43d6-1ae5-e1ce-5ec4cc9fca12@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207163255.564116-1-mszeredi@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <978f0cb9-43d6-1ae5-e1ce-5ec4cc9fca12@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/08 1:32, Miklos Szeredi wrote:
-> A general observation is that overlayfs does not call security_path_*()
-> hooks on the underlying fs.  I don't see this as a problem, because a
-> simple bind mount done inside a private mount namespace also defeats the
-> path based security checks.  Maybe I'm missing something here, so I'm
-> interested in comments from AppArmor and Tomoyo developers.
+On Mon, Dec 07, 2020 at 03:19:06PM -0500, Liang, Kan wrote:
+> 
+> 
+> On 12/4/2020 6:27 PM, Jiri Olsa wrote:
+> > On Mon, Nov 30, 2020 at 09:27:57AM -0800, kan.liang@linux.intel.com wrote:
+> > 
+> > SNIP
+> > 
+> > > @@ -172,7 +172,7 @@ dump_raw_samples(struct perf_tool *tool,
+> > >   {
+> > >   	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
+> > >   	struct addr_location al;
+> > > -	const char *fmt;
+> > > +	const char *fmt, *field_sep;
+> > >   	if (machine__resolve(machine, &al, sample) < 0) {
+> > >   		fprintf(stderr, "problem processing %d event, skipping it.\n",
+> > > @@ -186,60 +186,41 @@ dump_raw_samples(struct perf_tool *tool,
+> > >   	if (al.map != NULL)
+> > >   		al.map->dso->hit = 1;
+> > > -	if (mem->phys_addr) {
+> > > -		if (symbol_conf.field_sep) {
+> > > -			fmt = "%d%s%d%s0x%"PRIx64"%s0x%"PRIx64"%s0x%016"PRIx64
+> > > -			      "%s%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
+> > > -		} else {
+> > > -			fmt = "%5d%s%5d%s0x%016"PRIx64"%s0x016%"PRIx64
+> > > -			      "%s0x%016"PRIx64"%s%5"PRIu64"%s0x%06"PRIx64
+> > > -			      "%s%s:%s\n";
+> > > -			symbol_conf.field_sep = " ";
+> > > -		}
+> > > -
+> > > -		printf(fmt,
+> > > -			sample->pid,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->tid,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->ip,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->addr,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->phys_addr,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->weight,
+> > > -			symbol_conf.field_sep,
+> > > -			sample->data_src,
+> > > -			symbol_conf.field_sep,
+> > > -			al.map ? (al.map->dso ? al.map->dso->long_name : "???") : "???",
+> > > -			al.sym ? al.sym->name : "???");
+> > > +	field_sep = symbol_conf.field_sep;
+> > 
+> > hum, what's the point of having field_sep?
+> 
+> 
+> To keep the fmt consistent.
+> 
+> The patch divides the "printf(fmt,..." into two part. In the first half
+> part, the symbol_conf.field_sep may be modified to " ";
+> In the second half part, we should not use the modified
+> symbol_conf.field_sep for the below check. The field_sep keeps the original
+> value and should be used.
 
-Regarding TOMOYO, I don't want overlayfs to call security_path_*() hooks on the
-underlying fs, but the reason is different. It is not because a simple bind mount
-done inside a private mount namespace defeats the path based security checks.
-TOMOYO does want to check what device/filesystem is mounted on which location. But
-currently TOMOYO is failing to check it due to fsopen()/fsmount()/move_mount() API.
+ok, I missed it's being moified.. thanks
+
+jirka
 
