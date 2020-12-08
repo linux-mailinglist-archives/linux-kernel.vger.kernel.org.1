@@ -2,164 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAC52D2CED
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10422D2CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729784AbgLHORN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        id S1729821AbgLHOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729461AbgLHORM (ORCPT
+        with ESMTP id S1729469AbgLHOTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:17:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5FAC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3ijEhG8gGEWiXJLW+imhAKg7QjYa3RJ5hrd4zDBUdUg=; b=e+uAl4/KdJgbbqKvi7aFKetu1a
-        k6Skiclz4+Wej1KAIcTA4Y8ZFr+kZ35c0EsE5ujyreFOcN9ktg3MXwi0qUnhTo635gwPH5vLzbOtM
-        3PPXoKWFJsrkNfvpa9uJqtoE/yPsqsFA86yhtiNS6gO3ru5YxoBaotVJ2Ng5s8ohBU6geAovcNmM2
-        v4eYWv72A/fR5AJ3mzvNlt2KOyvUjwp6ETknxgxaQYLlEnpW+HsMfJM9IjT93OUaLcxO23+JozKDi
-        kfCblF/gxlmEOlNj5KF2XQeUartcHlT5X/04ymxQWufVn/mUoTDKcQw5gU1LULROjgO28rPNy0t8N
-        4Ip/dnJw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmdmo-0001PK-4V; Tue, 08 Dec 2020 14:16:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 093F7304B92;
-        Tue,  8 Dec 2020 15:16:10 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C78A8200AABBA; Tue,  8 Dec 2020 15:16:10 +0100 (CET)
-Date:   Tue, 8 Dec 2020 15:16:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Aubrey Li <aubrey.li@linux.intel.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, mgorman@techsingularity.net,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v6] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-Message-ID: <20201208141610.GA2414@hirez.programming.kicks-ass.net>
-References: <20201208014957.170845-1-aubrey.li@linux.intel.com>
+        Tue, 8 Dec 2020 09:19:00 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1803C061749;
+        Tue,  8 Dec 2020 06:18:19 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e2so3955496pgi.5;
+        Tue, 08 Dec 2020 06:18:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OMSR+hMzcB4dCy9fVjZAuKPwdWZD1h4rKUe3TPr+HH4=;
+        b=GDEr4M3xeVwCR65XN9Y3PUuP3W0e+4t3cOtl1sUc9mWjM4tK6sK0ZWxYkCWfHLhHAS
+         zsUaAQ8+EKNobiBUsvwIun6fgLNtkufyFJyzL/7yPlBqHSDUQU3PgEYMpYrwj9/ey/9+
+         PYlz4yCWKeKYTT8bVKa/mKeMsqbLKU325nn8hv7+zknczPoSLGI4KgTasMirQYO6tEOV
+         wrcsSW74IzIx875hGUjRcXPt/NqUvNT2/JiTwH5rUVVpHdwE1gOSjBgnvB/mJodGbu85
+         NwEr2YaBoF7NWgaizzR4iG/7Q31XludPpENCMcZNrIXRaqh8+9/dAG+vpydDKFc6Gs+Z
+         lidw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OMSR+hMzcB4dCy9fVjZAuKPwdWZD1h4rKUe3TPr+HH4=;
+        b=ByGOloImI5rkBxbrwzK0su0PnhsemUDuTeoMPXvLBLoZuQUktHy9tplJOL9tVQEVW6
+         aAiB1UWgIsCfNuXrXDuU9h4kMNWJH9O9JhpCSgEv78KUgHWC37aFe6TMC9ReG4Ue97at
+         FkooQK5RmXdW+kSh0TqPLx1v8rfbZF6Ex0hvYdKw/CXHi2MUz94zCbUO/3mZIBnf777I
+         9Z1mWYVCZ4wSwEd50gkqE8c11SFa3BHrBmnmNzoWDaKobRzA6/XP2dSRYI208Y7CSK/k
+         9uR7ehVeabRearzCePIqneCPLevw/8txKxpqdI/LWZ9xp5kMf5QNzpZFUOlsgJsegXIe
+         tr3w==
+X-Gm-Message-State: AOAM533/zs2o72+qH4f4/tcP3KZ3jXjPBRcaq0Y3jcNHb6vIw0/mAyuf
+        3GG0s7Wy0z1Ae4s+EamRgEzIBceKQX2Brv4T1/Y=
+X-Google-Smtp-Source: ABdhPJzsf8QZY2LQaf818jrjHoTphpxtNI7QUQQZgEjnN8Uga+bBWu9N22EYRNSUQQb8nNpQH61gugM0InXjm0hc5Uc=
+X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr4542310pjf.181.1607437099448;
+ Tue, 08 Dec 2020 06:18:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208014957.170845-1-aubrey.li@linux.intel.com>
+References: <20201208141429.8836-1-info@metux.net>
+In-Reply-To: <20201208141429.8836-1-info@metux.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Dec 2020 16:19:07 +0200
+Message-ID: <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
+Subject: Re: [RFC PATCH] RFC: drivers: gpio: helper for generic pin IRQ handling
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        joyce.ooi@intel.com, Andrew Jeffery <andrew@aj.id.au>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
+        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        Andy Shevchenko <andy@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:49:57AM +0800, Aubrey Li wrote:
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index c4da7e17b906..b8af602dea79 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3999,6 +3999,7 @@ void scheduler_tick(void)
->  	rq_lock(rq, &rf);
->  
->  	update_rq_clock(rq);
-> +	update_idle_cpumask(rq, false);
+On Tue, Dec 8, 2020 at 4:14 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
+>
+> Many gpio drivers already use gpiolib's builtin irqchip handling
+> (CONFIG_GPIOLIB_IRQCHIP), but still has some boilerplate for retrieving
+> the actual Linux IRQ number and calling into the generic handler.
+> That boilerplate can be reduced by moving that into a helper function.
+>
+> This is an RFC patch to outline how that could be done. Note: it's
+> completely untested yet.
+>
+> Several drivers still have their completely IRQ own implementation and
+> thus can't be converted yet. Some of them perhaps could be changed to
+> store their irq domain in the struct gpio, so the new helper could
+> also be used for those.
+>
+> Having all GPIO drivers doing their IRQ management entirely through the
+> GPIO subsystem (eg. never calling generic_handle_irq() and using the buil=
+tin
+> IRQ handling) would also allow a more direct (eg. callback-based) pin cha=
+nge
+> notification for GPIO consumers, that doesn't involve registering them as
+> generic IRQ handlers.
+>
+> Further reduction of boilerplate could be achieved by additional helpers
+> for common patterns like for_each_set_bit() loops on irq masks.
 
-Does that really need to be done with rq->lock held?
+Have you able to test them all?
+As the PCA953x case showed us this is not so simple, besides the name
+which sucks =E2=80=94 we don't *raise* and IRQ we *handle* it.
 
->  	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
->  	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+NAK.
 
-> @@ -6808,6 +6813,51 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  }
->  #endif /* CONFIG_SMP */
->  
-> +/*
-> + * Update cpu idle state and record this information
-> + * in sd_llc_shared->idle_cpus_span.
-> + */
-> +void update_idle_cpumask(struct rq *rq, bool set_idle)
-> +{
-> +	struct sched_domain *sd;
-> +	int cpu = cpu_of(rq);
-> +	int idle_state;
-> +
-> +	/*
-> +	 * If called from scheduler tick, only update
-> +	 * idle cpumask if the CPU is busy, as idle
-> +	 * cpumask is also updated on idle entry.
-> +	 *
-> +	 */
-> +	if (!set_idle && idle_cpu(cpu))
-> +		return;
-
-scheduler_tick() already calls idle_cpu() when SMP.
-
-> +	/*
-> +	 * Also set SCHED_IDLE cpu in idle cpumask to
-> +	 * allow SCHED_IDLE cpu as a wakeup target
-> +	 */
-> +	idle_state = set_idle || sched_idle_cpu(cpu);
-> +	/*
-> +	 * No need to update idle cpumask if the state
-> +	 * does not change.
-> +	 */
-> +	if (rq->last_idle_state == idle_state)
-> +		return;
-> +
-> +	rcu_read_lock();
-
-This is called with IRQs disabled, surely we can forgo rcu_read_lock()
-here.
-
-> +	sd = rcu_dereference(per_cpu(sd_llc, cpu));
-> +	if (!sd || !sd->shared)
-> +		goto unlock;
-
-I don't think !sd->shared is possible here.
-
-> +	if (idle_state)
-> +		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-> +	else
-> +		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-> +
-> +	rq->last_idle_state = idle_state;
-> +unlock:
-> +	rcu_read_unlock();
-> +}
-> +
->  static unsigned long wakeup_gran(struct sched_entity *se)
->  {
->  	unsigned long gran = sysctl_sched_wakeup_granularity;
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index f324dc36fc43..f995660edf2b 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -156,6 +156,11 @@ static void cpuidle_idle_call(void)
->  		return;
->  	}
->  
-> +	/*
-> +	 * The CPU is about to go idle, set it in idle cpumask
-> +	 * to be a wake up target.
-> +	 */
-> +	update_idle_cpumask(this_rq(), true);
-
-This should be in do_idle(), right around arch_cpu_idle_enter().
-
->  	/*
->  	 * The RCU framework needs to be told that we are entering an idle
->  	 * section, so no more rcu read side critical sections and one more
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 8d1ca65db3b0..db460b20217a 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1004,6 +1004,7 @@ struct rq {
->  	/* This is used to determine avg_idle's max value */
->  	u64			max_idle_balance_cost;
->  #endif /* CONFIG_SMP */
-> +	unsigned char		last_idle_state;
-
-All of that is pointless for UP. Also, is this the best location?
+--=20
+With Best Regards,
+Andy Shevchenko
