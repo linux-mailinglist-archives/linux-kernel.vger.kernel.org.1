@@ -2,165 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053A52D2D68
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF672D2D75
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbgLHOpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:45:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726080AbgLHOpD (ORCPT
+        id S1729846AbgLHOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:46:48 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:36639 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLHOqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:45:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607438616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cfa7wLpbxuEZq+R+bI/0NtkJcPb3sJm2JZkzYyHbJ5Q=;
-        b=HVah9qDgV+SP6M9VQgyO1bv/7XqZ0qJnL+CF0iSf2QeIBmI2kkFd5FbxMAuaMKjdtl29VW
-        TybudDAYnpRzeQ99knKrm+L0Ttfkh/e/n66vsKBCoh2+vBFl71Q2C2lXu9sZZtdC3m8+6H
-        49qClm+dOi8cr1mDk2wf1sCfirjdkJE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-Q0mGymiaN0Cc8fdacmJkNA-1; Tue, 08 Dec 2020 09:43:35 -0500
-X-MC-Unique: Q0mGymiaN0Cc8fdacmJkNA-1
-Received: by mail-ed1-f70.google.com with SMTP id e11so6672481edn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:43:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cfa7wLpbxuEZq+R+bI/0NtkJcPb3sJm2JZkzYyHbJ5Q=;
-        b=cnNvG66h/YeL6IQ9fahsEF8LMn0WAhRz2GMl26jHYs9B1+HzM45m0M3d57yajL1I2d
-         BzC3iXpcwOT6rnlLnSfRmlFTv1mAFzuO3tCOmWeay2vYO1XhkZGiU9xgRlpXHkHUzl2N
-         hn5qySAPPZxBSUEoQuuZxSMh55ZMESDY2DcHAm9CoAuMtbDvd3sHlLJpa3jHOh48iqqs
-         YZODDXHgh54MFoPKV2C/D7/NkcxI/YlPonD0DdhRK+zgFpfPUxm4UyhIo3o63We7j+Rg
-         w2sygR7QzFJVz7KP5Unqq6G8oFkxZ8JKeqSe7nFXIKDFSYaX9F36HKP2cj6X9QT146BA
-         OajA==
-X-Gm-Message-State: AOAM531lkWzl1YBXNMf/Cy0h7L0ZbxFFvDI/pUgDhG4ZCp7uOYUyr/Xk
-        cpbqDk6vRyP58ZlB6vgG1BWiz0cJv0URIoP6RR6pzkFP1uxFxyVEBNnvYQVkBkCR6Nb52sc4T9n
-        G7FIIwABlVSHIhL/yqfAuGxI0
-X-Received: by 2002:aa7:c355:: with SMTP id j21mr15707869edr.338.1607438613754;
-        Tue, 08 Dec 2020 06:43:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxVK8XivqJ/1pcRHYJCIxWdI292tXW8b7gOaiPbwlEw7m6LZ2VDFHJf49ClPgz7+ckFHOSH7g==
-X-Received: by 2002:aa7:c355:: with SMTP id j21mr15707853edr.338.1607438613544;
-        Tue, 08 Dec 2020 06:43:33 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id d14sm18083317edn.31.2020.12.08.06.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 06:43:32 -0800 (PST)
-Subject: Re: [PATCH v2 1/9] platform/surface: Add Surface Aggregator subsystem
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20201203212640.663931-1-luzmaximilian@gmail.com>
- <20201203212640.663931-2-luzmaximilian@gmail.com>
- <fd24d99a-e4f4-2030-e9bb-bcd549ce4bb9@redhat.com>
- <ac50a0c7-806e-d949-6440-620ec966099a@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <9748d778-b5e9-c80c-5968-a77b3203d769@redhat.com>
-Date:   Tue, 8 Dec 2020 15:43:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <ac50a0c7-806e-d949-6440-620ec966099a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 8 Dec 2020 09:46:47 -0500
+Received: from orion.localdomain ([95.117.39.192]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MkYkC-1kIJPC0qBq-00lz4e; Tue, 08 Dec 2020 15:44:08 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     laurent.pinchart@ideasonboard.com, balbi@kernel.org,
+        leoyang.li@nxp.com, linux-usb@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] drivers: usb: gadget: prefer pr_*() functions over raw printk()
+Date:   Tue,  8 Dec 2020 15:44:03 +0100
+Message-Id: <20201208144403.22097-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:Hd0jRTZbyRdEtlPBUB2MGqA/988pOvZCOqb2ORa+FOFfi38Jkpt
+ 1l1ZPOwy1dHvIRiqjtpPZar3zuDoVixaOykeDlTX66plCa/RkBwunYPI50lZl5ZJne1SWaR
+ F22p+Vm7sVO/VSHBR08hvopYMkLyxUfoNMkrb+M1m0C7BQ4p944up8bEFMEknoj+RVB29Ji
+ pC+u5I5ZdwEn9KxmdK/jA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IPug7u3YJxE=:DLpb0pe7MzbDCq9G8/WGtD
+ UDfHOr1+Ivt7HSPEPxtbcGmBKzJI5d/hl5tH6jXyDEQZCIPb6Av9uIUH2AzED6em7UqYfMaJ5
+ eZkut+gD8vmS2HE3Js/Qqa2hrTS9oanKKahX8QDO0QHIRUYbTgC+Uj3p0ugIv1DQ8c/QfaA9y
+ S3BzeZGlPvVaE58M83h4d4LyVhnDIrSfHidiEA1yuppYuf9sfss7kcsxSZnd7u3SoM1X8qG9i
+ i5EVglzrJ/QkX8keXnJqAG3uwDtOaBd86SpTrNJQdGCabcSmzWFNFDDp3mR9eEsjqqa3wa/F4
+ 6biMliHlPRWFEkxc2XGfP8FLhDDHPesOi/hFGWfqJTgfWDCd4HY5773LQlSsgwoLkCRko5Aam
+ ak4+QuY2B2qhmc9dzqznaaWhva/UyHN9+aJWoQndJJd8Iim1ow324tcrzLauZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reduce a bit logging boilerplate by using the preferred pr_*()
+macros instead of raw printk().
 
-On 12/8/20 3:37 PM, Maximilian Luz wrote:
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ drivers/usb/gadget/function/uvc.h       |  2 +-
+ drivers/usb/gadget/udc/atmel_usba_udc.c |  2 +-
+ drivers/usb/gadget/udc/fsl_udc_core.c   |  4 +--
+ drivers/usb/gadget/udc/fsl_usb2_udc.h   |  4 +--
+ drivers/usb/gadget/udc/fusb300_udc.c    | 64 ++++++++++++++++-----------------
+ drivers/usb/gadget/udc/goku_udc.c       |  2 +-
+ drivers/usb/gadget/udc/r8a66597-udc.h   |  2 +-
+ 7 files changed, 40 insertions(+), 40 deletions(-)
 
-<snip>
-
->>> +
->>> +    obj = acpi_evaluate_dsm_typed(handle, &SSAM_SSH_DSM_GUID,
->>> +                      SSAM_SSH_DSM_REVISION, func, NULL,
->>> +                      ACPI_TYPE_INTEGER);
->>> +    if (!obj)
->>> +        return -EIO;
->>> +
->>> +    val = obj->integer.value;
->>> +    ACPI_FREE(obj);
->>> +
->>> +    if (val > U32_MAX)
->>> +        return -ERANGE;
->>> +
->>> +    *ret = val;
->>> +    return 0;
->>> +}
-> 
-> [...]
-> 
->>> +/**
->>> + * ssam_controller_start() - Start the receiver and transmitter threads of the
->>> + * controller.
->>> + * @ctrl: The controller.
->>> + *
->>> + * Note: When this function is called, the controller should be properly
->>> + * hooked up to the serdev core via &struct serdev_device_ops. Please refer
->>> + * to ssam_controller_init() for more details on controller initialization.
->>> + *
->>> + * This function must be called from an exclusive context with regards to the
->>> + * state, if necessary, by locking the controller via ssam_controller_lock().
->>
->> Again you are being a bit hand-wavy (I assume you know what I mean by that)
->> wrt the locking requirements. If possible I would prefer clearly spelled out
->> locking requirements in the form of "this and that lock must be held when
->> calling this function". Preferably backed-up by lockdep_assert-s asserting
->> these conditions.
-> 
-> The reason for this is that this function specifically is currently only
-> called during initialization, when the controller has not been published
-> yet, i.e. when we have an exclusive reference to the controller.
-> 
-> I'll change this to fully enforce locking (with lockdep_assert).
-> 
->> And maybe if you are a bit stricter with always holding the lock when
->> calling this, you can also drop the WRITE_ONCE and the comment about it
->> (in all places where you do this).
-> 
-> The WRITE_ONCE is only there to ensure that the basic test in
-> ssam_request_sync_submit() can be done. I always try to be explicit
-> about access that can happen without the respective locks being held.
-
-Yes I saw the matching READ_ONCE later on (as the comment indicated
-I would), which made it more obvious to me why the WRITE_ONCE is here,'
-so maybe I should have gone back and updated this comment.
-
-Anyways, keeping the WRITE_ONCE + READ_ONCE for this is fine.
-
-> Unfortunately it's not feasible to hold the reader lock in
-> ssam_request_sync_submit() due to reentrancy. Specifically, as the lock,
-> if at all (i.e. if this is not a client driver bound to the controller),
-> must be held not only during submission but until the request has been
-> completed. Note that if we would hold the lock during submission, this
-> is just a smoke-test.
-
-Ack.
-
-<more snip>
-
-Regards,
-
-Hans
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 23ee25383c1f..d546eb7c348c 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -49,7 +49,7 @@ extern unsigned int uvc_gadget_trace_param;
+ #define uvc_trace(flag, msg...) \
+ 	do { \
+ 		if (uvc_gadget_trace_param & flag) \
+-			printk(KERN_DEBUG "uvcvideo: " msg); \
++			pr_debug("uvcvideo: " msg); \
+ 	} while (0)
+ 
+ #define uvcg_dbg(f, fmt, args...) \
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index 2b893bceea45..4834fafb3f70 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -1573,7 +1573,7 @@ static void usba_control_irq(struct usba_udc *udc, struct usba_ep *ep)
+ 		 * generate or receive a reply right away. */
+ 		usba_ep_writel(ep, CLR_STA, USBA_RX_SETUP);
+ 
+-		/* printk(KERN_DEBUG "setup: %d: %02x.%02x\n",
++		/* pr_debug("setup: %d: %02x.%02x\n",
+ 			ep->state, crq.crq.bRequestType,
+ 			crq.crq.bRequest); */
+ 
+diff --git a/drivers/usb/gadget/udc/fsl_udc_core.c b/drivers/usb/gadget/udc/fsl_udc_core.c
+index ad6ff9c4188e..cab4def04f9f 100644
+--- a/drivers/usb/gadget/udc/fsl_udc_core.c
++++ b/drivers/usb/gadget/udc/fsl_udc_core.c
+@@ -1474,7 +1474,7 @@ __acquires(udc->lock)
+ 			mdelay(10);
+ 			tmp = fsl_readl(&dr_regs->portsc1) | (ptc << 16);
+ 			fsl_writel(tmp, &dr_regs->portsc1);
+-			printk(KERN_INFO "udc: switch to test mode %d.\n", ptc);
++			pr_info("udc: switch to test mode %d.\n", ptc);
+ 		}
+ 
+ 		return;
+@@ -1952,7 +1952,7 @@ static int fsl_udc_start(struct usb_gadget *g,
+ 	if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+ 		/* Suspend the controller until OTG enable it */
+ 		udc_controller->stopped = 1;
+-		printk(KERN_INFO "Suspend udc for OTG auto detect\n");
++		pr_info("Suspend udc for OTG auto detect\n");
+ 
+ 		/* connect to bus through transceiver */
+ 		if (!IS_ERR_OR_NULL(udc_controller->transceiver)) {
+diff --git a/drivers/usb/gadget/udc/fsl_usb2_udc.h b/drivers/usb/gadget/udc/fsl_usb2_udc.h
+index 4ba651ae9048..b180bf14dd0c 100644
+--- a/drivers/usb/gadget/udc/fsl_usb2_udc.h
++++ b/drivers/usb/gadget/udc/fsl_usb2_udc.h
+@@ -509,7 +509,7 @@ struct fsl_udc {
+ /*-------------------------------------------------------------------------*/
+ 
+ #ifdef DEBUG
+-#define DBG(fmt, args...) 	printk(KERN_DEBUG "[%s]  " fmt "\n", \
++#define DBG(fmt, args...) 	pr_debug("[%s]  " fmt "\n", \
+ 				__func__, ## args)
+ #else
+ #define DBG(fmt, args...)	do{}while(0)
+@@ -535,7 +535,7 @@ static void dump_msg(const char *label, const u8 * buf, unsigned int length)
+ 			p += 3;
+ 		}
+ 		*p = 0;
+-		printk(KERN_DEBUG "%6x: %s\n", start, line);
++		pr_debug("%6x: %s\n", start, line);
+ 		buf += num;
+ 		start += num;
+ 		length -= num;
+diff --git a/drivers/usb/gadget/udc/fusb300_udc.c b/drivers/usb/gadget/udc/fusb300_udc.c
+index 9af8b415f303..c4e7e4b8e46f 100644
+--- a/drivers/usb/gadget/udc/fusb300_udc.c
++++ b/drivers/usb/gadget/udc/fusb300_udc.c
+@@ -352,24 +352,24 @@ static void fusb300_wrcxf(struct fusb300_ep *ep,
+ 		for (i = length >> 2; i > 0; i--) {
+ 			data = *tmp | *(tmp + 1) << 8 | *(tmp + 2) << 16 |
+ 				*(tmp + 3) << 24;
+-			printk(KERN_DEBUG "    0x%x\n", data);
++			pr_debug("    0x%x\n", data);
+ 			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+ 			tmp = tmp + 4;
+ 		}
+ 		switch (length % 4) {
+ 		case 1:
+ 			data = *tmp;
+-			printk(KERN_DEBUG "    0x%x\n", data);
++			pr_debug("    0x%x\n", data);
+ 			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+ 			break;
+ 		case 2:
+ 			data = *tmp | *(tmp + 1) << 8;
+-			printk(KERN_DEBUG "    0x%x\n", data);
++			pr_debug("    0x%x\n", data);
+ 			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+ 			break;
+ 		case 3:
+ 			data = *tmp | *(tmp + 1) << 8 | *(tmp + 2) << 16;
+-			printk(KERN_DEBUG "    0x%x\n", data);
++			pr_debug("    0x%x\n", data);
+ 			iowrite32(data, fusb300->reg + FUSB300_OFFSET_CXPORT);
+ 			break;
+ 		default:
+@@ -390,7 +390,7 @@ static void fusb300_clear_epnstall(struct fusb300 *fusb300, u8 ep)
+ 	u32 reg = ioread32(fusb300->reg + FUSB300_OFFSET_EPSET0(ep));
+ 
+ 	if (reg & FUSB300_EPSET0_STL) {
+-		printk(KERN_DEBUG "EP%d stall... Clear!!\n", ep);
++		pr_debug("EP%d stall... Clear!!\n", ep);
+ 		reg |= FUSB300_EPSET0_STL_CLR;
+ 		iowrite32(reg, fusb300->reg + FUSB300_OFFSET_EPSET0(ep));
+ 	}
+@@ -402,7 +402,7 @@ static void ep0_queue(struct fusb300_ep *ep, struct fusb300_request *req)
+ 		if (req->req.length) {
+ 			fusb300_wrcxf(ep, req);
+ 		} else
+-			printk(KERN_DEBUG "%s : req->req.length = 0x%x\n",
++			pr_debug("%s : req->req.length = 0x%x\n",
+ 				__func__, req->req.length);
+ 		if ((req->req.length == req->req.actual) ||
+ 		    (req->req.actual < ep->ep.maxpacket))
+@@ -565,7 +565,7 @@ static void fusb300_rdcxf(struct fusb300 *fusb300,
+ 
+ 	for (i = (length >> 2); i > 0; i--) {
+ 		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+-		printk(KERN_DEBUG "    0x%x\n", data);
++		pr_debug("    0x%x\n", data);
+ 		*tmp = data & 0xFF;
+ 		*(tmp + 1) = (data >> 8) & 0xFF;
+ 		*(tmp + 2) = (data >> 16) & 0xFF;
+@@ -576,18 +576,18 @@ static void fusb300_rdcxf(struct fusb300 *fusb300,
+ 	switch (length % 4) {
+ 	case 1:
+ 		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+-		printk(KERN_DEBUG "    0x%x\n", data);
++		pr_debug("    0x%x\n", data);
+ 		*tmp = data & 0xFF;
+ 		break;
+ 	case 2:
+ 		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+-		printk(KERN_DEBUG "    0x%x\n", data);
++		pr_debug("    0x%x\n", data);
+ 		*tmp = data & 0xFF;
+ 		*(tmp + 1) = (data >> 8) & 0xFF;
+ 		break;
+ 	case 3:
+ 		data = ioread32(fusb300->reg + FUSB300_OFFSET_CXPORT);
+-		printk(KERN_DEBUG "    0x%x\n", data);
++		pr_debug("    0x%x\n", data);
+ 		*tmp = data & 0xFF;
+ 		*(tmp + 1) = (data >> 8) & 0xFF;
+ 		*(tmp + 2) = (data >> 16) & 0xFF;
+@@ -610,7 +610,7 @@ static void fusb300_rdfifo(struct fusb300_ep *ep,
+ 	req->req.actual += length;
+ 
+ 	if (req->req.actual > req->req.length)
+-		printk(KERN_DEBUG "req->req.actual > req->req.length\n");
++		pr_debug("req->req.actual > req->req.length\n");
+ 
+ 	for (i = (length >> 2); i > 0; i--) {
+ 		data = ioread32(fusb300->reg +
+@@ -649,7 +649,7 @@ static void fusb300_rdfifo(struct fusb300_ep *ep,
+ 		reg = ioread32(fusb300->reg + FUSB300_OFFSET_IGR1);
+ 		reg &= FUSB300_IGR1_SYNF0_EMPTY_INT;
+ 		if (i)
+-			printk(KERN_INFO "sync fifo is not empty!\n");
++			pr_info("sync fifo is not empty!\n");
+ 		i++;
+ 	} while (!reg);
+ }
+@@ -677,7 +677,7 @@ static u8 fusb300_get_cxstall(struct fusb300 *fusb300)
+ static void request_error(struct fusb300 *fusb300)
+ {
+ 	fusb300_set_cxstall(fusb300);
+-	printk(KERN_DEBUG "request error!!\n");
++	pr_debug("request error!!\n");
+ }
+ 
+ static void get_status(struct fusb300 *fusb300, struct usb_ctrlrequest *ctrl)
+@@ -999,7 +999,7 @@ static void check_device_mode(struct fusb300 *fusb300)
+ 		fusb300->gadget.speed = USB_SPEED_UNKNOWN;
+ 		break;
+ 	}
+-	printk(KERN_INFO "dev_mode = %d\n", (reg & FUSB300_GCR_DEVEN_MSK));
++	pr_info("dev_mode = %d\n", (reg & FUSB300_GCR_DEVEN_MSK));
+ }
+ 
+ 
+@@ -1076,14 +1076,14 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 	if (int_grp1 & FUSB300_IGR1_WARM_RST_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_WARM_RST_INT);
+-		printk(KERN_INFO"fusb300_warmreset\n");
++		pr_info("fusb300_warmreset\n");
+ 		fusb300_reset();
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_HOT_RST_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_HOT_RST_INT);
+-		printk(KERN_INFO"fusb300_hotreset\n");
++		pr_info("fusb300_hotreset\n");
+ 		fusb300_reset();
+ 	}
+ 
+@@ -1097,13 +1097,13 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 	if (int_grp1 & FUSB300_IGR1_CX_COMABT_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_CX_COMABT_INT);
+-		printk(KERN_INFO"fusb300_ep0abt\n");
++		pr_info("fusb300_ep0abt\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_VBUS_CHG_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_VBUS_CHG_INT);
+-		printk(KERN_INFO"fusb300_vbus_change\n");
++		pr_info("fusb300_vbus_change\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_U3_EXIT_FAIL_INT) {
+@@ -1134,25 +1134,25 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 	if (int_grp1 & FUSB300_IGR1_U3_EXIT_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U3_EXIT_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U3_EXIT_INT\n");
++		pr_info("FUSB300_IGR1_U3_EXIT_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_U2_EXIT_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U2_EXIT_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U2_EXIT_INT\n");
++		pr_info("FUSB300_IGR1_U2_EXIT_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_U1_EXIT_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U1_EXIT_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U1_EXIT_INT\n");
++		pr_info("FUSB300_IGR1_U1_EXIT_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_U3_ENTRY_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U3_ENTRY_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U3_ENTRY_INT\n");
++		pr_info("FUSB300_IGR1_U3_ENTRY_INT\n");
+ 		fusb300_enable_bit(fusb300, FUSB300_OFFSET_SSCR1,
+ 				   FUSB300_SSCR1_GO_U3_DONE);
+ 	}
+@@ -1160,31 +1160,31 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 	if (int_grp1 & FUSB300_IGR1_U2_ENTRY_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U2_ENTRY_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U2_ENTRY_INT\n");
++		pr_info("FUSB300_IGR1_U2_ENTRY_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_U1_ENTRY_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_U1_ENTRY_INT);
+-		printk(KERN_INFO "FUSB300_IGR1_U1_ENTRY_INT\n");
++		pr_info("FUSB300_IGR1_U1_ENTRY_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_RESM_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_RESM_INT);
+-		printk(KERN_INFO "fusb300_resume\n");
++		pr_info("fusb300_resume\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_SUSP_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_SUSP_INT);
+-		printk(KERN_INFO "fusb300_suspend\n");
++		pr_info("fusb300_suspend\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_HS_LPM_INT) {
+ 		fusb300_clear_int(fusb300, FUSB300_OFFSET_IGR1,
+ 				  FUSB300_IGR1_HS_LPM_INT);
+-		printk(KERN_INFO "fusb300_HS_LPM_INT\n");
++		pr_info("fusb300_HS_LPM_INT\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_DEV_MODE_CHG_INT) {
+@@ -1195,11 +1195,11 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 
+ 	if (int_grp1 & FUSB300_IGR1_CX_COMFAIL_INT) {
+ 		fusb300_set_cxstall(fusb300);
+-		printk(KERN_INFO "fusb300_ep0fail\n");
++		pr_info("fusb300_ep0fail\n");
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_CX_SETUP_INT) {
+-		printk(KERN_INFO "fusb300_ep0setup\n");
++		pr_info("fusb300_ep0setup\n");
+ 		if (setup_packet(fusb300, &ctrl)) {
+ 			spin_unlock(&fusb300->lock);
+ 			if (fusb300->driver->setup(&fusb300->gadget, &ctrl) < 0)
+@@ -1209,16 +1209,16 @@ static irqreturn_t fusb300_irq(int irq, void *_fusb300)
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_CX_CMDEND_INT)
+-		printk(KERN_INFO "fusb300_cmdend\n");
++		pr_info("fusb300_cmdend\n");
+ 
+ 
+ 	if (int_grp1 & FUSB300_IGR1_CX_OUT_INT) {
+-		printk(KERN_INFO "fusb300_cxout\n");
++		pr_info("fusb300_cxout\n");
+ 		fusb300_ep0out(fusb300);
+ 	}
+ 
+ 	if (int_grp1 & FUSB300_IGR1_CX_IN_INT) {
+-		printk(KERN_INFO "fusb300_cxin\n");
++		pr_info("fusb300_cxin\n");
+ 		fusb300_ep0in(fusb300);
+ 	}
+ 
+diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
+index 3e1267d38774..4f225552861a 100644
+--- a/drivers/usb/gadget/udc/goku_udc.c
++++ b/drivers/usb/gadget/udc/goku_udc.c
+@@ -1748,7 +1748,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	int			retval;
+ 
+ 	if (!pdev->irq) {
+-		printk(KERN_ERR "Check PCI %s IRQ setup!\n", pci_name(pdev));
++		pr_err("Check PCI %s IRQ setup!\n", pci_name(pdev));
+ 		retval = -ENODEV;
+ 		goto err;
+ 	}
+diff --git a/drivers/usb/gadget/udc/r8a66597-udc.h b/drivers/usb/gadget/udc/r8a66597-udc.h
+index 9a115caba661..fa4d62c32ea1 100644
+--- a/drivers/usb/gadget/udc/r8a66597-udc.h
++++ b/drivers/usb/gadget/udc/r8a66597-udc.h
+@@ -247,7 +247,7 @@ static inline u16 get_xtal_from_pdata(struct r8a66597_platdata *pdata)
+ 		clock = XTAL48;
+ 		break;
+ 	default:
+-		printk(KERN_ERR "r8a66597: platdata clock is wrong.\n");
++		pr_err("r8a66597: platdata clock is wrong.\n");
+ 		break;
+ 	}
+ 
+-- 
+2.11.0
 
