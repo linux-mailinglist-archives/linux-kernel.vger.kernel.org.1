@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD122D310E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97032D311C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730717AbgLHR3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgLHR3i (ORCPT
+        id S1729910AbgLHRbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:31:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2222 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgLHRbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:29:38 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB6AC061793;
-        Tue,  8 Dec 2020 09:28:52 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c12so7433042pfo.10;
-        Tue, 08 Dec 2020 09:28:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1eCjyv5AYQr2qxuLo6/ait7gDzN7SzMmyZr3TYkqLG4=;
-        b=ZmI14GuVeT5a+LFPJTmG0K/1PeM+gSpk1flxbpHVzSZh2uuGl69LDd5vVkOZKaWWnj
-         zdUxr07jZJK53rlRRYtmCJGeiocmgsUeatjkry3S6k17Qtzfrh+C4r9U8SQ3jthMjRFl
-         mgv0R9f+Sd7jSCxcZrXsAVH9KQZY8kpU9W1qhALvNJWY0e8DNdTlqWT6eGdTFlpXoUyz
-         VjCV6cJQNXOX2ZinMWe9x+i6zqJ+gz/jh4n7iGHUTv3ll+PB+n6wUnUOulzwELgyQSEk
-         vPmcyJJ5CAIu0eRHN2Fp6iC2n9KI61y1598gt2VZ1QsZQli7c4IW5D2Sw71OF5zmd18k
-         o9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1eCjyv5AYQr2qxuLo6/ait7gDzN7SzMmyZr3TYkqLG4=;
-        b=sLBs/99VdZjgNyavUN+xzvZ0RxSwhiDxFGKS50g3Z83HfIB4ocrvcLstAUKcbzJfQJ
-         GQenZd4F3/+ATtUfX4dmLWGF3tOTYMyYbua56p5eZhAfJKppWEYa4FQ53txTmmU/3ACM
-         TcwJ0N/3p8PhCMdIucphKFYRJ9gcX0Rs7PLEbJROuHH3l995jPY/aiFyH+zo6+wQokP9
-         szGCtumrLvX+p59oYH2XlmTvvTsDHELRCybj59UJdegy1nzAILyLTtR8642WQqYYZQnu
-         IAynhuWKbv5m2q3OAgfUHDfDvykHdGALD/3FuU9yZ+l1o9VDgi62WoVOVKa9HFhhH077
-         W2UQ==
-X-Gm-Message-State: AOAM532laOOOeaCuqzHeBBXl+QM9Y8hV38CS6K8a7t0N+CGa1eu9cZLL
-        +P4rDQCKoALoQu7nJzagNHA=
-X-Google-Smtp-Source: ABdhPJxmyvNMMzVsga0L1faMWDx4HgMYMUroGfCmiEvwynPjPl7a2bzIW0LukZZb7Xtd4kuIsLktzQ==
-X-Received: by 2002:a17:90a:3ee3:: with SMTP id k90mr5172362pjc.164.1607448531916;
-        Tue, 08 Dec 2020 09:28:51 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id f7sm18019852pfe.30.2020.12.08.09.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 09:28:51 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 8 Dec 2020 09:28:49 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Rui Salvaterra <rsalvaterra@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7] zram: break the strict dependency from lzo
-Message-ID: <X8+30biXWgNRlKRM@google.com>
-References: <20201207121245.50529-1-rsalvaterra@gmail.com>
- <X8+3X2piRUi/jIa/@google.com>
+        Tue, 8 Dec 2020 12:31:06 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cr6b76KMnz67NwN;
+        Wed,  9 Dec 2020 01:28:19 +0800 (CST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 18:30:24 +0100
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.26.232) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 17:30:23 +0000
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-edac@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <james.morse@arm.com>,
+        <mchehab+huawei@kernel.org>, <bp@alien8.de>, <tony.luck@intel.com>,
+        <rjw@rjwysocki.net>, <lenb@kernel.org>, <rrichter@marvell.com>
+CC:     <linuxarm@huawei.com>, <xuwei5@huawei.com>,
+        <jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
+        <tanxiaofei@huawei.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <salil.mehta@huawei.com>, <shiju.jose@huawei.com>
+Subject: [RFC PATCH 0/2] EDAC/ghes: Add EDAC device for recording the CPU error count
+Date:   Tue, 8 Dec 2020 17:29:57 +0000
+Message-ID: <20201208172959.1249-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8+3X2piRUi/jIa/@google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.26.232]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:26:55AM -0800, Minchan Kim wrote:
-> On Mon, Dec 07, 2020 at 12:12:45PM +0000, Rui Salvaterra wrote:
-> > From the beginning, the zram block device always enabled CRYPTO_LZO, since
-> > lzo-rle is hardcoded as the fallback compression algorithm. As a consequence, on
-> > systems where another compression algorithm is chosen (e.g. CRYPTO_ZSTD), the
-> > lzo kernel module becomes unused, while still having to be built/loaded.
-> > 
-> > This patch removes the hardcoded lzo-rle dependency and allows the user to
-> > select the default compression algorithm for zram at build time. The previous
-> > behaviour is kept, as the default algorithm is still lzo-rle.
-> > 
-> > Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-> > Suggested-by: Minchan Kim <minchan@kernel.org>
-> > Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-> Acked-by: Minchan Kim <minchan@kernel.org>
+For the firmware-first error handling on ARM64 hardware platforms,
+CPU cache corrected error count is not recorded.
+Create an CPU EDAC device and device blocks for the CPU caches
+for this purpose. The EDAC device blocks are created based on the
+cache information from the cpu_cacheinfo.
 
-Ccing Andrew
+User-space application could monitor the recorded corrected error
+count for the predictive failure analysis.
+
+More information in the patch headers.
+
+Shiju Jose (2):
+  EDAC/ghes: Add EDAC device for the CPU caches
+  ACPI / APEI: Add reporting ARM64 CPU cache corrected error count
+
+ Documentation/ABI/testing/sysfs-devices-edac |  15 ++
+ drivers/acpi/apei/ghes.c                     |  76 ++++++++-
+ drivers/edac/Kconfig                         |  10 ++
+ drivers/edac/ghes_edac.c                     | 171 +++++++++++++++++++
+ include/acpi/ghes.h                          |  27 +++
+ include/linux/cper.h                         |   4 +
+ 6 files changed, 299 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
