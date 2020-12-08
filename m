@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553E02D2C2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA342D2C35
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729283AbgLHNsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:48:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726738AbgLHNsE (ORCPT
+        id S1729252AbgLHNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgLHNuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:48:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607435198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PgDVMF6zomYKlcivF1VhzvM1BcYHrc98uBdNjH1KPmA=;
-        b=ONSjP6ZiAerlYnrkCVYt2QcpmBEhwvDdga3ggkFH8Di4fPfhSaPV/AIZqt08NfLedahqxe
-        k6ojsrgZXvr1USPC1kLjgM9iMUJqCbs10Z6Mt2aGY1cclFoWOeIfAZbo1pLPRgi3yvkQR7
-        XLuDadPH+W2GdIALJvLro4Y8+aBz3Z8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-ThVQy7QoOOyTS3-OJpnwLg-1; Tue, 08 Dec 2020 08:46:35 -0500
-X-MC-Unique: ThVQy7QoOOyTS3-OJpnwLg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F57CC287;
-        Tue,  8 Dec 2020 13:46:33 +0000 (UTC)
-Received: from ovpn-114-102.rdu2.redhat.com (ovpn-114-102.rdu2.redhat.com [10.10.114.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 86AAA6E519;
-        Tue,  8 Dec 2020 13:46:24 +0000 (UTC)
-Message-ID: <589c684a04b4e91e99b22409c614baea35dc93ad.camel@redhat.com>
-Subject: Re: [PATCH v4 11/19] sched/core: Make migrate disable and CPU
- hotplug cooperative
-From:   Qian Cai <qcai@redhat.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Date:   Tue, 08 Dec 2020 08:46:23 -0500
-In-Reply-To: <jhjsg8hto03.mognet@arm.com>
-References: <20201023101158.088940906@infradead.org>
-         <20201023102347.067278757@infradead.org>
-         <ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com>
-         <jhjpn4bwznx.mognet@arm.com>
-         <c2c013282faf278ee6e0fc66deefbab165ff4e88.camel@redhat.com>
-         <jhjsg8hto03.mognet@arm.com>
+        Tue, 8 Dec 2020 08:50:23 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113EFC061749;
+        Tue,  8 Dec 2020 05:49:37 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id v3so15558022ilo.5;
+        Tue, 08 Dec 2020 05:49:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQXYbDMPL3yLYU7/kBOYlmtMsBjUqShGbSk3HBKaf8g=;
+        b=qB1tZR3lpatG/0Zal3n5vfTlz2EOHV54ihJtai6PxbNg83npjonBDrtvWxoWqKEHMn
+         boRmt5oXMbD5LvNj4OeZIaYR+ST5n8gpvHjkcbEIXqJUaprLoWbQkHTTjPeAci8N94HW
+         loWBBpYEAkEob3/Cv/C1sDTjjxUvN4st0YeCB3Q7TQMzPQ2R19sISFXvvnF0zyV1kyGG
+         5w2kMfl/y3PE7p++iIOkxI/Zia39QDXZ+OQI8WiAlzXHgdbj92dbSCukLUIPqjMD5QM/
+         rvn5FhYjVTgU4PQvs1yECbhgurO+i+oCHAWjXh/zVWbgcNWS8WRzHjBnt5RoSNZ5bFhQ
+         nhvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQXYbDMPL3yLYU7/kBOYlmtMsBjUqShGbSk3HBKaf8g=;
+        b=jI0ul73ONQ1eM/zORf7+g7lsPQAkLiR5j7TpcJkcQzO7iT6wUzpmzX5RRHY9GyrYGk
+         pYxzuH3Y2hZs/6+laaaAKVHfQu+se0VFgzGa/tKqvi83QHlafGlJLXYwfvjOShugFSel
+         L7+vqwA3oyelO8LmT4Rzbz4NquqrmfNoSdxAwQ0aDN1nsDiA6419u4GF981NoUsifXGd
+         k93boS5lvCjB30Ca/lmlLMGGwN7EwnxcRiE90whoiAYTKNF54DTdlLpLroKYGIa/+lAB
+         USl+iFkF7RUtXQEU8EpFiRnnnB94ENSsOBLcN3+uGyykcqHS/ZwJPrX9sps4IrvMbyTd
+         BwoA==
+X-Gm-Message-State: AOAM530DViDqOMsZgqiIKOuh2R9OYTYdztqt7+6+6s8jqW/ey24LgUTq
+        X1WT6fmuWmclGtmJ1a33H+BpylK/13FyybNnmTudX1Cx410=
+X-Google-Smtp-Source: ABdhPJzs16Xbq9yXw4nMJe03SEuYZzH2JW3YVHgNPO0ogZUhHvZ9E49JOk1KNqGKQdSDMeXaSAPZ0uvc65/dx2fdz1w=
+X-Received: by 2002:a05:6e02:14ce:: with SMTP id o14mr27386946ilk.9.1607435376411;
+ Tue, 08 Dec 2020 05:49:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-4-mszeredi@redhat.com>
+In-Reply-To: <20201207163255.564116-4-mszeredi@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 8 Dec 2020 15:49:25 +0200
+Message-ID: <CAOQ4uxhti+COYB3GhfMcPFwpfBRYQvr98oCO9wwS029W5e0A5g@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] ovl: check privs before decoding file handle
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 19:27 +0000, Valentin Schneider wrote:
-> Ok, can reproduce this on a TX2 on next-20201207. I didn't use your config,
-> I oldconfig'd my distro config and only modified it to CONFIG_PREEMPT_NONE.
-> Interestingly the BUG happens on CPU127 here too...
+On Mon, Dec 7, 2020 at 6:36 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>
+> CAP_DAC_READ_SEARCH is required by open_by_handle_at(2) so check it in
+> ovl_decode_real_fh() as well to prevent privilege escalation for
+> unprivileged overlay mounts.
+>
+> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> ---
+>  fs/overlayfs/namei.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+> index a6162c4076db..82a55fdb1e7a 100644
+> --- a/fs/overlayfs/namei.c
+> +++ b/fs/overlayfs/namei.c
+> @@ -156,6 +156,9 @@ struct dentry *ovl_decode_real_fh(struct ovl_fh *fh, struct vfsmount *mnt,
+>         struct dentry *real;
+>         int bytes;
+>
+> +       if (!capable(CAP_DAC_READ_SEARCH))
+> +               return NULL;
+> +
 
-I think that number is totally random. For example, on this x86, it could happen
-for CPU8 or CPU111.
+If the mounter is not capable in init ns, ovl_check_origin() and
+ovl_verify_index()
+will not function as expected and this will break index and nfs export features.
+So I think we need to also check capability in ovl_can_decode_fh(), to auto
+disable those features.
 
+Thanks,
+Amir.
