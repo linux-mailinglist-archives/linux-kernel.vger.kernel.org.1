@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BC42D23AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC322D23AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgLHGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgLHGdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:33:54 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E69C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 22:33:13 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id u16so1347898qvl.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 22:33:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bjGBizsQuqAYSTH9PhUDz3K9900CQ12Hy6bVTWK7Db0=;
-        b=HCVUrsPSVTe5e0k7pZ0vOLU8BXfOzpCdoZx6CY/vJxWVuoLXqewWdyHIH1v8oHdtBr
-         Go6zaMZ7INvGcr0Hv6P3a9NzQsIb0JrA0FU+HgbONQ+6aadQPoqZFCCAk9vxnlShPb0M
-         94/pfthQGK9WnUZNAHUKHtx2gA9+IRBK7HQS/X4vif8sR9JTS005lzkRmdPLLb0LB5u9
-         VqoWJnV/sk7ehYbFnD8WvTIuQh1pg4L0rFcb2xrJw0Yl6sMGz92KgE3/rA4NrPoJ+jFN
-         WJDKkT34Jpzs+XGmPpLe9y8jExCV/zM6wADYeWyvN/V+OQBHbEoeehKp/gU3qrSNYKaC
-         WulQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bjGBizsQuqAYSTH9PhUDz3K9900CQ12Hy6bVTWK7Db0=;
-        b=trwZrQ1NrnZgZ2tWOnrc3tv8dfUlAZw/p5Te54hQ4hR81kh4AtGCmgwSbLfgjz5fLJ
-         JJ2c/zJU6qd+sgbMBK9yI1YeKsZtD0jzamE+yzHqM7GCEXp69IuxmWbF6LtEZSQKtNC6
-         QPu34tDgvPbQOFtdwgcbgL7M83OWkLiRhwH9C5XaEU7VyxV3AfoPmINZtHi+9/sW1gEs
-         PRjTiycUc6j+t2JsnjKqph2SZp9wnQlZEZyaR/t0FBC207q7Zd/g1xa2Ln4h5kFWS2Ri
-         3o29KgNcSkwe12V88rgUDoi7GEncOZNgirxi7vGG65qEtyKd9FzD+uXzbrrrZjeRw5bR
-         gWEQ==
-X-Gm-Message-State: AOAM530SvTgiK8befmy9m8vIZ8XwQOsotCiKh7+w3NvPoW3nN9cRLKHO
-        A7ETo8E6E9R4bv0mHCK65kz2rKLWdUNSYm6oPo42X5Xjf5q/mQ==
-X-Google-Smtp-Source: ABdhPJz0A/5qLzf/WoKC3tSsPva3lJSf9OEYwdGpy/jOBAQCVL+GatEDzyBkihTbe/Huz62cWx65pNFR7kkpPuKda+I=
-X-Received: by 2002:a0c:edab:: with SMTP id h11mr4278598qvr.23.1607409192833;
- Mon, 07 Dec 2020 22:33:12 -0800 (PST)
+        id S1726361AbgLHGfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:35:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgLHGfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:35:10 -0500
+Date:   Tue, 8 Dec 2020 08:34:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607409270;
+        bh=rKSac2+EH/DLhYum2uVJtbfylBmSPHvYtIfaooxgTk4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VDjXV5r6lBUiuY3EiYrTC9ugOJ24Ecpg2lOS7t6v6scKlhy0RQ52bDRoUfvNU+NJw
+         gldifHNRt3N77atBSG9UL2+Uh21LaAlyHvL/to6PKqJq3xgR18G81zjGmKVAdTR5kB
+         a4uHYltFmtL654QoIoaLtm43y8e1S5s+Nq08oSchqV2rLEg4Fm8UTVG7CgdPrx1ZY1
+         KlbUlHfbFw/8MxDOhp7S2tjeJVBI7GSfTiFJ3f2Yyp7QK0Lp6HV4GVpDF1txw95LTt
+         hcggpi7tA288nNZpEAETmNQWFnKOD8KDa0hmE6j92Np+oTvnt9JKr2FqS22RMvHhtg
+         UycP62nY8qr5Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 07/17] driver core: Add fwnode_init()
+Message-ID: <20201208063423.GB4430@unreal>
+References: <20201121020232.908850-1-saravanak@google.com>
+ <20201121020232.908850-8-saravanak@google.com>
+ <20201206072621.GA687065@unreal>
+ <CAGETcx9L0f5HPgunTf_WRsr9yeaYK1Ku5ESzeb0A1pkn3Yy2aw@mail.gmail.com>
+ <20201207195357.GF693271@unreal>
+ <CAGETcx-Y6qdyt7xGfoGg=z9B7VE30AZjodMZzy9hQrDAEd8uYw@mail.gmail.com>
 MIME-Version: 1.0
-References: <0000000000009caba805a9c7b840@google.com> <00000000000013d25705b5e55be6@google.com>
-In-Reply-To: <00000000000013d25705b5e55be6@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 8 Dec 2020 07:33:01 +0100
-Message-ID: <CACT4Y+aX1eZ3Pwb=LfeH+rsadx2ehwmfFb9MQy=FK25MegP6CA@mail.gmail.com>
-Subject: Re: INFO: rcu detected stall in __se_sys_mount
-To:     syzbot <syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx-Y6qdyt7xGfoGg=z9B7VE30AZjodMZzy9hQrDAEd8uYw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 9:06 PM syzbot
-<syzbot+3f2db34df769d77edf8c@syzkaller.appspotmail.com> wrote:
+On Mon, Dec 07, 2020 at 12:36:43PM -0800, Saravana Kannan wrote:
+> On Mon, Dec 7, 2020 at 11:54 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Mon, Dec 07, 2020 at 11:25:15AM -0800, Saravana Kannan wrote:
+> > > On Sat, Dec 5, 2020 at 11:26 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Nov 20, 2020 at 06:02:22PM -0800, Saravana Kannan wrote:
+> > > > > There are multiple locations in the kernel where a struct fwnode_handle
+> > > > > is initialized. Add fwnode_init() so that we have one way of
+> > > > > initializing a fwnode_handle.
+> > > > >
+> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > ---
+> > > > >  drivers/acpi/property.c         | 2 +-
+> > > > >  drivers/acpi/scan.c             | 2 +-
+> > > > >  drivers/base/swnode.c           | 2 +-
+> > > > >  drivers/firmware/efi/efi-init.c | 8 ++++----
+> > > > >  include/linux/fwnode.h          | 6 ++++++
+> > > > >  include/linux/of.h              | 2 +-
+> > > > >  kernel/irq/irqdomain.c          | 2 +-
+> > > > >  7 files changed, 15 insertions(+), 9 deletions(-)
+> > > >
+> > > > In this series, I didn't find any extension of fwnode_init() to be it more
+> > > > than simple assignment. This change looks to me like unnecessary churn and
+> > > > obfuscation rather than improvement.
+> > > >
+> > > > "...ops = &...;" is pretty standard in the kernel to initialize ops
+> > > > structures.
+> > >
+> > > Subsequent patches make fwnode_init() do more stuff.
+> >
+> > But not in this series, right?
 >
-> syzbot suspects this issue was fixed by commit:
->
-> commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Fri Oct 16 12:21:14 2020 +0000
->
->     afs: Fix cell removal
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=162cebcf500000
-> start commit:   c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3f2db34df769d77edf8c
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11df5d4f900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157851e0500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: afs: Fix cell removal
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> In this series. The very next patch - Patch 8/17 :)
 
-#syz fix: afs: Fix cell removal
+Thanks, sorry for the noise.
+
+>
+> -Saravana
