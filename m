@@ -2,159 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6E52D2B3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D700E2D2B48
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgLHMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:39:40 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53122 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgLHMjj (ORCPT
+        id S1729560AbgLHMmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729067AbgLHMmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:39:39 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5126CDD;
-        Tue,  8 Dec 2020 13:38:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1607431136;
-        bh=v/1gJ9S8/WL7ZCOyvN/j+6KzE11E1+D7ZujUrs8lthI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gUnh33RpWU/mAZ93S3wX/T6Ghd/YrHXmOCK2uw0qO9dPPMw5iy66Dl4YQpH2ILLpa
-         qa3jBE3z39ofvUW7eeXdffHMk6o6HevMQT1dKUtF54nRU6rwXxxTMDmKTaqvJs2FIY
-         rSmDAGO6Qir86/d0PhCEhA/iFhiw3kTPVlw/j1kA=
-Date:   Tue, 8 Dec 2020 14:38:53 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, kishon@ti.com,
-        vkoul@kernel.org, robh+dt@kernel.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, jonas@kwiboo.se, jernej.skrabec@siol.net,
-        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, agx@sigxcpu.org, robert.chiras@nxp.com,
-        martin.kepplinger@puri.sm
-Subject: Re: [PATCH 2/4] phy: Add LVDS configuration options
-Message-ID: <X89z3czlY1yxgsX3@pendragon.ideasonboard.com>
-References: <1607067224-15616-1-git-send-email-victor.liu@nxp.com>
- <1607067224-15616-3-git-send-email-victor.liu@nxp.com>
+        Tue, 8 Dec 2020 07:42:45 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA94C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:42:05 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id n26so24363845eju.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tx7so5XKh7FIt1CA8a0h/fwFWUTtxj/iNvR1h5PSzgs=;
+        b=X9IfdZ07CRaiRKxilHDYeGeCj7zned0+KK4/c2hUOKGBFsLX4mL5lpbLbO4tW8eFx+
+         S1SPRlOnL119OUpixgUVUsaanEf+Inh54zdDT4arb83ADCp1T0ZRxNlpvvuyUtlVq6BL
+         /B0K29s1R81mTX/7k9+yGB2VfH4gAsqUMKzGZ61+GP37udF5so1UcUvtNiP7Fpv2W/uN
+         LzcRJM+sfvD2NRyYdvW6qhzTCOb3GpRgDp0uyTJd209DJESVQL1CXmjfLWhEqyMYh6Lc
+         bNoqBEzhWivPk5Uy/g7HHyJWaOQm3flu8ayUQzLrpGpuM2LIEJMnhhJV5/be7zf/ZZQI
+         8FGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tx7so5XKh7FIt1CA8a0h/fwFWUTtxj/iNvR1h5PSzgs=;
+        b=rX/jd6WnMKzk0hgQ5z5/qAS5SEaSipmJJVjG0o9Lk7aAodE+T4pWjyxgUsbabKcYBA
+         uV0pIu/HvtuMmqUsmiFrU5Is1kTpIz2R5Yg36ngTVKSEYS0880Jhe95PXrQZzDRVwKwl
+         ScrDCbOPFpNJwlTCjXviAdnhb1KAQf0m4SJJnZSE+Zel5DyeDIQMvOHiR22wJyGUWJPs
+         uIYdA6aqaB9aretefJf+dmv/kD1qs0XOlF/d5E7jgF9HoxD+6hlB56jW8j2hQ+B9vzu1
+         Bi333ML15aDAQHanX/4Rm/cgtf1ECRtVP3bS3VVpj+zgUzAuPbshJUHHdm/p2whc4kS/
+         ECDw==
+X-Gm-Message-State: AOAM531ZR1OCfxylABqc5MJBNrz8yuHRYghWjauLx529GBTasOfxvK/j
+        a5VrsVK3iW9AnRZB6KksJm0iz3Rm9tzoXT7nYZcGJQ==
+X-Google-Smtp-Source: ABdhPJy7t/No4fH1h4DsAU+2EaLD5XR/kFCUDJ6y6e6XetS2CV9vhLSdpVaPVEmxxKbl8FmphDgHIKYlvueG5WlWgi8=
+X-Received: by 2002:a17:906:38c3:: with SMTP id r3mr2523260ejd.193.1607431323939;
+ Tue, 08 Dec 2020 04:42:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1607067224-15616-3-git-send-email-victor.liu@nxp.com>
+References: <20201122170822.21715-1-mani@kernel.org> <20201122170822.21715-3-mani@kernel.org>
+ <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+ <X8ZmfbQp7/BGgxec@localhost> <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+ <X89OOUOG0x0SSxXA@localhost>
+In-Reply-To: <X89OOUOG0x0SSxXA@localhost>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 8 Dec 2020 13:41:52 +0100
+Message-ID: <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
+To:     Johan Hovold <johan@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu,
+On Tue, Dec 8, 2020 at 10:57 AM Johan Hovold <johan@kernel.org> wrote:
+> [Me]
 
-Thank you for the patch.
+> > A better approach might be to create an array of names
+> > prepended with something device-unique like the USB
+> > bus topology? Or do we need a helper to help naming the
+> > GPIOs? What would be helpful here?
+> >
+> > name = kasprintf(GFP_KERNEL, "%s-NAME", topology_str);
+>
+> Well we started discussing this back when we only had the sysfs
+> interface which suffered from the same problem. I thought the chardev
+> interface was supposed to get rid of the assumption of a flat name
+> space? Perhaps in v3 of the ABI. ;P
 
-On Fri, Dec 04, 2020 at 03:33:42PM +0800, Liu Ying wrote:
-> This patch allows LVDS PHYs to be configured through
-> the generic functions and through a custom structure
-> added to the generic union.
-> 
-> The parameters added here are based on common LVDS PHY
-> implementation practices.  The set of parameters
-> should cover all potential users.
-> 
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
->  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/phy/phy.h      |  4 ++++
->  2 files changed, 52 insertions(+)
->  create mode 100644 include/linux/phy/phy-lvds.h
-> 
-> diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
-> new file mode 100644
-> index 00000000..1b5b9d6
-> --- /dev/null
-> +++ b/include/linux/phy/phy-lvds.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright 2020 NXP
-> + */
-> +
-> +#ifndef __PHY_LVDS_H_
-> +#define __PHY_LVDS_H_
-> +
-> +/**
-> + * struct phy_configure_opts_lvds - LVDS configuration set
-> + *
-> + * This structure is used to represent the configuration state of a
-> + * LVDS phy.
-> + */
-> +struct phy_configure_opts_lvds {
-> +	/**
-> +	 * @bits_per_lane_and_dclk_cycle:
-> +	 *
-> +	 * Number of bits per data lane and differential clock cycle.
-> +	 */
-> +	unsigned int bits_per_lane_and_dclk_cycle;
+It's "mostly true" that the line names are unique per-chip actually,
+because people don't like the nasty warning message. I wonder
+if anything would really break if I go in and make a patch to
+enforce it, since all drivers passing ->names in the gpiochip
+are in the kernel we can check them all.
 
-I see in patch 4/4 that you only support 7, can the value be any
-different ?
+If the names are unique-per-chip, we can add a restriction like this
+with the requirement:
 
-> +
-> +	/**
-> +	 * @differential_clk_rate:
-> +	 *
-> +	 * Clock rate, in Hertz, of the LVDS differential clock.
-> +	 */
-> +	unsigned long differential_clk_rate;
-> +
-> +	/**
-> +	 * @lanes:
-> +	 *
-> +	 * Number of active, consecutive, data lanes, starting from
-> +	 * lane 0, used for the transmissions.
-> +	 */
-> +	unsigned int lanes;
-> +
-> +	/**
-> +	 * @is_slave:
-> +	 *
-> +	 * Boolean, true if the phy is a slave which works together
-> +	 * with a master phy to support dual link transmission,
-> +	 * otherwise a regular phy or a master phy.
-> +	 */
-> +	bool is_slave;
-> +};
-> +
-> +#endif /* __PHY_LVDS_H_ */
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb..d450b44 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -17,6 +17,7 @@
->  #include <linux/regulator/consumer.h>
->  
->  #include <linux/phy/phy-dp.h>
-> +#include <linux/phy/phy-lvds.h>
->  #include <linux/phy/phy-mipi-dphy.h>
->  
->  struct phy;
-> @@ -51,10 +52,13 @@ enum phy_mode {
->   *		the MIPI_DPHY phy mode.
->   * @dp:		Configuration set applicable for phys supporting
->   *		the DisplayPort protocol.
-> + * @lvds:	Configuration set applicable for phys supporting
-> + *		the LVDS phy mode.
->   */
->  union phy_configure_opts {
->  	struct phy_configure_opts_mipi_dphy	mipi_dphy;
->  	struct phy_configure_opts_dp		dp;
-> +	struct phy_configure_opts_lvds		lvds;
->  };
->  
->  /**
+depends on !GPIO_SYSFS
 
--- 
-Regards,
+so it can't even be compiled in if someone is using the sysfs.
 
-Laurent Pinchart
+That should solve the situation where people are (ab)using
+the sysfs and getting name collisions as a result.
+
+Then it should be fine for any driver to provide a names array
+provided all the names are unique on that gpiochip.
+
+I doubt it would break anything, but let's see what Geert says.
+He has some special usecases in the gpio-aggregator driver
+which will incidentally look for just linenames when
+aggregating gpios, but I feel it is a bit thick for it to work
+with multiple hot-pluggable GPIO chips as well, I don't think
+that is its usecase. (We all want to be perfect but...)
+
+> But what about any other non-pluggable
+> IC, which provides a few named GPIO lines and of which there could be
+> more than one in a system?
+
+I think if there are such, and the lines are unique per-chip
+we should make the drivers depend on !GPIO_SYSFS.
+
+> The topology is already encoded in sysfs and it seems backwards to have
+> each and every gpio driver reconstruct it.
+
+I agree.
+
+I think if this driver already has unique line-names per-gpiochip
+we could actually make it depend on !GPIO_SYSFS and
+just add the names.
+
+Yours,
+Linus Walleij
