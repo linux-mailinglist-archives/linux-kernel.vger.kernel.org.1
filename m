@@ -2,142 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0322D27EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C302D27EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729025AbgLHJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbgLHJlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:41:03 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42ACC061749;
-        Tue,  8 Dec 2020 01:40:22 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqwC52zT5z9sWC;
-        Tue,  8 Dec 2020 20:40:17 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607420420;
-        bh=SgR9rRLLr1wpSVNkvx0TwzJ8HMz7bq3+cs6tsbyEc2I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LOz5JpQjYf5HjjNeBUWfIuVZ9Lb7SNwdTt1qvJYyPtbLFfBZkcPivMFh1ibHAZ+Rt
-         Rv6pNwkispda+2UI76IJ3A657fFA4Xnf5zoW3P8EwjTM4XCtdLdYqCtujQXiPuK9UL
-         K9JBckgl8HB2DzV7MKLs8LfrMxIaQhHrbnw8GXoIFPzalD6VC+x5Y2voQssPl8BBfs
-         RgvquyeAv51BA64SsxBzb1bbwRYb173dqRCJS9ZLMHLfomVvgGqLOZq3mPRaUtCmWc
-         NHmWTdL/kn4JFsRsPeKjt1kcCaX8UzC4as9w7teAYwajS0c70HCk40HOUwYVkATern
-         CYBlEqmdxhOng==
-Date:   Tue, 8 Dec 2020 20:40:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Francis Laniel <laniel_francis@privacyrequired.com>,
-        Ganesh Goudar <ganeshgr@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mahesh Salgaonkar <mahesh@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm-current tree with the powerpc
- tree
-Message-ID: <20201208204016.4eb18ca4@canb.auug.org.au>
+        id S1729031AbgLHJlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:41:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727543AbgLHJlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:41:13 -0500
+Date:   Tue, 8 Dec 2020 09:40:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607420432;
+        bh=l03X9b1AwR7eEYo3VLDO+AWbKPeOsT8lUlLG3XUEGcc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B9yFCJVPeCmI8cxF0hHxdebit6cTtoLiw93kazgl0x+BJCfUJJXOZNfRGlYKaygXI
+         S/N+40Uwu0X5uWaRwpuCZ2jc8AlyUfdZpE/NM3RSP3QSz+o8XgD35WRRD2+xDNbXGZ
+         VGH+IiMIgdJj74Kd/2A2KesH+nrjgb9PcdGfaCUAdXvQdli5MpnnWsUwzJHKiwEvDd
+         SmjfzgawHzDoD/40UPolbneGtEDobrxNbSh5oHZO3KfAdI+flFHiVg9esS9VGe/Oxr
+         Rh5SfXP/9IDR+s7jMOFYBEKEwxZ8kOghkhqxHHdsyKIbnhjx4/wuZXbaNwKKQBF7mu
+         GXiLXL8rGbQ2w==
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
+        <devicetree@vger.kernel.org>, kernel-team@android.com,
+        android-kvm@google.com
+Subject: Re: [RFC PATCH 16/27] KVM: arm64: Prepare Hyp memory protection
+Message-ID: <20201208094026.GA5562@willie-the-truck>
+References: <20201117181607.1761516-1-qperret@google.com>
+ <20201117181607.1761516-17-qperret@google.com>
+ <20201207134052.GA4563@willie-the-truck>
+ <X844CBNCTL4XT3iq@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WhuzseIJmOBCjIOtWW=K0=l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X844CBNCTL4XT3iq@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WhuzseIJmOBCjIOtWW=K0=l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Dec 07, 2020 at 02:11:20PM +0000, Quentin Perret wrote:
+> On Monday 07 Dec 2020 at 13:40:52 (+0000), Will Deacon wrote:
+> > Why not use the RESERVEDMEM_OF_DECLARE() interface for the hypervisor
+> > memory? That way, the hypervisor memory can either be statically partitioned
+> > as a carveout or allocated dynamically for us -- we wouldn't need to care.
+> 
+> Yup, I did consider that, but the actual amount of memory we need to
+> reserve for the hypervisor depends on things such as the size of struct
+> hyp_page, which depends on the kernel you're running (that is, it might
+> change over time). So, that really felt like something the kernel should
+> be doing, to keep the DT backward compatible, ... Or did you have
+> something more elaborate in mind?
 
-Hi all,
+No, that's fair. Just wanted to make sure we had a good reason not to use
+the existing memory reservation code.
 
-Today's linux-next merge of the akpm-current tree got conflicts in:
-
-  drivers/misc/lkdtm/Makefile
-  drivers/misc/lkdtm/lkdtm.h
-  tools/testing/selftests/lkdtm/tests.txt
-
-between commit:
-
-  3ba150fb2120 ("lkdtm/powerpc: Add SLB multihit test")
-
-from the powerpc tree and commit:
-
-  014a486edd8a ("drivers/misc/lkdtm: add new file in LKDTM to test fortifie=
-d strscpy")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/misc/lkdtm/Makefile
-index 5a92c74eca92,d898f7b22045..000000000000
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@@ -10,7 -10,7 +10,8 @@@ lkdtm-$(CONFIG_LKDTM)		+=3D rodata_objcop
-  lkdtm-$(CONFIG_LKDTM)		+=3D usercopy.o
-  lkdtm-$(CONFIG_LKDTM)		+=3D stackleak.o
-  lkdtm-$(CONFIG_LKDTM)		+=3D cfi.o
-+ lkdtm-$(CONFIG_LKDTM)		+=3D fortify.o
- +lkdtm-$(CONFIG_PPC_BOOK3S_64)	+=3D powerpc.o
- =20
-  KASAN_SANITIZE_stackleak.o	:=3D n
-  KCOV_INSTRUMENT_rodata.o	:=3D n
-diff --cc drivers/misc/lkdtm/lkdtm.h
-index 79ec05c18dd1,6aa6d6a1a839..000000000000
---- a/drivers/misc/lkdtm/lkdtm.h
-+++ b/drivers/misc/lkdtm/lkdtm.h
-@@@ -102,7 -104,7 +104,10 @@@ void lkdtm_STACKLEAK_ERASING(void)
-  /* cfi.c */
-  void lkdtm_CFI_FORWARD_PROTO(void);
- =20
-+ /* fortify.c */
-+ void lkdtm_FORTIFIED_STRSCPY(void);
-+=20
- +/* powerpc.c */
- +void lkdtm_PPC_SLB_MULTIHIT(void);
- +
-  #endif
-diff --cc tools/testing/selftests/lkdtm/tests.txt
-index 18e4599863c0,92ba4cc41314..000000000000
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@@ -68,4 -68,4 +68,5 @@@ USERCOPY_STACK_BEYON
-  USERCOPY_KERNEL
-  STACKLEAK_ERASING OK: the rest of the thread stack is properly erased
-  CFI_FORWARD_PROTO
-+ FORTIFIED_STRSCPY
- +PPC_SLB_MULTIHIT Recovered
-
---Sig_/WhuzseIJmOBCjIOtWW=K0=l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PSgAACgkQAVBC80lX
-0GwEsAgAk4+6coRYdOFpzQs6pyo/XwOgK5qgBdXPsG7VYHQSQbt54tZylrmTvyrs
-Q7sjjQnIvo0VxUlllPKV7i/A0v9G4cVcrWB6/fMfz2sjO5Hq45YnsJagT7xD04VX
-cm1Fq3UCxrdACXhaVlR1JydEYEzAyplTjyGgpdgwB1Gv7nucW2uWtahusIIaB7s3
-vv3DB+YSt8tjuVtzjNhI+OhiW8R0ExUnaa95F0Rsy8OrgFjdnH9f59GBlL+a3HKc
-rvMfBS4M5kcf64Uik5SEHTs1ejWkzmL77S2EDZNWpBkYu4FHJXG1AMg3YIn/T7JW
-AufpfmXzECUqaK8Ev3wfdi6QhOGx3Q==
-=n6NW
------END PGP SIGNATURE-----
-
---Sig_/WhuzseIJmOBCjIOtWW=K0=l--
+Will
