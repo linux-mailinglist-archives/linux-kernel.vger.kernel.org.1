@@ -2,93 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1E42D3369
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAB82D33C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgLHUSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLHUSS (ORCPT
+        id S1728555AbgLHUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:24:36 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38397 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726168AbgLHUYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:18:18 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA74C0619D4
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:17:33 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id q22so17244158qkq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8EiQ216BCvq5E3ZOT1I0q0n5ZMKUzKstAb5dwxu2d2I=;
-        b=H+O+LB9l6tD4mV0hOiWsrlvudGlRYkKHYX1vIuNGbQRlA0M41yWHaSqoynyQ/KSduU
-         /nx93xjIgpA2ZqNBfy8sfx/uQM51WYb9zBcCY18tFIfB/vu7K6mJH5uw4wIjcs+Kdc5t
-         svK2wCMfMXWVnKSyDaJ8PRAAiXZVu3B8bh4VQli/HnwcVjQI6q45BlM3xA4ja8nTw/KH
-         G6Ss0wcAQUP+o7l0MhNP6cjG4V9ytYYXZ9vZlBtZQd7FNpRXJqbX9B9Bn+pmhbEmPOC3
-         F1RZWOplj9UOEBemVv24FDfahSFE4FwsYdv0gZ0K9RopqDhBvKLg8RyZa0/iXZekC+A1
-         apqg==
+        Tue, 8 Dec 2020 15:24:33 -0500
+Received: by mail-ot1-f65.google.com with SMTP id b62so17027908otc.5;
+        Tue, 08 Dec 2020 12:24:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8EiQ216BCvq5E3ZOT1I0q0n5ZMKUzKstAb5dwxu2d2I=;
-        b=Gw7pAW1hSlHrkYRA7dtEjPDCDHru9P9tbuvO4B07OKDzkldmUQ8Zqq8oHpHToSAgOr
-         7AqqdOMwUS6Wy1NGEhNDSquD+wvU6Lay69l16V0TO2zieDy+7Rp3bEAl/8azbG7DfpyL
-         uZAEJJt4nmqRMj6iH8lYKJRYiX4N1L933GneKM0J1UowZ4d4O/ULelszQSKMuZayZQxB
-         SrBflSjiHgvhNmnqcP3P75krHaTXt7RdX/9Bwk3n4+tG87UMi7L2XXwJfuvOvtTFn3Ds
-         ot+sCjRuiuYpuoFDiIpCpZWN9Od6n+r96yxhgXETP38sujjcSpBpWJ8Jg3PSX7DPQGGM
-         mszw==
-X-Gm-Message-State: AOAM533DGbS01Y7Ys8FG6r4/94ujhXPi/xpsmzOR/PmIMqjmc4C9udmq
-        BiF/Vvvab4talVxAnAMwDxJ9Y86rvRU=
-X-Google-Smtp-Source: ABdhPJy2QKOFcGdKPniH3biP/AcV9n4+MreVaxj+4qol5JZ4qA/vdo3UcHnohnWncAYFYRuDZ0TMZQ==
-X-Received: by 2002:ae9:df47:: with SMTP id t68mr31594897qkf.438.1607457154512;
-        Tue, 08 Dec 2020 11:52:34 -0800 (PST)
-Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com. [71.65.111.223])
-        by smtp.googlemail.com with ESMTPSA id x24sm14169458qkx.23.2020.12.08.11.52.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QxevaX9hHJqThS0h+1tu93etIkBHDGFZ0rujAfMqWBU=;
+        b=ucJyqrCt0YhLl1QZMa6nmqnJgXy9B1GymUqqOFR+5A18GU0oTCghNSCjHeE8BmlbRv
+         7QjfwhrcHfKEn/15NironBRFIIO9/c9Lp51QXTn7XmAVFnfGkx3AuYC0OGCZ9rGMnEvG
+         yeq/LWEA+kzUw/ntPdGP7MlFrgR+kFvJ4gvTd82gmP4/5Wwh3FqKZiiBrkW8H+CsaXHQ
+         P543Oiwi3PM3DRTEhUWI8qJ+aJ+oWWZ5OxThJa01l6B9MFiUZ4NdR8aZjavsQ6s2i3VO
+         oV2Za0L0Tn4hUkRqNJRPDfj0fGzsQcGmsBQTpuNhJBGZ1P3R61FhXMy1BIcdHzXGKEA4
+         4H/g==
+X-Gm-Message-State: AOAM532XCEWf6BI7f1L9nJU/O74+KcU6T4qGugWloyFSOEkF+ojR7KfQ
+        D6jw3G9q4Jq4v2MN03pqpNIyRo0kFg==
+X-Google-Smtp-Source: ABdhPJzCUquUPkk4QcEOY3Zw0x6ce2Fw4YZ0IvyhJ84rgBYmuVMaX6uzvrqVOqNJYEjlVUOHQDs46g==
+X-Received: by 2002:a05:6830:1d8c:: with SMTP id y12mr17836523oti.34.1607457275947;
+        Tue, 08 Dec 2020 11:54:35 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n3sm3887074oif.42.2020.12.08.11.54.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 11:52:34 -0800 (PST)
-From:   Connor McAdams <conmanx360@gmail.com>
-Cc:     conmanx360@gmail.com, stable@kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] ALSA: hda/ca0132 - Unmute surround when speaker output is selected.
-Date:   Tue,  8 Dec 2020 14:52:22 -0500
-Message-Id: <20201208195223.424753-3-conmanx360@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201208195223.424753-1-conmanx360@gmail.com>
-References: <20201208195223.424753-1-conmanx360@gmail.com>
+        Tue, 08 Dec 2020 11:54:34 -0800 (PST)
+Received: (nullmailer pid 2975909 invoked by uid 1000);
+        Tue, 08 Dec 2020 19:54:32 -0000
+Date:   Tue, 8 Dec 2020 13:54:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v2 06/19] dt-bindings: media: sun6i-a31-csi: Add MIPI
+ CSI-2 input port
+Message-ID: <20201208195432.GA2973474@robh.at.kernel.org>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-7-paul.kocialkowski@bootlin.com>
+ <20201201104321.rl3ujt5pjre6xlmm@gilmour>
+ <X8ehzCjZJ3yC8YtJ@aptenodytes>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8ehzCjZJ3yC8YtJ@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure GPIO pin for surround channel mute is set to 0 when speaker
-output is selected.
+On Wed, Dec 02, 2020 at 03:16:44PM +0100, Paul Kocialkowski wrote:
+> Hi,
+> 
+> On Tue 01 Dec 20, 11:43, Maxime Ripard wrote:
+> > On Sat, Nov 28, 2020 at 03:28:26PM +0100, Paul Kocialkowski wrote:
+> > > The A31 CSI controller supports two distinct input interfaces:
+> > > parallel and an external MIPI CSI-2 bridge. The parallel interface
+> > > is often connected to a set of hardware pins while the MIPI CSI-2
+> > > bridge is an internal FIFO-ish link. As a result, these two inputs
+> > > are distinguished as two different ports.
+> > > 
+> > > Note that only one of the two may be present on a controller instance.
+> > > For example, the V3s has one controller dedicated to MIPI-CSI2 and one
+> > > dedicated to parallel.
+> > > 
+> > > Update the binding with an explicit ports node that holds two distinct
+> > > port nodes: one for parallel input and one for MIPI CSI-2.
+> > > 
+> > > This is backward-compatible with the single-port approach that was
+> > > previously taken for representing the parallel interface port, which
+> > > stays enumerated as fwnode port 0. However, it is now marked as
+> > > deprecated and the multi-port approach should be preferred.
+> > > 
+> > > Note that additional ports may be added in the future, especially to
+> > > support feeding the CSI controller's output to the ISP.
+> > > 
+> > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > ---
+> > >  .../media/allwinner,sun6i-a31-csi.yaml        | 86 ++++++++++++++++---
+> > >  1 file changed, 73 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
+> > > index 1fd9b5532a21..3bcee2d44f3c 100644
+> > > --- a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
+> > > @@ -43,6 +43,7 @@ properties:
+> > >    # See ./video-interfaces.txt for details
+> > >    port:
+> > >      type: object
+> > > +    deprecated: true
+> > 
+> > I'm not sure we want to deprecate it. There's some SoCs with the same
+> > controller but without the MIPI-CSI block where this would be completely
+> > valid
+> 
+> I think we'll need to deprecate it when adding support for the ISP anyway,
+> so I figured we might as well do it now. But I'm okay to postpone this for now.
+> 
+> > >      properties:
+> > >        endpoint:
+> > > @@ -67,6 +68,59 @@ properties:
+> > >  
+> > >      additionalProperties: false
+> > >  
+> > > +  ports:
+> > > +    type: object
+> > > +
+> > > +    properties:
+> > > +      port@0:
+> > > +        type: object
+> > > +        description: Parallel input port, connect to a parallel sensor
+> > > +
+> > > +        properties:
+> > > +          reg:
+> > > +            const: 0
+> > > +
+> > > +          endpoint:
+> > > +            type: object
+> > > +
+> > > +            properties:
+> > > +              remote-endpoint: true
+> > > +
+> > > +              bus-width:
+> > > +                enum: [ 8, 10, 12, 16 ]
+> > > +
+> > > +              pclk-sample: true
+> > > +              hsync-active: true
+> > > +              vsync-active: true
+> > > +
+> > > +            required:
+> > > +              - bus-width
+> > > +              - remote-endpoint
+> > > +
+> > > +        required:
+> > > +          - endpoint
+> > > +
+> > > +        additionalProperties: false
+> > > +
+> > > +      port@1:
+> > > +        type: object
+> > > +        description: MIPI CSI-2 bridge input port
+> > > +
+> > > +        properties:
+> > > +          reg:
+> > > +            const: 1
+> > > +
+> > > +          endpoint:
+> > > +            type: object
+> > > +
+> > > +            properties:
+> > > +              remote-endpoint: true
+> > > +
+> > > +            required:
+> > > +              - remote-endpoint
+> > > +
+> > > +        additionalProperties: false
+> > 
+> > There's a schema for the OF-graph now, you'll want to use it.
+> 
+> I didn't know that, thanks for the tip! Will look into it.
 
-Fixes: def3f0a5c7007 ("ALSA: hda/ca0132 - Add quirk output selection structures.")
-Cc: <stable@kernel.org>
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
----
- sound/pci/hda/patch_ca0132.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There's about to be. Don't use what's in graph.yaml (in dt-schema) yet.
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 793dc5d501a5..6d647d461eab 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1390,7 +1390,7 @@ static const struct ca0132_alt_out_set_quirk_data quirk_out_set_data[] = {
- 		  .has_hda_gpio     = false,
- 		  .mmio_gpio_count  = 3,
- 		  .mmio_gpio_pin    = { 2, 3, 5 },
--		  .mmio_gpio_set    = { 1, 1, 0 },
-+		  .mmio_gpio_set    = { 1, 0, 0 },
- 		  .scp_cmds_count   = 0,
- 		  .has_chipio_write = false,
- 		},
--- 
-2.25.1
-
+Rob
