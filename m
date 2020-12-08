@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61542D3184
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323682D3186
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730752AbgLHRyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:54:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbgLHRyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:54:23 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1730754AbgLHRzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726810AbgLHRzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:55:21 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D5CC061749;
+        Tue,  8 Dec 2020 09:54:41 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17E3223B7E;
-        Tue,  8 Dec 2020 17:53:42 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 12:53:40 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        by ms.lwn.net (Postfix) with ESMTPSA id 3E7342AE;
+        Tue,  8 Dec 2020 17:54:40 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3E7342AE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607450080; bh=vUPe5xnpjeq2RaLybVlar/PVL7nLlPiDhZ3QIs3m20A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GRjBzFPvR4kiKNQwFPmmxzQxrkIKDc8YNkpgRVUBRpFnNPj1VzA9PLr4bQRIgYuKE
+         nglo3wWpIWrxUfRm8hVM65ug3d/2JtDRi1a54rElPcZWlQRI9zeJXrx9B+mSRGV2CA
+         79URsdjyLhoe7OuSb2FsMas1epmkLbhnxH0DhGbYGHIt5ae5WDYzcEOfgP5yLnB+mt
+         x+N+/7S/qCEg3lpjZvfCrsfgrpfiPbsUSax6nxY+7VDtWsi2jpVUZE+zpJs9zTWLea
+         kzd4eO5Y1htxj1+ioRH51aUPDhvRhu8qfhkmWbXT6kZ0XpoacjzNOODrSzL5qfxFTR
+         C/mVTeuD8o49A==
+Date:   Tue, 8 Dec 2020 10:54:39 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mathieu Chouquet-Stringer <me@mathieu.digital>
+Cc:     Borislav Petkov <bp@alien8.de>, Stephen Kitt <steve@sk2.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Naoki Hayama <naoki.hayama@lineo.co.jp>,
+        Yue Hu <huyue2@yulong.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] tracing: Update synth command errors
-Message-ID: <20201208125340.407150f2@gandalf.local.home>
-In-Reply-To: <44b9e471f0d3b77ab0a2bf11024e2e72c1f1a80d.camel@kernel.org>
-References: <cover.1603723933.git.zanussi@kernel.org>
-        <8671adc7ce95ff1d5c7b037d371467e96f7f2914.1603723933.git.zanussi@kernel.org>
-        <20201207201304.627bfe48@oasis.local.home>
-        <44b9e471f0d3b77ab0a2bf11024e2e72c1f1a80d.camel@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Subject: Re: [PATCH] Update documentation to reflect what
+ TAINT_CPU_OUT_OF_SPEC means nowadays
+Message-ID: <20201208105439.23e2349b@lwn.net>
+In-Reply-To: <20201202153244.709752-1-me@mathieu.digital>
+References: <20201202153244.709752-1-me@mathieu.digital>
+Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Dec 2020 11:34:41 -0600
-Tom Zanussi <zanussi@kernel.org> wrote:
+On Wed,  2 Dec 2020 16:32:43 +0100
+Mathieu Chouquet-Stringer <me@mathieu.digital> wrote:
 
-> Unfortunately, you're correct, if you have a script that creates a
-> synthetic event without semicolons, this patchset will break it, as I
-> myself found out and fixed in patch 4 ([PATCH v3 4/5] selftests/ftrace:
-> Add synthetic event field separators) [4].
+> 	Hello Jonathan,
 > 
-> So whereas before this would work, even though it shouldn't have in the
-> first place:
+> Here's a patch updating the meaning of TAINT_CPU_OUT_OF_SPEC after
+> Borislav introduced changes in a7e1f67ed29f and upcoming patches in tip.
 > 
->   # echo 'wakeup_latency  u64 lat pid_t pid char comm[16]' >
-> synthetic_events
+> TAINT_CPU_OUT_OF_SPEC now means a bit more what it implies as the
+> flag isn't set just because of a CPU misconfiguration or mismatch.
+> Historically it was for SMP kernel oops on an officially SMP incapable
+> processor but now it also covers CPUs whose MSRs have been incorrectly
+> poked at from userspace, drivers being used on non supported
+> architectures, broken firmware, mismatched CPUs, ...
 > 
-> it now has to be:
+> Update documentation and script to reflect that.
 > 
->   # echo 'wakeup_latency  u64 lat; pid_t pid; char comm[16]' >
-> synthetic_events
-> 
-> So yeah, this patchset fixes a set of parsing bugs for things that
-> shouldn't have been accepted as valid, but shouldn't break things that
-> are obviously valid.
-> 
-> If it's too late to fix them, though, I guess we'll just have to live
-> with them, or some other option?
+> Signed-off-by: Mathieu Chouquet-Stringer <me@mathieu.digital>
 
+Hearing no objection, I've applied this.
 
-I would suggest allowing the old interface work (with no new features, for
-backward compatibility), but new things like "char comm[16]" we require
-semicolons.
+Thanks,
 
-One method to do this is to add to the start of reading the string, and
-checking if it has semicolons. If it does not, we create a new string with
-them, but make sure that the string does not include new changes.
-
-	strncpy_from_user(buffer, user_buff, sizeof(buffer));
-
-	if (!strstr(buffer, ";")) {
-		if (!audit_old_buffer(buffer))
-			goto error;
-		insert_colons(buffer);
-	}
-
-
-That is, if the buffer does not have semicolons, then check if it is a
-valid "old format", and if not, we error out. Otherwise, we insert the
-colons into the buffer, and process that as if the user put in colons:
-
-That is:
-
-	echo 'wakeup_latency u64 lat pid_t pid' > synthetic_events
-
-would change the buffer to:
-
-	"wakeup_latency u64 lat; pid_t pid;"
-
-And then put it through the normal processing. I think its OK that if the
-user were to cat out the synthetic events, it would see the semicolons even
-if it did not add them. As I don't think that will break userspace.
-
-Does that make sense?
-
--- Steve
+jon
