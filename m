@@ -2,148 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002FF2D2E7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A5B2D2E85
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgLHPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730167AbgLHPmr (ORCPT
+        id S1730189AbgLHPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:43:16 -0500
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:33986 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729457AbgLHPnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:42:47 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD389C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:42:06 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id g18so12513514pgk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:42:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jmDvSPRVcyFiUTh9P/9tgxR63Fy7Ex8sd1a89ZzSMyc=;
-        b=d6sGHdDKnkJinKcYD9aW5HuYKEFF3OfjEUqAtYD5wc6upJs5m5wpSzwGzVpVxBgzA8
-         /PSxlxqYS/Bzj04qXWkVIoxjj67Y81tl/oWZbDECCLvYS8kd7bE75u/yzA+ioVIBzJLB
-         snBKRKoHWVzQ2Rl/6CG5GA0OANMhp6YSB0tXM9+wP+O/DCezuqoXEGczNczF9NtkjQCk
-         1fsQGReKEPEJm2+8+1bo0eOYZaafbstyt+SrGP3Vw/aCP0Mn87SqUOvYQLkH9xdEzi4Q
-         Gc732c3U7Xk7FoMpa2ZHBFWWdN4BsocaYjbfElOkDxhhbzrNkXawJnbQIcbJarlIHCW2
-         GIlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jmDvSPRVcyFiUTh9P/9tgxR63Fy7Ex8sd1a89ZzSMyc=;
-        b=q8D4MWtAdGpI+VG4zSMJGxqdcCj/FJKzNM942bcHjsPN04DgXvpICN1ozUR2+e06MV
-         zJWFH+x8WsFmkU+JD7I1qjSPCUjroMAsblVbyuBs9Nuk9pgLg+QgooB03Uu0PQUPH11I
-         A4gM5SvoNlno2IRDFt+WlJ4+qgJxsuOrOUGPCX3k5bcOTaWLf5MoYgILKDSytm2Hz8Y/
-         NG7NjspOCXQATLEmwA0S2DP9VduMAjvZizR3RjXJuYzlKQM4mpUGwZKzAAUSZfzyf6XY
-         wYX6/c7RfbGYtFWp2BvV/UlIsn8i8cf+oATds1jgCw68NIl0C9/uOIBOeliW3KmqWGIJ
-         qU5A==
-X-Gm-Message-State: AOAM530iHmPQiKtEcnL3sGRF8lMJBkjKt5L/Kk3GRJdc08Y2Pv1T4N40
-        teQIGopSbqEu0duTupcHBSaG
-X-Google-Smtp-Source: ABdhPJy583cwUkBWFf5ggCavTrTu465iNtib6m3+T2n3nlybT7JEEZweJdzcPVW4TJ9udxotaMWd4Q==
-X-Received: by 2002:a17:90a:178b:: with SMTP id q11mr4791029pja.132.1607442126108;
-        Tue, 08 Dec 2020 07:42:06 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id f7sm3680833pjs.25.2020.12.08.07.41.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 07:42:05 -0800 (PST)
-Date:   Tue, 8 Dec 2020 21:11:55 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        jorge.ramirez-ortiz@linaro.org, robh+dt@kernel.org,
-        konrad.dybcio@somainline.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ulf.hansson@linaro.org,
-        nks@flawful.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        phone-devel@vger.kernel.org, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        robh@kernel.org
-Subject: Re: [PATCH 11/13] dt-bindings: cpufreq: Convert qcom-cpufreq-hw to
- YAML binding
-Message-ID: <20201208154155.GC9925@work>
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
- <20201126184559.3052375-12-angelogioacchino.delregno@somainline.org>
- <20201130172305.GA2661895@robh.at.kernel.org>
- <20201203111427.GA3937@thinkpad>
- <d66e05be-4ea1-dfb7-40ee-bfe417ab1a77@somainline.org>
+        Tue, 8 Dec 2020 10:43:16 -0500
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0B8FeYvD016868;
+        Tue, 8 Dec 2020 10:42:30 -0500
+Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
+        by pbmsgap02.intersil.com with ESMTP id 35858khkcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 10:42:29 -0500
+Received: from pbmxdp01.intersil.corp (132.158.200.222) by
+ pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Tue, 8 Dec 2020 10:42:28 -0500
+Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
+ (132.158.200.222) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 8 Dec 2020 10:42:27 -0500
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net-next 3/4] ptp: clockmatrix: Fix non-zero phase_adj is lost after snap
+Date:   Tue, 8 Dec 2020 10:41:56 -0500
+Message-ID: <1607442117-13661-3-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1607442117-13661-1-git-send-email-min.li.xe@renesas.com>
+References: <1607442117-13661-1-git-send-email-min.li.xe@renesas.com>
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d66e05be-4ea1-dfb7-40ee-bfe417ab1a77@somainline.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-08_11:2020-12-08,2020-12-08 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxlogscore=999 suspectscore=4
+ malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080095
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 01:13:52AM +0100, AngeloGioacchino Del Regno wrote:
-> Il 03/12/20 12:14, Manivannan Sadhasivam ha scritto:
-> > Hi,
-> > 
-> > On Mon, Nov 30, 2020 at 10:23:05AM -0700, Rob Herring wrote:
-> > > On Thu, 26 Nov 2020 19:45:57 +0100, AngeloGioacchino Del Regno wrote:
-> > > > Convert the qcom-cpufreq-hw documentation to YAML binding as
-> > > > qcom,cpufreq-hw.yaml.
-> > > > 
-> > > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > 
-> > There is already a patch floating for this. Please see:
-> > https://lkml.org/lkml/2020/10/20/676
-> > 
-> > Thanks,
-> > Mani
-> > 
-> Oh, I'm sorry, I wasn't aware of that, didn't want to step on you.
-> 
-> Should I rebase patch 1345789 (patch 13/13 of this series) on top of
-> the one that you pointed out and drop this one?
+From: Min Li <min.li.xe@renesas.com>
 
-Yes please.
+Fix non-zero phase_adj is lost after snap. Use ktime_sub
+to do ktime_t subtraction.
 
-Thanks,
-Mani
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/ptp/ptp_clockmatrix.c | 109 ++++++++++++++++++++++++++++++++++--------
+ drivers/ptp/ptp_clockmatrix.h |   5 +-
+ 2 files changed, 90 insertions(+), 24 deletions(-)
 
-> 
-> - Angelo
-> 
-> > > > ---
-> > > >   .../bindings/cpufreq/cpufreq-qcom-hw.txt      | 173 +---------------
-> > > >   .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 196 ++++++++++++++++++
-> > > >   2 files changed, 197 insertions(+), 172 deletions(-)
-> > > >   create mode 100644 Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> > > > 
-> > > 
-> > > 
-> > > My bot found errors running 'make dt_binding_check' on your patch:
-> > > 
-> > > yamllint warnings/errors:
-> > > 
-> > > dtschema/dtc warnings/errors:
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: properties:clock-names: [{'const': 'xo'}, {'const': 'ref'}] is not of type 'object', 'boolean'
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: maintainers:0: 'TBD' is not a 'email'
-> > > /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml: ignoring, error in schema: properties: clock-names
-> > > warning: no schema found in file: ./Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> > > Error: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dts:150.3-151.1 syntax error
-> > > FATAL ERROR: Unable to parse input tree
-> > > make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.example.dt.yaml] Error 1
-> > > make[1]: *** Waiting for unfinished jobs....
-> > > make: *** [Makefile:1364: dt_binding_check] Error 2
-> > > 
-> > > 
-> > > See https://patchwork.ozlabs.org/patch/1406857
-> > > 
-> > > The base for the patch is generally the last rc1. Any dependencies
-> > > should be noted.
-> > > 
-> > > If you already ran 'make dt_binding_check' and didn't see the above
-> > > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > > date:
-> > > 
-> > > pip3 install dtschema --upgrade
-> > > 
-> > > Please check and re-submit.
-> > > 
-> 
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index 7a660bc..6382041 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -673,8 +673,9 @@ static int _idtcm_set_dpll_hw_tod(struct idtcm_channel *channel,
+ 
+ 		if (idtcm->calculate_overhead_flag) {
+ 			/* Assumption: I2C @ 400KHz */
+-			total_overhead_ns =  ktime_to_ns(ktime_get_raw()
+-							 - idtcm->start_time)
++			ktime_t diff = ktime_sub(ktime_get_raw(),
++						 idtcm->start_time);
++			total_overhead_ns =  ktime_to_ns(diff)
+ 					     + idtcm->tod_write_overhead_ns
+ 					     + SETTIME_CORRECTION;
+ 
+@@ -757,6 +758,54 @@ static int _idtcm_set_dpll_scsr_tod(struct idtcm_channel *channel,
+ 	return 0;
+ }
+ 
++static int get_output_base_addr(u8 outn)
++{
++	int base;
++
++	switch (outn) {
++	case 0:
++		base = OUTPUT_0;
++		break;
++	case 1:
++		base = OUTPUT_1;
++		break;
++	case 2:
++		base = OUTPUT_2;
++		break;
++	case 3:
++		base = OUTPUT_3;
++		break;
++	case 4:
++		base = OUTPUT_4;
++		break;
++	case 5:
++		base = OUTPUT_5;
++		break;
++	case 6:
++		base = OUTPUT_6;
++		break;
++	case 7:
++		base = OUTPUT_7;
++		break;
++	case 8:
++		base = OUTPUT_8;
++		break;
++	case 9:
++		base = OUTPUT_9;
++		break;
++	case 10:
++		base = OUTPUT_10;
++		break;
++	case 11:
++		base = OUTPUT_11;
++		break;
++	default:
++		base = -EINVAL;
++	}
++
++	return base;
++}
++
+ static int _idtcm_settime(struct idtcm_channel *channel,
+ 			  struct timespec64 const *ts)
+ {
+@@ -881,6 +930,7 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
+ 
+ 	ktime_t start;
+ 	ktime_t stop;
++	ktime_t diff;
+ 
+ 	char buf[TOD_BYTE_COUNT] = {0};
+ 
+@@ -900,7 +950,9 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
+ 
+ 		stop = ktime_get_raw();
+ 
+-		current_ns = ktime_to_ns(stop - start);
++		diff = ktime_sub(stop, start);
++
++		current_ns = ktime_to_ns(diff);
+ 
+ 		if (i == 0) {
+ 			lowest_ns = current_ns;
+@@ -1220,11 +1272,19 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
+ 			       bool enable, unsigned int outn)
+ {
+ 	struct idtcm *idtcm = channel->idtcm;
++	int base;
+ 	int err;
+ 	u8 val;
+ 
+-	err = idtcm_read(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
+-			 OUT_CTRL_1, &val, sizeof(val));
++	base = get_output_base_addr(outn);
++
++	if (!(base > 0)) {
++		dev_err(&idtcm->client->dev,
++			"%s - Unsupported out%d", __func__, outn);
++		return base;
++	}
++
++	err = idtcm_read(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
+ 
+ 	if (err)
+ 		return err;
+@@ -1234,8 +1294,7 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
+ 	else
+ 		val &= ~SQUELCH_DISABLE;
+ 
+-	return idtcm_write(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
+-			   OUT_CTRL_1, &val, sizeof(val));
++	return idtcm_write(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
+ }
+ 
+ static int idtcm_output_mask_enable(struct idtcm_channel *channel,
+@@ -1278,6 +1337,23 @@ static int idtcm_perout_enable(struct idtcm_channel *channel,
+ 	return idtcm_output_enable(channel, enable, perout->index);
+ }
+ 
++static int idtcm_get_pll_mode(struct idtcm_channel *channel,
++			      enum pll_mode *pll_mode)
++{
++	struct idtcm *idtcm = channel->idtcm;
++	int err;
++	u8 dpll_mode;
++
++	err = idtcm_read(idtcm, channel->dpll_n, DPLL_MODE,
++			 &dpll_mode, sizeof(dpll_mode));
++	if (err)
++		return err;
++
++	*pll_mode = (dpll_mode >> PLL_MODE_SHIFT) & PLL_MODE_MASK;
++
++	return 0;
++}
++
+ static int idtcm_set_pll_mode(struct idtcm_channel *channel,
+ 			      enum pll_mode pll_mode)
+ {
+@@ -1343,7 +1419,7 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
+ 	else if (offset_ps < -MAX_ABS_WRITE_PHASE_PICOSECONDS)
+ 		offset_ps = -MAX_ABS_WRITE_PHASE_PICOSECONDS;
+ 
+-	phase_50ps = DIV_ROUND_CLOSEST(div64_s64(offset_ps, 50), 1);
++	phase_50ps = div_s64(offset_ps, 50);
+ 
+ 	for (i = 0; i < 4; i++) {
+ 		buf[i] = phase_50ps & 0xff;
+@@ -1360,7 +1436,6 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
+ {
+ 	struct idtcm *idtcm = channel->idtcm;
+ 	u8 i;
+-	bool neg_adj = 0;
+ 	int err;
+ 	u8 buf[6] = {0};
+ 	s64 fcw;
+@@ -1384,18 +1459,11 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
+ 	 * FCW = -------------
+ 	 *         111 * 2^4
+ 	 */
+-	if (scaled_ppm < 0) {
+-		neg_adj = 1;
+-		scaled_ppm = -scaled_ppm;
+-	}
+ 
+ 	/* 2 ^ -53 = 1.1102230246251565404236316680908e-16 */
+ 	fcw = scaled_ppm * 244140625ULL;
+ 
+-	fcw = div_u64(fcw, 1776);
+-
+-	if (neg_adj)
+-		fcw = -fcw;
++	fcw = div_s64(fcw, 1776);
+ 
+ 	for (i = 0; i < 6; i++) {
+ 		buf[i] = fcw & 0xff;
+@@ -2062,12 +2130,11 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
+ 		}
+ 	}
+ 
+-	err = idtcm_set_pll_mode(channel, PLL_MODE_WRITE_FREQUENCY);
++	/* Sync pll mode with hardware */
++	err = idtcm_get_pll_mode(channel, &channel->pll_mode);
+ 	if (err) {
+ 		dev_err(&idtcm->client->dev,
+-			"Failed at line %d in func %s!\n",
+-			__LINE__,
+-			__func__);
++			"Error: %s - Unable to read pll mode\n", __func__);
+ 		return err;
+ 	}
+ 
+diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+index dd3436e..3790dfa 100644
+--- a/drivers/ptp/ptp_clockmatrix.h
++++ b/drivers/ptp/ptp_clockmatrix.h
+@@ -15,6 +15,7 @@
+ #define FW_FILENAME	"idtcm.bin"
+ #define MAX_TOD		(4)
+ #define MAX_PLL		(8)
++#define MAX_OUTPUT	(12)
+ 
+ #define MAX_ABS_WRITE_PHASE_PICOSECONDS (107374182350LL)
+ 
+@@ -49,9 +50,6 @@
+ #define PHASE_PULL_IN_THRESHOLD_NS_V487	(15000)
+ #define TOD_WRITE_OVERHEAD_COUNT_MAX	(2)
+ #define TOD_BYTE_COUNT			(11)
+-#define WR_PHASE_SETUP_MS		(5000)
+-
+-#define OUTPUT_MODULE_FROM_INDEX(index)	(OUTPUT_0 + (index) * 0x10)
+ 
+ #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
+ 
+@@ -125,6 +123,7 @@ struct idtcm_channel {
+ 	enum pll_mode		pll_mode;
+ 	u8			pll;
+ 	u16			output_mask;
++	u8			output_phase_adj[MAX_OUTPUT][4];
+ };
+ 
+ struct idtcm {
+-- 
+2.7.4
+
