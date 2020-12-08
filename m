@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0C12D31E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2802D31ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730972AbgLHSOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:14:08 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33350 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730964AbgLHSOI (ORCPT
+        id S1730897AbgLHSQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730483AbgLHSQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:14:08 -0500
-Received: by mail-ot1-f67.google.com with SMTP id b18so16687193ots.0;
-        Tue, 08 Dec 2020 10:13:46 -0800 (PST)
+        Tue, 8 Dec 2020 13:16:03 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D439C061749;
+        Tue,  8 Dec 2020 10:15:23 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id t19so5912736uaq.1;
+        Tue, 08 Dec 2020 10:15:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M8SVSLFtz8XCFX35QtBBhLioF4VkLss3R+vxBxh9OlM=;
+        b=IXMCJvQn8ys5LSKXqaH2S2FHBiJJTdR62QBskWNgyXtob6K6y0GNFeOLFVUToI7zCg
+         ZmiNWtCVVMNIwMYRl4BIjrrBvOcsEwSYyVmw2RMBotSNbcjXjB3DOGG2yDbr2gYmq3xL
+         JYt8C4BajLMBqq5eF1E68jmP1WycYUFzYP8SWoTjudEXQWgWyUjqN+nwRmSAnT3kxSMM
+         z/+FVU1qQQtdp5Sgaisd2EsLpG3YBRjFDkCORNwTn/FgYi104NdMGV8QSpg+NWBApMPD
+         kUGxeyZZuN6wOvhAiMizdYIOMbLeZKPixTKDvQ0Ve9wShEHRDdLndaB1X5ozuF76QoKq
+         qQ+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wh9jnHQilX25aULdurAa38tQjEpUFH5bf92wn1kDkV8=;
-        b=OwkN4dibKBgZpkzhbxAGCRyW/Xl2MS0W1rX51y5rt4ZW+L+RNE1QABRU+PR4ZJnOJM
-         t36o5mO8CyDGdp9F5H4qGv24i2yM0AxuJsRjvbI4MLlxRo0K7X9MStJheOiBpgieisha
-         SpEVVphTasH3JXzBu07pEGRBWi76lj9tRmX8crvhDv/c1SUHvXPYSMD+Cy5JWI93TR3/
-         rqEb61YP5OL8Yb2vBbHAnP2qmq1+Z1HpXpMMhnWPw46UxJmv3O5gKyNeb10g/wvQMnU7
-         jSC3VL2/eU3pBEO7mvf/7HyNZtRDL2K7N0P6aGID3yM7bNzuzw7vylbLFxCsierfLOND
-         g6Ig==
-X-Gm-Message-State: AOAM5331+F7zHlL256RU0jHC+kK/vG1RyBDLMHlg1LjiDlFduwz7/5rd
-        HPkyWeGSfcPOI06oSYrwHKP6DcxGaA==
-X-Google-Smtp-Source: ABdhPJwZ5y52wb+PR4oET30Dmr/zuMyrdN//jT7ed3cWNfcEWlJ0YwR/XNow1Rub7kvrkr99kH9H9A==
-X-Received: by 2002:a9d:5f03:: with SMTP id f3mr17786964oti.91.1607451201547;
-        Tue, 08 Dec 2020 10:13:21 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y204sm2448491oiy.38.2020.12.08.10.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 10:13:19 -0800 (PST)
-Received: (nullmailer pid 2814302 invoked by uid 1000);
-        Tue, 08 Dec 2020 18:13:18 -0000
-Date:   Tue, 8 Dec 2020 12:13:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, lars@metafoo.de
-Subject: Re: [PATCH v3 4/4] dt-bindings: add ADP5585/ADP5589 entries to
- trivial-devices
-Message-ID: <20201208181318.GA2814147@robh.at.kernel.org>
-References: <20201127111420.96500-1-alexandru.ardelean@analog.com>
- <20201127111420.96500-4-alexandru.ardelean@analog.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M8SVSLFtz8XCFX35QtBBhLioF4VkLss3R+vxBxh9OlM=;
+        b=t5Qu7/gmT8aHFz7/5GuSPAxEk/aafqsB59NJ+IBw33aJYDgXRrgQRBeulA10Fvv1PQ
+         CaWDH0ha9NJ69aeZoex8RLTT9rKXsS+exhCTpHcVWPrd2m8ykBHMliSJ7vRKAmTVbr3E
+         ys/X9hf2lqtNEZgaASlaGIEcEnU9i3AhRmlUkuSBnlq2PMJFwVb7+9nZBcQgKiQXPeN5
+         MTVLgWheyYmKOstJs9pRv5/9PP63oEA3dfgmbKyr9+NQr2ZfQ43wxyqSCfnW8LwVo2eB
+         +AigfcUqu/NDttzyXIeg0iHLgk+8OEPpibhqw8CF2rnTs+hC/o0pl3a7iPY1BgVQPb3w
+         t0ew==
+X-Gm-Message-State: AOAM532CeDxVrjwsUjAMTQwZuvcAr2vbwce0PJGL016s3/hsLaqUFhCC
+        XLZI5gbqFr2PMb6XNyoYqyVqemnuBSaoyMkRQ+Q=
+X-Google-Smtp-Source: ABdhPJzJeaX9n16GCA7D55Jumfe08vdLPZG98CULXNKDaLkT/bhaI5P3Sn0PGpOBHNHsAyvUmUDbts7dJEco1sO7R/c=
+X-Received: by 2002:ab0:4881:: with SMTP id x1mr17207972uac.101.1607451322316;
+ Tue, 08 Dec 2020 10:15:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127111420.96500-4-alexandru.ardelean@analog.com>
+References: <20201207193629.493241-1-clemens.gruber@pqgruber.com>
+ <20201207220025.42b6g76wq7ph5nvb@pengutronix.de> <X863KNo0IaekkU7q@workstation.tuxnet>
+ <20201208091033.bxzrlad7mjbe3dsp@pengutronix.de> <X89RgpTb3sBBI++w@workstation.tuxnet>
+ <X8+DI7ZN7mXtsxv9@ulmo> <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
+ <X8+waLH58pOaMI06@ulmo>
+In-Reply-To: <X8+waLH58pOaMI06@ulmo>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 8 Dec 2020 13:15:10 -0500
+Message-ID: <CAGngYiUP7BBF4i8YFXREA291dBTc4JytAFV9AoSjzMYTW7MyjQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 13:14:20 +0200, Alexandru Ardelean wrote:
-> This change adds the device-tree entries for the Analog Devices ADP5585 and
-> ADP5589 devices to the trivial devices list.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  Documentation/devicetree/bindings/trivial-devices.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+On Tue, Dec 8, 2020 at 11:57 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> Is this really that complicated? I sounds to me like the only thing that
+> you need is to have some sort of usage count for the prescaler. Whenever
+> you want to use the prescaler you check that usage count. If it is zero,
+> then you can just set it to whatever you need. If it isn't zero, that
+> means somebody else is already using it and you can't change it, which
+> means you have to check if you're trying to request the value that's
+> already set. If so, you can succeed, but otherwise you'll have to fail.
 
-Applied, thanks!
++1
+I think your suggestion is an elegant solution to get the required behaviour.
+
+One possible complication is synchronization. The sysfs interface has a lock
+protecting against concurrent pwm_apply() calls. But the in-kernel
+API (e.g. pwm_apply_state()) doesn't seem to. This is not normally a problem
+when pwm bits are strictly separated. But in this case we have shared state
+(prescale value and use count), so we probably need to protect pwm_apply()
+with a mutex?
+
+Not sure if it is currently possible *in practice* for two regulator consumer
+drivers to call pwm_apply() from different threads. But Linux is slowly moving
+towards asynchronous probing.
+
+Uwe and Thierry, what is your opinion? Do you think we need to worry about
+synchronization?
