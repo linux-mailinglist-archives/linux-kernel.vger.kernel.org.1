@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD0C2D365D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77502D365F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbgLHWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:38:12 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13074 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726421AbgLHWiM (ORCPT
+        id S1730644AbgLHWjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:39:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgLHWjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:38:12 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MW9Ec106166;
-        Tue, 8 Dec 2020 17:37:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ny4BGtsIDYCNJGw0eK1XWCj9RE2kutEusQjjkUxM/bI=;
- b=IinELtBzPOnmbSaQjLmMTQ2kyaiigWd0K10ApwnaRlH393m2M1dp/t2naYJGkv1U6+xn
- DYMIMZCbGpbpoa/3zjdQtFOu8P36Ox+/VMZigz3Y3PnR58sgLk69ULde7zqTs3CL/cD1
- Yo4H+Fau5H7gy8BzSuYJA+eI02P2/faWO6EQTNd6XLKzHzm3jeQBubQPZsvXJ5zaxSbv
- dYqRB+bryeS4qOxT//+Zqw7gJ4MQRHDmQpPlJHa8yDVTEFqd6rboMQtDo3rpq2Px7c+e
- 13Jsuw7Jb7+tnGdaQKdyqBblzUfbIvqEBPbDJAUpBfFpxhixEAnJ87deuBAK5jHuKTCt hg== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ajbng5br-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 17:37:21 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MWO9T029588;
-        Tue, 8 Dec 2020 22:37:20 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma03dal.us.ibm.com with ESMTP id 3581u99pss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 22:37:20 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8MbJRi28049680
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 22:37:20 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD4B8112079;
-        Tue,  8 Dec 2020 22:37:19 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2347811207A;
-        Tue,  8 Dec 2020 22:37:18 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 22:37:17 +0000 (GMT)
-Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Hannes Reinecke <hare@suse.de>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20201202005329.4538-1-tyreld@linux.ibm.com>
- <20201202005329.4538-2-tyreld@linux.ibm.com>
- <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
- <38903a4f-9253-0b4b-6f67-af78ec86175f@linux.ibm.com>
- <efbfe9e9-c692-80a1-f5b4-55473d8193e4@linux.vnet.ibm.com>
- <6ce79011-d288-7a49-3d51-262da58d8486@suse.de>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <f226e3f9-60e9-b96a-ecc3-2e4008e08bac@linux.ibm.com>
-Date:   Tue, 8 Dec 2020 14:37:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 8 Dec 2020 17:39:39 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2ADC0613CF;
+        Tue,  8 Dec 2020 14:38:59 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id w79so268800qkb.5;
+        Tue, 08 Dec 2020 14:38:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=nXoogOelth45m3680v5dZQaa0Q3qItZ3ltsEtGhqtc8=;
+        b=M5BfxozHRlw3l2o4rTRpHD5p48CGpDBsna0zK/X+ca/8y0a35teW83GRtEERQzIjUb
+         Nbmqvimz4DicZs/aFRhkzSXUDu0aZXR2NnL54O0HMcDkvpEWEqeCTreeEEGVAgG5JkRu
+         GAzhZYOIQNno3BuwuU63y6cTBdQUXhv4JgQsLMfrYnnRfzYlDwQ/zfJOElw8iJBG4u+M
+         HrpmukNk/oFGIDEhTaJUjNVmeGNfgjAdFjAj0PRJxijg5pKBCEVC7V8vTadFfP827SHY
+         YEVbJt394K3quhKFiDGjAoZymqar07jPFQ6mV5FOn3vPqTw7cSFkQf/okAxMgzLDTg3U
+         8r8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:subject:message-id
+         :mime-version:content-disposition;
+        bh=nXoogOelth45m3680v5dZQaa0Q3qItZ3ltsEtGhqtc8=;
+        b=TWGPGavWff/CqG5BZywHDyX9J7vixqUNLsBFEipoBuKw2DBHPpKuJpGihX4JvTECJo
+         eQci2JTfBpK7pD2ddg/DnMqmA57GEITmWwTG+gu4suys7+MNxU8JzFQNgwF1YjFvDrji
+         uaPOGyKpMKTTh6uZkdtvQsyk0zC8zKYVj4zdvsBpWEkx5IqWz34P2/qXOUDu/cRtiNiW
+         HO45X2z7YS+6ODT4BkQKRb5hqnVA9kCK8xuUCFyEKwQSgJcv5UvvHy6iXNOVcK1MhTFl
+         gYLjUMA5OpLOIz1g72q6+y8ROVrirD8v49Ywg4XZZ3Dq8igerrbY4xjh9cTW7yZiy3OR
+         kaig==
+X-Gm-Message-State: AOAM531NS3huipO6luDr9ZYpJJlOVZRnununNtg0g6I9B9sSyv1oTqv8
+        9Hir/X+eZHUouDlaldMSXGOMa6Ehw+M=
+X-Google-Smtp-Source: ABdhPJz1OtRdaRy8RNImn03gJ3baPUIgjN2QP/MdDMoPzf23TXdxT5EUSAXp9ROoIU1cFLeSnI502A==
+X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr34032820qkh.136.1607467138709;
+        Tue, 08 Dec 2020 14:38:58 -0800 (PST)
+Received: from lclaudio.dyndns.org ([191.177.185.4])
+        by smtp.gmail.com with ESMTPSA id t133sm68705qke.82.2020.12.08.14.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 14:38:58 -0800 (PST)
+Sender: "Luis Claudio R. Goncalves" <lclaudio00@gmail.com>
+From:   "Luis Claudio R. Goncalves" <lclaudio@uudg.org>
+X-Google-Original-From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
+        id A05ED3C0047; Tue,  8 Dec 2020 19:38:55 -0300 (-03)
+Date:   Tue, 8 Dec 2020 19:38:55 -0300
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.9.247-rt162
+Message-ID: <20201208223855.GO348285@uudg.org>
 MIME-Version: 1.0
-In-Reply-To: <6ce79011-d288-7a49-3d51-262da58d8486@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_15:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012080137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 3:56 AM, Hannes Reinecke wrote:
-> On 12/4/20 3:26 PM, Brian King wrote:
->> On 12/2/20 11:27 AM, Tyrel Datwyler wrote:
->>> On 12/2/20 7:14 AM, Brian King wrote:
->>>> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
->>>>> Introduce several new vhost fields for managing MQ state of the adapter
->>>>> as well as initial defaults for MQ enablement.
->>>>>
->>>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->>>>> ---
->>>>>   drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
->>>>>   drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
->>>>>   2 files changed, 19 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> index 42e4d35e0d35..f1d677a7423d 100644
->>>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->>>>> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const
->>>>> struct vio_device_id *id)
->>>>>       }
->>>>>         shost->transportt = ibmvfc_transport_template;
->>>>> -    shost->can_queue = max_requests;
->>>>> +    shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
->>>>
->>>> This doesn't look right. can_queue is the SCSI host queue depth, not the MQ
->>>> queue depth.
->>>
->>> Our max_requests is the total number commands allowed across all queues. From
->>> what I understand is can_queue is the total number of commands in flight allowed
->>> for each hw queue.
->>>
->>>          /*
->>>           * In scsi-mq mode, the number of hardware queues supported by the LLD.
->>>           *
->>>           * Note: it is assumed that each hardware queue has a queue depth of
->>>           * can_queue. In other words, the total queue depth per host
->>>           * is nr_hw_queues * can_queue. However, for when host_tagset is set,
->>>           * the total queue depth is can_queue.
->>>           */
->>>
->>> We currently don't use the host wide shared tagset.
->>
->> Ok. I missed that bit... In that case, since we allocate by default only 100
->> event structs. If we slice that across IBMVFC_SCSI_HW_QUEUES (16) queues, then
->> we end up with only about 6 commands that can be outstanding per queue,
->> which is going to really hurt performance... I'd suggest bumping up
->> IBMVFC_MAX_REQUESTS_DEFAULT from 100 to 1000 as a starting point.
->>
-> Before doing that I'd rather use the host-wide shared tagset.
-> Increasing the number of requests will increase the memory footprint of the
-> driver (as each request will be statically allocated).
-> 
+Hello RT-list!
 
-In the case where we use host-wide how do I determine the queue depth per
-hardware queue? Is is hypothetically can_queue or is it (can_queue /
-nr_hw_queues)? We want to allocate an event pool per-queue which made sense
-without host-wide tags since the queue depth per hw queue is exactly can_queue.
+I'm pleased to announce the 4.9.247-rt162 stable release.
 
--Tyrel
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.9-rt
+  Head SHA1: 35e7b01017420a52fa269101a09a0a93815ec65d
+
+Or to build 4.9.247-rt162 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.247.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.247-rt162.patch.xz
+
+Enjoy!
+Luis
+
