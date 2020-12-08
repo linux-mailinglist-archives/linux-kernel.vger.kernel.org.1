@@ -2,126 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6152B2D312B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AA72D3132
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729885AbgLHReg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:34:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgLHRef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:34:35 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA88C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:33:55 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id v14so2709525wml.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:33:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=prv6QXAjwXmx7X2n72Rz/QqUHHpEtIXIiLJUnnkHbR0=;
-        b=uXqAktZWSUW4BB2xkW70Q7Y0knpgm8Ya3oLIOqAeMxBdX54aZro6l5hGEy2/ScF132
-         B4SjN5eepkt1FLiQE+gKv+yD+8A0BJMTRqluag6GgEWseNrnd5oy7frSgWgbBKzZN3YS
-         UExoJ9ya1dr2M+wcvHfV5D/VDXcMvrNRViSjYDvslwVRFof4M0we9OhGSjTDU3qYEkEb
-         cPHh2qGP1VzyITFEQOLU/1TzrEoYiLxWW+sDzX4PYOCtptCHXTVEP+M9D/Unbbdc3OU9
-         H53L6HylG34y/iCr9QrcYx9B98atOECoJXVt16Ecdt2tZsI1ffQ6Rut6doKOioTiHWem
-         7VMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=prv6QXAjwXmx7X2n72Rz/QqUHHpEtIXIiLJUnnkHbR0=;
-        b=DDAvJ8cwJ5hHTOIwng1A9NnZDVKIRk8QrAQUZ2FwGco4GlTy0ai31uss111n9ZtLIa
-         9iD3dKUzTB1atZqMpsIs1NyEkEygSxLNE93d7eV9/jAfFVUEORWArZjEUyho1mAfQgKe
-         uxTXG/rovstjiFHJ/fmktdM6bGSwXo29CyhJRqW8iEn8zjFUDeoW7Tud58hXoSK5w63f
-         0h5O6jtjPLzP7tZW712ILU1KW2IAqxUkpcbqVALrsF1H7IOmXSrj348dI3cy9dknBKcA
-         YBSR+djMaE0/vQS00BxwFvlUd9TuojzJ7kZvbbQCSExwQHbgG7rZPT4vz66Izj6Trzur
-         8ENQ==
-X-Gm-Message-State: AOAM533gWdK8HrTAZjusDH1ovRdv40mk25Zyms03ngWk6GeYgJurHkRl
-        1Ux4H6iQaoOQiRHWtyKKmXVxufy546QWZONaFmOZDw==
-X-Google-Smtp-Source: ABdhPJykbWJPG5N03i1GYewP/i/cBTHGqhNOfixMnBo6i2tP7QSuJaYZ1nvtJPsrNciqblBV72wkgDt1t7DOWW7riNI=
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr4741631wmc.176.1607448834084;
- Tue, 08 Dec 2020 09:33:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com>
- <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
- <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
-In-Reply-To: <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Tue, 8 Dec 2020 09:33:41 -0800
-Message-ID: <CALCETrWKSdro=0YkaamU-RXpa+2sPzBKct4SPi1SmgL2yS62AQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+        id S1730395AbgLHRf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:35:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726278AbgLHRf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:35:27 -0500
+Message-ID: <44b9e471f0d3b77ab0a2bf11024e2e72c1f1a80d.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607448885;
+        bh=bL6BKZCG/gd/rumYLQKb1gaCJvC399/JnNwCkUwnhjs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=IpCOujcF+tsbEZ8bz+6d1Lvi4lnn+oZC1kOtNK3E8iCvzOFS3qMh2CynseTzvZCXQ
+         vvWdcwrPqQ/CEIoynodNlKlSKJ808tqKpSrs8vTQyriV6gCVO6ZK331IdAwnpksSTB
+         TI6iMnA+R94WrM3U7HJxpisDuLJgMvQ845hm0QkUIO2cO9RHqUxpWRqtsUdh2qbkc3
+         L0COUwoVojVaxVvywogSt/FvwK2rVHH3v5n6zcD+I8LJobf6KMn1qJUkQ/h37WBd1C
+         mKXX1N1iN4kSROEQeLg55SRm8YM1UVQxJtNMdjatHXbx2t2XPxoymnyqRlKFEpxDbo
+         OsGBXStccSgBQ==
+Subject: Re: [PATCH v3 3/5] tracing: Update synth command errors
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 08 Dec 2020 11:34:41 -0600
+In-Reply-To: <20201207201304.627bfe48@oasis.local.home>
+References: <cover.1603723933.git.zanussi@kernel.org>
+         <8671adc7ce95ff1d5c7b037d371467e96f7f2914.1603723933.git.zanussi@kernel.org>
+         <20201207201304.627bfe48@oasis.local.home>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 8:26 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
->
-> On Tue, 2020-12-08 at 17:02 +0100, Thomas Gleixner wrote:
-> > On Tue, Dec 08 2020 at 16:50, Maxim Levitsky wrote:
-> > > On Mon, 2020-12-07 at 20:29 -0300, Marcelo Tosatti wrote:
-> > > > > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
-> > > > > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
-> > > > > +
-> > > > > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
-> > > > > +KVM will adjust the guest TSC value by the time that passed since the moment
-> > > > > +CLOCK_REALTIME timestamp was saved in the struct and current value of
-> > > > > +CLOCK_REALTIME, and set the guest's TSC to the new value.
-> > > >
-> > > > This introduces the wraparound bug in Linux timekeeping, doesnt it?
-> >
-> > Which bug?
-> >
-> > > It does.
-> > > Could you prepare a reproducer for this bug so I get a better idea about
-> > > what are you talking about?
-> > >
-> > > I assume you need very long (like days worth) jump to trigger this bug
-> > > and for such case we can either work around it in qemu / kernel
-> > > or fix it in the guest kernel and I strongly prefer the latter.
-> > >
-> > > Thomas, what do you think about it?
-> >
-> > For one I have no idea which bug you are talking about and if the bug is
-> > caused by the VMM then why would you "fix" it in the guest kernel.
->
-> The "bug" is that if VMM moves a hardware time counter (tsc or anything else)
-> forward by large enough value in one go,
-> then the guest kernel will supposingly have an overflow in the time code.
-> I don't consider this to be a buggy VMM behavior, but rather a kernel
-> bug that should be fixed (if this bug actually exists)
->
-> Purely in theory this can even happen on real hardware if for example SMM handler
-> blocks a CPU from running for a long duration, or hardware debugging
-> interface does, or some other hardware transparent sleep mechanism kicks in
-> and blocks a CPU from running.
-> (We do handle this gracefully for S3/S4)
+Hi Steve,
 
-IIRC we introduced mul_u64_u32_shift() for roughly this reason,but we
-don't seem to be using it in the relevant code paths.  We should be
-able to use the same basic math with wider intermediates to allow very
-large intervals between updates.
+On Mon, 2020-12-07 at 20:13 -0500, Steven Rostedt wrote:
+> On Mon, 26 Oct 2020 10:06:11 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Since array types are handled differently, errors referencing them
+> > also need to be handled differently.  Add and use a new
+> > INVALID_ARRAY_SPEC error.  Also add INVALID_CMD and INVALID_DYN_CMD
+> > to
+> > catch and display the correct form for badly-formed commands, which
+> > can also be used in place of CMD_INCOMPLETE, which is removed, and
+> > remove CMD_TOO_LONG, since it's no longer used.
+> > 
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> 
+> Unfortunately, this patch series breaks user space.
+> 
+> I already have scripts that do the histograms, and I'm sure others
+> may
+> have that too, and if we change how synthetic events are created, it
+> will break them.
+> 
+> What's the rationale for the new delimiters?
+> 
+
+The overall problem this is trying to fix is that it was probably a
+mistake to try to shoehorn the synthetic event parsing into what was
+available from  trace_run_command() and trace_parse_run_command(),
+which use argv_split() to do the command splitting, and which only
+splits on whitespace.  Whereas the synthetic events have a bit of a
+higher-level structure which is 'event field; field; field;...'
+
+So this patchset tries to remedy that - the first patch,
+(tracing/dynevent: Delegate parsing to create function) is from Masami,
+and makes it possible to share code between kprobe/uprobe and synthetic
+evnents, and to allow synthetic events to have their own higher-level
+parsing, which the next 2 patches do.
+
+The history in more detail:
+
+Initially the problem was to fix the errors mentioned by Masami in
+[1]. 
+
+Things like:
+
+  # echo myevent char str[];; int v >> synthetic_events
+
+which was identified as INVALID_TYPE where it should just be a void arg
+and
+
+  # echo mye;vent char str[] >> synthetic_events
+
+which was identified as BAD_NAME where it should have been an invalid
+command, etc.
+
+I suggested that the way to fix them was to consider semicolon as
+additional whitespace and the result was the patchset containing [2],
+which also explains the reasons for wanting to enforce semicolon
+grouping.
+
+Masami pointed out that it really wasn't correct to do it that way,
+and  the commands should be split out first at the higher level by
+semicolon and then further processed [3].
+
+Unfortunately, you're correct, if you have a script that creates a
+synthetic event without semicolons, this patchset will break it, as I
+myself found out and fixed in patch 4 ([PATCH v3 4/5] selftests/ftrace:
+Add synthetic event field separators) [4].
+
+So whereas before this would work, even though it shouldn't have in the
+first place:
+
+  # echo 'wakeup_latency  u64 lat pid_t pid char comm[16]' >
+synthetic_events
+
+it now has to be:
+
+  # echo 'wakeup_latency  u64 lat; pid_t pid; char comm[16]' >
+synthetic_events
+
+So yeah, this patchset fixes a set of parsing bugs for things that
+shouldn't have been accepted as valid, but shouldn't break things that
+are obviously valid.
+
+If it's too late to fix them, though, I guess we'll just have to live
+with them, or some other option?
+
+Tom
+
+[1] https://lore.kernel.org/lkml/20201014110636.139df7be275d40a23b523b84@kernel.org/
+[2] https://lore.kernel.org/lkml/e29c3ae1fc46892ec792d6f6f910f75d0e12584c.1602883818.git.zanussi@kernel.org/
+[3] https://lore.kernel.org/lkml/20201018232011.38e5da51f5cd8e73e6f529ee@kernel.org/
+[4] https://lore.kernel.org/lkml/75a2816b4001e04e7d60bcc87aa91477ad5d90b3.1603723933.git.zanussi@kernel.org/
+
+
+
+> -- Steve
+
