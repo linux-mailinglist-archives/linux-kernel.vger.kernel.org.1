@@ -2,54 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF5D2D36B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF6D2D36B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731474AbgLHXI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:08:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
+        id S1731612AbgLHXIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:08:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729455AbgLHXI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:08:28 -0500
-Subject: Re: [git pull] [brown paperbag] regression in sparc64 this cycle
+        id S1729455AbgLHXIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 18:08:32 -0500
+Date:   Tue, 8 Dec 2020 15:07:50 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607468868;
-        bh=is8cdR0jhTGNNjRII4bzkqzk9cgZ3sPHPILPJ7m4Jog=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=OEMs6LKrSZ++rkUF4dLD6mcn8ByGzZFWT8UF0eNF2PE5ZsqBTUyquJyid1h8TFbK8
-         9znIEKzOLCgeZKGe0qGgx0SLkelPnWFhS8xFIqV0v0nHohqQ7z+HamK1tMU4Zzsr1N
-         dsZfl5jhma9oz+BatF4D59vYJazQdUbLmbo8W2nc0xRFDl8CMBkhp+mh8Ip7xt0kuu
-         fQVPP+oxMGcJR9VSCQ4xCbA/XIGRO5Zi/ARxGcx9xdjWzvh5qmygzozdDaEYRByESa
-         4okB/ttZuGIwhe5jsDsk9GhLC9a6zhgD7wn2wtxVn+kf7OChp5SJECjXN+X82W0lhV
-         PnlgC49O+m6xw==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201208214823.GJ3579531@ZenIV.linux.org.uk>
-References: <20201208214823.GJ3579531@ZenIV.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201208214823.GJ3579531@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
-X-PR-Tracked-Commit-Id: 6220e48d9640538ff700f2e7d24c2f9277555fd6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c6f7e1510b872c281ff603a3108c084b6548d35c
-Message-Id: <160746886787.32435.14588690235445646420.pr-tracker-bot@kernel.org>
-Date:   Tue, 08 Dec 2020 23:07:47 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1607468872;
+        bh=nHqLjGa7WrRpzyyp54HyHUJiZs7T5K709l/dHW3MvIo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jiTAcSlBteT4edoQqPTbYzc9uZN9uGlK31Aq295tsGDqB7M+JyZSlP6IxdD6I5pP4
+         5Z/EGkrqlHe8qaG/mf4k1o8rCzZ+l4PNjF/S/ZxcG4ggilpGJsuCEX6k4UIjQEHNf0
+         CgF7KS6xiA1VOTHsOi9d8Y//20JXs4RGDEaSa06H6OKBSDaHUJs5vsl1SdcQfLKFls
+         l7SiKB+GkxgcuYSdCFE8rdiF+80vK0d2RwM7B0MpwQtOT51egmKfnfhctX6YyP+KpF
+         AMM7qf+hEoZsL+JsFThaMYWKdBabzmB9S4GVrkMiQWXjk4A2WCZnh106CdZ9xou7hC
+         SsE+EkqZQzRyw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
+ bandwidth requirement
+Message-ID: <20201208150750.75afc991@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <CAGngYiVp2u-A07rrkbeJCbqPW9efjkJUNC+NBxrtCM2JtXGpVA@mail.gmail.com>
+References: <20201206034408.31492-1-TheSven73@gmail.com>
+        <20201206034408.31492-2-TheSven73@gmail.com>
+        <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
+        <20201208225125.GA2602479@lunn.ch>
+        <CAGngYiVp2u-A07rrkbeJCbqPW9efjkJUNC+NBxrtCM2JtXGpVA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 8 Dec 2020 21:48:23 +0000:
+On Tue, 8 Dec 2020 18:02:30 -0500 Sven Van Asbroeck wrote:
+> On Tue, Dec 8, 2020 at 5:51 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> > > So I assumed that it's a PCIe dma bandwidth issue, but I could be wrong -
+> > > I didn't do any PCIe bandwidth measurements.  
+> >
+> > Sometimes it is actually cache operations which take all the
+> > time. This needs to invalidate the cache, so that when the memory is
+> > then accessed, it get fetched from RAM. On SMP machines, cache
+> > invalidation can be expensive, due to all the cross CPU operations.
+> > I've actually got better performance by building a UP kernel on some
+> > low core count ARM CPUs.
+> >
+> > There are some tricks which can be played. Do you actually need all
+> > 9K? Does the descriptor tell you actually how much is used? You can
+> > get a nice speed up if you just unmap 64 bytes for a TCP ACK, rather
+> > than the full 9K.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+Good point!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c6f7e1510b872c281ff603a3108c084b6548d35c
+> Thank you for the suggestion! The original driver developer chose 9K because
+> presumably that's the largest frame size supported by the chip.
+> 
+> Yes, I believe the chip will tell us via the descriptor how much it has
+> written, I would have to double-check. I was already looking for a
+> "trick" to transfer only the required number of bytes, but I was led to
+> believe that dma_map_single() and dma_unmap_single() always needed to match.
+> 
+> So:
+> dma_map_single(9K) followed by dma_unmap_single(9K) is correct, and
+> dma_map_single(9K) followed by dma_unmap_single(1500 bytes) means trouble.
+> 
+> How can we get around that?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+You can set DMA_ATTR_SKIP_CPU_SYNC and then sync only the part of the
+buffer that got written.
