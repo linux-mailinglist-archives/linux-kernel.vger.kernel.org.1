@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1FF2D281C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45E72D281E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgLHJtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728028AbgLHJtN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:49:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C952C061749;
-        Tue,  8 Dec 2020 01:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7bcvgstjEVppk7+MPyrtpEwXq1xns69yzQtxAznXpyE=; b=SkHw+uYjKNb2aRytJV+52kzv2l
-        MvuPXaK9BuESM9VjTmzXK7/dz2iUL0/CKuWMcKZ6ylR9V4qTU7kKLJA5oLvopX9zlQZ4lr/4q0pxn
-        pJ5DFi/Q9r5l3f8IE+PuhxpAgDXnh+rvAvTG3y8cWw1EoGb8l8jrm8Naru/+2I2BcKHaoig27oXck
-        b5//ZGMl6IejdckF35Y9xfmYGwR5VzWAxWNuFGEd8GaLJUYm5QLsYd/K0V235dnZSO3q0PLZd8f0n
-        huBpRfNObPAfLG2WG+A+Ez5TyuQpzHN9KZtrerHlyJ8KCFiD1PqDgzYQIE1W6V457XeIvQmtI4iQr
-        +aaB37sA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmZbQ-0002Bc-38; Tue, 08 Dec 2020 09:48:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728541AbgLHJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:49:53 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:60852 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727612AbgLHJtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:49:52 -0500
+Received: from zn.tnic (p200300ec2f0f0800de4a64cb7778f3c5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:de4a:64cb:7778:f3c5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91DA7304BAE;
-        Tue,  8 Dec 2020 10:48:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7B47720812B43; Tue,  8 Dec 2020 10:48:09 +0100 (CET)
-Date:   Tue, 8 Dec 2020 10:48:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201208094809.GT2414@hirez.programming.kicks-ass.net>
-References: <20201203171118.372391-1-mlevitsk@redhat.com>
- <20201203171118.372391-2-mlevitsk@redhat.com>
- <87a6uq9abf.fsf@nanos.tec.linutronix.de>
- <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
- <87im9dlpsw.fsf@vitty.brq.redhat.com>
- <875z5d5x9m.fsf@nanos.tec.linutronix.de>
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 206B41EC026D;
+        Tue,  8 Dec 2020 10:49:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607420951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=nHwrzM8sBYNzv3ZS/BVe63dW+mG8m9RUPLrJK5+MKCc=;
+        b=V4UeYHj/eosomKIA9BRFUbVJfw6zHLgZzMrF7YI5efUMT6fFPsA7WJ+GaTTxd1v5FuWVM8
+        anEiGoNi/O3FPInZWnkmxzB2yeYwXYuH7SI7HamwIaCZSfvEW7OnwEP5P9x9J7ISuanBCM
+        HKJFqjKTLP/83HQIS9uvXCiHr2NkjSc=
+Date:   Tue, 8 Dec 2020 10:49:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        james.morse@arm.com, hpa@zytor.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] x86/resctrl: Move setting task's active CPU in a
+ mask into helpers
+Message-ID: <20201208094907.GB27920@zn.tnic>
+References: <cover.1607036601.git.reinette.chatre@intel.com>
+ <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
+ <20201207182912.GF20489@zn.tnic>
+ <db6bea7e-b60b-2859-aa35-c3d2d5356eaa@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <875z5d5x9m.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <db6bea7e-b60b-2859-aa35-c3d2d5356eaa@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:41:41PM +0100, Thomas Gleixner wrote:
+On Mon, Dec 07, 2020 at 01:24:51PM -0800, Reinette Chatre wrote:
+> How about:
+> "Move the setting of the CPU on which a task is running in a CPU mask into a
+> couple of helpers.
+> 
+> There is no functional change. This is a preparatory change for the fix in
+> the following patch from where the Fixes tag is copied."
 
-> Right this happens still occasionally, but for quite some time this is
-> 100% firmware sillyness and not a fundamental property of the hardware
-> anymore.
+Almost. Just not call it a "following patch" because once this is
+applied, the following one might be a different one depending on the
+ordering a git command has requested. So a "later patch" would be
+probably better.
 
-Ever since Nehalem (2008) TSC is synchronized on <= 2 sockets, and any
-observed deviation is firmware fail. I don't remember exactly where 4
-socket and up got reliable.
+> Correct. I will add it. The addition to the commit message above aims to
+> explain a Fixes tag to a patch with no functional changes.
 
-(there's the physical hotplug case, but let's not make this complicated)
+Yes but you need to tell the stable people somehow that this one is a
+prerequisite and that they should pick it up too.
 
-AMD has had Constant TSC since Barcelona which is roughly the same
-timeframe IIRC.
+Unless you can reorg your code this way that you don't need patch 1...
 
-So basically every TSC fail in the last decase is due to firmware being
-shit.
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
