@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13A92D2CD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9D32D2CDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgLHOO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:14:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbgLHOO1 (ORCPT
+        id S1729635AbgLHOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:15:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42331 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729379AbgLHOPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:14:27 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BB7C061749;
-        Tue,  8 Dec 2020 06:13:47 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id c7so17719327edv.6;
-        Tue, 08 Dec 2020 06:13:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eSPfpQbfD8TtnWjYs+6jj8qzhsWODAim1cckJ/MJTu0=;
-        b=pMxp4TNM4M+N05Yx9TQgHM79zWQBDbpvpnmuI555O1zxarA53NmboJkgdjPiAvm2rk
-         tA5Nxy3pEFTL8n62f5NDpQA2anFbpBzV6UuZnAmMdt23xIg1F4mQWZtvO0Ea4oWZhiqR
-         Mk788rhqKcb8Z+qCwERSPi7jnRwjPYRDARTP9lDWSyID9m+1ZcJ8ccjghI6h6AZrh5C3
-         2AdQvAAw5BgPumeEHZboIkxXk2yESbZyjnBCrArWoBb7TIKKaC+w3ANmYjV5CD8tdlck
-         yGAsthsXggHQnxbc/Why3OhoTu2e/oBSBGMEEPYd2fLqeayYYbcl1HqO0wDamcPNgkdF
-         OaGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eSPfpQbfD8TtnWjYs+6jj8qzhsWODAim1cckJ/MJTu0=;
-        b=Iq2Jnh3FvMXcotoSClQ3hLSw3Dwy34Lys/OGAEebO8dHjNoSuVgb1eRR9P38Bw2wub
-         R1yKWs681GCHNrF7CEj5+sCLuW60QEbaD2QMEwZUT/BAFToxpVZ7oj9GKqISazbqC+Mp
-         EmHrEUggY7s/UVRFDKBrp5vDUesmOg5istNKCQftQ8lQAcmkLCnQfNSUWibxN+i+SuXz
-         tWoLIzRFZs9n2KUUcJwke6saDRFfS+EUwijzhNQcnH88zhXtjrsGJSgZa8SIojihW/cV
-         ExbcOVdl6LQHLhciSBFieGMUeFSn3nWOo7q7ccSfmu7yQtUTd78tt3E2suCijaDojsRU
-         8jMg==
-X-Gm-Message-State: AOAM533gFVzl6m6pyfU+gxKO5ey7GbW45SKMCYCPb/EAo2CiST9j6Qyx
-        NoaT2V+FzwTY+nHhglv6GpE=
-X-Google-Smtp-Source: ABdhPJxT3MS0tLQzrz5zGTrmxsemf1EdNibb6+Ece9/iVj28PTNygmtdP13l0xPVSWG+mugPOMO4PA==
-X-Received: by 2002:a50:fb1a:: with SMTP id d26mr25055415edq.101.1607436825849;
-        Tue, 08 Dec 2020 06:13:45 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id s5sm15577093eju.98.2020.12.08.06.13.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 06:13:45 -0800 (PST)
-Message-ID: <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Re-enable WriteBooster after device
- reset
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Date:   Tue, 08 Dec 2020 15:13:43 +0100
-In-Reply-To: <20201208135635.15326-2-stanley.chu@mediatek.com>
-References: <20201208135635.15326-1-stanley.chu@mediatek.com>
-         <20201208135635.15326-2-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 8 Dec 2020 09:15:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607436837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tffr6g9iDgmcI1vdIiaVq+38gJQDylZk+4muqW+tsNE=;
+        b=PYPRxxRSdfplv5X8EEkbvHRzLxpQozQ/FPoppOBP5D/81FAR9/eUOu/c4Lv9CYnt/9C2RE
+        V6FNERbX9+IM1sVOntnpE99gUw0o4YBjSDARTrHNmW2SMJiTl8qQBkyBnX3iet6LZ6ql56
+        +w/v5SuFcWqzGmj2PuGmBVbGts7Q2iM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-_6Jn5BKhNzC6LVuO_YUIoQ-1; Tue, 08 Dec 2020 09:13:53 -0500
+X-MC-Unique: _6Jn5BKhNzC6LVuO_YUIoQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DADC19611AE;
+        Tue,  8 Dec 2020 14:13:51 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E13960BE2;
+        Tue,  8 Dec 2020 14:13:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAMj1kXE+oi2Q7OE8o0xP4XabZt-y61NMG3Q3eyRzSG6cG9i4Kg@mail.gmail.com>
+References: <CAMj1kXE+oi2Q7OE8o0xP4XabZt-y61NMG3Q3eyRzSG6cG9i4Kg@mail.gmail.com> <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk> <118876.1607093975@warthog.procyon.org.uk> <955415.1607433903@warthog.procyon.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     dhowells@redhat.com, Chuck Lever <chuck.lever@oracle.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org
+Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <960648.1607436828.1@warthog.procyon.org.uk>
+Date:   Tue, 08 Dec 2020 14:13:48 +0000
+Message-ID: <960649.1607436828@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 21:56 +0800, Stanley Chu wrote:
-> index 08c8a591e6b0..36d367eb8139 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -1221,8 +1221,13 @@ static inline void
-> ufshcd_vops_device_reset(struct ufs_hba *hba)
->         if (hba->vops && hba->vops->device_reset) {
->                 int err = hba->vops->device_reset(hba);
->  
-> -               if (!err)
-> +               if (!err) {
->                         ufshcd_set_ufs_dev_active(hba);
-> +                       if (ufshcd_is_wb_allowed(hba)) {
-> +                               hba->wb_enabled = false;
-> +                               hba->wb_buf_flush_enabled = false;
-> +                       }
-> +               }
+Ard Biesheuvel <ardb@kernel.org> wrote:
 
-Stanley,
-how do you think group wb_buf_flush_enabled and wb_enabled to the
-dev_info, since they are UFS device attributes. means they are set only
-when UFS device flags being set.
+> Apparently, it is permitted for gss_krb5_cts_crypt() to do a
+> kmalloc(GFP_NOFS) in the context from where gss_krb5_aes_encrypt() is
+> being invoked, and so I don't see why it wouldn't be possible to
+> simply kmalloc() a scatterlist[] of the appropriate size, populate it
+> with all the pages, bufs and whatever else gets passed into the
+> skcipher, and pass it into the skcipher in one go.
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+I never said it wasn't possible.  But doing a pair of order-1 allocations from
+there might have a significant detrimental effect on performance - in which
+case Trond and co. will say "no".
+
+Remember: to crypt 1MiB of data on a 64-bit machine requires 2 x minimum 8KiB
+scatterlist arrays.  That's assuming the pages in the middle are contiguous,
+which might not be the case for a direct I/O read/write.  So for the DIO case,
+it could be involve an order-2 allocation (or chaining of single pages).
+
+David
 
