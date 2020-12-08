@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2402D366E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 030C02D3679
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730552AbgLHWrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
+        id S1731343AbgLHWvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgLHWru (ORCPT
+        with ESMTP id S1728147AbgLHWvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:47:50 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E187C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:47:04 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id y8so90164plp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:47:03 -0800 (PST)
+        Tue, 8 Dec 2020 17:51:37 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1299C0613CF;
+        Tue,  8 Dec 2020 14:50:57 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t37so13598616pga.7;
+        Tue, 08 Dec 2020 14:50:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NhoPWANOuKk74WKFMhZT6qq1p5q2Lo8ht3SDLB7i7r8=;
-        b=vqG3vMEW30YVZkZ3EhpYrXQJPqrDz8uFRuNK8rsW5VbhyJNrLLjnQlQj752zlXRn6b
-         sf7uM8ikLy+9cdeE86GdCCf+vA6H3d2qzpFEvcVhvNBmRj3wC3VPSMIKRltjB+UWokxm
-         uKRgWZzRMB7GDbpDCcYuzsftrmdVLz1nxj24TAETvpHNx96kbNYlMEfXVLSIcWFOk2Lj
-         mXacmgDd92ys9D/4TPewM9gfblhCL9lZoVU+rVsU6JLpZJ5GIjnw8a97vYkJmmghUoWW
-         R4cOryf2iWw0fV2+efNufuUtQUY8k9k9DPoGBTWJ+g11HwB3jW1Nhk84wYrW6WaEAQzH
-         XqYw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=czPRgCP4Rbvj8nQm8kV+1nNwcp4eHqLkAIVxs9WjDpk=;
+        b=VXzD6wwNroEMOtTsjKAFrXV3Ykmq11SgT6QT0T+yMgGu3gUnx9joMIFzmJ0oQMo7TD
+         Y5zrQy4AqY3a4iWw4A9W6JapbweHMdHprj+tNKbhbmUVCwwVXDTDKbBJ+IqVFXL34dCv
+         +q5rmn7SjQ77tXvhz0niCCqULV+ynvw+ss4Pvqswb/ABCLgp/VFdbUlfvyO5umzwfebV
+         J0YMrDVHBQI7WG0314/DMIqNeyZ4oGKFvsOAdEE2UMaSxqZtwjTWsRFpmI3INj3VU9ok
+         3KxfDDr/DC5KbpF6lVuHTb1/R6MS3Ow6n6n+iRYSrSPyeO8iRxhr19mR44oDzZdN00yH
+         ncEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NhoPWANOuKk74WKFMhZT6qq1p5q2Lo8ht3SDLB7i7r8=;
-        b=CrmgtFhY+XH9Q6gedps/uboOSGnjCOovYV4PgYKD1d/GEUOPX+Z/xZka1OYmKvK9Pn
-         74HP8V7ovSfargnpddxEGSQU1jLVqIWEgTV71qtky+9BF0fRUe/i8+0H9jfoMxoNWOw6
-         2Hv6GfEIdvyyg9fZmAfLgsmhwVAdsHAC5Ko06FMyndYF38w/Mz9FPC9zjbg/TbPOsp4d
-         y8/nKfUuKAuN1QO2ATeJsn6Q004ZYi9h995uz8wH24F9i9M63OMHwzLZeK5ymyC9ftxq
-         KdAj9l3o7Os2XMJN8lCMoKbJVFpa0XoZFmy/6J4XCL1McY36Tk/SzJrQVxyF3UVmJysq
-         bv7g==
-X-Gm-Message-State: AOAM531CPpNf/C0welAAMsmKM62xsEz5iJLZL7VzlR4KgBa1zhLQZdox
-        Eb2n963+ipLCx5OUQgFpuRLHPw==
-X-Google-Smtp-Source: ABdhPJyTNwc9ppFYE5Krbe4DW1eOX3XMoDFJAurWfPSZUtamJFI1LgNhldLKQx43nqRXajRYEe4NeA==
-X-Received: by 2002:a17:902:a9c1:b029:da:8227:65f7 with SMTP id b1-20020a170902a9c1b02900da822765f7mr221417plr.49.1607467623485;
-        Tue, 08 Dec 2020 14:47:03 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id b4sm192701pju.33.2020.12.08.14.47.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 14:47:02 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: Re: problem booting 5.10
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
- <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
- <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
- <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
- <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
- <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
- <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
-Message-ID: <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
-Date:   Tue, 8 Dec 2020 15:47:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=czPRgCP4Rbvj8nQm8kV+1nNwcp4eHqLkAIVxs9WjDpk=;
+        b=A1jSbT1UUKxVjdz62X5bXXZpomzoByDv3zs9lXxjqAzqKsJ2qoZl7hA/2EdiGNjlhI
+         afsVmh1WEOf7SgOHoHmaV+2f6gWJ9pq0jakyyhaDUgaGVibNBk3Hv0blxG20mrC2z9nb
+         R/EIjoICeWVtN3eH4hBUAflIMsz+vVIbgNh1xCzwcD0RoaduyYuKgOYj0TU0jrpCjDqj
+         4Gz447Vxv1xyMRp9bO3ofUH8RKt3wCpOqO8revQQIizydcY2c3/JmUYvhRTdnEhQhDP8
+         0LYIccRsoaDSUuzHMFyi+7ERiYH96Ljg8ax+M/+gQDQCQ3OWgIWSvtXqBSABZvk+WyO0
+         NDsQ==
+X-Gm-Message-State: AOAM533dbHZD0Sdpse3aYvbwiGSI7wy+B0vNfmnVRvXqhob0eexCDnFj
+        DyH2SVqlVnr1csmsDxXfk6E=
+X-Google-Smtp-Source: ABdhPJzmnlwG1nSzxgXgEJFyCnxe2OHLK9eZDpCtUOcjYeK4XTm8lup1A/VwsyO5pFxGEDNEPMP/oQ==
+X-Received: by 2002:a63:1c53:: with SMTP id c19mr261553pgm.392.1607467857445;
+        Tue, 08 Dec 2020 14:50:57 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:55ef:9b8b:7388:ced5])
+        by smtp.gmail.com with ESMTPSA id dw16sm194135pjb.35.2020.12.08.14.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 14:50:56 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next] net: lapbether: Consider it successful if (dis)connecting when already (dis)connected
+Date:   Tue,  8 Dec 2020 14:50:44 -0800
+Message-Id: <20201208225044.5522-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:42 PM Julia Lawall <julia.lawall@inria.fr> wrote:
-> On Tue, 8 Dec 2020, Linus Torvalds wrote:
->
-> > On Tue, Dec 8, 2020 at 1:14 PM John Garry <john.garry@huawei.com> wrote:
-> > >
-> > > JFYI, About "scsi: megaraid_sas: Added support for shared host tagset
-> > > for cpuhotplug", we did have an issue reported here already from Qian
-> > > about a boot hang:
-> >
-> > Hmm. That does sound like it might be it.
-> >
-> > At this point, the patches from Ming Lei seem to be a riskier approach
-> > than perhaps just reverting the megaraid_sas change?
-> >
-> > It looks like those patches are queued up for 5.11, and we could
-> > re-apply the megaraid_sas change then?
-> >
-> > Jens, comments?
-> >
-> > And Julia - if it's that thing, then a
-> >
-> >     git revert 103fbf8e4020
-> >
-> > would be the thing to test.
->
-> This solves the problem.  Starting from 5.10-rc7 and doing this
-> revert, I get a kernel that boots.
+When the upper layer instruct us to connect (or disconnect), but we have
+already connected (or disconnected), consider this operation successful
+rather than failed.
 
-Thanks for testing! Linus, do you just want to revert this, or do you
-want me to queue it up?
+This can help the upper layer to correct its record about whether we are
+connected or not here in layer 2.
 
+The upper layer may not have the correct information about whether we are
+connected or not. This can happen if this driver has already been running
+for some time when the "x25" module gets loaded.
+
+Another X.25 driver (hdlc_x25) is already doing this, so we make this
+driver do this, too.
+
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/lapbether.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index b6be2454b8bd..605fe555e157 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -55,6 +55,9 @@ struct lapbethdev {
+ 
+ static LIST_HEAD(lapbeth_devices);
+ 
++static void lapbeth_connected(struct net_device *dev, int reason);
++static void lapbeth_disconnected(struct net_device *dev, int reason);
++
+ /* ------------------------------------------------------------------------ */
+ 
+ /*
+@@ -167,11 +170,17 @@ static netdev_tx_t lapbeth_xmit(struct sk_buff *skb,
+ 	case X25_IFACE_DATA:
+ 		break;
+ 	case X25_IFACE_CONNECT:
+-		if ((err = lapb_connect_request(dev)) != LAPB_OK)
++		err = lapb_connect_request(dev);
++		if (err == LAPB_CONNECTED)
++			lapbeth_connected(dev, LAPB_OK);
++		else if (err != LAPB_OK)
+ 			pr_err("lapb_connect_request error: %d\n", err);
+ 		goto drop;
+ 	case X25_IFACE_DISCONNECT:
+-		if ((err = lapb_disconnect_request(dev)) != LAPB_OK)
++		err = lapb_disconnect_request(dev);
++		if (err == LAPB_NOTCONNECTED)
++			lapbeth_disconnected(dev, LAPB_OK);
++		else if (err != LAPB_OK)
+ 			pr_err("lapb_disconnect_request err: %d\n", err);
+ 		fallthrough;
+ 	default:
 -- 
-Jens Axboe
+2.27.0
 
