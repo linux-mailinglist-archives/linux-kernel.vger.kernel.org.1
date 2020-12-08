@@ -2,121 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1782D2454
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669EC2D2457
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgLHH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgLHH0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:26:54 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B488CC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:26:14 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id q3so11420301pgr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:26:14 -0800 (PST)
+        id S1727258AbgLHH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:27:56 -0500
+Received: from mail-dm6nam12on2078.outbound.protection.outlook.com ([40.107.243.78]:54855
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725927AbgLHH14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:27:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mu9fSHd1QW1vU5KZui2XtpTF8BPR+oMO2dFdcixIASAB9hYEXVOniRNRHLlM1zp4UVP2I7AZaK6rizNZTEOiQHvsk4l7adKHCV86xu1DWPHrnzDFiGGQrXxZ2zd8GDhbV9+eNuyHx6SS/jV5tfsmoKAxqPvBgxgfN7HvI6ogXUB6MiK+7cNLbMhCrEZRZJrE34Pk87KJ1jObRlG4Yhs2TF+1xVasblMdNqsmsWE/VBMmNIx1AXQzk0Il3wzDe8KzL31GH9sdp9eF922TO/Dzpo7Wo9rKmFvv/NB+WLKFEcvoLHYdzAKp31UM66cicvlq78pEzRX0LBCflAQZz2BV/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xIwotGCQQjejC7YTj4qfHU3GmsNZ0GSFnsEvSnJyup0=;
+ b=AZYm9XWOqvPMTFgHYdLEaPwrj3VCWhWUU6fNgZLkXafVSeQqa9j5iusLRZ0MLkP9mPj4IYnjTZiEWD/ckZL0mZUuq/MonyVLJSu5CU/UQYiMk4UiTG1tjGaMMvXV0KR4FQ7Ng6vJo4YwJvpVFbIqDeWaReRnUnpnn4g8BkP1lk8nKZIV4PFBPtunDUuo+55o+KOs+M0sB4jVQKklcWSXMZjb6YXUHJdb5OvtmvneHLO2zAe8SRwnz3KoPs4vL2yO3uY9MFy//h+RfbR6Y5To/QZoTn8l1pNqHv2DwUAvfOCReWbwWPHBjkC/J5IzlC3C+sNiqC7owNCwdBKolcvKJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xIO9JpAUTkGihgKfEbKVJG87paWf400pgZOMT6qA8FE=;
-        b=kqnmJKaFMQuWu6HFIqgafDBOiqqHESjea4lcVKgJ0l9uGDpUCLpa8XvTbA6HbFvE4p
-         MNG602dmJPD4fkUykE1mNYHhG/HbZIzwHJ2ugWFjryaw+RgY60Z64rFI39/UKaUd0P/E
-         N5c7APiqSA3IjR60Ie0bEKUZTwI8uSatcRxFIVoSGkjp3f65UUjSh5TbJuVyziyTZR/Z
-         wc1mCMGP0v1lPFNZy3R+IybyDB2hIrKyY2NKuFmiWURyl3PoHWIQv4Nowm5tukQlF2VA
-         0QllOhEqjJOs8py44htGROATBKVmIrQc9vdFIri1ZAGQylv8pdEXyvDpVklXOMykBWb3
-         hPFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xIO9JpAUTkGihgKfEbKVJG87paWf400pgZOMT6qA8FE=;
-        b=WjVMRQxv0tDkTEiARIl3SJPY3ohc6BB3pOKVXzRX9U+u2ElAOujWQMeHeUdsBOTSqW
-         FNQtkzaP66hhU1LRkEVUSGF3OBEtTYmdMhV5EIyeW0OawZlyfPYTDBzhsH0Ht1fPhdmT
-         HdCVoMyq49Tr0uuk76q6Mw+zSPQ87y6/lQFDdDTZTZUp4EtSwoQOxLAMG9bKEvzFxHqu
-         AlNjgJqpT2kP1wFy65XjKs8pXL2COJ+skYtOzEZ2e4QEbE8MuhfZ05AlDgSNbVTvW4U5
-         OwrIn5olgdhToZIawZaw4K0CSzNhnwpLgHuNG8H6xOI7ptmf/4Ghfs1ZY4a3T0MlY/ET
-         gr5w==
-X-Gm-Message-State: AOAM533JW3F6MSy9loIJgBxZVa0KtquqUC6d7i/2IAgX0wiLehDvRZnl
-        zBDIfa6SHrNg6+SUnY3Oa7DTyw==
-X-Google-Smtp-Source: ABdhPJygsLIE8kXIDMBPSc4wcTQOzDstg4xV38cF/UKmPk0Qdzt8EiD+wh7Q4PaOhB+xCiQMoWO2Ag==
-X-Received: by 2002:a65:4544:: with SMTP id x4mr22229571pgr.183.1607412374264;
-        Mon, 07 Dec 2020 23:26:14 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id l66sm14409613pgl.24.2020.12.07.23.26.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Dec 2020 23:26:13 -0800 (PST)
-Date:   Tue, 8 Dec 2020 12:56:11 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
- EM
-Message-ID: <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
-References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
- <20201202172356.10508-4-nicola.mazzucato@arm.com>
- <20201208055053.kggxw26kxtnpneua@vireshk-i7>
- <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xIwotGCQQjejC7YTj4qfHU3GmsNZ0GSFnsEvSnJyup0=;
+ b=Tuc/xTZ9J1xZSCpxyqZtrq+YKWFfBAo3LDgHkDu6tgpFv2ug/kTiaHhEJChPNi0H47Ib/dkJld7jpTr9t5QpMmWBYp1NXO5mLSTL9p7mqUsTOpvrR1Kw5OhdvV+WopJnK4Z5RiZci1TKo+zf7GIUemdzgyuWE1Ju00SJF1d2cK8=
+Received: from SN6PR08CA0028.namprd08.prod.outlook.com (2603:10b6:805:66::41)
+ by SN6PR02MB4781.namprd02.prod.outlook.com (2603:10b6:805:9b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
+ 2020 07:27:02 +0000
+Received: from SN1NAM02FT062.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:805:66:cafe::37) by SN6PR08CA0028.outlook.office365.com
+ (2603:10b6:805:66::41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
+ Transport; Tue, 8 Dec 2020 07:27:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT062.mail.protection.outlook.com (10.152.72.208) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3632.21 via Frontend Transport; Tue, 8 Dec 2020 07:27:02 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 7 Dec 2020 23:26:46 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 7 Dec 2020 23:26:46 -0800
+Envelope-to: git@xilinx.com,
+ michal.simek@xilinx.com,
+ rajan.vaja@xilinx.com,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ robh+dt@kernel.org,
+ krzk@kernel.org,
+ monstr@monstr.eu,
+ linux-kernel@vger.kernel.org,
+ laurent.pinchart@ideasonboard.com
+Received: from [172.30.17.109] (port=42068)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kmXOX-00032f-OU; Mon, 07 Dec 2020 23:26:45 -0800
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <git@xilinx.com>, Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <cover.1606917949.git.michal.simek@xilinx.com>
+ <272e23e0123f02c559bfa4ada9de73eb197aced8.1606917949.git.michal.simek@xilinx.com>
+ <X81fXtxvsc7KE7cK@pendragon.ideasonboard.com>
+ <99008851-6c12-3acc-6530-25af08429ff5@xilinx.com>
+ <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH 06/12] arm64: dts: zynqmp: Add label for zynqmp_ipi
+Message-ID: <4010c2d4-bee1-827b-1079-1f1bbf1f10d1@xilinx.com>
+Date:   Tue, 8 Dec 2020 08:26:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3e62111-2264-4241-960f-08d89b4aa832
+X-MS-TrafficTypeDiagnostic: SN6PR02MB4781:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <SN6PR02MB4781C08AEABD7B62F16F443FC6CD0@SN6PR02MB4781.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a8xncvd4SEDzVesXCYyIFaqHX8m6mQDARQA51XGddo4NwSKxPEOZfdNqxTR8cMdLBYieCRUD+0gj5XFH9S4Ff9KwQ3eJc7pWn27TqLQ6Q1rMc/MN2afT0XoXr/L9eiIgVAeBxXAJM9DbBKMl7QzYKwE/foEhq5dncicxRvnKz5lKy+P2iZ461jH+tgZNoZOSofkTvzzWc9G5XHHFLy5ABnN6BxJkeg7bkvWpbWcVjYCeYlE2+eUf/iI/5WTJQ0SccCk/REvvz2kOOK+/RhCVaC6YnQDD1FF0ZVMy8wIzFRdSeFfcJha4qhevO6Fl3FUFXu4UF0prb6vSm96bWTCiMmuYwzbjRzmah4xQX3NosaCq72uuoPWH4JbToBArXKXkolk7j4TvsDC+lBa6jMwZpC+Fgl3vLRmQrtLRHTnoU/5ArUuVXUxWyKKTslOVROz8VTmYD6SYm3noW/zBYYUijQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(46966005)(70206006)(36756003)(83380400001)(8936002)(6666004)(70586007)(4326008)(26005)(31686004)(5660300002)(82740400003)(426003)(44832011)(8676002)(478600001)(2616005)(336012)(7636003)(36906005)(9786002)(2906002)(47076004)(356005)(316002)(110136005)(31696002)(186003)(82310400003)(54906003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 07:27:02.3888
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3e62111-2264-4241-960f-08d89b4aa832
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT062.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4781
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-12-20, 07:22, Nicola Mazzucato wrote:
-> On 12/8/20 5:50 AM, Viresh Kumar wrote:
-> > On 02-12-20, 17:23, Nicola Mazzucato wrote:
-> >>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> >>  	if (nr_opp <= 0) {
-> >> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
-> >> -		ret = -EPROBE_DEFER;
-> >> -		goto out_free_opp;
-> >> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> >> +		if (ret) {
-> >> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
-> >> +			goto out_free_cpumask;
-> >> +		}
-> >> +
-> >> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
-> >> +		if (ret) {
-> >> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> >> +				__func__, ret);
-> >> +			goto out_free_cpumask;
-> >> +		}
-> >> +
-> > 
-> > Why do we need to call above two after calling
-> > dev_pm_opp_get_opp_count() ?
+Hi Laurent,
+
+On 07. 12. 20 23:16, Laurent Pinchart wrote:
+> Hi Michal,
 > 
-> Sorry, I am not sure to understand your question here. If there are no opps for
-> a device we want to add them to it
-
-Earlier we used to call handle->perf_ops->device_opps_add() and
-dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
-the order changed now ?
-
-> otherwise no need as they would be duplicated.
-
-I am not sure why they would be duplicated in your case. I though
-device_opps_add() is responsible for dynamically adding the OPPs here.
-
-> > And we don't check the return value of
-> > the below call anymore, moreover we have to call it twice now.
+> On Mon, Dec 07, 2020 at 10:39:25AM +0100, Michal Simek wrote:
+>> On 06. 12. 20 23:46, Laurent Pinchart wrote:
+>>> On Wed, Dec 02, 2020 at 03:06:05PM +0100, Michal Simek wrote:
+>>>> Add label which is used by bootloader for adding bootloader specific flag.
+>>>>
+>>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+>>>> ---
+>>>>
+>>>> U-Boot needs to add u-boot,dm-pre-reloc; property
+>>>
+>>> I'm not entirely sure what best practice rules are in this area, but
+>>> shouldn't U-Boot locate the node by name instead of label ?
+>>
+>> Labels are not listed in dt binding and there are two approaches how to
+>> reference nodes. Via full path with node name or via labels.
+>> I do normally use labels which are much simple.
 > 
-> This second get_opp_count is required such that we register em with the correct
-> opp number after having added them. Without this the opp_count would not be correct.
+> Note that labels require the DTB to be compiled with the -@ option,
+> otherwise they're not present in the binary.
 
-What if the count is still 0 ? What about deferred probe we were doing earlier ?
+U-Boot is using different concept. You can see that there are a lot of
+-u-boot.dtsi files in dts folders. These are automatically included to
+DTS before DTC is called. It means you don't need to build overlay to
+get merged.
 
--- 
-viresh
+
+> 
+>> And also if you take a look how dtb looks like (convert back to dts) you
+>> can see that for example aliases are using full path (just &label) but
+>> clocks/gic which is the part of <> is handled via phandles as numbers.
+>>
+>> And labels names can vary and shouldn't be the part of binding doc as
+>> far as I know. But I can be wrong of course.
+> 
+> The DT bindings should document the interface with the operating system,
+> and if applicable, the boot loader. If the boot loader requires a
+> particular label, then it becomes part of the ABI, and I think it should
+> be documented in the bindings.
+
+We have been discussing with Rob some month ago but didn't have a time
+to do step further. Just keep it short Rob was ok to keep bootloader
+binding inside Linux repo.
+
+There is no hardcoding for a particular name. There is just a need to
+have any label. U-Boot needs to have one property(e.g.
+u-boot,dm-pre-reloc;) just to do early allocation.
+The name is just reference and none is really looking for it. It is just
+a way how to include it in much easier way.
+
+Thanks,
+Michal
+
