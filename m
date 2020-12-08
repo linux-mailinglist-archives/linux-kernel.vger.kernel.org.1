@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935312D3580
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B64C2D3587
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729302AbgLHVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:43:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgLHVnR (ORCPT
+        id S1729955AbgLHVql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:46:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28158 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725874AbgLHVqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:43:17 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100F7C0613CF;
-        Tue,  8 Dec 2020 13:42:37 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id dk8so16277770edb.1;
-        Tue, 08 Dec 2020 13:42:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h4DTYQeYJg/FEdSffrAfQrBpakqJmGcXZl/saAgMsOQ=;
-        b=stfm1gSfOfW8hHFXQ8m4sFhxzfgIuQ/abOjFm1uASl+qgNli4eT+noBozuz6JdOAIF
-         TdPIQCxFFp4O9qW7trBdflCeYa+QZT9JKmpoPYx0SmWbpQAclCusAFM+ZlSNPYZSh3K2
-         wGnjjTz0WIZMtahb0/yRirP2p+d8HLbd2if5xi6fxf0xvP/RySVQo2N6bNtrsKcuT3GH
-         GAIK4fL6uTtSAPua56csAIYssOCmwq+vW5iWEhVPlZEW+szhQCWnJEBDg3No1A/RRrAa
-         f4z8tkitbfrlO2rROm+TqqAoIJKMO93Rj0MhTvvQqoRn+n/JNl0MYOLk8a6ffrCR7jkF
-         YyZQ==
+        Tue, 8 Dec 2020 16:46:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607463913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+efrBz8AmXzGUD15XyQRufBjSK+9yNQ71jf2nuJyarI=;
+        b=BI210s679FMc+mNO/1OtYor4b29rrx9Tb2MkB04aUQ1zb+tFrmKid/sZTS4LUiSNwjjjBr
+        /l9XrzwEm1Thl/A7DWc/rd6NxrsTJ1eeYXWpEU3gt7+Shjfn7dNYUQmykrDZxvX55pGVDC
+        sk+ZaNS1kSSFEgyAsrsJzkU4Iolm4wY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-H1KRSczlM5uRerJ57jIJkQ-1; Tue, 08 Dec 2020 16:45:11 -0500
+X-MC-Unique: H1KRSczlM5uRerJ57jIJkQ-1
+Received: by mail-wr1-f72.google.com with SMTP id r8so4533904wro.22
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:45:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h4DTYQeYJg/FEdSffrAfQrBpakqJmGcXZl/saAgMsOQ=;
-        b=eFDjHRsQKchTi/zz0sC56v1xlTysnOXY4uV8ZvgHsuuMdD4efkmdvqCGnQBgtR/RUe
-         TBARcrJcqPp8an/oBMW17inZM1An5/k7OxrZddkq0LG7YDXYbvoiqXPlXM2/jXe8pMVo
-         gC/gR9O+p7dJCxPJdzWgawbuCe3JejNmlLZDqBkFDMzxORF8B/l4zvJauZBPRdbGQ2ph
-         gNIXeT2OwyzBRUxdXY0InyTXlHQ1sx4Z3gT0c09VwrQMprfIyJ7hizq7CjN6tuTpPD8O
-         J5dFDeJAIuFw5Ef1WaVo2IW7OyObzo4snJYfq1ilRDJ97dIzrH1x3eSvOxCu2tkWmRvL
-         D9eQ==
-X-Gm-Message-State: AOAM5305gO7lrk0cm0rwlAroXlgpyMfyVzcq3ySj4hfGnX78l73JdlcM
-        8soWsEHQ3qpdNVQ4YRxij99GSfZEFYY=
-X-Google-Smtp-Source: ABdhPJyk9Orzh1gsZjqIsfwIJ6a7JF3GX86Jsk2PJaT+iQ3VuRy6mAr+7NsFCGVHEF+AwL3G/jQw8g==
-X-Received: by 2002:a50:ccdb:: with SMTP id b27mr23337edj.20.1607463755817;
-        Tue, 08 Dec 2020 13:42:35 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id c25sm16974995ejx.39.2020.12.08.13.42.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 13:42:35 -0800 (PST)
-Message-ID: <ff0d08c891d22ddcd09edb87b82881eeb6cee19f.camel@gmail.com>
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Date:   Tue, 08 Dec 2020 22:42:34 +0100
-In-Reply-To: <DM6PR04MB65757385EE651DBAAC468BD1FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
-         <20201206164226.6595-4-huobean@gmail.com>
-         <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-         <c4333f6ad6172d991f6afdaea3698c75fb0f7c36.camel@gmail.com>
-         <DM6PR04MB65757385EE651DBAAC468BD1FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+efrBz8AmXzGUD15XyQRufBjSK+9yNQ71jf2nuJyarI=;
+        b=RtfGG8VgT+QU25TOIV1Vs9qW1Y/xpQnAvm0GEde79oa6UW3X1kP3V64aqwg0YY/xNk
+         kTm1OqyKhmPxwm6Cltwjc9DCya3I7y1a8sGW2HF/emmmmqUHOCqKzVEAoiY0jxlUetAw
+         5YUs8DpfEW6GaheC9WN0SXwCKJa115lmG8YkyVqy5ozsUJo2VNVOMTT/NxQL/eEjDYQa
+         l8jSmJD2WCQOMLOJZk2Ju1eDcIvaytySc2TAMUndzFDV/COuy/DWw4duJPK9UV1wxa5d
+         dFdvYhaiqs2SECGwmc3+zuH7Rsa3BBhtcauCQv2Y6YZRoO7lrxEIlOZVDcIfqlLguxZV
+         mEHA==
+X-Gm-Message-State: AOAM5332SwZj9N5u5hfuj4sYSKCWpu3qDrYNDb6xe2xE3gwU84aAECTl
+        dI2Oj+uw4NQK1xEEpm/TrqNuhGMK0ms/XYu7XhMngtx2+11g9jr1Ep7JCYR6X5hYzVTM+KFRDWV
+        hQLTONqNmOMHoQt0jO2MDBWCc
+X-Received: by 2002:a5d:6902:: with SMTP id t2mr104773wru.214.1607463908413;
+        Tue, 08 Dec 2020 13:45:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwXGvbxAcbO5BFwkDYJ7jC95TKxqn9gNikXqZCE7BFMQOriT1WGuoUMulzEYkt3Yx0aZc7tWA==
+X-Received: by 2002:a5d:6902:: with SMTP id t2mr104763wru.214.1607463908279;
+        Tue, 08 Dec 2020 13:45:08 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id n17sm99784wmc.33.2020.12.08.13.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 13:45:07 -0800 (PST)
+Date:   Tue, 8 Dec 2020 16:45:04 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, lulu@redhat.com
+Subject: Re: [PATCH] vdpa/mlx5: Use write memory barrier after updating CQ
+ index
+Message-ID: <20201208164356-mutt-send-email-mst@kernel.org>
+References: <20201206105719.123753-1-elic@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206105719.123753-1-elic@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 08:35 +0000, Avri Altman wrote:
-> > didn't differenciate them. we take all of these as CDB. This is
-> > wrong.
-> > 
-> > I want to make it clearer and make UPIU trace in line with the
-> > Spec.
-> > what's more,  how do you filter OSF, TM parameters with current
-> > UPIU
-> > trace? you take all of them as CDB? if so, I think, it's better to
-> > change parser.
+On Sun, Dec 06, 2020 at 12:57:19PM +0200, Eli Cohen wrote:
+> Make sure to put write memory barrier after updating CQ consumer index
+> so the hardware knows that there are available CQE slots in the queue.
 > 
-> Indeed, it is just a small change, but breaking user-space is not an
-> acceptable approach.
-> Also, the upiu tracer was never meant to be human-readable: it just
-> dump the upiu,
-> Which contains all the info required to parse it anyway,
-> So breaking user-space just to making it more readable doesn't really
-> make sense?
+> Failure to do this can cause the update of the RX doorbell record to get
+> updated before the CQ consumer index resulting in CQ overrun.
 > 
-> Looking at the previous 2 patches of this series, I was hoping that
-> you will do the same for
-> Command upiu, as well?
-> Again - same comment: if you are doing that need to change the str
-> not to break current parsers.
+> Change-Id: Ib0ae4c118cce524c9f492b32569179f3c1f04cc1
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+
+Aren't both memory writes? And given that, isn't dma_wmb() sufficient
+here?
+
+
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Thanks,
-> Avri
-
-will not change original CDB format, just add new OSF, TM.
-the string format will not be change. The current the HDR and CDB in
-the send and complete trace are the same, I guess, you even didn't
-trace CDB in your parser, they cannot tell you the request execution
-result.
-
-Bean
-
-
-
-
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 1f4089c6f9d7..295f46eea2a5 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -478,6 +478,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
+>  static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
+>  {
+>  	mlx5_cq_set_ci(&mvq->cq.mcq);
+> +
+> +	/* make sure CQ cosumer update is visible to the hardware before updating
+> +	 * RX doorbell record.
+> +	 */
+> +	wmb();
+>  	rx_post(&mvq->vqqp, num);
+>  	if (mvq->event_cb.callback)
+>  		mvq->event_cb.callback(mvq->event_cb.private);
+> -- 
+> 2.27.0
 
