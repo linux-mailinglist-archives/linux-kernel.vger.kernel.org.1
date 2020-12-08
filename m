@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824182D2AA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1042D2AA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgLHMXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:23:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:48154 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729469AbgLHMXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:23:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 233F91FB;
-        Tue,  8 Dec 2020 04:22:28 -0800 (PST)
-Received: from bogus (unknown [10.57.33.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B4B13F68F;
-        Tue,  8 Dec 2020 04:22:25 -0800 (PST)
-Date:   Tue, 8 Dec 2020 12:22:22 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        rjw@rjwysocki.net, vireshk@kernel.org, robh+dt@kernel.org,
-        sboyd@kernel.org, nm@ti.com, daniel.lezcano@linaro.org,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
- EM
-Message-ID: <20201208122222.bp3o6y3xsxo642wd@bogus>
-References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
- <20201202172356.10508-4-nicola.mazzucato@arm.com>
- <20201208055053.kggxw26kxtnpneua@vireshk-i7>
- <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
- <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
- <20201208112008.niesjrunxq2jz3kt@bogus>
- <1f9daaf8-e850-7c1b-7a32-71367982beaf@arm.com>
+        id S1729523AbgLHMXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729485AbgLHMXb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:23:31 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E556CC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:22:50 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id b73so17317738edf.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:22:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mimyofEa+0whU409Dhp0a+YV5b97sukKj8gfG9Rbmic=;
+        b=O0MKn6nsnZaleEs/kNELsIh8dmH/kUILor5blbkmcjPeH/9Ep6OyKVm0KhMgD3NGd3
+         jiS2xaM6anmzo4ZJoxWWeypRd3TPX9i1pbDK1fn7CHS4MoXi73uI9bkKwiK46bx0/aYj
+         QiUgUp9GM2g/V0rTnnXbSt39JqhI5CnWjpjP7roaLEcLPuRXAYMc/oC98jZUIwDawmI9
+         TuWYO0e8QQghyUuybvSDRbNtqa5oVqU+WzjvfKefSY9LEdJhMLfaBcg69YT58rpPi73N
+         6QDuFT3wPIMhu+1PtBLD6TPuURzIfM/B6NmbuJq0Jt0I9O+0ZRmUCz9xhCfcsFBDaruc
+         p2aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mimyofEa+0whU409Dhp0a+YV5b97sukKj8gfG9Rbmic=;
+        b=aJTohC1EkPsdEk1Mj7uAQGXD9c4/9TItWTDTW9PC7Q0sKGj4tmvLvY5qCv//+l1m1P
+         2COGvdUB6d68yxlDU0IgrcIT+e7IDBX1O90ig+zd2oQ0yNQanzZWwG5G8EHcrilLiv0X
+         f/hbnARuYTdzSYZVKAqJn84ZdoFjmAD5CddO9CnD5Ld9pWmYZVDy2N1lEtE41YnsdOnQ
+         lSiTSwoc381TgDZ1tHWNfqYjOw1ISMVcF2lCuxXFm89BB5xoWrQ/RwFtnDJZG4vhODQs
+         4rrFPZnOgQmzx0wnleoL3gqFpRURmKykWeJMvk+W37RLouZdfTqZXdXUtvzc29lVSciy
+         lySw==
+X-Gm-Message-State: AOAM530VycbSbEOroQEwPUA7WqAkxkOValOfBwiF7WGLUjRPezOQPEhN
+        k920wmu2JDuW4H/v1arAJ/iRQA==
+X-Google-Smtp-Source: ABdhPJwDxIoRMy+9VbYFQ3igoSIhbhtPBIxA8vjX9L86uM4LXFP5Wttpcb3/4YB/UuHFCIPdaYrkmA==
+X-Received: by 2002:a50:ccdb:: with SMTP id b27mr18839271edj.20.1607430169696;
+        Tue, 08 Dec 2020 04:22:49 -0800 (PST)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id x15sm16783915edj.91.2020.12.08.04.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 04:22:49 -0800 (PST)
+Date:   Tue, 8 Dec 2020 13:22:48 +0100
+From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier@javigon.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201208122248.utv7pqthmmn6uwv6@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <20201207141123.GC31159@lst.de>
+ <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+ <20201207192453.vc6clbdhz73hzs7l@mpHalley>
+ <SN4PR0401MB35988951265391511EBC8C6E9BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f9daaf8-e850-7c1b-7a32-71367982beaf@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <SN4PR0401MB35988951265391511EBC8C6E9BCD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:34:36AM +0000, Lukasz Luba wrote:
-> 
-> 
-> On 12/8/20 11:20 AM, Sudeep Holla wrote:
-> > On Tue, Dec 08, 2020 at 12:56:11PM +0530, Viresh Kumar wrote:
-> > > On 08-12-20, 07:22, Nicola Mazzucato wrote:
-> > > > On 12/8/20 5:50 AM, Viresh Kumar wrote:
-> > > > > On 02-12-20, 17:23, Nicola Mazzucato wrote:
-> > > > > >   	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> > > > > >   	if (nr_opp <= 0) {
-> > > > > > -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
-> > > > > > -		ret = -EPROBE_DEFER;
-> > > > > > -		goto out_free_opp;
-> > > > > > +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> > > > > > +		if (ret) {
-> > > > > > +			dev_warn(cpu_dev, "failed to add opps to the device\n");
-> > > > > > +			goto out_free_cpumask;
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
-> > > > > > +		if (ret) {
-> > > > > > +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> > > > > > +				__func__, ret);
-> > > > > > +			goto out_free_cpumask;
-> > > > > > +		}
-> > > > > > +
-> > > > > 
-> > > > > Why do we need to call above two after calling
-> > > > > dev_pm_opp_get_opp_count() ?
-> > > > 
-> > > > Sorry, I am not sure to understand your question here. If there are no opps for
-> > > > a device we want to add them to it
-> > > 
-> > > Earlier we used to call handle->perf_ops->device_opps_add() and
-> > > dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
-> > > the order changed now ?
-> > > 
-> > > 
-> > > I am not sure why they would be duplicated in your case. I though
-> > > device_opps_add() is responsible for dynamically adding the OPPs here.
-> > > 
-> > 
-> > It is because of per-CPU vs per domain drama here. Imagine a system with
-> > 4 CPUs which the firmware puts in individual domains while they all are
-> > in the same perf domain and hence OPP is marked shared in DT.
-> > 
-> > Since this probe gets called for all the cpus, we need to skip adding
-> > OPPs for the last 3(add only for 1st one and mark others as shared).
-> > If we attempt to add OPPs on second cpu probe, it *will* shout as duplicate
-> > OPP as we would have already marked it as shared table with the first cpu.
-> > Am I missing anything ? I suggested this as Nicola saw OPP duplicate
-> > warnings when he was hacking up this patch.
-> > 
-> > > > otherwise no need as they would be duplicated.
-> > > > > And we don't check the return value of
-> > > > > the below call anymore, moreover we have to call it twice now.
-> > 
-> > Yes, that looks wrong, we need to add the check for non zero values, but ....
-> > 
-> > > > 
-> > > > This second get_opp_count is required such that we register em with the correct
-> > > > opp number after having added them. Without this the opp_count would not be correct.
-> > > 
-> > 
-> > ... I have a question here. Why do you need to call
-> > 
-> > em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus..)
-> > 
-> > on each CPU ? Why can't that be done once for unique opp_shared_cpus ?
-> 
-> It just have to be called once, for one CPU from the mask. Otherwise for
-> the next CPUs you should see error:
-> "EM: exists for CPU%d"
-
-OK cool, at least it is designed and expected to be used like I thought.
-Ah, I might have seen those, but never thought it was error message 😄 
-
-> It can happen that this print is not seen when the get_cpu_device(cpu)
-> failed, but that would lead to investigation why CPU devices are not
-> there yet.
+On 08.12.2020 08:40, Johannes Thumshirn wrote:
+>On 07/12/2020 20:27, Javier González wrote:
+>> Good point. We can share some performance data on how Simple Copy scales
+>> in terms of bw / latency and the CPU usage. Do you have anything else in
+>> mind?
+>>
 >
-> Nicola: have you seen that print?
+>With an emulation in the kernel, we could make the usd "backend"
+>implementation configurable. So if the emulation is faster, users can select
+>the emulation, if the device is faster then the device.
 >
+>Kind of what the crypto and raid code do as well.
 
-I assume you must see that and you need to pull this inside if condition
-to do this once for each performance domain.
+Good idea. Are you thinking of a sysfs entry to select the backend?
+>
+>I'm really interested in this work, as BTRFS relocation/balance will have
+>potential benefits, but we need to get it right.
 
---
-Regards,
-Sudeep
+Agree. We will post a V3 with emulation and addressing other comments.
+We can take it from there. If you have comments on V2, please send them
+our way and we will take them in.
