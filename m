@@ -2,155 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BA62D2DA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E71C2D2DA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgLHO4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729386AbgLHO4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:56:38 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AE6C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:55:57 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id r3so16535113wrt.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:55:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=essensium.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=RpoOB4SsMWdHs6nxGfrQI11gBbJ7r+aNGucdh2ApF9E=;
-        b=iG2Akie/C8iOA4AoP/BrYYn4RnEecoss9rAmtZKg+2j1nUi+jmWt9AMtU+zLS2Pw6Q
-         6lD/UNGQoMes+YoCU7n0x3xO1iNyNNVFx/Si1vvI21PGN3Z+RAfjlmMCPhMvZ965yHZa
-         bvp7O+XrfU3YKZT1B9OnsyyazaziLMlY8n/y+zZXGY36fsRpvIYfDZpl6lLnQRwab00i
-         +EDnh3CMPiWHgsKpvko1N7zsbtmMaWeIVWoE65jcSz2H7y6tO8tf0xlXXziismeLysY3
-         p7+drHRkv6RnWtIrzZe9mRazkX7XE1Ot0sjZ6T77MvvQv4k0ChNx5EDTw3C+mN2Yd1Wu
-         dR7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RpoOB4SsMWdHs6nxGfrQI11gBbJ7r+aNGucdh2ApF9E=;
-        b=Pg5TdNTmDYi+bTY0DK5BR6QJFRdsm2kYjWc42x93FQbFMkwmyVWriubJBhEalss0J3
-         +De20tJ6N7ISWKE96zlI8eN/pohN9iL/JUvmLdb3bb/xtq9TrFMn1Irw4WlaCxUpPJl1
-         JMM82jq7ZPcCTVd8fixk3CUskkxA7DPtvPTBrBnltCEn670hC1ICJ821NKg9T5SpUoFH
-         5bS/nF/3Pmt6YMoitEyfeliOqRoCDb9MwIWSJPVCNd06FlPnkHa2Et7FPmgfxELw8+KJ
-         2BfSHsuO1OHKjOo/AfEaWH92GrMXC6Pcf8/8XCrfpww/cRwdXKlDTwp4JTz7H7Epe5J8
-         Wz7Q==
-X-Gm-Message-State: AOAM533Tegx27p0IBCdP6giswWBHcob/gX+0Za6R7S160RefFVKHffEg
-        SrWygw6U4NPUqvp3DNf8OinrrMvoEtnMsQ==
-X-Google-Smtp-Source: ABdhPJymceEIiI/XPBYiJyKoLr/Mvlj37/77whhfEuNNagY6lrn2k5V2RspZGLa3ZzDA+UYl6cWfIw==
-X-Received: by 2002:a5d:554e:: with SMTP id g14mr8416974wrw.264.1607439356429;
-        Tue, 08 Dec 2020 06:55:56 -0800 (PST)
-Received: from [10.8.0.46] (ip-188-118-3-185.reverse.destiny.be. [188.118.3.185])
-        by smtp.gmail.com with ESMTPSA id h20sm8365273wrb.21.2020.12.08.06.55.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 06:55:55 -0800 (PST)
-Subject: Re: [PATCH net 1/4] net: freescale/fman: Split the main resource
- region reservation
-To:     Madalin Bucur <madalin.bucur@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201203135039.31474-1-patrick.havelange@essensium.com>
- <20201203135039.31474-2-patrick.havelange@essensium.com>
- <AM6PR04MB39764190C3CC885EAA84E8B3ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
-From:   Patrick Havelange <patrick.havelange@essensium.com>
-Message-ID: <e488ed95-3672-fdcb-d678-fdd4eb9a8b4b@essensium.com>
-Date:   Tue, 8 Dec 2020 15:55:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729915AbgLHO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:57:02 -0500
+Received: from foss.arm.com ([217.140.110.172]:50138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729837AbgLHO5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:57:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F33561FB;
+        Tue,  8 Dec 2020 06:56:15 -0800 (PST)
+Received: from [10.57.23.55] (unknown [10.57.23.55])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91AC33F718;
+        Tue,  8 Dec 2020 06:56:14 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
+ updated without ops
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+ <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
+ <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
+ <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
+Message-ID: <d1d2c723-8f1f-fc68-0cdf-d26d8373b417@arm.com>
+Date:   Tue, 8 Dec 2020 14:56:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <AM6PR04MB39764190C3CC885EAA84E8B3ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
+In-Reply-To: <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-03 16:47, Madalin Bucur wrote:
->> -----Original Message-----
->> From: Patrick Havelange <patrick.havelange@essensium.com>
->> Sent: 03 December 2020 15:51
->> To: Madalin Bucur <madalin.bucur@nxp.com>; David S. Miller
->> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
->> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
->> Cc: Patrick Havelange <patrick.havelange@essensium.com>
->> Subject: [PATCH net 1/4] net: freescale/fman: Split the main resource
->> region reservation
->>
->> The main fman driver is only using some parts of the fman memory
->> region.
->> Split the reservation of the main region in 2, so that the other
->> regions that will be used by fman-port and fman-mac drivers can
->> be reserved properly and not be in conflict with the main fman
->> reservation.
->>
->> Signed-off-by: Patrick Havelange <patrick.havelange@essensium.com>
+
+
+On 12/8/20 2:37 PM, Lukasz Luba wrote:
 > 
-> I think the problem you are trying to work on here is that the device
-> tree entry that describes the FMan IP allots to the parent FMan device the
-> whole memory-mapped registers area, as described in the device datasheet.
-> The smaller FMan building blocks (ports, MDIO controllers, etc.) are
-> each using a nested subset of this memory-mapped registers area.
-> While this hierarchical depiction of the hardware has not posed a problem
-> to date, it is possible to cause issues if both the FMan driver and any
-> of the sub-blocks drivers are trying to exclusively reserve the registers
-> area. I'm assuming this is the problem you are trying to address here,
-> besides the stack corruption issue.
+> 
+> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
+>>
+>> Hi Lukasz,
+>>
+>> On 08/12/2020 10:36, Lukasz Luba wrote:
+>>> Hi Daniel,
+>>
+>> [ ... ]
+>>
+>>>>      static void thermal_zone_device_init(struct thermal_zone_device 
+>>>> *tz)
+>>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
+>>>> thermal_zone_device *tz,
+>>>>        if (atomic_read(&in_suspend))
+>>>>            return;
+>>>>    -    if (!tz->ops->get_temp)
+>>>> +    if (update_temperature(tz))
+>>>>            return;
+>>>>    -    update_temperature(tz);
+>>>> -
+>>>
+>>> I think the patch does a bit more. Previously we continued running the
+>>> code below even when the thermal_zone_get_temp() returned an error (due
+>>> to various reasons). Now we stop and probably would not schedule next
+>>> polling, not calling:
+>>> handle_thermal_trip() and monitor_thermal_zone()
+>>
+>> I agree there is a change in the behavior.
+>>
+>>> I would left update_temperature(tz) as it was and not check the return.
+>>> The function thermal_zone_get_temp() can protect itself from missing
+>>> tz->ops->get_temp(), so we should be safe.
+>>>
+>>> What do you think?
+>>
+>> Does it make sense to handle the trip point if we are unable to read the
+>> temperature?
+>>
+>> The lines following the update_temperature() are:
+>>
+>>   - thermal_zone_set_trips() which needs a correct tz->temperature
+>>
+>>   - handle_thermal_trip() which needs a correct tz->temperature to
+>> compare with
+>>
+>>   - monitor_thermal_zone() which needs a consistent tz->passive. This one
+>> is updated by the governor which is in an inconsistent state because the
+>> temperature is not updated.
+>>
+>> The problem I see here is how the interrupt mode and the polling mode
+>> are existing in the same code path.
+>>
+>> The interrupt mode can call thermal_notify_framework() for critical/hot
+>> trip points without being followed by a monitoring. But for the other
+>> trip points, the get_temp is needed.
+> 
+> Yes, I agree that we can bail out when there is no .get_temp() callback
+> and even not schedule next polling in such case.
+> But I am just not sure if we can bail out and not schedule the next
+> polling, when there is .get_temp() populated and the driver returned
+> an error only at that moment, e.g. indicating some internal temporary,
+> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
+> The thermal_zone_get_temp() would pass the error to update_temperature()
+> but we return, losing the next try. We would not check the temperature
+> again.
+> 
 
-Yes exactly.
-I did not add this behaviour (having a main region and subdrivers using 
-subregions), I'm just trying to correct what is already there.
-For example: this is some content of /proc/iomem for one board I'm 
-working with, with the current existing code:
-ffe400000-ffe4fdfff : fman
-   ffe4e0000-ffe4e0fff : mac
-   ffe4e2000-ffe4e2fff : mac
-   ffe4e4000-ffe4e4fff : mac
-   ffe4e6000-ffe4e6fff : mac
-   ffe4e8000-ffe4e8fff : mac
+Some links to point you to such code where sensor has to deal
+with protocol and various error reasons [1][2][3]
 
-and now with my patches:
-ffe400000-ffe4fdfff : /soc@ffe000000/fman@400000
-   ffe400000-ffe480fff : fman
-   ffe488000-ffe488fff : fman-port
-   ffe489000-ffe489fff : fman-port
-   ffe48a000-ffe48afff : fman-port
-   ffe48b000-ffe48bfff : fman-port
-   ffe48c000-ffe48cfff : fman-port
-   ffe4a8000-ffe4a8fff : fman-port
-   ffe4a9000-ffe4a9fff : fman-port
-   ffe4aa000-ffe4aafff : fman-port
-   ffe4ab000-ffe4abfff : fman-port
-   ffe4ac000-ffe4acfff : fman-port
-   ffe4c0000-ffe4dffff : fman
-   ffe4e0000-ffe4e0fff : mac
-   ffe4e2000-ffe4e2fff : mac
-   ffe4e4000-ffe4e4fff : mac
-   ffe4e6000-ffe4e6fff : mac
-   ffe4e8000-ffe4e8fff : mac
 
-> While for the latter I think we can
-> put together a quick fix, for the former I'd like to take a bit of time
-> to select the best fix, if one is really needed. So, please, let's split
-> the two problems and first address the incorrect stack memory use.
-
-I have no idea how you can fix it without a (more correct this time) 
-dummy region passed as parameter (and you don't want to use the first 
-patch). But then it will be useless to do the call anyway, as it won't 
-do any proper verification at all, so it could also be removed entirely, 
-which begs the question, why do it at all in the first place (the 
-devm_request_mem_region).
-
-I'm not an expert in that part of the code so feel free to correct me if 
-I missed something.
-
-BR,
-
-Patrick H.
+[1] 
+https://elixir.bootlin.com/linux/latest/source/drivers/firmware/arm_scmi/sensors.c#L230
+[2] 
+https://elixir.bootlin.com/linux/latest/source/drivers/firmware/arm_scmi/driver.c#L425
+[3] 
+https://elixir.bootlin.com/linux/latest/source/drivers/firmware/arm_scmi/driver.c#L474
