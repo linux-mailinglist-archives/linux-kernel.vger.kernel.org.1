@@ -2,258 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844D72D21DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1137D2D21F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgLHEKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:10:53 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56067 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726048AbgLHEKw (ORCPT
+        id S1726961AbgLHESp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:18:45 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:49122 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgLHESo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:10:52 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 35D31C0D;
-        Mon,  7 Dec 2020 23:10:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 07 Dec 2020 23:10:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=t
-        hPfHNvHBgBwFsdE/nnkzFCxSaj3tnRQE7Aisw/au5c=; b=nI3kvkR+hZ0kK/IGt
-        lvtnviRbpSjaXztIA68DjAJo0BP1UEa8kXrTk1lbKAxxEFUeP5DeIwRHOKZwkKuA
-        q4d0d6VYNQWjkJOBi+cDr3WegNgzfW8a649xplpCqsdxqGjYAy7rQakmak4P8UOl
-        tz5k+8URRWaTAs9tT2P8ddF1fvigelfFMTnw2Vh4k7tiqKw9VnnCDYBwbFMkszQ3
-        BRyh1xyMLByB5VA7S0IFtWYADP3+Mkef6ConjZIpCteK92gz2EHxujDA/wA6u5md
-        zDpC/C4uqWQTIhupiUlZuIcZTr+gevwdwO4q5bYBdcWDrI3jjlNyy2OFGWHYhsO0
-        JGcTA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=thPfHNvHBgBwFsdE/nnkzFCxSaj3tnRQE7Aisw/au
-        5c=; b=nXTvLnNmSah2K4sfz5H3jW7oOaks9kBKO0LkVQaw1CWk5nTU163Zmf85M
-        yEXmXG/9kSSJeZd0x229/ShlJ/I3BNj9mo5gNoBCANaPsCulYRd6ovkQa9+zJFMF
-        ZCC8UabwPTbhx0tGJn183HcyIB6e+F5RLlReec8wtBJuRGMDMjKujTraQtxTZnI6
-        o5S5iXDd1qTAgkWYo7lIU6WeHscIzH8bMTob1sMQVgN/sahaBPBJ9wh8jEcN+10u
-        kHfwqiMTwGe+YYWRCCg1pZHHG3rQvfzMMSr/71NQXgS1kVliLVXIOSi/X/HjPCFc
-        dBlzPJMJw42uUuTLDZkNf5JoXKccQ==
-X-ME-Sender: <xms:nPzOX3RBDOIK0F6oFJ-OeoGuQkQEocxE-4Rw4OG_XNtUXtIwZ1P1SA>
-    <xme:nPzOX4wy7HjNtS5cyaEs71E3B-algqMtkCVH4zKwTxriDXFeh8Y0HW0C6Whn9mZJz
-    EfnEJz396PuBBAFpg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:nPzOX82la6ot3lC2T8ZN9GCqTtSRDA7mYZQieJivbMG9kscSA1Zq7w>
-    <xmx:nPzOX3AyqypJ9qqA7wYGo-Dp0ejI_0yxvwPTeWqkIYzHawtU0SN-zg>
-    <xmx:nPzOXwjeuNV3uqsKwlNixId-5W_pOlN2WSaz0DyCKSBfd8ChsGzH1g>
-    <xmx:nfzOX8h3N-Z_fBU6n07cqyq8XnKpVdyFBmowqYGOwSK14PH12W8BLw>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 001AB24005D;
-        Mon,  7 Dec 2020 23:10:03 -0500 (EST)
-To:     Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        tiny.windzz@gmail.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <20201208023720.22544-1-huangshuosheng@allwinnertech.com>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v3 1/6] cpufreq: sun50i: add efuse_xlate to get efuse
- version.
-Message-ID: <e0a2573d-8009-39c1-63cb-c828dfcbabef@sholland.org>
-Date:   Mon, 7 Dec 2020 22:10:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201208023720.22544-1-huangshuosheng@allwinnertech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 7 Dec 2020 23:18:44 -0500
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201208041802epoutp02ad72ef1a2ef3dda6402802d29016644c~OosSazs1I2802328023epoutp02E
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:18:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201208041802epoutp02ad72ef1a2ef3dda6402802d29016644c~OosSazs1I2802328023epoutp02E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607401082;
+        bh=bNcO0L7f6HW9trLGLjRuh+5Y5IE2mspFwgJfTwfn9TU=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=ofVhsodbZafGyPcVg8JESrOUpcPdsheMxt+MTmnPYPKcR/1IqhBSRawijnvZuJSx/
+         NIhPr9dbu8M4e07GyMl/4kleqqegF/IdTUvqQhzLu2NWfXtwUhnqSCH1ucwDlKPYYU
+         5lxfh1EBZipFebpNsNjvn4rFdg2Hkejro8zoVBKI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20201208041801epcas3p3d9219a9d0c1a572936a60e062cead918~OosR3HcpY2756127561epcas3p3k;
+        Tue,  8 Dec 2020 04:18:01 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4Cqn3F4nxHzMqYkW; Tue,  8 Dec 2020 04:18:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster
+ Support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <greg@kroah.com>, James Bottomley <jejb@linux.ibm.com>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <X859wznB1peRtjp0@kroah.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01607401081656.JavaMail.epsvc@epcpadp4>
+Date:   Tue, 08 Dec 2020 13:12:31 +0900
+X-CMS-MailID: 20201208041231epcms2p225d2c155e42f4d45aa86a4ffbd0b2e6e
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20201103044021epcms2p8f1556853fc23414442b9e958f20781ce
+References: <X859wznB1peRtjp0@kroah.com>
+        <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+        <X85sxxgpdtFXiKsg@kroah.com> <20201207180655.GA30657@infradead.org>
+        <X85zEFduHeUr4YKR@kroah.com> <20201207182603.GA2499@infradead.org>
+        <X85116BXkgTtRDKV@kroah.com>
+        <fa89e2a960e98b016d4935490fa2905aab0868f7.camel@linux.ibm.com>
+        <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 12/7/20 8:37 PM, Shuosheng Huang wrote:
-> It's better to use efuse_xlate to extract the differentiated part
-> regarding different SoC.
+> > On Mon, 2020-12-07 at 19:35 +0100, Greg KH wrote:
+> > > On Mon, Dec 07, 2020 at 06:26:03PM +0000, Christoph Hellwig wrote:
+> > > > On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
+> > > > > What "real workload" test can be run on this to help show if it
+> > > > > is useful or not?  These vendors seem to think it helps for some
+> > > > > reason, otherwise they wouldn't have added it to their silicon :)
+> > > > > 
+> > > > > Should they run fio?  If so, any hints on a config that would be
+> > > > > good to show any performance increases?
+> > > > 
+> > > > A real actual workload that matters.  Then again that was Martins
+> > > > request to even justify it.  I don't think the broken addressing
+> > > > that breaks a whole in the SCSI addressing has absolutely not
+> > > > business being supported in Linux ever.  The vendors should have
+> > > > thought about the design before committing transistors to something
+> > > > that fundamentally does not make sense.
+> > 
+> > Actually, that's not the way it works: vendors add commands because
+> > standards mandate.  That's why people who want weird commands go and
+> > join standard committees.  Unfortunately this means that a lot of the
+> > commands the standard mandates end up not being very useful in
+> > practice.  For instance in SCSI we really only implement a fraction of
+> > the commands in the standard.
+> > 
+> > In this case, the industry already tried a very similar approach with
+> > GEN 1 hybrid drives and it turned into a complete disaster, which is
+> > why the mode became optional in shingle drives and much better modes,
+> > which didn't have the huge shared state problem, superseded it.  Plus
+> > truncating the LBA of a READ 16 to 4 bytes is asking for capacity
+> > problems down the line, so even the actual implementation seems to be
+> > problematic.
+> > 
+> > All in all, this looks like a short term fix which will go away when
+> > the drive capacity improves and thus all the effort changing the driver
+> > will eventually be wasted.
 > 
-> Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
-> ---
->  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 72 +++++++++++++++++---------
->  1 file changed, 48 insertions(+), 24 deletions(-)
+> "short term" in the embedded world means "this device is stuck with this
+> chip for the next 8 years", it's not like a storage device you can
+> replace, so this might be different than the shingle drive mess.  Also,
+> I see many old SoCs still showing up in brand new devices many many
+> years after they were first introduced, on-chip storage controllers is
+> something we need to support well if we don't want to see huge
+> out-of-tree patchsets like UFS traditionally has been lugging around for
+> many years.
 > 
-> diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> index 9907a165135b..da23d581a4b4 100644
-> --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> @@ -22,21 +22,52 @@
->  #define NVMEM_MASK	0x7
->  #define NVMEM_SHIFT	5
-
-You should remove these definitions now that you added the ones below.
-
->
-> +#define SUN50I_H6_NVMEM_MASK		0x7
-> +#define SUN50I_H6_NVMEM_SHIFT		5
-> +
-> +struct sunxi_cpufreq_soc_data {
-> +	u32 (*efuse_xlate)(void *efuse);
-> +};
-> +
->  static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
->  
-> +static u32 sun50i_h6_efuse_xlate(struct nvmem_cell *speedbin_nvmem)
-> +{
-> +	size_t len;
-> +	u32 *speedbin;
-> +	u32 efuse_value;
-> +
-> +	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
-> +	if (IS_ERR(speedbin))
-> +		return PTR_ERR(speedbin);
-
-You're trying to return a negative value for an error here, but the
-return type is unsigned.
-
-> +
-> +	efuse_value = (*(u32 *)speedbin >> SUN50I_H6_NVMEM_SHIFT) &
-> +			  SUN50I_H6_NVMEM_MASK;
-> +	kfree(speedbin);
-> +	/*
-> +	 * We treat unexpected efuse values as if the SoC was from
-> +	 * the slowest bin. Expected efuse values are 1-3, slowest
-> +	 * to fastest.
-> +	 */
-> +	if (efuse_value >= 1 && efuse_value <= 3)
-> +		return efuse_value - 1;
-> +	else
-> +		return 0;
-> +}
-> +
->  /**
->   * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
-> + * @soc_data: pointer to sunxi_cpufreq_soc_data context
->   * @versions: Set to the value parsed from efuse
->   *
->   * Returns 0 if success.
->   */
-> -static int sun50i_cpufreq_get_efuse(u32 *versions)
-> +static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data *soc_data,
-> +				    u32 *versions)
->  {
->  	struct nvmem_cell *speedbin_nvmem;
->  	struct device_node *np;
->  	struct device *cpu_dev;
-> -	u32 *speedbin, efuse_value;
-> -	size_t len;
->  	int ret;
->  
->  	cpu_dev = get_cpu_device(0);
-> @@ -63,41 +94,31 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
->  		return PTR_ERR(speedbin_nvmem);
->  	}
->  
-> -	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
-> +	*versions = soc_data->efuse_xlate(speedbin_nvmem);
->  	nvmem_cell_put(speedbin_nvmem);
-> -	if (IS_ERR(speedbin))
-> -		return PTR_ERR(speedbin);
-> -
-> -	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
-> -
-> -	/*
-> -	 * We treat unexpected efuse values as if the SoC was from
-> -	 * the slowest bin. Expected efuse values are 1-3, slowest
-> -	 * to fastest.
-> -	 */
-> -	if (efuse_value >= 1 && efuse_value <= 3)
-> -		*versions = efuse_value - 1;
-> -	else
-> -		*versions = 0;
->  
-> -	kfree(speedbin);
->  	return 0;
-
-If *versions is negative, you need to pass that error back to the caller.
-
->  };
->  
->  static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  {
-> +	const struct of_device_id *match;
->  	struct opp_table **opp_tables;
->  	char name[MAX_NAME_LEN];
->  	unsigned int cpu;
->  	u32 speed = 0;
->  	int ret;
->  
-> +	match = dev_get_platdata(&pdev->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +
->  	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables),
->  			     GFP_KERNEL);
->  	if (!opp_tables)
->  		return -ENOMEM;
->  
-> -	ret = sun50i_cpufreq_get_efuse(&speed);
-> +	ret = sun50i_cpufreq_get_efuse(match->data, &speed);
->  	if (ret)
->  		return ret;
-
-Since we've already decoupled the speed grade from the nvmem value, why
-not make this:
-
-	int speed;
-	...
-	speed = sun50i_cpufreq_get_efuse(match->data);
-	if (speed < 0)
-		return speed;
-
-And have sun50i_cpufreq_get_efuse return the value from efuse_xlate
-without all the pointer indirection.
-
-And this is a separate bug in the existing code, but it leaks opp_tables
-if sun50i_cpufreq_get_efuse fails. That could be fixed by moving the
-call to sun50i_cpufreq_get_efuse up.
-
-Cheers,
-Samuel
-
->  
-> @@ -163,8 +184,12 @@ static struct platform_driver sun50i_cpufreq_driver = {
->  	},
->  };
->  
-> +static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
-> +	.efuse_xlate = sun50i_h6_efuse_xlate,
-> +};
-> +
->  static const struct of_device_id sun50i_cpufreq_match_list[] = {
-> -	{ .compatible = "allwinner,sun50i-h6" },
-> +	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
->  	{}
->  };
->  
-> @@ -198,9 +223,8 @@ static int __init sun50i_cpufreq_init(void)
->  	if (unlikely(ret < 0))
->  		return ret;
->  
-> -	sun50i_cpufreq_pdev =
-> -		platform_device_register_simple("sun50i-cpufreq-nvmem",
-> -						-1, NULL, 0);
-> +	sun50i_cpufreq_pdev = platform_device_register_data(NULL,
-> +		"sun50i-cpufreq-nvmem", -1, match, sizeof(*match));
->  	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
->  	if (ret == 0)
->  		return 0;
+> > > So "time to boot an android system with this enabled and disabled"
+> > > would be a valid workload, right?  I'm guessing that's what the
+> > > vendors here actually care about, otherwise there is no real stress-
+> > > test on a UFS system that I know of.
+> > 
+> > Um, does it?  I don't believe even the UFS people have claimed this. 
+> > The problem is that HPB creates a shared state between the driver and
+> > the device.  That shared state has to be populated, which has to happen
+> > at start of day, so it's entirely unclear if this is a win or a slow
+> > down for boot.
+> 
+> Ok, showing that this actually matters is a good rule, Daejun, can you
+> provide that if you resubmit this patchset?
 > 
 
+Sure, I will find out the case which has performance benefit by HPB.
+
+Thanks,
+Daejun
