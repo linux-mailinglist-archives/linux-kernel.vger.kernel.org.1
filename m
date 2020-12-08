@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC252D256C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7A12D256E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgLHIJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:09:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725927AbgLHIJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:09:39 -0500
-X-Gm-Message-State: AOAM531KqWTf1bliUheTV+JFQbgQKCdg9zvsnyFRXkQPt0688OgOdZNo
-        wh2znYJwOKLssJfFfmAAm+AND7yN0hWYf5pgYz0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607414938;
-        bh=LhPpJxC4F5Q3Y/fX73/+10L00v+eOApqEJLmH8dkajo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cpzu6RDtnB0yEkEvK7aYyfX1tX24iW65gKao2x8SM/84+WA1x0BAwUXuqCcnVbv+e
-         PeUt37/U84dLpYuRmZNeWe6ZwPEDOygOGBiWyHexzkBOu8QK+YdC4kuFyP9Hlo+B0c
-         N3hqLr1B8i3Pe1K3CGNcOSf75SsflNb9SRY79KVhR2BX6kPR5QRP5ynOGZ8Qh/O7xX
-         qhqsqNu2wXsuHr5CskyKAcQbUiRx35S5KDc/z83jqdoiDPAq1kbyU9IO9uE5RQqImf
-         Hp2jvkBe+9Mt0gVlmb7NKwtlX3kJCbYsZlwMi1VOkTord1YXXvTbh4GV+skabNq9zR
-         fZYZKwLJdw+Bw==
-X-Google-Smtp-Source: ABdhPJwe1x41l8I7WarLwBmKZ2PsxA0cxVWQLgoGcW+CucDX3vRQbuP0kctQJUR/b8oR9+p75TThDyXXV7jUAio3k2g=
-X-Received: by 2002:aa7:d593:: with SMTP id r19mr24099686edq.246.1607414937105;
- Tue, 08 Dec 2020 00:08:57 -0800 (PST)
+        id S1727543AbgLHIMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726340AbgLHIMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:12:19 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BAEDC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8wGUeauYQffXI8deK/t5tpiJqZQbKQ3feyEVhMUeoio=; b=UEP2qNx2yuGrgBZuyUqqIknCDM
+        bunAcbBJmvpuvxgrv4RaBxQlYji19+2pO7V9vqrV+lyA236b34edtdd6ev/43ZJXnoGUS7KQcOxXI
+        gGhCIDw/DJISC2r0k64rbr6bRG8asqyKv5TkCjLdpj5VYhCaUUBZLO+pK3NUrNqHrEVmx7cadj9Fw
+        rvQKg/4WxlRRcSOCOd6nDH5ABfvEMEQnJc+82eWYaBWtIE4IDMFpQ53RyAoQagdd/QzQM9FFIPy4b
+        mILUSeiWH6r3TlM6yCx58S7T/hVU+p8cHuhUbPOTewoTF65iXUfawV8B8ErVXrecd4iVmSV932Dp8
+        gI0CeVKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmY5r-0004Vv-5b; Tue, 08 Dec 2020 08:11:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6347304B92;
+        Tue,  8 Dec 2020 09:11:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA68B200AABB6; Tue,  8 Dec 2020 09:11:29 +0100 (CET)
+Date:   Tue, 8 Dec 2020 09:11:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
+        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
+        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
+Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
+Message-ID: <20201208081129.GQ2414@hirez.programming.kicks-ass.net>
+References: <20201206211253.919834182@linutronix.de>
+ <20201206212002.876987748@linutronix.de>
+ <20201207120943.GS3021@hirez.programming.kicks-ass.net>
+ <87y2i94igo.fsf@nanos.tec.linutronix.de>
+ <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
+ <20201207194406.GK2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201208043700.23098-1-quan@os.amperecomputing.com>
- <20201208043700.23098-3-quan@os.amperecomputing.com> <CACPK8XdsbgKKr=icLxV=PZB9U03ZGWXQwCWgFvoqgCj9K_fbVg@mail.gmail.com>
-In-Reply-To: <CACPK8XdsbgKKr=icLxV=PZB9U03ZGWXQwCWgFvoqgCj9K_fbVg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 8 Dec 2020 09:08:45 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPc2wY+tcXpZRkdKodr+SgQSbW=+qWYU6E1t8CXE0D9iNA@mail.gmail.com>
-Message-ID: <CAJKOXPc2wY+tcXpZRkdKodr+SgQSbW=+qWYU6E1t8CXE0D9iNA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add device tree for Ampere's Mt.
- Jade BMC
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        allen <allen.chen@ite.com.tw>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207194406.GK2657@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 05:42, Joel Stanley <joel@jms.id.au> wrote:
->
-> On Tue, 8 Dec 2020 at 04:37, Quan Nguyen <quan@os.amperecomputing.com> wrote:
-> >
-> > The Mt. Jade BMC is an ASPEED AST2500-based BMC for the Mt. Jade
-> > hardware reference platform with Ampere's Altra Processor Family.
-> >
-> > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> > Reviewed-by: Joel Stanley <joel@jms.id.au>
-> > Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> > Signed-off-by: Phong Vo <phong@os.amperecomputing.com>
-> > Signed-off-by: Thang Q. Nguyen <thang@os.amperecomputing.com>
->
-> Thanks, I've applied this to the aspeed tree.
+On Mon, Dec 07, 2020 at 11:44:06AM -0800, Paul E. McKenney wrote:
 
-Did you review it already before (which would explain tags being there)?
+> Also, in this particular case, why data_race() rather than READ_ONCE()?
+> Do we really expect the compiler to be able to optimize this case
+> significantly without READ_ONCE()?
 
-Best regards,
-Krzysztof
+It's about intent and how the code reads. READ_ONCE() is something
+completely different from data_race(). data_race() is correct here.
+
+
