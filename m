@@ -2,260 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8FF2D25C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765742D25C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgLHIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:22:42 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:53545 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727559AbgLHIWm (ORCPT
+        id S1728050AbgLHIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727895AbgLHIXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:22:42 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 3A406C7F;
-        Tue,  8 Dec 2020 03:21:55 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 08 Dec 2020 03:21:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=cQfOkOJh+W2ncPOOtPBR29+hpuG
-        wA7DnPqCP/mcp+RQ=; b=ppUo6sT1Rx4Rx33UfWWwLNyk3okKg2/lnFWxRdOdUF2
-        2xXLJCn+WquhboIWP0Ws2g8DCZAMzRF1NgryUjZ857f4iHIczGNcKQ0C/58OTfYN
-        CX366MJAGM3IrJ5IRl0hMX3hfi1tDRKr8DkRp0Ow2+7zu2IloMDUMRzDcaHuv1Bf
-        HvaqDsvW8xlfsRc6m+HAL52pFWDYuDOUZajdFCq0vQme0g6PNfi0zHeNc4VGy6wo
-        NkG4lPj4t/WkbqkN+rKCpLhGihRn+IW7nhbS0WL9N7rbirT2fkIP6bxqP9Y3Cvpt
-        LYGKwsPLFNFblAMDELibYuqMa6lUmVLZNYXdKdU8NNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cQfOkO
-        Jh+W2ncPOOtPBR29+hpuGwA7DnPqCP/mcp+RQ=; b=ozlgh2U7G4WaltBwvAXILY
-        ZIkCkmEPSFWgw+KQZ/BQlDb1Bg0MDPkntOgNmeOBCF8YC87kjK7nAYG49EKdNt4g
-        wu4T8zcu6GxQbxum8U9m3GeoxuuDnOtGAINGOvbKO6e3Rc4P11ShXE//FV9tthPB
-        1QTX0KMqUPzTKxRYwKeh2QcmThNsOqitx8PbHO8q0w6IV9fklqdFHNhVhu3khSxS
-        yw7nfqO2iPnXdEkw6+Ec6f2efq3Oot7LDI44XK/u0p7y6zx0k1StMKwt89gufLES
-        b3VE+7TPbaJNtwPE62csy2fXOVpLgQtrkvpO0KIL6A2vhX/Z9rZ9PJ07gRND0YiA
-        ==
-X-ME-Sender: <xms:oDfPXxj7ptTx-0CKlksl-E2vA90RfaBEAZIUAlYKpUnLpJfpUFjHxA>
-    <xme:oDfPX2CVxiKGyCwI6qpYmv_znYPhYsKjiM7b-40kAPYcmAszGapujZueVd_Gtnrq9
-    h_iJKfuHvGrEMdB2WQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:oDfPXxEyoiQu2tRusAHZijWb4mUejwKvMivetcLQPajmDU0NH6FvIA>
-    <xmx:oDfPX2QDmnyx62zRzI8aAhCLrANFeirgZy6HXWPliUvbC03rESQGLA>
-    <xmx:oDfPX-wNE4F7nhHkHezYX5XLn06SlLuhoz-QMbAMyD2nCI-6KlLWIQ>
-    <xmx:ojfPX5w3gAOXWyA8qunCmTkvTz2300syak36nxHr8I1tNsuZTrP18Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 513081080057;
-        Tue,  8 Dec 2020 03:21:52 -0500 (EST)
-Date:   Tue, 8 Dec 2020 09:21:50 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Cc:     tiny.windzz@gmail.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        wens@csie.org, jernej.skrabec@siol.net, samuel@sholland.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] cpufreq: sun50i: add efuse_xlate to get efuse
- version.
-Message-ID: <20201208082150.jbpdlpcghbj3liqj@gilmour>
-References: <20201208071928.2078-1-huangshuosheng@allwinnertech.com>
+        Tue, 8 Dec 2020 03:23:13 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8F5C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:22:32 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id d17so23390713ejy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:22:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=kykEw2BEk9tqE8eIyPPw0YNBTolu5cfPIst6UC7/yyU=;
+        b=VlM+uqNYXAyqRxlcmHJLx3okbfWPfv3hXR+DTQA9HBC6eMnIXacKuwV/rjMyoNH4ff
+         SdbETgifqeQzKApxRjQ7+9wsTpN4egjSAx5UglpdQ/35o1XGzDygj07sSYVBi0pY/fsT
+         Ht5kLf/TqyRqckJpq3RFFdfRRTmGDFh4BuCegMvLCkD4SbGSPPvqJw4BOJOIWeN7+E1h
+         QiNxIIBG+RigmHi0lgUWQUn20zQo9l5jHttA7MXeZxYh5etVlLj/ccBbmt+kcj+JWuxY
+         pmiqJ0z3kuY2ghGZQKrHJPvQGtCM4f+S+04szfrnKnVtUgnpMHYt6Sf/TDucrIgpNfEi
+         mpow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=kykEw2BEk9tqE8eIyPPw0YNBTolu5cfPIst6UC7/yyU=;
+        b=saRPAxA5y1iFMzMqqIGKH8zO+7xuJDxNFIn+gcsaXJacrTnh1rxwVSQqd6ID/gv/CD
+         Jpo/pbm6cwBuCxpbDfkWGNpi3ZIBGIiRDmHVOpoyAgqVl+mnE/1R86pWzEm0GSeqSqUT
+         yBvRL3tk+sUooF2c3JdMnWWFvlm3Bg5nzHundXKqse3tnAcSBsOfaHZh23/QtQxC0BX0
+         Tdgy6a8P+Ehy68AFOR/eI2VYHwDO5bE5jECsNfj5BbXqYD3ZktGqE1K3RocAcZ1rs0Xg
+         jiq0iUVLWaZOJmCc8Wb3WcVJsYufK80exxempy+3U1+gs2ZmJ6hc5lCFD1rA3MdYBUDA
+         qwtw==
+X-Gm-Message-State: AOAM533qILJqKmqyLi3tstYl86D541HsQbGapNqd3mbjdrm/pNF2//1i
+        gzPjZI/WjTCWSsfnMizDpOsmKlK0baApDjq+LcY=
+X-Google-Smtp-Source: ABdhPJyqczBXzsJ7EB8UjNIGexP1kPmQfFO8fq19UZr+d9lcRz8e/g5wo1kX4ei2kn+zMVF0B2JjCN9wVKWBJjOPAgA=
+X-Received: by 2002:a17:906:174f:: with SMTP id d15mr22075104eje.15.1607415751652;
+ Tue, 08 Dec 2020 00:22:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lez4floknnnll5q5"
-Content-Disposition: inline
-In-Reply-To: <20201208071928.2078-1-huangshuosheng@allwinnertech.com>
+Received: by 2002:a05:6400:24c:0:0:0:0 with HTTP; Tue, 8 Dec 2020 00:22:31
+ -0800 (PST)
+Reply-To: cristinacampeell@outlook.com
+From:   "Mrs. Cristina Campbell" <unionbanktransferunit.bankplc@gmail.com>
+Date:   Tue, 8 Dec 2020 00:22:31 -0800
+Message-ID: <CAEU+9WGYNcjyx2Z=3z+EouK_S=rBOQL32fJS-zUQGzin8Gi7Cw@mail.gmail.com>
+Subject: Kannst du mir helfen?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lieber geliebter,
 
---lez4floknnnll5q5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bitte lesen Sie dies langsam und sorgf=C3=A4ltig durch, da dies
+m=C3=B6glicherweise eine der wichtigsten E-Mails ist, die Sie jemals
+erhalten. Ich bin Frau Cristina Campbell, ich war mit dem verstorbenen
+Edward Campbell verheiratet. Er arbeitete fr=C3=BCher bei der Shell
+Petroleum Development Company in London und war auch eine Er starb am
+Montag, 31. Juli 2003 in Paris. Wir waren sieben Jahre ohne Kind
+verheiratet.
 
-Hi,
+W=C3=A4hrend Sie dies lesen, m=C3=B6chte ich nicht, dass Sie Mitleid mit mi=
+r
+haben, denn ich glaube, dass jeder eines Tages sterben wird. Bei mir
+wurde Speiser=C3=B6hrenkrebs diagnostiziert und mein Arzt sagte mir, dass
+ich aufgrund meiner komplizierten Gesundheitsprobleme nicht lange
+durchhalten w=C3=BCrde.
 
-On Tue, Dec 08, 2020 at 03:19:28PM +0800, Shuosheng Huang wrote:
-> It's better to use efuse_xlate to extract the differentiated part
-> regarding different SoC.
->=20
-> Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Ich m=C3=B6chte, dass Gott mir gn=C3=A4dig ist und meine Seele akzeptiert.
+Deshalb habe ich beschlossen, Wohlt=C3=A4tigkeitsorganisationen / Kirchen /
+Moscheen / mutterlosen Babys / Tempeln / weniger privilegierten Witwen
+Almosen zu geben, da ich m=C3=B6chte, dass dies eine der letzten guten
+Taten ist, die ich tue Mach es auf Erden, bevor ich sterbe. Bisher
+habe ich Geld an einige Wohlt=C3=A4tigkeitsorganisationen in Wales, Polen,
+D=C3=A4nemark und Luxemburg verteilt. Jetzt, wo sich mein
+Gesundheitszustand so stark verschlechtert hat, kann ich das nicht
+mehr selbst tun.
 
-Please wait a bit for reviews before sending a new version. You've sent
-three versions in a day, and I haven't reviewed the first one.
+Ich habe einmal Mitglieder meiner Familie gebeten, eines meiner Konten
+zu schlie=C3=9Fen und das Geld, das ich dort habe, an
+Wohlt=C3=A4tigkeitsorganisationen in =C3=96sterreich, der Schweiz, Deutschl=
+and,
+den Niederlanden und Italien zu verteilen. Sie haben es abgelehnt und
+das Geld f=C3=BCr sich behalten. Daher vertraue ich nicht sie nicht mehr,
+da sie nicht mit dem zu k=C3=A4mpfen scheinen, was ich ihnen hinterlassen
+habe. Das letzte Geld, von dem niemand etwas wei=C3=9F, ist die riesige
+Bareinzahlung von 6 Millionen US-Dollar in H=C3=B6he von 6.000.000
+US-Dollar, die ich bei einer Bank in Thailand habe, bei der ich den
+Fonds eingezahlt habe. Ich m=C3=B6chte, dass Sie diesen Fonds f=C3=BCr
+Wohlt=C3=A4tigkeitsprogramme verwenden und die Menschheit in Ihrem Land
+unterst=C3=BCtzen, wenn Sie nur aufrichtig sind.
 
-Also, please put a changelog in the cover letter, we don't have any way
-to tell what is the difference between v1, v2, v3 and v4.
+Ich habe diese Entscheidung getroffen, weil ich kein Kind habe, das
+dieses Geld erben wird. Ich habe keine Angst vor dem Tod, daher wei=C3=9F
+ich, wohin ich gehe. Ich wei=C3=9F, dass ich im Busen des Herrn sein werde.
+Sobald ich Ihre Antwort erhalten habe, werde ich Ihnen den Kontakt der
+Bank geben und Ihnen ein Genehmigungsschreiben ausstellen, das Sie als
+urspr=C3=BCnglichen Beg=C3=BCnstigten dieses Fonds erm=C3=A4chtigt, dieses
+Wohlt=C3=A4tigkeitsprogramm sofort in Ihrem Land zu starten.
 
-> ---
->  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 82 ++++++++++++++++----------
->  1 file changed, 51 insertions(+), 31 deletions(-)
->=20
-> diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun=
-50i-cpufreq-nvmem.c
-> index 9907a165135b..3c0531938d1a 100644
-> --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
-> @@ -19,24 +19,51 @@
-> =20
->  #define MAX_NAME_LEN	7
-> =20
-> -#define NVMEM_MASK	0x7
-> -#define NVMEM_SHIFT	5
-> +#define SUN50I_H6_NVMEM_MASK		0x7
-> +#define SUN50I_H6_NVMEM_SHIFT		5
-> +
-> +struct sunxi_cpufreq_soc_data {
-> +	int (*efuse_xlate)(struct nvmem_cell *speedbin_nvmem);
-> +};
-> =20
->  static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
-> =20
-> +static int sun50i_h6_efuse_xlate(struct nvmem_cell *speedbin_nvmem)
-> +{
-> +	size_t len;
-> +	u32 *speedbin;
-> +	u32 efuse_value;
-> +
-> +	speedbin =3D nvmem_cell_read(speedbin_nvmem, &len);
-> +	if (IS_ERR(speedbin))
-> +		return PTR_ERR(speedbin);
-> +
-> +	efuse_value =3D (*(u32 *)speedbin >> SUN50I_H6_NVMEM_SHIFT) &
-> +			  SUN50I_H6_NVMEM_MASK;
-> +	kfree(speedbin);
-> +	/*
-> +	 * We treat unexpected efuse values as if the SoC was from
-> +	 * the slowest bin. Expected efuse values are 1-3, slowest
-> +	 * to fastest.
-> +	 */
-> +	if (efuse_value >=3D 1 && efuse_value <=3D 3)
-> +		return efuse_value - 1;
-> +	else
-> +		return 0;
-> +}
-> +
->  /**
->   * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
-> - * @versions: Set to the value parsed from efuse
-> + * @soc_data: pointer to sunxi_cpufreq_soc_data context
->   *
->   * Returns 0 if success.
->   */
-> -static int sun50i_cpufreq_get_efuse(u32 *versions)
-> +static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data =
-*soc_data)
->  {
->  	struct nvmem_cell *speedbin_nvmem;
->  	struct device_node *np;
->  	struct device *cpu_dev;
-> -	u32 *speedbin, efuse_value;
-> -	size_t len;
-> +	int versions;
->  	int ret;
-> =20
->  	cpu_dev =3D get_cpu_device(0);
-> @@ -63,43 +90,33 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
->  		return PTR_ERR(speedbin_nvmem);
->  	}
-> =20
-> -	speedbin =3D nvmem_cell_read(speedbin_nvmem, &len);
-> +	versions =3D soc_data->efuse_xlate(speedbin_nvmem);
->  	nvmem_cell_put(speedbin_nvmem);
-> -	if (IS_ERR(speedbin))
-> -		return PTR_ERR(speedbin);
-> -
-> -	efuse_value =3D (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
-> -
-> -	/*
-> -	 * We treat unexpected efuse values as if the SoC was from
-> -	 * the slowest bin. Expected efuse values are 1-3, slowest
-> -	 * to fastest.
-> -	 */
-> -	if (efuse_value >=3D 1 && efuse_value <=3D 3)
-> -		*versions =3D efuse_value - 1;
-> -	else
-> -		*versions =3D 0;
-> =20
-> -	kfree(speedbin);
-> -	return 0;
-> +	return versions;
->  };
-> =20
->  static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
->  {
-> +	const struct of_device_id *match;
->  	struct opp_table **opp_tables;
->  	char name[MAX_NAME_LEN];
->  	unsigned int cpu;
-> -	u32 speed =3D 0;
-> +	int speed =3D 0;
->  	int ret;
-> =20
-> +	match =3D dev_get_platdata(&pdev->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +
->  	opp_tables =3D kcalloc(num_possible_cpus(), sizeof(*opp_tables),
->  			     GFP_KERNEL);
->  	if (!opp_tables)
->  		return -ENOMEM;
-> =20
-> -	ret =3D sun50i_cpufreq_get_efuse(&speed);
-> -	if (ret)
-> -		return ret;
-> +	speed =3D sun50i_cpufreq_get_efuse(match->data);
-> +	if (speed < 0)
-> +		return speed;
-> =20
->  	snprintf(name, MAX_NAME_LEN, "speed%d", speed);
-> =20
-> @@ -163,8 +180,12 @@ static struct platform_driver sun50i_cpufreq_driver =
-=3D {
->  	},
->  };
-> =20
-> +static const struct sunxi_cpufreq_soc_data sun50i_h6_data =3D {
-> +	.efuse_xlate =3D sun50i_h6_efuse_xlate,
-> +};
-> +
->  static const struct of_device_id sun50i_cpufreq_match_list[] =3D {
-> -	{ .compatible =3D "allwinner,sun50i-h6" },
-> +	{ .compatible =3D "allwinner,sun50i-h6", .data =3D &sun50i_h6_data },
->  	{}
->  };
-> =20
-> @@ -198,9 +219,8 @@ static int __init sun50i_cpufreq_init(void)
->  	if (unlikely(ret < 0))
->  		return ret;
-> =20
-> -	sun50i_cpufreq_pdev =3D
-> -		platform_device_register_simple("sun50i-cpufreq-nvmem",
-> -						-1, NULL, 0);
-> +	sun50i_cpufreq_pdev =3D platform_device_register_data(NULL,
-> +		"sun50i-cpufreq-nvmem", -1, match, sizeof(*match));
+Ich m=C3=B6chte, dass Sie immer f=C3=BCr mich beten. Jede Verz=C3=B6gerung =
+Ihrer
+Antwort gibt mir Raum f=C3=BCr die Beschaffung einer anderen Person f=C3=BC=
+r
+denselben Zweck. Wenn Sie nicht interessiert sind, entschuldigen Sie
+bitte, dass ich Sie kontaktiert habe. Sie k=C3=B6nnen mich erreichen oder
+mir =C3=BCber meine private E-Mail-Adresse antworten:
+(cristinacampeell@outlook.com).
 
-The alignment here raises a checkpatch warning with --strict
-
-Maxime
-
---lez4floknnnll5q5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX883ngAKCRDj7w1vZxhR
-xbJHAQDmcSqlridLyB0SRGolBHcXCe9dPTSgLj/2rXPbLbyqyQEAgHhkTPY5DzP/
-wV7FUsm6Syw1GB66TNsQH/8ty3fyEgc=
-=x4Ax
------END PGP SIGNATURE-----
-
---lez4floknnnll5q5--
+Vielen Dank,
+Dein,
+Frau Cristina Campbell
+Email; cristinacampeell@outlook.com
