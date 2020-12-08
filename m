@@ -2,189 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3395F2D2237
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D2A2D223B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgLHEp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgLHEp3 (ORCPT
+        id S1727381AbgLHEsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:48:01 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35170 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgLHEsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:45:29 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7D8C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:44:48 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id b62so14789721otc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:44:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S839lFMHy0MANqMX7LWPsNoTjUegKOQvqUVMPavlC6U=;
-        b=cPp45lFN7EuWl0/lks1tVaMwk5uWFdxivYWhaGF4067O3UY2TYPjybuRmrsoFtp181
-         jyFkty98xB+dpDH/Zp5SKoBL3wi8wGd0kGbMVsZhtxnf0137Ty1SPv9l09C1H5VPQwp9
-         HRiG7CAvk+PSumHqbQbwSCBlSFG8ubvb4arPsbJvxl2JESREVz14KEqYdpolVA64eHFH
-         1FPJZ1ZiDhom6U4BDoehZBcOfU9UYbmqB/93NBcpYMGXD4TCxISBD9h6SOjDxKV8+RYP
-         +wB9YGUsEaQ0lwqvvJTniFX0s2sEo176ugxVzL9gG51AsKz1nxAHyJm3LJzR1W1eWBmH
-         8Kfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S839lFMHy0MANqMX7LWPsNoTjUegKOQvqUVMPavlC6U=;
-        b=HBDSb0jHpmTZAu0fIgQB//D5w0f6LLcxOpU/Wy0YUP/bfffidmuYgBbzkQTYV0eDEf
-         l7xNjAW2YKOum+XuNGUVAdgBf0hmmiN4t2lz5lydnquayQV5ERjqwGbOZR7Nf/rBjM3E
-         M4OJAaP2OD52CWVc9J9TYQgJiLn7uTMn1aOadUCE6s4v478ZREpqTOt6hm1ToknXimyU
-         GfF5eP/U+V2DNdzXA80zZXumBCaBagakaEODRpvUZke6RCx7yhJiyL2sWIrkfLgyPx6o
-         WzyGDo3fgy2ov+C03Vb+9yG1hMzIVb7NB4AlI9pD8oDpvYNPqzP3I5P657dNQFnyfEOY
-         TZFw==
-X-Gm-Message-State: AOAM530b6Xb8t6bTlmn1+V27PDzRcVZb5M+JupcFIlcFSCs0k2/I/gfT
-        mMSfA2dVlnUJodEhsczXE+koaw==
-X-Google-Smtp-Source: ABdhPJyQpX+x8CsyAIpk0UarS+sOy31K736OMAOfCChjfjOwQ4qoP3bt78faRAsycAlt5uSGYTG+vg==
-X-Received: by 2002:a05:6830:11cc:: with SMTP id v12mr16250268otq.363.1607402688364;
-        Mon, 07 Dec 2020 20:44:48 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c19sm3171921otn.59.2020.12.07.20.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 20:44:47 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] drm/panel: Make backlight attachment lazy
-Date:   Mon,  7 Dec 2020 22:44:46 -0600
-Message-Id: <20201208044446.973238-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 23:48:00 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B84kqxV039474;
+        Mon, 7 Dec 2020 22:46:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607402812;
+        bh=ab8TR71D8wvDMjyDs6nWrexGzGp6Fis30WChrKD0GJI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=I1KcsdWfGGYKukU1vhdrJMy3dUirqKSS8jiSFV+azOygxU/WmetaeoFr4QPN7fk2O
+         UxFK+NyVzyVyTqtyzzKkTiA5UZ3MYqpYSyGYUd55RbkWH+14VndD7BbKV2RBM8eASt
+         vb+sJt5xjkxsIKdGHs+vPyuQAw00hfK8AW8HWujc=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B84kqEQ098505
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Dec 2020 22:46:52 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Dec
+ 2020 22:46:52 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 7 Dec 2020 22:46:52 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B84kkoW053051;
+        Mon, 7 Dec 2020 22:46:47 -0600
+Subject: Re: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local
+ or remote side of bridge
+To:     "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
+References: <20201111153559.19050-1-kishon@ti.com>
+ <20201111153559.19050-17-kishon@ti.com>
+ <f39cf769993541e2a46bfe4d777ccf46@intel.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <6a493055-eef0-5722-e24b-449a11cf8a36@ti.com>
+Date:   Tue, 8 Dec 2020 10:16:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f39cf769993541e2a46bfe4d777ccf46@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
-means of generating a PWM signal for backlight control of the attached
-panel. The provided PWM chip is typically controlled by the
-pwm-backlight driver, which if tied to the panel will provide DPMS.
+Hi Dave,
 
-But with the current implementation the panel will refuse to probe
-because the bridge driver has yet to probe and register the PWM chip,
-and the bridge driver will refuse to probe because it's unable to find
-the panel.
+On 07/12/20 9:25 pm, Jiang, Dave wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Kishon Vijay Abraham I <kishon@ti.com>
+>> Sent: Wednesday, November 11, 2020 8:36 AM
+>> To: Bjorn Helgaas <bhelgaas@google.com>; Jonathan Corbet
+>> <corbet@lwn.net>; Kishon Vijay Abraham I <kishon@ti.com>; Lorenzo
+>> Pieralisi <lorenzo.pieralisi@arm.com>; Arnd Bergmann <arnd@arndb.de>;
+>> Jon Mason <jdmason@kudzu.us>; Jiang, Dave <dave.jiang@intel.com>;
+>> Allen Hubbe <allenbh@gmail.com>; Tom Joseph <tjoseph@cadence.com>;
+>> Rob Herring <robh@kernel.org>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
+>> pci@vger.kernel.org; linux-doc@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-ntb@googlegroups.com
+>> Subject: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local or
+>> remote side of bridge
+>>
+>> Invoke ntb_link_enable() to enable the NTB/PCIe link on the local or remote
+>> side of the bridge.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/ntb/test/ntb_tool.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c index
+>> b7bf3f863d79..8230ced503e3 100644
+>> --- a/drivers/ntb/test/ntb_tool.c
+>> +++ b/drivers/ntb/test/ntb_tool.c
+>> @@ -1638,6 +1638,7 @@ static int tool_probe(struct ntb_client *self, struct
+>> ntb_dev *ntb)
+>>
+>>  	tool_setup_dbgfs(tc);
+>>
+>> +	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
+> 
+> The tool expects the user to enable the link via debugfs according to documentation. Is this necessary?
 
-Mitigate this catch-22 situation by allowing the panel driver to probe
-and retry the attachment of the backlight as the panel is turned on or
-off.
+right, it can be enabled using debugfs. Will drop this patch.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/gpu/drm/drm_panel.c | 47 +++++++++++++++++++++++++++----------
- include/drm/drm_panel.h     |  8 +++++++
- 2 files changed, 43 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index f634371c717a..7487329bd22d 100644
---- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -43,6 +43,34 @@ static LIST_HEAD(panel_list);
-  * take look at drm_panel_bridge_add() and devm_drm_panel_bridge_add().
-  */
- 
-+#if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
-+static int drm_panel_of_backlight_lazy(struct drm_panel *panel)
-+{
-+	struct backlight_device *backlight;
-+
-+	if (!panel || !panel->dev)
-+		return -EINVAL;
-+
-+	backlight = devm_of_find_backlight(panel->dev);
-+
-+	if (IS_ERR(backlight)) {
-+		if (PTR_ERR(backlight) == -EPROBE_DEFER) {
-+			panel->backlight_init_pending = true;
-+			return 0;
-+		}
-+
-+		return PTR_ERR(backlight);
-+	}
-+
-+	panel->backlight = backlight;
-+	panel->backlight_init_pending = false;
-+
-+	return 0;
-+}
-+#else
-+static int drm_panel_of_backlight_lazy(struct drm_panel *panel) { return 0; }
-+#endif
-+
- /**
-  * drm_panel_init - initialize a panel
-  * @panel: DRM panel
-@@ -161,6 +189,9 @@ int drm_panel_enable(struct drm_panel *panel)
- 			return ret;
- 	}
- 
-+	if (panel->backlight_init_pending)
-+		drm_panel_of_backlight_lazy(panel);
-+
- 	ret = backlight_enable(panel->backlight);
- 	if (ret < 0)
- 		DRM_DEV_INFO(panel->dev, "failed to enable backlight: %d\n",
-@@ -187,6 +218,9 @@ int drm_panel_disable(struct drm_panel *panel)
- 	if (!panel)
- 		return -EINVAL;
- 
-+	if (panel->backlight_init_pending)
-+		drm_panel_of_backlight_lazy(panel);
-+
- 	ret = backlight_disable(panel->backlight);
- 	if (ret < 0)
- 		DRM_DEV_INFO(panel->dev, "failed to disable backlight: %d\n",
-@@ -328,18 +362,7 @@ EXPORT_SYMBOL(of_drm_get_panel_orientation);
-  */
- int drm_panel_of_backlight(struct drm_panel *panel)
- {
--	struct backlight_device *backlight;
--
--	if (!panel || !panel->dev)
--		return -EINVAL;
--
--	backlight = devm_of_find_backlight(panel->dev);
--
--	if (IS_ERR(backlight))
--		return PTR_ERR(backlight);
--
--	panel->backlight = backlight;
--	return 0;
-+	return drm_panel_of_backlight_lazy(panel);
- }
- EXPORT_SYMBOL(drm_panel_of_backlight);
- #endif
-diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-index 33605c3f0eba..b126abebb2f3 100644
---- a/include/drm/drm_panel.h
-+++ b/include/drm/drm_panel.h
-@@ -149,6 +149,14 @@ struct drm_panel {
- 	 */
- 	struct backlight_device *backlight;
- 
-+	/**
-+	 * @backlight_init_pending
-+	 *
-+	 * Backlight driver is not yet available so further attempts to
-+	 * initialize @backlight is necessary.
-+	 */
-+	bool backlight_init_pending;
-+
- 	/**
- 	 * @funcs:
- 	 *
--- 
-2.29.2
-
+Thank You,
+Kishon
