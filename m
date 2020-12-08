@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2852D3652
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD0C2D365D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731530AbgLHWdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:33:51 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:42981 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731518AbgLHWdv (ORCPT
+        id S1731302AbgLHWiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:38:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726421AbgLHWiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:33:51 -0500
-Received: by mail-io1-f70.google.com with SMTP id m9so15700127ioa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:33:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5N8UKcVWDRDZehTYxR/1/iB/xs2w750hku+tRRbXm28=;
-        b=iNybHH36D0UQQwMYpmF3URCRHG2YS0O11z7ANdXw0cupIYSeilL7dxpLPlIlp3FLm9
-         pwyrM/BB5UPbo22fnwUD9iH9mtTGjn0muCfPxrX7a11bxL5kkIfpcnCJlssmCK5DIDvU
-         hZgnKTuk1p984ENih6eu25u5YwLbCJ2ga+C+7Ogr5Ke681Sc6Mx/l/fP+T2Oe2H9xN2d
-         qCwJqATn+IeDrxpZs8MKlXZ7poEhpMuet8/qTVQDjDGSUFiXAZ0PFZvNGkuN1Sw19/A3
-         lkJpV796moCE3eEPII4JFth/72fIxWORg/OmeGMHt634ZpzDcXbHzfcPsipBs44IBXNZ
-         1J9g==
-X-Gm-Message-State: AOAM532VUBI0CwEwogG2dUV54xFYTyIUPee2GzeimYIiOO8pk7qwbC9S
-        civuCJ0jujlJ0Aqvu6kfTRuscTgt4cZJFggkoEY/y/WVdQ3W
-X-Google-Smtp-Source: ABdhPJxTCiOFZJBvc0dE/asUctDs0YhPWft6cBWXWFDcz6/g7eOwGBnIHImZ9xCyWIig6yvXUTNsZfOm1ya+drU89FlAddQr4bEa
+        Tue, 8 Dec 2020 17:38:12 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MW9Ec106166;
+        Tue, 8 Dec 2020 17:37:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ny4BGtsIDYCNJGw0eK1XWCj9RE2kutEusQjjkUxM/bI=;
+ b=IinELtBzPOnmbSaQjLmMTQ2kyaiigWd0K10ApwnaRlH393m2M1dp/t2naYJGkv1U6+xn
+ DYMIMZCbGpbpoa/3zjdQtFOu8P36Ox+/VMZigz3Y3PnR58sgLk69ULde7zqTs3CL/cD1
+ Yo4H+Fau5H7gy8BzSuYJA+eI02P2/faWO6EQTNd6XLKzHzm3jeQBubQPZsvXJ5zaxSbv
+ dYqRB+bryeS4qOxT//+Zqw7gJ4MQRHDmQpPlJHa8yDVTEFqd6rboMQtDo3rpq2Px7c+e
+ 13Jsuw7Jb7+tnGdaQKdyqBblzUfbIvqEBPbDJAUpBfFpxhixEAnJ87deuBAK5jHuKTCt hg== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35ajbng5br-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 17:37:21 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MWO9T029588;
+        Tue, 8 Dec 2020 22:37:20 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma03dal.us.ibm.com with ESMTP id 3581u99pss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 22:37:20 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8MbJRi28049680
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Dec 2020 22:37:20 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD4B8112079;
+        Tue,  8 Dec 2020 22:37:19 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2347811207A;
+        Tue,  8 Dec 2020 22:37:18 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.138])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Dec 2020 22:37:17 +0000 (GMT)
+Subject: Re: [PATCH v2 01/17] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Hannes Reinecke <hare@suse.de>,
+        Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20201202005329.4538-1-tyreld@linux.ibm.com>
+ <20201202005329.4538-2-tyreld@linux.ibm.com>
+ <a11c0e6a-cfa6-0dc4-5d34-6fd35ae1f29b@linux.vnet.ibm.com>
+ <38903a4f-9253-0b4b-6f67-af78ec86175f@linux.ibm.com>
+ <efbfe9e9-c692-80a1-f5b4-55473d8193e4@linux.vnet.ibm.com>
+ <6ce79011-d288-7a49-3d51-262da58d8486@suse.de>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <f226e3f9-60e9-b96a-ecc3-2e4008e08bac@linux.ibm.com>
+Date:   Tue, 8 Dec 2020 14:37:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:91cf:: with SMTP id k15mr28658ior.161.1607466790502;
- Tue, 08 Dec 2020 14:33:10 -0800 (PST)
-Date:   Tue, 08 Dec 2020 14:33:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000953b005b5fb870e@google.com>
-Subject: memory leak in pcan_usb_pro_init
-From:   syzbot <syzbot+215ecdbae76bb8c36b7e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, gustavoars@kernel.org, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liushixin2@huawei.com, mkl@pengutronix.de, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, wg@grandegger.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6ce79011-d288-7a49-3d51-262da58d8486@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-08_15:2020-12-08,2020-12-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012080137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 12/7/20 3:56 AM, Hannes Reinecke wrote:
+> On 12/4/20 3:26 PM, Brian King wrote:
+>> On 12/2/20 11:27 AM, Tyrel Datwyler wrote:
+>>> On 12/2/20 7:14 AM, Brian King wrote:
+>>>> On 12/1/20 6:53 PM, Tyrel Datwyler wrote:
+>>>>> Introduce several new vhost fields for managing MQ state of the adapter
+>>>>> as well as initial defaults for MQ enablement.
+>>>>>
+>>>>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>>>>> ---
+>>>>>   drivers/scsi/ibmvscsi/ibmvfc.c |  9 ++++++++-
+>>>>>   drivers/scsi/ibmvscsi/ibmvfc.h | 13 +++++++++++--
+>>>>>   2 files changed, 19 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>>> index 42e4d35e0d35..f1d677a7423d 100644
+>>>>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>>>>> @@ -5161,12 +5161,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const
+>>>>> struct vio_device_id *id)
+>>>>>       }
+>>>>>         shost->transportt = ibmvfc_transport_template;
+>>>>> -    shost->can_queue = max_requests;
+>>>>> +    shost->can_queue = (max_requests / IBMVFC_SCSI_HW_QUEUES);
+>>>>
+>>>> This doesn't look right. can_queue is the SCSI host queue depth, not the MQ
+>>>> queue depth.
+>>>
+>>> Our max_requests is the total number commands allowed across all queues. From
+>>> what I understand is can_queue is the total number of commands in flight allowed
+>>> for each hw queue.
+>>>
+>>>          /*
+>>>           * In scsi-mq mode, the number of hardware queues supported by the LLD.
+>>>           *
+>>>           * Note: it is assumed that each hardware queue has a queue depth of
+>>>           * can_queue. In other words, the total queue depth per host
+>>>           * is nr_hw_queues * can_queue. However, for when host_tagset is set,
+>>>           * the total queue depth is can_queue.
+>>>           */
+>>>
+>>> We currently don't use the host wide shared tagset.
+>>
+>> Ok. I missed that bit... In that case, since we allocate by default only 100
+>> event structs. If we slice that across IBMVFC_SCSI_HW_QUEUES (16) queues, then
+>> we end up with only about 6 commands that can be outstanding per queue,
+>> which is going to really hurt performance... I'd suggest bumping up
+>> IBMVFC_MAX_REQUESTS_DEFAULT from 100 to 1000 as a starting point.
+>>
+> Before doing that I'd rather use the host-wide shared tagset.
+> Increasing the number of requests will increase the memory footprint of the
+> driver (as each request will be statically allocated).
+> 
 
-syzbot found the following issue on:
+In the case where we use host-wide how do I determine the queue depth per
+hardware queue? Is is hypothetically can_queue or is it (can_queue /
+nr_hw_queues)? We want to allocate an event pool per-queue which made sense
+without host-wide tags since the queue depth per hw queue is exactly can_queue.
 
-HEAD commit:    0477e928 Linux 5.10-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ef3f45500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=215ecdbae76bb8c36b7e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1207c05b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b7b613500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+215ecdbae76bb8c36b7e@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888110d22380 (size 96):
-  comm "kworker/0:3", pid 4912, jiffies 4294942219 (age 8.820s)
-  hex dump (first 32 bytes):
-    40 89 17 12 81 88 ff ff 00 00 00 00 00 00 00 00  @...............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000706edd19>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000706edd19>] kzalloc include/linux/slab.h:664 [inline]
-    [<00000000706edd19>] pcan_usb_pro_init+0x120/0x280 drivers/net/can/usb/peak_usb/pcan_usb_pro.c:856
-    [<0000000025ad9e43>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:850 [inline]
-    [<0000000025ad9e43>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:948
-    [<0000000064acbdae>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<0000000032f135d3>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e1ce8490>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<00000000bfd26436>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-    [<00000000cc4dd83e>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000f1b1aa05>] __device_attach+0x122/0x250 drivers/base/dd.c:912
-    [<0000000034abf9f3>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000ade05bb4>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
-    [<00000000a596bcb5>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
-    [<0000000008726818>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000c9e87a33>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<0000000032f135d3>] really_probe+0x159/0x480 drivers/base/dd.c:554
-    [<00000000e1ce8490>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
-    [<00000000bfd26436>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-Tyrel
