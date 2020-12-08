@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C416D2D262A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F0D2D25ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgLHIde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:33:34 -0500
-Received: from first.geanix.com ([116.203.34.67]:58268 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbgLHIdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:33:33 -0500
-X-Greylist: delayed 411 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 03:33:32 EST
-Received: from localhost (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id E025B485564;
-        Tue,  8 Dec 2020 08:25:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1607415959; bh=lsqzWpSkidQFbFC/2KHGEOpLIdIj+Y37q9lXRL1y3uA=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To;
-        b=JYMikx4285LYqJCSnR5UbisXb2SFm4OF51KQyFhRCxBp7O4G9xyzPA2Xqm0N56ppL
-         gfkcCMs+ET4QjEQ1hISVMq+o1odD0Vln+7wHJ4NGkU5poId5UrwvHYVunjNq6M+25h
-         f+p4ogHTp9+M4i45EqHj47858PiOtbqgF/f2FaJW87xFJsZcdABrbEd5/u0FIfk4kF
-         X36nUF3GtyXVQQtia5ArRVPbSsSRRngJW+GsJL9LIyz7v/0RHMtEHRBMiH3G9HVQQe
-         6x+hxyN8RtQK/EkQH4l4UIlOL5ziYsdbRIiPpE11Ro8DB6utxz8VUvMmA3gmsqFW3Q
-         g8PMZnutUwJEg==
-From:   Esben Haabendal <esben@geanix.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: ll_temac: Fix potential NULL dereference in
- temac_probe()
-References: <1607392422-20372-1-git-send-email-zhangchangzhong@huawei.com>
-Date:   Tue, 08 Dec 2020 09:25:59 +0100
-In-Reply-To: <1607392422-20372-1-git-send-email-zhangchangzhong@huawei.com>
-        (Zhang Changzhong's message of "Tue, 8 Dec 2020 09:53:42 +0800")
-Message-ID: <874kkw3drc.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1728124AbgLHIaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:30:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725927AbgLHIaS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:30:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607416131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TjsxQ2FzOW8Vf+JUFyxyrHDPT5g94+5fVImUHems/bg=;
+        b=ChoAllp3IenSpA3t2pK1BrF2q3L9Wkb8XtczRn4PQ0c3ek8cJSLXBTXLm64eq99hD2lHMu
+        1aTT215YR2bFyQRdg58tIKTHYoKIwdQF4tc4CtQxOKQZXZkdG/at6Hw5lSpoxD7Y1qsMXo
+        YMSYl1/mbHjsWSwhoRIhI9ezZFKphys=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-qE97xquSPL-ru67l_GVtUA-1; Tue, 08 Dec 2020 03:28:49 -0500
+X-MC-Unique: qE97xquSPL-ru67l_GVtUA-1
+Received: by mail-pf1-f198.google.com with SMTP id k17so7426402pfu.21
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:28:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TjsxQ2FzOW8Vf+JUFyxyrHDPT5g94+5fVImUHems/bg=;
+        b=PNO21T0pZethJR6aeSkNtqOflv74Xxy7ppzq4RkCORvObg4TtTAvaFatGXRsJDk5xT
+         Rg+mKY6sZ03ePtMohb4qrJ8n7TvijdOIMV6GXTuhY2UwTQAnSkyHyICj+2xckwP3uD8E
+         JaW3WfBSimlmTjfuNQIbNv8q9wLjLt3dFsVfvs4mXe8uiHdYlzFQWPA9tlJ2I65iw0oV
+         xbBGs2CWN5obkbNN82GIhGis+dMbl318YkG82luKaIyesXH9hX10s3he7hQbGa22tqYZ
+         O25opGpza5fzMnB3u/t8pkBXYpfdA/GoZ29wPr4iPwWTrDVHSIQRjiuYzik4mFvol2B7
+         zzvQ==
+X-Gm-Message-State: AOAM532SAR3D44KTSUVIEClHKoMr5mjstK5nMB4SQStTh/9/rcIxDOm+
+        dR5RdxaEpgS4x2S4lDakGMC+fogtV6Q6xq+k68iIfPOWEJmd5jUUzGLANlkCrwtE0gFiaRxJqYE
+        1P/pybt+ymFpSrD9eSULlGf8o
+X-Received: by 2002:aa7:9f0f:0:b029:19b:c68f:61cd with SMTP id g15-20020aa79f0f0000b029019bc68f61cdmr19311541pfr.45.1607416128451;
+        Tue, 08 Dec 2020 00:28:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyfxiWJVep27zelwlm4PEke2fzHrgHBaLKKZuL5ZDqWxjwE42PCmN/0sqAxIvpULn5YbI4fZA==
+X-Received: by 2002:aa7:9f0f:0:b029:19b:c68f:61cd with SMTP id g15-20020aa79f0f0000b029019bc68f61cdmr19311523pfr.45.1607416128200;
+        Tue, 08 Dec 2020 00:28:48 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id f92sm2218853pjk.54.2020.12.08.00.28.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 00:28:47 -0800 (PST)
+Date:   Tue, 8 Dec 2020 16:28:37 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH v2 1/3] erofs: get rid of magical Z_EROFS_MAPPING_STAGING
+Message-ID: <20201208082837.GC3006985@xiangao.remote.csb>
+References: <20201207012346.2713857-1-hsiangkao@redhat.com>
+ <0fc43d3f-9c79-c7a1-6e41-b5b6932fe571@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0fc43d3f-9c79-c7a1-6e41-b5b6932fe571@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zhang Changzhong <zhangchangzhong@huawei.com> writes:
+On Tue, Dec 08, 2020 at 04:15:59PM +0800, Chao Yu wrote:
+> On 2020/12/7 9:23, Gao Xiang wrote:
 
-> platform_get_resource() may fail and in this case a NULL dereference
-> will occur.
->
-> Fix it to use devm_platform_ioremap_resource() instead of calling
-> platform_get_resource() and devm_ioremap().
->
-> This is detected by Coccinelle semantic patch.
->
-> @@
-> expression pdev, res, n, t, e, e1, e2;
-> @@
->
-> res = \(platform_get_resource\|platform_get_resource_byname\)(pdev, t, n);
-> + if (!res)
-> +   return -EINVAL;
-> ... when != res == NULL
-> e = devm_ioremap(e1, res->start, e2);
->
-> Fixes: 8425c41d1ef7 ("net: ll_temac: Extend support to non-device-tree platforms")
-> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> ---
->  drivers/net/ethernet/xilinx/ll_temac_main.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
-> index 60c199f..0301853 100644
-> --- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-> +++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-> @@ -1351,7 +1351,6 @@ static int temac_probe(struct platform_device *pdev)
->  	struct device_node *temac_np = dev_of_node(&pdev->dev), *dma_np;
->  	struct temac_local *lp;
->  	struct net_device *ndev;
-> -	struct resource *res;
->  	const void *addr;
->  	__be32 *p;
->  	bool little_endian;
-> @@ -1500,13 +1499,11 @@ static int temac_probe(struct platform_device *pdev)
->  		of_node_put(dma_np);
->  	} else if (pdata) {
->  		/* 2nd memory resource specifies DMA registers */
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -		lp->sdma_regs = devm_ioremap(&pdev->dev, res->start,
-> -						     resource_size(res));
-> -		if (!lp->sdma_regs) {
-> +		lp->sdma_regs = devm_platform_ioremap_resource(pdev, 1);
-> +		if (IS_ERR(lp->sdma_regs)) {
->  			dev_err(&pdev->dev,
->  				"could not map DMA registers\n");
-> -			return -ENOMEM;
-> +			return PTR_ERR(lp->sdma_regs);
->  		}
->  		if (pdata->dma_little_endian) {
->  			lp->dma_in = temac_dma_in32_le;
+...
 
-Acked-by: Esben Haabendal <esben@geanix.com>
+
+> >   }
+> > -static inline bool z_erofs_put_stagingpage(struct list_head *pagepool,
+> > -					   struct page *page)
+> > +static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
+> > +					      struct page *page)
+> >   {
+> > -	if (!z_erofs_page_is_staging(page))
+> > +	if (!z_erofs_is_shortlived_page(page))
+> >   		return false;
+> > -	/* staging pages should not be used by others at the same time */
+> > -	if (page_ref_count(page) > 1)
+> > +	/* short-lived pages should not be used by others at the same time */
+> > +	if (page_ref_count(page) > 1) {
+> 
+> Does this be a possible case?
+
+Add more words about this.... since EROFS uses rolling decompression (which means
+the sliding window is limited (e.g. 64k, but some vendors adjust it to 12k for
+example ) even though the uncompressed size is too large (e.g. 128k)), and by
+using get_page(), vmap(), and z_erofs_put_shortlivedpage() to free such usage.
+Since shortlivedpages won't share with other parallel thread, so it's safe to
+just like this to decrease page count (it means how many shared get_page()
+before) and recycle to pagepool (on the last reference for later use.)
+
+Thanks,
+Gao Xiang
+
