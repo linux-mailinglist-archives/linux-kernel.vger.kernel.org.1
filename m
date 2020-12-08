@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613962D322C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607F12D3232
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgLHS3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:29:05 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:48604 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730493AbgLHS3F (ORCPT
+        id S1731093AbgLHS3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:29:42 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61686 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730490AbgLHS3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:29:05 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kmhin-002dQe-3P; Tue, 08 Dec 2020 11:28:21 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kmhij-007tVT-Fz; Tue, 08 Dec 2020 11:28:20 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Vasiliy Kulikov <segoon@openwall.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christopher Yeoh <cyeoh@au1.ibm.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <87tut2bqik.fsf@x220.int.ebiederm.org>
-        <87k0tybqfy.fsf@x220.int.ebiederm.org>
-        <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
-        <20201207090243.GE3040@hirez.programming.kicks-ass.net>
-        <87360hy5hp.fsf@x220.int.ebiederm.org>
-        <20201208145257.GE2414@hirez.programming.kicks-ass.net>
-Date:   Tue, 08 Dec 2020 12:27:39 -0600
-In-Reply-To: <20201208145257.GE2414@hirez.programming.kicks-ass.net> (Peter
-        Zijlstra's message of "Tue, 8 Dec 2020 15:52:57 +0100")
-Message-ID: <87tuswup9g.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kmhij-007tVT-Fz;;;mid=<87tuswup9g.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/iGgeJHJE2smz5oxfFAlHTueqe3oPu7oQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Peter Zijlstra <peterz@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 3090 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 11 (0.4%), b_tie_ro: 10 (0.3%), parse: 1.30
-        (0.0%), extract_message_metadata: 16 (0.5%), get_uri_detail_list: 0.83
-        (0.0%), tests_pri_-1000: 8 (0.3%), tests_pri_-950: 1.63 (0.1%),
-        tests_pri_-900: 1.37 (0.0%), tests_pri_-90: 131 (4.2%), check_bayes:
-        128 (4.2%), b_tokenize: 9 (0.3%), b_tok_get_all: 6 (0.2%),
-        b_comp_prob: 2.8 (0.1%), b_tok_touch_all: 108 (3.5%), b_finish: 0.95
-        (0.0%), tests_pri_0: 157 (5.1%), check_dkim_signature: 0.61 (0.0%),
-        check_dkim_adsp: 2.3 (0.1%), poll_dns_idle: 2735 (88.5%),
-        tests_pri_10: 2.2 (0.1%), tests_pri_500: 2757 (89.2%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+        Tue, 8 Dec 2020 13:29:42 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8I2Xkw108436;
+        Tue, 8 Dec 2020 13:28:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=2sprkH7X6430iSy8aZKUJoSEt3ENoaaXC2DRCVltC70=;
+ b=UnGkJ9nF0jDwgQoQ62ovn7nll8uw4MM7KHiE3ACkguJTs3mPRPf0iXvPhMsR6EcMXX49
+ RedQt1x1lmgoGrQ5umUFo+qRgmGlsNPm+S35QpfbXjD5VcaUKMvC8FRFkSG5lo7O8lJG
+ yjHDq8dcUO0ML4FN1j3sSJkQKn2hR6uFkYVzstuN1gXowsTtlpoL37KF86qcVb4dSyiI
+ hLiDl5GxjZWspv2PQbGfB8NV3rYfeOr4746kbIvHZMpkSJqrv9OfuCy+cnlhR9SXMX6g
+ OkGCpoiUAWh0uTAwW7LDPrjwyZIXWj8jcrspSUjVby9m1l1OkQeK55UAWwf8VJKzah3e Xw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35acbkwbkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 13:28:51 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8ICh4I010994;
+        Tue, 8 Dec 2020 18:28:49 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3581fhktxa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 18:28:49 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8ISkXf24248580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Dec 2020 18:28:46 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D3F0AE04D;
+        Tue,  8 Dec 2020 18:28:46 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1437FAE053;
+        Tue,  8 Dec 2020 18:28:46 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Dec 2020 18:28:46 +0000 (GMT)
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [RFC PATCH 0/1] "Bad page state" while freeing gigantic pages
+Date:   Tue,  8 Dec 2020 19:28:12 +0100
+Message-Id: <20201208182813.66391-1-gerald.schaefer@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1011 suspectscore=2 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
+The following "Bad page state" occurs on s390 when freeing gigantic pages:
 
-> On Mon, Dec 07, 2020 at 09:56:34AM -0600, Eric W. Biederman wrote:
->
->> Do you want to pull these two into a topic branch in the tip tree
->> based on v10-rc1?
->
-> I'll go do that. I'll let the robots chew on it before pushing it out
-> though, I'll reply once it's in tip.git.
+[  276.681603] BUG: Bad page state in process bash  pfn:380001
+[  276.681614] page:00000000c35f0856 refcount:0 mapcount:0 mapping:00000000126b68aa index:0x0 pfn:0x380001
+[  276.681620] aops:0x0
+[  276.681622] flags: 0x3ffff00000000000()
+[  276.681626] raw: 3ffff00000000000 0000000000000100 0000000000000122 0000000100000000
+[  276.681628] raw: 0000000000000000 0000000000000000 ffffffff00000000 0000000000000000
+[  276.681630] page dumped because: non-NULL mapping
+[  276.681632] Modules linked in:
+[  276.681637] CPU: 6 PID: 616 Comm: bash Not tainted 5.10.0-rc7-next-20201208 #1
+[  276.681639] Hardware name: IBM 3906 M03 703 (LPAR)
+[  276.681641] Call Trace:
+[  276.681648]  [<0000000458c252b6>] show_stack+0x6e/0xe8
+[  276.681652]  [<000000045971cf60>] dump_stack+0x90/0xc8
+[  276.681656]  [<0000000458e8b186>] bad_page+0xd6/0x130
+[  276.681658]  [<0000000458e8cdea>] free_pcppages_bulk+0x26a/0x800
+[  276.681661]  [<0000000458e8e67e>] free_unref_page+0x6e/0x90
+[  276.681663]  [<0000000458e8ea6c>] free_contig_range+0x94/0xe8
+[  276.681666]  [<0000000458ea5e54>] update_and_free_page+0x1c4/0x2c8
+[  276.681669]  [<0000000458ea784e>] free_pool_huge_page+0x11e/0x138
+[  276.681671]  [<0000000458ea8530>] set_max_huge_pages+0x228/0x300
+[  276.681673]  [<0000000458ea86c0>] nr_hugepages_store_common+0xb8/0x130
+[  276.681678]  [<0000000458fd5b6a>] kernfs_fop_write+0xd2/0x218
+[  276.681681]  [<0000000458ef9da0>] vfs_write+0xb0/0x2b8
+[  276.681684]  [<0000000458efa15c>] ksys_write+0xac/0xe0
+[  276.681687]  [<000000045972c5ca>] system_call+0xe6/0x288
+[  276.681730] Disabling lock debugging due to kernel taint
 
-Thanks,
+I bisected it to commit 1378a5ee451a ("mm: store compound_nr as well as
+compound_order"), and it seems that the new compound_nr overlaying
+page->mapping is not properly cleared, which then triggers the non-NULL
+mapping warning.
 
-Eric
+This is because only the compound_order is cleared in
+destroy_compound_gigantic_page(), and compound_nr is set to 1U << order == 1
+for order 0 in set_compound_order(page, 0).
+
+For some reason, I can not reproduce this on x86, but I do not see where
+this could be an arch-sepcific issue. Still, I might be missing something,
+and my proposed patch also looks a bit ugly (at least to me), hence this
+RFC. Any comments?
+
+BTW, for "normal sized" hugepages, this is not an issue, as page->mapping
+seems to be cleared explicitly in this case, in free_tail_pages_check(),
+but the freeing path for normal hugepages is quite different from that for
+gigantic pages using free_contig_range(). So a "page[1].mapping = NULL"
+might also be an option, instead of the "page[1].compound_nr = 0" in my
+patch, but that looks even more ugly, since it would clear more than
+needed.
+
+Gerald Schaefer (1):
+  mm/hugetlb: clear compound_nr before freeing gigantic pages
+
+ mm/hugetlb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+-- 
+2.17.1
+
