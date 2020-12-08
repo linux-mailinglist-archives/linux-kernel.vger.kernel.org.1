@@ -2,108 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB98E2D30CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4F2D30D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730621AbgLHRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730436AbgLHRTT (ORCPT
+        id S1730376AbgLHRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:20:03 -0500
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:12664 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgLHRUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:19:19 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06D7C061793;
-        Tue,  8 Dec 2020 09:18:38 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id k4so18408529edl.0;
-        Tue, 08 Dec 2020 09:18:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=YsRTsMesCTliRWq4glF76HNwn9ElWJpIdmHckoW2bvo=;
-        b=C6rysrLLV7sfxL+MVzuGx2dgpynoaKZwkG5aZ+HfF+/4msF1fH8Xam/Rm/CJWSwFmO
-         88pVRExhJ9bYiRSmD5noxb6tqNsZVnaRKHFQhBi46KliVnzSkyXxFp0Utd03rVh9HZr2
-         JbE/0mvw+PnMIl2HuB+rXqehij9oUY1LSyXIBclOeFtvHy+GsW0vFK6BOXHPw/5hgRxU
-         g509UkB/dWzQyXPk+zVIh07+JliwiT2A1g+fFo0Fll5CyKSn4BqVhI/wDf9eWccBEu3g
-         v4O7d6AYBUXLtWUGkZurD1PXupxAwqP0lBivwg+AVU+OKHpI7jrgFWhBRc+VuDFBRrZe
-         S4Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=YsRTsMesCTliRWq4glF76HNwn9ElWJpIdmHckoW2bvo=;
-        b=qgu5YK4SFAeoBEffn9nNcYaCRrF3A248gghwatWkRy7nibI/oPPxNkVfLAlvCzMR4z
-         Xi6eDUyTUJJcdFcH2umsZnbgGFbp/lerTfwtkn6Twut5gxCHq1ByYZzctv45EVCSVkVr
-         C6DT6g41HBfiTxy3vCroe6RJcxwuCy5bgEVAHnUZA9FWBB3Mn/Hu8A9C5RMEl27nPsQl
-         Wc2oRcaj6a5B7UkoPA1z0kLcrpFzqo36Eq8Uk2ZLJ1FzrcLm2eEfNqbRXzd7RhiuAVrH
-         xEkc4j8ycXIJ8XsztxvUTDnNsUJ4eI0Uoey0Rkk5sQNiptsJNsh8csqsVIr01XmR50mB
-         HssA==
-X-Gm-Message-State: AOAM531ANcsjeQcAO8B13+CerG1n13+zqp49An0sSycWsJxFV/sURAfG
-        3FQX8CQMZ32LU7Ura0TtATopK/8Z+dc=
-X-Google-Smtp-Source: ABdhPJxFJFhmprL9FiUn3tPn/fQwnmKhZr5/OMewcYe2zAlrGaCBV56eF5K/klQt3ixGkdieNipNXQ==
-X-Received: by 2002:a05:6402:8cc:: with SMTP id d12mr25266684edz.0.1607447917370;
-        Tue, 08 Dec 2020 09:18:37 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:580f:b429:3aa2:f8b1? (p200300ea8f065500580fb4293aa2f8b1.dip0.t-ipconnect.de. [2003:ea:8f06:5500:580f:b429:3aa2:f8b1])
-        by smtp.googlemail.com with ESMTPSA id ef11sm3659979ejb.15.2020.12.08.09.18.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 09:18:36 -0800 (PST)
-Subject: Re: [PATCH 2/2] PCI/ASPM: Use capability to override ASPM via sysfs
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201208082534.2460215-1-kai.heng.feng@canonical.com>
- <20201208082534.2460215-2-kai.heng.feng@canonical.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d47544b3-b9a0-609c-fc97-527c9416f9a0@gmail.com>
-Date:   Tue, 8 Dec 2020 18:18:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 8 Dec 2020 12:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607448003; x=1638984003;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=sk1rMyQfSku9eJoVG8ckn+sXbfP9b95FJk80FI5Fcis=;
+  b=jOHYH/iQDhtcwEg2jzKPVPjJrQNq3vFly8GGLzj88WVJYw3JoQKbiA/b
+   brvCZwBSu1BRGPZ4xpNMhR0PHWyxh1BxpFQ8YFPP3TZa9iUt7sMIyyh1K
+   etbycIVYvTwWxmOyHrlsTJrJLLgcr+Y6hOGSDC+lBSNx6Vn3MhCzJbKk8
+   1tunvmV0eWUczFIkRdQV8bOZ/s0FPTpO7Kw3bIS1I5SsPfxKv0WnlwHpL
+   rJg7RzvpP5Dz31zjuZeWNLQ7t0W5CKI515BqeD0W9neAb7rNcqjkJ70Bn
+   LZdKSiJcv0OmAaPV9RWgIe3psnrG+EcGGo6bCImU7NRgUsUPvB8yF8A1G
+   A==;
+IronPort-SDR: +6hj0J9iRfjQL7hdcrqldXTxm8Ae/Mto9MKT/26OGMc5hYSYm6+sr7URntusQguj1ze8F1T0In
+ jMeQrME/O73nw6YoyJtcgsJc+C1T3de4P9xcQCDIG3mzZx3ZD0UgkBKFNe/4VG4B09gmIyz/We
+ tw7MRW6/y9f8IBqPsmSwVf/dIKzeUTU9B6mo8HtvjNyAwKGiGxcjzXZXyPY89VNHUfPwfmTX/5
+ JGqkMJptH0eaYzwZuYdpItL6YGdAqlPmccxIOICKxwZrCQIfFsvuNEVi7GZPBeYLswG89gqHU8
+ PQc=
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="101984012"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Dec 2020 10:18:57 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Dec 2020 10:18:57 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 8 Dec 2020 10:18:55 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <daniel.lezcano@linaro.org>, <tglx@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] clocksource/drivers/timer-microchip-pit64b: add clocksource suspend/resume
+Date:   Tue, 8 Dec 2020 19:18:47 +0200
+Message-ID: <1607447927-17786-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20201208082534.2460215-2-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.12.2020 um 09:25 schrieb Kai-Heng Feng:
-> If we are to use sysfs to change ASPM settings, we may want to override
-> the default ASPM policy.
-> 
-> So use ASPM capability, instead of default policy, to be able to use all
-> possible ASPM states.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/pci/pcie/aspm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 2ea9fddadfad..326da7bbc84d 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1239,8 +1239,7 @@ static ssize_t aspm_attr_store_common(struct device *dev,
->  
->  		link->aspm_disable |= state;
->  	}
-> -
-> -	pcie_config_aspm_link(link, policy_to_aspm_state(link));
-> +	pcie_config_aspm_link(link, link->aspm_capable);
->  
-I like the idea, because the policy can be changed by the user anyway.
-Therefore I don't see it as a hard system limit.
+Add suspend/resume support for clocksource timer.
 
-However I think this change is not sufficient. Each call to
-pcie_config_aspm_link(link, policy_to_aspm_state(link)), e.g. in path
-pcie_aspm_pm_state_change -> pcie_config_aspm_path will reset the
-enabled states to the policy.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/clocksource/timer-microchip-pit64b.c | 86 +++++++++++++++++++++++-----
+ 1 file changed, 71 insertions(+), 15 deletions(-)
 
->  	mutex_unlock(&aspm_lock);
->  	up_read(&pci_bus_sem);
-> 
+diff --git a/drivers/clocksource/timer-microchip-pit64b.c b/drivers/clocksource/timer-microchip-pit64b.c
+index 59e11ca8ee73..ab623b25a47b 100644
+--- a/drivers/clocksource/timer-microchip-pit64b.c
++++ b/drivers/clocksource/timer-microchip-pit64b.c
+@@ -71,10 +71,24 @@ struct mchp_pit64b_clkevt {
+ 	struct clock_event_device	clkevt;
+ };
+ 
+-#define to_mchp_pit64b_timer(x) \
++#define clkevt_to_mchp_pit64b_timer(x) \
+ 	((struct mchp_pit64b_timer *)container_of(x,\
+ 		struct mchp_pit64b_clkevt, clkevt))
+ 
++/**
++ * mchp_pit64b_clksrc - PIT64B clocksource data structure
++ * @timer: PIT64B timer
++ * @clksrc: clocksource
++ */
++struct mchp_pit64b_clksrc {
++	struct mchp_pit64b_timer	timer;
++	struct clocksource		clksrc;
++};
++
++#define clksrc_to_mchp_pit64b_timer(x) \
++	((struct mchp_pit64b_timer *)container_of(x,\
++		struct mchp_pit64b_clksrc, clksrc))
++
+ /* Base address for clocksource timer. */
+ static void __iomem *mchp_pit64b_cs_base;
+ /* Default cycles for clockevent timer. */
+@@ -116,6 +130,36 @@ static inline void mchp_pit64b_reset(struct mchp_pit64b_timer *timer,
+ 	writel_relaxed(MCHP_PIT64B_CR_START, timer->base + MCHP_PIT64B_CR);
+ }
+ 
++static void mchp_pit64b_suspend(struct mchp_pit64b_timer *timer)
++{
++	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
++	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
++		clk_disable_unprepare(timer->gclk);
++	clk_disable_unprepare(timer->pclk);
++}
++
++static void mchp_pit64b_resume(struct mchp_pit64b_timer *timer)
++{
++	clk_prepare_enable(timer->pclk);
++	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
++		clk_prepare_enable(timer->gclk);
++}
++
++static void mchp_pit64b_clksrc_suspend(struct clocksource *cs)
++{
++	struct mchp_pit64b_timer *timer = clksrc_to_mchp_pit64b_timer(cs);
++
++	mchp_pit64b_suspend(timer);
++}
++
++static void mchp_pit64b_clksrc_resume(struct clocksource *cs)
++{
++	struct mchp_pit64b_timer *timer = clksrc_to_mchp_pit64b_timer(cs);
++
++	mchp_pit64b_resume(timer);
++	mchp_pit64b_reset(timer, ULLONG_MAX, MCHP_PIT64B_MR_CONT, 0);
++}
++
+ static u64 mchp_pit64b_clksrc_read(struct clocksource *cs)
+ {
+ 	return mchp_pit64b_cnt_read(mchp_pit64b_cs_base);
+@@ -128,7 +172,7 @@ static u64 mchp_pit64b_sched_read_clk(void)
+ 
+ static int mchp_pit64b_clkevt_shutdown(struct clock_event_device *cedev)
+ {
+-	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
++	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
+ 
+ 	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
+ 
+@@ -137,7 +181,7 @@ static int mchp_pit64b_clkevt_shutdown(struct clock_event_device *cedev)
+ 
+ static int mchp_pit64b_clkevt_set_periodic(struct clock_event_device *cedev)
+ {
+-	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
++	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
+ 
+ 	mchp_pit64b_reset(timer, mchp_pit64b_ce_cycles, MCHP_PIT64B_MR_CONT,
+ 			  MCHP_PIT64B_IER_PERIOD);
+@@ -148,7 +192,7 @@ static int mchp_pit64b_clkevt_set_periodic(struct clock_event_device *cedev)
+ static int mchp_pit64b_clkevt_set_next_event(unsigned long evt,
+ 					     struct clock_event_device *cedev)
+ {
+-	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
++	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
+ 
+ 	mchp_pit64b_reset(timer, evt, MCHP_PIT64B_MR_ONE_SHOT,
+ 			  MCHP_PIT64B_IER_PERIOD);
+@@ -158,21 +202,16 @@ static int mchp_pit64b_clkevt_set_next_event(unsigned long evt,
+ 
+ static void mchp_pit64b_clkevt_suspend(struct clock_event_device *cedev)
+ {
+-	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
++	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
+ 
+-	writel_relaxed(MCHP_PIT64B_CR_SWRST, timer->base + MCHP_PIT64B_CR);
+-	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
+-		clk_disable_unprepare(timer->gclk);
+-	clk_disable_unprepare(timer->pclk);
++	mchp_pit64b_suspend(timer);
+ }
+ 
+ static void mchp_pit64b_clkevt_resume(struct clock_event_device *cedev)
+ {
+-	struct mchp_pit64b_timer *timer = to_mchp_pit64b_timer(cedev);
++	struct mchp_pit64b_timer *timer = clkevt_to_mchp_pit64b_timer(cedev);
+ 
+-	clk_prepare_enable(timer->pclk);
+-	if (timer->mode & MCHP_PIT64B_MR_SGCLK)
+-		clk_prepare_enable(timer->gclk);
++	mchp_pit64b_resume(timer);
+ }
+ 
+ static irqreturn_t mchp_pit64b_interrupt(int irq, void *dev_id)
+@@ -296,20 +335,37 @@ static int __init mchp_pit64b_init_mode(struct mchp_pit64b_timer *timer,
+ static int __init mchp_pit64b_init_clksrc(struct mchp_pit64b_timer *timer,
+ 					  u32 clk_rate)
+ {
++	struct mchp_pit64b_clksrc *cs;
+ 	int ret;
+ 
++	cs = kzalloc(sizeof(*cs), GFP_KERNEL);
++	if (!cs)
++		return -ENOMEM;
++
+ 	mchp_pit64b_reset(timer, ULLONG_MAX, MCHP_PIT64B_MR_CONT, 0);
+ 
+ 	mchp_pit64b_cs_base = timer->base;
+ 
+-	ret = clocksource_mmio_init(timer->base, MCHP_PIT64B_NAME, clk_rate,
+-				    210, 64, mchp_pit64b_clksrc_read);
++	cs->timer.base = timer->base;
++	cs->timer.pclk = timer->pclk;
++	cs->timer.gclk = timer->gclk;
++	cs->timer.mode = timer->mode;
++	cs->clksrc.name = MCHP_PIT64B_NAME;
++	cs->clksrc.mask = CLOCKSOURCE_MASK(64);
++	cs->clksrc.flags = CLOCK_SOURCE_IS_CONTINUOUS;
++	cs->clksrc.rating = 210;
++	cs->clksrc.read = mchp_pit64b_clksrc_read;
++	cs->clksrc.suspend = mchp_pit64b_clksrc_suspend;
++	cs->clksrc.resume = mchp_pit64b_clksrc_resume;
++
++	ret = clocksource_register_hz(&cs->clksrc, clk_rate);
+ 	if (ret) {
+ 		pr_debug("clksrc: Failed to register PIT64B clocksource!\n");
+ 
+ 		/* Stop timer. */
+ 		writel_relaxed(MCHP_PIT64B_CR_SWRST,
+ 			       timer->base + MCHP_PIT64B_CR);
++		kfree(cs);
+ 
+ 		return ret;
+ 	}
+-- 
+2.7.4
 
