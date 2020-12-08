@@ -2,193 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297802D2E04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A162D2E08
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730038AbgLHPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:17:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730025AbgLHPRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:17:42 -0500
-Date:   Tue, 8 Dec 2020 07:17:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607440622;
-        bh=sOLjfmSGv043E0EIO2v/kyNGWMFwowAWFXBL4rHV5+E=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=J0hqZIybRD8nsLlo6SyS+sxhHTME3EdkR3yS30bFB/hjaFOdkY0fnYbs+8eD7pfw9
-         0RyJ206yalOzLE91/FFPtn5Rdnmub0PxRJPEjuvqo57OvYaDt0YLdR2mOaapag3Q1x
-         /xIRIlOgKf83Pqs5N4eshpTxtNAKiAsAG3KMqwuAQ2nUjw7hWRO2NiFzGpJxbpvW4K
-         rzEPflRo/8JXHy5jEU7xsI2kU4GJP+kskBnHH8eL8ca7KS1drHWvArUAvE4V4KxdjB
-         X21V1+9Os7inbE2n1nriWZomt0J6jbA/oX151eJRvRIFsbMVrlKfUh58l3CgtpWrKx
-         jDsLHt/slWN/Q==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>, linux-mm@kvack.org
-Subject: Re: [PATCH sl-b 1/6] mm: Add kmem_last_alloc() to return last
- allocation for memory block
-Message-ID: <20201208151701.GR2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
- <20201205004057.32199-1-paulmck@kernel.org>
- <20201207090243.GA20765@js1304-desktop>
- <20201207172554.GI2657@paulmck-ThinkPad-P72>
- <20201208085653.GA26940@js1304-desktop>
+        id S1729815AbgLHPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729457AbgLHPUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:20:22 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8271C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:19:41 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id lt17so25157145ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tzsovbIcXxZbPQxa4va4cD/Nj2m9EEN+fh5YzE4Jzs8=;
+        b=LIISehDJDsl6HTopwe/jucDF24nCTz1G8nlyh+9KRUuUtct7+FPmwGsXDHGyRLcPqA
+         eIw8lkpOY8J+eZZxQmwNfaD/ZhW4CkThjQXbVuTXBgFYpbcso2UBE1vXiPPeL6DhUAOq
+         wKcxqkm7Ht7yABSRkClc/mk9YfOaNxB7klZO+X0XURwWsZLoaYhQyCI9jT9Rd0xqnuIa
+         YgWwhskPwHcu2QAfTBQfuhmxEbDG6r3TBmHRORywU0D2UnaZZUekwKDwlck1261pjW25
+         dek3wZ/Hs1ikTl2tf4UoyaY2jzH7UNu7YkUNvuG9HwGeSuj5qlvNiyeutnlgYHi8X8KN
+         33iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tzsovbIcXxZbPQxa4va4cD/Nj2m9EEN+fh5YzE4Jzs8=;
+        b=EEGxiI4YYj16UvlZhINlJ2lNG19ct6nx74FGfAmQGmFRmFC+ifWOUFpDSodrdEtHFq
+         VTQV+qB023+oHh/requEsjApKvIE9cJr7ue+ntajkXgeRE0i3vAqRzCGQrKZT/Wx+OG7
+         4AVs+OH0uPZ/H9DvdXKHwHWl52RmlqviTcIR8NK/uhZxxx81o4QRMINUhY7Mx1qmekeq
+         uw2VcYWTWBnH853I7LPq5XkOv8vw+0F+ggevEx/YOihtZlRaBy8mEQWtVToKLtm1749C
+         WcPPKrqFzQp9PxKkIrutCpnbCOopIFMUjHeTjxlPCzKt/Rb+e/QasqusVBXDRxS0s/DY
+         gF+w==
+X-Gm-Message-State: AOAM533qtpvRzR7rKRaAFww2EBG1H7Ep2XBcllo7OLrFlNEKN0HeWm0i
+        y6jwqiECHao4NpZ8uVaEbkPoa3UmWfBhUA==
+X-Google-Smtp-Source: ABdhPJydZdkG3wGvgB36lJwRqm/woilf61nCHZ/fOBuVBoiFpKzGu3Kf8yD/KwpEy0Lnn7aCCVoITw==
+X-Received: by 2002:a17:906:351a:: with SMTP id r26mr8513471eja.409.1607440779779;
+        Tue, 08 Dec 2020 07:19:39 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b? ([2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b])
+        by smtp.googlemail.com with ESMTPSA id v24sm17529631edw.23.2020.12.08.07.19.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:19:39 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
+ updated without ops
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+ <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
+ <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
+ <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <7dff767d-3089-584e-f77d-33018faa38ea@linaro.org>
+Date:   Tue, 8 Dec 2020 16:19:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208085653.GA26940@js1304-desktop>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 05:57:07PM +0900, Joonsoo Kim wrote:
-> On Mon, Dec 07, 2020 at 09:25:54AM -0800, Paul E. McKenney wrote:
-> > On Mon, Dec 07, 2020 at 06:02:53PM +0900, Joonsoo Kim wrote:
-> > > Hello, Paul.
-> > > 
-> > > On Fri, Dec 04, 2020 at 04:40:52PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > 
-> > > > There are kernel facilities such as per-CPU reference counts that give
-> > > > error messages in generic handlers or callbacks, whose messages are
-> > > > unenlightening.  In the case of per-CPU reference-count underflow, this
-> > > > is not a problem when creating a new use of this facility because in that
-> > > > case the bug is almost certainly in the code implementing that new use.
-> > > > However, trouble arises when deploying across many systems, which might
-> > > > exercise corner cases that were not seen during development and testing.
-> > > > Here, it would be really nice to get some kind of hint as to which of
-> > > > several uses the underflow was caused by.
-> > > > 
-> > > > This commit therefore exposes a new kmem_last_alloc() function that
-> > > > takes a pointer to dynamically allocated memory and returns the return
-> > > > address of the call that allocated it.  This pointer can reference the
-> > > > middle of the block as well as the beginning of the block, as needed
-> > > > by things like RCU callback functions and timer handlers that might not
-> > > > know where the beginning of the memory block is.  These functions and
-> > > > handlers can use the return value from kmem_last_alloc() to give the
-> > > > kernel hacker a better hint as to where the problem might lie.
-> > > 
-> > > I agree with exposing allocation caller information to the other
-> > > subsystem to help the debugging. Some suggestions...
-> > 
-> > Good to hear!  ;-)
-> > 
-> > > 1. It's better to separate a slab object check (validity check) and
-> > > retrieving the allocation caller. Someone else would want to check
-> > > only a validity. And, it doesn't depend on the debug configuration so
-> > > it's not good to bind it to the debug function.
-> > > 
-> > > kmem_cache_valid_(obj|ptr)
-> > > kmalloc_valid_(obj|ptr)
-> > 
-> > Here both functions would say "true" for a pointer from kmalloc()?
-> > Or do I need to add a third function that is happy with a pointer from
-> > either source?
+On 08/12/2020 15:37, Lukasz Luba wrote:
 > 
-> I focused on separation and missed this case that the user sometimes
-> cannot know the object source (kmalloc/kmem_cache). At first step,
-> just checking whether it is a slab-object or not looks enough.
 > 
-> int kmem_valid_obj()
-
-OK, I will update my current kmalloc_valid_obj() to kmem_valid_obj(),
-thank you!
-
-> > I do understand that people who don't want to distinguish could just do
-> > "kmem_cache_valid_ptr(p) || kmalloc_valid_ptr(p)".  However, the two
-> > use cases in the series have no idea whether the pointer they have came
-> > from kmalloc(), kmem_cache_alloc(), or somewhere else entirely, even an
-> > on-stack variable.
-> > 
-> > Are you asking me to choose between the _obj() and _ptr() suffixes?
+> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
+>>
+>> Hi Lukasz,
+>>
+>> On 08/12/2020 10:36, Lukasz Luba wrote:
+>>> Hi Daniel,
+>>
+>> [ ... ]
+>>
+>>>>      static void thermal_zone_device_init(struct thermal_zone_device
+>>>> *tz)
+>>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
+>>>> thermal_zone_device *tz,
+>>>>        if (atomic_read(&in_suspend))
+>>>>            return;
+>>>>    -    if (!tz->ops->get_temp)
+>>>> +    if (update_temperature(tz))
+>>>>            return;
+>>>>    -    update_temperature(tz);
+>>>> -
+>>>
+>>> I think the patch does a bit more. Previously we continued running the
+>>> code below even when the thermal_zone_get_temp() returned an error (due
+>>> to various reasons). Now we stop and probably would not schedule next
+>>> polling, not calling:
+>>> handle_thermal_trip() and monitor_thermal_zone()
+>>
+>> I agree there is a change in the behavior.
+>>
+>>> I would left update_temperature(tz) as it was and not check the return.
+>>> The function thermal_zone_get_temp() can protect itself from missing
+>>> tz->ops->get_temp(), so we should be safe.
+>>>
+>>> What do you think?
+>>
+>> Does it make sense to handle the trip point if we are unable to read the
+>> temperature?
+>>
+>> The lines following the update_temperature() are:
+>>
+>>   - thermal_zone_set_trips() which needs a correct tz->temperature
+>>
+>>   - handle_thermal_trip() which needs a correct tz->temperature to
+>> compare with
+>>
+>>   - monitor_thermal_zone() which needs a consistent tz->passive. This one
+>> is updated by the governor which is in an inconsistent state because the
+>> temperature is not updated.
+>>
+>> The problem I see here is how the interrupt mode and the polling mode
+>> are existing in the same code path.
+>>
+>> The interrupt mode can call thermal_notify_framework() for critical/hot
+>> trip points without being followed by a monitoring. But for the other
+>> trip points, the get_temp is needed.
 > 
-> Yes, I prefer _obj().
+> Yes, I agree that we can bail out when there is no .get_temp() callback
+> and even not schedule next polling in such case.
+> But I am just not sure if we can bail out and not schedule the next
+> polling, when there is .get_temp() populated and the driver returned
+> an error only at that moment, e.g. indicating some internal temporary,
+> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
+> The thermal_zone_get_temp() would pass the error to update_temperature()
+> but we return, losing the next try. We would not check the temperature
+> again.
 
-Then _obj() it is.
+Hmm, right. I agree with your point.
 
-> > If not, please help me understand the distinction.
-> > 
-> > Do we want "debug" in these names as well?
-> 
-> I don't think so since it can be called without enabling the debug
-> option.
+What about the following changes:
 
-OK, understood.
+ - Add the new APIs:
 
-> > > 2. rename kmem_last_alloc to ...
-> > > 
-> > > int kmem_cache_debug_alloc_caller(cache, obj, &ret_addr)
-> > > int kmalloc_debug_alloc_caller(obj, &ret_addr)
-> > > 
-> > > or debug_kmem_cache_alloc_caller()
-> > > 
-> > > I think that function name need to include the keyword 'debug' to show
-> > > itself as a debugging facility (enabled at the debugging). And, return
-> > > errno and get caller address by pointer argument.
-> > 
-> > I am quite happy to add the "debug", but my use cases have no idea
-> > how the pointer was allocated.  In fact, the next version of the
-> > patch will also handle allocator return addresses from vmalloc().
-> > 
-> > And for kernels without sufficient debug enabled, I need to provide
-> > the name of the slab cache, and this also is to be in the next version.
-> 
-> Okay. So, your code would be...
-> 
-> if (kmem_valid_obj(ptr))
->         kmalloc_debug_print_provenance(ptr)
-> else if (vmalloc_valid_obj(ptr))
->         ....
+   thermal_zone_device_critical(struct thermal_zone_device *tz);
+     => emergency poweroff
 
-Suggestions on where to put the mem_dump_obj() or whatever name that
-executes this code?  Left to myself, I will pick a likely on the theory
-that it can always be moved later.
+   thermal_zone_device_hot(struct thermal_zone_device *tz);
+     => userspace notification
 
-This structuring does cause double work, but this should be OK because
-all of the uses I know of are on error paths.
+ - Add a big fat WARN when thermal_zone_device_update is called with
+.get_temp == NULL because that must not happen.
 
-> > > 3. If concrete error message is needed, please introduce more functions.
-> > > 
-> > > void *kmalloc_debug_error(errno)
-> > 
-> > Agreed, in fact, I was planning to have a function that printed out
-> > a suitable error-message continuation to the console for ease-of-use
-> > reasons.  For example, why is the caller deciding how deep the stack
-> > frame is?  ;-)
-> > 
-> > So something like this?
-> > 
-> > 	void kmalloc_debug_print_provenance(void *ptr);
-> > 
-> > With the understanding that it will print something helpful regardless
-> > of where ptr came from, within the constraints of the kernel build and
-> > boot options?
-> 
-> Looks good idea. I suggest a name, kmem_dump_obj(), for this function.
-> In this case, I don't think that "debug" keyword is needed since it shows
-> something useful (slab cache info) even if debug option isn't enabled.
-> 
-> So, for summary, we need to introduce two functions to accomplish your
-> purpose. Please correct me if wrong.
-> 
-> int kmem_valid_obj(ptr)
-> void kmem_dump_obj(ptr)
+If the .get_temp is NULL it is because we only have a HOT/CRITICAL
+thermal trip points where we don't care about the temperature and
+governor decision, right ?
 
-Within slab, agreed.
 
-We course also need something like mem_dump_obj() to handle a pointer
-with unknown provenance, along with the vmalloc_valid_obj() and the
-vmalloc_dump_obj().  And similar functions should other allocation
-sources become important.
 
-							Thanx, Paul
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
