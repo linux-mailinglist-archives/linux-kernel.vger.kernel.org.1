@@ -2,281 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3322D306B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEC42D306E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730552AbgLHRAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730009AbgLHRAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:00:25 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E062C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:59:36 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r3so16972403wrt.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:59:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hmA2Ghpuh1syeBdo0l6Iro27lr4TgRIFAotO0/MBG4o=;
-        b=RsLCoHjN0wyjjLOEWsdzvHd0m4ITsrHLyuth23/ibvkmVT941DfzFlJ/n0Z9riaCak
-         C0vcpnzJAVTyPpfBj2wXcTjQ0ZZ1u333ddaZOTmILSE7hDWohLe86xSRJjzR4lzcnWwy
-         /9DKUSq5ffkS272Xtox1vCD4A3PjA2Ce1Tl9ibK6lsZismF2sWJHP52LymyMoPgXXyNI
-         b+hYGfbcTaNTmKMw5uBN9XeKZ6pUumIL3AUFyth6XLwz2uCwaUsxt2kWL7DQF7kj6u38
-         zUUxRP/5IWkhoKY9JFLpL1erWZUUYL19wEv7XZ08uC1Hbgai2hcjkn63uz+GrK0LIo/D
-         G+AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hmA2Ghpuh1syeBdo0l6Iro27lr4TgRIFAotO0/MBG4o=;
-        b=FlF6c6l3lzOUOfyIPLl2LoJQYOjCy0KkNpMhw32zA1xftCzxFpHOl/XGgTWrsqBz2w
-         5uwZvyXIsgsnUXg9nTDYY+0hCeaqhdGzn/YQEpxry63IZ4JCbAStX1MDZYxi8v7iqGnW
-         dxBe3u9uCm4iNMr6lAwoGFvXE79yU5MhTxnyYPL+zRdBnbcTzfODwsOKAiUIKZ9LvYG2
-         ZC9C2iEgG5YWSqZe/Pgb+EblVbOfdk6GCK3N22oQ2HxsM36OttVhT/iou+gcBNNtFX7B
-         t3mkOkaVj9DtQUCCO2u/IG9bPuX3JtcgcPGMpjJ4vgW1TVnIuBwONtjxxV+Ikfzeh4Nh
-         tJfw==
-X-Gm-Message-State: AOAM532zPDeRPsCIYeccI3IPJVmMend1WWc/y0sxUILdNArTf/KuP+Es
-        SUEWi5JMk4B4oiW9Lcz8ihjVKw==
-X-Google-Smtp-Source: ABdhPJxt6ig7WK9aRT5J0JwgupC3CNLVYFhmMslrPivF10SzO7twGawtriUpR5ejeZd0hn2qqUqa7Q==
-X-Received: by 2002:a5d:6191:: with SMTP id j17mr25709333wru.299.1607446774988;
-        Tue, 08 Dec 2020 08:59:34 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id n3sm3868801wrw.61.2020.12.08.08.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 08:59:34 -0800 (PST)
-Date:   Tue, 8 Dec 2020 16:59:30 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v4 10/11] bpf: Add tests for new BPF atomic
- operations
-Message-ID: <X8+w8g56z11AKNci@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-11-jackmanb@google.com>
- <3adb88d5-b8d8-9c15-a988-7c10f86686fd@fb.com>
- <X890lro0A5mFJHyD@google.com>
- <24c9b2d7-f9b1-d7d4-71dc-47f4208ee6e9@fb.com>
+        id S1730599AbgLHRBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:01:21 -0500
+Received: from elvis.franken.de ([193.175.24.41]:57395 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729679AbgLHRBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:01:21 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kmgLm-0006Gx-00; Tue, 08 Dec 2020 18:00:30 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 909BFC0331; Tue,  8 Dec 2020 18:00:21 +0100 (CET)
+Date:   Tue, 8 Dec 2020 18:00:21 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        thierry.reding@gmail.com, krzk@kernel.org, mripard@kernel.org,
+        benh@kernel.crashing.org, emil.l.velikov@gmail.com,
+        alexandre.belloni@bootlin.com, mpe@ellerman.id.au,
+        linux-parisc@vger.kernel.org, paulus@samba.org,
+        nicolas.ferre@microchip.com, tony@atomide.com, sam@ravnborg.org,
+        linux@armlinux.org.uk, ludovic.desroches@microchip.com,
+        soc@kernel.org, James.Bottomley@HansenPartnership.com,
+        will@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        daniel.thompson@linaro.org, jernej.skrabec@siol.net,
+        linux-arm-kernel@lists.infradead.org, deller@gmx.de,
+        catalin.marinas@arm.com, wens@csie.org, linux-mips@vger.kernel.org,
+        lee.jones@linaro.org,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 0/5] drop unused BACKLIGHT_GENERIC option
+Message-ID: <20201208170021.GA6168@alpha.franken.de>
+References: <20201201222922.3183-1-andrey.zhizhikin@leica-geosystems.com>
+ <160744514229.359082.11487352663734358657.b4-ty@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24c9b2d7-f9b1-d7d4-71dc-47f4208ee6e9@fb.com>
+In-Reply-To: <160744514229.359082.11487352663734358657.b4-ty@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 08:38:04AM -0800, Yonghong Song wrote:
+On Tue, Dec 08, 2020 at 05:34:46PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> 
-> On 12/8/20 4:41 AM, Brendan Jackman wrote:
-> > On Mon, Dec 07, 2020 at 07:18:57PM -0800, Yonghong Song wrote:
-> > > 
-> > > 
-> > > On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> > > > The prog_test that's added depends on Clang/LLVM features added by
-> > > > Yonghong in commit 286daafd6512 (was https://reviews.llvm.org/D72184  ).
-> > > > 
-> > > > Note the use of a define called ENABLE_ATOMICS_TESTS: this is used
-> > > > to:
-> > > > 
-> > > >    - Avoid breaking the build for people on old versions of Clang
-> > > >    - Avoid needing separate lists of test objects for no_alu32, where
-> > > >      atomics are not supported even if Clang has the feature.
-> > > > 
-> > > > The atomics_test.o BPF object is built unconditionally both for
-> > > > test_progs and test_progs-no_alu32. For test_progs, if Clang supports
-> > > > atomics, ENABLE_ATOMICS_TESTS is defined, so it includes the proper
-> > > > test code. Otherwise, progs and global vars are defined anyway, as
-> > > > stubs; this means that the skeleton user code still builds.
-> > > > 
-> > > > The atomics_test.o userspace object is built once and used for both
-> > > > test_progs and test_progs-no_alu32. A variable called skip_tests is
-> > > > defined in the BPF object's data section, which tells the userspace
-> > > > object whether to skip the atomics test.
-> > > > 
-> > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > 
-> > > Ack with minor comments below.
-> > > 
-> > > Acked-by: Yonghong Song <yhs@fb.com>
-> > > 
-> > > > ---
-> > > >    tools/testing/selftests/bpf/Makefile          |  10 +
-> > > >    .../selftests/bpf/prog_tests/atomics.c        | 246 ++++++++++++++++++
-> > > >    tools/testing/selftests/bpf/progs/atomics.c   | 154 +++++++++++
-> > > >    .../selftests/bpf/verifier/atomic_and.c       |  77 ++++++
-> > > >    .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++++
-> > > >    .../selftests/bpf/verifier/atomic_fetch_add.c | 106 ++++++++
-> > > >    .../selftests/bpf/verifier/atomic_or.c        |  77 ++++++
-> > > >    .../selftests/bpf/verifier/atomic_xchg.c      |  46 ++++
-> > > >    .../selftests/bpf/verifier/atomic_xor.c       |  77 ++++++
-> > > >    9 files changed, 889 insertions(+)
-> > > >    create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/progs/atomics.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
-> > > >    create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
-> > > > 
-> > > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > > index ac25ba5d0d6c..13bc1d736164 100644
-> > > > --- a/tools/testing/selftests/bpf/Makefile
-> > > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > > @@ -239,6 +239,12 @@ BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
-> > > >    	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
-> > > >    	     -I$(abspath $(OUTPUT)/../usr/include)
-> > > > +# BPF atomics support was added to Clang in llvm-project commit 286daafd6512
-> > > > +# (release 12.0.0).
-> > > > +BPF_ATOMICS_SUPPORTED = $(shell \
-> > > > +	echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
-> > > > +	| $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
-> > > 
-> > > '-x c' here more intuitive?
-> > > 
-> > > > +
-> > > >    CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
-> > > >    	       -Wno-compare-distinct-pointer-types
-> > > > @@ -399,11 +405,15 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
-> > > >    		       $(wildcard progs/btf_dump_test_case_*.c)
-> > > >    TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> > > >    TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> > > > +ifeq ($(BPF_ATOMICS_SUPPORTED),1)
-> > > > +  TRUNNER_BPF_CFLAGS += -DENABLE_ATOMICS_TESTS
-> > > > +endif
-> > > >    TRUNNER_BPF_LDFLAGS := -mattr=+alu32
-> > > >    $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-> > > >    # Define test_progs-no_alu32 test runner.
-> > > >    TRUNNER_BPF_BUILD_RULE := CLANG_NOALU32_BPF_BUILD_RULE
-> > > > +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> > > >    TRUNNER_BPF_LDFLAGS :=
-> > > >    $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> > > > new file mode 100644
-> > > > index 000000000000..c841a3abc2f7
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> > > > @@ -0,0 +1,246 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +#include <test_progs.h>
-> > > > +
-> > > > +#include "atomics.skel.h"
-> > > > +
-> > > > +static void test_add(struct atomics *skel)
-> > > > +{
-> > > > +	int err, prog_fd;
-> > > > +	__u32 duration = 0, retval;
-> > > > +	struct bpf_link *link;
-> > > > +
-> > > > +	link = bpf_program__attach(skel->progs.add);
-> > > > +	if (CHECK(IS_ERR(link), "attach(add)", "err: %ld\n", PTR_ERR(link)))
-> > > > +		return;
-> > > > +
-> > > > +	prog_fd = bpf_program__fd(skel->progs.add);
-> > > > +	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> > > > +				NULL, NULL, &retval, &duration);
-> > > > +	if (CHECK(err || retval, "test_run add",
-> > > > +		  "err %d errno %d retval %d duration %d\n", err, errno, retval, duration))
-> > > > +		goto cleanup;
-> > > > +
-> > > > +	ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
-> > > > +	ASSERT_EQ(skel->bss->add64_result, 1, "add64_result");
-> > > > +
-> > > > +	ASSERT_EQ(skel->data->add32_value, 3, "add32_value");
-> > > > +	ASSERT_EQ(skel->bss->add32_result, 1, "add32_result");
-> > > > +
-> > > > +	ASSERT_EQ(skel->bss->add_stack_value_copy, 3, "add_stack_value");
-> > > > +	ASSERT_EQ(skel->bss->add_stack_result, 1, "add_stack_result");
-> > > > +
-> > > > +	ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
-> > > > +
-> > > > +cleanup:
-> > > > +	bpf_link__destroy(link);
-> > > > +}
-> > > > +
-> > > [...]
-> > > > +
-> > > > +__u64 xchg64_value = 1;
-> > > > +__u64 xchg64_result = 0;
-> > > > +__u32 xchg32_value = 1;
-> > > > +__u32 xchg32_result = 0;
-> > > > +
-> > > > +SEC("fentry/bpf_fentry_test1")
-> > > > +int BPF_PROG(xchg, int a)
-> > > > +{
-> > > > +#ifdef ENABLE_ATOMICS_TESTS
-> > > > +	__u64 val64 = 2;
-> > > > +	__u32 val32 = 2;
-> > > > +
-> > > > +	__atomic_exchange(&xchg64_value, &val64, &xchg64_result, __ATOMIC_RELAXED);
-> > > > +	__atomic_exchange(&xchg32_value, &val32, &xchg32_result, __ATOMIC_RELAXED);
-> > > 
-> > > Interesting to see this also works. I guess we probably won't advertise
-> > > this, right? Currently for LLVM, the memory ordering parameter is ignored.
+> On Tue, 1 Dec 2020 22:29:17 +0000, Andrey Zhizhikin wrote:
+> > Since the removal of generic_bl driver from the source tree in commit
+> > 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> > unused") BACKLIGHT_GENERIC config option became obsolete as well and
+> > therefore subject to clean-up from all configuration files.
 > > 
-> > Well IIUC this specific case is fine: the ordering that you get with
-> > BPF_[CMP]XCHG (via kernel atomic_[cmpxchg]) is sequential consistency,
-> > and its' fine to provide a stronger ordering than the one requested. I
-> > should change it to say __ATOMIC_SEQ_CST to avoid confusing readers,
-> > though.
+> > This series introduces patches to address this removal, separated by
+> > architectures in the kernel tree.
 > > 
-> > (I wrote it this way because I didn't see a __sync* function for
-> > unconditional atomic exchange, and I didn't see an __atomic* function
-> > where you don't need to specify the ordering).
+> > [...]
 > 
-> For the above code,
->    __atomic_exchange(&xchg64_value, &val64, &xchg64_result,
-> __ATOMIC_RELAXED);
-> It tries to do an atomic exchange between &xchg64_value and
->  &val64, and store the old &xchg64_value to &xchg64_result. So it is
-> equivalent to
->     xchg64_result = __sync_lock_test_and_set(&xchg64_value, val64);
+> While my plan was to only take the arm specific patches, it seems
+> nobody else has applied the other architecture specific ones,
+> but there have been a lot of Acks. Also, b4 makes it easy to
+> merge the entire branch, so I'll just take all of these.
 > 
-> So I think this test case can be dropped.
+> Applied to arm/defconfig, thanks!
+> 
+> [1/5] ARM: configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 0437141b4e2233ae0109a9584e7a003cd05b0a20
+> [2/5] arm64: defconfig: drop unused BACKLIGHT_GENERIC option
+>       commit: 717c4c8336486781630893508b3347ae18953fae
+> [3/5] MIPS: configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 2257682282531de45929c6006152f6e2ee881b42
 
-Ah nice, I didn't know about __sync_lock_test_and_set, let's switch to
-that I think.
+this one is already in mips-next.
 
-> > However... this led me to double-check the semantics and realise that we
-> > do have a problem with ordering: The kernel's atomic_{add,and,or,xor} do
-> > not imply memory barriers and therefore neither do the corresponding BPF
-> > instructions. That means Clang can compile this:
-> > 
-> >   (void)__atomic_fetch_add(&val, 1, __ATOMIC_SEQ_CST)
-> > 
-> > to a {.code = (BPF_STX | BPF_DW | BPF_ATOMIC), .imm = BPF_ADD},
-> > which is implemented with atomic_add, which doesn't actually satisfy
-> > __ATOMIC_SEQ_CST.
-> 
-> This is the main reason in all my llvm selftests I did not use
-> __atomic_* intrinsics because we cannot handle *different* memory
-> ordering properly.
-> 
-> > 
-> > In fact... I think this is a pre-existing issue with BPF_XADD.
-> > 
-> > If all I've written here is correct, the fix is to use
-> > (void)atomic_fetch_add etc (these imply barriers) even when BPF_FETCH is
-> > not set. And that change ought to be backported to fix BPF_XADD.
-> 
-> We cannot change BPF_XADD behavior. If we change BPF_XADD to use
-> atomic_fetch_add, then suddenly old code compiled with llvm12 will
-> suddenly requires latest kernel, which will break userland very badly.
+Thomas.
 
-Sorry I should have been more explicit: I meant that the fix would be to
-call atomic_fetch_add but discard the return value, purely for the
-implied barrier. The x86 JIT would stay the same. It would not break any
-existing code, only add ordering guarantees that the user probably
-already expected (since these builtins come from GCC originally and the
-GCC docs say "these builtins are considered a full barrier" [1])
-
-[1] https://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Atomic-Builtins.html
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
