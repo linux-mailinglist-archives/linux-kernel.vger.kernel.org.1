@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC662D33C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE0A2D3316
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgLHUYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:24:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbgLHUYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:24:33 -0500
-Date:   Tue, 8 Dec 2020 20:48:01 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607456802;
-        bh=R9ZTonv2bquTD0w3FW4XMjfaf0WYpoD2MwjmUjHw5oM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Neqj5W1Aj0Aj7asxkUIrAjZCrI+JoRgHoSfvmxK1TeIwO1tEkINzNOzmcLfVr7CWH
-         40THnoTl+5dGwKqHJWfjS4gpdO2kd3UtJquz37F549NiQ+O8eSVChtaPPF7M1w2nDn
-         rQ1NxLqzLcuCEjtK7SoL9ahhPF+y4vslwJx+iFyo=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        corbet@lwn.net, leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/22] keembay-ipc: Add Keem Bay IPC module
-Message-ID: <X8/YceIsM/Akt/E/@kroah.com>
-References: <20201201223511.65542-1-mgross@linux.intel.com>
- <20201201223511.65542-4-mgross@linux.intel.com>
- <X8cyA1qKCwrayEOp@kroah.com>
- <bcf8bad08a5f586093a151126aba2127eee44c02.camel@linux.intel.com>
+        id S1726774AbgLHUQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgLHUQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:16:36 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C69CC0613D6;
+        Tue,  8 Dec 2020 12:15:56 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id dm12so8853420qvb.3;
+        Tue, 08 Dec 2020 12:15:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D4Fyco5bDL0b1+A0R6hLCqPDjj4kiCO+5bu9D2g1+lI=;
+        b=dJ4xAje6ekDIJ6XmZmZjkKMybOjqi5CojyEmwj6BdVqiCqmxl1Vm53EK/YDL20COY1
+         AsUZsQmPL4qa9+67R3ufDZPdhOoc/76z1CmcTAYThFMFPEnu4/SbeE5ArPRj5kB61v41
+         xHkursJgg2yhDZTmDciQthWSwmMyMB2SW6rjZDw00pqjgJyxwrs+8XeHo3gGvSZEm96m
+         ITgEW0zJXWpH/VrH/UgwDZHTsbpSyKg/XsXVRfQvizX9YG5mew/97QqdxaV+m+UyIkoM
+         RrFM4VulWYccCTfWdRk+FBA+BQ9jMYnonRDvfOsHl63UuYov0+yFGnD6zq49ASq91mui
+         TQcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D4Fyco5bDL0b1+A0R6hLCqPDjj4kiCO+5bu9D2g1+lI=;
+        b=hd4IzLGBPOyp2AuPqDZPtxW51VmELi1ltLqgAr0eYP3UtSJ7aw7Qw/MU/9yZSTPNDu
+         BmGDe0MWcE4VCGrq3Btg9/5yVn2wV7CZSrvZm9uGD9uV1t9iLulYF/W6Z1vmZbLnbpP6
+         aTBWJ6dh+0mHaHdio5aL/3VF2d7uBCWaikis1JqNYzywoC6JJhCUfobTShnYE/YT/8kl
+         dBYCe7Li3nb/O7AxFw9pkie1I/MBWomNsUdYX8U4TznI9eX5e7HEJHhsLDmT5QFTk6VS
+         nV8rZNtcI4cqb9+CWoD59MwUBy45zwUMFuCj7K4TF+BnGhpA1PA+pfrubjrOZtbJmTVW
+         sh4Q==
+X-Gm-Message-State: AOAM533xD7ymOLdOWB1fTOEB0kSHjbmB6N+k3xiTLLkUvD3IE2uGWbjX
+        Zog3Vs+sL/dKONprm01khr2MPKSwyhVJOHIC3qPSvvjRDQo=
+X-Google-Smtp-Source: ABdhPJw7UDJIZ7N5Pm/Kgcza91TI1rb7WJ4XMyk9pIaUTNzYdmYB7lwXmKNCUO2sXUVfsxPLJ3z6IpK2Lca0r8l08Wg=
+X-Received: by 2002:a05:6102:a07:: with SMTP id t7mr18112045vsa.30.1607456893158;
+ Tue, 08 Dec 2020 11:48:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bcf8bad08a5f586093a151126aba2127eee44c02.camel@linux.intel.com>
+References: <1604455331-28031-1-git-send-email-jrdr.linux@gmail.com> <CAFqt6zZ3HouweyeKGUbeF9ix+SXvBUrRB6ks3hozRofwtUaUtA@mail.gmail.com>
+In-Reply-To: <CAFqt6zZ3HouweyeKGUbeF9ix+SXvBUrRB6ks3hozRofwtUaUtA@mail.gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 9 Dec 2020 01:18:22 +0530
+Message-ID: <CAFqt6zaRhgiktY8RyfDrBwoz18LRtxvThsh_JkASnhsk+5jDaQ@mail.gmail.com>
+Subject: Re: [PATCH v2] media: atomisp: Fixed error handling path
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        Greg KH <gregkh@linuxfoundation.org>, gustavoars@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, daniel.m.jordan@oracle.com,
+        Michel Lespinasse <walken@google.com>
+Cc:     linux-media@vger.kernel.org,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 06:59:09PM +0000, Daniele Alessandrelli wrote:
-> Hi Greg,
-> 
-> Thanks for your feedback.
-> 
-> On Wed, 2020-12-02 at 07:19 +0100, Greg KH wrote:
-> > On Tue, Dec 01, 2020 at 02:34:52PM -0800, mgross@linux.intel.com wrote:
-> > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > 
-> > > On the Intel Movidius SoC code named Keem Bay, communication between the
-> > > Computing Sub-System (CSS), i.e., the CPU, and the Multimedia Sub-System
-> > > (MSS), i.e., the VPU is enabled by the Keem Bay Inter-Processor
-> > > Communication (IPC) mechanism.
-> > > 
-> > > Add the driver for using Keem Bay IPC from within the Linux Kernel.
-> > > 
-> > > Keem Bay IPC uses the following terminology:
-> > > 
-> > > - Node:    A processing entity that can use the IPC to communicate;
-> > > 	   currently, we just have two nodes, CPU (CSS) and VPU (MSS).
-> > > 
-> > > - Link:    Two nodes that can communicate over IPC form an IPC link
-> > > 	   (currently, we just have one link, the one between the CPU
-> > > 	   and VPU).
-> > > 
-> > > - Channel: An IPC link can provide multiple IPC channels. IPC channels
-> > > 	   allow communication multiplexing, i.e., the same IPC link can
-> > > 	   be used by different applications for different
-> > > 	   communications. Each channel is identified by a channel ID,
-> > > 	   which must be unique within a single IPC link. Channels are
-> > > 	   divided in two categories, High-Speed (HS) channels and
-> > > 	   General-Purpose (GP) channels. HS channels have higher
-> > > 	   priority over GP channels.
-> > > 
-> > > Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
-> > > Both the CPU and the VPU have their own hardware FIFO. When the CPU
-> > > wants to send an IPC message to the VPU, it writes to the VPU FIFO (MSS
-> > > FIFO); similarly, when MSS wants to send an IPC message to the CPU, it
-> > > writes to the CPU FIFO (CSS FIFO).
-> > > 
-> > > A FIFO entry is simply a pointer to an IPC buffer (aka IPC header)
-> > > stored in a portion of memory shared between the CPU and the VPU.
-> > > Specifically, the FIFO entry contains the (VPU) physical address of the
-> > > IPC buffer being transferred.
-> > > 
-> > > In turn, the IPC buffer contains the (VPU) physical address of the
-> > > payload (which must be located in shared memory too) as well as other
-> > > information (payload size, IPC channel ID, etc.).
-> > > 
-> > > Each IPC node instantiates a pool of IPC buffers from its own IPC buffer
-> > > memory region. When instantiated, IPC buffers are marked as free. When
-> > > the node needs to send an IPC message, it gets the first free buffer it
-> > > finds (from its own pool), marks it as allocated (used), and puts its
-> > > physical address into the IPC FIFO of the destination node. The
-> > > destination node (which is notified by an interrupt when there are
-> > > entries pending in its FIFO) extract the physical address from the FIFO
-> > > and process the IPC buffer, marking it as free once done (so that the
-> > > sender can reuse the buffer).
-> > 
-> > Any reason you can't use the dmabuf interface for these memory buffers
-> > you are creating and having to manage "by hand"?  I thought that was
-> > what the kernel was wanting to unify on such that individual
-> > drivers/subsystems didn't have to do this on their own.
-> 
-> My understanding is that the dmabuf interface is used to share DMA
-> buffers across different drivers, while these buffers are used only
-> internally to the IPC driver (and exchanged only with the VPU
-> firmware). They basically are packet headers that are sent to the VPU.
+On Thu, Nov 19, 2020 at 1:06 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+>
+> On Wed, Nov 4, 2020 at 7:32 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> >
+> > Inside alloc_user_pages() based on flag value either pin_user_pages()
+> > or get_user_pages_fast() will be called. However, these API might fail.
+> >
+> > But free_user_pages() called in error handling path doesn't bother
+> > about return value and will try to unpin bo->pgnr pages, which is
+> > incorrect.
+> >
+> > Fix this by passing the page_nr to free_user_pages(). If page_nr > 0
+> > pages will be unpinned based on bo->mem_type. This will also take care
+> > of non error handling path.
+> >
+> > Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
+> > allocation")
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: Ira Weiny <ira.weiny@intel.com>
+> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> > v2:
+> >     Added review tag.
+>
+> Any further comment ? If no, can we get this patch in queue for 5.11 ?
 
-There's no reason you couldn't use these to share your buffers
-"internally" as well, because you have the same lifetime rules and
-accounting and all other sorts of things you have to handle, right?  Why
-rewrite something like this when you should take advantage of common
-code instead?
+Can we get this patch in the queue for 5.11 ?
 
-thanks,
-
-greg k-h
+> >
+> >  drivers/staging/media/atomisp/pci/hmm/hmm_bo.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c b/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
+> > index f13af23..0168f98 100644
+> > --- a/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
+> > +++ b/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
+> > @@ -857,16 +857,17 @@ static void free_private_pages(struct hmm_buffer_object *bo,
+> >         kfree(bo->page_obj);
+> >  }
+> >
+> > -static void free_user_pages(struct hmm_buffer_object *bo)
+> > +static void free_user_pages(struct hmm_buffer_object *bo,
+> > +                           unsigned int page_nr)
+> >  {
+> >         int i;
+> >
+> >         hmm_mem_stat.usr_size -= bo->pgnr;
+> >
+> >         if (bo->mem_type == HMM_BO_MEM_TYPE_PFN) {
+> > -               unpin_user_pages(bo->pages, bo->pgnr);
+> > +               unpin_user_pages(bo->pages, page_nr);
+> >         } else {
+> > -               for (i = 0; i < bo->pgnr; i++)
+> > +               for (i = 0; i < page_nr; i++)
+> >                         put_page(bo->pages[i]);
+> >         }
+> >         kfree(bo->pages);
+> > @@ -942,6 +943,8 @@ static int alloc_user_pages(struct hmm_buffer_object *bo,
+> >                 dev_err(atomisp_dev,
+> >                         "get_user_pages err: bo->pgnr = %d, pgnr actually pinned = %d.\n",
+> >                         bo->pgnr, page_nr);
+> > +               if (page_nr < 0)
+> > +                       page_nr = 0;
+> >                 goto out_of_mem;
+> >         }
+> >
+> > @@ -954,7 +957,7 @@ static int alloc_user_pages(struct hmm_buffer_object *bo,
+> >
+> >  out_of_mem:
+> >
+> > -       free_user_pages(bo);
+> > +       free_user_pages(bo, page_nr);
+> >
+> >         return -ENOMEM;
+> >  }
+> > @@ -1037,7 +1040,7 @@ void hmm_bo_free_pages(struct hmm_buffer_object *bo)
+> >         if (bo->type == HMM_BO_PRIVATE)
+> >                 free_private_pages(bo, &dynamic_pool, &reserved_pool);
+> >         else if (bo->type == HMM_BO_USER)
+> > -               free_user_pages(bo);
+> > +               free_user_pages(bo, bo->pgnr);
+> >         else
+> >                 dev_err(atomisp_dev, "invalid buffer type.\n");
+> >         mutex_unlock(&bo->mutex);
+> > --
+> > 1.9.1
+> >
