@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E312D1EBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693FD2D1EBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgLHABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 19:01:47 -0500
-Received: from mout.gmx.net ([212.227.15.19]:48449 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726207AbgLHABr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 19:01:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607385603;
-        bh=wvtwafmRpa5o7FnknQH0FLf14PhWObhwf1sB2Xashig=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=bAYgifTVJ7vR2Ea2fItrfoK1BZS+/ht27lJjLRVNR5iAXHRY/M5StKlyDhimYcdO6
-         6hsUaNJQmbiR6goMzQSzDM/9bW2Qe5RYGo1vrnyPbSBvefLyVgla8KGzAbSEwZBbok
-         tDhVEJ5VVsPq7liNSzyO1YZ0pAC7Le+1/gbEvSMY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8GMk-1k8fqt11vc-014E2I; Tue, 08
- Dec 2020 01:00:03 +0100
-Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
- configuration
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Sean Young <sean@mess.org>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
- <20201204084417.GA2154@gofer.mess.org>
- <20201204111326.qjux6k2472dmukot@pengutronix.de>
- <20201204113846.GA6547@gofer.mess.org>
- <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
- <20201205173444.GA1265@gofer.mess.org>
- <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
- <20201206141941.GA24807@gofer.mess.org>
- <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
- <20201207094320.GA10460@gofer.mess.org>
- <20201207135209.htp7plyotjxp37q2@pengutronix.de>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <ad83f03b-869d-44e1-5db9-d5e91a0c0da3@gmx.de>
-Date:   Tue, 8 Dec 2020 01:00:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728311AbgLHACR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 19:02:17 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54824 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726207AbgLHACQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 19:02:16 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B7NWYHC086651;
+        Mon, 7 Dec 2020 19:01:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=C7ZENVW1dr4uhcX3MvbQ3d8uls/tihQUr88RU0IrEus=;
+ b=q81G/1vzAZ8DL5fchF19kT+aZy3wHw13dGYLSna4AaLOILAGa2FgEGFFpw/NeBrvOyeb
+ NZPjE+2uba899ND+qOtlq20TaBtFMnf60vR8NBxQQgyR2gAHQZSJp3qzEsONZn2jnN0b
+ Qu+JusCaFneQLF3J03eyDNY8oqFoyfSZh3bN8TA/rU+P+9t/vVcTU11RUqWJNs4Bf00o
+ T4q46KZiaWI16kWpY/Y8Hy1E+MHhOCWuK5oeBpUrKmq0jPuRNwvkkUeLYsQy+yZ65Pc7
+ TNWvYxmUlkWfhczpYil0sV1+bYWMmSjU074ZiMphxu07vQIeQXAGk3rpmnt07hT4o+2V 2A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 359wwjryq7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 19:01:33 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B7NsJCP155829;
+        Mon, 7 Dec 2020 19:01:33 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 359wwjrypg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Dec 2020 19:01:33 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B7NqphK018707;
+        Tue, 8 Dec 2020 00:01:31 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3581u83030-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 00:01:31 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B801Sdw52429124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Dec 2020 00:01:28 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FD564C058;
+        Tue,  8 Dec 2020 00:01:28 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9036D4C050;
+        Tue,  8 Dec 2020 00:01:27 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.6.119])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue,  8 Dec 2020 00:01:27 +0000 (GMT)
+Date:   Tue, 8 Dec 2020 01:01:25 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
+        Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201208010125.209883f5.pasic@linux.ibm.com>
+In-Reply-To: <683dd341-f047-0447-1ee8-c126c305b6c2@linux.ibm.com>
+References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
+        <20201203185514.54060568.pasic@linux.ibm.com>
+        <a8a90aed-97df-6f10-85c2-8e18dba8f085@linux.ibm.com>
+        <20201204200502.1c34ae58.pasic@linux.ibm.com>
+        <683dd341-f047-0447-1ee8-c126c305b6c2@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201207135209.htp7plyotjxp37q2@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9LTnKuUWkzb+9t5TXmpWktlN8X27SbL8PRv/wO+Yb/T2Ncr1Oh7
- ROYMUo89lqZYg5T43iSExDPBF99psOQzkqsSKHvW30QRSmBpgODTqfLzELAD3LMW5HcqWeA
- 7+qSN3osa06fkvygaa1zQg7Dzg8ziHJ8URrmaIeGRgoif3k4Hw5w+l6245cFpzYDVtFz6n8
- NExj7xIsO0UWwzJ+TgmlQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qn4Zb7/VqAU=:SKP1eIFfNnl30EvA80MARf
- QqFrADljiJpGWQ7mnIqKI7R9tvbrMjHF5yeMZUeXlt91i4RACGzahV9v2IdXc/VZoUyfu+ajo
- oujMvUsg+deWlVTY7Livpe4PU7DxZEK9g19M/gCrbU1GJDHOM8i8UQrAOcOqfvgIheeb2pPNw
- CYlQ2x0YOEPUur4Sx5OZ9l6frviE0xzNrCXF0ADVZp7qBBLWGL7lw6SyzJZ+RZwb+cA7mSuYl
- v/9jbiwF9G5vQ0BCOwWJhqtwB0M9mWef8DDz44RZIlvBDZeXIiWV0KW3fKXVkM1coy+oPGmMF
- azCmkbA1cLB9oEG1Noqyq3azlkEY0u47cq6hlCt0jWLspYKKnan1b9srOUtUPRwf/PFE8tjC/
- 4mPZLTAUOB0erDLdL18qrqN60GPegVNrmeJRkMibhj6rmUMxfz/ktPrvfC6tSBLiuK8LqKh6p
- SOO2u4B4p4NCgZKkVQOvjOlsHZvkaI6F2ixjHZ8i1q5Fb3qIjLN46geBw8yXQ//RiMuHQAws/
- COqVNXPgoAOEJFxRcgNilOYcjBTZZZyC0qcGX0nYPUuU7KDRZ18aJXL/AnYhlTtLtRtPdIf5J
- WZEjIs3KFplP6xF8kzhJatgljXSBwQBDBEVS3QpTHEyqDKicSGZv/bMOoczqoRSakOVLsgwKi
- anrsfPlQJsqnimAv3PPy5I48f9uurlEr0qgurcgPVQAP+qtML9siyWFg19ic1jb1k65kQzkfB
- gb5+1U1VIN+GkTVyORDAR7TTmM84uSmV7syo0mBcJes6/jGAEqniNxrMILypd92CYVE9W6vkQ
- snAk9IZYuHzRzLIhxiuIcQHSrdfcUp1obv2j+uc9//vTfYAWsWJD//dliTTuY8egTnhLEc6cG
- IhNsYqG5vRrTzeakTAmw==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-07_16:2020-12-04,2020-12-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 7 Dec 2020 13:50:36 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On 07.12.20 at 14:52, Uwe Kleine-K=F6nig wrote:
+> On 12/4/20 2:05 PM, Halil Pasic wrote:
+> > On Fri, 4 Dec 2020 09:43:59 -0500
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >>>> +{
+> >>>> +	if (matrix_mdev->kvm) {
+> >>>> +		(matrix_mdev->kvm);
+> >>>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;  
+> >>> Is a plain assignment to arch.crypto.pqap_hook apropriate, or do we need
+> >>> to take more care?
+> >>>
+> >>> For instance kvm_arch_crypto_set_masks() takes kvm->lock before poking
+> >>> kvm->arch.crypto.crycb.  
+> >> I do not think so. The CRYCB is used by KVM to provide crypto resources
+> >> to the guest so it makes sense to protect it from changes to it while
+> >> passing
+> >> the AP devices through to the guest. The hook is used only when an AQIC
+> >> executed on the guest is intercepted by KVM. If the notifier
+> >> is being invoked to notify vfio_ap that KVM has been set to NULL, this means
+> >> the guest is gone in which case there will be no AP instructions to
+> >> intercept.  
+> > If the update to pqap_hook isn't observed as atomic we still have a
+> > problem. With torn writes or reads we would try to use a corrupt function
+> > pointer. While the compiler probably ain't likely to generate silly code
+> > for the above assignment (multiple write instructions less then
+> > quadword wide), I know of nothing that would prohibit the compiler to do
+> > so.  
+> 
+> I'm sorry, but I still don't understand why you tkvm_vfio_group_set_kvmhink this is a problem
+> given what I stated above.
 
->
-> Given that the bcm2835 driver is quite trivial I would be happy to
-> create a series that "fixes" the driver to round down and provide a
-> prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
-> tester and a real use-case were the single two things that stopped me
-> investing time here.
->
-
-Should I send a v3 of the .apply() support for the bcm2835 driver before y=
-ou start
-such a rework? The v3 would contain the check against truncation of the pe=
-riod but
-keep the round-closest strategy as it is.
+I assume you are specifically referring to 'the guest is gone in which
+case there will be no AP instructions to intercept'.  I assume by 'guest
+is gone' you mean that the VM is being destroyed, and the vcpus are out
+of SIE. You are probably right for the invocation of
+kvm_vfio_group_set_kvm() in kvm_vfio_destroy(), but is that true for
+the invocation in the KVM_DEV_VFIO_GROUP_DEL case in
+kvm_vfio_set_group()? I.e. can't we get the notifier called when the
+qemu device is hot unplugged (modulo remove which unregisters the
+notifier and usually precludes the notifier being with NULL called at
+all)?
 
 Regards,
-Lino
-
+Halil
