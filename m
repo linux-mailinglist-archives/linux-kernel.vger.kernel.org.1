@@ -2,60 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E622D20E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB0D2D20EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgLHChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:37:14 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41803 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727075AbgLHChN (ORCPT
+        id S1728028AbgLHCiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:38:10 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:56927 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726896AbgLHCiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:37:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UHwb6FU_1607394989;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UHwb6FU_1607394989)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Dec 2020 10:36:30 +0800
-Subject: Re: [PATCH] docs/zh_CN: Improve Cinese transolation quality.
-To:     Ran Wang <gxndwr@outlook.com>, Harry Wei <harryxiyou@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AT5PR8401MB09648490A868481BB51D7326CCF00@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
- <718033fa-eb9f-63b7-5285-18fac2310721@linux.alibaba.com>
- <AT5PR8401MB0964184C8C077AD7AAC741EBCCCE0@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <a3ff9f37-672e-e7ca-bea3-f3a41c162151@linux.alibaba.com>
-Date:   Tue, 8 Dec 2020 10:36:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Mon, 7 Dec 2020 21:38:09 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437121|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0217741-0.00249463-0.975731;FP=12595700015734326370|2|2|9|0|-1|-1|-1;HT=ay29a033018047187;MF=huangshuosheng@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.J4MW.no_1607395041;
+Received: from allwinnertech.com(mailfrom:huangshuosheng@allwinnertech.com fp:SMTPD_---.J4MW.no_1607395041)
+          by smtp.aliyun-inc.com(10.147.44.145);
+          Tue, 08 Dec 2020 10:37:23 +0800
+From:   Shuosheng Huang <huangshuosheng@allwinnertech.com>
+To:     tiny.windzz@gmail.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Subject: [PATCH v3 1/6] cpufreq: sun50i: add efuse_xlate to get efuse version.
+Date:   Tue,  8 Dec 2020 10:37:20 +0800
+Message-Id: <20201208023720.22544-1-huangshuosheng@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <AT5PR8401MB0964184C8C077AD7AAC741EBCCCE0@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's better to use efuse_xlate to extract the differentiated part
+regarding different SoC.
 
+Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
+---
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c | 72 +++++++++++++++++---------
+ 1 file changed, 48 insertions(+), 24 deletions(-)
 
-在 2020/12/7 下午9:05, Ran Wang 写道:
->>> +:ref:`cn_development_followthrough` 介绍了提交补丁之后发生的事情；至此工作实际
->> is it bybond 80 chars?
-> On my part this line is aligned with context (on vim), and pass checkpatch.pl check,
+diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+index 9907a165135b..da23d581a4b4 100644
+--- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
++++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+@@ -22,21 +22,52 @@
+ #define NVMEM_MASK	0x7
+ #define NVMEM_SHIFT	5
+ 
++#define SUN50I_H6_NVMEM_MASK		0x7
++#define SUN50I_H6_NVMEM_SHIFT		5
++
++struct sunxi_cpufreq_soc_data {
++	u32 (*efuse_xlate)(void *efuse);
++};
++
+ static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
+ 
++static u32 sun50i_h6_efuse_xlate(struct nvmem_cell *speedbin_nvmem)
++{
++	size_t len;
++	u32 *speedbin;
++	u32 efuse_value;
++
++	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++	if (IS_ERR(speedbin))
++		return PTR_ERR(speedbin);
++
++	efuse_value = (*(u32 *)speedbin >> SUN50I_H6_NVMEM_SHIFT) &
++			  SUN50I_H6_NVMEM_MASK;
++	kfree(speedbin);
++	/*
++	 * We treat unexpected efuse values as if the SoC was from
++	 * the slowest bin. Expected efuse values are 1-3, slowest
++	 * to fastest.
++	 */
++	if (efuse_value >= 1 && efuse_value <= 3)
++		return efuse_value - 1;
++	else
++		return 0;
++}
++
+ /**
+  * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse value
++ * @soc_data: pointer to sunxi_cpufreq_soc_data context
+  * @versions: Set to the value parsed from efuse
+  *
+  * Returns 0 if success.
+  */
+-static int sun50i_cpufreq_get_efuse(u32 *versions)
++static int sun50i_cpufreq_get_efuse(const struct sunxi_cpufreq_soc_data *soc_data,
++				    u32 *versions)
+ {
+ 	struct nvmem_cell *speedbin_nvmem;
+ 	struct device_node *np;
+ 	struct device *cpu_dev;
+-	u32 *speedbin, efuse_value;
+-	size_t len;
+ 	int ret;
+ 
+ 	cpu_dev = get_cpu_device(0);
+@@ -63,41 +94,31 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
+ 		return PTR_ERR(speedbin_nvmem);
+ 	}
+ 
+-	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++	*versions = soc_data->efuse_xlate(speedbin_nvmem);
+ 	nvmem_cell_put(speedbin_nvmem);
+-	if (IS_ERR(speedbin))
+-		return PTR_ERR(speedbin);
+-
+-	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
+-
+-	/*
+-	 * We treat unexpected efuse values as if the SoC was from
+-	 * the slowest bin. Expected efuse values are 1-3, slowest
+-	 * to fastest.
+-	 */
+-	if (efuse_value >= 1 && efuse_value <= 3)
+-		*versions = efuse_value - 1;
+-	else
+-		*versions = 0;
+ 
+-	kfree(speedbin);
+ 	return 0;
+ };
+ 
+ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
+ {
++	const struct of_device_id *match;
+ 	struct opp_table **opp_tables;
+ 	char name[MAX_NAME_LEN];
+ 	unsigned int cpu;
+ 	u32 speed = 0;
+ 	int ret;
+ 
++	match = dev_get_platdata(&pdev->dev);
++	if (!match)
++		return -EINVAL;
++
+ 	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables),
+ 			     GFP_KERNEL);
+ 	if (!opp_tables)
+ 		return -ENOMEM;
+ 
+-	ret = sun50i_cpufreq_get_efuse(&speed);
++	ret = sun50i_cpufreq_get_efuse(match->data, &speed);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -163,8 +184,12 @@ static struct platform_driver sun50i_cpufreq_driver = {
+ 	},
+ };
+ 
++static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
++	.efuse_xlate = sun50i_h6_efuse_xlate,
++};
++
+ static const struct of_device_id sun50i_cpufreq_match_list[] = {
+-	{ .compatible = "allwinner,sun50i-h6" },
++	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
+ 	{}
+ };
+ 
+@@ -198,9 +223,8 @@ static int __init sun50i_cpufreq_init(void)
+ 	if (unlikely(ret < 0))
+ 		return ret;
+ 
+-	sun50i_cpufreq_pdev =
+-		platform_device_register_simple("sun50i-cpufreq-nvmem",
+-						-1, NULL, 0);
++	sun50i_cpufreq_pdev = platform_device_register_data(NULL,
++		"sun50i-cpufreq-nvmem", -1, match, sizeof(*match));
+ 	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
+ 	if (ret == 0)
+ 		return 0;
+-- 
+2.28.0
 
-En, right, maybe a line alignment? but it depends on different editors. it's fine.
-> 
->>> +上还远未完成。与审阅者一起合作是开发过程中的重要部分；本节提供了一些关于如何在
->>> +这个重要阶段避免出现问题的提示。此外，即使当补丁已经被合并到主线中，开发者也不
->>> +能认为任务就此完成。
->>>   
->>>   :ref:`cn_development_advancedtopics` 介绍了两个“高级”主题：
->>> -使用Git管理补丁和查看其他人发布的补丁。
->>> +使用Git管理补丁和查看其他人提交的补丁。
->> Any different of above lines?
-> 发布 => 提交  :)
-
-ops, overlooked, 提交 is better.
-
-Thanks!
