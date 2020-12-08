@@ -2,97 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB402D34C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1A62D34EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729347AbgLHVCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727660AbgLHVCf (ORCPT
+        id S1729210AbgLHVIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:08:53 -0500
+Received: from plasma33.jpberlin.de ([80.241.58.43]:35425 "EHLO
+        plasma33.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726512AbgLHVIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:02:35 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE34C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:01:54 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id o24so21988646ljj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=skpauNrCohQyEEsv7QYK47OFlZchJzrtvUvgvaYlI0g=;
-        b=ROtEO+OVS9RfjVYt13rb9bXwl6vWUQ0uLL0X6wygCiWrpFFIQVJPjqgKkj1v7UrNXO
-         KDiY9qw9NYnKeQXvq82LKIFRDtuWh/xJCBAirqtHokmUbbpCucKnihw7UAohXOfdUzST
-         R/beNSF/szQK06awRivcQ/EdxP5ry8GrnSbts=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=skpauNrCohQyEEsv7QYK47OFlZchJzrtvUvgvaYlI0g=;
-        b=OcE+eq/9pqGvJDVz5xaAT2BuURKx3FW84Y2Fa2II+xYAm+PB1azehIjyc1sUX84CZt
-         lXVmJ4kAuYur59H+iTAzHyGpGfAhcbL0dyc/6NX2iVj31k2qxkUoX8kEU7l7PMYjs0wZ
-         iM4xSYLPcu2qz4FyyFAfJGC35cdFwPcP1PeceKSHbx7oh3cmQcmGPSfUHjgUo4aMOBlQ
-         POP0wFmjJ7hT2XbYEX6oJxC3iKYfu+Wk1eAwBSiLFKQLtGu0vdfCE8y8dd4qPfkNP8q3
-         5Jfv/gU8wndNXp9pQX3ihkfcRedcFeJtAL6bEp1ascs+ppWXUvpu/xQMK46I56zfF17N
-         ivRQ==
-X-Gm-Message-State: AOAM531FWXMfwpkK2N1ntM6sU6jtDXumwOGcQgOQZCmXYn0vIR7xLd8Q
-        y+fA2H3c1cmGtdNkykrX9yuHdM6dLNyhfQ==
-X-Google-Smtp-Source: ABdhPJzhJ9NUukf4IZ1YcWbLhFRQkgHlnPTc9W5FhxMlUWbGjO2e/Z8uUNj0mA6l+RiJ+WNn6E4V0w==
-X-Received: by 2002:a2e:2417:: with SMTP id k23mr2601709ljk.373.1607461313023;
-        Tue, 08 Dec 2020 13:01:53 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id n20sm3307009lfe.104.2020.12.08.13.01.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 13:01:49 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id h19so109139lfc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:01:48 -0800 (PST)
-X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr11218462lfb.421.1607461308477;
- Tue, 08 Dec 2020 13:01:48 -0800 (PST)
+        Tue, 8 Dec 2020 16:08:53 -0500
+X-Greylist: delayed 363 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 16:08:52 EST
+Received: from spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123])
+        by plasma.jpberlin.de (Postfix) with ESMTP id 72A57105564;
+        Tue,  8 Dec 2020 22:02:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from plasma.jpberlin.de ([80.241.56.76])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id szCGRUWyRsVe; Tue,  8 Dec 2020 22:02:01 +0100 (CET)
+Received: from webmail.opensynergy.com (unknown [217.66.60.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
+        (Authenticated sender: opensynergy@jpberlin.de)
+        by plasma.jpberlin.de (Postfix) with ESMTPSA id EB3C11054DC;
+        Tue,  8 Dec 2020 22:02:00 +0100 (CET)
+From:   Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Mathias Crombez <mathias.crombez@faurecia.com>,
+        Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Subject: [PATCH RESEND v2] virtio-input: add multi-touch support
+Date:   Tue, 8 Dec 2020 23:01:50 +0200
+Message-ID: <20201208210150.20001-1-vasyl.vavrychuk@opensynergy.com>
 MIME-Version: 1.0
-References: <20201115233814.GT3576660@ZenIV.linux.org.uk> <20201115235149.GA252@Ryzen-9-3900X.localdomain>
- <20201116002513.GU3576660@ZenIV.linux.org.uk> <20201116003416.GA345@Ryzen-9-3900X.localdomain>
- <20201116032942.GV3576660@ZenIV.linux.org.uk> <20201127162902.GA11665@lst.de>
- <20201208163552.GA15052@lst.de> <CAHk-=wiPeddM90zqyaHzd6g6Cc3NUpg+2my2gX5mR1ydd0ZjNg@mail.gmail.com>
- <20201208194935.GH3579531@ZenIV.linux.org.uk> <CAHk-=whGUXQzNEfPXiKUVZg-mGQjTC_WNZ0m9FKFoWDDrik85g@mail.gmail.com>
- <20201208205321.GI3579531@ZenIV.linux.org.uk>
-In-Reply-To: <20201208205321.GI3579531@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Dec 2020 13:01:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjU6pebnM6ei51T-UyVok7u5MF6ndaFr6T0PA3zajEgSw@mail.gmail.com>
-Message-ID: <CAHk-=wjU6pebnM6ei51T-UyVok7u5MF6ndaFr6T0PA3zajEgSw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -5.38 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 72A57105564
+X-Rspamd-UID: d20710
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 12:53 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Umm...  I've got
-> fs: Handle I_DONTCACHE in iput_final() instead of generic_drop_inode()
-> and
-> fs: Kill DCACHE_DONTCACHE dentry even if DCACHE_REFERENCED is set
-> in "to apply" pile; if that's what you are talking about,
+From: Mathias Crombez <mathias.crombez@faurecia.com>
 
-Yup, those were the ones.
+Without multi-touch slots allocated, ABS_MT_SLOT events will be lost by
+input_handle_abs_event.
 
-> I don't
-> think they are anywhere critical enough for 5.10-final, but I might
-> be missing something...
+Signed-off-by: Mathias Crombez <mathias.crombez@faurecia.com>
+Signed-off-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Tested-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+---
+v2: fix patch corrupted by corporate email server
 
-No, I agree, no hurry with them. I just wanted to make sure you're
-aware of them.
+ drivers/virtio/Kconfig        | 11 +++++++++++
+ drivers/virtio/virtio_input.c |  8 ++++++++
+ 2 files changed, 19 insertions(+)
 
-                 Linus
+diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+index 7b41130d3f35..2cfd5b01d96d 100644
+--- a/drivers/virtio/Kconfig
++++ b/drivers/virtio/Kconfig
+@@ -111,6 +111,17 @@ config VIRTIO_INPUT
+ 
+ 	 If unsure, say M.
+ 
++config VIRTIO_INPUT_MULTITOUCH_SLOTS
++	depends on VIRTIO_INPUT
++	int "Number of multitouch slots"
++	range 0 64
++	default 10
++	help
++	 Define the number of multitouch slots used. Default to 10.
++	 This parameter is unused if there is no multitouch capability.
++
++	 0 will disable the feature.
++
+ config VIRTIO_MMIO
+ 	tristate "Platform bus driver for memory mapped virtio devices"
+ 	depends on HAS_IOMEM && HAS_DMA
+diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+index f1f6208edcf5..13f3d90e6c30 100644
+--- a/drivers/virtio/virtio_input.c
++++ b/drivers/virtio/virtio_input.c
+@@ -7,6 +7,7 @@
+ 
+ #include <uapi/linux/virtio_ids.h>
+ #include <uapi/linux/virtio_input.h>
++#include <linux/input/mt.h>
+ 
+ struct virtio_input {
+ 	struct virtio_device       *vdev;
+@@ -205,6 +206,7 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 	unsigned long flags;
+ 	size_t size;
+ 	int abs, err;
++	bool is_mt = false;
+ 
+ 	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
+ 		return -ENODEV;
+@@ -287,9 +289,15 @@ static int virtinput_probe(struct virtio_device *vdev)
+ 		for (abs = 0; abs < ABS_CNT; abs++) {
+ 			if (!test_bit(abs, vi->idev->absbit))
+ 				continue;
++			if (input_is_mt_value(abs))
++				is_mt = true;
+ 			virtinput_cfg_abs(vi, abs);
+ 		}
+ 	}
++	if (is_mt)
++		input_mt_init_slots(vi->idev,
++				    CONFIG_VIRTIO_INPUT_MULTITOUCH_SLOTS,
++				    INPUT_MT_DIRECT);
+ 
+ 	virtio_device_ready(vdev);
+ 	vi->ready = true;
+-- 
+2.23.0
+
