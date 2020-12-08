@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49D32D284B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FFB2D2854
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgLHJ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:58:24 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45515 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgLHJ6X (ORCPT
+        id S1728232AbgLHKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLHKA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:58:23 -0500
-Received: by mail-lj1-f195.google.com with SMTP id q8so18352703ljc.12;
-        Tue, 08 Dec 2020 01:58:06 -0800 (PST)
+        Tue, 8 Dec 2020 05:00:26 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6D2C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:59:45 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so15646502wrt.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QdGmwva9RtqTY7a7GN4dBmF3gJOdWFsFlLtWdXLRLeA=;
+        b=XAuv5QEeW/kEMbA4SLlD2kgsjqPXZd+4y+wc51LFw4CWcP0Jaw8W8hAAjawk115SEL
+         YxiSL7k1uZLUanxDFQtqNWDABvLkbAeJPJTGqyQ7vSXDjd7TTTJQSn28bbNJCtoI1eZr
+         muvqOnohKVlZlK1iLAwUeRmW7I7Xq8FSVRfnAstDhJDVwBHW3I5DukXufOms+KY72s/1
+         FcbvU+YYHE5Q2lDFWQZ7UMnCFtqqDQP16Tjx0x60U56vmHqzshWTsYY/9cnOL2zerwX4
+         VrEN77a0Xvg/S1n4OiQF+1dycTK2i1LDxE14ec7Wd+8UIYm6E+ej+RUWBPL3r5SMS4ew
+         xikg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Q47D2MCEJANfe8A3Mn/U//6T+qK1xgRot8Ay5wujQIg=;
-        b=KipQnqbgUuyoecsjKoPfDKVBuDTOswBrGz2z4I+zK4j9O6L88cDle97w93n2AYi9Z+
-         drz2IMLl4i/hWI4ahqEqDXoU+XUZhMWgnNGcjGOmJ5XdkYz7hhB+X3N685Wo2HDJbkHg
-         sKOaCaAohxL6cKJCtDkCixzIZwdhoThRWsZWmONo9ADdVqblZdUAxHa8fi6NF8ROyrmS
-         dd8niFye19l7keZuuoVaw4D3jMNzlmugkReY2vwT5qyhhX0gsp7NL0OE4FHSOY2yAuSW
-         jujdO1O2LVFkN91/5uX1tkkyQ0GKeGx3jCtv696NS5XZtmtPxKNnqtEL0l9ltsGNIqYq
-         NtwA==
-X-Gm-Message-State: AOAM532uDRJwkTBHKNnSNbHeL77P8kbCqdX4CnY1wS0Y6yEQucdJzTFc
-        vwGv1MAmfqknFCL4D4RobbA=
-X-Google-Smtp-Source: ABdhPJyq06PSaIEJucMbI2cUpTz3rwP8T22tNF+Iukqc4xzbUcKe/BZubhoMJpmKW42UNCAiexoZ0g==
-X-Received: by 2002:a2e:81d1:: with SMTP id s17mr10404025ljg.287.1607421460890;
-        Tue, 08 Dec 2020 01:57:40 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id m11sm862904ljp.12.2020.12.08.01.57.39
+        bh=QdGmwva9RtqTY7a7GN4dBmF3gJOdWFsFlLtWdXLRLeA=;
+        b=j1PzacNUK8eEIQJpdZP7NCNgKhPUHfI/ckVvRmPHcpMvbSF0qjzDZCS+kuF/QTJbBp
+         xhC6djObqWJIVxA8y5eIq/T+QZVryrFIz9GixsC0nNjmGjkM1Dr4gxU96Rjhs6RX7pSb
+         MjOLdisKpMzXxFgP2Bcb3XgePhD00ugBneRpBAWajVfkCRNmxS1Td5lF+A0XGWu9sFTc
+         isb1IBBJwleC/5Gciu6rMWmQOqaOy6+QrW912UK3DmFi7qZXKnC1omAJoboCpMXiSsuo
+         NldxiyfHO9NvdnlHWRGaQjluFqKdA6+tQ2lZ5MPm8ewRmJFuNKBJIr4gU87juvBXGMUS
+         owLA==
+X-Gm-Message-State: AOAM530xK3ucDTdpvg8D//KtC+SXPPrsUFyv3jkHT+qS/VQMGM224T+p
+        bcca9k/ACVoQShf4zmLhRrgY6A==
+X-Google-Smtp-Source: ABdhPJzNhC3+5htN47FqdOjCq68HPhKctDxzg2/ih+f0nt6Mx/wIUL47vy4c3z6WRSEVesrFgrFFEw==
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr22962698wrp.59.1607421584172;
+        Tue, 08 Dec 2020 01:59:44 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f7sm3816543wmc.1.2020.12.08.01.59.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:57:40 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kmZlB-0002ZK-9Y; Tue, 08 Dec 2020 10:58:18 +0100
-Date:   Tue, 8 Dec 2020 10:58:17 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-Message-ID: <X89OOUOG0x0SSxXA@localhost>
-References: <20201122170822.21715-1-mani@kernel.org>
- <20201122170822.21715-3-mani@kernel.org>
- <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
- <X8ZmfbQp7/BGgxec@localhost>
- <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+        Tue, 08 Dec 2020 01:59:43 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:59:39 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
+ atomic_fetch_add instruction
+Message-ID: <X89Oi7ndmwS+cLWx@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-7-jackmanb@google.com>
+ <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+In-Reply-To: <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 11:21:09PM +0100, Linus Walleij wrote:
-> On Tue, Dec 1, 2020 at 4:50 PM Johan Hovold <johan@kernel.org> wrote:
-> > On Tue, Dec 01, 2020 at 03:37:38PM +0100, Linus Walleij wrote:
-> > > On Sun, Nov 22, 2020 at 6:08 PM Manivannan Sadhasivam <mani@kernel.org> wrote:
+On Mon, Dec 07, 2020 at 09:31:40PM -0800, John Fastabend wrote:
+> Brendan Jackman wrote:
+> > The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
+> > instructions, in order to have the previous value of the
+> > atomically-modified memory location loaded into the src register
+> > after an atomic op is carried out.
+> > 
+> > Suggested-by: Yonghong Song <yhs@fb.com>
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
 > 
-> > > You know the names of the pins...
-> > >
-> > > > +       port_priv->gc.ngpio = 6;
-> > > > +       port_priv->gc.label = "xr_gpios";
-> > > > +       port_priv->gc.request = xr_gpio_request;
-> > > > +       port_priv->gc.free = xr_gpio_free;
-> > > > +       port_priv->gc.get_direction = xr_gpio_direction_get;
-> > > > +       port_priv->gc.direction_input = xr_gpio_direction_input;
-> > > > +       port_priv->gc.direction_output = xr_gpio_direction_output;
-> > > > +       port_priv->gc.get = xr_gpio_get;
-> > > > +       port_priv->gc.set = xr_gpio_set;
-> > > > +       port_priv->gc.owner = THIS_MODULE;
-> > > > +       port_priv->gc.parent = &port->dev;
-> > > > +       port_priv->gc.base = -1;
-> > > > +       port_priv->gc.can_sleep = true;
-> > >
-> > > So assign port_priv->gc.names here as well with an array
-> > > of strings with the names ("RI", "CD", ... etc).
-> > > This makes it look really nice in userspace if you do
-> > > e.g. "lsgpio".
-> >
-> > Last time we tried that gpiolib still used a flat namespace so that you
-> > can't have have more than one device using the same names. Unless that
-> > has changed this is a no-go. See
-> >
-> >         https://lore.kernel.org/r/20180930122703.7115-1-johan@kernel.org
-> >
-> > for our previous discussion about this.
+> I like Yonghong suggestion 
 > 
-> Hm hm yeah we actually put in a nasty warning there since:
+>  #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)               \
+>      BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
 > 
->                 gpio = gpio_name_to_desc(gc->names[i]);
->                 if (gpio)
->                         dev_warn(&gdev->dev,
->                                  "Detected name collision for GPIO name '%s'\n",
->                                  gc->names[i]);
+> otherwise LGTM. One observation to consider below.
 > 
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 > 
-> A better approach might be to create an array of names
-> prepended with something device-unique like the USB
-> bus topology? Or do we need a helper to help naming the
-> GPIOs? What would be helpful here?
+> >  arch/x86/net/bpf_jit_comp.c    |  4 ++++
+> >  include/linux/filter.h         |  1 +
+> >  include/uapi/linux/bpf.h       |  3 +++
+> >  kernel/bpf/core.c              | 13 +++++++++++++
+> >  kernel/bpf/disasm.c            |  7 +++++++
+> >  kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
+> >  tools/include/linux/filter.h   | 11 +++++++++++
+> >  tools/include/uapi/linux/bpf.h |  3 +++
+> >  8 files changed, 66 insertions(+), 9 deletions(-)
 > 
-> name = kasprintf(GFP_KERNEL, "%s-NAME", topology_str);
+> [...]
+> 
+> > @@ -3652,8 +3656,20 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> >  		return err;
+> >  
+> >  	/* check whether we can write into the same memory */
+> > -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> > +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	if (!(insn->imm & BPF_FETCH))
+> > +		return 0;
+> > +
+> > +	/* check and record load of old value into src reg  */
+> > +	err = check_reg_arg(env, insn->src_reg, DST_OP);
+> 
+> This will mark the reg unknown. I think this is fine here. Might be nice
+> to carry bounds through though if possible
 
-Well we started discussing this back when we only had the sysfs
-interface which suffered from the same problem. I thought the chardev
-interface was supposed to get rid of the assumption of a flat name
-space? Perhaps in v3 of the ABI. ;P
+Ah, I hadn't thought of this. I think if I move this check_reg_arg to be
+before the first check_mem_access, and then (when BPF_FETCH) set the
+val_regno arg to load_reg, then the bounds from memory would get
+propagated back to the register:
 
-If this is too built into the new chardev interface as well to be fixed
-up, a unique prefix is the only way to go. Perhaps gpiolib can just
-prefix it with the controller name?
+if (insn->imm & BPF_FETCH) {
+	if (insn->imm == BPF_CMPXCHG)
+		load_reg = BPF_REG_0;
+	else
+		load_reg = insn->src_reg;
+	err = check_reg_arg(env, load_reg, DST_OP);
+	if (err)
+		return err;
+} else {
+	load_reg = -1;
+}
+/* check wether we can read the memory */
+err = check_mem_access(env, insn_index, insn->dst_reg, insn->off
+		       BPF_SIZE(insn->code), BPF_READ,
+		       load_reg, // <--
+		       true);
 
-	gpiochip508-CBUS0
+Is that the kind of thing you had in mind?
 
-Based on a hotpluggable bus flag? But what about any other non-pluggable
-IC, which provides a few named GPIO lines and of which there could be
-more than one in a system?
-
-The topology is already encoded in sysfs and it seems backwards to have
-each and every gpio driver reconstruct it.
-
-Johan
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	return 0;
+> >  }
+> >  
