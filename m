@@ -2,77 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C8B2D267F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 453C82D2683
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgLHInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727735AbgLHInH (ORCPT
+        id S1728343AbgLHIo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:44:59 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9395 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727735AbgLHIo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:43:07 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462C2C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:42:21 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id u18so21912026lfd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ymnCoQX1+UEnlfRUosY5UkqWz5Rl16ic4atnqAGgf1E=;
-        b=TSzGAA5l5QLF43fxPLXCwVQ7edav0PgyWJzpkKM81cFxyi08uGwT4SY4R7Z4bWL0XV
-         wFTFaoDtlnh+oYASBIDEKAq9W57r+GKVQhSKPn75ojafgU9J0Ulr1pOqE1kDa24abJyl
-         Rowr8bfapuebK5wuz1PeQB2XY3lOl0yCrlq7rqiZXRI3AenjxPB1hyxkbsFyUrRy3dx8
-         NgP2Jsv4HD5IsGy0RwCvW9PTT6yR2K98ZNp/e7E052wu1YEVqW3IHP9WxBzEKFEguwBi
-         1liTeusR/i0QxXB5lomW8exauCdRK7Kzl3oZRxEJOJhNDlz0rstla8Aw+1HJW5BI5ZGE
-         UZig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ymnCoQX1+UEnlfRUosY5UkqWz5Rl16ic4atnqAGgf1E=;
-        b=dkrzSjVQPIkEZbZmUrDvpQGKmQSB4GDp+Ud8ebZKzdMCqMqALf2LHdS/cjYXoTYK4r
-         BFN2ILiVu87hiycEQ25ncI0YxUlW9tkYxJ2tgFIi0lDRSj36btJY9hINhrnWU664XKtC
-         cGLnMJTj334I9qbNHVSruBCnsx+0dputL82+xMaQuaWqRGW/N9CkGJ4m/PMdANtrgFyu
-         wHkT6JKK35sL7leNhl99Ey/sJz6B/siIc5ewCZJ5dil+pZE2iacEt6ctnt/QCAsrILQq
-         5aEuuRr+NbhGqLDdFgm/k4DTkauI2Oq/x9txhY6pm3FORwLcbuk3L/xmWlPyVDPoSrlh
-         7KpA==
-X-Gm-Message-State: AOAM531+kOJPGGtewkRa9R8lOtNcohZGoeELZ7R5wOymVUlScGdD1z+W
-        UX/P9MQKrHiFXur72oi1yRnzHZkHHtLeasEWIZo1JA==
-X-Google-Smtp-Source: ABdhPJxJH6WOiwnX0/Tp2sqcPodJNB8qgVejkevd8OIMmSe8HP3/a8RT4LZ5WXvCVLbktHHy+GWvSAkdamL7iDdA6yc=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr9319905lfh.260.1607416939796;
- Tue, 08 Dec 2020 00:42:19 -0800 (PST)
+        Tue, 8 Dec 2020 03:44:59 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cqtxr3wy0z7BJh;
+        Tue,  8 Dec 2020 16:43:44 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 8 Dec 2020
+ 16:44:13 +0800
+Subject: Re: [PATCH v2 1/3] erofs: get rid of magical Z_EROFS_MAPPING_STAGING
+To:     Gao Xiang <hsiangkao@redhat.com>
+CC:     <linux-erofs@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>, "Chao Yu" <chao@kernel.org>
+References: <20201207012346.2713857-1-hsiangkao@redhat.com>
+ <0fc43d3f-9c79-c7a1-6e41-b5b6932fe571@huawei.com>
+ <20201208082319.GB3006985@xiangao.remote.csb>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <7da6fe17-1257-67e7-379c-99a0ebbe6ba4@huawei.com>
+Date:   Tue, 8 Dec 2020 16:44:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20201203182423.5499-1-info@metux.net>
-In-Reply-To: <20201203182423.5499-1-info@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 8 Dec 2020 09:42:09 +0100
-Message-ID: <CACRpkdZK2epvcxezVerW3TVdLgO5sz46J8VreaAANMYw=tq+-A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drivers: gpio: bt8xx: prefer dev_err()/dev_warn()
- over of raw printk
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Buesch <m@bues.ch>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201208082319.GB3006985@xiangao.remote.csb>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 7:24 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
+Hi Xiang,
 
-> For logging in device contexts, dev_*() functions are preferred over
-> raw printk(), which also print out device name.
->
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+On 2020/12/8 16:23, Gao Xiang wrote:
+> Hi Chao,
+> 
+> On Tue, Dec 08, 2020 at 04:15:59PM +0800, Chao Yu wrote:
+>> On 2020/12/7 9:23, Gao Xiang wrote:
+>>> Previously, we played around with magical page->mapping for short-lived
+>>> temporary pages since we need to identify different types of pages in
+>>> the same pcluster but both invalidated and short-lived temporary pages
+>>> can have page->mapping == NULL. It was considered as safe because that
+>>> temporary pages are all non-LRU / non-movable pages.
+>>>
+>>> This patch tends to use specific page->private to identify short-lived
+>>> pages instead so it won't rely on page->mapping anymore. Details are
+>>> described in "compress.h" as well.
+>>>
+>>> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+>>> ---
+>>> tested with ro_fsstress for a whole night.
+>>>
+>>> The old "[PATCH 4/4] erofs: complete a missing case for inplace I/O" is
+>>> temporarily dropped since ro_fsstress failed with such modification,
+>>> will look into later.
+>>>
+>>>    fs/erofs/compress.h     | 50 ++++++++++++++++++++++++++++++-----------
+>>>    fs/erofs/decompressor.c |  2 +-
+>>>    fs/erofs/zdata.c        | 42 +++++++++++++++++++++-------------
+>>>    fs/erofs/zdata.h        |  1 +
+>>>    4 files changed, 65 insertions(+), 30 deletions(-)
+>>>
+>>> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+>>> index 3d452443c545..2bbf47f353ef 100644
+>>> --- a/fs/erofs/compress.h
+>>> +++ b/fs/erofs/compress.h
+>>> @@ -26,30 +26,54 @@ struct z_erofs_decompress_req {
+>>>    	bool inplace_io, partial_decoding;
+>>>    };
+>>> +#define Z_EROFS_SHORTLIVED_PAGE		(-1UL << 2)
+>>> +
+>>>    /*
+>>> - * - 0x5A110C8D ('sallocated', Z_EROFS_MAPPING_STAGING) -
+>>> - * used to mark temporary allocated pages from other
+>>> - * file/cached pages and NULL mapping pages.
+>>> + * For all pages in a pcluster, page->private should be one of
+>>> + * Type                         Last 2bits      page->private
+>>> + * short-lived page             00              Z_EROFS_SHORTLIVED_PAGE
+>>> + * cached/managed page          00              pointer to z_erofs_pcluster
+>>> + * online page (file-backed,    01/10/11        sub-index << 2 | count
+>>> + *              some pages can be used for inplace I/O)
+>>> + *
+>>> + * page->mapping should be one of
+>>> + * Type                 page->mapping
+>>> + * short-lived page     NULL
+>>> + * cached/managed page  non-NULL or NULL (invalidated/truncated page)
+>>> + * online page          non-NULL
+>>> + *
+>>> + * For all managed pages, PG_private should be set with 1 extra refcount,
+>>> + * which is used for page reclaim / migration.
+>>
+>> FYI, there is a generic way to set/clear page_private, it binds the private
+>> value set and page count operation in one function:
+>>
+>> attach_page_private()
+>> detach_page_private()
+>>
+>> If there are use cases, let's try to use them as much as possible.
+> 
+> I discussed this case in the original thread,
+> https://lore.kernel.org/r/20200519100612.GA3687@hsiangkao-HP-ZHAN-66-Pro-G1
+> 
+> The previous conclusion is that for EROFS case (see Matthew's reply) this
+> pair won't have too much usage. since EROFS pattern saves extra page
+> reference count (- and +) by cases.
 
-All three patches applied.
+Alright, I see.
 
-Thanks for tidying this up Enrico!
+> 
+> I could use attach_page_private() and detach_page_private() if possible,
+> but the problem is I'm not not its such pair internal implementation is
+> stable (but the PG_Private rule is stable for decades);
+> 
+>>
+>>>     */
+>>> -#define Z_EROFS_MAPPING_STAGING         ((void *)0x5A110C8D)
+>>> -/* check if a page is marked as staging */
+>>> -static inline bool z_erofs_page_is_staging(struct page *page)
+>>> +/*
+>>> + * short-lived pages are pages directly from buddy system with specific
+>>> + * page->private (no need to set PagePrivate since these are non-LRU /
+>>> + * non-movable pages and bypass reclaim / migration code).
+>>> + */
+>>> +static inline bool z_erofs_is_shortlived_page(struct page *page)
+>>>    {
+>>> -	return page->mapping == Z_EROFS_MAPPING_STAGING;
+>>> +	if (page->private != Z_EROFS_SHORTLIVED_PAGE)
+>>> +		return false;
+>>> +
+>>> +	DBG_BUGON(page->mapping);
+>>> +	return true;
+>>>    }
+>>> -static inline bool z_erofs_put_stagingpage(struct list_head *pagepool,
+>>> -					   struct page *page)
+>>> +static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
+>>> +					      struct page *page)
+>>>    {
+>>> -	if (!z_erofs_page_is_staging(page))
+>>> +	if (!z_erofs_is_shortlived_page(page))
+>>>    		return false;
+>>> -	/* staging pages should not be used by others at the same time */
+>>> -	if (page_ref_count(page) > 1)
+>>> +	/* short-lived pages should not be used by others at the same time */
+>>> +	if (page_ref_count(page) > 1) {
+>>
+>> Does this be a possible case?
+> 
+> Yes, see decompress.c, if will get_page(page);
 
-Yours,
-Linus Walleij
+Yup,
+
+> 
+>>
+>>>    		put_page(page);
+>>> -	else
+>>> +	} else {
+>>> +		/* follow the pcluster rule above. */
+>>> +		set_page_private(page, 0);
+>>>    		list_add(&page->lru, pagepool);
+>>> +	}
+>>>    	return true;
+>>>    }
+>>> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+>>> index cbadbf55c6c2..1cb1ffd10569 100644
+>>> --- a/fs/erofs/decompressor.c
+>>> +++ b/fs/erofs/decompressor.c
+>>> @@ -76,7 +76,7 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
+>>>    			victim = erofs_allocpage(pagepool, GFP_KERNEL);
+>>>    			if (!victim)
+>>>    				return -ENOMEM;
+>>> -			victim->mapping = Z_EROFS_MAPPING_STAGING;
+>>> +			set_page_private(victim, Z_EROFS_SHORTLIVED_PAGE);
+>>>    		}
+>>>    		rq->out[i] = victim;
+>>>    	}
+>>> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+>>> index 86fd3bf62af6..afeadf413c2c 100644
+>>> --- a/fs/erofs/zdata.c
+>>> +++ b/fs/erofs/zdata.c
+>>> @@ -255,6 +255,7 @@ int erofs_try_to_free_cached_page(struct address_space *mapping,
+>>>    		erofs_workgroup_unfreeze(&pcl->obj, 1);
+>>>    		if (ret) {
+>>> +			set_page_private(page, 0);
+>>>    			ClearPagePrivate(page);
+>>>    			put_page(page);
+>>
+>> detach_page_private()?
+> 
+> The same as the above.
+
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks,
+
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> Thanks,
+>>
+>>>    		}
+>>> @@ -648,12 +649,12 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>>>    retry:
+>>>    	err = z_erofs_attach_page(clt, page, page_type);
+>>> -	/* should allocate an additional staging page for pagevec */
+>>> +	/* should allocate an additional short-lived page for pagevec */
+>>>    	if (err == -EAGAIN) {
+>>>    		struct page *const newpage =
+>>>    				alloc_page(GFP_NOFS | __GFP_NOFAIL);
+>>> -		newpage->mapping = Z_EROFS_MAPPING_STAGING;
+>>> +		set_page_private(newpage, Z_EROFS_SHORTLIVED_PAGE);
+>>>    		err = z_erofs_attach_page(clt, newpage,
+>>>    					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
+>>>    		if (!err)
+>>> @@ -710,6 +711,11 @@ static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+>>>    		queue_work(z_erofs_workqueue, &io->u.work);
+>>>    }
+>>> +static bool z_erofs_page_is_invalidated(struct page *page)
+>>> +{
+>>> +	return !page->mapping && !z_erofs_is_shortlived_page(page);
+>>> +}
+>>> +
+>>>    static void z_erofs_decompressqueue_endio(struct bio *bio)
+>>>    {
+>>>    	tagptr1_t t = tagptr_init(tagptr1_t, bio->bi_private);
+>>> @@ -722,7 +728,7 @@ static void z_erofs_decompressqueue_endio(struct bio *bio)
+>>>    		struct page *page = bvec->bv_page;
+>>>    		DBG_BUGON(PageUptodate(page));
+>>> -		DBG_BUGON(!page->mapping);
+>>> +		DBG_BUGON(z_erofs_page_is_invalidated(page));
+>>>    		if (err)
+>>>    			SetPageError(page);
+>>> @@ -795,9 +801,9 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+>>>    		/* all pages in pagevec ought to be valid */
+>>>    		DBG_BUGON(!page);
+>>> -		DBG_BUGON(!page->mapping);
+>>> +		DBG_BUGON(z_erofs_page_is_invalidated(page));
+>>> -		if (z_erofs_put_stagingpage(pagepool, page))
+>>> +		if (z_erofs_put_shortlivedpage(pagepool, page))
+>>>    			continue;
+>>>    		if (page_type == Z_EROFS_VLE_PAGE_TYPE_HEAD)
+>>> @@ -831,9 +837,9 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+>>>    		/* all compressed pages ought to be valid */
+>>>    		DBG_BUGON(!page);
+>>> -		DBG_BUGON(!page->mapping);
+>>> +		DBG_BUGON(z_erofs_page_is_invalidated(page));
+>>> -		if (!z_erofs_page_is_staging(page)) {
+>>> +		if (!z_erofs_is_shortlived_page(page)) {
+>>>    			if (erofs_page_is_managed(sbi, page)) {
+>>>    				if (!PageUptodate(page))
+>>>    					err = -EIO;
+>>> @@ -858,7 +864,7 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+>>>    			overlapped = true;
+>>>    		}
+>>> -		/* PG_error needs checking for inplaced and staging pages */
+>>> +		/* PG_error needs checking for all non-managed pages */
+>>>    		if (PageError(page)) {
+>>>    			DBG_BUGON(PageUptodate(page));
+>>>    			err = -EIO;
+>>> @@ -897,8 +903,8 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+>>>    		if (erofs_page_is_managed(sbi, page))
+>>>    			continue;
+>>> -		/* recycle all individual staging pages */
+>>> -		(void)z_erofs_put_stagingpage(pagepool, page);
+>>> +		/* recycle all individual short-lived pages */
+>>> +		(void)z_erofs_put_shortlivedpage(pagepool, page);
+>>>    		WRITE_ONCE(compressed_pages[i], NULL);
+>>>    	}
+>>> @@ -908,10 +914,10 @@ static int z_erofs_decompress_pcluster(struct super_block *sb,
+>>>    		if (!page)
+>>>    			continue;
+>>> -		DBG_BUGON(!page->mapping);
+>>> +		DBG_BUGON(z_erofs_page_is_invalidated(page));
+>>> -		/* recycle all individual staging pages */
+>>> -		if (z_erofs_put_stagingpage(pagepool, page))
+>>> +		/* recycle all individual short-lived pages */
+>>> +		if (z_erofs_put_shortlivedpage(pagepool, page))
+>>>    			continue;
+>>>    		if (err < 0)
+>>> @@ -1011,13 +1017,17 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+>>>    	mapping = READ_ONCE(page->mapping);
+>>>    	/*
+>>> -	 * unmanaged (file) pages are all locked solidly,
+>>> +	 * file-backed online pages in plcuster are all locked steady,
+>>>    	 * therefore it is impossible for `mapping' to be NULL.
+>>>    	 */
+>>>    	if (mapping && mapping != mc)
+>>>    		/* ought to be unmanaged pages */
+>>>    		goto out;
+>>> +	/* directly return for shortlived page as well */
+>>> +	if (z_erofs_is_shortlived_page(page))
+>>> +		goto out;
+>>> +
+>>>    	lock_page(page);
+>>>    	/* only true if page reclaim goes wrong, should never happen */
+>>> @@ -1062,8 +1072,8 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+>>>    out_allocpage:
+>>>    	page = erofs_allocpage(pagepool, gfp | __GFP_NOFAIL);
+>>>    	if (!tocache || add_to_page_cache_lru(page, mc, index + nr, gfp)) {
+>>> -		/* non-LRU / non-movable temporary page is needed */
+>>> -		page->mapping = Z_EROFS_MAPPING_STAGING;
+>>> +		/* turn into temporary page if fails */
+>>> +		set_page_private(page, Z_EROFS_SHORTLIVED_PAGE);
+>>>    		tocache = false;
+>>>    	}
+>>> diff --git a/fs/erofs/zdata.h b/fs/erofs/zdata.h
+>>> index 68c9b29fc0ca..b503b353d4ab 100644
+>>> --- a/fs/erofs/zdata.h
+>>> +++ b/fs/erofs/zdata.h
+>>> @@ -173,6 +173,7 @@ static inline void z_erofs_onlinepage_endio(struct page *page)
+>>>    	v = atomic_dec_return(u.o);
+>>>    	if (!(v & Z_EROFS_ONLINEPAGE_COUNT_MASK)) {
+>>> +		set_page_private(page, 0);
+>>>    		ClearPagePrivate(page);
+>>>    		if (!PageError(page))
+>>>    			SetPageUptodate(page);
+>>>
+>>
+> 
+> .
+> 
