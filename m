@@ -2,168 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E292D2247
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AA82D224D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgLHEuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        id S1727132AbgLHEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgLHEux (ORCPT
+        with ESMTP id S1726396AbgLHEvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:50:53 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1375EC061749;
-        Mon,  7 Dec 2020 20:50:13 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id 15so6972875oix.8;
-        Mon, 07 Dec 2020 20:50:13 -0800 (PST)
+        Mon, 7 Dec 2020 23:51:41 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F7DC061749;
+        Mon,  7 Dec 2020 20:51:01 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id i24so8352583edj.8;
+        Mon, 07 Dec 2020 20:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jHkOHufgfPix7XJnCEL5dkvF/7Fypmy2uLtYXWhqwes=;
-        b=EEzbqjYcjazN0cXwdMDcfLJmNNCY56rjfD4ovOHQWoIq0PjSl2+DZt4tpssS+lf6uN
-         4KcG/updZ2pSSwNA7isAgug3R5F2zcKEN51CvqMFcvSiMWl0E1DKInY61Vrj0X6SUXqP
-         9h8Cu97E5J3wL96zoGau0O0J3WTn/be0xdq6GJLSPuCaAaGK23Fck1Psj8+8bJMVU/Tt
-         +rhkyhK4tr0Xt1wVD2l+WkrJLS8qiXl3mrVJcWKNPykDQirzpXBvZVjY1OoWi08bHj4t
-         Mdrh3Ee6hEQl8m9quYNSTQwpYhOktchVLUxJXRMZAlMcw9h1l9V6umiw4VbyQqzTYocf
-         V1HA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LpBxApSP8rCkKlkJaOOFJxIK7H0arGSthSf/Abqc1f0=;
+        b=VcYmqqFkZcsz7ruK90wqwWcXsd76SC0LUJJ98io9ZKofQcbxNTMBIXLdfU/iaC0MpG
+         /VDzjogKNREO57usDtzHJ5gBV4zXFWKvPbBmfiunp5uKqvt31DFaAN0vY/72GVkNbbG3
+         odiQjoM5lrXpeu7ExSfIl20XVCYp4/NHEqEu83rUF03bAXO7U4Y9RLIQNWMrbVzYINiY
+         kOSvwzl/VpcNjHA0CYD9MlE1gTm4uvu/hxPOw6d6682gqYIS1xNgEeIrCGo5E5Rlkhqt
+         CucT/2rIdbGpjmIxyJoIJPyCIgF9ij8TShnlQJc8TjPXrz/98fvgKpaPRQSwOXPFEo2w
+         rCKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=jHkOHufgfPix7XJnCEL5dkvF/7Fypmy2uLtYXWhqwes=;
-        b=oWZ0kiqRkeLSf1/Hmti3JnTnhEUL1ZpZohW4W+bEEavyQh2xaQRs4uxIjpdKdkLBfh
-         9ZJCJVGmQA1R02Ito973EzmkpnjWG4k65cBuAizTmkaZMKomD7J4TG/Pbsd8Nh/LV889
-         ts1ib3Q5E1R0bI/AsyJH2wCU0W3wdS+hGU15UbPHfvfjwnmagJZNsjRtiDMI+JwG+XOg
-         ioJ+1A1anNMjq5rqfpq7I2DxVFz4tCTez5ZyYMR7n4GzIQtw/+aykHrKjs7CWSyBBARY
-         MtkhWr0N0FmqdrAd3sIPtLReXrTgTewHT6n4HwYP9WFBx/81cDIqvK1pSUGOTJdilHRe
-         fNTw==
-X-Gm-Message-State: AOAM532j2nMbmNUOjqFvRo5bxps6wroXS3pLrVnvwmbj8aAKKpBGnnN+
-        yg7lJNS1wY5GOl6jlNNsv1sZXCZXCAQ=
-X-Google-Smtp-Source: ABdhPJzsIwBuv4H4rkF21YxZVwyw5ietTe5Qq9IgEmpv5eSLf7lfeyOZCkot/YI+Hhs6+6nt4+MuQg==
-X-Received: by 2002:aca:5c07:: with SMTP id q7mr1448521oib.178.1607403012526;
-        Mon, 07 Dec 2020 20:50:12 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a15sm2360269oii.50.2020.12.07.20.50.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 20:50:11 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 0/3] occ: Add support for P10
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Eddie James <eajames@linux.ibm.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-fsi@lists.ozlabs.org
-References: <20201120010315.190737-1-joel@jms.id.au>
- <20201121185150.GD114144@roeck-us.net>
- <CACPK8Xcf1xhPZNqpxuZE22uqDFR7rb1Wv-RW802bx2S-nphpzA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <892cbf6d-b209-13e3-645e-082e2ce5c68c@roeck-us.net>
-Date:   Mon, 7 Dec 2020 20:50:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LpBxApSP8rCkKlkJaOOFJxIK7H0arGSthSf/Abqc1f0=;
+        b=EZ35Eh9aRC/0hVRdxRy2FEgylUovJ6FEzGcHS00Sverftg7nZ0Ln25vqJNJiDWNkrL
+         JMDhyrsTJLjjBUgAYhXV92Ebv9WTxpG5gp11KOy/x5DDDnjT9B7S0/QH648w8uaah1lH
+         M8fjqdZmGP8ned2sno7wr6Ze/Hy5NjyAJg/fuC2vkJzmpZefz1A3tgC3a6Px2v21dGCo
+         iM7jUr5pj8G/lg1OzmrzaBmJHkw0qnyLgoiCoY3GfPr7xRhg1o5Kp0vJNsv1BDWPB8q9
+         80zoEsz0MnnZ0q15OI6MlbH1mQMEEu8kv2qUyN29dOIkebgb1+9PviqOvZNqqsFOkDwq
+         HiLg==
+X-Gm-Message-State: AOAM530lF1tb/fOY6bngMZrPrPCKfFJ3R9UP48ahoDLPkmkU6bLl0ziJ
+        oGCKTF0k/jWXc+F958bdCH8=
+X-Google-Smtp-Source: ABdhPJwJWwskX0ehYSyo/1zgQiqkcF4qXSsR/UjOZTLyj1endimvm9CQVWDIrjMNDUJyKgV7JIh+rg==
+X-Received: by 2002:a05:6402:b57:: with SMTP id bx23mr22763851edb.191.1607403060074;
+        Mon, 07 Dec 2020 20:51:00 -0800 (PST)
+Received: from andrea (host-95-239-64-30.retail.telecomitalia.it. [95.239.64.30])
+        by smtp.gmail.com with ESMTPSA id t26sm14439420eji.22.2020.12.07.20.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 20:50:59 -0800 (PST)
+Date:   Tue, 8 Dec 2020 05:50:50 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Subject: Re: [PATCH v2] Drivers: hv: vmbus: Copy packets sent by Hyper-V out
+ of the ring buffer
+Message-ID: <20201208045050.GA9609@andrea>
+References: <20201109100727.9207-1-parri.andrea@gmail.com>
+ <MW2PR2101MB1052B7CBB14283AA066BF125D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CACPK8Xcf1xhPZNqpxuZE22uqDFR7rb1Wv-RW802bx2S-nphpzA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB1052B7CBB14283AA066BF125D7CF1@MW2PR2101MB1052.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
-
-On 12/7/20 6:41 PM, Joel Stanley wrote:
-> On Sat, 21 Nov 2020 at 18:55, Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Fri, Nov 20, 2020 at 11:33:12AM +1030, Joel Stanley wrote:
->>> Hi Guenter, here's v2 of this series on behalf of Eddie. I made the
->>> change to the compatible string that we spoke about in v2, and I'm happy
->>> for these to go through the hwmon tree.
->>>
->>
->> I'll be happy to do that, as soon as we get a Reviewed-by: tag for the DT
->> change.
+> > @@ -419,17 +446,52 @@ static u32 hv_pkt_iter_avail(const struct hv_ring_buffer_info *rbi)
+> >  struct vmpacket_descriptor *hv_pkt_iter_first(struct vmbus_channel *channel)
+> >  {
+> >  	struct hv_ring_buffer_info *rbi = &channel->inbound;
+> > -	struct vmpacket_descriptor *desc;
+> > +	struct vmpacket_descriptor *desc, *desc_copy;
+> > +	u32 bytes_avail, pkt_len, pkt_offset;
+> > 
+> > -	hv_debug_delay_test(channel, MESSAGE_DELAY);
+> > -	if (hv_pkt_iter_avail(rbi) < sizeof(struct vmpacket_descriptor))
+> > +	desc = hv_pkt_iter_first_raw(channel);
+> > +	if (!desc)
+> >  		return NULL;
+> > 
+> > -	desc = hv_get_ring_buffer(rbi) + rbi->priv_read_index;
+> > -	if (desc)
+> > -		prefetch((char *)desc + (desc->len8 << 3));
+> > +	bytes_avail = hv_pkt_iter_avail(rbi);
+> > +
+> > +	/*
+> > +	 * Ensure the compiler does not use references to incoming Hyper-V values (which
+> > +	 * could change at any moment) when reading local variables later in the code
+> > +	 */
+> > +	pkt_len = READ_ONCE(desc->len8) << 3;
+> > +	pkt_offset = READ_ONCE(desc->offset8) << 3;
+> > +
+> > +	/*
+> > +	 * If pkt_len is invalid, set it to the smaller of hv_pkt_iter_avail() and
+> > +	 * rbi->pkt_buffer_size
+> > +	 */
+> > +	if (rbi->pkt_buffer_size < bytes_avail)
+> > +		bytes_avail = rbi->pkt_buffer_size;
 > 
-> Rob has sent that through now, so this should be good to go in.
+> I think the above could be combined with the earlier call to hv_pkt_iter_avail(),
+> and more logically expressed as:
 > 
-
-Thanks for the reminder. Series applied to hwmon-next.
-
-Thanks,
-Genter
-
-> Thank you.
+> 	bytes_avail = min(rbi->pkt_buffer_size, hv_pkt_iter_avail(rbi));
 > 
->>
->> Thanks,
->> Guenter
->>
->>> v1: https://lore.kernel.org/linux-hwmon/20200501150833.5251-1-eajames@linux.ibm.com/
->>>
->>> The OCC in the P10 has a number of differences from the P9. Add some logic to
->>> handle the differences in accessing the OCC from the service processor, and
->>> support the new temperature sensor type.
->>>
->>> Eddie James (3):
->>>   dt-bindings: fsi: Add P10 OCC device documentation
->>>   fsi: occ: Add support for P10
->>>   hwmon: (occ) Add new temperature sensor type
->>>
->>>  .../devicetree/bindings/fsi/ibm,p9-occ.txt    |  12 +-
->>>  drivers/fsi/fsi-occ.c                         | 125 +++++++++++++-----
->>>  drivers/hwmon/occ/common.c                    |  75 +++++++++++
->>>  3 files changed, 172 insertions(+), 40 deletions(-)
->>>
->>> --
->>> 2.29.2
->>>
+> 
+> This is a minor nit.  Everything else in this patch looks good to me.
 
+Thanks for the feedback, Michael; I'll send v3 to address it shortly.
+
+  Andrea
