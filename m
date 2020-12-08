@@ -2,244 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9BE2D220D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1B82D221B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgLHEWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S1726288AbgLHEaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:30:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727290AbgLHEWj (ORCPT
+        with ESMTP id S1726028AbgLHEaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:22:39 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393D2C061749
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:21:43 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id t6so763163plq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:21:43 -0800 (PST)
+        Mon, 7 Dec 2020 23:30:13 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACB9C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:29:27 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id i3so9072723pfd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iuruSM5Wk5IQuXnGIYHAC1ej2c7Wmgf5EexDWUENUOw=;
-        b=JvSBmHPkXQn9tqltsKxRwqdG3L4xMxx3IUPXwtPqKOYEyGp238OQgLQ7jDXPKt24e3
-         sYkRd9arNELgXCsNFausQ1G47Il3mclukxuUag5+wS39WymDZvYjin+7g0neRTqG8Y9n
-         VO9rU6zNwtU41CReh9zDnH2Ljy1keWq+zuZwRvTfmgKg83qpHAMoB4/mXprbbYLETe6G
-         RBRnybRoEHBts/t70AtrP2bQhcUwjOJ8oh3mfZrTGORG02pzBeqFJEBegTzngrCn72XV
-         gPVe66zYzpbG9bk4zkDzACtObij3N/ESHJn/3qupwhqJAPbI9bj6K33pWLyewDQtt+LB
-         wCXg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nwo+BCJKm7wcb2h7JzOrNJu8zdED7/Pq3+KQEiGYNC4=;
+        b=ftPp1aze2+o1I5P7qeC+WWQnUhOXYDB6WysEgSHwPTEqehGwSZ1nTTjWQTyLkuFyq2
+         Bqd0dTz41+LZYiJ7059Wn/BGrqkvGUnKyzrigWLghh9z8SlrznCkiWM8k9HbSV9MWNu3
+         FMT1LBU3JeswHBwQr539iJXFeULVSS9jodJCVFvx0zHOJjxcDNJrBXZchUj0n0SU6Dy7
+         XMD3oZKlEULVQWlzWbneoJzhTWVNRA01G8muy6btZWGXiIqvoigvYoFgmCXCs7c33y28
+         GACPaCMyvhJNKxqqpI535T8gXObq8RjiMJCTnb3TV+KH29hpkmuLyM/HUiAUZRaBOuTF
+         gDlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iuruSM5Wk5IQuXnGIYHAC1ej2c7Wmgf5EexDWUENUOw=;
-        b=Gc9AK48JPenKg+z7p79dUppXG2AqERWIrYjDJ4Jsv20SrI5qRFo2QN2wySnLC+qk+e
-         TfwQ5jWaTnQul8UxdB+EfWfav4WI5t9CyWw33jvjfg/er+2evkrOqLbDD7aB/KZ0KfH1
-         xWWeXPbjawPvvnjI/smCKe9v6x51bpsYetXi275b0BpmF5YcdHZjY/XYFJVVZ04dI8Yk
-         0DUZz+W591wb4NSwyUdfgG1E8xV2FTHWHJYg4s9xbC/rT1yK9fXueztEVikkdwNoieOd
-         Hcdy8VRCpf4cyxQwixgc/D3CL57FLPjUuKHhcfbj1W4E5nFH62QNuXC+7FS2SXUi5QuA
-         ixWA==
-X-Gm-Message-State: AOAM532jcqO4MZiewp2DzzosMNx3GIjztr+1f6wc5xV78bZiy09z2RwS
-        lNi6Wgvy4Ol110haPQ9HkbMxcw==
-X-Google-Smtp-Source: ABdhPJwCAN4zm3sxSIMbaeUGH8Q36ijCLpemWCrzTBw2fM2/G6fQIIQjIkxW+ToQpB618UjA8kaeLg==
-X-Received: by 2002:a17:902:6803:b029:d6:cf9d:2cfb with SMTP id h3-20020a1709026803b02900d6cf9d2cfbmr19526373plk.55.1607401302801;
-        Mon, 07 Dec 2020 20:21:42 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id mr7sm1031166pjb.31.2020.12.07.20.21.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nwo+BCJKm7wcb2h7JzOrNJu8zdED7/Pq3+KQEiGYNC4=;
+        b=GLvI7teOjGFkzx2ZAZoFyyWwYwPRgkNR2RUW9EOESdCLHngF+PSHz9ph3UQOa4vq/t
+         CIS9yceXUKG55dUcSEaiY0dx2DlBzqYZv91nLGJAwvk7nxdqa7rK2xm+K/pE12/tyViR
+         cnlS2JveIsUv9y0hykopRZFfAu/ZxMawItcTJDXyyGr7XoXpySxPm4uovm3ip5oKzgpC
+         c4kdAy6uiVCpJljAQSa32F6p1bVRfossV9Y7g6nqvhOzKI3HGqpSe4axQ2Wdpy0WCgjJ
+         wjzTEdw4bqCWr5Tq92JvBfH4wdNIkNhi7DuyhevgBGBkCuXnZ98s+Lq1QF2SpwPJDgaH
+         /zfQ==
+X-Gm-Message-State: AOAM533W2cXtFzMg/0avsR7zRaoIExDlw/kS24SjZ8KTzlrK9Yy/VhCC
+        pSj1sZMWiE2vGt9BAG/jtCpUPsSoHtaGoA==
+X-Google-Smtp-Source: ABdhPJw6cKmfJYM3CskGrGwpcWIdE9+O9nGA+xXmZktoCuvueP8ol/A7L8M41d+n06uF2Ug544ZyAA==
+X-Received: by 2002:a17:90b:187:: with SMTP id t7mr1333182pjs.191.1607401767151;
+        Mon, 07 Dec 2020 20:29:27 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id 193sm3853148pfz.36.2020.12.07.20.29.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Dec 2020 20:21:42 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
-        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
-        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 7/7] mm: memcontrol: make the slab calculation consistent
-Date:   Tue,  8 Dec 2020 12:18:47 +0800
-Message-Id: <20201208041847.72122-8-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201208041847.72122-1-songmuchun@bytedance.com>
-References: <20201208041847.72122-1-songmuchun@bytedance.com>
+        Mon, 07 Dec 2020 20:29:26 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:59:24 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+Subject: Re: [PATCH v4 1/4] dt-bindings/opp: Update documentation for
+ opp-shared
+Message-ID: <20201208042924.kv7tqsbstoanqham@vireshk-i7>
+References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+ <20201202172356.10508-2-nicola.mazzucato@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202172356.10508-2-nicola.mazzucato@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although the ratio of the slab is one, we also should read the ratio
-from the related memory_stats instead of hard-coding. And the local
-variable of size is already the value of slab_unreclaimable. So we
-do not need to read again.
+Subject should rather be:
 
-We can drop the ratio in struct memory_stat. This can make the code
-clean and simple. And get rid of the awkward mix of static and runtime
-initialization of the memory_stats table.
+dt-bindings: opp: Allow empty OPP tables
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 112 ++++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 73 insertions(+), 39 deletions(-)
+On 02-12-20, 17:23, Nicola Mazzucato wrote:
+> Currently the optional property opp-shared is used within an opp table
+> to tell that a set of devices share their clock/voltage lines (and the
+> opp points).
+> It is therefore possible to use an empty opp table to convey only that
+> information, useful in situations where the opp points are provided via
+> other means (hardware. firmware, etc).
+> 
+> Update the documentation to remark this additional case and provide an
+> example.
+> 
+> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
+> ---
+>  Documentation/devicetree/bindings/opp/opp.txt | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
+> index 9847dfeeffcb..a5f1f993eab9 100644
+> --- a/Documentation/devicetree/bindings/opp/opp.txt
+> +++ b/Documentation/devicetree/bindings/opp/opp.txt
+> @@ -72,6 +72,9 @@ Optional properties:
+>    switch their DVFS state together, i.e. they share clock/voltage/current lines.
+>    Missing property means devices have independent clock/voltage/current lines,
+>    but they share OPP tables.
+> +  This optional property can be used without any OPP nodes when its only purpose
+> +  is to describe a dependency of clock/voltage/current lines among a set of
+> +  devices.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a40797a27f87..841ea37cc123 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1511,49 +1511,78 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+And instead of this, we should rather update "OPP nodes:" section like
+this:
+
+diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
+index 9847dfeeffcb..28077ce3a845 100644
+--- a/Documentation/devicetree/bindings/opp/opp.txt
++++ b/Documentation/devicetree/bindings/opp/opp.txt
+@@ -63,11 +63,13 @@ This describes the OPPs belonging to a device. This node can have following
+ - compatible: Allow OPPs to express their compatibility. It should be:
+   "operating-points-v2".
  
- struct memory_stat {
- 	const char *name;
--	unsigned int ratio;
- 	unsigned int idx;
- };
++Optional properties:
+ - OPP nodes: One or more OPP nodes describing voltage-current-frequency
+   combinations. Their name isn't significant but their phandle can be used to
+-  reference an OPP.
++  reference an OPP. These are mandatory except for the case where the OPP table
++  is present only to indicate dependency between devices using the opp-shared
++  property.
  
- static const struct memory_stat memory_stats[] = {
--	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
--	{ "file", PAGE_SIZE, NR_FILE_PAGES },
--	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
--	{ "pagetables", PAGE_SIZE, NR_PAGETABLE },
--	{ "percpu", 1, MEMCG_PERCPU_B },
--	{ "sock", PAGE_SIZE, MEMCG_SOCK },
--	{ "shmem", PAGE_SIZE, NR_SHMEM },
--	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
--	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
--	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-+	{ "anon",			NR_ANON_MAPPED			},
-+	{ "file",			NR_FILE_PAGES			},
-+	{ "kernel_stack",		NR_KERNEL_STACK_KB		},
-+	{ "pagetables",			NR_PAGETABLE			},
-+	{ "percpu",			MEMCG_PERCPU_B			},
-+	{ "sock",			MEMCG_SOCK			},
-+	{ "shmem",			NR_SHMEM			},
-+	{ "file_mapped",		NR_FILE_MAPPED			},
-+	{ "file_dirty",			NR_FILE_DIRTY			},
-+	{ "file_writeback",		NR_WRITEBACK			},
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	{ "anon_thp", PAGE_SIZE, NR_ANON_THPS },
--	{ "file_thp", PAGE_SIZE, NR_FILE_THPS },
--	{ "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
-+	{ "anon_thp",			NR_ANON_THPS			},
-+	{ "file_thp",			NR_FILE_THPS			},
-+	{ "shmem_thp",			NR_SHMEM_THPS			},
- #endif
--	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
--	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
--	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
--	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
--	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
--
--	/*
--	 * Note: The slab_reclaimable and slab_unreclaimable must be
--	 * together and slab_reclaimable must be in front.
--	 */
--	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
--	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-+	{ "inactive_anon",		NR_INACTIVE_ANON		},
-+	{ "active_anon",		NR_ACTIVE_ANON			},
-+	{ "inactive_file",		NR_INACTIVE_FILE		},
-+	{ "active_file",		NR_ACTIVE_FILE			},
-+	{ "unevictable",		NR_UNEVICTABLE			},
-+	{ "slab_reclaimable",		NR_SLAB_RECLAIMABLE_B		},
-+	{ "slab_unreclaimable",		NR_SLAB_UNRECLAIMABLE_B		},
- 
- 	/* The memory events */
--	{ "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
--	{ "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
--	{ "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
--	{ "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
--	{ "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
--	{ "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
--	{ "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
-+	{ "workingset_refault_anon",	WORKINGSET_REFAULT_ANON		},
-+	{ "workingset_refault_file",	WORKINGSET_REFAULT_FILE		},
-+	{ "workingset_activate_anon",	WORKINGSET_ACTIVATE_ANON	},
-+	{ "workingset_activate_file",	WORKINGSET_ACTIVATE_FILE	},
-+	{ "workingset_restore_anon",	WORKINGSET_RESTORE_ANON		},
-+	{ "workingset_restore_file",	WORKINGSET_RESTORE_FILE		},
-+	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
- };
- 
-+/* Translate stat items to the correct unit for memory.stat output */
-+static int memcg_page_state_unit(int item)
-+{
-+	int unit;
-+
-+	switch (item) {
-+	case MEMCG_PERCPU_B:
-+	case NR_SLAB_RECLAIMABLE_B:
-+	case NR_SLAB_UNRECLAIMABLE_B:
-+	case WORKINGSET_REFAULT_ANON:
-+	case WORKINGSET_REFAULT_FILE:
-+	case WORKINGSET_ACTIVATE_ANON:
-+	case WORKINGSET_ACTIVATE_FILE:
-+	case WORKINGSET_RESTORE_ANON:
-+	case WORKINGSET_RESTORE_FILE:
-+	case WORKINGSET_NODERECLAIM:
-+		unit = 1;
-+		break;
-+	case NR_KERNEL_STACK_KB:
-+		unit = SZ_1K;
-+		break;
-+	default:
-+		unit = PAGE_SIZE;
-+		break;
-+	}
-+
-+	return unit;
-+}
-+
-+static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
-+						    int item)
-+{
-+	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
-+}
-+
- static char *memory_stat_format(struct mem_cgroup *memcg)
- {
- 	struct seq_buf s;
-@@ -1577,13 +1606,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
- 
--		size = memcg_page_state(memcg, memory_stats[i].idx);
--		size *= memory_stats[i].ratio;
-+		size = memcg_page_state_output(memcg, memory_stats[i].idx);
- 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
- 
- 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
--			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
--			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-+			size += memcg_page_state_output(memcg,
-+							NR_SLAB_RECLAIMABLE_B);
- 			seq_buf_printf(&s, "slab %llu\n", size);
- 		}
- 	}
-@@ -6377,6 +6405,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
- }
- 
- #ifdef CONFIG_NUMA
-+static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
-+						     int item)
-+{
-+	return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
-+}
-+
- static int memory_numa_stat_show(struct seq_file *m, void *v)
- {
- 	int i;
-@@ -6394,8 +6428,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 			struct lruvec *lruvec;
- 
- 			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
--			size = lruvec_page_state(lruvec, memory_stats[i].idx);
--			size *= memory_stats[i].ratio;
-+			size = lruvec_page_state_output(lruvec,
-+							memory_stats[i].idx);
- 			seq_printf(m, " N%d=%llu", nid, size);
- 		}
- 		seq_putc(m, '\n');
+-Optional properties:
+ - opp-shared: Indicates that device nodes using this OPP Table Node's phandle
+   switch their DVFS state together, i.e. they share clock/voltage/current lines.
+   Missing property means devices have independent clock/voltage/current lines,
+
 -- 
-2.11.0
-
+viresh
