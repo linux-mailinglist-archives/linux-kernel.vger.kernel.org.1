@@ -2,157 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF362D20E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C602D20E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgLHCiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:38:08 -0500
-Received: from mail-eopbgr1410053.outbound.protection.outlook.com ([40.107.141.53]:23712
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727763AbgLHCiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:38:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=id7P+ILQ7gtW3oDNTkoGJCnBMMUfToxre2lS/v0koermA0ZqkqTYWXKOWGaKLysj+fWuU83V3ufRtSR5dourrZQoMW9vIVuIAF7raH6GsXnUum8bC5kMzJp2dOi7RZdfPonNws100C29eo/NtaFiw+yzxcz/4Bz9o/2JEzthNDEXPPPJSAs3aTG1kiVz7NqGyLAhKKhqRZIto2YkuiK1CSV7bd0YkNOmHKpFzp5r6mSsxPbTGL5vykoBNSeQfqmjMfiEgDSrixv87+lTbDsEZHMxkqfCKrb9qu2uuxPZR9ajKqq1VCmerU92NMA2JQbPCrDbnRGB+tvjPB3z2GQCcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aRuTnYf6pJm1T26OSkd2zGm5X3ayc5sFWkXmh9zB81E=;
- b=Tn0KLQ9OnlNL9+VZRecc2sH4cyzhYurGnOryiojQX7FONC8O5GlQ8lUtYn8faQ32Qn3qELrcBXUbS4k921S6Pa9rLAx1ajiQ/wzenDYlyeKle/mH3/Ckr0rKILnBV2Yuy8Jk6UWusIzz3wkhc8HQkb+Vyevl0nFov1SXpcHiZ9zmt9RXHUNo5WhQLDQ1Og0jGdGw+S5Icrizok2NIQh4mocvzwSo19IYwTSa0wTa5VYJjYe4blQYLi4iUH6pasQxIQN2ZrEuJwNkC6Ba5briIuuLq3vQhgt9ulAu0AIISvYAhHHD6ASH2IQHaOys0FuoycTB7QLzQHu0pbjqc+Pvfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aRuTnYf6pJm1T26OSkd2zGm5X3ayc5sFWkXmh9zB81E=;
- b=Rm4CZTphoMAnha4I0MAUSReoUtpyUk+MNfeP9VT8AAdoVA2YLiV5i6SPujyyKQdE8dTLpkP4lpU/9Ucm9mxUGN6QGusyvB25Bfu+5+/aV3vsPS8S43ZMGRfGFLAjcuGhaEEVbUzj377eS9L4NB62TGRGFoxZrFBDngc7JCAaXe4=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TYAPR01MB5930.jpnprd01.prod.outlook.com (2603:1096:404:8055::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
- 2020 02:35:14 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::8453:2ddb:cf2b:d244]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::8453:2ddb:cf2b:d244%7]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 02:35:14 +0000
-From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
-        <naoya.horiguchi@nec.com>
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "n-horiguchi@ah.jp.nec.com" <n-horiguchi@ah.jp.nec.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm,memory_failure: Always pin the page in
- madvise_inject_error
-Thread-Topic: [PATCH] mm,memory_failure: Always pin the page in
- madvise_inject_error
-Thread-Index: AQHWzH4hO9bKFpDJuEiM7pqnWm2hdKnsfIcA
-Date:   Tue, 8 Dec 2020 02:35:14 +0000
-Message-ID: <20201208023513.GB10757@hori.linux.bs1.fc.nec.co.jp>
-References: <20201207094818.8518-1-osalvador@suse.de>
-In-Reply-To: <20201207094818.8518-1-osalvador@suse.de>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: adae0acd-b608-4dbd-ee1d-08d89b21e4a3
-x-ms-traffictypediagnostic: TYAPR01MB5930:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB5930558DD36F288739505B51E7CD0@TYAPR01MB5930.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zaAmOQcx1Hhy+qD5T0auIfohzbiFoW0LakoaFA+V4Q1WuykQ+o3ZJtLl9fE5o40c89Gw8nEGhS0M2x6BNN+NN3lXqmRcc+zu1WlflkMAor/I1Y21ol9Yqb5fSxI0cx/8mqv96pgMUfvAk2SYACdMz88QIYbcIzGbMWzyZvoJT4MXdGQkDuF2c/FMp+nE/kcm4bF5iN+bTfaGUdZC+qarPvkq33+SeOQm1gmkTyQ0xC2FfHwz5LF+HNsjcXNxmZgDMNyy8KabYLYLNg5BxCYHvggxJMvQXZLXImtHu0h/Y4+I+n2O4uvYAIQ3ZICOfRF1CowfdrWqkDDSz6XEMEZN9w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(6506007)(66946007)(71200400001)(508600001)(9686003)(86362001)(26005)(55236004)(8676002)(4326008)(6512007)(64756008)(66556008)(1076003)(6916009)(54906003)(66476007)(186003)(8936002)(5660300002)(2906002)(33656002)(66446008)(83380400001)(6486002)(85182001)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?dUVuWDNSSFBqWFVtcU1oZFljYUVLVmZndE5uVnZjUmFiOWtEL09BbUps?=
- =?iso-2022-jp?B?NE03RmlpN0tQRWtaNG0rVFl5Smt4MWxKd0dJY0VwSVVhUFV6YThoYzRn?=
- =?iso-2022-jp?B?NmlFMXZuUURlVXpYVEFmbC9Va01UaWxVVXg0elVNVjlidzUvUEg1cnhi?=
- =?iso-2022-jp?B?c1NpN2U2WGwwN3RpWlhuWmZhenpNRy9WQk5nZE1QYWh5UThqLzVQOEJO?=
- =?iso-2022-jp?B?MDVNQUJGbjdtNHdHdDJXanFVRkJKcklvbXc1eUxxR2lsTFRqNHNMRGdK?=
- =?iso-2022-jp?B?VjJvaTdPdU10R3JOK1BOR3VUN2VPZnQvNHgwNXpSZjEzbUdQS3daRnRM?=
- =?iso-2022-jp?B?bUUrZEVpWUJIczlmL2lUS2tCVGxBNUpVWlBCVXRSNnp5THZqMmtNZnBz?=
- =?iso-2022-jp?B?ZWpUbmZQQkwvSkNIMTBuYldtTDZDSjljM2YxL2hnUnhINE9LODcyOXVN?=
- =?iso-2022-jp?B?OFBtL0cydlhNa2JYSHd4WWhjNGJBVmV3bHhOMnM2S082UUU5VzRyczBu?=
- =?iso-2022-jp?B?UVJDdDhacGdQc1dIclZJSFE4SDEvN25NOWFDRjBsdzMvY0M1YXFXRE43?=
- =?iso-2022-jp?B?UnpOY0Yxc3FTL3ppYlZFbVVnREVKS213VlFMQjJFemtDSldUczhEMDR5?=
- =?iso-2022-jp?B?VUNBNXZPa25GU2J4bW5KT09idG9kTDlTNlFCcXUxRml5WjFrMnZ3ZW96?=
- =?iso-2022-jp?B?ZWFOcHFSMGVGWkIraDRBZ213V2F0SXZON3EzaWtxUTQ0QkE5ODNKazJZ?=
- =?iso-2022-jp?B?cnM5MG1ucnBCVVJlTDVOL21BSUwwaU12cmE3RUJlVWhZU0FMK0JGUll3?=
- =?iso-2022-jp?B?eGtUSlhrOXB5a2llbDNKQmxyRXhicTQwYTJyNk1GelM1V0VVT2taa1B4?=
- =?iso-2022-jp?B?TTJLa3MvVWMySDhCL0dZZ3hQRkxwcytVZ1BSZjdsRGdrTnhSblo3SHFE?=
- =?iso-2022-jp?B?MFN0dURYMkVhaG56bHV3b1RndzZ2Q3U5Q2RIOGh2TE5uWkFkSkNjeVJt?=
- =?iso-2022-jp?B?cTc1aENYaytsNHgvV1BqS1FMa3BkNXdWb3FuWmhWdHpWczcxZ2w3UUM5?=
- =?iso-2022-jp?B?NW9MMzRHTGhDVzRHQVM4dGpCYVFNMnUydEJBWTFaMFdNR0kwNlNCem1O?=
- =?iso-2022-jp?B?VzlBQXRxNFlYWkxMYzh3dlpZT3JORGxGSGQzRXJSSEJkMHV1cndFYWEz?=
- =?iso-2022-jp?B?eGZUME44NHFPYUlQOVlnSGVwUmdRNXBpR0NJd29hMXhqVEZoZGhrTHEr?=
- =?iso-2022-jp?B?ZTZpdmpsdnJ2TWYrYnJvaXBxMGtTL2ZnQXlETFlTY29tT2JVL3FxTHEr?=
- =?iso-2022-jp?B?NXdoVWUwY1A5UXlyRjVnVFJWMVZHeWZUa083UUgxdk9nekdCQnhEUERr?=
- =?iso-2022-jp?B?YTZpdmpGUDF1TlFwUUpXaFF4aUJsSWtxM3NQdkZpemJqMWwwbUR5andN?=
- =?iso-2022-jp?B?bnpWQy9oSUh0TGpscy9WSQ==?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <8EA991E89894DB4E83C94B190FAE1487@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727945AbgLHChq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:37:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56689 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727763AbgLHChq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:37:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607394979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RYRh0BrbEydzQN0gbRsV8YUEFZZ1GUb2egfShjaZmZc=;
+        b=SQSyslpGamarlynAbhnz+2gR4Yc4x7AhO1kONdCBP1/6MsVB4mbiBccjWa54UJAym7PySn
+        TdgjjZ4iVVP4Y5RSSF7IjbCsA+0K6+170Rj3XC9Bb1rCDG3Kb0NzFhACmcdh3mt/snqFq1
+        5pNWyWI5Kfu9t4F1sZvk4KtzwE1Kmtw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-GP2LMSA8PV6LunypxUpYSg-1; Mon, 07 Dec 2020 21:36:15 -0500
+X-MC-Unique: GP2LMSA8PV6LunypxUpYSg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAC931005513;
+        Tue,  8 Dec 2020 02:36:13 +0000 (UTC)
+Received: from [10.72.12.91] (ovpn-12-91.pek2.redhat.com [10.72.12.91])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4108060BE2;
+        Tue,  8 Dec 2020 02:36:01 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org, stefanha@redhat.com,
+        msuchanek@suse.de
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
+ <20201205142218-mutt-send-email-mst@kernel.org>
+ <842519cc-94ca-3c11-ddd6-543e5a89c998@redhat.com>
+ <20201207085247-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0a9c19bd-0d25-1035-57e3-b1f5f204c309@redhat.com>
+Date:   Tue, 8 Dec 2020 10:36:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: adae0acd-b608-4dbd-ee1d-08d89b21e4a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 02:35:14.4879
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lBQbjsaLhz5Jsr1rJKSsvb1cuj2r3mANAMjNzZd5NLif3jGq6QGgP1U0h/++GVgK55b36fhR0m1WjbyIBNaU5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5930
+In-Reply-To: <20201207085247-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 10:48:18AM +0100, Oscar Salvador wrote:
-> madvise_inject_error() uses get_user_pages_fast to translate the
-> address we specified to a page.
-> After [1], we drop the extra reference count for memory_failure() path.
-> That commit says that memory_failure wanted to keep the pin in order
-> to take the page out of circulation.
->=20
-> The truth is that we need to keep the page pinned, otherwise the
-> page might be re-used after the put_page() and we can end up messing
-> with someone else's memory.
->=20
-> E.g:
->=20
-> CPU0
-> process X					CPU1
->  madvise_inject_error
->   get_user_pages
->    put_page
-> 					page gets reclaimed
-> 					process Y allocates the page
->   memory_failure
->    // We mess with process Y memory
->=20
-> madvise() is meant to operate on a self address space, so messing with
-> pages that do not belong to us seems the wrong thing to do.
-> To avoid that, let us keep the page pinned for memory_failure as well.
->=20
-> Pages for DAX mappings will release this extra refcount in
-> memory_failure_dev_pagemap.
->=20
-> [1] ("23e7b5c2e271: mm, madvise_inject_error:
->       Let memory_failure() optionally take a page reference")
->=20
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Fixes: 23e7b5c2e271 ("mm, madvise_inject_error: Let memory_failure() opti=
-onally take a page reference")
 
-Thank you very much.
+On 2020/12/7 下午9:53, Michael S. Tsirkin wrote:
+> On Mon, Dec 07, 2020 at 11:12:50AM +0800, Jason Wang wrote:
+>> On 2020/12/6 上午3:32, Michael S. Tsirkin wrote:
+>>> On Sat, Dec 05, 2020 at 08:59:55AM +0100, Enrico Weigelt, metux IT consult wrote:
+>>>> On 04.12.20 04:35, Jason Wang wrote:
+>>>>
+>>>>>> --- a/drivers/gpio/Kconfig
+>>>>>> +++ b/drivers/gpio/Kconfig
+>>>>>> @@ -1615,6 +1615,15 @@ config GPIO_MOCKUP
+>>>>>> Â Â Â Â Â Â Â  tools/testing/selftests/gpio/gpio-mockup.sh. Reference the
+>>>>>> usage in
+>>>>>> Â Â Â Â Â Â Â  it.
+>>>>>> Â  +config GPIO_VIRTIO
+>>>>>> +Â Â Â  tristate "VirtIO GPIO support"
+>>>>>> +Â Â Â  depends on VIRTIO
+>>>>> Let's use select, since there's no prompt for VIRTIO and it doesn't have
+>>>>> any dependencies.
+>>>> whoops, it's not that simple:
+>>>>
+>>>> make: Entering directory '/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git'
+>>>> make[1]: Entering directory
+>>>> '/home/nekrad/src/dk/DistroKit/platform-x86_64/build-target/linux-5.8.9-build'
+>>>>     GEN     Makefile
+>>>> drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
+>>>> drivers/gpu/drm/Kconfig:74:	symbol DRM_KMS_HELPER is selected by
+>>>> DRM_VIRTIO_GPU
+>>>> drivers/gpu/drm/virtio/Kconfig:2:	symbol DRM_VIRTIO_GPU depends on VIRTIO
+>>>> drivers/virtio/Kconfig:2:	symbol VIRTIO is selected by GPIO_VIRTIO
+>>>> drivers/gpio/Kconfig:1618:	symbol GPIO_VIRTIO depends on GPIOLIB
+>>>> drivers/gpio/Kconfig:14:	symbol GPIOLIB is selected by I2C_MUX_LTC4306
+>>>> drivers/i2c/muxes/Kconfig:47:	symbol I2C_MUX_LTC4306 depends on I2C
+>>>> drivers/i2c/Kconfig:8:	symbol I2C is selected by FB_DDC
+>>>> drivers/video/fbdev/Kconfig:63:	symbol FB_DDC depends on FB
+>>>> drivers/video/fbdev/Kconfig:12:	symbol FB is selected by DRM_KMS_FB_HELPER
+>>>> drivers/gpu/drm/Kconfig:80:	symbol DRM_KMS_FB_HELPER depends on
+>>>> DRM_KMS_HELPER
+>>>>
+>>>> Seems that we can only depend on or select some symbol - we run into
+>>>> huge trouble if thats mixed. Just changed DRM_VIRTIO_GPU to just select
+>>>> VIRIO instead of depending on it, and now it works.
+>>>>
+>>>> I've posted another patch for fixing drivers/gpu/drm/virtio/Kconfig
+>>>> to use 'select' instead of 'depends on'.
+>>> It seems a bit of a mess, at this point I'm not entirely sure when
+>>> should drivers select VIRTIO and when depend on it.
+>>>
+>>> The text near it says:
+>>>
+>>> # SPDX-License-Identifier: GPL-2.0-only
+>>> config VIRTIO
+>>>           tristate
+>>>           help
+>>>             This option is selected by any driver which implements the virtio
+>>>             bus, such as CONFIG_VIRTIO_PCI, CONFIG_VIRTIO_MMIO, CONFIG_RPMSG
+>>>             or CONFIG_S390_GUEST.
+>>>
+>>> Which seems clear enough and would indicate drivers for devices *behind*
+>>> the bus should not select VIRTIO and thus presumably should "depend on" it.
+>>> This is violated in virtio console and virtio fs drivers.
+>>>
+>>> For console it says:
+>>>
+>>> commit 9f30eb29c514589e16f2999ea070598583d1f6ec
+>>> Author: Michal Suchanek <msuchanek@suse.de>
+>>> Date:   Mon Aug 31 18:58:50 2020 +0200
+>>>
+>>>       char: virtio: Select VIRTIO from VIRTIO_CONSOLE.
+>>>       Make it possible to have virtio console built-in when
+>>>       other virtio drivers are modular.
+>>>       Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+>>>       Reviewed-by: Amit Shah <amit@kernel.org>
+>>>       Link: https://lore.kernel.org/r/20200831165850.26163-1-msuchanek@suse.de
+>>>       Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>
+>>> which seems kind of bogus - why do we care about allowing a builtin
+>>> virtio console driver if the pci virtio bus driver is a module?
+>>> There won't be any devices on the bus to attach to ...
+>>
+>> For testing like switching bus from pci to MMIO?
+>
+> Not sure I understand ... can you give an example?
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>=
+
+E.g testing
+
+modprobe -r virtio_mmio
+modprobe virtio_pci
+
+?
+
+
+>
+>>> And for virtio fs it was like this from the beginning.
+>>>
+>>> I am inclined to fix console and virtio fs to depend on VIRTIO:
+>>> select is harder to use correctly ...
+>>>
+>>> Jason?
+>>
+>> I think it works, but we need a prompt for VIRTIO otherwise there's no way
+>> to enable it.
+>>
+>> Thanks
+> That's even messier. No one needs VIRTIO core by itself - it's only used
+> by transports and drivers.
+
+
+So we endup with two solutions (without a prompt):
+
+1) using select, user may end up with driver without transport
+2) using depends, user need to enable at least one transport
+
+2) looks a little bit better I admit.
+
+Thanks
+
+
+>
+>>>
+>>>> -- 
+>>>> ---
+>>>> Hinweis: unverschlÃ¼sselte E-Mails kÃ¶nnen leicht abgehÃ¶rt und manipuliert
+>>>> werden ! FÃ¼r eine vertrauliche Kommunikation senden Sie bitte ihren
+>>>> GPG/PGP-SchlÃ¼ssel zu.
+>>>> ---
+>>>> Enrico Weigelt, metux IT consult
+>>>> Free software and Linux embedded engineering
+>>>> info@metux.net -- +49-151-27565287
+
