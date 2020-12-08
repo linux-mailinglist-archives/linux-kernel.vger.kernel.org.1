@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220742D2242
+	by mail.lfdr.de (Postfix) with ESMTP id 990C82D2243
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgLHEsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:48:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S1727037AbgLHEsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:48:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbgLHEsf (ORCPT
+        with ESMTP id S1725901AbgLHEsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:48:35 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E59C061749;
-        Mon,  7 Dec 2020 20:47:55 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id p12so11198700qtp.7;
-        Mon, 07 Dec 2020 20:47:55 -0800 (PST)
+        Mon, 7 Dec 2020 23:48:47 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E453FC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:48:06 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id d2so8811519pfq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:48:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gr6ueobMh+vnmyt2bfamggoZ4Oj0RVzF8cBiEWbccuM=;
-        b=M4ETzUHqiw2eaTNSI9rZ+u8o2w+3aoosIwYtTxO9c7WrK1T/cFwFlHnelv5cZm225K
-         6U+jTJ9waGexRwSBEX/SQJJxuk01rr2tRrX1X1QuQewX8rmCfyf+lXLPKYi5xZd+GuMO
-         vaBV8HlczfHnchnB7n7Ev4kqCJ5lC2UfCLj6Q=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=j+a4JfEuJPj+G4wzsoHlVwRdBKRoQxlLRdwTZTqYHQo=;
+        b=lFgivkchqxY+Z3ILx+m5I4AbOsApyKCEV7/UL01AiN17xt15DXRzocH4To2uskZC1c
+         2KPNzAfAB8RTnLPPf6/xnmgbsJFI94ed4Z7UEcaUQ3+X3lSM7s9qCARTk/8DKf4wfK1o
+         8TRFopWB7XtoekvbBhg9DNiyf16PCOCvxQdYVxZXW7Qz6WCAYJAE6SEb/PHbocCQKdWQ
+         vfA4jvdH8J3arjARX3I1Fc3uzmwbdeyq1KGq0VeVaOnvXbaGKth4XN/AnOZbdMcBqxa6
+         5owlfUXlBl9YtxTeDF4VUAmsQiUP/kUuiLtjSOoCg9uzgsuTA0imYU1zYAQvNBTg1S7T
+         Jrhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gr6ueobMh+vnmyt2bfamggoZ4Oj0RVzF8cBiEWbccuM=;
-        b=VErcmIoF1i/r5aXw/XWPJBRFouIBcF6BmCEZKWdC5BCAazX8sm1TeC9fbu6RvQQZ1j
-         THYHYwTh+GAoTruT1zxET/E0PnDhHtKbzqqcclan2ttGIzT6xFm7le6FHqbvwzPcL86R
-         MjG9E0iQsFY8ZL9GFPd93sw97oxUJZSgV9jNOSssCrUt2KfvwY5b7mnQ/MaSmtljn/1S
-         PBNA69viOPqJ3jLGGzIIKE58bm7Yx6TQMUE2Bsl+LrUR0QmvV3efNMZpHwt3gD2KONMl
-         z0adz/XYZzf2iAGZNW4hzOuV595S8LE7p5AB4YY941Qs6u5/GFbU6IM+vCAdwjRCBjlS
-         Vwgw==
-X-Gm-Message-State: AOAM530oPg5prGzPybjkGqp0GZG0eM9EVvbv3Ulm42GD2zuA+LGiZ/Qy
-        sZosQHlvboW5VUZw3GC/XkpKSJwsCTUDic8cmt4=
-X-Google-Smtp-Source: ABdhPJyyLcbrhQrxezdnGCGZdOwsDBSb8fGGduYb0qreiYG4sPtDKFBaIlNbf3rbOUR87HODmd1ZbBjHuVrb2J3mZLo=
-X-Received: by 2002:ac8:5cce:: with SMTP id s14mr27174884qta.135.1607402874438;
- Mon, 07 Dec 2020 20:47:54 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j+a4JfEuJPj+G4wzsoHlVwRdBKRoQxlLRdwTZTqYHQo=;
+        b=sWYrfURTweil4dNHg3PgaZ4icCO+OwYHLrcOXx9JehTGV3mJPf6BTDqDON3urjMJuI
+         mXEpF2U6IHlw4BppvjgydUgfkMXWc/i6xynvCZ/OT5YCp5zh5q7JEMyenKbOEEMlEHe8
+         o/X8mxXz9eCbEkqIiRCqxbhm9Sxw4JeJ0UtswpW491fzQgw2RlXVKzs60eKivGIG4l3c
+         lYPh83kJMaJ1QH8HUylrbXuSCAfpAJpi0UszgR5cSSxkRWTQaHIUNgrmYZGIZq8ovJkk
+         nfoQunQMVNTWgYi7Yp9+qgPTtbLYYOcQ5f2iGlExHd7VJt2+0TOeEK9LkIFe0jDU6mhm
+         C1Jw==
+X-Gm-Message-State: AOAM531p/yhO9UhOwcMAj5hXPMGl47pssOAAIBos0rR+/+VNbPV5J5Gw
+        f2Alinrnw8NmZ+2R7IsH7rTJ8w==
+X-Google-Smtp-Source: ABdhPJyWymG7nJBYFow8xJNbQNgwTbl9wnPqUCrx1NSPFIYqppsL6InNpbtQXg45ieSc80LvfZWlzA==
+X-Received: by 2002:a17:90a:bb91:: with SMTP id v17mr2413112pjr.231.1607402886491;
+        Mon, 07 Dec 2020 20:48:06 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id 65sm15747595pfd.184.2020.12.07.20.48.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 20:48:05 -0800 (PST)
+Date:   Tue, 8 Dec 2020 10:18:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        Dietmar.Eggemann@arm.com, cristian.marussi@arm.com,
+        morten.rasmussen@arm.com, rafael@kernel.org
+Subject: Re: [PATCH 0/2] SCMI performance protocol power scale interface
+Message-ID: <20201208044803.6kepfqvoz3pov4c3@vireshk-i7>
+References: <20201124104346.27167-1-lukasz.luba@arm.com>
+ <20201207071308.rm7x6ro7i4qtmm7h@vireshk-i7>
 MIME-Version: 1.0
-References: <20201208012615.2717412-1-andrew@aj.id.au> <20201208012615.2717412-7-andrew@aj.id.au>
-In-Reply-To: <20201208012615.2717412-7-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 8 Dec 2020 04:47:41 +0000
-Message-ID: <CACPK8Xfx8gtJWncrnyXyqBwzce4pyT21RbA4JzM7GSp_yPsNKA@mail.gmail.com>
-Subject: Re: [PATCH v5 6/6] ARM: dts: rainier: Add eMMC clock phase compensation
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207071308.rm7x6ro7i4qtmm7h@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 01:26, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Determined by scope measurements at speed.
->
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+On 07-12-20, 12:43, Viresh Kumar wrote:
+> On 24-11-20, 10:43, Lukasz Luba wrote:
+> > Hi all,
+> > 
+> > The Energy Model (EM) supports power values expressed in an abstract scale
+> > via new API. The SCMI performance protocol provides the information about
+> > power scale. This patch set implements the needed interface and updates
+> > cpufreq driver to set the right scale in the EM.
+> > 
+> > It is based on top of patch series adding milli-Watts flag in EM [1]
+> > (next-20201124 was used as a base).
+> > 
+> > Regards,
+> > Lukasz
+> > 
+> > [1] https://lore.kernel.org/linux-pm/20201103090600.29053-1-lukasz.luba@arm.com/
+> > 
+> > Lukasz Luba (2):
+> >   firmware: arm_scmi: Add power_scale_mw_get() interface
+> >   cpufreq: arm_scmi: Discover the power scale in performance protocol
+> > 
+> >  drivers/cpufreq/scmi-cpufreq.c   | 4 +++-
+> >  drivers/firmware/arm_scmi/perf.c | 8 ++++++++
+> >  include/linux/scmi_protocol.h    | 1 +
+> >  3 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+More scmi stuff came in which I had to apply and so I applied this to
+the ARM tree.
 
-... assuming the bindings get acked.
+Rafael: I had to rebase this over one of the patches from your tree,
+which was based on rc3:
 
+commit c250d50fe2ce ("PM: EM: Add a flag indicating units of power values in Energy Model")
 
-> ---
->  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> index 21ae880c7530..ab8d37d49f30 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-> @@ -186,6 +186,7 @@ &pinctrl_emmc_default {
->
->  &emmc {
->         status = "okay";
-> +       clk-phase-mmc-hs200 = <180>, <180>;
->  };
->
->  &fsim0 {
-> --
-> 2.27.0
->
+I hope you won't rebase it any further.
+
+Applied. Thanks.
+
+-- 
+viresh
