@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F652D30DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA3F2D30DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbgLHRW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgLHRW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:22:29 -0500
-Date:   Tue, 8 Dec 2020 17:21:43 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-Message-ID: <20201208172143.GB13960@gaia>
-References: <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
- <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
- <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
- <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
- <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
- <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
- <0d0eb6da6a11f76d10e532c157181985@kernel.org>
- <20201207163405.GD1526@gaia>
- <874kkx5thq.wl-maz@kernel.org>
+        id S1730603AbgLHRWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgLHRWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:22:33 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9460C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:21:52 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g18so12784857pgk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:references:user-agent
+         :mime-version;
+        bh=1txzdi4LrtLpEkhyaGd3WhDsio4NPh8e5/se8kxUFmA=;
+        b=gEzxnXX4QgdBN1At+xjVEaEAe9lMGJXNhHwJsnH+AnJOJIrf/6DSYsEz9++pANskLT
+         TD3iR6d0rgKKP03UfN2ERMwEI9IItHtHN1tcQIApSkfBBWCS+RabKvVmg+5L9G3GzKHo
+         BCt6QYeRQCisUImoqbVrWMJoVpuhn/Km4GKB3doBTw/haqw1UW+xrFC3tZseuacaFmki
+         VEXY1OwOoQrU5Uj4Ke6bGjwVDXpzfzT6NcRPhOET1CcHg4HN3ZqjfYQIykTWn2CHfWtF
+         ppA/i1Yodo0SoqRIgejTHSYPDTi8kPp7s1WAQLfxiPnDwav7N5zj9pHlEPxuVw89ThUO
+         AI0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:references
+         :user-agent:mime-version;
+        bh=1txzdi4LrtLpEkhyaGd3WhDsio4NPh8e5/se8kxUFmA=;
+        b=Ex3dfNiJePb5eTwaOM1RYysiIWBT7gFcbe6cOeuUYsqYOLglBLKsieyGULf3XUOWva
+         PN/SSFbNcfViubNIpagiP/PoZqe0jY1+C+1Ys8FuBrGw2LoZhab4JtQLPJQCSSmMc9Yi
+         clbLv48rl2vMcZ3DzZHBszDG3kKC3zxU8ftKo+2rmOy4fPuRsgyIC93ALrGZFVgZ07Or
+         coKsIgkIRe2Ii1nAKsqXhYg8gInGBxOLEJkkGYf33babQhVxCxgtsyZt9+94wdFRGbad
+         JeEXLXnjjTLWQcQJXWo/zlWr9B/e64J9cz/pVABltVHdGiiDdxEXqFMYn2aW7rM/lISH
+         Z2nw==
+X-Gm-Message-State: AOAM532XbnV+9qAhrJ3eGgL0B8R8CVGKK+0KzlAsaw2QhTlsePSEC603
+        WOFTFIxDKcIYq2VP5ngQ0Xt0vA==
+X-Google-Smtp-Source: ABdhPJyV/JZEtgpK+FuUz+fVYukAiK4A3pbFw67xZzHeNTHEo2u77cIPxBzJzjEVWlvI6OmTRstR7g==
+X-Received: by 2002:a63:1d55:: with SMTP id d21mr23041195pgm.324.1607448112434;
+        Tue, 08 Dec 2020 09:21:52 -0800 (PST)
+Received: from [192.168.0.4] ([122.164.38.199])
+        by smtp.gmail.com with ESMTPSA id j14sm7219101pfi.3.2020.12.08.09.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 09:21:51 -0800 (PST)
+Message-ID: <1b2a426b865df93c6e6d8efe8312b9591a1e4efc.camel@rajagiritech.edu.in>
+Subject: Fwd: [PROBLEM] kmemleak: 2 new suspected memory leaks
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     brendanhiggins@google.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Cc:     kunit-dev@googlegroups.com, lkml <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Dec 2020 22:51:48 +0530
+References: <b65ca811947006b04e6027e30649c263a787323d.camel@rajagiritech.edu.in>
+Content-Type: multipart/mixed; boundary="=-T7C4rXS5LInIDXAodK4F"
+User-Agent: Evolution 3.38.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874kkx5thq.wl-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
-> On Mon, 07 Dec 2020 16:34:05 +0000,
-> Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Mon, Dec 07, 2020 at 04:05:55PM +0000, Marc Zyngier wrote:
-> > > What I'd really like to see is a description of how shared memory
-> > > is, in general, supposed to work with MTE. My gut feeling is that
-> > > it doesn't, and that you need to turn MTE off when sharing memory
-> > > (either implicitly or explicitly).
-> > 
-> > The allocation tag (in-memory tag) is a property assigned to a physical
-> > address range and it can be safely shared between different processes as
-> > long as they access it via pointers with the same allocation tag (bits
-> > 59:56). The kernel enables such tagged shared memory for user processes
-> > (anonymous, tmpfs, shmem).
-> 
-> I think that's one case where the shared memory scheme breaks, as we
-> have two kernels in charge of their own tags, and they obviously can't
-> be synchronised
 
-Yes, if you can't trust the other entity to not change the tags, the
-only option is to do an untagged access.
+--=-T7C4rXS5LInIDXAodK4F
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-> > What we don't have in the architecture is a memory type which allows
-> > access to tags but no tag checking. To access the data when the tags
-> > aren't known, the tag checking would have to be disabled via either a
-> > prctl() or by setting the PSTATE.TCO bit.
-> 
-> I guess that's point (3) in Steven's taxonomy. It still a bit ugly to
-> fit in an existing piece of userspace, specially if it wants to use
-> MTE for its own benefit.
 
-I agree it's ugly. For the device DMA emulation case, the only sane way
-is to mimic what a real device does - no tag checking. For a generic
-implementation, this means that such shared memory should not be mapped
-with PROT_MTE on the VMM side. I guess this leads to your point that
-sharing doesn't work for this scenario ;).
 
-> > The kernel accesses the user memory via the linear map using a match-all
-> > tag 0xf, so no TCO bit toggling. For user, however, we disabled such
-> > match-all tag and it cannot be enabled at run-time (at least not easily,
-> > it's cached in the TLB). However, we already have two modes to disable
-> > tag checking which Qemu could use when migrating data+tags.
-> 
-> I wonder whether we will have to have something kernel side to
-> dump/reload tags in a way that matches the patterns used by live
-> migration.
+--=-T7C4rXS5LInIDXAodK4F
+Content-Disposition: inline
+Content-Description: Forwarded message =?UTF-8?Q?=E2=80=94?= [PROBLEM]
+ kmemleak: 2 new suspected memory leaks
+Content-Type: message/rfc822
 
-We have something related - ptrace dumps/resores the tags. Can the same
-concept be expanded to a KVM ioctl?
+Return-Path: <jeffrin@rajagiritech.edu.in>
+Received: from [192.168.1.9] ([122.174.249.115]) by smtp.gmail.com with
+ ESMTPSA id i14sm13522636pgm.35.2020.12.07.15.00.16 for
+ <linux-kernel@vger.kernel.org> (version=TLS1_3
+ cipher=TLS_AES_256_GCM_SHA384 bits=256/256); Mon, 07 Dec 2020 15:00:17
+ -0800 (PST)
+Message-ID: <b65ca811947006b04e6027e30649c263a787323d.camel@rajagiritech.edu.in>
+Subject: [PROBLEM] kmemleak: 2 new suspected memory leaks
+From: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To: lkml <linux-kernel@vger.kernel.org>
+Date: Tue, 08 Dec 2020 04:30:15 +0530
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Catalin
+hello,
+
+
+kmemleaks  found. see related information below...
+
+------------x------------------x------------------------>
+cat /sys/kernel/debug/kmemleak=20
+unreferenced object 0xffff8881105d2348 (size 8):
+  comm "kunit_try_catch", pid 139, jiffies 4294898877 (age 6055.628s)
+  hex dump (first 8 bytes):
+    74 65 73 74 69 6e 67 00                          testing.
+  backtrace:
+    [<000000001d6f9546>] kmemdup+0x23/0x50
+    [<000000007157804e>] unpack_strdup+0xc7/0x140
+    [<000000000fcb0a94>]
+policy_unpack_test_unpack_strdup_with_null_name+0xd0/0x350
+    [<0000000043df290a>] kunit_try_run_case+0xa6/0x150
+    [<00000000c069ee6a>] kunit_generic_run_threadfn_adapter+0x2e/0x50
+    [<00000000929a25ad>] kthread+0x232/0x260
+    [<00000000e5de2862>] ret_from_fork+0x22/0x30
+unreferenced object 0xffff8881105d2bb8 (size 8):
+  comm "kunit_try_catch", pid 140, jiffies 4294898878 (age 6055.624s)
+  hex dump (first 8 bytes):
+    74 65 73 74 69 6e 67 00                          testing.
+  backtrace:
+    [<000000001d6f9546>] kmemdup+0x23/0x50
+    [<000000007157804e>] unpack_strdup+0xc7/0x140
+    [<00000000ba70df5f>]
+policy_unpack_test_unpack_strdup_with_name+0xc3/0x340
+    [<0000000043df290a>] kunit_try_run_case+0xa6/0x150
+    [<00000000c069ee6a>] kunit_generic_run_threadfn_adapter+0x2e/0x50
+    [<00000000929a25ad>] kthread+0x232/0x260
+    [<00000000e5de2862>] ret_from_fork+0x22/0x30
+--------------------x------------------x--------------->
+
+Reported-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
+--=20
+software engineer
+rajagiri school of engineering and technology - autonomous
+
+
+--=-T7C4rXS5LInIDXAodK4F--
+
