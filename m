@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF36F2D2C40
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600E62D2C4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgLHNyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:54:18 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9555 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbgLHNyR (ORCPT
+        id S1729466AbgLHNyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:54:53 -0500
+Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:50395 "EHLO
+        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726338AbgLHNyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:54:17 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cr1pZ2djPzM1L7;
-        Tue,  8 Dec 2020 21:52:54 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 21:53:27 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <drivers@pensando.io>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <leon@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] drivers: net: ionic: simplify the return expression of ionic_set_rxfh()
-Date:   Tue, 8 Dec 2020 21:53:53 +0800
-Message-ID: <20201208135353.11708-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Tue, 8 Dec 2020 08:54:52 -0500
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id 219731C3AAE
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:54:01 +0000 (GMT)
+Received: (qmail 27912 invoked from network); 8 Dec 2020 13:54:00 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Dec 2020 13:54:00 -0000
+Date:   Tue, 8 Dec 2020 13:53:58 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/4] sched/fair: Remove SIS_AVG_CPU
+Message-ID: <20201208135358.GJ3371@techsingularity.net>
+References: <20201207091516.24683-1-mgorman@techsingularity.net>
+ <20201207091516.24683-2-mgorman@techsingularity.net>
+ <25a8c4bd-792b-2851-b10a-c4375eb83dfe@arm.com>
+ <20201208105900.GG3371@techsingularity.net>
+ <CAKfTPtBgo5vCrN87fqKjyaowONLMWeUusLmvE4bmGmDq10+Yrw@mail.gmail.com>
+ <20201208133650.GI3371@techsingularity.net>
+ <CAKfTPtDbUoVSvnjFrpomvTJD0jCA6vH_Y3LP=csW8fHntOG_6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDbUoVSvnjFrpomvTJD0jCA6vH_Y3LP=csW8fHntOG_6A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+On Tue, Dec 08, 2020 at 02:43:10PM +0100, Vincent Guittot wrote:
+> On Tue, 8 Dec 2020 at 14:36, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Tue, Dec 08, 2020 at 02:24:32PM +0100, Vincent Guittot wrote:
+> > > > > Nitpick:
+> > > > >
+> > > > > Since now avg_cost and avg_idle are only used w/ SIS_PROP, they could go
+> > > > > completely into the SIS_PROP if condition.
+> > > > >
+> > > >
+> > > > Yeah, I can do that. In the initial prototype, that happened in a
+> > > > separate patch that split out SIS_PROP into a helper function and I
+> > > > never merged it back. It's a trivial change.
+> > >
+> > > while doing this, should you also put the update of
+> > > this_sd->avg_scan_cost under the SIS_PROP feature ?
+> > >
+> >
+> > It's outside the scope of the series but why not. This?
+> >
+> > --8<--
+> > sched/fair: Move avg_scan_cost calculations under SIS_PROP
+> >
+> > As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
+> > even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
+> > check and while we are at it, exclude the cost of initialising the CPU
+> > mask from the average scan cost.
+> >
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 19ca0265f8aa..0fee53b1aae4 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6176,10 +6176,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >                         nr = 4;
+> >         }
+> >
+> > -       time = cpu_clock(this);
+> 
+> I would move it in the if (sched_feat(SIS_PROP)) above.
+> 
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/pensando/ionic/ionic_ethtool.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+I considered it but made the choice to exclude the cost of cpumask_and()
+from the avg_scan_cost instead. It's minor but when doing the original
+prototype, I didn't think it was appropriate to count the cpumask
+clearing as part of the scan cost as it's not directly related.
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-index 35c72d4a78b3..0832bedcb3b4 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-@@ -738,16 +738,11 @@ static int ionic_set_rxfh(struct net_device *netdev, const u32 *indir,
- 			  const u8 *key, const u8 hfunc)
- {
- 	struct ionic_lif *lif = netdev_priv(netdev);
--	int err;
- 
- 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_TOP)
- 		return -EOPNOTSUPP;
- 
--	err = ionic_lif_rss_config(lif, lif->rss_types, key, indir);
--	if (err)
--		return err;
--
--	return 0;
-+	return ionic_lif_rss_config(lif, lif->rss_types, key, indir);
- }
- 
- static int ionic_set_tunable(struct net_device *dev,
 -- 
-2.22.0
-
+Mel Gorman
+SUSE Labs
