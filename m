@@ -2,176 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5ED2D3728
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0C12D3730
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730566AbgLHXvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgLHXvD (ORCPT
+        id S1730455AbgLHXxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:53:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59384 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730236AbgLHXxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:51:03 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20E1C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:50:22 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id p187so330476iod.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hdL0m5JgFJe1EpPesWikdrSf9jXdSBdwbL4TxHVvvOk=;
-        b=NzY69DPYhNIzwXHVZei4rEkY+5RtZDtn0aCrOkx/uPRICVZIHrkfQbrlaRl+WQdGWY
-         T3u2EBHoGUDpiUaRXsVSR6EcxAG/qffWWgalhmZ067BzOJYuh1MkEe4gr8uvvZ21NVM1
-         Pgp/sezauXFiu6bpz+LiR/EJ8zmuwZLU9hfKF2t5TVCnztZsYu9+jdmuhe0KJYNHzqQa
-         i7E8SgSWb7JiVQhROomVLR8FKZfVb0hEFC9zflx0fgYMDLGWoGwFiT794TGqcbBC5Vs+
-         q5Bp/+B51GnRNr9aQFsyDbcz0fzywlcqVdfOGV+pTLeywo8FhhokE+ZlTPEs3JGl1F+G
-         /Ftw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hdL0m5JgFJe1EpPesWikdrSf9jXdSBdwbL4TxHVvvOk=;
-        b=AyHbrp6Ym6/s3qzSr7f/+gA5TIpO0hpMNW1XJ5qL0UDFt5XsItIbtaGb1X0bM5WOPs
-         MvZse/9mqn2qTA98W5ScKawBVyncPCiK58IfSJo5jUaMs2ok6A4zXmDIGyh/0qb3L9tS
-         LHTFblwPoTRk6byo2T/NYMbmKdWmR8Nh64Cd7rA31tN696nlOh2qytMmVyGt8Oi+Hozc
-         ukgvxW+snHpaML2nJXWUJN0emq3BlErzDIN1T7uQ2sgWCAcWQTSIhtUQMhUS1V4jDYaW
-         zcpMYm3KGb//Ko9kr0b6Wm55lGx4lGzscHJ4DbAloN0cKUmN+V7+FcQ0e5yOceIqbfdT
-         B3MA==
-X-Gm-Message-State: AOAM5323GHTY240ZoOMK6OVIYSfjnAwtFkzlEz+aJS6PN717OFYE0Myt
-        mWnd/XOlo1MmT2Rhr9Mb96uLLcjyf+gMicc6y0z4rQ==
-X-Google-Smtp-Source: ABdhPJy0s478dGQDlOWaOEFsZDMsEl/YWBNiwlPctX36Fwxt4h7/a2eHUrlWaQN7j4J0v/D9VBTLvueMBo7CH2SHf7U=
-X-Received: by 2002:a6b:c8c1:: with SMTP id y184mr264930iof.99.1607471421992;
- Tue, 08 Dec 2020 15:50:21 -0800 (PST)
+        Tue, 8 Dec 2020 18:53:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607471528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MTh9e9UxyEy8kihSlCzR3WJynOSHVGELayKPMtiESZU=;
+        b=Rwu0pSSZsmbHtF1Vmg9obTdoUMEqpU9a2Ux43TFl2HarEZqZtNR4PwSoe/Nd+BifKR5/vV
+        HhcxPWgpxC//h+s9NoiEcEEWxrIj3BYAAGWyCK1ysygJ6aKPirY3nDY1z/CBX9WbrGs9tX
+        yKZwoQf5bkaglkeC3Mhpt5W4pDNvfuo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-c3VAAdd1PuWrwzcGOCnjmg-1; Tue, 08 Dec 2020 18:52:07 -0500
+X-MC-Unique: c3VAAdd1PuWrwzcGOCnjmg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4351803620;
+        Tue,  8 Dec 2020 23:52:05 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 848FA5D9DD;
+        Tue,  8 Dec 2020 23:52:04 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix memory leak when mounting with multiple source
+ parameters
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com,
+        Randy Dunlap <rdunlap@infradead.org>, dhowells@redhat.com,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 08 Dec 2020 23:52:03 +0000
+Message-ID: <160747152376.1115012.15487588820547991576.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <20201206034408.31492-1-TheSven73@gmail.com> <20201208115035.74221c31@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CAGngYiVpToas=offBuPgQ6t8wru64__NQ7MnNDYb0i0E+m6ebw@mail.gmail.com> <20201208152948.006606b3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201208152948.006606b3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 9 Dec 2020 00:50:10 +0100
-Message-ID: <CANn89iKxjQawkMBCg5Mt=eMgqvD_cpYSs4664GoGZFrMTgWJFw@mail.gmail.com>
-Subject: Re: [PATCH net v1 1/2] lan743x: improve performance: fix
- rx_napi_poll/interrupt ping-pong
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:29 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 8 Dec 2020 17:23:08 -0500 Sven Van Asbroeck wrote:
-> > On Tue, Dec 8, 2020 at 2:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > >
-> > > >
-> > > > +done:
-> > > >       /* update RX_TAIL */
-> > > >       lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
-> > > >                         rx_tail_flags | rx->last_tail);
-> > > > -done:
-> > > > +
-> > >
-> > > I assume this rings the doorbell to let the device know that more
-> > > buffers are available? If so it's a little unusual to do this at the
-> > > end of NAPI poll. The more usual place would be to do this every n
-> > > times a new buffer is allocated (in lan743x_rx_init_ring_element()?)
-> > > That's to say for example ring the doorbell every time a buffer is put
-> > > at an index divisible by 16.
-> >
-> > Yes, I believe it tells the device that new buffers have become available.
-> >
-> > I wonder why it's so unusual to do this at the end of a napi poll? Omitting
-> > this could result in sub-optimal use of buffers, right?
-> >
-> > Example:
-> > - tail is at position 0
-> > - core calls napi_poll(weight=64)
-> > - napi poll consumes 15 buffers and pushes 15 skbs, then ring empty
-> > - index not divisible by 16, so tail is not updated
-> > - weight not reached, so napi poll re-enables interrupts and bails out
-> >
-> > Result: now there are 15 buffers which the device could potentially use, but
-> > because the tail wasn't updated, it doesn't know about them.
->
-> Perhaps 16 for a device with 64 descriptors is rather high indeed.
-> Let's say 8. If the device misses 8 packet buffers on the ring,
-> that should be negligible.
->
+There's a memory leak in afs_parse_source() whereby multiple source=
+parameters overwrite fc->source in the fs_context struct without freeing
+the previously recorded source.
 
-mlx4 uses 8 as the threshold ( mlx4_en_refill_rx_buffers())
+Fix this by only permitting a single source parameter and rejecting with an
+error all subsequent ones.
 
-> Depends on the cost of the CSR write, usually packet processing is
-> putting a lot of pressure on the memory subsystem of the CPU, hence
-> amortizing the write over multiple descriptors helps. The other thing
-> is that you could delay the descriptor writes to write full cache lines,
-> but I don't think that will help on IMX6.
->
-> > It does make sense to update the tail more frequently than only at the end
-> > of the napi poll, though?
-> >
-> > I'm new to napi polling, so I'm quite interested to learn about this.
->
-> There is a tracepoint which records how many packets NAPI has polled:
-> napi:napi_poll, you can see easily what your system is doing.
->
-> What you want to avoid is the situation where the device already used
-> up all the descriptors by the time driver finishes the Rx processing.
-> That'd result in drops. So the driver should push the buffers back to
-> the device reasonably early.
->
-> With a ring of 64 descriptors and NAPI budget of 64 it's not unlikely
-> that the ring will be completely used when processing runs.
->
-> > > > +     /* up to half of elements in a full rx ring are
-> > > > +      * extension frames. these do not generate skbs.
-> > > > +      * to prevent napi/interrupt ping-pong, limit default
-> > > > +      * weight to the smallest no. of skbs that can be
-> > > > +      * generated by a full rx ring.
-> > > > +      */
-> > > >       netif_napi_add(adapter->netdev,
-> > > >                      &rx->napi, lan743x_rx_napi_poll,
-> > > > -                    rx->ring_size - 1);
-> > > > +                    (rx->ring_size - 1) / 2);
-> > >
-> > > This is rather unusual, drivers should generally pass NAPI_POLL_WEIGHT
-> > > here.
-> >
-> > I agree. The problem is that a full ring buffer of 64 buffers will only
-> > contain 32 buffers with network data - the others are timestamps.
-> >
-> > So napi_poll(weight=64) can never reach its full weight. Even with a full
-> > buffer, it always assumes that it has to stop polling, and re-enable
-> > interrupts, which results in a ping-pong.
->
-> Interesting I don't think we ever had this problem before. Let me CC
-> Eric to see if he has any thoughts on the case. AFAIU you should think
-> of the weight as way of arbitrating between devices (if there is more
-> than one).
+This was caught by syzbot with the kernel memory leak detector, showing
+something like the following trace:
 
-Driver could be called with an arbitrary budget (of 64),
-and if its ring buffer has been depleted, return @budget instead of skb counts,
-and not ream the interrupt
+unreferenced object 0xffff888114375440 (size 32):
+  comm "repro", pid 5168, jiffies 4294923723 (age 569.948s)
+  hex dump (first 32 bytes):
+    25 5e 5d 24 5b 2b 25 5d 28 24 7b 3a 0f 6b 5b 29  %^]$[+%](${:.k[)
+    2d 3a 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -:..............
+  backtrace:
+    [<0000000072e41e46>] slab_post_alloc_hook+0x42/0x79
+    [<00000000d8b306e6>] __kmalloc_track_caller+0x125/0x16a
+    [<0000000028ae1813>] kmemdup_nul+0x24/0x3c
+    [<0000000072927516>] vfs_parse_fs_string+0x5a/0xa1
+    [<0000000045b4b196>] generic_parse_monolithic+0x9d/0xc5
+    [<0000000084462c80>] do_new_mount+0x10d/0x15a
+    [<000000008aef98c5>] do_mount+0x5f/0x8e
+    [<000000002998d632>] __do_sys_mount+0xff/0x127
+    [<00000000faf86d94>] do_syscall_64+0x2d/0x3a
+    [<000000004495c173>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-if (count < budget && !rx_ring_fully_processed) {
-    if (napi_complete_done(napi, count))
-          ream_irqs();
-   return count;
-}
-return budget;
+Fixes: 13fcc6837049 ("afs: Add fs_context support")
+Reported-by: syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Randy Dunlap <rdunlap@infradead.org>
+---
+
+ fs/afs/super.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/afs/super.c b/fs/afs/super.c
+index 6c5900df6aa5..e38bb1e7a4d2 100644
+--- a/fs/afs/super.c
++++ b/fs/afs/super.c
+@@ -230,6 +230,9 @@ static int afs_parse_source(struct fs_context *fc, struct fs_parameter *param)
+ 
+ 	_enter(",%s", name);
+ 
++	if (fc->source)
++		return invalf(fc, "kAFS: Multiple sources not supported");
++
+ 	if (!name) {
+ 		printk(KERN_ERR "kAFS: no volume name specified\n");
+ 		return -EINVAL;
 
 
->
-> NAPI does not do any deferral (in wall clock time terms) of processing,
-> so the only difference you may get for lower weight is that softirq
-> kthread will get a chance to kick in earlier.
->
-> > Would it be better to fix the weight counting? Increase the count
-> > for every buffer consumed, instead of for every skb pushed?
->
