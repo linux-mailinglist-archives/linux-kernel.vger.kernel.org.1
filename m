@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712C62D2ED3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFC32D2ED7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730113AbgLHP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:56:33 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39524 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729985AbgLHP4c (ORCPT
+        id S1730234AbgLHP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:56:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39772 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729558AbgLHP4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:56:32 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 8564B1F44B0A
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] media: rkvdec: silence ktest bot build warning
-Date:   Tue,  8 Dec 2020 17:55:40 +0200
-Message-Id: <20201208155540.340583-1-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 8 Dec 2020 10:56:37 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607442954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zLoKOU+kSW7kZX0dODC+sT6g6ygfkbwnnbOdUP+fpIo=;
+        b=YNEqf/mqLSmjBmP5ZGf5eHu12lDeWGEzyauSFZAHPkhNVHZ1/AlNAqqBPKV7Wk4RaFHIGJ
+        xw+JhkXoG1lzOSOOV44QRn+kYn/uRbW0SwbEHU9i24YAkRr5r38Q6CP2rpn56gigMEdWL1
+        HMMQPjUWoDQhvMK1Ejpzf6kjbKeHvGDAt2nulDNCRwCN6R+eVKoK9GDHsV/EWGPBTYQ95o
+        FJaY6t3dBgA0WtPuhtS8j4M/sxcSKM3xflf4o0uEViYQ3ccAFTNoP07V4Uw9VOg5+bnb13
+        m33F8u0g5ENeP//5nmPwIFr2XPcSO7wjFthT0v2C1FB67BUBOjzvq0Pl6JEYvw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607442954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zLoKOU+kSW7kZX0dODC+sT6g6ygfkbwnnbOdUP+fpIo=;
+        b=5eK4E9Ikvqh6D2TZGskNvX7QoOS3LoBgXize7jGZM3c/9qut1GtVzf/vcoIv5MUQ/DOWqH
+        HrwKMSeV0laYDOAQ==
+To:     Ira Weiny <ira.weiny@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 00/10] PKS: Add Protection Keys Supervisor (PKS) support V3
+In-Reply-To: <20201207221431.GL1563847@iweiny-DESK2.sc.intel.com>
+References: <20201106232908.364581-1-ira.weiny@intel.com> <20201207221431.GL1563847@iweiny-DESK2.sc.intel.com>
+Date:   Tue, 08 Dec 2020 16:55:54 +0100
+Message-ID: <87v9dc2sxh.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some configurations built by the ktest bot produce the following
-warn, so mark the struct as __maybe_unused to avoid unnecessary
-ML spam.
+Ira,
 
->> drivers/staging/media/rkvdec/rkvdec.c:967:34: warning: unused variable 'of_rkvdec_match' [-Wunused-const-variable]
-   static const struct of_device_id of_rkvdec_match[] = {
-				    ^
-   1 warning generated.
+On Mon, Dec 07 2020 at 14:14, Ira Weiny wrote:
+> Is there any chance of this landing before the kmap stuff gets sorted out?
 
-vim +/of_rkvdec_match +967 drivers/staging/media/rkvdec/rkvdec.c
+I have marked this as needs an update because the change log of 5/10
+sucks. https://lore.kernel.org/r/87lff1xcmv.fsf@nanos.tec.linutronix.de
 
-   966
- > 967	static const struct of_device_id of_rkvdec_match[] = {
-   968		{ .compatible = "rockchip,rk3399-vdec" },
-   969		{ /* sentinel */ }
-   970	};
-   971	MODULE_DEVICE_TABLE(of, of_rkvdec_match);
-   972
+> It would be nice to have this in 5.11 to build off of.
 
-Cc: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
----
- drivers/staging/media/rkvdec/rkvdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It would be nice if people follow up on review request :)
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index aa4f8c287618..3af0f02ec59b 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -992,7 +992,7 @@ static void rkvdec_watchdog_func(struct work_struct *work)
- 	}
- }
- 
--static const struct of_device_id of_rkvdec_match[] = {
-+static const struct of_device_id __maybe_unused of_rkvdec_match[] = {
- 	{ .compatible = "rockchip,rk3399-vdec" },
- 	{ /* sentinel */ }
- };
--- 
-2.29.2
+Thanks,
 
+        tglx
