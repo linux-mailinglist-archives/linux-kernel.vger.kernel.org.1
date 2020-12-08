@@ -2,151 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8182D285A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41F12D2857
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgLHKBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:01:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726218AbgLHKBa (ORCPT
+        id S1728688AbgLHKBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:01:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727096AbgLHKBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:01:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607421602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=rBR2sHYHwldgTu0PFeX3ECPbcilHKiXAcu7mwUOdVL4=;
-        b=cxTOoAHSXW3zzYJodXHNqtCHrbXc5YMKSZfBVTd4PBvunejQViOtZn2iHcCnN+J7W4V4GG
-        ifG6joKtfCnnvyiYuB3VPM8gROzDIkP6Pu21XSksdLjhY4WoLE48Lat0HO+obQC77qMTRB
-        Ry1KprQePKypHxugL03YG7EoFDrN1nY=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-2O_es8Y4MrGlvnxW1XHs7A-1; Tue, 08 Dec 2020 05:00:00 -0500
-X-MC-Unique: 2O_es8Y4MrGlvnxW1XHs7A-1
-Received: by mail-pl1-f198.google.com with SMTP id a17so6624247pls.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:59:58 -0800 (PST)
+        Tue, 8 Dec 2020 05:01:04 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBD1C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:00:24 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id i9so16392576ioo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eenPMKZFIvKxHs8p+z8DXTbTMPPBle9331ck5pciU80=;
+        b=bBDlyv2qSZUEWjQuOSkhL2I7jBbgzltH8brFYzzNclfrlVParEemmX0evih924F3/q
+         cmb6B3J03cRJKK95KI4JrEqz+7GqBLyv/oXyJEp3wsLOqC9u7sMiOPyFaWXPXoyecj4r
+         txWkKNL49fd8PM5JDnXfBZM9BOlC0TxkYyCFjDzjOH7Z8so6BAzpfDXUgHjs2crf9W4g
+         2/jN94Sf7/xRx5dWhCdBaed5L0rPFQl4CWau2UGjnJR36h/hCgNBsmuEw1wIFpbsUk1y
+         Jph+1OUa/6caOYI/rg1hvDwhZZ5NjO27TO2sTiO/Ujs2q9bilJWT6S7Lt2dqxKoUGPM3
+         36jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=rBR2sHYHwldgTu0PFeX3ECPbcilHKiXAcu7mwUOdVL4=;
-        b=TVhBXaOlv4vG+1+kJBCtjG7TfCGE+D+sYPy0avEBBJR8iO8kXQJY/hhZ/qYBWanmVw
-         ku6tQ7D7zckDYNqlTR0aHXBIebe4ay4DreYKBwofslaDyZT0h/zsbKOKZ8sS3lLpDRg/
-         STSM/w9gIudSSp/BNJB6LhH0dOd9Xr/Snju29Jy1FW5PHyUej/NSIW8H/2hz1qS3sxf+
-         WjvZCq/IeH2AGLV6cz6UU1i3+N2GAfrTpUGqQqhj8AUq8uuynsB6bxPz2ecywXGdlBYZ
-         nQUy1s37yygECUCwb/fszVb2f0fdzRLYv56L7I34NjfFq2T+Y9ZuRHr+fAp0SeeDAbSW
-         9JoQ==
-X-Gm-Message-State: AOAM531TcbQ0r4XNj2VYOBeGuRu7ArsCvzsDHkTTeFGgcktoPbu58gjy
-        ZH9JSV5j7vGLLe2GrfR2pzA2k3pW24ir8SiW8ar3yOUoBvan7DRReFYY0wtlIabpIavL4J3/27h
-        C0Ed2SgJvmLHLnSzYGwHzmBCS
-X-Received: by 2002:a17:90a:a2e:: with SMTP id o43mr3484685pjo.59.1607421597408;
-        Tue, 08 Dec 2020 01:59:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzUumzd5COLJTL8qWXa47ZR2o6FPrRYsjhJoPO1IK0VWghEiCF9KhowSLpTE7f5VVk6OdLSJQ==
-X-Received: by 2002:a17:90a:a2e:: with SMTP id o43mr3484674pjo.59.1607421597228;
-        Tue, 08 Dec 2020 01:59:57 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z7sm11529018pfq.193.2020.12.08.01.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:59:56 -0800 (PST)
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH v3 3/3] erofs: simplify try_to_claim_pcluster()
-Date:   Tue,  8 Dec 2020 17:58:34 +0800
-Message-Id: <20201208095834.3133565-3-hsiangkao@redhat.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20201208095834.3133565-1-hsiangkao@redhat.com>
-References: <20201208095834.3133565-1-hsiangkao@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eenPMKZFIvKxHs8p+z8DXTbTMPPBle9331ck5pciU80=;
+        b=pLBq7iA4lqcji1v/4WxLKDypOmbmlpcODmYLBE1vTo4dM1oQPCOsyp3wMAIUl6/Tlx
+         a/QOca0u8wHD5PY4W6hgm4UMj9OX9DHVX+raVGD820SDvJdXS/ypr7xdSA0gRQ30Iv/L
+         NsJtoUx8BdKu4e2sRPA3lwb9f3xGXX57oVl0aj5GJwNmODIcwwMd7QntwHw5P7LZdOeq
+         ltnG/pGiTVjNA9x1hQxBM+PjQi9clXFeRtXdaZfHDWfnhjaCXoPX7fDj+OwZ/S+AnnXq
+         fbVLpvjzmxzJ/oOn+uNTiraH7LmzA1GRfCoT5qxydUpOrcO9CKmUtosv/fEgcuM+jxPw
+         7L6w==
+X-Gm-Message-State: AOAM531HkIySToPNwO0b38q7vcOHC5qjH6LhpnB0b9qUDIOKRw6Oyh22
+        xMUcrxuXXKNI2DPp2lstlRqi8Ac2CZ+tGNWhzw==
+X-Google-Smtp-Source: ABdhPJz8l5jcgM4AiD08klQNZ2GrQJEFPsaBT50M2qgzqwaKJhcYQPMMtCyvKsHEWbfYfLbxyCM6uwWG1yox/giGJsQ=
+X-Received: by 2002:a02:488:: with SMTP id 130mr18446065jab.39.1607421624025;
+ Tue, 08 Dec 2020 02:00:24 -0800 (PST)
+MIME-Version: 1.0
+References: <1607419304-26140-1-git-send-email-kernelfans@gmail.com>
+ <0f230af42ff4c6e4cf763b9145fb9487@kernel.org> <CAFgQCTuVortG9FgAA+Ximo1zcAfTLK5vpZMWap=ZZA8Tp=yQsg@mail.gmail.com>
+ <867be4df47247f8c56687cf2046ee7bb@kernel.org>
+In-Reply-To: <867be4df47247f8c56687cf2046ee7bb@kernel.org>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Tue, 8 Dec 2020 18:00:12 +0800
+Message-ID: <CAFgQCTtWhZoTyCP1ByrAhHrkWX=V49pQjPYeLVvv=bhT63Ekmw@mail.gmail.com>
+Subject: Re: [PATCH] arm64/irq: report bug if NR_IPI greater than max SGI
+ during compile time
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-simplify try_to_claim_pcluster() by directly using cmpxchg() here
-(the retry loop caused more overhead.) Also, move the chain loop
-detection in and rename it to z_erofs_try_to_claim_pcluster().
+On Tue, Dec 8, 2020 at 5:51 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-12-08 09:43, Pingfan Liu wrote:
+> > On Tue, Dec 8, 2020 at 5:31 PM Marc Zyngier <maz@kernel.org> wrote:
+> >>
+> >> On 2020-12-08 09:21, Pingfan Liu wrote:
+> >> > Although there is a runtime WARN_ON() when NR_IPR > max SGI, it had
+> >> > better
+> >> > do the check during built time, and associate these related code
+> >> > together.
+> >> >
+> >> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> >> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> > Cc: Will Deacon <will@kernel.org>
+> >> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> >> > Cc: Jason Cooper <jason@lakedaemon.net>
+> >> > Cc: Marc Zyngier <maz@kernel.org>
+> >> > Cc: Mark Rutland <mark.rutland@arm.com>
+> >> > To: linux-arm-kernel@lists.infradead.org
+> >> > Cc: linux-kernel@vger.kernel.org
+> >> > ---
+> >> >  arch/arm64/kernel/smp.c                | 2 ++
+> >> >  drivers/irqchip/irq-gic-v3.c           | 2 +-
+> >> >  drivers/irqchip/irq-gic.c              | 2 +-
+> >> >  include/linux/irqchip/arm-gic-common.h | 2 ++
+> >> >  4 files changed, 6 insertions(+), 2 deletions(-)
+> >> >
+> >> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> >> > index 18e9727..9fc383c 100644
+> >> > --- a/arch/arm64/kernel/smp.c
+> >> > +++ b/arch/arm64/kernel/smp.c
+> >> > @@ -33,6 +33,7 @@
+> >> >  #include <linux/kernel_stat.h>
+> >> >  #include <linux/kexec.h>
+> >> >  #include <linux/kvm_host.h>
+> >> > +#include <linux/irqchip/arm-gic-common.h>
+> >> >
+> >> >  #include <asm/alternative.h>
+> >> >  #include <asm/atomic.h>
+> >> > @@ -76,6 +77,7 @@ enum ipi_msg_type {
+> >> >       IPI_WAKEUP,
+> >> >       NR_IPI
+> >> >  };
+> >> > +static_assert(NR_IPI <= MAX_SGI_NUM);
+> >>
+> >> I am trying *very hard* to remove dependencies between the
+> >> architecture
+> >> code and random drivers, so this kind of check really is
+> >> counter-productive.
+> >>
+> >> Driver code should not have to know the number of IPIs, because there
+> >> is
+> >> no requirement that all IPIs should map 1:1 to SGIs. Conflating the
+> >> two
+> >
+> > Just curious about this. Is there an IPI which is not implemented by
+> > SGI? Or mapping several IPIs to a single SGI, and scatter out due to a
+> > global variable value?
+>
+> We currently have a single NS SGI left, and I'd like to move some of the
+> non-critical IPIs over to dispatching mechanism (the two "CPU stop" IPIs
+> definitely are candidate for merging). That's not implemented yet, but
+> I don't see a need to add checks that would otherwise violate this
+> IPI/SGI distinction.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
- fs/erofs/zdata.c | 51 +++++++++++++++++++++++-------------------------
- 1 file changed, 24 insertions(+), 27 deletions(-)
+Got it. Thanks for your detailed explanation.
 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 37fee144f0e7..777790038bc9 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -292,34 +292,33 @@ static int z_erofs_attach_page(struct z_erofs_collector *clt,
- 	return ret ? 0 : -EAGAIN;
- }
- 
--static enum z_erofs_collectmode
--try_to_claim_pcluster(struct z_erofs_pcluster *pcl,
--		      z_erofs_next_pcluster_t *owned_head)
-+static void z_erofs_try_to_claim_pcluster(struct z_erofs_collector *clt)
- {
--	/* let's claim these following types of pclusters */
--retry:
--	if (pcl->next == Z_EROFS_PCLUSTER_NIL) {
--		/* type 1, nil pcluster */
--		if (cmpxchg(&pcl->next, Z_EROFS_PCLUSTER_NIL,
--			    *owned_head) != Z_EROFS_PCLUSTER_NIL)
--			goto retry;
-+	struct z_erofs_pcluster *pcl = clt->pcl;
-+	z_erofs_next_pcluster_t *owned_head = &clt->owned_head;
- 
-+	/* type 1, nil pcluster (this pcluster doesn't belong to any chain.) */
-+	if (cmpxchg(&pcl->next, Z_EROFS_PCLUSTER_NIL,
-+		    *owned_head) == Z_EROFS_PCLUSTER_NIL) {
- 		*owned_head = &pcl->next;
--		/* lucky, I am the followee :) */
--		return COLLECT_PRIMARY_FOLLOWED;
--	} else if (pcl->next == Z_EROFS_PCLUSTER_TAIL) {
--		/*
--		 * type 2, link to the end of a existing open chain,
--		 * be careful that its submission itself is governed
--		 * by the original owned chain.
--		 */
--		if (cmpxchg(&pcl->next, Z_EROFS_PCLUSTER_TAIL,
--			    *owned_head) != Z_EROFS_PCLUSTER_TAIL)
--			goto retry;
-+		/* so we can attach this pcluster to our submission chain. */
-+		clt->mode = COLLECT_PRIMARY_FOLLOWED;
-+		return;
-+	}
-+
-+	/*
-+	 * type 2, link to the end of an existing open chain, be careful
-+	 * that its submission is controlled by the original attached chain.
-+	 */
-+	if (cmpxchg(&pcl->next, Z_EROFS_PCLUSTER_TAIL,
-+		    *owned_head) == Z_EROFS_PCLUSTER_TAIL) {
- 		*owned_head = Z_EROFS_PCLUSTER_TAIL;
--		return COLLECT_PRIMARY_HOOKED;
-+		clt->mode = COLLECT_PRIMARY_HOOKED;
-+		clt->tailpcl = NULL;
-+		return;
- 	}
--	return COLLECT_PRIMARY;	/* :( better luck next time */
-+	/* type 3, it belongs to a chain, but it isn't the end of the chain */
-+	clt->mode = COLLECT_PRIMARY;
- }
- 
- static int z_erofs_lookup_collection(struct z_erofs_collector *clt,
-@@ -364,10 +363,8 @@ static int z_erofs_lookup_collection(struct z_erofs_collector *clt,
- 	/* used to check tail merging loop due to corrupted images */
- 	if (clt->owned_head == Z_EROFS_PCLUSTER_TAIL)
- 		clt->tailpcl = pcl;
--	clt->mode = try_to_claim_pcluster(pcl, &clt->owned_head);
--	/* clean tailpcl if the current owned_head is Z_EROFS_PCLUSTER_TAIL */
--	if (clt->owned_head == Z_EROFS_PCLUSTER_TAIL)
--		clt->tailpcl = NULL;
-+
-+	z_erofs_try_to_claim_pcluster(clt);
- 	clt->cl = cl;
- 	return 0;
- }
--- 
-2.18.4
-
+Regards,
+Pingfan
