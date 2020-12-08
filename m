@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4F92D35B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3A32D35B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgLHV7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:59:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgLHV7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:59:42 -0500
-X-Gm-Message-State: AOAM532x5hBniVRGj7L4YJDrBmgGkqfhNKcTUg9wsFN8e5luMtuOKKVn
-        sPJal3CcyEnRmgszqRov6132ejc6s7xpUj+jYdE1MQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607464741;
-        bh=aq1REvmr8G4HHsMmI7IDmZOap2E/6/9t6PDlS39WANU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gUWX7QEivlEBbfouHMgr400icneCDEUYZL6Vgvd+W7VFDbPj5ioDZEsyxrKScpxna
-         FOoNjLl3Fb014TRLuxA2Qix2nLq+Rj9xAR5I9b86gxL6deMLjVYwB6lMYsxTBH5Sl5
-         O+F+9cv7u0QFG+3oBhLKYxiM8SFMHGf/VFulCwRtR3o31NbmbBqhNxDRU7XokLe+Pr
-         PNZHYhRUVU8G/PoZ9uy+plQfCMLlIhKwk7Dn7QUfjC2r3tHp+/TRgm+OsSkDTVBlwD
-         iwLJLxJGHsKqwcSTgFUtRZ39gtMwRIvnj8qNOEGvmmfGoGDfz1Co0DWTndFptZ45H/
-         TAPE6CrL0C63Q==
-X-Google-Smtp-Source: ABdhPJz1BNeZy2zJhsVUwUwxQH6zhCY3cVJMR3mDK3yUi89dUtazop/iQ5s8I/mdJXZsMaJhBcUfaFKL5jM5H0sW15Q=
-X-Received: by 2002:a2e:9611:: with SMTP id v17mr584959ljh.69.1607464739743;
- Tue, 08 Dec 2020 13:58:59 -0800 (PST)
+        id S1730504AbgLHWA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:00:56 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:41888 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730482AbgLHWAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:00:55 -0500
+Date:   Tue, 08 Dec 2020 21:59:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1607464771;
+        bh=1hYjg8WRlU6tVQsFOn5GFB0I2LWqf6gUYIXfyucinX4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=nKjIEnl2xqbnAdHa3plEidQMmJHMMIei9SGArs5wH22tQYMzuEecV9oVT5x4ESqvp
+         9VbyUN5vu9jQCPcx7ljela/wjzt284ZVALWvOOvJSgW1by19+NniG3tmpfgjPy8kyE
+         2CXMAzxMbTcJlAV2Yl/30w+PugqCvtlHJJzMn080=
+To:     Greg KH <gregkh@linuxfoundation.org>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Coiby Xu <coiby.xu@gmail.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        Baq Domalaq <domalak@gmail.com>,
+        Pedro Ribeiro <pedrib@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Message-ID: <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com>
+In-Reply-To: <X75zL12q+FF6KBHi@kroah.com>
+References: <20201125141022.321643-1-coiby.xu@gmail.com> <X75zL12q+FF6KBHi@kroah.com>
 MIME-Version: 1.0
-References: <20201208173623.1136863-1-revest@chromium.org> <20201208205240.hucgnmi76ng2r5s7@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201208205240.hucgnmi76ng2r5s7@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 8 Dec 2020 22:58:48 +0100
-X-Gmail-Original-Message-ID: <CANA3-0fHyriceUjbSLBJgUA6oddGTRBuP_PwAyWar8o9eSPoaQ@mail.gmail.com>
-Message-ID: <CANA3-0fHyriceUjbSLBJgUA6oddGTRBuP_PwAyWar8o9eSPoaQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: Only provide bpf_sock_from_file with CONFIG_NET
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, rdunlap@infradead.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 9:56 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Tue, Dec 08, 2020 at 06:36:23PM +0100, Florent Revest wrote:
-> > This moves the bpf_sock_from_file definition into net/core/filter.c
-> > which only gets compiled with CONFIG_NET and also moves the helper proto
-> > usage next to other tracing helpers that are conditional on CONFIG_NET.
-> >
-> > This avoids
-> >   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
-> >   bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
-> > When compiling a kernel with BPF and without NET.
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+2020. november 25., szerda 16:07 keltez=C3=A9ssel, Greg KH =C3=ADrta:
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+> [...]
+> > +static u8 polling_mode;
+> > +module_param(polling_mode, byte, 0444);
+> > +MODULE_PARM_DESC(polling_mode, "How to poll (default=3D0) - 0 disabled=
+; 1 based on GPIO pin's status");
+>
+> Module parameters are for the 1990's, they are global and horrible to
+> try to work with. You should provide something on a per-device basis,
+> as what happens if your system requires different things here for
+> different devices? You set this for all devices :(
+> [...]
+
+Hi
+
+do you think something like what the usbcore has would be better?
+A module parameter like "quirks=3D<vendor-id>:<product-id>:<flags>[,<vendor=
+-id>:<product-id>:<flags>]*"?
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
