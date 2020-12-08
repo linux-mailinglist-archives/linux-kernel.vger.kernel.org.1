@@ -2,285 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C94E2D204E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261262D205B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgLHBsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:48:51 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32218 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726830AbgLHBsu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:48:50 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 0B81h0iM016402;
-        Mon, 7 Dec 2020 17:47:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=cGDSQdHV4n/tqKb0jC4+TEkB7eVzDNa2+NK1Tj2igdY=;
- b=kKWcQCIHl5pfmd5r7isyemtLygIFMaLN09xMUFVd3UPedmJLiAN/GSHPPjqihYjc/jvP
- 4E/fHwbSJ7w/F1WMeEi2P4y7sy+GdM/PJLzDMQl86hYd+99U8zsSVfUCWV7KMbJtHhaH
- U8tgG1ZeJKjoi4m9o7YcAVUhSN5PpWKcr0k= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 35882fns59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 07 Dec 2020 17:47:52 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 7 Dec 2020 17:47:50 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gXLMfuBWzx7/XeQPobaGz+7iIOuoHnDFX4ypg1zOSc/OM65bzQjXSLTJPz8qbBIT1XWlu3yQiJ/n1raBCFO7pq7Xb77sw7W4xJTS825oAwZqzjeiqhhqsR8BTCMTHnFvRJ3mmHy/j2K6ZWg2s57yMiAphc0CumBhV53aG3BuS4GXiNRkbV5GlzKHTYfLKoWn4w6bhOOS0pI38oF/gMThmoOP3kHCdqlXoI0kyo+p1eWMd6WmswTAf9qQeTQ2HaYgK+fsvXQOLx8kCBj8zSJX/8ztGAZz8o6IQ0DZmEp6UV/iBu01g9PxbFIu+CM1UdXDnpX4Lm1K7kPW9OXSV7iI5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cGDSQdHV4n/tqKb0jC4+TEkB7eVzDNa2+NK1Tj2igdY=;
- b=RDGkI6PiZLSV6F91sPJ6KRjpdqjqK9ZUi/0kiCDt2eAoqMszUcAxO4AeZm0YChSzjI1lPigZVKR7VIbTwxf3m/5EAGvCsLe1nDDPMuhfyVzKrIOKf9uGo0o7LpMOEvYFmyp5UjqQOLwINW4aTzOV239ZJ8kiOHu94EasRqC16n9mzFhFT2clt9S8zuYsdKkdAv/rB0oBESwtBsqSMbGa4DSfblGyBSwOq419V+srXpxI0Pro1Zd+vEi2N+ekJhltqeFvjbpWNwJXDuFi7MN1k1+6oVv0LHR0BnsT+Tjy4w64BDiMxvPJI7EVKmVIjGR/AnUtT6j6+czWhAIWeD02Tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cGDSQdHV4n/tqKb0jC4+TEkB7eVzDNa2+NK1Tj2igdY=;
- b=TZOKNwH6/KhyUbKiYhvYuG73rbk8azcNTVadWdck0d4tDLDr1BPIztP4pyhAp2y90s0qK7u/l5yyAKooO4SBiiNp4MivFczDpBC3EC7ehmzQgh0Jrz3ZAeqkENhexjTzMKGTbqx4F70hAfC5KOA0Bq157xGTPa/lpLoCb7iFShc=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2646.namprd15.prod.outlook.com (2603:10b6:a03:155::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Tue, 8 Dec
- 2020 01:47:49 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
- 01:47:49 +0000
-Subject: Re: [PATCH bpf-next v4 09/11] bpf: Add bitwise atomic instructions
-To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-10-jackmanb@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3d8192e2-6167-bbd3-e23c-ef7a4e8238c1@fb.com>
-Date:   Mon, 7 Dec 2020 17:47:48 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201207160734.2345502-10-jackmanb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:ee04]
-X-ClientProxiedBy: BY5PR16CA0013.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::26) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1727554AbgLHBwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:52:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:32407 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgLHBwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 20:52:06 -0500
+IronPort-SDR: fVtZi235F3dxxC+s8xx99nE6AyLIoF+D7f5ob5NL1VTfkP8/8esq1We7lpGEy/S2IpQC5PYdrI
+ bEmjsldXSiwg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="192092152"
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="192092152"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 17:50:20 -0800
+IronPort-SDR: WBpBR9Sdd31Ag7bLOrwZClcabZ70OXbKAayR+rvJhSyQZBj/1cOikfWBqpZGJdnhNtQZ0o/7d0
+ dt+w7FkFQ2dw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
+   d="scan'208";a="437193526"
+Received: from aubrey-work.sh.intel.com ([10.239.53.113])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Dec 2020 17:50:17 -0800
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, mgorman@techsingularity.net,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com
+Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: [RFC PATCH v6] sched/fair: select idle cpu from idle cpumask for task wakeup
+Date:   Tue,  8 Dec 2020 09:49:57 +0800
+Message-Id: <20201208014957.170845-1-aubrey.li@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::113f] (2620:10d:c090:400::5:ee04) by BY5PR16CA0013.namprd16.prod.outlook.com (2603:10b6:a03:1a0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19 via Frontend Transport; Tue, 8 Dec 2020 01:47:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 73f399ca-5b67-405a-9617-08d89b1b4517
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2646:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2646E70C5A5836D9F0A01792D3CD0@BYAPR15MB2646.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:118;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LeTSOK4MnlFSRK2dpMwTcfc6YBNUgXn/0MGnydyejmcHv0VZWBIcnvEMAMRuO+DZgy6i5pufQ18Dm7ofPHAzjpundV9OqmbPGzqvWXHufwtsD+NeAfGNCdwQJfX1kIiifRHNI6MZbYQiAAnT4Rm+KqSj2//CPLBr4A4VbcF5wMi2Oq1BJo21RWbUWAq5I8MvPJGOJPBgZoonBw+GDvm5ExqNxcFDNGTpojMvnOSYhx2DChwGus1Rutz8AGk+igunjJ+cu/OVz0bbst4f+pTrXNQQomS0QU/E4xQOKSaxemLoBOKmUFCqGLXVyPsU9L+snRCUDuxt08VUboebv9TuAMrF5pCWZg4SduTr7saKBlIV1lJ/qhUEioBHBEB7BrBjT/V/QouE2CycO3x+FI32Xuk16UN/adlBNbQz+MTuOqc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(376002)(366004)(396003)(136003)(52116002)(66946007)(66476007)(8936002)(66556008)(5660300002)(2616005)(2906002)(8676002)(36756003)(53546011)(316002)(4326008)(186003)(86362001)(31696002)(6486002)(478600001)(16526019)(54906003)(31686004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MWo0SklsTzVHSWZHSTl0N29LdjdJMExxZjlxTWNaRjdhMS9naVFOdFg1VHNu?=
- =?utf-8?B?QjRMN0ZVbXRWdm5iSnhVOEkxTDhMYm5jK3RoeEZGdXJodXZTUEJEaEpQMVBj?=
- =?utf-8?B?ZnhFNnJHeVB6VkV2WUJ0MXFXTlQzdTQrRzg2Y2xUd1hIb3BXb1dzNkNwenhV?=
- =?utf-8?B?NGw3L2kzOUtTU2JYZlNJTWdiQXZRbzQ5b0sydDlNRitJVVNqYllkZitTaUM1?=
- =?utf-8?B?bUZDNjJKdDZ1TkZrSEpNQVJQK3RDbnE2TTJrM3V6MmcyaVFLM2YwSTczVVN3?=
- =?utf-8?B?T3BpdFp3cXlIUGs5endubnJWYTRkbWd6YTI1Q3JvbFJ1anMvTzJadWxtaFRY?=
- =?utf-8?B?Y1VKZVQwTmhWcC9jenF5VWFOcDRZTkFXWnpQYWcyTFNMdXZRdFRDUmRSY2FZ?=
- =?utf-8?B?bCtJcnZ3U2p6MXpHMlNjUmR0UDZ2OHRoZlZvUVl1dkVUZDNQWDl3MjZUcXhF?=
- =?utf-8?B?OEJVZ1JLdE9pV1JBTlJRSlUrM3Fkb3VPZ3dmZm1CVGNTKzhUTW1aZjc4UU8x?=
- =?utf-8?B?L0tzTEFwN0NSUTVucWZmRlo4WXVOQW5mMkgvRkFrRUgxNTZ0eXNEYVE2dXRv?=
- =?utf-8?B?UU43ZkFOZkpKb3dOb05qbWRleTVOK3EyM0VvNjBNQ3RGWk1WSCtROEgrVjJ6?=
- =?utf-8?B?Rk93Y2prM2twajd2VmVNZ2F2ZVY0RGlRZnFFRko0SzNtK3A0RnhJZEdrajFQ?=
- =?utf-8?B?V1Q0SGJiWjEwVlZ2MUZLcDJ3VzVCYkxMRHU3SisxOTk1YVduRitlU2M3aVFL?=
- =?utf-8?B?T0pERXhueUV6ZitlTWQwQ1Y0NFlBWEtINldwMisxZWlKNFlqQkd4Y1J2MS9S?=
- =?utf-8?B?YTVyUVQrNEVhYnc3aWhNR3paN3oxSkRodjA4MlNYQWdMN2Jyb3RKbktLSjhh?=
- =?utf-8?B?anFoSnNvM3Rwb2JPTWVjYmxIZGN4UmdWYnltcmJMWnROejJVU3pwZVZZcVpD?=
- =?utf-8?B?Z3NXUmE3UDNQbERTZytWREprM3JBUHA4S0M2RnR4K25MWndMZXFmVGR1T3Np?=
- =?utf-8?B?TTFKaVQvYVdWeTJONzJYRjNqMFNMc3RFc01aR2hsOGh5RW1qaGwyOFlIK1I4?=
- =?utf-8?B?bUFDSjE4a2ZtM3J2Y21Ba296NjdrVG1vQ0NjRFJGLzdsMnBESmRyL3lzaFFx?=
- =?utf-8?B?Z0dOT3RNbG5udFVHYVYwMVdJa0JPTmFFMnZKK3RJSGFtVnV4enBqeGhZV0or?=
- =?utf-8?B?dXgzZ1JSQlFUTTR4emNveGdoVWdaYUQ3UU5VZ0pRNDY1dG5tU3h4MEVZZXhi?=
- =?utf-8?B?VGlDSkl4Q0RVbDkyb0JMbWVEOXZTeE9ORWhrS0wveEhzQW9IWWZFTndSZHU0?=
- =?utf-8?B?dmdsRVB0WUdjeHUzSytjUHVoeWkyanJMbFZhckZqWmdKdURHQlF1N3E0ZGtr?=
- =?utf-8?B?L05XQldKcEF3T2c9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 01:47:49.7471
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73f399ca-5b67-405a-9617-08d89b1b4517
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ISgSNafLZlG4PAVIrWr8ZaE3qpkedWSabJE8jeaUu0dhdsohvpzBTqa46Vi3YloL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2646
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_19:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- spamscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080008
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add idle cpumask to track idle cpus in sched domain. Every time
+a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
+target. And if the CPU is not in idle, the CPU is cleared in idle
+cpumask during scheduler tick to ratelimit idle cpumask update.
 
+When a task wakes up to select an idle cpu, scanning idle cpumask
+has lower cost than scanning all the cpus in last level cache domain,
+especially when the system is heavily loaded.
 
-On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> This adds instructions for
-> 
-> atomic[64]_[fetch_]and
-> atomic[64]_[fetch_]or
-> atomic[64]_[fetch_]xor
-> 
-> All these operations are isomorphic enough to implement with the same
-> verifier, interpreter, and x86 JIT code, hence being a single commit.
-> 
-> The main interesting thing here is that x86 doesn't directly support
-> the fetch_ version these operations, so we need to generate a CMPXCHG
-> loop in the JIT. This requires the use of two temporary registers,
-> IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->   arch/x86/net/bpf_jit_comp.c  | 50 ++++++++++++++++++++++++++-
->   include/linux/filter.h       | 66 ++++++++++++++++++++++++++++++++++++
->   kernel/bpf/core.c            |  3 ++
->   kernel/bpf/disasm.c          | 21 +++++++++---
->   kernel/bpf/verifier.c        |  6 ++++
->   tools/include/linux/filter.h | 66 ++++++++++++++++++++++++++++++++++++
->   6 files changed, 207 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 308241187582..1d4d50199293 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -808,6 +808,10 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
->   	/* emit opcode */
->   	switch (atomic_op) {
->   	case BPF_ADD:
-> +	case BPF_SUB:
-> +	case BPF_AND:
-> +	case BPF_OR:
-> +	case BPF_XOR:
->   		/* lock *(u32/u64*)(dst_reg + off) <op>= src_reg */
->   		EMIT1(simple_alu_opcodes[atomic_op]);
->   		break;
-[...]
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index e1e1fc946a7c..e100c71555a4 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -264,7 +264,13 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->    * Atomic operations:
->    *
->    *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
-> + *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
-> + *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
-> + *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
->    *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
-> + *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
-> + *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
-> + *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
->    *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
->    *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
->    */
-> @@ -295,6 +301,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->   		.off   = OFF,					\
->   		.imm   = BPF_ADD })
->   
-> +/* Atomic memory and, *(uint *)(dst_reg + off16) &= src_reg */
-> +
-> +#define BPF_ATOMIC_AND(SIZE, DST, SRC, OFF)			\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_AND })
-> +
-> +/* Atomic memory and with fetch, src_reg = atomic_fetch_and(dst_reg + off, src_reg); */
-> +
-> +#define BPF_ATOMIC_FETCH_AND(SIZE, DST, SRC, OFF)		\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_AND | BPF_FETCH })
-> +
-> +/* Atomic memory or, *(uint *)(dst_reg + off16) |= src_reg */
-> +
-> +#define BPF_ATOMIC_OR(SIZE, DST, SRC, OFF)			\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_OR })
-> +
-> +/* Atomic memory or with fetch, src_reg = atomic_fetch_or(dst_reg + off, src_reg); */
-> +
-> +#define BPF_ATOMIC_FETCH_OR(SIZE, DST, SRC, OFF)		\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_OR | BPF_FETCH })
-> +
-> +/* Atomic memory xor, *(uint *)(dst_reg + off16) ^= src_reg */
-> +
-> +#define BPF_ATOMIC_XOR(SIZE, DST, SRC, OFF)			\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_XOR })
-> +
-> +/* Atomic memory xor with fetch, src_reg = atomic_fetch_xor(dst_reg + off, src_reg); */
-> +
-> +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_XOR | BPF_FETCH })
+Benchmarks including hackbench, schbench, uperf, sysbench mysql
+and kbuild were tested on a x86 4 socket system with 24 cores per
+socket and 2 hyperthreads per core, total 192 CPUs, no significant
+data change found.
 
-Use BPF_ATOMIC macro to define all the above macros?
+v5->v6:
+- decouple idle cpumask update from stop_tick signal, set idle CPU
+  in idle cpumask every time the CPU enters idle
 
-> +
->   /* Atomic exchange, src_reg = atomic_xchg(dst_reg + off, src_reg) */
->   
->   #define BPF_ATOMIC_XCHG(SIZE, DST, SRC, OFF)			\
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 1d9e5dcde03a..4b78ff89ec91 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1642,6 +1642,9 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
->   	STX_ATOMIC_W:
->   		switch (IMM) {
->   		ATOMIC_ALU_OP(BPF_ADD, add)
-> +		ATOMIC_ALU_OP(BPF_AND, and)
-> +		ATOMIC_ALU_OP(BPF_OR, or)
-> +		ATOMIC_ALU_OP(BPF_XOR, xor)
->   #undef ATOMIC_ALU_OP
->   
->   		case BPF_XCHG:
-[...]
+v4->v5:
+- add update_idle_cpumask for s2idle case
+- keep the same ordering of tick_nohz_idle_stop_tick() and update_
+  idle_cpumask() everywhere
+
+v3->v4:
+- change setting idle cpumask from every idle entry to tickless idle
+  if cpu driver is available.
+- move clearing idle cpumask to scheduler_tick to decouple nohz mode.
+
+v2->v3:
+- change setting idle cpumask to every idle entry, otherwise schbench
+  has a regression of 99th percentile latency.
+- change clearing idle cpumask to nohz_balancer_kick(), so updating
+  idle cpumask is ratelimited in the idle exiting path.
+- set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
+
+v1->v2:
+- idle cpumask is updated in the nohz routines, by initializing idle
+  cpumask with sched_domain_span(sd), nohz=off case remains the original
+  behavior.
+
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Qais Yousef <qais.yousef@arm.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Jiang Biao <benbjiang@gmail.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+---
+ include/linux/sched/topology.h | 13 +++++++++
+ kernel/sched/core.c            |  2 ++
+ kernel/sched/fair.c            | 52 +++++++++++++++++++++++++++++++++-
+ kernel/sched/idle.c            |  5 ++++
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        |  3 +-
+ 6 files changed, 75 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 820511289857..b47b85163607 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -65,8 +65,21 @@ struct sched_domain_shared {
+ 	atomic_t	ref;
+ 	atomic_t	nr_busy_cpus;
+ 	int		has_idle_cores;
++	/*
++	 * Span of all idle CPUs in this domain.
++	 *
++	 * NOTE: this field is variable length. (Allocated dynamically
++	 * by attaching extra space to the end of the structure,
++	 * depending on how many CPUs the kernel has booted up with)
++	 */
++	unsigned long	idle_cpus_span[];
+ };
+ 
++static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
++{
++	return to_cpumask(sds->idle_cpus_span);
++}
++
+ struct sched_domain {
+ 	/* These fields must be setup */
+ 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c4da7e17b906..b8af602dea79 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3999,6 +3999,7 @@ void scheduler_tick(void)
+ 	rq_lock(rq, &rf);
+ 
+ 	update_rq_clock(rq);
++	update_idle_cpumask(rq, false);
+ 	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+ 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+ 	curr->sched_class->task_tick(rq, curr, 0);
+@@ -7197,6 +7198,7 @@ void __init sched_init(void)
+ 		rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
+ #endif
+ #endif /* CONFIG_SMP */
++		rq->last_idle_state = 1;
+ 		hrtick_rq_init(rq);
+ 		atomic_set(&rq->nr_iowait, 0);
+ 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c0c4d9ad7da8..1b5c7ed08544 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6146,7 +6146,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 
+ 	time = cpu_clock(this);
+ 
+-	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
++	/*
++	 * sched_domain_shared is set only at shared cache level,
++	 * this works only because select_idle_cpu is called with
++	 * sd_llc.
++	 */
++	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (!--nr)
+@@ -6808,6 +6813,51 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ }
+ #endif /* CONFIG_SMP */
+ 
++/*
++ * Update cpu idle state and record this information
++ * in sd_llc_shared->idle_cpus_span.
++ */
++void update_idle_cpumask(struct rq *rq, bool set_idle)
++{
++	struct sched_domain *sd;
++	int cpu = cpu_of(rq);
++	int idle_state;
++
++	/*
++	 * If called from scheduler tick, only update
++	 * idle cpumask if the CPU is busy, as idle
++	 * cpumask is also updated on idle entry.
++	 *
++	 */
++	if (!set_idle && idle_cpu(cpu))
++		return;
++	/*
++	 * Also set SCHED_IDLE cpu in idle cpumask to
++	 * allow SCHED_IDLE cpu as a wakeup target
++	 */
++	idle_state = set_idle || sched_idle_cpu(cpu);
++	/*
++	 * No need to update idle cpumask if the state
++	 * does not change.
++	 */
++	if (rq->last_idle_state == idle_state)
++		return;
++
++	rcu_read_lock();
++	sd = rcu_dereference(per_cpu(sd_llc, cpu));
++	if (!sd || !sd->shared)
++		goto unlock;
++
++	if (idle_state)
++		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
++	else
++		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
++
++	rq->last_idle_state = idle_state;
++unlock:
++	rcu_read_unlock();
++}
++
+ static unsigned long wakeup_gran(struct sched_entity *se)
+ {
+ 	unsigned long gran = sysctl_sched_wakeup_granularity;
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index f324dc36fc43..f995660edf2b 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -156,6 +156,11 @@ static void cpuidle_idle_call(void)
+ 		return;
+ 	}
+ 
++	/*
++	 * The CPU is about to go idle, set it in idle cpumask
++	 * to be a wake up target.
++	 */
++	update_idle_cpumask(this_rq(), true);
+ 	/*
+ 	 * The RCU framework needs to be told that we are entering an idle
+ 	 * section, so no more rcu read side critical sections and one more
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 8d1ca65db3b0..db460b20217a 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1004,6 +1004,7 @@ struct rq {
+ 	/* This is used to determine avg_idle's max value */
+ 	u64			max_idle_balance_cost;
+ #endif /* CONFIG_SMP */
++	unsigned char		last_idle_state;
+ 
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+ 	u64			prev_irq_time;
+@@ -1088,6 +1089,7 @@ static inline void update_idle_core(struct rq *rq)
+ #else
+ static inline void update_idle_core(struct rq *rq) { }
+ #endif
++void update_idle_cpumask(struct rq *rq, bool set_idle);
+ 
+ DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 1bd7e3af904f..541bd3a7de4d 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
+ 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
+ 		atomic_inc(&sd->shared->ref);
+ 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
++		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+ 	}
+ 
+ 	sd->private = sdd;
+@@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+ 
+ 			*per_cpu_ptr(sdd->sd, j) = sd;
+ 
+-			sds = kzalloc_node(sizeof(struct sched_domain_shared),
++			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+ 					GFP_KERNEL, cpu_to_node(j));
+ 			if (!sds)
+ 				return -ENOMEM;
+-- 
+2.25.1
+
