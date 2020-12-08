@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525512D3174
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8875E2D3178
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730780AbgLHRtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:49:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40502 "EHLO mail.kernel.org"
+        id S1730667AbgLHRuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:50:25 -0500
+Received: from ms.lwn.net ([45.79.88.28]:38912 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbgLHRty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:49:54 -0500
-Date:   Tue, 8 Dec 2020 19:49:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607449754;
-        bh=rOJ6wd7pPv9VKVPvlMY8tmHKt2EG7z2LdgbuHHBAfBM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lEYRfeTg3M0LKd3/09Wd6RwkuxU+RdWKeY9jt5u1xLhxEwW0JQAxrMDwiiLoL4EjF
-         m08HD606VXjtVcf8OUY2IbPJEd9/bxiMe+45LZV7E9VyfC/rCkGGUzSry4pvNVfkoA
-         kMnE8TseXtiGD4K49NYeKLTZ0VjSbnmvDmn/Cdlw5JD8Ur1/w34w+TIX5d8Ka3g2H0
-         xOlP+HfbYAMpmoGibCcGP7MNZ8ORJBzOfXt7DDcqivg8cddhBK7TrU2zrPOBLL9CJQ
-         WlIKQ8GHr4Wh5juj/wxkDhLXMavFoNbn397FRxCySP1js949sMRxd+PiecdofpBmLp
-         bjV8CIPeuz4rw==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>, sumit.garg@linaro.org
-Cc:     Elaine Palmer <erpalmerny@gmail.com>,
-        jarkko.sakkinen@linux.intel.com, jejb@linux.ibm.com,
-        dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
-        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Kenneth Goldman <kgoldman@us.ibm.com>, gcwilson@linux.ibm.com,
-        zgu@us.ibm.com, stefanb@us.ibm.com, NAYNA JAIN1 <naynjain@ibm.com>
-Subject: Re: [PATCH v8 3/4] doc: trusted-encrypted: updates with TEE as a new
- trust source
-Message-ID: <20201208174906.GA58572@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-4-git-send-email-sumit.garg@linaro.org>
- <81A6B61D-3811-4957-B270-52AE5FA6DE4F@gmail.com>
- <20201204153037.GC4922@kernel.org>
- <ba6cd934bf7460cf6e9fc101a759a63fdd4e6e9b.camel@linux.ibm.com>
+        id S1726810AbgLHRuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:50:25 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 1D9BE300;
+        Tue,  8 Dec 2020 17:49:44 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1D9BE300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607449784; bh=6OeIccjT8navNqk1ywiJAFEwFR9443hfeELt6U7X4SM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HQQa/xhg5xUHtfs9cQTgeCHCl2iHqCpuNrmMFvnZEMXe3fPLlRqwAKo8pNoRrF+98
+         EihEOJCAMLYEPiuUtX/MYLD6TaDBuEeQRXpmnCbYwQIcL+Yz2Ia83GO9YX/xKviyvB
+         KjmtmlKt+r0taEDbHVSALUeSJi5GVsa8GMr9/oINBCr8fpaXCpbRjqYYQs4w1jEJC1
+         iT0jV34Wtn7UDNFtXSEAz3Sld3nJJQxESIJCjK48rJTGNT5ZdrQgicGg3/8w94d0Y4
+         lixqeMlaXFEAo+6ZMXyGHCovkk+LWcLsMj2bBmzoOv1yrS6e/06upPhhJvUW+j5NSK
+         znxDRQmeILInQ==
+Date:   Tue, 8 Dec 2020 10:49:43 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Amjad Ouled-Ameur <aouledameur@baylibre.com>,
+        kernel@pengutronix.de
+Subject: Re: [PATCH v2] docs: add a reset controller chapter to the driver
+ API docs
+Message-ID: <20201208104943.499bf52c@lwn.net>
+In-Reply-To: <20201201115754.1713-1-p.zabel@pengutronix.de>
+References: <20201201115754.1713-1-p.zabel@pengutronix.de>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ba6cd934bf7460cf6e9fc101a759a63fdd4e6e9b.camel@linux.ibm.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:02:57AM -0500, Mimi Zohar wrote:
-> Hi Jarkko,
-> 
-> On Fri, 2020-12-04 at 17:30 +0200, Jarkko Sakkinen wrote:
-> > On Wed, Dec 02, 2020 at 02:34:07PM -0500, gmail Elaine Palmer wrote:
-> > > Hi Sumit,  
-> > > 
-> > > Thank you for the detailed descriptions and examples of trust sources
-> > > for Trusted Keys.   A group of us in IBM (Stefan Berger, Ken Goldman,
-> > > Zhongshu Gu, Nayna Jain, Elaine Palmer, George Wilson, Mimi Zohar)
-> > > have been doing related work for quite some time, and we have one
-> > > primary concern and some suggested changes to the document. 
-> > > 
-> > > Our primary concern is that describing a TEE as a Trust Source needs
-> > > to be more specific.   For example, "ARM TrustZone" is not sufficient,
-> > > but "wolfSSL embedded SSL/TLS library with ARM TrustZone
-> > > CryptoCell-310" is.  Just because a key is protected by software
-> > > running in a TEE is not enough to establish trust.  Just like
-> > > cryptographic modules, a Trust Source should be defined as a specific
-> > > implementation on specific hardware with well-documented environmental
-> > > assumptions, dependencies, and threats.
-> > > 
-> > > In addition to the above concern, our suggested changes are inline
-> > > below.
-> > 
-> > In order to give a decent review comment it should have two ingredients:
-> > 
-> > - Where the existing line of code / text / whatever goes wrong.
-> > - How it should modified and why that makes sense. And use as plain
-> >   English and non-academic terms as possible, if it is documentation.
-> >   Further, scope is only the kernel implementation, no more or no
-> >   less.
-> > 
-> > "do this" is not unfortunately an argument. Feedback is welcome when
-> > it is supported by something common sensse.
-> 
-> Even after the code is fully debugged, reviewed and tested, our concern
-> is that people will assume the security guarantees of TEE based trusted
-> keys to be equivalent to that of a discrete TPM.
-> 
-> > 
-> > Some meta suggestion of related to email:
-> > 
-> > Please also use a proper email client and split your paragraphs into
-> > at most 80 character lines with new line characters when writing email.
-> > I prefer to use 72 character line length so that there's some space
-> > for longer email threads.
-> 
-> Sure, we'll re-post the suggested documentation changes/additions.
-> 
-> Mimi
+On Tue,  1 Dec 2020 12:57:54 +0100
+Philipp Zabel <p.zabel@pengutronix.de> wrote:
 
-So. Wouldn't it be a better idea to post a patch that Sumit could
-squash to his (and add co-developed-by tag)?
+> Add initial reset controller API documentation. This is mostly intended
+> to describe the concepts to users of the consumer API, and to tie the
+> kerneldoc comments we already have into the driver API documentation.
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> Reviewed-by: Amjad Ouled-Ameur <aouledameur@baylibre.fr>
+> ---
+> Changes since v1 [1]:
+> - Added a note that reset_control_status() does not accept reset control
+>   array handles (Randy Dunlap)
+> 
+> [1] https://lore.kernel.org/lkml/20201117103306.17010-1-p.zabel@pengutronix.de/
+> ---
+>  Documentation/driver-api/index.rst |   1 +
+>  Documentation/driver-api/reset.rst | 221 +++++++++++++++++++++++++++++
+>  MAINTAINERS                        |   1 +
+>  3 files changed, 223 insertions(+)
+>  create mode 100644 Documentation/driver-api/reset.rst
 
-/Jarkko
+I've applied this, thanks.
+
+jon
