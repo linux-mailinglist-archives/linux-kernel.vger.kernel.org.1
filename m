@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5252D21A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C112D2187
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgLHD4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 22:56:46 -0500
-Received: from mga14.intel.com ([192.55.52.115]:59706 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726556AbgLHD4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 22:56:45 -0500
-IronPort-SDR: Pevb0BF4lHRIr9bC7/RguIX0ejY0RSmGRQCwxdqvVSsW7OZisJprRxjd1se5fDvqw039bB4FT7
- ILJtYha9SufQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="173060182"
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="173060182"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 19:55:35 -0800
-IronPort-SDR: 99uynEt5jHqcAbRU/AZLAFnaNABKgcDEZBW0H4iDxedrURkee1Et3Uw7BtVHxhnWl/Vauv3WXX
- 5e/hpWBUrG9A==
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="363469731"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 19:55:35 -0800
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, kyung.min.park@intel.com,
-        cathy.zhang@intel.com
-Subject: [PATCH 2/2] x86: Expose AVX512_FP16 for supported CPUID
-Date:   Mon,  7 Dec 2020 19:34:41 -0800
-Message-Id: <20201208033441.28207-3-kyung.min.park@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208033441.28207-1-kyung.min.park@intel.com>
-References: <20201208033441.28207-1-kyung.min.park@intel.com>
+        id S1726435AbgLHDlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:41:42 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8723 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgLHDll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 22:41:41 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqmCl3KNDzkmkY;
+        Tue,  8 Dec 2020 11:40:19 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 8 Dec 2020 11:40:52 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: introduce sb_status sysfs node
+Date:   Tue, 8 Dec 2020 11:40:40 +0800
+Message-ID: <20201208034040.67658-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cathy Zhang <cathy.zhang@intel.com>
+Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
+status in real time.
 
-AVX512_FP16 is supported by Intel processors, like Sapphire Rapids.
-It could gain better performance for it's faster compared to FP32
-while meets the precision or magnitude requirement. It's availability
-is indicated by CPUID.(EAX=7,ECX=0):EDX[bit 23].
-
-Expose it in KVM supported CPUID, then guest could make use of it.
-
-Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-fs-f2fs |  5 ++++
+ fs/f2fs/sysfs.c                         | 36 +++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index e83bfe2daf82..d7707cfc9401 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -416,7 +416,7 @@ void kvm_set_cpu_caps(void)
- 		F(AVX512_4VNNIW) | F(AVX512_4FMAPS) | F(SPEC_CTRL) |
- 		F(SPEC_CTRL_SSBD) | F(ARCH_CAPABILITIES) | F(INTEL_STIBP) |
- 		F(MD_CLEAR) | F(AVX512_VP2INTERSECT) | F(FSRM) |
--		F(SERIALIZE) | F(TSXLDTRK)
-+		F(SERIALIZE) | F(TSXLDTRK) | F(AVX512_FP16)
- 	);
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 3dfee94e0618..57ab839dc3a2 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -377,3 +377,8 @@ Description:	This gives a control to limit the bio size in f2fs.
+ 		Default is zero, which will follow underlying block layer limit,
+ 		whereas, if it has a certain bytes value, f2fs won't submit a
+ 		bio larger than that size.
++
++What:		/sys/fs/f2fs/<disk>/stat/sb_status
++Date:		December 2020
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	Show status of f2fs superblock in real time.
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index ebca0b4961e8..1b85e6d16a94 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -101,6 +101,40 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
+ 				sbi->sectors_written_start) >> 1)));
+ }
  
- 	/* TSC_ADJUST and ARCH_CAPABILITIES are emulated in software. */
++#define	SB_STATUS(s)	(s ? "yes" : "no")
++static ssize_t sb_status_show(struct f2fs_attr *a,
++		struct f2fs_sb_info *sbi, char *buf)
++{
++	return sprintf(buf, "IS_DIRTY:		%s\n"
++				"IS_CLOSE:		%s\n"
++				"IS_SHUTDOWN:		%s\n"
++				"IS_RECOVERED:		%s\n"
++				"IS_RESIZEFS:		%s\n"
++				"NEED_FSCK:		%s\n"
++				"POR_DOING:		%s\n"
++				"NEED_SB_WRITE:		%s\n"
++				"NEED_CP:		%s\n"
++				"CP_DISABLED:		%s\n"
++				"CP_DISABLED_QUICK:	%s\n"
++				"QUOTA_NEED_FLUSH:	%s\n"
++				"QUOTA_SKIP_FLUSH:	%s\n"
++				"QUOTA_NEED_REPAIR:	%s\n",
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_DIRTY)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_CLOSE)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RECOVERED)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RESIZEFS)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_FSCK)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_POR_DOING)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_SB_WRITE)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_CP)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED_QUICK)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_FLUSH)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_SKIP_FLUSH)),
++			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_REPAIR)));
++}
++
+ static ssize_t features_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+@@ -711,7 +745,9 @@ static struct attribute *f2fs_feat_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(f2fs_feat);
+ 
++F2FS_GENERAL_RO_ATTR(sb_status);
+ static struct attribute *f2fs_stat_attrs[] = {
++	ATTR_LIST(sb_status),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(f2fs_stat);
 -- 
-2.17.1
+2.29.2
 
