@@ -2,65 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEAA2D2964
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02D42D294F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgLHK7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:59:24 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:53153 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728780AbgLHK7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:59:24 -0500
-Received: from [192.168.0.3] (ip5f5af449.dynamic.kabel-deutschland.de [95.90.244.73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 91CC820647B77;
-        Tue,  8 Dec 2020 11:58:41 +0100 (CET)
-Subject: Re: Pass modules to Linux kernel without initrd
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>
-References: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
- <8aac3537-e84b-057d-94d8-0327261daaf8@metux.net>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <2f67eee5-b613-43ef-7790-7f29f203c808@molgen.mpg.de>
-Date:   Tue, 8 Dec 2020 11:58:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728906AbgLHK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:57:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:47276 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726226AbgLHK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:57:29 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BF891FB;
+        Tue,  8 Dec 2020 02:56:43 -0800 (PST)
+Received: from [10.57.34.152] (unknown [10.57.34.152])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C6CA3F68F;
+        Tue,  8 Dec 2020 02:56:41 -0800 (PST)
+Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
+ EM
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+ <20201202172356.10508-4-nicola.mazzucato@arm.com>
+ <20201208055053.kggxw26kxtnpneua@vireshk-i7>
+ <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
+ <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+Message-ID: <83b8400f-8dc4-000e-d790-0bf584a75f48@arm.com>
+Date:   Tue, 8 Dec 2020 10:58:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <8aac3537-e84b-057d-94d8-0327261daaf8@metux.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Enrico,
 
 
-Am 08.12.20 um 10:38 schrieb Enrico Weigelt, metux IT consult:
-> On 08.12.20 10:24, Paul Menzel wrote:
+On 12/8/20 7:26 AM, Viresh Kumar wrote:
+> On 08-12-20, 07:22, Nicola Mazzucato wrote:
+>> On 12/8/20 5:50 AM, Viresh Kumar wrote:
+>>> On 02-12-20, 17:23, Nicola Mazzucato wrote:
+>>>>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>>>>  	if (nr_opp <= 0) {
+>>>> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
+>>>> -		ret = -EPROBE_DEFER;
+>>>> -		goto out_free_opp;
+>>>> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+>>>> +		if (ret) {
+>>>> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
+>>>> +			goto out_free_cpumask;
+>>>> +		}
+>>>> +
+>>>> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
+>>>> +		if (ret) {
+>>>> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+>>>> +				__func__, ret);
+>>>> +			goto out_free_cpumask;
+>>>> +		}
+>>>> +
+>>>
+>>> Why do we need to call above two after calling
+>>> dev_pm_opp_get_opp_count() ?
+>>
+>> Sorry, I am not sure to understand your question here. If there are no opps for
+>> a device we want to add them to it
 > 
->> Similar to passing firmware and microcode update files to Linux or
->> building these into the Linux kernel image, would it be possible to
->> append the required modules to the Linux kernel image, and Linux would
->> load these?
+> Earlier we used to call handle->perf_ops->device_opps_add() and
+> dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
+> the order changed now ?
+
+True. The order has changed to take into account the fact that when we have
+per-cpu + opp-shared, we don't need to add opps for devices which already have them.
+
 > 
-> Indeed, yes it does. Just set the corresponding CONFIG_ symbols to 'y'
-> instead of 'm'. If you don't need to dynamically load any modules
-> (already have everything you need compiled-in), you can completely
-> disable module support via disabling CONFIG_MODULES.
+>> otherwise no need as they would be duplicated.
+> 
+> I am not sure why they would be duplicated in your case. I though
+> device_opps_add() is responsible for dynamically adding the OPPs here.
 
-[…]
+In case of per-cpu + opp-shared, with the "previous order" we would try to add
+opps to a device which already has them, in fact attempting to add duplicates.
+Nothing wrong with it, but a lot of warnings are thrown.
 
-Thank you. I know this and do it myself. But, the requirement is to use 
-the distribution Linux kernel (package). I am sorry for being unclear.
+> 
+>>> And we don't check the return value of
+>>> the below call anymore, moreover we have to call it twice now.
+>>
+>> This second get_opp_count is required such that we register em with the correct
+>> opp number after having added them. Without this the opp_count would not be correct.
+> 
+> What if the count is still 0 ? What about deferred probe we were doing earlier ?
 
+My assumption is to rely on the two above to fail if there was something wrong.
+For the deferred probe, I am not sure it is still a useful case to have, but I
+will let Sudeep have his view also on this.
 
-Kind regards,
+> 
 
-Paul
+Thanks Viresh, hope it's a bit more clear now.
+Nicola
