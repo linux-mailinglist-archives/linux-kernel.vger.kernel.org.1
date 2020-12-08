@@ -2,140 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9162D2BED
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBDB2D2C15
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729374AbgLHN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:29:45 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48856 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLHN3o (ORCPT
+        id S1729415AbgLHNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:37:37 -0500
+Received: from mail-m972.mail.163.com ([123.126.97.2]:38440 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729020AbgLHNhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:29:44 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8DLN7G149793;
-        Tue, 8 Dec 2020 13:28:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=PHhSWbqvPHYiI4rMRA7ryUUNNJrMc0nKQ1YVCCWbBzo=;
- b=rtQ+KlZ560UCoqswD3HrmESADOsgGdEMeI49qnZzXhFzP7VSPrJtRQiLifhe52eQ/fEd
- bV3qEKHt4TXWH4AYi7pC7CuDWS59H/I+qfFqS122lvT+/nXShExDrF30WZp4rdbPJqzp
- KkzP5eKv62RN3gaBbeAYkKGlJlohI338LLH2dGVV9qIySpSRljBbSuhkwc5YRruhYXWH
- 9pMbCRdPlG/+HRNi4YbfbgGbxECf4TPljONA5/r/mTHuFFtJlhs7xXIk71HYypsnSWHV
- Y5wEbDtIHv8P+udL3vnzscTyqFaECx5M682ewn9uO5Ue5EBhkx96pl+HSbnOx8NyPILE /A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m2q5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 13:28:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8DOeaJ030141;
-        Tue, 8 Dec 2020 13:28:53 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kysuyqj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 13:28:52 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8DSp43013011;
-        Tue, 8 Dec 2020 13:28:52 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 05:28:50 -0800
-Date:   Tue, 8 Dec 2020 16:28:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-        edwin.peer@broadcom.com
-Subject: Re: sparse annotation for error types?
-Message-ID: <20201208132844.GC2767@kadam>
-References: <20201205143250.2378b9f9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205143250.2378b9f9@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=2 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080081
+        Tue, 8 Dec 2020 08:37:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=t2VJOPJlWsz8l5wsja
+        RBlQoKQE79rv25LpyRWLQ/ba0=; b=b2aJ7/dSbQG7CMDbVNBHIkBCvL2U6vyJ2b
+        vExmabzSzvEr357wuq/GFDu28Qr3KxTqY1GYhZhj/wEo6glJkzf40WlsAhvoVewk
+        X4AyUx0724fXwl5kISaoLyWBAOolkXoUPNTtr9C7hBxEik7MHy4uIe6dtURBmEr+
+        OGQ8qSzLw=
+Received: from localhost.localdomain (unknown [202.112.113.212])
+        by smtp2 (Coremail) with SMTP id GtxpCgC3z3pYfc9fHjmbEQ--.13268S4;
+        Tue, 08 Dec 2020 21:19:26 +0800 (CST)
+From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-hyperv@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] scsi: Fix possible buffer overflows in storvsc_queuecommand
+Date:   Tue,  8 Dec 2020 21:19:18 +0800
+Message-Id: <20201208131918.31534-1-ruc_zhangxiaohui@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: GtxpCgC3z3pYfc9fHjmbEQ--.13268S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF4xZF4rAw4fXF4xJry7ZFb_yoWDAFbE9w
+        4rKr97Wry5Arn7Xr1DGFy3ua4avr4UWr1rua12v39xArWjywsav34vqrs0vr48trWUuayD
+        A3Z5Xr1Fy3W0kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRR9mRUUUUUU==
+X-Originating-IP: [202.112.113.212]
+X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/1tbipR70MFUMbDH2ZAAAsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhang,
+From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 
-Are you using Coccinelle to detect these bugs?
+storvsc_queuecommand() calls memcpy() without checking
+the destination size may trigger a buffer overflower,
+which a local user could use to cause denial of service
+or the execution of arbitrary code.
+Fix it by putting the length check before calling memcpy().
 
-On Sat, Dec 05, 2020 at 02:32:50PM -0800, Jakub Kicinski wrote:
-> Hi!
-> 
-> Recently we've been getting a steady stream of patches from Changzhong
-> to fix missing assignment to error variables before jumping to error
-> cases.
+Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+---
+ drivers/scsi/storvsc_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I've mucked about with this a little in Smatch trying to work out some
-heuristics to use.  I added a warning for a NULL return followed by a
-goto.  Then on Friday I added a warning for a _dev_err() print followed
-by a goto.  But neither of those rules catches the bug fixed by commit
-4de377b65903 ("net: marvell: prestera: Fix error return code in
-prestera_port_create()"), where the error was invalid data.
-
-	if (idx >= size)
-		goto free_whatever;
-
-I'm going to print a warning if the function ends in a cleanup block
-that can only be reached by gotos.  We'll see how that works tomorrow.
-
-static void match_return(struct statement *stmt)
-{
-        struct sm_state *sm, *tmp;
-        sval_t sval;
-        char *name;
-        bool is_last;
-
-	// Only complain if the function returns a variable
-        if (!stmt->ret_value || stmt->ret_value->type != EXPR_SYMBOL)
-                return;
-
-	// The function returns an int
-        if (cur_func_return_type() != &int_ctype)
-                return;
-
-	// It's only reachable via a goto
-        if (get_state(my_id, "path", NULL) != &label)
-                return;
-
-	// It returns a negative error code
-        sm = get_extra_sm_state(stmt->ret_value);
-        if (!sm || !estate_rl(sm->state) ||
-            !sval_is_negative(rl_min(estate_rl(sm->state))))
-                return;
-
-        FOR_EACH_PTR(sm->possible, tmp) {
-		// There is at least one path where "ret" is zero
-                if (estate_get_single_value(tmp->state, &sval) &&
-                    sval.value == 0)
-                        goto warn;
-        } END_FOR_EACH_PTR(tmp);
-
-        return;
-warn:
-	// It's the last statement of a function
-        is_last = is_last_stmt(stmt);
-
-        name = expr_to_str(stmt->ret_value);
-        sm_warning("missing error code '%s' rl='%s' is_last=%d", name, sm->state->name, is_last);
-        free_string(name);
-}
-
-regards,
-dan carpenter
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 0c65fbd41..09b60a4c0 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1729,6 +1729,8 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
+ 
+ 	vm_srb->cdb_length = scmnd->cmd_len;
+ 
++	if (vm_srb->cdb_length > STORVSC_MAX_CMD_LEN)
++		vm_srb->cdb_length = STORVSC_MAX_CMD_LEN;
+ 	memcpy(vm_srb->cdb, scmnd->cmnd, vm_srb->cdb_length);
+ 
+ 	sgl = (struct scatterlist *)scsi_sglist(scmnd);
+-- 
+2.17.1
 
