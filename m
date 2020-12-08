@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C542D310B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D32D3068
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgLHR32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:29:28 -0500
-Received: from mail-m975.mail.163.com ([123.126.97.5]:50586 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgLHR32 (ORCPT
+        id S1730436AbgLHRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbgLHRAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:29:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=mhb1hiwoFlD+Yupftc
-        Lzct0BXhlsBvQWytCvH/Rlhcw=; b=bimc8M89VAlQpHA9a56AzhVBteAX+EE7xj
-        vEhGSHP1e9m4fDpg1H+FNEJlJ/KE/5iZBWJ6wkhfQXXVBEbHMHEyi6G5ODhbm+AO
-        fK297+qSMRgxsyoq0pXANGBAMkTEqbqBB+Tlq0kjuM1NNFu5McZMJw9LlIivtm8b
-        fqwCGmoXU=
-Received: from localhost.localdomain (unknown [202.112.113.212])
-        by smtp5 (Coremail) with SMTP id HdxpCgB3k2NtrM9fceG3EA--.2717S4;
-        Wed, 09 Dec 2020 00:40:19 +0800 (CST)
-From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        John Garry <john.garry@huawei.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] hisi_sas: Fix possible buffer overflows in prep_ssp_v3_hw
-Date:   Wed,  9 Dec 2020 00:40:11 +0800
-Message-Id: <20201208164011.13866-1-ruc_zhangxiaohui@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: HdxpCgB3k2NtrM9fceG3EA--.2717S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtF4xZF4rAw4fXF4xJry7ZFb_yoWkuFc_Gw
-        4FgrnxWr40kF4vkan3Cr43X3s0yw48Jr9Y9FnIv3y7AryjyFsFqFnrWFs8Zry7Gr43Aw18
-        G3W5XryFkF4xAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUOVyDUUUUU==
-X-Originating-IP: [202.112.113.212]
-X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/1tbiZRD0MF8ZLc7dRwABsP
+        Tue, 8 Dec 2020 12:00:16 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB74C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:59:36 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id s21so14428462pfu.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:59:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/TxV5YiOQURGPp9N72E4jbrpfGvnOvNp2x+RiNLZp0o=;
+        b=ee00sPjLZGb4/3Znq+WhjPen+uAH8pMT7MGko1Ak9g/s6NOZbkfgBXpKMT9wHxq9nN
+         cKVtyuqSPlq3QHvTG5SKhEe22LDBKelCGpiSWl1BfdFpCnXIlLQacwzEGGMYufVv86yG
+         /oBXcvlOz1DogTLD+5UssqfrRjQUMi8IxJBcDa/aa/RqDj6XFIXlT4YHm0xujKSEKTwi
+         jzK6WGAA+/F6vkhwTynqYw5+V8wG5WTZOQxDelmM5CLk3MmeXF0DBloK83nNJGai7XlG
+         OMAb4TEAzgheJ2aOrVgFo3AiseO+WmljbZgKSAcXg+z775Vgtt5/zdXdXJXsF0JjKNtM
+         b2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/TxV5YiOQURGPp9N72E4jbrpfGvnOvNp2x+RiNLZp0o=;
+        b=b+FDGwfT2lksTyZ23GZdNBx6PBjEG9nboJ2aHQi9FATKjxkcGQB1XC3cevkoySDT4g
+         +1sK6GRL9AeEI3BIh9LKXdGZcCH2Ux1uzcxbhl7h8fqEe/Wje3PGblO0rfmQc8I/Srxm
+         fKOit9qVHH2hZi8uJHR1bidw6HSGVgYB1wI83w9QlJhjzzk/zIsphiPjcXd+rkM9/tb0
+         rxX4XghygWn/gG1NHjVdDLbnAsTf9SG7Ikf6Czap1aMskfrd/X3xu+G6OSPpQxGbHwUb
+         JL6lIOPzfC+n2+chYm0IIld5jES8kFRRV/HdBaCNA1KOSb8ik9jErFI99EdX6jTU/cEU
+         bakw==
+X-Gm-Message-State: AOAM530wVvBqGW0QrB4anQBdlq6H1EpD9WgHxoelQhR41sJtR8Q9Qd3f
+        hEXI9rzfkc1rboFYYK5d9Xa/
+X-Google-Smtp-Source: ABdhPJxHzFE61aPBh+3a/ynge8AsyscNyy/LZVdpYJcTnMZTM09u/LLGnqb0xouDGy8q62WU7tjhEQ==
+X-Received: by 2002:a63:d741:: with SMTP id w1mr23187514pgi.131.1607446775584;
+        Tue, 08 Dec 2020 08:59:35 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id k15sm10597940pfh.40.2020.12.08.08.59.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Dec 2020 08:59:34 -0800 (PST)
+Date:   Tue, 8 Dec 2020 22:29:27 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
+Message-ID: <20201208165927.GE9925@work>
+References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
+ <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
+ <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
+ <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <f22eaead-fd25-8b20-7ca1-ae3f535347d4@codeaurora.org>
+ <20201206083302.GA691268@unreal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206083302.GA691268@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+On Sun, Dec 06, 2020 at 10:33:02AM +0200, Leon Romanovsky wrote:
+> On Tue, Dec 01, 2020 at 09:59:53PM -0700, Jeffrey Hugo wrote:
+> > On 12/1/2020 7:55 PM, Jakub Kicinski wrote:
+> > > On Tue, 1 Dec 2020 13:48:36 -0700 Jeffrey Hugo wrote:
+> > > > On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
+> > > > > On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
+> > > > > > On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
+> > > > > > > On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
+> > > > > > > > This patch series adds support for UCI driver. UCI driver enables userspace
+> > > > > > > > clients to communicate to external MHI devices like modem and WLAN. UCI driver
+> > > > > > > > probe creates standard character device file nodes for userspace clients to
+> > > > > > > > perform open, read, write, poll and release file operations. These file
+> > > > > > > > operations call MHI core layer APIs to perform data transfer using MHI bus
+> > > > > > > > to communicate with MHI device. Patch is tested using arm64 based platform.
+> > > > > > >
+> > > > > > > Wait, I thought this was for modems.
+> > > > > > >
 
-prep_ssp_v3_hw() calls memcpy() without checking the
-destination size may trigger a buffer overflower, which a
-local user could use to cause denial of service or the
-execution of arbitrary code.
-Fix it by putting the length check before calling memcpy().
+[...]
 
-Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
----
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Like it or not, but Jakub is absolutely right with his claim that
+> providing user-visible interfaces without any standardization is proven
+> as wrong.
+> 
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 7133ca859..2664c36d3 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -1267,7 +1267,8 @@ static void prep_ssp_v3_hw(struct hisi_hba *hisi_hba,
- 	memcpy(buf_cmd, &task->ssp_task.LUN, 8);
- 	if (!tmf) {
- 		buf_cmd[9] = ssp_task->task_attr | (ssp_task->task_prio << 3);
--		memcpy(buf_cmd + 12, scsi_cmnd->cmnd, scsi_cmnd->cmd_len);
-+		memcpy(buf_cmd + 12, scsi_cmnd->cmnd,
-+		       min_t(unsigned short, scsi_cmnd->cmd_len, strlen(buf_cmd)-12));
- 	} else {
- 		buf_cmd[10] = tmf->tmf;
- 		switch (tmf->tmf) {
--- 
-2.17.1
+Everybody agrees with standardizing things but the problem is, the
+standardization will only happen when more than one person implements the
+same functionality.
 
+The primary discussion is around the usage of chardev nodes for WLAN but
+we made it clear that WLAN doesn't need this chardev node for working at
+all. I agree that the commit message is a bit misleading and I hope that
+Hemant will fix it in next revision.
+
+Thanks,
+Mani
+
+> Thanks
+> 
+> >
+> > --
+> > Jeffrey Hugo
+> > Qualcomm Technologies, Inc. is a member of the
+> > Code Aurora Forum, a Linux Foundation Collaborative Project.
