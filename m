@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5AE2D2E4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814022D2E55
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730124AbgLHPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:31:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S1730132AbgLHPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730115AbgLHPbc (ORCPT
+        with ESMTP id S1729471AbgLHPdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:31:32 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BCAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:30:51 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id ce23so21381050ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:30:51 -0800 (PST)
+        Tue, 8 Dec 2020 10:33:18 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4B2C0613D6;
+        Tue,  8 Dec 2020 07:32:32 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id n142so6085777qkn.2;
+        Tue, 08 Dec 2020 07:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bJHsD7wusQYPoSnayseCrxu6qN7hzp3QYIwsAak7I3I=;
-        b=bzJj91XMnvArriI3I1poli3kf9PSZjAHzPXbnwtMGmfHPoHARHfic9GH5/nSP6a21N
-         FE0e4E4o14IYYLgzGDOeUGxAr/H4n4rNvp9l/rNuOt1nqkLKOuG5qrvmRI6NMhIbSeOv
-         6Qhl7o2zrzyqqfkYQradnD/t6hU2VHaH02kjrhx72k2A6iqJKoNGyEfKBadcd+R0DXJc
-         d30xQrl/deFB438A12OgexfIqN7N9gGP1kVJIHUmkGsd+YEZPQ36W+9euOBd9SF5EDHQ
-         JC8PWXJM5LKf811U4haUANBlLXhAs20BYsEj3TnU29+72zG96PGpBCPc/My0MJaUdesw
-         JMZg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NSzebNPhajLq432NNakK3AqX4FUCpmwsnxgH+v2U6H4=;
+        b=rD85Gnws16zwR8LBE4ytRyXYYmkCOueu1ojR3EYl+JabsiBCgv8ReifyyQadQFkIfM
+         owwkVIfGutlr03Pvee4vMEdppIHtrtIsBDGjGUewuMacTDXZHU3heSWNuq6hSC1OE4iV
+         IW1CBXkmzBGLHrVe+leYaB+YOwV/qFLoKbwNmoKu8VzD+WClbkOQpUiXPYs4Nnf/jfVS
+         sF0PCvi4A741IQpuErhcugSPly8Sau50i5yWB+W2DnQtyE2BunhDI+HlObdlRoOv64Vp
+         VJQE4javnkKBEUGQklf9mMxBASkTqO6o8QBJz2/FZPSyMON4Lfn2lEnkj4A/NVX7sjN9
+         phqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bJHsD7wusQYPoSnayseCrxu6qN7hzp3QYIwsAak7I3I=;
-        b=cY3Zd6aLgkQrZCPO1/LfC9rrN1xAy6sdGPAXjalU4GoIjaxakB3Q/4+f2bpVzv3W3g
-         3Ah6aEmr5O+MMJpP01gAvbn6GLtEKB2aaGUc+eKNTslSUaQGHVhUErSJuCaXVYwI62H+
-         oDeKX9p8KDLn4mCUitOthFT6CVcA6p3pkzvIdYlkhGLokdOxN4ppRXhE+aq4u4dSVbH7
-         WSLTwYMvfsezoW/c2Hb3ZCK4Yper0yfPtEzLhuk32yV15wW1NDSIh++szAyxlQsIbRol
-         4i4WPs0f5ttfh69BmnMZ8zTtJ960nmb19+WOAKkvLCUBOXvYJu8T9b/13qy/tuObY0Ki
-         94NA==
-X-Gm-Message-State: AOAM5302mKQ19jZlaagThfvGXb3pPheJkIv3pEMDUONHypKQKeKB71Ib
-        UBEenpcYP939zr/eKq9nANxnjw==
-X-Google-Smtp-Source: ABdhPJyEdIVR5McQZGlRUMGSoMxBnErGu7+TVm5gy13H7lFhayHXkqsjZ4vtCsP1Q4frlXzHhOsLHQ==
-X-Received: by 2002:a17:906:7aca:: with SMTP id k10mr23128906ejo.215.1607441450423;
-        Tue, 08 Dec 2020 07:30:50 -0800 (PST)
-Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b])
-        by smtp.gmail.com with ESMTPSA id z9sm16233427eju.123.2020.12.08.07.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 07:30:49 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amitk@kernel.org
-Subject: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
-Date:   Tue,  8 Dec 2020 16:30:43 +0100
-Message-Id: <20201208153046.297456-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NSzebNPhajLq432NNakK3AqX4FUCpmwsnxgH+v2U6H4=;
+        b=Vr5N39vfY5L6DJR9uMr9cat2xzuANSaAr6S9OMNHb2RtUaY3ZDijFqjBahpAzTxZnh
+         iGxDGBX7j6aRaEQs+3D7ShTKlmVt1JNTkR1SR1juo6VDZk442NpKlZxF8WNAgOGofM0R
+         NMO4ju/KuA30AlnbaKx12RrFqWchP5nlNZAPkquH0dsMtxOrEEy5YMqGTV/RZV3v/27R
+         Fb+XbSJT1MBs/vKm2s3VKl/IRewxAlTskNZsnYnQIusOAXowY2YpP32nQaP4uJGs+XYs
+         kdzUWgMhZnypfZBWY7OtlI1HEowhePEdGQ+5uLPplHAB+Ei/E1hQ63019Et3gOgOmWs6
+         P9QA==
+X-Gm-Message-State: AOAM533Ckhn1EDiUrWS5dBKeKNBwA/YSwJQTA/IVQ6L0OWtTtL3atGpb
+        o3kJx19lvvrfDJN1IZYiuhM=
+X-Google-Smtp-Source: ABdhPJycDXNDYNb34PZoZAjb+h10MHtfLAjdMtdyK4fk9jbtN12d8/thyy4A6Q4Htc9tzHzBBgXeTQ==
+X-Received: by 2002:a37:8485:: with SMTP id g127mr8321683qkd.233.1607441551543;
+        Tue, 08 Dec 2020 07:32:31 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d2sm5993826qtp.71.2020.12.08.07.32.30
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:32:30 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 48A3027C0060;
+        Tue,  8 Dec 2020 10:32:29 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 08 Dec 2020 10:32:29 -0500
+X-ME-Sender: <xms:ipzPXxpm6i5Zb8EIfBNNULO7NLbkasMxVFG7uNgZB_59hoPmoEZIrQ>
+    <xme:ipzPXzrxdoW-TDNlSKIhPzwUeSL4Zb5HikjQYQD0TJBZDBlrFJ1P41q6wYEX2pq_A
+    u2eFaw7dXAO6OCRPw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgjeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:i5zPX-MpN1WwQTdwk9sMceBSfmHam309gNBlMH9UqmhB9iKBRQcklg>
+    <xmx:i5zPX84zRpSR4FvL5twIkf76WGvHGUUHCPzqHj8Jl-BgJU2TQZMd_Q>
+    <xmx:i5zPXw7nmtYEjttmlPWyZ3wL59wrA3jPWMvqDWcCyNUptjComaAMXQ>
+    <xmx:jZzPXwiGFk6WtUM5IDtzG0Q4SUu7TjouQ7MSfbwjVGfWYdDJi7_ENp_jWyE>
+Received: from localhost (unknown [131.107.147.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AD8441080067;
+        Tue,  8 Dec 2020 10:32:26 -0500 (EST)
+Date:   Tue, 8 Dec 2020 23:31:11 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC lockdep 4/4] lockdep/selftest: Add wait context selftests
+Message-ID: <20201208153111.GJ3025@boqun-archlinux>
+References: <20201208103112.2838119-1-boqun.feng@gmail.com>
+ <20201208103112.2838119-5-boqun.feng@gmail.com>
+ <20201208143324.GB2414@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208143324.GB2414@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The passive file in sysfs forces the usage of a passive trip point set
-by the userspace when a broken BIOS does not provide the mitigation
-temperature for such thermal zone. The hardware evolved a lot since
-2008 as a good thermal management is no longer an option.
+On Tue, Dec 08, 2020 at 03:33:24PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 08, 2020 at 06:31:12PM +0800, Boqun Feng wrote:
+> > These tests are added for two purposes:
+> > 
+> > *	Test the implementation of wait context checks and related
+> > 	annotations.
+> > 
+> > *	Semi-document the rules for wait context nesting when
+> > 	PROVE_RAW_LOCK_NESTING=y.
+> 
+> Documentation/locking/locktypes.rst should have that.
+> 
 
-Linux on the other side also provides now a way to load fixed ACPI
-table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
-could be added there.
+Thanks for the pointer!
 
-Set the option obsolete and plan to remove it, so the corresponding
-code can be removed from the core code and allow more cleanups the
-thermal framework deserves.
+I miss it before, and it's really a comprehensive document for lock
+nesting rules. Still I think more rules can be (and should be) put in
+that document: a broader idea is the context nesting rule (e.g. whether
+a spinlock_t is allowed in a hard irq handler). And the document
+reminders me that I'm missing some locks (e.g local_lock) in the test
+cases. So will improve both the document and the test cases in the next
+version. In the meanwhile, feel free to point out any mistake or
+misunderstanding of mine in the rules or the tests, I'm really still
+learning through these locks with PREEMPT_RT into consideration, thanks!
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- Documentation/ABI/obsolete/sysfs-thermal-passive | 13 +++++++++++++
- drivers/thermal/thermal_sysfs.c                  |  2 ++
- 2 files changed, 15 insertions(+)
- create mode 100644 Documentation/ABI/obsolete/sysfs-thermal-passive
+Regards,
+Boqun
 
-diff --git a/Documentation/ABI/obsolete/sysfs-thermal-passive b/Documentation/ABI/obsolete/sysfs-thermal-passive
-new file mode 100644
-index 000000000000..2510724cc165
---- /dev/null
-+++ b/Documentation/ABI/obsolete/sysfs-thermal-passive
-@@ -0,0 +1,13 @@
-+What:		/sys/class/thermal/thermal_zone*/passive
-+Date:		December 2008
-+KernelVersion:	2.6.28
-+Contact:	Daniel Lezcano <daniel.lezcano@linaro.org>
-+Description:
-+
-+  The passive file in sysfs forces the usage of a passive trip point
-+  set by the userspace when a broken BIOS does not provide the
-+  mitigation temperature for such thermal zone. However, the Linux
-+  kernel evolved a lot since 2008 as well as the hardware and it is
-+  able to manage correctly the thermal envelope. It does also provide
-+  a way to load fixed ACPI table via the option ACPI_TABLE_UPGRADE, so
-+  additionnal trip point could be added there.
-diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-index 0866e949339b..578099b520b1 100644
---- a/drivers/thermal/thermal_sysfs.c
-+++ b/drivers/thermal/thermal_sysfs.c
-@@ -232,6 +232,8 @@ passive_store(struct device *dev, struct device_attribute *attr,
- 	if (state && state < 1000)
- 		return -EINVAL;
- 
-+	pr_warn("%s: Consider the 'passive' option obsolete\n", tz->type);
-+
- 	if (state && !tz->forced_passive) {
- 		if (!tz->passive_delay)
- 			tz->passive_delay = 1000;
--- 
-2.25.1
-
+> > The test cases are only avaible for PROVE_RAW_LOCK_NESTING=y, as wait
+> > context checking makes more sense for that configuration.
+> 
+> Looks about right ;-)
