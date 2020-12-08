@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0615E2D2259
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9422D225C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbgLHExu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:53:50 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:40304 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727193AbgLHExu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:53:50 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84ocIt134327;
-        Tue, 8 Dec 2020 04:53:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=q6vcNK7EUL0+jkb9MM0W0hXlcVsoj2SoAzgXmE5ZB+w=;
- b=CPBtcTTG8Tp+bPm/QCYxn2FGCTxA5mp6XZIS72vQfJJ6EJZyWivM3pKsaWprA0ZYhaJp
- 3+dVHOWOS4mMgIRF67k3Z0hn47esJOYRkvKZ17guhSOV7a7HyOJEbblIaKNBvDLVML89
- SZgSmkKpmSVT8foU1Ie+DDcFyYdlLy86fNuGECW7LL2K+5afDeE49+4F14N2I+NwVEwY
- AQf/2DfJ3/wsHrzlL3DHKJOdL1SVKD1pmkZKYHUDZOrHv071Ks0kFC9RTXjszr8BiQbp
- CybV/Z8PtHtKvQTW4u+6hC4yv9jEw9mcfMeJpRA/nKTG71pt5gqxj0f/8R7Vq6k42KRG 8w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3581mqrrqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 04:53:03 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84ngKV145396;
-        Tue, 8 Dec 2020 04:53:03 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 358m4x76fh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 04:53:02 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B84r18O016177;
-        Tue, 8 Dec 2020 04:53:01 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Dec 2020 20:53:01 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Colin King <colin.king@canonical.com>, linux-scsi@vger.kernel.org,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: pm8001: remove space in a debug message
-Date:   Mon,  7 Dec 2020 23:52:57 -0500
-Message-Id: <160740315201.1143.13169163294791547714.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201124093828.307709-1-colin.king@canonical.com>
-References: <20201124093828.307709-1-colin.king@canonical.com>
+        id S1727473AbgLHExw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:53:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727451AbgLHExw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 23:53:52 -0500
+From:   Vinod Koul <vkoul@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        =?UTF-8?q?=E6=BC=86=E9=B9=8F=E6=8C=AF=20=28Qi=20Pengzhen=29?= 
+        <aric.pzqi@ingenic.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>, kernel test robot <lkp@intel.com>
+Subject: [PATCH] phy: ingenic: depend on HAS_IOMEM
+Date:   Tue,  8 Dec 2020 10:23:00 +0530
+Message-Id: <20201208045300.3637026-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020 09:38:28 +0000, Colin King wrote:
+The driver uses devm_ioremap_resource() which will not be built if
+CONFIG_HAS_IOMEM is not selected, so add depends on it to fix the build
+failure on few archs
 
-> There are two words that need separating with a space in a
-> pm8001_dbg message. Fix it.
+s390-linux-ld: drivers/phy/ingenic/phy-ingenic-usb.o: in function `ingenic_usb_phy_probe':
+>> phy-ingenic-usb.c:(.text+0xb66): undefined reference to `devm_platform_ioremap_resource'
 
-Applied to 5.11/scsi-queue, thanks!
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/phy/ingenic/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1/1] scsi: pm8001: remove space in a debug message
-      https://git.kernel.org/mkp/scsi/c/c6131854e28a
-
+diff --git a/drivers/phy/ingenic/Kconfig b/drivers/phy/ingenic/Kconfig
+index 912b14e512cb..f23cc109324b 100644
+--- a/drivers/phy/ingenic/Kconfig
++++ b/drivers/phy/ingenic/Kconfig
+@@ -6,6 +6,7 @@ config PHY_INGENIC_USB
+ 	tristate "Ingenic SoCs USB PHY Driver"
+ 	depends on MIPS || COMPILE_TEST
+ 	depends on USB_SUPPORT
++	depends on HAS_IOMEM
+ 	select GENERIC_PHY
+ 	help
+ 	  This driver provides USB PHY support for the USB controller found
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.26.2
+
