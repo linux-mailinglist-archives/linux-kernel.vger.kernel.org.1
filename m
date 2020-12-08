@@ -2,90 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9532D36E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6AB2D36D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731740AbgLHXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:23:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46869 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731731AbgLHXXS (ORCPT
+        id S1731659AbgLHXWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:22:24 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43030 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLHXWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:23:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607469712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GqTl8ne3MpfBFToDfCcb9stsXmHRL3JBm8iFVeCCNHU=;
-        b=EGdioaUg1e8jHGLaHNXi5jDE6VaweZLjtuCZ8MdqXs40lmR4ZaO9Qtr94C5cHD2daeF85P
-        64KPH7u582srp/kiUultwbwbZy7jjmHot4rLY38sxTgGkW08o951W8YBf1ocSBayKc7TXY
-        g4r2hsQy1lHtqz0JwI5SdcHE/xrOc4g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-9cVGwTtHOa2d_LPq51-9Nw-1; Tue, 08 Dec 2020 18:21:50 -0500
-X-MC-Unique: 9cVGwTtHOa2d_LPq51-9Nw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0E4ECC657;
-        Tue,  8 Dec 2020 23:21:46 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 632431042AA6;
-        Tue,  8 Dec 2020 23:21:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <e6d9fd7e-ea43-25a6-9f1e-16a605de0f2d@infradead.org>
-References: <e6d9fd7e-ea43-25a6-9f1e-16a605de0f2d@infradead.org> <1c752ffe-8118-f9ea-e928-d92783a5c516@infradead.org> <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org> <0000000000002a530d05b400349b@google.com> <928043.1607416561@warthog.procyon.org.uk> <1030308.1607468099@warthog.procyon.org.uk>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     dhowells@redhat.com,
-        syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: memory leak in generic_parse_monolithic [+PATCH]
+        Tue, 8 Dec 2020 18:22:24 -0500
+Received: by mail-ot1-f67.google.com with SMTP id q25so403283otn.10;
+        Tue, 08 Dec 2020 15:22:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eMniSFV4+130ZIEZpjALAeT/RpGcoF1J+lgVhHbcJ28=;
+        b=tpkCaRC88OUGp2Fh8pCwWtRn39rYzWqbcgWof+JPUvg5wE6a5gB22G9z6LeTH/yOMK
+         Rj4qtFm5Dg8sBzR+dqlthB4W+bke8qFd/McQC6tcgl5lIy1bx4EhJRWkdeHOXyT7rRtD
+         4c8glQmdBVQ79yqrJhlBR12i0hTS78lwnM0nNALCK2NccHv1+gofQZbMA9nsQOXjkRiN
+         Fpgwp9tq+SnuLVk32w+CP6H+ZTn02PbDBTMsa2uKd7eonrK2Ft3m+CE5SS/DaRAIQGwR
+         taUr8MIaQlt+pKh8XRf/MXaJ4z1jrAfJM32AlFBN9PwTSzLM7aC4mV59Tl9JCDb6a/Mq
+         tOgw==
+X-Gm-Message-State: AOAM530NXnm5SQvwjTjZSIbqHNY5xIRv107x7sEUkUeaAS0j/6FuI09P
+        6LBq8rFwJSnIAKHOe8O1ZQ==
+X-Google-Smtp-Source: ABdhPJyaxdlSzuLG5UOTM6JMcax7tOhiEjrsX/dso/hyIBUnZNj6th3HeOaiCH4QiM8P2Vpy0BckUg==
+X-Received: by 2002:a9d:7e8c:: with SMTP id m12mr427098otp.38.1607469703203;
+        Tue, 08 Dec 2020 15:21:43 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p4sm67432oib.24.2020.12.08.15.21.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 15:21:42 -0800 (PST)
+Received: (nullmailer pid 3303386 invoked by uid 1000);
+        Tue, 08 Dec 2020 23:21:41 -0000
+Date:   Tue, 8 Dec 2020 17:21:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, bp@suse.de, anup@brainfault.org,
+        Jonathan.Cameron@huawei.com, wsa@kernel.org, sam@ravnborg.org,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, sagar.kadam@sifive.com,
+        sachin.ghadi@sifive.com
+Subject: Re: [PATCH v2 1/2] RISC-V: Update l2 cache DT documentation to add
+ support for SiFive FU740
+Message-ID: <20201208232141.GA3292265@robh.at.kernel.org>
+References: <1606714984-16593-1-git-send-email-yash.shah@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1093803.1607469696.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 08 Dec 2020 23:21:36 +0000
-Message-ID: <1093804.1607469696@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606714984-16593-1-git-send-email-yash.shah@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Mon, Nov 30, 2020 at 11:13:03AM +0530, Yash Shah wrote:
+> The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
+> compared to 3 in FU540. Update the DT documentation accordingly with
+> "compatible" and "interrupt" property changes.
 
-> Here's the syzbot reproducer:
-> https://syzkaller.appspot.com/x/repro.c?x=3D129ca3d6500000
-> =
+'dt-bindings: riscv: ...' for the subject.
 
-> The "interesting" mount params are:
-> 	source=3D%^]$[+%](${:\017k[)-:,source=3D%^]$[+.](%{:\017\200[)-:,\000
-> =
+> 
+> Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> ---
+> Changes in v2:
+> - Changes as per Rob Herring's request on v1
+> ---
+>  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 35 ++++++++++++++++++++--
+>  1 file changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> index efc0198..749265c 100644
+> --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> @@ -27,6 +27,7 @@ select:
+>        items:
+>          - enum:
+>              - sifive,fu540-c000-ccache
+> +            - sifive,fu740-c000-ccache
+>  
+>    required:
+>      - compatible
+> @@ -34,7 +35,9 @@ select:
+>  properties:
+>    compatible:
+>      items:
+> -      - const: sifive,fu540-c000-ccache
+> +      - enum:
+> +          - sifive,fu540-c000-ccache
+> +          - sifive,fu740-c000-ccache
+>        - const: cache
+>  
+>    cache-block-size:
+> @@ -53,9 +56,15 @@ properties:
+>  
+>    interrupts:
+>      description: |
+> -      Must contain entries for DirError, DataError and DataFail signals.
+> +      Must contain 3 entries for FU540 (DirError, DataError and DataFail) or 4
+> +      entries for other chips (DirError, DirFail, DataError, DataFail signals)
 
-> There is no other AFS activity: nothing mounted, no cells known (or
-> whatever that is), etc.
-> =
+While below is wrong, don't give descriptions that just repeat what the 
+schema says.
 
-> I don't recall if the mount was successful and I can't test it just now.
-> My laptop is mucked up.
-> =
+>      minItems: 3
+> -    maxItems: 3
+> +    maxItems: 4
+> +    items:
+> +      - description: DirError interrupt
+> +      - description: DirFail interrupt
+> +      - description: DataError interrupt
+> +      - description: DataFail interrupt
 
-> =
+This says DataFail is optional.
 
-> Be aware that this report could just be a false positive: it waits
-> for 5 seconds then looks for a memleak. AFAIK, it's possible that the "l=
-eaked"
-> memory is still in valid use and will be freed some day.
-
-Bah.  Multiple source=3D parameters.  I don't reject the second one, but j=
-ust
-overwrite fc->source.
-
-David
-
+>  
+>    reg:
+>      maxItems: 1
+> @@ -67,6 +76,26 @@ properties:
+>        The reference to the reserved-memory for the L2 Loosely Integrated Memory region.
+>        The reserved memory node should be defined as per the bindings in reserved-memory.txt.
+>  
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: sifive,fu540-c000-ccache
+> +
+> +then:
+> +  properties:
+> +    interrupts:
+> +      description: |
+> +        Must contain entries for DirError, DataError and DataFail signals.
+> +      maxItems: 3
+> +
+> +else:
+> +  properties:
+> +    interrupts:
+> +      description: |
+> +        Must contain entries for DirError, DirFail, DataError, DataFail signals.
+> +      minItems: 4
+> +
+>  additionalProperties: false
+>  
+>  required:
+> -- 
+> 2.7.4
+> 
