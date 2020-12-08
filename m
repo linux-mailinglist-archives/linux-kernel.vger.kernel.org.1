@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530622D27C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC1C2D27C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbgLHJfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:35:01 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:47375 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727482AbgLHJfA (ORCPT
+        id S1728905AbgLHJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:35:08 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:47020 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727482AbgLHJfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:35:00 -0500
-Received: from orion.localdomain ([95.117.39.192]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MDhQt-1ktUBK0RVv-00AoTj; Tue, 08 Dec 2020 10:32:09 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     duncan.sands@free.fr, accessrunner-general@lists.sourceforge.net,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 3/3] drivers: usb: atm: use pr_err() and pr_warn() instead of raw printk()
-Date:   Tue,  8 Dec 2020 10:32:06 +0100
-Message-Id: <20201208093206.24780-3-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201208093206.24780-1-info@metux.net>
-References: <20201208093206.24780-1-info@metux.net>
-X-Provags-ID: V03:K1:MmyerTd2PpR2Z6zqetbr9VnuqB7jfj2Aq2+ftbj5b6kC3eQIVeu
- 7d26a0rA1zLDCHdQ3SGbT88WgDRZvu8MNw8D4CNpu7T7B0LEdbP4z/dbCBXTy1fLT/gxSOv
- O3f5+OHRIJVEf4NZvbICGJA+BJmlBZ+tYbYWBxSX8BZE6DEyrQNV6xF7kEIkV0stP9uD4rt
- zzybvbZ4M8ZnlzmZjSZPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GAEp16o9VWk=:EfpMJ1HqMj/DZqe+yxrE/+
- 6I72SeZLrLcSS0oY4uzrv452BWQiEGw7ozIebcsKaQ0Dq23ryGUEC4wSrKrogFDbkMWrXaf2f
- VeFqQlHZ3JsTMaRk9mdS26f4F6fCNNXOIt91NzvNWOJr2ftnK+mgasM4qLeVdS3vNKjL0zPdT
- V5g65FpTxJT4W9dKv51TrtmZrGIxC1+xnwsjvG+tV2sIgV7+mHXIjnUi9S6T/dGar1VeHQQs2
- n5BdpKBHADOLf5Wti2eKjka4wf6ONmAJdVSdYxyHiQUtgMv/73pbqcci9ohTeIa7pIeeSfb7r
- cztuk9qGu0Aq6+Pr1vctxKmZ41gBHk4rAOPFFkL7iREvkbPIp5d0gAopnEBJapw/lxz3WzG76
- 1ycO45OeG94LrOKz2MEr5zpWD/ZTzpGmc/oA2VhSkOGaLBd5AVa92PW3YPaA5
+        Tue, 8 Dec 2020 04:35:07 -0500
+Received: by mail-lj1-f196.google.com with SMTP id f24so18311081ljk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:34:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n46FeDvrQgslntB/QvyVhRFq+v4FH13erjugPCMtV1w=;
+        b=fXx4Y53DkBhBO0xIwVRAmR32ASJocd0agEanjnHZ1OO9DjlIrjr1xGPHnM0WVoODYk
+         pfcaLP1Qhe7rDeG+t1uibXANFb/QQH/H637Yoa+TtA+zv+oY/TYlGd04dAlYVFlNiuwm
+         ANU1r0EQovXQUvubU5ymsZv1w4LR9foMY4rmGW9IZ9WNFzBvGPR67SGPAr4jSOUOaJBx
+         M1u1gNCrCE0S7bkAd4N6XHr9BoPu+5VYq3Gs4SmsLoecFyqcEHIgoNVQRqGEDc0t1IXm
+         s6bB8basSbLZRWT3nHi1XHp1qHg9znlrI2PH2VtmKZX11zmgAYiu/MrV8BQeBqS6tJbl
+         Cllg==
+X-Gm-Message-State: AOAM531VAsFpDctXuJ7cbqpFxBOE0ELPB7+CNQBfwOcMHZm9/oQvFmr+
+        iHyS55yRyoTju/+Og9oz774=
+X-Google-Smtp-Source: ABdhPJy02FhKhfSnq0GfVhtpL9g3uz6VqfvBEbr919u7Jtx3QetFzJxS0YPPKSyOlaXDZZGUZhCqMA==
+X-Received: by 2002:a2e:7119:: with SMTP id m25mr679541ljc.229.1607420065262;
+        Tue, 08 Dec 2020 01:34:25 -0800 (PST)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id g69sm739199lfd.161.2020.12.08.01.34.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 01:34:24 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kmZOg-0002UD-GE; Tue, 08 Dec 2020 10:35:02 +0100
+Date:   Tue, 8 Dec 2020 10:35:02 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     johan@kernel.org, vaibhav.sr@gmail.com, elder@kernel.org,
+        gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
+        aibhav.sr@gmail.com, greybus-dev@lists.linaro.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: audio: Fix possible leak free widgets
+ in gbaudio_dapm_free_controls
+Message-ID: <X89IxvbYWjuyaQDT@localhost>
+References: <20201205103827.31244-1-wanghai38@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205103827.31244-1-wanghai38@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we have the nice helpers pr_err() and pr_warn(), use them instead
-of raw printk().
+On Sat, Dec 05, 2020 at 06:38:27PM +0800, Wang Hai wrote:
+> In gbaudio_dapm_free_controls(), if one of the widgets is not found, an error
+> will be returned directly, which will cause the rest to be unable to be freed,
+> resulting in leak.
+> 
+> This patch fixes the bug. If if one of them is not found, just skip and free the others.
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- drivers/usb/atm/usbatm.c  | 2 +-
- drivers/usb/atm/xusbatm.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Apart from the typo, please break your lines at 72 columns or so (not
+needed for the Fixes tag).
 
-diff --git a/drivers/usb/atm/usbatm.c b/drivers/usb/atm/usbatm.c
-index 56fe30d247da..1c90aa273a41 100644
---- a/drivers/usb/atm/usbatm.c
-+++ b/drivers/usb/atm/usbatm.c
-@@ -1278,7 +1278,7 @@ EXPORT_SYMBOL_GPL(usbatm_usb_disconnect);
- static int __init usbatm_usb_init(void)
- {
- 	if (sizeof(struct usbatm_control) > sizeof_field(struct sk_buff, cb)) {
--		printk(KERN_ERR "%s unusable with this kernel!\n", usbatm_driver_name);
-+		pr_err("%s unusable with this kernel!\n", usbatm_driver_name);
- 		return -EIO;
- 	}
- 
-diff --git a/drivers/usb/atm/xusbatm.c b/drivers/usb/atm/xusbatm.c
-index ffc9810070a3..0befbf63d1cc 100644
---- a/drivers/usb/atm/xusbatm.c
-+++ b/drivers/usb/atm/xusbatm.c
-@@ -179,7 +179,7 @@ static int __init xusbatm_init(void)
- 	    num_vendor != num_product ||
- 	    num_vendor != num_rx_endpoint ||
- 	    num_vendor != num_tx_endpoint) {
--		printk(KERN_WARNING "xusbatm: malformed module parameters\n");
-+		pr_warn("xusbatm: malformed module parameters\n");
- 		return -EINVAL;
- 	}
- 
--- 
-2.11.0
+> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+>  drivers/staging/greybus/audio_helper.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+> index 237531ba60f3..3011b8abce38 100644
+> --- a/drivers/staging/greybus/audio_helper.c
+> +++ b/drivers/staging/greybus/audio_helper.c
+> @@ -135,7 +135,8 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
+>  		if (!w) {
+>  			dev_err(dapm->dev, "%s: widget not found\n",
+>  				widget->name);
+> -			return -EINVAL;
+> +			widget++;
+> +			continue;
+>  		}
+>  		widget++;
+>  #ifdef CONFIG_DEBUG_FS
 
+Not sure if we can ever have the widget lookup fail, but at least this
+looks consistent now.
+
+Reviewed-by: Johan Hovold <johan@kernel.org>
+
+Johan
