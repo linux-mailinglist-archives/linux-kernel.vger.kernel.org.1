@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A522D29E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4062D29F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgLHLlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:41:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:47738 "EHLO foss.arm.com"
+        id S1729092AbgLHLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:49:41 -0500
+Received: from mga06.intel.com ([134.134.136.31]:5209 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729078AbgLHLlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:41:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A201FB;
-        Tue,  8 Dec 2020 03:40:30 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBDF03F68F;
-        Tue,  8 Dec 2020 03:40:28 -0800 (PST)
-Date:   Tue, 8 Dec 2020 11:40:23 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org, svarbanov@mm-sol.com,
-        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org,
-        truong@codeaurora.org
-Subject: Re: [PATCH v5 0/5] Add PCIe support for SM8250 SoC
-Message-ID: <20201208114023.GA31860@e121166-lin.cambridge.arm.com>
-References: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
- <20201208094712.GA30430@e121166-lin.cambridge.arm.com>
- <20201208104557.GA8081@work>
+        id S1725803AbgLHLtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 06:49:41 -0500
+IronPort-SDR: uS9jtQB7A+2vxALhk799l2dRyzyCyhgZwM1XCdjszVPqO3KUdZP2QuIzSHez+y4osDa1IEsl4/
+ lz5TUqlZngfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="235474374"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="235474374"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 03:48:05 -0800
+IronPort-SDR: +mYAsGNwLPzSACc9S8+36/64d/OoImY/y1/fHBX6dA6McsnXEeAXnCQkDcHxOw34xTe6V8DnCD
+ 34BlhhgZ3X4Q==
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="363605727"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 03:48:02 -0800
+Received: by lahna (sSMTP sendmail emulation); Tue, 08 Dec 2020 13:47:59 +0200
+Date:   Tue, 8 Dec 2020 13:47:59 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: Re: linux-next: manual merge of the drm tree with the pci tree
+Message-ID: <20201208114759.GA5246@lahna.fi.intel.com>
+References: <20201208132632.7c3a6a41@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201208104557.GA8081@work>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201208132632.7c3a6a41@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 04:15:57PM +0530, Manivannan Sadhasivam wrote:
-> Hi Lorenzo,
-> 
-> On Tue, Dec 08, 2020 at 09:47:12AM +0000, Lorenzo Pieralisi wrote:
-> > On Tue, Oct 27, 2020 at 10:30:28PM +0530, Manivannan Sadhasivam wrote:
-> > > Hello,
-> > > 
-> > > This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
-> > > There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
-> > > controller and PHYs are mostly comaptible with the ones found on SDM845
-> > > SoC, hence the old drivers are modified to add the support.
-> > > 
-> > > This series has been tested on RB5 board with QCA6391 chipset connected
-> > > onboard.
-> > 
-> > Hi,
-> > 
-> > I would be merging this series, I understand patch {2) was already
-> > taken by Vinod - should I take {1,3,4,5} via the pci tree ?
-> > 
-> 
-> Vinod merged patches 1/5 and 2/5 as they belong to phy subsystem. You
-> can take the rest of the patches via pci tree.
+Hi,
 
-Would you mind rebasing them on top of my pci/dwc branch (with Bjorn's
-tags) and resend them, I will apply them then.
+On Tue, Dec 08, 2020 at 01:27:54PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the drm tree got a conflict in:
+> 
+>   drivers/gpu/vga/vga_switcheroo.c
+> 
+> between commit:
+> 
+>   99efde6c9bb7 ("PCI/PM: Rename pci_wakeup_bus() to pci_resume_bus()")
+> 
+> from the pci tree and commit:
+> 
+>   9572e6693cd7 ("vga_switcheroo: simplify the return expression of vga_switcheroo_runtime_resume")
+> 
+> from the drm tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Thanks,
-Lorenzo
+Thanks for the fix Stephen! Looks correct to me.
