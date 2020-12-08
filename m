@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C072D2F52
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78A42D2F77
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgLHQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:20:20 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42592 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728124AbgLHQUU (ORCPT
+        id S1730335AbgLHQZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:25:31 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57399 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729035AbgLHQZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:20:20 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8GISHL022626;
-        Tue, 8 Dec 2020 10:18:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607444308;
-        bh=f+1zQWX3bzrQvGic9sYZTm9ErEECcOnG3+Kc4bYcx7s=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=O1gySBPJsMVlXOyUd02v0rhD/X5a1ECQ6iqza/EzlFKZxgxRqrNWLc3DmzZEcI+sx
-         mAAe0JWo/bF9nv76rfnMfO4nm3sT1Sxtu1IdzuvQ+7w4g2DduCkK8UYKp/J/8aPdoV
-         Ia3YNkA7WivmCqXNzEV28RBlT1Wo4KYPDr5HiX9Y=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8GIS5K070027
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Dec 2020 10:18:28 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
- 2020 10:18:28 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Dec 2020 10:18:28 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8GIMO3054655;
-        Tue, 8 Dec 2020 10:18:22 -0600
-Subject: Re: [RFC PATCH] RFC: drivers: gpio: helper for generic pin IRQ
- handling
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        <joyce.ooi@intel.com>, Andrew Jeffery <andrew@aj.id.au>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>, <orsonzhai@gmail.com>,
-        <baolin.wang7@gmail.com>, <zhang.lyra@gmail.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
-References: <20201208141429.8836-1-info@metux.net>
- <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
- <CAHp75VfOjb4Rfo9yPmwEYUDbaPXNjfGs6goM27ZnLdAMtiU+jA@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <0c16ab33-f87f-b32d-53d0-a44a5fecd6dc@ti.com>
-Date:   Tue, 8 Dec 2020 18:18:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 11:25:30 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-155-cj57Z_jXNN6MUS3aCidSWg-1; Tue, 08 Dec 2020 16:23:51 +0000
+X-MC-Unique: cj57Z_jXNN6MUS3aCidSWg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 8 Dec 2020 16:23:50 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 8 Dec 2020 16:23:50 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Waiman Long' <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Christopher Yeoh" <cyeoh@au1.ibm.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        "Sargun Dhillon" <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: RE: [PATCH 2/3] rwsem: Implement down_read_interruptible
+Thread-Topic: [PATCH 2/3] rwsem: Implement down_read_interruptible
+Thread-Index: AQHWzK7TgKb+NsLWq0OuVEyoMuW4SKnr2Z6AgAAkBICAAOuiYIAAbJiAgAAJxfA=
+Date:   Tue, 8 Dec 2020 16:23:50 +0000
+Message-ID: <1be90b66dfe84a4c8a1e65bd40692c57@AcuMS.aculab.com>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87k0tybqfy.fsf@x220.int.ebiederm.org>
+ <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+ <20201207090243.GE3040@hirez.programming.kicks-ass.net>
+ <7be81903-14e3-7485-83e7-02e65e80e8c3@redhat.com>
+ <c781c59872e742c2b64f1aa70c30d7e2@AcuMS.aculab.com>
+ <aef54faf-cead-403c-6088-ff52ce1a5dde@redhat.com>
+ <71db845efc7d44b5a7d23b0e55b3a496@AcuMS.aculab.com>
+ <edfd0eb8-192e-60be-f0ca-2a72a26caa07@redhat.com>
+In-Reply-To: <edfd0eb8-192e-60be-f0ca-2a72a26caa07@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfOjb4Rfo9yPmwEYUDbaPXNjfGs6goM27ZnLdAMtiU+jA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogV2FpbWFuIExvbmcNCj4gU2VudDogMDggRGVjZW1iZXIgMjAyMCAxNTozNA0KPiANCj4g
+T24gMTIvOC8yMCA0OjEyIEFNLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogV2FpbWFu
+IExvbmcNCj4gPj4gU2VudDogMDcgRGVjZW1iZXIgMjAyMCAxOTowMg0KPiA+IC4uLg0KPiA+Pj4g
+SG93IG11Y2ggbW9yZSBkaWZmaWN1bHQgd291bGQgaXQgYmUgdG8gYWxzbyBhZGQgYSB0aW1lb3V0
+IG9wdGlvbj8NCj4gPj4+IEkgbG9va2VkIGF0IGFkZGluZyBvbmUgdG8gdGhlIG11dGV4IGNvZGUg
+LSBhbmQgZmVsbCBpbnRvIGEgYmlnIHBpbGUNCj4gPj4+IG9mIHJlcGxpY2F0ZWQgY29kZS4NCj4g
+Pj4+DQo+ID4+PiBJU1RNIHRoYXQgb25lIHRoZSBpbml0aWFsIGxvY2tlZCBleGNoYW5nZSAoYW5k
+IHNwaW4pIGZhaWxzIGEgZmV3DQo+ID4+PiBleHRyYSBpbnN0cnVjdGlvbnMgd2hlbiBoZWFkaW5n
+IGZvciB0aGUgc2xlZXAgZG9uJ3QgcmVhbGx5IG1hdHRlcg0KPiA+Pj4NCj4gPj4gQWN0dWFsbHks
+IEkgaGFkIHRyaWVkIHRoYXQgYmVmb3JlLiBTZWUNCj4gPj4NCj4gPj4gaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvbGttbC8yMDE5MDkxMTE1MDUzNy4xOTUyNy0xLWxvbmdtYW5AcmVkaGF0LmNvbS8N
+Cj4gPj4NCj4gPj4gVGhhdCBpcyBmb3IgcndzZW0sIGJ1dCB0aGUgc2FtZSBjYW4gYmUgZG9uZSBm
+b3IgbXV0ZXguIEhvd2V2ZXIsIFBldGVyDQo+ID4+IGRpZG4ndCBzZWVtIHRvIGxpa2UgdGhlIGlk
+ZWEgb2YgYSB0aW1lb3V0IHBhcmFtZXRlci4gQW55d2F5LCBpdCBpcw0KPiA+PiBjZXJ0YWlubHkg
+ZG9hYmxlIGlmIHRoZXJlIGlzIGEgZ29vZCB1c2UgY2FzZSBmb3IgaXQuDQo+ID4gJ1VuZm9ydHVu
+YXRlbHknIG15IHVzZS1jYXNlIGlmIGZvciBhbiBvdXQtb2YtdHJlZSBkcml2ZXIuDQo+ID4NCj4g
+PiBUaGUgcHJvYmxlbSBJIHdhcyBzb2x2aW5nIGlzIGEgc3RhdHVzIGNhbGwgYmxvY2tpbmcgYmVj
+YXVzZQ0KPiA+IHNvbWUgb3RoZXIgY29kZSBpcyAnc3R1Y2snIChwcm9iYWJseSBhbiBvb3BzKSB3
+aXRoIGEgbXV0ZXggaGVsZC4NCj4gPg0KPiA+IFRoZSBjb2RlIHVzZWQgdG8gdXNlIGRvd25fdGlt
+ZW91dCgpIChpdCB3YXMgd3JpdHRlbiBmb3IgMi40KS4NCj4gPiBXaGVuIEkgY2hhbmdlZCB0byBt
+dXRleF8odG8gZ2V0IG9wdGltaXN0aWMgc3Bpbm5pbmcpIEkgbG9zdA0KPiA+IHRoZSBhYmlsaXR5
+IHRvIGRvIHRoZSB0aW1lb3V0cy4NCj4gDQo+IFRoZSBwcmltYXJ5IHJlYXNvbiBmb3Igc2VuZGlu
+ZyBvdXQgdGhhdCBwYXRjaHNldCB3YXMgdG8gd29yayBhcm91bmQgc29tZQ0KPiBjaXJjdWxhciBs
+b2NraW5nIHByb2JsZW0gaW4gZXhpc3RpbmcgY29kZSBldmVuIHRob3VnaCB0aGVzZSBjaXJjdWxh
+cg0KPiBsb2NraW5nIHNjZW5hcmlvcyBhcmUgbm90IGxpa2VseSB0byBoYXBwZW4uIFlvdXIgY2Fz
+ZSBpcyBjZXJ0YWlubHkNCj4gYW5vdGhlciBwb3RlbnRpYWwgY2lyY3VsYXIgbG9ja2luZyBwcm9i
+bGVtIGFzIHdlbGwuDQoNCklmIHlvdSd2ZSBnb3QgbG9jay1vcmRlcmluZyBwcm9ibGVtcyB0aGV5
+IG5lZWQgZml4aW5nLg0KTmVpdGhlciBzaWduYWxzIG5vciB0aW1lb3V0cyBhcmUgcmVhbCBzb2x1
+dGlvbnMuDQpFaXRoZXIgbWF5IGhlbHAgZGlhZ25vc2UgdGhlIHByb2JsZW0sIGJ1dCB0aGV5IGFy
+ZW4ndCBmaXhlcy4NCg0KT1RPSCBpZiBpdCByZWFzb25hYmxlIHRvIGhhdmUgYSByZXF1ZXN0IGlu
+dGVycnVwdGVkIGJ5IGEgc2lnbmFsDQppdCBtdXN0IGFsc28gYmUgcmVhc29uYWJsZSB0byBpbXBs
+ZW1lbnQgYSB0aW1lb3V0Lg0KT2YgY291cnNlLCBvbmUgbWlnaHQgd29uZGVyIHdoZXRoZXIgJ2Nv
+cnJlY3QnIGNvZGUgc2hvdWxkIGV2ZXINCmJlIHdhaXRpbmcgb24gYSBtdXRleCBmb3IgYW55IGxl
+bmd0aCBvZiB0aW1lLg0KU28gaXMgdGhlcmUgZXZlbiBhIGp1c3RpZmljYXRpb24gZm9yIGludGVy
+cnVwdGlibGUgd2FpdHMgZm9yIG11dGV4Lg0KDQpGV0lXIEkgY291bGQgaW1wbGVtZW50IG15IHRp
+bWVvdXRzIHVzaW5nIFNJR0FMQVJNIC0gYnV0IGl0IGlzIGEgbG90DQpvZiB3b3JrIDotKQ0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
-
-On 08/12/2020 16:38, Andy Shevchenko wrote:
-> On Tue, Dec 8, 2020 at 4:19 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Tue, Dec 8, 2020 at 4:14 PM Enrico Weigelt, metux IT consult
->> <info@metux.net> wrote:
->>>
->>> Many gpio drivers already use gpiolib's builtin irqchip handling
->>> (CONFIG_GPIOLIB_IRQCHIP), but still has some boilerplate for retrieving
->>> the actual Linux IRQ number and calling into the generic handler.
->>> That boilerplate can be reduced by moving that into a helper function.
->>>
->>> This is an RFC patch to outline how that could be done. Note: it's
->>> completely untested yet.
->>>
->>> Several drivers still have their completely IRQ own implementation and
->>> thus can't be converted yet. Some of them perhaps could be changed to
->>> store their irq domain in the struct gpio, so the new helper could
->>> also be used for those.
->>>
->>> Having all GPIO drivers doing their IRQ management entirely through the
->>> GPIO subsystem (eg. never calling generic_handle_irq() and using the builtin
->>> IRQ handling) would also allow a more direct (eg. callback-based) pin change
->>> notification for GPIO consumers, that doesn't involve registering them as
->>> generic IRQ handlers.
-
-Above part makes me worry - why?
-
->>>
->>> Further reduction of boilerplate could be achieved by additional helpers
->>> for common patterns like for_each_set_bit() loops on irq masks.
->>
->> Have you able to test them all?
->> As the PCA953x case showed us this is not so simple, besides the name
->> which sucks — we don't *raise* and IRQ we *handle* it.
->>
->> NAK.
-> 
-> To be on constructive side what I think can help here:
-> - split patch on per driver basis (and first patch is a simple
-> introduction of new API)
-> - rename function
-> - in each new per-driver patch explain what is the difference in behaviour
-> - test as many as you can and explain in a cover letter what has been
-> done and what are the expectations on the ones that you weren't able
-> to test.
-> 
-
-agree.
-
--- 
-Best regards,
-grygorii
