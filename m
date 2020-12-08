@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3852D27F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA022D27F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgLHJmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:42:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47648 "EHLO mail.kernel.org"
+        id S1729070AbgLHJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:42:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgLHJmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:42:23 -0500
-Date:   Tue, 8 Dec 2020 10:42:51 +0100
+        id S1729048AbgLHJmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:42:43 -0500
+Date:   Tue, 8 Dec 2020 10:43:11 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607420503;
-        bh=OPRdtXo+b3fj0Tly5SZe2L9SsKslAawkKaxtdea4VmQ=;
+        s=korg; t=1607420522;
+        bh=w1nf9aRZwPuZBafKpjL531MngAbXEyNSYpf7tVShm2Y=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VxPt11EmjME54Y3knWT0FywaT4ox9CyA43xmhiu0siuFmvKxQH/pubclg4YHAYMUp
-         VlyNXg71zAjSxDgIH2152GVb0RJteL1w7BOTMwdRbduxak1+pmDlGZTM/EgIwWEUw2
-         LlcdShyTSqoYXPpKYo6F5OUE1QvWGp5h5JYbH85w=
+        b=BGH7fQQwxFG/YBy7QGfmKJ8BT9aCjvoWMVU3bdoX4VGN5kRa4or5O1yrS6ezU1/cP
+         Bld+Kba7MacDJqKW3vVCf0867r+bB/6nZqY04uvo57lybaQ3OKP0gyJ/PZc2966Z3u
+         3LubaJYdiMsVthFMiFfYQYclrHtx4W0q1PdF80H0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux-stable <stable@vger.kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
 Subject: Re: [PATCH 5.9 00/46] 5.9.13-rc1 review
-Message-ID: <X89KmwbnuWvh7Eus@kroah.com>
+Message-ID: <X89Kr+aTg1o0KEfp@kroah.com>
 References: <20201206111556.455533723@linuxfoundation.org>
- <CA+G9fYt6AO+iz42u=9PKW2UwXcU_FLr35YfsKEEMsbf2gdaqqA@mail.gmail.com>
+ <20201207155532.GD43600@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYt6AO+iz42u=9PKW2UwXcU_FLr35YfsKEEMsbf2gdaqqA@mail.gmail.com>
+In-Reply-To: <20201207155532.GD43600@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 12:47:38PM +0530, Naresh Kamboju wrote:
-> On Sun, 6 Dec 2020 at 17:14, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
+On Mon, Dec 07, 2020 at 07:55:32AM -0800, Guenter Roeck wrote:
+> On Sun, Dec 06, 2020 at 12:17:08PM +0100, Greg Kroah-Hartman wrote:
 > > This is the start of the stable review cycle for the 5.9.13 release.
 > > There are 46 patches in this series, all will be posted as a response
 > > to this one.  If anyone has any issues with these being applied, please
 > > let me know.
-> >
+> > 
 > > Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
 > > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.13-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+> > 
 > 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 426 pass: 426 fail: 0
 > 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks for testing all of these and letting me know.
+Thanks for testing them all and letting me know.
 
 greg k-h
