@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539F42D25D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472492D25E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgLHI1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:27:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgLHI1E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:27:04 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFEDC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:26:24 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id r24so21872519lfm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:26:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0XCWHt4ysn/EFBhmkpBIxyKTWH0ki1D5h+fBNmPMfm0=;
-        b=R/4Ww2cc08c7iIqfaNx9Qit6Ci3xfXlqC291P5W4kyjQVjgoq5baG121BFYNDZ5JhC
-         jN2fCyf8tFcaHx8WcDVqsExJDIaDdifkvaVEOX7rxcxWgBy+9PiTl8tmD9nZLyjfHSPP
-         JSeGaqYq3DPl8FfDpdHYO3PoxX3ugMtm+bL4LnHtY4qYS7D1ZGOQkXPWsBckZs1I/CfW
-         ljyd6TDjSpXqr+aF4oA+gMw/K6b8zmNrDBIilJoGj9yT6rk8kENdNzgZb8UdsSEIU9yy
-         P9oz/T5OawZpLGkkqmVKF/fZHQG7lzaZ8vdQ+QBdz83apUCObCGtjLFdq7aUtge0DzJJ
-         Dx5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0XCWHt4ysn/EFBhmkpBIxyKTWH0ki1D5h+fBNmPMfm0=;
-        b=Gs40SeenLUF0OR5xatT47UHuGy0Jpyn7NArqXYlHXIOiwt+sQmLjzmxQos68iMO0WL
-         p8a5SjhhR8KrecxpaDFXu+1vX6aHHYvScYR65W3rEtmC6cd0+QUxJLxOjI+6G2RQBFEX
-         98oVkbPLf+v1d7HAOyp6m1eXpJhxEaWlqHwVG9nasnugVK1lPEIhMPC8H8qTzx9axAFx
-         fMKaf91hj1Onq2UFwF93rfnL7aAiCixjTVMI9tMbQVZGw/6IfG+QJ1lOmgssYz4lSkxE
-         ganDW6RTTKBml/RgFFdb9p50UgjSTIzJLu32jpEH0ia19A68U1C/JUVjYJX8KbAEDB8T
-         TuYg==
-X-Gm-Message-State: AOAM533vHyxmcRD34r8KmbLJ3NqT1o2BXzmW+9f8CjTqL1T7+ClKAucU
-        nL51Jaevgq4OlZyzyMRNm+iAfGgbE+fB6RKulQWvOA==
-X-Google-Smtp-Source: ABdhPJyr1SbGQ3T10AHNBB50oJwSz/j2jQByv6Pwgnml59Xz/oAD99kJ+Gj2hQNrZljLojbtyoUj9YUMsrOnGTPQT7A=
-X-Received: by 2002:a19:cb45:: with SMTP id b66mr3266398lfg.441.1607415982808;
- Tue, 08 Dec 2020 00:26:22 -0800 (PST)
+        id S1728276AbgLHI2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:28:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgLHI2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:28:45 -0500
+X-Gm-Message-State: AOAM533CHJvzc9ByQs7T5tU695sXulZc7tnBIgdBZGk1OfHKQnIXvHfN
+        L8Tekjc2Y3ADK+merNjoQ7zdlI1v9FI4NynNj9k=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607416084;
+        bh=jyKkaKXiQzGnuQvTvF+wC0qTSGobbL2G0IC3stRghDU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p1zog/D2c5Ld+5yRO3wK8h1myUlWQkC27l8KQdRti0iMcEAGkgHB0Az3bG1ASpErD
+         e/KpAUIsOVhgy+ZfyLeLkm3Rhse1yQ6VpfDebd0V7VWCGZrIDDQauRy0hpR+30voPM
+         MBzhI4WXahCXQIAADZC6xgZ4Sfm1DgXgc58vT3kfyx3YNp1aYzLwJfVQV+G27lR+bS
+         niVcC9YO4iC/ZQNXlqgDG1xv1qQSAN3JSQJV2jkEBSdUd4Qufs26xSgmkHl4cPKbzb
+         aMys6HLwNTht5X27ltyNHYeakx6bXhxw0Ks6VGzd/1tl1oD7vR/io4vIA/UkGEn611
+         dR07Z1tB8MlkA==
+X-Google-Smtp-Source: ABdhPJwS0+KqYVwv76AZtzOyLb7K4/Q9YxUc5R358VAL2n1Q3JFjnSXSbPcwLv0jq4LS0xkvO+SkX4Q5VleICXbWnU0=
+X-Received: by 2002:a9d:62c1:: with SMTP id z1mr15552080otk.108.1607416083657;
+ Tue, 08 Dec 2020 00:28:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207071649.272eba1e@canb.auug.org.au> <3f182394-8cf9-4d50-854e-cdcc33621b5f@www.fastmail.com>
-In-Reply-To: <3f182394-8cf9-4d50-854e-cdcc33621b5f@www.fastmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 8 Dec 2020 09:26:11 +0100
-Message-ID: <CACRpkdYy6cFUYerfPUV8_46ge1gCFG4W+Edr_tJ8YcbH9qvBdg@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the pinctrl tree
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Joel Stanley <joel@jms.id.au>,
+References: <20201204154626.GA26255@fieldses.org> <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
+ <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
+ <118876.1607093975@warthog.procyon.org.uk> <122997.1607097713@warthog.procyon.org.uk>
+ <20201204160347.GA26933@fieldses.org> <125709.1607100601@warthog.procyon.org.uk>
+ <CAMj1kXEOm_yh478i+dqPiz0eoBxp4eag3j2qHm5eBLe+2kihoQ@mail.gmail.com>
+ <127458.1607102368@warthog.procyon.org.uk> <CAMj1kXFe50HvZLxG6Kh-oYBCf5uu51hhuh7mW5UQ62ZSqmu_xA@mail.gmail.com>
+ <468625.1607342512@warthog.procyon.org.uk> <CAMj1kXH_gEjgZKx=8uQgv=ckBqTVoh3vrHj=O-nY-nm5VMgLaA@mail.gmail.com>
+ <482243.1607350500@warthog.procyon.org.uk>
+In-Reply-To: <482243.1607350500@warthog.procyon.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 8 Dec 2020 09:27:52 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG5_ePTr7KCxE-m6g9xNHr72-xPMoED7Jmx38uNt6bzoQ@mail.gmail.com>
+Message-ID: <CAMj1kXG5_ePTr7KCxE-m6g9xNHr72-xPMoED7Jmx38uNt6bzoQ@mail.gmail.com>
+Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+To:     David Howells <dhowells@redhat.com>
+Cc:     Bruce Fields <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 12:39 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> On Mon, 7 Dec 2020, at 06:46, Stephen Rothwell wrote:
-
-> > Maybe you meant
-> >
-> > Fixes: 9b92f5c51e9a ("pinctrl: aspeed: Fix GPI only function problem.")
+On Mon, 7 Dec 2020 at 15:15, David Howells <dhowells@redhat.com> wrote:
 >
-> Right, looks like I accidentally grabbed 6726fbff19bf from the 5.9 stable tree.
+> Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> > > I wonder if it would help if the input buffer and output buffer didn't
+> > > have to correspond exactly in usage - ie. the output buffer could be used
+> > > at a slower rate than the input to allow for buffering inside the crypto
+> > > algorithm.
+> > >
+> >
+> > I don't follow - how could one be used at a slower rate?
+>
+> I mean that the crypto algorithm might need to buffer the last part of the
+> input until it has a block's worth before it can write to the output.
+>
 
-OK I fixed it!
+This is what is typically handled transparently by the driver. When
+you populate a scatterlist, it doesn't matter how misaligned the
+individual elements are, the scatterlist walker will always present
+the data in chunks that the crypto algorithm can manage. This is why
+using a single scatterlist for the entire input is preferable in
+general.
 
-Yours,
-Linus Walleij
+> > > The hashes corresponding to the kerberos enctypes I'm supporting are:
+> > >
+> > > HMAC-SHA1 for aes128-cts-hmac-sha1-96 and aes256-cts-hmac-sha1-96.
+> > >
+> > > HMAC-SHA256 for aes128-cts-hmac-sha256-128
+> > >
+> > > HMAC-SHA384 for aes256-cts-hmac-sha384-192
+> > >
+> > > CMAC-CAMELLIA for camellia128-cts-cmac and camellia256-cts-cmac
+> > >
+> > > I'm not sure you can support all of those with the instructions available.
+> >
+> > It depends on whether the caller can make use of the authenc()
+> > pattern, which is a type of AEAD we support.
+>
+> Interesting.  I didn't realise AEAD was an API.
+>
+> > There are numerous implementations of authenc(hmac(shaXXX),cbc(aes)),
+> > including h/w accelerated ones, but none that implement ciphertext
+> > stealing. So that means that, even if you manage to use the AEAD layer to
+> > perform both at the same time, the generic authenc() template will perform
+> > the cts(cbc(aes)) and hmac(shaXXX) by calling into skciphers and ahashes,
+> > respectively, which won't give you any benefit until accelerated
+> > implementations turn up that perform the whole operation in one pass over
+> > the input. And even then, I don't think the performance benefit will be
+> > worth it.
+>
+> Also, the rfc8009 variants that use AES with SHA256/384 hash the ciphertext,
+> not the plaintext.
+>
+> For the moment, it's probably not worth worrying about, then.  If I can manage
+> to abstract the sunrpc bits out into a krb5 library, we can improve the
+> library later.
+>
