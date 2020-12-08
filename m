@@ -2,119 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CAD2D3041
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814FC2D3043
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgLHQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:54:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        id S1730234AbgLHQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728602AbgLHQyh (ORCPT
+        with ESMTP id S1726810AbgLHQyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:54:37 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF76C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:53:57 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id l187so1724629vki.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:53:57 -0800 (PST)
+        Tue, 8 Dec 2020 11:54:47 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD31C06179C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:54:07 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id c14so2778670qtn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:54:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l5zve3QgoBiHLvxkhbeIQQ8L+c1shM0AySo9iJPfdLI=;
-        b=tcWjcUsoxU6SpDxMxfUujxhJGgNiN0OcrzVgHRXE+pbJuNC7SLmXfBUI75eINJCzON
-         G0nY39F1EVNqZripZe6gbBqfZzjuLM84h1W0NmIJ9jvGryhhLgEOXTrybPsOQT8GLnc8
-         KUcGz9aiF8dfaNJXcsm4ma4k42S8fJ72oEzmlNAlfhp/cRlYwKUgc/vMzXaoCHGAiAQz
-         Fv8ITYgJz1voaC3m4n36riFKsJeJiarjPn95yOG7ac8eVlG7dHlzrZ6kvmUTf+Y5xSqG
-         1a1WQigfWfhFFyxkOxdgAlObdqquWglgAenkMnogNlCbuvVFB7EBjDeKD1KOeC3meePi
-         dfuA==
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Li9FNCs+r58sHgUOn9VW6RK53rMll07O7ewT2tY4odA=;
+        b=Fn4TFkg8LVUpkF3uZWMrIIVrR9qv9K0uaOsxdLqirCT+GuhPpBkfyqJKKmc2MzNXA1
+         CRsNfWYertDeSU9pI/MquqCbO8CajOsm/tX2jbcUFfGy1TNFzrKDx3sO+0qJvCRQN6It
+         KtZCzqktmOs+rauKpG+D/8qrzev7UP5cRcFfSqwULKcchhYq28uB38TTglkuOKZoDltL
+         kxJKdECY1Prl+vhlg1wC5vt2ppSsHViN5lVT9PcZZUH8P1J+7StadDEAAHDfTa0Uj/tk
+         6B+Rkoiv3pUmvePjwvEyF8SgAxltomKubLQuTu9IRUWl/fbpNnYxRAyeRxLCpZqJbLHk
+         T2/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l5zve3QgoBiHLvxkhbeIQQ8L+c1shM0AySo9iJPfdLI=;
-        b=JdNhFmRdujPKwoW6H0RSooGkM3t08lqu6ZIwEKsws58mGdkaIKm7zCHDZa2ndEbpfv
-         XcnRQLEbV3WNps8sx6nxVBMBuuKbALMy5qRLC0OD7Ys3rQDUw5RS92n3pKTbDRA94cw2
-         yWsRlo+/f3XzurOQWXpjnEpeHjaixzO2uwmMPOgXRu39LETtZBCiAvuZ37q034yZ0efR
-         Uishe2d1kksa93pQQTq5rzYEERGtvI/yYaihAxAQVcaZbZjwS3CXy8vok3C9wcbfzNDC
-         6OoqlATGlv4VyDPu9VzY1fo8hEfxx6qaFpknNXV4DN0H+KqLPn7wvgDPx9sdYvjAEo/F
-         wKIw==
-X-Gm-Message-State: AOAM530VrJb0AnvLV5q7tE3TYXCejA7hOAfS1uDZeA0PMEZSdOp+ccyj
-        MdMk21btb+FRFw5/iD28o49Bq+FINKAoa8bxk0n7aA==
-X-Google-Smtp-Source: ABdhPJxgg0AuBgAyNX33MRQChfKNjBy/l6I+d3qFW7cDxguUPeYCwHRH9XJaUc5ctnBi5qE5LUaYex6e2Q3DEwkWc2E=
-X-Received: by 2002:a1f:b245:: with SMTP id b66mr17138078vkf.3.1607446436156;
- Tue, 08 Dec 2020 08:53:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com> <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 8 Dec 2020 08:53:44 -0800
-Message-ID: <CABCJKudbCD3s0RcSVzbnn4MV=DadKOxOxar3jfiPWucX4JGxCg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Li9FNCs+r58sHgUOn9VW6RK53rMll07O7ewT2tY4odA=;
+        b=S0KtccHyh53bjbXDsJrqZqDHgE1d8/ZjgRPlxQS3CzikrDyCKld2m7JKfDuSpbNxAZ
+         WMhX8pr2vcFuThx3kNvL7sYKtH1qfp5sHXg57282d8cwGdtIKvFWQPYnfm7X+e32RB8K
+         OIEH1IQkoxY3SEQ63OG8qoYiihod4dqryAhYtLCpfDIIXaWeZXcQaUxWbiur5KWpdbAf
+         sQ+380r5uSVRgE3DTz8nLr2djSN61YtbkFFstw+o/hrV4iq4GToU1lZFrHGVi0nptgfn
+         /WgmTKSXo5+vR5yXrwoKQlKyb/44VKw34KoVMvyJPgjt4DB2Q8hCKkah/tbMfOVbdvuL
+         Rx+A==
+X-Gm-Message-State: AOAM532ZJAmv4YFY56WTmfJ7kdCV9yHbWpKh48xtWL22n6wHZZo1/sPJ
+        5xd0q50DP/L8isyoLfXEw253Fg==
+X-Google-Smtp-Source: ABdhPJzKu5k+opBWMLTGG0G/Z/6Z9q2u7NhuuDnQp0Sf5WJDN+jkuUUS2L/iO9uH9pzo+FkgQiLq0g==
+X-Received: by 2002:ac8:59d5:: with SMTP id f21mr31218834qtf.2.1607446446643;
+        Tue, 08 Dec 2020 08:54:06 -0800 (PST)
+Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id z78sm3374497qkb.0.2020.12.08.08.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 08:54:05 -0800 (PST)
+Message-ID: <ec5fd04e7bcec92ae021bc4d36373deaa50e96fd.camel@ndufresne.ca>
+Subject: Re: [PATCH v3 0/4] media: meson: Add support for the Amlogic GE2D
+ Accelerator Unit
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Neil Armstrong <narmstrong@baylibre.com>, hverkuil@xs4all.nl
+Cc:     linux-amlogic@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 08 Dec 2020 11:54:04 -0500
+In-Reply-To: <20201117084440.578540-1-narmstrong@baylibre.com>
+References: <20201117084440.578540-1-narmstrong@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 5:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > On Tue, Dec 1, 2020 at 10:37 PM 'Sami Tolvanen' via Clang Built Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > - many builds complain about thousands of duplicate symbols in the kernel, e.g.
-> >   ld.lld: error: duplicate symbol: qrtr_endpoint_post
-> >  >>> defined in net/qrtr/qrtr.lto.o
-> >  >>> defined in net/qrtr/qrtr.o
-> >  ld.lld: error: duplicate symbol: init_module
-> >  >>> defined in crypto/842.lto.o
-> >  >>> defined in crypto/842.o
-> >  ld.lld: error: duplicate symbol: init_module
-> >  >>> defined in net/netfilter/nfnetlink_log.lto.o
-> >  >>> defined in net/netfilter/nfnetlink_log.o
-> >  ld.lld: error: duplicate symbol: vli_from_be64
-> >  >>> defined in crypto/ecc.lto.o
-> >  >>> defined in crypto/ecc.o
-> >  ld.lld: error: duplicate symbol: __mod_of__plldig_clk_id_device_table
-> >  >>> defined in drivers/clk/clk-plldig.lto.o
-> >  >>> defined in drivers/clk/clk-plldig.o
->
-> A small update here: I see this behavior with every single module
-> build, including 'tinyconfig' with one module enabled, and 'defconfig'.
+Le mardi 17 novembre 2020 à 09:44 +0100, Neil Armstrong a écrit :
+> The GE2D is a 2D accelerator with various features like configurable blitter
+> with alpha blending, frame rotation, scaling, format conversion and colorspace
+> conversion.
+> 
+> The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
+> - 0, 90, 180, 270deg rotation
+> - horizontal/vertical flipping
+> - source cropping
+> - destination compositing
+> - 32bit/24bit/16bit format conversion
+> 
+> This adds the support for the GE2D version found in the AXG SoCs Family.
+> 
+> The missing features are:
+> - Source scaling
+> - Colorspace conversion
+> - Advanced alpha blending & blitting options
 
-The .o file here is a thin archive of the bitcode files for the
-module. We compile .lto.o from that before modpost, because we need an
-ELF binary to process, and then reuse the .lto.o file when linking the
-final module.
+Is there some Open Source software using this driver ? GStreamer got some
+support, but it's mostly focused on CSC and Scaling (flipping should work, but
+rotation is not implemented). But I'm not aware of anything else, hence asking.
 
-At no point should we link the .o file again, especially not with
-.lto.o, because that would clearly cause every symbol to be
-duplicated, so I'm not sure what goes wrong here. Here's the relevant
-part of scripts/Makefile.modfinal:
+> 
+> Dependencies:
+> - Patches 1-3: None
+> - Patch 4: 
+> https://lkml.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com (appli
+> ed for 5.11)
+> 
+> Changes since v2:
+> - removed error check in and after get_frame()
+> - moved the v4l2_file_operations lower in the code to avoid adding
+> vidioc_setup_cap_fmt on top
+> - removed all memcpy of pix_fmt
+> - simplified & fixed ge2d_start_streaming
+> - added local buffer type check in vidioc_g_selection instead of using
+> get_frame error
+> - removed impossible <0 rectangle check, fixed error string
+> - added comment on condition after V4L2_CID_ROTATE
+> 
+> Changes since v1:
+> - Rebased on v5.10-rc1
+> 
+> / # v4l2-compliance -s
+> v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit
+> time_t
+> 
+> Compliance test for meson-ge2d device /dev/video0:
+> 
+> Driver Info:
+>         Driver name      : meson-ge2d
+>         Card type        : meson-ge2d
+>         Bus info         : platform:meson-ge2d
+>         Driver version   : 5.9.0
+>         Capabilities     : 0x84208000
+>                 Video Memory-to-Memory
+>                 Streaming
+>                 Extended Pix Format
+>                 Device Capabilities
+>         Device Caps      : 0x04208000
+>                 Video Memory-to-Memory
+>                 Streaming
+>                 Extended Pix Format
+> 
+> Required ioctls:
+>         test VIDIOC_QUERYCAP: OK
+> 
+> Allow for multiple opens:
+>         test second /dev/video0 open: OK
+>         test VIDIOC_QUERYCAP: OK
+>         test VIDIOC_G/S_PRIORITY: OK
+>         test for unlimited opens: OK
+> 
+>         test invalid ioctls: OK
+> Debug ioctls:
+>         test VIDIOC_DBG_G/S_REGISTER: OK
+>         test VIDIOC_LOG_STATUS: OK (Not Supported)
+> 
+> Input ioctls:
+>         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+>         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+>         test VIDIOC_ENUMAUDIO: OK (Not Supported)
+>         test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
+>         test VIDIOC_G/S_AUDIO: OK (Not Supported)
+>         Inputs: 0 Audio Inputs: 0 Tuners: 0
+> 
+> Output ioctls:
+>         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+>         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+>         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+>         test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+>         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+>         Outputs: 0 Audio Outputs: 0 Modulators: 0
+> 
+> Input/Output configuration ioctls:
+>         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
+>         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+>         test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+>         test VIDIOC_G/S_EDID: OK (Not Supported)
+> 
+> Control ioctls:
+>         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
+>         test VIDIOC_QUERYCTRL: OK
+>         test VIDIOC_G/S_CTRL: OK
+>         test VIDIOC_G/S/TRY_EXT_CTRLS: OK
+>         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
+>         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+>         Standard Controls: 4 Private Controls: 0
+> 
+> Format ioctls:
+>         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+>         test VIDIOC_G/S_PARM: OK (Not Supported)
+>         test VIDIOC_G_FBUF: OK (Not Supported)
+>         test VIDIOC_G_FMT: OK
+>         test VIDIOC_TRY_FMT: OK
+>         test VIDIOC_S_FMT: OK
+>         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+>         test Cropping: OK
+>         test Composing: OK
+>         test Scaling: OK (Not Supported)
+> 
+> Codec ioctls:
+>         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+>         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+>         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+> 
+> Buffer ioctls:
+>         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>         test VIDIOC_EXPBUF: OK
+>         test Requests: OK (Not Supported)
+> 
+> Test input 0:
+> 
+> Streaming ioctls:
+>         test read/write: OK (Not Supported)
+>         test blocking wait: OK
+>         Video Capture: Captured 58 buffers                
+>         test MMAP (no poll): OK
+>         Video Capture: Captured 58 buffers                
+>         test MMAP (select): OK
+>         Video Capture: Captured 58 buffers                
+>         test MMAP (epoll): OK
+>         test USERPTR (no poll): OK (Not Supported)
+>         test USERPTR (select): OK (Not Supported)
+>         test DMABUF: Cannot test, specify --expbuf-device
+> 
+> Total for meson-ge2d device /dev/video0: 52, Succeeded: 52, Failed: 0,
+> Warnings: 0
+> 
+> Neil Armstrong (4):
+>   dt-bindings: media: Add bindings for the Amlogic GE2D Accelerator Unit
+>   media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit
+>   MAINTAINERS: Add myself as maintainer of the Amlogic GE2D driver
+>   arm64: dts: meson-axg: add GE2D node
+> 
+>  .../bindings/media/amlogic,axg-ge2d.yaml      |   47 +
+>  MAINTAINERS                                   |    9 +
+>  arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |    9 +
+>  drivers/media/platform/Kconfig                |   13 +
+>  drivers/media/platform/Makefile               |    2 +
+>  drivers/media/platform/meson/ge2d/Makefile    |    3 +
+>  drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
+>  drivers/media/platform/meson/ge2d/ge2d.c      | 1091 +++++++++++++++++
+>  8 files changed, 1534 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-
+> ge2d.yaml
+>  create mode 100644 drivers/media/platform/meson/ge2d/Makefile
+>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
+>  create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
+> 
 
-ifdef CONFIG_LTO_CLANG
-# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
-# avoid a second slow LTO link
-prelink-ext := .lto
-...
-$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds FORCE
-        +$(call if_changed,ld_ko_o)
 
-Sami
