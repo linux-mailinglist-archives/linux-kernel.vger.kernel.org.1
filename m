@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC282D2CFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E97B2D2D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729832AbgLHOVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:21:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:49658 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726738AbgLHOVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:21:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFA9613D5;
-        Tue,  8 Dec 2020 06:20:35 -0800 (PST)
-Received: from [10.57.23.55] (unknown [10.57.23.55])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A96B3F718;
-        Tue,  8 Dec 2020 06:20:33 -0800 (PST)
-Subject: Re: [PATCH v2 2/5] thermal: devfreq_cooling: get a copy of device
- status
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, orjan.eide@arm.com, robh@kernel.org,
-        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
-        airlied@linux.ie, daniel@ffwll.ch, ionela.voinescu@arm.com
-References: <20201118120358.17150-1-lukasz.luba@arm.com>
- <20201118120358.17150-3-lukasz.luba@arm.com>
- <5d4743b9-5b2f-8494-8d10-6a5fd2c0fdfd@linaro.org>
- <d9906ed8-e3bf-5e42-2e43-09071848ae48@arm.com>
- <224c6b9b-977a-d553-f22b-2056223a84bc@linaro.org>
- <947a3afc-5dd6-892b-6987-ad81a5a96197@arm.com>
-Message-ID: <9b19373f-2dd9-368c-6d38-cd885fcde5e1@arm.com>
-Date:   Tue, 8 Dec 2020 14:20:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729749AbgLHOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgLHOZk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:25:40 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3894DC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:25:00 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r3so16429260wrt.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bkCxpWePsFfevlDcUEyEPGxcsnjzxasA1OIQEvsNU/o=;
+        b=UH8R3RfyY4sPynLquFWkpqy2WTWXSSzIuSAp+rSQhizic1tnp9KlTS7Y7efZGAqAMw
+         MuWmN0VcSOE7Y1ATcEcSGkT9NY58W2weDYlFHdCmmJ+OvSiaDfwuiKRe3Gt4FFvbiP64
+         4azh0WSYbt0mS/zs2fxByv6me6YjHQQj4xGUXsYsFovPpv6vD+gk1npQf9zndpaXWfnx
+         1TmuF62lTL29fBChAox+JnPUBpEgrxEK6x4ocItr0OEy88xJz+tpcpolNsKsxYkdFY3u
+         w+oVXT2DBgxcBjpOIk2J4+Gj7R721q8NZdsa5uC9Q61VagBrwHxgA+J86j3TUZNUQPG8
+         4FaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bkCxpWePsFfevlDcUEyEPGxcsnjzxasA1OIQEvsNU/o=;
+        b=QTrsVqJW1LfQ4DQ+6rnQM6/fhtIJy+Q1f8vcwAPF26faTFRru4/+A5kFqtA1SnURJq
+         Vr8G/TuKJvs8iA/j+54wVclbGQqMBWv2vGVphV+o/bkpAKmMP6QTfUyIMqFKy5uEl2zp
+         tcuqi+pN4QyMvw4v5e3m0s2J3+3ALCb8w4eYONqgfj6XY5/kh5k3IZ5YmK5hJYGyDbjo
+         81IQULBCwsV3sWFK155ydgk2+4PNZnJMO1b30SRfabH0+7n4evw1aCAgtCp1SvC12CcW
+         mNFbY9l1suktDGHD+EOh7P7fuO3fvgvPNCYw/L8uhHDb+Hr8CgSk4U915rcNLW+xMzo2
+         nsGA==
+X-Gm-Message-State: AOAM531AUr52oixj3gGM80e7Me7C9NHZ6yJcn2dRJ3gtKZ6dIy/sCvQG
+        8RcJSdMZ0Vq9MZ2e0l4/hC4D0g==
+X-Google-Smtp-Source: ABdhPJwsb7RVuNDV5tHluPT3itlJhGZvi8mvDtVcsmCOFtJE87agLeOo3053LrTTOxV3LtILOYbdww==
+X-Received: by 2002:a5d:6ccb:: with SMTP id c11mr7906522wrc.224.1607437498694;
+        Tue, 08 Dec 2020 06:24:58 -0800 (PST)
+Received: from localhost ([2a01:4b00:8523:2d03:258e:cb26:cef:a620])
+        by smtp.gmail.com with ESMTPSA id w10sm20739956wra.34.2020.12.08.06.24.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 06:24:57 -0800 (PST)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH 0/6] Fixes and cleanups of PSCI relay for kvmarm/next
+Date:   Tue,  8 Dec 2020 14:24:46 +0000
+Message-Id: <20201208142452.87237-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <947a3afc-5dd6-892b-6987-ad81a5a96197@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Small batch of improvements for the 'Opt-in always-on nVHE hypervisor'
+series, now merged in kvmarm/next.
 
-On 12/7/20 12:41 PM, Lukasz Luba wrote:
-> 
-> 
-> On 12/3/20 4:09 PM, Daniel Lezcano wrote:
->> On 03/12/2020 16:38, Lukasz Luba wrote:
->>>
->>>
->>> On 12/3/20 1:09 PM, Daniel Lezcano wrote:
->>>> On 18/11/2020 13:03, Lukasz Luba wrote:
->>>>> Devfreq cooling needs to now the correct status of the device in order
->>>>> to operate. Do not rely on Devfreq last_status which might be a stale
->>>>> data
->>>>> and get more up-to-date values of the load.
->>>>>
->>>>> Devfreq framework can change the device status in the background. To
->>>>> mitigate this situation make a copy of the status structure and use it
->>>>> for internal calculations.
->>>>>
->>>>> In addition this patch adds normalization function, which also makes
->>>>> sure
->>>>> that whatever data comes from the device, it is in a sane range.
->>>>>
->>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>>> ---
->>>>>    drivers/thermal/devfreq_cooling.c | 52 
->>>>> +++++++++++++++++++++++++------
->>>>>    1 file changed, 43 insertions(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/drivers/thermal/devfreq_cooling.c
->>>>> b/drivers/thermal/devfreq_cooling.c
->>>>> index 659c0143c9f0..925523694462 100644
->>>>> --- a/drivers/thermal/devfreq_cooling.c
->>>>> +++ b/drivers/thermal/devfreq_cooling.c
->>>>> @@ -227,20 +227,46 @@ static inline unsigned long
->>>>> get_total_power(struct devfreq_cooling_device *dfc,
->>>>>                                       voltage);
->>>>>    }
->>>>>    +static void _normalize_load(struct devfreq_dev_status *status)
->>>>> +{
->>>>> +    /* Make some space if needed */
->>>>> +    if (status->busy_time > 0xffff) {
->>>>> +        status->busy_time >>= 10;
->>>>> +        status->total_time >>= 10;
->>>>> +    }
->>>>> +
->>>>> +    if (status->busy_time > status->total_time)
->>>>> +        status->busy_time = status->total_time;
->>>>
->>>> How the condition above is possible?
->>>
->>> They should, be checked by the driver, but I cannot trust
->>> and have to check for all corner cases: (div by 0, overflow
->>> one of them, etc). The busy_time and total_time are unsigned long,
->>> which means 4B on 32bit machines.
->>> If these values are coming from device counters, which count every
->>> busy cycle and total cycles of a clock of a device running at e.g.
->>> 1GHz they would overflow every ~4s.
->>
->> I don't think it is up to this routine to check the driver is correctly
->> implemented, especially at every call to get_requested_power.
->>
->> If the normalization ends up by doing this kind of thing, there is
->> certainly something wrong in the 'status' computation to be fixed before
->> submitting this series.
->>
->>
->>> Normally IPA polling are 1s and 100ms, it's platform specific. But there
->>> are also 'empty' periods when IPA sees temperature very low and does not
->>> even call the .get_requested_power() callbacks for the cooling devices,
->>> just grants max freq to all. This is problematic. I am investigating it
->>> and will propose a solution for IPA soon.
->>>
->>> I would avoid all of this if devfreq core would have default for all
->>> devices a reliable polling timer... Let me check some possibilities also
->>> for this case.
->>
->> Ok, may be create an API to compute the 'idle,busy,total times' to be
->> used by the different the devfreq drivers and then fix the overflow in
->> this common place.
-> 
-> Yes, I have this plan, but I have to close this patch series. To go
-> forward with this, I will drop the normalization function and will keep
-> only the code of safe copy of the 'status', so using busy_time and
-> total_time will be safe.
+Patch #1 fixes potential use of invalid v0.1 functions IDs reported
+by Mark Rutland, patch #2 fixes a warning reported by Qian Cai.
+Patch #3 avoids a code path not used in VHE, can be dropped if any
+concerns arise. The remaining patches are minor cleanups from review.
 
-I did experiments and actually I cannot drop this function. Drivers can
-feed total_time and busy_time which are in nanoseconds, e.g. [1] 50ms =>
-50.000.000ns which is then when multiplied by 1024  and exceed the u32.
-I want to avoid 64bit variables and divisions, so shifting them earlier
-would help. IMHO it does not harm this devfreq cooling to make that
-check and handle ns values.
+-David
 
-I am going to use the normalization into 0..1024 as you and Ionela
-suggested.
-I will also drop the direct device status check. That would be a
-different patch series. In that patch set I will try to come with a
-generic solution and some API.
+David Brazdil (6):
+  kvm: arm64: Prevent use of invalid PSCI v0.1 function IDs
+  kvm: arm64: Use lm_alias in nVHE-only VA conversion
+  kvm: arm64: Skip computing hyp VA layout for VHE
+  kvm: arm64: Minor cleanup of hyp variables used in host
+  kvm: arm64: Remove unused includes in psci-relay.c
+  kvm: arm64: Move skip_host_instruction to adjust_pc.h
 
-Regards,
-Lukasz
+ arch/arm64/include/asm/kvm_host.h          | 26 ++++++++++
+ arch/arm64/kernel/smp.c                    |  2 +-
+ arch/arm64/kvm/arm.c                       | 18 ++++---
+ arch/arm64/kvm/hyp/include/hyp/adjust_pc.h |  9 ++++
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c         | 12 +----
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c          |  6 +--
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c       | 56 +++++++++++++++-------
+ arch/arm64/kvm/va_layout.c                 |  7 ++-
+ 8 files changed, 95 insertions(+), 41 deletions(-)
 
-[1] 
-https://elixir.bootlin.com/linux/v5.10-rc5/source/drivers/gpu/drm/panfrost/panfrost_devfreq.c#L66
+--
+2.29.2.576.ga3fc446d84-goog
