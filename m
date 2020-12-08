@@ -2,217 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A5B2D346B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98BB2D3460
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbgLHUkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:40:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S1729039AbgLHUi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgLHUka (ORCPT
+        with ESMTP id S1728971AbgLHUi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:40:30 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9F3C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:39:50 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id h9so24183211ybj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:39:50 -0800 (PST)
+        Tue, 8 Dec 2020 15:38:27 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0521C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:37:41 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id s21so15013635pfu.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=GVBCj7++kadYslQEKiUiOvXrT6u8C535LweeV3vmr3w=;
-        b=GpYQ3QJDvynec7G8eavuJvRKmeokXYwUk/DvyDC3rQCo/JzL2hcmyvtT1WwRGq8Lmy
-         TvllJRWIfWUzwn3OnjP1wF9jAfazM/mHTaMU/s1zmWuAUVNodHwc0n1dWMhXio7aUxEO
-         PMx0pHNYbALD8pWiIGYiCWiQvYvP7ILmIER+SxFtR1oIsqgPsKeQNrDHXLRQ6zfaIlHN
-         CIFmnrE3RtuUSUHW1vk8gNefCJXG1SfDqGOdY5j0xptgOnB9UHUu/gP1saxNS6Ok9ui5
-         ols2KlUjDbo8F6agl1LN0ziyQv7ectxlEvOAbQ0rNWDudDW74lmyuAHw71C4de4CQctE
-         clAA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=cOsptZpbaXZdyHeq1KoGUWDMF3slisUiT0yak+RYvVg=;
+        b=V1HJf+WKm8xtLqwvNnhsLkSQVipGbGBajM1F2ZUQcrOTQ2iu39pW4KdaTgszCgwjnq
+         tGzWVJdaHcBvZzl5aaqYttQ5TUOZCZZeqIs09s44Q9oB+hsnPkOAZotzWpI8i00QVucJ
+         ZkqvlVBVZSwtlbZua/brIaYJZ/+yexmmd5LKCv3G/Ku5t2DBPxqLPlTYem2pm7/BQHwc
+         Y2739VDQ3AMdHUYiNTI4cIVwWH1a3RA/iMrBvYTFlKq7M7ehhFBWisKxwf1Ty4u4bQp6
+         Q+maaFLNMOJu0B6hXcWTKH/5A8HPZ32RGxpfIbbSJvjpSfD8VZYPzolUFR9zjcbs0rIx
+         4beQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=GVBCj7++kadYslQEKiUiOvXrT6u8C535LweeV3vmr3w=;
-        b=S1aJ4Q3QtC1AFI68tpXDsSjgedYdwoyxBiuOOPVh0YhiTbIyozzzzLKACG4oir40Rf
-         X+5bZE+S/sxaqbpbSh7WGIuYW6OlBCS3fe0oOv0+iLO7JqPck0Z+1du0DvSs4D69af/6
-         +zSOkk+4KEsrWfzyDsaHgeOMKdzefA45/5jcO6LafQ+RgCeub/X5DP/EviJygrC+ZBf7
-         V83jVnpJZjNrYxagjpvvAly2G8pvi02NdP2Nj8bl5WtCUDq+ejzxO9Gqpy8K7MPXENCe
-         EFgYnucbD+S0xvPO/JYSKuUTzcM0qZArQWQM/KzCAz67BSN+NDZSx1xtJB+s5JnRJ+zj
-         dbDA==
-X-Gm-Message-State: AOAM531B6OVx30xwZZe5bu0XRAn1et4IU5+Ei0UBRWLREDJ27nNIZoQy
-        rmAjI+ioFsBwO1EpOlaodJpLVfGmqUHz+A==
-X-Google-Smtp-Source: ABdhPJxrfnJgi+EoEPqJXFI0NQkBlW/M60oMpPttVL+nDa9ZdrF2cemzNk1oPOuI5AUEOsRmwN6J+aV3XRjjQA==
-Sender: "tstrudel via sendgmr" <tstrudel@legoland2.mtv.corp.google.com>
-X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:7220:84ff:fe09:fd20])
- (user=tstrudel job=sendgmr) by 2002:a25:bb8f:: with SMTP id
- y15mr98605ybg.451.1607455204168; Tue, 08 Dec 2020 11:20:04 -0800 (PST)
-Date:   Tue,  8 Dec 2020 11:19:55 -0800
-Message-Id: <20201208191955.2466057-1-tstrudel@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH v4] PM: domains: create debugfs nodes when adding power domains
-From:   Thierry Strudel <tstrudel@google.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thierry Strudel <tstrudel@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cOsptZpbaXZdyHeq1KoGUWDMF3slisUiT0yak+RYvVg=;
+        b=qfeNHpD/sT4wv/PwgB+mWFVluujRtrr8GSABKfK/N1eKaNHc4qPNDNrcqgf2ljeTiw
+         B88q2G2trCnlKZjmj2CFmd9SsoNwuxdhap4Buy73iWXe1Nffvnp2/b5s/3Zl/NNApril
+         /I4EVDeDWQGMmP9iTYLXtYrFBuNUFod+CkMapw+Yt0qW1bDd8XbhZMU1Q9fA2fTWiC6r
+         VVqCLRncxt448GiGIpkyUrg1Mt1YoPeVxVpbtMTQ0sKSALCQG66REfyvTrKsiNMTFi7y
+         /+4AGpM6kXd3BtOzKDyMO7IrAej/EWZnmIFTTvsl9yTInNXswMe1n6JrfHvpHr3ZrExi
+         ooLQ==
+X-Gm-Message-State: AOAM530bByNAbTkHCH7Kqyiombqi8pH1dFQ64Q2b0C6Zi4jsjCw6YAMm
+        j8QjJlU7ngrtu3qjZS5uOhU8aIhJoR9YGloy
+X-Google-Smtp-Source: ABdhPJxyhjHPDKKo2JqsB/7HDITrAO23pyfmgSy+gat1GDFvuRxWeDGk6joJ5fCWRlKZVFhCYSjLzQ==
+X-Received: by 2002:a62:7693:0:b029:19d:92fb:4ec1 with SMTP id r141-20020a6276930000b029019d92fb4ec1mr21819903pfc.4.1607455203885;
+        Tue, 08 Dec 2020 11:20:03 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id i4sm16499994pgg.67.2020.12.08.11.20.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 11:20:03 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Christian Hewitt <christianshewitt@gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: add i2c3/rtc nodes and vrtc alias to GT-King/GT-King-Pro
+Date:   Tue,  8 Dec 2020 11:20:02 -0800
+Message-Id: <160745519765.13209.7401462503756984105.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201201062135.18241-1-christianshewitt@gmail.com>
+References: <20201201062135.18241-1-christianshewitt@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs nodes were created in genpd_debug_init alled in late_initcall
-preventing power domains registered though loadable modules to have
-a debugfs entry.
+On Tue, 1 Dec 2020 06:21:35 +0000, Christian Hewitt wrote:
+> The GT-King and GT-King-Pro boxes have an RTC chip and power cell, so enable it.
+> 
+> GTKING:~ # dmesg | grep rtc
+> [    5.237245] meson-vrtc ff8000a8.rtc: registered as rtc1
+> [    5.261869] rtc-hym8563 0-0051: registered as rtc0
+> [    5.265016] rtc-hym8563 0-0051: setting system clock to 2020-11-30T09:16:54 UTC (1606727814)
 
-Create/remove debugfs nodes when the power domain is added/removed
-to/from the internal gpd_list.
+Applied, thanks!
 
-Signed-off-by: Thierry Strudel <tstrudel@google.com>
-Change-Id: I8a2e0616746afe2a6bbd9c24bc3a0eaa84725a75
----
-v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
-v3: remove extra trailing char added by mistake in v2 - kernel test robot
-v4: cleanup includes and regroup CONFIG_DEBUG_FS CPP blocks - Greg
- drivers/base/power/domain.c | 73 +++++++++++++++++++++++--------------
- 1 file changed, 45 insertions(+), 28 deletions(-)
+[1/1] arm64: dts: meson: add i2c3/rtc nodes and vrtc alias to GT-King/GT-King-Pro
+      commit: 7704b100719cf0fead976a1bc839c60ee552d045
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 2cb5e04cf86c..49c87607cba7 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -21,6 +21,7 @@
- #include <linux/suspend.h>
- #include <linux/export.h>
- #include <linux/cpu.h>
-+#include <linux/debugfs.h>
- 
- #include "power.h"
- 
-@@ -210,6 +211,18 @@ static void genpd_sd_counter_inc(struct generic_pm_domain *genpd)
- }
- 
- #ifdef CONFIG_DEBUG_FS
-+static struct dentry *genpd_debugfs_dir;
-+
-+static void genpd_debug_add(struct generic_pm_domain *genpd);
-+
-+static void genpd_debug_remove(struct generic_pm_domain *genpd)
-+{
-+	struct dentry *d;
-+
-+	d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
-+	debugfs_remove(d);
-+}
-+
- static void genpd_update_accounting(struct generic_pm_domain *genpd)
- {
- 	ktime_t delta, now;
-@@ -234,6 +247,8 @@ static void genpd_update_accounting(struct generic_pm_domain *genpd)
- 	genpd->accounting_time = now;
- }
- #else
-+static inline void genpd_debug_add(struct generic_pm_domain *genpd) {}
-+static inline void genpd_debug_remove(struct generic_pm_domain *genpd) {}
- static inline void genpd_update_accounting(struct generic_pm_domain *genpd) {}
- #endif
- 
-@@ -1827,6 +1842,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 
- 	mutex_lock(&gpd_list_lock);
- 	list_add(&genpd->gpd_list_node, &gpd_list);
-+	genpd_debug_add(genpd);
- 	mutex_unlock(&gpd_list_lock);
- 
- 	return 0;
-@@ -1860,6 +1876,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
- 		kfree(link);
- 	}
- 
-+	genpd_debug_remove(genpd);
- 	list_del(&genpd->gpd_list_node);
- 	genpd_unlock(genpd);
- 	cancel_work_sync(&genpd->power_off_work);
-@@ -2764,14 +2781,6 @@ core_initcall(genpd_bus_init);
- /***        debugfs support        ***/
- 
- #ifdef CONFIG_DEBUG_FS
--#include <linux/pm.h>
--#include <linux/device.h>
--#include <linux/debugfs.h>
--#include <linux/seq_file.h>
--#include <linux/init.h>
--#include <linux/kobject.h>
--static struct dentry *genpd_debugfs_dir;
--
- /*
-  * TODO: This function is a slightly modified version of rtpm_status_show
-  * from sysfs.c, so generalize it.
-@@ -3047,9 +3056,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
- DEFINE_SHOW_ATTRIBUTE(devices);
- DEFINE_SHOW_ATTRIBUTE(perf_state);
- 
--static int __init genpd_debug_init(void)
-+static void genpd_debug_add(struct generic_pm_domain *genpd)
- {
- 	struct dentry *d;
-+
-+	if (!genpd_debugfs_dir)
-+		return;
-+
-+	d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
-+
-+	debugfs_create_file("current_state", 0444,
-+			    d, genpd, &status_fops);
-+	debugfs_create_file("sub_domains", 0444,
-+			    d, genpd, &sub_domains_fops);
-+	debugfs_create_file("idle_states", 0444,
-+			    d, genpd, &idle_states_fops);
-+	debugfs_create_file("active_time", 0444,
-+			    d, genpd, &active_time_fops);
-+	debugfs_create_file("total_idle_time", 0444,
-+			    d, genpd, &total_idle_time_fops);
-+	debugfs_create_file("devices", 0444,
-+			    d, genpd, &devices_fops);
-+	if (genpd->set_performance_state)
-+		debugfs_create_file("perf_state", 0444,
-+				    d, genpd, &perf_state_fops);
-+}
-+
-+static int __init genpd_debug_init(void)
-+{
- 	struct generic_pm_domain *genpd;
- 
- 	genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
-@@ -3057,25 +3091,8 @@ static int __init genpd_debug_init(void)
- 	debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
- 			    NULL, &summary_fops);
- 
--	list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
--		d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
--
--		debugfs_create_file("current_state", 0444,
--				d, genpd, &status_fops);
--		debugfs_create_file("sub_domains", 0444,
--				d, genpd, &sub_domains_fops);
--		debugfs_create_file("idle_states", 0444,
--				d, genpd, &idle_states_fops);
--		debugfs_create_file("active_time", 0444,
--				d, genpd, &active_time_fops);
--		debugfs_create_file("total_idle_time", 0444,
--				d, genpd, &total_idle_time_fops);
--		debugfs_create_file("devices", 0444,
--				d, genpd, &devices_fops);
--		if (genpd->set_performance_state)
--			debugfs_create_file("perf_state", 0444,
--					    d, genpd, &perf_state_fops);
--	}
-+	list_for_each_entry(genpd, &gpd_list, gpd_list_node)
-+		genpd_debug_add(genpd);
- 
- 	return 0;
- }
+Best regards,
 -- 
-2.29.2.576.ga3fc446d84-goog
-
+Kevin Hilman <khilman@baylibre.com>
