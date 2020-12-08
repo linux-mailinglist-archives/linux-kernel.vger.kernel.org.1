@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7802F2D31CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A602D31D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgLHSL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:11:56 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2226 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730456AbgLHSLz (ORCPT
+        id S1730943AbgLHSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:11:57 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37080 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730468AbgLHSL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:11:55 -0500
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cr7Tf5QqNz67Nc1;
-        Wed,  9 Dec 2020 02:08:38 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 8 Dec 2020 19:11:13 +0100
-Received: from [10.210.169.98] (10.210.169.98) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 8 Dec 2020 18:11:12 +0000
-Subject: Re: [PATCH 1/1] hisi_sas: Fix possible buffer overflows in
- prep_ssp_v3_hw
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201208164011.13866-1-ruc_zhangxiaohui@163.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <07831891-58ab-1147-e5b0-a62cca243769@huawei.com>
-Date:   Tue, 8 Dec 2020 18:10:37 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 8 Dec 2020 13:11:56 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8IAsIO060952;
+        Tue, 8 Dec 2020 12:10:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607451054;
+        bh=KukNEevA95t01KvHxeKqUpiG0yj/87OEttzDlhLnfr0=;
+        h=Date:From:To:Subject:References:In-Reply-To;
+        b=PKZxcP+91fPhvIxMRdbBkUtI4nXDQzONgYsz8byNZB3dB+0NAb1KEHlTOUGkXYakv
+         8qpzWjAbYUGrHTxtNkSDml9JYmGMD7a0VGII0YEx2MkTP0gyTZDjPeF1LN05xA3AVC
+         vCc/B8EK65qDnf+WNRW0TLr9rtieCum6MKk4TIBc=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8IAs7A103397
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Dec 2020 12:10:54 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
+ 2020 12:10:54 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Dec 2020 12:10:54 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8IArMI058897;
+        Tue, 8 Dec 2020 12:10:53 -0600
+Date:   Tue, 8 Dec 2020 23:40:52 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] UBI: Do not zero out EC and VID on ECC-ed NOR
+ flashes
+Message-ID: <20201208181050.z747aiiccoxj6xqz@ti.com>
+References: <20201201102711.8727-1-p.yadav@ti.com>
+ <20201201102711.8727-2-p.yadav@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201208164011.13866-1-ruc_zhangxiaohui@163.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.98]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201201102711.8727-2-p.yadav@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2020 16:40, Xiaohui Zhang wrote:
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+Richard,
+
+On 01/12/20 03:57PM, Pratyush Yadav wrote:
+> For NOR flashes EC and VID are zeroed out before an erase is issued to
+> make sure UBI does not mistakenly treat the PEB as used and associate it
+> with an LEB.
 > 
-> prep_ssp_v3_hw() calls memcpy() without checking the
-> destination size may trigger a buffer overflower, which a
-> local user could use to cause denial of service or the
-> execution of arbitrary code.
-> Fix it by putting the length check before calling memcpy().
+> But on some flashes, like the Cypress Semper S28 SPI NOR flash family,
+> multi-pass page programming is not allowed on the default ECC scheme.
+> This means zeroing out these magic numbers will result in the flash
+> throwing a page programming error.
 > 
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> index 7133ca859..2664c36d3 100644
-> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> @@ -1267,7 +1267,8 @@ static void prep_ssp_v3_hw(struct hisi_hba *hisi_hba,
->   	memcpy(buf_cmd, &task->ssp_task.LUN, 8);
->   	if (!tmf) {
->   		buf_cmd[9] = ssp_task->task_attr | (ssp_task->task_prio << 3);
-> -		memcpy(buf_cmd + 12, scsi_cmnd->cmnd, scsi_cmnd->cmd_len);
-> +		memcpy(buf_cmd + 12, scsi_cmnd->cmnd,
-> +		       min_t(unsigned short, scsi_cmnd->cmd_len, strlen(buf_cmd)-12));
+> Do not zero out EC and VID for such flashes. A writesize > 1 is an
+> indication of an ECC-ed flash.
 
-buf_cmd is not a NULL-terminated string, it's actually a pointer to a 
-structure.
+Patches 2/3 and 3/3 have been picked up in the spi-nor tree. Can you 
+please pick this patch up?
 
-And you can see that we set buf_cmd[9] previously (which could set as 
-0), so how can you possibly rely on a strlen(buf_cmd) - 12 being sane?
-
-Thanks,
-john
-
->   	} else {
->   		buf_cmd[10] = tmf->tmf;
->   		switch (tmf->tmf) {
-> 
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
