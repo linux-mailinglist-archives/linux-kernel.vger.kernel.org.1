@@ -2,280 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B67E2D23B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59362D23BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgLHGkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:40:22 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44392 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgLHGkV (ORCPT
+        id S1726396AbgLHGm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:42:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgLHGm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:40:21 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B86dNWS078398;
-        Tue, 8 Dec 2020 00:39:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607409563;
-        bh=fMmCqJRwhs4bIWwJI7KnWGQ9VZ3xD70RmS1sgZEkN7Q=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dsS4aHRIVqg3eA4qAK//vYdKYC999s1H+OwueCOFyWj4frKQsq+AhLExXLTtKSgGi
-         mUpNuTbFLtow58OF6r08UY5ZAx4ye72WbBD7Bi/cn92a/ToXYG7AB72C8nxlWM8p0x
-         ZlWGHF3mLj1xCWbE49/rFgsNx+SQvQseMdrn8p7Q=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B86dNad026563
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Dec 2020 00:39:23 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
- 2020 00:39:23 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Dec 2020 00:39:23 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B86dKVZ127732;
-        Tue, 8 Dec 2020 00:39:20 -0600
-Subject: Re: [PATCH v2 10/19] dt-bindings: dma: ti: Add document for K3 BCDMA
-To:     Rob Herring <robh@kernel.org>
-CC:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
-        <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
-        <grygorii.strashko@ti.com>
-References: <20201117105656.5236-1-peter.ujfalusi@ti.com>
- <20201117105656.5236-11-peter.ujfalusi@ti.com>
- <20201207194201.GA680126@robh.at.kernel.org>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <9681053b-c67b-be08-3fab-bc293ca5a21a@ti.com>
-Date:   Tue, 8 Dec 2020 08:40:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <20201207194201.GA680126@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Tue, 8 Dec 2020 01:42:57 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34204C061749;
+        Mon,  7 Dec 2020 22:42:11 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id d8so7044581otq.6;
+        Mon, 07 Dec 2020 22:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=GHGxlyc9EsC37JwbegkZqr7jGQdGFYOwxkgqYx90MSM=;
+        b=khMqjn8XFM3wXwNerjZdteRluOxbgVrO255TekQJBKHqEG4eRFH/2fZY1vil/jVsQq
+         n/Vl8tDhkFawgivSqDCpOAZfdKC72fw9sh4ajL47G+Pu1XGKwU81TRKGFVOVo4V6J6P3
+         HkfJybWiRrFqji/JDvvOqPUghlYQiaEOCog8IbiELJ8+nysn1KsIPxB7Yp3R2svfoT2F
+         fIV4kGq3WTV/f1cCqr4C26giyHO/NMb0B1JkGQidVuH5jz1SU8SbglIPxMCUqn19sZ1g
+         XCQ5cQaVVpXa/IHZ6FCmC04jX5vqLAnNjif2Msx2j8MewjA1igk3UPIkZb229Zor6mBm
+         x4jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=GHGxlyc9EsC37JwbegkZqr7jGQdGFYOwxkgqYx90MSM=;
+        b=pbvhn2DbKG+1eEVU97eaaAdPLMPw2YN1POr2FwyU3KDf+pLU6K/4Ri1AszH7YDc9sx
+         oZgPjaf1XxfXUPR3PIhgnX7iTaaNaLzsCad/uyfaT3FRCFnlCt66RQ3TH0Mc1F0c5Saj
+         i7ABzqDtdjEO1xSKVlqmawCzeuYXgdotyr5ak2CC0LxcVl0azO9aFB5l8QijRIdsbrbF
+         8zZxPvGUtIHt9nKhhP0bq0sz8JJPda6IdregFO5wWXiTVg9BxAi5n2oBsmhifX1p8tE/
+         l19U8QkwYeWoe1iJ0jazVNgFNaIQl99+ubIrU0yUet4K43zxRh3FypjLjyJFcCWXVo5T
+         YI2Q==
+X-Gm-Message-State: AOAM531PhQA1sCUoYIrkIjF7FsaIkgN6dy0gSOM+Ign2Dc3HB9e+amqc
+        IdANOVkX8O9G4XLk2UQa37U=
+X-Google-Smtp-Source: ABdhPJzhoxk6OeXWhDdD+pSpD0FxTfnqsQjv5SlnNFWdEZ8g5jZ1uJcmMPmTgcr1WwlcYEo2vnDZHg==
+X-Received: by 2002:a05:6830:1482:: with SMTP id s2mr5848385otq.296.1607409730674;
+        Mon, 07 Dec 2020 22:42:10 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id u141sm318252oie.46.2020.12.07.22.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 22:42:10 -0800 (PST)
+Date:   Mon, 07 Dec 2020 22:42:02 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fcf203ab087a_d22720855@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-8-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-8-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 07/11] bpf: Add instructions for
+ atomic_[cmp]xchg
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 07/12/2020 21.42, Rob Herring wrote:
-> On Tue, Nov 17, 2020 at 12:56:47PM +0200, Peter Ujfalusi wrote:
->> New binding document for
->> Texas Instruments K3 Block Copy DMA (BCDMA).
->>
->> BCDMA is introduced as part of AM64.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 175 ++++++++++++++++++
->>  1 file changed, 175 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
->> new file mode 100644
->> index 000000000000..c6d76641ebec
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
->> @@ -0,0 +1,175 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/dma/ti/k3-bcdma.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments K3 DMSS BCDMA Device Tree Bindings
->> +
->> +maintainers:
->> +  - Peter Ujfalusi <peter.ujfalusi@ti.com>
->> +
->> +description: |
->> +  The Block Copy DMA (BCDMA) is intended to perform similar functions as the TR
->> +  mode channels of K3 UDMA-P.
->> +  BCDMA includes block copy channels and Split channels.
->> +
->> +  Block copy channels mainly used for memory to memory transfers, but with
->> +  optional triggers a block copy channel can service peripherals by accessing
->> +  directly to memory mapped registers or area.
->> +
->> +  Split channels can be used to service PSI-L based peripherals.
->> +  The peripherals can be PSI-L native or legacy, non PSI-L native peripherals
->> +  with PDMAs. PDMA is tasked to act as a bridge between the PSI-L fabric and the
->> +  legacy peripheral.
->> +
->> +  PDMAs can be configured via BCDMA split channel's peer registers to match with
->> +  the configuration of the legacy peripheral.
->> +
->> +allOf:
->> +  - $ref: /schemas/dma/dma-controller.yaml#
->> +
->> +properties:
->> +  "#dma-cells":
->> +    const: 3
->> +    description: |
->> +      cell 1: type of the BCDMA channel to be used to service the peripheral:
->> +        0 - split channel
->> +        1 - block copy channel using global trigger 1
->> +        2 - block copy channel using global trigger 2
->> +        3 - block copy channel using local trigger
->> +
->> +      cell 2: parameter for the channel:
->> +        if cell 1 is 0 (split channel):
->> +          PSI-L thread ID of the remote (to BCDMA) end.
->> +          Valid ranges for thread ID depends on the data movement direction:
->> +          for source thread IDs (rx): 0 - 0x7fff
->> +          for destination thread IDs (tx): 0x8000 - 0xffff
->> +
->> +          Please refer to the device documentation for the PSI-L thread map and
->> +          also the PSI-L peripheral chapter for the correct thread ID.
->> +        if cell 1 is 1 or 2 (block copy channel using global trigger):
->> +          Unused, ignored
->> +
->> +          The trigger must be configured for the channel externally to BCDMA,
->> +          channels using global triggers should not be requested directly, but
->> +          via DMA event router.
->> +        if cell 1 is 3 (block copy channel using local trigger):
->> +          bchan number of the locally triggered channel
->> +
->> +      cell 3: ASEL value for the channel
->> +
->> +  compatible:
->> +    enum:
->> +      - ti,am64-dmss-bcdma
+Brendan Jackman wrote:
+> This adds two atomic opcodes, both of which include the BPF_FETCH
+> flag. XCHG without the BPF_FETCH flag would naturally encode
+> atomic_set. This is not supported because it would be of limited
+> value to userspace (it doesn't imply any barriers). CMPXCHG without
+> BPF_FETCH woulud be an atomic compare-and-write. We don't have such
+> an operation in the kernel so it isn't provided to BPF either.
 > 
-> Typically, we put 'compatible' first.
-
-OK.
-
->> +  "#address-cells":
->> +    const: 2
->> +
->> +  "#size-cells":
->> +    const: 2
+> There are two significant design decisions made for the CMPXCHG
+> instruction:
 > 
-> These apply to child nodes, but you don't have any.
+>  - To solve the issue that this operation fundamentally has 3
+>    operands, but we only have two register fields. Therefore the
+>    operand we compare against (the kernel's API calls it 'old') is
+>    hard-coded to be R0. x86 has similar design (and A64 doesn't
+>    have this problem).
+> 
+>    A potential alternative might be to encode the other operand's
+>    register number in the immediate field.
+> 
+>  - The kernel's atomic_cmpxchg returns the old value, while the C11
+>    userspace APIs return a boolean indicating the comparison
+>    result. Which should BPF do? A64 returns the old value. x86 returns
+>    the old value in the hard-coded register (and also sets a
+>    flag). That means return-old-value is easier to JIT.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-True, I forgot to remove these.
+Sorry if this is a dup, client crashed while I sent the previous version
+and don't see it on the list.
 
->> +
->> +  reg:
->> +    maxItems: 5
->> +
->> +  reg-names:
->> +    items:
->> +      - const: gcfg
->> +      - const: bchanrt
->> +      - const: rchanrt
->> +      - const: tchanrt
->> +      - const: ringrt
->> +
->> +  msi-parent: true
->> +
->> +  ti,asel:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: ASEL value for non slave channels
->> +
->> +  ti,sci-rm-range-bchan:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description: |
->> +      Array of BCDMA block-copy channel resource subtypes for resource
->> +      allocation for this host
->> +    minItems: 1
->> +    # Should be enough
->> +    maxItems: 255
->> +    items:
->> +      maximum: 0x3f
->> +
->> +  ti,sci-rm-range-tchan:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description: |
->> +      Array of BCDMA split tx channel resource subtypes for resource allocation
->> +      for this host
->> +    minItems: 1
->> +    # Should be enough
->> +    maxItems: 255
->> +    items:
->> +      maximum: 0x3f
->> +
->> +  ti,sci-rm-range-rchan:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description: |
->> +      Array of BCDMA split rx channel resource subtypes for resource allocation
->> +      for this host
->> +    minItems: 1
->> +    # Should be enough
->> +    maxItems: 255
->> +    items:
->> +      maximum: 0x3f
->> +
->> +required:
->> +  - compatible
->> +  - "#address-cells"
->> +  - "#size-cells"
->> +  - "#dma-cells"
->> +  - reg
->> +  - reg-names
->> +  - msi-parent
->> +  - ti,sci
->> +  - ti,sci-dev-id
->> +  - ti,sci-rm-range-bchan
->> +  - ti,sci-rm-range-tchan
->> +  - ti,sci-rm-range-rchan
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |+
->> +    cbass_main {
->> +        #address-cells = <2>;
->> +        #size-cells = <2>;
->> +
->> +        main_dmss {
->> +            compatible = "simple-mfd";
->> +            #address-cells = <2>;
->> +            #size-cells = <2>;
->> +            dma-ranges;
->> +            ranges;
->> +
->> +            ti,sci-dev-id = <25>;
->> +
->> +            main_bcdma: dma-controller@485c0100 {
->> +                compatible = "ti,am64-dmss-bcdma";
->> +                #address-cells = <2>;
->> +                #size-cells = <2>;
->> +
->> +                reg = <0x0 0x485c0100 0x0 0x100>,
->> +                      <0x0 0x4c000000 0x0 0x20000>,
->> +                      <0x0 0x4a820000 0x0 0x20000>,
->> +                      <0x0 0x4aa40000 0x0 0x20000>,
->> +                      <0x0 0x4bc00000 0x0 0x100000>;
->> +                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
->> +                msi-parent = <&inta_main_dmss>;
->> +                #dma-cells = <3>;
->> +
->> +                ti,sci = <&dmsc>;
->> +                ti,sci-dev-id = <26>;
->> +
->> +                ti,sci-rm-range-bchan = <0x20>; /* BLOCK_COPY_CHAN */
->> +                ti,sci-rm-range-rchan = <0x21>; /* SPLIT_TR_RX_CHAN */
->> +                ti,sci-rm-range-tchan = <0x22>; /* SPLIT_TR_TX_CHAN */
->> +            };
->> +        };
->> +    };
->> -- 
->> Peter
->>
->> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
->> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->>
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3608,11 +3608,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>  
+>  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+>  {
+> +	int load_reg;
+>  	int err;
+>  
+>  	switch (insn->imm) {
+>  	case BPF_ADD:
+>  	case BPF_ADD | BPF_FETCH:
+> +	case BPF_XCHG:
+> +	case BPF_CMPXCHG:
+>  		break;
+>  	default:
+>  		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
+> @@ -3634,6 +3637,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+>  	if (err)
+>  		return err;
+>  
+> +	if (insn->imm == BPF_CMPXCHG) {
+> +		/* Check comparison of R0 with memory location */
+> +		err = check_reg_arg(env, BPF_REG_0, SRC_OP);
+> +		if (err)
+> +			return err;
+> +	}
+> +
 
-- Péter
+Need to think a bit more on this, but do we need to update is_reg64() here
+as well?
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>  	if (is_pointer_value(env, insn->src_reg)) {
+>  		verbose(env, "R%d leaks addr into mem\n", insn->src_reg);
+>  		return -EACCES;
+> @@ -3664,8 +3674,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+>  	if (!(insn->imm & BPF_FETCH))
+>  		return 0;
+>  
+> -	/* check and record load of old value into src reg  */
+> -	err = check_reg_arg(env, insn->src_reg, DST_OP);
+> +	if (insn->imm == BPF_CMPXCHG)
+> +		load_reg = BPF_REG_0;
+> +	else
+> +		load_reg = insn->src_reg;
+> +
+> +	/* check and record load of old value */
+> +	err = check_reg_arg(env, load_reg, DST_OP);
+>  	if (err)
+>  		return err;
+>  
+
+Thanks,
+John
