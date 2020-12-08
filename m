@@ -2,138 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CA02D2137
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125912D213F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgLHC6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:58:22 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:31240 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbgLHC6V (ORCPT
+        id S1727881AbgLHDFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbgLHDFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:58:21 -0500
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201208025739epoutp0161f725eb8cd064c3f883da11818811c5~OnmGenjuR0673206732epoutp01L
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:57:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201208025739epoutp0161f725eb8cd064c3f883da11818811c5~OnmGenjuR0673206732epoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607396259;
-        bh=hdZZ+/7XX3C01adJ1BxuhBqM9QJ43p3zU5pXJVSrO3w=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=FGc1KgY9kM11b+Yk8E7lB9M3BAljcX59/kiisL/Ku+/shoCaVPQtd3h9oItdBCt9Y
-         VUWiHkFz4UnRx0WYZLLy0VqqWNFY/kyjBAeK3uZaLWcDpINfyoiRsT+JC71vWoH0TS
-         dIWd82yMTdDDHoQH3BRLQW8BGLdu0Lr58hY6cnyQ=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20201208025738epcas5p3f7d9816ff296c06ee199972bdfc4c93d~OnmGE457X0400604006epcas5p3I;
-        Tue,  8 Dec 2020 02:57:38 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A0.7E.50652.2ABEECF5; Tue,  8 Dec 2020 11:57:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201208025738epcas5p4a50b39f580a76d0961eb5d8f8878ec2c~OnmFbwAOF3236132361epcas5p4d;
-        Tue,  8 Dec 2020 02:57:38 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201208025737epsmtrp257049d7bac9afa8e95e584d99a57a687~OnmFa98r23094730947epsmtrp2I;
-        Tue,  8 Dec 2020 02:57:37 +0000 (GMT)
-X-AuditID: b6c32a4a-6c9ff7000000c5dc-d7-5fceeba2c0ef
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        69.F1.13470.1ABEECF5; Tue,  8 Dec 2020 11:57:37 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201208025736epsmtip1cb5356a515c6f36881e429ddb936febb~OnmDxeeSV1502615026epsmtip1g;
-        Tue,  8 Dec 2020 02:57:36 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Bean Huo'" <huobean@gmail.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <stanley.chu@mediatek.com>,
-        <beanhuo@micron.com>, <bvanassche@acm.org>,
-        <tomas.winkler@intel.com>, <cang@codeaurora.org>
-Cc:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201207190137.6858-1-huobean@gmail.com>
-Subject: RE: [PATCH 0/2] two UFS changes
-Date:   Tue, 8 Dec 2020 08:27:35 +0530
-Message-ID: <01a401d6cd0d$e2db4c60$a891e520$@samsung.com>
+        Mon, 7 Dec 2020 22:05:05 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C798DC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 19:04:18 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id m5so5128717wrx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 19:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bkRHDvM+lBKvUGRt9o9RkqLVx4uIScAOd7JSt30Of/c=;
+        b=No/qvAM9pflFXcfZM8hc1VwbOLIF0qSunPN9S7d9Xy85yzF38aP+pkIPIV4e9P9WhN
+         8nSQYWd8NtIcX1Rx36tlq8MKFusH5tziF0X9ZbtMLMM9uN9cqhiI7lxti+AtxH0F7tja
+         e0mhlxZWUHFrb6/isixI48BP+2winookiiYbKK546JAdG5iyZJRp399ZcSaOyxLN9feK
+         qbBfH9yqgZftAEgaHWl2fY/iRlSsaRlxlE61DHHr9fpQjNAVdjbXIf0yahz63ijGOKNC
+         cvUdlKubI+zd7tRbSY3DAufx9m0ktc4ZyscBdGhBWWSzifjCwvYqYFf0am4Jl0bMJsBD
+         QzgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=bkRHDvM+lBKvUGRt9o9RkqLVx4uIScAOd7JSt30Of/c=;
+        b=aq/QbQWSyQbXJ889GZ1dfTg0ZP+tyCbMqb20qH82XiXrUiTBKH0wSFFdCRl36eczuw
+         2EADi5LKgyvmzIStRiikpHe+aYPerkhuvgW4xr3/vQjUgXXhJEVQsmlz9t1A7iuE046/
+         ujRUxZ97XuIhryy8z0TbEUaQtssBjaBt1Y7CsHNgc0PpAF7mUWxb3IeUlipHNKAme4jB
+         vy1uinyNe/mO4wkACgMME6ec3plgEAbElCBLpxNpG+gCizv8tlm7wj3L4fcJJzp34cvY
+         CScetXUqrdsQV0HkVHq7ZSmv20N0J61TVm3laHLZqyo551/EywqBdcqZC1mwsDIIzh17
+         c8Ng==
+X-Gm-Message-State: AOAM530vdyNCv44w1Qc3UnJ7VjWmcMk+cTPweEkRmmmXs9Jc8uTKErwT
+        kKOI9YwinLGffq+rjVyAfHk=
+X-Google-Smtp-Source: ABdhPJyN3SlF2EzN5gnynGwQFx7UeZjkPfAuNnlWYoGw8TumcT4TJzw/xszm/d0rJHXwKRY7WJ1Amw==
+X-Received: by 2002:a5d:504f:: with SMTP id h15mr22605630wrt.402.1607396656511;
+        Mon, 07 Dec 2020 19:04:16 -0800 (PST)
+Received: from [192.168.8.113] ([185.69.145.78])
+        by smtp.gmail.com with ESMTPSA id q25sm1492883wmq.37.2020.12.07.19.04.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Dec 2020 19:04:15 -0800 (PST)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+References: <abab9af4e0d26358538a45a2826650e9cefd2924.1606961931.git.asml.silence@gmail.com>
+ <20201208013722.GG3579531@ZenIV.linux.org.uk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [RFC] exit: do exit_task_work() before shooting off mm
+Message-ID: <d00c5e71-76c9-3b95-7d3b-e88b990d3682@gmail.com>
+Date:   Tue, 8 Dec 2020 03:00:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH5gtBARHfB6frg5az8lN1he36AbQG4tUtqqZlPhcA=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7bCmlu6i1+fiDdqOKVnsbTvBbvHy51U2
-        i4MPO1kspn34yWzxaf0yVos5ZxuYLBbd2MZkcXnXHDaL7us72CyWH//HZLF0601Giw89dQ48
-        HpeveHtc7utl8tg56y67x+I9L5k8Jiw6wOjRcnI/i8f39R1sHh+f3mLx+LxJzqP9QDdTAFcU
-        l01Kak5mWWqRvl0CV8bFhQ1sBS/ZKlY9esHcwHiOtYuRk0NCwETi5K+lLF2MXBxCArsZJX68
-        Os8I4XxilLj5uZkJpEpI4BujxLrXaTAd87cdgurYyyhx4/JPdgjnJaPErOfL2UCq2AR0JXYs
-        bmMDSYgI9DBJbPxxgAUkwSzgIHHywQ6wsZwCZhKnLswAiwsLaEi0fd7KCGKzCKhIfJrwE+xA
-        XgFLidPLz0DZghInZz6BmiMvsf3tHGaIkxQkfj5dBlYjImAl8axjCStEjbjE0Z89zCBHSAjc
-        4ZCYsv4DC0SDi8S3dUegbGGJV8e3sEPYUhKf3+0FupoDyM6W6NllDBGukVg67xhUub3EgStz
-        WEBKmAU0Jdbv0odYxSfR+/sJE0Qnr0RHmxBEtapE87urUJ3SEhO7u6HB7iFxYc8npgmMirOQ
-        PDYLyWOzkDwwC2HZAkaWVYySqQXFuempxaYFRnmp5XrFibnFpXnpesn5uZsYwWlOy2sH48MH
-        H/QOMTJxMB5ilOBgVhLhVZM6Gy/Em5JYWZValB9fVJqTWnyIUZqDRUmcV+nHmTghgfTEktTs
-        1NSC1CKYLBMHp1QDU9denTxOJ7s7jtwRdTPVeLd73Yv4fsH8wfdp9z3rFW/InIy0v9vHr3H3
-        z7TOKDstE+m089Oeiessefb6/XW1spenN2dtrjx6puT/pDa1dydTrsgpvUyuagqb+2hnX+mW
-        z0I/9eqlbKbH702ctKbHcrl6ELuHRWNZ8av6+/d1RXdy3bBpadi7NqbB2+/8s00yDEuTjLea
-        aPLqHGbXeDHjpqq+71HHde8kL18PO+U0ezNHz3rLs9Hlu2o7WXv07u9aNaHUJ89HmcEy4lu9
-        6Ar+3t6JVu/Lg0qbq80NXPaXZE17yTn/+OvHC1607ZtYf7to6vc1idZy5efCHSvt2Zed2JZm
-        8vVd9DnzLdvNvZ88U2Ipzkg01GIuKk4EAAxqqDTiAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEIsWRmVeSWpSXmKPExsWy7bCSnO7C1+fiDTqOWVrsbTvBbvHy51U2
-        i4MPO1kspn34yWzxaf0yVos5ZxuYLBbd2MZkcXnXHDaL7us72CyWH//HZLF0601Giw89dQ48
-        HpeveHtc7utl8tg56y67x+I9L5k8Jiw6wOjRcnI/i8f39R1sHh+f3mLx+LxJzqP9QDdTAFcU
-        l01Kak5mWWqRvl0CV8bFhQ1sBS/ZKlY9esHcwHiOtYuRk0NCwERi/rZDLF2MXBxCArsZJV7e
-        /M0OkZCWuL5xApQtLLHy33N2iKLnjBJXW1tYQBJsAroSOxa3sYEkRASmMUnsWXaEuYuRg4NZ
-        wEliz80kiIZ2Rom/0/eCNXAKmEmcujADzBYW0JBo+7yVEcRmEVCR+DThJ9hJvAKWEqeXn4Gy
-        BSVOznzCAjFTT6JtI1g5s4C8xPa3c5ghjlOQ+Pl0GVi5iICVxLOOJawQNeISR3/2ME9gFJ6F
-        ZNIshEmzkEyahaRjASPLKkbJ1ILi3PTcYsMCw7zUcr3ixNzi0rx0veT83E2M4GjV0tzBuH3V
-        B71DjEwcjIcYJTiYlUR41aTOxgvxpiRWVqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7
-        NbUgtQgmy8TBKdXAlN6cfOO87NRP2/PDaxbEr5m5KEX7s9VLH9NTZdEsG1TWePf/c14iuMRz
-        565Ns8xfGz1iadj7aMK9puZN+TOuv0lpXrP52DmumhvpnVKlXLGVCrPP1GjquzWZdYbxrHg2
-        w7Y5Mk/9x13LCU97W07tPn18j8vUpyf6r1hc6wp/zdamJnrlu89Gwb4NUYV9q6bP/bmt8B/n
-        1C3TL2a+fxA8+ZK2m9nHurcdlrEN+4/oln/e3hJwY4vyPGX5VX/tmS2fMBk/K/OvN337O87e
-        fdMXFu3Zu496KdaYl/O+cld+XrtsTX205HH19u1vrk0OspuxLapk6cWzK6+uaGj9/XtJcuj9
-        QpPbLBwRHU1KJj0CE5VYijMSDbWYi4oTAZReEb5FAwAA
-X-CMS-MailID: 20201208025738epcas5p4a50b39f580a76d0961eb5d8f8878ec2c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20201207190149epcas5p2d877f4e3f6d31548d97f9b486d243a05
-References: <CGME20201207190149epcas5p2d877f4e3f6d31548d97f9b486d243a05@epcas5p2.samsung.com>
-        <20201207190137.6858-1-huobean@gmail.com>
+In-Reply-To: <20201208013722.GG3579531@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bean,
+On 08/12/2020 01:37, Al Viro wrote:
+> On Thu, Dec 03, 2020 at 02:30:46AM +0000, Pavel Begunkov wrote:
+>> Handle task works and lock it earlier before it starts killing off
+>> task's resources like mm. io_uring makes use of it a lot and it'd
+>> nicer to have all added task_work finding tasks in a consistent state.
+>>
+>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>> ---
+>>
+>> Would it be correct? I clearly don't know all the exit invariants, but
+>> can't find any users relying on task_works in-between.
+> 
+> You've just gotten rid of exit_task_work() anywhere after exit_files().
+> And exit_mm() can trigger the final fput() just as easily as exit_files().
+> 
+> IOW, you have just made the effect of final close on exit() completely
+> asynchronous.
+> 
+> NAK.
 
-> -----Original Message-----
-> From: Bean Huo <huobean@gmail.com>
-> Sent: 08 December 2020 00:32
-> To: alim.akhtar@samsung.com; avri.altman@wdc.com;
-> asutoshd@codeaurora.org; jejb@linux.ibm.com;
-> martin.petersen@oracle.com; stanley.chu@mediatek.com;
-> beanhuo@micron.com; bvanassche@acm.org; tomas.winkler@intel.com;
-> cang@codeaurora.org
-> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH 0/2] two UFS changes
-> 
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> 
-> 
-> Bean Huo (2):
->   scsi: ufs: Remove an unused macro definition POWER_DESC_MAX_SIZE
->   scsi: ufs: Fix wrong print message in dev_err()
-> 
->  drivers/scsi/ufs/ufs.h    | 1 -
->  drivers/scsi/ufs/ufshcd.c | 2 +-
->  2 files changed, 1 insertion(+), 2 deletions(-)
-> 
-Thanks!
-Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
+Ok, that's why it was a question. Thanks for making it clear
 
-> --
-> 2.17.1
-
-
+-- 
+Pavel Begunkov
