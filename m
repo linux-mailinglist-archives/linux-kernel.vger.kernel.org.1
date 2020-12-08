@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74732D3233
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863D02D3235
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731085AbgLHS3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:29:42 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43552 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730454AbgLHS3l (ORCPT
+        id S1730980AbgLHSc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730492AbgLHSc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:29:41 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8I1M6l180887;
-        Tue, 8 Dec 2020 13:28:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=dCWMN9LSCY8KccMhTXdAKysM9baWfzMNIMM2kI9/EMA=;
- b=q8ohGRdj0AfgJnoJ094XpzezQfcbMZDeTGEoi8zlwHQDa7Xi/bXtIGIDlRUL7EhcdxjF
- qDx1aLcE6VMhKHs6EDzTxHv5TojShJ95WZrLwDTwiIHjbcERkzooiHUEtx3AWLaN6hjV
- KesJxMxKao92UslqAIID3vrmbMHdJLMKQQMcAvTNKtpBA2BgKr1XT1QLyjPprGcz1kzs
- Qhia0dISrOVDLJRpddo8g/eQpF2I7yLwrAVaul/YyYGMCUgOT9xyRlEr7bdO+9eKxX4N
- NmGiE+pn41shTW8R3iltZDuVrW4UTWq+jn1SHPvqqIoj/he71a8PaXpPclOdcwdzjb3D Yg== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35adg3an7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 13:28:52 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8ICkGp001331;
-        Tue, 8 Dec 2020 18:28:50 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3581fhhy8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 18:28:50 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8ISl4A47186260
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 18:28:47 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D410AE058;
-        Tue,  8 Dec 2020 18:28:47 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F4A2AE053;
-        Tue,  8 Dec 2020 18:28:47 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 18:28:47 +0000 (GMT)
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [RFC PATCH 1/1] mm/hugetlb: clear compound_nr before freeing gigantic pages
-Date:   Tue,  8 Dec 2020 19:28:13 +0100
-Message-Id: <20201208182813.66391-2-gerald.schaefer@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208182813.66391-1-gerald.schaefer@linux.ibm.com>
-References: <20201208182813.66391-1-gerald.schaefer@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 suspectscore=2 phishscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080108
+        Tue, 8 Dec 2020 13:32:27 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43BDC061749;
+        Tue,  8 Dec 2020 10:31:46 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id k78so8078541ybf.12;
+        Tue, 08 Dec 2020 10:31:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Yv0AU/YcsITiXZw1huIkAWkR6xhRqThVIfqOGzqf/JQ=;
+        b=CBXqKAqyoMu38WmYGr1Y8k3JfN0eKpaU4LePiRbwo+sA5ZJdjF48VLNM9Xxf5E6ZQo
+         XXNIIx0a2K453Z3vpLxvRlBOMRlO2y8G6FPzDpU0AQcDkrS7P2CWbCsbn+Cb485uNck8
+         r/xPi3+V6Tjj12uUCV+yaU5qvRvsl/v6AHY9Ml/gpOkSH67Irrsyw8BZF3/nT+W9C590
+         zfwWrxoNy44WhFqI7FiGpdOSuIOBr59/ervp4+u/KbnvExcquZbKKT9R1hbDa13WHoWp
+         /7yuwcO1LVxlhT2aDHQ0tdSX07J/IxQGRlXjb8BEiAziJtkWYOVvlJqAkpArCBuvSeDu
+         Eb7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yv0AU/YcsITiXZw1huIkAWkR6xhRqThVIfqOGzqf/JQ=;
+        b=Bu5lT6qIwf5PX2A5vR1j1sLU2ebDiFj63LPJltPZD3JV9Lp0iZ6+etWi5t010xhlzh
+         1ruuxhl5Wg7EjolzURqHuEv4rgx9BLSYLvxrRCqtSZmeyDPOim/Tz+1KaxES3MpHvfoG
+         dyxGgSOzZPFDZ+tG183lj3lalJ1cIORgwBsJLB3ykQHacZUW7y2QULsGhLA3MCLLwVf1
+         zwwVuIl25XVn3+T3dIll/0eLdg+Oxgmpdseft1SzPrHOSsK8ZI15trV0JRs3GxFj9DD5
+         biFvMdZT/fE+bs0cEOXbKbZUNQDx4H+Xy9vxW43OI6CBaQFIVp+WO7Fs+c6YxF8nHoI1
+         +yNg==
+X-Gm-Message-State: AOAM5318A5mtzjEJYXOaKxkFwb733fjCAgrJbisj/79MP2AjZktvnoO8
+        +Y5X2Kh9cJ2ZRDcZJajAjQg+Y9QTrFJvp+4ocGTOl3KfOuI=
+X-Google-Smtp-Source: ABdhPJz4kLQkZYPvmUQyiTHbtl8m5yefRpAQ2bYH7VLaeBMHmO5pq3UIpM1gEU8h0Yb/QfFCwgS0Y52HXP3PIQpe61s=
+X-Received: by 2002:a25:aea8:: with SMTP id b40mr13150562ybj.347.1607452306014;
+ Tue, 08 Dec 2020 10:31:46 -0800 (PST)
+MIME-Version: 1.0
+References: <20201203160245.1014867-1-jackmanb@google.com> <20201203160245.1014867-13-jackmanb@google.com>
+ <CAEf4BzbEfPScq_qMVJkDxfWBh-oRhY5phFr=517pam80YcpgMg@mail.gmail.com>
+ <X8oEOPViOhR8XdH6@google.com> <CAEf4BzaEystdQ3PbaZXhmpTfqbs410BVCEToHfKLgx-3wAm-KA@mail.gmail.com>
+ <X84LPVp3PqfESx9U@google.com> <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
+ <X8+yHRxv2g7dXeNP@google.com>
+In-Reply-To: <X8+yHRxv2g7dXeNP@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Dec 2020 10:31:35 -0800
+Message-ID: <CAEf4BzYhCmahyXbG3mXgfGuSD8T3gvkXXYToTwAuG17MDZwwKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 12/14] bpf: Pull tools/build/feature biz into
+ selftests Makefile
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1378a5ee451a ("mm: store compound_nr as well as compound_order")
-added compound_nr counter to first tail struct page, overlaying with
-page->mapping. The overlay itself is fine, but while freeing gigantic
-hugepages via free_contig_range(), a "bad page" check will trigger for
-non-NULL page->mapping on the first tail page:
+On Tue, Dec 8, 2020 at 9:04 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> On Mon, Dec 07, 2020 at 06:19:12PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Dec 7, 2020 at 3:00 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > >
+> > > On Fri, Dec 04, 2020 at 11:00:24AM -0800, Andrii Nakryiko wrote:
+> > > > On Fri, Dec 4, 2020 at 1:41 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > > > >
+> > > > > On Thu, Dec 03, 2020 at 01:01:27PM -0800, Andrii Nakryiko wrote:
+> > > > > > On Thu, Dec 3, 2020 at 8:07 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > > > > > >
+> [...]
+> > >
+> > > Ah right gotcha. Then yeah I think we can do this:
+> > >
+> > >  BPF_ATOMICS_SUPPORTED = $(shell \
+> > >         echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
+> > >         | $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
+> >
+> > Looks like it would work, yes.
+> /
+> > Curious what "-x cpp-output" does?
+>
+> That's just to tell Clang what language to expect, since it can't infer
+> it from a file extension:
+>
+>   $ echo foo | clang -S -
+>   clang-10: error: -E or -x required when input is from standard input
+>
+> Yonghong pointed out that we can actually just use `-x c`.
 
-[  276.681603] BUG: Bad page state in process bash  pfn:380001
-[  276.681614] page:00000000c35f0856 refcount:0 mapcount:0 mapping:00000000126b68aa index:0x0 pfn:0x380001
-[  276.681620] aops:0x0
-[  276.681622] flags: 0x3ffff00000000000()
-[  276.681626] raw: 3ffff00000000000 0000000000000100 0000000000000122 0000000100000000
-[  276.681628] raw: 0000000000000000 0000000000000000 ffffffff00000000 0000000000000000
-[  276.681630] page dumped because: non-NULL mapping
-[  276.681632] Modules linked in:
-[  276.681637] CPU: 6 PID: 616 Comm: bash Not tainted 5.10.0-rc7-next-20201208 #1
-[  276.681639] Hardware name: IBM 3906 M03 703 (LPAR)
-[  276.681641] Call Trace:
-[  276.681648]  [<0000000458c252b6>] show_stack+0x6e/0xe8
-[  276.681652]  [<000000045971cf60>] dump_stack+0x90/0xc8
-[  276.681656]  [<0000000458e8b186>] bad_page+0xd6/0x130
-[  276.681658]  [<0000000458e8cdea>] free_pcppages_bulk+0x26a/0x800
-[  276.681661]  [<0000000458e8e67e>] free_unref_page+0x6e/0x90
-[  276.681663]  [<0000000458e8ea6c>] free_contig_range+0x94/0xe8
-[  276.681666]  [<0000000458ea5e54>] update_and_free_page+0x1c4/0x2c8
-[  276.681669]  [<0000000458ea784e>] free_pool_huge_page+0x11e/0x138
-[  276.681671]  [<0000000458ea8530>] set_max_huge_pages+0x228/0x300
-[  276.681673]  [<0000000458ea86c0>] nr_hugepages_store_common+0xb8/0x130
-[  276.681678]  [<0000000458fd5b6a>] kernfs_fop_write+0xd2/0x218
-[  276.681681]  [<0000000458ef9da0>] vfs_write+0xb0/0x2b8
-[  276.681684]  [<0000000458efa15c>] ksys_write+0xac/0xe0
-[  276.681687]  [<000000045972c5ca>] system_call+0xe6/0x288
-[  276.681730] Disabling lock debugging due to kernel taint
-
-This is because only the compound_order is cleared in
-destroy_compound_gigantic_page(), and compound_nr is set to 1U << order == 1
-for order 0 in set_compound_order(page, 0).
-
-Fix this by explicitly clearing compound_nr for first tail page after calling
-set_compound_order(page, 0).
-
-Cc: <stable@vger.kernel.org> # 5.9+
-Fixes: 1378a5ee451a ("mm: store compound_nr as well as compound_order")
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
----
- mm/hugetlb.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1f3bf1710b66..3bcc0bc7e02a 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1216,6 +1216,7 @@ static void destroy_compound_gigantic_page(struct page *page,
- 	}
- 
- 	set_compound_order(page, 0);
-+	page[1].compound_nr = 0;
- 	__ClearPageHead(page);
- }
- 
--- 
-2.17.1
-
+yeah, that's what confused me, as we don't really write C++ for BPF
+code :) All good.
