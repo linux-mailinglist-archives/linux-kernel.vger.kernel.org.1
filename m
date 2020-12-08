@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60DB2D2375
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624C82D2373
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgLHGMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgLHGMX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:12:23 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8198C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 22:11:42 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x15so6450955pll.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 22:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UpVQF3Vudkbc3GHoWROwS054gUR7+NaA51Md2j04exk=;
-        b=MO4q8Daiy7xSk0OWg8VXqYhYklCqqE1W9wZHqn4xUf/MmMlgyVCQJbCefKD3IlLPo5
-         68BreaQqF3oOFwd0dXQ1W523QExDItYrWAaw++qVF1oNxHxlYFD2tf0Q4ZbevR+wkMWp
-         tw/c4E5vYcT+MZvCpmFAtI4y3aZOLTLfOUj7LeuIQf0MaNXEIuKa29vMbtbBR7T/6kSE
-         GOA3AoUSgYkGvwSiZWOjUOpgvSWDd+5z5G1WoGt6owN/G3rhgy982d0H7OwCjiJS/6f3
-         bGiF1i0l5TkxUq4mniAKrcU0gUn2kGlQdAzcmxeaOat9ZKw/Khn5MPRF5syo4Jf3iBts
-         kCLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UpVQF3Vudkbc3GHoWROwS054gUR7+NaA51Md2j04exk=;
-        b=aJH09zyd9/Q9PYDGVMwzI/F6r8ZKc2sHwh0lYrpv2B6q6k2UYPjzYgHnWnEaTPGM/4
-         eTCkZuExujWNAUjOT5JB31SujkzrqmKpzUcDdhaUfcg16eCOsxlAsbj3On6jaX6aVSDa
-         TqFmMFcENXyYNwvW8mk252ORff5NtYiYvMZcnr15A89jyK3k7/LWA03hbE7z5w6zg0r9
-         qaLI6Q5Ml+7c0SlTgW9rjFWSK2r6DdCzxT4i0CRvg3s9uuvcm5nIlGw9NUw+LWh7qNZb
-         IvZIYokM/iXFwT4XuXGs/4iclxe9B3gI1izKqq5RCLrxe/7Ts8KsEkABS9CpCkp/rgIq
-         oqzg==
-X-Gm-Message-State: AOAM531r683cBDkjDYIDhfG5KwHyIk0Q4zwhOgAddByTON3Y8FFAv77N
-        H1GfHm9pmD0FgXEEg0bxsBokeQ==
-X-Google-Smtp-Source: ABdhPJxQ7wCgvPqgz9ego4638i3fjxTVNJlcUZ2n0nqpNJKE4NIpX6odJWAB6a0FOaM14bjDRvanmA==
-X-Received: by 2002:a17:902:a708:b029:da:ec42:a3d4 with SMTP id w8-20020a170902a708b02900daec42a3d4mr11356142plq.40.1607407902173;
-        Mon, 07 Dec 2020 22:11:42 -0800 (PST)
-Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id q35sm1725015pjh.38.2020.12.07.22.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 22:11:41 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     cascardo@holoscopio.com, don@syst.com.br, dvhart@infradead.org,
-        andy@infradead.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Carlo Caione <carlo@endlessm.com>,
-        Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH] x86/platform: classmate-laptop: add WiFi media button
-Date:   Tue,  8 Dec 2020 14:11:11 +0800
-Message-Id: <20201208061111.29073-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726642AbgLHGMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:12:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgLHGMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:12:05 -0500
+Date:   Mon, 7 Dec 2020 22:11:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607407885;
+        bh=6eVsoX1UfUHRal2QvrfoS2AS5yZMliy97WzwbEbV8Lw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b5+clt9E+XWruWrulzy8brKCYKPtc+U0zAbBxonMi99vz0vq2qL1HNoQbZX4nst4a
+         6wdYBbQcebmWtEB6MBWfv/tfdSJSpTRzrGwdJWtjiEQ/LrThHH8Fwr7lBSnmDFhel+
+         g2iNerWRtHpiiQ2ncO9s+2xhrElmDaqxYlwIw/gJgsq8XF52qDQjQyLlOUcgPTTKPI
+         /IFeIn/pxcsXbDpmL/1/U+NmqYEbgOqK6KwKowSHJ2qD8yVu1K2dF3V7txI7yoMjj7
+         XD/B3gJkbWt0Po8I1aps1bw9pBqmUN1y+VOi3diqNJYT2h1gzY9aBxMQglpYgBYSrd
+         pvYgyOs+ewE8Q==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: fix race of pending_pages in
+ decompression
+Message-ID: <X88ZC4f2hZxAU3C0@gmail.com>
+References: <20201205042626.1113600-1-daeho43@gmail.com>
+ <X86RJdLhOVRm28Eu@gmail.com>
+ <CACOAw_yp0LU-vcT2+NTF3ipibF6GvqfaQ4V=957CDPQLbes92Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACOAw_yp0LU-vcT2+NTF3ipibF6GvqfaQ4V=957CDPQLbes92Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Carlo Caione <carlo@endlessm.com>
+On Tue, Dec 08, 2020 at 08:51:45AM +0900, Daeho Jeong wrote:
+> > I am trying to review this but it is very hard, as the f2fs compression code is
+> > very hard to understand.
+> >
+> > It looks like a 'struct decompress_io_ctx' represents the work to decompress a
+> > particular cluster.  Since the compressed data of the cluster can be read using
+> > multiple bios, there is a reference count of how many pages are remaining to be
+> > read before all the cluster's pages have been read and decompression can start.
+> >
+> > What I don't understand is why that reference counting needs to work differently
+> > depending on whether verity is enabled or not.  Shouldn't it be exactly the
+> > same?
+> >
+> > There also seems to be some confusion about the scope of STEP_VERITY.  Before
+> > f2fs compression was added, it was a per-bio thing.  But now in a compressed
+> > file, it's really a per-cluster thing, since all decompressed pages in a
+> > compressed cluster are verified (or not verified) at once.
+> >
+> > Wouldn't it make a lot more sense to, when a cluster needs both compression and
+> > verity, *not* set STEP_VERITY on the bios, but rather set a similar flag in the
+> > decompress_io_ctx?
+> >
+> 
+> Eric,
+> 
+> Decompression and verity can be executed in different thread contexts
+> in different timing, so we need separate counts for each.
+> 
+> We already use STEP_VERITY for non-compression case, so I think using
+> this flag in here looks more making sense.
+> 
+> Thanks,
 
-The WiFi media button on the Quanta NL3 reports keycodes 0x8b and 0x9b
-to the platform driver. Add the mapping to support these codes.
+That didn't really answer my questions.
 
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
-Reviewed-by: Chris Chiu <chiu@endlessos.org>
----
- drivers/platform/x86/classmate-laptop.c | 2 ++
- 1 file changed, 2 insertions(+)
+I gave up trying to review this patch as the compression post-read handling is
+just way too weird and hard to understand.  I wrote a patch to clean it all up
+instead, please take a look:
+https://lkml.kernel.org/r/20201208060328.2237091-1-ebiggers@kernel.org
 
-diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
-index af063f690846..3e03e8d3a07f 100644
---- a/drivers/platform/x86/classmate-laptop.c
-+++ b/drivers/platform/x86/classmate-laptop.c
-@@ -1023,6 +1023,8 @@ static int cmpc_keys_codes[] = {
- 	KEY_CAMERA,
- 	KEY_BACK,
- 	KEY_FORWARD,
-+	KEY_UNKNOWN,
-+	KEY_WLAN, /* NL3: 0x8b (press), 0x9b (release) */
- 	KEY_MAX
- };
- 
--- 
-2.20.1
-
+- Eric
