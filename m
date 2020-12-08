@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9812D21ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC6B2D21E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgLHESB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:18:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:40648 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbgLHESB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:18:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BDA111FB;
-        Mon,  7 Dec 2020 20:17:15 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.87.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DC8423F718;
-        Mon,  7 Dec 2020 20:17:10 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
-        hca@linux.ibm.com, catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH 3/3] s390/mm: Define arch_get_mappable_range()
-Date:   Tue,  8 Dec 2020 09:46:18 +0530
-Message-Id: <1607400978-31595-4-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
-References: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
+        id S1726289AbgLHERo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:17:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgLHERo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 23:17:44 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EAEC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:17:03 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w6so12634640pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHdvJA2HTSsKcq12ECvAFT6hATkrl/TFzJg0uMaRku0=;
+        b=YKPk34UO6uwnipQNlIBKtdQw/9xGkncAFiZryxzvH34O/VEGjEaYwyr3zstJRQ23yy
+         2d6nIPyAZaPz21F5m+W7/O9qXIU0UQjDz2ncZzh2LBOlfEHAKFTGEVYcOnI+a7Zxd7ax
+         dbsoZwoatQouMGQaIftlSidpryFdaeILezrvQeIjFP8uIdffKQJKbpbIURf3dHOM0MtH
+         0RyLIMvZkHvvRLFth5i+QTQbJPkxe8zkdskTn6ptpRb7DjXH/VJq0vsbf+bNOsM1qP2M
+         Fn8f968ZMyDnvZ/3Itqt4GKht5ji6dSFw/F4MNLEGV+E7bIybyrDipAGSf26A4Kcq5ph
+         g5QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHdvJA2HTSsKcq12ECvAFT6hATkrl/TFzJg0uMaRku0=;
+        b=Tkc5BV+EVd06MsBz1kV1UyXhtgkfaip/sEFo+dl0yQsCsHfdLi7hdfd1ZVwJU1PZaD
+         GWex1vAtIOccfdX7oQzZBWjLeQgXX5heEn9uSzPOHxWo59v1L5EQuDpaRxhEJngziM4M
+         Cj0edpeDVC02/Y1Zy+TBAwFPjm7sBpu7++tPf9mrggiGNKOx6VGwS8KAOEQv2iAoJkp8
+         Dplcq2qhRWWHpEn6xOMgkBmK8HwvOwygok1d8SHgQ0jPt5SVFxv4bdhj08GWx+VQs3az
+         ESdMp/wKCIloY5yLV6nt1U8Fu+DQod06ida0EJFxv0xkLCPRezUIg+s8CfSpWx+mJsWU
+         VhzQ==
+X-Gm-Message-State: AOAM531bJkFHUV7B78+Ixop4snXdzx1x6cVjVZx2w8FSBhfnA2bkL3zj
+        nKbGA9fXNyajo0+YU/gVPrwHyQ==
+X-Google-Smtp-Source: ABdhPJwJUzPaDCBiYEYyn3tMURt2qiGQGs2mL3byq2uqzBnMc5ig1jS6M6TLGHIYPgvzT9y5ea3XhA==
+X-Received: by 2002:aa7:9afb:0:b029:19e:45d8:b102 with SMTP id y27-20020aa79afb0000b029019e45d8b102mr3130288pfp.48.1607401023135;
+        Mon, 07 Dec 2020 20:17:03 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id w9sm13052748pfj.128.2020.12.07.20.17.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 20:17:02 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH V5 0/3] cpufreq_cooling: Get effective CPU utilization from scheduler
+Date:   Tue,  8 Dec 2020 09:46:54 +0530
+Message-Id: <cover.1607400596.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This overrides arch_get_mappabble_range() on s390 platform which will be
-used with recently added generic framework. It drops a redundant similar
-check in vmem_add_mapping() while compensating __segment_load() with a new
-address range check to preserve the existing functionality. It also adds a
-VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
-been called on the hotplug path.
+Hi,
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/s390/mm/extmem.c |  5 +++++
- arch/s390/mm/init.c   | 10 ++++++++++
- arch/s390/mm/vmem.c   |  4 ----
- 3 files changed, 15 insertions(+), 4 deletions(-)
+This patchset makes the cpufreq_cooling driver reuse the CPU utilization
+metric provided by the scheduler instead of depending on idle and busy
+times of a CPU, which aren't that accurate to measure the busyness of a
+CPU for the next cycle. More details can be seen in the commit logs of
+the patches.
 
-diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
-index 5060956b8e7d..cc055a78f7b6 100644
---- a/arch/s390/mm/extmem.c
-+++ b/arch/s390/mm/extmem.c
-@@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
- 		goto out_free_resource;
- 	}
- 
-+	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
-+		rc = -ERANGE;
-+		goto out_resource;
-+	}
-+
- 	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
- 	if (rc)
- 		goto out_resource;
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 77767850d0d0..64937baabf93 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -278,6 +278,15 @@ device_initcall(s390_cma_mem_init);
- 
- #endif /* CONFIG_CMA */
- 
-+struct range arch_get_mappable_range(void)
-+{
-+	struct range memhp_range;
-+
-+	memhp_range.start = 0;
-+	memhp_range.end =  VMEM_MAX_PHYS;
-+	return memhp_range;
-+}
-+
- int arch_add_memory(int nid, u64 start, u64 size,
- 		    struct mhp_params *params)
- {
-@@ -291,6 +300,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
- 		return -EINVAL;
- 
-+	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
- 	rc = vmem_add_mapping(start, size);
- 	if (rc)
- 		return rc;
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index b239f2ba93b0..749eab43aa93 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -536,10 +536,6 @@ int vmem_add_mapping(unsigned long start, unsigned long size)
- {
- 	int ret;
- 
--	if (start + size > VMEM_MAX_PHYS ||
--	    start + size < start)
--		return -ERANGE;
--
- 	mutex_lock(&vmem_mutex);
- 	ret = vmem_add_range(start, size);
- 	if (ret)
+V4->V5:
+- Don't export enum cpu_util_type and don't pass it as argument to
+  sched_cpu_util().
+- Fixed a build issue with !CONFIG_THERMAL_GOV_POWER_ALLOCATOR by moving
+  {allocate|free}_idle_time() out of CONFIG_THERMAL_GOV_POWER_ALLOCATOR
+  in patch 3/3.
+- Applied Acks from Rafael.
+
+V3->V4:
+- Broke the first patch into two parts and used effective_cpu_util() in
+  schedutil (Rafael).
+
+- Removed comment about idle-injection in last patch based on feedback
+  from Lukasz and added hi Reviewed-by tag.
+
+V2->V3:
+- Put the scheduler helpers within ifdef CONFIG_SMP.
+- Keep both SMP and !SMP implementations in the cpufreq_cooling driver.
+- Improved commit log with testing related information.
+
+--
+Viresh
+
+Viresh Kumar (3):
+  sched/core: Move schedutil_cpu_util() to core.c
+  sched/core: Rename schedutil_cpu_util() and allow rest of the kernel
+    to use it
+  thermal: cpufreq_cooling: Reuse sched_cpu_util() for SMP platforms
+
+ drivers/thermal/cpufreq_cooling.c |  69 ++++++++++++++----
+ include/linux/sched.h             |   5 ++
+ kernel/sched/core.c               | 114 ++++++++++++++++++++++++++++++
+ kernel/sched/cpufreq_schedutil.c  | 108 +---------------------------
+ kernel/sched/fair.c               |   6 +-
+ kernel/sched/sched.h              |  22 ++----
+ 6 files changed, 184 insertions(+), 140 deletions(-)
+
+
+base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
 -- 
-2.20.1
+2.25.0.rc1.19.g042ed3e048af
 
