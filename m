@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91862D244C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00092D245A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgLHHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgLHHYi (ORCPT
+        id S1726843AbgLHH3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:29:52 -0500
+Received: from regular1.263xmail.com ([211.150.70.202]:60842 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726218AbgLHH3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:24:38 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E2C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:23:57 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id y23so1432334wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:23:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bwnZcJKOltLC78EdCJTTIZysg34xmbCEL+7ZUfnNors=;
-        b=AZufqmYyhIhiIjIXjTNyh2J9tNPyJ/WjQvSjd60viGbcy6GE4yOkipfzzs3Yd3nGrK
-         zzdEigae73Y3oNfJfTSEIGxTOKW0g7mSZpzCX+B1KhzUnNvuEVi21ujVjlN7uj8LZQ5/
-         CxhTuiDmpGfWSIVaLeECasOAflAsFj2jM7M125qmr1N+8dP/rD28XmdRHK/WrRyEz1Rl
-         Lvxva7DN7Cd94jq7XnSe/3DBFF2Gy3MvH8ArnQVryjdrMF1sJ4/JORUiWCHX+4tYQt8H
-         R4f+uolTnhOINvG6Jc+hTUauTim4L/AKv8xWP/4pnjJRZEaSybGonIFRIXggYWpclFCQ
-         ucHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bwnZcJKOltLC78EdCJTTIZysg34xmbCEL+7ZUfnNors=;
-        b=LYm7dWC6TRltlUtu09cqie6PvIzcRIkmD/7dz8Z0alK/POYT1KA6Vrm3G/ex0mCvu9
-         8fMUBQngeooDNU71VsDsmzGCShRVCpecQYNqFfxvJYwd3pSy3GtMbbDpAOxoegNfb25O
-         G9Dv5QyS5kQMwuRpUsfLlc2WRfTDbeAaYigjtbFS1P7Ffoq5q87FGqdyB/YLJW6oT4TL
-         F/yQ9wFikn+seLQvJEuE3J03D31mioVCxSbYim5GWfW4d62OPkw6D4cCM2zzcJKi1nrA
-         t5ztOKEkpOJJFQ89k3KYfTlGDOTj21ajr4S8ImjVLwbp+T0lTXeiQST6GBrtnYl4Uh+b
-         c0Kg==
-X-Gm-Message-State: AOAM533BdYY1m+SS1ahf6IvgJ5FlaxeaYqQAADwmfu83kzMNpAdsL9+a
-        YiPMBpNdnlbH1K0dARE9VqW4s4wtaN4dvFVG560tkQ==
-X-Google-Smtp-Source: ABdhPJxr4+o94bHYhKcEmobnJ9PgmKWvNErqCzXT8KkYnhyRDLin/XHz0bPr2OLcOhJnyokzuUQFUb9zkQ0GKOQ0ZTM=
-X-Received: by 2002:a7b:cf37:: with SMTP id m23mr2415823wmg.37.1607412236344;
- Mon, 07 Dec 2020 23:23:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-2-surenb@google.com>
- <20201125231322.GF1484898@google.com> <CAJuCfpGCc49g5+T+V3SxZ6eVteLac6xVRx+1z6G2a8P4-Cr7bA@mail.gmail.com>
- <20201125234322.GG1484898@google.com> <CAJuCfpFuWqMEXJij_qHhyGpuFXLuJ7-DcHgcc9760NhBHhuLHw@mail.gmail.com>
-In-Reply-To: <CAJuCfpFuWqMEXJij_qHhyGpuFXLuJ7-DcHgcc9760NhBHhuLHw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 7 Dec 2020 23:23:45 -0800
-Message-ID: <CAJuCfpFW=ruDA-FX6Uj7P8__J7RcbQuWwdQfhSuXm6SUWZeCXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
- entire memory range
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 8 Dec 2020 02:29:51 -0500
+Received: from localhost (unknown [192.168.167.13])
+        by regular1.263xmail.com (Postfix) with ESMTP id 7DBE8757;
+        Tue,  8 Dec 2020 15:23:55 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from hp1216 (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P20464T140378982311680S1607412234718334_;
+        Tue, 08 Dec 2020 15:23:55 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <bf1563341e3518cf21c038c9a99d4d63>
+X-RL-SENDER: zyf@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: zyf@rock-chips.com
+X-FST-TO: jbx6244@gmail.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Date:   Tue, 8 Dec 2020 15:23:54 +0800
+Organization: =?utf-8?B?55Ge6Iqv5b6u55S15a2Q?=
+From:   =?utf-8?B?6LW15Luq5bOw?= <yifeng.zhao@rock-chips.com>
+To:     "Johan Jonker" <jbx6244@gmail.com>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        richard <richard@nod.at>, vigneshr <vigneshr@ti.com>,
+        robh+dt <robh+dt@kernel.org>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        =?utf-8?B?SGVpa29TdMO8Ym5lcg==?= <heiko@sntech.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-rockchip <linux-rockchip@lists.infradead.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Re: [PATCH v15 2/8] mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+References: <20201130100031.22083-1-yifeng.zhao@rock-chips.com>, 
+        <20201130100031.22083-3-yifeng.zhao@rock-chips.com>, 
+        <0abf1dbd-13bb-cd92-907c-849f05ea887c@gmail.com>, 
+        <259fe1ce-6bcb-3a26-493d-87bbd2eaff5e@gmail.com>
+X-Priority: 3
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.18.111[cn]
+Mime-Version: 1.0
+Message-ID: <2020120815225461228793@rock-chips.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 11:01 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Wed, Nov 25, 2020 at 3:43 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Wed, Nov 25, 2020 at 03:23:40PM -0800, Suren Baghdasaryan wrote:
-> > > On Wed, Nov 25, 2020 at 3:13 PM Minchan Kim <minchan@kernel.org> wrote:
-> > > >
-> > > > On Mon, Nov 23, 2020 at 09:39:42PM -0800, Suren Baghdasaryan wrote:
-> > > > > process_madvise requires a vector of address ranges to be provided for
-> > > > > its operations. When an advice should be applied to the entire process,
-> > > > > the caller process has to obtain the list of VMAs of the target process
-> > > > > by reading the /proc/pid/maps or some other way. The cost of this
-> > > > > operation grows linearly with increasing number of VMAs in the target
-> > > > > process. Even constructing the input vector can be non-trivial when
-> > > > > target process has several thousands of VMAs and the syscall is being
-> > > > > issued during high memory pressure period when new allocations for such
-> > > > > a vector would only worsen the situation.
-> > > > > In the case when advice is being applied to the entire memory space of
-> > > > > the target process, this creates an extra overhead.
-> > > > > Add PMADV_FLAG_RANGE flag for process_madvise enabling the caller to
-> > > > > advise a memory range of the target process. For now, to keep it simple,
-> > > > > only the entire process memory range is supported, vec and vlen inputs
-> > > > > in this mode are ignored and can be NULL and 0.
-> > > > > Instead of returning the number of bytes that advice was successfully
-> > > > > applied to, the syscall in this mode returns 0 on success. This is due
-> > > > > to the fact that the number of bytes would not be useful for the caller
-> > > > > that does not know the amount of memory the call is supposed to affect.
-> > > > > Besides, the ssize_t return type can be too small to hold the number of
-> > > > > bytes affected when the operation is applied to a large memory range.
-> > > >
-> > > > Can we just use one element in iovec to indicate entire address rather
-> > > > than using up the reserved flags?
-> > > >
-> > > >         struct iovec {
-> > > >                 .iov_base = NULL,
-> > > >                 .iov_len = (~(size_t)0),
-> > > >         };
-> > > >
-> > > > Furthermore, it would be applied for other syscalls where have support
-> > > > iovec if we agree on it.
-> > > >
-> > >
-> > > The flag also changes the return value semantics. If we follow your
-> > > suggestion we should also agree that in this mode the return value
-> > > will be 0 on success and negative otherwise instead of the number of
-> > > bytes madvise was applied to.
-> >
-> > Well, return value will depends on the each API. If the operation is
-> > desruptive, it should return the right size affected by the API but
-> > would be okay with 0 or error, otherwise.
->
-> I'm fine with dropping the flag, I just thought with the flag it would
-> be more explicit that this is a special mode operating on ranges. This
-> way the patch also becomes simpler.
-> Andrew, Michal, Christian, what do you think about such API? Should I
-> change the API this way / keep the flag / change it in some other way?
+SGkgSm9oYW4sCgpZZXMsIEkgd2lsbCBwb3N0IE5GQyBjb2RlIHRvIFVib29077yMYnV0IGl0IG1h
+eSB0YWtlIGEgd2hpbGUgdG8gbW9kaWZ5IHRoZSBjb2RlIGZvciBVYm9vdC4KCi0tLS0tLS0tLS0t
+LS0tCnlpZmVuZwo+SGkgWWlmZW5nLAo+Cj5NZWFud2hpbGUsIGNvdWxkIHlvdSBwb3N0IGEgUkZD
+IHZlcnNpb24gZm9yIFVib290IGJhc2VkIG9uIHRoaXMgdmVyc2lvbgo+cGx1cyBjb21tZW50cywg
+c28gcGVvcGxlIGNhbiB0ZXN0IHRoZSB3aG9sZSBwcm9jZXNzIGZyb20gcHJvZ3JhbW1pbmcsCj5i
+b290aW5nIGFuZCBrZXJuZWw/Cj4KPk9uIDExLzMwLzIwIDE6NDkgUE0sIEpvaGFuIEpvbmtlciB3
+cm90ZToKPj4gSGksCj4+Cj4+IExvb2tzIGdvb2QgdG8gbWUuCj4+IERvIHRoZSBtYWludGFpbmVy
+cyBvciBzb21lb25lIGVsc2UgaGF2ZSBhbnkgbWFqb3IgaXNzdWVzPwo+PiBDb3VsZCBNaXF1ZWwg
+aW5kaWNhdGUgaWYgYSB2ZXJzaW9uIDE2IG11c3QgYmUgc2VuZCBmb3IgdGhhdCAncmV0Jwo+PiB2
+YXJpYWJsZSBhbG9uZSBvciBpcyBpdCBPSyBub3c/Cj4+Cj4+Cj4+IE9uIDExLzMwLzIwIDExOjAw
+IEFNLCBZaWZlbmcgWmhhbyB3cm90ZToKPj4+IFRoaXMgZHJpdmVyIHN1cHBvcnRzIFJvY2tjaGlw
+IE5GQyAoTkFORCBGbGFzaCBDb250cm9sbGVyKSBmb3VuZCBvbiBSSzMzMDgsCj4+PiBSSzI5Mjgs
+IFJLUFgzMCwgUlYxMTA4IGFuZCBvdGhlciBTT0NzLiBUaGUgZHJpdmVyIGhhcyBiZWVuIHRlc3Rl
+ZCB1c2luZwo+Pj4gOC1iaXQgTkFORCBpbnRlcmZhY2Ugb24gdGhlIEFSTSBiYXNlZCBSSzMzMDgg
+cGxhdGZvcm0uCj4KPlsuLl0KPgo+Pj4gKy8qKgo+Pj4gKyAqIHN0cnVjdCBya19lY2NfY250X3N0
+YXR1czogcmVwcmVzZW50IGEgZWNjIHN0YXR1cyBkYXRhLgo+Cj5yZXByZXNlbnQgdGhlIEVDQyBz
+dGF0dXMgZGF0YS4KPgo+Pj4gKyAqIEBlcnJfZmxhZ19iaXQ6IGVycm9yIGZsYWcgYml0IGluZGV4
+IGF0IHJlZ2lzdGVyLgo+Pj4gKyAqIEBsb3c6IEVDQyBjb3VudCBsb3cgYml0IGluZGV4IGF0IHJl
+Z2lzdGVyLgo+Pj4gKyAqIEBsb3dfbWFzazogbWFzayBiaXQuCj4+PiArICogQGxvd19ibjogRUND
+IGNvdW50IGxvdyBiaXQgbnVtYmVyLgo+Pj4gKyAqIEBoaWdoOiBFQ0MgY291bnQgaGlnaCBiaXQg
+aW5kZXggYXQgcmVnaXN0ZXIuCj4+PiArICogQGhpZ2hfbWFzazogbWFzayBiaXQKPj4+ICsgKi8K
+Pgo+Cj4=
 
 
-Friendly ping to get some feedback on the proposed API please.
+
