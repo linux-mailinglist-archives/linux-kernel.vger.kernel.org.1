@@ -2,173 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6F92D2353
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8236D2D2355
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgLHFtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:49:47 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:59832 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgLHFtr (ORCPT
+        id S1726667AbgLHFun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:50:43 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33695 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726338AbgLHFun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:49:47 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 448C080684;
-        Tue,  8 Dec 2020 06:48:57 +0100 (CET)
-Date:   Tue, 8 Dec 2020 06:48:55 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] drm/panel: Make backlight attachment lazy
-Message-ID: <20201208054855.GA18863@ravnborg.org>
-References: <20201208044446.973238-1-bjorn.andersson@linaro.org>
+        Tue, 8 Dec 2020 00:50:43 -0500
+X-UUID: ccabb92cb51d4d8eb6a95319ccbc93ab-20201208
+X-UUID: ccabb92cb51d4d8eb6a95319ccbc93ab-20201208
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1708644948; Tue, 08 Dec 2020 13:49:57 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Dec 2020 13:49:42 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Dec 2020 13:49:42 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v1] scsi: ufs: Ensure WriteBooster to be re-enabled after device reset
+Date:   Tue, 8 Dec 2020 13:49:40 +0800
+Message-ID: <20201208054940.1855-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208044446.973238-1-bjorn.andersson@linaro.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=KKAkSRfTAAAA:8 a=KJCBkObgxTU_UUeBqkUA:9
-        a=CjuIK1q_8ugA:10 a=cvBusfyB2V15izCimMoJ:22
+Content-Type: text/plain
+X-TM-SNTS-SMTP: EE9471868BCE6F5EBDE13344911B30D28E13E0E7A3F5D3E610102976C6D9DA642000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-On Mon, Dec 07, 2020 at 10:44:46PM -0600, Bjorn Andersson wrote:
-> Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
-> means of generating a PWM signal for backlight control of the attached
-> panel. The provided PWM chip is typically controlled by the
-> pwm-backlight driver, which if tied to the panel will provide DPMS.
-> 
-> But with the current implementation the panel will refuse to probe
-> because the bridge driver has yet to probe and register the PWM chip,
-> and the bridge driver will refuse to probe because it's unable to find
-> the panel.
-> 
-> Mitigate this catch-22 situation by allowing the panel driver to probe
-> and retry the attachment of the backlight as the panel is turned on or
-> off.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/drm_panel.c | 47 +++++++++++++++++++++++++++----------
->  include/drm/drm_panel.h     |  8 +++++++
->  2 files changed, 43 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-> index f634371c717a..7487329bd22d 100644
-> --- a/drivers/gpu/drm/drm_panel.c
-> +++ b/drivers/gpu/drm/drm_panel.c
-> @@ -43,6 +43,34 @@ static LIST_HEAD(panel_list);
->   * take look at drm_panel_bridge_add() and devm_drm_panel_bridge_add().
->   */
->  
-> +#if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
-> +static int drm_panel_of_backlight_lazy(struct drm_panel *panel)
-> +{
-> +	struct backlight_device *backlight;
-> +
-> +	if (!panel || !panel->dev)
-> +		return -EINVAL;
-> +
-> +	backlight = devm_of_find_backlight(panel->dev);
-> +
-> +	if (IS_ERR(backlight)) {
-> +		if (PTR_ERR(backlight) == -EPROBE_DEFER) {
-> +			panel->backlight_init_pending = true;
-> +			return 0;
-> +		}
-> +
-> +		return PTR_ERR(backlight);
-Use dev_err_probe()
+UFS 3.1 specification mentions that below WriteBooster flags will be
+set to default value, say disabled, after power cycle or any type
+of reset event. Thus we need to reset those flag variables kept
+in struct hba to align the device status and ensure WriteBooster
+related functions being configured properly after device reset.
 
-> +	}
-> +
-> +	panel->backlight = backlight;
-> +	panel->backlight_init_pending = false;
-> +
-> +	return 0;
-> +}
-> +#else
-> +static int drm_panel_of_backlight_lazy(struct drm_panel *panel) { return 0; }
-> +#endif
-> +
->  /**
->   * drm_panel_init - initialize a panel
->   * @panel: DRM panel
-> @@ -161,6 +189,9 @@ int drm_panel_enable(struct drm_panel *panel)
->  			return ret;
->  	}
->  
-> +	if (panel->backlight_init_pending)
-> +		drm_panel_of_backlight_lazy(panel);
-> +
->  	ret = backlight_enable(panel->backlight);
->  	if (ret < 0)
->  		DRM_DEV_INFO(panel->dev, "failed to enable backlight: %d\n",
-> @@ -187,6 +218,9 @@ int drm_panel_disable(struct drm_panel *panel)
->  	if (!panel)
->  		return -EINVAL;
->  
-> +	if (panel->backlight_init_pending)
-> +		drm_panel_of_backlight_lazy(panel);
-> +
->  	ret = backlight_disable(panel->backlight);
->  	if (ret < 0)
->  		DRM_DEV_INFO(panel->dev, "failed to disable backlight: %d\n",
-> @@ -328,18 +362,7 @@ EXPORT_SYMBOL(of_drm_get_panel_orientation);
->   */
->  int drm_panel_of_backlight(struct drm_panel *panel)
->  {
-> -	struct backlight_device *backlight;
-> -
-> -	if (!panel || !panel->dev)
-> -		return -EINVAL;
-> -
-> -	backlight = devm_of_find_backlight(panel->dev);
-> -
-> -	if (IS_ERR(backlight))
-> -		return PTR_ERR(backlight);
-> -
-> -	panel->backlight = backlight;
-> -	return 0;
-> +	return drm_panel_of_backlight_lazy(panel);
-Could you update the drm_panel_of_backlight() implementation (and
-do not forget the documentation) and avoid drm_panel_of_backlight_lazy()?
+Without this fix, WriteBooster will not be enabled successfully
+by ufshcd_wb_ctrl() after device reset because hba->wb_enabled
+remains as true.
 
-	Sam
+Flags required to be reset to default values:
+- fWriteBoosterEn: hba->wb_enabled
+- fWriteBoosterBufferFlushEn: hba->wb_buf_flush_enabled
+- fWriteBoosterBufferFlushDuringHibernate: No variable mapped
 
->  }
->  EXPORT_SYMBOL(drm_panel_of_backlight);
->  #endif
-> diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
-> index 33605c3f0eba..b126abebb2f3 100644
-> --- a/include/drm/drm_panel.h
-> +++ b/include/drm/drm_panel.h
-> @@ -149,6 +149,14 @@ struct drm_panel {
->  	 */
->  	struct backlight_device *backlight;
->  
-> +	/**
-> +	 * @backlight_init_pending
-> +	 *
-> +	 * Backlight driver is not yet available so further attempts to
-> +	 * initialize @backlight is necessary.
-> +	 */
-> +	bool backlight_init_pending;
-> +
+Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+---
+ drivers/scsi/ufs/ufshcd.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-We have not done so today for other fields, but it would be good
-to document this is for drm_panel use only and drivers shall not touch.
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 7a7e056a33a9..c22887bee788 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -1218,8 +1218,11 @@ static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
+ 	if (hba->vops && hba->vops->device_reset) {
+ 		int err = hba->vops->device_reset(hba);
+ 
+-		if (!err)
++		if (!err) {
+ 			ufshcd_set_ufs_dev_active(hba);
++			hba->wb_enabled = false;
++			hba->wb_buf_flush_enabled = false;
++		}
+ 		if (err != -EOPNOTSUPP)
+ 			ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, err);
+ 	}
+-- 
+2.18.0
 
-	Sam
