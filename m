@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9829F2D2877
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054A22D287E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgLHKHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727122AbgLHKHy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:07:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E754BC061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/cbg0yWJlkVgkdQRE8gAJUwBms4pTAlYLahKPvCS91M=; b=anEw8/6aKdXJ8H7aopQ/mcvoGi
-        VtFEhI9C5lnXYgwasWsNM5tP3WVp7eGbnZbc3banrikySSOtwAmyTl5myrRbIPf60CG5W5WcC57oM
-        ONo3mNblKSo/Jb2fkvTKMnZG1pBqITR2yLGAtnRxA/CgYEsOuf563Kx6kwkQBmNHEjtWhRr+wW8XB
-        VfHoEnCeLVEfx7RBhJq/Z7Pp7JW0EkEbqMukWC1ZwhyNf4W1TgSMmd4vf92WDUDvPTKjCOLGuI8Jf
-        M+92435LMZVCO/xozf4dnAlQtVykwSZY+7jIQSau3btxeMAn7PO1zgG85PjCxUMZQSp41rDGASEcY
-        clOK6C4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmZtl-0007bU-BK; Tue, 08 Dec 2020 10:07:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 131E73007CD;
-        Tue,  8 Dec 2020 11:07:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F0E61200AABB2; Tue,  8 Dec 2020 11:07:04 +0100 (CET)
-Date:   Tue, 8 Dec 2020 11:07:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v2 5/5] locking/rwsem: Remove reader optimistic spinning
-Message-ID: <20201208100704.GU2414@hirez.programming.kicks-ass.net>
-References: <20201121041416.12285-1-longman@redhat.com>
- <20201121041416.12285-6-longman@redhat.com>
+        id S1729007AbgLHKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:08:10 -0500
+Received: from foss.arm.com ([217.140.110.172]:46782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727122AbgLHKIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:08:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3E691FB;
+        Tue,  8 Dec 2020 02:07:23 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 219BA3F68F;
+        Tue,  8 Dec 2020 02:07:20 -0800 (PST)
+Subject: Re: [PATCH 1/4] sched/fair: Remove SIS_AVG_CPU
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201207091516.24683-1-mgorman@techsingularity.net>
+ <20201207091516.24683-2-mgorman@techsingularity.net>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <25a8c4bd-792b-2851-b10a-c4375eb83dfe@arm.com>
+Date:   Tue, 8 Dec 2020 11:07:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201121041416.12285-6-longman@redhat.com>
+In-Reply-To: <20201207091516.24683-2-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 11:14:16PM -0500, Waiman Long wrote:
-
-
-> @@ -1032,40 +901,16 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, int state, long count)
->  	 *
->  	 * We can take the read lock directly without doing
->  	 * rwsem_optimistic_spin() if the conditions are right.
-
-This comment no longer makes sense..
-
-> -	 * Also wake up other readers if it is the first reader.
->  	 */
-> -	if (!(count & (RWSEM_WRITER_LOCKED | RWSEM_FLAG_HANDOFF)) &&
-> -	    rwsem_no_spinners(sem)) {
-> +	if (!(count & (RWSEM_WRITER_LOCKED | RWSEM_FLAG_HANDOFF))) {
->  		rwsem_set_reader_owned(sem);
->  		lockevent_inc(rwsem_rlock_steal);
-> -		if (rcnt == 1)
-> -			goto wake_readers;
-> -		return sem;
-> -	}
+On 07/12/2020 10:15, Mel Gorman wrote:
+> SIS_AVG_CPU was introduced as a means of avoiding a search when the
+> average search cost indicated that the search would likely fail. It
+> was a blunt instrument and disabled by 4c77b18cf8b7 ("sched/fair: Make
+> select_idle_cpu() more aggressive") and later replaced with a proportional
+> search depth by 1ad3aaf3fcd2 ("sched/core: Implement new approach to
+> scale select_idle_cpu()").
+> 
+> While there are corner cases where SIS_AVG_CPU is better, it has now been
+> disabled for almost three years. As the intent of SIS_PROP is to reduce
+> the time complexity of select_idle_cpu(), lets drop SIS_AVG_CPU and focus
+> on SIS_PROP as a throttling mechanism.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c     | 3 ---
+>  kernel/sched/features.h | 1 -
+>  2 files changed, 4 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 98075f9ea9a8..23934dbac635 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6161,9 +6161,6 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>  	avg_idle = this_rq()->avg_idle / 512;
+>  	avg_cost = this_sd->avg_scan_cost + 1;
 >  
-> -	/*
-> -	 * Save the current read-owner of rwsem, if available, and the
-> -	 * reader nonspinnable bit.
-> -	 */
-> -	waiter.last_rowner = owner;
-> -	if (!(waiter.last_rowner & RWSEM_READER_OWNED))
-> -		waiter.last_rowner &= RWSEM_RD_NONSPINNABLE;
+> -	if (sched_feat(SIS_AVG_CPU) && avg_idle < avg_cost)
+> -		return -1;
 > -
-> -	if (!rwsem_can_spin_on_owner(sem, RWSEM_RD_NONSPINNABLE))
-> -		goto queue;
-> -
-> -	/*
-> -	 * Undo read bias from down_read() and do optimistic spinning.
-> -	 */
-> -	atomic_long_add(-RWSEM_READER_BIAS, &sem->count);
-> -	adjustment = 0;
-> -	if (rwsem_optimistic_spin(sem, false)) {
+>  	if (sched_feat(SIS_PROP)) {
+>  		u64 span_avg = sd->span_weight * avg_idle;
+>  		if (span_avg > 4*avg_cost)
 
-since we're removing the optimistic spinning entirely on the read side.
+Nitpick:
 
-Also, I was looking at skipping patch #4, which mucks with the reader
-wakeup logic, and afaict this removal doesn't really depend on it.
+Since now avg_cost and avg_idle are only used w/ SIS_PROP, they could go
+completely into the SIS_PROP if condition.
 
-Or am I missing something?
-
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 09f6f0edead4..fce9457cccb9 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6121,7 +6121,6 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+ 	struct sched_domain *this_sd;
+-	u64 avg_cost, avg_idle;
+ 	u64 time;
+ 	int this = smp_processor_id();
+ 	int cpu, nr = INT_MAX;
+@@ -6130,14 +6129,13 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	if (!this_sd)
+ 		return -1;
+ 
+-	/*
+-	 * Due to large variance we need a large fuzz factor; hackbench in
+-	 * particularly is sensitive here.
+-	 */
+-	avg_idle = this_rq()->avg_idle / 512;
+-	avg_cost = this_sd->avg_scan_cost + 1;
+-
+ 	if (sched_feat(SIS_PROP)) {
++		/*
++		 * Due to large variance we need a large fuzz factor; hackbench in
++		 * particularly is sensitive here.
++		 */
++		u64 avg_idle = this_rq()->avg_idle / 512;
++		u64 avg_cost = this_sd->avg_scan_cost + 1;
+ 		u64 span_avg = sd->span_weight * avg_idle;
+ 		if (span_avg > 4*avg_cost)
+ 			nr = div_u64(span_avg, avg_cost);
+-- 
+2.17.1
