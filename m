@@ -2,90 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5A82D2C52
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C892D2C56
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbgLHNzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726338AbgLHNzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:55:52 -0500
-X-Gm-Message-State: AOAM531vd5GLJ17BIhllutjkE+6n48AniZDMzZN4ItSIvtDTIS7W8Z9L
-        5oWC82bBr16v2Ax/S/G/pXGTP2skjhWDLM+BhGQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607435711;
-        bh=aMUeJmcHjLR1mxPMY4lSg5wm08l9vr2Dq3J8KhZCHss=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N6+VRiKj1w/sHG04FJYJajgruVEl0d0kXpByOymHxPthCNLPJiukFzJ0fV2Fks4F3
-         f3OYCjwUjrh0Mlf1Q4sJGjiuG+CSXHTbFZTkrqCv+RKCMWkLCdkoGeXDRPUxmeCutZ
-         PvCcGNK3GKImyzLMtrB2yTw7+GoV0yDqsIR4dn7IMy5VKyojDA4DfYN2ZEygwOrw5h
-         yf899Lyg8XrtlHlrasiYJQpQD5/jtisPkmLxhy3aBeoCxaov7xm4Im/ELWLRl42Ocw
-         cizq88EGMi2nzasl/XChEgEAvqZzmNujCnkYUHPFgAM4zpJ9J9XBeHGGlR89vy8Yhi
-         rTnMXtxRGJrBQ==
-X-Google-Smtp-Source: ABdhPJw84bKjNW6pc9lV2J+47WEe1njStGFQFPiO39biuyycOb/7NnBSKOzxngL0mEe4vYZqUHtN+LSV3ssbam6y5lc=
-X-Received: by 2002:a1c:b4c4:: with SMTP id d187mr3984205wmf.38.1607435710266;
- Tue, 08 Dec 2020 05:55:10 -0800 (PST)
+        id S1729590AbgLHN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:56:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37199 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729572AbgLHN4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:56:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607435698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4QSOmAtZQRXzBlAkmbOjJY9qdaS64wrTUPOrqsxjNI=;
+        b=f6Cc3n6GzsxcfuaVoSe/FhIjrNw76pBQZ41TGLAOUznDWjbcmTnYAxHgdQVHWTiTHS633r
+        EXRy+NoD6UoghLEot3JhJQS98po+dt4byrZsDwWM9dMNiaM6+hyyoqRJ8OpPTMn5WXrFGc
+        wU1uN/q2GinQiFhkvEu6g42iCmSSXgQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-FaFOAWEJMa2G44VElC4VBQ-1; Tue, 08 Dec 2020 08:54:56 -0500
+X-MC-Unique: FaFOAWEJMa2G44VElC4VBQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 181CE107ACF6;
+        Tue,  8 Dec 2020 13:54:51 +0000 (UTC)
+Received: from [10.36.112.92] (ovpn-112-92.ams2.redhat.com [10.36.112.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B454060C05;
+        Tue,  8 Dec 2020 13:54:49 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Zheng Yongjun" <zhengyongjun3@huawei.com>
+Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, dev@openvswitch.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: openvswitch: conntrack: simplify the return
+ expression of ovs_ct_limit_get_default_limit()
+Date:   Tue, 08 Dec 2020 14:54:33 +0100
+Message-ID: <41DC90CB-BCB4-4F3B-9487-9ADB6DE9676F@redhat.com>
+In-Reply-To: <20201208121353.9353-1-zhengyongjun3@huawei.com>
+References: <20201208121353.9353-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com> <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
-In-Reply-To: <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 8 Dec 2020 14:54:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
-Message-ID: <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Tue, Dec 1, 2020 at 10:37 PM 'Sami Tolvanen' via Clang Built Linux <clang-built-linux@googlegroups.com> wrote:
+
+
+On 8 Dec 2020, at 13:13, Zheng Yongjun wrote:
+
+> Simplify the return expression.
 >
-> - many builds complain about thousands of duplicate symbols in the kernel, e.g.
->   ld.lld: error: duplicate symbol: qrtr_endpoint_post
->  >>> defined in net/qrtr/qrtr.lto.o
->  >>> defined in net/qrtr/qrtr.o
->  ld.lld: error: duplicate symbol: init_module
->  >>> defined in crypto/842.lto.o
->  >>> defined in crypto/842.o
->  ld.lld: error: duplicate symbol: init_module
->  >>> defined in net/netfilter/nfnetlink_log.lto.o
->  >>> defined in net/netfilter/nfnetlink_log.o
->  ld.lld: error: duplicate symbol: vli_from_be64
->  >>> defined in crypto/ecc.lto.o
->  >>> defined in crypto/ecc.o
->  ld.lld: error: duplicate symbol: __mod_of__plldig_clk_id_device_table
->  >>> defined in drivers/clk/clk-plldig.lto.o
->  >>> defined in drivers/clk/clk-plldig.o
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-A small update here: I see this behavior with every single module
-build, including 'tinyconfig' with one module enabled, and 'defconfig'.
+Change looks good to me.
 
-I tuned the randconfig setting using KCONFIG_PROBABILITY=2:2:1
-now, which only enables a few symbols. With this I see faster build
-times (obvioulsy), aroudn 30 seconds per kernel, and all small builds
-with CONFIG_MODULES disabled so far succeed.
-It appears that the problems I saw originally only happen for larger
-configurations, or possibly a combination of Kconfig options that don't
-happen that often on randconfig builds with low
-KCONFIG_PROBABILITY.
+Reviewed-by: Eelco Chaudron <echaudro@redhat.com>
 
-      Arnd
