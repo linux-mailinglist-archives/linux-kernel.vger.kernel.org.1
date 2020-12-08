@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB522D2801
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806712D27EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgLHJn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:43:29 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:45769 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728007AbgLHJn3 (ORCPT
+        id S1728891AbgLHJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727844AbgLHJmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:43:29 -0500
-Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1Mdvyi-1kBrd02oNy-00b1rX; Tue, 08 Dec 2020 10:40:56 +0100
-Subject: Re: [PATCH v3] drivers: gpio: put virtual gpio device into their own
- submenu
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>
-References: <20201207203816.18269-1-info@metux.net>
- <CAMpxmJWinRPUrmpcqsLaE62uAQpZ3Cb1ys3s7oHmeKM6rUUqQg@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <c839fa75-80ee-31e6-2ccb-87155281e1d4@metux.net>
-Date:   Tue, 8 Dec 2020 10:40:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAMpxmJWinRPUrmpcqsLaE62uAQpZ3Cb1ys3s7oHmeKM6rUUqQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:nBA98hAC7/Ipc4TroA9tXLaYgK0mRhExXlwhSPQw+rhsiqRkQHg
- udlHgaKFgf9u+h6deHgLPaIG5G5Fs8ul62j1xKUCRjgFnyqoRRLn4QBwP9BR5iyJp9DDGqo
- KA/H/EKBmDRTcBdnKhYn+reyZJfJ31TusajcbjSkOUtj3aSh2r27klJVgHzfB4McR9WTSr8
- mn5jfUcASS9bDFjD/8INA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aMvaIfnxHX8=:FGY5y0mnygyPxYSz6ZTWbI
- 1W7icYA/bUIBrYRMPwI4ZFS1ChyTNyCDdXjlyIytkYwVqWVB8DvBMjebOMxKYbfeYbTg8Qsbb
- wAQH21JYJduYsN8zDbNLUgxJVUrs2bwEs3QehNcKJlLPa6mvfr5MpohmJ9dWc2vR7GbdLsx8/
- FpW9jfx+Gr4FLKTX9BY7fcyFWtluRhXLlDLIMdoz1BRSCGFJSD8TXKyvcJf5A3982f8vcui74
- Gt6AJI3ja6dParITjgA0LWcWyCDU+n5cFpXGd+1QLeXse8UwzvMoToWhfKnM0q0eg3Bu1uHay
- QmLc7DxoFsuEHk/T1oG3OJKOOqr3uzY6/161N1jySAYMGQILrYFWkGTo1enQT9sfaW2T/ef4G
- Wez7wROJ6HBrVHwt/hanGIHBXKgT5zBlN3Av5NshYcGklzRgzxHE0D5oyu6DR
+        Tue, 8 Dec 2020 04:42:06 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D4EC061749;
+        Tue,  8 Dec 2020 01:41:25 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id b9so13370369ejy.0;
+        Tue, 08 Dec 2020 01:41:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gHzl/uWiYLo8FvoZ+prOSIPKAbDS1mKoOLJ/17Oi3Yg=;
+        b=nEEegRY7MAaR/8obBCLLBJ/RpfQwBI8+Bv/vJ+H2oH5JeY7kO9z11Q06qoS1o2ldEa
+         XEhtAo/rr5Su0egvjG0Yl21qWVNRX+OQFbQzPdFZGfQGgzB+Oud72Em9Md0AidYCStzQ
+         d+0XbL9nDFmMnkJSPx9uKvNziCYBTV7rSv62KI8zmKA7VWAWjdWt/W7eH3RdyuNEC4Bf
+         ZtT6rP39kWRtNczuQsQt9ouTBVDEEQ67cYNT7hWKhKIrDTNC7qD+YbilSL03lft6LQ3N
+         hGSC9zVzXEOYAhV30g7MMfYMqXnSbvfAlz37X3/3I46hfMenUcQMd5m8uOTxPcI2CzTN
+         RSsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gHzl/uWiYLo8FvoZ+prOSIPKAbDS1mKoOLJ/17Oi3Yg=;
+        b=mlizTyamxbiJJXBMhVh29C62pznYYuSE6qH4+TlUrr6/++qohr8M5FGepeWjeVx83F
+         HwOQ4Q0eO9Mii1ivNFVWomkCXcM5Od9quhHIWE/rUoVN0hYj96a64e2c0gn9gIqM3iEI
+         ZYF4tv3zwZjQMuOPI5bhCAs500g+41VUEQsl8Zc2hA0HmNg1iE8mV0i/wUW5wykU+sBu
+         x0aAdK6mcbiAmoIKKFwSmIjGkgBIWz8f60sAod7WTTNX0yUSMmbnBTbvBcO0FLZRWUMB
+         +nTrUdhc+IyLrPY0LLsoL22ioR0qRYZ8e/LYPXTdKyUsM13mew/0A1lH7Tb+t61pbC5I
+         rCgg==
+X-Gm-Message-State: AOAM530feeBzFZBHPul7ZRNK585u1K3Ud57EzFtiXFHZSh399QY9ZSyL
+        R/sgYl0AuhyryvAJPPy4s22a8QgFl5A=
+X-Google-Smtp-Source: ABdhPJxsse4stlAtQaFm8734Iz9OFP4KsJGLHm2qf0Sc2QMBu1mMb+k+IgAJISdtcVlfCLITNAyQxA==
+X-Received: by 2002:a17:907:2070:: with SMTP id qp16mr22297756ejb.503.1607420484311;
+        Tue, 08 Dec 2020 01:41:24 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id c14sm16493744edy.56.2020.12.08.01.41.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Dec 2020 01:41:23 -0800 (PST)
+Message-ID: <7a66077d6e5a3590d027756941850d6058ccb40c.camel@gmail.com>
+Subject: Re: [PATCH v2 2/3] scsi: ufs: Keep device active mode only
+ fWriteBoosterBufferFlushDuringHibernate == 1
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Dec 2020 10:41:22 +0100
+In-Reply-To: <DM6PR04MB657584B4590496FA6BF11725FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201206101335.3418-1-huobean@gmail.com>
+         <20201206101335.3418-3-huobean@gmail.com>
+         <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+         <2ef12e328ecdc411e7d145a331d7c8ce668bf2be.camel@gmail.com>
+         <DM6PR04MB657584B4590496FA6BF11725FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.12.20 10:15, Bartosz Golaszewski wrote:
-> On Mon, Dec 7, 2020 at 9:38 PM Enrico Weigelt, metux IT consult
-> <info@metux.net> wrote:
->>
->> Since we already have a few virtual GPIO drivers, and more to come,
->> this category deserves its own submenu.
->>
->> changes v2: fixed menu title (replaced "devices" by "drivers")
->> changes v3: added patch changelog
+On Tue, 2020-12-08 at 09:05 +0000, Avri Altman wrote:
+> > "
+> > If fWriteBoosterBufferFlushDuringHibernate ==0, device will not
+> > flush
+> > WB, even if you keep device as "active mode" and LINK in hibernate
+> > state.
 > 
-> This should be below the --- under all tags because we don't want this
-> in the actual log that goes into git.
+> OK, so what you are actually saying, is that since we are only
+> toggling this flag once per
+> link startup / recovery, in case of a failure, however rare - the
+> host may be still keep vcc on
+> for nothing, as the device will do nothing in that extra wake time. 
+> Right?
+> 
+
+again, this is a BUG, BUG...
+Bug is a Bug, doesn't matter it is rare or not rare. 
+
+Tell me why we retry three times in ufshcd_query_flag_retry() in case
+of failure?
 
 
-Sorry, wasn't aware of that. Does git-am automatically cut it off ?
+> But every time ufshcd_wb_need_flush() is called we are reading some
+> other flags/attributes?
+> What about them? Why not protecting them as well?
+> 
+
+did you read ufshcd_wb_need_flush() fully? they have been properly
+protected.
+
+> Sorry - the whole idea doesn't make any sense to me.
+> 
+
+Thanks very much for sharing your opinion, I am very happy to hear your
+opinion. Because you don't believe this is a bug, I will ask other UFS
+guys to review, let Martin make the last decision.
 
 
---mtx
+Thanks agaion for your review.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Bean
+
