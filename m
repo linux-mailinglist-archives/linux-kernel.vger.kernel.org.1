@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964202D2C97
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C462D2C9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgLHOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:05:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37196 "EHLO mx2.suse.de"
+        id S1729366AbgLHOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:05:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729521AbgLHOFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:05:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607436268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=10SyrdXgUrRdGAnh5WvPbKIV8pyNLoc3QTTb/TrnexM=;
-        b=RfqM41Uoo3BDdJegOLAbRpfKZeaGPHScJLBjg2eLxnshLcpE63sJXTUBZV5PeOKUb+MxEx
-        S4IgQxEn9BlS6hRiNNXn3UTXMzcn4qIyAfAbnuA9c2RDj9gEwP7201egn1CZaASKpURatW
-        LG+a7uy3FqyLDGPQW5O2QtyCbE+QeZ0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EC7FAC94;
-        Tue,  8 Dec 2020 14:04:28 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 15:04:27 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v3 2/3] printk: define CONSOLE_LOG_MAX in printk.h
-Message-ID: <X8+H6xG+eTyOJ3nu@alley>
-References: <20201207222020.2923-1-john.ogness@linutronix.de>
- <20201207222020.2923-3-john.ogness@linutronix.de>
- <87k0tsd9q6.fsf@jogness.linutronix.de>
+        id S1726080AbgLHOFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:05:44 -0500
+X-Gm-Message-State: AOAM531EkzPx7nb7JEQsYP/50EBqRsU5WvQpcPDHV8I6f8CWwRqj6Yxj
+        iL8JPxD2KGK/ALbv6grRX5jJE/NyED3ZpoKp1GI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607436303;
+        bh=mbsdbwKyczvLHvtpaeUbdE5uuehFNcjej12iuv54kM0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t5uiLAeQbxE76Z++9gWAPnbTDDysMrXRk28zPlRtfyuIO7KisYFV51C0+0vmKG/lx
+         FDmoSG20CkOI9fWyjYdJ7NGaT7c19OkAKQBfG1TuQ9CJwvMmNBlcMpT9RBEokMdgTO
+         JI+YOHY1RkGBEiRYOL4qRgyeMqtE0/y+yNFKHctLaLSULO5eeOojKUyFe08t+XqT8o
+         ze7N/fAz5Rgpn5PaUxsuw2xcvh3TQgrsCIpR/wbTURPXqTdJiTR879ONxqAjHDlysJ
+         5bXxC2JOCcuSb30yGAmqESn+giBCnwNguePZrZirB0JPDJIzcr2ah1ev9rj5hnQkst
+         ZKoA2TyKqP7aw==
+X-Google-Smtp-Source: ABdhPJwOOS2YE9U5ISalt8ZW6t5h5/7Imq5MdNE9kh6uYThwbWteRjZKRfIw8tfSJKviZjaCwjro3y+psb4Y2uBf6pY=
+X-Received: by 2002:adf:b343:: with SMTP id k3mr22054883wrd.202.1607436301682;
+ Tue, 08 Dec 2020 06:05:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0tsd9q6.fsf@jogness.linutronix.de>
+References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
+ <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com> <IVYYKQ.T5GFS8Z1QTP2@crapouillou.net>
+In-Reply-To: <IVYYKQ.T5GFS8Z1QTP2@crapouillou.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 8 Dec 2020 15:04:45 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a21gkBsb3rcNvzH3XA_0GRRKPgnsrynTTO=EZVwy6DC+g@mail.gmail.com>
+Message-ID: <CAK8P3a21gkBsb3rcNvzH3XA_0GRRKPgnsrynTTO=EZVwy6DC+g@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        yong mao <yong.mao@mediatek.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-12-08 08:48:57, John Ogness wrote:
-> On 2020-12-07, John Ogness <john.ogness@linutronix.de> wrote:
-> > CONSOLE_EXT_LOG_MAX for extended console messages is already defined
-> > in printk.h. Define CONSOLE_LOG_MAX there as well so that future
-> > changes can make use of the constant for non-extended console
-> > messages.
-> 
-> Actually this patch is not necessary for this series. Also, this patch
-> should probably modify all the "LOG_LINE_MAX + PREFIX_MAX" calls as
-> well.
+On Mon, Dec 7, 2020 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
+> Le ven. 4 d=C3=A9c. 2020 =C3=A0 15:14, Arnd Bergmann <arnd@kernel.org> a =
+=C3=A9crit
 
-+1
+> By the way, as I'm ending up doing the same in a different context, I
+> think it would be useful to have a IF_ENABLED() macro defined like this:
+>
+> #define IF_ENABLED(_cfg, _ptr) (IS_ENABLED(_cfg) ? (_ptr) : NULL)
+>
+> Then the pm_ptr(_ptr) macro could be defined like this:
+>
+> #define pm_ptr(_ptr) IF_ENABLED(CONFIG_PM, _ptr)
 
-Best Regards,
-Petr
+I like that. Do you just want to go ahead and start with adding
+IF_ENABLED() to your own branch then?
+
+    Arnd
