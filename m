@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C4C2D21D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1E42D21D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgLHEJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S1727973AbgLHEJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:09:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgLHEJQ (ORCPT
+        with ESMTP id S1726697AbgLHEJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:09:16 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0571C0611E4
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:07:59 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id p5so14358350iln.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:07:59 -0800 (PST)
+        Mon, 7 Dec 2020 23:09:22 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686F5C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:08:01 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id 81so15603736ioc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:08:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B2kvsrP4A4w9Ll/8j0HYqPedZLnR0R37yVmOg87xaPQ=;
-        b=WKCdaZbidtImG3GtcDYPK1cR3ReQS7JakYx9QXy3pR1y0BIVqyWTl1ijLYUnb+vpAW
-         irZXTNSzo0t073Fe0BnUx7kvbF0uA+w7QT6uUw9eTkQbC+rhoJ+OTjpoTx8TShbnlfRk
-         BxvnARs7qP1MFb4DlkKlsC6g5e5zU9m5ojzTDj69n0ZwILt7oeUZuh0y2DAA/Nz++60h
-         rohZO8vkw9o/nyyKWN0iZCm2fCTDZgJc0CnMDI/sEYCL4IGTsSyPRp0bBY7Gx7V7dyWt
-         jOCWpteiZO5WQtWi1WFYTssEe0J9SqE1R15gt1peXSaljTD8H0NovPbgGg/7C+g0pi3I
-         gtUA==
+        bh=dsWJ3wrdvClaf8NoUeAOfEEb2bR+T2eO/cQV3hJDJhA=;
+        b=O3SsdqoptsHL+5djAONfMBEO4xq7WCTiejUCI/p/Nmi6OEizNdKX5jH2UatTU6nxSz
+         kYXX/BH9jGXLcj341NUUje8zDnWt0U9ZsNIn1igZFVytaV13cgxVAzyC1vSz0x+Vgkwd
+         MlliFr/LKBxzOD12uqhAYZRB1FziXfvMILEqLJVM5VuhrEaqd2TA8/OgkqIc1xPMTlD0
+         MLvVDR00+LQliL77qZ3x+akhodwsl1eKA2W22McXhDDOilivK87oYVydz8nbKUirwbid
+         efrP8A+EaFjK5fP1oW8m/FaglBCXI+kpI7+h1cHG4kzJRHoQW9uOO5zZHe7M8EuDVqI8
+         1Org==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B2kvsrP4A4w9Ll/8j0HYqPedZLnR0R37yVmOg87xaPQ=;
-        b=iW+SkZ1Uddn49AvspYA3JSgePGrqI0H9HBdc6y3mW4ahj5VLQLdyM3E8LFxJ0ndU6P
-         MjJmdZ0g4uwWdYwQEFGP6ODr/wiF9vkEHrz1DPXKzNrRayqP4LeCpR/CzYqIkbHgVMLt
-         gBXWfLZj99UOSZDp4nN5XAtcCRaXZy1XMf3YMtXHd5znjoMfRyGQAGr8a/C+sfRFlNqI
-         B3o0Ku7CMJNwsbPpRY8jsd0YE6kvUkRfr08jk7Wsi/EQeoZa1Mh8b8nqj+oHi29+xX/l
-         g4ZAs0V+fwp6su/tP7G57jDm3hN815dPF8dyeFHAob6Pc26GWO9phjmEdMdu+EMTciP1
-         zJXg==
-X-Gm-Message-State: AOAM532rWQbfuO22NVA8kfIuJ/nzpvSLiwX1o8MsTkoxScIGiwqzeFmH
-        vPCV73O3CbY0yoQ1pqd/2OU=
-X-Google-Smtp-Source: ABdhPJyyfqz3bycaiHCfu0MYFS5x9VmP/0W4+iqlTCHKYxWFFsnHrTVkjIEii/y1wUoON6+alAyEwQ==
-X-Received: by 2002:a92:4002:: with SMTP id n2mr23931383ila.293.1607400479231;
-        Mon, 07 Dec 2020 20:07:59 -0800 (PST)
+        bh=dsWJ3wrdvClaf8NoUeAOfEEb2bR+T2eO/cQV3hJDJhA=;
+        b=hTyEg6SO/e5jaeY5FOr5452OdhGkcYVrgRY095LawG7xpvI0IA3wWDzNxXA2v3NV8Z
+         6ZltnXwqL/VSlKVFJJJ0aQbXZTaYPaC9g97Pexh/it9S8d/0gPwpBba1UeN0nz8j31+B
+         Ywhl5HvemcXcxty8JoFBlx9zRZFZhVG9dVTRSZphP4HKfrDypjWJer8d4BQM0IzwFbi5
+         t5L2IUz8SOEHjgx5FUCiGXbWoxLaiT8trvhTzTLbRU0EzSZXhSb/rBVa2HrhnHrnDMEt
+         lbw6HhUERTfe3+Xs3CbKm/6/QZtaCKE2iwgjeBVm87UImaUN/IG3ZfAeWLflvPZ5rnLR
+         Ug4g==
+X-Gm-Message-State: AOAM532egtwuduvxPbKTBHshVCdSCYYy48jZqMkSFccKAknKbC0x2KZf
+        0ayqaJvJ3IGooUswJSV1Azo=
+X-Google-Smtp-Source: ABdhPJxK9xuXLbplaY1A0R0SwyrpRl4q1MJSZx1rOm8fC1aw+oP6FpIfRiS27FtfmeE65QMnwhgQpw==
+X-Received: by 2002:a02:b607:: with SMTP id h7mr25285486jam.120.1607400480332;
+        Mon, 07 Dec 2020 20:08:00 -0800 (PST)
 Received: from localhost.localdomain (c-73-242-81-227.hsd1.mn.comcast.net. [73.242.81.227])
-        by smtp.gmail.com with ESMTPSA id g2sm8630390ilh.41.2020.12.07.20.07.58
+        by smtp.gmail.com with ESMTPSA id g2sm8630390ilh.41.2020.12.07.20.07.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 20:07:58 -0800 (PST)
+        Mon, 07 Dec 2020 20:07:59 -0800 (PST)
 From:   Ross Schmidt <ross.schm.dev@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Ross Schmidt <ross.schm.dev@gmail.com>
-Subject: [PATCH v2 19/21] staging: rtl8723bs: replace EID_EXTCapability
-Date:   Mon,  7 Dec 2020 22:07:31 -0600
-Message-Id: <20201208040733.379197-20-ross.schm.dev@gmail.com>
+Subject: [PATCH v2 20/21] staging: rtl8723bs: remove unused macros
+Date:   Mon,  7 Dec 2020 22:07:32 -0600
+Message-Id: <20201208040733.379197-21-ross.schm.dev@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201208040733.379197-1-ross.schm.dev@gmail.com>
 References: <20201208040733.379197-1-ross.schm.dev@gmail.com>
@@ -64,44 +64,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace unique EID_EXTCapability constant with kernel provided
-WLAN_EID_EXT_CAPABILITY from linux/ieee80211.h.
+Remove many macros from wifi.h and ieee80211.h because they are unused.
 
 Signed-off-by: Ross Schmidt <ross.schm.dev@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_mlme.c     | 2 +-
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/rtl8723bs/include/ieee80211.h |  5 -----
+ drivers/staging/rtl8723bs/include/wifi.h      | 15 ---------------
+ 2 files changed, 20 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index d05338015744..2c9425e2a1e9 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -2912,7 +2912,7 @@ void rtw_append_exented_cap(struct adapter *padapter, u8 *out_ie, uint *pout_len
- 	if (phtpriv->bss_coexist)
- 		SET_EXT_CAPABILITY_ELE_BSS_COEXIST(cap_content, 1);
+diff --git a/drivers/staging/rtl8723bs/include/ieee80211.h b/drivers/staging/rtl8723bs/include/ieee80211.h
+index 20c53c290aa1..d9ff8c8e7f36 100644
+--- a/drivers/staging/rtl8723bs/include/ieee80211.h
++++ b/drivers/staging/rtl8723bs/include/ieee80211.h
+@@ -348,11 +348,6 @@ struct ieee80211_snap_hdr {
+ #define WLAN_REASON_JOIN_WRONG_CHANNEL       65534
+ #define WLAN_REASON_EXPIRATION_CHK 65535
  
--	rtw_set_ie(out_ie + *pout_len, EID_EXTCapability, 8, cap_content, pout_len);
-+	rtw_set_ie(out_ie + *pout_len, WLAN_EID_EXT_CAPABILITY, 8, cap_content, pout_len);
- }
+-/* EIDs defined by IEEE 802.11h - END */
+-#define WLAN_EID_20_40_BSS_COEXISTENCE 72
+-#define WLAN_EID_20_40_BSS_INTOLERANT 73
+-#define WLAN_EID_OVERLAPPING_BSS_SCAN_PARAMS 74
+-
+ #define IEEE80211_MGMT_HDR_LEN 24
+ #define IEEE80211_DATA_HDR3_LEN 24
+ #define IEEE80211_DATA_HDR4_LEN 30
+diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
+index 82dfdafb38fc..7f482a45705b 100644
+--- a/drivers/staging/rtl8723bs/include/wifi.h
++++ b/drivers/staging/rtl8723bs/include/wifi.h
+@@ -387,21 +387,6 @@ static inline int IsFrameTypeCtrl(unsigned char *pframe)
  
- inline void rtw_set_to_roam(struct adapter *adapter, u8 to_roam)
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 9d172bd23911..fa4b0259c5ae 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -3381,9 +3381,9 @@ void issue_assocreq(struct adapter *padapter)
- 			}
- 			break;
+ #define _FIXED_IE_LENGTH_			_BEACON_IE_OFFSET_
  
--		case EID_EXTCapability:
-+		case WLAN_EID_EXT_CAPABILITY:
- 			if (padapter->mlmepriv.htpriv.ht_option)
--				pframe = rtw_set_ie(pframe, EID_EXTCapability, pIE->Length, pIE->data, &(pattrib->pktlen));
-+				pframe = rtw_set_ie(pframe, WLAN_EID_EXT_CAPABILITY, pIE->Length, pIE->data, &(pattrib->pktlen));
- 			break;
- 		default:
- 			break;
+-#define _SUPPORTED_CH_IE_		36
+-#define _CH_SWTICH_ANNOUNCE_	37	/* Secondary Channel Offset */
+-
+-#define _FTIE_						55
+-#define _TIMEOUT_ITVL_IE_			56
+-#define _SRC_IE_				59
+-
+-#define _RIC_Descriptor_IE_			75
+-#define _LINK_ID_IE_					101
+-#define _CH_SWITCH_TIMING_		104
+-#define _PTI_BUFFER_STATUS_		106
+-#define _EXT_CAP_IE_				127
+-
+-#define	_RESERVED47_				47
+-
+ enum ELEMENT_ID {
+ 	EID_SsId					= 0, /* service set identifier (0:32) */
+ 	EID_SupRates				= 1, /* supported rates (1:8) */
 -- 
 2.25.1
 
