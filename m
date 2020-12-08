@@ -2,116 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738762D2891
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C3A2D2893
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgLHKLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727992AbgLHKLt (ORCPT
+        id S1729077AbgLHKMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:12:03 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56893 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729063AbgLHKMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:11:49 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC9BC06179C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:11:03 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r9so16359279ioo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:11:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rI1cpmvfLJH6kTfoQBqKr4p1uRHaWCiCfbric7yc3oU=;
-        b=dNIn3iZoh8mC1iMR2GHayG7Dmsey5468YPYG+bQp3mApwT3AV55v0utWeiH+FyfOPR
-         xMzkRjQWCES+3urWzSrFaYw3Wb6CLk5ZYExO6M73Lcy3/BC+b6jefT8+jvqDEii1lF2x
-         vLurTuwD53UxyuzGI1GPvxsdl68S2a/LtEPPN7Gs/868QIsRj0XslCX+xuiE+nbV5Tla
-         mTC7TIWsxh8cmM/gR8PwhCMnjYpfVmc8R4cgbR0llcidfH9fN949wv7Mw6p/CPkvu8Xn
-         nzfXCWhuaFRIpnfL7YveIUN2mlKKVclIhlKIkbtMa1MTRZqAb8Aj0Jw0eqyfvg3BgYtd
-         xQmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rI1cpmvfLJH6kTfoQBqKr4p1uRHaWCiCfbric7yc3oU=;
-        b=DGMJrMoXuwsHbYJoOAUE2mbvqXueZnByibMaB0PapHlQZNnswVp4aOBh1aGqfRsZ2k
-         LNBpXD0q57X8ulqYn0PKbU5EgglxgKDAcJJczH3hmoFB62v9aCAVfcCwkpBqpDFR8c9Z
-         JNDdGszkvVspDk66wpG763sX/6LjHpeGO+ImJJA/BFB4OI9KnxR/Dshi3Z/ndFZyNiQv
-         xVIG7G4oSRnS71h2jCz4eySaLBXQbPS1WpQvsLSs/RSvgcNORrVl8AjFpO5v7K44gETV
-         TughsvbNqTqHhQxvZ9H0TfJvp5x6pQ2XdcCY0pRSDfIHHvPZW/7GcewOtwJz2nqEbvfD
-         h2dQ==
-X-Gm-Message-State: AOAM531Kz6kOrfWrarwPZFTGBpTeYXq+O8ZYFvKVX3tEnhVuind6EXky
-        Mj6sQTEXJU31sQ41ELC/fz2OBc+NBIdZl0eAMLss
-X-Google-Smtp-Source: ABdhPJzzChXpGASUFHrcW55NeZaQFkmopErMJ5BvtCk7RK4Qi9bfAbL4Z4qf2qaNh1ATuEArKZuiqRpucQGGwd3Fp0s=
-X-Received: by 2002:a02:c608:: with SMTP id i8mr25590358jan.125.1607422263337;
- Tue, 08 Dec 2020 02:11:03 -0800 (PST)
+        Tue, 8 Dec 2020 05:12:02 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id BA0B5C4E;
+        Tue,  8 Dec 2020 05:10:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 08 Dec 2020 05:10:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=IZMTMn4wRKlczmZfBuLVqpHG2s4
+        w07cs+psbge8qouM=; b=LDCcM9gWBuPYaWTmfEAB2bJcoP3GjzN0AxqnNTlXG2j
+        Mq4qYhbj1RBOiW2WuzAdRFwOxOlzdJ4KXQjTKxXXJbL7NcB2IEtbEiejTfXi7Lj1
+        PbPWz7TEE0NiP+vv5nlfbKNDM8W64dggqW7r85a+hTsk+Agr5bqe15jd+BtYv2kc
+        nI55rjJxivHsvxGVuUXcwQu5W6eWN+IPFGNJLs9TzzjoKOgesdhK1ml100FuKM1W
+        UPrTGrHlILU092nDWHDjaL8Z/0e82aLdSBYf9fcyC9BSI9aFbgGxCYvLRBD2b37+
+        g3C73khigvSN/XpGuWRkMTG4lyezTfuCdldiGvyV3lw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IZMTMn
+        4wRKlczmZfBuLVqpHG2s4w07cs+psbge8qouM=; b=g6ccMHznz2ANZ/wJfEXtEu
+        1r0lnW/H4PfqDZBEdOnCSnbtiMe2MYEVHWvwPU8hHf4kyAVPcpZEjAG8wBXsoCaj
+        /a6MofJxwtKWiyYJeTXxJHon23Q2fLmsgsu2SWKdyMM5d2AcmPCDWO3X+sM+rLac
+        3V9V5VHZRKMxSH9A5ntete7QJMZFgofJDGCwmVrExWKWB9qlydtCK9DGRbeKiPLr
+        +xAR0BzzRWO+2rVGm38QVHORqZCAX0iZcMdNjN6kYtyN9s0ibYJmskIYqmSdk4v3
+        Nu90Qx5Y+3dnKpHhZP+wIyMJRyQaJkN2kZeJUPaYbJ+6cQUmsvt2kLApMGFfgTGg
+        ==
+X-ME-Sender: <xms:LlHPX5GBWcGUthXFlKdoH37tufBKJGG1WS2DwuERXhZ2DkAYGh1mBg>
+    <xme:LlHPX-WMJjUEStaSAddJ-i9UgN5Qd-gApQzYnUvTx3EUphOH4HRI1KWAy0n_WxXi2
+    otPkylAyoMSzjUbBkI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:LlHPX7ITfLQMTg7ABdZ3uHQDJ_fhY4uvuXkZ8O7RA4R_uJ6e_ierRw>
+    <xmx:LlHPX_G6gRv1P0MM6XcpxorEGhqTVXmPvEXE1tOe0DoHRF6IWgPlgQ>
+    <xmx:LlHPX_XioNQF8RjyVILaWps0ddfWvhmqvFIpRGbyw8x1BLPluJh4XQ>
+    <xmx:L1HPXxJt3ovzrzlRIV9tvnNJ8Rfs7bPDhFjoNdPOwh2JDCqI6wmptA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0301A1080057;
+        Tue,  8 Dec 2020 05:10:53 -0500 (EST)
+Date:   Tue, 8 Dec 2020 11:10:52 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] power: reset: new driver regulator-poweroff
+Message-ID: <20201208101052.ecq2hbixxi45h4mr@gilmour>
+References: <20201128103958.q6glewhhch7vtczr@gilmour>
+ <20201207142756.17819-1-michael@fossekall.de>
+ <20201207142756.17819-2-michael@fossekall.de>
 MIME-Version: 1.0
-References: <20201119153901.53705-1-steven.price@arm.com> <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
- <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com> <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
- <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com> <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
- <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com> <CAJc+Z1FRJR5LHw-xZvPpeYF6+v+ZOcLt99X41xOMAbFmB2DJ2A@mail.gmail.com>
- <b77efceaec433dd98fdf2cd535a9cf40@kernel.org>
-In-Reply-To: <b77efceaec433dd98fdf2cd535a9cf40@kernel.org>
-From:   Haibo Xu <haibo.xu@linaro.org>
-Date:   Tue, 8 Dec 2020 18:10:51 +0800
-Message-ID: <CAJc+Z1EafkLezXv=+1aPbaXo9uWpcB77iM32M70oyP6zEzacjw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2oq2ncswqe5ho6wm"
+Content-Disposition: inline
+In-Reply-To: <20201207142756.17819-2-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 18:01, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-12-08 09:51, Haibo Xu wrote:
-> > On Mon, 7 Dec 2020 at 22:48, Steven Price <steven.price@arm.com> wrote:
-> >>
->
-> [...]
->
-> >> Sounds like you are making good progress - thanks for the update. Have
-> >> you thought about how the PROT_MTE mappings might work if QEMU itself
-> >> were to use MTE? My worry is that we end up with MTE in a guest
-> >> preventing QEMU from using MTE itself (because of the PROT_MTE
-> >> mappings). I'm hoping QEMU can wrap its use of guest memory in a
-> >> sequence which disables tag checking (something similar will be needed
-> >> for the "protected VM" use case anyway), but this isn't something I've
-> >> looked into.
-> >
-> > As far as I can see, to map all the guest memory with PROT_MTE in VMM
-> > is a little weird, and lots of APIs have to be changed to include this
-> > flag.
-> > IMHO, it would be better if the KVM can provide new APIs to load/store
-> > the
-> > guest memory tag which may make it easier to enable the Qemu migration
-> > support.
->
-> On what granularity? To what storage? How do you plan to synchronise
-> this
-> with the dirty-log interface?
 
-The Qemu would migrate page by page, and if one page has been migrated but
-becomes dirty again, the migration process would re-send this dirty page.
-The current MTE migration POC codes would try to send the page tags just after
-the page data, if one page becomes dirty again, the page data and the tags would
-be re-sent.
+--2oq2ncswqe5ho6wm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+On Mon, Dec 07, 2020 at 03:27:54PM +0100, Michael Klein wrote:
+> This driver registers a pm_power_off function to disable a set of
+> regulators defined in the devicetree to turn off the board.
+>=20
+> Signed-off-by: Michael Klein <michael@fossekall.de>
+> ---
+>  drivers/power/reset/Kconfig              |   7 ++
+>  drivers/power/reset/Makefile             |   1 +
+>  drivers/power/reset/regulator-poweroff.c | 107 +++++++++++++++++++++++
+>  3 files changed, 115 insertions(+)
+>  create mode 100644 drivers/power/reset/regulator-poweroff.c
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index d55b3727e00e..ae6cb7b0bd4d 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -177,6 +177,13 @@ config POWER_RESET_QNAP
+> =20
+>  	  Say Y if you have a QNAP NAS.
+> =20
+> +config POWER_RESET_REGULATOR
+> +	bool "Regulator subsystem power-off driver"
+> +	depends on OF && REGULATOR
+> +	help
+> +	  This driver supports turning off your board by disabling a set
+> +	  of regulators defined in the devicetree.
+> +
+>  config POWER_RESET_RESTART
+>  	bool "Restart power-off driver"
+>  	help
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index c51eceba9ea3..9dc49d3a57ff 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_POWER_RESET_OCELOT_RESET) +=3D ocelot-rese=
+t.o
+>  obj-$(CONFIG_POWER_RESET_PIIX4_POWEROFF) +=3D piix4-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_LTC2952) +=3D ltc2952-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_QNAP) +=3D qnap-poweroff.o
+> +obj-$(CONFIG_POWER_RESET_REGULATOR) +=3D regulator-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_RESTART) +=3D restart-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_ST) +=3D st-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_VERSATILE) +=3D arm-versatile-reboot.o
+> diff --git a/drivers/power/reset/regulator-poweroff.c b/drivers/power/res=
+et/regulator-poweroff.c
+> new file mode 100644
+> index 000000000000..df2ca4fdcc49
+> --- /dev/null
+> +++ b/drivers/power/reset/regulator-poweroff.c
+> @@ -0,0 +1,107 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Force-disables a regulator to power down a device
+> + *
+> + * Michael Klein <michael@fossekall.de>
+> + *
+> + * Copyright (C) 2020 Michael Klein
+> + *
+> + * Based on the gpio-poweroff driver.
+> + */
+> +#include <linux/delay.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#define DEFAULT_TIMEOUT_MS 3000
+> +
+> +/*
+> + * Hold configuration here, cannot be more than one instance of the driv=
+er
+> + * since pm_power_off itself is global.
+> + */
+> +static struct regulator **poweroff_regulators;
+> +static u32 timeout =3D DEFAULT_TIMEOUT_MS;
+> +
+> +static void regulator_poweroff_do_poweroff(void)
+> +{
+> +	struct regulator **it;
+> +
+> +	if (poweroff_regulators)
+> +		for (it =3D poweroff_regulators; *it; ++it)
+> +			if (regulator_is_enabled(*it))
+> +				regulator_force_disable(*it);
+> +
+> +	/* give it some time */
+> +	mdelay(timeout);
+> +
+> +	WARN_ON(1);
+> +}
+> +
+> +static int regulator_poweroff_probe(struct platform_device *pdev)
+> +{
+> +	int count;
+> +	const char *name;
+> +	struct regulator **it;
+> +	struct property *prop;
+> +	struct device_node *node =3D pdev->dev.of_node;
+> +
+> +	/* If a pm_power_off function has already been added, leave it alone */
+> +	if (pm_power_off !=3D NULL) {
+> +		dev_err(&pdev->dev,
+> +			"%s: pm_power_off function already registered\n",
+> +		       __func__);
+> +		return -EBUSY;
+> +	}
+> +
+> +	count =3D of_property_count_strings(node, "regulator-names");
+> +	if (count <=3D 0)
+> +		return -ENOENT;
+> +
+> +	poweroff_regulators =3D devm_kcalloc(&pdev->dev, count + 1,
+> +		sizeof(struct regulator *), GFP_KERNEL);
+> +
+> +	it =3D poweroff_regulators;
+> +	of_property_for_each_string(node, "regulator-names", prop, name) {
+> +		*it =3D devm_regulator_get(&pdev->dev, name);
+> +		if (IS_ERR(*it))
+> +			return PTR_ERR(*it);
+> +		it++;
+> +	}
+> +
+> +	of_property_read_u32(node, "timeout-ms", &timeout);
+> +
+> +	pm_power_off =3D &regulator_poweroff_do_poweroff;
+> +	return 0;
+> +}
+> +
+> +static int regulator_poweroff_remove(__maybe_unused struct platform_devi=
+ce *pdev)
+> +{
+> +	if (pm_power_off =3D=3D &regulator_poweroff_do_poweroff)
+> +		pm_power_off =3D NULL;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id of_regulator_poweroff_match[] =3D {
+> +	{ .compatible =3D "regulator-poweroff", },
+> +	{},
+> +};
+> +
+> +static struct platform_driver regulator_poweroff_driver =3D {
+> +	.probe =3D regulator_poweroff_probe,
+> +	.remove =3D regulator_poweroff_remove,
+> +	.driver =3D {
+> +		.name =3D "poweroff-regulator",
+> +		.of_match_table =3D of_regulator_poweroff_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(regulator_poweroff_driver);
+
+Since this can't be compiled as a module, you can use
+module_platform_driver_probe instead.
+
+Maxime
+
+--2oq2ncswqe5ho6wm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX89RLAAKCRDj7w1vZxhR
+xYtVAP0c0fzec8KxHO/a2lG5JN9lp/jXTsHoamD5+8e8G53xnwEAniwDyn2gvqjS
+f1ceoeFITgRaS9n7Noj1lGaieeO0cwY=
+=2QeK
+-----END PGP SIGNATURE-----
+
+--2oq2ncswqe5ho6wm--
