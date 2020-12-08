@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD282D2E38
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010F22D2E40
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730056AbgLHP2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S1730093AbgLHP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729910AbgLHP2Z (ORCPT
+        with ESMTP id S1730016AbgLHP3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:28:25 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AB9C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:27:44 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id h16so6660730edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:27:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=YMax7HXKrIBHqsRJBxpKIHMa/O+tINsTtd7XKbDtC80=;
-        b=DtsHviAdDeIWnaFQR/4iMHT4WVx4haBzizrp65eLK/AnaXH7J4YB1pzEPzS/O4vBJ9
-         Ebx6M9XiWuOL/U7iIAGYO+wfAoq/4klaGiMh1pXBl1pixubuHYrpNvK/uWUnf0hS0URq
-         ySMz8xCld6VG5hEkBYMVtMW826QsTEbIBZnadVhE4I9GT3bvKuaajEPg8Jk2+eph5mnE
-         WOsdO1kx/M11A7HzISfnkT59GxWUdXyd0jnqKkPnpcswkGdYb3CvbnlP12EJQRf+rR6f
-         XSZOcdULNin1YhpOoYoae/XiMYWKmqRqpAHp3DKy4Ry06r1PfvYl6tGdP3bVUmGU6fxl
-         wcqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=YMax7HXKrIBHqsRJBxpKIHMa/O+tINsTtd7XKbDtC80=;
-        b=A/IVbYJSHNm/yzmNSjURZoYYLs5na/0Pte/ZSKr5Q8zqDypW35t1TwVMKvoBzv6qvR
-         dEZjXLIqBsNFTUDGK8M8R+KG2Ne6y9AVf8Ty0QGdHIz8fxNN7f7z1IPRu2T9z4gry+AZ
-         FKLhfgrFs/cs5++jZhVjRMQunzDNgAszTKmg0B2YlhNobMbgF7W7LYSDq9elIn7mWSpb
-         7+zp9iHNorJ8afIbrrG0FqqBVdxEzSu/I0vz6J1Ei98KobXEdIDsk4BRjwy5qxVkeFPR
-         HbpkVylkOusfhErKhvBU/KtxBb3rkpvvy1+Ty9fOTppogM6hckFvuqLnfBBsZmJ3+zO8
-         zk0Q==
-X-Gm-Message-State: AOAM532bJzVcYQV0N8PQZaiFrFSJxXhcuqbC1M/itnlvu3sQkhMrqv+S
-        B5qsaeStfnq9WNLoaPP14dZMZHUvuHlic/Rgj8I=
-X-Google-Smtp-Source: ABdhPJwXWrPfdESaIWcsQRA4cQAaN7jFbp2ZxDXBjIpRPebP2gryuT8mhnAYFjdLtQ5FMeEQA2LCe1ouIQwOYykRykM=
-X-Received: by 2002:a50:e00b:: with SMTP id e11mr25129724edl.303.1607441263700;
- Tue, 08 Dec 2020 07:27:43 -0800 (PST)
+        Tue, 8 Dec 2020 10:29:43 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AADC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:29:02 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by andre.telenet-ops.be with bizsmtp
+        id 1rUy2400X4C55Sk01rUyDW; Tue, 08 Dec 2020 16:28:59 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kmevC-0090Gd-Jy; Tue, 08 Dec 2020 16:28:58 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kmevC-0094TL-6w; Tue, 08 Dec 2020 16:28:58 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 1/2] Documentation/kbuild: Document COMPILE_TEST dependencies
+Date:   Tue,  8 Dec 2020 16:28:56 +0100
+Message-Id: <20201208152857.2162093-2-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201208152857.2162093-1-geert+renesas@glider.be>
+References: <20201208152857.2162093-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Received: by 2002:a54:2f52:0:0:0:0:0 with HTTP; Tue, 8 Dec 2020 07:27:43 -0800 (PST)
-Reply-To: stephenbordeaux@yahoo.com
-From:   Stephen Bordeaux <jafar78546@gmail.com>
-Date:   Tue, 8 Dec 2020 16:27:43 +0100
-Message-ID: <CAP_crS=sr6eR_ApH58+AH506vOLCbSupkotw9PRgynP0zkOhkg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sch=C3=B6nen Tag
-Ich bin Anthony Calder, Anwalt aus Togo. Ich habe Sie bez=C3=BCglich des
-Nachlasses des verstorbenen Dr. Edwin-Fonds in H=C3=B6he von 8,5 Millionen
-US-Dollar kontaktiert, der auf Ihr Konto zur=C3=BCckgef=C3=BChrt werden sol=
-l.
-Dar=C3=BCber hinaus m=C3=B6chte ich, dass Sie bei dieser Transaktion vertra=
-ulich
-antworten.
-Anthony Calder
+Document best practises for using COMPILE_TEST dependencies.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ Documentation/kbuild/kconfig-language.rst | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+index 1cf1aebdd6cdf8fa..2b746332d8aa6bce 100644
+--- a/Documentation/kbuild/kconfig-language.rst
++++ b/Documentation/kbuild/kconfig-language.rst
+@@ -553,6 +553,17 @@ with "depends on m".  E.g.::
+ 
+ limits FOO to module (=m) or disabled (=n).
+ 
++Compile-testing
++~~~~~~~~~~~~~~~
++If a config symbol has a dependency, but the code controlled by the config
++symbol can still be compiled if the dependency is not met, it is encouraged to
++increase build coverage by adding an "|| COMPILE_TEST" clause to the
++dependency.  This is especially useful for drivers for more exotic hardware, as
++it allows continuous-integration systems to compile-test the code on a more
++common system, and detect bugs that way.
++Note that compile-tested code should avoid crashing when run on a system where
++the dependency is not met.
++
+ Kconfig recursive dependency limitations
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-- 
+2.25.1
+
