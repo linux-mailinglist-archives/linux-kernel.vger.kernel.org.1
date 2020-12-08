@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BF92D354F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AFA2D3552
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgLHVdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:33:36 -0500
-Received: from mga12.intel.com ([192.55.52.136]:32713 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727793AbgLHVdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:33:36 -0500
-IronPort-SDR: VAhrJxpyKutXrvbmtA6v7zWLBfvVrMPWcbw3mLp1Yg5B2Xwl8CXA3UAdyONj9wF64o15ape3Sc
- iVz+iM5ZXafw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153212634"
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="153212634"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 13:32:56 -0800
-IronPort-SDR: Y+f3DI1veGKmX6VjzcwgXkHwdnd1cjjstobayoJ4ZyEvwtexSao5eaJZ+ovVen+hnFysEG5mBK
- bfjh5UoYi3HQ==
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="437537590"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 13:32:55 -0800
-Date:   Tue, 8 Dec 2020 13:32:55 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
- <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org>
- <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org>
- <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+        id S1729631AbgLHVd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:33:58 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41428 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727793AbgLHVd6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:33:58 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607463195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FebrbWILKUR8Hgmz9i1mtULcgETiptdqLPMhWP7EMIU=;
+        b=r1xECTHRQcb8hTX5txaTxq9Or8wTghetyMu2X2oy1RwU/RSqubXkPYlGK+vUnkhmp3PmA2
+        wkxVTbHYTR4wTOoKC2Ud1x364nHZer7l30pa5ZEOnVdUFJeLE0q9wmOZxnx39ogNwwmCfx
+        h35a0HUl66gG2cBpXkkZocb+LA6DeHZ6gBfkvMiB3+8WDM/WpdNql6AQ195ZVxLrirvfHU
+        WXni0hEgauv88BfP4zKxL2C2XdXndhbYuk3CMxFHWObPKxeS09E6yJf+tTEEgKLqFnelje
+        pr4BkDdM3rGMHgj+/TeFaPwGyE5VdKUkuMh8DP2ffqQrxYFLddFk/6oh9ndSlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607463195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FebrbWILKUR8Hgmz9i1mtULcgETiptdqLPMhWP7EMIU=;
+        b=RtPIAb0xy9lmaw4yVIcuXS3FUaGVS+YVt2s2PMAKGKzRb6mr13bqE56dfW4N+aqsnmla2h
+        zOS/81es/ovhRqAQ==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <20201208181107.GA31442@fuller.cnet>
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <20201208181107.GA31442@fuller.cnet>
+Date:   Tue, 08 Dec 2020 22:33:15 +0100
+Message-ID: <875z5c2db8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
-> On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
-> > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-> > > > > +                            struct page *src_page, size_t src_off,
-> > > > > +                            size_t len)
-> > > > > +{
-> > > > > +     char *dst = kmap_local_page(dst_page);
-> > > > > +     char *src = kmap_local_page(src_page);
-> > > >
-> > > > I appreciate you've only moved these, but please add:
-> > > >
-> > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
-> > >
-> > > I imagine it's not outside the realm of possibility that some driver
-> > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
-> > > it because kmap_atomic() of contiguous pages "just works (TM)".
-> > > Shouldn't this WARN rather than BUG so that the user can report the
-> > > buggy driver and not have a dead system?
-> >
-> > As opposed to (on a HIGHMEM=y system) silently corrupting data that
-> > is on the next page of memory?
-> 
-> Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
-> 
-> > I suppose ideally ...
-> >
-> >         if (WARN_ON(dst_off + len > PAGE_SIZE))
-> >                 len = PAGE_SIZE - dst_off;
-> >         if (WARN_ON(src_off + len > PAGE_SIZE))
-> >                 len = PAGE_SIZE - src_off;
-> >
-> > and then we just truncate the data of the offending caller instead of
-> > corrupting innocent data that happens to be adjacent.  Although that's
-> > not ideal either ... I dunno, what's the least bad poison to drink here?
-> 
-> Right, if the driver was relying on "corruption" for correct operation.
-> 
-> If corruption actual were happening in practice wouldn't there have
-> been screams by now? Again, not necessarily...
-> 
-> At least with just plain WARN the kernel will start screaming on the
-> user's behalf, and if it worked before it will keep working.
+On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
+> On Tue, Dec 08, 2020 at 05:02:07PM +0100, Thomas Gleixner wrote:
+>> On Tue, Dec 08 2020 at 16:50, Maxim Levitsky wrote:
+>> > On Mon, 2020-12-07 at 20:29 -0300, Marcelo Tosatti wrote:
+>> >> > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
+>> >> > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
+>> >> > +
+>> >> > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
+>> >> > +KVM will adjust the guest TSC value by the time that passed since the moment
+>> >> > +CLOCK_REALTIME timestamp was saved in the struct and current value of
+>> >> > +CLOCK_REALTIME, and set the guest's TSC to the new value.
+>> >> 
+>> >> This introduces the wraparound bug in Linux timekeeping, doesnt it?
+>> 
+>> Which bug?
+>
+> max_cycles overflow. Sent a message to Maxim describing it.
 
-So I decided to just sleep on this because I was recently told to not introduce
-new WARN_ON's[1]
+Truly helpful. Why the hell did you not talk to me when you ran into
+that the first time?
 
-I don't think that truncating len is worth the effort.  The conversions being
-done should all 'work'  At least corrupting users data in the same way as it
-used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
-to do so while I work through the 0-day issues.  (not sure what is going on
-there.)
+>> For one I have no idea which bug you are talking about and if the bug is
+>> caused by the VMM then why would you "fix" it in the guest kernel.
+>
+> 1) Stop guest, save TSC value of cpu-0 = V.
+> 2) Wait for some amount of time = W.
+> 3) Start guest, load TSC value with V+W.
+>
+> Can cause an overflow on Linux timekeeping.
 
-However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
-is a bit more critical than the PKS API in that it could result in corrupt
-data.
+Yes, because you violate the basic assumption which Linux timekeeping
+makes. See the other mail in this thread.
 
-Ira
+Thanks,
 
-[1] https://lore.kernel.org/linux-doc/20201103065024.GC75930@kroah.com/
+        tglx
+
