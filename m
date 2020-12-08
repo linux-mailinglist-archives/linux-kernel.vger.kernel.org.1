@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9582D2522
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028D82D2544
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgLHH6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:58:14 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:28848 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727558AbgLHH6N (ORCPT
+        id S1727762AbgLHH7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgLHH7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:58:13 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607414268; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=2Mn2Pc9dXqsIJzPbjlcSc+dZ+VvEsmsUdo0W18MYg2E=;
- b=BXAWcKmFvi6o9fYMAZPZ6zxPjojMh2YIUc4Ms5cUWL4+YxfBK3MQMKPnAAwx3nJY45trGPXl
- V5l+PRsYwGidUvGgBzTr+ZyvEXAcmc0m/JbViPg1P9im1GHbnG69aVKNbU2SNK6MGmr/Nowt
- TXGblNt2odbAij+cRP0CYVKs4FE=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fcf31fab50fb3818a95590a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 07:57:46
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D2DA6C43461; Tue,  8 Dec 2020 07:57:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B32C6C433C6;
-        Tue,  8 Dec 2020 07:57:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B32C6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Tue, 8 Dec 2020 02:59:07 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EF3C061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:58:21 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 131so13137361pfb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:58:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KnZfQqoZzWUzBKCvzyfIcJ91Cd0y5N1mgzIqVdR3rMA=;
+        b=SZ3nsZ1SIFBJZO136kSq0uCuUCrrUag/yRqo2T6IXzYAOKkNGwHkq5FT/ZbQaf+S3s
+         VNJwR4J+GlDgwOVF8prxwnp0+VCWLO72sbP/r/CNz6Lire9I0tcZvxq5pGNTwDFZv+C5
+         BocQj2AgD2NsDFou1cd7OELbYzn38BIcAsUMHcPADmG5rYxZzfr4l2IyCAOX04fLxEix
+         VUvfPiKQEgBAzgXiclItdiapR+kDVHFglRb6IXas8PYW9Yphq7ZPr41RQjC4mBZE88L4
+         D2hQAoX/MgEsCUgtSsnBNmnNYv7qcFjllXng8O+XpJPNmUDocP3sIk0FuSEEkxnOXDz/
+         e7zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=KnZfQqoZzWUzBKCvzyfIcJ91Cd0y5N1mgzIqVdR3rMA=;
+        b=b4YgTBjsJDDps/1YkZKyCHuhbqy1yGhU0Gg2TpKZLR0wohS1MNauMZdSi6P8skjJUT
+         ksbajI2bItvi2C2BbFSppBim0bub2qZ3A5BJ0wlWAKzvtCcdkvO2pap9EuJuo8+X6TtW
+         kow2uNxv3ecpvYCZPNZ5subLX70SZxlhz0LTQsI1p0OqDtH5TKH35p0Z/OIiEqhXAz+p
+         DJhGE+7wECQIk7hEP7Sc70HJog3zRcJVy8AAONDshCFcAJnA87ys7Bv2d+VFFaxDa4Fz
+         dVZFdfqB4yCnCmjA9KWWop3uYZhvno8kYyyFNk4UDkWErRLUjK5aiUF4zU3M+08WHZLo
+         Ec7g==
+X-Gm-Message-State: AOAM532qRmX3rsaowBfHqbZs1tyjCQzCA85xYyed9FN82rwQNRt7+OCw
+        zTk688+PP9UX/6GetJeUVqqxy/Amd1jJRw==
+X-Google-Smtp-Source: ABdhPJxRVcpJfQBIqL9F/mg6nvL8LrdGgEQtsnzFjb0uImmFA3ZvkN4UJ46V1gqpLQ/GfBriYRq+Hg==
+X-Received: by 2002:a17:90a:f288:: with SMTP id fs8mr3016334pjb.184.1607414301322;
+        Mon, 07 Dec 2020 23:58:21 -0800 (PST)
+Received: from laputa (p73a20c63.tkyea130.ap.so-net.ne.jp. [115.162.12.99])
+        by smtp.gmail.com with ESMTPSA id x7sm16000357pfb.96.2020.12.07.23.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 23:58:20 -0800 (PST)
+Date:   Tue, 8 Dec 2020 16:58:15 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
+Message-ID: <20201208075815.GC31973@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201125074125.GC62993@laputa>
+ <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
+ <20201201030937.GE43403@laputa>
+ <523f9ed9-318e-7121-d58d-c3843d9b9b7c@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-To:     Abhishek Kumar <kuabhs@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, kuabhs@chromium.org,
-        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
-        pillair@codeaurora.org, briannorris@chromium.org,
-        dianders@chromium.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201208075745.D2DA6C43461@smtp.codeaurora.org>
-Date:   Tue,  8 Dec 2020 07:57:45 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <523f9ed9-318e-7121-d58d-c3843d9b9b7c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abhishek Kumar <kuabhs@chromium.org> wrote:
+Adrian,
 
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
+On Thu, Dec 03, 2020 at 11:55:23AM +0200, Adrian Hunter wrote:
+> On 1/12/20 5:09 am, AKASHI Takahiro wrote:
+> > Adrian,
+> > 
+> > Thank you for your review comments.
+> > 
+> > On Thu, Nov 26, 2020 at 10:18:55AM +0200, Adrian Hunter wrote:
+> >> On 25/11/20 9:41 am, AKASHI Takahiro wrote:
+> >>> Gentle ping;
+> >>>
+> >>> On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
+> >>>> This is an interim snapshot of our next version, v4, for enabling
+> >>>> UHS-II on MMC/SD.
+> >>>>
+> >>>> It is focused on 'sdhci' side to address Adrian's comments regarding
+> >>>> "modularising" sdhci-uhs2.c.
+> >>>> The whole aim of this version is to get early feedback from Adrian (and
+> >>>> others) on this issue. Without any consensus about the code structure,
+> >>>
+> >>> Any comments so far?
+> >>>
+> >>
+> >> Overall, I like this approach of separating UHS2 from legacy sdhci as much
+> >> as possible.  The only major change, is to drop support for legacy quirks
+> >> and features that you do not need.  The reason for that, is that there may
+> >> be few drivers that end up with UHS-II support (opting instead for SD
+> >> Express), so there is no point going to a lot of trouble to support things
+> >> that never get used.
+> >>
+> >> From what I have seen that looks like it includes:
+> >> 	- any quirks
+> > 
+> > GLI driver (gl9755) needs
+> >   * SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC
+> >   * SDHCI_QUIRK2_BROKEN_DDR50
+> > but they are managed in sdhci code.
+> > 
+> >> 	- SDHCI LED support
+> >> 	- external DMA support
+> > 
+> > Should we add 'depends on !SDHCI_UHS2' to MMC_SDHCI_EXTERNAL_DMA?
+> > 
+> >> In this regard, the important thing is to have a comment somewhere that
+> >> lists what is not supported.
+> >>
+> >> I have only looked at SDHCI patches so far, and only up to about patch 20,
+> >> but maybe that gives you enough to go on for a while.
+> > 
+> > Well, I have almost done.
+> > Can I expect your comments on the patches #21-#27 as well soon?
 > 
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> I have made some more comments and that is all for now, except for anything
+> more you wish to discuss.
 
-Two new checkpatch (using ath10k-check) warnings:
+Thank you.
+I assume that you don't have any objection against adding extra hooks
+to sdhci_ops in patch#23 and #25, do you?
 
-drivers/net/wireless/ath/ath10k/core.c:1509: line length of 92 exceeds 90 columns
-drivers/net/wireless/ath/ath10k/core.c:1518: line length of 92 exceeds 90 columns
+If so, since we don't have any critical issues to discuss,
+I hope that my changes will be contained in the new version
+where a major rework will be done on the core side by Ben.
 
-Fixed those in the pending branch.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+-Takahiro Akashi
