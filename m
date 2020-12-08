@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85862D367F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B388D2D3681
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731508AbgLHWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:52:20 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:45196 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731438AbgLHWwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:52:16 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kmlpN-00AvrE-AX; Tue, 08 Dec 2020 23:51:25 +0100
-Date:   Tue, 8 Dec 2020 23:51:25 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
- bandwidth requirement
-Message-ID: <20201208225125.GA2602479@lunn.ch>
-References: <20201206034408.31492-1-TheSven73@gmail.com>
- <20201206034408.31492-2-TheSven73@gmail.com>
- <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
+        id S1731038AbgLHWxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729455AbgLHWxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:53:22 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69FEC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:52:41 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id y19so587054lfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:52:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZplHny7NuMDeOaboy5Ojl3351+q3889Gr1PaS7aPZVw=;
+        b=SoCAWoi6D80C376nwcmnYXhMLwlWp/fjLJB5XEgBGVMVfPU3bxnr2Ie6vmImL59rKa
+         ZYJf3tAq9nvcbZXxr02MRDrL3FhZN7Z7fnYt9g8LdWhL66pWjHdR+8HvYC7DONcGTj0b
+         jtZ8VS7TGo08Svsmicqpx2dbeSy5Ll1P+H440=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZplHny7NuMDeOaboy5Ojl3351+q3889Gr1PaS7aPZVw=;
+        b=h0WISHHvyGJrDTeZT+LSTV2y5Ojq7kZFB/XZjjo4c3U3If2awCYVLw+yNU3FV5LJw2
+         9ZWbfM4PI1fkPhgN3XOPC0bW3VnEkaR1PJdaYp+LsoJuS+s71eLBdPToJbOn5OSHD09X
+         Wwp51TkZ0gmqtWRedNCB20zb/jNmJS4vViAgQnPiZZHCTx/o1rOAaF0yXdldx5wUnVEx
+         PIKXtJsaPQT5lVILWe7uJQLnarZPq6H0y00xen24pFp01Lj7TD3obq6NKcQUR+hCUXdu
+         VSytop2xGCrafrSqE2azxpjBCIgkTLRRV233qxXmFTHOpSIdyXwxWRIp32Q/1NDhRgzX
+         XkRQ==
+X-Gm-Message-State: AOAM5324/WcMc8QPc3dsAR7Z0nls27rD/ZUcR6ciVQlEvcDw74O5YK0g
+        3+ANwUSrhBwlTgg2SWhYByEm9FmC7F8pgQ==
+X-Google-Smtp-Source: ABdhPJy3wirYroK3BGQlQNeKQRrxgjsabYY+yvPL/nXH2mJ2Uv/GHRwqqdDmXQfuGGxc7+YllOQUng==
+X-Received: by 2002:ac2:5145:: with SMTP id q5mr1150711lfd.626.1607467960069;
+        Tue, 08 Dec 2020 14:52:40 -0800 (PST)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id r16sm2419ljj.52.2020.12.08.14.52.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 14:52:39 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id m13so66926ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:52:38 -0800 (PST)
+X-Received: by 2002:a2e:b4af:: with SMTP id q15mr1414834ljm.507.1607467958621;
+ Tue, 08 Dec 2020 14:52:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+ <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
+In-Reply-To: <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Dec 2020 14:52:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wikp9x+nz=9CHc+70aO11V0a0Ga=WSpRTySqr_r6dpiOw@mail.gmail.com>
+Message-ID: <CAHk-=wikp9x+nz=9CHc+70aO11V0a0Ga=WSpRTySqr_r6dpiOw@mail.gmail.com>
+Subject: Re: problem booting 5.10
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> That's a good question. I used perf to create a flame graph of what
-> the cpu was doing when receiving data at high speed. It showed that
-> __dma_page_dev_to_cpu took up most of the cpu time. Which is triggered
-> by dma_unmap_single(9K, DMA_FROM_DEVICE).
-> 
-> So I assumed that it's a PCIe dma bandwidth issue, but I could be wrong -
-> I didn't do any PCIe bandwidth measurements.
+On Tue, Dec 8, 2020 at 2:47 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On Tue, Dec 8, 2020 at 3:42 PM Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> > This solves the problem.  Starting from 5.10-rc7 and doing this
+> > revert, I get a kernel that boots.
+>
+> Thanks for testing! Linus, do you just want to revert this, or do you
+> want me to queue it up?
 
-Sometimes it is actually cache operations which take all the
-time. This needs to invalidate the cache, so that when the memory is
-then accessed, it get fetched from RAM. On SMP machines, cache
-invalidation can be expensive, due to all the cross CPU operations.
-I've actually got better performance by building a UP kernel on some
-low core count ARM CPUs.
+I'll just revert it in my tree directly, but you (or Martin) might
+want to make sure that it gets re-enabled in 5.11.
 
-There are some tricks which can be played. Do you actually need all
-9K? Does the descriptor tell you actually how much is used? You can
-get a nice speed up if you just unmap 64 bytes for a TCP ACK, rather
-than the full 9K.
-
-     Andrew
+           Linus
