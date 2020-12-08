@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F712D290A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F9A2D2908
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgLHKhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgLHKhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:37:18 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA76C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:36:38 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f17so11819554pge.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:36:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czdrjdVlGdWRX0t2911F8kLhf9bUIXthpSCZ3yhB1pM=;
-        b=t+O0l4FU8SBaumgvxIysuTFkTBWRDRwJZVnT8cch+PSbrNKzklgyK8A0MVHuOIxzyQ
-         S2QruZdyUg+h+50ZFTrKh+Hh2f3gdbz4lLEhmJqTVEW/Uk9pXdnYyFpgQT9eyAlFY2vY
-         aXZFWjnlMXpj/CDuKOcOmrVkdwto4ogNFuEvrQ/pozcMewC/P2FxhIe/vMeVJu0rHHH0
-         JcoC1yGm1D6MOocUNKgNMPnXwkLGPvS2xTkVuLNQKsnWLmpS9xUnKztG27PJZYJhCgH7
-         hhP3mvZz7OXOsoC9Pq0u/Qr2GRemntB3BEnc7O+yxch6k7Dkb9ZUzEBi2Iqd1OK7iBYi
-         qvQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=czdrjdVlGdWRX0t2911F8kLhf9bUIXthpSCZ3yhB1pM=;
-        b=hK7eKUGjKrDgoTLPAsy7zzuP4lInoZt220/7a7ER57NwPpxMvDYYm/l1/AD8WIyLp/
-         dsvrejBv6NpWxxlzB5HZF4FwAOhZ6rBLHplXWyPm0KvyeBU9K2m5OhIHy2EChmqrLL7r
-         vbzBTEfyoolTKuet/x5wz5TOGkDpbQk5vmZ9UlJ7flp9eLQ1LcnOHODz6WcgAGi8oB0g
-         1jVErTP1MLUnH6nhr0391d+bGY7FMa+AZYcgJzhHrCjEFegF4Tq+t71h/oovXmWUq8sK
-         HgQak5n43n+bLGNfz5NyrUUgteTvqaZU/Ls8mjA5pA4+RZvIomSY11Jy3Ke0Qi7BBycw
-         M5zQ==
-X-Gm-Message-State: AOAM532nR6p3NKs/p1vCSbejGO6FQ8okjH27xiKcdZ8i31KYfKH0y07F
-        YPIWDTtDYYrtq1CvlG+I/lk=
-X-Google-Smtp-Source: ABdhPJzDNPE8O/yQXLmwY6V05iz6bfyONekHaRobvHsV3BD2uKOCvgbnF6hMzIiJn57lv8Vna17Paw==
-X-Received: by 2002:a17:90a:990f:: with SMTP id b15mr3619423pjp.166.1607423797699;
-        Tue, 08 Dec 2020 02:36:37 -0800 (PST)
-Received: from cjuniorslaptop.localdomain ([202.164.130.48])
-        by smtp.gmail.com with ESMTPSA id dw16sm2466237pjb.35.2020.12.08.02.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 02:36:36 -0800 (PST)
-From:   Aswin C <aswinraman2013@gmail.com>
-X-Google-Original-From: Aswin C <realc@protonmail.com>
-To:     olteanv@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Aswin C <realc@protonmail.com>
-Subject: [PATCH] net: dsa: sja1105: Remove an unprofessional word from the code comments
-Date:   Tue,  8 Dec 2020 16:03:32 +0530
-Message-Id: <20201208103332.5095-1-realc@protonmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1728863AbgLHKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:36:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727965AbgLHKgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:36:35 -0500
+Date:   Tue, 8 Dec 2020 10:35:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607423754;
+        bh=ffXh/ffsFEu14yYkVpY1W+3Tb6JWOvb9jWcp7gmAz2g=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jv1ty0fx2BX6Qj72fdbIYdZax8z6degjujXihkSyIV3UDb97UyieX87rWb9JnOawd
+         pXhwuacdG+oxlOhtVN1nycBQGosStF8DwNj07kppxrJ/n2SKKvQORxiMA19Mb+xBJs
+         xz71tgAnVkOVazSgi0d+kxvDN5kC6lqWXpiBAtVnBZmobANuUmpOrTEtMaANVSB3PQ
+         gwZO1zItEGR8VUcUdPpVyXosXmXS7/zzf5wYI64aJrLaJl0Qf6RG0/jONM3jY+8OW7
+         Y0oeCYv2buhqif9br8mchpVwsELCVxhQigueqioBdr8BhNLL7Na0L7A9OlPMlJqJSq
+         KfGD6MFcN2qew==
+From:   Will Deacon <will@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>
+Subject: Re: [PATCH] arm64: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20201208103549.GA5887@willie-the-truck>
+References: <20201205165406.108990-1-yury.norov@gmail.com>
+ <20201207112530.GB4379@willie-the-truck>
+ <CAAH8bW-fb0wPwwvo8P8VW33zV=Wi_LPWxdJH8y2wdGGqPE+3nA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAH8bW-fb0wPwwvo8P8VW33zV=Wi_LPWxdJH8y2wdGGqPE+3nA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the word 'retarded' from the code comments with a more professional word
-'erroneous' to make it less profane.
----
- drivers/net/dsa/sja1105/sja1105_dynamic_config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 07, 2020 at 05:59:16PM -0800, Yury Norov wrote:
+> (CC: Alexey Klimov)
+> 
+> On Mon, Dec 7, 2020 at 3:25 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Sat, Dec 05, 2020 at 08:54:06AM -0800, Yury Norov wrote:
+> > > ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
+> > > enable it in config. It leads to using find_next_bit() which is less
+> > > efficient:
+> >
+> > [...]
+> >
+> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > index 1515f6f153a0..2b90ef1f548e 100644
+> > > --- a/arch/arm64/Kconfig
+> > > +++ b/arch/arm64/Kconfig
+> > > @@ -106,6 +106,7 @@ config ARM64
+> > >       select GENERIC_CPU_AUTOPROBE
+> > >       select GENERIC_CPU_VULNERABILITIES
+> > >       select GENERIC_EARLY_IOREMAP
+> > > +     select GENERIC_FIND_FIRST_BIT
+> >
+> > Does this actually make any measurable difference? The disassembly with
+> > or without this is _very_ similar for me (clang 11).
+> >
+> > Will
+> 
+> On A-53 find_first_bit() is almost twice faster than find_next_bit(),
+> according to
+> lib/find_bit_benchmark. (Thanks to Alexey for testing.)
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_dynamic_config.c b/drivers/net/dsa/sja1105/sja1105_dynamic_config.c
-index b777d3f37..7a76180f3 100644
---- a/drivers/net/dsa/sja1105/sja1105_dynamic_config.c
-+++ b/drivers/net/dsa/sja1105/sja1105_dynamic_config.c
-@@ -250,7 +250,7 @@ sja1105pqrs_l2_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
- 			SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY, op);
- }
- 
--/* The switch is so retarded that it makes our command/entry abstraction
-+/* The switch is so erroneous that it makes our command/entry abstraction
-  * crumble apart.
-  *
-  * On P/Q/R/S, the switch tries to say whether a FDB entry
--- 
-2.29.2
+I guess it's more compiler dependent than anything else, and it's a pity
+that find_next_bit() isn't implemented in terms of the generic
+find_first_bit() tbh, but if the numbers are as you suggest then I don't
+have a problem selecting this on arm64.
 
+Will
