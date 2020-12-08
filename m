@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB492D3506
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C073D2D3510
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgLHVNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:13:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727998AbgLHVNr (ORCPT
+        id S1729365AbgLHVP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:15:29 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2227 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727660AbgLHVP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:13:47 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FC1C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:13:07 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w6so15132622pfu.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:13:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O9P7Yx8VFzWCCAYZubuM8Kn2akF3BiN8tXjMtys17+Y=;
-        b=L5cS/IQRJsFrNE1wrnlNkM2ax4xafyjL+6GZOGgovgRJBSpvz0hAYrBACzsPeS+Oe1
-         G+lrmZaSukgwT1/7j8rHbSsWhYOQKfZMOLW5X+orEKQebaSPLNbZ90tJ7dcY8uabz+oM
-         GVFBb3UPecdyX2mm3bPruW0W1wTqUaR+KaMVXJ1EdzldtzAQGhw1Zx6zioznTtzqLwNF
-         ef1pnyDhD8EhyXZQhKynYBdZmx2mTBS71Zbyyz/uSIETyOTBUpce4bDId9MjFr1NrkVA
-         ON5lAohMLdtifRwHLF3jJlee6nRyHc6J0jng9qRhWSk+tklg8Pxmftm4LwEu9TLd603p
-         DwNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O9P7Yx8VFzWCCAYZubuM8Kn2akF3BiN8tXjMtys17+Y=;
-        b=LSh59dGUDkh0PreW+dTXO65lrQ+RBPwgVyTS4ZC342HHDNF6QWKN3Pe54wM1y0ZZyn
-         5L7txZkF8QhxIr1XCRy4T9CVIIObrNGQCusxkccNC5u00xD6gURCLvBzb0X2fz/jHxPd
-         cWt++dNNRye+clTzeTLKhRxaQmfywf9fpHBtWaEYQLvG3/XLAZm5cvqnf0jhDfQxJnP8
-         K4I8BKZGwwaN23jSNI2HqNzCKutrVaBdwcq2qPwhaB+pi9Z+5WjR4HfRte+B1s4QuSxY
-         e7FgFoDaMCmauqIY+QR2kqXovWTpmFUpiZfnUl8BZT1ZNCZECRHa9avP9Tu5+70WsoFb
-         dpiA==
-X-Gm-Message-State: AOAM532n7pa8Bu1G0IYIgunSDGBXJMr6Z8fdIcYvaE97hzCxAZNYn/sO
-        XSQ/vDEmQ2ebPPXZBuzkfnkUdA==
-X-Google-Smtp-Source: ABdhPJwORoXXi+f1fdDVPYoHcpzT5DXgLPCXxBehn4/sdw05RKt5FVO5JcW7RGhdTE4HV0fOyvayng==
-X-Received: by 2002:a63:4b22:: with SMTP id y34mr340pga.214.1607461986630;
-        Tue, 08 Dec 2020 13:13:06 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id x4sm15739367pgg.94.2020.12.08.13.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 13:13:05 -0800 (PST)
-Date:   Tue, 8 Dec 2020 13:12:59 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
-Message-ID: <X8/sWzYUjuEYwCuf@google.com>
-References: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
- <370db207-7216-ae26-0c33-dab61e0fdaab@redhat.com>
+        Tue, 8 Dec 2020 16:15:29 -0500
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrCXd65Qtz67FSB;
+        Wed,  9 Dec 2020 05:11:29 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 22:14:47 +0100
+Received: from [10.210.169.98] (10.210.169.98) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 21:14:46 +0000
+Subject: Re: problem booting 5.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Julia Lawall <julia.lawall@inria.fr>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <nicolas.palix@univ-grenoble-alpes.fr>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
+ <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
+Date:   Tue, 8 Dec 2020 21:14:10 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <370db207-7216-ae26-0c33-dab61e0fdaab@redhat.com>
+In-Reply-To: <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.98]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020, Paolo Bonzini wrote:
-> On 05/12/20 01:48, Maciej S. Szmigiero wrote:
-> > From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> > 
-> > Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> > cleaned up the computation of MMIO generation SPTE masks, however it
-> > introduced a bug how the upper part was encoded:
-> > SPTE bits 52-61 were supposed to contain bits 10-19 of the current
-> > generation number, however a missing shift encoded bits 1-10 there instead
-> > (mostly duplicating the lower part of the encoded generation number that
-> > then consisted of bits 1-9).
-> > 
-> > In the meantime, the upper part was shrunk by one bit and moved by
-> > subsequent commits to become an upper half of the encoded generation number
-> > (bits 9-17 of bits 0-17 encoded in a SPTE).
-> > 
-> > In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
-> > has changed the SPTE bit range assigned to encode the generation number and
-> > the total number of bits encoded but did not update them in the comment
-> > attached to their defines, nor in the KVM MMU doc.
-> > Let's do it here, too, since it is too trivial thing to warrant a separate
-> > commit.
-> > 
-> > Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-> > Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> > ---
+On 08/12/2020 19:19, Linus Torvalds wrote:
+> On Tue, Dec 8, 2020 at 10:59 AM Martin K. Petersen
+> <martin.petersen@oracle.com> wrote:
+>>
+>>> So I'm adding SCSI people to the cc, just in case they go "Hmm..".
+>>
+>> Only change in this department was:
+>>
+>> 831e3405c2a3 scsi: core: Don't start concurrent async scan on same host
 > 
+> Yeah, I found that one too, and dismissed it for the same reason you
+> did - it wasn't in rc1. Plus it looked very simple.
 > 
-> Good catch.
+> That said, maybe Julia might have misspoken, and rc1 was ok, so I
+> guess it's possible. The scan_mutex does show up in that "locks held"
+> list, although I can't see why it would matter. But it does
+> potentially change timing (so it could expose some existing race), if
+> nothing else.
+> 
+> But let's make sure Jens is aware of this too, in case it's some ATA
+> issue. Not that any of those handful of 5.10 changes look remotely
+> likely _either_.
+> 
+> Jens, see
+> 
+>     https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2012081813310.2680@hadrien/
+> 
+> if you don't already have the lkml thread locally.. There's not enough
+> of the dmesg to even really guess what Julia's actual hardware is,
+> apart from it being a Seagate SATA disk. Julia? What controllers and
+> disks do you have show up when things work?
+> 
+>               Linus
+> .
+> 
 
-Indeed!  I hate this code... :-)
+JFYI, About "scsi: megaraid_sas: Added support for shared host tagset 
+for cpuhotplug", we did have an issue reported here already from Qian 
+about a boot hang:
 
-> What do you think about this alternative definition?  It computes everything
-> from the bit ranges.
+https://lore.kernel.org/linux-scsi/fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com/
 
-This has my vote, I was going to suggest something similar for the shifts to
-minimize the magic.
+And the solution to that specific problem is in:
+https://lore.kernel.org/linux-block/20201203012638.543321-1-ming.lei@redhat.com/
 
-> #define MMIO_SPTE_GEN_LOW_START         3
-> #define MMIO_SPTE_GEN_LOW_END           11
-> 
-> #define MMIO_SPTE_GEN_HIGH_START        PT64_SECOND_AVAIL_BITS_SHIFT
-> #define MMIO_SPTE_GEN_HIGH_END          62
-> 
-> #define MMIO_SPTE_GEN_LOW_MASK          GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, MMIO_SPTE_GEN_LOW_START)
-> #define MMIO_SPTE_GEN_HIGH_MASK         GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, MMIO_SPTE_GEN_HIGH_START)
-> 
-> #define MMIO_SPTE_GEN_LOW_BITS          (MMIO_SPTE_GEN_LOW_END - MMIO_SPTE_GEN_LOW_START + 1)
-> #define MMIO_SPTE_GEN_HIGH_BITS         (MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
-> 
-> #define MMIO_SPTE_GEN_LOW_SHIFT         (MMIO_SPTE_GEN_LOW_START - 0)
-> #define MMIO_SPTE_GEN_HIGH_SHIFT        (MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
-> 
-> #define MMIO_SPTE_GEN_MASK               GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
+This issue may be related, so you could test by reverting that megaraid 
+sas commit or setting the driver module param "host_tagset_enable=0" 
+just to see.
 
-What if we leave MMIO_SPTE_GEN_MASK as is, GENMASK_ULL(17, 0), and instead add a
-BUILD_BUG_ON() to assert that it matches the above logic?  It's really easy to
-get lost when reading through the chain of defines, I find the explicit mask
-helps provide an anchor/reference for understand what's going on.  It'll require
-an update if/when PT64_SECOND_AVAIL_BITS_SHIFT, but that's not necessarily a bad
-thing, e.g. the comment above this block will also be stale.
+Thanks,
+John
