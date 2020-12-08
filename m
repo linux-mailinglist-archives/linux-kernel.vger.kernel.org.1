@@ -2,126 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18592D35F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ADC2D35F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731381AbgLHWI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:08:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731369AbgLHWI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:08:57 -0500
-X-Gm-Message-State: AOAM532a+reETF4XRfgpJ4oCZDAlvONVqX+INSMJ94Lv8TOiDIXjh67u
-        bgV4OIvhspDfiG61ozW0jMzV6mA0g9cD+Nw+3+nLKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607465296;
-        bh=J7br4+6VmGx77/7VBZgfseCUz95g64+31jTTDT3s5to=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ws8SSGdIyOUV/LoJdT9eDm8+sWO8kPtQTNGqfqQAN6Y1+gfRBsgC34eewSks3x7al
-         jPDK4GwFHpOrPQuU0uxRlbpkw4SpxPPmtp5foqhAxG+yu1RqSwZGvNuERuFQvNDcXq
-         US7ZO7EvN6qbsOr8deIw/u/hYWoFueY4mBtyvMvODFxVJgpgKGKk+td5A+tlkrm+6B
-         MiETpht8PRvBieXgg3J6D2vTG3mD6aA3SvaWn4VrkIarrqLvwhMb22PwwI+BBlM3tB
-         e/6BI52VUf4TwJIclWkk4RpBoaY2lhSjwRf5rpDraWUNlU2+CBrJ8GsENSB8USab+t
-         50DJBlyCZRB+g==
-X-Google-Smtp-Source: ABdhPJyiGQxFUq1siCws5D38GZ8eqcIJXn0RCbawbKZhP9JzdmJqu6p2p6oA78QUs+fK+JStXf4q29VjM+q31m+NSPQ=
-X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr790473lfs.153.1607465294452;
- Tue, 08 Dec 2020 14:08:14 -0800 (PST)
+        id S1731373AbgLHWJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:09:09 -0500
+Received: from mail-dm6nam10on2068.outbound.protection.outlook.com ([40.107.93.68]:52065
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726421AbgLHWJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:09:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gvpq1Z7H2wIOk60G9qqjcF5OQmObg6OSJ5SSMeIf/iOeBk6OtbPhyX7L+KnTFPnBJ6Ilu5bcBksuMcX4ADAdRdrWEQSrQGRUIBzncrEngmNp2l36O07E62WMNZhPB++ImwDL9w0af1X/JnqXd94nlpNZvSDYl/ITuRysFZdJKHAoLBxc3g6qspnsBPckEAnvva9Ft2qbEt/DLo0Th41XgyG1iwBW/28JWsdSfytNIVPnh8qz5Zm2A3a0z6YuO4aPP3SBDoWz1L9ti0OxJXwCZltpdQrzxalVavTRfYhSJAW3dwFyQV7xKV7uDFKoSAwdHCFkXeMpO5t/VU/iw3czVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=awtWtr6qcudGngNaB89F/KCqTuyYWVy8YJE2RT9vcM8=;
+ b=ZEr4A9HEchMJ0zcANYx/7F8bSKKcdcjANtNt9syzd/1sakH83cncmNwJZalof/Xu6J6ZqEXFTK17ICvn4nFPxY2ues+S+yC3uXkMWFJqy2kpGCC03bOC90gf4qXuCNUNZPqW1m/vu/7KgoMFftoWMWWBQrIP5Orf9c4wg7JVVO6NWXUnCgoaLg0AW6nYhDF6eVEF5VnusYhFJPseANuab0+gnvNK/DHSPllb4NZrff+4zlsFME9iVjZrwuULxK/Uk4F+KKgLxBM42GrCUuk7jSYiv1VJ5UZwocBnDBLS5OjjqSh5hYc5kHEhAuFLdd5JIkWy2LyH+ZQzIEyl62xoPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=awtWtr6qcudGngNaB89F/KCqTuyYWVy8YJE2RT9vcM8=;
+ b=lS53bYMk+6XzC5Es77zqK8eXGYz9Wr3zbudafUpEXGM8dndds1rMVuWwRAZ9uD35tlAT8k4qsQ0FPBT5KV/ODnrFEvbBTT5kcjsSCzjMOKnaGA+ykx6gstd6SHdCuC/cNXvj0U1pGpjBAOjon+j/SaX3C/iChXzQ+qUzCnBbUpI=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4415.namprd12.prod.outlook.com (2603:10b6:806:70::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Tue, 8 Dec
+ 2020 22:08:24 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
+ 22:08:24 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     pbonzini@redhat.com
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        rkrcmar@redhat.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+Subject: [PATCH v9 14/18] EFI: Introduce the new AMD Memory Encryption GUID.
+Date:   Tue,  8 Dec 2020 22:08:14 +0000
+Message-Id: <3a2140b46673543a2c29b9450199a2793cc13cee.1607460588.git.ashish.kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1607460588.git.ashish.kalra@amd.com>
+References: <cover.1607460588.git.ashish.kalra@amd.com>
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN4PR0701CA0002.namprd07.prod.outlook.com
+ (2603:10b6:803:28::12) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201208201533.1312057-1-revest@chromium.org> <20201208201533.1312057-2-revest@chromium.org>
-In-Reply-To: <20201208201533.1312057-2-revest@chromium.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 8 Dec 2020 23:08:03 +0100
-X-Gmail-Original-Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org,
-        Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN4PR0701CA0002.namprd07.prod.outlook.com (2603:10b6:803:28::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 8 Dec 2020 22:08:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f78f6837-c818-4010-12bc-08d89bc5c828
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4415:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB441594EE321187F461BCC75B8ECD0@SA0PR12MB4415.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c2QV8dIDyO280nKFG2vBb4cOX9SDeDgVaeTTZL0yopO78NjdHkCDbb6Gctb04/bTX7ATXrZne41baQ5tGX+6qAwLnIBB+tcCjqwk/5q7JV/0LJI8OdeMFUZRY8ybCbNOpixM3qp/4mzkUIkzgVnjy6w5XyBTRWjQOyGAXmml7seyerUiXK0J9nFQYzFJZy9lsvrYXaFDjIynyk9zLxwcfroB9fEp3wBhgCNOijc5+HtuUuUyXS0PNvqPMOObKfXpeTG/nqW8M0DnhtFjyqwSq6zZDlrdnOD+5AlFxeKGWnKQQ333IHPTWGIEvqZDKXSgIG4xquXQusRa4kRYkZhGKXhbB8KgJKutcORXIg/zBBDr3v5o70GnDoN+akxQ7Nvk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(34490700003)(83380400001)(186003)(4326008)(86362001)(6916009)(7416002)(16526019)(6486002)(5660300002)(66556008)(8676002)(8936002)(508600001)(7696005)(52116002)(66946007)(956004)(36756003)(2906002)(6666004)(26005)(66476007)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dFAmL9aUA2HQA+cS10T/w4SGddBZ/ehfk7jdTK9qSGxfiUBWY85lMZFvCixS?=
+ =?us-ascii?Q?unF7LcnTv+ekuNNOXKcWcGVe20lHeh2gnBSp58Trnr+57L+NodjEhwI8eoPf?=
+ =?us-ascii?Q?gbT5JgxhhFvh5JWaxq2JUEDSpRteu4gXKutxhrUYEyqf41YV43hwBvYpk4xo?=
+ =?us-ascii?Q?HkWLvnjrnr47DFgjjjfAFm0j7XHYqfl/CuFWvDaCGbGxmaGldqyEMy09GLyi?=
+ =?us-ascii?Q?jgc0wqIH7cxBvs+fNmaCONNlD2nkdgVFOk0kl4iomzCyY1ziYnzek8FU5Qh6?=
+ =?us-ascii?Q?9Mndd0v75plqt4J6pd2qv6/XHEtoK/XaNll+xEPfU+OCORAGFIDGtCp1sjSp?=
+ =?us-ascii?Q?aP2+1pgX9JCM5qJ2S2n+CYvnpV9sQMdOHnyHsg5HkMEo/zlzTVTarjEd152W?=
+ =?us-ascii?Q?YDrmMeepvtimb7HTSCFaQjH4lDo2LSe3cgdMPu7jjd2Sg7/gY72Ctt8HERes?=
+ =?us-ascii?Q?GaDnLpOgW/gFSQiK7CW7SIIPi2oNCO0KrI25a7/amfnSZZEQTC4SOrDKgWV9?=
+ =?us-ascii?Q?IbldYIpJNtdRBjZ2mp/tOxVxljg65o1nVfrWy+7Vpt75SyTVU5SPHwhcgq2m?=
+ =?us-ascii?Q?dabpuZen2XJ8LE6IQnQIEvp0qdn8KNW9aJg91tCAoq/2LWt4AvDCDo14Vrrs?=
+ =?us-ascii?Q?YLnkrlL9tinujcqyimWmxoQQQMGhRmc9JE1PldAT8rEG6sxVWuOIak2IZ0ct?=
+ =?us-ascii?Q?Kmgr8J5zXIrvNbW7GVCkjcR3zzuDdG7De/IB48KtwewjYcvZ+S/DEubYKQ8r?=
+ =?us-ascii?Q?IaTyxub0J75snmq2zthg1hHrRt4XUh7ROaqs266NKprhS37viQkM6CgqXgmK?=
+ =?us-ascii?Q?GMb8ACWq+co/imOz7QsosF+3w2n21t4Eqaoye8/FCUdBRTsEJwO+qdLRM46u?=
+ =?us-ascii?Q?NFLD6rY+pGJ2+DuAHceR6FW6u32tUts0Z3D9/Ah/fvEZIPjLuUtQSiAUR8jY?=
+ =?us-ascii?Q?B8UQ8MfJ6VmklsZrlLIEOhiU3ZVkfZKzieFQo45aqLV9liOQd8fgpgpEZkS5?=
+ =?us-ascii?Q?a2tJ?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 22:08:24.0787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: f78f6837-c818-4010-12bc-08d89bc5c828
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0/XzO9y+zLeCfwQehCwSc0LV0neJPfwaXVpfKWW1Wv0t0UlWjxhEzIIbJQsCfsoVjxOlEc40YPVCb6cSVRUAJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4415
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 9:20 PM Florent Revest <revest@chromium.org> wrote:
->
-> This needs two new helpers, one that works in a sleepable context (using
-> sock_gen_cookie which disables/enables preemption) and one that does not
-> (for performance reasons). Both take a struct sock pointer and need to
-> check it for NULLness.
->
-> This helper could also be useful to other BPF program types such as LSM.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  include/linux/bpf.h            |  2 ++
->  include/uapi/linux/bpf.h       |  7 +++++++
->  kernel/trace/bpf_trace.c       |  4 ++++
->  net/core/filter.c              | 24 ++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  7 +++++++
->  5 files changed, 44 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index d05e75ed8c1b..2ecda549b773 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1859,6 +1859,8 @@ extern const struct bpf_func_proto bpf_snprintf_btf_proto;
->  extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
-> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_sleepable_proto;
-> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
->
->  const struct bpf_func_proto *bpf_tracing_func_proto(
->         enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ba59309f4d18..9ac66cf25959 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1667,6 +1667,13 @@ union bpf_attr {
->   *     Return
->   *             A 8-byte long unique number.
->   *
-> + * u64 bpf_get_socket_cookie(void *sk)
-> + *     Description
-> + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
-> + *             *sk*, but gets socket from a BTF **struct sock**.
-> + *     Return
-> + *             A 8-byte long unique number.
-> + *
->   * u32 bpf_get_socket_uid(struct sk_buff *skb)
->   *     Return
->   *             The owner UID of the socket associated to *skb*. If the socket
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 0cf0a6331482..99accc2146bc 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1778,6 +1778,10 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_sk_storage_get_tracing_proto;
->         case BPF_FUNC_sk_storage_delete:
->                 return &bpf_sk_storage_delete_tracing_proto;
-> +       case BPF_FUNC_get_socket_cookie:
-> +               return prog->aux->sleepable ?
-> +                      &bpf_get_socket_ptr_cookie_sleepable_proto :
-> +                      &bpf_get_socket_ptr_cookie_proto;
->  #endif
->         case BPF_FUNC_seq_printf:
->                 return prog->expected_attach_type == BPF_TRACE_ITER ?
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 77001a35768f..34877796ab5b 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4631,6 +4631,30 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
->         .arg1_type      = ARG_PTR_TO_CTX,
->  };
->
-> +BPF_CALL_1(bpf_get_socket_ptr_cookie_sleepable, struct sock *, sk)
-> +{
-> +       return sk ? sock_gen_cookie(sk) : 0;
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-My understanding is you can simply always call sock_gen_cookie and not
-have two protos.
+Introduce a new AMD Memory Encryption GUID which is currently
+used for defining a new UEFI enviroment variable which indicates
+UEFI/OVMF support for the SEV live migration feature. This variable
+is setup when UEFI/OVMF detects host/hypervisor support for SEV
+live migration and later this variable is read by the kernel using
+EFI runtime services to verify if OVMF supports the live migration
+feature.
 
-This will disable preemption in sleepable programs and not have any effect
-in non-sleepable programs since preemption will already be disabled.
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ include/linux/efi.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index d7c0e73af2b9..47d5b70ec058 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
+ 
+ /* OEM GUIDs */
+ #define DELLEMC_EFI_RCI2_TABLE_GUID		EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
++#define MEM_ENCRYPT_GUID			EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
+ 
+ typedef struct {
+ 	efi_guid_t guid;
+-- 
+2.17.1
+
