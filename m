@@ -2,185 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0EC2D2F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF702D2F3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgLHQPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        id S1729994AbgLHQPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:15:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgLHQPa (ORCPT
+        with ESMTP id S1729457AbgLHQPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:15:30 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA27C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:14:50 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id x23so13336879lji.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:14:50 -0800 (PST)
+        Tue, 8 Dec 2020 11:15:51 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF21C0613D6;
+        Tue,  8 Dec 2020 08:15:11 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id d9so8829789iob.6;
+        Tue, 08 Dec 2020 08:15:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jvK/rcBZ+ncoq0z4m0U1M9RN+o8FAfMKBetL37kSxrw=;
-        b=kyRy8HCAMatgEuN8e9NTUBjdlAHxTLViLrlRLxAKVmGBr6I/Zo46rojBGVq6WliZ9D
-         I2/Vqfh+vQczS0j7bPP4nibN18cOx4iDO3r+6dnDbGfp1wxGKXWZX8rjLtPX6mL7woJE
-         Cn3TS4FWsE24BabWAvSKfki4qVOL15vsHDIc7IWzhimo+EiiD+Sw4o1XxlTd4l23rFFm
-         UJi85xP7eHWTU7v12jct1B0wVSenqTaoIfhr86+GqRwa3uG1x6rTH/+3zqdS0rSFL7JY
-         4u4QK8H/lFs+78UaxsEDSP5YmUQ1doO/I0VX0dsp7sOHD9cwu8x0gQ0zi/UWFpU7Bgqq
-         rpOA==
+         :cc:content-transfer-encoding;
+        bh=oLW8xGxoanWIpJZovz5czICr17i3LTPEQIdqGA3O2h0=;
+        b=CrdkV8rVgDKbU+JWugnZu/ASTWkgGuftLg+bo5Y6wrvT9CZAL7f/Ib+cmCyVw6n9SJ
+         oWm9XKNEBDhWdBKlz/9tIIVY7jkM0EU446Hl2B2pgz+tdXjPkEuMpEEVP3+09EsGrhFy
+         39b3VWPxG08coduB0bDMIJ9QeYmgs0kkoHt2pKY4IDUvgsXTDB7usxHxluT+1BAXTMM+
+         H/EIy6prqc9OFu6LQwGoMeuH/xsCiph6igRly3nhzc5RzWaK+cS0zsgyA1NApO9F4KLy
+         3lrB4KJNmn/ORSK/xKYgtqRwlGRp5JhRe52UKnTbjX73D462/HnflLGHP/Xw3vVLrFlf
+         8Vqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jvK/rcBZ+ncoq0z4m0U1M9RN+o8FAfMKBetL37kSxrw=;
-        b=uPDOPXzrw58J3nYDyuMQ2nHnwNe73/GGfiuxYUoxkmArT81U8PBdBiAj7Z7SwZNa/3
-         aG8i7A3sRrAtJNzsLZCE+104e5CQ8LfuWMwqUsU+ZHgaMmP+t2kH5pNhA0V6lZzVt2PE
-         K39eHCrj4KTrlMZ5gr9gcJaoE2dTp28ZJUK9skLDtrTTPsOO2kNFBWoafx7tWRsKkK7a
-         28QMTXq769B82PnZoVqSuLVmTgMEgpgh/qoh2r8EKqUy/JI5I4MLuz8A9BxBlv6VttAX
-         ziL7WDmjdlos+I5+essGKkatOjtSsuEuOupRN4ee0o6dt6M97xfyaqYjDzFW0Y/PGYZV
-         u9rA==
-X-Gm-Message-State: AOAM531AMmgT3wjxFN9aNWml9O5W4U2UrIivweFGSlwFqiHl4+wqj4tG
-        SvbR2l2eHznF6CslftSitmUrMn1OQzG+T7JxXVaeMg==
-X-Google-Smtp-Source: ABdhPJw4vO+93cI9tySLlFVtUK2VrvMJE/CCZYBgBNIm4Lee9p2hOliys1WxnhUlsOY/sI7R0ixrQj6dQ8FO5C8t1/g=
-X-Received: by 2002:a2e:7d0f:: with SMTP id y15mr10991904ljc.401.1607444088783;
- Tue, 08 Dec 2020 08:14:48 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oLW8xGxoanWIpJZovz5czICr17i3LTPEQIdqGA3O2h0=;
+        b=bMGOWkKZhPgW/nW9yYPVDAz8xnN7g7AQ39BVxQ9snFKnMfE7x1umMTGbpDG58VKCcJ
+         J0gLjexKcYCic+6kKpXRiPQ/ttHVS3RKeK2eh1nCnW1nk5drnjkqWCyYlKd4qb9mR2H+
+         3yDBIiJHf6VAw5Qo5Ue1c0rHvpxHQZar7oJvFo946pK0tzXprj+dA54Y9PTUkP41D21L
+         CcgloOKt5EkdWkliJh/iJcOG1Vwk1vC0zmu8TXP5jEONAGnt9GdLCUtlj4Nhl2aQBg83
+         rju/AGTzEJYipFvh9hQpiEIYw0dF6BZsDqppLShHhxIHJHI7iy2hDb44mo/2uJDGBVVl
+         PsTg==
+X-Gm-Message-State: AOAM53113vo/orrwk9Aft1huWAjxJsaByL39qtY0HzNESntpyshx75lQ
+        URks+b8KxbEjYpu5Scr3jO6OmbQKmXBcyXXrsZU=
+X-Google-Smtp-Source: ABdhPJxXeSbNnS0AeBgABRYL8Vmru53bsBrzbyhq87wFdTsv9q/V2oexnDeIfcYrjPz5NCgFr4xpx2rWyu1scvDIowQ=
+X-Received: by 2002:a5d:8344:: with SMTP id q4mr25183113ior.38.1607444110138;
+ Tue, 08 Dec 2020 08:15:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201208153501.1467-1-mgorman@techsingularity.net> <20201208153501.1467-4-mgorman@techsingularity.net>
-In-Reply-To: <20201208153501.1467-4-mgorman@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 8 Dec 2020 17:14:37 +0100
-Message-ID: <CAKfTPtD+d2wdPVg1f5YXe-rvHHd6m=nB64v60KNGeh-u3=rMTQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] sched/fair: Do not replace recent_used_cpu with the
- new target
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201204200920.133780-1-mario.limonciello@dell.com>
+ <d0f7e565-05e1-437e-4342-55eb73daa907@redhat.com> <DM6PR19MB2636A4097B68DBB253C416D8FACE0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <383daf0d-8a9b-c614-aded-6e816f530dcd@intel.com> <e7d57370-e35e-a9e6-2dd9-aa7855c15650@redhat.com>
+In-Reply-To: <e7d57370-e35e-a9e6-2dd9-aa7855c15650@redhat.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 8 Dec 2020 08:14:58 -0800
+Message-ID: <CAKgT0UebNROCeAyyg0Jf-pTfLDd-oNyu2Lo-gkZKWk=nOAYL8g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] Improve s0ix flows for systems i219LM
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Neftin, Sasha" <sasha.neftin@intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        "darcari@redhat.com" <darcari@redhat.com>,
+        "Shen, Yijun" <Yijun.Shen@dell.com>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "anthony.wong@canonical.com" <anthony.wong@canonical.com>,
+        viltaly.lifshits@intel.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 16:35, Mel Gorman <mgorman@techsingularity.net> wrote:
+On Tue, Dec 8, 2020 at 1:30 AM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> After select_idle_sibling, p->recent_used_cpu is set to the
-> new target. However on the next wakeup, prev will be the same as
-> recent_used_cpu unless the load balancer has moved the task since the last
-> wakeup. It still works, but is less efficient than it can be after all
-> the changes that went in since that reduce unnecessary migrations, load
-> balancer changes etc.  This patch preserves recent_used_cpu for longer.
+> Hi,
 >
-> With tbench on a 2-socket CascadeLake machine, 80 logical CPUs, HT enabled
+> On 12/8/20 6:08 AM, Neftin, Sasha wrote:
+> > On 12/7/2020 17:41, Limonciello, Mario wrote:
+> >>> First of all thank you for working on this.
+> >>>
+> >>> I must say though that I don't like the approach taken here very
+> >>> much.
+> >>>
+> >>> This is not so much a criticism of this series as it is a criticism
+> >>> of the earlier decision to simply disable s0ix on all devices
+> >>> with the i219-LM + and active ME.
+> >>
+> >> I was not happy with that decision either as it did cause regressions
+> >> on all of the "named" Comet Lake laptops that were in the market at
+> >> the time.  The "unnamed" ones are not yet released, and I don't feel
+> >> it's fair to call it a regression on "unreleased" hardware.
+> >>
+> >>>
+> >>> AFAIK there was a perfectly acceptable patch to workaround those
+> >>> broken devices, which increased a timeout:
+> >>> https://patchwork.ozlabs.org/project/intel-wired-
+> >>> lan/patch/20200323191639.48826-1-aaron.ma@canonical.com/
+> >>>
+> >>> That patch was nacked because it increased the resume time
+> >>> *on broken devices*.
+> >>>
+> > Officially CSME/ME not POR for Linux and we haven't interface to the ME=
+. Nobody can tell how long (and why) ME will hold PHY access semaphore ant =
+just increasing the resuming time (ULP configure) won't be solve the proble=
+m. This is not reliable approach.
+> > I would agree users can add ME system on their responsibilities.
 >
->                           5.10.0-rc6             5.10.0-rc6
->                          baseline-v2           altrecent-v2
-> Hmean     1        508.39 (   0.00%)      502.05 *  -1.25%*
-> Hmean     2        986.70 (   0.00%)      983.65 *  -0.31%*
-> Hmean     4       1914.55 (   0.00%)     1920.24 *   0.30%*
-> Hmean     8       3702.37 (   0.00%)     3663.96 *  -1.04%*
-> Hmean     16      6573.11 (   0.00%)     6545.58 *  -0.42%*
-> Hmean     32     10142.57 (   0.00%)    10253.73 *   1.10%*
-> Hmean     64     14348.40 (   0.00%)    12506.31 * -12.84%*
-> Hmean     128    21842.59 (   0.00%)    21967.13 *   0.57%*
-> Hmean     256    20813.75 (   0.00%)    21534.52 *   3.46%*
-> Hmean     320    20684.33 (   0.00%)    21070.14 *   1.87%*
->
-> The different was marginal except for 64 threads which showed in the
-> baseline that the result was very unstable where as the patch was much
-> more stable. This is somewhat machine specific as on a separate 80-cpu
-> Broadwell machine the same test reported.
->
->                           5.10.0-rc6             5.10.0-rc6
->                          baseline-v2           altrecent-v2
-> Hmean     1        310.36 (   0.00%)      291.81 *  -5.98%*
-> Hmean     2        340.86 (   0.00%)      547.22 *  60.54%*
-> Hmean     4        912.29 (   0.00%)     1063.21 *  16.54%*
-> Hmean     8       2116.40 (   0.00%)     2103.60 *  -0.60%*
-> Hmean     16      4232.90 (   0.00%)     4362.92 *   3.07%*
-> Hmean     32      8442.03 (   0.00%)     8642.10 *   2.37%*
-> Hmean     64     11733.91 (   0.00%)    11473.66 *  -2.22%*
-> Hmean     128    17727.24 (   0.00%)    16784.23 *  -5.32%*
-> Hmean     256    16089.23 (   0.00%)    16110.79 *   0.13%*
-> Hmean     320    15992.60 (   0.00%)    16071.64 *   0.49%*
->
-> schedstats were not used in this series but from an earlier debugging
-> effort, the schedstats after the test run were as follows;
->
-> Ops SIS Search               5653107942.00  5726545742.00
-> Ops SIS Domain Search        3365067916.00  3319768543.00
-> Ops SIS Scanned            112173512543.00 99194352541.00
-> Ops SIS Domain Scanned     109885472517.00 96787575342.00
-> Ops SIS Failures             2923185114.00  2950166441.00
-> Ops SIS Recent Used Hit           56547.00   118064916.00
-> Ops SIS Recent Used Miss     1590899250.00   354942791.00
-> Ops SIS Recent Attempts      1590955797.00   473007707.00
-> Ops SIS Search Efficiency             5.04           5.77
-> Ops SIS Domain Search Eff             3.06           3.43
-> Ops SIS Fast Success Rate            40.47          42.03
-> Ops SIS Success Rate                 48.29          48.48
-> Ops SIS Recent Success Rate           0.00          24.96
->
-> First interesting point is the ridiculous number of times runqueues are
-> enabled -- almost 97 billion times over the course of 40 minutes
->
-> With the patch, "Recent Used Hit" is over 2000 times more likely to
-> succeed. The failure rate also increases by quite a lot but the cost is
-> marginal even if the "Fast Success Rate" only increases by 2% overall. What
-> cannot be observed from these stats is where the biggest impact as these
-> stats cover low utilisation to over saturation.
->
-> If graphed over time, the graphs show that the sched domain is only
-> scanned at negligible rates until the machine is fully busy. With
-> low utilisation, the "Fast Success Rate" is almost 100% until the
-> machine is fully busy. For 320 clients, the success rate is close to
-> 0% which is unsurprising.
->
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> It is not clear to me what you are trying to say here.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Based on the earlier thread you had referenced and his comment here it
+sounds like while adding time will work for most cases, it doesn't
+solve it for all cases. The problem is as a vendor you are usually
+stuck looking for a solution that will work for all cases which can
+lead to things like having to drop features because they can be
+problematic for a few cases.
 
-> ---
->  kernel/sched/fair.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+> Are you saying that you insist on keeping the e1000e_check_me check and
+> thus needlessly penalizing 100s of laptops models with higher
+> power-consumption unless these 100s of laptops are added manually
+> to an allow list for this?
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5c41875aec23..413d895bbbf8 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6277,17 +6277,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->
->         /* Check a recently used CPU as a potential idle candidate: */
->         recent_used_cpu = p->recent_used_cpu;
-> +       p->recent_used_cpu = prev;
->         if (recent_used_cpu != prev &&
->             recent_used_cpu != target &&
->             cpus_share_cache(recent_used_cpu, target) &&
->             (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
->             cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
->             asym_fits_capacity(task_util, recent_used_cpu)) {
-> -               /*
-> -                * Replace recent_used_cpu with prev as it is a potential
-> -                * candidate for the next wake:
-> -                */
-> -               p->recent_used_cpu = prev;
->                 return recent_used_cpu;
->         }
->
-> @@ -6768,9 +6764,6 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
->         } else if (wake_flags & WF_TTWU) { /* XXX always ? */
->                 /* Fast path */
->                 new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
-> -
-> -               if (want_affine)
-> -                       current->recent_used_cpu = cpu;
->         }
->         rcu_read_unlock();
->
-> --
-> 2.26.2
->
+> I'm sorry but that is simply unacceptable, the maintenance burden
+> of that is just way too high.
+
+Think about this the other way though. If it is enabled and there are
+cases where adding a delay doesn't resolve it then it still doesn't
+really solve the issue does it?
+
+> Testing on the models where the timeout issue was first hit has
+> shown that increasing the timeout does actually fix it on those
+> models. Sure in theory the ME on some buggy model could hold the
+> semaphore even longer, but then the right thing would be to
+> have a deny-list for s0ix where we can add those buggy models
+> (none of which we have encountered sofar). Just like we have
+> denylist for buggy hw in other places in the kernel.
+
+This would actually have a higher maintenance burden then just
+disabling the feature. Having to individually test for and deny-list
+every one-off system with this bad configuration would be a pretty
+significant burden. That also implies somebody would have access to
+such systems and that is not normally the case. Even Intel doesn't
+have all possible systems that would include this NIC.
+
+> Maintaining an ever growing allow list for the *theoretical*
+> case of encountering a model where things do not work with
+> the increased timeout is not a workable and this not an
+> acceptable solution.
+
+I'm not a fan of the allow-list either, but it is preferable to a
+deny-list where you have to first trigger the bug before you realize
+it is there. Ideally there should be another solution in which the ME
+could somehow set a flag somewhere in the hardware to indicate that it
+is alive and the driver could read that order to determine if the ME
+is actually alive and can skip this workaround. Then this could all be
+avoided and it can be safely assumed the system is working correctly.
+
+> The initial addition of the e1000e_check_me check instead
+> of just going with the confirmed fix of bumping the timeout
+> was already highly controversial and should IMHO never have
+> been done.
+
+How big was the sample size for the "confirmed" fix? How many
+different vendors were there within the mix? The problem is while it
+may have worked for the case you encountered you cannot say with
+certainty that it worked in all cases unless you had samples of all
+the different hardware out there.
+
+> Combining this with an ever-growing allow-list on which every
+> new laptop model needs to be added separately + a new
+> "s0ix-enabled" ethertool flag, which existence is basically
+> an admission that the allow-list approach is flawed goes
+> from controversial to just plain not acceptable.
+
+I don't view this as problematic, however this is some overhead to it.
+One thing I don't know is if anyone has looked at is if the issue only
+applies to a few specific system vendors. Currently the allow-list is
+based on the subdevice ID. One thing we could look at doing is
+enabling it based on the subvendor ID in which case we could
+allow-list in large swaths of hardware with certain trusted vendors.
+The only issue is that it pulls in any future parts as well so it puts
+the onus on that manufacturer to avoid misconfiguring things in the
+future.
