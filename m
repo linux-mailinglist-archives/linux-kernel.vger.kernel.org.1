@@ -2,137 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEBC2D2A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2909E2D2A16
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgLHL4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:56:41 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:38019 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgLHL4k (ORCPT
+        id S1727524AbgLHL5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:57:20 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:55802 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLHL5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:56:40 -0500
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 08 Dec 2020 03:55:59 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 08 Dec 2020 03:55:57 -0800
-X-QCInternal: smtphost
-Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 08 Dec 2020 17:25:33 +0530
-Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
-        id 011E520F2D; Tue,  8 Dec 2020 17:25:31 +0530 (IST)
-From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Subject: [PATCH v4] Bluetooth: btqca: Add support to read FW build version for WCN3991 BTSoC
-Date:   Tue,  8 Dec 2020 17:25:29 +0530
-Message-Id: <1607428529-26629-1-git-send-email-gubbaven@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 8 Dec 2020 06:57:19 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8BtcB1054200;
+        Tue, 8 Dec 2020 05:55:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607428538;
+        bh=JmO/iWLGv+Hj8NN2W5fGoHVbiV83OKtPwcdpXebyXiI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=CBsH5IybWm+TvT3rP8jTUNOK2mbp+nWKOM0OR9qybs2lOVXcJWJStcl2MgJn2vQVK
+         NsKlNLHH+yZXiFGVqH2u1eEvAKJTWW8sIWR8/X0nDgjcn8cnPmLeCVde0233q0OSB6
+         E/wl5hAgYjBP+GCA7Wy05DT+5/yTKetBuddtSqEs=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8BtcgZ121670
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Dec 2020 05:55:38 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
+ 2020 05:55:38 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Dec 2020 05:55:38 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8BtXE0039872;
+        Tue, 8 Dec 2020 05:55:35 -0600
+Subject: Re: [PATCH v3 13/20] dmaengine: ti: k3-psil: Extend
+ psil_endpoint_config for K3 PKTDMA
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <vkoul@kernel.org>,
+        <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>
+References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
+ <20201208090440.31792-14-peter.ujfalusi@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <ce3f82c4-e4b3-b162-d7f6-8b6781a381a6@ti.com>
+Date:   Tue, 8 Dec 2020 13:55:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201208090440.31792-14-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to read FW build version from debugfs node.
-This info can be read from
-/sys/kernel/debug/bluetooth/hci0/firmware_info
 
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
----
- drivers/bluetooth/btqca.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
- drivers/bluetooth/btqca.h |  1 +
- 2 files changed, 55 insertions(+)
 
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index f85a55a..f6256a3 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -94,6 +94,53 @@ int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
- }
- EXPORT_SYMBOL_GPL(qca_read_soc_version);
- 
-+static int qca_read_fw_build_info(struct hci_dev *hdev)
-+{
-+	struct sk_buff *skb;
-+	struct edl_event_hdr *edl;
-+	char cmd, build_label[QCA_FW_BUILD_VER_LEN];
-+	int build_lbl_len, err = 0;
-+
-+	bt_dev_dbg(hdev, "QCA read fw build info");
-+
-+	cmd = EDL_GET_BUILD_INFO_CMD;
-+	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
-+				&cmd, 0, HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		err = PTR_ERR(skb);
-+		bt_dev_err(hdev, "Reading QCA fw build info failed (%d)",
-+			   err);
-+		return err;
-+	}
-+
-+	edl = (struct edl_event_hdr *)(skb->data);
-+	if (!edl) {
-+		bt_dev_err(hdev, "QCA read fw build info with no header");
-+		err = -EILSEQ;
-+		goto out;
-+	}
-+
-+	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
-+	    edl->rtype != EDL_GET_BUILD_INFO_CMD) {
-+		bt_dev_err(hdev, "QCA Wrong packet received %d %d", edl->cresp,
-+			   edl->rtype);
-+		err = -EIO;
-+		goto out;
-+	}
-+
-+	build_lbl_len = edl->data[0];
-+	if (build_lbl_len <= QCA_FW_BUILD_VER_LEN - 1) {
-+		memcpy(build_label, edl->data + 1, build_lbl_len);
-+		*(build_label + build_lbl_len) = '\0';
-+	}
-+
-+	hci_set_fw_info(hdev, "%s", build_label);
-+
-+out:
-+	kfree_skb(skb);
-+	return err;
-+}
-+
- static int qca_send_reset(struct hci_dev *hdev)
- {
- 	struct sk_buff *skb;
-@@ -524,6 +571,13 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 		return err;
- 	}
- 
-+	if (soc_type == QCA_WCN3991) {
-+		/* get fw build info */
-+		err = qca_read_fw_build_info(hdev);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	bt_dev_info(hdev, "QCA setup on UART is completed");
- 
- 	return 0;
-diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-index e73b8f8..b19add7 100644
---- a/drivers/bluetooth/btqca.h
-+++ b/drivers/bluetooth/btqca.h
-@@ -11,6 +11,7 @@
- #define EDL_PATCH_CMD_LEN		(1)
- #define EDL_PATCH_VER_REQ_CMD		(0x19)
- #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
-+#define EDL_GET_BUILD_INFO_CMD		(0x20)
- #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
- #define MAX_SIZE_PER_TLV_SEGMENT	(243)
- #define QCA_PRE_SHUTDOWN_CMD		(0xFC08)
+On 08/12/2020 11:04, Peter Ujfalusi wrote:
+> Additional fields needed for K3 PKTDMA to be able to handle the mapped
+> channels (channels are locked to handle specific threads) and flow ranges
+> for these mapped threads.
+> PKTDMA also introduces tflow for tx channels which can not be found in
+> K3 UDMA architecture.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>   include/linux/dma/k3-psil.h | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Best regards,
+grygorii
