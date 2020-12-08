@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285072D2587
+	by mail.lfdr.de (Postfix) with ESMTP id 957E22D2588
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgLHIPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:15:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S1728028AbgLHIPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727527AbgLHIPU (ORCPT
+        with ESMTP id S1727527AbgLHIPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:15:20 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC38C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:14:39 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id e2so3168726pgi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:14:39 -0800 (PST)
+        Tue, 8 Dec 2020 03:15:24 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7EDC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:14:44 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id e2so3168886pgi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=doyuajGDAoaPFhb2ThVHLJXkkRiThGYIceTU9U28wvo=;
-        b=XplbGEVMkw49ATGj0X5s2zGBOZ4Law2VvqzRfG2IzcCND6tnlpL9MisVk3WH/AJO2F
-         +dXdWMjXhEysVTatNrp1YDGXNy1m7qxvUj7p3Uuv95atsnPQy6d3216A4mntr1eLyVPm
-         hsaaXSHez8W8K3wtQZ/kWxOX0PlwhaaaciQpQHNJIWKEACUuziWdd/KrHQyn6YhRiU3c
-         n/5mqBUaZ/EfzKKxKQf2mpXbvbpx825jQd3fogEMiR6/ibmZU4oQqVDvg9F8vlczmaFQ
-         L7jipQneYO134IPROf3y6TTjvdba0harss/GQKgo+N5aZ/DilyRZGvr90ZsMduGBEuDM
-         Qh8w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=X1Fz0yq5QOWZGHX6crMbhCYX2GPoKckcY3/RN3rhSp8=;
+        b=LYcl97eWcyp36GTTmFA630p01xUrXCDfNOigwz2I/OMi9Yi/XnQ12k2r5aXhgo+AN9
+         3ZsxxLEDUjkNhZe4t4GXT7ForPbCasMHNakE1GinbIjV5uzN4I4XXndGh80RsoMd8sIU
+         pp79PgS8q4g/U5jnDM+StBZewDvDaW4s/ffbn/LT/w6rcsg1Ojn1dl0pVjw+hO+PNkCF
+         FY7I5lF7JmEt2e4DzZie82mYQf6zuItUD4z6gKx2w1j6kjcvUvwWm0tiOePplMF8gMQ8
+         ReCaD/kZDZKnKoY1SRcZG4Wm11U5TUa4uZyMLKF9vjb2ali+rGWxsS21o1vT5lyk39E9
+         lJ0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=doyuajGDAoaPFhb2ThVHLJXkkRiThGYIceTU9U28wvo=;
-        b=pX7lSzCeeHZRwrRY97iIYfZKKFqTsT3wqvUsOPJ8GBZHT15T5nuiMAtDxVELX2t2pL
-         j2rGrP8q5hazLA7ritc0MnnkWGGS8IFKpvTx/Ir4m9oxVjVtbh+vzd74oGipZ+r2yqEy
-         rPSreeGRGzHXesp0mjVYdvQi4Gph0sBguxNvNS0WHQrsQ0OPB4CBFeU/0WwPIxFaxOK3
-         HTBYspzJvuny4f8j0Ur/AKH/Z2M3BtU3Ud+CCoQFWkBg9wIRvJGzLT7ZSHFDZ89PamnT
-         rDWjZuIAh7PRnT3dwBg7HmPLRVGlArq2uQeRp3nYO4VG/S+5F+dyhgsHmaYWQb0s8KIB
-         V0Pg==
-X-Gm-Message-State: AOAM533ntjT6yArRzwhaMli+7b8cqjupS9bAyY8BQY9BKRGU3q1Idnlm
-        AxOXOh+ARUz42aosHdCsNvE=
-X-Google-Smtp-Source: ABdhPJw0w/qfucPI9qD2kNAbfwIDKVlACeVmCEPvGem828ZlHRxCWhDk4BOJH4lJJFMyFymrQywmzg==
-X-Received: by 2002:a63:da03:: with SMTP id c3mr21821637pgh.133.1607415279406;
-        Tue, 08 Dec 2020 00:14:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=X1Fz0yq5QOWZGHX6crMbhCYX2GPoKckcY3/RN3rhSp8=;
+        b=lN0U9HNkW39AD3eRz4BrTMXeYS1a2VrZBFeeqzRF9IJN1pclEqqMNOIxsesrKt6Sra
+         rbw4DudpDCHMSi2d/YeuMnthIykAvK3FhAr0JiymE94n3kpgpRbk/cJbCOCNdlASEJp6
+         JuyevSTF64kzvVj1xzohpx3ja4a0jke8dfKkn9M+tx0FGllWHsmqiWZEkXnRaxQiBQL7
+         cblq9qw865LzQkGwfDAqE0fFp5rU69VXauaPSVwmRDf2wYpOtOlt4aJc3cUvpbEEalWD
+         3ZYn+gIapCcXpJFq3yf94j5FIiAvr773LfV6b52zF2r2XYkHpav4JNmBIG8I6EjlAVDM
+         IfQQ==
+X-Gm-Message-State: AOAM532sVwyzve13L3vj5GDBmfWY/+5U7Gsseyjkwb4kt1PuM/NXiYt3
+        JrMXF8vEOD+1Lz8t+3Nl4cA=
+X-Google-Smtp-Source: ABdhPJxBXk46n3SDMmXeBCsRrmKRkx57VGxxBE11dFj+he8rrDP78jbjlA1yj3fZvOLON/zq+wz/zg==
+X-Received: by 2002:a17:90a:3cc6:: with SMTP id k6mr3193611pjd.204.1607415284080;
+        Tue, 08 Dec 2020 00:14:44 -0800 (PST)
 Received: from robinhsu-p520.ntc.corp.google.com ([2401:fa00:fc:202:1ea0:b8ff:fe77:fe45])
-        by smtp.gmail.com with ESMTPSA id 19sm2665387pfu.85.2020.12.08.00.14.37
+        by smtp.gmail.com with ESMTPSA id 19sm2665387pfu.85.2020.12.08.00.14.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 00:14:38 -0800 (PST)
+        Tue, 08 Dec 2020 00:14:43 -0800 (PST)
 From:   Robin Hsu <robinh3123@gmail.com>
 To:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
         chao@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
-Subject: [PATCH v3 0/3] f2fs-tools: sload compression support
-Date:   Tue,  8 Dec 2020 16:13:41 +0800
-Message-Id: <20201208081344.652430-1-robinh3123@gmail.com>
+Subject: [PATCH 1/3] f2fs-tools: Added #ifdef WITH_func
+Date:   Tue,  8 Dec 2020 16:13:42 +0800
+Message-Id: <20201208081344.652430-2-robinh3123@gmail.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+In-Reply-To: <20201208081344.652430-1-robinh3123@gmail.com>
+References: <20201208081344.652430-1-robinh3123@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -64,35 +66,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Robin Hsu <robinhsu@google.com>
 
-* 3 patch set:
-  #1: added some #ifdef for easier support
-  #2: main code change
-  #3: automake changes
+Add proprocessor defines (options) 'WITH_func',
+where func = DUMP, DEFRAG, RESIZE, or SLOAD
 
-v2 fix (from v1): fixed a bug and a more elegant error handling flow.
-v3 fix (from v2): ./configure (automake) automatically determine to
-compile in lzo and/or lz4 compression support depending on the presence
-of liblzo2-dev and/or liblz4-dev
+Signed-off-by: Robin Hsu <robinhsu@google.com>
+---
+ fsck/main.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Robin Hsu (3):
-  f2fs-tools: Added #ifdef WITH_func
-  f2fs-tools:sload.f2fs compression support
-  f2fs-tools:sload.f2fs compress: Fixed automake
-
- configure.ac            |  12 +++
- fsck/Makefile.am        |   9 +-
- fsck/compress_wrapper.c | 102 ++++++++++++++++++++
- fsck/compress_wrapper.h |  22 +++++
- fsck/fsck.h             |  15 +++
- fsck/main.c             | 157 ++++++++++++++++++++++++++++++-
- fsck/segment.c          | 202 +++++++++++++++++++++++++++++++++++++---
- fsck/sload.c            |  67 +++++++++++++
- include/f2fs_fs.h       |  76 ++++++++++++++-
- lib/libf2fs_io.c        |  33 +++++++
- 10 files changed, 678 insertions(+), 17 deletions(-)
- create mode 100644 fsck/compress_wrapper.c
- create mode 100644 fsck/compress_wrapper.h
-
+diff --git a/fsck/main.c b/fsck/main.c
+index e70048b..b20498f 100644
+--- a/fsck/main.c
++++ b/fsck/main.c
+@@ -345,6 +345,7 @@ void f2fs_parse_options(int argc, char *argv[])
+ 				break;
+ 		}
+ 	} else if (!strcmp("dump.f2fs", prog)) {
++#ifdef WITH_DUMP
+ 		const char *option_string = "d:i:n:s:Sa:b:V";
+ 		static struct dump_option dump_opt = {
+ 			.nid = 0,	/* default root ino */
+@@ -426,7 +427,9 @@ void f2fs_parse_options(int argc, char *argv[])
+ 		}
+ 
+ 		c.private = &dump_opt;
++#endif
+ 	} else if (!strcmp("defrag.f2fs", prog)) {
++#ifdef WITH_DEFRAG
+ 		const char *option_string = "d:s:Sl:t:iV";
+ 
+ 		c.func = DEFRAG;
+@@ -484,7 +487,9 @@ void f2fs_parse_options(int argc, char *argv[])
+ 			if (err != NOERROR)
+ 				break;
+ 		}
++#endif
+ 	} else if (!strcmp("resize.f2fs", prog)) {
++#ifdef WITH_RESIZE
+ 		const char *option_string = "d:st:iV";
+ 
+ 		c.func = RESIZE;
+@@ -526,7 +531,9 @@ void f2fs_parse_options(int argc, char *argv[])
+ 			if (err != NOERROR)
+ 				break;
+ 		}
++#endif
+ 	} else if (!strcmp("sload.f2fs", prog)) {
++#ifdef WITH_SLOAD
+ 		const char *option_string = "C:d:f:p:s:St:T:V";
+ #ifdef HAVE_LIBSELINUX
+ 		int max_nr_opt = (int)sizeof(c.seopt_file) /
+@@ -595,6 +602,7 @@ void f2fs_parse_options(int argc, char *argv[])
+ 			if (err != NOERROR)
+ 				break;
+ 		}
++#endif /* WITH_SLOAD */
+ 	}
+ 
+ 	if (err == NOERROR) {
+@@ -707,6 +715,7 @@ static int do_fsck(struct f2fs_sb_info *sbi)
+ 	return FSCK_ERRORS_LEFT_UNCORRECTED;
+ }
+ 
++#ifdef WITH_DUMP
+ static void do_dump(struct f2fs_sb_info *sbi)
+ {
+ 	struct dump_option *opt = (struct dump_option *)c.private;
+@@ -733,7 +742,9 @@ static void do_dump(struct f2fs_sb_info *sbi)
+ 	print_cp_state(flag);
+ 
+ }
++#endif
+ 
++#ifdef WITH_DEFRAG
+ static int do_defrag(struct f2fs_sb_info *sbi)
+ {
+ 	struct f2fs_super_block *sb = F2FS_RAW_SUPER(sbi);
+@@ -782,7 +793,9 @@ out_range:
+ 				c.defrag_target);
+ 	return -1;
+ }
++#endif
+ 
++#ifdef WITH_RESIZE
+ static int do_resize(struct f2fs_sb_info *sbi)
+ {
+ 	if (!c.target_sectors)
+@@ -796,7 +809,9 @@ static int do_resize(struct f2fs_sb_info *sbi)
+ 
+ 	return f2fs_resize(sbi);
+ }
++#endif
+ 
++#ifdef WITH_SLOAD
+ static int do_sload(struct f2fs_sb_info *sbi)
+ {
+ 	if (!c.from_dir) {
+@@ -808,6 +823,7 @@ static int do_sload(struct f2fs_sb_info *sbi)
+ 
+ 	return f2fs_sload(sbi);
+ }
++#endif
+ 
+ #if defined(__APPLE__)
+ static u64 get_boottime_ns()
 -- 
 2.29.2.576.ga3fc446d84-goog
 
