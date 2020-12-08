@@ -2,69 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC892D3698
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4AB2D369C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731577AbgLHW5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        id S1731565AbgLHXAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgLHW5Y (ORCPT
+        with ESMTP id S1731346AbgLHXAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:57:24 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7508BC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:56:44 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id r24so659007lfm.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:56:44 -0800 (PST)
+        Tue, 8 Dec 2020 18:00:43 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ED4C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:00:03 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id m9so13630068pgb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:00:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dp63dIdRcJ+RLwNco+dq+wSG9tRy12b3KCEuVvbzzL8=;
-        b=LhNqYMYEDwYKbHkLZ330pI728saYOj9rxKzqq4j1aGuQmsKxAeEGqoVNujajZbkkmQ
-         CRMFF7OWR2loXvYd7gVB2TcOB9g60xRH/EEhVLhSbBWqeao2CwGTCFuIpvf1aeYyl94K
-         PmZNAPNRCemrWOyyf+xxHNkCZjddQnjYUHrLU=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cvX4Xg5ko6vGqIjHH66x4K4QBryzq3vXXA2jw9y8g7s=;
+        b=GXND6WILUV13nGMPNsvyp3jDZl5GKURlUac6Fy1bWTowxbY6/Ty0LYcGcMZDExzJzr
+         jz+hOI6q4ic3GN++qDpJy+Fj4YhKRMPpCJe920iDoJHNphm5pCxN3ym3xSumCeNvDQ73
+         u9pjeY3qFpUiDo1XjFmBspf2nCeUJf6ErndeVw4gJjsORB7bqbBWy90BfgparUJ2c8xD
+         cASwGT1bnldPaDRKzHNx3UWARJ4KIyoBm1jxwrmJjsvlimHeV3We98PobuR/oyqaAOKd
+         WN4I+WsC//jShMx6S+Wax8hy98aONzhoqXoaq/JOpYGDwMS0zgffzHFeX3mMV0bIdF5P
+         zOQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dp63dIdRcJ+RLwNco+dq+wSG9tRy12b3KCEuVvbzzL8=;
-        b=T+j3+GAcprKETdjD67OUnDVoCtSExMgsEBIGRPFQy9HG7P7vi3inaN3l0ieOUBiikT
-         QQRtfPNX2UA7/g7De+iuEtjR/6AhBhvVnCnK8Nk/BfTJpi5D6BMdD5bPMCvpflbPyJyn
-         5CKHQJund7NUGh+LmAWzP4/46QtxGc+l2lC/Z6t3YyZt0QH6Kno6tNbptwmSg98P2IC4
-         g1WMHE8+vFKyJFyWnoHzIuAaM0tpBiLpzVUE8ZzpPZHeVuAGAbKWmBlBYdMKqbkkQY65
-         Cl5QhJ243BJBqhWR6FiFHZ1pj3rBLG2N3hSGVxsPUdQbu0uBnR7xdIa5AELfmtIRUuXH
-         iymA==
-X-Gm-Message-State: AOAM532GjKuXmLbH+BhY5eLGnH7PC+HtqfrZXbpde81F8EZI45Yx48aD
-        VuwuhmAa/7jtDsu2rHKmujUpqTP6IfeJTQ==
-X-Google-Smtp-Source: ABdhPJznvdtlbwq9tgsY3O8dCQG01ui4zAdvWMQwzqIz0GkS4rk4o2RyZ7Jhod5WodEyYyx4yZYK8w==
-X-Received: by 2002:ac2:511b:: with SMTP id q27mr4725721lfb.322.1607468202543;
-        Tue, 08 Dec 2020 14:56:42 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id o21sm24463lfc.153.2020.12.08.14.56.41
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cvX4Xg5ko6vGqIjHH66x4K4QBryzq3vXXA2jw9y8g7s=;
+        b=lwVi0eZ2u5Sl2hbnwjmwaru6vH0WnD3WmGSrs6tUDadxmKX+j8iCYN0FLsRhKo07yg
+         YVn3OIpvdmfdPDfBF11OAqFlW3PuzpWHlz2cFo66luBz2xnFfa3VN31M4iq1PE0YSBk4
+         NZBdpI08pEX5LMWA41fbStN1M40GIq5C6XPre1pHZe9qPgYrMx4N6WZw6lA0z1HxSYul
+         A7xCA7QnH+Bwe+J9AUpcWb8I4hmtrEOX3fDgFfTnZPa1d9KE+Xx9av0WDsdqo4f3hapc
+         9a3wM6p9hbHWOIGKmogdG9ocr6bQmHGF5xPTI2796llbHFlGZwppmyrDWuNWKCtt4I11
+         TYyw==
+X-Gm-Message-State: AOAM5307nfueh8b4fi3UV+TaGj20Bq1r9TDw2oCC1d6BiTy08M1Ds21O
+        1gPgL4uSsB+AirCcCwETgaTfnA==
+X-Google-Smtp-Source: ABdhPJxp2R1oGJVXiZr63+jfMbon4n0SOZ/r/L2AlBnsAR7h5DkJcSKPLsOYmbePi+uRVkaf/tfpLA==
+X-Received: by 2002:a65:68da:: with SMTP id k26mr260441pgt.303.1607468403277;
+        Tue, 08 Dec 2020 15:00:03 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 125sm225182pfy.111.2020.12.08.15.00.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 14:56:41 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id 23so637589lfg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:56:41 -0800 (PST)
-X-Received: by 2002:ac2:4831:: with SMTP id 17mr11506247lft.487.1607468200941;
- Tue, 08 Dec 2020 14:56:40 -0800 (PST)
-MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
- <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
- <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
- <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
- <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
- <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 8 Dec 2020 14:56:24 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
-Message-ID: <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
+        Tue, 08 Dec 2020 15:00:02 -0800 (PST)
 Subject: Re: problem booting 5.10
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Julia Lawall <julia.lawall@inria.fr>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
         John Garry <john.garry@huawei.com>,
         "James E.J. Bottomley" <jejb@linux.ibm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -72,16 +60,42 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Julia Lawall <julia.lawall@inria.fr>,
         linux-scsi <linux-scsi@vger.kernel.org>,
         Kashyap Desai <kashyap.desai@broadcom.com>,
         Ming Lei <ming.lei@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
+ <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
+ <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+ <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
+ <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
+ <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
+ <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1364ec02-bfae-328e-8f55-14ac953dd30d@kernel.dk>
+Date:   Tue, 8 Dec 2020 16:00:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:54 PM Martin K. Petersen
-<martin.petersen@oracle.com> wrote:
->
-> Oh, I just realized the megaraid patch went in through block.
+On 12/8/20 3:56 PM, Linus Torvalds wrote:
+> On Tue, Dec 8, 2020 at 2:54 PM Martin K. Petersen
+> <martin.petersen@oracle.com> wrote:
+>>
+>> Oh, I just realized the megaraid patch went in through block.
+> 
+> I'll take this as an "ack" for the revert, though ;)
 
-I'll take this as an "ack" for the revert, though ;)
+You can add mine too, if you wish.
 
-          Linus
+We'll follow up in 5.11 time once the other fixes have landed.
+
+-- 
+Jens Axboe
+
