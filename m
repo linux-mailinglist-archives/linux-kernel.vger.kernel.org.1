@@ -2,115 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7682D2642
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEEB2D2645
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgLHIe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S1728266AbgLHIfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbgLHIe2 (ORCPT
+        with ESMTP id S1727943AbgLHIfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:34:28 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F647C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:33:48 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id 4so6624929plk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Gjlk/jLtNyUeazDdibe5U/NgLr5RcEOaHOigFIrgjeQ=;
-        b=OCylihwq7Lr5YIGlbD2kaf6/40QC0sTHW78aJsoFmHE03MNa1w24Gwx7iPgKqOuMiW
-         dr1Fs5D8hBgnHMLti9ou6c9x3yky5vgVa72hOXjS6nmiYup1XgMyBr6LPJJhB+t5MxUL
-         7mqR1RvunHbJ9ijFWcJQe2u+zs60a+3gWFYIb0nEkE/MbHLL0hxR9ZDTaPJqZv0fi8C8
-         jscJmQ2gm1Wmkc6gdui2bOmIehjxPsmM6yXpSACpZ7jgQ7tQJLfNjs6sFhbyjsPLK6MC
-         XjBRdR9R81z5whkK8AWEg+WDvrp5jDcl/vrjpQEkNWUYnFH37g9O39jzEvm+uJ8qEngU
-         b6xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Gjlk/jLtNyUeazDdibe5U/NgLr5RcEOaHOigFIrgjeQ=;
-        b=pxvk208uhr4hl2Ne3s1w8EUJ3KNHW9EbndxZgVpYYdKrJ7hQbIv044c+2yiUBBrYgW
-         ICHMHjwACFFbW0ljzvvRaNlsPNcnyPnXIq4Ez4Y3euMtNcsiORGPbjK5G4/x0L0drrey
-         3dM9tnJa1XF/TvqGyF/XnHa//adX924HE7IlfDTU8p0SmAzSRNa4fMvseFAx5RrpNDBI
-         iFsUsyRrFRG+LmMfRrSqt4Eg/GR4qNjtB27jMORbQADpcSUoffD7SKOmlinGJkopdqgz
-         YISkkDV/2DCwBg7X5ofGIwrlLnjAQK7/tC1ZfFtKb32D7tiIDOJxYYyEFxkQ9AbC/q5f
-         9ztA==
-X-Gm-Message-State: AOAM530KBZLNdPeaDze42/r2HmKY+fexq/y7+HQZHm+s/uL3y61rncC5
-        4asBdf/jZIIT2gterB9hTejhug==
-X-Google-Smtp-Source: ABdhPJzY0+766oi0+74mYEbdymuuxI+2nI3fPnl7VRjTC2pW8nnX+qsLQ4JACq+CUkg+5IvstN2a/A==
-X-Received: by 2002:a17:902:6b8c:b029:d6:d32e:4a8c with SMTP id p12-20020a1709026b8cb02900d6d32e4a8cmr20100699plk.28.1607416427728;
-        Tue, 08 Dec 2020 00:33:47 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id k21sm16105066pfu.77.2020.12.08.00.33.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 00:33:46 -0800 (PST)
-Date:   Tue, 8 Dec 2020 14:03:44 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [PATCH v1 1/4] cpufreq: schedutil: Add util to struct sg_cpu
-Message-ID: <20201208083344.s67kalyxuui3ia4q@vireshk-i7>
-References: <20360841.iInq7taT2Z@kreacher>
- <2344038.BgO4qI7qUv@kreacher>
+        Tue, 8 Dec 2020 03:35:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E71C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5eN9bOq5BisU3LrIXD+xvKeOuXnCMEoU0VfsvsdlUUA=; b=U93NTA6VG6BYwoSv/DlNn0AMK5
+        hxtekoS7zDnZD5Pvsw1MCoJQMJXE9hVfITYKRS+mzx6VEnXF0cCeuaHa9aqe6NFdkOcpuwT4uBBVc
+        hm8xMZNszIu7RUydx5CUFMRGQAfXcT4eEAVwVAdjIzxQ9KONR1PoCp8z/A6yPTrhE/B86hSZlMXM/
+        xc2rVIhMbSczGsd227jdPY1BqMEq5Y7gFkpogSszahJERedv/rHAW6tqzUKD688V2yMmcXYrqzVYp
+        vobr+TtDruvgK5uxrfHK6zhClr/spAEl1yy6hIwcpJsgUWlYLKA2cYyIG3yw7Cxt2vMSiA+sP8sKf
+        z3Tosqsw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmYRr-0005IT-84; Tue, 08 Dec 2020 08:34:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2717A3059C6;
+        Tue,  8 Dec 2020 09:34:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 06FF320815F05; Tue,  8 Dec 2020 09:34:12 +0100 (CET)
+Date:   Tue, 8 Dec 2020 09:34:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH] perf: Break deadlock involving exec_update_mutex
+Message-ID: <20201208083412.GR2414@hirez.programming.kicks-ass.net>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87ft4mbqen.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB5170412C2B0318C40CED55E5E4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi6inOF5yvQRwUFbqMt0zFJ8S8GhqE2M0judU7RiGru8Q@mail.gmail.com>
+ <875z5h4b7a.fsf@x220.int.ebiederm.org>
+ <CAHk-=wio3JXxf3fy8tRVzb69u1e5iUru8p-dw+Mnga6yAdz=HQ@mail.gmail.com>
+ <AM6PR03MB51704629E50F6280A52D9FAFE4F10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wgxe-KAqR_y2jP58GthOYKk0YG=6gNxKHxVUJbG7z2CoQ@mail.gmail.com>
+ <20201207090953.GF3040@hirez.programming.kicks-ass.net>
+ <CAHk-=wjgG=_-zONkBkKnkOv3uoVRy45hTxx8e-6Ks3j-3TVHKQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2344038.BgO4qI7qUv@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <CAHk-=wjgG=_-zONkBkKnkOv3uoVRy45hTxx8e-6Ks3j-3TVHKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-12-20, 17:28, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Dec 07, 2020 at 10:40:11AM -0800, Linus Torvalds wrote:
+> On Mon, Dec 7, 2020 at 1:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > PeterZ, is there something I'm missing?
+> >
+> > Like this?
+> >
+> >   https://lkml.kernel.org/r/20200828123720.GZ1362448@hirez.programming.kicks-ass.net
 > 
-> Instead of passing util and max between functions while computing the
-> utilization and capacity, store the former in struct sg_cpu (along
-> with the latter and bw_dl).
-> 
-> This will allow the current utilization value to be compared with the
-> one obtained previously (which is requisite for some code changes to
-> follow this one), but also it makes the code look slightly more
-> consistent and clean.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
->  1 file changed, 20 insertions(+), 22 deletions(-)
-> 
-> Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-> ===================================================================
-> --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-> +++ linux-pm/kernel/sched/cpufreq_schedutil.c
-> @@ -53,6 +53,7 @@ struct sugov_cpu {
->  	unsigned int		iowait_boost;
->  	u64			last_update;
->  
-> +	unsigned long		util;
->  	unsigned long		bw_dl;
->  	unsigned long		max;
->  
-> @@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
->  	return min(max, util);
->  }
->  
-> -static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
-> +static void sugov_get_util(struct sugov_cpu *sg_cpu)
+> Yes, except I think you should remove the old ptrace_may_access() check.
 
-Maybe name it sugov_update_util() ?
+> I don't see any point at all in checking privileges twice, and I do
+> see real downsides. Not just that KCSAN issue, but also lack of
+> coverage (ie the second check will then effectively never be tested,
+> which is bad too).
 
-Otherwise,
+Fair enough, find below.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+I suppose I'll queue the below into tip/perf/core for next merge window,
+unless you want it in a hurry?
 
--- 
-viresh
+---
+Subject: perf: Break deadlock involving exec_update_mutex
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Fri, 28 Aug 2020 14:37:20 +0200
+
+Syzbot reported a lock inversion involving perf. The sore point being
+perf holding exec_update_mutex() for a very long time, specifically
+across a whole bunch of filesystem ops in pmu::event_init() (uprobes)
+and anon_inode_getfile().
+
+This then inverts against procfs code trying to take
+exec_update_mutex.
+
+Move the permission checks later, such that we need to hold the mutex
+over less code.
+
+Reported-by: syzbot+db9cdf3dd1f64252c6ef@syzkaller.appspotmail.com
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/events/core.c |   46 +++++++++++++++++++++++-----------------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
+
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11832,24 +11832,6 @@ SYSCALL_DEFINE5(perf_event_open,
+ 		goto err_task;
+ 	}
+ 
+-	if (task) {
+-		err = mutex_lock_interruptible(&task->signal->exec_update_mutex);
+-		if (err)
+-			goto err_task;
+-
+-		/*
+-		 * Preserve ptrace permission check for backwards compatibility.
+-		 *
+-		 * We must hold exec_update_mutex across this and any potential
+-		 * perf_install_in_context() call for this new event to
+-		 * serialize against exec() altering our credentials (and the
+-		 * perf_event_exit_task() that could imply).
+-		 */
+-		err = -EACCES;
+-		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
+-			goto err_cred;
+-	}
+-
+ 	if (flags & PERF_FLAG_PID_CGROUP)
+ 		cgroup_fd = pid;
+ 
+@@ -11857,7 +11839,7 @@ SYSCALL_DEFINE5(perf_event_open,
+ 				 NULL, NULL, cgroup_fd);
+ 	if (IS_ERR(event)) {
+ 		err = PTR_ERR(event);
+-		goto err_cred;
++		goto err_task;
+ 	}
+ 
+ 	if (is_sampling_event(event)) {
+@@ -11976,6 +11958,24 @@ SYSCALL_DEFINE5(perf_event_open,
+ 		goto err_context;
+ 	}
+ 
++	if (task) {
++		err = mutex_lock_interruptible(&task->signal->exec_update_mutex);
++		if (err)
++			goto err_file;
++
++		/*
++		 * Preserve ptrace permission check for backwards compatibility.
++		 *
++		 * We must hold exec_update_mutex across this and any potential
++		 * perf_install_in_context() call for this new event to
++		 * serialize against exec() altering our credentials (and the
++		 * perf_event_exit_task() that could imply).
++		 */
++		err = -EACCES;
++		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS))
++			goto err_cred;
++	}
++
+ 	if (move_group) {
+ 		gctx = __perf_event_ctx_lock_double(group_leader, ctx);
+ 
+@@ -12151,7 +12151,10 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	if (move_group)
+ 		perf_event_ctx_unlock(group_leader, gctx);
+ 	mutex_unlock(&ctx->mutex);
+-/* err_file: */
++err_cred:
++	if (task)
++		mutex_unlock(&task->signal->exec_update_mutex);
++err_file:
+ 	fput(event_file);
+ err_context:
+ 	perf_unpin_context(ctx);
+@@ -12163,9 +12166,6 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	 */
+ 	if (!event_file)
+ 		free_event(event);
+-err_cred:
+-	if (task)
+-		mutex_unlock(&task->signal->exec_update_mutex);
+ err_task:
+ 	if (task)
+ 		put_task_struct(task);
