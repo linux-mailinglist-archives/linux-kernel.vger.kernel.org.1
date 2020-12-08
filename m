@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5A42D288F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 738762D2891
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgLHKLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:11:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727992AbgLHKLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:11:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2735AD12;
-        Tue,  8 Dec 2020 10:10:52 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 11:10:51 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org, stefanha@redhat.com
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-Message-ID: <20201208101051.GC6564@kitsune.suse.cz>
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <96aca1e6-2d5a-deb1-2444-88f938c7a9de@metux.net>
- <20201205142218-mutt-send-email-mst@kernel.org>
+        id S1728988AbgLHKLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727992AbgLHKLt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:11:49 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC9BC06179C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:11:03 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r9so16359279ioo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rI1cpmvfLJH6kTfoQBqKr4p1uRHaWCiCfbric7yc3oU=;
+        b=dNIn3iZoh8mC1iMR2GHayG7Dmsey5468YPYG+bQp3mApwT3AV55v0utWeiH+FyfOPR
+         xMzkRjQWCES+3urWzSrFaYw3Wb6CLk5ZYExO6M73Lcy3/BC+b6jefT8+jvqDEii1lF2x
+         vLurTuwD53UxyuzGI1GPvxsdl68S2a/LtEPPN7Gs/868QIsRj0XslCX+xuiE+nbV5Tla
+         mTC7TIWsxh8cmM/gR8PwhCMnjYpfVmc8R4cgbR0llcidfH9fN949wv7Mw6p/CPkvu8Xn
+         nzfXCWhuaFRIpnfL7YveIUN2mlKKVclIhlKIkbtMa1MTRZqAb8Aj0Jw0eqyfvg3BgYtd
+         xQmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rI1cpmvfLJH6kTfoQBqKr4p1uRHaWCiCfbric7yc3oU=;
+        b=DGMJrMoXuwsHbYJoOAUE2mbvqXueZnByibMaB0PapHlQZNnswVp4aOBh1aGqfRsZ2k
+         LNBpXD0q57X8ulqYn0PKbU5EgglxgKDAcJJczH3hmoFB62v9aCAVfcCwkpBqpDFR8c9Z
+         JNDdGszkvVspDk66wpG763sX/6LjHpeGO+ImJJA/BFB4OI9KnxR/Dshi3Z/ndFZyNiQv
+         xVIG7G4oSRnS71h2jCz4eySaLBXQbPS1WpQvsLSs/RSvgcNORrVl8AjFpO5v7K44gETV
+         TughsvbNqTqHhQxvZ9H0TfJvp5x6pQ2XdcCY0pRSDfIHHvPZW/7GcewOtwJz2nqEbvfD
+         h2dQ==
+X-Gm-Message-State: AOAM531Kz6kOrfWrarwPZFTGBpTeYXq+O8ZYFvKVX3tEnhVuind6EXky
+        Mj6sQTEXJU31sQ41ELC/fz2OBc+NBIdZl0eAMLss
+X-Google-Smtp-Source: ABdhPJzzChXpGASUFHrcW55NeZaQFkmopErMJ5BvtCk7RK4Qi9bfAbL4Z4qf2qaNh1ATuEArKZuiqRpucQGGwd3Fp0s=
+X-Received: by 2002:a02:c608:: with SMTP id i8mr25590358jan.125.1607422263337;
+ Tue, 08 Dec 2020 02:11:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201205142218-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <20201119153901.53705-1-steven.price@arm.com> <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com> <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com> <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com> <CAJc+Z1FRJR5LHw-xZvPpeYF6+v+ZOcLt99X41xOMAbFmB2DJ2A@mail.gmail.com>
+ <b77efceaec433dd98fdf2cd535a9cf40@kernel.org>
+In-Reply-To: <b77efceaec433dd98fdf2cd535a9cf40@kernel.org>
+From:   Haibo Xu <haibo.xu@linaro.org>
+Date:   Tue, 8 Dec 2020 18:10:51 +0800
+Message-ID: <CAJc+Z1EafkLezXv=+1aPbaXo9uWpcB77iM32M70oyP6zEzacjw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On Tue, 8 Dec 2020 at 18:01, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-12-08 09:51, Haibo Xu wrote:
+> > On Mon, 7 Dec 2020 at 22:48, Steven Price <steven.price@arm.com> wrote:
+> >>
+>
+> [...]
+>
+> >> Sounds like you are making good progress - thanks for the update. Have
+> >> you thought about how the PROT_MTE mappings might work if QEMU itself
+> >> were to use MTE? My worry is that we end up with MTE in a guest
+> >> preventing QEMU from using MTE itself (because of the PROT_MTE
+> >> mappings). I'm hoping QEMU can wrap its use of guest memory in a
+> >> sequence which disables tag checking (something similar will be needed
+> >> for the "protected VM" use case anyway), but this isn't something I've
+> >> looked into.
+> >
+> > As far as I can see, to map all the guest memory with PROT_MTE in VMM
+> > is a little weird, and lots of APIs have to be changed to include this
+> > flag.
+> > IMHO, it would be better if the KVM can provide new APIs to load/store
+> > the
+> > guest memory tag which may make it easier to enable the Qemu migration
+> > support.
+>
+> On what granularity? To what storage? How do you plan to synchronise
+> this
+> with the dirty-log interface?
 
-On Sat, Dec 05, 2020 at 02:32:04PM -0500, Michael S. Tsirkin wrote:
-> On Sat, Dec 05, 2020 at 08:59:55AM +0100, Enrico Weigelt, metux IT consult wrote:
-> > On 04.12.20 04:35, Jason Wang wrote:
-> > 
-> > > 
-> > > Let's use select, since there's no prompt for VIRTIO and it doesn't have
-> > > any dependencies.
-> > 
-> > whoops, it's not that simple:
-> > 
-> > make: Entering directory '/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git'
-> > make[1]: Entering directory
-> > '/home/nekrad/src/dk/DistroKit/platform-x86_64/build-target/linux-5.8.9-build'
-> >   GEN     Makefile
-> > drivers/gpu/drm/Kconfig:74:error: recursive dependency detected!
-> > drivers/gpu/drm/Kconfig:74:	symbol DRM_KMS_HELPER is selected by
-> > DRM_VIRTIO_GPU
-> > drivers/gpu/drm/virtio/Kconfig:2:	symbol DRM_VIRTIO_GPU depends on VIRTIO
-> > drivers/virtio/Kconfig:2:	symbol VIRTIO is selected by GPIO_VIRTIO
-> > drivers/gpio/Kconfig:1618:	symbol GPIO_VIRTIO depends on GPIOLIB
-> > drivers/gpio/Kconfig:14:	symbol GPIOLIB is selected by I2C_MUX_LTC4306
-> > drivers/i2c/muxes/Kconfig:47:	symbol I2C_MUX_LTC4306 depends on I2C
-> > drivers/i2c/Kconfig:8:	symbol I2C is selected by FB_DDC
-> > drivers/video/fbdev/Kconfig:63:	symbol FB_DDC depends on FB
-> > drivers/video/fbdev/Kconfig:12:	symbol FB is selected by DRM_KMS_FB_HELPER
-> > drivers/gpu/drm/Kconfig:80:	symbol DRM_KMS_FB_HELPER depends on
-> > DRM_KMS_HELPER
-> > 
-> > Seems that we can only depend on or select some symbol - we run into
-> > huge trouble if thats mixed. Just changed DRM_VIRTIO_GPU to just select
-> > VIRIO instead of depending on it, and now it works.
-> > 
-> > I've posted another patch for fixing drivers/gpu/drm/virtio/Kconfig
-> > to use 'select' instead of 'depends on'.
-> 
-> It seems a bit of a mess, at this point I'm not entirely sure when
-> should drivers select VIRTIO and when depend on it.
-> 
-> The text near it says:
-> 
-> # SPDX-License-Identifier: GPL-2.0-only
-> config VIRTIO
->         tristate
->         help
->           This option is selected by any driver which implements the virtio
->           bus, such as CONFIG_VIRTIO_PCI, CONFIG_VIRTIO_MMIO, CONFIG_RPMSG
->           or CONFIG_S390_GUEST.
-> 
-> Which seems clear enough and would indicate drivers for devices *behind*
-> the bus should not select VIRTIO and thus presumably should "depend on" it.
-> This is violated in virtio console and virtio fs drivers.
-> 
-> For console it says:
-> 
-> commit 9f30eb29c514589e16f2999ea070598583d1f6ec
-> Author: Michal Suchanek <msuchanek@suse.de>
-> Date:   Mon Aug 31 18:58:50 2020 +0200
-> 
->     char: virtio: Select VIRTIO from VIRTIO_CONSOLE.
->     
->     Make it possible to have virtio console built-in when
->     other virtio drivers are modular.
->     
->     Signed-off-by: Michal Suchanek <msuchanek@suse.de>
->     Reviewed-by: Amit Shah <amit@kernel.org>
->     Link: https://lore.kernel.org/r/20200831165850.26163-1-msuchanek@suse.de
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> which seems kind of bogus - why do we care about allowing a builtin
-> virtio console driver if the pci virtio bus driver is a module?
-> There won't be any devices on the bus to attach to ...
-The console driver provides early console which should initialize
-without any transport. I have not tested it actually works but the code
-seems to be there to support this use case.
+The Qemu would migrate page by page, and if one page has been migrated but
+becomes dirty again, the migration process would re-send this dirty page.
+The current MTE migration POC codes would try to send the page tags just after
+the page data, if one page becomes dirty again, the page data and the tags would
+be re-sent.
 
-Thanks
-
-Michal
+>
+> Thanks,
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
