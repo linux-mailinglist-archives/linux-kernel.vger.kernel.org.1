@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE5A2D22D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AB82D22DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgLHFCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:02:40 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:45649 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgLHFCj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:02:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607403739; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=tj9rBjSpnqQrd08gg6qirCgLleskHe5sgj9qm4KfQbE=; b=vOnuKMl4vVQaJWiZcUmD2vXJmWoEw6pB/GxFU9q/0ICoMqnE/Q3UPL8uyKjbWyr2Ts4nR7hs
- D/AEjAtRzG9FDGtX2tI5T0W0Ss78+0o7Icv5sIGMe5dhlsTnEjlRf5dKrkSSOWXyjHaFClaY
- ohU/jyfolLDzSMapLjPEBBd5AzI=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fcf08bfae7b1057669c658b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 05:01:51
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A7AAFC433ED; Tue,  8 Dec 2020 05:01:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [49.205.247.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725820AbgLHFDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:03:08 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41089 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgLHFDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:03:08 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 317A4C433C6;
-        Tue,  8 Dec 2020 05:01:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 317A4C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Abhishek Kumar'" <kuabhs@chromium.org>, <kvalo@codeaurora.org>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-        <ath10k@lists.infradead.org>, <briannorris@chromium.org>,
-        <dianders@chromium.org>, "'David S. Miller'" <davem@davemloft.net>,
-        "'Jakub Kicinski'" <kuba@kernel.org>, <netdev@vger.kernel.org>
-References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
-Subject: RE: [PATCH v3] ath10k: add option for chip-id based BDF selection
-Date:   Tue, 8 Dec 2020 10:31:42 +0530
-Message-ID: <005d01d6cd1f$3c469ff0$b4d3dfd0$@codeaurora.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqp2V0j16z9sWL;
+        Tue,  8 Dec 2020 16:02:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607403746;
+        bh=edv2CqI4iBAUuIFvbAZ0YNS7FHbH6CwTe06qjo9u+v4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jI0q7oGOEIXqBur/Tfj6SyF27e1INxhuzN7hcsvpB+wT3Hiz8gkDgE7ex7jrIuc5T
+         wdLVEvqjg+y4mQolmCPYFyNmcuFQMhBUqr2OJ5xh+1G8Vwi+FQYsBLTL5wFfnsyso5
+         zHAR6vBZpIWpdKXqYe+tkARDtFEHIMSl7o1E5drb7HUH/8DwPJfGEoyNObipb3mgN3
+         MMgF1riTBj3sSyXF7cu20I3UVaRghQJVHO/UjRasLza7UGtqPwU30ennRPFHkWIFBR
+         dgkvzT2zQc5U29Yg6iThuz3ncFi4BfXdnGe+cA/gIgYOMkPvuKArGZe8r3uV3z3B8l
+         ubipgQ84QlCfw==
+Date:   Tue, 8 Dec 2020 16:02:22 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the ftrace tree with Linus' tree
+Message-ID: <20201208160222.04ad114f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQCE8JkGD3TKZlrmAmVZX18lYRS3TayQXLQA
-Content-Language: en-us
+Content-Type: multipart/signed; boundary="Sig_/7zL33gzx8NipyD/ueU5m=UB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/7zL33gzx8NipyD/ueU5m=UB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-> -----Original Message-----
-> From: Abhishek Kumar <kuabhs@chromium.org>
-> Sent: Tuesday, December 8, 2020 4:50 AM
-> To: kvalo@codeaurora.org
-> Cc: linux-kernel@vger.kernel.org; kuabhs@chromium.org; linux-
-> wireless@vger.kernel.org; ath10k@lists.infradead.org;
-> pillair@codeaurora.org; briannorris@chromium.org;
-> dianders@chromium.org; David S. Miller <davem@davemloft.net>; Jakub
-> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org
-> Subject: [PATCH v3] ath10k: add option for chip-id based BDF selection
-> 
-> In some devices difference in chip-id should be enough to pick
-> the right BDF. Add another support for chip-id based BDF selection.
-> With this new option, ath10k supports 2 fallback options.
-> 
-> The board name with chip-id as option looks as follows
-> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> 
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
-> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
-> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> ---
-> 
-> Changes in v3:
-> - Resurreted Patch V1 because as per discussion we do need two
-> fallback board names and refactored ath10k_core_create_board_name.
-> 
->  drivers/net/wireless/ath/ath10k/core.c | 41 +++++++++++++++++++-------
->  1 file changed, 30 insertions(+), 11 deletions(-)
+Today's linux-next merge of the ftrace tree got a conflict in:
 
-Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+  kernel/trace/ring_buffer.c
 
-Thanks,
-Rakesh Pillai.
+between commit:
 
+  68e10d5ff512 ("ring-buffer: Always check to put back before stamp when cr=
+ossing pages")
 
+from Linus' tree and commit:
+
+  5b7be9c709e1 ("ring-buffer: Add test to validate the time stamp deltas")
+
+from the ftrace tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/trace/ring_buffer.c
+index a6268e09160a,7cd888ee9ac7..000000000000
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@@ -3234,12 -3391,16 +3391,14 @@@ __rb_reserve_next(struct ring_buffer_pe
+ =20
+  	/* See if we shot pass the end of this buffer page */
+  	if (unlikely(write > BUF_PAGE_SIZE)) {
+ -		if (tail !=3D w) {
+ -			/* before and after may now different, fix it up*/
+ -			b_ok =3D rb_time_read(&cpu_buffer->before_stamp, &info->before);
+ -			a_ok =3D rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ -			if (a_ok && b_ok && info->before !=3D info->after)
+ -				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
+ -						      info->before, info->after);
+ -		}
+ +		/* before and after may now different, fix it up*/
+ +		b_ok =3D rb_time_read(&cpu_buffer->before_stamp, &info->before);
+ +		a_ok =3D rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ +		if (a_ok && b_ok && info->before !=3D info->after)
+ +			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
+ +					      info->before, info->after);
++ 		if (a_ok && b_ok)
++ 			check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+  		return rb_move_tail(cpu_buffer, tail, info);
+  	}
+ =20
+
+--Sig_/7zL33gzx8NipyD/ueU5m=UB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PCN4ACgkQAVBC80lX
+0GzrrggAm5437ppwZJkiqFKBp5MNSX7lRO5GCUge0gdfN9NC8QnMchG5n7+juSc7
+qDYOym/d1i6bwJUep8sBzothGMzDAOAD5YSoEqD/nHS9+GUQmnQQSAZNCvU5WCNN
+nf1vp/Cjb5Z9g+/dC0iLt6OnUP1Y8EJ/3mT4XJMQRc+jGX1T1LibrsPsmHCtiBgQ
+W6806MMctYxkltouQ2YRUs0T9aJY8Dss4PH0TJLm1hsxvbvRadmFEadsLU/EoUwX
+Ie6aXijk6YBpe2MQm1fJLcorr6c9gxjRtLrPvwLkzSruv8N/Bh6uqR/RvwYs0GWV
+A0+M7A5zvmICrztGgzNTK2y7xeaelQ==
+=D9QM
+-----END PGP SIGNATURE-----
+
+--Sig_/7zL33gzx8NipyD/ueU5m=UB--
