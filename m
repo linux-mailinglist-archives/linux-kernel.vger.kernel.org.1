@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798702D282B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7D02D282D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbgLHJwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:52:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726338AbgLHJwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:52:16 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C19F123A82;
-        Tue,  8 Dec 2020 09:51:35 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kmZef-00H37M-Iw; Tue, 08 Dec 2020 09:51:33 +0000
+        id S1728774AbgLHJwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:52:50 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:43029 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726226AbgLHJwt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:52:49 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 1E492B2C;
+        Tue,  8 Dec 2020 04:52:03 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 08 Dec 2020 04:52:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=asvG7QSfhF/2ylr+I3SRwx8CNZR
+        8SPz/lWQtigkYbJI=; b=aU6K4ccvDLSSCwC2+rLB6ewF6wd8a4UosEx1db2jz/D
+        po2Jke+fJPbNDiSRhtDWC6khrwtOD6w+8VsZMKVUtBocBs5xuD7UWdMC35siuTv7
+        DqpXquizJARj5uxYgSBCdTf5bEIG/pJe9x2ARygLBFXrymfI47SFFezcVcfLTzIp
+        dsREtMSS/7gkPLHgiiKukP93CeYzppEZkaUW8iyCNGi0QAXSrCjudT275u4voqb2
+        5aShfbFBa5/0cSr24gRTFNij4rusU7MLBW9/g+nHwd7xG0o3e+bYbemLuEqK0Ms8
+        D9kbACE32wGSsvotVdRVpac+4zBuP9CFYev7t9INqwA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=asvG7Q
+        SfhF/2ylr+I3SRwx8CNZR8SPz/lWQtigkYbJI=; b=WYYFVFRrpMqpIY07qups2Q
+        UQ03srm/dFcd9obhMqcWEwcWF9yF/Rv+ewjK57TuJeZ8EDdbPjWG0Lv5TOI5581T
+        orHi5ufbTdi29Z/Sd8zuPSWeWRWrX34snzo5cv7C8Zfd79YIPPNCduWaZVrQHM9M
+        LpKgGnjzNCTEQMMf8TWiKgrgOmqrbUmWTa6mi1C1Z0Vj1s4yyZ9q4qNi61h9zsq2
+        +WOPPRH3Yr7ifo8oMY9yi2Bg8MTlzm62BKUz1UF/olPDFp9vIxyH3p9pcaXO5t3G
+        fIAcwzTx5NKxGhcdGv2qV3emmuVqfZEflqfkdfs6H3xvj4e+pJR5LQB5BglfMqSw
+        ==
+X-ME-Sender: <xms:wUzPX3GBqVVDdbsbYvQphPVZhlK6X8ZLYxsQmQAbpadxgper5rXYDA>
+    <xme:wUzPX0QkGX6ctLnVkb_Qv2xiOd4KJtQKaZtF-PT5QOozQeyuYc2hHmX_LTLEn69hR
+    aVf0A2tJ9szT37KHBI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:wUzPX2B-Hk_tmqbHXPYv-JN49dHPb9oIADzveXAwBU9A3naMuZdTKA>
+    <xmx:wUzPX837sJeQIZUmOm88NQm_mxFxmjNV8aJmEKPXUhtixEfZvAuvUw>
+    <xmx:wUzPX8VtkI4TgFaUGGcdJbqwng8obxxu9cO7hKJGwFB2upvfhx1-ig>
+    <xmx:wkzPXwAYRYLdPqp3qRR8SRyz4VwXSKutgN9exgORA1B7wroT-nQSfA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9747D1080057;
+        Tue,  8 Dec 2020 04:52:01 -0500 (EST)
+Date:   Tue, 8 Dec 2020 10:52:00 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Shuosheng Huang <huangshuosheng@allwinnertech.com>
+Cc:     robh+dt@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        tiny.windzz@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 6/6] arm64: dts: allwinner: a100: Enable cpufreq on
+ a100
+Message-ID: <20201208095200.lkyxqzgh5wzjjz7c@gilmour>
+References: <20201208072138.9003-1-huangshuosheng@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Dec 2020 09:51:33 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64/irq: report bug if NR_IPI greater than max SGI
- during compile time
-In-Reply-To: <CAFgQCTuVortG9FgAA+Ximo1zcAfTLK5vpZMWap=ZZA8Tp=yQsg@mail.gmail.com>
-References: <1607419304-26140-1-git-send-email-kernelfans@gmail.com>
- <0f230af42ff4c6e4cf763b9145fb9487@kernel.org>
- <CAFgQCTuVortG9FgAA+Ximo1zcAfTLK5vpZMWap=ZZA8Tp=yQsg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <867be4df47247f8c56687cf2046ee7bb@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: kernelfans@gmail.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de, mark.rutland@arm.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oab6asfbiyrhkwmt"
+Content-Disposition: inline
+In-Reply-To: <20201208072138.9003-1-huangshuosheng@allwinnertech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-08 09:43, Pingfan Liu wrote:
-> On Tue, Dec 8, 2020 at 5:31 PM Marc Zyngier <maz@kernel.org> wrote:
->> 
->> On 2020-12-08 09:21, Pingfan Liu wrote:
->> > Although there is a runtime WARN_ON() when NR_IPR > max SGI, it had
->> > better
->> > do the check during built time, and associate these related code
->> > together.
->> >
->> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
->> > Cc: Catalin Marinas <catalin.marinas@arm.com>
->> > Cc: Will Deacon <will@kernel.org>
->> > Cc: Thomas Gleixner <tglx@linutronix.de>
->> > Cc: Jason Cooper <jason@lakedaemon.net>
->> > Cc: Marc Zyngier <maz@kernel.org>
->> > Cc: Mark Rutland <mark.rutland@arm.com>
->> > To: linux-arm-kernel@lists.infradead.org
->> > Cc: linux-kernel@vger.kernel.org
->> > ---
->> >  arch/arm64/kernel/smp.c                | 2 ++
->> >  drivers/irqchip/irq-gic-v3.c           | 2 +-
->> >  drivers/irqchip/irq-gic.c              | 2 +-
->> >  include/linux/irqchip/arm-gic-common.h | 2 ++
->> >  4 files changed, 6 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
->> > index 18e9727..9fc383c 100644
->> > --- a/arch/arm64/kernel/smp.c
->> > +++ b/arch/arm64/kernel/smp.c
->> > @@ -33,6 +33,7 @@
->> >  #include <linux/kernel_stat.h>
->> >  #include <linux/kexec.h>
->> >  #include <linux/kvm_host.h>
->> > +#include <linux/irqchip/arm-gic-common.h>
->> >
->> >  #include <asm/alternative.h>
->> >  #include <asm/atomic.h>
->> > @@ -76,6 +77,7 @@ enum ipi_msg_type {
->> >       IPI_WAKEUP,
->> >       NR_IPI
->> >  };
->> > +static_assert(NR_IPI <= MAX_SGI_NUM);
->> 
->> I am trying *very hard* to remove dependencies between the 
->> architecture
->> code and random drivers, so this kind of check really is
->> counter-productive.
->> 
->> Driver code should not have to know the number of IPIs, because there 
->> is
->> no requirement that all IPIs should map 1:1 to SGIs. Conflating the 
->> two
-> 
-> Just curious about this. Is there an IPI which is not implemented by
-> SGI? Or mapping several IPIs to a single SGI, and scatter out due to a
-> global variable value?
 
-We currently have a single NS SGI left, and I'd like to move some of the
-non-critical IPIs over to dispatching mechanism (the two "CPU stop" IPIs
-definitely are candidate for merging). That's not implemented yet, but
-I don't see a need to add checks that would otherwise violate this
-IPI/SGI distinction.
+--oab6asfbiyrhkwmt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+On Tue, Dec 08, 2020 at 03:21:38PM +0800, Shuosheng Huang wrote:
+> Enable cpufreq for all CPU cores on a100.
+>=20
+> Signed-off-by: Shuosheng Huang <huangshuosheng@allwinnertech.com>
+> ---
+>  .../allwinner/sun50i-a100-allwinner-perf1.dts    | 16 ++++++++++++++++
+>  arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi   |  6 +++---
+>  2 files changed, 19 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dt=
+s b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
+> index 301793c72cb7..62a770f1a979 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a100-allwinner-perf1.dts
+> @@ -21,6 +21,22 @@ chosen {
+>  	};
+>  };
+> =20
+> +&cpu0 {
+> +	cpu-supply =3D <&reg_dcdc2>;
+> +};
+> +
+> +&cpu1 {
+> +	cpu-supply =3D <&reg_dcdc2>;
+> +};
+> +
+> +&cpu2 {
+> +	cpu-supply =3D <&reg_dcdc2>;
+> +};
+> +
+> +&cpu3 {
+> +	cpu-supply =3D <&reg_dcdc2>;
+> +};
+> +
+>  &pio {
+>  	vcc-pb-supply =3D <&reg_dcdc1>;
+>  	vcc-pc-supply =3D <&reg_eldo1>;
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi b/arch/arm64/=
+boot/dts/allwinner/sun50i-a100.dtsi
+> index 8f370a175ce6..c6ff172bf599 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+> @@ -26,7 +26,7 @@ cpu0: cpu@0 {
+>  			clocks =3D <&ccu CLK_CPUX>;
+>  		};
+> =20
+> -		cpu@1 {
+> +		cpu1: cpu@1 {
 
-          M.
--- 
-Jazz is not dead. It just smells funny...
+You're using these labels in the previous patch, it should be added there.
+
+Maxime
+
+--oab6asfbiyrhkwmt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX89MwAAKCRDj7w1vZxhR
+xWNKAP4yfCNPd2/4gONFj9eKQi/Z/W1/z27q/e+221eheoo7vwEAyz+y6MQ9jK45
+Asp+V8YjcJtbGuT9Dj41JLiO5omV9wo=
+=RxVm
+-----END PGP SIGNATURE-----
+
+--oab6asfbiyrhkwmt--
