@@ -2,136 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64A12D212A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C362D2D2123
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728341AbgLHCwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:52:37 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49272 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727912AbgLHCwg (ORCPT
+        id S1727945AbgLHCuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:50:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52878 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725877AbgLHCup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:52:36 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B82nreB098678;
-        Tue, 8 Dec 2020 02:51:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=iT75PEr74+22T8OxtC1oHxs5BBlW6iP/VhqAfwjey4U=;
- b=KTWKv6gq1d6evY6A5bLK9N7H+MIOhHRKLW3Sylcxd8sIgMU6jWRhGvGFkcLbk6SpWfST
- aYO/NU/FyagY88KAyA4zqCeOdWXYeVud6wJVXzQtoigLxzUOWInpQ/lHltiWw415LLOZ
- ysx3AOFrx2wXO5josSk/O7qE58jXPSDIrHyidQtP9LH9IKUnukrQpywGTigWCtxM6mEr
- 1X3sWuUCSfkFNaEl2swshhWOhxhKb4EEQcaKCfFDFEEXxVolCp41p/JM+k90XKnZfntA
- UMsTPH0Vx80NHbH3LyjE1G/YqmBQKmNOOlvHA0pwl9WqNWGZpQxOXRlETluorNew+X7X eg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3581mqrgu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 02:51:00 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B82kSjN090694;
-        Tue, 8 Dec 2020 02:48:59 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 358m3x4ek1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 02:48:59 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B82mskI003262;
-        Tue, 8 Dec 2020 02:48:54 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Dec 2020 18:48:53 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 6/6] mm/gup: migrate pinned pages out of movable zone
-In-Reply-To: <20201204205233.GF5487@ziepe.ca>
-References: <20201202052330.474592-1-pasha.tatashin@soleen.com>
- <20201202052330.474592-7-pasha.tatashin@soleen.com>
- <20201202163507.GL5487@ziepe.ca>
- <CA+CK2bBT=U+xhbzXTDFwsL5wTvPHgNJ0DRpaeseiUq=w4EOe9w@mail.gmail.com>
- <20201203010809.GQ5487@ziepe.ca>
- <CA+CK2bBRgcCc5Nm0RcsEgVFpGBFC-_icA6UDRiqQxeRJE5U-Aw@mail.gmail.com>
- <20201203141729.GS5487@ziepe.ca> <87360lnxph.fsf@oracle.com>
- <20201204205233.GF5487@ziepe.ca>
-Date:   Mon, 07 Dec 2020 21:48:48 -0500
-Message-ID: <87k0ttrp0v.fsf@oracle.com>
+        Mon, 7 Dec 2020 21:50:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607395759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HntMT6HlcO+PPg+xL5NcseaQ7qpjGnU814ibQC6Ox/I=;
+        b=X1DfipvAJKm9PhTAxieLuosfvi0MQ41dipOY3ZiF97K0Ktu7fCnIr0Y54ZZiXZ6rlsODxZ
+        vUl8CwvT90sCqlndELhx+CLGZWFw/oCjVo2QVYePlh4ANL3QQi4RyOsksQ0Q7qa0UC4nbW
+        RHavdb/Zuo1AhOvJ6lmp334D1muTzkE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-EToiXG03Mv2XEkNJtBUdtg-1; Mon, 07 Dec 2020 21:49:14 -0500
+X-MC-Unique: EToiXG03Mv2XEkNJtBUdtg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0CC2800D62;
+        Tue,  8 Dec 2020 02:49:12 +0000 (UTC)
+Received: from [10.72.12.91] (ovpn-12-91.pek2.redhat.com [10.72.12.91])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ABB0C10023AD;
+        Tue,  8 Dec 2020 02:49:04 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, mst@redhat.com,
+        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
+ <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
+ <37a9fbc6-d75f-f6cd-f052-0dd416594a84@redhat.com>
+ <635faeb7-950e-e594-3217-69032ed9cbd1@metux.net>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <2882f118-3555-614c-33a0-30865673deb3@redhat.com>
+Date:   Tue, 8 Dec 2020 10:49:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=1 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080016
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080016
+In-Reply-To: <635faeb7-950e-e594-3217-69032ed9cbd1@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Gunthorpe <jgg@ziepe.ca> writes:
-> On Fri, Dec 04, 2020 at 03:05:46PM -0500, Daniel Jordan wrote:
->> Well Alex can correct me, but I went digging and a comment from the
->> first type1 vfio commit says the iommu API didn't promise to unmap
->> subpages of previous mappings, so doing page at a time gave flexibility
->> at the cost of inefficiency.
+
+On 2020/12/7 下午5:33, Enrico Weigelt, metux IT consult wrote:
+> On 07.12.20 04:48, Jason Wang wrote:
 >
-> iommu restrictions are not related to with gup. vfio needs to get the
-> page list from the page tables as efficiently as possible, then you
-> break it up into what you want to feed into the IOMMU how the iommu
-> wants.
+> Hi,
 >
-> vfio must maintain a page list to call unpin_user_pages() anyhow, so
-
-It does in some cases but not others, namely the expensive
-VFIO_IOMMU_MAP_DMA/UNMAP_DMA path where the iommu page tables are used
-to find the pfns when unpinning.
-
-I don't see why vfio couldn't do as you say, though, and the worst case
-memory overhead of using scatterlist to remember the pfns of a 300g VM
-backed by huge but physically discontiguous pages is only a few meg, not
-bad at all.
-
-> it makes alot of sense to assemble the page list up front, then do the
-> iommu, instead of trying to do both things page at a time.
+>>>> Not a native speaker but event sounds like something driver read from
+>>>> device. Looking at the below lists, most of them except for
+>>>> VIRTIO_GPIO_EV_HOST_LEVEL looks more like a command.
+>>> okay, shall I name it "message" ?
+>>
+>> It might be better.
+> Okay, renamed to messages in v3.
 >
-> It would be smart to rebuild vfio to use scatter lists to store the
-> page list and then break the sgl into pages for iommu
-> configuration. SGLs will consume alot less memory for the usual case
-> of THPs backing the VFIO registrations.
+>>>> #define VIRTIO_NET_OK     0
+>>>> #define VIRTIO_NET_ERR    1
+>>> hmm, so I'd need to define all the error codes that possibly could
+>>> happen ?
+>>
+>> Yes, I think you need.
+> Okay, going to do it in the next version.
 >
-> ib_umem_get() has some example of how to code this, I've been thinking
-> we could make this some common API, and it could be further optimized.
-
-Agreed, great suggestions, both above and in the rest of your response.
-
->> Yesterday I tried optimizing vfio to skip gup calls for tail pages after
->> Matthew pointed out this same issue to me by coincidence last week.
+>>>> If I read the code correctly, this expects there will be at most a
+>>>> single type of event that can be processed at the same time. E.g can
+>>>> upper layer want to read from different lines in parallel? If yes, we
+>>>> need to deal with that.
+>>> @Linus @Bartosz: can that happen or does gpio subsys already serialize
+>>> requests ?
+>>>
+>>> Initially, I tried to protect it by spinlock (so, only one request may
+>>> run at a time, other calls just wait until the first is finished), but
+>>> it crashed when gpio cdev registration calls into the driver (fetches
+>>> the status) while still in bootup.
+>>>
+>>> Don't recall the exact error anymore, but something like an
+>>> inconsistency in the spinlock calls.
+>>>
+>>> Did I just use the wrong type of lock ?
+>> I'm not sure since I am not familiar with GPIO. But a question is, if at
+>> most one request is allowed, I'm not sure virtio is the best choice here
+>> since we don't even need a queue(virtqueue) here.
+> I guess, I should add locks to the gpio callback functions (where gpio
+> subsys calls in). That way, requests are requests are strictly ordered.
+> The locks didn't work in my previous attempts, but probably because I've
+> missed to set the can_sleep flag (now fixed in v3).
 >
-> Please don't just hack up vfio like this.
+> The gpio ops are already waiting for reply of the corresponding type, so
+> the only bad thing that could happen is the same operation being called
+> twice (when coming from different threads) and replies mixed up between
+> first and second one. OTOH I don't see much problem w/ that. This can be
+> fixed by adding a global lock.
+>
+>> I think it's still about whether or not we need allow a batch of
+>> requests via a queue. Consider you've submitted two request A and B, and
+>> if B is done first, current code won't work. This is because, the reply
+>> is transported via rxq buffers not just reuse the txq buffer if I read
+>> the code correctly.
+> Meanwhile I've changed it to allocate a new rx buffer for the reply
+> (done right before the request is sent), so everything should be
+> processed in the order it had been sent. Assuming virtio keeps the
+> order of the buffers in the queues.
 
-Yeah, you've cured me of that idea.  I'll see where I get experimenting
-with some of this stuff.
+
+Unfortunately, there's no guarantee that virtio will keep the order or 
+it needs to advertise VIRTIO_F_IN_ORDER. (see 2.6.9 in the virtio spec).
+
+Btw, if possible, it's better to add a link to the userspace code here.
+
+
+>
+>>> Could you please give an example how bi-directional transmission within
+>>> the same queue could look like ?
+>> You can check how virtio-blk did this in:
+>>
+>> https://docs.oasis-open.org/virtio/virtio/v1.1/csprd01/virtio-v1.1-csprd01.html#x1-2500006
+> hmm, still don't see how the code would actually look like. (in qemu as
+> well as kernel). Just add the fetched inbuf as an outbuf (within the
+> same queue) ?
+
+
+Yes, virtio allows adding IN buffers after OUT buffer through descriptor 
+chaining.
+
+Thanks
+
+
+>
+>>> Maybe add one new buffer per request and one new per received async
+>>> signal ?
+>> It would be safe to fill the whole rxq and do the refill e.g when half
+>> of the queue is used.
+> Okay, doing that now in v3: there's always at least one rx buffer,
+> and requests as well as the intr receiver always add a new one.
+> (they get removed on fetching, IMHO).
+>
+>
+> --mtx
+>
+
