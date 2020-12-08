@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983812D2AA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FDE2D2AA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgLHMXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:23:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729527AbgLHMXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:23:48 -0500
-Date:   Tue, 8 Dec 2020 13:23:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607430188;
-        bh=utgRFHc5eDVfTJt/ATnGSUDOGde5zn7hRl74TtGW2gA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S47or7LRaZu3Y5dAxGJkmmsSn5d5gMhDLDDS9p+sOvxxDx868SxlD53tRdsrGmh8w
-         hOBoISFd2m0lqNKChKYvO5IxHc1al/Yaa/F5VJXHBMpGBMpZAKyTfrpjikBmea8zcG
-         w/KSzLLbmttPcpqk2W00MuNDyUGWCruvqTcJfJVG9XcSlKc31vb4g2v4Sy8jqrGZkT
-         wfqDLw/477RZIRbnLXRZwz4rimCAvBkXyof0jMq6aQSGnWQXyTKoKGY04UK7dytKnB
-         RfmnHCGd4tRwwUv1uxAVGObBeGa7vPfjtUk20UWkYMgAKW7LGVht0oBJMY3T04kqAk
-         6kcI9K09p615g==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [patch V2 5/9] tick/sched: Prevent false positive softirq
- pending warnings on RT
-Message-ID: <20201208122300.GA16597@lothringen>
-References: <20201204170151.960336698@linutronix.de>
- <20201204170805.232293729@linutronix.de>
+        id S1729546AbgLHMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729388AbgLHMYH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:24:07 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48261C061794;
+        Tue,  8 Dec 2020 04:23:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UNxXJNXqQX33pzDKLkLUQwPsiKXBBcwJYZRxFVbPnps=; b=O/IQVntJZbkpB69wJ39eyVCtkh
+        JJARkVk4MvbcQkuYX8rGTsvb5Rnge7YOct0s4PSHnT8xJQQ3Z3HO/eEacoUd8ngR4xNlDzEYf0XEA
+        Y1fuio0PpOhmsPUHvCz0tsnCrzYCRFQ7/NXClDyiron7GGQy5BKz9xb48TpFc969jU7mPY48b8tr9
+        IiEkGx4OcDfrwzT/IxJum56BPO5ug6IBVYKBxLTiz+zeZm2T9WaKxY1B2hLi/WIdV2LHpG0tebefB
+        CzhZR/bwnsyYY+guh6tWs2ghinTb9ieumMIQFRnzfmwVXsrNClVsLUjiC/UUyMCoFu7tsdcYRybJ4
+        RFGAsSLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmc1U-0002xv-Sc; Tue, 08 Dec 2020 12:23:16 +0000
+Date:   Tue, 8 Dec 2020 12:23:16 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     ira.weiny@intel.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201208122316.GH7338@casper.infradead.org>
+References: <20201207225703.2033611-1-ira.weiny@intel.com>
+ <20201207225703.2033611-3-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204170805.232293729@linutronix.de>
+In-Reply-To: <20201207225703.2033611-3-ira.weiny@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 06:01:56PM +0100, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> On RT a task which has soft interrupts disabled can block on a lock and
-> schedule out to idle while soft interrupts are pending. This triggers the
-> warning in the NOHZ idle code which complains about going idle with pending
-> soft interrupts. But as the task is blocked soft interrupt processing is
-> temporarily blocked as well which means that such a warning is a false
-> positive.
-> 
-> To prevent that check the per CPU state which indicates that a scheduled
-> out task has soft interrupts disabled.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  include/linux/bottom_half.h |    6 ++++++
->  kernel/softirq.c            |   15 +++++++++++++++
->  kernel/time/tick-sched.c    |    2 +-
->  3 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> --- a/include/linux/bottom_half.h
-> +++ b/include/linux/bottom_half.h
-> @@ -32,4 +32,10 @@ static inline void local_bh_enable(void)
->  	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
->  }
->  
-> +#ifdef CONFIG_PREEMPT_RT
-> +extern bool local_bh_blocked(void);
-> +#else
-> +static inline bool local_bh_blocked(void) { return false; }
-> +#endif
-> +
->  #endif /* _LINUX_BH_H */
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -138,6 +138,21 @@ static DEFINE_PER_CPU(struct softirq_ctr
->  	.lock	= INIT_LOCAL_LOCK(softirq_ctrl.lock),
->  };
->  
-> +/**
-> + * local_bh_blocked() - Check for idle whether BH processing is blocked
-> + *
-> + * Returns false if the per CPU softirq::cnt is 0 otherwise true.
-> + *
-> + * This is invoked from the idle task to guard against false positive
-> + * softirq pending warnings, which would happen when the task which holds
-> + * softirq_ctrl::lock was the only running task on the CPU and blocks on
-> + * some other lock.
-> + */
-> +bool local_bh_blocked(void)
-> +{
-> +	return this_cpu_read(softirq_ctrl.cnt) != 0;
+On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
+> Placing these functions in 'highmem.h' is suboptimal especially with the
+> changes being proposed in the functionality of kmap.  From a caller
+> perspective including/using 'highmem.h' implies that the functions
+> defined in that header are only required when highmem is in use which is
+> increasingly not the case with modern processors.  Some headers like
+> mm.h or string.h seem ok but don't really portray the functionality
+> well.  'pagemap.h', on the other hand, makes sense and is already
+> included in many of the places we want to convert.
 
-__this_cpu_read()
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+pagemap.h is for the page cache.  It's not for "random page
+functionality".  Yes, I know it's badly named.  No, I don't want to
+rename it.  These helpers should go in highmem.h along with zero_user().
