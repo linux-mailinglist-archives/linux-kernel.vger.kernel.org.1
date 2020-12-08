@@ -2,86 +2,553 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B3A2D2825
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741572D2827
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgLHJvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:51:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgLHJve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:51:34 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE9AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:50:54 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id a16so23742564ejj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:50:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=10M18cVAuscOUxDbYGRHkvB3zRG0OEfv/jnc8FTzxqc=;
-        b=0mvZiavMpbegbyJwQjflRyNIpoDJ73hHK7WJBJ6gAqNazVCc+Mcoe8fXxAWVSVTf5V
-         nAXV3S2ckKzjmQfpQU0fSpm5md+DitG0bpxILVYKScJbgMVRlqUGwzN38sX7ie7cYOrI
-         rCyaNr5URFjC6+hUj+XzaFgl3Kh7pbE6GRyEztzk+AiVUePpGr1meHD4KtScGfrzNt0B
-         elBOLIDeg87fdA7m47w8EdIEFh+1MbTFwJbRw6jBsVekeSYzTHPdTetOMddPiSCQVxYj
-         KpdxT8PgjspEftwMwB7RpnzgNW+szamL1h30h6cW2GHOlJnTMQQ6BIzxrYzyXyEyr/Tc
-         QVpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=10M18cVAuscOUxDbYGRHkvB3zRG0OEfv/jnc8FTzxqc=;
-        b=X/htCt47qsnsmJNk9mN1wAkAiUp17B7n/trJgfB2jdY3erw/Tz/1sN5wdymAwtCtxU
-         mc8SJ9McXlGgduwu+lXAa0J8HCEjGAwfsz0jolQ8H83P9wi1Nz6wf3blLpKgh9Nky6Fe
-         BJ95W3eSRyxAKEXUxcntGTxaWubz3fiAiqYJZ71a9+SApWx83FzZ0rPlMx/D25G8MpHs
-         hd+tEevAxNMCiU8zlk2QObJaV9Uawk+vFCxtdOnqrSSYL7G4cFgEyehDOks8fElLVJI1
-         xQ+Bik2uBOxo7ZYkrLuKrNJO97mqhEPje/kIfvw9s3gOo/a0LGI4GJ+XPl//Q/hiPVBV
-         YZ4Q==
-X-Gm-Message-State: AOAM531kFwaIHAbhpD54C0aMEeDE91pSaIBT5sX17K8NWyDr0yHvF1ru
-        0uN71PAV07IY1t7sRHDspgrJ3FrrmbgGsS6HMyf4ZQ==
-X-Google-Smtp-Source: ABdhPJzNtD4WQ/Xm+ojAxbBmrEYphGTPDBm/F4wJmiTlnsWbAIPBGceR5zEP7TdKDCcbFi2JJuvGseVZknVEMMqe97Q=
-X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr21798676ejd.363.1607421053288;
- Tue, 08 Dec 2020 01:50:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201207203816.18269-1-info@metux.net> <CAMpxmJWinRPUrmpcqsLaE62uAQpZ3Cb1ys3s7oHmeKM6rUUqQg@mail.gmail.com>
- <c839fa75-80ee-31e6-2ccb-87155281e1d4@metux.net>
-In-Reply-To: <c839fa75-80ee-31e6-2ccb-87155281e1d4@metux.net>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 8 Dec 2020 10:50:42 +0100
-Message-ID: <CAMpxmJX2RN7N8h+KeMpb6Zmj6Uh5sHEAWObK+kRVcB4H6XXbpg@mail.gmail.com>
-Subject: Re: [PATCH v3] drivers: gpio: put virtual gpio device into their own submenu
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728676AbgLHJvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:51:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728661AbgLHJvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:51:42 -0500
+Date:   Tue, 8 Dec 2020 18:50:57 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607421060;
+        bh=QOnX4GTGgs6pCPGAPIJbU8/luexeKt1sSh2kdnXINU8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qF8v/iHm66FZ9xSZSgr/PV2FE+MOFpy2Z+Ukqxp+mMSsSzXKLevYzhTtsQcQtV/4I
+         EPfjwL/lUxhtJrmalY0LuO2Er6jw76K8+z64Y6b6Imf8ailuU2kphPOdF8gixrhSZk
+         CXBUXQr6dILZsnOCrQ1V6joDAWTGm9Kj/KXrjdfLwRJpbZr/GmMZRmw+m+LEfQ+xsp
+         SP0tLCS24XAmLme3NZ5ydGzUtUNvT77+6lOX0/iifn7pi+7vDLEs6U6JzyTfpTpwxC
+         PMEaJodGEOe+LgbQYifn7XpggNQxGkuavn+l7ytcHlZLg9LsdlpLyzblLCgR8aXInH
+         5eYDy0EUbFw+g==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, axelrasmussen@google.com,
+        mhiramat@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] tracing/dynevent: Delegate parsing to create
+ function
+Message-Id: <20201208185057.89d76defabd8676da107a294@kernel.org>
+In-Reply-To: <20201207183322.120eab5b@gandalf.local.home>
+References: <cover.1603723933.git.zanussi@kernel.org>
+        <1e358426d7f8fd81cfddfc0b84312c626c9de6f5.1603723933.git.zanussi@kernel.org>
+        <20201207183322.120eab5b@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 10:40 AM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
->
-> On 08.12.20 10:15, Bartosz Golaszewski wrote:
-> > On Mon, Dec 7, 2020 at 9:38 PM Enrico Weigelt, metux IT consult
-> > <info@metux.net> wrote:
-> >>
-> >> Since we already have a few virtual GPIO drivers, and more to come,
-> >> this category deserves its own submenu.
-> >>
-> >> changes v2: fixed menu title (replaced "devices" by "drivers")
-> >> changes v3: added patch changelog
-> >
-> > This should be below the --- under all tags because we don't want this
-> > in the actual log that goes into git.
->
->
-> Sorry, wasn't aware of that. Does git-am automatically cut it off ?
->
+On Mon, 7 Dec 2020 18:33:22 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Yes, everything between the --- and the actual diff is dropped.
+> 
+> Hi Masami,
+> 
+> You had comments on this patch for v2. Is this one fine for you?
 
-Bartosz
+Yes, this part is good for me. v2 [1/4] is separated into v3 [1/5] and [2/5].
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> On Mon, 26 Oct 2020 10:06:09 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> > Delegate command parsing to each create function so that the
+> > command syntax can be customized.
+> > 
+> > This requires changes to the kprobe/uprobe/synthetic event handling,
+> > which are also included here.
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > [ zanussi@kernel.org: added synthetic event modifications ]
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> >  kernel/trace/trace.c              | 23 ++----------
+> >  kernel/trace/trace.h              |  3 +-
+> >  kernel/trace/trace_dynevent.c     | 35 +++++++++++-------
+> >  kernel/trace/trace_dynevent.h     |  4 +--
+> >  kernel/trace/trace_events_synth.c | 60 +++++++++++++++++++++++--------
+> >  kernel/trace/trace_kprobe.c       | 33 +++++++++--------
+> >  kernel/trace/trace_probe.c        | 17 +++++++++
+> >  kernel/trace/trace_probe.h        |  1 +
+> >  kernel/trace/trace_uprobe.c       | 17 +++++----
+> >  9 files changed, 120 insertions(+), 73 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index 63c97012ed39..277d97220971 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> > @@ -9367,30 +9367,11 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+> >  }
+> >  EXPORT_SYMBOL_GPL(ftrace_dump);
+> >  
+> > -int trace_run_command(const char *buf, int (*createfn)(int, char **))
+> > -{
+> > -	char **argv;
+> > -	int argc, ret;
+> > -
+> > -	argc = 0;
+> > -	ret = 0;
+> > -	argv = argv_split(GFP_KERNEL, buf, &argc);
+> > -	if (!argv)
+> > -		return -ENOMEM;
+> > -
+> > -	if (argc)
+> > -		ret = createfn(argc, argv);
+> > -
+> > -	argv_free(argv);
+> > -
+> > -	return ret;
+> > -}
+> > -
+> >  #define WRITE_BUFSIZE  4096
+> >  
+> >  ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
+> >  				size_t count, loff_t *ppos,
+> > -				int (*createfn)(int, char **))
+> > +				int (*createfn)(const char *))
+> >  {
+> >  	char *kbuf, *buf, *tmp;
+> >  	int ret = 0;
+> > @@ -9438,7 +9419,7 @@ ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
+> >  			if (tmp)
+> >  				*tmp = '\0';
+> >  
+> > -			ret = trace_run_command(buf, createfn);
+> > +			ret = createfn(buf);
+> >  			if (ret)
+> >  				goto out;
+> >  			buf += size;
+> > diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> > index 34e0c4d5a6e7..02d7c487a30b 100644
+> > --- a/kernel/trace/trace.h
+> > +++ b/kernel/trace/trace.h
+> > @@ -1982,10 +1982,9 @@ extern int tracing_set_cpumask(struct trace_array *tr,
+> >  
+> >  #define MAX_EVENT_NAME_LEN	64
+> >  
+> > -extern int trace_run_command(const char *buf, int (*createfn)(int, char**));
+> >  extern ssize_t trace_parse_run_command(struct file *file,
+> >  		const char __user *buffer, size_t count, loff_t *ppos,
+> > -		int (*createfn)(int, char**));
+> > +		int (*createfn)(const char *));
+> >  
+> >  extern unsigned int err_pos(char *cmd, const char *str);
+> >  extern void tracing_log_err(struct trace_array *tr,
+> > diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
+> > index 5fa49cfd2bb6..af83bc5447fe 100644
+> > --- a/kernel/trace/trace_dynevent.c
+> > +++ b/kernel/trace/trace_dynevent.c
+> > @@ -31,23 +31,31 @@ int dyn_event_register(struct dyn_event_operations *ops)
+> >  	return 0;
+> >  }
+> >  
+> > -int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
+> > +int dyn_event_release(const char *raw_command, struct dyn_event_operations *type)
+> >  {
+> >  	struct dyn_event *pos, *n;
+> >  	char *system = NULL, *event, *p;
+> > -	int ret = -ENOENT;
+> > +	int argc, ret = -ENOENT;
+> > +	char **argv;
+> > +
+> > +	argv = argv_split(GFP_KERNEL, raw_command, &argc);
+> > +	if (!argv)
+> > +		return -ENOMEM;
+> >  
+> >  	if (argv[0][0] == '-') {
+> > -		if (argv[0][1] != ':')
+> > -			return -EINVAL;
+> > +		if (argv[0][1] != ':') {
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> >  		event = &argv[0][2];
+> >  	} else {
+> >  		event = strchr(argv[0], ':');
+> > -		if (!event)
+> > -			return -EINVAL;
+> > +		if (!event) {
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> >  		event++;
+> >  	}
+> > -	argc--; argv++;
+> >  
+> >  	p = strchr(event, '/');
+> >  	if (p) {
+> > @@ -63,7 +71,7 @@ int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
+> >  		if (type && type != pos->ops)
+> >  			continue;
+> >  		if (!pos->ops->match(system, event,
+> > -				argc, (const char **)argv, pos))
+> > +				argc - 1, (const char **)argv + 1, pos))
+> >  			continue;
+> >  
+> >  		ret = pos->ops->free(pos);
+> > @@ -71,21 +79,22 @@ int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
+> >  			break;
+> >  	}
+> >  	mutex_unlock(&event_mutex);
+> > -
+> > +out:
+> > +	argv_free(argv);
+> >  	return ret;
+> >  }
+> >  
+> > -static int create_dyn_event(int argc, char **argv)
+> > +static int create_dyn_event(const char *raw_command)
+> >  {
+> >  	struct dyn_event_operations *ops;
+> >  	int ret = -ENODEV;
+> >  
+> > -	if (argv[0][0] == '-' || argv[0][0] == '!')
+> > -		return dyn_event_release(argc, argv, NULL);
+> > +	if (raw_command[0] == '-' || raw_command[0] == '!')
+> > +		return dyn_event_release(raw_command, NULL);
+> >  
+> >  	mutex_lock(&dyn_event_ops_mutex);
+> >  	list_for_each_entry(ops, &dyn_event_ops_list, list) {
+> > -		ret = ops->create(argc, (const char **)argv);
+> > +		ret = ops->create(raw_command);
+> >  		if (!ret || ret != -ECANCELED)
+> >  			break;
+> >  	}
+> > diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
+> > index d6857a254ede..4f4e03df4cbb 100644
+> > --- a/kernel/trace/trace_dynevent.h
+> > +++ b/kernel/trace/trace_dynevent.h
+> > @@ -39,7 +39,7 @@ struct dyn_event;
+> >   */
+> >  struct dyn_event_operations {
+> >  	struct list_head	list;
+> > -	int (*create)(int argc, const char *argv[]);
+> > +	int (*create)(const char *raw_command);
+> >  	int (*show)(struct seq_file *m, struct dyn_event *ev);
+> >  	bool (*is_busy)(struct dyn_event *ev);
+> >  	int (*free)(struct dyn_event *ev);
+> > @@ -97,7 +97,7 @@ void *dyn_event_seq_start(struct seq_file *m, loff_t *pos);
+> >  void *dyn_event_seq_next(struct seq_file *m, void *v, loff_t *pos);
+> >  void dyn_event_seq_stop(struct seq_file *m, void *v);
+> >  int dyn_events_release_all(struct dyn_event_operations *type);
+> > -int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type);
+> > +int dyn_event_release(const char *raw_command, struct dyn_event_operations *type);
+> >  
+> >  /*
+> >   * for_each_dyn_event	-	iterate over the dyn_event list
+> > diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> > index bdd427ccdfc5..271811fbf8fb 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -62,7 +62,7 @@ static void synth_err(u8 err_type, u8 err_pos)
+> >  			err_type, err_pos);
+> >  }
+> >  
+> > -static int create_synth_event(int argc, const char **argv);
+> > +static int create_synth_event(const char *raw_command);
+> >  static int synth_event_show(struct seq_file *m, struct dyn_event *ev);
+> >  static int synth_event_release(struct dyn_event *ev);
+> >  static bool synth_event_is_busy(struct dyn_event *ev);
+> > @@ -1385,18 +1385,30 @@ int synth_event_delete(const char *event_name)
+> >  }
+> >  EXPORT_SYMBOL_GPL(synth_event_delete);
+> >  
+> > -static int create_or_delete_synth_event(int argc, char **argv)
+> > +static int create_or_delete_synth_event(const char *raw_command)
+> >  {
+> > -	const char *name = argv[0];
+> > -	int ret;
+> > +	char **argv, *name = NULL;
+> > +	int argc = 0, ret = 0;
+> > +
+> > +	argv = argv_split(GFP_KERNEL, raw_command, &argc);
+> > +	if (!argv)
+> > +		return -ENOMEM;
+> > +
+> > +	if (!argc)
+> > +		goto free;
+> > +
+> > +	name = argv[0];
+> >  
+> >  	/* trace_run_command() ensures argc != 0 */
+> >  	if (name[0] == '!') {
+> >  		ret = synth_event_delete(name + 1);
+> > -		return ret;
+> > +		goto free;
+> >  	}
+> >  
+> >  	ret = __create_synth_event(argc - 1, name, (const char **)argv + 1);
+> > +free:
+> > +	argv_free(argv);
+> > +
+> >  	return ret == -ECANCELED ? -EINVAL : ret;
+> >  }
+> >  
+> > @@ -1405,7 +1417,7 @@ static int synth_event_run_command(struct dynevent_cmd *cmd)
+> >  	struct synth_event *se;
+> >  	int ret;
+> >  
+> > -	ret = trace_run_command(cmd->seq.buffer, create_or_delete_synth_event);
+> > +	ret = create_or_delete_synth_event(cmd->seq.buffer);
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > @@ -1941,23 +1953,43 @@ int synth_event_trace_end(struct synth_event_trace_state *trace_state)
+> >  }
+> >  EXPORT_SYMBOL_GPL(synth_event_trace_end);
+> >  
+> > -static int create_synth_event(int argc, const char **argv)
+> > +static int create_synth_event(const char *raw_command)
+> >  {
+> > -	const char *name = argv[0];
+> > -	int len;
+> > +	char **argv, *name;
+> > +	int len, argc = 0, ret = 0;
+> > +
+> > +	argv = argv_split(GFP_KERNEL, raw_command, &argc);
+> > +	if (!argv) {
+> > +		ret = -ENOMEM;
+> > +		return ret;
+> > +	}
+> >  
+> > -	if (name[0] != 's' || name[1] != ':')
+> > -		return -ECANCELED;
+> > +	if (!argc)
+> > +		goto free;
+> > +
+> > +	name = argv[0];
+> > +
+> > +	if (name[0] != 's' || name[1] != ':') {
+> > +		ret = -ECANCELED;
+> > +		goto free;
+> > +	}
+> >  	name += 2;
+> >  
+> >  	/* This interface accepts group name prefix */
+> >  	if (strchr(name, '/')) {
+> >  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
+> > -		if (len == 0)
+> > -			return -EINVAL;
+> > +		if (len == 0) {
+> > +			ret = -EINVAL;
+> > +			goto free;
+> > +		}
+> >  		name += len;
+> >  	}
+> > -	return __create_synth_event(argc - 1, name, argv + 1);
+> > +
+> > +	ret = __create_synth_event(argc - 1, name, (const char **)argv + 1);
+> > +free:
+> > +	argv_free(argv);
+> > +
+> > +	return ret;
+> >  }
+> >  
+> >  static int synth_event_release(struct dyn_event *ev)
+> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> > index b911e9f6d9f5..ddef93e32905 100644
+> > --- a/kernel/trace/trace_kprobe.c
+> > +++ b/kernel/trace/trace_kprobe.c
+> > @@ -34,7 +34,7 @@ static int __init set_kprobe_boot_events(char *str)
+> >  }
+> >  __setup("kprobe_event=", set_kprobe_boot_events);
+> >  
+> > -static int trace_kprobe_create(int argc, const char **argv);
+> > +static int trace_kprobe_create(const char *raw_command);
+> >  static int trace_kprobe_show(struct seq_file *m, struct dyn_event *ev);
+> >  static int trace_kprobe_release(struct dyn_event *ev);
+> >  static bool trace_kprobe_is_busy(struct dyn_event *ev);
+> > @@ -710,7 +710,7 @@ static inline void sanitize_event_name(char *name)
+> >  			*name = '_';
+> >  }
+> >  
+> > -static int trace_kprobe_create(int argc, const char *argv[])
+> > +static int __trace_kprobe_create(int argc, const char *argv[])
+> >  {
+> >  	/*
+> >  	 * Argument syntax:
+> > @@ -907,20 +907,25 @@ static int trace_kprobe_create(int argc, const char *argv[])
+> >  	goto out;
+> >  }
+> >  
+> > -static int create_or_delete_trace_kprobe(int argc, char **argv)
+> > +static int trace_kprobe_create(const char *raw_command)
+> > +{
+> > +	return trace_probe_create(raw_command, __trace_kprobe_create);
+> > +}
+> > +
+> > +static int create_or_delete_trace_kprobe(const char *raw_command)
+> >  {
+> >  	int ret;
+> >  
+> > -	if (argv[0][0] == '-')
+> > -		return dyn_event_release(argc, argv, &trace_kprobe_ops);
+> > +	if (raw_command[0] == '-')
+> > +		return dyn_event_release(raw_command, &trace_kprobe_ops);
+> >  
+> > -	ret = trace_kprobe_create(argc, (const char **)argv);
+> > +	ret = trace_kprobe_create(raw_command);
+> >  	return ret == -ECANCELED ? -EINVAL : ret;
+> >  }
+> >  
+> >  static int trace_kprobe_run_command(struct dynevent_cmd *cmd)
+> >  {
+> > -	return trace_run_command(cmd->seq.buffer, create_or_delete_trace_kprobe);
+> > +	return create_or_delete_trace_kprobe(cmd->seq.buffer);
+> >  }
+> >  
+> >  /**
+> > @@ -1081,7 +1086,7 @@ int kprobe_event_delete(const char *name)
+> >  
+> >  	snprintf(buf, MAX_EVENT_NAME_LEN, "-:%s", name);
+> >  
+> > -	return trace_run_command(buf, create_or_delete_trace_kprobe);
+> > +	return create_or_delete_trace_kprobe(buf);
+> >  }
+> >  EXPORT_SYMBOL_GPL(kprobe_event_delete);
+> >  
+> > @@ -1884,7 +1889,7 @@ static __init void setup_boot_kprobe_events(void)
+> >  		if (p)
+> >  			*p++ = '\0';
+> >  
+> > -		ret = trace_run_command(cmd, create_or_delete_trace_kprobe);
+> > +		ret = create_or_delete_trace_kprobe(cmd);
+> >  		if (ret)
+> >  			pr_warn("Failed to add event(%d): %s\n", ret, cmd);
+> >  		else
+> > @@ -1982,8 +1987,7 @@ static __init int kprobe_trace_self_tests_init(void)
+> >  
+> >  	pr_info("Testing kprobe tracing: ");
+> >  
+> > -	ret = trace_run_command("p:testprobe kprobe_trace_selftest_target $stack $stack0 +0($stack)",
+> > -				create_or_delete_trace_kprobe);
+> > +	ret = create_or_delete_trace_kprobe("p:testprobe kprobe_trace_selftest_target $stack $stack0 +0($stack)");
+> >  	if (WARN_ON_ONCE(ret)) {
+> >  		pr_warn("error on probing function entry.\n");
+> >  		warn++;
+> > @@ -2004,8 +2008,7 @@ static __init int kprobe_trace_self_tests_init(void)
+> >  		}
+> >  	}
+> >  
+> > -	ret = trace_run_command("r:testprobe2 kprobe_trace_selftest_target $retval",
+> > -				create_or_delete_trace_kprobe);
+> > +	ret = create_or_delete_trace_kprobe("r:testprobe2 kprobe_trace_selftest_target $retval");
+> >  	if (WARN_ON_ONCE(ret)) {
+> >  		pr_warn("error on probing function return.\n");
+> >  		warn++;
+> > @@ -2078,13 +2081,13 @@ static __init int kprobe_trace_self_tests_init(void)
+> >  				trace_probe_event_call(&tk->tp), file);
+> >  	}
+> >  
+> > -	ret = trace_run_command("-:testprobe", create_or_delete_trace_kprobe);
+> > +	ret = create_or_delete_trace_kprobe("-:testprobe");
+> >  	if (WARN_ON_ONCE(ret)) {
+> >  		pr_warn("error on deleting a probe.\n");
+> >  		warn++;
+> >  	}
+> >  
+> > -	ret = trace_run_command("-:testprobe2", create_or_delete_trace_kprobe);
+> > +	ret = create_or_delete_trace_kprobe("-:testprobe2");
+> >  	if (WARN_ON_ONCE(ret)) {
+> >  		pr_warn("error on deleting a probe.\n");
+> >  		warn++;
+> > diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+> > index d2867ccc6aca..ec589a4612df 100644
+> > --- a/kernel/trace/trace_probe.c
+> > +++ b/kernel/trace/trace_probe.c
+> > @@ -1134,3 +1134,20 @@ bool trace_probe_match_command_args(struct trace_probe *tp,
+> >  	}
+> >  	return true;
+> >  }
+> > +
+> > +int trace_probe_create(const char *raw_command, int (*createfn)(int, const char **))
+> > +{
+> > +	int argc = 0, ret = 0;
+> > +	char **argv;
+> > +
+> > +	argv = argv_split(GFP_KERNEL, raw_command, &argc);
+> > +	if (!argv)
+> > +		return -ENOMEM;
+> > +
+> > +	if (argc)
+> > +		ret = createfn(argc, (const char **)argv);
+> > +
+> > +	argv_free(argv);
+> > +
+> > +	return ret;
+> > +}
+> > diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+> > index 2f703a20c724..7ce4027089ee 100644
+> > --- a/kernel/trace/trace_probe.h
+> > +++ b/kernel/trace/trace_probe.h
+> > @@ -341,6 +341,7 @@ struct event_file_link *trace_probe_get_file_link(struct trace_probe *tp,
+> >  int trace_probe_compare_arg_type(struct trace_probe *a, struct trace_probe *b);
+> >  bool trace_probe_match_command_args(struct trace_probe *tp,
+> >  				    int argc, const char **argv);
+> > +int trace_probe_create(const char *raw_command, int (*createfn)(int, const char **));
+> >  
+> >  #define trace_probe_for_each_link(pos, tp)	\
+> >  	list_for_each_entry(pos, &(tp)->event->files, list)
+> > diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> > index 3cf7128e1ad3..e6b56a65f80f 100644
+> > --- a/kernel/trace/trace_uprobe.c
+> > +++ b/kernel/trace/trace_uprobe.c
+> > @@ -34,7 +34,7 @@ struct uprobe_trace_entry_head {
+> >  #define DATAOF_TRACE_ENTRY(entry, is_return)		\
+> >  	((void*)(entry) + SIZEOF_TRACE_ENTRY(is_return))
+> >  
+> > -static int trace_uprobe_create(int argc, const char **argv);
+> > +static int trace_uprobe_create(const char *raw_command);
+> >  static int trace_uprobe_show(struct seq_file *m, struct dyn_event *ev);
+> >  static int trace_uprobe_release(struct dyn_event *ev);
+> >  static bool trace_uprobe_is_busy(struct dyn_event *ev);
+> > @@ -530,7 +530,7 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
+> >   * Argument syntax:
+> >   *  - Add uprobe: p|r[:[GRP/]EVENT] PATH:OFFSET[%return][(REF)] [FETCHARGS]
+> >   */
+> > -static int trace_uprobe_create(int argc, const char **argv)
+> > +static int __trace_uprobe_create(int argc, const char **argv)
+> >  {
+> >  	struct trace_uprobe *tu;
+> >  	const char *event = NULL, *group = UPROBE_EVENT_SYSTEM;
+> > @@ -716,14 +716,19 @@ static int trace_uprobe_create(int argc, const char **argv)
+> >  	return ret;
+> >  }
+> >  
+> > -static int create_or_delete_trace_uprobe(int argc, char **argv)
+> > +int trace_uprobe_create(const char *raw_command)
+> > +{
+> > +	return trace_probe_create(raw_command, __trace_uprobe_create);
+> > +}
+> > +
+> > +static int create_or_delete_trace_uprobe(const char *raw_command)
+> >  {
+> >  	int ret;
+> >  
+> > -	if (argv[0][0] == '-')
+> > -		return dyn_event_release(argc, argv, &trace_uprobe_ops);
+> > +	if (raw_command[0] == '-')
+> > +		return dyn_event_release(raw_command, &trace_uprobe_ops);
+> >  
+> > -	ret = trace_uprobe_create(argc, (const char **)argv);
+> > +	ret = trace_uprobe_create(raw_command);
+> >  	return ret == -ECANCELED ? -EINVAL : ret;
+> >  }
+> >  
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
