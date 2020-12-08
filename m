@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1DE2D2A08
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BFA2D2A00
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729233AbgLHLyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:54:09 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38862 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgLHLyI (ORCPT
+        id S1729195AbgLHLxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgLHLxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:54:08 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8BqT4n055991;
-        Tue, 8 Dec 2020 05:52:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607428349;
-        bh=iv8zEB8GmkL1Ie8iD/aF0lFt3MMc4uENlhuM/JropiM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=tezWFPvrmjofJ/S2KYjmR/OowZJhp2+slBY0ZHb3lKhQbWQCCJjeXa1IMpLBqSGMH
-         ZYBwGU9WbImuNwtrWrtnznTRG9byFpzBieI6yJQtt982tGGkRm2hwa+En73VL1a+HW
-         repFqb7CqWZYNt+6efLAJGAqP1kIqz/19CxJR+60=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8BqTSn116810
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 8 Dec 2020 05:52:29 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
- 2020 05:52:28 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 8 Dec 2020 05:52:28 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8BqPb9090364;
-        Tue, 8 Dec 2020 05:52:26 -0600
-Subject: Re: [PATCH v3 05/20] dmaengine: ti: k3-udma-glue: Get the ringacc
- from udma_dev
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <vkoul@kernel.org>,
-        <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>
-CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>
-References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
- <20201208090440.31792-6-peter.ujfalusi@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <f759177c-f060-30dd-a4a5-44781054b2d3@ti.com>
-Date:   Tue, 8 Dec 2020 13:52:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 06:53:36 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB310C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 03:52:55 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0f080075ab11bb2325b51a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:75ab:11bb:2325:b51a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2E8481EC04DF;
+        Tue,  8 Dec 2020 12:52:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607428374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ilCcr2hsaww+8WtUZm8dpe2+ao20Xeo/UcCyN6Gb//4=;
+        b=ZmRzOQIdQKqDh10l00y9zQ1fVIbW+W4oZqGIJxLY7iEBXLo1AkfGzfMMLByL3rvWleR8kb
+        VpCa2H79kaU1ClF3j5EkBbkfNRzecfF77bLe4ckhKW6u2GQbFK59ruSJykpGGC+CBeB35A
+        NA9fxYS1GaN7CQ1hZ/fIjPvMM82Pg3w=
+Date:   Tue, 8 Dec 2020 12:52:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v6 01/18] docs: acrn: Introduce ACRN
+Message-ID: <20201208115249.GC27920@zn.tnic>
+References: <20201201093853.12070-1-shuo.a.liu@intel.com>
+ <20201201093853.12070-2-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201208090440.31792-6-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201201093853.12070-2-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/12/2020 11:04, Peter Ujfalusi wrote:
-> If of_xudma_dev_get() returns with the valid udma_dev then the driver
-> already got the ringacc, there is no need to execute
-> of_k3_ringacc_get_by_phandle() for each channel via the glue layer.
+On Tue, Dec 01, 2020 at 05:38:36PM +0800, shuo.a.liu@intel.com wrote:
+> From: Shuo Liu <shuo.a.liu@intel.com>
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->   drivers/dma/ti/k3-udma-glue.c    | 6 +-----
->   drivers/dma/ti/k3-udma-private.c | 6 ++++++
->   drivers/dma/ti/k3-udma.h         | 1 +
->   3 files changed, 8 insertions(+), 5 deletions(-)
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Add documentation on the following aspects of ACRN:
+
+Thanks for doing this!
+
+> +===============
+> +ACRN CPUID bits
+> +===============
+> +
+> +A guest VM running on an ACRN hypervisor, can check some of its features using
+> +cpuid.
+
+s/cpuid/CPUID/g
+
+> +ACRN Hypervisor Introduction
+> +============================
+> +
+> +The ACRN Hypervisor is a Type 1 hypervisor, running directly on the bare-metal
+
+s/the //
+
+with those fixed:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
 -- 
-Best regards,
-grygorii
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
