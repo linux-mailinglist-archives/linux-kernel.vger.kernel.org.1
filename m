@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82F52D36C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB8A2D36C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgLHXMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:12:22 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:46291 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgLHXMV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:12:21 -0500
-X-Originating-IP: 62.210.143.248
-Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
-        (Authenticated sender: m@thi.eu.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A3724240002;
-        Tue,  8 Dec 2020 23:11:36 +0000 (UTC)
-Received: by weirdfishes.localdomain (Postfix, from userid 1000)
-        id 206BD720488DE; Wed,  9 Dec 2020 00:11:36 +0100 (CET)
-Date:   Wed, 9 Dec 2020 00:11:36 +0100
-From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
-        Stephen Kitt <steve@sk2.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>,
-        Yue Hu <huyue2@yulong.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Update documentation to reflect what
- TAINT_CPU_OUT_OF_SPEC means nowadays
-Message-ID: <20201208231136.GA1455290@weirdfishes>
-Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
-        Stephen Kitt <steve@sk2.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>, Yue Hu <huyue2@yulong.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201202153244.709752-1-me@mathieu.digital>
- <20201208105439.23e2349b@lwn.net>
- <1254edd7-25ee-b73d-da2c-194d38ba7890@infradead.org>
+        id S1731687AbgLHXNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:13:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731300AbgLHXNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 18:13:48 -0500
+Date:   Tue, 8 Dec 2020 15:13:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607469188;
+        bh=SSjYgzjvqBuVRProPbpN4uTwWvMV5QlAAtGfYXjS/Bk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F6OQehZ7W5mVgi+gS/AY9iiprqitncpv4u/iXBEOCI0JTRKICJUBeRX0J5a6mHeja
+         QOhDagvnEM8SbttqMiwK7761dSMQLoY4fHCipQRbcwV9Z3S77N4vQlYas686BOQcII
+         4eyoI3pBaWghZsooudrK4x66WSxi1imKq2303yWh1lYjG7AOVAkeG8Ahza1ppTJj+F
+         Wx8ScWrfZDLs3kHRkGQXTCXGFW2Hhii3MPP1NQoHgBkY9+WiXgaZ5FOQKwnQvVh+9R
+         Z2LJccRQaGwf+zxoFY6bY0WUJrfKHu4L2aCtQBEzPL68r96VpeGyLz/buV+Msg0AXg
+         FxOf3H9zJ39Zw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
+ bandwidth requirement
+Message-ID: <20201208151306.23461636@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
+References: <20201206034408.31492-1-TheSven73@gmail.com>
+        <20201206034408.31492-2-TheSven73@gmail.com>
+        <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1254edd7-25ee-b73d-da2c-194d38ba7890@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hello,
+On Tue, 8 Dec 2020 16:54:33 -0500 Sven Van Asbroeck wrote:
+> > > Tested with iperf3 on a freescale imx6 + lan7430, both sides
+> > > set to mtu 1500 bytes.
+> > >
+> > > Before:
+> > > [ ID] Interval           Transfer     Bandwidth       Retr
+> > > [  4]   0.00-20.00  sec   483 MBytes   203 Mbits/sec    0
+> > > After:
+> > > [ ID] Interval           Transfer     Bandwidth       Retr
+> > > [  4]   0.00-20.00  sec  1.15 GBytes   496 Mbits/sec    0
+> > >
+> > > And with both sides set to MTU 9000 bytes:
+> > > Before:
+> > > [ ID] Interval           Transfer     Bandwidth       Retr
+> > > [  4]   0.00-20.00  sec  1.87 GBytes   803 Mbits/sec   27
+> > > After:
+> > > [ ID] Interval           Transfer     Bandwidth       Retr
+> > > [  4]   0.00-20.00  sec  1.98 GBytes   849 Mbits/sec    0
+> > >
+> > > Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+> > > Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>  
+> >
+> > This is a performance improvement, not a fix, it really needs to target
+> > net-next.  
+> 
+> I thought it'd be cool if 'historic' kernels could benefit from this performance
+> improvement too, but yeah if it's against policy it should go into net-next.
+> 
+> What about the other patch in the patchset (ping-pong). Should it go into
+> net-next as well?
 
-On Tue, Dec 08, 2020 at 09:58:32AM -0800, Randy Dunlap wrote:
-> On 12/8/20 9:54 AM, Jonathan Corbet wrote:
-> > On Wed,  2 Dec 2020 16:32:43 +0100
-> > Mathieu Chouquet-Stringer <me@mathieu.digital> wrote:
-> >> Signed-off-by: Mathieu Chouquet-Stringer <me@mathieu.digital>
-> > 
-> > Hearing no objection, I've applied this.
+The jury is out on that one. Using ring size for netif_napi_add() 
+and updating RX_TAIL at the end of NAPI is pretty broken. So that
+one can qualify as a fix IMHO.
 
-Thanks Jon.
+> > > @@ -2632,9 +2633,13 @@ static int lan743x_netdev_change_mtu(struct net_device *netdev, int new_mtu)
+> > >       struct lan743x_adapter *adapter = netdev_priv(netdev);
+> > >       int ret = 0;
+> > >
+> > > +     if (netif_running(netdev))
+> > > +             return -EBUSY;  
+> >
+> > That may cause a regression to users of the driver who expect to be
+> > able to set the MTU when the device is running. You need to disable
+> > the NAPI, pause the device, swap the buffers for smaller / bigger ones
+> > and restart the device.  
+> 
+> That's what I tried first, but I quickly ran into a spot of trouble:
+> restarting the device may fail (unlikely but possible). So when the user tries
+> to change the mtu and that errors out, they might end up with a stopped device.
+> Is that acceptable behaviour? If so, I'll add it to the patch.
 
-> Hm, I was glad to read this new info since my old testing laptop
-> now tells me that it needs a microcode update.  :(
+Fail because of memory allocation failures?
 
-In my case I first saw the error because tuned uses
-x86_energy_perf_policy which uses to poke at MSRs [1]. And that was
-tainting my kernel and I initially couldn't understand why.
-
-It's been fixed but will be released in an upcoming kernel version (it's
-in tip at the moment [2]).
-
-Thanks to Borislav for work and for helping me out!
-
-[1] https://lore.kernel.org/lkml/20201117210018.GA4247@weirdfishes/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=fe0a5788624c8b8f113a35bbe4636e37f9321241
--- 
-Mathieu Chouquet-Stringer                             me@mathieu.digital
-            The sun itself sees not till heaven clears.
-	             -- William Shakespeare --
+The best way to work around that is to allocate all the memory for new
+configuration before you free the old memory. This also makes the
+change a lot less disturbing to the traffic because you can do all the
+allocations before the device is disabled, do the swap, start the
+device, and then free the old set.
