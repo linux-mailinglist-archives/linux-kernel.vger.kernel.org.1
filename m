@@ -2,435 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9362D300A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783C62D2FFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbgLHQnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        id S1730446AbgLHQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730507AbgLHQnl (ORCPT
+        with ESMTP id S1730258AbgLHQmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:43:41 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A92EC0611C5
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:42:27 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id cm17so18263293edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Y4932ET97sTNfQgQ4uz2ZxIPK+WLVNLtpqFUP/CyM1o=;
-        b=QUe6fjCkny/tv5B339RgzttMImen3sNrMduCS57Xk7t/PCxz/GBUO79qeNdCrAHFls
-         3CIna08jogqv6KlmffnWHzjf8fUkUlEnbtvpPq7yrrHb3oka44vg3BXZ37W+bpgT6VWV
-         sNDiIgM7K/qpz/AqMl8RZH8auCDaR5/nn7YCNJ7wiZWBypWnKg6HQ0oex5zl/Cc2tpGZ
-         Vhux9uiyYiYfglX+w0vDLLMl+qli+RlHFwiDDCv6YFjh2tS+gCjKI8vMtvFpIqimdymZ
-         nTzIJZhRvu/zzwg12dMMPTBDBFRARFQMOpJDf7jS4Foa/b7QTNPlhbrp2TgWMzE2IkTh
-         XmtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Y4932ET97sTNfQgQ4uz2ZxIPK+WLVNLtpqFUP/CyM1o=;
-        b=gwAloPRu496TL24D+7CAQWbBzq0zIp/IDEv+9MtFdkE/yCz9nZsQ/WuVwvYMkJMqrs
-         CYBPPNQZQ6PbTJSOtEQ6NP3/NKqjKhp9k0MhQa9ni3y/+ZyMAfAcEJDfur2z28zO+bFI
-         aPr+lED+/5KuUGqqikYPEjurhhaweyWAzvkyi2GtNeSBpGlPgJ25wXVJYrAwrQq3WCvq
-         BgNS4HdxGwIgo/AOtuSxTrDoxFkOv8vWRfNfWj3UVg3KH9curXmTthqQmaQhUyLt1g5H
-         BzCWaYQMGCNbVcOhskV32Gk58MvtjWuor8r2klTptPi6sKedBMMw2gzu/9iMdfGdmP/6
-         UDtg==
-X-Gm-Message-State: AOAM533gT33Hl/2IxwdBy71a9IGCbtZ3T11p09Bp0V3KeFacUu+kb04q
-        GpDAiScAU+zYsP11GdvUVK6PsJRlI0HcYA==
-X-Google-Smtp-Source: ABdhPJz8Su2SlK7K94/Rfm7DFu5ntU1rxQyas7qSFpH+HrrIEp38xd+VORgwVV2mTz0V8CZt6XQcXQ==
-X-Received: by 2002:a50:a6de:: with SMTP id f30mr25911346edc.30.1607445745588;
-        Tue, 08 Dec 2020 08:42:25 -0800 (PST)
-Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
-        by smtp.gmail.com with ESMTPSA id t19sm16150546eje.86.2020.12.08.08.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 08:42:24 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rjw@rjwysocki.net
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v5 4/4] powercap/drivers/dtpm: Add CPU energy model based support
-Date:   Tue,  8 Dec 2020 17:41:45 +0100
-Message-Id: <20201208164145.19493-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208164145.19493-1-daniel.lezcano@linaro.org>
-References: <20201208164145.19493-1-daniel.lezcano@linaro.org>
+        Tue, 8 Dec 2020 11:42:45 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4A6C0613D6;
+        Tue,  8 Dec 2020 08:42:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=AtL8wx9VklKxBINtSQ3AopQN3khwzpEuE4AVdNvGdcY=; b=l+QQOGJJnRgpYOU9qHYVK8RBzH
+        SXZQUa+bN3VfnU1BkiZlzQ1SF4Q2dMPSA0ozil0UZNz3xIlB2LPbxZ7WMxnBP/HThV6BlBv7+VRlx
+        OhzsQ3xqNQt4ft6HluPpCugMs/9EhEjhCyTSCfOc8nvh+8z6K/RvimOqJpp37Qooxng7j9ixI6Y/y
+        1qaDYh+q3gz17FVkZMbLnn6Ae1niTz55MEXUUra/sSUcjd3iex0400g1IrxKLDdlnzvhCbBad6Ibg
+        EF2tlMu50B7Cp0WobPMVJgtZBEcDqeqbe0r8TW3/69aWnL6PhFHPLEnVoln7TvMmk+rak6fvEEzVU
+        PC6yoIqg==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmg3p-0004f3-9B; Tue, 08 Dec 2020 16:41:57 +0000
+Subject: Re: memory leak in generic_parse_monolithic [+PATCH]
+To:     David Howells <dhowells@redhat.com>
+Cc:     syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org>
+ <0000000000002a530d05b400349b@google.com>
+ <928043.1607416561@warthog.procyon.org.uk>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1c752ffe-8118-f9ea-e928-d92783a5c516@infradead.org>
+Date:   Tue, 8 Dec 2020 08:41:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <928043.1607416561@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the powercap dtpm controller, we are able to plug devices with
-power limitation features in the tree.
+On 12/8/20 12:36 AM, David Howells wrote:
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+>> Otherwise please look at the patch below.
+> 
+> The patch won't help, since it's not going through sys_fsconfig() - worse, it
+> introduces two new errors.
+> 
+>>  		fc->source = param->string;
+>> -		param->string = NULL;
+> 
+> This will cause the string now attached to fc->source to be freed by the
+> caller.  No, the original is doing the correct thing here.  The point is to
+> steal the string.
+> 
+>> @@ -262,7 +262,9 @@ static int vfs_fsconfig_locked(struct fs
+>>
+>> -		return vfs_parse_fs_param(fc, param);
+>> +		ret = vfs_parse_fs_param(fc, param);
+>> +		kfree(param->string);
+>> +		return ret;
+> 
+> But your stack trace shows you aren't going through sys_fsconfig(), so this
+> function isn't involved.  Further, this introduces a double free, since
+> sys_fsconfig() frees param.string after it drops uapi_mutex.
+> 
+> Looking at the backtrace:
+> 
+>>      kmemdup_nul+0x2d/0x70 mm/util.c:151
+>>      vfs_parse_fs_string+0x6e/0xd0 fs/fs_context.c:155
+>>      generic_parse_monolithic+0xe0/0x130 fs/fs_context.c:201
+>>      do_new_mount fs/namespace.c:2871 [inline]
+>>      path_mount+0xbbb/0x1170 fs/namespace.c:3205
+>>      do_mount fs/namespace.c:3218 [inline]
+>>      __do_sys_mount fs/namespace.c:3426 [inline]
+>>      __se_sys_mount fs/namespace.c:3403 [inline]
+>>      __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+> 
+> A couple of possibilities spring to mind from that: maybe
+> vfs_parse_fs_string() is not releasing the param.string - but that's not the
+> problem since we stole the string and the free is definitely there at the
+> bottom of the function:
+> 
+> 	int vfs_parse_fs_string(struct fs_context *fc, const char *key,
+> 				const char *value, size_t v_size)
+> 	{
+> 	...
+> 		kfree(param.string);
+> 		return ret;
+> 	}
+> 
+> or fc->source is not being cleaned up in vfs_clean_context() - but that's
+> there as well:
+> 
+> 	void vfs_clean_context(struct fs_context *fc)
+> 	{
+> 	...
+> 		kfree(fc->source);
+> 		fc->source = NULL;
+> 
+> In either of these cases, I would expect this to have already become evident
+> from other filesystem mounts as there would be a lot of leaking going on,
+> particularly with the first.
+> 
+> Now the backtrace only shows what the state was when the string was allocated;
+> it doesn't show what happened to it after that, so another possibility is that
+> the filesystem being mounted nicked what vfs_parse_fs_param() had rightfully
+> stolen, transferring fc->source somewhere else and then failed to release it -
+> most likely on mount failure (ie. it's an error handling bug in the
+> filesystem).
+> 
+> Do we know what filesystem it was?
 
-The following patch introduces the CPU power limitation based on the
-energy model and the performance states.
+Yes, it's call AFS (or kAFS).
 
-The power limitation is done at the performance domain level. If some
-CPUs are unplugged, the corresponding power will be subtracted from
-the performance domain total power.
+Thanks for your comments & help.
 
-It is up to the platform to initialize the dtpm tree and add the CPU.
-
-Here is an example to create a simple tree with one root node called
-"pkg" and the CPU's performance domains.
-
-static int dtpm_register_pkg(struct dtpm_descr *descr)
-{
-	struct dtpm *pkg;
-	int ret;
-
-	pkg = dtpm_alloc(NULL);
-	if (!pkg)
-		return -ENOMEM;
-
-	ret = dtpm_register(descr->name, pkg, descr->parent);
-	if (ret)
-		return ret;
-
-	return dtpm_register_cpu(pkg);
-}
-
-static struct dtpm_descr descr = {
-	.name = "pkg",
-	.init = dtpm_register_pkg,
-};
-DTPM_DECLARE(descr);
-
-Cc: Thara Gopinath <thara.gopinath@linaro.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
-Cc: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/powercap/Kconfig    |   7 +
- drivers/powercap/Makefile   |   1 +
- drivers/powercap/dtpm_cpu.c | 257 ++++++++++++++++++++++++++++++++++++
- include/linux/cpuhotplug.h  |   1 +
- include/linux/dtpm.h        |   2 +
- 5 files changed, 268 insertions(+)
- create mode 100644 drivers/powercap/dtpm_cpu.c
-
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index cc1953bd8bed..20b4325c6161 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -49,4 +49,11 @@ config DTPM
- 	help
- 	  This enables support for the power capping for the dynamic
- 	  thermal power management userspace engine.
-+
-+config DTPM_CPU
-+	bool "Add CPU power capping based on the energy model"
-+	depends on DTPM && ENERGY_MODEL
-+	help
-+	  This enables support for CPU power limitation based on
-+	  energy model.
- endif
-diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-index 6482ac52054d..fabcf388a8d3 100644
---- a/drivers/powercap/Makefile
-+++ b/drivers/powercap/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_DTPM) += dtpm.o
-+obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
- obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
- obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
- obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-new file mode 100644
-index 000000000000..6933c783c6b4
---- /dev/null
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -0,0 +1,257 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright 2020 Linaro Limited
-+ *
-+ * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-+ *
-+ * The DTPM CPU is based on the energy model. It hooks the CPU in the
-+ * DTPM tree which in turns update the power number by propagating the
-+ * power number from the CPU energy model information to the parents.
-+ *
-+ * The association between the power and the performance state, allows
-+ * to set the power of the CPU at the OPP granularity.
-+ *
-+ * The CPU hotplug is supported and the power numbers will be updated
-+ * if a CPU is hot plugged / unplugged.
-+ */
-+#include <linux/cpumask.h>
-+#include <linux/cpufreq.h>
-+#include <linux/cpuhotplug.h>
-+#include <linux/dtpm.h>
-+#include <linux/energy_model.h>
-+#include <linux/pm_qos.h>
-+#include <linux/slab.h>
-+#include <linux/units.h>
-+
-+static struct dtpm *__parent;
-+
-+static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
-+
-+struct dtpm_cpu {
-+	struct freq_qos_request qos_req;
-+	int cpu;
-+};
-+
-+/*
-+ * When a new CPU is inserted at hotplug or boot time, add the power
-+ * contribution and update the dtpm tree.
-+ */
-+static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min += dtpm->power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max += dtpm->power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+/*
-+ * When a CPU is unplugged, remove its power contribution from the
-+ * dtpm tree.
-+ */
-+static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
-+{
-+	u64 power_min, power_max;
-+
-+	power_min = em->table[0].power;
-+	power_min *= MICROWATT_PER_MILLIWATT;
-+	power_min = dtpm->power_min - power_min;
-+
-+	power_max = em->table[em->nr_perf_states - 1].power;
-+	power_max *= MICROWATT_PER_MILLIWATT;
-+	power_max = dtpm->power_max - power_max;
-+
-+	return dtpm_update_power(dtpm, power_min, power_max);
-+}
-+
-+static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	struct cpumask cpus;
-+	unsigned long freq;
-+	u64 power;
-+	int i, nr_cpus;
-+
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+
-+	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
-+
-+	nr_cpus = cpumask_weight(&cpus);
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		power = pd->table[i].power * MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+		if (power > power_limit)
-+			break;
-+	}
-+
-+	freq = pd->table[i - 1].frequency;
-+
-+	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
-+
-+	power_limit = pd->table[i - 1].power *
-+		MICROWATT_PER_MILLIWATT * nr_cpus;
-+
-+	return power_limit;
-+}
-+
-+static u64 get_pd_power_uw(struct dtpm *dtpm)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+	struct em_perf_domain *pd;
-+	struct cpumask cpus;
-+	unsigned long freq;
-+	int i, nr_cpus;
-+
-+	pd = em_cpu_get(dtpm_cpu->cpu);
-+	freq = cpufreq_quick_get(dtpm_cpu->cpu);
-+	cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
-+	nr_cpus = cpumask_weight(&cpus);
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+
-+		if (pd->table[i].frequency < freq)
-+			continue;
-+
-+		return pd->table[i].power *
-+			MICROWATT_PER_MILLIWATT * nr_cpus;
-+	}
-+
-+	return 0;
-+}
-+
-+static void pd_release(struct dtpm *dtpm)
-+{
-+	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-+
-+	if (freq_qos_request_active(&dtpm_cpu->qos_req))
-+		freq_qos_remove_request(&dtpm_cpu->qos_req);
-+
-+	kfree(dtpm_cpu);
-+}
-+
-+static struct dtpm_ops dtpm_ops = {
-+	.set_power_uw = set_pd_power_limit,
-+	.get_power_uw = get_pd_power_uw,
-+	.release = pd_release,
-+};
-+
-+static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-+{
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	struct dtpm *dtpm;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+
-+	power_sub(dtpm, pd);
-+
-+	if (cpumask_weight(policy->cpus) != 1)
-+		return 0;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = NULL;
-+
-+	dtpm_unregister(dtpm);
-+
-+	return 0;
-+}
-+
-+static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-+{
-+	struct dtpm *dtpm;
-+	struct dtpm_cpu *dtpm_cpu;
-+	struct cpufreq_policy *policy;
-+	struct em_perf_domain *pd;
-+	char name[CPUFREQ_NAME_LEN];
-+	int ret = -ENOMEM;
-+
-+	policy = cpufreq_cpu_get(cpu);
-+
-+	if (!policy)
-+		return 0;
-+
-+	pd = em_cpu_get(cpu);
-+	if (!pd)
-+		return -EINVAL;
-+
-+	dtpm = per_cpu(dtpm_per_cpu, cpu);
-+	if (dtpm)
-+		return power_add(dtpm, pd);
-+
-+	dtpm = dtpm_alloc(&dtpm_ops);
-+	if (!dtpm)
-+		return -EINVAL;
-+
-+	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
-+	if (!dtpm_cpu)
-+		goto out_kfree_dtpm;
-+
-+	dtpm->private = dtpm_cpu;
-+	dtpm_cpu->cpu = cpu;
-+
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = dtpm;
-+
-+	sprintf(name, "cpu%d", dtpm_cpu->cpu);
-+
-+	ret = dtpm_register(name, dtpm, __parent);
-+	if (ret)
-+		goto out_kfree_dtpm_cpu;
-+
-+	ret = power_add(dtpm, pd);
-+	if (ret)
-+		goto out_dtpm_unregister;
-+
-+	ret = freq_qos_add_request(&policy->constraints,
-+				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
-+				   pd->table[pd->nr_perf_states - 1].frequency);
-+	if (ret)
-+		goto out_power_sub;
-+
-+	return 0;
-+
-+out_power_sub:
-+	power_sub(dtpm, pd);
-+
-+out_dtpm_unregister:
-+	dtpm_unregister(dtpm);
-+	dtpm_cpu = NULL;
-+	dtpm = NULL;
-+
-+out_kfree_dtpm_cpu:
-+	for_each_cpu(cpu, policy->related_cpus)
-+		per_cpu(dtpm_per_cpu, cpu) = NULL;
-+	kfree(dtpm_cpu);
-+
-+out_kfree_dtpm:
-+	kfree(dtpm);
-+	return ret;
-+}
-+
-+int dtpm_register_cpu(struct dtpm *parent)
-+{
-+	__parent = parent;
-+
-+	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
-+				 "dtpm_cpu:online",
-+				 cpuhp_dtpm_cpu_online,
-+				 cpuhp_dtpm_cpu_offline);
-+}
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index bc56287a1ed1..72fd8db62342 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -192,6 +192,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
- 	CPUHP_AP_X86_HPET_ONLINE,
- 	CPUHP_AP_X86_KVM_CLK_ONLINE,
-+	CPUHP_AP_DTPM_CPU_ONLINE,
- 	CPUHP_AP_ACTIVE,
- 	CPUHP_ONLINE,
- };
-diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-index 7a1d0b50e334..e80a332e3d8a 100644
---- a/include/linux/dtpm.h
-+++ b/include/linux/dtpm.h
-@@ -72,4 +72,6 @@ void dtpm_unregister(struct dtpm *dtpm);
- 
- int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent);
- 
-+int dtpm_register_cpu(struct dtpm *parent);
-+
- #endif
 -- 
-2.17.1
+~Randy
 
