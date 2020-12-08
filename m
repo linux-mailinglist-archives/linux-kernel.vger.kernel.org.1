@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080162D30E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F58D2D30EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbgLHRXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:23:33 -0500
-Received: from mga09.intel.com ([134.134.136.24]:46494 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728510AbgLHRXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:23:32 -0500
-IronPort-SDR: k2OaVScCk5FhknST8x3ZNPTDFlBJ/0jwRkrAoYOxpIIPTOIXwx3UcFAK20CAEGexujISkS7QRX
- ZoRnGoEMSw1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="174079650"
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="174079650"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 09:22:51 -0800
-IronPort-SDR: 4tMCT8vGceU6karZIafhKmMgXOvVyLb2LYUpW4elgkPoxwOmo0p3IPPIPJd/KFUP4xOgwuEKcz
- tsRuwAPBPm3Q==
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="363733327"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 09:22:51 -0800
-Date:   Tue, 8 Dec 2020 09:22:51 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 00/10] PKS: Add Protection Keys Supervisor (PKS)
- support V3
-Message-ID: <20201208172250.GA2032506@iweiny-DESK2.sc.intel.com>
-References: <20201106232908.364581-1-ira.weiny@intel.com>
- <20201207221431.GL1563847@iweiny-DESK2.sc.intel.com>
- <87v9dc2sxh.fsf@nanos.tec.linutronix.de>
+        id S1729558AbgLHRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728510AbgLHRYM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:24:12 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73209C061749;
+        Tue,  8 Dec 2020 09:23:32 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 28003300;
+        Tue,  8 Dec 2020 17:23:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 28003300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607448212; bh=6noqackd9jly2jr8MVHKDLefh3lAUeOcwzrsMdVHg4M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=T3rhp7rrpN1+yEyU+vXPlmrcqMu9ftUEzrN2j/3mPky0j4AOhLUP9pD/LQaFdr/Xq
+         OKm5hdNWd4MdeK0iyxM1qOpcn3GhFi3x1jrOxcuZkeT2L7iODIcmYTTHx0RDom9+qi
+         qmYnibQiNqXm7M66Vz2aV10NlFodg3D4UIeXO853n7aGPuZQvHk+YFpb2N/cGO1jgi
+         +nLF0Rt51vIUIdHv2e0srtAd8XGM9oZ4EMhr0vCVAYVDKN4Bnw0SfHJW30XOjM9Xkv
+         b7jgV96sjgopGsrQMTttm2gZkMtpFVe4Ic4CV88srVo7AS02TYYELOClQaRVYqwVwS
+         3/Em/jwrh5gfQ==
+Date:   Tue, 8 Dec 2020 10:23:31 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel-doc: Fix example in Nested structs/unions
+Message-ID: <20201208102331.5ccaf8ab@lwn.net>
+In-Reply-To: <20201207210027.1049346-1-ben.widawsky@intel.com>
+References: <20201207210027.1049346-1-ben.widawsky@intel.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9dc2sxh.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 04:55:54PM +0100, Thomas Gleixner wrote:
-> Ira,
+On Mon,  7 Dec 2020 13:00:27 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
+
+> Add missing ';' as well as fixes the indent for the first struct.
 > 
-> On Mon, Dec 07 2020 at 14:14, Ira Weiny wrote:
-> > Is there any chance of this landing before the kmap stuff gets sorted out?
-> 
-> I have marked this as needs an update because the change log of 5/10
-> sucks. https://lore.kernel.org/r/87lff1xcmv.fsf@nanos.tec.linutronix.de
-> 
-> > It would be nice to have this in 5.11 to build off of.
-> 
-> It would be nice if people follow up on review request :)
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  Documentation/doc-guide/kernel-doc.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-I did, but just as an update to that patch.[1]  Sorry if this caused you to
-miss the response.  It would have been better for me to ping you on that patch.
-:-/
+Applied, thanks.
 
-I was trying to avoid a whole new series just for that single commit message.
-Is that generally ok?
-
-Is that commit message still lacking?
-
-Ira
-
-[1] https://lore.kernel.org/linux-doc/20201124060956.1405768-1-ira.weiny@intel.com/
+jon
