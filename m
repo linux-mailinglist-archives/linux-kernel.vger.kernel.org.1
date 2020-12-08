@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68572D2E45
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A63E2D2E4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729966AbgLHPaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729558AbgLHPaX (ORCPT
+        id S1730112AbgLHPbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:31:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729386AbgLHPbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:30:23 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0BFC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:29:04 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 1rUy2400J4C55Sk01rUyYb; Tue, 08 Dec 2020 16:29:02 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kmevC-0090Gc-Hi; Tue, 08 Dec 2020 16:28:58 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kmevC-0094TH-5A; Tue, 08 Dec 2020 16:28:58 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 0/2] Documentation/kbuild: Document COMPILE_TEST and platform dependencies
-Date:   Tue,  8 Dec 2020 16:28:55 +0100
-Message-Id: <20201208152857.2162093-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 8 Dec 2020 10:31:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607441384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=miua5ROGrphgyENa3zVBXUwOoAslKJxQNqStT5/JBjw=;
+        b=aeSNODpx+XpA58Q7nHxCpu+D/zNUEmqUyZY5+/9dZrCkFK0ftRTWkouRc7As4As8msbv7u
+        1H6TJa5t0BbqCjJrt92G5QIxk6sAPJN6gIkbcbWBFRf0VVuhQRCUwZ1oBMr3S5TBu2NsuU
+        78TXZ2RfGLZUFw0HDp12CzlqQAtFYeg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-07-LZiWuNQKcBiRkqqRf3Q-1; Tue, 08 Dec 2020 10:29:41 -0500
+X-MC-Unique: 07-LZiWuNQKcBiRkqqRf3Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90080858187;
+        Tue,  8 Dec 2020 15:29:40 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-119-227.rdu2.redhat.com [10.10.119.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D57F260BE2;
+        Tue,  8 Dec 2020 15:29:39 +0000 (UTC)
+Subject: Re: [PATCH v2 5/5] locking/rwsem: Remove reader optimistic spinning
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Phil Auld <pauld@redhat.com>
+References: <20201121041416.12285-1-longman@redhat.com>
+ <20201121041416.12285-6-longman@redhat.com>
+ <20201208100704.GU2414@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <234a49df-0f88-2dc1-968c-8bfe52ccf9d4@redhat.com>
+Date:   Tue, 8 Dec 2020 10:29:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201208100704.GU2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi all,
+On 12/8/20 5:07 AM, Peter Zijlstra wrote:
+> On Fri, Nov 20, 2020 at 11:14:16PM -0500, Waiman Long wrote:
+>
+>
+>> @@ -1032,40 +901,16 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, int state, long count)
+>>   	 *
+>>   	 * We can take the read lock directly without doing
+>>   	 * rwsem_optimistic_spin() if the conditions are right.
+> This comment no longer makes sense..
 
-This patch series documents best practices for COMPILE_TEST and
-architecture/platform dependencies, like already in use in most
-subsystems, to serve as a point of reference.
+You are right. I forgot to take that out.
 
-Thanks for your comments!
 
-Geert Uytterhoeven (2):
-  Documentation/kbuild: Document COMPILE_TEST dependencies
-  Documentation/kbuild: Document platform dependency practises
+>> -	 * Also wake up other readers if it is the first reader.
+>>   	 */
+>> -	if (!(count & (RWSEM_WRITER_LOCKED | RWSEM_FLAG_HANDOFF)) &&
+>> -	    rwsem_no_spinners(sem)) {
+>> +	if (!(count & (RWSEM_WRITER_LOCKED | RWSEM_FLAG_HANDOFF))) {
+>>   		rwsem_set_reader_owned(sem);
+>>   		lockevent_inc(rwsem_rlock_steal);
+>> -		if (rcnt == 1)
+>> -			goto wake_readers;
+>> -		return sem;
+>> -	}
+>>   
+>> -	/*
+>> -	 * Save the current read-owner of rwsem, if available, and the
+>> -	 * reader nonspinnable bit.
+>> -	 */
+>> -	waiter.last_rowner = owner;
+>> -	if (!(waiter.last_rowner & RWSEM_READER_OWNED))
+>> -		waiter.last_rowner &= RWSEM_RD_NONSPINNABLE;
+>> -
+>> -	if (!rwsem_can_spin_on_owner(sem, RWSEM_RD_NONSPINNABLE))
+>> -		goto queue;
+>> -
+>> -	/*
+>> -	 * Undo read bias from down_read() and do optimistic spinning.
+>> -	 */
+>> -	atomic_long_add(-RWSEM_READER_BIAS, &sem->count);
+>> -	adjustment = 0;
+>> -	if (rwsem_optimistic_spin(sem, false)) {
+> since we're removing the optimistic spinning entirely on the read side.
+>
+> Also, I was looking at skipping patch #4, which mucks with the reader
+> wakeup logic, and afaict this removal doesn't really depend on it.
+>
+> Or am I missing something?
 
- Documentation/kbuild/kconfig-language.rst | 35 +++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+That is true. Patch 4 isn't essential for this series. So if you are 
+general OK with the current patchset, I can send out v3 that remove 
+patch 4 and make the your suggested change above.
 
--- 
-2.25.1
+Cheers,
+Longman
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
