@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9396B2D2BEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607A62D2BEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgLHN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:29:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48076 "EHLO mail.kernel.org"
+        id S1729392AbgLHNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:30:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLHN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:29:42 -0500
+        id S1729149AbgLHNaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:30:09 -0500
 From:   Will Deacon <will@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-arm-kernel@lists.infradead.org
@@ -30,9 +30,9 @@ Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         kernel-team@android.com
-Subject: [PATCH v5 04/15] arm64: Kill 32-bit applications scheduled on 64-bit-only CPUs
-Date:   Tue,  8 Dec 2020 13:28:24 +0000
-Message-Id: <20201208132835.6151-5-will@kernel.org>
+Subject: [PATCH v5 05/15] arm64: Advertise CPUs capable of running 32-bit applications in sysfs
+Date:   Tue,  8 Dec 2020 13:28:25 +0000
+Message-Id: <20201208132835.6151-6-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201208132835.6151-1-will@kernel.org>
 References: <20201208132835.6151-1-will@kernel.org>
@@ -42,107 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scheduling a 32-bit application on a 64-bit-only CPU is a bad idea.
+Since 32-bit applications will be killed if they are caught trying to
+execute on a 64-bit-only CPU in a mismatched system, advertise the set
+of 32-bit capable CPUs to userspace in sysfs.
 
-Ensure that 32-bit applications always take the slow-path when returning
-to userspace on a system with mismatched support at EL0, so that we can
-avoid trying to run on a 64-bit-only CPU and force a SIGKILL instead.
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- arch/arm64/kernel/process.c | 19 ++++++++++++++++++-
- arch/arm64/kernel/signal.c  | 26 ++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 1 deletion(-)
+ .../ABI/testing/sysfs-devices-system-cpu      |  9 +++++++++
+ arch/arm64/kernel/cpufeature.c                | 19 +++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index ed919f633ed8..9a2532d848f0 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -541,6 +541,15 @@ static void erratum_1418040_thread_switch(struct task_struct *prev,
- 	write_sysreg(val, cntkctl_el1);
+diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+index 1a04ca8162ad..8a2e377b0dde 100644
+--- a/Documentation/ABI/testing/sysfs-devices-system-cpu
++++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+@@ -493,6 +493,15 @@ Description:	AArch64 CPU registers
+ 		'identification' directory exposes the CPU ID registers for
+ 		identifying model and revision of the CPU.
+ 
++What:		/sys/devices/system/cpu/aarch32_el0
++Date:		November 2020
++Contact:	Linux ARM Kernel Mailing list <linux-arm-kernel@lists.infradead.org>
++Description:	Identifies the subset of CPUs in the system that can execute
++		AArch32 (32-bit ARM) applications. If present, the same format as
++		/sys/devices/system/cpu/{offline,online,possible,present} is used.
++		If absent, then all or none of the CPUs can execute AArch32
++		applications and execve() will behave accordingly.
++
+ What:		/sys/devices/system/cpu/cpu#/cpu_capacity
+ Date:		December 2016
+ Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index bb53af53ce8d..088bf668cbe7 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -67,6 +67,7 @@
+ #include <linux/crash_dump.h>
+ #include <linux/sort.h>
+ #include <linux/stop_machine.h>
++#include <linux/sysfs.h>
+ #include <linux/types.h>
+ #include <linux/mm.h>
+ #include <linux/cpu.h>
+@@ -1272,6 +1273,24 @@ const struct cpumask *system_32bit_el0_cpumask(void)
+ 	return cpu_possible_mask;
  }
  
-+static void compat_thread_switch(struct task_struct *next)
++static ssize_t aarch32_el0_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
 +{
-+	if (!is_compat_thread(task_thread_info(next)))
-+		return;
++	const struct cpumask *mask = system_32bit_el0_cpumask();
 +
-+	if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
-+		set_tsk_thread_flag(next, TIF_NOTIFY_RESUME);
++	return sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(mask));
 +}
++static const DEVICE_ATTR_RO(aarch32_el0);
 +
- /*
-  * Thread switching.
-  */
-@@ -557,6 +566,7 @@ __notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
- 	uao_thread_switch(next);
- 	ssbs_thread_switch(next);
- 	erratum_1418040_thread_switch(prev, next);
-+	compat_thread_switch(next);
- 
- 	/*
- 	 * Complete any pending TLB or cache maintenance on this CPU in case
-@@ -619,8 +629,15 @@ unsigned long arch_align_stack(unsigned long sp)
-  */
- void arch_setup_new_exec(void)
- {
--	current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
-+	unsigned long mmflags = 0;
-+
-+	if (is_compat_task()) {
-+		mmflags = MMCF_AARCH32;
-+		if (static_branch_unlikely(&arm64_mismatched_32bit_el0))
-+			set_tsk_thread_flag(current, TIF_NOTIFY_RESUME);
-+	}
- 
-+	current->mm->context.flags = mmflags;
- 	ptrauth_thread_init_user(current);
- 
- 	if (task_spec_ssb_noexec(current)) {
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index a8184cad8890..bcb6ca2d9a7c 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -911,6 +911,19 @@ static void do_signal(struct pt_regs *regs)
- 	restore_saved_sigmask();
- }
- 
-+static bool cpu_affinity_invalid(struct pt_regs *regs)
++static int __init aarch32_el0_sysfs_init(void)
 +{
-+	if (!compat_user_mode(regs))
-+		return false;
++	if (!allow_mismatched_32bit_el0)
++		return 0;
 +
-+	/*
-+	 * We're preemptible, but a reschedule will cause us to check the
-+	 * affinity again.
-+	 */
-+	return !cpumask_test_cpu(raw_smp_processor_id(),
-+				 system_32bit_el0_cpumask());
++	return device_create_file(cpu_subsys.dev_root, &dev_attr_aarch32_el0);
 +}
++device_initcall(aarch32_el0_sysfs_init);
 +
- asmlinkage void do_notify_resume(struct pt_regs *regs,
- 				 unsigned long thread_flags)
+ static bool has_32bit_el0(const struct arm64_cpu_capabilities *entry, int scope)
  {
-@@ -948,6 +961,19 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
- 			if (thread_flags & _TIF_NOTIFY_RESUME) {
- 				tracehook_notify_resume(regs);
- 				rseq_handle_notify_resume(NULL, regs);
-+
-+				/*
-+				 * If we reschedule after checking the affinity
-+				 * then we must ensure that TIF_NOTIFY_RESUME
-+				 * is set so that we check the affinity again.
-+				 * Since tracehook_notify_resume() clears the
-+				 * flag, ensure that the compiler doesn't move
-+				 * it after the affinity check.
-+				 */
-+				barrier();
-+
-+				if (cpu_affinity_invalid(regs))
-+					force_sig(SIGKILL);
- 			}
- 
- 			if (thread_flags & _TIF_FOREIGN_FPSTATE)
+ 	if (!has_cpuid_feature(entry, scope))
 -- 
 2.29.2.576.ga3fc446d84-goog
 
