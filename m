@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41F12D2857
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7DC2D285E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgLHKBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbgLHKBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:01:04 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBD1C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 02:00:24 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id i9so16392576ioo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:00:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eenPMKZFIvKxHs8p+z8DXTbTMPPBle9331ck5pciU80=;
-        b=bBDlyv2qSZUEWjQuOSkhL2I7jBbgzltH8brFYzzNclfrlVParEemmX0evih924F3/q
-         cmb6B3J03cRJKK95KI4JrEqz+7GqBLyv/oXyJEp3wsLOqC9u7sMiOPyFaWXPXoyecj4r
-         txWkKNL49fd8PM5JDnXfBZM9BOlC0TxkYyCFjDzjOH7Z8so6BAzpfDXUgHjs2crf9W4g
-         2/jN94Sf7/xRx5dWhCdBaed5L0rPFQl4CWau2UGjnJR36h/hCgNBsmuEw1wIFpbsUk1y
-         Jph+1OUa/6caOYI/rg1hvDwhZZ5NjO27TO2sTiO/Ujs2q9bilJWT6S7Lt2dqxKoUGPM3
-         36jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eenPMKZFIvKxHs8p+z8DXTbTMPPBle9331ck5pciU80=;
-        b=pLBq7iA4lqcji1v/4WxLKDypOmbmlpcODmYLBE1vTo4dM1oQPCOsyp3wMAIUl6/Tlx
-         a/QOca0u8wHD5PY4W6hgm4UMj9OX9DHVX+raVGD820SDvJdXS/ypr7xdSA0gRQ30Iv/L
-         NsJtoUx8BdKu4e2sRPA3lwb9f3xGXX57oVl0aj5GJwNmODIcwwMd7QntwHw5P7LZdOeq
-         ltnG/pGiTVjNA9x1hQxBM+PjQi9clXFeRtXdaZfHDWfnhjaCXoPX7fDj+OwZ/S+AnnXq
-         fbVLpvjzmxzJ/oOn+uNTiraH7LmzA1GRfCoT5qxydUpOrcO9CKmUtosv/fEgcuM+jxPw
-         7L6w==
-X-Gm-Message-State: AOAM531HkIySToPNwO0b38q7vcOHC5qjH6LhpnB0b9qUDIOKRw6Oyh22
-        xMUcrxuXXKNI2DPp2lstlRqi8Ac2CZ+tGNWhzw==
-X-Google-Smtp-Source: ABdhPJz8l5jcgM4AiD08klQNZ2GrQJEFPsaBT50M2qgzqwaKJhcYQPMMtCyvKsHEWbfYfLbxyCM6uwWG1yox/giGJsQ=
-X-Received: by 2002:a02:488:: with SMTP id 130mr18446065jab.39.1607421624025;
- Tue, 08 Dec 2020 02:00:24 -0800 (PST)
+        id S1728935AbgLHKCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:02:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728022AbgLHKCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:02:21 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E8F9217A0;
+        Tue,  8 Dec 2020 10:01:40 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmZoQ-00H3In-Bb; Tue, 08 Dec 2020 10:01:38 +0000
 MIME-Version: 1.0
-References: <1607419304-26140-1-git-send-email-kernelfans@gmail.com>
- <0f230af42ff4c6e4cf763b9145fb9487@kernel.org> <CAFgQCTuVortG9FgAA+Ximo1zcAfTLK5vpZMWap=ZZA8Tp=yQsg@mail.gmail.com>
- <867be4df47247f8c56687cf2046ee7bb@kernel.org>
-In-Reply-To: <867be4df47247f8c56687cf2046ee7bb@kernel.org>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Tue, 8 Dec 2020 18:00:12 +0800
-Message-ID: <CAFgQCTtWhZoTyCP1ByrAhHrkWX=V49pQjPYeLVvv=bhT63Ekmw@mail.gmail.com>
-Subject: Re: [PATCH] arm64/irq: report bug if NR_IPI greater than max SGI
- during compile time
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 08 Dec 2020 10:01:38 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Haibo Xu <haibo.xu@linaro.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+In-Reply-To: <CAJc+Z1FRJR5LHw-xZvPpeYF6+v+ZOcLt99X41xOMAbFmB2DJ2A@mail.gmail.com>
+References: <20201119153901.53705-1-steven.price@arm.com>
+ <CAFEAcA85fiqA206FuFANKbV_3GkfY1F8Gv7MP58BgTT81bs9kA@mail.gmail.com>
+ <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAJc+Z1FRJR5LHw-xZvPpeYF6+v+ZOcLt99X41xOMAbFmB2DJ2A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <b77efceaec433dd98fdf2cd535a9cf40@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: haibo.xu@linaro.org, steven.price@arm.com, drjones@redhat.com, catalin.marinas@arm.com, quintela@redhat.com, richard.henderson@linaro.org, qemu-devel@nongnu.org, dgilbert@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, tglx@linutronix.de, will@kernel.org, Dave.Martin@arm.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 5:51 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-12-08 09:43, Pingfan Liu wrote:
-> > On Tue, Dec 8, 2020 at 5:31 PM Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2020-12-08 09:21, Pingfan Liu wrote:
-> >> > Although there is a runtime WARN_ON() when NR_IPR > max SGI, it had
-> >> > better
-> >> > do the check during built time, and associate these related code
-> >> > together.
-> >> >
-> >> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> >> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> > Cc: Will Deacon <will@kernel.org>
-> >> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> >> > Cc: Jason Cooper <jason@lakedaemon.net>
-> >> > Cc: Marc Zyngier <maz@kernel.org>
-> >> > Cc: Mark Rutland <mark.rutland@arm.com>
-> >> > To: linux-arm-kernel@lists.infradead.org
-> >> > Cc: linux-kernel@vger.kernel.org
-> >> > ---
-> >> >  arch/arm64/kernel/smp.c                | 2 ++
-> >> >  drivers/irqchip/irq-gic-v3.c           | 2 +-
-> >> >  drivers/irqchip/irq-gic.c              | 2 +-
-> >> >  include/linux/irqchip/arm-gic-common.h | 2 ++
-> >> >  4 files changed, 6 insertions(+), 2 deletions(-)
-> >> >
-> >> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> >> > index 18e9727..9fc383c 100644
-> >> > --- a/arch/arm64/kernel/smp.c
-> >> > +++ b/arch/arm64/kernel/smp.c
-> >> > @@ -33,6 +33,7 @@
-> >> >  #include <linux/kernel_stat.h>
-> >> >  #include <linux/kexec.h>
-> >> >  #include <linux/kvm_host.h>
-> >> > +#include <linux/irqchip/arm-gic-common.h>
-> >> >
-> >> >  #include <asm/alternative.h>
-> >> >  #include <asm/atomic.h>
-> >> > @@ -76,6 +77,7 @@ enum ipi_msg_type {
-> >> >       IPI_WAKEUP,
-> >> >       NR_IPI
-> >> >  };
-> >> > +static_assert(NR_IPI <= MAX_SGI_NUM);
-> >>
-> >> I am trying *very hard* to remove dependencies between the
-> >> architecture
-> >> code and random drivers, so this kind of check really is
-> >> counter-productive.
-> >>
-> >> Driver code should not have to know the number of IPIs, because there
-> >> is
-> >> no requirement that all IPIs should map 1:1 to SGIs. Conflating the
-> >> two
-> >
-> > Just curious about this. Is there an IPI which is not implemented by
-> > SGI? Or mapping several IPIs to a single SGI, and scatter out due to a
-> > global variable value?
->
-> We currently have a single NS SGI left, and I'd like to move some of the
-> non-critical IPIs over to dispatching mechanism (the two "CPU stop" IPIs
-> definitely are candidate for merging). That's not implemented yet, but
-> I don't see a need to add checks that would otherwise violate this
-> IPI/SGI distinction.
+On 2020-12-08 09:51, Haibo Xu wrote:
+> On Mon, 7 Dec 2020 at 22:48, Steven Price <steven.price@arm.com> wrote:
+>> 
 
-Got it. Thanks for your detailed explanation.
+[...]
 
-Regards,
-Pingfan
+>> Sounds like you are making good progress - thanks for the update. Have
+>> you thought about how the PROT_MTE mappings might work if QEMU itself
+>> were to use MTE? My worry is that we end up with MTE in a guest
+>> preventing QEMU from using MTE itself (because of the PROT_MTE
+>> mappings). I'm hoping QEMU can wrap its use of guest memory in a
+>> sequence which disables tag checking (something similar will be needed
+>> for the "protected VM" use case anyway), but this isn't something I've
+>> looked into.
+> 
+> As far as I can see, to map all the guest memory with PROT_MTE in VMM
+> is a little weird, and lots of APIs have to be changed to include this 
+> flag.
+> IMHO, it would be better if the KVM can provide new APIs to load/store 
+> the
+> guest memory tag which may make it easier to enable the Qemu migration
+> support.
+
+On what granularity? To what storage? How do you plan to synchronise 
+this
+with the dirty-log interface?
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
