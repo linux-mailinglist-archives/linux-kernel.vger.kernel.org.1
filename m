@@ -2,172 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC882D351B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E582D34C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgLHVUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:20:11 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:53448 "EHLO mail.skyhub.de"
+        id S1729293AbgLHVAL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 16:00:11 -0500
+Received: from aposti.net ([89.234.176.197]:42030 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726104AbgLHVUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:20:11 -0500
-Received: from zn.tnic (p200300ec2f0f08004da90e847a90bd48.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:4da9:e84:7a90:bd48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 515021EC04BF;
-        Tue,  8 Dec 2020 19:43:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607453000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/ZQYdyMntojjSpS0VNOBBCh2xJC9JCydUpM1Shp6nLw=;
-        b=VKBSSiMMABTlg4e/gOqwPW/l0D5HODUGSc5er/ZHtC5DNYPpTLEXfdpuF8K9sFZgw4VBpc
-        Xy4p+CvjCfeCNoPlVAz08QqPMi6ReE+AkmIi0VhKyamT4fs+09CAjHc/dRBZXGpRxIty6N
-        isu5dUhGHYWMJdK2EHdjMgTj+Bz30CA=
-Date:   Tue, 8 Dec 2020 19:43:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
-Message-ID: <20201208184315.GE27920@zn.tnic>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120114630.13552-8-jgross@suse.com>
+        id S1728511AbgLHVAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:00:10 -0500
+Date:   Tue, 08 Dec 2020 19:00:22 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] if_enabled.h: Add IF_ENABLED_OR_ELSE()
+ =?UTF-8?Q?and=0D=0A?= IF_ENABLED() macros
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@kernel.org>, od@zcrc.me,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <MGB1LQ.44LK9O2T0H6E1@crapouillou.net>
+In-Reply-To: <cf2f222b-e7cc-c7b7-2586-31dd3df7c0c7@infradead.org>
+References: <20201208164821.2686082-1-paul@crapouillou.net>
+        <cf2f222b-e7cc-c7b7-2586-31dd3df7c0c7@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201120114630.13552-8-jgross@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 12:46:25PM +0100, Juergen Gross wrote:
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index dad350d42ecf..ffa23c655412 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -237,6 +237,9 @@
->  #define X86_FEATURE_VMCALL		( 8*32+18) /* "" Hypervisor supports the VMCALL instruction */
->  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
->  #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> +#define X86_FEATURE_NOT_XENPV		( 8*32+21) /* "" Inverse of X86_FEATURE_XENPV */
-> +#define X86_FEATURE_NO_PVUNLOCK		( 8*32+22) /* "" No PV unlock function */
-> +#define X86_FEATURE_NO_VCPUPREEMPT	( 8*32+23) /* "" No PV vcpu_is_preempted function */
+Hi Randy,
 
-Ew, negative features. ;-\
+Le mar. 8 déc. 2020 à 9:39, Randy Dunlap <rdunlap@infradead.org> a 
+écrit :
+> On 12/8/20 8:48 AM, Paul Cercueil wrote:
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> 
+> Hi Paul,
+> 
+> Why not just add these 2 new macros to <linux/kconfig.h> ?
+> 
+> Maybe you don't want to add the other 2 headers there also?
 
-/me goes forward and looks at usage sites:
+That means including <linux/compiler.h> in <linux/kconfig.h>, which 
+causes build failures:
 
-+	ALTERNATIVE_2 "jmp *paravirt_iret(%rip);",			\
-+		      "jmp native_iret;", X86_FEATURE_NOT_XENPV,	\
-+		      "jmp xen_iret;", X86_FEATURE_XENPV
+  LD      vmlinux
+  SORTTAB vmlinux
+  SYSMAP  System.map
+  AS      arch/mips/boot/compressed/head.o
+  CC      arch/mips/boot/compressed/decompress.o
+  CC      arch/mips/boot/compressed/string.o
+  CC      arch/mips/boot/compressed/dummy.o
+  OBJCOPY arch/mips/boot/compressed/vmlinux.bin
+  HOSTCC  arch/mips/boot/compressed/calc_vmlinuz_load_addr
+  GZIP    arch/mips/boot/compressed/vmlinux.bin.z
+In file included from ./include/linux/kcsan-checks.h:7,
+                 from ./include/asm-generic/rwonce.h:27,
+                 from ./arch/mips/include/generated/asm/rwonce.h:1,
+                 from ./include/linux/compiler.h:246,
+                 from ././include/linux/kconfig.h:8,
+                 from <command-line>:32:
+/include/linux/compiler_attributes.h:64: warning: "__always_inline" 
+redefined
+   64 | #define __always_inline                 inline 
+__attribute__((__always_inline__))
+      |
+In file included from ./include/linux/stddef.h:5,
+                 from ./include/uapi/linux/posix_types.h:5,
+                 from ./include/uapi/linux/types.h:14,
+                 from ./include/linux/types.h:6,
+                 from ./include/linux/kasan-checks.h:5,
+                 from ./include/asm-generic/rwonce.h:26,
+                 from ./arch/mips/include/generated/asm/rwonce.h:1,
+                 from ./include/linux/compiler.h:246,
+                 from ././include/linux/kconfig.h:8,
+                 from <command-line>:32:
+/include/uapi/linux/stddef.h:5: note: this is the location of the 
+previous definition
+    5 | #define __always_inline inline
+      |
+In file included from ./arch/mips/include/generated/asm/rwonce.h:1,
+                 from ./include/linux/compiler.h:246,
+                 from ././include/linux/kconfig.h:8,
+                 from <command-line>:32:
+/include/asm-generic/rwonce.h:64:31: error: expected ‘;’ before 
+‘unsigned’
+   64 | static __no_sanitize_or_inline
+      |                               ^
+      |                               ;
+   65 | unsigned long __read_once_word_nocheck(const void *addr)
+      | ~~~~~~~~
+/include/asm-generic/rwonce.h:65:15: warning: no previous prototype 
+for ‘__read_once_word_nocheck’ [-Wmissing-prototypes]
+   65 | unsigned long __read_once_word_nocheck(const void *addr)
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~
+/include/asm-generic/rwonce.h:82:28: error: expected ‘;’ before 
+‘unsigned’
+   82 | static __no_kasan_or_inline
+      |                            ^
+      |                            ;
+   83 | unsigned long read_word_at_a_time(const void *addr)
+      | ~~~~~~~~
+/include/asm-generic/rwonce.h:83:15: warning: no previous prototype 
+for ‘read_word_at_a_time’ [-Wmissing-prototypes]
+   83 | unsigned long read_word_at_a_time(const void *addr)
+      |               ^~~~~~~~~~~~~~~~~~~
 
-Can we make that:
 
-	ALTERNATIVE_TERNARY "jmp *paravirt_iret(%rip);",
-		      "jmp xen_iret;", X86_FEATURE_XENPV,
-		      "jmp native_iret;", X86_FEATURE_XENPV,
+That's why I opted for a new header.
 
-where the last two lines are supposed to mean
+Cheers,
+-Paul
 
-			    X86_FEATURE_XENPV ? "jmp xen_iret;" : "jmp native_iret;"
+>>  ---
+>>   include/linux/if_enabled.h | 22 ++++++++++++++++++++++
+>>   1 file changed, 22 insertions(+)
+>>   create mode 100644 include/linux/if_enabled.h
+>> 
+>>  diff --git a/include/linux/if_enabled.h b/include/linux/if_enabled.h
+>>  new file mode 100644
+>>  index 000000000000..8189d1402340
+>>  --- /dev/null
+>>  +++ b/include/linux/if_enabled.h
+>>  @@ -0,0 +1,22 @@
+>>  +/* SPDX-License-Identifier: GPL-2.0 */
+>>  +#ifndef __LINUX_IF_ENABLED_H
+>>  +#define __LINUX_IF_ENABLED_H
+>>  +
+>>  +#include <linux/build_bug.h>
+>>  +#include <linux/compiler_types.h>
+>>  +#include <linux/kconfig.h>
+>>  +
+>>  +/*
+>>  + * IF_ENABLED_OR_ELSE(CONFIG_FOO, a, b) evaluates to (a) if 
+>> CONFIG_FOO is set
+>>  + * to 'y' or 'm', (b) otherwise.
+>>  + */
+>>  +#define IF_ENABLED_OR_ELSE(option, a, b) \
+>>  +	(BUILD_BUG_ON_ZERO(__same_type((a), (b))) || IS_ENABLED(option) ? 
+>> (a) : (b))
+>>  +
+>>  +/*
+>>  + * IF_ENABLED(CONFIG_FOO, ptr) evaluates to (ptr) if CONFIG_FOO is 
+>> set to 'y'
+>>  + * or 'm', NULL otherwise.
+>>  + */
+>>  +#define IF_ENABLED(option, ptr) IF_ENABLED_OR_ELSE(option, ptr, 
+>> NULL)
+>>  +
+>>  +#endif /* __LINUX_IF_ENABLED_H */
+>> 
+> 
+> 
+> thanks.
+> --
+> ~Randy
+> 
 
-Now, in order to convey that logic to apply_alternatives(), you can do:
 
-struct alt_instr {
-        s32 instr_offset;       /* original instruction */
-        s32 repl_offset;        /* offset to replacement instruction */
-        u16 cpuid;              /* cpuid bit set for replacement */
-        u8  instrlen;           /* length of original instruction */
-        u8  replacementlen;     /* length of new instruction */
-        u8  padlen;             /* length of build-time padding */
-	u8  flags;		/* patching flags */ 			<--- THIS
-} __packed;
-
-and yes, we have had the flags thing in a lot of WIP diffs over the
-years but we've never come to actually needing it.
-
-Anyway, then, apply_alternatives() will do:
-
-	if (flags & ALT_NOT_FEATURE)
-
-or something like that - I'm bad at naming stuff - then it should patch
-only when the feature is NOT set and vice versa.
-
-There in that
-
-	if (!boot_cpu_has(a->cpuid)) {
-
-branch.
-
-Hmm?
-
->  /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
->  #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 2400ad62f330..f8f9700719cf 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -593,6 +593,18 @@ int alternatives_text_reserved(void *start, void *end)
->  #endif /* CONFIG_SMP */
->  
->  #ifdef CONFIG_PARAVIRT
-> +static void __init paravirt_set_cap(void)
-> +{
-> +	if (!boot_cpu_has(X86_FEATURE_XENPV))
-> +		setup_force_cpu_cap(X86_FEATURE_NOT_XENPV);
-> +
-> +	if (pv_is_native_spin_unlock())
-> +		setup_force_cpu_cap(X86_FEATURE_NO_PVUNLOCK);
-> +
-> +	if (pv_is_native_vcpu_is_preempted())
-> +		setup_force_cpu_cap(X86_FEATURE_NO_VCPUPREEMPT);
-> +}
-> +
->  void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
->  				     struct paravirt_patch_site *end)
->  {
-> @@ -616,6 +628,8 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
->  }
->  extern struct paravirt_patch_site __start_parainstructions[],
->  	__stop_parainstructions[];
-> +#else
-> +static void __init paravirt_set_cap(void) { }
->  #endif	/* CONFIG_PARAVIRT */
->  
->  /*
-> @@ -723,6 +737,18 @@ void __init alternative_instructions(void)
->  	 * patching.
->  	 */
->  
-> +	paravirt_set_cap();
-
-Can that be called from somewhere in the Xen init path and not from
-here? Somewhere before check_bugs() gets called.
-
-> +	/*
-> +	 * First patch paravirt functions, such that we overwrite the indirect
-> +	 * call with the direct call.
-> +	 */
-> +	apply_paravirt(__parainstructions, __parainstructions_end);
-> +
-> +	/*
-> +	 * Then patch alternatives, such that those paravirt calls that are in
-> +	 * alternatives can be overwritten by their immediate fragments.
-> +	 */
->  	apply_alternatives(__alt_instructions, __alt_instructions_end);
-
-Can you give an example here pls why the paravirt patching needs to run
-first?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
