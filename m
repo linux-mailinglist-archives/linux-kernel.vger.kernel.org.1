@@ -2,147 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547802D1FEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EDE2D2017
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgLHBXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:23:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9126 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgLHBXw (ORCPT
+        id S1727389AbgLHB27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726826AbgLHB27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:23:52 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cqj8s4LCmz15Xkq;
-        Tue,  8 Dec 2020 09:22:37 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 09:23:00 +0800
-Subject: Re: ping // [PATCH] mtd:cfi_cmdset_0002: fix atomic sleep bug when
- CONFIG_MTD_XIP=y
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <richard@nod.at>, <tudor.ambarus@microchip.com>,
-        <tglx@linutronix.de>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, <wangle6@huawei.com>
-References: <20201127130731.99270-1-nixiaoming@huawei.com>
- <a02e1364-3b82-039a-4b65-e2a216663dd4@huawei.com>
- <20201207115228.0a6de398@xps13> <73b539eb-616e-64d8-07d8-4606da2ea2ea@ti.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <b5c52547-b3cc-4217-cc69-067cee7d536f@huawei.com>
-Date:   Tue, 8 Dec 2020 09:23:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Mon, 7 Dec 2020 20:28:59 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA871C061749;
+        Mon,  7 Dec 2020 17:28:17 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id v3so6095833plz.13;
+        Mon, 07 Dec 2020 17:28:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
+        b=c+bi86iXy/pSBac/0D9EHuYLqSgzndqvSEaxFibcNpweMKyQygRkZzQDEMO+Qw0UxT
+         /33sCLHGIDMYobzNYwvDSi74tyY8ITvbbDU0Sk258GTxreVez+owDIlHjtcFzsZa3xix
+         ndvhJ1d6ZErYf3EfuNA0LAXY706OqaLr54H27c48TPfhCf0qaS4L6PqOmMCtN1HN3dO1
+         QEJZ6vbRb6gjEs93MG4zMFETc25vJntRNgVRpY1n02Py/AK4BmQHWQK+H8sSTwpOHpWn
+         XXq5k8unAN/YWq7bTwYRW4BFivBs+VzBJ60omZmbh14WbOjmjjO7/mdsrXwe3+w0Qdr2
+         OW+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
+        b=FtNouGG++ajaGcmkXtV6uQMuw3t0t1OnxLxOp0Gx9kPAmYjfZ8Im9dnc7+Bd0KgF9R
+         cLi1FmelndDMsjWnnHJBh3BW1WzuFhlBbf5S5I+yTbPdgAyMkVXz317dC5Ry1ydI3txt
+         X/t1OkPbtzna1dCHuW8uvXncX7cPwz52fym1Tv+5vmqlMySluCSRKgY++JFcDP0ZN3+Y
+         dXxw220srwWFMjbYIeS1BbtVRwT/89ZKaZksSouuYGdu24qOcZYQc+5EqrToAzoz/XQ7
+         EmDRYGubfJcDOBunp8pxM0St85X2W3zLHUpYcJy7PRstdYBUOai7C4KkGPM1ukgJMe9h
+         AK2Q==
+X-Gm-Message-State: AOAM532oLQqZA7JEDiaEI3eP4cncbN0L8Txw1BgfoSI3jTx6XhYjq8zN
+        DXQbxItG1QyX70Cvd/+rWWwp9CiTHUpHMw==
+X-Google-Smtp-Source: ABdhPJxpxLxNICfqOJ5BiNFYHNzVKl0q1JwFffvvXbpF0tW9FuLkpPPBA+bELyA/XOq2JtoKBTRo5w==
+X-Received: by 2002:a17:902:6ac8:b029:da:d645:ab58 with SMTP id i8-20020a1709026ac8b02900dad645ab58mr16864544plt.25.1607390896709;
+        Mon, 07 Dec 2020 17:28:16 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id a22sm12495382pfa.215.2020.12.07.17.28.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 17:28:16 -0800 (PST)
+Date:   Mon, 7 Dec 2020 17:25:26 -0800
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] ASoC: fsl: Add imx-hdmi machine driver
+Message-ID: <20201208012526.GA21510@Asurada-Nvidia>
+References: <1607251319-5821-1-git-send-email-shengjiu.wang@nxp.com>
+ <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <73b539eb-616e-64d8-07d8-4606da2ea2ea@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/8 2:59, Vignesh Raghavendra wrote:
-> Hi Xiaoming,
+On Sun, Dec 06, 2020 at 06:41:59PM +0800, Shengjiu Wang wrote:
+> The driver is initially designed for sound card using HDMI
+> interface on i.MX platform. There is internal HDMI IP or
+> external HDMI modules connect with SAI or AUD2HTX interface.
+> It supports both transmitter and receiver devices.
 > 
-> On 12/7/20 4:23 PM, Miquel Raynal wrote:
->> Hi Xiaoming,
->>
->> Xiaoming Ni <nixiaoming@huawei.com> wrote on Mon, 7 Dec 2020 18:48:33
->> +0800:
->>
->>> ping
->>>
->>> On 2020/11/27 21:07, Xiaoming Ni wrote:
->>>> When CONFIG_MTD_XIP=y, local_irq_disable() is called in xip_disable().
->>>> To avoid sleep in interrupt context, we need to call local_irq_enable()
->>>> before schedule().
->>>>
->>>> The problem call stack is as follows:
->>>> bug1:
->>>> 	do_write_oneword_retry()
->>>> 		xip_disable()
->>>> 			local_irq_disable()
->>>> 		do_write_oneword_once()
->>>> 			schedule()
->>>> bug2:
->>>> 	do_write_buffer()
->>>> 		xip_disable()
->>>> 			local_irq_disable()
->>>> 		do_write_buffer_wait()
->>>> 			schedule()
->>>> bug3:
->>>> 	do_erase_chip()
->>>> 		xip_disable()
->>>> 			local_irq_disable()
->>>> 		schedule()
->>>> bug4:
->>>> 	do_erase_oneblock()
->>>> 		xip_disable()
->>>> 			local_irq_disable()
->>>> 		schedule()
->>>>
->>>> Fixes: 02b15e343aee ("[MTD] XIP for AMD CFI flash.")
->>>> Cc: stable@vger.kernel.org # v2.6.13
->>>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
->>>> ---
->>>>    drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++++++++++
->>>>    1 file changed, 16 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
->>>> index a1f3e1031c3d..12c3776f093a 100644
->>>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
->>>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
->>>> @@ -1682,7 +1682,11 @@ static int __xipram do_write_oneword_once(struct map_info *map,
->>>>    			set_current_state(TASK_UNINTERRUPTIBLE);
->>>>    			add_wait_queue(&chip->wq, &wait);
->>>>    			mutex_unlock(&chip->mutex);
->>>> +			if (IS_ENABLED(CONFIG_MTD_XIP))
->>>> +				local_irq_enable();
->>>>    			schedule();
->>>> +			if (IS_ENABLED(CONFIG_MTD_XIP))
->>>> +				local_irq_disable();
->>
->> The fix really seems strange to me. I will let Vignesh decide but I
->> think we should consider updating/fixing xip_disable instead.
-> 
-> Agree with Miquel. Have you done any testing
-> or is this purely based on code inspection?
-> 
-I don't have the corresponding device test environment.
-I found the problem through code review.
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-
-> What about comment before xip_disable() function:
-> 
-> /*
->   * No interrupt what so ever can be serviced while the flash isn't in array
->   * mode.  This is ensured by the xip_disable() and xip_enable() functions
->   * enclosing any code path where the flash is known not to be in array mode.
->   * And within a XIP disabled code path, only functions marked with __xipram
->   * may be called and nothing else (it's a good thing to inspect generated
->   * assembly to make sure inline functions were actually inlined and that gcc
->   * didn't emit calls to its own support functions). Also configuring MTD CFI
->   * support to a single buswidth and a single interleave is also recommended.
->   */
-> 
-> So, I don't think the fix is as simple as this patch.
->
-+xip_enable();
-  schedule();
-+xip_disable();
-
-Do I need to change it to this?
-
-
-
-> Regards
-> Vignesh
-> .
-> 
-
-Thanks
-Xiaoming Ni
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
