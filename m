@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5EF2D2A72
+	by mail.lfdr.de (Postfix) with ESMTP id 87CC12D2A73
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgLHMOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:14:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726361AbgLHMN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:13:59 -0500
-Date:   Tue, 8 Dec 2020 12:13:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607429599;
-        bh=mLvA4FB9gzMsXJ8QIezTtXurSP32ina1dgLS7P/tnCs=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZMVHeQyHNSPwCQMbCqYhkTXnoF9Z0QSIOtBEpu8fRMHacmE3u67zGCIb5ThVu1RDq
-         vx9/bw7vyu4AOMfQfGcw0JJbrvDtOMBSxVvumIhLuvhrkd0mGhlby6plAJp2GVYPh1
-         RrJ2fW2vF0y5dvorTHyn4QwahvD3EH/FikvL63w7v7dnQxaNgw1irKUt4MyUJ5GBhq
-         9r3bJfmuDklX/Gu7uAJmWcceeN9m6IOquI/OZ/ex3N7kNjdXBaAMhC8otrZlzCtoQM
-         znyHuaX31VvvRQO4Znt/z/ZzBRAsyfnfuEmyxh2BxpVHCKDS0x10yO1x0qxCYzij+y
-         QqTB79P6JCkkQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, sharadg@nvidia.com,
-        jonathanh@nvidia.com, kuninori.morimoto.gx@renesas.com,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: Re: [PATCH v6 0/6] Tegra210 audio graph card
-Message-ID: <20201208121312.GB6686@sirena.org.uk>
-References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
- <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
- <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
- <20201207123131.GB5694@sirena.org.uk>
- <14d2a6cc-9ca6-f6dd-ae83-6fc75d5361eb@nvidia.com>
+        id S1729486AbgLHMOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:14:19 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9036 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727524AbgLHMOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:14:18 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqzbN68LZzhntg;
+        Tue,  8 Dec 2020 20:13:04 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 8 Dec 2020 20:13:26 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <pshelar@ovn.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <dev@openvswitch.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: openvswitch: conntrack: simplify the return expression of ovs_ct_limit_get_default_limit()
+Date:   Tue, 8 Dec 2020 20:13:53 +0800
+Message-ID: <20201208121353.9353-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
-Content-Disposition: inline
-In-Reply-To: <14d2a6cc-9ca6-f6dd-ae83-6fc75d5361eb@nvidia.com>
-X-Cookie: Do not dry clean.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Simplify the return expression.
 
---bCsyhTFzCvuiizWE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ net/openvswitch/conntrack.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-On Tue, Dec 08, 2020 at 09:24:47AM +0530, Sameer Pujar wrote:
+diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
+index 4beb96139d77..96a49aa3a128 100644
+--- a/net/openvswitch/conntrack.c
++++ b/net/openvswitch/conntrack.c
+@@ -2025,15 +2025,11 @@ static int ovs_ct_limit_get_default_limit(struct ovs_ct_limit_info *info,
+ 					  struct sk_buff *reply)
+ {
+ 	struct ovs_zone_limit zone_limit;
+-	int err;
+ 
+ 	zone_limit.zone_id = OVS_ZONE_LIMIT_DEFAULT_ZONE;
+ 	zone_limit.limit = info->default_limit;
+-	err = nla_put_nohdr(reply, sizeof(zone_limit), &zone_limit);
+-	if (err)
+-		return err;
+ 
+-	return 0;
++	return nla_put_nohdr(reply, sizeof(zone_limit), &zone_limit);
+ }
+ 
+ static int __ovs_ct_limit_get_zone_limit(struct net *net,
+-- 
+2.22.0
 
-> > No, this was sent by a b4 bug - notice the "no commit info" there, they
-> > weren't applied.
-
-> Oh I see! I guess review would be still pending then.
-
-I don't seem to have them in my backlog so either there was feedback
-=66rom someone else I was expecting to see addressed or some other issue.
-
---bCsyhTFzCvuiizWE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/PbdcACgkQJNaLcl1U
-h9CqnQf/eMYjgDWfCNyswXGemvr7kIq6mU3xUpEyqfZR+q62DDj64lzHbDh+56qf
-IQR1LbQUCVgzig4dhU3+Sz6/mjZx7kxCac+Gp//Px7tcGoG0h5vaCHszxguqF/7Y
-TnHTOm76s06tVl8eS9eZf4sN0xbWQWNaq7wk1KYxorUAqpAjQU0giDPhXHDwRJWw
-ogelYbCNvEVqxHTKRn8ZoMQsdatgxiyUiUu+ZXHKbUUHhAAqUhxs0cAbSdI5KDOy
-Ijqlx7oYx1m6IRQpEJDonQPe4K3EYbZz5umZKB9S8zOYDmd0cGFWpbVhjZfQ/nYx
-1uf+VdF8gSYdWzAYO6jkUKPEXF+eVA==
-=ZNIG
------END PGP SIGNATURE-----
-
---bCsyhTFzCvuiizWE--
