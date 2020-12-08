@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323682D3186
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8FD2D318B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730754AbgLHRzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgLHRzV (ORCPT
+        id S1730857AbgLHR4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:56:08 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:48915 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1730325AbgLHR4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:55:21 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D5CC061749;
-        Tue,  8 Dec 2020 09:54:41 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 3E7342AE;
-        Tue,  8 Dec 2020 17:54:40 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3E7342AE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607450080; bh=vUPe5xnpjeq2RaLybVlar/PVL7nLlPiDhZ3QIs3m20A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GRjBzFPvR4kiKNQwFPmmxzQxrkIKDc8YNkpgRVUBRpFnNPj1VzA9PLr4bQRIgYuKE
-         nglo3wWpIWrxUfRm8hVM65ug3d/2JtDRi1a54rElPcZWlQRI9zeJXrx9B+mSRGV2CA
-         79URsdjyLhoe7OuSb2FsMas1epmkLbhnxH0DhGbYGHIt5ae5WDYzcEOfgP5yLnB+mt
-         x+N+/7S/qCEg3lpjZvfCrsfgrpfiPbsUSax6nxY+7VDtWsi2jpVUZE+zpJs9zTWLea
-         kzd4eO5Y1htxj1+ioRH51aUPDhvRhu8qfhkmWbXT6kZ0XpoacjzNOODrSzL5qfxFTR
-         C/mVTeuD8o49A==
-Date:   Tue, 8 Dec 2020 10:54:39 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mathieu Chouquet-Stringer <me@mathieu.digital>
-Cc:     Borislav Petkov <bp@alien8.de>, Stephen Kitt <steve@sk2.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>,
-        Yue Hu <huyue2@yulong.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Update documentation to reflect what
- TAINT_CPU_OUT_OF_SPEC means nowadays
-Message-ID: <20201208105439.23e2349b@lwn.net>
-In-Reply-To: <20201202153244.709752-1-me@mathieu.digital>
-References: <20201202153244.709752-1-me@mathieu.digital>
-Organization: LWN.net
+        Tue, 8 Dec 2020 12:56:07 -0500
+Received: (qmail 1305181 invoked by uid 1000); 8 Dec 2020 12:55:26 -0500
+Date:   Tue, 8 Dec 2020 12:55:26 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20201208175526.GH1298255@rowland.harvard.edu>
+References: <20201208202853.186ae136@canb.auug.org.au>
+ <20201208203859.686f83eb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208203859.686f83eb@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Dec 2020 16:32:43 +0100
-Mathieu Chouquet-Stringer <me@mathieu.digital> wrote:
-
-> 	Hello Jonathan,
+On Tue, Dec 08, 2020 at 08:38:59PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Here's a patch updating the meaning of TAINT_CPU_OUT_OF_SPEC after
-> Borislav introduced changes in a7e1f67ed29f and upcoming patches in tip.
+> On Tue, 8 Dec 2020 20:28:53 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> > 
+> > After merging the scsi-mkp tree, today's linux-next build (sparc64
+> > defconfig) failed like this:
+> > 
+> > drivers/mtd/nand/raw/intel-nand-controller.c:17:10: fatal error: linux/mtd/nand_ecc.h: No such file or directory
+> >    17 | #include <linux/mtd/nand_ecc.h>
+> >       |          ^~~~~~~~~~~~~~~~~~~~~~
 > 
-> TAINT_CPU_OUT_OF_SPEC now means a bit more what it implies as the
-> flag isn't set just because of a CPU misconfiguration or mismatch.
-> Historically it was for SMP kernel oops on an officially SMP incapable
-> processor but now it also covers CPUs whose MSRs have been incorrectly
-> poked at from userspace, drivers being used on non supported
-> architectures, broken firmware, mismatched CPUs, ...
+> Clearly, it did not fail like that :-)
 > 
-> Update documentation and script to reflect that.
+> block/blk-core.c: In function 'blk_queue_enter':
+> block/blk-core.c:443:18: error: 'struct request_queue' has no member named 'rpm_status'; did you mean 'stats'?
+>     if ((pm && q->rpm_status != RPM_SUSPENDED) ||
+>                   ^~~~~~~~~~
+>                   stats
 > 
-> Signed-off-by: Mathieu Chouquet-Stringer <me@mathieu.digital>
+> > Caused by commit
+> > 
+> >   81a395cdc176 ("scsi: block: Do not accept any requests while suspended")
+> > 
+> > # CONFIG_PM is not set
+> > 
+> > I have applied the following patch:
+> > 
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Tue, 8 Dec 2020 20:12:33 +1100
+> > Subject: [PATCH] scsi: block: fix for "scsi: block: Do not accept any requests while suspended"
+> > 
+> > Fixes: 81a395cdc176 ("scsi: block: Do not accept any requests while suspended")
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  block/blk-core.c | 18 ++++++++++++++----
+> >  1 file changed, 14 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/block/blk-core.c b/block/blk-core.c
+> > index a71a5c9429d6..9c9aec1382be 100644
+> > --- a/block/blk-core.c
+> > +++ b/block/blk-core.c
+> > @@ -421,6 +421,18 @@ void blk_cleanup_queue(struct request_queue *q)
+> >  }
+> >  EXPORT_SYMBOL(blk_cleanup_queue);
+> >  
+> > +#ifdef CONFIG_PM
+> > +static bool rq_suspended(struct request_queue *q)
+> > +{
+> > +	return q->rpm_status == RPM_SUSPENDED;
+> > +}
+> > +#else
+> > +static bool rq_suspended(struct request_queue *q)
+> > +{
+> > +	return false;
+> > +}
+> > +#endif
+> > +
+> >  /**
+> >   * blk_queue_enter() - try to increase q->q_usage_counter
+> >   * @q: request queue pointer
+> > @@ -440,12 +452,10 @@ int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags)
+> >  			 * responsible for ensuring that that counter is
+> >  			 * globally visible before the queue is unfrozen.
+> >  			 */
+> > -			if ((pm && q->rpm_status != RPM_SUSPENDED) ||
+> > -			    !blk_queue_pm_only(q)) {
+> > +			if ((pm && !rq_suspended(q)) || !blk_queue_pm_only(q))
+> >  				success = true;
+> > -			} else {
+> > +			else
+> >  				percpu_ref_put(&q->q_usage_counter);
+> > -			}
+> >  		}
+> >  		rcu_read_unlock();
 
-Hearing no objection, I've applied this.
+Yes, that certainly is the proper fix.  It's all to easy to miss these 
+issues that depend on your kernel configuration.
 
-Thanks,
+Bart, can you fold it into a new version of the patch?
 
-jon
+Alan Stern
