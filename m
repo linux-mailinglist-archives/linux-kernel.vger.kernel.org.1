@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF232D2054
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B482D2058
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgLHBvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:51:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8721 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727075AbgLHBvB (ORCPT
+        id S1727517AbgLHBvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:51:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9552 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgLHBvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:51:01 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cqjm30MXpzkmnk;
-        Tue,  8 Dec 2020 09:49:39 +0800 (CST)
+        Mon, 7 Dec 2020 20:51:36 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cqjmj46mKzM1nT;
+        Tue,  8 Dec 2020 09:50:13 +0800 (CST)
 Received: from compute.localdomain (10.175.112.70) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Tue, 8 Dec 2020 09:50:09 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 8 Dec 2020 09:50:43 +0800
 From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Esben Haabendal <esben@geanix.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>
 CC:     Zhang Changzhong <zhangchangzhong@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: ll_temac: Fix potential NULL dereference in temac_probe()
-Date:   Tue, 8 Dec 2020 09:53:42 +0800
-Message-ID: <1607392422-20372-1-git-send-email-zhangchangzhong@huawei.com>
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] remoteproc: qcom: Fix potential NULL dereference in adsp_init_mmio()
+Date:   Tue, 8 Dec 2020 09:54:20 +0800
+Message-ID: <1607392460-20516-1-git-send-email-zhangchangzhong@huawei.com>
 X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -49,47 +51,42 @@ This is detected by Coccinelle semantic patch.
 expression pdev, res, n, t, e, e1, e2;
 @@
 
-res = \(platform_get_resource\|platform_get_resource_byname\)(pdev, t, n);
+res = \(platform_get_resource\|platform_get_resource_byname\)(pdev, t,
+n);
 + if (!res)
 +   return -EINVAL;
 ... when != res == NULL
 e = devm_ioremap(e1, res->start, e2);
 
-Fixes: 8425c41d1ef7 ("net: ll_temac: Extend support to non-device-tree platforms")
+Fixes: dc160e449122 ("remoteproc: qcom: Introduce Non-PAS ADSP PIL driver")
 Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 ---
- drivers/net/ethernet/xilinx/ll_temac_main.c | 9 +++------
+ drivers/remoteproc/qcom_q6v5_adsp.c | 9 +++------
  1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
-index 60c199f..0301853 100644
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -1351,7 +1351,6 @@ static int temac_probe(struct platform_device *pdev)
- 	struct device_node *temac_np = dev_of_node(&pdev->dev), *dma_np;
- 	struct temac_local *lp;
- 	struct net_device *ndev;
+diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
+index efb2c1a..8674b73 100644
+--- a/drivers/remoteproc/qcom_q6v5_adsp.c
++++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+@@ -362,15 +362,12 @@ static int adsp_init_mmio(struct qcom_adsp *adsp,
+ 				struct platform_device *pdev)
+ {
+ 	struct device_node *syscon;
 -	struct resource *res;
- 	const void *addr;
- 	__be32 *p;
- 	bool little_endian;
-@@ -1500,13 +1499,11 @@ static int temac_probe(struct platform_device *pdev)
- 		of_node_put(dma_np);
- 	} else if (pdata) {
- 		/* 2nd memory resource specifies DMA registers */
--		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--		lp->sdma_regs = devm_ioremap(&pdev->dev, res->start,
--						     resource_size(res));
--		if (!lp->sdma_regs) {
-+		lp->sdma_regs = devm_platform_ioremap_resource(pdev, 1);
-+		if (IS_ERR(lp->sdma_regs)) {
- 			dev_err(&pdev->dev,
- 				"could not map DMA registers\n");
--			return -ENOMEM;
-+			return PTR_ERR(lp->sdma_regs);
- 		}
- 		if (pdata->dma_little_endian) {
- 			lp->dma_in = temac_dma_in32_le;
+ 	int ret;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	adsp->qdsp6ss_base = devm_ioremap(&pdev->dev, res->start,
+-			resource_size(res));
+-	if (!adsp->qdsp6ss_base) {
++	adsp->qdsp6ss_base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(adsp->qdsp6ss_base)) {
+ 		dev_err(adsp->dev, "failed to map QDSP6SS registers\n");
+-		return -ENOMEM;
++		return PTR_ERR(adsp->qdsp6ss_base);
+ 	}
+ 
+ 	syscon = of_parse_phandle(pdev->dev.of_node, "qcom,halt-regs", 0);
 -- 
 2.9.5
 
