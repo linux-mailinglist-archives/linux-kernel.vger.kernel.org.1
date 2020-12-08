@@ -2,186 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316122D289B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFB12D28AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729012AbgLHKOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:14:48 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:38951 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728266AbgLHKOr (ORCPT
+        id S1729051AbgLHKSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:18:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728966AbgLHKSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:14:47 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id F1EA99EB;
-        Tue,  8 Dec 2020 05:14:00 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 08 Dec 2020 05:14:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=vdUkDeRfsoAEQzQPdIe5/Kd/oo5
-        eFAZbliCK9MyCNhY=; b=HzV4Wtfi0k4C3NNil1BxlpYUUdxjDxDBROO4WwQX75j
-        v1phXzc/yI4iB7R4R45MuKWxbrRwx9OwKKTr2uuH/Ho/XdD4q3paEn05pPdnvuxv
-        wIE1Acf2eZMhklOK8RbzZ9rUCvkZGhux8D8KAEj9vuiYEwStNwATXxB5I3PVKjDT
-        SG4HZheTBRmlAwaJBHd3K5dJavl6wQvoPS8kx0qqPtM7hfs0/VL8KeVOqEGxbwm4
-        154cJBHqygimlD5cJuDxHRVv43kZXp3m0yBFYcFATbbXxXsOECt35vdqDht5rlTb
-        J7zqMg9Ipg0HFCBXa87kXuOhPTJrPYXO3frZg6B7akw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=vdUkDe
-        RfsoAEQzQPdIe5/Kd/oo5eFAZbliCK9MyCNhY=; b=MMfUmaSL1G49rnbMzkS3xV
-        zAhklP197AgCPAz7bQfGPuc0Qs196Dkc/E5sd10aQubt0N5DQ0Kk/cGqixukiNI3
-        7+wVFst1XgKmhk7LWGuSyrhm22QPDN51xl+f2mtab0o5UX5IJ6tepQaOsekeichk
-        t33A7+nJ85XHsz7eKwUmoZYOBGMN6ywfTcv/jzH5rKfoJ8O7jtL0FREKnVCj7TPj
-        RVGf7L1nSV96/7900YKTohhfzUKzJnJkO8D+IWy/yA9UQ4GtFCpCWZ3my9E/HbEw
-        b9Ldkrv8ibUDPLd4FBLwr8rg9mHITcYddu21+C8A01adYgAzH4XZEwtgtkK8khMg
-        ==
-X-ME-Sender: <xms:51HPX9rsW-v8v3rHIZMWXpaDc9nJFj8vgKtmSSVo8WMq1MRELByolQ>
-    <xme:51HPX_rQ3Xn8CPPfYTPxXU_5Tj3cs04dFryvqt8tPpd0CVqW482E3FumAz0VPlr1U
-    eeT4wUS5nMRoDPNDTk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
-    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
-    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:51HPX6PuCpfoo6SO5Xp_cTsGGR3Ja97L8YGGpNlV_Teaoe0aM2JKUQ>
-    <xmx:51HPX455Nb98olm_oWTYQ_rkFumY7O9AkHUswb4z3xxGu-y6uyzExw>
-    <xmx:51HPX84ZJuSh3qlpHufRj_a2Hig_2w4sjGhGW7WDygjnvQBsgwSGMQ>
-    <xmx:6FHPX5s8ZjgARzCBB4VO7l8favsZPYy6XLBBSCUlisJE_Ipk98PzYw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 52E901080059;
-        Tue,  8 Dec 2020 05:13:59 -0500 (EST)
-Date:   Tue, 8 Dec 2020 11:13:58 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Michael Klein <michael@fossekall.de>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/3] Documentation: DT: binding documentation for
- regulator-poweroff
-Message-ID: <20201208101358.mwxmlgqonmunb2m2@gilmour>
-References: <20201128103958.q6glewhhch7vtczr@gilmour>
- <20201207142756.17819-1-michael@fossekall.de>
- <20201207142756.17819-3-michael@fossekall.de>
+        Tue, 8 Dec 2020 05:18:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607422641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V7ghnr94M4oyTTLnAUgx22ge58iAEYBvxpJ10jqNm3Y=;
+        b=ZGBoNJ4oKdqXq+u9wiRzSAPtXTdqT8LgvwG8Zl5o9Fqf1mVqone5KMSLnFeLC+to8bXtTK
+        snaOTU8yFbpSFxciag5cnv0s9/wIkU+qBLkCyxIls1Pl5uP3VNwmbUfB7sauexAotxyxSr
+        G3EQ1VcPgNc6OUISond3TIT4q9GvpN0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-_BPhb-FcN7GmTDiYJD0m7w-1; Tue, 08 Dec 2020 05:17:19 -0500
+X-MC-Unique: _BPhb-FcN7GmTDiYJD0m7w-1
+Received: by mail-ed1-f71.google.com with SMTP id f19so7190991edq.20
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 02:17:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V7ghnr94M4oyTTLnAUgx22ge58iAEYBvxpJ10jqNm3Y=;
+        b=H+LQA1trMRGFdBWf7nNsRFbWodX74oRc5GvsAvM+FLx4Dv0dbC74XVjnrhWBUcuS7f
+         QXPobDHIdvmp0G7EuWPtAVnoq5sWUFLp7xdBdWc3dS8nfY/j3+KZMh+SBvFvxJZCwI3L
+         WiHNk78PwVbT3LQQTFmQSEi7Xqi2Leev3Aq+Z5YGywiBlGIUAuE1UnEPJZOkTI8SkhLb
+         /ItEZ5l7DC6ybFjQp0Pf7Lk2xykwZUQiv3YCxZpzeKhDx8c2Ng0Mn/NArbDwwKCUiNmI
+         0zh8Ql8CKi4ew12UagaOB3AHkQELmhoA42v6mgCj4Ngw6DjGUO2sGvSR6TqEGmh7gP74
+         DuLA==
+X-Gm-Message-State: AOAM531FHMtymqwWvTf/w+7kqszJ0cXFI6WRibqhK8Cy1ul2tCv8D2lx
+        M+F/XCpNgQkN7D53nMpZs75MM8Kpm/5kmeJQTu1LXvUoC1zCAvv5QsJj8gxB0K6kT4nk5ivInCE
+        O/dz8o/bHcmXX/1KtOlQ1u8n8k9I5zcpbqyrQKUpFxBJEQCWblVrFPzCzIRPosHDjlDdsbXpOX8
+        hp
+X-Received: by 2002:a05:6402:22ea:: with SMTP id dn10mr23620099edb.67.1607422638496;
+        Tue, 08 Dec 2020 02:17:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwMgz2p79ATKIl5ou8LZsSdM2IsgZ5zLI7QxR6nFDwa+9zzS3kserBJqfTfNEHiZekytu5vqA==
+X-Received: by 2002:a05:6402:22ea:: with SMTP id dn10mr23620079edb.67.1607422638268;
+        Tue, 08 Dec 2020 02:17:18 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id qn4sm4333537ejb.50.2020.12.08.02.17.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 02:17:17 -0800 (PST)
+Subject: Re: [PATCH platform 0/2] platform/x86: mlx-platform: Fix item counter
+ assignment
+To:     Vadim Pasternak <vadimp@nvidia.com>, andy@infradead.org
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201207174745.22889-1-vadimp@nvidia.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a5491c65-8783-a2d8-1fce-a46fa9a718b7@redhat.com>
+Date:   Tue, 8 Dec 2020 11:17:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wwouytazosfvho63"
-Content-Disposition: inline
-In-Reply-To: <20201207142756.17819-3-michael@fossekall.de>
+In-Reply-To: <20201207174745.22889-1-vadimp@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---wwouytazosfvho63
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 12/7/20 6:47 PM, Vadim Pasternak wrote:
+> Fix array names to match assignments for data items and data items
+> counter for power and fan attributes.
+> 
+> Patch #1: Provide fixes for system types MSN2700, MSN24xx.
+> Patch #1: Provide fixes for system type MSN2700/ComEx.
 
-On Mon, Dec 07, 2020 at 03:27:55PM +0100, Michael Klein wrote:
-> Add devicetree binding documentation for regulator-poweroff driver.
->=20
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> ---
->  .../power/reset/regulator-poweroff.yaml       | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/reset/regulat=
-or-poweroff.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/power/reset/regulator-powe=
-roff.yaml b/Documentation/devicetree/bindings/power/reset/regulator-powerof=
-f.yaml
-> new file mode 100644
-> index 000000000000..8c8ce6bb031a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/reset/regulator-poweroff.ya=
-ml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/reset/regulator-poweroff.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Force-disable power regulators to turn the power off.
-> +
-> +maintainers:
-> +  - Michael Klein <michael@fossekall.de>
-> +
-> +description: |
-> +  When the power-off handler is called, one more regulators are disabled
-> +  by calling regulator_force_disable(). If the power is still on and the
-> +  CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
-> +
-> +properties:
-> +  compatible:
-> +    const: "regulator-poweroff"
-> +
-> +  regulator-names:
-> +    description:
-> +      Array of regulator names
-> +    $ref: /schemas/types.yaml#/definitions/string-array
-> +
-> +  REGULATOR-supply:
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-This should be a patternProperties
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-> +    description:
-> +      For any REGULATOR listed in regulator-names, a phandle
-> +      to the corresponding regulator node
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  timeout-ms:
-> +    description:
-> +      Time to wait before asserting a WARN_ON(1). If nothing is
-> +      specified, 3000 ms is used.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +required:
-> +  - compatible
-> +  - regulator-names
-> +  - REGULATOR-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    regulator-poweroff {
-> +        compatible =3D "regulator-poweroff";
-> +        regulator-names =3D "vcc1v2", "vcc-dram";
-> +        vcc1v2-supply =3D <&reg_vcc1v2>;
-> +        vcc-dram-supply =3D <&reg_vcc_dram>;
-> +    };
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-I'm not entirely sure how multiple regulators would work here. I guess
-the ordering is board/purpose sensitive. In this particular case, I
-assume that vcc1v2 would be shut down before vcc-dram?
+Regards,
 
-If so, I would expect that one regulator_force_disable is run, the CPU
-is disabled and you never get the chance to cut vcc-dram.
+Hans
 
-Similarly, cutting the RAM regulator first would probably be fine if
-you're running code from the cache / SRAM, but I don't see anything
-making sure it's the case in the driver?
+> 
+> Vadim Pasternak (2):
+>   platform/x86: mlx-platform: Fix item counter assignment for MSN2700,
+>     MSN24xx systems
+>   platform/x86: mlx-platform: Fix item counter assignment for
+>     MSN2700/ComEx system
+> 
+>  drivers/platform/x86/mlx-platform.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
 
-Maxime
-
---wwouytazosfvho63
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX89R5gAKCRDj7w1vZxhR
-xeFUAQDcZZeVgm//dGhbQWPMt1dKcu+sWEouturNNHIfo+ZdkAD/TB5Mov4SPoOn
-EnbhRNPpksqxyhx4WIXOTW4t5RX9jwA=
-=VCjk
------END PGP SIGNATURE-----
-
---wwouytazosfvho63--
