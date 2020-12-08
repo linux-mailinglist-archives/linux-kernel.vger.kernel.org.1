@@ -2,80 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3EB2D2FF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9AE2D3004
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgLHQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S1730530AbgLHQnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:43:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730257AbgLHQln (ORCPT
+        with ESMTP id S1729948AbgLHQnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:41:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1CEC0613D6;
-        Tue,  8 Dec 2020 08:41:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NMqhQXFvhSVNTGBBUTvkzNDsEmmLv8BXIjRUXuQR1PA=; b=fBKqRdzNgO2taBufpfsIv0owb3
-        dpe3g7A1vOOMY9UhPDDZLHc0LOlsC+LIBDhlRZPvwlmXQQZsjmaf5RghYYPebuC6nmmQz5sQyB6HT
-        DcX996N8PGX5dcDGGObL4aUq4bkgB5hXwh5vxVS050YetMTvrpVEkvTBB2g4czES2FFZ8CQnOYzr5
-        7otWfELANedPzbfZjAvum3+TKQgAjs2plkyVMoH5hCZMdnojfqQal7GnTaAMBmZoBkrn3/T5+AxVY
-        o3cqjMiFJmfqw/uWHZFY2+Xzi7ys4OhEjUu4gwvaTpdndanwNnlInNs9eKHroS+AZ46IpgqoQrVAT
-        sA/qA0Aw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmg2p-0001el-FN; Tue, 08 Dec 2020 16:40:55 +0000
-Date:   Tue, 8 Dec 2020 16:40:55 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201208164055.GI7338@casper.infradead.org>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
- <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201208122316.GH7338@casper.infradead.org>
- <20201208163814.GN1563847@iweiny-DESK2.sc.intel.com>
+        Tue, 8 Dec 2020 11:43:01 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A061BC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:42:20 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id n26so25454798eju.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRHO/dd4K0+UmYNDK5G5hy4CRUx6ajfflGnapOkGJI0=;
+        b=KfCs9sjAhAbjk8EjSJ+o/JIZLkCTlFFa6i1SDAFCvTt3CMQenAzLbZmWIbp2J5LpAz
+         TWJE5PIb62HUICjXTqLY7vd+iWm1o5jE3e4e7Cq3lfG/XAJB/FORTRhHtf95Kn2WnN5f
+         qcy+Ly6jEtjQTWB5nGlnImjenkVO2bigsyuRmFdsTYsV2ooYgKPUm/hd+iX3s5Fa/+c/
+         alfhsezXjo/FdmbmRZYaI36Ti6BNUdCN8Cciiu5/KIw356FarV+W0tC5715BB0uFab/D
+         EW9275UxkpxG9OzjiruKMCYHT2qEVPtSLJsJ8sue42sP5jMJpCxCirdpy0tcngvhRGJo
+         LF4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lRHO/dd4K0+UmYNDK5G5hy4CRUx6ajfflGnapOkGJI0=;
+        b=TWmM9Ngo0KYzWNptBJBxBsaVSSlx0gWQVjMDNIc1z7Q4oPxYW6NUCWWGqFwyJI+FER
+         uWz1tLNeZwzTw0SGE3YCzKi2Q2kwVs7B1rnvA1FCvUxJpgw5OtMtEnhE4aWBD8n9dbo1
+         muhymosflcG85RO4LBgvdaWAyBuz/uZqZcyp8VoGzVzC+5WRDv0ygC+X11K6Sblb9m/z
+         3CPhtKOvHwgGT0K/Cw3aDeD4zG1Zb07UCLvB+lGhZRp7MO9YWuKyRGb8s1ulNU2+jvW0
+         G6Hr+BloPsxKI28q11tremmzXIFTWSSDnfoSS9ARbROvoTnaIWL6GDJN0EsFu+BZeqEV
+         8TrA==
+X-Gm-Message-State: AOAM531cWZ1NSYy0X6/9rFa8Rpy72XAah5dslSrOJj13xcq6G30fPjCr
+        qBD2g//R+tUzlLdYSWb+K20G1A==
+X-Google-Smtp-Source: ABdhPJwuTYn2PCtf27aYV9lEwk/hkNPq/4oVElXDbSYN5MnVac0/xmcuysMZmnFAgoFeiwgJ0CtkLw==
+X-Received: by 2002:a17:906:1102:: with SMTP id h2mr15819717eja.296.1607445739255;
+        Tue, 08 Dec 2020 08:42:19 -0800 (PST)
+Received: from localhost.localdomain (lns-bzn-59-82-252-158-132.adsl.proxad.net. [82.252.158.132])
+        by smtp.gmail.com with ESMTPSA id t19sm16150546eje.86.2020.12.08.08.42.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 08:42:18 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     rjw@rjwysocki.net
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v5 0/4] powercap/dtpm: Add the DTPM framework
+Date:   Tue,  8 Dec 2020 17:41:41 +0100
+Message-Id: <20201208164145.19493-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208163814.GN1563847@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 08:38:14AM -0800, Ira Weiny wrote:
-> On Tue, Dec 08, 2020 at 12:23:16PM +0000, Matthew Wilcox wrote:
-> > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > Placing these functions in 'highmem.h' is suboptimal especially with the
-> > > changes being proposed in the functionality of kmap.  From a caller
-> > > perspective including/using 'highmem.h' implies that the functions
-> > > defined in that header are only required when highmem is in use which is
-> > > increasingly not the case with modern processors.  Some headers like
-> > > mm.h or string.h seem ok but don't really portray the functionality
-> > > well.  'pagemap.h', on the other hand, makes sense and is already
-> > > included in many of the places we want to convert.
-> > 
-> > pagemap.h is for the page cache.  It's not for "random page
-> > functionality".  Yes, I know it's badly named.  No, I don't want to
-> > rename it.  These helpers should go in highmem.h along with zero_user().
-> 
-> I could have sworn you suggested pagemap.h.  But I can't find the evidence on
-> lore.  :-/   hehehe...
-> 
-> In the end the code does not care.  I have a distaste for highmem.h because it
-> is no longer for 'high memory'.  And I think a number of driver writers who are
-> targeting 64bit platforms just don't care any more.  So as we head toward
-> memory not being mapped by the kernel for other reasons I think highmem needs
-> to be 'rebranded' if not renamed.
+The density of components greatly increased the last decade bringing a
+numerous number of heating sources which are monitored by more than 20
+sensors on recent SoC. The skin temperature, which is the case
+temperature of the device, must stay below approximately 45°C in order
+to comply with the legal requirements.
 
-Rename highmem.h to kmap.h?
+The skin temperature is managed as a whole by an user space daemon,
+which is catching the current application profile, to allocate a power
+budget to the different components where the resulting heating effect
+will comply with the skin temperature constraint.
+
+This technique is called the Dynamic Thermal Power Management.
+
+The Linux kernel does not provide any unified interface to act on the
+power of the different devices. Currently, the thermal framework is
+changed to export artificially the performance states of different
+devices via the cooling device software component with opaque values.
+This change is done regardless of the in-kernel logic to mitigate the
+temperature. The user space daemon uses all the available knobs to act
+on the power limit and those differ from one platform to another.
+
+This series provides a Dynamic Thermal Power Management framework to
+provide an unified way to act on the power of the devices.
+
+Changelog:
+ V5:
+  - Fixed typos in documentation
+  - Added a dtpm NULL pointer check in the dtpm_register() function
+ V4:
+  - Changed fine grain spinlocks by global tree mutex lock
+    - Dropped tested by tag from Lukasz
+  - Fixed rollback routine in dtpm_cpu
+  - Checked freq_qos_request_active() when releasing the dtpm_cpu node
+ V3:
+  - Fixed power-limit computation in addition with the hotplugging
+  - Improved the encapsulation
+  - Added specific ops for the leaves of the tree
+  - Simplified API and self-encapsulation
+  - Fixed documentation and generated it to check the content
+ V2:
+  - Fixed indentation
+  - Fixed typos in comments
+  - Fixed missing kfree for dtpm_cpu
+  - Capitalize letters in the Kconfig description
+  - Reduced name description
+  - Stringified section name
+  - Added more debug traces in the code
+  - Removed duplicate initialization in the dtpm cpu
+
+Daniel Lezcano (4):
+  units: Add Watt units
+  Documentation/powercap/dtpm: Add documentation for dtpm
+  powercap/drivers/dtpm: Add API for dynamic thermal power management
+  powercap/drivers/dtpm: Add CPU energy model based support
+
+ Documentation/power/index.rst         |   1 +
+ Documentation/power/powercap/dtpm.rst | 212 ++++++++++++
+ drivers/powercap/Kconfig              |  13 +
+ drivers/powercap/Makefile             |   2 +
+ drivers/powercap/dtpm.c               | 473 ++++++++++++++++++++++++++
+ drivers/powercap/dtpm_cpu.c           | 257 ++++++++++++++
+ include/asm-generic/vmlinux.lds.h     |  11 +
+ include/linux/cpuhotplug.h            |   1 +
+ include/linux/dtpm.h                  |  77 +++++
+ include/linux/units.h                 |   4 +
+ 10 files changed, 1051 insertions(+)
+ create mode 100644 Documentation/power/powercap/dtpm.rst
+ create mode 100644 drivers/powercap/dtpm.c
+ create mode 100644 drivers/powercap/dtpm_cpu.c
+ create mode 100644 include/linux/dtpm.h
+
+Cc: Thara Gopinath <thara.gopinath@linaro.org>
+Cc: Lina Iyer <ilina@codeaurora.org>
+Cc: Ram Chandrasekar <rkumbako@codeaurora.org>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Lukasz Luba <lukasz.luba@arm.com>
+
+--
+2.17.1
