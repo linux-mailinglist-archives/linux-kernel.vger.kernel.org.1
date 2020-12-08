@@ -2,96 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09342D367D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85862D367F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731415AbgLHWwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:52:10 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:52328 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgLHWwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:52:09 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MnJ4h167149;
-        Tue, 8 Dec 2020 22:51:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=3+QUZSt2q2jWmzvwsgmOVm1eKlyky2fgihAM4ea9S5I=;
- b=yBJMH4oZbyn/4+iPwjViFVp2Zl4jHs29sXx9X1EaGJn3ya6cN8MlCQbmXrABTdEpPz/3
- MFpg6gLFNe5LqG3zdoTIriY/LX50N57vjRmAUJivn0J2PnkpgDN1sgy/kUAD0zGn6HHP
- NCImuuwuiMGPaE14DJAq4mDpOJ4JBhmi+OYjjw98GOhcKuckG9z/KQ+noaCg/4ZfQhKx
- d6UsTKZlWtAM2IFt8xh0q405PJ3OGpDCoWa7wp+CWEPhjx7secUq0NYPSj4i6YGf4Haq
- OQVQVJ15kw6v2b3dUv8IsUTtWlbKLHgzEpsEffnh40n8Q/iobcmkKqZIYgr+Rnr6/l37 eQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m5dm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 22:51:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MofZP046160;
-        Tue, 8 Dec 2020 22:51:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kytmpc4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 22:51:15 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8MpAZq015951;
-        Tue, 8 Dec 2020 22:51:11 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 14:51:10 -0800
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: problem booting 5.10
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
-        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
-        <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
-        <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
-        <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
-        <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
-        <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
-Date:   Tue, 08 Dec 2020 17:51:07 -0500
-In-Reply-To: <alpine.DEB.2.22.394.2012082339470.16458@hadrien> (Julia Lawall's
-        message of "Tue, 8 Dec 2020 23:40:44 +0100 (CET)")
+        id S1731508AbgLHWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:52:20 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:45196 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731438AbgLHWwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:52:16 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kmlpN-00AvrE-AX; Tue, 08 Dec 2020 23:51:25 +0100
+Date:   Tue, 8 Dec 2020 23:51:25 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
+ bandwidth requirement
+Message-ID: <20201208225125.GA2602479@lunn.ch>
+References: <20201206034408.31492-1-TheSven73@gmail.com>
+ <20201206034408.31492-2-TheSven73@gmail.com>
+ <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=1 mlxlogscore=852 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=863 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080143
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> That's a good question. I used perf to create a flame graph of what
+> the cpu was doing when receiving data at high speed. It showed that
+> __dma_page_dev_to_cpu took up most of the cpu time. Which is triggered
+> by dma_unmap_single(9K, DMA_FROM_DEVICE).
+> 
+> So I assumed that it's a PCIe dma bandwidth issue, but I could be wrong -
+> I didn't do any PCIe bandwidth measurements.
 
-Julia,
+Sometimes it is actually cache operations which take all the
+time. This needs to invalidate the cache, so that when the memory is
+then accessed, it get fetched from RAM. On SMP machines, cache
+invalidation can be expensive, due to all the cross CPU operations.
+I've actually got better performance by building a UP kernel on some
+low core count ARM CPUs.
 
-> This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
-> get a kernel that boots.
+There are some tricks which can be played. Do you actually need all
+9K? Does the descriptor tell you actually how much is used? You can
+get a nice speed up if you just unmap 64 bytes for a TCP ACK, rather
+than the full 9K.
 
-Thanks for testing!
-
-I'll go ahead and revert 103fbf8e4020 in 5.10/scsi-fixes. We can revisit
-this change in 5.11 when Ming's fixes are in place.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+     Andrew
