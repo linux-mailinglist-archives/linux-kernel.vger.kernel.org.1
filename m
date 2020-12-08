@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E092D3104
+	by mail.lfdr.de (Postfix) with ESMTP id 916CA2D3105
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730646AbgLHR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
+        id S1730693AbgLHR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729086AbgLHR1j (ORCPT
+        with ESMTP id S1728914AbgLHR2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:27:39 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F368BC061749;
-        Tue,  8 Dec 2020 09:26:58 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id m9so12791043pgb.4;
-        Tue, 08 Dec 2020 09:26:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JzJa62+h9IWO9HdUS/s0n/qxaiHYSZ6m+KmjEm7qI/A=;
-        b=ncE9+Zg7HC8jdfWIIhPHTjJAXr5UIxUTHzt1InqoHrW/e1UJFlLmaiRL5fKLe7avKz
-         okKotJllzT59Y3ZArL2FGKW7GVsh53SHOvgnBiTHgdBcje7A/kRKD074xe0NZ/0HotnI
-         /kFDute9s4G2ah4hgKaBzww8XCFiLB0rxDc2uf0fEVnx4SEh85101w/zPVHwbzsX7feZ
-         li6GMiI0jRXpt97kIf0Ov3duXArcZzhLfE3KZqcjBZvd3z0KyLL2R7sMWii90B4aH3FA
-         6gkJTMDkfAGEI3/cqbNEpKdDPPPwwSFzKK+Wadefru0C20X9mo6nwqD6bhdaVbLg1jfg
-         b20g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JzJa62+h9IWO9HdUS/s0n/qxaiHYSZ6m+KmjEm7qI/A=;
-        b=giM+KcLtzCjcficWdodd8X/XE+cOKmWPxwaf5cITja790xLeCaURQLAm4JKlB7XMV9
-         DpRulOJdTCwuwWVTnBfXuekqVnDeHE6rWRbGUdbhZoz0faZilSaEnB6Y6GWQAnscWCYY
-         qBg8kEEdkQR49EzHAksAas66SZaLFQSR1Bxhj0hTMzRsTjYVatcfWPtUnhEJhN/HevuO
-         SgWY+3MuisNNT1rzQFS/67de62lkUN/4A828PYTKHIDj3MiijXSrHopnaFG13vGVXxXm
-         iNNhyNSVwO3bWxk9A902wo3rdg+FkjtX4zoavHUWABp1ZDp9sl+sAEit1oBlFUv/7A6p
-         mYPQ==
-X-Gm-Message-State: AOAM533J6glwTaTdchD9F5S8DwOHFieCWDgQ8mq6XIgf9WYyVUTd4VdL
-        rw6AIXCYGIea+fyEJY5DbsFqEEjwkcQ=
-X-Google-Smtp-Source: ABdhPJyBlBcxgi5EPZ03wymn+gGdDug0lE6PF0vkwWWUKpt9cXr2oDDRhURvc5hiMdHq+34S720gUQ==
-X-Received: by 2002:a17:90b:1886:: with SMTP id mn6mr5269014pjb.31.1607448418568;
-        Tue, 08 Dec 2020 09:26:58 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id p15sm72870pgl.19.2020.12.08.09.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 09:26:57 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 8 Dec 2020 09:26:55 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Rui Salvaterra <rsalvaterra@gmail.com>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7] zram: break the strict dependency from lzo
-Message-ID: <X8+3X2piRUi/jIa/@google.com>
-References: <20201207121245.50529-1-rsalvaterra@gmail.com>
+        Tue, 8 Dec 2020 12:28:02 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDD4C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:27:22 -0800 (PST)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id CA932300;
+        Tue,  8 Dec 2020 17:27:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net CA932300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1607448442; bh=UoY//GkK/Dx8qCEM/QmcaS7DrGe59TUEybC2Gy2pTz0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jcQ8tW+ytHfKxMCkLP7vCQGppqyUNRrnvbfZQVnav7C0qI3Ywgw9Fc5mSe0JMV5br
+         ZtrrqdDVvdTRMGwsJJqz+zkrzDc3C8M7algriRa79pIwe6moitIVzZ0aYMjBMIaHrr
+         AjI6GlNyt2aaEUDpSySEWbspZ+I1CmUIU6h2l253gedaM6fKX4s89ecy/I9jSbpHoX
+         rjWtwhnp4JdVkdMIeuanJz4ZiWI9RIOdIlIYNIAlH6uiaH/vsV9U0zu0b+o0AHRA4N
+         9NRlLQj+mmbnzo5+x42UzCi1z99NG7DYpsNn2+Chi49SiKVfRMBN+eysqWOznL5AOg
+         rXopXYYlea+2g==
+Date:   Tue, 8 Dec 2020 10:27:20 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] (fixed after review) Documentation: fix typos found in
+ admin-guide subdirectory
+Message-ID: <20201208102720.1c235d0a@lwn.net>
+In-Reply-To: <20201204070235.GA48631@spblnx124.lan>
+References: <20201204070235.GA48631@spblnx124.lan>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207121245.50529-1-rsalvaterra@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 12:12:45PM +0000, Rui Salvaterra wrote:
-> From the beginning, the zram block device always enabled CRYPTO_LZO, since
-> lzo-rle is hardcoded as the fallback compression algorithm. As a consequence, on
-> systems where another compression algorithm is chosen (e.g. CRYPTO_ZSTD), the
-> lzo kernel module becomes unused, while still having to be built/loaded.
-> 
-> This patch removes the hardcoded lzo-rle dependency and allows the user to
-> select the default compression algorithm for zram at build time. The previous
-> behaviour is kept, as the default algorithm is still lzo-rle.
-> 
-> Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-> Suggested-by: Minchan Kim <minchan@kernel.org>
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
+On Fri, 4 Dec 2020 10:02:35 +0300
+Andrew Klychkov <andrew.a.klychkov@gmail.com> wrote:
 
-Thanks, Rui.
+> Fixed twelve typos in cppc_sysfs.rst, binderfs.rst, paride.rst,
+> zram.rst, bug-hunting.rst, introduction.rst, usage.rst, dm-crypt.rst
+> 
+> Reviewed-by: Jonathan Corbet <corbet@lwn.net>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
+> ---
+>  Documentation/admin-guide/acpi/cppc_sysfs.rst        | 4 ++--
+>  Documentation/admin-guide/binderfs.rst               | 2 +-
+>  Documentation/admin-guide/blockdev/paride.rst        | 2 +-
+>  Documentation/admin-guide/blockdev/zram.rst          | 2 +-
+>  Documentation/admin-guide/bug-hunting.rst            | 2 +-
+>  Documentation/admin-guide/cifs/introduction.rst      | 2 +-
+>  Documentation/admin-guide/cifs/usage.rst             | 6 +++---
+>  Documentation/admin-guide/device-mapper/dm-crypt.rst | 4 ++--
+>  8 files changed, 12 insertions(+), 12 deletions(-)
+
+Applied, thanks.
+
+jon
