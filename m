@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BB52D273E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B532D2740
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgLHJOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:14:51 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:46506 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgLHJOu (ORCPT
+        id S1728287AbgLHJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:15:47 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1520 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726340AbgLHJPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:14:50 -0500
-Received: by mail-oi1-f194.google.com with SMTP id k2so18705095oic.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:14:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5EGQR2culyGmiGFkRWmTZwJqkIzkyjnCwKsV3S+AsiM=;
-        b=Z0UR5BGOLD1h/JK0wbdqoo6aIZKDNdL67Wdilegz8k9NYJ9WNuo4bwnXbAsSFAAWjY
-         bOdBjZ9t14wLmuDS1nLKh+lQe/A9WYyzBjMYiRBS9qnaLdlXmiIt3y2KtoALliFWeu2V
-         IcHW1WicerPI0fjpWRF/CK+tV1OZ/6V7oHGcDgQFkjptavuds6o6pWTRNOOsaP7W72tr
-         UHF4Tmtv2IIx4txUTKdog3IFw8fU8HKzLmwaaacSuLLHIaayeE81NV7Zp1Gmh2+zaJJg
-         XzM1nxg3Z70YhRRoSFpRzo03pL4YcFJFKgw+N+JPVMoJ8iD5wLdyWDogpUt0ZnjsdNng
-         JIGA==
-X-Gm-Message-State: AOAM532rR/eLFTpyrcFtwIIPBfBK+eo8wqtxN56jhmmyeKBWVFsbG84V
-        3xoDqA83DilzRbm4Wxwz8/Ma0AffYNZV59S46OA=
-X-Google-Smtp-Source: ABdhPJxldlti3eHVhWkgVpBbjoYDMdHrVluoGc9x3slqnFFctpFrbNpWqpvf1xQKT3khbMkKxyco0lgSZK8sfnGHC98=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr1949478oih.153.1607418849898;
- Tue, 08 Dec 2020 01:14:09 -0800 (PST)
+        Tue, 8 Dec 2020 04:15:46 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fcf441a0000>; Tue, 08 Dec 2020 01:15:06 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
+ 2020 09:15:04 +0000
+Date:   Tue, 8 Dec 2020 11:15:00 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <lulu@redhat.com>,
+        <elic@nvidia.com>
+Subject: Re: [PATCH] vdpa/mlx5: Use write memory barrier after updating CQ
+ index
+Message-ID: <20201208091500.GA17763@mtl-vdi-166.wap.labs.mlnx>
+References: <20201206105719.123753-1-elic@nvidia.com>
+ <dd7cde10-2e75-1bd3-68ad-f4988274b37d@redhat.com>
 MIME-Version: 1.0
-References: <20201207185952.261697-1-krzk@kernel.org>
-In-Reply-To: <20201207185952.261697-1-krzk@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Dec 2020 10:13:58 +0100
-Message-ID: <CAMuHMdWqMRUf=rZMxTgJx3PQAL6q22wBOi6A_e-o8z+0jyrTgw@mail.gmail.com>
-Subject: Re: [PATCH] soc: fix comment for freeing soc_dev_attr
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <dd7cde10-2e75-1bd3-68ad-f4988274b37d@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607418906; bh=dFsq2xs9sTUYZhZViaCLtjhb30g1fDD4Z2bfmBzr46M=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=Km45oX1nrydEXr3wGp1VEdrwnc4vCj0VFQJQ395jSO4K1aQpvyNEOJdolklVW3hk/
+         OGecy/daM70W2QmfW3FmzyNDGC7T8vQfJdA5PB7GJdtisIRkkIRmaocdNmjUCFEgOD
+         +T6NGWPUFq2Q5Hh4ml2f9ZOBMTzMiwjqwQayvYhY6WwjKMHebrY7vYqeyeEW7rtTz9
+         Hw6B9LM4oJ5sZvIP38I7sfZCMEWZKJM4Wobsvu20DsbGUlQRi29zRDQdKektUvw9QW
+         AeCxDp58u9kcP0XNlWpTEb0UtWR0Dszbk7ATf49RlGlqmgHI7MwaPqoZlfzHeXppWs
+         V/fJUcaZxO00A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, Dec 07, 2020 at 10:51:44AM +0800, Jason Wang wrote:
+>=20
+> On 2020/12/6 =E4=B8=8B=E5=8D=886:57, Eli Cohen wrote:
+> > Make sure to put write memory barrier after updating CQ consumer index
+> > so the hardware knows that there are available CQE slots in the queue.
+> >=20
+> > Failure to do this can cause the update of the RX doorbell record to ge=
+t
+> > updated before the CQ consumer index resulting in CQ overrun.
+> >=20
+> > Change-Id: Ib0ae4c118cce524c9f492b32569179f3c1f04cc1
 
-On Mon, Dec 7, 2020 at 8:00 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> The soc_dev_attr is stored soc_dev->attr during soc_device_register() so
-> it could be used till the cleanup call: soc_device_unregister().
-> Therefore this memory should not be freed prior, but after unregistering
-> soc device.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Michael, I left this gerrit ID by mistake. Can you remove it before
+merging?
 
-Thanks for your patch!
-
-> --- a/drivers/base/soc.c
-> +++ b/drivers/base/soc.c
-> @@ -168,7 +168,7 @@ struct soc_device *soc_device_register(struct soc_device_attribute *soc_dev_attr
->  }
->  EXPORT_SYMBOL_GPL(soc_device_register);
->
-> -/* Ensure soc_dev->attr is freed prior to calling soc_device_unregister. */
-> +/* Ensure soc_dev->attr is freed after calling soc_device_unregister. */
-
-"Ensure" makes it sound like the freeing is taken care of, which is not,
-as it should be handled by the caller.
-
-What about "soc_dev->attr should be freed after calling soc_device_unregister."?
-
->  void soc_device_unregister(struct soc_device *soc_dev)
->  {
->         device_unregister(&soc_dev->dev);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 dev=
+ices")
+> > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > ---
+> >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> >=20
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/=
+mlx5_vnet.c
+> > index 1f4089c6f9d7..295f46eea2a5 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -478,6 +478,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq =
+*vcq)
+> >   static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *=
+mvq, int num)
+> >   {
+> >   	mlx5_cq_set_ci(&mvq->cq.mcq);
+> > +
+> > +	/* make sure CQ cosumer update is visible to the hardware before upda=
+ting
+> > +	 * RX doorbell record.
+> > +	 */
+> > +	wmb();
+> >   	rx_post(&mvq->vqqp, num);
+> >   	if (mvq->event_cb.callback)
+> >   		mvq->event_cb.callback(mvq->event_cb.private);
+>=20
+>=20
+> Acked-by: Jason Wang <jasowang@redhat.com>
+>=20
+>=20
