@@ -2,116 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325B92D368B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B912D368F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731549AbgLHWzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:55:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S1731567AbgLHWzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:55:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730812AbgLHWy7 (ORCPT
+        with ESMTP id S1731093AbgLHWzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:54:59 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA2C061794;
-        Tue,  8 Dec 2020 14:54:19 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so14823wmd.0;
-        Tue, 08 Dec 2020 14:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
-        b=LhH39ZJllmZgRfTf/stoFJUkdm/dcAq3xnEuGAp8Va6ittVOc4iIH8MTdfV7F3DXgY
-         j3v5mJq/mSgfFDthJdNwlTUTwaCdcDGtJ9nyTJRCiBh7Bcz28jPFFincwK7yvmYqww+u
-         DAKUE12Za6tSxJ7Rbe0zSQt5qrwj+HIt2wgsec2kNK5HLwOFFyLjlQsWs7zXeSE4c+qB
-         CnxDu+nEbuB6rOAyoyuc9jUtZDFbOJxyqkE3eylvSJUrWtUSSw6hC2tAP4Uz/ne32UcK
-         bbFq2NUfAMF+5bmOEe43HzoPU6V9+bYd7SP94MCjgLKDEkRjS+HLojKmjx+3QNpVvf7V
-         GcdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
-        b=MY63rgHCCnisO9qVA1gf5tmemcitzdYr41OGqSFl6tN4reyZx7Zwwtbg8BJbqduaFf
-         CP8rb8CYruDB2RUgfFKvnV+FVVnsnGgRSOxXkffhWQqzlIZfqKd49gfRBuP9AtW+K69B
-         EoX5lHTl0NSMTZxO11RnPjgHVai45g+y3RPll8lr9edVJF8yE9puia4DdnGxWautqLQu
-         22pnJECqT9wOMzmHaOpk0/6E9fOTZMoW9FOoNtt6t5dIj4zIyvksTwlEG6EFX7M6tXAY
-         d1lFQNLVITAgJRKtkDVxkz7TWPKghugTTYy67Eoua5rBRxqTFds/q+ZQiDP4+1Bvwxqx
-         t0Lw==
-X-Gm-Message-State: AOAM530UdjG8ydEoaDtsBcYSrGAfo00kpvKML0Vz6kEq3TX+/klBe+zq
-        3rvHBl8CIoHZiij7v0XYXEyP8ULgahwTqYCjoc0=
-X-Google-Smtp-Source: ABdhPJw400Ws44xNLBD4ZTOJFxkw8sVbXemco2YVdG5lmPlUv7qXS9ndgp56DxsGieEi2wCieOAMSG4duQr34HnEoD0=
-X-Received: by 2002:a1c:b742:: with SMTP id h63mr64902wmf.122.1607468057844;
- Tue, 08 Dec 2020 14:54:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
- <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
- <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com> <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
-In-Reply-To: <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Wed, 9 Dec 2020 07:54:06 +0900
-Message-ID: <CAM7-yPQ_Ak+uzPadeuAUCjv-MP=aK1HuKXC=czzM_+=wWCvnLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Tue, 8 Dec 2020 17:55:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F51C0613CF;
+        Tue,  8 Dec 2020 14:55:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=awHPg+iyDLnmqpp/Cix68l0fsaA4igxr2Qb0br1IObI=; b=B4dCdvkpsGV6bCkCQ5b+Mc1/r/
+        IoiliAO0Lny2SOH5HDWyZMnJ9carbOGkL+YMWW0PSkQdTi2AXz8Rzpp095YZN7Qc25ItVr6uqB/9T
+        6ZHgyapjpZhOEU9zFXAhs+BQ+VxJyocKS2HNztqFeU1GHQO/QrNgXTGvxbAV/gu9jLOskJXT/kgkc
+        3PAgS+wU4flclPVKcq7k15YB5ZcjEV/8wv2jeFpzsQoGsTHw2V+qjCb6cRO7PoIrvqL5EnoNhwHjD
+        F7fsnR2B+DtEAe64HU1UON+T80wy26veZTrFZSRoa4P7HJt2ImTh9rcwD5+KEPDofBhH/5Uu2JK/S
+        6LZu5PLg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmlsh-0007hx-SO; Tue, 08 Dec 2020 22:54:51 +0000
+Date:   Tue, 8 Dec 2020 22:54:51 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
-        masahiroy@kernel.org, peterz@infradead.org,
-        peter.enderborg@sony.com, krzk@kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
-        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
-        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
-        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
-        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        dushistov@mail.ru,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201208225451.GM7338@casper.infradead.org>
+References: <20201207225703.2033611-3-ira.weiny@intel.com>
+ <20201207232649.GD7338@casper.infradead.org>
+ <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+ <20201207234008.GE7338@casper.infradead.org>
+ <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+ <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+ <20201208215028.GK7338@casper.infradead.org>
+ <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
+ <20201208223234.GL7338@casper.infradead.org>
+ <20201208224555.GA605321@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208224555.GA605321@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> btrfs' free space cache v1 is going to be removed some time in the
-> future so introducing kernel-wide change just for its own sake is a bit
-> premature
+On Tue, Dec 08, 2020 at 02:45:55PM -0800, Darrick J. Wong wrote:
+> On Tue, Dec 08, 2020 at 10:32:34PM +0000, Matthew Wilcox wrote:
+> > On Tue, Dec 08, 2020 at 02:23:10PM -0800, Dan Williams wrote:
+> > > On Tue, Dec 8, 2020 at 1:51 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Tue, Dec 08, 2020 at 01:32:55PM -0800, Ira Weiny wrote:
+> > > > > On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
+> > > > > > On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > > >
+> > > > > > > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
+> > > > > > > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > > > > > > >
+> > > > > > > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
+> > > > > > > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
+> > > > > > > > > > +                            struct page *src_page, size_t src_off,
+> > > > > > > > > > +                            size_t len)
+> > > > > > > > > > +{
+> > > > > > > > > > +     char *dst = kmap_local_page(dst_page);
+> > > > > > > > > > +     char *src = kmap_local_page(src_page);
+> > > > > > > > >
+> > > > > > > > > I appreciate you've only moved these, but please add:
+> > > > > > > > >
+> > > > > > > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
+> > > > > > > >
+> > > > > > > > I imagine it's not outside the realm of possibility that some driver
+> > > > > > > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
+> > > > > > > > it because kmap_atomic() of contiguous pages "just works (TM)".
+> > > > > > > > Shouldn't this WARN rather than BUG so that the user can report the
+> > > > > > > > buggy driver and not have a dead system?
+> > > > > > >
+> > > > > > > As opposed to (on a HIGHMEM=y system) silently corrupting data that
+> > > > > > > is on the next page of memory?
+> > > > > >
+> > > > > > Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
+> > > > > >
+> > > > > > > I suppose ideally ...
+> > > > > > >
+> > > > > > >         if (WARN_ON(dst_off + len > PAGE_SIZE))
+> > > > > > >                 len = PAGE_SIZE - dst_off;
+> > > > > > >         if (WARN_ON(src_off + len > PAGE_SIZE))
+> > > > > > >                 len = PAGE_SIZE - src_off;
+> > > > > > >
+> > > > > > > and then we just truncate the data of the offending caller instead of
+> > > > > > > corrupting innocent data that happens to be adjacent.  Although that's
+> > > > > > > not ideal either ... I dunno, what's the least bad poison to drink here?
+> > > > > >
+> > > > > > Right, if the driver was relying on "corruption" for correct operation.
+> > > > > >
+> > > > > > If corruption actual were happening in practice wouldn't there have
+> > > > > > been screams by now? Again, not necessarily...
+> > > > > >
+> > > > > > At least with just plain WARN the kernel will start screaming on the
+> > > > > > user's behalf, and if it worked before it will keep working.
+> > > > >
+> > > > > So I decided to just sleep on this because I was recently told to not introduce
+> > > > > new WARN_ON's[1]
+> > > > >
+> > > > > I don't think that truncating len is worth the effort.  The conversions being
+> > > > > done should all 'work'  At least corrupting users data in the same way as it
+> > > > > used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
+> > > > > to do so while I work through the 0-day issues.  (not sure what is going on
+> > > > > there.)
+> > > > >
+> > > > > However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
+> > > > > is a bit more critical than the PKS API in that it could result in corrupt
+> > > > > data.
+> > > >
+> > > > zero_user_segments contains:
+> > > >
+> > > >         BUG_ON(end1 > page_size(page) || end2 > page_size(page));
+> > > >
+> > > > These should be consistent.  I think we've demonstrated that there is
+> > > > no good option here.
+> > > 
+> > > True, but these helpers are being deployed to many new locations where
+> > > they were not used before.
+> > 
+> > So what's your preferred poison?
+> > 
+> > 1. Corrupt random data in whatever's been mapped into the next page (which
+> >    is what the helpers currently do)
+> 
+> Please no.
+> 
+> > 2. Copy less data than requested
+> 
+> This sounds like the germination event for a research paper showing that
+> 63% of callers never notice. ;)
+> 
+> > 3. Crash
+> 
+> Useful as a debug tool?
+> 
+> > 4. Something else
+> 
+> Return bytes copied like we do for writes that didn't quite work?
 
-But, I think it's not quite a kernel-wide change just add the
-correspondent function to find_last_bit.
-So, if we add this feature, maybe some users will use it in near future.
-As my fault, I sent this patch without cover in patch [0/8] to explain why
-So, I will send this patch again to take some review...
-
-Sorry to make a noise again and Thanks to advice.
-
-On Sun, Dec 6, 2020 at 6:01 PM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 6.12.20 =D0=B3. 10:56 =D1=87., Yun Levi wrote:
-> >> This, and the change above this, are not related to this patch so you
-> >> might not want to include them.
-> >
-> >> Also, why is this patch series even needed?  I don't see a justificati=
-on
-> >> for it anywhere, only "what" this patch is, not "why".
-> >
-> > I think the find_last_zero_bit will help to improve in
-> > 7th patch's change and It can be used in the future.
-> > But if my thinking is bad.. Please let me know..
-> >
-> > Thanks.
-> > Levi.
-> >
->
-> btrfs' free space cache v1 is going to be removed some time in the
-> future so introducing kernel-wide change just for its own sake is a bit
-> premature. Also do you have measurements showing it indeed improves
-> performances?
+... to learn that 87% of callers never check the return value, 10%
+of them do the wrong thing and the remainder have never been tested?
