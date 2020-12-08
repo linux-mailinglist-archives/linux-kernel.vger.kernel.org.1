@@ -2,72 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3A32D35B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9202D35CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730504AbgLHWA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:00:56 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:41888 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730482AbgLHWAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:00:55 -0500
-Date:   Tue, 08 Dec 2020 21:59:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1607464771;
-        bh=1hYjg8WRlU6tVQsFOn5GFB0I2LWqf6gUYIXfyucinX4=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nKjIEnl2xqbnAdHa3plEidQMmJHMMIei9SGArs5wH22tQYMzuEecV9oVT5x4ESqvp
-         9VbyUN5vu9jQCPcx7ljela/wjzt284ZVALWvOOvJSgW1by19+NniG3tmpfgjPy8kyE
-         2CXMAzxMbTcJlAV2Yl/30w+PugqCvtlHJJzMn080=
-To:     Greg KH <gregkh@linuxfoundation.org>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Coiby Xu <coiby.xu@gmail.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        Baq Domalaq <domalak@gmail.com>,
-        Pedro Ribeiro <pedrib@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v4] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
-Message-ID: <B3Hx1v5x_ZWS8XSi8-0vZov1KLuINEHyS5yDUGBaoBN4d9wTi9OlCoFX1h6sqYG8dCZr_OKcKeImWX9eyKh8X4X3ZMdAUQ-KVwmG5e9LJeI=@protonmail.com>
-In-Reply-To: <X75zL12q+FF6KBHi@kroah.com>
-References: <20201125141022.321643-1-coiby.xu@gmail.com> <X75zL12q+FF6KBHi@kroah.com>
+        id S1730658AbgLHWEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:04:22 -0500
+Received: from mout.gmx.net ([212.227.17.22]:36791 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730608AbgLHWEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:04:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607464945;
+        bh=0W8L1s/+E8M+O5m3NU5Cjqur7xln1/V/UMJdSR+R264=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=UVFUKXAKROTOprum0Bxa8AAlMCbTb8S2jdMLfGiaG0tBNk91Oo0MyMlrfA9v7qdrX
+         zMLoUlsnO4vp5NDEuQW64URRH61u/huMZO/0n36ILGq4CURhs0j7+PLa1rzi8KuRhF
+         lYGhXeLdTjJQBH0KdSpj8HI3VZWeSgEf0zm5rbqM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N63VY-1k6i7M3dxg-016NUN; Tue, 08
+ Dec 2020 23:02:24 +0100
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     thierry.reding@gmail.com
+Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sean@mess.org, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH v3] pwm: bcm2835: Support apply function for atomic configuration
+Date:   Tue,  8 Dec 2020 23:01:45 +0100
+Message-Id: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:aKuR+reSMDTjWPkMggxhK4pXa7GsX+soPSBxaw2X6SiRgJ3gyEf
+ eHuRyhr+2p1cY4DXylGklrqH2aM0gQTB+K5IkpcPy8olTJ8MnIdWfT1BIV/jvPBt9Kjvtep
+ 8u+LRLFuHosJIDegsOBzZH/oiNvbpdmdzw9niv09U5u4Kzm7sjXf1DLoHJjsVWclPYaiVlI
+ zov13P17h6H9/yvHgmFyg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:myZg7KeR1cw=:MRonv6eSgpTO/yMAIm6e4I
+ d1W+NUCwofXYYR0/Sqnir9wtHFzgSa2PO/yvwVVOMklldh6o6df2Hmlj8AuX/ErxK8unb7yz6
+ sOh48kAXa27KfcHX0Z3rYzFVer0YIYO0QJJr5SRgfjHxREmn9uI46njGNbqoLBwW/QYcUfbez
+ tNUky/SCZr6UqMUItZPiaT4kxSjmjTnGt+0Yz2xRBhU7HzXh6t/9TC52RsAiCEL5mriRuraau
+ CsODQ6HPHcRHHQV0hB/kUonDEcOK6pgL2iF15KorczqaWw97tDuvEsSNlj8mTbtmOboIagnw8
+ cuiIg0k8NJIOsYYZe+U4xXt5Za2bo8PWNgdtqemM8dpBKkYGKgbTuAZ0xoNNn3C8I06+xnGOR
+ VwbTrHvlxJG+dXO3CknAWO2ougD/oyNVMRUPF9vkn8reuJG1crchjfU5OaldY7jGpAKRRPRNe
+ QSxJrWiP/EdOLkhhi/ddxnxZCtO+feqz08hBGO/A2121Mth8ctN+uXXpYFQUtan5gKZ3WDpsP
+ ByyOYi8iLqi5e1DRIGoeLM8BfGuSoqNpVpP6HFOm/9KepSOdXIpaHbRR5vMEH6PTfqCRS/Itz
+ fN2VDgQgc0ONIPx6h+sA/wn9f6X9YzbBNV+EBQVBiwwvsGCOpW6u1picVmHUH8tAsiStFRk/t
+ 1bdJtRbqpapSYmZHzTUIYna+JCg1EF9BBrwV2jltA/lep4ojiTmWVHxMyo9yEDnvwCEoL/5Fa
+ jykH4XD0g5cCikHTgVjQc3881DfAMyK0JbtQbwUHZJT5GjGJK7d0qajGjf1/11FRiSCyfVgSY
+ QdqVKyMljJBeirSTWd00ue5CTfQwbg7tCMBtSptJzBojZNvfXcnD0qDWoz/uQmw3OgH4JKFIN
+ y5vvwFKstMdTPHgDh4ZA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020. november 25., szerda 16:07 keltez=C3=A9ssel, Greg KH =C3=ADrta:
-
-> [...]
-> > +static u8 polling_mode;
-> > +module_param(polling_mode, byte, 0444);
-> > +MODULE_PARM_DESC(polling_mode, "How to poll (default=3D0) - 0 disabled=
-; 1 based on GPIO pin's status");
->
-> Module parameters are for the 1990's, they are global and horrible to
-> try to work with. You should provide something on a per-device basis,
-> as what happens if your system requires different things here for
-> different devices? You set this for all devices :(
-> [...]
-
-Hi
-
-do you think something like what the usbcore has would be better?
-A module parameter like "quirks=3D<vendor-id>:<product-id>:<flags>[,<vendor=
--id>:<product-id>:<flags>]*"?
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+VXNlIHRoZSBuZXdlciAuYXBwbHkgZnVuY3Rpb24gb2YgcHdtX29wcyBpbnN0ZWFkIG9mIC5jb25m
+aWcsIC5lbmFibGUsCi5kaXNhYmxlIGFuZCAuc2V0X3BvbGFyaXR5LiBUaGlzIGd1YXJhbnRlZXMg
+YXRvbWljIGNoYW5nZXMgb2YgdGhlIHB3bQpjb250cm9sbGVyIGNvbmZpZ3VyYXRpb24uIEl0IGFs
+c28gcmVkdWNlcyB0aGUgc2l6ZSBvZiB0aGUgZHJpdmVyLgoKU2luY2Ugbm93IHBlcmlvZCBpcyBh
+IDY0IGJpdCB2YWx1ZSwgYWRkIGFuIGV4dHJhIGNoZWNrIHRvIHJlamVjdCBwZXJpb2RzCnRoYXQg
+ZXhjZWVkIHRoZSBwb3NzaWJsZSBtYXggdmFsdWUgZm9yIHRoZSAzMiBiaXQgcmVnaXN0ZXIuCgpU
+aGlzIGhhcyBiZWVuIHRlc3RlZCBvbiBhIFJhc3BiZXJyeSBQSSA0LgoKU2lnbmVkLW9mZi1ieTog
+TGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0tLQoKdjM6IENoZWNrIGFn
+YWluc3QgcGVyaW9kIHRydW5jYXRpb24gKGJhc2VkIG9uIGEgcmV2aWV3IGJ5IFV3ZSBLbGVpbmUt
+S8O2bmlnKQp2MjogRml4IGNvbXBpbGVyIGVycm9yIGZvciA2NCBiaXQgYnVpbGRzCgogZHJpdmVy
+cy9wd20vcHdtLWJjbTI4MzUuYyB8IDcyICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygrKSwgNDYgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wd20vcHdtLWJjbTI4MzUuYyBiL2RyaXZl
+cnMvcHdtL3B3bS1iY20yODM1LmMKaW5kZXggNjg0MWRjZi4uZDMzOTg5OCAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9wd20vcHdtLWJjbTI4MzUuYworKysgYi9kcml2ZXJzL3B3bS9wd20tYmNtMjgzNS5j
+CkBAIC01OCwxMyArNTgsMTUgQEAgc3RhdGljIHZvaWQgYmNtMjgzNV9wd21fZnJlZShzdHJ1Y3Qg
+cHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20pCiAJd3JpdGVsKHZhbHVlLCBw
+Yy0+YmFzZSArIFBXTV9DT05UUk9MKTsKIH0KIAotc3RhdGljIGludCBiY20yODM1X3B3bV9jb25m
+aWcoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLAotCQkJICAg
+ICAgaW50IGR1dHlfbnMsIGludCBwZXJpb2RfbnMpCitzdGF0aWMgaW50IGJjbTI4MzVfcHdtX2Fw
+cGx5KHN0cnVjdCBwd21fY2hpcCAqY2hpcCwgc3RydWN0IHB3bV9kZXZpY2UgKnB3bSwKKwkJCSAg
+ICAgY29uc3Qgc3RydWN0IHB3bV9zdGF0ZSAqc3RhdGUpCiB7CisKIAlzdHJ1Y3QgYmNtMjgzNV9w
+d20gKnBjID0gdG9fYmNtMjgzNV9wd20oY2hpcCk7CiAJdW5zaWduZWQgbG9uZyByYXRlID0gY2xr
+X2dldF9yYXRlKHBjLT5jbGspOworCXVuc2lnbmVkIGxvbmcgbG9uZyBwZXJpb2Q7CiAJdW5zaWdu
+ZWQgbG9uZyBzY2FsZXI7Ci0JdTMyIHBlcmlvZDsKKwl1MzIgdmFsOwogCiAJaWYgKCFyYXRlKSB7
+CiAJCWRldl9lcnIocGMtPmRldiwgImZhaWxlZCB0byBnZXQgY2xvY2sgcmF0ZVxuIik7CkBAIC03
+Miw2NSArNzQsNDMgQEAgc3RhdGljIGludCBiY20yODM1X3B3bV9jb25maWcoc3RydWN0IHB3bV9j
+aGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLAogCX0KIAogCXNjYWxlciA9IERJVl9S
+T1VORF9DTE9TRVNUKE5TRUNfUEVSX1NFQywgcmF0ZSk7Ci0JcGVyaW9kID0gRElWX1JPVU5EX0NM
+T1NFU1QocGVyaW9kX25zLCBzY2FsZXIpOworCS8qIHNldCBwZXJpb2QgKi8KKwlwZXJpb2QgPSBE
+SVZfUk9VTkRfQ0xPU0VTVF9VTEwoc3RhdGUtPnBlcmlvZCwgc2NhbGVyKTsKIAotCWlmIChwZXJp
+b2QgPCBQRVJJT0RfTUlOKQorCS8qIGRvbnQgYWNjZXB0IGEgcGVyaW9kIHRoYXQgaXMgdG9vIHNt
+YWxsIG9yIGhhcyBiZWVuIHRydW5jYXRlZCAqLworCWlmICgocGVyaW9kIDwgUEVSSU9EX01JTikg
+fHwgKHBlcmlvZCA+IFUzMl9NQVgpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAotCXdyaXRlbChESVZf
+Uk9VTkRfQ0xPU0VTVChkdXR5X25zLCBzY2FsZXIpLAotCSAgICAgICBwYy0+YmFzZSArIERVVFko
+cHdtLT5od3B3bSkpOwotCXdyaXRlbChwZXJpb2QsIHBjLT5iYXNlICsgUEVSSU9EKHB3bS0+aHdw
+d20pKTsKLQotCXJldHVybiAwOwotfQotCi1zdGF0aWMgaW50IGJjbTI4MzVfcHdtX2VuYWJsZShz
+dHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20pCi17Ci0Jc3RydWN0
+IGJjbTI4MzVfcHdtICpwYyA9IHRvX2JjbTI4MzVfcHdtKGNoaXApOwotCXUzMiB2YWx1ZTsKLQot
+CXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7Ci0JdmFsdWUgfD0gUFdNX0VO
+QUJMRSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKLQl3cml0ZWwodmFsdWUsIHBj
+LT5iYXNlICsgUFdNX0NPTlRST0wpOwotCi0JcmV0dXJuIDA7Ci19Ci0KLXN0YXRpYyB2b2lkIGJj
+bTI4MzVfcHdtX2Rpc2FibGUoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2Rldmlj
+ZSAqcHdtKQotewotCXN0cnVjdCBiY20yODM1X3B3bSAqcGMgPSB0b19iY20yODM1X3B3bShjaGlw
+KTsKLQl1MzIgdmFsdWU7CisJd3JpdGVsKCh1MzIpIHBlcmlvZCwgcGMtPmJhc2UgKyBQRVJJT0Qo
+cHdtLT5od3B3bSkpOwogCi0JdmFsdWUgPSByZWFkbChwYy0+YmFzZSArIFBXTV9DT05UUk9MKTsK
+LQl2YWx1ZSAmPSB+KFBXTV9FTkFCTEUgPDwgUFdNX0NPTlRST0xfU0hJRlQocHdtLT5od3B3bSkp
+OwotCXdyaXRlbCh2YWx1ZSwgcGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7Ci19CisJLyogc2V0IGR1
+dHkgY3ljbGUgKi8KKwl2YWwgPSBESVZfUk9VTkRfQ0xPU0VTVF9VTEwoc3RhdGUtPmR1dHlfY3lj
+bGUsIHNjYWxlcik7CisJd3JpdGVsKHZhbCwgcGMtPmJhc2UgKyBEVVRZKHB3bS0+aHdwd20pKTsK
+IAotc3RhdGljIGludCBiY20yODM1X3NldF9wb2xhcml0eShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAs
+IHN0cnVjdCBwd21fZGV2aWNlICpwd20sCi0JCQkJZW51bSBwd21fcG9sYXJpdHkgcG9sYXJpdHkp
+Ci17Ci0Jc3RydWN0IGJjbTI4MzVfcHdtICpwYyA9IHRvX2JjbTI4MzVfcHdtKGNoaXApOwotCXUz
+MiB2YWx1ZTsKKwkvKiBzZXQgcG9sYXJpdHkgKi8KKwl2YWwgPSByZWFkbChwYy0+YmFzZSArIFBX
+TV9DT05UUk9MKTsKIAotCXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7CisJ
+aWYgKHN0YXRlLT5wb2xhcml0eSA9PSBQV01fUE9MQVJJVFlfTk9STUFMKQorCQl2YWwgJj0gfihQ
+V01fUE9MQVJJVFkgPDwgUFdNX0NPTlRST0xfU0hJRlQocHdtLT5od3B3bSkpOworCWVsc2UKKwkJ
+dmFsIHw9IFBXTV9QT0xBUklUWSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKIAot
+CWlmIChwb2xhcml0eSA9PSBQV01fUE9MQVJJVFlfTk9STUFMKQotCQl2YWx1ZSAmPSB+KFBXTV9Q
+T0xBUklUWSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKSk7CisJLyogZW5hYmxlL2Rp
+c2FibGUgKi8KKwlpZiAoc3RhdGUtPmVuYWJsZWQpCisJCXZhbCB8PSBQV01fRU5BQkxFIDw8IFBX
+TV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pOwogCWVsc2UKLQkJdmFsdWUgfD0gUFdNX1BPTEFS
+SVRZIDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pOworCQl2YWwgJj0gfihQV01fRU5B
+QkxFIDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pKTsKIAotCXdyaXRlbCh2YWx1ZSwg
+cGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7CisJd3JpdGVsKHZhbCwgcGMtPmJhc2UgKyBQV01fQ09O
+VFJPTCk7CiAKIAlyZXR1cm4gMDsKIH0KIAorCiBzdGF0aWMgY29uc3Qgc3RydWN0IHB3bV9vcHMg
+YmNtMjgzNV9wd21fb3BzID0gewogCS5yZXF1ZXN0ID0gYmNtMjgzNV9wd21fcmVxdWVzdCwKIAku
+ZnJlZSA9IGJjbTI4MzVfcHdtX2ZyZWUsCi0JLmNvbmZpZyA9IGJjbTI4MzVfcHdtX2NvbmZpZywK
+LQkuZW5hYmxlID0gYmNtMjgzNV9wd21fZW5hYmxlLAotCS5kaXNhYmxlID0gYmNtMjgzNV9wd21f
+ZGlzYWJsZSwKLQkuc2V0X3BvbGFyaXR5ID0gYmNtMjgzNV9zZXRfcG9sYXJpdHksCisJLmFwcGx5
+ID0gYmNtMjgzNV9wd21fYXBwbHksCiAJLm93bmVyID0gVEhJU19NT0RVTEUsCiB9OwogCi0tIAoy
+LjcuNAoK
