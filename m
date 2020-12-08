@@ -2,149 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EBE2D33AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138AF2D3329
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgLHUW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729231AbgLHUWv (ORCPT
+        id S1731197AbgLHUQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:07 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36494 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730854AbgLHUMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:22:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285DBC0617A7;
-        Tue,  8 Dec 2020 12:22:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=T2NKufslsV4zHnMND/Rek7wwwX3gR2vSveo5C0g9xCM=; b=N1NRhNaSnVk8G1XUcYN1U+ABvW
-        ztPmgw8KbK64ZoLwyIZcu50+YxkTDV2EINrc8kV972LWHAmL6B5TJ5WQWY6lZ4EacCQg8k0v1MV8d
-        fey5ruQ58/6rzMsSq6XjNzSJgCfvQ/sMAySZdMAo6D4IWdYR+i80AfGCGlpM1cRAGXE62Spsen4KH
-        2N83yIBvl9/X443/Er6X+hlIs7sBqtUtOA5QWHLvMFI/NT3arW/U5mwnHoumbqcFuz0aGF6z9H6Zd
-        RDqqlfOmSvrfmslN2HUISUlYfn/1E/UEb4/u+x04b+sPYOYWLsBDdhWz7+TH6mDZNMvvafEsgTDuN
-        AefuqMaA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmiwu-00051J-9O; Tue, 08 Dec 2020 19:47:00 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 11/11] mm/swap: Convert rotate_reclaimable_page to folio
-Date:   Tue,  8 Dec 2020 19:46:53 +0000
-Message-Id: <20201208194653.19180-12-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201208194653.19180-1-willy@infradead.org>
-References: <20201208194653.19180-1-willy@infradead.org>
+        Tue, 8 Dec 2020 15:12:51 -0500
+Received: by mail-wr1-f65.google.com with SMTP id t16so2237059wra.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:12:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sgyQki4FzsYscH5k16Etbh421UMG+JihNWud51/vg7o=;
+        b=Kf4+GRG3ICi22fvx5fccY4z9fvoThH7QoV401LvADvCQugMcp6btTNSih+yZOSoZ3j
+         a2Q4gyueZSi5BP5D2Zdzf+u2ZyELugu0V4ZSQwUNMWysc21aPXKcL6d9WbJrfWoKkaDM
+         5kD8tlsLhmWzjPSFqTPB6Xq+mP/fDQ7RtaM28=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sgyQki4FzsYscH5k16Etbh421UMG+JihNWud51/vg7o=;
+        b=IeSDbIMGcyozTGR41zOKLe3QZLbWAFyEu9MTO+KtkF0AiOY+rRahC2a0HJFXTv+oO9
+         OXMyknDf8vJJcdKHMCx3cYnf1OTV30QiQOnY6TVTfYkWfdE4E7L1twDIxi8IjRZHI1vH
+         ElM1zDAT0Ac4a2/R/nljw74sFKfx0n+HKsRtL6mM69hKbhy9FqllNYG4kOOj8RrHMiIC
+         +tqb8pNx6FfYOV61vHXQFC+eJ2nBhvJ7GGIfTWZZ2nIUjJh1Ufs1o/UE0aGUj2Q5I6eo
+         YvFOppq3xzh/8WO0i6nu249RoDQmmKCNaiSSZClZn03PIjTPGxGdXXUPWUOM6xfe+qrW
+         y7Iw==
+X-Gm-Message-State: AOAM532U9/8zB3BK5b4xAkFfZBRhaNWR1xBIlWwzapLC8Vp8MksHSX14
+        5IadklE1lFSG1TV8zpYuWE44dnKwuUPAWA==
+X-Google-Smtp-Source: ABdhPJy6X6zMosNU2G+TVH7twn+OsvBfJFlegGULpTRzRdjqDf3Nr0Bm0HRgWfbHcSdf3t0KF5ZcVA==
+X-Received: by 2002:a05:651c:1398:: with SMTP id k24mr4659169ljb.30.1607456871262;
+        Tue, 08 Dec 2020 11:47:51 -0800 (PST)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id t3sm1170117lfe.263.2020.12.08.11.47.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 11:47:50 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id s11so12911076ljp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 11:47:50 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr3342315lji.251.1607456869937;
+ Tue, 08 Dec 2020 11:47:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <alpine.DEB.2.22.394.2012082025310.16458@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2012082025310.16458@hadrien>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Dec 2020 11:47:33 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjVch4Y7wGKRROYCHN9vD0e5YK=KRWhcZMJ2zNQdc+_Jg@mail.gmail.com>
+Message-ID: <CAHk-=wjVch4Y7wGKRROYCHN9vD0e5YK=KRWhcZMJ2zNQdc+_Jg@mail.gmail.com>
+Subject: Re: problem booting 5.10
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the declaration into mm/internal.h and rename the function to
-rotate_reclaimable_folio().  This eliminates all five of the calls to
-compound_head() in this function.
+On Tue, Dec 8, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+> A dmesg after successfully booting in 5.9 is attached.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/swap.h |  1 -
- mm/filemap.c         |  2 +-
- mm/internal.h        |  1 +
- mm/page_io.c         |  4 ++--
- mm/swap.c            | 12 ++++++------
- 5 files changed, 10 insertions(+), 10 deletions(-)
+Ok, from a quick look it's megaraid_sas.
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 5bba15ac5a2e..5aaca35ce887 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -343,7 +343,6 @@ extern void lru_add_drain(void);
- extern void lru_add_drain_cpu(int cpu);
- extern void lru_add_drain_cpu_zone(struct zone *zone);
- extern void lru_add_drain_all(void);
--extern void rotate_reclaimable_page(struct page *page);
- extern void deactivate_file_page(struct page *page);
- extern void deactivate_page(struct page *page);
- extern void mark_page_lazyfree(struct page *page);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 297144524f58..93e40e9ac357 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1477,7 +1477,7 @@ void end_page_writeback(struct page *page)
- 	 */
- 	if (FolioReclaim(folio)) {
- 		ClearFolioReclaim(folio);
--		rotate_reclaimable_page(&folio->page);
-+		rotate_reclaimable_folio(folio);
- 	}
- 
- 	/*
-diff --git a/mm/internal.h b/mm/internal.h
-index 8e9c660f33ca..f089535b5d86 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -35,6 +35,7 @@
- void page_writeback_init(void);
- 
- vm_fault_t do_swap_page(struct vm_fault *vmf);
-+void rotate_reclaimable_folio(struct folio *folio);
- 
- void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
- 		unsigned long floor, unsigned long ceiling);
-diff --git a/mm/page_io.c b/mm/page_io.c
-index 9bca17ecc4df..1fc0a579da58 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -57,7 +57,7 @@ void end_swap_bio_write(struct bio *bio)
- 		 * Also print a dire warning that things will go BAD (tm)
- 		 * very quickly.
- 		 *
--		 * Also clear PG_reclaim to avoid rotate_reclaimable_page()
-+		 * Also clear PG_reclaim to avoid rotate_reclaimable_folio()
- 		 */
- 		set_page_dirty(page);
- 		pr_alert("Write-error on swap-device (%u:%u:%llu)\n",
-@@ -341,7 +341,7 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
- 			 * temporary failure if the system has limited
- 			 * memory for allocating transmit buffers.
- 			 * Mark the page dirty and avoid
--			 * rotate_reclaimable_page but rate-limit the
-+			 * rotate_reclaimable_folio but rate-limit the
- 			 * messages but do not flag PageError like
- 			 * the normal direct-to-bio case as it could
- 			 * be temporary.
-diff --git a/mm/swap.c b/mm/swap.c
-index 5022dfe388ad..9aadde8aea9b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -241,19 +241,19 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
-  * reclaim.  If it still appears to be reclaimable, move it to the tail of the
-  * inactive list.
-  *
-- * rotate_reclaimable_page() must disable IRQs, to prevent nasty races.
-+ * rotate_reclaimable_folio() must disable IRQs, to prevent nasty races.
-  */
--void rotate_reclaimable_page(struct page *page)
-+void rotate_reclaimable_folio(struct folio *folio)
- {
--	if (!PageLocked(page) && !PageDirty(page) &&
--	    !PageUnevictable(page) && PageLRU(page)) {
-+	if (!FolioLocked(folio) && !FolioDirty(folio) &&
-+	    !FolioUnevictable(folio) && FolioLRU(folio)) {
- 		struct pagevec *pvec;
- 		unsigned long flags;
- 
--		get_page(page);
-+		get_folio(folio);
- 		local_lock_irqsave(&lru_rotate.lock, flags);
- 		pvec = this_cpu_ptr(&lru_rotate.pvec);
--		if (!pagevec_add(pvec, page) || PageCompound(page))
-+		if (!pagevec_add(pvec, &folio->page) || FolioHead(folio))
- 			pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
- 		local_unlock_irqrestore(&lru_rotate.lock, flags);
- 	}
--- 
-2.29.2
+The only thing I see there is that commit 103fbf8e4020 ("scsi:
+megaraid_sas: Added support for shared host tagset for cpuhotplug").
 
+Of course, it could be something entirely unrelated that just triggers
+this, but I don't think I've seen any other reports, so at a first
+guess I'd blame something specific to that hardware, rather than some
+generic problem that just happens to hit Jula.
+
+            Linus
