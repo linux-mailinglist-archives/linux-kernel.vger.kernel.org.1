@@ -2,81 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AA42D1FDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D322D1FE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgLHBTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:19:24 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9551 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgLHBTY (ORCPT
+        id S1726556AbgLHBUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgLHBUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:19:24 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cqj3Z6RjnzM20k;
-        Tue,  8 Dec 2020 09:18:02 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 8 Dec 2020
- 09:18:37 +0800
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: compress: support chksum
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201126103209.67985-1-yuchao0@huawei.com>
- <X86Sb2pvD53MzO5+@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e6bc842d-90a2-d4ce-56be-594bcebaea37@huawei.com>
-Date:   Tue, 8 Dec 2020 09:18:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 7 Dec 2020 20:20:23 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5073BC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 17:19:43 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id s2so6095218plr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 17:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
+        b=uxUBtVmrMtQ5jQorGj0gobnzg71+HD0mvLX7WlgSaDnuvVEeLunog/VsCzRw2GLLuC
+         RAyAYHLdpm/w/csWMtw19quePNvzc4rDWkjjgNtxqBIeR7EUde2mFAV9GYDJo8Dl12PI
+         CPVQFapQV7PVZQrahrPmfUu3vtUhd2ypQ+BZXbsrdMBz4AYN8zH9GLW97c5ghobIpJBO
+         VexuUo5wWJ8vtOVq4TY2X7qsH0mR9vJp7KpN/16f3NXaezsUiNDj7S2UBP+mbm0wRE2j
+         zpVMJln0m4vuiW3JzmgxWsSvBWYYGrkuiSLAfdNwDHBINaFzWBZ0P83Z3gd2L4BBiE8j
+         x9lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
+        b=P+fy9WbAxcNn2r8Rld6s7LOtMaDWfyaXKn5jJj+XtKFDE9idOtDp1RBIAG5nm75mbw
+         z+bjPTgiZ7I1oM+qer9ZB5Vavydp00tOjpcar0TT6MeSTfB4oU1k76sFSuNszk40Si3M
+         gljDU8bv27x37UKc5lF+2YsoGFx804e4A2Lq5Nro3vmgqBYZWH3UU+k3U+8acMJGEYWc
+         rJ9L7a4EELvKZ89mTj2FinmGz6ulNEclwRBaqotZf30U46V8R3DAYbiKcGn2Cw6rlNu1
+         Aw+aXFAEQDwByRlT8obxGsv/9u0I5x6vcJyuROhvdoDqnV5vIE+5qC74HkrsTj8SHYiC
+         quqg==
+X-Gm-Message-State: AOAM533R662tmlc5HZZlxQm8auGKC5F7FgZQQ4DOPRecW9gthqVK5OPN
+        DjZFSBa5TjhJ1ZHZh8TlNLk=
+X-Google-Smtp-Source: ABdhPJzKGVZDeflu26vkS5pCHroCNG0RjvHZTgh+6J2ah4TzDpxmXD1Dvm32CJnGbybS1z20Xbw14g==
+X-Received: by 2002:a17:902:ac90:b029:da:fd0c:53ba with SMTP id h16-20020a170902ac90b02900dafd0c53bamr6110596plr.23.1607390382566;
+        Mon, 07 Dec 2020 17:19:42 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
+        by smtp.gmail.com with ESMTPSA id mj5sm472656pjb.20.2020.12.07.17.19.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 07 Dec 2020 17:19:42 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:19:38 +0800
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     Tudor.Ambarus@microchip.com
+Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: macronix: enable 4-bit BP support for
+ MX25L6405D
+Message-ID: <20201208011938.GB12175@DESKTOP-8REGVGF.localdomain>
+References: <20201207024612.1318-1-liew.s.piaw@gmail.com>
+ <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <X86Sb2pvD53MzO5+@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/8 4:37, Eric Biggers wrote:
-> On Thu, Nov 26, 2020 at 06:32:09PM +0800, Chao Yu wrote:
->> +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
+On Mon, Dec 07, 2020 at 05:53:20PM +0000, Tudor.Ambarus@microchip.com wrote:
+> Hi, Sieng,
 > 
-> This really could use some parentheses.  People shouldn't have to look up a
-> C operator precedence table to understand the code.
-
-Will add parentheses to avoid misread.
-
+> On 12/7/20 4:46 AM, Sieng Piaw Liew wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Enable 4-bit Block Protect support for MX256405D and its variants using
+> > the same ID.
+> > 
+> > Tested on Innacom W3400V6 router with MX25L6406E chip.
 > 
->> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
->> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
->> +
->> +		if (provided != calculated) {
->> +			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
->> +				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
->> +				printk_ratelimited(
->> +					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
->> +					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
->> +					provided, calculated);
->> +			}
->> +			set_sbi_flag(sbi, SBI_NEED_FSCK);
->> +			WARN_ON_ONCE(1);
-> 
-> WARN, WARN_ON_ONCE, BUG, BUG_ON, etc. are only for kernel bugs, not for invalid
-> inputs from disk or userspace.
-> 
-> There is already a log message printed just above, so it seems this WARN_ON_ONCE
-> should just be removed.
+> :) What kind of tests did you exactly make?
 
-Jaegeuk wants to give WARN_ON and marking a FSCK flag without returning EFSCORRUPTED,
-
-Jaegeuk, thoughts?
-
-Thanks,
+OpenWrt cannot write into spi-nor after first boot.
+After hacking 4-bit BP support into OpenWrt's kernel v5.4, writing works.
 
 > 
-> - Eric
-> .
+> > https://github.com/openwrt/openwrt/pull/3501
+> > 
+> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+> > ---
+> >  drivers/mtd/spi-nor/macronix.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> > index 9203abaac229..7aa8b1ee9daa 100644
+> > --- a/drivers/mtd/spi-nor/macronix.c
+> > +++ b/drivers/mtd/spi-nor/macronix.c
+> > @@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
+> >         { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+> >         { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+> >         { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+> > -       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
+> > +       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
+> > +                             SECT_4K | SPI_NOR_4BIT_BP) },
+> 
+> I assume this won't work because it misses the SPI_NOR_HAS_LOCK flag.
+> 
+> Cheers,
+> ta
+
+Yes, I'll have v2 patch sent shortly.
+
+> 
+> >         { "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+> >         { "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64,
+> >                               SECT_4K | SPI_NOR_DUAL_READ |
+> > --
+> > 2.17.1
+> > 
 > 
