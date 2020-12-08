@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9A62D28F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8AD2D28FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbgLHKby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:31:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726138AbgLHKbx (ORCPT
+        id S1729097AbgLHKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729078AbgLHKd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:31:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607423427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wTTs5k06KawVFBsrzimy1ln5wExel7K+JmVgKzEhQOY=;
-        b=J/UqyKYpEBLuq9v2S2461h4lEdx99lG51e0TLpT+SX9ncbQPJnDvJUrgOZJEb4VA+qeOrI
-        xjOXViW+ItcY5PatG4oNgPa3cGJy6rIq0F9xzhjKripXKyr033NYXNM6JQV9lp2N/QkITO
-        BEkqoeVrYIpQj/6fec7zhkARhBKVKIw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-AW8qbANlORSGoDUt7EcDjg-1; Tue, 08 Dec 2020 05:30:24 -0500
-X-MC-Unique: AW8qbANlORSGoDUt7EcDjg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86481393B9;
-        Tue,  8 Dec 2020 10:29:47 +0000 (UTC)
-Received: from krava (unknown [10.40.193.58])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A117C5D9DD;
-        Tue,  8 Dec 2020 10:29:44 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 11:29:43 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V2 06/12] perf mem: Clean up output format
-Message-ID: <20201208102943.GB4135722@krava>
-References: <20201130172803.2676-1-kan.liang@linux.intel.com>
- <20201130172803.2676-7-kan.liang@linux.intel.com>
- <20201204232756.GK3613628@krava>
- <978f0cb9-43d6-1ae5-e1ce-5ec4cc9fca12@linux.intel.com>
+        Tue, 8 Dec 2020 05:33:27 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DFAC0613D6;
+        Tue,  8 Dec 2020 02:32:40 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id n14so16392313iom.10;
+        Tue, 08 Dec 2020 02:32:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fggqU2VJFoa1II5jbP6EKkjrj00ye/I/oSOoKfJ2EyU=;
+        b=O8rvR0nEMju8fwgTseNAya4tLTsmY8JIxe2kvK8ZjCZnaUvqoPQWp1v/Ip7r/qYmKw
+         mB6Ar+UbLyCE7WYSvfvpcdBfFhy0142H1pRhmsltO3NKuA3qIqFRQ/D7E5fAc/xLrNag
+         UMqYIH1T9OVlk/necqAIgHZgwM3jnydPPkh7xIuTHpwOHRk3FOnCSoNU724omhLcYAaL
+         PBdK6Bl6h1jbwbPft5Hf9T1MyFEFxjfqWRgA2DLquwpVLMD1OJKNgxzMOOJkSWwpY3e4
+         aJQATLlRgQkn6c8YCGd+0jrWsO3/lGNKtgZiJIdS3q/P2/4RdS4paEZrWSKZN4d9It0c
+         6Xcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fggqU2VJFoa1II5jbP6EKkjrj00ye/I/oSOoKfJ2EyU=;
+        b=X8US2SsVpNmgbSwIZyIQ3dr+O5OkFqyl9M/nTj8NOSLZGB0Z///gu354GN4O57npQT
+         yeF2j/Tq5z9e2oF1/91CpjzNYb8H+fqGZSPHgIG+mWvqdiUoeP+32sVx3H2ylxl/tUf6
+         LYOmgKZRRXmKEmrlvarHG90QRMJixe4bDNzDbqygQM36sNhr6Yx+iMPwAkU2yXF2Xwbe
+         tin368vT25/KbichcYbc8v3pYgxjYcjCFDpVpotwzDeOcXc2JUmpGUpVT/MwEeRnvmw+
+         9X1NScpBhVR+MC9j/cnGhwaNwI38P0V01Ebx57EjI+KFRjNEyNFeyHyxARer3yfxeYfO
+         RqpQ==
+X-Gm-Message-State: AOAM530l4DFoFHyGuQzeefkAYqk+bWFBxQp4unhPk6x9/5fKKP/6DMdI
+        VgVVCAw03tlOB96Ik5ZeY38=
+X-Google-Smtp-Source: ABdhPJxgfXPu7/UAjd0GvabW4jd0LdfX9Almzwr0CBLxZ0VituRn9Tb3oAo2bHZtB4fY83OScYF5qw==
+X-Received: by 2002:a5e:8e0d:: with SMTP id a13mr13928796ion.1.1607423560329;
+        Tue, 08 Dec 2020 02:32:40 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id v22sm9890695ila.84.2020.12.08.02.32.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 02:32:38 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EC84D27C0054;
+        Tue,  8 Dec 2020 05:32:36 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 08 Dec 2020 05:32:36 -0500
+X-ME-Sender: <xms:RFbPX6p5M_nKO4Q-wim7jwZr2B2sd5LuFRjd-2mOYA7knGoHIOEeaA>
+    <xme:RFbPX41_OiMKuKLevKWpHKPILq5eV7HJo9RLUU2SI0AHK38cuAlRBAqJMSu7Fi7Rm
+    uIQhhmeLaC4b2ALaw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhepieejhfelvddtgeduhfffueegteevleeugfekvefhueduuedugfevvefhtedvuedv
+    necukfhppeduieejrddvvddtrddvrdduvdeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhs
+    ohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnh
+    hgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:RFbPXxBGV5JyVVWTEE8AodyCDKxxw0SMRJmdu49A_bvmF7E6aktlsw>
+    <xmx:RFbPX4eyoRiECXhuTK_BPVRlLB3oDA1rrspB6WM14kNGWv821Av5aQ>
+    <xmx:RFbPX-g4Sgd916HI7ouO9onF34rKvtCeWQJV1NTGQr-hWGIdv1Ciqg>
+    <xmx:RFbPX4cKd6DrxFecHl9ER_Pm0jACRWzfa_zM30c495pMm47Il9gATb9_SiI>
+Received: from localhost (unknown [167.220.2.126])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1D3FC24005B;
+        Tue,  8 Dec 2020 05:32:36 -0500 (EST)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [RFC lockdep 0/4] Fixes and self testcases for wait context detection
+Date:   Tue,  8 Dec 2020 18:31:08 +0800
+Message-Id: <20201208103112.2838119-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <978f0cb9-43d6-1ae5-e1ce-5ec4cc9fca12@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 03:19:06PM -0500, Liang, Kan wrote:
-> 
-> 
-> On 12/4/2020 6:27 PM, Jiri Olsa wrote:
-> > On Mon, Nov 30, 2020 at 09:27:57AM -0800, kan.liang@linux.intel.com wrote:
-> > 
-> > SNIP
-> > 
-> > > @@ -172,7 +172,7 @@ dump_raw_samples(struct perf_tool *tool,
-> > >   {
-> > >   	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
-> > >   	struct addr_location al;
-> > > -	const char *fmt;
-> > > +	const char *fmt, *field_sep;
-> > >   	if (machine__resolve(machine, &al, sample) < 0) {
-> > >   		fprintf(stderr, "problem processing %d event, skipping it.\n",
-> > > @@ -186,60 +186,41 @@ dump_raw_samples(struct perf_tool *tool,
-> > >   	if (al.map != NULL)
-> > >   		al.map->dso->hit = 1;
-> > > -	if (mem->phys_addr) {
-> > > -		if (symbol_conf.field_sep) {
-> > > -			fmt = "%d%s%d%s0x%"PRIx64"%s0x%"PRIx64"%s0x%016"PRIx64
-> > > -			      "%s%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
-> > > -		} else {
-> > > -			fmt = "%5d%s%5d%s0x%016"PRIx64"%s0x016%"PRIx64
-> > > -			      "%s0x%016"PRIx64"%s%5"PRIu64"%s0x%06"PRIx64
-> > > -			      "%s%s:%s\n";
-> > > -			symbol_conf.field_sep = " ";
-> > > -		}
-> > > -
-> > > -		printf(fmt,
-> > > -			sample->pid,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->tid,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->ip,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->addr,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->phys_addr,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->weight,
-> > > -			symbol_conf.field_sep,
-> > > -			sample->data_src,
-> > > -			symbol_conf.field_sep,
-> > > -			al.map ? (al.map->dso ? al.map->dso->long_name : "???") : "???",
-> > > -			al.sym ? al.sym->name : "???");
-> > > +	field_sep = symbol_conf.field_sep;
-> > 
-> > hum, what's the point of having field_sep?
-> 
-> 
-> To keep the fmt consistent.
-> 
-> The patch divides the "printf(fmt,..." into two part. In the first half
-> part, the symbol_conf.field_sep may be modified to " ";
-> In the second half part, we should not use the modified
-> symbol_conf.field_sep for the below check. The field_sep keeps the original
-> value and should be used.
+Hi Peter,
 
-ok, I missed it's being moified.. thanks
+Recently I looked into the wait context check feature and found some
+places could use fixes, besides a suite of test cases is also added to
+verify these fixes and future development.
 
-jirka
+Note: I'm not 100% sure all the expected results of the test cases are
+correct, please do have a look at the the comment of patch #4 in case I
+miss something subtle.
+
+Suggestion and comments are welcome!
+
+Regards,
+Boqun
+
+
+Boqun Feng (4):
+  lockdep/selftest: Make HARDIRQ context threaded
+  lockdep: Allow wait context checking with empty ->held_locks
+  rcu/lockdep: Annotate the rcu_callback_map with proper wait contexts
+  lockdep/selftest: Add wait context selftests
+
+ kernel/locking/lockdep.c |   6 +-
+ kernel/rcu/update.c      |   8 +-
+ lib/locking-selftest.c   | 233 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 244 insertions(+), 3 deletions(-)
+
+-- 
+2.29.2
 
