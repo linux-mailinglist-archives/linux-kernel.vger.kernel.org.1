@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31F72D2568
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC252D256C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgLHIJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:09:10 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:45190 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgLHIJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:09:10 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607414930; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=HVvW8//D2rnwst2clmB9T1kZp2OMdvbxOdz8wy3/iTE=;
- b=Y+ZT2Ph1JB4mwLrdmy1Fg/IK4cfmiGffZkdpTM+6aA8m/BhPFxzmKnlrpQ5WrpXfybhkYk6w
- KqdxVfFXCWKYVH4TbhTQaCb9Aj/uPMeFC/6HiGNkt+CmyK6COlhX/Jn8cAET7WU5WW4jUcUD
- OPTB7SA+02uV1+Z4WMRC2yX737U=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fcf3478ed9d5dfa896b8a9f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 08:08:24
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B35FAC43463; Tue,  8 Dec 2020 08:08:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CB59C433CA;
-        Tue,  8 Dec 2020 08:08:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5CB59C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1727916AbgLHIJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:09:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgLHIJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:09:39 -0500
+X-Gm-Message-State: AOAM531KqWTf1bliUheTV+JFQbgQKCdg9zvsnyFRXkQPt0688OgOdZNo
+        wh2znYJwOKLssJfFfmAAm+AND7yN0hWYf5pgYz0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607414938;
+        bh=LhPpJxC4F5Q3Y/fX73/+10L00v+eOApqEJLmH8dkajo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cpzu6RDtnB0yEkEvK7aYyfX1tX24iW65gKao2x8SM/84+WA1x0BAwUXuqCcnVbv+e
+         PeUt37/U84dLpYuRmZNeWe6ZwPEDOygOGBiWyHexzkBOu8QK+YdC4kuFyP9Hlo+B0c
+         N3hqLr1B8i3Pe1K3CGNcOSf75SsflNb9SRY79KVhR2BX6kPR5QRP5ynOGZ8Qh/O7xX
+         qhqsqNu2wXsuHr5CskyKAcQbUiRx35S5KDc/z83jqdoiDPAq1kbyU9IO9uE5RQqImf
+         Hp2jvkBe+9Mt0gVlmb7NKwtlX3kJCbYsZlwMi1VOkTord1YXXvTbh4GV+skabNq9zR
+         fZYZKwLJdw+Bw==
+X-Google-Smtp-Source: ABdhPJwe1x41l8I7WarLwBmKZ2PsxA0cxVWQLgoGcW+CucDX3vRQbuP0kctQJUR/b8oR9+p75TThDyXXV7jUAio3k2g=
+X-Received: by 2002:aa7:d593:: with SMTP id r19mr24099686edq.246.1607414937105;
+ Tue, 08 Dec 2020 00:08:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 065/141] airo: Fix fall-through warnings for Clang
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <b3c0f74f5b6e6bff9f1609b310319b6fdd9ee205.1605896059.git.gustavoars@kernel.org>
-References: <b3c0f74f5b6e6bff9f1609b310319b6fdd9ee205.1605896059.git.gustavoars@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201208080824.B35FAC43463@smtp.codeaurora.org>
-Date:   Tue,  8 Dec 2020 08:08:24 +0000 (UTC)
+References: <20201208043700.23098-1-quan@os.amperecomputing.com>
+ <20201208043700.23098-3-quan@os.amperecomputing.com> <CACPK8XdsbgKKr=icLxV=PZB9U03ZGWXQwCWgFvoqgCj9K_fbVg@mail.gmail.com>
+In-Reply-To: <CACPK8XdsbgKKr=icLxV=PZB9U03ZGWXQwCWgFvoqgCj9K_fbVg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 8 Dec 2020 09:08:45 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPc2wY+tcXpZRkdKodr+SgQSbW=+qWYU6E1t8CXE0D9iNA@mail.gmail.com>
+Message-ID: <CAJKOXPc2wY+tcXpZRkdKodr+SgQSbW=+qWYU6E1t8CXE0D9iNA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add device tree for Ampere's Mt.
+ Jade BMC
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+On Tue, 8 Dec 2020 at 05:42, Joel Stanley <joel@jms.id.au> wrote:
+>
+> On Tue, 8 Dec 2020 at 04:37, Quan Nguyen <quan@os.amperecomputing.com> wrote:
+> >
+> > The Mt. Jade BMC is an ASPEED AST2500-based BMC for the Mt. Jade
+> > hardware reference platform with Ampere's Altra Processor Family.
+> >
+> > Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> > Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> > Signed-off-by: Phong Vo <phong@os.amperecomputing.com>
+> > Signed-off-by: Thang Q. Nguyen <thang@os.amperecomputing.com>
+>
+> Thanks, I've applied this to the aspeed tree.
 
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of letting the code fall
-> through to the next case.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Did you review it already before (which would explain tags being there)?
 
-4 patches applied to wireless-drivers-next.git, thanks.
-
-48264b23fade airo: Fix fall-through warnings for Clang
-f48d7dccb3e4 rt2x00: Fix fall-through warnings for Clang
-0662fbebf4fb rtw88: Fix fall-through warnings for Clang
-18572b0b5493 zd1201: Fix fall-through warnings for Clang
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/b3c0f74f5b6e6bff9f1609b310319b6fdd9ee205.1605896059.git.gustavoars@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Best regards,
+Krzysztof
