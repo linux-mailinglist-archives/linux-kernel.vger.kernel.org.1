@@ -2,564 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19302D2A78
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921BF2D2A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729488AbgLHMO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:14:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
+        id S1729421AbgLHMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:16:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727524AbgLHMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:14:57 -0500
-Date:   Tue, 8 Dec 2020 21:14:11 +0900
+        id S1727550AbgLHMQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:16:30 -0500
+X-Gm-Message-State: AOAM531pCNf3+pt4/gxI7ev0HTiugt+kVRX+mWEA0Xc3ccWL5NzuNlxw
+        Q5DMJzmliyrBsBbl/PytXnxnVlcQgL24/EPkz3M=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607429655;
-        bh=reAqiJ4yz80XfZvNe68XrEKawPn513UBEdmtUQULeZ4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=indu95/XuY6fGS0WbUMpoSSLswgtz0mSIpLRXXD7pHyC9n4O6tBHOsSnRC4hUShIm
-         b+mRJb0EQVZlCXPnMAu9W67P4Mxu9NgK/dBD8R0NLZ8pZ1i10gcgd6zKraKFqmi7ZL
-         ybCu7ShSStRXfoMnVUFPJfVxvkRJ8tH5ws9z+C0pKuOPKZuuv/n4919xsqYNaZVUZ8
-         ZVRFP5TIyuLlgyJ5hJaxpvmcYY8YEmP0AfEbuHGWEEm8/xC+QkJEMHRk4OcxvBddDg
-         p54bpgGe2FeX2Pykm5+7ZnMoFRlf8c7i8KWW32j7nGvHs8OBG3d//YtsJVS3+HXW8q
-         w9CtiUm3/43vw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
- buffer timestamps
-Message-Id: <20201208211411.e41849908381eb493adce0f5@kernel.org>
-In-Reply-To: <20201201160656.7cc6a5e8@gandalf.local.home>
-References: <20201201160656.7cc6a5e8@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1607429749;
+        bh=K94MQ6q50UGiEvhj+VB0lG6N0jZujxUWTttppsr8gwM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ns4p/v7H7ScAMGSZF+uiL0GLrzuK92X4fsakgAnSLuAme/K5fEsEi38bY3jw803Wy
+         audkXq/WYB7RTMZ3yOuTK6onrxqVBtnoYqkkvLnvpNRPrQxrYcO6XAo70lbZp3Wa4T
+         9qu4teHx4OR4D7tI19aZUR6LPG7nQ4wU5rtl2vcxyqBk81XPqwKBpVKsGaiwHXIJuy
+         PuNNq9XDDyWTO1GKhaqTq1XoK2qrf9wdaOmxVotAI6FaDwC0nVzQIN5BYHWvkh+7Pl
+         TIDC46XqhgPtl/QkCcf02gs7jdiOHkHzlufEr692R+gOJKVmFAwvvzdy3POnIF8teL
+         9TV0RUdUG0tPw==
+X-Google-Smtp-Source: ABdhPJwYXzEbw5wojirREdrWvTDFdS68u6lSRc1TxQHV80oZ08BdPpLLWGJpTl+WAoAqOweiNLoKVC/CXI7Rr5nYmRU=
+X-Received: by 2002:a05:6808:9a9:: with SMTP id e9mr2451121oig.4.1607429748222;
+ Tue, 08 Dec 2020 04:15:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20201201213707.541432-1-samitolvanen@google.com>
+In-Reply-To: <20201201213707.541432-1-samitolvanen@google.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 8 Dec 2020 13:15:31 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+Message-ID: <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 16:06:56 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Dec 1, 2020 at 10:37 PM 'Sami Tolvanen' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> This patch series adds support for building the kernel with Clang's
+> Link Time Optimization (LTO). In addition to performance, the primary
+> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
+> to be used in the kernel. Google has shipped millions of Pixel
+> devices running three major kernel versions with LTO+CFI since 2018.
+>
+> Most of the patches are build system changes for handling LLVM
+> bitcode, which Clang produces with LTO instead of ELF object files,
+> postponing ELF processing until a later stage, and ensuring initcall
+> ordering.
+>
+> Note that arm64 support depends on Will's memory ordering patches
+> [1]. I will post x86_64 patches separately after we have fixed the
+> remaining objtool warnings [2][3].
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
+> [2] https://lore.kernel.org/lkml/20201120040424.a3wctajzft4ufoiw@treble/
+> [3] https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=objtool-vmlinux
+>
+> You can also pull this series from
+>
+>   https://github.com/samitolvanen/linux.git lto-v8
 
-> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> A bug was reported about the ftrace ring buffer going backwards:
-> 
-> Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
-> 
-> In debugging this code, I wrote a C program that uses libtracefs to enable
-> all events and function tracing (if it exits), and then read the raw ring
-> buffer binary data and make sure that all the events never go backwards. If
-> they do, then it does a dump of the ring buffer sub buffer page and shows
-> the layout of the events and their deltas.
-> 
-> This was a very useful tool, and can be used to make sure that the ring
-> buffer's timestamps are consistently monotonic.
+I've tried pull this into my randconfig test tree to give it a spin.
+So far I have
+not managed to get a working build out of it, the main problem so far being
+that it is really slow to build because the link stage only uses one CPU.
+These are the other issues I've seen so far:
 
-Yeah, this sounds good to me.
+- one build seems to take even longer to link. It's currently at 35GB RAM
+  usage and 40 minutes into the final link, but I'm worried it might
+not complete
+  before it runs out of memory.  I only have 128GB installed, and google-chrome
+  uses another 30GB of that, and I'm also doing some other builds in parallel.
+  Is there a minimum recommended amount of memory for doing LTO builds?
 
-> 
-> Adding this to the ftrace selftests seems to be a way that this can be
-> tested more often. But this would introduce the first binary code to the
-> ftracetests.
+- One build failed with
+ ld.lld -EL -maarch64elf -mllvm -import-instr-limit=5 -r -o vmlinux.o
+-T .tmp_initcalls.lds --whole-archive arch/arm64/kernel/head.o
+init/built-in.a usr/built-in.a arch/arm64/built-in.a kernel/built-in.a
+certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
+security/built-in.a crypto/built-in.a block/built-in.a
+arch/arm64/lib/built-in.a lib/built-in.a drivers/built-in.a
+sound/built-in.a net/built-in.a virt/built-in.a --no-whole-archive
+--start-group arch/arm64/lib/lib.a lib/lib.a
+./drivers/firmware/efi/libstub/lib.a --end-group
+  "ld.lld: error: arch/arm64/kernel/head.o: invalid symbol index"
+  after about 30 minutes
 
-No problem. I think it is better to be placed under ftracetest/bin/ and
-add a PATH before running testcases.
+- CONFIG_CPU_BIG_ENDIAN doesn't seem to work with lld, and LTO
+  doesn't work with ld.bfd.
+  I've added a CPU_LITTLE_ENDIAN dependency to
+  ARCH_SUPPORTS_LTO_CLANG{,THIN}
 
-> To make sure that the tests still work on embedded devices (where a
-> compiler may not even exist), and also since this binary incorporates the
-> yet-to-be-released libtracefs library, if the make fails, the test exits
-> with UNTESTED. The UNTESTED is documented as being a place holder which
-> this would be if the make does not work.
+- one build failed with
+  "ld.lld: error: Never resolved function from blockaddress (Producer:
+'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
+  Not sure how to debug this
 
-Hmm, in some embedded environment, we may not have make nor gcc.
-So it would be better to be build in the kselftest build process as similar
-to the other kselftests.
+- one build seems to have dropped all symbols the string operations
+from vmlinux,
+  so while the link goes through, modules cannot be loaded:
+ ERROR: modpost: "memmove" [drivers/media/rc/rc-core.ko] undefined!
+ ERROR: modpost: "memcpy" [net/wireless/cfg80211.ko] undefined!
+ ERROR: modpost: "memcpy" [net/8021q/8021q.ko] undefined!
+ ERROR: modpost: "memset" [net/8021q/8021q.ko] undefined!
+ ERROR: modpost: "memcpy" [net/unix/unix.ko] undefined!
+ ERROR: modpost: "memset" [net/sched/cls_u32.ko] undefined!
+ ERROR: modpost: "memcpy" [net/sched/cls_u32.ko] undefined!
+ ERROR: modpost: "memset" [net/sched/sch_skbprio.ko] undefined!
+ ERROR: modpost: "memcpy" [net/802/garp.ko] undefined!
+ I first thought this was related to a clang-12 bug I saw the other day, but
+ this also happens with clang-11
 
-What about putting the source code under ftracetest/src/. For the embedded
-devices, it can be built with cross-tools (and make it static binary if
-needed) and install it under ftracetest/bin. If we have no cross-build
-tool etc. we just skip building the binary under ftracetest/bin. And if 
-the testcase finds there is no binary, it just returns UNRESOLVED or UNTESTED.
+- many builds complain about thousands of duplicate symbols in the kernel, e.g.
+  ld.lld: error: duplicate symbol: qrtr_endpoint_post
+ >>> defined in net/qrtr/qrtr.lto.o
+ >>> defined in net/qrtr/qrtr.o
+ ld.lld: error: duplicate symbol: init_module
+ >>> defined in crypto/842.lto.o
+ >>> defined in crypto/842.o
+ ld.lld: error: duplicate symbol: init_module
+ >>> defined in net/netfilter/nfnetlink_log.lto.o
+ >>> defined in net/netfilter/nfnetlink_log.o
+ ld.lld: error: duplicate symbol: vli_from_be64
+ >>> defined in crypto/ecc.lto.o
+ >>> defined in crypto/ecc.o
+ ld.lld: error: duplicate symbol: __mod_of__plldig_clk_id_device_table
+ >>> defined in drivers/clk/clk-plldig.lto.o
+ >>> defined in drivers/clk/clk-plldig.o
 
-(currently I returns UNRESOLVED when the test target kmodule is not found)
+Not sure if these are all known issues. If there is one you'd like me try
+take a closer look at for finding which config options break it, I can try
 
-Thank you,
-
-> 
-> Thoughts?
-> 
-> Soon-to-be-signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/Makefile b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
-> new file mode 100644
-> index 000000000000..86f96b6fed9f
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
-> @@ -0,0 +1,32 @@
-> +
-> +LD_PATH := -L/usr/local/lib/tracefs/ -L/usr/local/lib/traceevent
-> +
-> +TARGETS = test-ring-buffer
-> +
-> +PKG_CONFIG = pkg-config
-> +TRACEFS_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtracefs 2>/dev/null)
-> +TRACEFS_LIBS = $(shell $(PKG_CONFIG) --libs libtracefs 2>/dev/null)
-> +
-> +TRACEEVENT_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtraceevent 2>/dev/null)
-> +TRACEEVENT_LIBS = $(shell $(PKG_CONFIG) --libs libtraceevent 2>/dev/null)
-> +
-> +ifeq ("$(TRACEFS_INCLUDES)","")
-> +$(error no libtracefs found)
-> +endif
-> +
-> +ifeq ("$(TRACEEVENT_INCLUDES)","")
-> +$(error no libtraceevent found)
-> +endif
-> +
-> +LIBS = $(TRACEFS_LIBS) $(TRACEEVENT_LIBS) -ldl
-> +
-> +CFLAGS := $(TRACEFS_INCLUDES) $(TRACEEVENT_INCLUDES)
-> +
-> +all: $(TARGETS)
-> +
-> +test-ring-buffer: test-ring-buffer.c
-> +	gcc -g -Wall -o $@ $(CFLAGS) $^ $(LIBS)
-> +
-> +clean:
-> +	$(RM) $(TARGETS) *.o
-> +
-> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
-> new file mode 100644
-> index 000000000000..af823e2102ff
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
-> @@ -0,0 +1,399 @@
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <stdarg.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <signal.h>
-> +#include <stdbool.h>
-> +#include <sys/types.h>
-> +#include <fcntl.h>
-> +
-> +#include <tracefs.h>
-> +#include <kbuffer.h>
-> +
-> +typedef long long u64;
-> +
-> +static char *THIS_NAME;
-> +static struct tep_handle *tep;
-> +
-> +static void __vdie(const char *fmt, va_list ap, int err)
-> +{
-> +	int ret = errno;
-> +
-> +	if (err && errno)
-> +		perror(THIS_NAME);
-> +	else
-> +		ret = -1;
-> +
-> +	fprintf(stderr, "  ");
-> +	vfprintf(stderr, fmt, ap);
-> +
-> +	fprintf(stderr, "\n");
-> +	exit(ret);
-> +}
-> +
-> +void die(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	__vdie(fmt, ap, 0);
-> +	va_end(ap);
-> +}
-> +
-> +void pdie(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	__vdie(fmt, ap, 1);
-> +	va_end(ap);
-> +}
-> +
-> +static void usage(char **argv)
-> +{
-> +	char *arg = argv[0];
-> +	char *p = arg+strlen(arg);
-> +
-> +	while (p >= arg && *p != '/')
-> +		p--;
-> +	p++;
-> +
-> +	printf("\nusage: %s timeout\n"
-> +	       "\n",p);
-> +	exit(-1);
-> +}
-> +
-> +static int tfd;
-> +static int result;
-> +static int done = 1;
-> +
-> +static void stop(int sig)
-> +{
-> +	write(tfd, "0", 1);
-> +	done = 0;
-> +}
-> +
-> +static struct last_info {
-> +	u64			timestamp;
-> +	void 			*content;
-> +	void 			*content_next;
-> +	unsigned long		page;
-> +	int			index;
-> +	int			irq;
-> +	int			sirq;
-> +} *info;
-> +
-> +static int page_size;
-> +
-> +static void *get_meta_data(struct tep_record *record)
-> +{
-> +	void *p = record->data;
-> +	int type_len;
-> +
-> +	if (record->size > 120) {
-> +		int size;
-> +
-> +		p -= 4;
-> +		size = *(unsigned int *)p;
-> +		p -= 4;
-> +		type_len = *(unsigned int *)p;
-> +		if (size != record->size + 4)
-> +			die("Expected size %d but found %d (%d)\n",
-> +			    record->size + 4,
-> +			    size, type_len);
-> +	} else
-> +		p -= 4;
-> +
-> +	return p;
-> +}
-> +
-> +static void init_content(struct last_info *info, int cpu,
-> +			 struct tep_record *record)
-> +{
-> +	int type_len;
-> +	void *p;
-> +
-> +	p = get_meta_data(record);
-> +	p -= 8;
-> +
-> +	type_len = *(unsigned int *)p;
-> +	/* FIXME for big endian */
-> +	type_len = type_len & ((1 << 5) - 1);
-> +	switch (type_len) {
-> +	case KBUFFER_TYPE_TIME_EXTEND:
-> +	case KBUFFER_TYPE_TIME_STAMP:
-> +		p -= 8;
-> +		break;
-> +	}
-> +	p -= sizeof(long);
-> +	memcpy(info[cpu].content, p, (record->data - p) + record->size);
-> +	info[cpu].page = (unsigned long)p;
-> +	info[cpu].content_next = record->data + record->size;
-> +}
-> +
-> +static void update_content(struct last_info *info, int cpu,
-> +			   struct tep_record *record)
-> +{
-> +	int size = (record->data + record->size) - info[cpu].content_next;
-> +	int start = info[cpu].content_next - (void *)info[cpu].page;
-> +
-> +	memcpy(info[cpu].content + start, (void *)info[cpu].page + start, size);
-> +	info[cpu].content_next = record->data + record->size;
-> +}
-> +
-> +static int read_kbuf_record(struct kbuffer *kbuf, struct tep_record *record)
-> +{
-> +	unsigned long long ts;
-> +	void *ptr;
-> +
-> +	ptr = kbuffer_read_event(kbuf, &ts);
-> +	if (!ptr || !record)
-> +		return -1;
-> +
-> +	memset(record, 0, sizeof(*record));
-> +	record->ts = ts;
-> +	record->size = kbuffer_event_size(kbuf);
-> +	record->record_size = kbuffer_curr_size(kbuf);
-> +	record->cpu = 0;
-> +	record->data = ptr;
-> +	record->ref_count = 1;
-> +
-> +	kbuffer_next_event(kbuf, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned get_delta(void *p)
-> +{
-> +	return (*(unsigned *)p & ((1<<27)-1) << 5) >> 5;
-> +}
-> +
-> +static unsigned long long get_extend_delta(void *p)
-> +{
-> +	unsigned long long delta;
-> +	unsigned long long extend;
-> +
-> +	delta = get_delta(p);
-> +	p += 4;
-> +	extend = *(unsigned *)p;
-> +
-> +	return (extend << 27) + delta;
-> +}
-> +
-> +static void check_meta(void *p, bool show)
-> +{
-> +	int type_len;
-> +
-> +	type_len = *(unsigned *)p & ((1<<5)-1);
-> +	if (show)
-> +		printf(" type_len=%d\n", type_len);
-> +	switch (type_len) {
-> +	case KBUFFER_TYPE_TIME_EXTEND:
-> +		printf("   TIME_EXTEND: delta: %lld\n", get_extend_delta(p));
-> +		break;
-> +	case KBUFFER_TYPE_TIME_STAMP:
-> +		printf("   TIME_STAMP: stamp: %lld\n", get_extend_delta(p));
-> +		break;
-> +	}
-> +}
-> +
-> +static void dump_content(struct last_info *info, int cpu,
-> +			 struct tep_record *this_record)
-> +{
-> +	struct tep_record record;
-> +	struct kbuffer *kbuf;
-> +	enum kbuffer_long_size kls;
-> +	int last = info[cpu].content_next - (void *)info[cpu].page;
-> +	int ret;
-> +	void *p;
-> +
-> +	switch (sizeof(long)) {
-> +	case 4:
-> +		kls = KBUFFER_LSIZE_4;
-> +		break;
-> +	default:
-> +		kls = KBUFFER_LSIZE_8;
-> +		break;
-> +	}
-> +
-> +
-> +	kbuf = kbuffer_alloc(kls, KBUFFER_ENDIAN_LITTLE);
-> +	if (!kbuf)
-> +		die("Allocating kbuffer");
-> +	kbuffer_load_subbuffer(kbuf, info[cpu].content);
-> +
-> +	p = info[cpu].content;
-> +
-> +	printf(" [%lld] PAGE TIME STAMP\n", *(unsigned long long *)p);
-> +
-> +	p += 8 + sizeof(long);
-> +	check_meta(p, true);
-> +
-> +	while (!(ret = read_kbuf_record(kbuf, &record))) {
-> +		struct tep_event *event;
-> +		int id;
-> +
-> +		id = tep_data_type(tep, &record);
-> +		event = tep_find_event(tep, id);
-> +		if (!event) {
-> +			printf("Failed to find event!\n");
-> +			continue;
-> +		}
-> +
-> +		p = get_meta_data(&record);
-> +
-> +		printf(" [%lld] delta:%d (%d)\n", record.ts, get_delta(p), record.size);
-> +
-> +		if (info[cpu].content + last == record.data + record.size)
-> +			break;
-> +
-> +		check_meta(record.data + record.size, false);
-> +	}
-> +	kbuffer_free(kbuf);
-> +
-> +	if (!this_record)
-> +		return;
-> +
-> +	printf("\nDumping record buffer:\n");
-> +
-> +	init_content(info, cpu, this_record);
-> +	dump_content(info, cpu, NULL);
-> +}
-> +
-> +static int callback(struct tep_event *event,
-> +		    struct tep_record *record,
-> +		    int cpu, void *context)
-> +{
-> +	static int done;
-> +	int index;
-> +	int irq, sirq;
-> +	int flags;
-> +
-> +	if (done)
-> +		return 1;
-> +
-> +	if (!info[cpu].content) {
-> +		info[cpu].content = calloc(1, page_size);
-> +		if (!info[cpu].content)
-> +			die("Allocating content");
-> +	}
-> +	if (!info[cpu].page)
-> +		init_content(info, cpu, record);
-> +
-> +	index = (unsigned long)record->data - info[cpu].page;
-> +
-> +	if (index < 0) {
-> +		printf("HERE!\n");
-> +		info[cpu].page = (unsigned long)record->data;
-> +		info[cpu].index += index;
-> +		index = 0;
-> +	}
-> +
-> +	flags = tep_data_flags(event->tep, record);
-> +	irq = !!(flags & TRACE_FLAG_HARDIRQ);
-> +	sirq = !!(flags & TRACE_FLAG_SOFTIRQ);
-> +
-> +	if (info[cpu].timestamp > record->ts) {
-> +		stop(0);
-> +		printf("Record on cpu %d went backwards: %lld to %lld\n"
-> +		       "  last index = %d : this index = %d\n"
-> +		       "  last softirq = %d : last hardirq = %d\n",
-> +		       cpu, info[cpu].timestamp, record->ts,
-> +		       info[cpu].index, index, info[cpu].sirq, info[cpu].irq);
-> +		dump_content(info, cpu, record);
-> +		done = 1;
-> +		result = -1;
-> +		return 1;
-> +	}
-> +
-> +	if (info[cpu].content_next > record->data)
-> +		init_content(info, cpu, record);
-> +	else
-> +		update_content(info, cpu, record);
-> +
-> +	info[cpu].timestamp = record->ts;
-> +	if (info[cpu].index > index) {
-> +		info[cpu].sirq = sirq;
-> +		info[cpu].irq = irq;
-> +	} else {
-> +		info[cpu].sirq |= sirq;
-> +		info[cpu].irq |= irq;
-> +	}
-> +	info[cpu].index = index;
-> +	return 0;
-> +}
-> +
-> +static void test_buffer(struct tep_handle *tep, int timeout)
-> +{
-> +	signal(SIGALRM, stop);
-> +	alarm(timeout);
-> +
-> +	tracefs_iterate_raw_events(tep, NULL, callback, NULL);
-> +}
-> +
-> +int main (int argc, char **argv)
-> +{
-> +	char *current_tracer;
-> +	char *events_enable;
-> +	char *tracing_on;
-> +	int time;
-> +	int cpus;
-> +	int efd;
-> +	int cfd;
-> +
-> +	THIS_NAME = argv[0];
-> +
-> +	if (argc < 2)
-> +		usage(argv);
-> +
-> +	page_size = getpagesize();
-> +
-> +	time = atoi(argv[1]);
-> +	if (time <= 0)
-> +		usage(argv);
-> +
-> +	tep = tracefs_local_events(NULL);
-> +	if (!tep)
-> +		pdie("Error loading events");
-> +
-> +	events_enable = tracefs_instance_get_file(NULL, "events/enable");
-> +	current_tracer = tracefs_instance_get_file(NULL, "current_tracer");
-> +	tracing_on = tracefs_instance_get_file(NULL, "tracing_on");
-> +
-> +	if (!events_enable || !current_tracer || !tracing_on)
-> +		pdie("Allocating strings");
-> +
-> +	cpus = sysconf(_SC_NPROCESSORS_CONF);
-> +
-> +	info = calloc(cpus, sizeof(*info));
-> +	if (!info)
-> +		pdie("Allocating per cpu info");
-> +
-> +	efd = open(events_enable, O_WRONLY);
-> +	if (efd < 0)
-> +		pdie(events_enable);
-> +
-> +	cfd = open(current_tracer, O_WRONLY);
-> +	if (cfd < 0)
-> +		pdie(current_tracer);
-> +
-> +	tfd = open(tracing_on, O_WRONLY);
-> +	if (tfd < 0)
-> +		pdie(current_tracer);
-> +
-> +	write(efd, "1", 1);
-> +	write(cfd, "function", 8);
-> +
-> +	test_buffer(tep, time);
-> +
-> +	write(efd, "0", 1);
-> +	write(cfd, "nop", 3);
-> +	write(tfd, "1", 1);
-> +
-> +	close(efd);
-> +	close(cfd);
-> +	close(tfd);
-> +	exit(result);
-> +}
-> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
-> new file mode 100644
-> index 000000000000..05f628124774
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
-> @@ -0,0 +1,16 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# description: ftrace - test ring buffer timestamps
-> +
-> +cd $TOP_DIR/test-ring-buffer
-> +if ! make ; then
-> +	cd $TRACING_DIR
-> +	exit_untested
-> +fi
-> +
-> +./test-ring-buffer 10
-> +
-> +make clean
-> +
-> +cd $TRACING_DIR
-> +
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+     Arnd
