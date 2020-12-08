@@ -2,118 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46ED2D2E49
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5AE2D2E4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgLHPa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:30:27 -0500
-Received: from mga12.intel.com ([192.55.52.136]:62156 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729558AbgLHPa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:30:27 -0500
-IronPort-SDR: qZzhVJ/fxRwqL1s2RJGQ8kRr2G+qe8mCA8m7DUp9w1ecW3+njBnRIPqLmO/oIaHAooPhhtFJo/
- tasY78doIKJg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153144356"
-X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
-   d="scan'208";a="153144356"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 07:29:46 -0800
-IronPort-SDR: OBO1HLnRiQahv4WeNDC7lYfTTpQmyfLjUHopoCAvqYVvQ/Gv1yQ2eIt6afr+/2CPZHX2eNl6AA
- vqwzEBxEgp+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
-   d="scan'208";a="437415330"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Dec 2020 07:29:46 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Dec 2020 07:29:46 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Dec 2020 07:29:46 -0800
-Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
- ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.1713.004;
- Tue, 8 Dec 2020 07:29:45 -0800
-From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
-To:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "zou_wei@huawei.com" <zou_wei@huawei.com>
-CC:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
- mmio_range_devid_1 with static keyword
-Thread-Topic: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
- mmio_range_devid_1 with static keyword
-Thread-Index: AQHWzXXi1lycwfu5hEyc2e0GCUwWdKnt2IQAgAAAloA=
-Date:   Tue, 8 Dec 2020 15:29:45 +0000
-Message-ID: <02ba6732cb5e78c0a09840a64b6c422b89f744e5.camel@intel.com>
-References: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
-         <194d5a3c2c0f99345454004eb81c08d94181b7d7.camel@intel.com>
-         <179b9e9c-5f38-b6e9-2135-636bdb275989@redhat.com>
-In-Reply-To: <179b9e9c-5f38-b6e9-2135-636bdb275989@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.1 (3.38.1-1.fc33) 
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3608E09304E13F4BBADA042EEF6E6A07@intel.com>
-Content-Transfer-Encoding: base64
+        id S1730124AbgLHPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730115AbgLHPbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:31:32 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BCAC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:30:51 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id ce23so21381050ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bJHsD7wusQYPoSnayseCrxu6qN7hzp3QYIwsAak7I3I=;
+        b=bzJj91XMnvArriI3I1poli3kf9PSZjAHzPXbnwtMGmfHPoHARHfic9GH5/nSP6a21N
+         FE0e4E4o14IYYLgzGDOeUGxAr/H4n4rNvp9l/rNuOt1nqkLKOuG5qrvmRI6NMhIbSeOv
+         6Qhl7o2zrzyqqfkYQradnD/t6hU2VHaH02kjrhx72k2A6iqJKoNGyEfKBadcd+R0DXJc
+         d30xQrl/deFB438A12OgexfIqN7N9gGP1kVJIHUmkGsd+YEZPQ36W+9euOBd9SF5EDHQ
+         JC8PWXJM5LKf811U4haUANBlLXhAs20BYsEj3TnU29+72zG96PGpBCPc/My0MJaUdesw
+         JMZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bJHsD7wusQYPoSnayseCrxu6qN7hzp3QYIwsAak7I3I=;
+        b=cY3Zd6aLgkQrZCPO1/LfC9rrN1xAy6sdGPAXjalU4GoIjaxakB3Q/4+f2bpVzv3W3g
+         3Ah6aEmr5O+MMJpP01gAvbn6GLtEKB2aaGUc+eKNTslSUaQGHVhUErSJuCaXVYwI62H+
+         oDeKX9p8KDLn4mCUitOthFT6CVcA6p3pkzvIdYlkhGLokdOxN4ppRXhE+aq4u4dSVbH7
+         WSLTwYMvfsezoW/c2Hb3ZCK4Yper0yfPtEzLhuk32yV15wW1NDSIh++szAyxlQsIbRol
+         4i4WPs0f5ttfh69BmnMZ8zTtJ960nmb19+WOAKkvLCUBOXvYJu8T9b/13qy/tuObY0Ki
+         94NA==
+X-Gm-Message-State: AOAM5302mKQ19jZlaagThfvGXb3pPheJkIv3pEMDUONHypKQKeKB71Ib
+        UBEenpcYP939zr/eKq9nANxnjw==
+X-Google-Smtp-Source: ABdhPJyEdIVR5McQZGlRUMGSoMxBnErGu7+TVm5gy13H7lFhayHXkqsjZ4vtCsP1Q4frlXzHhOsLHQ==
+X-Received: by 2002:a17:906:7aca:: with SMTP id k10mr23128906ejo.215.1607441450423;
+        Tue, 08 Dec 2020 07:30:50 -0800 (PST)
+Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b])
+        by smtp.gmail.com with ESMTPSA id z9sm16233427eju.123.2020.12.08.07.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 07:30:49 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amitk@kernel.org
+Subject: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+Date:   Tue,  8 Dec 2020 16:30:43 +0100
+Message-Id: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTA4IGF0IDE2OjI3ICswMTAwLCBIYW5zIGRlIEdvZWRlIHdyb3RlOg0K
-PiBIaSwNCj4gDQo+IE9uIDEyLzgvMjAgNDoyMiBQTSwgUGFuZHJ1dmFkYSwgU3Jpbml2YXMgd3Jv
-dGU6DQo+ID4gT24gVHVlLCAyMDIwLTEyLTA4IGF0IDIwOjI4ICswODAwLCBab3UgV2VpIHdyb3Rl
-Og0KPiA+ID4gRml4IHRoZSBmb2xsb3dpbmcgc3BhcnNlIHdhcm5pbmdzOg0KPiA+ID4gDQo+ID4g
-PiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbF9zcGVlZF9zZWxlY3RfaWYvaXNzdF9pZl9tbWlv
-LmM6MjM6MjQ6DQo+ID4gPiB3YXJuaW5nOiBzeW1ib2wgJ21taW9fcmFuZ2VfZGV2aWRfMCcgd2Fz
-IG5vdCBkZWNsYXJlZC4gU2hvdWxkIGl0DQo+ID4gPiBiZQ0KPiA+ID4gc3RhdGljPw0KPiA+ID4g
-ZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWxfc3BlZWRfc2VsZWN0X2lmL2lzc3RfaWZfbW1pby5j
-OjI4OjI0Og0KPiA+ID4gd2FybmluZzogc3ltYm9sICdtbWlvX3JhbmdlX2RldmlkXzEnIHdhcyBu
-b3QgZGVjbGFyZWQuIFNob3VsZCBpdA0KPiA+ID4gYmUNCj4gPiA+IHN0YXRpYz8NCj4gPiA+IA0K
-PiA+IFllc3RlcmRheSBJIHNlbnQgYSBwYXRjaCAiW1BBVENIIHYyIDIvM10gcGxhdGZvcm0veDg2
-OiBJU1NUOiBBbGxvdw0KPiA+IGNvbmZpZ3VyYWJsZSBvZmZzZXQgcmFuZ2UiIHRvIGZpeC4NCj4g
-DQo+IEFuZCBJIHJlcGxpZWQgdG8gdGhhdCB2MiB3aXRoIHRoZSBmb2xsb3dpbmc6DQo+IA0KPiAi
-SSd2ZSBhbHJlYWR5IGFkZGVkIHYxIG9mIHRoZXNlIHRvIHRoZSBmb3ItbmV4dCBicmFuY2ggb2Y6
-DQo+IA0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9w
-ZHg4Ni9wbGF0Zm9ybS1kcml2ZXJzLXg4Ni5naXQvDQo+IA0KPiBQbGVhc2Ugc2VuZCB0aGUgY2hh
-bmdlcyBpbiB0aGlzIHYyIGFzIChhKSBmb2xsb3ctdXANCj4gcGF0Y2goZXMpLiINCj4gDQo+IGh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BsYXRmb3JtLWRyaXZlci14ODYvMmY2NjNkODktMTg0Yi1m
-NTJlLTYxNTYtZjQ4NTIwNWYyN2Y1QHJlZGhhdC5jb20vVC8jdA0KPiANCj4gQnV0IEkgZ3Vlc3Mg
-eW91IG1heSBub3QgaGF2ZSBzZWVuIHRoaXMgYmVjYXVzZSBJbnRlbCdzIG1haWwtc2VydmVycw0K
-PiBzZWVtIHRvIGhhdmUgZ29uZSBjb21wbGV0ZWx5IGZvb2JhciBsYXRlbHkgYW5kIGFyZSBib3Vu
-Y2luZyBtb3N0DQo+IG9mIG15IGVtYWlscyBpdCBzZWVtcy4gSSBzdHJvbmdseSBzdWdnZXN0IHRo
-YXQgeW91IHN1YnNjcmliZSB0bw0KPiB0aGUgcGxhdGZvcm0tZHJpdmVyLXg4NiBsaXN0cywgc28g
-dGhhdCB5b3UgYXQgbGVhc3QgZ2V0IHJlcGxpZXMNCj4gdG8geW91ciBwYXRjaGVzIHRocm91Z2gg
-dGhlIGxpc3QuDQo+IA0KPiBTbyBhcmUgdGhlIGNoYW5nZXMgaW4gdGhpcyBwYXRjaCBmcm9tIFpv
-dSBXZWkgdGhlIG9ubHkgY2hhbmdlcyBpbiB2Mg0KPiBvZiB5b3VyIElTU1QgY2hhbmdlcz8gSWYg
-dGhhdCBpcyB0aGUgY2FzZSB0aGVuIEknbGwganVzdCBtZXJnZQ0KPiBab3UgV2VpJ3MgcGF0Y2gg
-YW5kIHRoZW4gd2UncmUgZG9uZS4NCkZpbmUgd2l0aCBtZS4gSnVzdCBtZXJnZSBXZWkncyBwYXRj
-aC4NCg0KVGhhbmtzLA0KU3Jpbml2YXMNCg0KDQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gSGFucw0K
-PiANCj4gDQo+IA0KPiA+ID4gU2lnbmVkLW9mZi1ieTogWm91IFdlaSA8em91X3dlaUBodWF3ZWku
-Y29tPg0KPiA+ID4gLS0tDQo+ID4gPiDCoGRyaXZlcnMvcGxhdGZvcm0veDg2L2ludGVsX3NwZWVk
-X3NlbGVjdF9pZi9pc3N0X2lmX21taW8uYyB8IDQNCj4gPiA+ICsrLS0NCj4gPiA+IMKgMSBmaWxl
-IGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPiA+IA0KPiA+ID4g
-ZGlmZiAtLWdpdA0KPiA+ID4gYS9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbF9zcGVlZF9zZWxl
-Y3RfaWYvaXNzdF9pZl9tbWlvLmMNCj4gPiA+IGIvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWxf
-c3BlZWRfc2VsZWN0X2lmL2lzc3RfaWZfbW1pby5jDQo+ID4gPiBpbmRleCAyOTA2Y2ZlLi5mZjQ5
-MDI1IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWxfc3BlZWRf
-c2VsZWN0X2lmL2lzc3RfaWZfbW1pby5jDQo+ID4gPiArKysgYi9kcml2ZXJzL3BsYXRmb3JtL3g4
-Ni9pbnRlbF9zcGVlZF9zZWxlY3RfaWYvaXNzdF9pZl9tbWlvLmMNCj4gPiA+IEBAIC0yMCwxMiAr
-MjAsMTIgQEAgc3RydWN0IGlzc3RfbW1pb19yYW5nZSB7DQo+ID4gPiDCoMKgwqDCoMKgwqDCoMKg
-aW50IGVuZDsNCj4gPiA+IMKgfTsNCj4gPiA+IMKgDQo+ID4gPiAtc3RydWN0IGlzc3RfbW1pb19y
-YW5nZSBtbWlvX3JhbmdlX2RldmlkXzBbXSA9IHsNCj4gPiA+ICtzdGF0aWMgc3RydWN0IGlzc3Rf
-bW1pb19yYW5nZSBtbWlvX3JhbmdlX2RldmlkXzBbXSA9IHsNCj4gPiA+IMKgwqDCoMKgwqDCoMKg
-wqB7MHgwNCwgMHgxNH0sDQo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgezB4MjAsIDB4RDB9LA0KPiA+
-ID4gwqB9Ow0KPiA+ID4gwqANCj4gPiA+IC1zdHJ1Y3QgaXNzdF9tbWlvX3JhbmdlIG1taW9fcmFu
-Z2VfZGV2aWRfMVtdID0gew0KPiA+ID4gK3N0YXRpYyBzdHJ1Y3QgaXNzdF9tbWlvX3JhbmdlIG1t
-aW9fcmFuZ2VfZGV2aWRfMVtdID0gew0KPiA+ID4gwqDCoMKgwqDCoMKgwqDCoHsweDA0LCAweDE0
-fSwNCj4gPiA+IMKgwqDCoMKgwqDCoMKgwqB7MHgyMCwgMHgxMUN9LA0KPiA+ID4gwqB9Ow0KPiA+
-IA0KPiANCg0K
+The passive file in sysfs forces the usage of a passive trip point set
+by the userspace when a broken BIOS does not provide the mitigation
+temperature for such thermal zone. The hardware evolved a lot since
+2008 as a good thermal management is no longer an option.
+
+Linux on the other side also provides now a way to load fixed ACPI
+table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
+could be added there.
+
+Set the option obsolete and plan to remove it, so the corresponding
+code can be removed from the core code and allow more cleanups the
+thermal framework deserves.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ Documentation/ABI/obsolete/sysfs-thermal-passive | 13 +++++++++++++
+ drivers/thermal/thermal_sysfs.c                  |  2 ++
+ 2 files changed, 15 insertions(+)
+ create mode 100644 Documentation/ABI/obsolete/sysfs-thermal-passive
+
+diff --git a/Documentation/ABI/obsolete/sysfs-thermal-passive b/Documentation/ABI/obsolete/sysfs-thermal-passive
+new file mode 100644
+index 000000000000..2510724cc165
+--- /dev/null
++++ b/Documentation/ABI/obsolete/sysfs-thermal-passive
+@@ -0,0 +1,13 @@
++What:		/sys/class/thermal/thermal_zone*/passive
++Date:		December 2008
++KernelVersion:	2.6.28
++Contact:	Daniel Lezcano <daniel.lezcano@linaro.org>
++Description:
++
++  The passive file in sysfs forces the usage of a passive trip point
++  set by the userspace when a broken BIOS does not provide the
++  mitigation temperature for such thermal zone. However, the Linux
++  kernel evolved a lot since 2008 as well as the hardware and it is
++  able to manage correctly the thermal envelope. It does also provide
++  a way to load fixed ACPI table via the option ACPI_TABLE_UPGRADE, so
++  additionnal trip point could be added there.
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index 0866e949339b..578099b520b1 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -232,6 +232,8 @@ passive_store(struct device *dev, struct device_attribute *attr,
+ 	if (state && state < 1000)
+ 		return -EINVAL;
+ 
++	pr_warn("%s: Consider the 'passive' option obsolete\n", tz->type);
++
+ 	if (state && !tz->forced_passive) {
+ 		if (!tz->passive_delay)
+ 			tz->passive_delay = 1000;
+-- 
+2.25.1
+
