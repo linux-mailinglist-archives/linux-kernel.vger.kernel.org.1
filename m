@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4041F2D2E96
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586D82D2EA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730113AbgLHPre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:47:34 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5340 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729665AbgLHPre (ORCPT
+        id S1730118AbgLHPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729938AbgLHPvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:47:34 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcf9fee0001>; Tue, 08 Dec 2020 07:46:54 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
- 2020 15:46:53 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 8 Dec 2020 15:46:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ma1ZbKQfWW/uXrKeIrzKsxL9TbAMFck/w3GTFiFSmVfy20ZVqQV5rVKicEMxwlXV2+Nk59ofd6oDlCLfLK5FLfzAF9ladQqhmlSbshxNYH26hZHOPT90TBKVEWXaX2/6s7YRAUyLx2JQ0psxCsfM6jDCcalHk5w2JnabuCIuFvowA9qMVmeOOxFXK/Vgdo+2A5OGwo6gHZpRd2LTKHsDuPLYHKIeJUDHKOcz9kn22LkbKuSx2rBhbryf416I0JuZKw0icmjQ4rGJGuN0HSff1/RdzZrZVlrDnYX4CUYu5nWHCC8GvDujaN0zqqM2nzTNycJr9j6cFV/83MXIjAwTFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kB0E+4KI/ryyAooQ9G7OLFeq1gC6efMUMVPhm6bzZwY=;
- b=IMBKcH6cKwe3Rfh4GhEnVQg2VSx5YM5qBaEHtQm+IE/jjDbZ7GJ1gtZT6zGbmbVMG22jzrjx2gnMNdnWTPJBNTojvMLEQo3xkEzcqlEHraD9kvCt336fFEXtmVN3sHcLdOgVt2oGJgPFtYgKDPjrqFX5M0UJVQyivlVJZITiaT6qUyOR7ctb0HBosNdiEOQm7zsCCbciYmqh5GdIp+3Ofq78IkZjaqcc47sV7/q1jfPlKyF/leK6HrELSS62Plsf2DP0Mn0pok9FaxKC1GVwsHzrruumlqZuJW+NbNx7EHMK8NL5Suqct3ucNcH0Tv0eg5duTNru+FYQF9gae84VAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Tue, 8 Dec
- 2020 15:46:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1ce9:3434:90fe:3433%3]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 15:46:52 +0000
-Date:   Tue, 8 Dec 2020 11:46:51 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH -tip v1 3/3] seqlock: kernel-doc: Specify when preemption
- is automatically altered
-Message-ID: <20201208154651.GN552508@nvidia.com>
-References: <20201206162143.14387-1-a.darwish@linutronix.de>
- <20201206162143.14387-4-a.darwish@linutronix.de>
- <20201207204316.GF552508@nvidia.com> <X8+OS/K0+9ibIEGz@lx-t490>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <X8+OS/K0+9ibIEGz@lx-t490>
-X-ClientProxiedBy: MN2PR12CA0018.namprd12.prod.outlook.com
- (2603:10b6:208:a8::31) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Tue, 8 Dec 2020 10:51:44 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFBCC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:50:58 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id 81so17274515ioc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qvM7VaQOJMIgrDXRaJiMwzUNtVEGM98Cplm0mV8PJ+o=;
+        b=mb7mTrD+u196f1zL1WQTA452gEBzJfKE8I6lchPxVqpUmWxd74MgUUDh6xJwUWLDQk
+         L4dKbpJbGyxtluOaAlx5bFIdXq1puJLS7WReZz8WMYGAeXuLcfAkmAWK31CER+zs7erJ
+         ELkCXanIm8WXaoVtIHUjQSPGfATpYi/VFX3eyIrMM0GmGXbSiCFRKe8fmerkGWM0dk8X
+         MR+MnbQ2upaEAWQ8OyJD4XGv3etT6l6Xhefwr00ecdzBJ1PcR9zrgQw081/d9kghnl8u
+         SGaNRuFIbDH3RqYof4WayLgRpaGK+kPe+next9FdM8qmLNs20O3x0jnVxS68LigWSYI7
+         l+ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qvM7VaQOJMIgrDXRaJiMwzUNtVEGM98Cplm0mV8PJ+o=;
+        b=iFCavOnAh5WLbwxgjb5SuQLrJsCuMfvKenYEGpv8IPBE0atU2vaD5RDwqUbjmonFfu
+         Psg0LSf3+j3za99PhbNbwsRqUDRwBd7CtoMqQzmwj0x2occKfE63eM1JwyV9GQ0VH028
+         Mp0slpA+jAcQhx5rgY7CGQ6Gci8j9AdO0OsXFQPX5zE+Uep016e8Am4JkQFKOmnSJF4x
+         qbsZJ2Q6NnpoVhjruiAVW3HbyhrhHXwpjfOaaxFR4mrg3ZnhBVcXOh8+QQdgN8xH68u6
+         JytIF4ctpR8yiigiUqaja64lvFYM/cDl2aa3jOJwEW91XB52VnizLvFnXztiLxeF/lYd
+         O53Q==
+X-Gm-Message-State: AOAM531d75Z1tn1zm2g2B2DRiavFOPWMFmmxyrSmgYRrdkrScYakh/aU
+        7X2JZD/nWBASS6SeyVWnN67+Tw==
+X-Google-Smtp-Source: ABdhPJxew2H6oPImcx1UTFqAlaOtXnq/TVGpa4KV6v/19nXkgo6WmAWea0voBxMMS6Z1a48AfR5mOQ==
+X-Received: by 2002:a6b:f112:: with SMTP id e18mr25313535iog.195.1607442657838;
+        Tue, 08 Dec 2020 07:50:57 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id n1sm9820485ilm.72.2020.12.08.07.50.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:50:57 -0800 (PST)
+Subject: Re: [PATCH] io_uring: fix file leak on creating io ctx
+To:     Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     io-uring@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot+71c4697e27c99fddcf17@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20201207081558.2361-1-hdanton@sina.com>
+ <20201208102851.2585-1-hdanton@sina.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <439d735f-3cbb-a84e-4c43-0a6841f76615@kernel.dk>
+Date:   Tue, 8 Dec 2020 08:50:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR12CA0018.namprd12.prod.outlook.com (2603:10b6:208:a8::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 8 Dec 2020 15:46:52 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kmfCV-007wQJ-3Z; Tue, 08 Dec 2020 11:46:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607442414; bh=kB0E+4KI/ryyAooQ9G7OLFeq1gC6efMUMVPhm6bzZwY=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=C0DZmHS39Ekkdw3HN0WbyxsTt47hiFUezl98OfKBnS5VOvLmPjzD2tbhUEuVVCHX6
-         1jMAwBuegpiS13fM12PLxxTpVimewj1sk6q45EiTP/+lT86Co8Lt98aalEuIJfBPTA
-         Dxwh8eYVWq7aJJM7pJ2sMY4Sgg7FyPdtJUT1wlv/EkkjDwNga7yzz1BZx0WwzTeZxL
-         YjAtiJt/sMbRZPdYHF2DrKVEypV2JoVSp/E8rKkMPHU3G5pqrbrB8e2Gul4DO4Uucx
-         2WBErXsdCYTalNyfv7bPcNevoC4VBA9CafjwpTbMpZozd11sefFkjHTh0QJWoJAGnW
-         iNTtBDQmFpM9A==
+In-Reply-To: <20201208102851.2585-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 03:31:39PM +0100, Ahmed S. Darwish wrote:
-> Hi Jason,
+On 12/8/20 3:28 AM, Hillf Danton wrote:
+> On Mon, 7 Dec 2020 09:42:21 -0700 Jens Axboe wrote:
+>> On 12/7/20 1:15 AM, Hillf Danton wrote:
+>>> @@ -9207,12 +9208,14 @@ err_fd:
+>>>  #if defined(CONFIG_UNIX)
+>>>  	ctx->ring_sock->file = file;
+>>>  #endif
+>>> -	if (unlikely(io_uring_add_task_file(ctx, file))) {
+>>> -		file = ERR_PTR(-ENOMEM);
+>>> -		goto err_fd;
+>>> +	ret = io_uring_add_task_file(ctx, file);
+>>> +	if (ret) {
+>>> +		fput(file);
+>>> +		put_unused_fd(fd);
+>>> +		goto err;
+>>>  	}
+>>>  	fd_install(ret, file);
+>>> -	return ret;
+>>> +	return 0;
+>>
+>> You're installing the return value from io_uring_add_task_file() in the
+>> fd table, and then returning '0' for the fd...
 > 
-> On Mon, Dec 07, 2020 at 04:43:16PM -0400, Jason Gunthorpe wrote:
-> ...
-> >
-> > The thing that was confusing is if it was appropriate to use a
-> > seqcount in case where write side preemption was not disabled - which
-> > is safe only if the read side doesn't spin.
-> >
-> 
-> No, that's not correct.
+> I canot find phrases to describe the stupid mistake in my patch.
+> Thank you so much for pointing it out.
 
-Well, that is where I started from.. seqcount in normal pre-emption
-disabled cases was well understood, I needed a no-pre-emption disable
-case.
+This one is still utterly broken, and (again) cannot have been even
+tested in the most basic way. So let's focus on not how things are
+phrased, but proper patch etiquette:
 
-> For developers who're advanced enough to know the difference, they don't
-> need the kernel-doc anyway. And that's why I've kindly asked to add the
-> following to your mm/ patch (which you did, thanks):
+- Always (ALWAYS) test your patches. There's no excuse for not doing
+  so, and you are blacklisting yourself and ruining your reputation
+  by sending garbage that doesn't even pass basic functionality.
 
-That is probably over stating things quite a lot. If there are valid
-locking patterns then I think we should document them, otherwise
-people simply do something crazy and get it wrong.
+- If something isn't tested at all, make it VERY clear that this is
+  the case. Generally that's done by putting RFC in there and also
+  stating that this is just for discussion, it's not a patch that
+  is proposed for inclusion.
 
-It was not entirely easy to figure out why preemption disable is
-necessary here, though in hindsight it is obvious..
+- Slow down! I see you sent a patch 10 min after this one, with no
+  extra notice in there why that was the case. It's clearly because
+  you figured out that this hasty send was bad.
 
-Jason
+I'd really like to get this in for 5.10, but I'd almost feel better
+just redoing the patch myself to ensure it doesn't have other silly
+errors in there. Don't put yourself in that position.
+
+
+> @@ -9207,12 +9208,14 @@ err_fd:
+>  #if defined(CONFIG_UNIX)
+>  	ctx->ring_sock->file = file;
+>  #endif
+> -	if (unlikely(io_uring_add_task_file(ctx, file))) {
+> -		file = ERR_PTR(-ENOMEM);
+> -		goto err_fd;
+> +	ret = io_uring_add_task_file(ctx, file);
+> +	if (ret) {
+> +		fput(file);
+> +		put_unused_fd(fd);
+> +		goto err;
+>  	}
+> -	fd_install(ret, file);
+> -	return ret;
+> +	fd_install(fd, file);
+> +	return 0;
+
+You're still returning '0' for the fd. 
+
+
+-- 
+Jens Axboe
+
