@@ -2,152 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1137D2D21F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548682D21E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgLHESp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:18:45 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:49122 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgLHESo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:18:44 -0500
-Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201208041802epoutp02ad72ef1a2ef3dda6402802d29016644c~OosSazs1I2802328023epoutp02E
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:18:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201208041802epoutp02ad72ef1a2ef3dda6402802d29016644c~OosSazs1I2802328023epoutp02E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607401082;
-        bh=bNcO0L7f6HW9trLGLjRuh+5Y5IE2mspFwgJfTwfn9TU=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=ofVhsodbZafGyPcVg8JESrOUpcPdsheMxt+MTmnPYPKcR/1IqhBSRawijnvZuJSx/
-         NIhPr9dbu8M4e07GyMl/4kleqqegF/IdTUvqQhzLu2NWfXtwUhnqSCH1ucwDlKPYYU
-         5lxfh1EBZipFebpNsNjvn4rFdg2Hkejro8zoVBKI=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20201208041801epcas3p3d9219a9d0c1a572936a60e062cead918~OosR3HcpY2756127561epcas3p3k;
-        Tue,  8 Dec 2020 04:18:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4Cqn3F4nxHzMqYkW; Tue,  8 Dec 2020 04:18:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v13 0/3] scsi: ufs: Add Host Performance Booster
- Support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Greg KH <greg@kroah.com>, James Bottomley <jejb@linux.ibm.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "gregkh@google.com" <gregkh@google.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <X859wznB1peRtjp0@kroah.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01607401081656.JavaMail.epsvc@epcpadp4>
-Date:   Tue, 08 Dec 2020 13:12:31 +0900
-X-CMS-MailID: 20201208041231epcms2p225d2c155e42f4d45aa86a4ffbd0b2e6e
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20201103044021epcms2p8f1556853fc23414442b9e958f20781ce
-References: <X859wznB1peRtjp0@kroah.com>
-        <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
-        <X85sxxgpdtFXiKsg@kroah.com> <20201207180655.GA30657@infradead.org>
-        <X85zEFduHeUr4YKR@kroah.com> <20201207182603.GA2499@infradead.org>
-        <X85116BXkgTtRDKV@kroah.com>
-        <fa89e2a960e98b016d4935490fa2905aab0868f7.camel@linux.ibm.com>
-        <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p2>
+        id S1726338AbgLHERq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:17:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:40602 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726222AbgLHERp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 23:17:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEFCF1FB;
+        Mon,  7 Dec 2020 20:16:59 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.87.7])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5EA643F718;
+        Mon,  7 Dec 2020 20:16:55 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org, akpm@linux-foundation.org, david@redhat.com,
+        hca@linux.ibm.com, catalin.marinas@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 0/3] mm/hotplug: Pre-validate the address range with platform
+Date:   Tue,  8 Dec 2020 09:46:15 +0530
+Message-Id: <1607400978-31595-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Mon, 2020-12-07 at 19:35 +0100, Greg KH wrote:
-> > > On Mon, Dec 07, 2020 at 06:26:03PM +0000, Christoph Hellwig wrote:
-> > > > On Mon, Dec 07, 2020 at 07:23:12PM +0100, Greg KH wrote:
-> > > > > What "real workload" test can be run on this to help show if it
-> > > > > is useful or not?  These vendors seem to think it helps for some
-> > > > > reason, otherwise they wouldn't have added it to their silicon :)
-> > > > > 
-> > > > > Should they run fio?  If so, any hints on a config that would be
-> > > > > good to show any performance increases?
-> > > > 
-> > > > A real actual workload that matters.  Then again that was Martins
-> > > > request to even justify it.  I don't think the broken addressing
-> > > > that breaks a whole in the SCSI addressing has absolutely not
-> > > > business being supported in Linux ever.  The vendors should have
-> > > > thought about the design before committing transistors to something
-> > > > that fundamentally does not make sense.
-> > 
-> > Actually, that's not the way it works: vendors add commands because
-> > standards mandate.  That's why people who want weird commands go and
-> > join standard committees.  Unfortunately this means that a lot of the
-> > commands the standard mandates end up not being very useful in
-> > practice.  For instance in SCSI we really only implement a fraction of
-> > the commands in the standard.
-> > 
-> > In this case, the industry already tried a very similar approach with
-> > GEN 1 hybrid drives and it turned into a complete disaster, which is
-> > why the mode became optional in shingle drives and much better modes,
-> > which didn't have the huge shared state problem, superseded it.  Plus
-> > truncating the LBA of a READ 16 to 4 bytes is asking for capacity
-> > problems down the line, so even the actual implementation seems to be
-> > problematic.
-> > 
-> > All in all, this looks like a short term fix which will go away when
-> > the drive capacity improves and thus all the effort changing the driver
-> > will eventually be wasted.
-> 
-> "short term" in the embedded world means "this device is stuck with this
-> chip for the next 8 years", it's not like a storage device you can
-> replace, so this might be different than the shingle drive mess.  Also,
-> I see many old SoCs still showing up in brand new devices many many
-> years after they were first introduced, on-chip storage controllers is
-> something we need to support well if we don't want to see huge
-> out-of-tree patchsets like UFS traditionally has been lugging around for
-> many years.
-> 
-> > > So "time to boot an android system with this enabled and disabled"
-> > > would be a valid workload, right?  I'm guessing that's what the
-> > > vendors here actually care about, otherwise there is no real stress-
-> > > test on a UFS system that I know of.
-> > 
-> > Um, does it?  I don't believe even the UFS people have claimed this. 
-> > The problem is that HPB creates a shared state between the driver and
-> > the device.  That shared state has to be populated, which has to happen
-> > at start of day, so it's entirely unclear if this is a win or a slow
-> > down for boot.
-> 
-> Ok, showing that this actually matters is a good rule, Daejun, can you
-> provide that if you resubmit this patchset?
-> 
+This series adds a mechanism allowing platforms to weigh in and prevalidate
+incoming address range before proceeding further with the memory hotplug.
+This helps prevent potential platform errors for the given address range,
+down the hotplug call chain, which inevitably fails the hotplug itself.
 
-Sure, I will find out the case which has performance benefit by HPB.
+This mechanism was suggested by David Hildenbrand during another discussion
+with respect to a memory hotplug fix on arm64 platform.
 
-Thanks,
-Daejun
+https://lore.kernel.org/linux-arm-kernel/1600332402-30123-1-git-send-email-anshuman.khandual@arm.com/
+
+This mechanism focuses on the addressibility aspect and not [sub] section
+alignment aspect. Hence check_hotplug_memory_range() and check_pfn_span()
+have been left unchanged. Wondering if all these can still be unified in
+an expanded memhp_range_allowed() check, that can be called from multiple
+memory hot add and remove paths.
+
+This series applies on v5.10-rc7 and has been tested on arm64. But only
+build tested on s390.
+
+Changes in V1:
+
+- Fixed build problems with (MEMORY_HOTPLUG & !MEMORY_HOTREMOVE)
+- Added missing prototype for arch_get_mappable_range()
+- Added VM_BUG_ON() check for memhp_range_allowed() in arch_add_memory() per David
+
+Changes in RFC V2:
+
+https://lore.kernel.org/linux-mm/1606706992-26656-1-git-send-email-anshuman.khandual@arm.com/
+
+Incorporated all review feedbacks from David.
+
+- Added additional range check in __segment_load() on s390 which was lost
+- Changed is_private init in pagemap_range()
+- Moved the framework into mm/memory_hotplug.c
+- Made arch_get_addressable_range() a __weak function
+- Renamed arch_get_addressable_range() as arch_get_mappable_range()
+- Callback arch_get_mappable_range() only handles range requiring linear mapping
+- Merged multiple memhp_range_allowed() checks in register_memory_resource()
+- Replaced WARN() with pr_warn() in memhp_range_allowed()
+- Replaced error return code ERANGE with E2BIG
+
+Changes in RFC V1:
+
+https://lore.kernel.org/linux-mm/1606098529-7907-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (3):
+  mm/hotplug: Prevalidate the address range being added with platform
+  arm64/mm: Define arch_get_mappable_range()
+  s390/mm: Define arch_get_mappable_range()
+
+ arch/arm64/mm/mmu.c            | 15 +++----
+ arch/s390/mm/extmem.c          |  5 +++
+ arch/s390/mm/init.c            | 10 +++++
+ arch/s390/mm/vmem.c            |  4 --
+ include/linux/memory_hotplug.h |  3 ++
+ mm/memory_hotplug.c            | 78 +++++++++++++++++++++++++---------
+ mm/memremap.c                  |  6 ++-
+ 7 files changed, 88 insertions(+), 33 deletions(-)
+
+-- 
+2.20.1
+
