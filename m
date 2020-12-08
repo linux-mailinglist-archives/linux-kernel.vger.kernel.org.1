@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4372D3614
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2F22D3624
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730618AbgLHWTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:19:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57316 "EHLO mail.kernel.org"
+        id S1730840AbgLHWVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:21:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729323AbgLHWTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:19:11 -0500
-X-Gm-Message-State: AOAM531+9Cls0MVgIkfrrMtHtm1DU6D3jBgY3lFX4ba8X4GWOyV58RKY
-        v66IA3Dtzk7qybABJkjefrWuREfVhwBMk5/uJO0=
+        id S1730678AbgLHWVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:21:30 -0500
+X-Gm-Message-State: AOAM532h2v33jj/ubi53QxOUS4fO7/pvhVPw/mMsXnFce50Kmd5ELYid
+        4E+0vELTZQp/AU7Zgt4HCB7IWyvCVmDSd3Uu5yE=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607465910;
-        bh=xFL+aV7HaUPdoDsPGiwsEiOwK43aRbX8SLueE905Gog=;
+        s=k20201202; t=1607466049;
+        bh=8y0P41eu0vrpOJeHzaBUZ9o4sOukFpEZzShJXEuuTDY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D/Bamd5Zm/Kd8OEMMg2w/VlmfLHGs9ICY7QcY+ulPXlZt2szrG2ZLeNsmwtpJpA3F
-         OEF6A9ZuX8PZ/rxBEvFjo9bi6wCAJqvae/KTCUsGvDpA36kAkKF0lyWPROLK8dGIOb
-         aLwQ6Ednn2YONApUrgbt6VmxL4/FjRerh45a9+rivh4IYbYLpBEOiygbiOHHmdXaKe
-         dM8ycWBysSL6XeuD0cLZZgmk4fclznMnuLQI3i9O+njHjUlpggRDjsBEgDVbft2jQj
-         R1oypkXi2B/LIGWIJOcA5hHISH0pKx6kzerlU9IJR5EyUfHmmloIx8VPVtOUe4eioF
-         fzCiKjjW4Kgnw==
-X-Google-Smtp-Source: ABdhPJzlwEf8pGc7wtGNJ4gFAo+LbUpeXPzo5xZwgMNh5ZzlPdm16Ibf3YJ2IYrQrfy1mcUxMOBbdUVl3HhSn1AHVZg=
-X-Received: by 2002:a4a:3b81:: with SMTP id s123mr110633oos.15.1607465909604;
- Tue, 08 Dec 2020 14:18:29 -0800 (PST)
+        b=gSkizAjGxLc0+AVGqS+JixiihOGYSXdfGwlEEthB3lNE4PHMREDewI5VO81wOOddC
+         3/AanEtVisMBlpZzZHNsMKbl9KV69BN0lodxF98JeLKqaNJ7xzaDngsmmOqXoQYsFp
+         g+I6B7Cm3sXq8gq473wvzBgECIOpHQc2b75rFjatHNedzz13rnSjS4GkaneyiCEwsm
+         g5zNg+sOgHPqdTVvL+X2Tx0fK0gHGPA4NfA09S2rehUYcmT3dTle9N9lKm0IPuPccy
+         teMFgzt8NUgSGKdVxOAGq1K3T0ScBVdYlwcaYh27/WhCtNUXpgwp8eu8LfCPOqrGlI
+         2TxPXiU/wR52A==
+X-Google-Smtp-Source: ABdhPJzqw4tXGHeHAKru+pZFdngSW7KLUcvLigOek1gd95JlX3PyzWo9iAppGBwNF2Oi7ti6Jouun7qgJJV39N2XE+k=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr215992oth.210.1607466049167;
+ Tue, 08 Dec 2020 14:20:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20201204081349.1182302-1-arnd@kernel.org> <CADnq5_OmAVZGuz=xHRyST4hE4w1g10wNBQ6iMgfpQD16-9QSiQ@mail.gmail.com>
- <b9d7e33c-4dcd-0075-d0ca-d22b2488c354@amd.com> <CAK8P3a09KQS7S5-vJU7ECJh0HXUhwZW9zOOp4c32mtvM5XcU1g@mail.gmail.com>
- <CAKwvOd=-2zoc06EY4R9ZJ0M874bQv3NuT8a0q9=RoYeMMtnXVQ@mail.gmail.com>
- <CAK8P3a0gjPWiRX0yg=i6Qxgyo02AtQVVsw+=w-OvF956Tn=jDw@mail.gmail.com>
- <CAKwvOd=+w6vJvvq9Pwnv1EHHzwCx=o_=PbSozXpqryN6P1yxVQ@mail.gmail.com>
- <CAK8P3a2_0bY+fmUHKjH8XCKpT1BepUGOV0HoKDSPnOvtKjA==g@mail.gmail.com> <CAKwvOdmSzf7vFjjxWfvUR1FTeFoPToytQL_enR6CFXPCbUn8Gg@mail.gmail.com>
-In-Reply-To: <CAKwvOdmSzf7vFjjxWfvUR1FTeFoPToytQL_enR6CFXPCbUn8Gg@mail.gmail.com>
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
+ <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com> <CAKwvOd=hL=Vt1ATYqky9jmv+tM5hpTnLRuZudG-7ki0EYoFGJQ@mail.gmail.com>
+In-Reply-To: <CAKwvOd=hL=Vt1ATYqky9jmv+tM5hpTnLRuZudG-7ki0EYoFGJQ@mail.gmail.com>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 8 Dec 2020 23:18:13 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0ViH90qvr63H4J5Qn0FMfV4r9CeTHurj3N2qO2f=Dq+Q@mail.gmail.com>
-Message-ID: <CAK8P3a0ViH90qvr63H4J5Qn0FMfV4r9CeTHurj3N2qO2f=Dq+Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: make DRM_AMD_DC x86-only again
+Date:   Tue, 8 Dec 2020 23:20:32 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1k_cq3NOUeuQC4-uKDBaGq49GSjAMSiS_M9AVMBxv51g@mail.gmail.com>
+Message-ID: <CAK8P3a1k_cq3NOUeuQC4-uKDBaGq49GSjAMSiS_M9AVMBxv51g@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
 To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roman Li <Roman.Li@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Timothy Pearson <tpearson@raptorengineering.com>
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 7:21 PM 'Nick Desaulniers' via Clang Built
+On Tue, Dec 8, 2020 at 10:10 PM 'Nick Desaulniers' via Clang Built
 Linux <clang-built-linux@googlegroups.com> wrote:
 >
-> On Tue, Dec 8, 2020 at 6:26 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Tue, Dec 8, 2020 at 1:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
 > >
-> > On Mon, Dec 7, 2020 at 11:28 PM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
-> Hmm...no warnings for me with that config on next-20201208:
-> $ make LLVM=1 -j71 olddefconfig
-> $ make LLVM=1 -j71
-> ...
-> $ clang --version
-> clang version 12.0.0 (git@github.com:llvm/llvm-project.git
-> 1c98f984105e552daa83ed8e92c61fba0e401410)
-> (ie. near ToT LLVM)
+> > On Tue, Dec 8, 2020 at 5:43 PM 'Sami Tolvanen' via Clang Built Linux
+> > <clang-built-linux@googlegroups.com> wrote:
+> > >
+> > > On Tue, Dec 8, 2020 at 4:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > >
+> > > > - one build seems to take even longer to link. It's currently at 35GB RAM
+> > > >   usage and 40 minutes into the final link, but I'm worried it might
+> > > > not complete
+> > > >   before it runs out of memory.  I only have 128GB installed, and google-chrome
+> > > >   uses another 30GB of that, and I'm also doing some other builds in parallel.
+> > > >   Is there a minimum recommended amount of memory for doing LTO builds?
+> > >
+> > > When building arm64 defconfig, the maximum memory usage I measured
+> > > with ThinLTO was 3.5 GB, and with full LTO 20.3 GB. I haven't measured
+> > > larger configurations, but I believe LLD can easily consume 3-4x that
+> > > much with full LTO allyesconfig.
+> >
+> > Ok, that's not too bad then. Is there actually a reason to still
+> > support full-lto
+> > in your series? As I understand it, full LTO was the initial approach and
+> > used to work better, but thin LTO is actually what we want to use in the
+> > long run. Perhaps dropping the full LTO option from your series now
+> > that thin LTO works well enough and uses less resources would help
+> > avoid some of the problems.
 >
-> I see CONFIG_KASAN=y in the .config, so that's a recurring theme with
-> clang; excessive stack usage.  It does seem a shame to disable a
-> driver for a bunch of archs just due to KASAN stack usage.
-> $ grep KASAN=y 0x9077925C_defconfig
-> CONFIG_HAVE_ARCH_KASAN=y
-> CONFIG_KASAN=y
->
-> Is there a different branch of a different tree that I should be
-> testing on instead? Otherwise, can you send the object file?
+> While all developers agree that ThinLTO is a much more palatable
+> experience than full LTO; our product teams prefer the excessive build
+> time and memory high water mark (at build time) costs in exchange for
+> slightly better performance than ThinLTO in <benchmarks that I've been
+> told are important>.  Keeping support for full LTO in tree would help
+> our product teams reduce the amount of out of tree code they have.  As
+> long as <benchmarks that I've been told are important> help
+> sell/differentiate phones, I suspect our product teams will continue
+> to ship full LTO in production.
 
-I was on a slightly older linux-next, and the latest version contains
-the patch "ubsan: enable for all*config builds" in linux-next,
-which enables CONFIG_UBSAN_SANITIZE_ALL. It took me
-an hour to figure out, but after turning that option off, the warning
-is back.
+Ok, fair enough. How about marking FULL_LTO as 'depends on
+!COMPILE_TEST' then? I'll do that locally for my randconfig tests,
+but it would help the other build bots that also force-enable
+COMPILE_TEST.
 
-I'll send you the object for reference in a private mail, it's kind
-of large.
-
-        Arnd
+       Arnd
