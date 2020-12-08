@@ -2,191 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E321B2D25C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AB12D25CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgLHIYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:24:53 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:42772 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726734AbgLHIYw (ORCPT
+        id S1728116AbgLHI0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:26:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9033 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727983AbgLHI0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:24:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UHyFYxY_1607415844;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UHyFYxY_1607415844)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Dec 2020 16:24:04 +0800
-Subject: Re: [PATCH 03/11] mm: don't pass "enum lru_list" to lru list addition
- functions
-To:     Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201207220949.830352-1-yuzhao@google.com>
- <20201207220949.830352-4-yuzhao@google.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <0035a169-8c9c-85dd-7823-7d7d6e33ae81@linux.alibaba.com>
-Date:   Tue, 8 Dec 2020 16:24:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Tue, 8 Dec 2020 03:26:02 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqtX05LC1zhpDC;
+        Tue,  8 Dec 2020 16:24:48 +0800 (CST)
+Received: from [10.174.187.47] (10.174.187.47) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 8 Dec 2020 16:25:13 +0800
+Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20201123065410.1915-1-lushenming@huawei.com>
+ <20201123065410.1915-4-lushenming@huawei.com>
+ <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
+ <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
+ <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
+ <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
+ <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
+ <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
+ <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
+ <274dafb2e21f49326a64bb575e668793@kernel.org>
+ <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+Message-ID: <77f60f4e-a832-97aa-7ec6-da9d596438b2@huawei.com>
+Date:   Tue, 8 Dec 2020 16:25:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20201207220949.830352-4-yuzhao@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/12/8 上午6:09, Yu Zhao 写道:
-> The "enum lru_list" parameter to add_page_to_lru_list() and
-> add_page_to_lru_list_tail() is redundant in the sense that it can
-> be extracted from the "struct page" parameter by page_lru().
+On 2020/12/1 20:15, Shenming Lu wrote:
+> On 2020/12/1 19:50, Marc Zyngier wrote:
+>> On 2020-12-01 11:40, Shenming Lu wrote:
+>>> On 2020/12/1 18:55, Marc Zyngier wrote:
+>>>> On 2020-11-30 07:23, Shenming Lu wrote:
+>>>>
+>>>> Hi Shenming,
+>>>>
+>>>>> We are pondering over this problem these days, but still don't get a
+>>>>> good solution...
+>>>>> Could you give us some advice on this?
+>>>>>
+>>>>> Or could we move the restoring of the pending states (include the sync
+>>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
+>>>>> which is completely corresponding to save_pending_tables (more symmetric?)
+>>>>> and don't expose GICv4...
+>>>>
+>>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
+>>>
+>>> Yeah, it is a a QEMU thing...
+>>>
+>>>> We don't really have that concept in KVM, so I'd appreciate if you could
+>>>> be a bit more explicit on this.
+>>>
+>>> My thought is to add a new interface (to QEMU) for the restoring of
+>>> the pending states, which is completely corresponding to
+>>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
+>>> And it is called from the GIC VM state change handler in QEMU, which
+>>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
+>>> but before the starting (running) of the VFIO device.
+>>
+>> Right, that makes sense. I still wonder how much the GIC save/restore
+>> stuff differs from other architectures that implement similar features,
+>> such as x86 with VT-D.
 > 
-> A caveat is that we need to make sure PageActive() or
-> PageUnevictable() is correctly set or cleared before calling
-> these two functions. And they are indeed.
+> I am not familiar with it...
 > 
-> Signed-off-by: Yu Zhao <yuzhao@google.com>
-> ---
->  include/linux/mm_inline.h |  8 ++++++--
->  mm/swap.c                 | 15 +++++++--------
->  mm/vmscan.c               |  6 ++----
->  3 files changed, 15 insertions(+), 14 deletions(-)
+>>
+>> It is obviously too late to change the userspace interface, but I wonder
+>> whether we missed something at the time.
 > 
-> diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-> index 2889741f450a..130ba3201d3f 100644
-> --- a/include/linux/mm_inline.h
-> +++ b/include/linux/mm_inline.h
-> @@ -106,15 +106,19 @@ static __always_inline enum lru_list page_lru(struct page *page)
->  }
->  
->  static __always_inline void add_page_to_lru_list(struct page *page,
-> -				struct lruvec *lruvec, enum lru_list lru)
-> +				struct lruvec *lruvec)
->  {
-> +	enum lru_list lru = page_lru(page);
-> +
->  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
->  	list_add(&page->lru, &lruvec->lists[lru]);
->  }
->  
->  static __always_inline void add_page_to_lru_list_tail(struct page *page,
-> -				struct lruvec *lruvec, enum lru_list lru)
-> +				struct lruvec *lruvec)
->  {
-> +	enum lru_list lru = page_lru(page);
-> +
->  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
->  	list_add_tail(&page->lru, &lruvec->lists[lru]);
->  }
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 5022dfe388ad..136acabbfab5 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -231,7 +231,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
->  	if (!PageUnevictable(page)) {
->  		del_page_from_lru_list(page, lruvec, page_lru(page));
->  		ClearPageActive(page);
-> -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
-> +		add_page_to_lru_list_tail(page, lruvec);
->  		__count_vm_events(PGROTATED, thp_nr_pages(page));
->  	}
->  }
-> @@ -313,8 +313,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec)
->  
->  		del_page_from_lru_list(page, lruvec, lru);
->  		SetPageActive(page);
-> -		lru += LRU_ACTIVE;
-
-Uh, actully, page to lru functions like, page_lru(page), always inline, so generally, no instruction
-increasing, except few place like here.
-
- 
-> -		add_page_to_lru_list(page, lruvec, lru);
-> +		add_page_to_lru_list(page, lruvec);
->  		trace_mm_lru_activate(page);
->  
->  		__count_vm_events(PGACTIVATE, nr_pages);
-> @@ -543,14 +542,14 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
->  		 * It can make readahead confusing.  But race window
->  		 * is _really_ small and  it's non-critical problem.
->  		 */
-> -		add_page_to_lru_list(page, lruvec, lru);
-> +		add_page_to_lru_list(page, lruvec);
->  		SetPageReclaim(page);
->  	} else {
->  		/*
->  		 * The page's writeback ends up during pagevec
->  		 * We moves tha page into tail of inactive.
->  		 */
-> -		add_page_to_lru_list_tail(page, lruvec, lru);
-> +		add_page_to_lru_list_tail(page, lruvec);
->  		__count_vm_events(PGROTATED, nr_pages);
->  	}
->  
-> @@ -570,7 +569,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
->  		del_page_from_lru_list(page, lruvec, lru + LRU_ACTIVE);
->  		ClearPageActive(page);
->  		ClearPageReferenced(page);
-> -		add_page_to_lru_list(page, lruvec, lru);
-> +		add_page_to_lru_list(page, lruvec);
->  
->  		__count_vm_events(PGDEACTIVATE, nr_pages);
->  		__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE,
-> @@ -595,7 +594,7 @@ static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
->  		 * anonymous pages
->  		 */
->  		ClearPageSwapBacked(page);
-> -		add_page_to_lru_list(page, lruvec, LRU_INACTIVE_FILE);
-> +		add_page_to_lru_list(page, lruvec);
->  
->  		__count_vm_events(PGLAZYFREE, nr_pages);
->  		__count_memcg_events(lruvec_memcg(lruvec), PGLAZYFREE,
-> @@ -1005,7 +1004,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
->  			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
->  	}
->  
-> -	add_page_to_lru_list(page, lruvec, lru);
-> +	add_page_to_lru_list(page, lruvec);
->  	trace_mm_lru_insertion(page, lru);
->  }
->  
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a174594e40f8..8fc8f2c9d7ec 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1865,7 +1865,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		 * inhibits memcg migration).
->  		 */
->  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-> -		add_page_to_lru_list(page, lruvec, page_lru(page));
-> +		add_page_to_lru_list(page, lruvec);
->  		nr_pages = thp_nr_pages(page);
->  		nr_moved += nr_pages;
->  		if (PageActive(page))
-> @@ -4280,12 +4280,10 @@ void check_move_unevictable_pages(struct pagevec *pvec)
->  
->  		lruvec = relock_page_lruvec_irq(page, lruvec);
->  		if (page_evictable(page) && PageUnevictable(page)) {
-> -			enum lru_list lru = page_lru_base_type(page);
-> -
->  			VM_BUG_ON_PAGE(PageActive(page), page);
->  			ClearPageUnevictable(page);
->  			del_page_from_lru_list(page, lruvec, LRU_UNEVICTABLE);
-> -			add_page_to_lru_list(page, lruvec, lru);
-
-And here.
-
-
-> +			add_page_to_lru_list(page, lruvec);
->  			pgrescued += nr_pages;
->  		}
->  		SetPageLRU(page);
+> The interface seems to be really asymmetrical?...
 > 
+> Or is there a possibility that we could know which irq is hw before the VFIO
+> device calls kvm_vgic_v4_set_forwarding()?
+> 
+> Thanks,
+> Shenming
+> 
+>>
+>> Thanks,
+>>
+>>         M.
+> .
+> 
+
+Hi Marc,
+
+I am learning VT-d Posted Interrupt (PI) these days.
+
+As far as I can tell, the posted interrupts are firstly recorded in the Posted
+Interrupt Request (*PIR*) field of the Posted Interrupt Descriptor (a temporary
+storage area (data structure in memory) which is specific to PI), and when the
+vCPU is running, a notification event (host vector) will be generated and sent
+to the CPU (the target vCPU is currently scheduled on it), which will cause the
+CPU to transfer the posted interrupt in the PIR field to the *Virtual-APIC page*
+(a data structure in kvm, the virtual interrupts delivered through kvm are put
+here, and it is also accessed by the VMX microcode (the layout matches the register
+layout seen by the guest)) of the vCPU and directly deliver it to the vCPU.
+
+So they only have to sync the PIR field to the Virtual-APIC page for the migration
+saving, and do nothing for the resuming...
+
+Besides, on x86 the setting of the IRQ bypass is independent of the VM interrupt
+setup...
+
+Not sure if I have missed something.
+
+In addition, I found that the enabling of the vAPIC is at the end of the migration
+(just before the VM start) on x86. So I am wondering if we could move the calling
+of *vgic_enable_lpis()* back, and transfer the pending state to the VPT there if the
+irq is hw (and I think the semantics of this function should include the transfer).
+In fact, this function is dependent on the restoring of the vgic(lpi_list)...
+
+After exploration, there seems to be no perfect place to transfer the pending states
+to HW in order to be compatible with the existing interface and under the current
+architecture, but we have to choose one solution?
+
+Thanks,
+Shenming
