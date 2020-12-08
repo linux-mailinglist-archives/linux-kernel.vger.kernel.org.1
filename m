@@ -2,173 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2552D3134
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556E2D313B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgLHRhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgLHRhM (ORCPT
+        id S1730740AbgLHRiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:38:02 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2225 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729585AbgLHRiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:37:12 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D67C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:36:31 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id v14so2715863wml.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:36:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jX3mNNkAYkA8sb0euHmnG4MILEbOBpNTv+pnHusb8uA=;
-        b=Q8Noz5MiD0BJW9bcOCv07n6fYNbh0JVxW6ADcS+Y0QIR4ilExCStr8xV6rD3z80Y6S
-         Z1CNdPOUU6mCceDa6wSVMEhJMSuR2Cp80nWtjx9GiKOa/l8eO1rVJO3hRpSyjyKjrAjS
-         S5oiK/7LZDuvDNBeQyRRqpWtOs0CgLXTft36k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jX3mNNkAYkA8sb0euHmnG4MILEbOBpNTv+pnHusb8uA=;
-        b=Xx4kQ42JO0EM8tvNsHIsPf/rzWGy/ZzgUpP7ML/cqP8ZwoYSCjbWLwM3cNtSQoVLR9
-         5RfpdinkEFqbIP6Fzg9pxwtUuTp1PnpZfu5+NaezXURbjzLowq+jGy/Jq39meBdaTawL
-         pUDFM3+EmV5kt946OOxckgb5K4PHwfjjiPjeO+ynezGJrvnUHPn2OnqWp9ZNasq+Tnq3
-         TvLF2wcOpCm9E8stCl9qMCiQ0itWiQwAtUXQbVlZFp3z4cpDJ9WiltrAIT4XYchPAZRk
-         RHfkId3VXB0ipaFkB+6k1mMRStmCk8b6TGT/6UyJwprYeDl58KXFyZKByFvTYhIXmYo3
-         UU1A==
-X-Gm-Message-State: AOAM532VyWiwBYJg50ajNxV34LGk++VZOHMCn0UhugU2+4vSBWLAJ3+F
-        JiT6N6iA+8tfzC/Icv5PgPoLIQ==
-X-Google-Smtp-Source: ABdhPJxFTOwKLFw9lobNHbE10tlOSMg/I9bktBdPEQyQPxNAGZmcDghKXl+vBa8me4R+DB08uCTxVg==
-X-Received: by 2002:a1c:b608:: with SMTP id g8mr4858668wmf.110.1607448990508;
-        Tue, 08 Dec 2020 09:36:30 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id k7sm8619519wrn.63.2020.12.08.09.36.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 09:36:29 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, rdunlap@infradead.org, kafai@fb.com,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH bpf-next v3] bpf: Only provide bpf_sock_from_file with CONFIG_NET
-Date:   Tue,  8 Dec 2020 18:36:23 +0100
-Message-Id: <20201208173623.1136863-1-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        Tue, 8 Dec 2020 12:38:02 -0500
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cr6jk6lMpz67NkT;
+        Wed,  9 Dec 2020 01:34:02 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 18:37:20 +0100
+Received: from [10.210.169.98] (10.210.169.98) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 17:37:18 +0000
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+From:   John Garry <john.garry@huawei.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
+        <kashyap.desai@broadcom.com>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+ <20201202033134.GD494805@T590>
+ <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
+ <20201203005505.GB540033@T590>
+ <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+ <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+Message-ID: <9d4124ea-dbab-41cf-63bd-b17ef3e5037a@huawei.com>
+Date:   Tue, 8 Dec 2020 17:36:43 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.98]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves the bpf_sock_from_file definition into net/core/filter.c
-which only gets compiled with CONFIG_NET and also moves the helper proto
-usage next to other tracing helpers that are conditional on CONFIG_NET.
+On 08/12/2020 11:36, John Garry wrote:
+>>
+>> OK, but another thing to say is that I need to find a somewhat 
+>> reliable reproducer for the potential problem you mention. So far this 
+>> patch solves the issue I see (in that kasan stops warning). Let me 
+>> analyze this a bit further.
+>>
+> 
+> Hi Ming,
+> 
+> I am just looking at this again, and have some doubt on your concern [0].
+> 
+>  From checking blk_mq_queue_tag_busy_iter() specifically, don't we 
+> actually guard against this with the q->q_usage_counter mechanism? That 
+> is, an agent needs to grab a q counter ref when attempting the iter. 
+> This will fail when the queue IO sched is being changed, as we freeze 
+> the queue during this time, which is when the requests are freed, so no 
+> agent can hold a reference to a freed request then. And same goes for 
+> blk_mq_update_nr_requests(), where we freeze the queue.
+> 
+> But I didn't see such a guard for blk_mq_tagset_busy_iter().
+> 
 
-This avoids
-  ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
-  bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
-When compiling a kernel with BPF and without NET.
+So I was able to trigger a use-after-free BUG in 
+blk_mq_tagset_busy_iter() even with my change, but I needed to add a 
+delay, as follows:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- include/linux/bpf.h      |  1 +
- kernel/trace/bpf_trace.c | 22 ++--------------------
- net/core/filter.c        | 18 ++++++++++++++++++
- 3 files changed, 21 insertions(+), 20 deletions(-)
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -278,6 +278,7 @@ static bool bt_tags_iter(struct sbitmap *bitmap, 
+unsigned int bitnr, void *data)
+                 rq = tags->rqs[bitnr];
+         if (!rq)
+                 return true;
++       msleep(50);
+         if ((iter_data->flags & BT_TAG_ITER_STARTED) &&
+             !blk_mq_request_started(rq))
+                 return true;
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d05e75ed8c1b..07cb5d15e743 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1859,6 +1859,7 @@ extern const struct bpf_func_proto bpf_snprintf_btf_proto;
- extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
- extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
- extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
-+extern const struct bpf_func_proto bpf_sock_from_file_proto;
- 
- const struct bpf_func_proto *bpf_tracing_func_proto(
- 	enum bpf_func_id func_id, const struct bpf_prog *prog);
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 0cf0a6331482..52ddd217d6a1 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1270,24 +1270,6 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
- 	.arg5_type	= ARG_ANYTHING,
- };
- 
--BPF_CALL_1(bpf_sock_from_file, struct file *, file)
--{
--	return (unsigned long) sock_from_file(file);
--}
--
--BTF_ID_LIST(bpf_sock_from_file_btf_ids)
--BTF_ID(struct, socket)
--BTF_ID(struct, file)
--
--static const struct bpf_func_proto bpf_sock_from_file_proto = {
--	.func		= bpf_sock_from_file,
--	.gpl_only	= false,
--	.ret_type	= RET_PTR_TO_BTF_ID_OR_NULL,
--	.ret_btf_id	= &bpf_sock_from_file_btf_ids[0],
--	.arg1_type	= ARG_PTR_TO_BTF_ID,
--	.arg1_btf_id	= &bpf_sock_from_file_btf_ids[1],
--};
--
- const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -1384,8 +1366,6 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_per_cpu_ptr_proto;
- 	case BPF_FUNC_bpf_this_cpu_ptr:
- 		return &bpf_this_cpu_ptr_proto;
--	case BPF_FUNC_sock_from_file:
--		return &bpf_sock_from_file_proto;
- 	default:
- 		return NULL;
- 	}
-@@ -1778,6 +1758,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_sk_storage_get_tracing_proto;
- 	case BPF_FUNC_sk_storage_delete:
- 		return &bpf_sk_storage_delete_tracing_proto;
-+	case BPF_FUNC_sock_from_file:
-+		return &bpf_sock_from_file_proto;
- #endif
- 	case BPF_FUNC_seq_printf:
- 		return prog->expected_attach_type == BPF_TRACE_ITER ?
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 77001a35768f..255aeee72402 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -10413,6 +10413,24 @@ const struct bpf_func_proto bpf_skc_to_udp6_sock_proto = {
- 	.ret_btf_id		= &btf_sock_ids[BTF_SOCK_TYPE_UDP6],
- };
- 
-+BPF_CALL_1(bpf_sock_from_file, struct file *, file)
-+{
-+	return (unsigned long)sock_from_file(file);
-+}
-+
-+BTF_ID_LIST(bpf_sock_from_file_btf_ids)
-+BTF_ID(struct, socket)
-+BTF_ID(struct, file)
-+
-+const struct bpf_func_proto bpf_sock_from_file_proto = {
-+	.func		= bpf_sock_from_file,
-+	.gpl_only	= false,
-+	.ret_type	= RET_PTR_TO_BTF_ID_OR_NULL,
-+	.ret_btf_id	= &bpf_sock_from_file_btf_ids[0],
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_sock_from_file_btf_ids[1],
-+};
-+
- static const struct bpf_func_proto *
- bpf_sk_base_func_proto(enum bpf_func_id func_id)
- {
--- 
-2.29.2.576.ga3fc446d84-goog
 
+And here's the splat:
+
+[  319.771745] BUG: KASAN: use-after-free in bt_tags_iter+0xe0/0x128 
+
+[  319.777832] Read of size 4 at addr ffff0010b6bd27cc by task more/1866 
+
+[  319.784262]
+[  319.785753] CPU: 61 PID: 1866 Comm: more Tainted: G        W 
+5.10.0-rc4-18118-gaa7b9c30d8ff #1070
+[  319.795312] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon 
+D05 IT21 Nemo 2.0 RC0 04/18/2018
+[  319.804437] Call trace:
+[  319.806892]  dump_backtrace+0x0/0x2d0
+[  319.810552]  show_stack+0x18/0x68
+[  319.813865]  dump_stack+0x100/0x16c
+[  319.817348]  print_address_description.constprop.12+0x6c/0x4e8
+[  319.823176]  kasan_report+0x130/0x200
+[  319.826831]  __asan_load4+0x9c/0xd8
+[  319.830315]  bt_tags_iter+0xe0/0x128
+[  319.833884]  __blk_mq_all_tag_iter+0x320/0x3a8
+[  319.838320]  blk_mq_tagset_busy_iter+0x8c/0xd8
+[  319.842760]  scsi_host_busy+0x88/0xb8
+[  319.846418]  show_host_busy+0x1c/0x48
+[  319.850079]  dev_attr_show+0x44/0x90
+[  319.853655]  sysfs_kf_seq_show+0x128/0x1c8
+[  319.857744]  kernfs_seq_show+0xa0/0xb8
+[  319.861489]  seq_read_iter+0x1ec/0x6a0
+[  319.865230]  seq_read+0x1d0/0x250
+[  319.868539]  kernfs_fop_read+0x70/0x330
+[  319.872369]  vfs_read+0xe4/0x250
+[  319.875590]  ksys_read+0xc8/0x178
+[  319.878898]  __arm64_sys_read+0x44/0x58
+[  319.882730]  el0_svc_common.constprop.2+0xc4/0x1e8
+[  319.887515]  do_el0_svc+0x90/0xa0
+[  319.890824]  el0_sync_handler+0x128/0x178
+[  319.894825]  el0_sync+0x158/0x180
+[  319.898131]
+[  319.899614] The buggy address belongs to the page:
+[  319.904403] page:000000004e9e6864 refcount:0 mapcount:0 
+mapping:0000000000000000 index:0x0 pfn:0x10b6bd2
+[  319.913876] flags: 0xbfffc0000000000()
+[  319.917626] raw: 0bfffc0000000000 0000000000000000 fffffe0000000000 
+0000000000000000
+[  319.925363] raw: 0000000000000000 0000000000000000 00000000ffffffff 
+0000000000000000
+[  319.933096] page dumped because: kasan: bad access detected
+[  319.938658]
+[  319.940141] Memory state around the buggy address:
+[  319.944925]  ffff0010b6bd2680: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  319.952139]  ffff0010b6bd2700: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  319.959354] >ffff0010b6bd2780: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  319.966566] ^
+[  319.972131]  ffff0010b6bd2800: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  319.979344]  ffff0010b6bd2880: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  319.986557] 
+==================================================================
+[  319.993770] Disabling lock debugging due to kernel taint
+
+So to trigger this, I start fio on a disk, and then have one script 
+which constantly enables and disables an IO scheduler for that disk, and 
+another which constantly reads /sys/class/scsi_host/host0/host_busy.
+
+I need the delay to make triggering the issue quick, as the window is so 
+small between the tag bit being cleared at the point the queue is being 
+frozen, and clearing the reference in the tagset.
+
+Anyway, solving this doesn't look trivial...
+
+Thanks,
+john
