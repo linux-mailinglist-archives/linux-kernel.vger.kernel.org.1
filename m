@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EDA2D2085
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6C12D2087
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbgLHCLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:11:52 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:1340 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726830AbgLHCLw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:11:52 -0500
-X-IronPort-AV: E=Sophos;i="5.78,401,1599494400"; 
-   d="scan'208";a="102156329"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 08 Dec 2020 10:10:57 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id D5FD24CE5CF8;
-        Tue,  8 Dec 2020 10:10:51 +0800 (CST)
-Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 8 Dec 2020 10:10:50 +0800
-Received: from localhost.localdomain (10.167.225.206) by
- G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Tue, 8 Dec 2020 10:10:50 +0800
-From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
-To:     <viro@zeniv.linux.org.uk>, <torvalds@linux-foundation.org>
-CC:     <ira.weiny@intel.com>, <jack@suse.cz>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>
-Subject: [PATCH] fs: Kill DCACHE_DONTCACHE dentry even if DCACHE_REFERENCED is set
-Date:   Tue, 8 Dec 2020 10:10:50 +0800
-Message-ID: <20201208021050.3846-1-lihao2018.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727769AbgLHCMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:12:17 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:43306 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726830AbgLHCMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:12:17 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kmSTT-00AjgY-LL; Tue, 08 Dec 2020 03:11:31 +0100
+Date:   Tue, 8 Dec 2020 03:11:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jean Pihet <jean.pihet@newoldbits.com>
+Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
+        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
+        Hugo Cornelis <hugo.cornelis@essensium.com>,
+        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
+Subject: Re: [PATCH v2] net: dsa: ksz8795: adjust CPU link to host interface
+Message-ID: <20201208021131.GE2475764@lunn.ch>
+References: <20201201083408.51006-1-jean.pihet@newoldbits.com>
+ <20201201184100.GN2073444@lunn.ch>
+ <CAORVsuXv5Gw18EeHwP36EkzF4nN5PeGerBQQa-6ruWAQRX+GoQ@mail.gmail.com>
+ <20201201204516.GA2324545@lunn.ch>
+ <CAORVsuXtVYKh_nCvCdA7PUWJeJbVJWD43jtkiFwXeg2Qo1mG+A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: D5FD24CE5CF8.A07CA
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAORVsuXtVYKh_nCvCdA7PUWJeJbVJWD43jtkiFwXeg2Qo1mG+A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If DCACHE_REFERENCED is set, fast_dput() will return true, and then
-retain_dentry() have no chance to check DCACHE_DONTCACHE. As a result,
-the dentry won't be killed and the corresponding inode can't be evicted.
-In the following example, the DAX policy can't take effects unless we
-do a drop_caches manually.
+On Mon, Dec 07, 2020 at 08:43:32PM +0100, Jean Pihet wrote:
+> Hi Andrew,
+> 
+> On Tue, Dec 1, 2020 at 9:45 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > Configure the host port of the switch to match the host interface
+> > > settings. This is useful when the switch is directly connected to the
+> > > host MAC interface.
+> >
+> > Why do you need this when no other board does? Why is your board
+> > special?
+> >
+> > As i said before, i'm guessing your board has back to back PHYs
+> > between the SoC and the switch and nobody else does. Is that the
+> > reason why? Without this, nothing is configuring the switch MAC to the
+> > results of the auto-neg between the two PHYs?
+> 
+> Yes that is the case. From here I see this patch is too specific to
+> our setup, and so cannot be considered for merging.
 
-  # DCACHE_LRU_LIST will be set
-  echo abcdefg > test.txt
+Hi Jean
 
-  # DCACHE_REFERENCED will be set and DCACHE_DONTCACHE can't do anything
-  xfs_io -c 'chattr +x' test.txt
+I never said i was too specific to your board. There are other boards
+using different switches like this. This is where the commit message
+is so important. Without understanding Why? it is hard to point you in
+the right direction.
 
-  # Drop caches to make DAX changing take effects
-  echo 2 > /proc/sys/vm/drop_caches
+So you setup is:
 
-What this patch does is preventing fast_dput() from returning true if
-DCACHE_DONTCACHE is set. Then retain_dentry() will detect the
-DCACHE_DONTCACHE and will return false. As a result, the dentry will be
-killed and the inode will be evicted. In this way, if we change per-file
-DAX policy, it will take effects automatically after this file is closed
-by all processes.
+SoC - MAC - PHY - PHY - MAC - Switch.
 
-I also add some comments to make the code more clear.
+The SoC MAC driver is looking after the first PHY?
 
-Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
----
-This patch may have been forgotten.
-Original patch: https://lore.kernel.org/linux-fsdevel/20200924055958.825515-1-lihao2018.fnst@cn.fujitsu.com/
+This patch is about the Switch MAC and PHY. You need the results of
+auto-neg from the PHY to be programmed into the MAC of the switch.
 
- fs/dcache.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+If i remember correctly you just need a phy-handle in the CPU node,
+pointing at the PHY. See for example imx6q-b450v3.dts
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..97e81a844a96 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -793,10 +793,17 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 * a reference to the dentry and change that, but
- 	 * our work is done - we can leave the dentry
- 	 * around with a zero refcount.
-+	 *
-+	 * Nevertheless, there are two cases that we should kill
-+	 * the dentry anyway.
-+	 * 1. free disconnected dentries as soon as their refcount
-+	 *    reached zero.
-+	 * 2. free dentries if they should not be cached.
- 	 */
- 	smp_rmb();
- 	d_flags = READ_ONCE(dentry->d_flags);
--	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
-+	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST |
-+			DCACHE_DISCONNECTED | DCACHE_DONTCACHE;
- 
- 	/* Nothing to do? Dropping the reference was all we needed? */
- 	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
--- 
-2.28.0
-
-
-
+	 Andrew
