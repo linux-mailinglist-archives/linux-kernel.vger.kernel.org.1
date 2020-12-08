@@ -2,46 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5CE2D21F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97F22D220E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgLHETN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:19:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38866 "EHLO mx2.suse.de"
+        id S1727543AbgLHEWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:22:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgLHETN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:19:13 -0500
+        id S1727290AbgLHEWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 23:22:42 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 326C2AC9A;
-        Tue,  8 Dec 2020 04:18:32 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 19:53:14 -0800
+        by mx2.suse.de (Postfix) with ESMTP id D9AF3ACC6;
+        Tue,  8 Dec 2020 04:22:00 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 19:56:43 -0800
 From:   Davidlohr Bueso <dave@stgolabs.net>
 To:     Waiman Long <longman@redhat.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH 3/5] locking/rwsem: Enable reader optimistic lock stealing
-Message-ID: <20201208035314.rwz72kgn5apr2whm@linux-p48b>
-References: <20201118030429.23017-1-longman@redhat.com>
- <20201118030429.23017-4-longman@redhat.com>
+Subject: Re: [PATCH v2 5/5] locking/rwsem: Remove reader optimistic spinning
+Message-ID: <20201208035643.zxhuvjplhlrzdxmi@linux-p48b>
+References: <20201121041416.12285-1-longman@redhat.com>
+ <20201121041416.12285-6-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201118030429.23017-4-longman@redhat.com>
+In-Reply-To: <20201121041416.12285-6-longman@redhat.com>
 User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 17 Nov 2020, Waiman Long wrote:
+On Fri, 20 Nov 2020, Waiman Long wrote:
 
->If the optimistic spinning queue is empty and the rwsem does not have
->the handoff or write-lock bits set, it is actually not necessary to
->call rwsem_optimistic_spin() to spin on it. Instead, it can steal the
->lock directly as its reader bias is in the count already.  If it is
->the first reader in this state, it will try to wake up other readers
->in the wait queue.
+>Reader optimistic spinning is helpful when the reader critical section
+>is short and there aren't that many readers around. It also improves
+>the chance that a reader can get the lock as writer optimistic spinning
+>disproportionally favors writers much more than readers.
+>
+>Since commit d3681e269fff ("locking/rwsem: Wake up almost all readers
+>in wait queue"), all the waiting readers are woken up so that they can
+>all get the read lock and run in parallel. When the number of contending
+>readers is large, allowing reader optimistic spinning will likely cause
+>reader fragmentation where multiple smaller groups of readers can get
+>the read lock in a sequential manner separated by writers. That reduces
+>reader parallelism.
+>
+>One possible way to address that drawback is to limit the number of
+>readers (preferably one) that can do optimistic spinning. These readers
+>act as representatives of all the waiting readers in the wait queue as
+>they will wake up all those waiting readers once they get the lock.
+>
+>Alternatively, as reader optimistic lock stealing has already enhanced
+>fairness to readers, it may be easier to just remove reader optimistic
+>spinning and simplifying the optimistic spinning code as a result.
+>
+>Performance measurements (locking throughput kops/s) using a locking
+>microbenchmark with 50/50 reader/writer distribution and turbo-boost
+>disabled was done on a 2-socket Cascade Lake system (48-core 96-thread)
+>to see the impacts of these changes:
+>
+>  1) Vanilla     - 5.10-rc3 kernel
+>  2) Before      - 5.10-rc3 kernel with previous patches in this series
+>  2) limit-rspin - 5.10-rc3 kernel with limited reader spinning patch
+>  3) no-rspin    - 5.10-rc3 kernel with reader spinning disabled
+>
+>  # of threads  CS Load   Vanilla  Before   limit-rspin   no-rspin
+>  ------------  -------   -------  ------   -----------   --------
+>       2            1      5,185    5,662      5,214       5,077
+>       4            1      5,107    4,983      5,188       4,760
+>       8            1      4,782    4,564      4,720       4,628
+>      16            1      4,680    4,053      4,567       3,402
+>      32            1      4,299    1,115      1,118       1,098
+>      64            1      3,218      983      1,001         957
+>      96            1      1,938      944        957         930
+>
+>       2           20      2,008    2,128      2,264       1,665
+>       4           20      1,390    1,033      1,046       1,101
+>       8           20      1,472    1,155      1,098       1,213
+>      16           20      1,332    1,077      1,089       1,122
+>      32           20        967      914        917         980
+>      64           20        787      874        891         858
+>      96           20        730      836        847         844
+>
+>       2          100        372      356        360         355
+>       4          100        492      425        434         392
+>       8          100        533      537        529         538
+>      16          100        548      572        568         598
+>      32          100        499      520        527         537
+>      64          100        466      517        526         512
+>      96          100        406      497        506         509
+>
+>The column "CS Load" represents the number of pause instructions issued
+>in the locking critical section. A CS load of 1 is extremely short and
+>is not likey in real situations. A load of 20 (moderate) and 100 (long)
+>are more realistic.
+>
+>It can be seen that the previous patches in this series have reduced
+>performance in general except in highly contended cases with moderate
+>or long critical sections that performance improves a bit. This change
+>is mostly caused by the "Prevent potential lock starvation" patch that
+>reduce reader optimistic spinning and hence reduce reader fragmentation.
+>
+>The patch that further limit reader optimistic spinning doesn't seem to
+>have too much impact on overall performance as shown in the benchmark
+>data.
+>
+>The patch that disables reader optimistic spinning shows reduced
+>performance at lightly loaded cases, but comparable or slightly better
+>performance on with heavier contention.
+>
+>This patch just removes reader optimistic spinning for now. As readers
+>are not going to do optimistic spinning anymore, we don't need to
+>consider if the OSQ is empty or not when doing lock stealing.
 >
 >Signed-off-by: Waiman Long <longman@redhat.com>
 
