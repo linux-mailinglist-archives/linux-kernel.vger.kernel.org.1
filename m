@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231D82D3035
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CAD2D3041
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbgLHQuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:50:18 -0500
-Received: from aposti.net ([89.234.176.197]:32890 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgLHQuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:50:17 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, od@zcrc.me,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/2] pinctrl: ingenic: Only support SoCs enabled in config
-Date:   Tue,  8 Dec 2020 16:48:21 +0000
-Message-Id: <20201208164821.2686082-2-paul@crapouillou.net>
-In-Reply-To: <20201208164821.2686082-1-paul@crapouillou.net>
-References: <20201208164821.2686082-1-paul@crapouillou.net>
+        id S1730013AbgLHQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728602AbgLHQyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 11:54:37 -0500
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF76C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:53:57 -0800 (PST)
+Received: by mail-vk1-xa42.google.com with SMTP id l187so1724629vki.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:53:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l5zve3QgoBiHLvxkhbeIQQ8L+c1shM0AySo9iJPfdLI=;
+        b=tcWjcUsoxU6SpDxMxfUujxhJGgNiN0OcrzVgHRXE+pbJuNC7SLmXfBUI75eINJCzON
+         G0nY39F1EVNqZripZe6gbBqfZzjuLM84h1W0NmIJ9jvGryhhLgEOXTrybPsOQT8GLnc8
+         KUcGz9aiF8dfaNJXcsm4ma4k42S8fJ72oEzmlNAlfhp/cRlYwKUgc/vMzXaoCHGAiAQz
+         Fv8ITYgJz1voaC3m4n36riFKsJeJiarjPn95yOG7ac8eVlG7dHlzrZ6kvmUTf+Y5xSqG
+         1a1WQigfWfhFFyxkOxdgAlObdqquWglgAenkMnogNlCbuvVFB7EBjDeKD1KOeC3meePi
+         dfuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l5zve3QgoBiHLvxkhbeIQQ8L+c1shM0AySo9iJPfdLI=;
+        b=JdNhFmRdujPKwoW6H0RSooGkM3t08lqu6ZIwEKsws58mGdkaIKm7zCHDZa2ndEbpfv
+         XcnRQLEbV3WNps8sx6nxVBMBuuKbALMy5qRLC0OD7Ys3rQDUw5RS92n3pKTbDRA94cw2
+         yWsRlo+/f3XzurOQWXpjnEpeHjaixzO2uwmMPOgXRu39LETtZBCiAvuZ37q034yZ0efR
+         Uishe2d1kksa93pQQTq5rzYEERGtvI/yYaihAxAQVcaZbZjwS3CXy8vok3C9wcbfzNDC
+         6OoqlATGlv4VyDPu9VzY1fo8hEfxx6qaFpknNXV4DN0H+KqLPn7wvgDPx9sdYvjAEo/F
+         wKIw==
+X-Gm-Message-State: AOAM530VrJb0AnvLV5q7tE3TYXCejA7hOAfS1uDZeA0PMEZSdOp+ccyj
+        MdMk21btb+FRFw5/iD28o49Bq+FINKAoa8bxk0n7aA==
+X-Google-Smtp-Source: ABdhPJxgg0AuBgAyNX33MRQChfKNjBy/l6I+d3qFW7cDxguUPeYCwHRH9XJaUc5ctnBi5qE5LUaYex6e2Q3DEwkWc2E=
+X-Received: by 2002:a1f:b245:: with SMTP id b66mr17138078vkf.3.1607446436156;
+ Tue, 08 Dec 2020 08:53:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com> <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 8 Dec 2020 08:53:44 -0800
+Message-ID: <CABCJKudbCD3s0RcSVzbnn4MV=DadKOxOxar3jfiPWucX4JGxCg@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested on a JZ4740 system (ARCH=mips make qi_lb60_defconfig), this saves
-about 14 KiB, by allowing the compiler to garbage-collect all the
-functions and tables that correspond to SoCs that were disabled in the
-config.
+On Tue, Dec 8, 2020 at 5:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Dec 8, 2020 at 1:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > On Tue, Dec 1, 2020 at 10:37 PM 'Sami Tolvanen' via Clang Built Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > - many builds complain about thousands of duplicate symbols in the kernel, e.g.
+> >   ld.lld: error: duplicate symbol: qrtr_endpoint_post
+> >  >>> defined in net/qrtr/qrtr.lto.o
+> >  >>> defined in net/qrtr/qrtr.o
+> >  ld.lld: error: duplicate symbol: init_module
+> >  >>> defined in crypto/842.lto.o
+> >  >>> defined in crypto/842.o
+> >  ld.lld: error: duplicate symbol: init_module
+> >  >>> defined in net/netfilter/nfnetlink_log.lto.o
+> >  >>> defined in net/netfilter/nfnetlink_log.o
+> >  ld.lld: error: duplicate symbol: vli_from_be64
+> >  >>> defined in crypto/ecc.lto.o
+> >  >>> defined in crypto/ecc.o
+> >  ld.lld: error: duplicate symbol: __mod_of__plldig_clk_id_device_table
+> >  >>> defined in drivers/clk/clk-plldig.lto.o
+> >  >>> defined in drivers/clk/clk-plldig.o
+>
+> A small update here: I see this behavior with every single module
+> build, including 'tinyconfig' with one module enabled, and 'defconfig'.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/pinctrl/pinctrl-ingenic.c | 61 +++++++++++++++++++++++++------
- 1 file changed, 49 insertions(+), 12 deletions(-)
+The .o file here is a thin archive of the bitcode files for the
+module. We compile .lto.o from that before modpost, because we need an
+ELF binary to process, and then reuse the .lto.o file when linking the
+final module.
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index a14938a7cc30..11f1bc90632d 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/compiler.h>
- #include <linux/gpio/driver.h>
-+#include <linux/if_enabled.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/of_device.h>
-@@ -2384,6 +2385,12 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
- 	unsigned int i;
- 	int err;
- 
-+	chip_info = of_device_get_match_data(dev);
-+	if (!chip_info) {
-+		dev_err(dev, "Unsupported SoC\n");
-+		return -EINVAL;
-+	}
-+
- 	jzpc = devm_kzalloc(dev, sizeof(*jzpc), GFP_KERNEL);
- 	if (!jzpc)
- 		return -ENOMEM;
-@@ -2400,7 +2407,7 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
- 	}
- 
- 	jzpc->dev = dev;
--	jzpc->info = chip_info = of_device_get_match_data(dev);
-+	jzpc->info = chip_info;
- 
- 	pctl_desc = devm_kzalloc(&pdev->dev, sizeof(*pctl_desc), GFP_KERNEL);
- 	if (!pctl_desc)
-@@ -2470,17 +2477,47 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id ingenic_pinctrl_of_match[] = {
--	{ .compatible = "ingenic,jz4740-pinctrl", .data = &jz4740_chip_info },
--	{ .compatible = "ingenic,jz4725b-pinctrl", .data = &jz4725b_chip_info },
--	{ .compatible = "ingenic,jz4760-pinctrl", .data = &jz4760_chip_info },
--	{ .compatible = "ingenic,jz4760b-pinctrl", .data = &jz4760_chip_info },
--	{ .compatible = "ingenic,jz4770-pinctrl", .data = &jz4770_chip_info },
--	{ .compatible = "ingenic,jz4780-pinctrl", .data = &jz4780_chip_info },
--	{ .compatible = "ingenic,x1000-pinctrl", .data = &x1000_chip_info },
--	{ .compatible = "ingenic,x1000e-pinctrl", .data = &x1000_chip_info },
--	{ .compatible = "ingenic,x1500-pinctrl", .data = &x1500_chip_info },
--	{ .compatible = "ingenic,x1830-pinctrl", .data = &x1830_chip_info },
--	{},
-+	{
-+		.compatible = "ingenic,jz4740-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4740, &jz4740_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,jz4725b-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4725B, &jz4725b_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,jz4760-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,jz4760b-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,jz4770-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4770, &jz4770_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,jz4780-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_JZ4780, &jz4780_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,x1000-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,x1000e-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,x1500-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_X1500, &x1500_chip_info)
-+	},
-+	{
-+		.compatible = "ingenic,x1830-pinctrl",
-+		.data = IF_ENABLED(CONFIG_MACH_X1830, &x1830_chip_info)
-+	},
-+	{ /* sentinel */ },
- };
- 
- static struct platform_driver ingenic_pinctrl_driver = {
--- 
-2.29.2
+At no point should we link the .o file again, especially not with
+.lto.o, because that would clearly cause every symbol to be
+duplicated, so I'm not sure what goes wrong here. Here's the relevant
+part of scripts/Makefile.modfinal:
 
+ifdef CONFIG_LTO_CLANG
+# With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+# avoid a second slow LTO link
+prelink-ext := .lto
+...
+$(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds FORCE
+        +$(call if_changed,ld_ko_o)
+
+Sami
