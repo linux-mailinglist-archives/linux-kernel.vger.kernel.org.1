@@ -2,161 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ECB2D3431
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51B92D3423
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgLHUcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:32:17 -0500
-Received: from mga09.intel.com ([134.134.136.24]:63853 "EHLO mga09.intel.com"
+        id S1729680AbgLHUaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:30:19 -0500
+Received: from cmta17.telus.net ([209.171.16.90]:44408 "EHLO cmta17.telus.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726697AbgLHUcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:32:15 -0500
-IronPort-SDR: rjdygps5KDPzZkxGR8iQZGrmpAVOW1gX8wYzxQkiSealPQBw55p2b4Hpsuk4vcKWu8+3tsGmGF
- 5MmLdlksV/sw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="174100977"
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="174100977"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 11:12:55 -0800
-IronPort-SDR: 8FMTbpv7fnTECzcDTxr68T71zDlyppSgvdbS7tJgR99yjjynXQ0HQkC2X0qaWwTQAiiamZ0hcN
- J8SoKvSKF6ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
-   d="scan'208";a="542124267"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Dec 2020 11:12:55 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Dec 2020 11:12:54 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Dec 2020 11:12:54 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 8 Dec 2020 11:12:54 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 8 Dec 2020 11:12:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aRUgw8R8HQuSrgqh+LivGXUqp6h0ixz3G7qpKZxr6ANqO+2UMJY/QKDUGo8qs85tTVArtItWwKv7Lwf5wW8fyYEpYAZGLItEZr5c5v5xNhT7haQL/qCWrlxCkJm1MI+HRRAvC3ctu+x5VuuGmKMyLt3dLI3xqtjuHv2PTzOVds43IGXwn3Us1wBgI8wB2ccRWlEMuoA5JS4o5Cnn4409/gsSKyjI7Vv5YTauMA+Tm5aVjO9oXoA1BjIIf6ZHPf1Buqg5KBxn0P0gnu+Kur8d2Dy3oUb1LwmEZSNOOdV7+MsTmv6L/81frahlaxFLXqtmrI5SbTt5AuuGhJMVDgXBzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KOB6c9hQFNiifsCK8fSUlmoxDZIvjxPfIGGck8PdmlA=;
- b=mDcY6sIo24+JK5E1Z/jbIw4iLIO6O1bl9sSASWbomA/w/xuO4Dkm6MWTFCTRdzGX6omK6xwkel/tiep5Xp5vbA63OWHUsJvH/DGaJhAIED68vWlsIoFGljzcKomk+XIHCHrzmDxcLeWcUxSuCGlEH+7Ulii5BnpuSgQiphnhTabzXSgc/P2I++MKhjxUBGWUfYF3Ere+1SmtaW9gV/FCyQ504Kub9DYrezDKwptX3Z/YGKbsdaY1PqbKLVVgOSZVXc87v1i/IZW73A3Vy5Ya84sJoMSq0AgW1ZVFl7IgSxu0s+6Bp6S9dzF7IovBZJAArYqEoqXaRm41cUkxjFF8NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KOB6c9hQFNiifsCK8fSUlmoxDZIvjxPfIGGck8PdmlA=;
- b=SKnqtzEhG1aTGTo+fTPsGzxbq1FLce7mxOl5vc2UXh724fd8PcMDolmhnHPpaIIx+Yot+1OTR4kSz3IM6CGwi6EhY3LWIQ/oIJgCkUzDWlPOnOPWZEk6M9cUwcwkO+yHctoOaHONl63XA++EsaaHTW3R2OPcoggrW5HePgLQ2qU=
-Received: from BY5PR11MB4056.namprd11.prod.outlook.com (2603:10b6:a03:18c::17)
- by BYAPR11MB2855.namprd11.prod.outlook.com (2603:10b6:a02:ca::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Tue, 8 Dec
- 2020 19:12:51 +0000
-Received: from BY5PR11MB4056.namprd11.prod.outlook.com
- ([fe80::a556:7843:c77:936a]) by BY5PR11MB4056.namprd11.prod.outlook.com
- ([fe80::a556:7843:c77:936a%5]) with mapi id 15.20.3654.012; Tue, 8 Dec 2020
- 19:12:51 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     "luto@kernel.org" <luto@kernel.org>
-CC:     "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bp@suse.de" <bp@suse.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Metzger, Markus T" <markus.t.metzger@intel.com>,
-        "Brown, Len" <len.brown@intel.com>
-Subject: Re: [PATCH v2 15/22] x86/fpu/xstate: Support ptracer-induced xstate
- area expansion
-Thread-Topic: [PATCH v2 15/22] x86/fpu/xstate: Support ptracer-induced xstate
- area expansion
-Thread-Index: AQHWvsznQG60NzoojESgLM5m/NNfkqnQeGSAgAcnjACAAAMugIALno4AgAGjDoCACMi7AA==
-Date:   Tue, 8 Dec 2020 19:12:51 +0000
-Message-ID: <ffa28f1070749ab00635608262c25bad2f11a185.camel@intel.com>
-References: <20201119233257.2939-1-chang.seok.bae@intel.com>
-         <20201119233257.2939-16-chang.seok.bae@intel.com>
-         <CALCETrW415uoRD3AFUnz8G2Yoj1TvC+hwi5AT=QiLtq6Vm9J=g@mail.gmail.com>
-         <246DCF46-D7F4-4F68-ADF8-2F694FEFD2AC@intel.com>
-         <CALCETrXjgB_QXumQr+AgZx5O5SDv25yiVuDkFuCk9ZRDP6VoKQ@mail.gmail.com>
-         <A7AD8A0D-0346-4B25-A2C8-283E59D422EF@intel.com>
-         <CALCETrX6=1AOS_G=dUdMyCiCSVRA3ns937nhRS5O1DwvfWtSQA@mail.gmail.com>
-In-Reply-To: <CALCETrX6=1AOS_G=dUdMyCiCSVRA3ns937nhRS5O1DwvfWtSQA@mail.gmail.com>
-Reply-To: "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.55.55.41]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 892e00a1-334c-40d9-9e12-08d89bad426d
-x-ms-traffictypediagnostic: BYAPR11MB2855:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2855DA8218BE3C004DD8EDF0D8CD0@BYAPR11MB2855.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LNbWoW8i7YrEbkgS5z0aNQKrD4fjXzXeDlEyWBT6z80toDnoDFakgOuIzIA9BfbjKCI/GbOs43PFtMB2tH8yGjL/yCMXUawqjTkJ9qzf9eL6EUg+91mJALMNJSay1PanTfQEX8sNEt66DwlTtE12FKt7QlMH5ym92e3myzRQNFxKZE7YQP8hhZYxdMy2uB5Gl/1GPAhUxkFV/XH0c1lxPJMNwzA80E0PThWqfYFG13aYddMhGJw/GTlOeB1cU1dWeKrcCbteXATSmdkVNWcxLAxGsa4ZZzYO9sXy8klVvWYwz7u8MNFSbipnWFAFi5u+PAGBSfPFhXvKIZbLkW8S1hCIIMQdsa/zVBe+AK9hHn/KCPpTfVSO+ZVC+0aoiHu2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4056.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(8936002)(64756008)(6512007)(186003)(76116006)(66446008)(26005)(8676002)(66556008)(5660300002)(66476007)(4326008)(558084003)(107886003)(6506007)(508600001)(54906003)(71200400001)(86362001)(2616005)(83380400001)(3450700001)(6916009)(53546011)(6486002)(66946007)(2906002)(36756003)(99106002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NW1abWU2YnlTMU1XWUNyZ1VnaTJYZmtxbHBRU3BWbmY4UXBxWGJOMWZmYjQv?=
- =?utf-8?B?Nis5TlBYNW5BbEJPUnIvdTd6ZGdQaVBUQUNJdGs0UXZlRzYzeTNmVE9xaWtC?=
- =?utf-8?B?RHhiS0NyVENWSWppeFI5VmhuU0pXYVk2UzFERHdrWkJUS2dtYjdZZzZ3a0Fr?=
- =?utf-8?B?YmMyUFZENy9KUXU2amkxUjQ1dS9Wb3pEeW5oN1psOFVuMTI2TkY3aUh5emt6?=
- =?utf-8?B?d2hxMjNuSll4QStpMERsU3QzY2NTWlhOd1FRRWJDVU5CSEhzdGorbnBpRExD?=
- =?utf-8?B?Z3RHSnZlNG1TV0pnTCthcEtOaTFhSkRFeVViOTAxeUZCcVFMV0ZMMFhROHc1?=
- =?utf-8?B?dGwxZHV4bnh5M1VnN2pXcFVqQlBEM0ZLK3VoMng3NUwycmhSQVJDdnhWcU9V?=
- =?utf-8?B?ZnpLN1A2WTZhYmhtaGdUU0dGcDlRenVLSy91Qmp1N0ZGVmk3clhMNUl5aDly?=
- =?utf-8?B?NDRkcm9RV3BLcEF4UnAybnhwdkdESXZjTXlxOGxrVThFd3NCejA0RDZ5d2Zv?=
- =?utf-8?B?ZzdQZ0JKRkF1VGFWYUZvNGZvajdHSjlUZlYrbWt5dWZMbVhlT1VERnJGdkF1?=
- =?utf-8?B?QVg1aThod3hYOGdZVTJtbWs0RHJUN2RIcnZFME90R1hoajI5SzY5K0VHdzd6?=
- =?utf-8?B?dEJhSDE1SmRDU002WVd1ZFJhbjI1dzNLZFh2azdVWVAzK3VnS2FvZVgyUWFP?=
- =?utf-8?B?NjExOW9KbmV6VnhZMGZCR0tBMExEaCsxTEZQT1QxRzdPQVQ1c3RzSEROZEtN?=
- =?utf-8?B?TSs1cFgxNGFBb1BWL1F6MTFoRUlQSnVIUERzZnBuRUovbUNyYjFyeXZObnZU?=
- =?utf-8?B?dzFtUFNiT0ZXL0RoQzRobmw1cnhHc0RocHVhTUVvL1hiS2tWSkpHOHpsSWVy?=
- =?utf-8?B?SkNWRW5HZkpRM01uSkxpQUpWMDhsdUQxZkNKYWFKRS8vTDFSU3k1TFNkb3VS?=
- =?utf-8?B?NFRTeklsdVo3QWkwRHd2dG91N1BTQS9aNjh4ZXh0d0xkSHBkODB6dDhEdWtS?=
- =?utf-8?B?NnhHRlBLV1FkOXVHTXhoMXEzNFFWRTRLVVRMM0RNcFJJTmUwRHhOVzFtejVJ?=
- =?utf-8?B?KzdoeG44dkVxVURHdTc5WTNHaXQxbkM1bFBMb2RwTU9QaGJQaUZvOUVwZ0JS?=
- =?utf-8?B?N1lFcTlWRUlXY0UwOEgwRkN4ZzN1VzJnVitBcEkreGxaYkpEQ2pCV1VJTXBK?=
- =?utf-8?B?RHJBa0pzRW9obGpkMDFHQWR6RE02TENtcEl1d0xyUXduRVR5RmtRWG9FcDA2?=
- =?utf-8?B?d0twT001bEJuWlZNdVBQVkRETlE0UWoyZHYzUWJITHRSdVRoVlZiRU1aSDJY?=
- =?utf-8?Q?wx3fVhdN8xhUK+rpgYwOK4BF2EFxFlRV64?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A9EDF2EA5F524B42AEB1A98DBDB60BE7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727660AbgLHUaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:30:18 -0500
+Received: from dougxps ([173.180.45.4])
+        by cmsmtp with SMTP
+        id miRZk7Fszm62rmiRakESsv; Tue, 08 Dec 2020 12:14:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1607454880; bh=cjeXmSSc2tCRBmt6xapT5IwcYBqI1AcxtK+LuUehyIA=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=5ZI3NdnPf1Rik4TxgG+mX/qkq1P/Z8eZoPemnHDeRjyKA/qxgNBUogcitopo05YgM
+         gYVet+DPnE2o5StkufEN28JXhqV1NYplwCjAM2KRQfPtBpQeBqZFr1tOnY4xnwEhDU
+         HYSM5DnM7Yn5F4R+IOyxqNqI2jila1n48YbEuQZX5rSUuc29/N758LrqlfluxK8HXa
+         nAddANFqjNFNl4UPIRSyhqmJufs6s1tvOfrl5Y16blCSjeZ4iiOwk1lXMEpUA4GfPT
+         CGlTXtUZ0Ox8Q2CLHEFNMcirtgBNjp0K5cWlxIvn0sF4daAJYlYC0l/y3Ozc0bFPJ8
+         Wk7Gx+3TJ91EQ==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.4 cv=D4iCltdj c=1 sm=1 tr=0 ts=5fcfd0a0
+ a=zJWegnE7BH9C0Gl4FFgQyA==:117 a=zJWegnE7BH9C0Gl4FFgQyA==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=IkcTkHD0fZMA:10 a=iox4zFpeAAAA:8
+ a=VwQbUJbxAAAA:8 a=gu6fZOg2AAAA:8 a=4Jbuw8ktRrBCy4-7u88A:9 a=QEXdDO2ut3YA:10
+ a=-FEs8UIgK8oA:10 a=NWVoK91CQyQA:10 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=2RSlZUUhi9gRBrsHwhhZ:22
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
+        "'Giovanni Gherdovich'" <ggherdovich@suse.com>
+Cc:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Peter Zijlstra'" <peterz@infradead.org>
+References: <20360841.iInq7taT2Z@kreacher> <1607445035.2673.64.camel@suse.com> <CAJZ5v0j2u7MrO82+ubx01kvyhDUKo11mfyofF-TAqdSLx_i3Ng@mail.gmail.com>
+In-Reply-To: <CAJZ5v0j2u7MrO82+ubx01kvyhDUKo11mfyofF-TAqdSLx_i3Ng@mail.gmail.com>
+Subject: RE: [PATCH v1 0/4] cpufreq: Allow drivers to receive more information from the governor
+Date:   Tue, 8 Dec 2020 11:14:36 -0800
+Message-ID: <001d01d6cd96$601c8a80$20559f80$@net>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4056.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 892e00a1-334c-40d9-9e12-08d89bad426d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 19:12:51.7223
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DhN9I8CPTakoqjtxzhGjZo1yVIJ5z7VnJg3xeDeI3PWULvQZPJGXpncgDtGHFGy9zlDcA7S5gUnzFHVoQdJ/UJt14kKJ3CB7x9BXYKfH6u4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2855
-X-OriginatorOrg: intel.com
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: AdbNhYnI6l7ez4eQRjiDzyQ3pYiW9QABrdRQ
+X-CMAE-Envelope: MS4xfNLEs3/CV44UYR9bsW93NdqFMR+RW4quJlygVKVFVpB5RDrMwtMRZYFzkYB3ZHLBn1hacK2BsqpbgPEIG1PMiHSucXp7eOQ5jtb0FC6lj0ADxBMFRQ/2
+ 4cktii8b1D761lCAdEwBYg+u/FaQadeq+lkzeIBvzQ6jDTlOB/q/JT+ytcRjToCCvHz+d6vUdduf+k3+/RxhEA10ZKxbbOi9t1EN1IV8K4zV7p+9QrLWvH0/
+ vnNOpwGQXKsEt/43yMJPc+pnO9d/RHredhLq0yYXk7tmaMEjE8Rpb5s7SZGxddqF3U5B3Zgeq0H9GLYNmkbFQkYPMznDQA+EO6ofHOGnFRNhHDiiqBUU4j5/
+ R6/nK2lL5UTWz8RFuuQrH6LE7QmgaijYbttsrEo2WsZL/zfd10pp3Z/UJjssVcjY8tN+rcclBwnW4xeehYVQa4Htd5PjvA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBEZWMgMywgMjAyMCwgYXQgMTQ6MDAsIEFuZHkgTHV0b21pcnNraSA8bHV0b0BrZXJuZWwu
-b3JnPiB3cm90ZToNCj4gDQo+IEhhdmUgeW91IGNvbmZpcm1lZCB0aGF0IHJlYWwgcHRyYWNlIHVz
-ZXJzIChnZGI/ICBkb2VzIGFueXRoaW5nDQo+IGFjdHVhbGx5IHVzZSB0aGlzIGNvZGU/KSBjYW4g
-aGFuZGxlIHRoZSBodWdlIGJ1ZmZlcnMgdGhhdCB3aWxsIGJlDQo+IG5lZWRlZD8NCg0KWWVzLCB3
-ZSB0aG91Z2h0IHRoZXJlIGlzIGFjdHVhbCB1c2FnZSBmb3IgdGhpcy4gV2UgKGNjJ2luZyBNYXJr
-dXMpIHdpbGwNCnN1cHBvcnQgaXQgb24gR0RCLg0KDQpUaGFua3MsDQpDaGFuZw0K
+On 2020.12.08 09:14 Rafael J. Wysocki wrote: 
+> On Tue, Dec 8, 2020 at 5:31 PM Giovanni Gherdovich <ggherdovich@suse.com> wrote:
+>> On Mon, 2020-12-07 at 17:25 +0100, Rafael J. Wysocki wrote:
+>>> Hi,
+>>>
+>>> This is based on the RFC posted a few days ago:
+>>>
+>>> https://lore.kernel.org/linux-pm/1817571.2o5Kk4Ohv2@kreacher/
+>>>
+>>> The majority of the original cover letter still applies, so let me quote it
+>>> here:
+>>> [...]
+>>
+>> Hello Rafael,
+>>
+>> I'd like to test this patch, as I have concerns on how it performs against the
+>> current intel_pstate passive + HWP + schedutil (which leaves HWP.REQ.DESIRED
+>> untouched).
+> 
+>The performance will be worse in some cases, which is to be expected,
+
+Agreed. More further below.
+
+>but the point here is to counter the problem that in some cases the
+>frequency is excessive now.
+
+Agreed.
+
+I retested with this new version with my load sweep test,
+and my results were the pretty similar to previously reported, [1].
+If anything, there might be a perceptible difference between the RFC
+version and this version as a function of work/sleep frequency.
+
+73 Hertz: RFC was 0.8% less power
+113 Hertz: RFC was 1.5% less power
+211 Hertz: RFC was 0.8% less power
+347 Hertz: RFC was 1.2% more power
+401 Hertz: RFC was 1.6% more power
+
+Of course, let us not lose site of the original gains that were in the 13 to 17% range.
+
+Now, for the "worse in some cases, which is to be expected" part:
+
+At least on my system, it is most evident for some of the pipe type tests,
+where the schedutil governor has never really known what to do. This patch
+set seems to add enough of a downward bias that this version of the schedutil
+governor now behaves much like the other versions
+
+Here is an example (no forced CPU affinity, 2 pipes):
+
+Legend:
+hwp: Kernel 5.10-rc6, HWP enabled; intel_cpufreq; schedutil (always)
+rjw: Kernel 5.10-rc6 + this patch set, HWP enabled; intel_cpu-freq; schedutil
+no-hwp: Kernel 5.10-rc6, HWP disabled; intel_cpu-freq; schedutil
+acpi-cpufreq (or just acpi): Kernel 5.10-rc6, HWP disabled; acpi-cpufreq; schedutil
+patch: Kernel 5.10-rc7 + the non RFC 4 patch version of this is patch set, HWP enabled; intel_cpu-freq; schedutil
+
+hwp: 3.295 uSec/loop (steady); average power: 62.78 Watts (steady); freq: 4.60GHz (steady).
+rjw: 3.6 uSec/loop (noisey) (9.3% worse); average power: 44.13 Watts (noisey); freq: ?.??GHz (noisey).
+no-hwp: 3.35 uSec/loop (noisey); average power: 59.17 Watts (noisey); freq: ?.??GHz (much less noisey).
+acpi-cpufreq: 3.4 uSec/loop (noisey); average power: 56.93 Watts (noisey); freq: ?.??GHz (less noisey).
+patch: 3.6 uSec/loop (noisey) (9.3% worse); average power: 43.36 Watts (noisey); freq: ?.??GHz (noisey).
+
+One could argue that this patch set might be driving the frequency down a little too hard in this case,
+but this is one of those difficult rotating through the CPUs cases anyhow.
+As a side note, all other governors (well, not powersave) pin the CPU frequency at max (4.6 GHz).
+
+For my version of the "Alex" pipe test (a token is passed around and around via 6 named pipes,
+with a bit of work to do per token stop)
+I get (more power = better performance):
+
+hwp: average power: 17.16 Watts (very noisey)
+rjw: average power: 3.18 (noisey)
+no-hwp: average power: 2.45 (less noisey)
+acpi-cpufreq: average power: 2.46 (less noisey)
+patch: average power: 2.47 (less noisey)
+
+The "hwp" case is misleading. It is really bouncing around at about 0.2 hertz
+and can't seem to make up its mind. If nothing else, all the other versions
+are a little more deterministic in their response.
+
+> 
+>> I'll get results within a week. Do you mind holding back the merge until then?
+
+On my system that git "make test" is broken, so I can not do the high PIDs per second test that way.
+My own PIDs per second test also has issues on this computer.
+I am not sure when I'll get these type of tests working, but will try for within a week.
+
+... Doug
+
+References:
+
+[1] https://marc.info/?l=linux-kernel&m=160692480907696&w=2
+
+My tests results graphs (updated):
+Note: I have to code the web site, or I get hammered by bots.
+Note: it is .com only because it was less expensive than .org
+
+73 Hertz (10 samples per second):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su73/ 
+113 Hertz (10 samples per second):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su113/
+211 Hertz (10 samples per second):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su211/
+347 Hertz (10 samples per second):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su347/
+401 Hertz (10 samples per second):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/su401/
+
+Note: The below graphs are mislabelled, because I made hacker use of a tool dedicated
+to graphing, and HTML wrapping, the load sweep test. The test conditions are steady state
+operation, no variable changes.
+
+pipe-test (5 seconds per sample):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/pipe/
+Alex test (5 seconds per sample):
+Double u double u double u dot smythies dot .com/~doug/linux/s18/hwp/k510-rc6/alex/
+
+
