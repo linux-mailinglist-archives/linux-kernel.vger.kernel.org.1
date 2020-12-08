@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FFA2D34F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6892D34FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729729AbgLHVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
+        id S1729879AbgLHVKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729308AbgLHVKf (ORCPT
+        with ESMTP id S1726222AbgLHVKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:10:35 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304E3C06179C;
-        Tue,  8 Dec 2020 13:09:55 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id lt17so26715047ejb.3;
-        Tue, 08 Dec 2020 13:09:55 -0800 (PST)
+        Tue, 8 Dec 2020 16:10:51 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F375AC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:10:06 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o4so13360813pgj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:10:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pcUFeGN1uwzpyJXiBF01tsjkIE/O4GFCTJ/pyCmdmBU=;
-        b=QIHsxzx6gd3fFLf1zUHC6i3YFsw4z7RdrhdaLFyeEJBDe4e+XqhkZnyMoHL7iVe17v
-         RhBzzd4VpQyRi4uO7MdaUlCrW5djq6MvQx+BHf1BWXC3pyjtpSYIy6KzkuYLQgljszdO
-         hp42xJ2m42tBXR05FVz++pQExVQOufK8o7Z6vn5DmDrwCqmx+LI6DVqPv32fZTN9f8MJ
-         Vq8QssCLFTqttTQi0vQFtCP49gKd/W0zDDRYLRf39HiEKHAR4GpqDzRo3yEtKdyTYrt6
-         oY0UAN4nJvLp2MwJY8Ob55Nks31Sdxts/bhMtqmSvCX+ozN31L45BuJ/b0zQiORe/HDk
-         BN7w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JlsOI1fRDP5hh5RRN78La/q8WBPdxUn50gvC+PZHts8=;
+        b=P0U7Ogd8zoiY2n175d1X/g+/fJdAmGtiw6Ed5UHTXp8ErBagDDkxCwMTGBF9BCIOjy
+         pbq/5qwvvmMeWHqUKqTbcNu+xhFsava13TOOa+wLsx8wIArkRm1a9Ar0K9/Kvv8AKw8K
+         wAIbNzDXN/ALgxyANFROrjx2Duw9tqQCdjAO5s/bky5fQ31eeRIzwiwPCCeJ9G21PMfp
+         0uSk9B6jy06FghAAJqiXpgYoIS0I+PnwdJ8bmYhf7TSY4IKWk8Dfbpn8T2PQYftvQb0G
+         TqVBRNnLA45BlEuMp1qEk5rIQLxsS4U1OGfqsttmRzHkFoLCsLcFH/cjS3FxF+XpxVrk
+         VA1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pcUFeGN1uwzpyJXiBF01tsjkIE/O4GFCTJ/pyCmdmBU=;
-        b=OPoM6q7ur8wuKrl1cDFdz+1TEqDrRP1Yy3wARly7SNiYD8A79aT+g7UPgaFF5/D3m9
-         PkPjJXa87w1HfGX4PJIvZnqlleWR+SbY/tCHtc0gg56/qrlCNh7A09sjk9QHgRFjYbzC
-         U1jSV2439fMnDE43RltZcifYU/MNGGGF0HnHfFBRUI/uNAw0kK7jgg5M1KuRFgjwln1z
-         NGcNIbr1C5xgCRzMlCVNvYb/OE3IV2zgzNV0vGlzTdwHz+06L5rAMzN65LuurQJUQ2VB
-         VPy89ESVgHMod1WBA5SMXcl9d3J+olpdyUjM/dq9r3AfQocvmtuNmt0dw+7bqkLiUnHM
-         kM4A==
-X-Gm-Message-State: AOAM530W304NZ2zsNgXqPUhIQdhwP1DvGdBNB4TiXxquFPNar1bEZi1k
-        vuKzowp31StD/KgHh1w0eKM=
-X-Google-Smtp-Source: ABdhPJyjzP5NFJy3eu7Vc0AjmAczfmBkCADjF9lFg/pGiZEoLKxkC7/UjFEbyFl6SMPPHoMdUyxs4g==
-X-Received: by 2002:a17:906:d62:: with SMTP id s2mr5548458ejh.61.1607461793933;
-        Tue, 08 Dec 2020 13:09:53 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.gmail.com with ESMTPSA id n22sm17908edr.11.2020.12.08.13.09.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 13:09:53 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] scsi: ufs: Changes comment in the function ufshcd_wb_probe()
-Date:   Tue,  8 Dec 2020 22:09:41 +0100
-Message-Id: <20201208210941.2177-4-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208210941.2177-1-huobean@gmail.com>
-References: <20201208210941.2177-1-huobean@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JlsOI1fRDP5hh5RRN78La/q8WBPdxUn50gvC+PZHts8=;
+        b=Yjt0KP7B52t4Oesi+4a7ZsGaNL9bZAq9w55FtnaerJBnBExDGKXPAnXchyd5p2K6Qz
+         +DErVA4AkXAcREi/AWJfBPz5VD1yKBnnyCyOA+ANxCzhKtLXkIKDTD8afPca4dMefy5O
+         GkvN3Wmzch62JR0skZIG+WSvzpS+j3oLRKJH940QNeTVhUqMNMrLuhk+VDB7j/eT3grO
+         VAmM6nEwLSmOJpsCDElfIoOrm3t+0uusSAasmvrO1jReW7dbeulRTR5qFG7QNBx8wbiq
+         xg+sfUUTvxWMyhsTWAhufMV/xEvvyOYCl+rlmuY9yT9xxrrn5EydTWNBpHIOal+Hh+C+
+         BKAA==
+X-Gm-Message-State: AOAM533uNk767SxCTes8sXLYqtGeCSJFfuKdOV/100fDx2Kqv4OkUDSt
+        WOe92WQy23prSEhhyFd4ics9OCJbOAIi2TWbL0Xwqg==
+X-Google-Smtp-Source: ABdhPJyLnu/bEkr1l2p2adVzNhFUDAMWuxSKY6xfqwbS1B4vhRKyNpYWWFzDSp2GEeJ76KAN+nCTPZuawZcHYARPCnA=
+X-Received: by 2002:a63:3247:: with SMTP id y68mr4840pgy.10.1607461806350;
+ Tue, 08 Dec 2020 13:10:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com> <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 8 Dec 2020 13:09:54 -0800
+Message-ID: <CAKwvOd=hL=Vt1ATYqky9jmv+tM5hpTnLRuZudG-7ki0EYoFGJQ@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Tue, Dec 8, 2020 at 1:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Tue, Dec 8, 2020 at 5:43 PM 'Sami Tolvanen' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Tue, Dec 8, 2020 at 4:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > - one build seems to take even longer to link. It's currently at 35GB RAM
+> > >   usage and 40 minutes into the final link, but I'm worried it might
+> > > not complete
+> > >   before it runs out of memory.  I only have 128GB installed, and google-chrome
+> > >   uses another 30GB of that, and I'm also doing some other builds in parallel.
+> > >   Is there a minimum recommended amount of memory for doing LTO builds?
+> >
+> > When building arm64 defconfig, the maximum memory usage I measured
+> > with ThinLTO was 3.5 GB, and with full LTO 20.3 GB. I haven't measured
+> > larger configurations, but I believe LLD can easily consume 3-4x that
+> > much with full LTO allyesconfig.
+>
+> Ok, that's not too bad then. Is there actually a reason to still
+> support full-lto
+> in your series? As I understand it, full LTO was the initial approach and
+> used to work better, but thin LTO is actually what we want to use in the
+> long run. Perhaps dropping the full LTO option from your series now
+> that thin LTO works well enough and uses less resources would help
+> avoid some of the problems.
 
-USFHCD supports WriteBooster "LU dedicated buffer” mode and
-“shared buffer” mode both, so changes the comment in the
-function ufshcd_wb_probe().
-
-Signed-off-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index f3ba46c48383..75ea74748bc6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7167,10 +7167,9 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
- 		goto wb_disabled;
- 
- 	/*
--	 * WB may be supported but not configured while provisioning.
--	 * The spec says, in dedicated wb buffer mode,
--	 * a max of 1 lun would have wb buffer configured.
--	 * Now only shared buffer mode is supported.
-+	 * WB may be supported but not configured while provisioning. The spec
-+	 * says, in dedicated wb buffer mode, a max of 1 lun would have wb
-+	 * buffer configured.
- 	 */
- 	dev_info->b_wb_buffer_type =
- 		desc_buf[DEVICE_DESC_PARAM_WB_TYPE];
+While all developers agree that ThinLTO is a much more palatable
+experience than full LTO; our product teams prefer the excessive build
+time and memory high water mark (at build time) costs in exchange for
+slightly better performance than ThinLTO in <benchmarks that I've been
+told are important>.  Keeping support for full LTO in tree would help
+our product teams reduce the amount of out of tree code they have.  As
+long as <benchmarks that I've been told are important> help
+sell/differentiate phones, I suspect our product teams will continue
+to ship full LTO in production.
 -- 
-2.17.1
-
+Thanks,
+~Nick Desaulniers
