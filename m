@@ -2,264 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A73C2D3521
+	by mail.lfdr.de (Postfix) with ESMTP id 77B1C2D3522
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729149AbgLHVVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:21:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S1729476AbgLHVV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:21:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgLHVVf (ORCPT
+        with ESMTP id S1726620AbgLHVVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:21:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514E9C0613CF;
-        Tue,  8 Dec 2020 13:20:55 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607462453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mKMgeVNoXnCbOxJY3c2Qk9xN0c/9glFEs7WvwfcFyk=;
-        b=BTSfQCoOvgPTEWGzfAZFUu6pNPO6SALgqYR+oiYjcgZh9h8p4vtuC4xA3zE/XXnjOz6fOL
-        za8Umn43pevJ0mgjQ6EEx17DsqzB3ujb0tanXigm5/SJ+B0vxnkJnczdUCF2plX9iAUnX9
-        McOOIRswZUPN2JPf2RxzSEu6KTt60AQbEk1nUaKOvs5S0RV+WirbY3pSGHbyPmbP0a9Hbb
-        0UDi7yfaspBcgv1U2lRR3d8rSvurkdNKdjDSMvDPdx2UFluJowy1PSQZWENFx1dm5SYCuH
-        JmDucT7JOlIjQdUn+mW5RxFS75ah+95Kt0+EMexRUft40QJ8QzhyXI2Vq+xUSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607462453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mKMgeVNoXnCbOxJY3c2Qk9xN0c/9glFEs7WvwfcFyk=;
-        b=9sFzMxntmhFfsRJ92ruQeL0ohbVzXVxQx/Gc6HYbxFVHhl/djmTCPFlUhcSRUR2n+IWtOz
-        doj5IYXZzw/S5aDw==
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     kvm@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
-Date:   Tue, 08 Dec 2020 22:20:52 +0100
-Message-ID: <87blf42dvv.fsf@nanos.tec.linutronix.de>
+        Tue, 8 Dec 2020 16:21:39 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77455C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:20:59 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t37so13377850pga.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RDWW5hZB1VaGavC7326+UBXGxqMf/k+gnSVXcAhVGwQ=;
+        b=AzGHJdjfU/mONr1fn3P2XppbsELqU+Ks1DxhOIyrwAIThIouZPSCNVvGGdOcjTNQrQ
+         udNZV9WyRf4see5Jei7FuuQOZ9xEDhVqn9clbZl7Wj0EK3VzrHStV5kxkVQpgIxdXVsk
+         PjL1jmBuaJjpJCPN3QLjDgqjJ1lWVEgGRWud4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RDWW5hZB1VaGavC7326+UBXGxqMf/k+gnSVXcAhVGwQ=;
+        b=NbA8BCzORXy2Sb01Cjv13kLjQ2zltDo5XDOZtJ8OMa1j8spoxEUZsry8lERYmZCn2C
+         ygP52j6d6MxyqPdu9wI/bgPP/z7JliGnGBk6tX7pnlijyayof1b1B8rr2YQEmUdLIGRi
+         gsYLepDVnoYfCMPIaPPzk59MYT4EI6K1Reek582B40GhytFRcM9JjOe+7PyNTK40MKq4
+         GoJboks6p5k9AN1Y+ryJHpUVDSVVpzarI/dYk/E7TkKTcUWhdb8VT55IlR7zgQtZJlBE
+         uCyUCvUmBQCLZaAeXxYw9DmH68XsC6cV1+ZKkfevIf9VwfRkbAvWoVV7Fk5KnIsvb8I9
+         Fdqw==
+X-Gm-Message-State: AOAM53029vwJO/SfjLHuMcv5iCNDLa6g3ToKcZniDPuTL4xa+AGfHDVH
+        ZazxABZsEnu66EYIvXNSlQ9jIg==
+X-Google-Smtp-Source: ABdhPJzXe+P48JeIrEK52QtqLMEukiieA6pN0QbzAkcKvHTd7HBnmtnnpXFAqO+nBIQPJ9ZDbwfdTA==
+X-Received: by 2002:a62:e901:0:b029:197:ca81:4bb9 with SMTP id j1-20020a62e9010000b0290197ca814bb9mr2664207pfh.26.1607462459031;
+        Tue, 08 Dec 2020 13:20:59 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s17sm16772192pge.37.2020.12.08.13.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 13:20:57 -0800 (PST)
+Date:   Tue, 8 Dec 2020 13:20:56 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] lkdtm: don't move ctors to .rodata
+Message-ID: <202012081319.D5827CF@keescook>
+References: <20201207170533.10738-1-mark.rutland@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207170533.10738-1-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08 2020 at 18:25, Maxim Levitsky wrote:
-> On Tue, 2020-12-08 at 17:02 +0100, Thomas Gleixner wrote:
->> For one I have no idea which bug you are talking about and if the bug is
->> caused by the VMM then why would you "fix" it in the guest kernel.
->
-> The "bug" is that if VMM moves a hardware time counter (tsc or anything else) 
-> forward by large enough value in one go, 
-> then the guest kernel will supposingly have an overflow in the time code.
-> I don't consider this to be a buggy VMM behavior, but rather a kernel
-> bug that should be fixed (if this bug actually exists)
+On Mon, Dec 07, 2020 at 05:05:33PM +0000, Mark Rutland wrote:
+> When building with KASAN and LKDTM, clang may implictly generate an
+> asan.module_ctor function in the LKDTM rodata object. The Makefile moves
+> the lkdtm_rodata_do_nothing() function into .rodata by renaming the
+> file's .text section to .rodata, and consequently also moves the ctor
+> function into .rodata, leading to a boot time crash (splat below) when
+> the ctor is invoked by do_ctors().
+> 
+> Let's prevent this by marking the function as noinstr rather than
+> notrace, and renaming the file's .noinstr.text to .rodata. Marking the
+> function as noinstr will prevent tracing and kprobes, and will inhibit
+> any undesireable compiler instrumentation.
+> 
+> The ctor function (if any) will be placed in .text and will work
+> correctly.
+> 
+> Example splat before this patch is applied:
+> 
+> [    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
+> [    0.922088] Mem abort info:
+> [    0.922828]   ESR = 0x8600000e
+> [    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
+> [    0.925036]   SET = 0, FnV = 0
+> [    0.925838]   EA = 0, S1PTW = 0
+> [    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
+> [    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
+> [    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
+> [    0.932806] Modules linked in:
+> [    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
+> [    0.935620] Hardware name: linux,dummy-virt (DT)
+> [    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+> [    0.938609] pc : asan.module_ctor+0x0/0x14
+> [    0.939759] lr : do_basic_setup+0x4c/0x70
+> [    0.940889] sp : ffff27b600177e30
+> [    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
+> [    0.943306] x27: 0000000000000000 x26: 0000000000000000
+> [    0.944803] x25: 0000000000000000 x24: 0000000000000000
+> [    0.946289] x23: 0000000000000001 x22: 0000000000000000
+> [    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
+> [    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
+> [    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
+> [    0.952246] x15: 0000000000000000 x14: 0000000000000000
+> [    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
+> [    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
+> [    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
+> [    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
+> [    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
+> [    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
+> [    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
+> [    0.964155] Call trace:
+> [    0.964844]  asan.module_ctor+0x0/0x14
+> [    0.965895]  kernel_init_freeable+0x158/0x198
+> [    0.967115]  kernel_init+0x14/0x19c
+> [    0.968104]  ret_from_fork+0x10/0x30
+> [    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
+> [    0.970815] ---[ end trace b5339784e20d015c ]---
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 
-Well, that's debatable. The kernel has a safe guard in place for each
-clocksource which calculates the maximum time before an update needs to
-take place. That limit comes from:
+Oh, eek. Why was a ctor generated at all? But yes, this looks good.
+Greg, can you pick this up please?
 
- 1) Hardware counter wraparound time
- 2) Math limitation
+Acked-by: Kees Cook <keescook@chromium.org>
 
-#1 is a non-issue on TSC, but it is on pm-timer, hpet and lots of other
-   non-x86 devices
-
-#2 The overflow surely can happen if you're long enough out. For TSC
-   it's ~ 800 / f [seconds/GHz TSC frequency], i.e. 200 seconds for a
-   4Ghz TSC.
-
-> Purely in theory this can even happen on real hardware if for example
-> SMM handler blocks a CPU from running for a long duration, or hardware
-> debugging interface does, or some other hardware transparent sleep
-> mechanism kicks in and blocks a CPU from running.  (We do handle this
-> gracefully for S3/S4)
-
-We had this discussion before. People got upset the stuff didn't work
-when they resumed debugging after leaving the box in the breakpoint over
-the weekend. *Shrug*
-
-If SMM goes out for lunch for > 200 seconds it's broken. End of story,
-really. There are bigger problems than timekeeping when that happens.
-
-Hardware transparent sleep mechanisms which are doing this behind the
-kernels back without giving it a mechanism to configure it is pretty
-much like SMM: It's broken.
-
-So now life migration comes a long time after timekeeping had set the
-limits and just because it's virt it expects that everything works and it
-just can ignore these limits.
-
-TBH. That's not any different than SMM or hard/firmware taking the
-machine out for lunch. It's exactly the same: It's broken.
-
-And of course since that migration muck started _nobody_ bothered until
-today to talk to me about that.
-
-It's not a kernel bug. The kernel works as designed for the purpose and
-the design clearly had these goals:
-
-    1) Correctness
-    2) Performance
-    3) Scalability
-
-and for that we introduced limitations which were perfectly reasonable
-at the time because SMM and hardware/firmware wreckage definitely cannot
-be the limiting factor and for the fast wrapping stuff there is no
-design at all. These limitations are still reasonable because lifting
-them hurts performance and depending on the length has effects on
-correctness as well. Timekeeping is a complex problem.
-
-It's a virt bug caused by pure ignorance of the underlying and already
-existing technology and the unwillingness to talk to people who actually
-understand it. I don't even want to know what kind of magic workarounds
-VMMs have dreamed up for that. I'm seriously grumpy that more than 10
-years after I reported that time can be observed going backwards this is
-still not fixed and that has absolutely nothing to do with guest
-migration.  Ignoring the simple and trivial requirement for timekeeping
-correctness in the first place and then having the chuzpah to claim that
-the kernel is buggy because virt decided it can do what it wants is
-beyond my comprehension and yet another proof for the theorem that virt
-creates more problems than it solves.
-
-</rant>
-
-The question how it can be made work is a different problem. I carefully
-said 'made work' because you can't 'fix' it.
-
-  - It can't be fixed at the VMM side at all
-
-  - It can't be fixed for fast wrapping clock sources by just fiddling
-    with the timekeeping and time accessor code at all.
-
-  - Even for TSC it can't be just fixed without imposing overhead on
-    every time read including VDSO. And just fixing it for x86 and TSC
-    does not cut it. There is a whole world outside of x86 and we are
-    not going to impose any x86/TSC specific insanity on everybody
-    else. We are neither going to make generic code have TSC specific
-    hoops and loops just to deal with that.
-
-This needs orchestration and collaboration from both the VMM and the
-guest kernel to make this work proper and reliably.
-
-There are two ways to do that:
-
-   1) Suspend / resume the guest kernel
-
-   2) Have a protocol which is safe under all circumstances.
-
-If #2 is not there then #1 is the only correct option unless the VMM can
-guarantee that the guest is restarted _before_ time goes south.
-
-Doing #2 correctly is not rocket science either. The kernel has
-mechanisms to deal with such problems already. All it requires is to
-expose and utilize them.
-
-The only requirement there is to bring the kernel into a state where no
-CPU can observe that the time goes backwards. The kernel has two
-mechanisms for that:
-
-   1) Suspend / resume. Trivial because all CPUs except the (usually)
-      boot CPU are unplugged or in a state which does not matter
-
-   2) Switching clocksources. A runtime operation which is safe and
-      correct utilizing stop_machine()
-
-If you really think about it then this migration problem is nothing else
-than switching the underlying clocksource. The only difference is that
-in case of a regular clocksource switch the previous clocksource is
-still accessible up to the point where the switchover happens which is
-obviously not the case for VM migration.
-
-But instead of switching the clocksource via stop machine we can just
-use the same mechanism to update the current clocksource so that the
-time jump does not matter and cannot be observed.
-
-That needs a few things to be done:
-
-VMM:
-        - Disable NMI delivery to the guest
-        - Inject a magic VMM to guest IPI which starts the operation
-
-Guest:
-        - Schedule work from the IPI
-
-        - work handles nested VMs if necessary        
-        
-        - work invokes stop_machine(update_guest_clocksource, NULL, NULL)
-
-        - When all vCPUs rendevouzed then the one vCPU which actually
-          runs update_guest_clocksource() and reports to the VMM via
-          hypercall or whatever that it reached the state and spin waits
-          on a hyperpage shared between guest and VMM to wait for the
-          VMM to signal to proceed.
-
-          At that point it's 100% safe to freeze it. Probably not only
-          from a timekeeping POV.
-
-VMM:
-        - Freeze VM and send image to destination VMM
-
-New VMM:
-
-        - Install the image
-
-        - Setup the vCPU TSC muck
-
-        - Store necessary information in the hyperpage and then flip the
-          bit which makes the guest waiting in update_guest_clocksource()
-          proceed.
-
-        - Schedule the guest vCPUs
-
-Guest:
-
-        - The one vCPU waiting in update_guest_clocksource() observes the
-          GO bit, updates timekeeping and returns.
-
-        - All CPUs leave stomp_machine() and everything is fine
-
-        - work resumes and handles nested VMs
-
-        - work tells VMM that everything is done
-
-All the bits and pieces are there already except for the VMM/guest
-contract and the extra 20 lines of code in the timekeeping core.
-
-There is one caveat vs. the NMI safe time keeper, but we have the
-mechanism to deal with that in place already for suspend so that's just
-another 5 lines of code to deal with at the core side.
-
-Now you combine this with a proper mechanism to deal with the TSC offset
-as I outlined before and your problems are pretty much gone in a very
-clean and understandable way.
-
-Thanks,
-
-        tglx
-
-
-
-
-
+-- 
+Kees Cook
