@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C082D228B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE5A2D22D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgLHE4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:56:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbgLHE4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:56:44 -0500
-Date:   Tue, 8 Dec 2020 10:26:00 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607403364;
-        bh=1RiFaYT5sszcYT3rzZ7wK33h9vZoHSV5GWfAX84nrpk=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JsaVxd5iO6il066W28gWU1l0+3OyFChdHtmkgNKsV/SRsoHYAr+W9iqN3k6/BsuwY
-         MuEGN2cmbukxDF56bNvz94mtXuOCLuzlwe9eE5k25W0xYyE0NYvFKK6EWuodyfiATb
-         Ua0qLLzG7O4GstPtpxslD6vSnZ3AbvXkraNeglweCzSA4IE6v4/fNl1wrwkEHNjuy+
-         SvkiabnoRnfF8/S2usqxo4/3XEcJanoL3UQZyDxYj8OjinAs236rccCpdzsgittcZ0
-         9XL6SitN1HnpfwQqaqEQ96C9zhNTWIcOdtSt7/LshVRMFE/OFpsmawixJ1bTpIfvWG
-         VAuytt2F626lA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
- initializing a device
-Message-ID: <20201208045600.GE8403@vkoul-mobl>
-References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
- <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
- <20201205074508.GQ8403@vkoul-mobl>
- <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
- <20201207044334.GA8403@vkoul-mobl>
- <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
+        id S1725890AbgLHFCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:02:40 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:45649 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgLHFCj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:02:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607403739; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=tj9rBjSpnqQrd08gg6qirCgLleskHe5sgj9qm4KfQbE=; b=vOnuKMl4vVQaJWiZcUmD2vXJmWoEw6pB/GxFU9q/0ICoMqnE/Q3UPL8uyKjbWyr2Ts4nR7hs
+ D/AEjAtRzG9FDGtX2tI5T0W0Ss78+0o7Icv5sIGMe5dhlsTnEjlRf5dKrkSSOWXyjHaFClaY
+ ohU/jyfolLDzSMapLjPEBBd5AzI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fcf08bfae7b1057669c658b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 05:01:51
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7AAFC433ED; Tue,  8 Dec 2020 05:01:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [49.205.247.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 317A4C433C6;
+        Tue,  8 Dec 2020 05:01:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 317A4C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Abhishek Kumar'" <kuabhs@chromium.org>, <kvalo@codeaurora.org>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+        <ath10k@lists.infradead.org>, <briannorris@chromium.org>,
+        <dianders@chromium.org>, "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>, <netdev@vger.kernel.org>
+References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+Subject: RE: [PATCH v3] ath10k: add option for chip-id based BDF selection
+Date:   Tue, 8 Dec 2020 10:31:42 +0530
+Message-ID: <005d01d6cd1f$3c469ff0$b4d3dfd0$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQCE8JkGD3TKZlrmAmVZX18lYRS3TayQXLQA
+Content-Language: en-us
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-12-20, 09:31, Pierre-Louis Bossart wrote:
-> On 12/6/20 10:43 PM, Vinod Koul wrote:
-> > On 05-12-20, 08:59, Pierre-Louis Bossart wrote:
-> > > Thanks for the review Vinod.
-> > > 
-> > > On 12/5/20 1:45 AM, Vinod Koul wrote:
-> > > > On 03-12-20, 04:46, Bard Liao wrote:
-> > > > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > > > 
-> > > > > When a Slave device is resumed, it may resume the bus and restart the
-> > > > > enumeration. During that process, we absolutely don't want to call
-> > > > > regular read/write routines which will wait for the resume to
-> > > > > complete, otherwise a deadlock occurs.
-> > > > > 
-> > > > > Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
-> > > > 
-> > > > Change looks okay, but not sure why this is a fix for adding no pm
-> > > > version?
-> > > 
-> > > when we added the no_pm version, we missed the two cases below where
-> > > sdw_update() was used and that creates a deadlock. To me that's a conceptual
-> > > bug, we didn't fully use the no_pm versions, hence the Fixes tag.
-> > 
-> > Documentation says:
-> > "A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
-> > is used to make it easy to determine where a bug originated, which can help
-> > review a bug fix. This tag also assists the stable kernel team in determining
-> > which stable kernel versions should receive your fix. This is the preferred
-> > method for indicating a bug fixed by the patch. See :ref:`describe_changes`
-> > for more details."
-> > 
-> > I do not this this helps here as this does not help distros etc
-> > I would say this is incremental development which improved a case not
-> > done properly earlier, unless you would like this to be backported.. In
-> > that case it helps folks...
-> 
-> IMHO the changes in the series are absolutely required to have a reliable
-> suspend-resume operation and will need to be back-ported. When I said
-> 'conceptual bug', I didn't mean a hypothetical case, I really meant that a
-> proven race condition and timeouts will occur. That's not good... We will
-> provide the list of this patches to distros that are known to support
-> SoundWire as a 'must apply'.
-> 
-> If you look at the series, we provided Fixes tags for all patches except
-> 'cosmetic' ones which don't fundamentally change the behavior (Patch 3,
-> patch 7) or when the code has not reached Linus' tree (patch 5).
-> 
-> That said, 5.10 was the first release where SoundWire started to be
-> functional so there's no need to apply these patches to earlier versions of
-> the stable tree.
-> 
-> Does this help?
+Hi,
 
-Yes, that helps, thanks
 
--- 
-~Vinod
+> -----Original Message-----
+> From: Abhishek Kumar <kuabhs@chromium.org>
+> Sent: Tuesday, December 8, 2020 4:50 AM
+> To: kvalo@codeaurora.org
+> Cc: linux-kernel@vger.kernel.org; kuabhs@chromium.org; linux-
+> wireless@vger.kernel.org; ath10k@lists.infradead.org;
+> pillair@codeaurora.org; briannorris@chromium.org;
+> dianders@chromium.org; David S. Miller <davem@davemloft.net>; Jakub
+> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org
+> Subject: [PATCH v3] ath10k: add option for chip-id based BDF selection
+> 
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
+> 
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> ---
+> 
+> Changes in v3:
+> - Resurreted Patch V1 because as per discussion we do need two
+> fallback board names and refactored ath10k_core_create_board_name.
+> 
+>  drivers/net/wireless/ath/ath10k/core.c | 41 +++++++++++++++++++-------
+>  1 file changed, 30 insertions(+), 11 deletions(-)
+
+Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+
+Thanks,
+Rakesh Pillai.
+
+
