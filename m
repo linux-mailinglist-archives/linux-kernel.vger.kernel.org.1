@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820E22D207A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA392D207B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgLHCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:08:25 -0500
-Received: from mga12.intel.com ([192.55.52.136]:50515 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbgLHCIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:08:25 -0500
-IronPort-SDR: Z5eIp2rArFljrypTy6Z4rdk1YiqjlPxf4pu79/TRoPOA5d4KKgosZRti+ueQ5/kaPpHGRkC+RK
- /jWRLqkJWERQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="153054075"
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="153054075"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 18:06:40 -0800
-IronPort-SDR: mRW2hLrS8WIzcV5YaJ+awzzv8yiTvuX95femrWkLHoMumS/7GTNyL1ZRvtOFarpzodmL85wQa0
- KUxFVqnkOIxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="375689516"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Dec 2020 18:06:38 -0800
-Subject: Re: [RFC PATCH 0/4] Reduce worst-case scanning of runqueues in
- select_idle_sibling
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux-ARM <linux-arm-kernel@lists.infradead.org>
-References: <20201207091516.24683-1-mgorman@techsingularity.net>
- <CAKfTPtC9At0Oej+u6-mtBdV6_vhFiNJGPQ-BFQc7RpUtDDixVA@mail.gmail.com>
- <20201207154216.GE3371@techsingularity.net>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <895d0c8a-5039-e569-80f3-a8a6f87380bd@linux.intel.com>
-Date:   Tue, 8 Dec 2020 10:06:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727693AbgLHCJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:09:25 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:28016 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725877AbgLHCJZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:09:25 -0500
+X-IronPort-AV: E=Sophos;i="5.78,401,1599494400"; 
+   d="scan'208";a="102156242"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 08 Dec 2020 10:08:47 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 198A94CE6027;
+        Tue,  8 Dec 2020 10:08:46 +0800 (CST)
+Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 8 Dec 2020 10:08:45 +0800
+Received: from localhost.localdomain (10.167.225.206) by
+ G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Tue, 8 Dec 2020 10:08:44 +0800
+From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
+To:     <viro@zeniv.linux.org.uk>, <torvalds@linux-foundation.org>
+CC:     <ira.weiny@intel.com>, <dchinner@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>
+Subject: [PATCH] fs: Handle I_DONTCACHE in iput_final() instead of generic_drop_inode()
+Date:   Tue, 8 Dec 2020 10:08:43 +0800
+Message-ID: <20201208020843.3784-1-lihao2018.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201207154216.GE3371@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 198A94CE6027.AA467
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/7 23:42, Mel Gorman wrote:
-> On Mon, Dec 07, 2020 at 04:04:41PM +0100, Vincent Guittot wrote:
->> On Mon, 7 Dec 2020 at 10:15, Mel Gorman <mgorman@techsingularity.net> wrote:
->>>
->>> This is a minimal series to reduce the amount of runqueue scanning in
->>> select_idle_sibling in the worst case.
->>>
->>> Patch 1 removes SIS_AVG_CPU because it's unused.
->>>
->>> Patch 2 improves the hit rate of p->recent_used_cpu to reduce the amount
->>>         of scanning. It should be relatively uncontroversial
->>>
->>> Patch 3-4 scans the runqueues in a single pass for select_idle_core()
->>>         and select_idle_cpu() so runqueues are not scanned twice. It's
->>>         a tradeoff because it benefits deep scans but introduces overhead
->>>         for shallow scans.
->>>
->>> Even if patch 3-4 is rejected to allow more time for Aubrey's idle cpu mask
->>
->> patch 3 looks fine and doesn't collide with Aubrey's work. But I don't
->> like patch 4  which manipulates different cpumask including
->> load_balance_mask out of LB and I prefer to wait for v6 of Aubrey's
->> patchset which should fix the problem of possibly  scanning twice busy
->> cpus in select_idle_core and select_idle_cpu
->>
-> 
-> Seems fair, we can see where we stand after V6 of Aubrey's work.  A lot
-> of the motivation for patch 4 would go away if we managed to avoid calling
-> select_idle_core() unnecessarily. As it stands, we can call it a lot from
-> hackbench even though the chance of getting an idle core are minimal.
-> 
+If generic_drop_inode() returns true, it means iput_final() can evict
+this inode regardless of whether it is dirty or not. If we check
+I_DONTCACHE in generic_drop_inode(), any inode with this bit set will be
+evicted unconditionally. This is not the desired behavior because
+I_DONTCACHE only means the inode shouldn't be cached on the LRU list.
+As for whether we need to evict this inode, this is what
+generic_drop_inode() should do. This patch corrects the usage of
+I_DONTCACHE.
 
-Sorry for the delay, I sent v6 out just now. Comparing to v5, v6 followed Vincent's
-suggestion to decouple idle cpumask update from stop_tick signal, that is, the
-CPU is set in idle cpumask every time the CPU enters idle, this should address
-Peter's concern about the facebook trail-latency workload, as I didn't see
-any regression in schbench workload 99.0000th latency report.
+This patch was proposed in [1].
 
-However, I also didn't see any significant benefit so far, probably I should
-put more load on the system. I'll do more characterization of uperf workload
-to see if I can find anything.
+[1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
 
-Thanks,
--Aubrey
+Fixes: dae2f8ed7992 ("fs: Lift XFS_IDONTCACHE to the VFS layer")
+Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+---
+This patch may have been forgotten.
+Original patch: https://lore.kernel.org/linux-fsdevel/20200904075939.176366-1-lihao2018.fnst@cn.fujitsu.com/
+
+ fs/inode.c         | 4 +++-
+ include/linux/fs.h | 3 +--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 9d78c37b00b8..5eea9912a0b9 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1627,7 +1627,9 @@ static void iput_final(struct inode *inode)
+ 	else
+ 		drop = generic_drop_inode(inode);
+ 
+-	if (!drop && (sb->s_flags & SB_ACTIVE)) {
++	if (!drop &&
++	    !(inode->i_state & I_DONTCACHE) &&
++	    (sb->s_flags & SB_ACTIVE)) {
+ 		inode_add_lru(inode);
+ 		spin_unlock(&inode->i_lock);
+ 		return;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 8667d0cdc71e..8bde32cf9711 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2878,8 +2878,7 @@ extern int inode_needs_sync(struct inode *inode);
+ extern int generic_delete_inode(struct inode *inode);
+ static inline int generic_drop_inode(struct inode *inode)
+ {
+-	return !inode->i_nlink || inode_unhashed(inode) ||
+-		(inode->i_state & I_DONTCACHE);
++	return !inode->i_nlink || inode_unhashed(inode);
+ }
+ extern void d_mark_dontcache(struct inode *inode);
+ 
+-- 
+2.28.0
+
+
+
