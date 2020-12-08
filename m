@@ -2,87 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CAA2D370B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736362D3710
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731803AbgLHXlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgLHXlg (ORCPT
+        id S1731775AbgLHXmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:42:18 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46824 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLHXmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:41:36 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12695C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:40:56 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id x16so330332ejj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mFLKQRkZoww23XEL7PXOxhhtdWSbzprjYliTkriku9g=;
-        b=Jntq7/6SNEMUM+eYiV7G1myyo+nAu2Zf/Ui7zyVN8Rx9JmZzQSKOZqkFrGDz2HKzIx
-         ompHPIdlRCYp+RD+MWBTTOhJrYrPGgnm6FvSJkQ4hVoL2ssKEkAF+zV2AqkBpaqwQf1L
-         6KDbKsmFu0PuNmu0YProuT3VQdw7k2jl/7PzhJiGqIAcMDDBmL5Ec350EZ+jcnng1WDY
-         q5SxN7JIbfpUCSkAeFvg3Azyk+kELpLE6khv6dGODjlbUnNFy9sd4viKNgatXVk3Gx3A
-         cxLQrKvJMCMfZTJByzYEXAlFPEin3M8KQL9Jh520h+nPnlomi4pTcOhw0/Iu6YbmJMy4
-         OeIw==
+        Tue, 8 Dec 2020 18:42:11 -0500
+Received: by mail-ot1-f68.google.com with SMTP id w3so431307otp.13;
+        Tue, 08 Dec 2020 15:41:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mFLKQRkZoww23XEL7PXOxhhtdWSbzprjYliTkriku9g=;
-        b=eAValDPpJ+X+nhdGa8/oM7a0nwqj8WPM/bVJb4ueyf5bY7cMiJklJoN4Kw2BbpZ5Pt
-         HBrqdgUu/8PAavOJRRyo2yUpBlDH9XxSIMKlR8k9sCUaHNN3mgB93DI12J0hndQDTrAq
-         ML9f/orPoYqcZA70tj3SwLSrVSDoxO70hgn3IWik1CUJGCmNhf7QgWOcW5SE+u3ty8ox
-         HVa2aqg9ViTDpvI566Lwd4/VKsSn1kvwJlE/61CjEyJ4tLhIxlGmz4OLe6bPYDx5/y5Z
-         UR6GP4seIT5aZbVCp38VQUz4q5RgMvGyPXiw6fCTIScwdGNAxKxxdHOKDjnJdvnF9pfO
-         D/5g==
-X-Gm-Message-State: AOAM5319M3H0wiFfIvMDep2h5eQjfXChcYNn4fTdvkMvkEh94zS+ztXW
-        akiFeqnbJpdQfzQI/Y9pdKbgPsupcyeOTo1QOszq7A==
-X-Google-Smtp-Source: ABdhPJwlgMQbj1gq6mP6kKfYjuwAl+ty/SxoFyiYcdC1W4w7ngUFi1kqfZfhHd3aFaQ+dqp4EipB37tPTiaBbuvqFIE=
-X-Received: by 2002:a17:906:518a:: with SMTP id y10mr77069ejk.323.1607470854865;
- Tue, 08 Dec 2020 15:40:54 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mCzrahJfQzjNGyApJxp330Y639Yd1mbxLODK6PjseoQ=;
+        b=Wrpj1V1N3Vx0P6AMGEWIVjhs3g7Aq8QQXAvfnpPScUH5A8Dm5TQDcEgBxD4JWgpQ/6
+         zgidSaxXnfpHUW0sAHQ5gTzHdv2XnII0Ncdju1x3IOFoIM0FOT1SGbfl8Sgk9z9Mzsaz
+         Vj3BnkycNioaD+Ol4LOqIRMLAACzmuewoR53m25iofGncksVFqzO+cGn2R/oDHGKT5Ce
+         pHtx06JJvLbpdrq33TBRbP/LOEjumG1nzoCeaGkLuLckNJv+vi9pKBSUi/sQX8xblDJs
+         fg/OSJZI4GJ2ULPfKVXArFRQmd25iMdt9NZaJW56xmL08XzQ6ZWX6oncRArXFPChJgDc
+         w+zg==
+X-Gm-Message-State: AOAM533oGeAo4MDTFk7jqoBcRD85Mc7C0uvR8DtVPfcIM4OhLJt2uL6N
+        VgcNCm4cOuML0oS6yfj2xQ==
+X-Google-Smtp-Source: ABdhPJyWhVNI/C53Lkge1VqK7cYq8nLg5rgXAvJRTD/JdewfYLumeU4nJgeCLYUAEw0d3qtY0FuK2g==
+X-Received: by 2002:a9d:73d1:: with SMTP id m17mr420711otk.187.1607470889716;
+        Tue, 08 Dec 2020 15:41:29 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p4sm79330oib.24.2020.12.08.15.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 15:41:28 -0800 (PST)
+Received: (nullmailer pid 3334104 invoked by uid 1000);
+        Tue, 08 Dec 2020 23:41:27 -0000
+Date:   Tue, 8 Dec 2020 17:41:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wendy Liang <wendy.liang@xilinx.com>
+Cc:     michal.simek@xilinx.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com,
+        rajan.vaja@xilinx.com, tejas.patel@xilinx.com,
+        manish.narani@xilinx.com, ravi.patel@xilinx.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v3 1/9] dt-binding: soc: xilinx: ai-engine: Add AI engine
+ binding
+Message-ID: <20201208234127.GA3303888@robh.at.kernel.org>
+References: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com>
+ <1606722505-16194-2-git-send-email-wendy.liang@xilinx.com>
 MIME-Version: 1.0
-References: <20201207225703.2033611-1-ira.weiny@intel.com> <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org> <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org> <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
- <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com> <20201208215028.GK7338@casper.infradead.org>
- <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
- <20201208223234.GL7338@casper.infradead.org> <20201208224555.GA605321@magnolia>
-In-Reply-To: <20201208224555.GA605321@magnolia>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 8 Dec 2020 15:40:52 -0800
-Message-ID: <CAPcyv4jEmdfAz8foEUtDw4GEm2-+7J-4GULZ=6tCD+9K5CFzRw@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606722505-16194-2-git-send-email-wendy.liang@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:49 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
-[..]
-> > So what's your preferred poison?
-> >
-> > 1. Corrupt random data in whatever's been mapped into the next page (which
-> >    is what the helpers currently do)
+On Sun, Nov 29, 2020 at 11:48:17PM -0800, Wendy Liang wrote:
+> Xilinx AI engine array can be partitioned statically for different
+> applications. In the device tree, there will be device node for the AI
+> engine device, and device nodes for the statically configured AI engine
+> partitions. Each of the statically configured partition has a partition
+> ID in the system.
 >
-> Please no.
+> Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+> ---
+>  .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 +++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+> new file mode 100644
+> index 0000000..1de5623
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+> @@ -0,0 +1,126 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/xilinx/xlnx,ai-engine.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx AI Engine
+> +
+> +maintainers:
+> +  - Wendy Liang <wendy.liang@xilinx.com>
+> +
+> +description: |+
 
-My assertion is that the kernel can't know it's corruption, it can
-only know that the driver is abusing the API. So over-copy and WARN
-seems better than violently regress by crashing what might have been
-working silently before.
+You don't need '|' unless there's formatting to preserve.
+
+> +  The Xilinx AI Engine is a tile processor with many cores (up to 400) that
+> +  can run in parallel. The data routing between cores is configured through
+> +  internal switches, and shim tiles interface with external interconnect, such
+> +  as memory or PL.
+> +
+> +properties:
+> +  compatible:
+> +    const: xlnx,ai-engine-v1.0
+
+This is soft logic? If not, don't use version numbers.
+
+> +
+> +  reg:
+> +    description: |
+> +      Physical base address and length of the device registers.
+
+That's every 'reg' property. Drop.
+
+> +      The AI engine address space assigned to Linux is defined by Xilinx
+> +      platform design tool.
+> +
+> +  '#address-cells':
+> +    enum: [2]
+
+const: 2
+
+> +    description: |
+> +      size of cell to describe AI engine range of tiles address.
+> +      It is the location of the starting tile of the range.
+> +      As the AI engine tiles are 2D array, the location of a tile
+> +      is presented as (column, row), the address cell is 2.
+> +
+> +  '#size-cells':
+> +    enum: [2]
+> +    description: |
+> +      size of cell to describe AI engine range of tiles size.
+> +      As the AI engine tiles are 2D array, the size cell is 2.
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +    description: phandle to the associated power domain
+> +
+> +  interrupts:
+> +    maxItems: 3
+> +
+> +  interrupt-names:
+> +    description: |
+> +      Should be "interrupt1", "interrupt2" or "interrupt3".
+
+Really, not useful names. If you do have names, they should be a schema, 
+not freeform text.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +  - power-domains
+> +  - interrupt-parent
+
+Generally, never required because it could be in the parent node.
+
+> +  - interrupts
+> +  - interrupt-names
+> +
+> +patternProperties:
+> +  "^aie_partition@[0-9]+$":
+
+aie-partition@
+
+The unit-address is just the 1st cell of reg (the row)? Or needs to be 
+row and column, in which case you'd want something like '@0,0'. Also, 
+unit-address values are typically hex, not decimal.
+
+> +    type: object
+> +    description: |
+> +      AI engine partition which is a group of column based tiles of the AI
+> +      engine device. Each AI engine partition is isolated from the other
+> +      AI engine partitions. An AI engine partition is defined by Xilinx
+> +      platform design tools. Each partition has a SHIM row and core tiles rows.
+> +      A SHIM row contains SHIM tiles which are the interface to external
+> +      components. AXI master can access AI engine registers, push data to and
+> +      fetch data from AI engine through the SHIM tiles. Core tiles are the
+> +      compute tiles.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          It describes the group of tiles of the AI engine partition. It needs
+> +          to include the SHIM row. The format is defined by the parent AI engine
+> +          device node's '#address-cells' and '#size-cells' properties. e.g. a v1
+> +          AI engine device has 2D tiles array, the first row is SHIM row. A
+> +          partition which has 50 columns and 8 rows of core tiles and 1 row of
+> +          SHIM tiles will be presented as <0 0 50 9>.
+
+You should be able to write some constraints like max row and column 
+values?
+
+> +
+> +      label:
+> +        maxItems: 1
+
+'label' is not an array. Why do you need label?
+
+> +
+> +      xlnx,partition-id:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: |
+> +          AI engine partition ID, which is defined by Xilinx platform design
+> +          tool to identify the AI engine partition in the system.
+
+I find the use of 'reg' a bit odd here. Maybe using 'reg' for partition 
+would make more sense? Which is more closely associated with how you 
+address the partition?
+
+> +
+> +    required:
+> +      - reg
+> +      - xlnx,partition-id
+> +    additionalProperties: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    bus {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      ai_engine: ai-engine@20000000000 {
+> +        compatible = "xlnx,ai-engine-v1.0";
+> +        reg = <0x200 0x0 0x1 0x0>;
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +        power-domains = <&versal_firmware 0x18224072>;
+> +        interrupt-parent = <&gic>;
+> +        interrupts = <0x0 0x94 0x4>,
+> +                     <0x0 0x95 0x4>,
+> +                     <0x0 0x96 0x4>;
+> +        interrupt-names = "interrupt1", "interrupt2", "interrupt3";
+> +
+> +        aie_partition0: aie_partition@0 {
+> +                /* 50 columns and 8 core tile rows + 1 SHIM row */
+> +                reg = <0 0 50 9>;
+> +                xlnx,partition-id = <1>;
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.7.4
+> 
