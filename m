@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D322D1FE2
+	by mail.lfdr.de (Postfix) with ESMTP id E27742D1FE3
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgLHBUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgLHBUX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:20:23 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5073BC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 17:19:43 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so6095218plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 17:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
-        b=uxUBtVmrMtQ5jQorGj0gobnzg71+HD0mvLX7WlgSaDnuvVEeLunog/VsCzRw2GLLuC
-         RAyAYHLdpm/w/csWMtw19quePNvzc4rDWkjjgNtxqBIeR7EUde2mFAV9GYDJo8Dl12PI
-         CPVQFapQV7PVZQrahrPmfUu3vtUhd2ypQ+BZXbsrdMBz4AYN8zH9GLW97c5ghobIpJBO
-         VexuUo5wWJ8vtOVq4TY2X7qsH0mR9vJp7KpN/16f3NXaezsUiNDj7S2UBP+mbm0wRE2j
-         zpVMJln0m4vuiW3JzmgxWsSvBWYYGrkuiSLAfdNwDHBINaFzWBZ0P83Z3gd2L4BBiE8j
-         x9lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lFbuQKLeAhpAAfgYiFKXrW7VWl8h2CMcWnPvP0ViZ/4=;
-        b=P+fy9WbAxcNn2r8Rld6s7LOtMaDWfyaXKn5jJj+XtKFDE9idOtDp1RBIAG5nm75mbw
-         z+bjPTgiZ7I1oM+qer9ZB5Vavydp00tOjpcar0TT6MeSTfB4oU1k76sFSuNszk40Si3M
-         gljDU8bv27x37UKc5lF+2YsoGFx804e4A2Lq5Nro3vmgqBYZWH3UU+k3U+8acMJGEYWc
-         rJ9L7a4EELvKZ89mTj2FinmGz6ulNEclwRBaqotZf30U46V8R3DAYbiKcGn2Cw6rlNu1
-         Aw+aXFAEQDwByRlT8obxGsv/9u0I5x6vcJyuROhvdoDqnV5vIE+5qC74HkrsTj8SHYiC
-         quqg==
-X-Gm-Message-State: AOAM533R662tmlc5HZZlxQm8auGKC5F7FgZQQ4DOPRecW9gthqVK5OPN
-        DjZFSBa5TjhJ1ZHZh8TlNLk=
-X-Google-Smtp-Source: ABdhPJzKGVZDeflu26vkS5pCHroCNG0RjvHZTgh+6J2ah4TzDpxmXD1Dvm32CJnGbybS1z20Xbw14g==
-X-Received: by 2002:a17:902:ac90:b029:da:fd0c:53ba with SMTP id h16-20020a170902ac90b02900dafd0c53bamr6110596plr.23.1607390382566;
-        Mon, 07 Dec 2020 17:19:42 -0800 (PST)
-Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
-        by smtp.gmail.com with ESMTPSA id mj5sm472656pjb.20.2020.12.07.17.19.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Dec 2020 17:19:42 -0800 (PST)
-Date:   Tue, 8 Dec 2020 09:19:38 +0800
-From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
-To:     Tudor.Ambarus@microchip.com
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: macronix: enable 4-bit BP support for
- MX25L6405D
-Message-ID: <20201208011938.GB12175@DESKTOP-8REGVGF.localdomain>
-References: <20201207024612.1318-1-liew.s.piaw@gmail.com>
- <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
+        id S1726790AbgLHBU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:20:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725995AbgLHBU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 20:20:57 -0500
+Date:   Mon, 7 Dec 2020 17:20:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607390416;
+        bh=PBUakZSI/8fHqIXDH5E3y18maLAa5mtKjoEIZuFHY+M=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BhqtjXk6xWeLrCwKwGYXVkfULXcIt3S2h/OvxHAJZUNY7uVskIk3frX3CFUWK/Sgx
+         51oR0fz61/NPW4KE3Fe61xV00FzipnOi4sJG6Uogltxs+N8ANiOzgGwHam/C/6qL5e
+         5k88Lrs8gunDw81G3XlDFuRu5aNjU79iv6xnL9sdDEczeVcuAGHb9R9xtYWdocksjS
+         zFHcswSpXza05xnRa2uM+Uj7wEi8mUIGOzP91CtMHlFCigkKpyftX5AztJI7dKOizx
+         yw2YJU3wjtgpiD1G5Iv9NXgjblUqQDNyn6niCGuZ5b/4Is0g0ZInjB0Moems87kYth
+         3lx2KTvxiDw3w==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Joseph Huang <Joseph.Huang@garmin.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] bridge: Fix a deadlock when enabling multicast
+ snooping
+Message-ID: <20201207172015.1f5a70b0@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <f16d76ed-5d93-d15b-e7da-5133e3b6c3e7@nvidia.com>
+References: <20201201214047.128948-1-Joseph.Huang@garmin.com>
+        <20201204235628.50653-1-Joseph.Huang@garmin.com>
+        <f16d76ed-5d93-d15b-e7da-5133e3b6c3e7@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc1a8c52-6319-2d37-8df8-f6205bdbfb37@microchip.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:53:20PM +0000, Tudor.Ambarus@microchip.com wrote:
-> Hi, Sieng,
-> 
-> On 12/7/20 4:46 AM, Sieng Piaw Liew wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On Sat, 5 Dec 2020 10:56:45 +0200 Nikolay Aleksandrov wrote:
+> On 05/12/2020 01:56, Joseph Huang wrote:
+> > When enabling multicast snooping, bridge module deadlocks on multicast_lock
+> > if 1) IPv6 is enabled, and 2) there is an existing querier on the same L2
+> > network.
 > > 
-> > Enable 4-bit Block Protect support for MX256405D and its variants using
-> > the same ID.
+> > The deadlock was caused by the following sequence: While holding the lock,
+> > br_multicast_open calls br_multicast_join_snoopers, which eventually causes
+> > IP stack to (attempt to) send out a Listener Report (in igmp6_join_group).
+> > Since the destination Ethernet address is a multicast address, br_dev_xmit
+> > feeds the packet back to the bridge via br_multicast_rcv, which in turn
+> > calls br_multicast_add_group, which then deadlocks on multicast_lock.
 > > 
-> > Tested on Innacom W3400V6 router with MX25L6406E chip.
-> 
-> :) What kind of tests did you exactly make?
+> > The fix is to move the call br_multicast_join_snoopers outside of the
+> > critical section. This works since br_multicast_join_snoopers only deals
+> > with IP and does not modify any multicast data structures of the bridge,
+> > so there's no need to hold the lock.
+> > 
+> > Steps to reproduce:
+> > 1. sysctl net.ipv6.conf.all.force_mld_version=1
+> > 2. have another querier
+> > 3. ip link set dev bridge type bridge mcast_snooping 0 && \
+> >    ip link set dev bridge type bridge mcast_snooping 1 < deadlock >
+> > 
+> > A typical call trace looks like the following:
 
-OpenWrt cannot write into spi-nor after first boot.
-After hacking 4-bit BP support into OpenWrt's kernel v5.4, writing works.
+> > Fixes: 4effd28c1245 ("bridge: join all-snoopers multicast address")
+> > Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
+> 
+> LGTM, thanks!
+> Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-> 
-> > https://github.com/openwrt/openwrt/pull/3501
-> > 
-> > Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/macronix.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> > index 9203abaac229..7aa8b1ee9daa 100644
-> > --- a/drivers/mtd/spi-nor/macronix.c
-> > +++ b/drivers/mtd/spi-nor/macronix.c
-> > @@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
-> >         { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
-> >         { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
-> >         { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-> > -       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> > +       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128,
-> > +                             SECT_4K | SPI_NOR_4BIT_BP) },
-> 
-> I assume this won't work because it misses the SPI_NOR_HAS_LOCK flag.
-> 
-> Cheers,
-> ta
-
-Yes, I'll have v2 patch sent shortly.
-
-> 
-> >         { "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
-> >         { "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64,
-> >                               SECT_4K | SPI_NOR_DUAL_READ |
-> > --
-> > 2.17.1
-> > 
-> 
+Applied, thank you!
