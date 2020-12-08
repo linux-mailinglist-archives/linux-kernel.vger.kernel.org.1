@@ -2,150 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED712D2D96
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5192D2D97
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgLHOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:53:52 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41840 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729386AbgLHOxv (ORCPT
+        id S1729884AbgLHOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:53:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729828AbgLHOxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:53:51 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8EXdhO146133;
-        Tue, 8 Dec 2020 09:52:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=PD55eNn2hAA6jWhNRAG2rmT98Hb/Lth5nkMCZmpHNMs=;
- b=faURiADelUKs2MAIR+pImaEZM+GWhw9lfuUaL90rz3Kazz76OUUYWzK/dd1z/VVQpii3
- auKx9RQ7+screQnLc4RrgKnaLQiB/kUPqnfekRY8SEOZDM/h2ieRsEPrhxzpCxE01G2F
- i1+zP5V2fiVqo0Cx7alCQDOHG4m4GwYOcHSK3/MOzbxFXEQVgjTNsld5B7V7vvyfHJK3
- r0LyEGmBJOtpWxqS4G/vAPbFQ3zSMOrnCWVJ+x2jD9MD7RLQdertsIWUSeBUiUmL9DRy
- 8r+g3VAP50qRMAFl/UM3rC12PSbKfXYxav4giVC8yZ9qb1OULAFd4QzAa6bqzYAzXzu4 Eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35aany1yy0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 09:52:41 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8EYRRs150930;
-        Tue, 8 Dec 2020 09:52:41 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35aany1yxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 09:52:41 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8Eh1MQ013215;
-        Tue, 8 Dec 2020 14:52:40 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 3581u9eens-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 14:52:40 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8Eqdp925035008
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 14:52:40 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD7CBAE09B;
-        Tue,  8 Dec 2020 14:52:39 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4362EAE09A;
-        Tue,  8 Dec 2020 14:52:37 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.85.71.234])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 14:52:36 +0000 (GMT)
-X-Mailer: emacs 27.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 4/5] powerpc/fault: Avoid heavy
- search_exception_tables() verification
-In-Reply-To: <731bdee26a5a5c81cd815ed624a6fb3bdef8b4db.1607416578.git.christophe.leroy@csgroup.eu>
-References: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
- <731bdee26a5a5c81cd815ed624a6fb3bdef8b4db.1607416578.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 08 Dec 2020 20:22:35 +0530
-Message-ID: <87lfe8qrik.fsf@linux.ibm.com>
+        Tue, 8 Dec 2020 09:53:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF312C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=69aiA/KbXT2suDAl7pYGEHkjGFFwGcIsW5cPybJySu0=; b=kh+G8V2hbdzgsQgk0meP5s+IEp
+        hJlvi77pY3JvhLfVYRYFxvvYc+juZeXMWoe3hLdSQUR78uDXqOg8C4kk0u/GJPeJL9EiQ5TRjwqhs
+        advWUg37n5dvlsPOYvjIqQpoTpuiMy7LDRiQm6ux2UHHJZtGfCzCaNRhpY/wr/0kLEojMuZJDI1h2
+        G9KH69hdMYBysqBiBYYlrzaGffvIymcbkG0CfhOn28l8PSyFfPlt9183KPHDVFC2w4ED4XWyEK2MF
+        gOTutCiOPnyj6I32vniHORhl4dxDjAKWwnwn8KTW9An0oHsQh0y4MYDbnpw5fE2M92mtvIIAk0PMi
+        hPRhmy3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmeMM-0003PV-Ve; Tue, 08 Dec 2020 14:52:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E0020304B92;
+        Tue,  8 Dec 2020 15:52:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4FB62846DEB5; Tue,  8 Dec 2020 15:52:57 +0100 (CET)
+Date:   Tue, 8 Dec 2020 15:52:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christopher Yeoh <cyeoh@au1.ibm.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
+Message-ID: <20201208145257.GE2414@hirez.programming.kicks-ass.net>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87k0tybqfy.fsf@x220.int.ebiederm.org>
+ <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+ <20201207090243.GE3040@hirez.programming.kicks-ass.net>
+ <87360hy5hp.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_09:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080086
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87360hy5hp.fsf@x220.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On Mon, Dec 07, 2020 at 09:56:34AM -0600, Eric W. Biederman wrote:
 
-> search_exception_tables() is an heavy operation, we have to avoid it.
-> When KUAP is selected, we'll know the fault has been blocked by KUAP.
-> Otherwise, it behaves just as if the address was already in the TLBs
-> and no fault was generated.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
-> v3: rebased
-> v2: Squashed with the preceeding patch which was re-ordering tests that get removed in this patch.
-> ---
->  arch/powerpc/mm/fault.c | 23 +++++++----------------
->  1 file changed, 7 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 3fcd34c28e10..1770b41e4730 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -210,28 +210,19 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->  		return true;
->  	}
->  
-> -	if (!is_exec && address < TASK_SIZE && (error_code & (DSISR_PROTFAULT | DSISR_KEYFAULT)) &&
-> -	    !search_exception_tables(regs->nip)) {
-> -		pr_crit_ratelimited("Kernel attempted to access user page (%lx) - exploit attempt? (uid: %d)\n",
-> -				    address,
-> -				    from_kuid(&init_user_ns, current_uid()));
-> -	}
-> -
->  	// Kernel fault on kernel address is bad
->  	if (address >= TASK_SIZE)
->  		return true;
->  
-> -	// Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
-> -	if (!search_exception_tables(regs->nip))
-> -		return true;
-> -
-> -	// Read/write fault in a valid region (the exception table search passed
-> -	// above), but blocked by KUAP is bad, it can never succeed.
-> -	if (bad_kuap_fault(regs, address, is_write))
-> +	// Read/write fault blocked by KUAP is bad, it can never succeed.
-> +	if (bad_kuap_fault(regs, address, is_write)) {
-> +		pr_crit_ratelimited("Kernel attempted to %s user page (%lx) - exploit attempt? (uid: %d)\n",
-> +				    is_write ? "write" : "read", address,
-> +				    from_kuid(&init_user_ns, current_uid()));
->  		return true;
-> +	}
+> Do you want to pull these two into a topic branch in the tip tree
+> based on v10-rc1?
 
-
-With this I am wondering whether the WARN() in bad_kuap_fault() is
-needed. A direct access of userspace address will trigger this, whereas
-previously we used bad_kuap_fault() only to identify incorrect restore
-of AMR register (ie, to identify kernel bugs). Hence a WARN() there was
-useful. We loose that differentiation now?
-
-
->  
-> -	// What's left? Kernel fault on user in well defined regions (extable
-> -	// matched), and allowed by KUAP in the faulting context.
-> +	// What's left? Kernel fault on user and allowed by KUAP in the faulting context.
->  	return false;
->  }
->  
-> -- 
-> 2.25.0
+I'll go do that. I'll let the robots chew on it before pushing it out
+though, I'll reply once it's in tip.git.
