@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1589D2D2D55
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D6F2D2D5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729827AbgLHOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:38:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:49930 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729570AbgLHOiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:38:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DB6130E;
-        Tue,  8 Dec 2020 06:37:29 -0800 (PST)
-Received: from [10.57.23.55] (unknown [10.57.23.55])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDD713F718;
-        Tue,  8 Dec 2020 06:37:27 -0800 (PST)
-Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
- updated without ops
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
- <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
- <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
-Date:   Tue, 8 Dec 2020 14:37:26 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729898AbgLHOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:38:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729881AbgLHOi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:38:29 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70CAC061793;
+        Tue,  8 Dec 2020 06:37:49 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id p4so8184969pfg.0;
+        Tue, 08 Dec 2020 06:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hU37JaKaOEirjPmALbrOJWPaTIoFEODaWEDaorKDgWk=;
+        b=ooksyxbT1PjBm+Qw586pxEZCow8feSKbTu9+hoWGwrqt6voY7lKdgMXkqFJTzkPrD0
+         u2W/c+36L9mvuqAXcHd99wRsVaPda+u1Iz99dYLpv5rcD+M8IZs5zGGpIB1ao2dvdFHz
+         IXha0OH3n0CxbHso3a/3Rrn2Jwv7qbN6lpf4gMnk5weob/GNC7GcIP6s+hZbPNc4/NBJ
+         KTQ+wMCY621HHwDxQ6N1eoAlKr7Ft4ozFYFEWpi6A0TkoUlhbxwYyh7W2D+1j1Qll38I
+         PN55OZPzUbOm1tW89mGL2tv7KZ/aJ2+8AiHdpVh2YuL5dGhx+stfe08TOYkvMTgARCiu
+         5RWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hU37JaKaOEirjPmALbrOJWPaTIoFEODaWEDaorKDgWk=;
+        b=g2j2I8NeWarSmCjXUxO0jGKjDkE27PJH930bF7kwo9fqhPz5icSkMkloY9cEOUyBpN
+         jwTw4Wuefu5cAxDRWVVKxlZVsAEa0CnyB0iNAaciuDV8Ib9UC17tBK9TU60OpjWB0RNb
+         SfEO34zClpLL07TN/Uew3Wp4DzBKzAFy0PKgxjvwXR4wUJNSuSgbD5X5HkpiCmMoMLFE
+         sa2SAQwOHU1Ub8GLIA/uyvC0krE/JBwmIHvmTg0egWWVlspZLH1vk87cIEGChhGX4Rpq
+         0mH6yIhlEybOV49K3tx3ABOFAvD2Fe7N1P9Np9mDLLUABw0YI5a2aEIx3sVTGm5CXQMx
+         /aLg==
+X-Gm-Message-State: AOAM532PJwP56M4neP9/Axd4V8RpnX9VhSVWwrIWyn21WzaHApd7tx9x
+        /xWVQdEsMCY/MjtJRGlHGPUfKsd8CXP8Vocuu00=
+X-Google-Smtp-Source: ABdhPJwH1S95yY17kMq1zaeFRIR/l3MZetRGkXNSdN1VTOlgJX4s7caWga2i6PDZLwJGuzmkDhL5Y8enQFKM7H/OKsI=
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4614277pjt.228.1607438269286;
+ Tue, 08 Dec 2020 06:37:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201208141429.8836-1-info@metux.net> <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
+In-Reply-To: <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 8 Dec 2020 16:38:37 +0200
+Message-ID: <CAHp75VfOjb4Rfo9yPmwEYUDbaPXNjfGs6goM27ZnLdAMtiU+jA@mail.gmail.com>
+Subject: Re: [RFC PATCH] RFC: drivers: gpio: helper for generic pin IRQ handling
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        joyce.ooi@intel.com, Andrew Jeffery <andrew@aj.id.au>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
+        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        Andy Shevchenko <andy@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 8, 2020 at 4:19 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Dec 8, 2020 at 4:14 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+> >
+> > Many gpio drivers already use gpiolib's builtin irqchip handling
+> > (CONFIG_GPIOLIB_IRQCHIP), but still has some boilerplate for retrieving
+> > the actual Linux IRQ number and calling into the generic handler.
+> > That boilerplate can be reduced by moving that into a helper function.
+> >
+> > This is an RFC patch to outline how that could be done. Note: it's
+> > completely untested yet.
+> >
+> > Several drivers still have their completely IRQ own implementation and
+> > thus can't be converted yet. Some of them perhaps could be changed to
+> > store their irq domain in the struct gpio, so the new helper could
+> > also be used for those.
+> >
+> > Having all GPIO drivers doing their IRQ management entirely through the
+> > GPIO subsystem (eg. never calling generic_handle_irq() and using the bu=
+iltin
+> > IRQ handling) would also allow a more direct (eg. callback-based) pin c=
+hange
+> > notification for GPIO consumers, that doesn't involve registering them =
+as
+> > generic IRQ handlers.
+> >
+> > Further reduction of boilerplate could be achieved by additional helper=
+s
+> > for common patterns like for_each_set_bit() loops on irq masks.
+>
+> Have you able to test them all?
+> As the PCA953x case showed us this is not so simple, besides the name
+> which sucks =E2=80=94 we don't *raise* and IRQ we *handle* it.
+>
+> NAK.
 
+To be on constructive side what I think can help here:
+- split patch on per driver basis (and first patch is a simple
+introduction of new API)
+- rename function
+- in each new per-driver patch explain what is the difference in behaviour
+- test as many as you can and explain in a cover letter what has been
+done and what are the expectations on the ones that you weren't able
+to test.
 
-On 12/8/20 1:51 PM, Daniel Lezcano wrote:
-> 
-> Hi Lukasz,
-> 
-> On 08/12/2020 10:36, Lukasz Luba wrote:
->> Hi Daniel,
-> 
-> [ ... ]
-> 
->>>      static void thermal_zone_device_init(struct thermal_zone_device *tz)
->>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
->>> thermal_zone_device *tz,
->>>        if (atomic_read(&in_suspend))
->>>            return;
->>>    -    if (!tz->ops->get_temp)
->>> +    if (update_temperature(tz))
->>>            return;
->>>    -    update_temperature(tz);
->>> -
->>
->> I think the patch does a bit more. Previously we continued running the
->> code below even when the thermal_zone_get_temp() returned an error (due
->> to various reasons). Now we stop and probably would not schedule next
->> polling, not calling:
->> handle_thermal_trip() and monitor_thermal_zone()
-> 
-> I agree there is a change in the behavior.
-> 
->> I would left update_temperature(tz) as it was and not check the return.
->> The function thermal_zone_get_temp() can protect itself from missing
->> tz->ops->get_temp(), so we should be safe.
->>
->> What do you think?
-> 
-> Does it make sense to handle the trip point if we are unable to read the
-> temperature?
-> 
-> The lines following the update_temperature() are:
-> 
->   - thermal_zone_set_trips() which needs a correct tz->temperature
-> 
->   - handle_thermal_trip() which needs a correct tz->temperature to
-> compare with
-> 
->   - monitor_thermal_zone() which needs a consistent tz->passive. This one
-> is updated by the governor which is in an inconsistent state because the
-> temperature is not updated.
-> 
-> The problem I see here is how the interrupt mode and the polling mode
-> are existing in the same code path.
-> 
-> The interrupt mode can call thermal_notify_framework() for critical/hot
-> trip points without being followed by a monitoring. But for the other
-> trip points, the get_temp is needed.
-
-Yes, I agree that we can bail out when there is no .get_temp() callback
-and even not schedule next polling in such case.
-But I am just not sure if we can bail out and not schedule the next
-polling, when there is .get_temp() populated and the driver returned
-an error only at that moment, e.g. indicating some internal temporary,
-issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
-The thermal_zone_get_temp() would pass the error to update_temperature()
-but we return, losing the next try. We would not check the temperature
-again.
-
-> 
-> IMHO, we should return if update_temperature() is failing.
-> 
-> Perhaps, it would make sense to simply prevent to register a thermal
-> zone if the get_temp ops is not defined.
-> 
-> AFAICS, if the interrupt mode without get_temp callback are for hot and
-> critical trip points which can be directly invoked from the sensor via a
-> specified callback, no thermal zone would be needed in this case.
-> 
-> 
-> 
+--=20
+With Best Regards,
+Andy Shevchenko
