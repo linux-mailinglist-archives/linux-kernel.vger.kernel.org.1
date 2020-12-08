@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990932D1EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A50B2D1EC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgLHAFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 19:05:09 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38637 "EHLO ozlabs.org"
+        id S1726326AbgLHAJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 19:09:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728426AbgLHAFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 19:05:08 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqgQR4Rhfz9sW0;
-        Tue,  8 Dec 2020 11:04:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607385866;
-        bh=19OrIeodFiMIQNQF+Sg6nJriKO1pUHSNuYeu7jcVYwU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=S5ndaTCMWe8LZ4Y9MbkJj2Btd31XKWIW1/drGKuRNp7DM0Lfl8ry9NMpbX+EitFgo
-         3Ns4nRa2BvVgX1UVFbHdq8ArCToB/aMekWs6pywJGMhcJRUEQRYQvbjpPoR6Gg0OkU
-         8mPBeal+0ngnrovq3TnDGTaA4M7XO/SR1WAieYTO9C0TVGoOXyQi1m08gZt40KdFl4
-         sIX8hfp+eXbvjE5wM42o5UWFnToe3iO9LDpQck1cIR14qLHAVjFeexAl0eLQjL0z9c
-         MSTHarNskH6G50HDQx2E10H0UmaJbV9wHu1VR1VfflM5OV2ycH5T0leyxO5q9nd687
-         Hkm+fZmbNDDuw==
-Date:   Tue, 8 Dec 2020 11:04:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Martin Cerveny <m.cerveny@computer.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: linux-next: manual merge of the v4l-dvb tree with the arm-soc tree
-Message-ID: <20201208110413.04400395@canb.auug.org.au>
+        id S1725924AbgLHAJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 19:09:38 -0500
+Date:   Tue, 8 Dec 2020 01:08:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607386137;
+        bh=pq18e9ZiVwpEi32VyuK7sdM+hmzGVadlVgXoYMtFU5w=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LigfSa9qFu0ATqUTZTo2bKQbQ8zlOeyw6lUP3dWtwAgXmcNLPRiJGaykw+stjJBjF
+         YtyDxj4rcSIzaO3Iss9ykV6Bt2nUkbpmGsop7wVAm+Dlgb+PTcDyTHQroWTx3lTRcE
+         PdoQnr70jk7pIejwcL0sDhOrfJAa/epL/8UPH2ufRRcfnBNB6EKNTHDeUvwZGUdPXh
+         VdUwjvh/WHepM2wyFxkVWogX/wibm2sRJeGDhk44SNPMtbLf/uFtSM0WQN1CbSXvbt
+         SkTu8VUFAtm2xHfrkfZN0ydRQaF2aMCkL7MKUzDW1oAYFRKwQyQhEOF7EHejXuHLqK
+         mhJgkckXceiVg==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [patch V2 4/9] softirq: Make softirq control and processing RT
+ aware
+Message-ID: <20201208000854.GA2877@lothringen>
+References: <20201204170151.960336698@linutronix.de>
+ <20201204170805.114951971@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/h7qdsitKTj5bCPYQb0am=ay";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201204170805.114951971@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/h7qdsitKTj5bCPYQb0am=ay
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Dec 04, 2020 at 06:01:55PM +0100, Thomas Gleixner wrote:
+> +static void __local_bh_enable(unsigned int cnt, bool unlock)
+> +{
+> +	unsigned long flags;
+> +	int newcnt;
+> +
+> +	DEBUG_LOCKS_WARN_ON(current->softirq_disable_cnt !=
+> +			    this_cpu_read(softirq_ctrl.cnt));
 
-Hi all,
+Less important since it's debug code, but still can be __this_cpu_read().
 
-Today's linux-next merge of the v4l-dvb tree got a conflict in:
+> +
+> +	if (IS_ENABLED(CONFIG_TRACE_IRQFLAGS) && softirq_count() == cnt) {
+> +		raw_local_irq_save(flags);
+> +		lockdep_softirqs_on(_RET_IP_);
+> +		raw_local_irq_restore(flags);
+> +	}
+> +
+> +	newcnt = __this_cpu_sub_return(softirq_ctrl.cnt, cnt);
+> +	current->softirq_disable_cnt = newcnt;
+> +
+> +	if (!newcnt && unlock) {
+> +		rcu_read_unlock();
+> +		local_unlock(&softirq_ctrl.lock);
+> +	}
+> +}
+> +
+> +static inline bool should_wake_ksoftirqd(void)
+> +{
+> +	return !this_cpu_read(softirq_ctrl.cnt);
 
-  drivers/staging/media/sunxi/cedrus/cedrus.c
+And that too.
 
-between commit:
+Other than these boring details:
 
-  c6e95daab1cc ("media: cedrus: Remove the MBUS quirks")
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-from the arm-soc tree and commits:
-
-  503dab0b8a56 ("media: cedrus: Register all codecs as capability")
-  68b4a01f88af ("media: cedrus: Make VP8 codec as capability")
-
-from the v4l-dvb tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/staging/media/sunxi/cedrus/cedrus.c
-index d5fca10ea5b4,18d54f9fd715..000000000000
---- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-@@@ -522,7 -584,11 +584,10 @@@ static const struct cedrus_variant sun5
- =20
-  static const struct cedrus_variant sun50i_h6_cedrus_variant =3D {
-  	.capabilities	=3D CEDRUS_CAPABILITY_UNTILED |
-- 			  CEDRUS_CAPABILITY_H265_DEC,
-+ 			  CEDRUS_CAPABILITY_MPEG2_DEC |
-+ 			  CEDRUS_CAPABILITY_H264_DEC |
-+ 			  CEDRUS_CAPABILITY_H265_DEC |
-+ 			  CEDRUS_CAPABILITY_VP8_DEC,
- -	.quirks		=3D CEDRUS_QUIRK_NO_DMA_OFFSET,
-  	.mod_rate	=3D 600000000,
-  };
- =20
-
---Sig_/h7qdsitKTj5bCPYQb0am=ay
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Owv0ACgkQAVBC80lX
-0Gy42wf+NAb0FeVZJwYwEqmiivZcxuhmfkdigRTuoeu8PN8wJvNOx1LScAT3KNOo
-kCx0kDYjJxJqAb5AJST9FPjrAES4sqJlbJfbtCSfMEIltEPeT3hv3F0J1HnS2QMB
-VKhDMXSySa4PTSsa3+UhyNkPRjcMoxDBBKK9fK8NDa5oKKgBL1x7xuslz039bXPk
-usdiJa76LUUkNvPxsrXLOTYs1129k0eburfE8stiM23Lp3TypxbMlFHDsRGRGILH
-ckD+EUCfdMh4CrRNQuVdPJ2gSlL0e5/BVMTbUHw3RDZ8rsFgr4jL5BCHVp/eSamx
-gUoe+flkmz2PwEysn+k6ql5eBOi82g==
-=XseB
------END PGP SIGNATURE-----
-
---Sig_/h7qdsitKTj5bCPYQb0am=ay--
+Thanks.
