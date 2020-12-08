@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF772D2C63
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062202D2C65
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgLHN4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:56:48 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9038 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729025AbgLHN4s (ORCPT
+        id S1729690AbgLHN5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:57:22 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:37922 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729678AbgLHN5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:56:48 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cr1sf6wYQzhp1j;
-        Tue,  8 Dec 2020 21:55:34 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 21:55:57 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net/mlx5: simplify the return expression of mlx5_esw_offloads_pair()
-Date:   Tue, 8 Dec 2020 21:56:25 +0800
-Message-ID: <20201208135625.11872-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Tue, 8 Dec 2020 08:57:21 -0500
+X-UUID: 4098dee9f14746dfa395ca8d74c7ef55-20201208
+X-UUID: 4098dee9f14746dfa395ca8d74c7ef55-20201208
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1451369614; Tue, 08 Dec 2020 21:56:38 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 8 Dec 2020 21:56:34 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Dec 2020 21:56:34 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
+        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2 0/2] scsi: ufs: Re-enable WB after device reset
+Date:   Tue, 8 Dec 2020 21:56:33 +0800
+Message-ID: <20201208135635.15326-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 29694EDB5F58899C9EB8D22B45F58AE6EF1CEAF90F164B2504683A26C00FED832000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the return expression.
+Hi,
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+This series fixes up an issue that WB is not re-enabled after device reset.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index c9c2962ad49f..786d2fc4b403 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -1893,13 +1893,8 @@ void esw_offloads_unload_rep(struct mlx5_eswitch *esw, u16 vport_num)
- static int mlx5_esw_offloads_pair(struct mlx5_eswitch *esw,
- 				  struct mlx5_eswitch *peer_esw)
- {
--	int err;
- 
--	err = esw_add_fdb_peer_miss_rules(esw, peer_esw->dev);
--	if (err)
--		return err;
--
--	return 0;
-+	return esw_add_fdb_peer_miss_rules(esw, peer_esw->dev);
- }
- 
- static void mlx5_esw_offloads_unpair(struct mlx5_eswitch *esw)
+Stanley Chu (2):
+  scsi: ufs: Re-enable WriteBooster after device reset
+  scsi: ufs: Uninline ufshcd_vops_device_reset function
+
+ drivers/scsi/ufs/ufshcd.c | 27 ++++++++++++++++++++++-----
+ drivers/scsi/ufs/ufshcd.h | 14 +++++---------
+ 2 files changed, 27 insertions(+), 14 deletions(-)
+
 -- 
-2.22.0
+2.18.0
 
