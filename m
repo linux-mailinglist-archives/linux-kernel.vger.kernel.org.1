@@ -2,81 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96442D22E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2382D22EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgLHFJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:09:08 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52756 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgLHFJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:09:08 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B858HUc048119;
-        Mon, 7 Dec 2020 23:08:17 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607404097;
-        bh=C6FwkyDgXtSraSg5zTTJYSsWZpjWh6LH1ulfNuODAHE=;
-        h=From:To:CC:Subject:Date;
-        b=tYmQmQMlhxSd3fPvPJLAZQCGTgVfmX8bBTc0HDGf4ChyGRu3Fj7vCcIcvg8zVz26C
-         oNJJQJLooPrlUZOtvr7sXSOV2zXdzua2FQjinLy12qE1ssShHp1z3ggx8dz654tulB
-         nMq+DftR/uZoqKNIiBj5QCOXNsqzp3KKAJz0Hxxk=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B858HDY129601
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Dec 2020 23:08:17 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Dec
- 2020 23:08:17 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Dec 2020 23:08:17 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B858DFq088962;
-        Mon, 7 Dec 2020 23:08:14 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [RESEND PATCH] MAINTAINERS: Add myself as a reviewer for CADENCE USB3 DRD IP DRIVER
-Date:   Tue, 8 Dec 2020 10:38:06 +0530
-Message-ID: <20201208050806.15382-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726340AbgLHFMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:12:30 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:44285 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgLHFM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:12:29 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id F26FD2400FB
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:11:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1607404292; bh=g5u4UyZ2WJ2e3hMxa5bog0RzU7/VxWIOWf101N3wx4Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DybgU/EoITZdhVMVJ+Y8LnW/g+1o6whTQbPxXD7k4uYx336EFODuHZ/eWa8pF+H5/
+         FHb2zaqdg4rjsev+xTaJYBvoTUvfp46QsjRDd9lL5+7YK/egmtLuKcv1hnyP8mbbtx
+         j/WrFKn2sg23sAzaVG2P9NqF6HG3FVaTNJ/iIi4g2gyyyP1aAEs8NReGCEkVBvqcfH
+         k7LZ87vo1HYTfcMYJTRGArkH6bsgaH4e+AYGts1RYhrJaVrcKxoMzq+AYHV4K0GF+B
+         8Xvewvq+hfMRMShPXjbrkbr7q1lGESoHmFcUtnIpfh7SvaLmG+C2rkf9RDH1coe3Ee
+         hGKSyybFii0/g==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4CqpDy22J3z9rxG;
+        Tue,  8 Dec 2020 06:11:30 +0100 (CET)
+Date:   Tue, 8 Dec 2020 06:11:28 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>, linux-kernel@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwlock: add sun8i_hwspinlock
+ documentation
+Message-ID: <20201208061128.3e20f00b@monster.powergraphx.local>
+In-Reply-To: <4ceaf71c-dbac-4dc3-7921-d59a40fbece7@sholland.org>
+References: <cover.1607353274.git.wilken.gottwalt@posteo.net>
+        <ac2c2b279be52876d66c91826a1ccebd08fe4810.1607353274.git.wilken.gottwalt@posteo.net>
+        <20201207161259.z6no7m2xqwb2jrju@gilmour>
+        <4ceaf71c-dbac-4dc3-7921-d59a40fbece7@sholland.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would like to help in reviewing CADENCE USB3 DRD IP DRIVER patches
+On Mon, 7 Dec 2020 21:22:23 -0600
+Samuel Holland <samuel@sholland.org> wrote:
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+> On 12/7/20 10:12 AM, Maxime Ripard wrote:
+> > Hi,
+> > 
+> > On Mon, Dec 07, 2020 at 05:05:03PM +0100, Wilken Gottwalt wrote:
+> >> Adds documentation on how to use the sun8i_hwspinlock driver for sun8i
+> >> compatible SoCs.
+> >>
+> >> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> >> ---
+> >>  .../bindings/hwlock/sun8i-hwspinlock.yaml     | 63 +++++++++++++++++++
+> >>  1 file changed, 63 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+> >> b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml new file mode 100644
+> >> index 000000000000..2954ee0b36a7
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+> >> @@ -0,0 +1,63 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/hwlock/sun8i-hwspinlock.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: SUN8I hardware spinlock driver for Allwinner sun8i compatible SoCs
+> >> +
+> >> +maintainers:
+> >> +  - Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - allwinner,sun8i-hwspinlock
+> > 
+> > This can be a const instead of an enum, and since it was introduced with
+> > the A33 it should be sun8i-a33-hwspinlock. There's a lot of SoCs in that
+> > family, some without that IP, and we could even see new SoCs in that
+> > family with a different IP at some point.
+> 
+> I just looked at the A31 ARISC blob, and it uses the hwspinlock hardware
+> as well, with the same MMIO address and gate/reset bits as A33-H3. So
+> the first compatible would actually be sun6i-a31-hwspinlock.
 
-Resending the patch to add more viewers.
+Hmm, so it would make sense to also change the drivers symbols from sun8i to
+sun6i, right? Before I do that, is there maybe a sun4i which also includes
+the hwspinlock unit? Just in case :D
 
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+greetings,
+Wilken
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6aac0f845f34..ff9bd7d18d94 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3861,6 +3861,7 @@ CADENCE USB3 DRD IP DRIVER
- M:	Peter Chen <peter.chen@nxp.com>
- M:	Pawel Laszczak <pawell@cadence.com>
- M:	Roger Quadros <rogerq@ti.com>
-+R:	Aswath Govindraju <a-govindraju@ti.com>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
--- 
-2.17.1
+> Cheers,
+> Samuel
+> 
+> >> +
+> >> +    reg:          # 0x01C18000 (H2+, H3, H5), 0x03004000 (H6), length 0x1000
+> >> +      maxItems: 1
+> > 
+> > There's no need for those comments
+> > 
+> >> +
+> >> +    clocks:       # phandle to the reference clock
+> > 
+> > This should be the description, and it's fairly obvious so you don't
+> > really need that comment.
+> > 
+> >> +      maxItems: 1
+> >> +
+> >> +    clock-names:  # name of the bus ("ahb")
+> >> +      maxItems: 1
+> > 
+> > You don't need clock-names if there's a single clock
+> > 
+> >> +
+> >> +    resets:       # phandle to the reset control
+> >> +      maxItems: 1
+> > 
+> > Same thing than for the clocks
+> > 
+> >> +
+> >> +    reset-names:  # name of the bus ("ahb")
+> >> +      maxItems: 1
+> >> +
+> > 
+> > Ditto
+> > 
+> >> +required:
+> >> +  - compatible
+> >> +  - reg
+> >> +  - clocks
+> >> +  - clock-names
+> >> +  - resets
+> >> +  - reset-names
+> >> +
+> >> +additionalProperties: false
+> >> +
+> >> +examples:
+> >> +
+> >> +  - |
+> >> +    /* H2+ based OrangePi Zero */
+> >> +    hwspinlock: hwspinlock@1C18000 {
+> > 
+> > Unit-address's are lowercase
+> > 
+> >> +      compatible = "allwinner,sun8i-hwspinlock";
+> >> +      reg = <0x01c18000 0x1000>;
+> >> +      clocks = <&ccu CLK_BUS_SPINLOCK>;
+> >> +      clock-names = "ahb";
+> >> +      resets = <&ccu RST_BUS_SPINLOCK>;
+> >> +      reset-names = "ahb";
+> >> +    };
+> >> +
+> >> +    /* H6 based OrangePi 3 */
+> >> +    hwspinlock: hwspinlock@3004000 {
+> >> +      compatible = "allwinner,sun8i-hwspinlock";
+> >> +      reg = <0x03004000 0x1000>;
+> >> +      clocks = <&ccu CLK_BUS_SPINLOCK>;
+> >> +      clock-names = "ahb";
+> >> +      resets = <&ccu RST_BUS_SPINLOCK>;
+> >> +      reset-names = "ahb";
+> >> +    };
+> > 
+> > Different examples should be different items on that list, but both are
+> > essentially the same binding so you can drop one.
+> > 
+> > Maxime
+> > 
+> 
 
