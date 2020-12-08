@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFE92D3373
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959BA2D33D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728650AbgLHUT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:19:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727801AbgLHUT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:19:26 -0500
-Date:   Tue, 8 Dec 2020 11:43:14 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607456595;
-        bh=0Z5bpu1nVbF3QnVaGuTjeixaoErw3LQOX5Pc9Y2x7xs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K7YJJADgVoOQA4WFXTX0LzCxujAPmgBwZQVMoMeuXF27q3Qacsr3wPaVgtfytn1OO
-         W5ENlYvhcNqu/ZKyYjBk/Q0ZCUuhUGc5n5hfUhASAniUtxNqo1jUjCYIoU8W4TIAHv
-         hX5wgzNlkUwnRxfm1MnP0swTsLes2IUyt/hknJBirVZ5En18zJeBxEnVx8uzEY0zqT
-         NHk2WVTFGR45S66SAiSUyfkfDAEAxa6SQyrzAA6uwF3U0bhZG6sdrEgx/Y5/FW9ce7
-         daA7EMlZCjbK9u/bxonV9cC1s5tyYA5akyDeip8MRcCK074w5MF5s1Zd9PDCg7tPj2
-         veGywUHWDdphg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
- bandwidth requirement
-Message-ID: <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201206034408.31492-2-TheSven73@gmail.com>
-References: <20201206034408.31492-1-TheSven73@gmail.com>
-        <20201206034408.31492-2-TheSven73@gmail.com>
+        id S1731181AbgLHUQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:07 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:35986 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730490AbgLHUMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:12:50 -0500
+Received: by mail-il1-f193.google.com with SMTP id j12so9476564ilk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:12:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5FWO1In4k/q/qaAMSnIUejYYiefldFf5ojrS9MJ5ecU=;
+        b=ZpExrs/P288Ri219IjA3Hw7BD0R00bOLGSdhmyBCQFJfxiZEIsObGa/IdxlVpG0Vzc
+         +TH2MEe7hE3jRo1OojYBZSxRRLgTp3VdfSqh6jAPg6RVv70ewzefSOxV8UlTRoNBwvKM
+         yMy/nz8wJDVxTo1rlREHkP9CqLLJMTHzIXcb0jy/aeKbQh1qy7C749Cn5ZEZcUekVPCK
+         EU2AVGWeE8oCxjnqZkMduWUA6+JGUqnDQVNo2L2abXX4akXPdM01xEZj/6JMO3BkhYiP
+         1vd3TX16ZS/VHMiJDZEQc0H67ZsiDPqUeH5eBQknoqQ6P1qUBgqfXXN5ms11XDsY/btV
+         9g2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5FWO1In4k/q/qaAMSnIUejYYiefldFf5ojrS9MJ5ecU=;
+        b=nPRdc5IgxoDMe1weqBTJOO2MlP7yIgg6VejL2VXKRa+QdnT0c9nJNRWPpdD+Pu/qkB
+         8MiNhYAB5Nb0FhsxMh2VtKXBncfJeT9PBDGDkWqqI+Rarrb0fB7g+ornP/Z3YuK3zR5n
+         bmGvAR6+7r/wDUkXbF3e7TiBveAy5+d5t39P99wReW+7L5HjIWSfoBgFQ9Ty749VfbMz
+         Pd3Pc5icumIwu0s4LZJhdHyJB3a7Ec0CeL31FuEKNaDHEd3g7SClEEImDNuReCcpIQOz
+         agig21r2agrYlswJndatVdkAxd4FpwGEw6R/0oKnxW31SLQdIhc3j1G+FL5KEfVLi8Lg
+         CFHw==
+X-Gm-Message-State: AOAM531w5N6U3NdmOpVqhLO8h0X7I6sCuuiiKxcZ1I+bGEBCe+SidKkw
+        egNPl99nvRWiKTmNgQ1rtckeHoZtupmI6XPb
+X-Google-Smtp-Source: ABdhPJzyIt0qixl+OfzysGNf0MERL4F6J9Hq7NNf8oxQW00m7AqhAW/8BHSsD0+zQQoTmN93P1OyQg==
+X-Received: by 2002:a63:f501:: with SMTP id w1mr847244pgh.142.1607456626044;
+        Tue, 08 Dec 2020 11:43:46 -0800 (PST)
+Received: from localhost.localdomain ([49.207.201.111])
+        by smtp.gmail.com with ESMTPSA id x10sm17337654pff.214.2020.12.08.11.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 11:43:45 -0800 (PST)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Jan Kara <jack@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+Subject: [PATCH] fs: quota: fix array-index-out-of-bounds bug by passing correct argument to vfs_cleanup_quota_inode()
+Date:   Wed,  9 Dec 2020 01:13:38 +0530
+Message-Id: <20201208194338.7064-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  5 Dec 2020 22:44:08 -0500 Sven Van Asbroeck wrote:
-> From: Sven Van Asbroeck <thesven73@gmail.com>
-> 
-> To support jumbo frames, each rx ring dma buffer is 9K in size.
-> But the chip only stores a single frame per dma buffer.
-> 
-> When the chip is working with the default 1500 byte MTU, a 9K
-> dma buffer goes from chip -> cpu per 1500 byte frame. This means
-> that to get 1G/s ethernet bandwidth, we need 6G/s PCIe bandwidth !
-> 
-> Fix by limiting the rx ring dma buffer size to the current MTU
-> size.
+When dquot_resume() was last updated, the argument that got passed
+to vfs_cleanup_quota_inode was incorrectly set.
 
-I'd guess this is a memory allocate issue, not a bandwidth thing.
-for 9K frames the driver needs to do order-2 allocations of 16K.
-For 1500 2K allocations are sufficient (which is < 1 page, hence 
-a lot cheaper).
+If type = -1 and dquot_load_quota_sb() returns a negative value,
+then vfs_cleanup_quota_inode() gets called with -1 passed as an
+argument, and this leads to an array-index-out-of-bounds bug.
 
-> Tested with iperf3 on a freescale imx6 + lan7430, both sides
-> set to mtu 1500 bytes.
-> 
-> Before:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec   483 MBytes   203 Mbits/sec    0
-> After:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec  1.15 GBytes   496 Mbits/sec    0
-> 
-> And with both sides set to MTU 9000 bytes:
-> Before:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec  1.87 GBytes   803 Mbits/sec   27
-> After:
-> [ ID] Interval           Transfer     Bandwidth       Retr
-> [  4]   0.00-20.00  sec  1.98 GBytes   849 Mbits/sec    0
-> 
-> Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
-> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Fix this issue by correctly passing the arguments.
 
-This is a performance improvement, not a fix, it really needs to target
-net-next.
+Fixes: ae45f07d47cc ("quota: Simplify dquot_resume()")
+Reported-by: syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+Tested-by: syzbot+2643e825238d7aabb37f@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+If type = -1 is passed as an argument to vfs_cleanup_quota_inode(),
+it causes an array-index-out-of-bounds error since dqopt->files[-1]
+can be potentially attempted to be accessed.
+Before the bisected commit introduced this bug, vfs_load_quota_inode()
+was being directly called in dquot_resume(), and subsequently 
+vfs_cleanup_quota_inode() was called with the cnt value as argument.
 
-> diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-> index ebb5e0bc516b..2bded1c46784 100644
-> --- a/drivers/net/ethernet/microchip/lan743x_main.c
-> +++ b/drivers/net/ethernet/microchip/lan743x_main.c
-> @@ -1957,11 +1957,11 @@ static int lan743x_rx_next_index(struct lan743x_rx *rx, int index)
->  
->  static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
->  {
-> -	int length = 0;
-> +	struct net_device *netdev = rx->adapter->netdev;
->  
-> -	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> -	return __netdev_alloc_skb(rx->adapter->netdev,
-> -				  length, GFP_ATOMIC | GFP_DMA);
-> +	return __netdev_alloc_skb(netdev,
-> +				  netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING,
-> +				  GFP_ATOMIC | GFP_DMA);
->  }
->  
->  static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
-> @@ -1969,9 +1969,10 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
->  {
->  	struct lan743x_rx_buffer_info *buffer_info;
->  	struct lan743x_rx_descriptor *descriptor;
-> -	int length = 0;
-> +	struct net_device *netdev = rx->adapter->netdev;
-> +	int length;
->  
-> -	length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> +	length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
->  	descriptor = &rx->ring_cpu_ptr[index];
->  	buffer_info = &rx->buffer_info[index];
->  	buffer_info->skb = skb;
-> @@ -2157,8 +2158,8 @@ static int lan743x_rx_process_packet(struct lan743x_rx *rx)
->  			int index = first_index;
->  
->  			/* multi buffer packet not supported */
-> -			/* this should not happen since
-> -			 * buffers are allocated to be at least jumbo size
-> +			/* this should not happen since buffers are allocated
-> +			 * to be at least the mtu size configured in the mac.
->  			 */
->  
->  			/* clean up buffers */
-> @@ -2632,9 +2633,13 @@ static int lan743x_netdev_change_mtu(struct net_device *netdev, int new_mtu)
->  	struct lan743x_adapter *adapter = netdev_priv(netdev);
->  	int ret = 0;
->  
-> +	if (netif_running(netdev))
-> +		return -EBUSY;
+ fs/quota/dquot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That may cause a regression to users of the driver who expect to be
-able to set the MTU when the device is running. You need to disable 
-the NAPI, pause the device, swap the buffers for smaller / bigger ones
-and restart the device.
-
->  	ret = lan743x_mac_set_mtu(adapter, new_mtu);
->  	if (!ret)
->  		netdev->mtu = new_mtu;
-> +
->  	return ret;
->  }
->  
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index bb02989d92b6..4f1373463766 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -2455,7 +2455,7 @@ int dquot_resume(struct super_block *sb, int type)
+ 		ret = dquot_load_quota_sb(sb, cnt, dqopt->info[cnt].dqi_fmt_id,
+ 					  flags);
+ 		if (ret < 0)
+-			vfs_cleanup_quota_inode(sb, type);
++			vfs_cleanup_quota_inode(sb, cnt);
+ 	}
+ 
+ 	return ret;
+-- 
+2.25.1
 
