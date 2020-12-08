@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C462D2C9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:05:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21102D2CA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgLHOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:05:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLHOFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:05:44 -0500
-X-Gm-Message-State: AOAM531EkzPx7nb7JEQsYP/50EBqRsU5WvQpcPDHV8I6f8CWwRqj6Yxj
-        iL8JPxD2KGK/ALbv6grRX5jJE/NyED3ZpoKp1GI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607436303;
-        bh=mbsdbwKyczvLHvtpaeUbdE5uuehFNcjej12iuv54kM0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=t5uiLAeQbxE76Z++9gWAPnbTDDysMrXRk28zPlRtfyuIO7KisYFV51C0+0vmKG/lx
-         FDmoSG20CkOI9fWyjYdJ7NGaT7c19OkAKQBfG1TuQ9CJwvMmNBlcMpT9RBEokMdgTO
-         JI+YOHY1RkGBEiRYOL4qRgyeMqtE0/y+yNFKHctLaLSULO5eeOojKUyFe08t+XqT8o
-         ze7N/fAz5Rgpn5PaUxsuw2xcvh3TQgrsCIpR/wbTURPXqTdJiTR879ONxqAjHDlysJ
-         5bXxC2JOCcuSb30yGAmqESn+giBCnwNguePZrZirB0JPDJIzcr2ah1ev9rj5hnQkst
-         ZKoA2TyKqP7aw==
-X-Google-Smtp-Source: ABdhPJwOOS2YE9U5ISalt8ZW6t5h5/7Imq5MdNE9kh6uYThwbWteRjZKRfIw8tfSJKviZjaCwjro3y+psb4Y2uBf6pY=
-X-Received: by 2002:adf:b343:: with SMTP id k3mr22054883wrd.202.1607436301682;
- Tue, 08 Dec 2020 06:05:01 -0800 (PST)
+        id S1729549AbgLHOHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:07:54 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:60269 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729462AbgLHOHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:07:54 -0500
+Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1Mzhax-1jzus61WUL-00viD2; Tue, 08 Dec 2020 15:05:07 +0100
+Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
+ drivers: gpio: add virtio-gpio guest driver
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-riscv@lists.infradead.org
+References: <20201203191135.21576-1-info@metux.net>
+ <20201203191135.21576-2-info@metux.net>
+ <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net>
+ <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <51d3efb7-b7eb-83d7-673a-308dd51616d3@metux.net>
+Date:   Tue, 8 Dec 2020 15:04:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201203222922.1067522-1-arnd@kernel.org> <CAPDyKFqtFYqc8i_fVzOUnuZGJjtwjVLqE-vebtOKuYJ-4PrDBg@mail.gmail.com>
- <CAK8P3a3srmTdY69j+g-wazMkrTL8_Grsw=vCMyizyA_7oOC4tg@mail.gmail.com> <IVYYKQ.T5GFS8Z1QTP2@crapouillou.net>
-In-Reply-To: <IVYYKQ.T5GFS8Z1QTP2@crapouillou.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 8 Dec 2020 15:04:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a21gkBsb3rcNvzH3XA_0GRRKPgnsrynTTO=EZVwy6DC+g@mail.gmail.com>
-Message-ID: <CAK8P3a21gkBsb3rcNvzH3XA_0GRRKPgnsrynTTO=EZVwy6DC+g@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mediatek: mark PM functions as __maybe_unused
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        yong mao <yong.mao@mediatek.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:G4pb0xE5H22ojPKBimkPJ8QHTZy9Ztkg67vq+dnwAqAyIP7Owjp
+ PtM4xLyYwEOsOB5Jeky7p0oHn4OV0smr3NYA6ZBFzuAz8Wj154fwdKeJAA7RKqTpXhphJ0A
+ KZ+KK0E+bN0KXeCyh8zH7Zs4RpyqkMmgg1F2DoLmutar7t2c9swfhYmzbPPLxZS31ACp14U
+ zhqcJNgYORsE2qZ0/AFTw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a0Ff9jNvXYo=:mUVNahr6lKpBJFzi+wLba2
+ BTDIDBHKoHwdSkhKUdoqJmrbqtF3ZYCKFqGIgJUBJmegkGz/SOcu3pd2KOd4s2s3/QuXaNdk0
+ uguRGeRDIcNPst62WfMtiwo4Iw/Vunm5FNmfJFeatXDqWazimqqDCanpscLSdrblTa20JB1VW
+ c7kuVDEz155jDxAxRrlCHa4xGdgZYPY0yAQaS4Dv3uUFDVLnMUFpMkDRsUEKPq4noO6+ucdvE
+ SRzQXp3T1n3zUjTN8U0oP43qsyQntWyl1RTCSoXTQO9xSgs89oOoNRoJT2rv1BUKKBfwqnqmI
+ LpZWwaBmU/uSsj4PGpYC4o/F9bS7XDbzC7/lddp5AyIn8cCAKy4qL8gpxMSWZ9sTqpjvl4Hqq
+ 945/WLdlpTWKQh+Nbd0YlPUVBPRRhnU8HM133F3fS5h9vHMLhveOWfk66rqfG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> Le ven. 4 d=C3=A9c. 2020 =C3=A0 15:14, Arnd Bergmann <arnd@kernel.org> a =
-=C3=A9crit
+On 08.12.20 10:38, Linus Walleij wrote:
 
-> By the way, as I'm ending up doing the same in a different context, I
-> think it would be useful to have a IF_ENABLED() macro defined like this:
->
-> #define IF_ENABLED(_cfg, _ptr) (IS_ENABLED(_cfg) ? (_ptr) : NULL)
->
-> Then the pm_ptr(_ptr) macro could be defined like this:
->
-> #define pm_ptr(_ptr) IF_ENABLED(CONFIG_PM, _ptr)
+Hi,
 
-I like that. Do you just want to go ahead and start with adding
-IF_ENABLED() to your own branch then?
+> This is Bartosz territory, but the gpio-mockup.c driver will insert
+> IRQs into the system, he went and added really core stuff
+> into kernel/irq to make this happen. Notice that in Kconfig
+> it does:
+> 
+> select IRQ_SIM
+> 
+> Then this is used:
+> include/linux/irq_sim.h
+> 
+> This is intended for simulating IRQs and both GPIO and IIO use it.
+> I think this inserts IRQs from debugfs and I have no idea how
+> flexible that is.
 
-    Arnd
+Oh, thx.
+
+It seems to implement a pseudo-irqchip driver. I've already though about
+doing that, but didn't think its worth it, just for my driver alone.
+I've implemented a few irq handling cb's directly the driver. But since
+we already have it, I'll reconsider :)
+
+BUT: this wasn't exactly my question :p
+
+I've been looking for some more direct notification callback for gpio
+consumers: here the consumer would register itself as a listener on
+some gpio_desc and called back when something changes (with data what
+exactly changed, eg. "gpio #3 input switched to high").
+
+Seems we currently just have the indirect path via interrupts.
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
