@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E332D25D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EFC2D25CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgLHI0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:26:50 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:43461 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728192AbgLHI0t (ORCPT
+        id S1728176AbgLHI0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:26:37 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:34652 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727849AbgLHI0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:26:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607415984; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xq3oy99zl2gR3nMQordnnBYArUynP/cy+s33+204NZY=; b=h6ClbUnqO7RQxaN1g2sHLi68KcLxTbZh0RvH9W/GclLb5B8RK1b4rhd8SxOOo/ra05B8d4KC
- 6bxHSC7Df//agKXSlY7+iql0sJUvtXVjNrNCEel6LW6pnjUSh/1QWOcPj8qXVwpsR6ZoNuW9
- thLntheUSlDhda7uwgyAoLGg0P8=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fcf389096285165cdaf9a8d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 08:25:52
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2A2F1C433CA; Tue,  8 Dec 2020 08:25:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E7D8C433CA;
-        Tue,  8 Dec 2020 08:25:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E7D8C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     youghand@codeaurora.org
-Cc:     ath10k@lists.infradead.org, briannorris@chromium.org,
-        dianders@chromium.org, kuabhs@chromium.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        pillair@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in shutdown path
-Date:   Tue,  8 Dec 2020 13:55:24 +0530
-Message-Id: <20201208082524.20451-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201126171553.2097-1-youghand@codeaurora.org>
-References: <20201126171553.2097-1-youghand@codeaurora.org>
+        Tue, 8 Dec 2020 03:26:36 -0500
+Received: from 36-229-231-79.dynamic-ip.hinet.net ([36.229.231.79] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kmYJb-0007bo-CD; Tue, 08 Dec 2020 08:25:44 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     bhelgaas@google.com
+Cc:     hkallweit1@gmail.com, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] PCI/ASPM: Store disabled ASPM states
+Date:   Tue,  8 Dec 2020 16:25:33 +0800
+Message-Id: <20201208082534.2460215-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
-<youghand@codeaurora.org> wrote:
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
->
->         reinit_completion(&ar->driver_recovery);
->
-> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
-> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+If we use sysfs to disable L1 ASPM, then enable one L1 ASPM substate
+again, all other substates will also be enabled too:
 
-You are skipping recovery in ath10k_snoc_remove() which is a remove callback
-and also called in shutdown callback. So that means it is also called when
-you unload the ath10k module and not just when the system reboots/shutdown.
-While it makes sense to not skip recovery in shutdown/reboot sequence because
-the system is going down, it might very well be needed in case of unloading
-the module because we expect the system to be up and stable after unloading
-the ath10k module and we should be able to reload the ath10k module smoothly.
+link# grep . *
+clkpm:1
+l0s_aspm:1
+l1_1_aspm:1
+l1_1_pcipm:1
+l1_2_aspm:1
+l1_2_pcipm:1
+l1_aspm:1
 
-If you remove that now and try to reload the ath10k module, won't that leave
-the system in possibly an inconsistent state because we skipped recovery in
-module remove and then we are trying to load the ath10k module when the
-recovery is not yet complete? In other words, you need to test ath10k module
-load/unload as well in addition to reboot tests to make sure this works as
-expected or else you will need a separate shutdown callback which skips the
-recovery part.
+link# echo 0 > l1_aspm
 
-Thanks,
-Sai
+link# grep . *
+clkpm:1
+l0s_aspm:1
+l1_1_aspm:0
+l1_1_pcipm:0
+l1_2_aspm:0
+l1_2_pcipm:0
+l1_aspm:0
+
+link# echo 1 > l1_2_aspm
+
+link# grep . *
+clkpm:1
+l0s_aspm:1
+l1_1_aspm:1
+l1_1_pcipm:1
+l1_2_aspm:1
+l1_2_pcipm:1
+l1_aspm:1
+
+This is because disabled ASPM states weren't saved, so enable any of the
+substate will also enable others.
+
+So store the disabled ASPM states for consistency.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/pci/pcie/aspm.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index ac0557a305af..2ea9fddadfad 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -658,6 +658,8 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+ 	/* Setup initial capable state. Will be updated later */
+ 	link->aspm_capable = link->aspm_support;
+ 
++	link->aspm_disable = link->aspm_capable & ~link->aspm_default;
++
+ 	/* Get and check endpoint acceptable latencies */
+ 	list_for_each_entry(child, &linkbus->devices, bus_list) {
+ 		u32 reg32, encoding;
+@@ -1226,11 +1228,15 @@ static ssize_t aspm_attr_store_common(struct device *dev,
+ 	mutex_lock(&aspm_lock);
+ 
+ 	if (state_enable) {
+-		link->aspm_disable &= ~state;
+ 		/* need to enable L1 for substates */
+ 		if (state & ASPM_STATE_L1SS)
+-			link->aspm_disable &= ~ASPM_STATE_L1;
++			state |= ASPM_STATE_L1;
++
++		link->aspm_disable &= ~state;
+ 	} else {
++		if (state == ASPM_STATE_L1)
++			state |= ASPM_STATE_L1SS;
++
+ 		link->aspm_disable |= state;
+ 	}
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.29.2
+
