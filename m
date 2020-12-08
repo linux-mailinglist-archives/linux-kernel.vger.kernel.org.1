@@ -2,69 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5072D311D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6152B2D312B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730603AbgLHRbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        id S1729885AbgLHReg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728812AbgLHRbO (ORCPT
+        with ESMTP id S1726278AbgLHRef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:31:14 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53939C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:30:34 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id ED52C300;
-        Tue,  8 Dec 2020 17:30:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net ED52C300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607448634; bh=FERq4cImv3osP50qz+SgLqb5oei6VpqlBDGrQMlk47I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CPi+IjbRVDPcaiXzmiJ8QPXH2lnrL0CVTthTELvpFsqBQmhk8Ze/77K3Mg4xk4VSi
-         M17u3oo/8i9WG04DSBmnR+ZyLrBCJdsU0sdDhjCllvbpclO2rRp99zmo3zzPsoHBry
-         1mTLfBDM0g/E8FbgXYLT8tt1Pr8L647GTWArLrl2fHmJ5HHbjezgu8JWNtg0c1jZba
-         pXsmvhf+FSQQVYxzMWl1mDwlMTfn+1jMpZUkWJH1FnKsiZVLQ5JKq5G1gdgorV2WuT
-         8iItp7yLyqyJZ3UWCu3NLsdnThwxgvwB5SETNNhcVKJ6HN1FWBH3I82Hk7e22y88IN
-         BTvV7a29gWuxQ==
-Date:   Tue, 8 Dec 2020 10:30:32 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Andrew Klychkov <andrew.a.klychkov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] Documentation: fix multiple typos found in the
- admin-guide subdirectory
-Message-ID: <20201208103032.0b60b26f@lwn.net>
-In-Reply-To: <20201204072848.GA49895@spblnx124.lan>
-References: <20201204072848.GA49895@spblnx124.lan>
-Organization: LWN.net
+        Tue, 8 Dec 2020 12:34:35 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA88C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:33:55 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id v14so2709525wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:33:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=prv6QXAjwXmx7X2n72Rz/QqUHHpEtIXIiLJUnnkHbR0=;
+        b=uXqAktZWSUW4BB2xkW70Q7Y0knpgm8Ya3oLIOqAeMxBdX54aZro6l5hGEy2/ScF132
+         B4SjN5eepkt1FLiQE+gKv+yD+8A0BJMTRqluag6GgEWseNrnd5oy7frSgWgbBKzZN3YS
+         UExoJ9ya1dr2M+wcvHfV5D/VDXcMvrNRViSjYDvslwVRFof4M0we9OhGSjTDU3qYEkEb
+         cPHh2qGP1VzyITFEQOLU/1TzrEoYiLxWW+sDzX4PYOCtptCHXTVEP+M9D/Unbbdc3OU9
+         H53L6HylG34y/iCr9QrcYx9B98atOECoJXVt16Ecdt2tZsI1ffQ6Rut6doKOioTiHWem
+         7VMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=prv6QXAjwXmx7X2n72Rz/QqUHHpEtIXIiLJUnnkHbR0=;
+        b=DDAvJ8cwJ5hHTOIwng1A9NnZDVKIRk8QrAQUZ2FwGco4GlTy0ai31uss111n9ZtLIa
+         9iD3dKUzTB1atZqMpsIs1NyEkEygSxLNE93d7eV9/jAfFVUEORWArZjEUyho1mAfQgKe
+         uxTXG/rovstjiFHJ/fmktdM6bGSwXo29CyhJRqW8iEn8zjFUDeoW7Tud58hXoSK5w63f
+         0h5O6jtjPLzP7tZW712ILU1KW2IAqxUkpcbqVALrsF1H7IOmXSrj348dI3cy9dknBKcA
+         YBSR+djMaE0/vQS00BxwFvlUd9TuojzJ7kZvbbQCSExwQHbgG7rZPT4vz66Izj6Trzur
+         8ENQ==
+X-Gm-Message-State: AOAM533gWdK8HrTAZjusDH1ovRdv40mk25Zyms03ngWk6GeYgJurHkRl
+        1Ux4H6iQaoOQiRHWtyKKmXVxufy546QWZONaFmOZDw==
+X-Google-Smtp-Source: ABdhPJykbWJPG5N03i1GYewP/i/cBTHGqhNOfixMnBo6i2tP7QSuJaYZ1nvtJPsrNciqblBV72wkgDt1t7DOWW7riNI=
+X-Received: by 2002:a1c:7e87:: with SMTP id z129mr4741631wmc.176.1607448834084;
+ Tue, 08 Dec 2020 09:33:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com>
+ <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
+In-Reply-To: <6f64558a029574444da417754786f711c2fec407.camel@redhat.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Tue, 8 Dec 2020 09:33:41 -0800
+Message-ID: <CALCETrWKSdro=0YkaamU-RXpa+2sPzBKct4SPi1SmgL2yS62AQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 10:28:48 +0300
-Andrew Klychkov <andrew.a.klychkov@gmail.com> wrote:
+On Tue, Dec 8, 2020 at 8:26 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> On Tue, 2020-12-08 at 17:02 +0100, Thomas Gleixner wrote:
+> > On Tue, Dec 08 2020 at 16:50, Maxim Levitsky wrote:
+> > > On Mon, 2020-12-07 at 20:29 -0300, Marcelo Tosatti wrote:
+> > > > > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
+> > > > > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
+> > > > > +
+> > > > > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
+> > > > > +KVM will adjust the guest TSC value by the time that passed since the moment
+> > > > > +CLOCK_REALTIME timestamp was saved in the struct and current value of
+> > > > > +CLOCK_REALTIME, and set the guest's TSC to the new value.
+> > > >
+> > > > This introduces the wraparound bug in Linux timekeeping, doesnt it?
+> >
+> > Which bug?
+> >
+> > > It does.
+> > > Could you prepare a reproducer for this bug so I get a better idea about
+> > > what are you talking about?
+> > >
+> > > I assume you need very long (like days worth) jump to trigger this bug
+> > > and for such case we can either work around it in qemu / kernel
+> > > or fix it in the guest kernel and I strongly prefer the latter.
+> > >
+> > > Thomas, what do you think about it?
+> >
+> > For one I have no idea which bug you are talking about and if the bug is
+> > caused by the VMM then why would you "fix" it in the guest kernel.
+>
+> The "bug" is that if VMM moves a hardware time counter (tsc or anything else)
+> forward by large enough value in one go,
+> then the guest kernel will supposingly have an overflow in the time code.
+> I don't consider this to be a buggy VMM behavior, but rather a kernel
+> bug that should be fixed (if this bug actually exists)
+>
+> Purely in theory this can even happen on real hardware if for example SMM handler
+> blocks a CPU from running for a long duration, or hardware debugging
+> interface does, or some other hardware transparent sleep mechanism kicks in
+> and blocks a CPU from running.
+> (We do handle this gracefully for S3/S4)
 
-> Fix thirty five typos in dm-integrity.rst, dm-raid.rst, dm-zoned.rst,
-> verity.rst, writecache.rst, tsx_async_abort.rst, md.rst, bttv.rst,
-> dvb_references.rst, frontend-cardlist.rst, gspca-cardlist.rst, ipu3.rst,
-> remote-controller.rst, mm/index.rst, numaperf.rst, userfaultfd.rst,
-> module-signing.rst, imx-ddr.rst, intel-speed-select.rst,
-> intel_pstate.rst, ramoops.rst, abi.rst, kernel.rst, vm.rst
-
-I've applied this patch, but made one important change:
-
-> Reviewed-by: Jonathan Corbet <corbet@lwn.net>
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Andrew Klychkov <andrew.a.klychkov@gmail.com>
-
-Neither Randy nor I provided you with a Reviewed-by tag for this patch, so
-you have no business adding it.  I've removed these.  Never add tags like
-this unless the person named therein has offered them.
-
-jon
+IIRC we introduced mul_u64_u32_shift() for roughly this reason,but we
+don't seem to be using it in the relevant code paths.  We should be
+able to use the same basic math with wider intermediates to allow very
+large intervals between updates.
