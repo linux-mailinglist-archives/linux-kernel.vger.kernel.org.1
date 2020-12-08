@@ -2,132 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EBD2D2378
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B5B2D237B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgLHGNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:13:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17214 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgLHGNI (ORCPT
+        id S1726943AbgLHGPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:15:15 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:58137 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726340AbgLHGPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:13:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcf194b0000>; Mon, 07 Dec 2020 22:12:27 -0800
-Received: from [10.40.102.151] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
- 2020 06:12:16 +0000
-Subject: Re: [PATCH V5 5/5] PCI: tegra: Disable LTSSM during L2 entry
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
-        <dinghao.liu@zju.edu.cn>, <kw@linux.com>,
-        <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-References: <20201207203730.GA2289423@bjorn-Precision-5520>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <4343a216-e583-6823-1c15-bd0efd64c026@nvidia.com>
-Date:   Tue, 8 Dec 2020 11:42:10 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Tue, 8 Dec 2020 01:15:14 -0500
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201208061431epoutp0298359d980b9519c282e97147b2ce0145~OqR-aNK3e2278622786epoutp02C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:14:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201208061431epoutp0298359d980b9519c282e97147b2ce0145~OqR-aNK3e2278622786epoutp02C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607408071;
+        bh=RCI9kK2tJsruhg/x5Ng5MDmJmukKeeFlhWN0LjRmvvk=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=CmcIsZop933nwm3GTUY3FUZnnBMzZvE6mCXSOh8mKbrrCgfvgIR5Lqmnsk9zrhn75
+         zrH3X2XXEW/zF7g9FYRcjRJiAC4Ojm1BVH3NeI01icBlSHDRxyjqkPg/pkhKDILLJm
+         LShekHuLd18e8FvOAQ83VSWTsJrB8Y/D/MGikbcw=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20201208061430epcas5p3896d33a10f201e81948e5a8971a15be4~OqR_8UogK3065330653epcas5p3T;
+        Tue,  8 Dec 2020 06:14:30 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9B.9B.33964.6C91FCF5; Tue,  8 Dec 2020 15:14:30 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201208061430epcas5p15cc5daed530a7f19846cca5743b2d738~OqR_P9W1E0329403294epcas5p10;
+        Tue,  8 Dec 2020 06:14:30 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201208061430epsmtrp14b4084431e167c58693e8235d2812185~OqR_PGW1s0778207782epsmtrp11;
+        Tue,  8 Dec 2020 06:14:30 +0000 (GMT)
+X-AuditID: b6c32a4b-ea1ff700000184ac-f6-5fcf19c69b74
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4D.D3.08745.5C91FCF5; Tue,  8 Dec 2020 15:14:29 +0900 (KST)
+Received: from pankajdubey02 (unknown [107.122.12.6]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201208061427epsmtip1738da04f5a89b9598e7c7482f3692454~OqR71-aKz2198521985epsmtip1n;
+        Tue,  8 Dec 2020 06:14:27 +0000 (GMT)
+From:   "Pankaj Dubey" <pankaj.dubey@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Cc:     "'Sylwester Nawrocki'" <snawrocki@kernel.org>,
+        "'Marek Szyprowski'" <m.szyprowski@samsung.com>,
+        "'Bartlomiej Zolnierkiewicz'" <b.zolnierkie@samsung.com>,
+        "'Arnd Bergmann'" <arnd@arndb.de>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        "'Alim Akhtar'" <alim.akhtar@samsung.com>, <stable@vger.kernel.org>
+In-Reply-To: <20201207190517.262051-3-krzk@kernel.org>
+Subject: RE: [PATCH v2 2/4] soc: samsung: exynos-asv: handle reading
+ revision register error
+Date:   Tue, 8 Dec 2020 11:44:26 +0530
+Message-ID: <000801d6cd29$635534d0$29ff9e70$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207203730.GA2289423@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607407947; bh=jfYakN3OOCnq6wVg1mrOEiYgJ9rsfC1HNUK9WgYrKN4=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=qX1ZkIOVjp3l6LNmFGr4j85niHkJNdsPQKi1QnMd0nivPsW7rGna21mechKe40Gau
-         YO0UEpaHkwIxvoDVoWtiqxYzh6ON2m2FiqL1/2fvtU7k1I6vzFV4IOmlD3cJFa9OUy
-         qdSsghDBo/TM3bontdnRXoxwgqZwYymxeSWlVkUj4/FhJ+Y4ErPY6K4kyDrGtAFgAk
-         u4EML67NgrKVxcBJ6FpIb2xqw0DSL8mC6KJwsaSAZIbxHVoE4G+sGp2VRohLXTUHWC
-         D2L67uKpPRN/FJ5LaWecfvnpYrcv3A5eaacqWTrEIabF3KiKPyAUx1cgh+wGhPX8bM
-         IZcx7BxpE1N9g==
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQI3Sc44zrAFnNObXiIFTUqq/KcsYAFGGxnGAlj5SuepDsZbAA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKKsWRmVeSWpSXmKPExsWy7bCmhu4xyfPxBs9+a1k8mLeNzeLvpGPs
+        FhtnrGe1uP7lOavF+fMb2C02Pb7GanF51xw2ixnn9zFZrD1yl92i/elLZosFGx8xOnB7/P41
+        idFj06pONo/NS+o9+rasYvT4vEkugDWKyyYlNSezLLVI3y6BK+P6hNesBev5K3rn97E3MH7l
+        6WLk4JAQMJHo7zfoYuTiEBLYzShxvvEwG4TziVHi44EmdgjnM6PEo+17gBxOsI7jJx6xQCR2
+        MUrsXLwcynnFKHGgYwMLSBWbgL7EuR/zWEESIgLzGCU2HfoENotZYBuTxOwpx8FmcQqYSfzq
+        +MgIYgsLxEls7PvPBGKzCKhIzHtwmQ3E5hWwlHh+6SeULShxcuYTsA3MAvIS29/OYYa4SUHi
+        59NlrCC2iICTxPGrZ9khasQlXh49ArZYQmAth8SnyV2MEA0uEjNfbmKDsIUlXh3fAvWclMTL
+        /jYoO1/ix+JJzBDNLYwSk4/PZYVI2EscuDKHBRR+zAKaEut36UMs45Po/f2ECRKsvBIdbUIQ
+        1WoS35+fgbpTRuJh81ImCNtDomfTPMYJjIqzkLw2C8lrs5C8MAth2QJGllWMkqkFxbnpqcWm
+        BcZ5qeV6xYm5xaV56XrJ+bmbGMEpS8t7B+OjBx/0DjEycTAeYpTgYFYS4VWTOhsvxJuSWFmV
+        WpQfX1Sak1p8iFGag0VJnFfpx5k4IYH0xJLU7NTUgtQimCwTB6dUA5POLcGsyz/kV17Zfz6o
+        4b207J3kFcpxT7de+nwiq+3cHCnLYyfMIw1e/rD9mvSTSfxxoHbDMrkqL2VzlZ7cwEz7+eY5
+        s25Iyn5lX+3wTFJ8w4rZe/qdXws/0VE4xJ/muEnNTFV+m0bMmir7j+KbpO6GbjTWUFhoc/xj
+        t3Lfx0Smv3XG/ZYpL1tNuP/E35QKaL74Mc+WKbJ4amfdt1BZhly+l89C1y0/EfMs+7SNyLrz
+        LIc15BkOnXcomSJWs3raAs4TdmErQi8cM+Zi7f6wRjxoXeCzVvuWJfd8Pb9/0N6n92v23Pf3
+        F1d++yfQ4drcf9YkPfDBgZNen+aWSWZMcP3722JmhlFRa1Px42fR95VYijMSDbWYi4oTAQOs
+        AC7IAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsWy7bCSnO5RyfPxBtP6zC0ezNvGZvF30jF2
+        i40z1rNaXP/ynNXi/PkN7BabHl9jtbi8aw6bxYzz+5gs1h65y27R/vQls8WCjY8YHbg9fv+a
+        xOixaVUnm8fmJfUefVtWMXp83iQXwBrFZZOSmpNZllqkb5fAlXF9wmvWgvX8Fb3z+9gbGL/y
+        dDFyckgImEgcP/GIpYuRi0NIYAejxOppu9ghEjISk1evYIWwhSVW/nsOFhcSeMEosX+6EIjN
+        JqAvce7HPLAaEYEFjBLbf4aD2MwCu5gkZk/3gxi6kVHiQ+NasCJOATOJXx0fGUFsYYEYiYV9
+        35lAbBYBFYl5Dy6zgdi8ApYSzy/9hLIFJU7OfAJ0HQfQUD2Jto2MEPPlJba/ncMMcZuCxM+n
+        y6BucJI4fvUsO0SNuMTLo0fYJzAKz0IyaRbCpFlIJs1C0rGAkWUVo2RqQXFuem6xYYFRXmq5
+        XnFibnFpXrpecn7uJkZwxGlp7WDcs+qD3iFGJg7GQ4wSHMxKIrxqUmfjhXhTEiurUovy44tK
+        c1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamCaxRtoN23TRSl+9Zn24dvszjoq
+        xRs9nuBhoVegvuTA7ozqSc/LtQUjNrOuWs19MWTWlOagyD88V1sKMrdknV0XNn1q96QPdzMC
+        QqJkZvPlKzfP4rKbYdl4bbvIjeonNVx/mp3Nsx41s0VL8cccO8S15vCSzrQrh6bfMFs1x2st
+        u2/+sylR3O1SJeWyxfxK/r94J4ezVk/uvafWJ2x+8mfciedSFX+uxtQHTNkiy3G3pcDzhtLu
+        5rak/T1JT9ezFfIG7U4I4w1k4nnRc2hzd890tz7HEwtmfbjUbmbNtj2TV7guY8mVSxmdUc1R
+        rvZ7s1epMVxXmpx1XyY6l/94ZbzHjnmhFxPEF5v9WbV/thJLcUaioRZzUXEiALkjbaMnAwAA
+X-CMS-MailID: 20201208061430epcas5p15cc5daed530a7f19846cca5743b2d738
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201207190540epcas5p34b9ceff8ee297536443a5fc65a7c49bc
+References: <20201207190517.262051-1-krzk@kernel.org>
+        <CGME20201207190540epcas5p34b9ceff8ee297536443a5fc65a7c49bc@epcas5p3.samsung.com>
+        <20201207190517.262051-3-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 12/8/2020 2:07 AM, Bjorn Helgaas wrote:
-> External email: Use caution opening links or attachments
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzk@kernel.org>
+> Sent: Tuesday, December 8, 2020 12:35 AM
+> To: Krzysztof Kozlowski <krzk@kernel.org>; linux-arm-
+> kernel@lists.infradead.org; linux-samsung-soc@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Cc: Sylwester Nawrocki <snawrocki@kernel.org>; Marek Szyprowski
+> <m.szyprowski@samsung.com>; Bartlomiej Zolnierkiewicz
+> <b.zolnierkie@samsung.com>; Arnd Bergmann <arnd@arndb.de>; Chanwoo
+> Choi <cw00.choi@samsung.com>; Alim Akhtar <alim.akhtar@samsung.com>;
+> Pankaj Dubey <pankaj.dubey@samsung.com>; stable@vger.kernel.org
+> Subject: [PATCH v2 2/4] soc: samsung: exynos-asv: handle reading revision
+> register error
 > 
+> If regmap_read() fails, the product_id local variable will contain random
+value
+> from the stack.  Do not try to parse such value and fail the ASV driver
+probe.
 > 
-> [+cc Jingoo, Gustavo]
+> Fixes: 5ea428595cc5 ("soc: samsung: Add Exynos Adaptive Supply Voltage
+> driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/soc/samsung/exynos-asv.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
-> On Thu, Dec 03, 2020 at 07:04:51PM +0530, Vidya Sagar wrote:
->> PCIe cards like Marvell SATA controller and some of the Samsung NVMe
->> drives don't support taking the link to L2 state. When the link doesn't
->> go to L2 state, Tegra194 requires the LTSSM to be disabled to allow PHY
->> to start the next link up process cleanly during suspend/resume sequence.
->> Failing to disable LTSSM results in the PCIe link not coming up in the
->> next resume cycle.
+> diff --git a/drivers/soc/samsung/exynos-asv.c
+> b/drivers/soc/samsung/exynos-asv.c
+> index f653e3533f0f..5daeadc36382 100644
+> --- a/drivers/soc/samsung/exynos-asv.c
+> +++ b/drivers/soc/samsung/exynos-asv.c
+> @@ -129,7 +129,13 @@ static int exynos_asv_probe(struct platform_device
+> *pdev)
+>  		return PTR_ERR(asv->chipid_regmap);
+>  	}
 > 
-> Is this a Tegra194-specific issue, or will other DWC-based controllers
-> need a similar change?
-This is a Tegra194 specific issue.
+> -	regmap_read(asv->chipid_regmap, EXYNOS_CHIPID_REG_PRO_ID,
+> &product_id);
+> +	ret = regmap_read(asv->chipid_regmap,
+> EXYNOS_CHIPID_REG_PRO_ID,
+> +			  &product_id);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev, "Cannot read revision from
+> ChipID: %d\n",
+> +			ret);
+> +		return -ENODEV;
+> +	}
+> 
+>  	switch (product_id & EXYNOS_MASK) {
+>  	case 0xE5422000:
+> --
+> 2.25.1
 
-Thanks,
-Vidya Sagar
-> 
->> Tested-by: Thierry Reding <treding@nvidia.com>
->> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->> Acked-by: Thierry Reding <treding@nvidia.com>
->> ---
->> V5:
->> * Added Tested-by and Acked-by from Thierry Reding
->>
->> V4:
->> * New patch in this series
->>
->>   drivers/pci/controller/dwc/pcie-tegra194.c | 16 +++++++++-------
->>   1 file changed, 9 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
->> index f4109d71f20b..5597b2a49598 100644
->> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
->> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
->> @@ -1506,6 +1506,14 @@ static void tegra_pcie_dw_pme_turnoff(struct tegra_pcie_dw *pcie)
->>                data &= ~APPL_PINMUX_PEX_RST;
->>                appl_writel(pcie, data, APPL_PINMUX);
->>
->> +             /*
->> +              * Some cards do not go to detect state even after de-asserting
->> +              * PERST#. So, de-assert LTSSM to bring link to detect state.
->> +              */
->> +             data = readl(pcie->appl_base + APPL_CTRL);
->> +             data &= ~APPL_CTRL_LTSSM_EN;
->> +             writel(data, pcie->appl_base + APPL_CTRL);
->> +
->>                err = readl_poll_timeout_atomic(pcie->appl_base + APPL_DEBUG,
->>                                                data,
->>                                                ((data &
->> @@ -1513,14 +1521,8 @@ static void tegra_pcie_dw_pme_turnoff(struct tegra_pcie_dw *pcie)
->>                                                APPL_DEBUG_LTSSM_STATE_SHIFT) ==
->>                                                LTSSM_STATE_PRE_DETECT,
->>                                                1, LTSSM_TIMEOUT);
->> -             if (err) {
->> +             if (err)
->>                        dev_info(pcie->dev, "Link didn't go to detect state\n");
->> -             } else {
->> -                     /* Disable LTSSM after link is in detect state */
->> -                     data = appl_readl(pcie, APPL_CTRL);
->> -                     data &= ~APPL_CTRL_LTSSM_EN;
->> -                     appl_writel(pcie, data, APPL_CTRL);
->> -             }
->>        }
->>        /*
->>         * DBI registers may not be accessible after this as PLL-E would be
->> --
->> 2.17.1
->>
+Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+
