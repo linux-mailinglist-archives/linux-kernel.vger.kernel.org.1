@@ -2,265 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABCF2D21F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CC82D21F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgLHESa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        id S1726063AbgLHEVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgLHESa (ORCPT
+        with ESMTP id S1725874AbgLHEVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:18:30 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E2AC0617B0
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:17:14 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t7so12622776pfh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:17:13 -0800 (PST)
+        Mon, 7 Dec 2020 23:21:32 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46858C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:20:52 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b26so12634780pfi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:20:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HS1iJkm0hv8Ke2csA68ZLm2xcERjTLMbURsBR9ZOsB4=;
-        b=qX8hLtO9+Pw8qEOWiWZoSgX/K+1uf38NjGAhipQoXgrGUrkt4De+MR5KgTa2Zz/T18
-         Km9nrQPYzrsy+RKyjVeuCKznbAqpjaTg520f8diuzJZO17WY/g4lbHdbJgcLWMPebRoo
-         IER9UcGkZXBz/gvfORKEuB6lc0j3vYooS0rCVi8tpQDsd6QKpt+O2X7WDoZrOtxiDjzh
-         VMu8ECkUrg26j8n3UF3ROb1fJij8Y4qt5P1vj+OSMTR0BAOzq0/zFCPumP8vgaUELfNU
-         v/HJvXorvVx0mm5yeLaQXU3MvAZzKLJ3bJtBpJ4LtiUhswCc+wAmE8m1Ygg9ZDDXUpSz
-         GBFg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=INwAUa8avMAOYbaB9rtoZiE/Uy1WuPgrXID/tKq7Y4o=;
+        b=h/6saWcxTLU/DKFG4oIjuuEDovFaZD1Ql3H24mQ6ZWdxdgezFfyhebiqTeFEKAN3Tl
+         En+Ha/3H7N2CkoQD6qgmYoM/vrvVSNRjDmmsaVrJDh4wkkCNV6OOZCERX4tO5/u3g2Tz
+         d7YAzvkgah5iQyIP3ylMC62iw7/Y3NPAhGBMnlBQ58mB9zlkWhPTclA3CuPDSbnlXSc7
+         9WCjSpbQgg1FBySH7zUl9Dnrh4UF2wRMw34n+1CsWqJChlCjwVWi7Rgz0V+nli8AHDW8
+         n4KJWsxHERxQ0QGjcsNOdDjH2hjXp2mZhsBTJkMe+Dzhho2XWjyUNIBrnxu9VyX71VBT
+         wFhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HS1iJkm0hv8Ke2csA68ZLm2xcERjTLMbURsBR9ZOsB4=;
-        b=tdTD8ENoy0f/KE6UlPKGHlspIr3MDpk1Wlayt82b/U5lqtlMMiZVO3oEZLsdUklKTq
-         YTe3uexWeNJ9eyD3HGBsRB9lqiqP6bEQZ9qZuPr3VVraUAyk7yAmvTZ1SNo+z3+09iJA
-         7ruY9wb5Fw58VRMSg1V9qGuxAYmjEbORWZ83s9GxegHHkJk1dFiGC8VvhVKduU/EqtiS
-         xBZ/e1Xfe13MmRJo3ji8TeWWWkzKsI5LUhVdZI6StW8uBdafgl0Rp2rgGmeP+xlXmUks
-         VjptjF7yt5IlxR4a7qwf2z3fGcklw2x+MrFYndiuItHNwO6E1TxX2BGtnktT1RCT8Iau
-         pjjA==
-X-Gm-Message-State: AOAM533ay/RabDCtH3aplAelbCvd3WKkyDggfQgUZKlZb7dCAwvErsCb
-        XKkm8nQyQRPqL8Sed5nu6bfX9g==
-X-Google-Smtp-Source: ABdhPJwQKlI5K5tbD3X2rWL/4KCZ0oRCOnvHrTve+MrFezA/tl5hICdOQPt3KpOkgYaew52cICnl8g==
-X-Received: by 2002:a62:be13:0:b029:19a:4c0:efe3 with SMTP id l19-20020a62be130000b029019a04c0efe3mr19199070pff.75.1607401033563;
-        Mon, 07 Dec 2020 20:17:13 -0800 (PST)
-Received: from localhost ([122.172.136.109])
-        by smtp.gmail.com with ESMTPSA id s30sm14195891pgl.39.2020.12.07.20.17.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=INwAUa8avMAOYbaB9rtoZiE/Uy1WuPgrXID/tKq7Y4o=;
+        b=GkmiQV92jiMJSwMUzhlv2syYlHp5MXPDcVNLkLuUC/40zIEem1oM9E1A28RD6N4WAf
+         odaGWI5aGr5kgb3VgfmC7BjRDa5jHH0ttqs5rX0W1WSSXkE8bq5UvRA+c5EkudIzuOXh
+         el8N0TmzPd5sUNStAA+oDKEvRXmK07LDSIa/hbhx8WlFaI3nY04a4awXYUXcAQE9u4js
+         cHbjP0htrdHw5/FSL4APrxoZ1xpTUs168ndehuXEq1efx7q+xJKD9okZ0Ul/EnuwGrpN
+         lGXYp7BjIFu6viSj0RlPyZrm9m/TXbpVIQ+2vsaya4We4Z34b082SYPCtX+VgjSOH2pX
+         VS0Q==
+X-Gm-Message-State: AOAM532suWE6IgO66ModzO+WTUwWIP5ZeGh2YUqeCywtBw5uf3d3SEKx
+        e2npTZh0v9au/kOdFjNC8UIB6Q==
+X-Google-Smtp-Source: ABdhPJwg6s8o790FlKSFquJnMGwqcffA65CpEykidVkNyFYWLAYFLP1GVkP70naEE9TEtRS09jE/VA==
+X-Received: by 2002:a17:90a:6fc7:: with SMTP id e65mr2280093pjk.116.1607401251862;
+        Mon, 07 Dec 2020 20:20:51 -0800 (PST)
+Received: from localhost.localdomain ([103.136.221.70])
+        by smtp.gmail.com with ESMTPSA id mr7sm1031166pjb.31.2020.12.07.20.20.44
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Dec 2020 20:17:12 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-Subject: [PATCH V5 3/3] thermal: cpufreq_cooling: Reuse sched_cpu_util() for SMP platforms
-Date:   Tue,  8 Dec 2020 09:46:57 +0530
-Message-Id: <9c255c83d78d58451abc06848001faef94c87a12.1607400596.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1607400596.git.viresh.kumar@linaro.org>
-References: <cover.1607400596.git.viresh.kumar@linaro.org>
+        Mon, 07 Dec 2020 20:20:51 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
+        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
+        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3 0/7] Convert all THP vmstat counters to pages
+Date:   Tue,  8 Dec 2020 12:18:40 +0800
+Message-Id: <20201208041847.72122-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several parts of the kernel are already using the effective CPU
-utilization (as seen by the scheduler) to get the current load on the
-CPU, do the same here instead of depending on the idle time of the CPU,
-which isn't that accurate comparatively.
+Hi,
 
-This is also the right thing to do as it makes the cpufreq governor
-(schedutil) align better with the cpufreq_cooling driver, as the power
-requested by cpufreq_cooling governor will exactly match the next
-frequency requested by the schedutil governor since they are both using
-the same metric to calculate load.
+This patch series is aimed to convert all THP vmstat counters to pages.
 
-This was tested on ARM Hikey6220 platform with hackbench, sysbench and
-schbench. None of them showed any regression or significant
-improvements. Schbench is the most important ones out of these as it
-creates the scenario where the utilization numbers provide a better
-estimate of the future.
+The unit of some vmstat counters are pages, some are bytes, some are
+HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
+counters to the userspace, we have to know the unit of the vmstat counters
+is which one. When the unit is bytes or kB, both clearly distinguishable
+by the B/KB suffix. But for the THP vmstat counters, We may make mistakes.
 
-Scenario 1: The CPUs were mostly idle in the previous polling window of
-the IPA governor as the tasks were sleeping and here are the details
-from traces (load is in %):
+For example, the below is some bug fix for the THP vmstat counters:
+  - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
+  - Not committed which is the first commit in this series ("mm: memcontrol: fix NR_ANON_THPS account")
 
- Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=203 load={{0x35,0x1,0x0,0x31,0x0,0x0,0x64,0x0}} dynamic_power=1339
- New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=600 load={{0x60,0x46,0x45,0x45,0x48,0x3b,0x61,0x44}} dynamic_power=3960
+This patch series can make the code clear. And make all the unit of the THP
+vmstat counters in pages. Finally, the unit of the vmstat counters are
+pages, kB and bytes. The B/KB suffix can tell us that the unit is bytes
+or kB. The rest which is without suffix are pages.
 
-Here, the "Old" line gives the load and requested_power (dynamic_power
-here) numbers calculated using the idle time based implementation, while
-"New" is based on the CPU utilization from scheduler.
+As Hugh said, "It does need to be recognized that, with these changes, every
+THP stats update overflows the per-cpu counter, resorting to atomic global
+updates.
 
-As can be clearly seen, the load and requested_power numbers are simply
-incorrect in the idle time based approach and the numbers collected from
-CPU's utilization are much closer to the reality.
+But this change is consistent with 4.7's 8f182270dfec ("mm/swap.c: flush
+lru pvecs on compound page arrival"): we accepted greater overhead for
+greater accuracy back then, so I think it's okay to do so for THP stats."
 
-Scenario 2: The CPUs were busy in the previous polling window of the IPA
-governor:
+This was inspired by Johannes and Roman. Thanks to them.
 
- Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
- New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
+Changes in v2 -> v3:
+  - Change the series subject from "Convert all vmstat counters to pages or bytes"
+    to "Convert all THP vmstat counters to pages".
+  - Remove convert of KB to B.
 
-As can be seen, the idle time based load is 100% for all the CPUs as it
-took only the last window into account, but in reality the CPUs aren't
-that loaded as shown by the utilization numbers.
+Changes in v1 -> v2:
+  - Change the series subject from "Convert all THP vmstat counters to pages"
+    to "Convert all vmstat counters to pages or bytes".
+  - Convert NR_KERNEL_SCS_KB account to bytes.
+  - Convert vmstat slab counters to bytes.
+  - Remove {global_}node_page_state_pages.
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/thermal/cpufreq_cooling.c | 69 ++++++++++++++++++++++++-------
- 1 file changed, 55 insertions(+), 14 deletions(-)
+Muchun Song (7):
+  mm: memcontrol: fix NR_ANON_THPS account
+  mm: memcontrol: convert NR_ANON_THPS account to pages
+  mm: memcontrol: convert NR_FILE_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
+  mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
+  mm: memcontrol: make the slab calculation consistent
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index cc2959f22f01..cee59b95633b 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -76,7 +76,9 @@ struct cpufreq_cooling_device {
- 	struct em_perf_domain *em;
- 	struct cpufreq_policy *policy;
- 	struct list_head node;
-+#ifndef CONFIG_SMP
- 	struct time_in_idle *idle_time;
-+#endif
- 	struct freq_qos_request qos_req;
- };
- 
-@@ -132,14 +134,25 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- }
- 
- /**
-- * get_load() - get load for a cpu since last updated
-- * @cpufreq_cdev:	&struct cpufreq_cooling_device for this cpu
-- * @cpu:	cpu number
-- * @cpu_idx:	index of the cpu in time_in_idle*
-+ * get_load() - get load for a cpu
-+ * @cpufreq_cdev: struct cpufreq_cooling_device for the cpu
-+ * @cpu: cpu number
-+ * @cpu_idx: index of the cpu in time_in_idle array
-  *
-  * Return: The average load of cpu @cpu in percentage since this
-  * function was last called.
-  */
-+#ifdef CONFIG_SMP
-+static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
-+		    int cpu_idx)
-+{
-+	unsigned long max = arch_scale_cpu_capacity(cpu);
-+	unsigned long util;
-+
-+	util = sched_cpu_util(cpu, max);
-+	return (util * 100) / max;
-+}
-+#else /* !CONFIG_SMP */
- static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
- 		    int cpu_idx)
- {
-@@ -161,6 +174,7 @@ static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
- 
- 	return load;
- }
-+#endif /* CONFIG_SMP */
- 
- /**
-  * get_dynamic_power() - calculate the dynamic power
-@@ -346,6 +360,36 @@ static inline bool em_is_sane(struct cpufreq_cooling_device *cpufreq_cdev,
- }
- #endif /* CONFIG_THERMAL_GOV_POWER_ALLOCATOR */
- 
-+#ifdef CONFIG_SMP
-+static inline int allocate_idle_time(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+	return 0;
-+}
-+
-+static inline void free_idle_time(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+}
-+#else
-+static int allocate_idle_time(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+	unsigned int num_cpus = cpumask_weight(cpufreq_cdev->policy->related_cpus);
-+
-+	cpufreq_cdev->idle_time = kcalloc(num_cpus,
-+					  sizeof(*cpufreq_cdev->idle_time),
-+					  GFP_KERNEL);
-+	if (!cpufreq_cdev->idle_time)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void free_idle_time(struct cpufreq_cooling_device *cpufreq_cdev)
-+{
-+	kfree(cpufreq_cdev->idle_time);
-+	cpufreq_cdev->idle_time = NULL;
-+}
-+#endif /* CONFIG_SMP */
-+
- static unsigned int get_state_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- 				   unsigned long state)
- {
-@@ -487,7 +531,7 @@ __cpufreq_cooling_register(struct device_node *np,
- 	struct thermal_cooling_device *cdev;
- 	struct cpufreq_cooling_device *cpufreq_cdev;
- 	char dev_name[THERMAL_NAME_LENGTH];
--	unsigned int i, num_cpus;
-+	unsigned int i;
- 	struct device *dev;
- 	int ret;
- 	struct thermal_cooling_device_ops *cooling_ops;
-@@ -498,7 +542,6 @@ __cpufreq_cooling_register(struct device_node *np,
- 		return ERR_PTR(-ENODEV);
- 	}
- 
--
- 	if (IS_ERR_OR_NULL(policy)) {
- 		pr_err("%s: cpufreq policy isn't valid: %p\n", __func__, policy);
- 		return ERR_PTR(-EINVAL);
-@@ -516,12 +559,10 @@ __cpufreq_cooling_register(struct device_node *np,
- 		return ERR_PTR(-ENOMEM);
- 
- 	cpufreq_cdev->policy = policy;
--	num_cpus = cpumask_weight(policy->related_cpus);
--	cpufreq_cdev->idle_time = kcalloc(num_cpus,
--					 sizeof(*cpufreq_cdev->idle_time),
--					 GFP_KERNEL);
--	if (!cpufreq_cdev->idle_time) {
--		cdev = ERR_PTR(-ENOMEM);
-+
-+	ret = allocate_idle_time(cpufreq_cdev);
-+	if (ret) {
-+		cdev = ERR_PTR(ret);
- 		goto free_cdev;
- 	}
- 
-@@ -581,7 +622,7 @@ __cpufreq_cooling_register(struct device_node *np,
- remove_ida:
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
- free_idle_time:
--	kfree(cpufreq_cdev->idle_time);
-+	free_idle_time(cpufreq_cdev);
- free_cdev:
- 	kfree(cpufreq_cdev);
- 	return cdev;
-@@ -674,7 +715,7 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
- 	thermal_cooling_device_unregister(cdev);
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
--	kfree(cpufreq_cdev->idle_time);
-+	free_idle_time(cpufreq_cdev);
- 	kfree(cpufreq_cdev);
- }
- EXPORT_SYMBOL_GPL(cpufreq_cooling_unregister);
+ drivers/base/node.c |  15 ++----
+ fs/proc/meminfo.c   |  10 ++--
+ mm/filemap.c        |   4 +-
+ mm/huge_memory.c    |   9 ++--
+ mm/khugepaged.c     |   4 +-
+ mm/memcontrol.c     | 139 ++++++++++++++++++++++++++--------------------------
+ mm/page_alloc.c     |   7 ++-
+ mm/rmap.c           |  19 ++++---
+ mm/shmem.c          |   3 +-
+ 9 files changed, 107 insertions(+), 103 deletions(-)
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.11.0
 
