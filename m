@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463CB2D30A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCF12D30A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730608AbgLHRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:11:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S1730586AbgLHRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:11:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730253AbgLHRLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:11:48 -0500
+        id S1730253AbgLHRLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:11:42 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>,
         Support Opensource <support.opensource@diasemi.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-In-Reply-To: <cover.1607361013.git.Adam.Ward.opensource@diasemi.com>
-References: <cover.1607361013.git.Adam.Ward.opensource@diasemi.com>
-Subject: Re: [PATCH 0/2] regulator: da9121: bug fixes
-Message-Id: <160744745469.29972.10628330212188147168.b4-ty@kernel.org>
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+In-Reply-To: <X85soGKnWAjPUA7a@mwanda>
+References: <X85soGKnWAjPUA7a@mwanda>
+Subject: Re: [PATCH] regulator: da9121: Potential Oops in da9121_assign_chip_model()
+Message-Id: <160744745469.29972.2193088415551214848.b4-ty@kernel.org>
 Date:   Tue, 08 Dec 2020 17:10:54 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -29,17 +30,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 17:15:14 +0000, Adam Ward wrote:
-> This patch fixes a couple of bugs in the DA9121 driver.
-> One in an uninialised string I forgot to remove when changing to of_parse_cb()
-> The other is an index for an optional DT property which overflows
-> 
-> 
-> Adam Ward (2):
->   regulator: da9121: Remove uninitialised string variable
->   regulator: da9121: Fix index used for DT property
-> 
-> [...]
+On Mon, 7 Dec 2020 20:55:44 +0300, Dan Carpenter wrote:
+> There is a missing "return ret;" on this error path so we call
+> "da9121_check_device_type(i2c, chip);" which will end up dereferencing
+> "chip->regmap" and lead to an Oops.
 
 Applied to
 
@@ -47,10 +41,8 @@ Applied to
 
 Thanks!
 
-[1/2] regulator: da9121: Remove uninitialised string variable
-      commit: 416c29e9ce1347ba9a4ef7aeb4f30c8d9a3ada49
-[2/2] regulator: da9121: Fix index used for DT property
-      commit: 9536ce63705952be5214544e3b048c78f932e794
+[1/1] regulator: da9121: Potential Oops in da9121_assign_chip_model()
+      commit: 8db06423e079b1f6c0657e5bebda0006acf75c3c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
