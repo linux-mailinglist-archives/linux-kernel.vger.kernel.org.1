@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BCA2D22D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C082D228B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728136AbgLHE7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:59:03 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:33144 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgLHE7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:59:03 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84tGiW067890;
-        Tue, 8 Dec 2020 04:58:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=AX0EbBAXwT94+urtCpFX1/8eXIvPah3QksJytH+HXaw=;
- b=dY5jD5NCaGmy7hb0AN8XtW/iqbJcydVA2UdZ4Lgcs+13Fv0WuKqucwC1bC7dKh1LZfP4
- NUhnuQVsjVT7s/k5nfzpIlsQQEDn11p/xBhQahYOjFYTt6mleQ1JxlonDhU+pXmqStYr
- 3u+BCCuIl1EjdIblfiNBodkP5rk22R2XeA7O94QzHCRPln4Q2LecBh3zs0eJfEj18Hb/
- CQ2gx5va69uJ5lcudawTMqWiMVE+fX5HhKtcv+yzdQGevXiMh0ALYtD5LIiLOLzM1Y0j
- moMddsBh8zXUIQrpus17sWerBWJsW1hAkY8FMt2oceRxuhTqjjQAHdEjLBmkOyHk9p1w 4w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35825m0t24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 04:58:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B84oSLP160782;
-        Tue, 8 Dec 2020 04:56:03 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m3x7kh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 04:56:03 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B84u1PP017394;
-        Tue, 8 Dec 2020 04:56:01 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Dec 2020 20:56:01 -0800
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     jejb@linux.ibm.com, John Garry <john.garry@huawei.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linuxarm@huawei.com, hare@suse.de, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: Re: [PATCH] scsi: hisi_sas: Select a suitable queue for internal IOs
-Date:   Mon,  7 Dec 2020 23:55:59 -0500
-Message-Id: <160740334901.1739.7752701168354918221.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <1607347855-59091-1-git-send-email-john.garry@huawei.com>
-References: <1607347855-59091-1-git-send-email-john.garry@huawei.com>
+        id S1726435AbgLHE4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:56:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726294AbgLHE4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 23:56:44 -0500
+Date:   Tue, 8 Dec 2020 10:26:00 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607403364;
+        bh=1RiFaYT5sszcYT3rzZ7wK33h9vZoHSV5GWfAX84nrpk=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JsaVxd5iO6il066W28gWU1l0+3OyFChdHtmkgNKsV/SRsoHYAr+W9iqN3k6/BsuwY
+         MuEGN2cmbukxDF56bNvz94mtXuOCLuzlwe9eE5k25W0xYyE0NYvFKK6EWuodyfiATb
+         Ua0qLLzG7O4GstPtpxslD6vSnZ3AbvXkraNeglweCzSA4IE6v4/fNl1wrwkEHNjuy+
+         SvkiabnoRnfF8/S2usqxo4/3XEcJanoL3UQZyDxYj8OjinAs236rccCpdzsgittcZ0
+         9XL6SitN1HnpfwQqaqEQ96C9zhNTWIcOdtSt7/LshVRMFE/OFpsmawixJ1bTpIfvWG
+         VAuytt2F626lA==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
+ initializing a device
+Message-ID: <20201208045600.GE8403@vkoul-mobl>
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+ <20201205074508.GQ8403@vkoul-mobl>
+ <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
+ <20201207044334.GA8403@vkoul-mobl>
+ <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080030
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 21:30:55 +0800, John Garry wrote:
-
-> For when managed interrupts are used (and shost->nr_hw_queues is set), a
-> fixed queue - set per-device - is still used for internal IOs.
+On 07-12-20, 09:31, Pierre-Louis Bossart wrote:
+> On 12/6/20 10:43 PM, Vinod Koul wrote:
+> > On 05-12-20, 08:59, Pierre-Louis Bossart wrote:
+> > > Thanks for the review Vinod.
+> > > 
+> > > On 12/5/20 1:45 AM, Vinod Koul wrote:
+> > > > On 03-12-20, 04:46, Bard Liao wrote:
+> > > > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > > > 
+> > > > > When a Slave device is resumed, it may resume the bus and restart the
+> > > > > enumeration. During that process, we absolutely don't want to call
+> > > > > regular read/write routines which will wait for the resume to
+> > > > > complete, otherwise a deadlock occurs.
+> > > > > 
+> > > > > Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+> > > > 
+> > > > Change looks okay, but not sure why this is a fix for adding no pm
+> > > > version?
+> > > 
+> > > when we added the no_pm version, we missed the two cases below where
+> > > sdw_update() was used and that creates a deadlock. To me that's a conceptual
+> > > bug, we didn't fully use the no_pm versions, hence the Fixes tag.
+> > 
+> > Documentation says:
+> > "A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
+> > is used to make it easy to determine where a bug originated, which can help
+> > review a bug fix. This tag also assists the stable kernel team in determining
+> > which stable kernel versions should receive your fix. This is the preferred
+> > method for indicating a bug fixed by the patch. See :ref:`describe_changes`
+> > for more details."
+> > 
+> > I do not this this helps here as this does not help distros etc
+> > I would say this is incremental development which improved a case not
+> > done properly earlier, unless you would like this to be backported.. In
+> > that case it helps folks...
 > 
-> If all the CPUs mapped to that queue are offlined, then the completions
-> for that queue are not serviced and any internal IOs will timeout.
+> IMHO the changes in the series are absolutely required to have a reliable
+> suspend-resume operation and will need to be back-ported. When I said
+> 'conceptual bug', I didn't mean a hypothetical case, I really meant that a
+> proven race condition and timeouts will occur. That's not good... We will
+> provide the list of this patches to distros that are known to support
+> SoundWire as a 'must apply'.
 > 
-> Fix by selecting a queue for internal IOs from the queue mapped from
-> the current CPU in this scenario.
+> If you look at the series, we provided Fixes tags for all patches except
+> 'cosmetic' ones which don't fundamentally change the behavior (Patch 3,
+> patch 7) or when the code has not reached Linus' tree (patch 5).
 > 
-> [...]
+> That said, 5.10 was the first release where SoundWire started to be
+> functional so there's no need to apply these patches to earlier versions of
+> the stable tree.
+> 
+> Does this help?
 
-Applied to 5.10/scsi-fixes, thanks!
-
-[1/1] scsi: hisi_sas: Select a suitable queue for internal IOs
-      https://git.kernel.org/mkp/scsi/c/359db63378ed
+Yes, that helps, thanks
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Vinod
