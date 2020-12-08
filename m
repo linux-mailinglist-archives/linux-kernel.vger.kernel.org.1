@@ -2,155 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793CA2D3190
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817812D3192
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730872AbgLHR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:57:50 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54326 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730860AbgLHR5t (ORCPT
+        id S1730881AbgLHR6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:58:17 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:26380
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730875AbgLHR6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:57:49 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8HcLGi046833;
-        Tue, 8 Dec 2020 12:56:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=EdY0U0J2gcVlEshkS8QsrpbR/zB+nrWtq0z4BHC6ZEg=;
- b=OwhG9aJ7Bdr2sBk8WTjuAqm221juDnnfKjm4SUuQHEJaeWhvZtvmqeQXwq64dqNYM35e
- JCnIMPG+G0CgGy99bq8HWzesFE9nj5e/ZgJUOTSHSFZTevKjlWP0OogpBlJsNQncWyjD
- /FBfKMaO7cp6aEoVR5ZWNeNKh721mQa6kGlVF3ZeoBEyDVUCocU7jdQfwqmPQtulqa3q
- rpoiGXyikyJHxtH8HdkGNFMCX4KuBFOUf+fHtLozzuWz6BrDmB7nX6tz87dB4YqApJfC
- 8smmaZTPtYwjle6yjnaPc798Ww2Wu/QBY56kFkaJqX6rZMYtPz0qe1uIF73FvaiKrtFY kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5ug1786-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 12:56:55 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8HngkA086334;
-        Tue, 8 Dec 2020 12:56:55 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5ug177q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 12:56:54 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8Hm6CQ030966;
-        Tue, 8 Dec 2020 17:56:53 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma02dal.us.ibm.com with ESMTP id 3581u9quqm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 17:56:53 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8HurAS15204716
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 17:56:53 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C6BEB2064;
-        Tue,  8 Dec 2020 17:56:53 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C862EB2067;
-        Tue,  8 Dec 2020 17:56:52 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.54.209])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 17:56:52 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id DE36F2E35A1; Tue,  8 Dec 2020 23:26:47 +0530 (IST)
-Date:   Tue, 8 Dec 2020 23:26:47 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
- map/list for L2 cache
-Message-ID: <20201208175647.GC14206@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
- <20201207131138.GJ528281@linux.vnet.ibm.com>
+        Tue, 8 Dec 2020 12:58:17 -0500
+X-IronPort-AV: E=Sophos;i="5.78,403,1599516000"; 
+   d="scan'208";a="366950524"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 18:57:33 +0100
+Date:   Tue, 8 Dec 2020 18:57:33 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     linux-kernel@vger.kernel.org
+cc:     nicolas.palix@univ-grenoble-alpes.fr, torvalds@linux-foundation.org
+Subject: Re: problem booting 5.10
+In-Reply-To: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+Message-ID: <alpine.DEB.2.22.394.2012081856320.16458@hadrien>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207131138.GJ528281@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080108
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:41:38PM +0530, Srikar Dronamraju wrote:
-> * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:47]:
-> 
-> > From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-> > 
-> > 
-> > Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> > ---
-> > 
-> > +extern bool thread_group_shares_l2;
-> >  /*
-> >   * On big-core systems, each core has two groups of CPUs each of which
-> >   * has its own L1-cache. The thread-siblings which share l1-cache with
-> >   * @cpu can be obtained via cpu_smallcore_mask().
-> > + *
-> > + * On some big-core systems, the L2 cache is shared only between some
-> > + * groups of siblings. This is already parsed and encoded in
-> > + * cpu_l2_cache_mask().
-> >   */
-> >  static const struct cpumask *get_big_core_shared_cpu_map(int cpu, struct cache *cache)
-> >  {
-> >  	if (cache->level == 1)
-> >  		return cpu_smallcore_mask(cpu);
-> > +	if (cache->level == 2 && thread_group_shares_l2)
-> > +		return cpu_l2_cache_mask(cpu);
-> > 
-> >  	return &cache->shared_cpu_map;
-> 
-> As pointed with lkp@intel.org, we need to do this only with #CONFIG_SMP,
-> even for cache->level = 1 too.
-
-Yes, I have fixed that in the next version.
-
-> 
-> I agree that we are displaying shared_cpu_map correctly. Should we have also
-> update /clear shared_cpu_map in the first place. For example:- If for a P9
-> core with CPUs 0-7, the cache->shared_cpu_map for L1 would have 0-7 but
-> would display 0,2,4,6.
-> 
-> The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
-> be released. Is this as expected?
-
-cacheinfo populates the cache->shared_cpu_map on the basis of which
-CPUs share the common device-tree node for a particular cache.  There
-is one l1-cache object in the device-tree for a CPU node corresponding
-to a big-core. That the L1 is further split between the threads of the
-core is shown using ibm,thread-groups.
-
-The ideal thing would be to add a "group_leader" field to "struct
-cache" so that we can create separate cache objects , one per thread
-group. I will take a stab at this in the v2.
-
-Thanks for the review comments.
 
 
+On Tue, 8 Dec 2020, Julia Lawall wrote:
 
-> 
-> 
-> -- 
-> Thanks and Regards
-> Srikar Dronamraju
+> Hello,
+>
+> We have not succeeded to boot 5.10 on our Intel(R) Xeon(R) CPU E7-8870 v4 @
+> 2.10GHz server.  Previous versions (eg 4.19 - 5.9) boot fine.  We have
+> tried various rcs.  The backtrace for rc7 is shown below.
+
+Some more information, from earlier in the boot attempt, is here:
+
+Begin: Running /scripts/local-block ... done.
+[   51.355655][    T7] scsi 0:0:14:0: Direct-Access     ATA      ST2000LM015-2E81 SDM1 PQ: 0 ANSI: 6
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+done.
+Gave up waiting for root file system device.  Common problems:
+ - Boot args (cat /proc/cmdline)
+   - Check rootdelay= (did the system wait long enough?)
+ - Missing modules (cat /proc/modules; ls /dev)
+ALERT!  UUID=754fa6b1-bb34-449a-9b95-41897013bded does not exist.
+Dropping to a shell!
+BusyBox v1.30.1 (Debian 1:1.30.1-4) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+(initramfs) [   64.082455][    T7] scsi 0:0:23:0: Direct-Access
+SEAGATE  DL2400MM0159     ST58 PQ: 0 ANSI: 6
+
+
+>
+> thanks,
+> julia
+>
+>
+> [  253.207171][  T979] INFO: task kworker/u321:2:1278 blocked for more than 120 seconds.
+> [  253.224089][  T979]       Tainted: G            E     5.10.0-rc7 #3
+> [  253.239209][  T979] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  253.256990][  T979] task:kworker/u321:2  state:D stack:    0 pid: 1278 ppid:     2 flags:0x00004000
+> [  253.275552][  T979] Workqueue: events_unbound async_run_entry_fn
+> [  253.290687][  T979] Call Trace:
+> [  253.302491][  T979]  __schedule+0x31e/0x890
+> [  253.315353][  T979]  schedule+0x3c/0xa0
+> [  253.327688][  T979]  schedule_timeout+0x274/0x310
+> [  253.340908][  T979]  ? find_held_lock+0x34/0xa0
+> [  253.353841][  T979]  ? sched_clock+0x5/0x10
+> [  253.366406][  T979]  ? sched_clock_cpu+0xc/0xb0
+> [  253.379283][  T979]  wait_for_completion+0x8a/0xf0
+> [  253.392327][  T979]  scsi_complete_async_scans+0x107/0x170
+> [  253.406115][  T979]  __scsi_add_device+0xf7/0x130
+> [  253.418974][  T979]  ata_scsi_scan_host+0x98/0x1c0
+> [  253.431948][  T979]  async_run_entry_fn+0x39/0x160
+> [  253.444853][  T979]  process_one_work+0x24c/0x490
+> [  253.457590][  T979]  worker_thread+0x30/0x370
+> [  253.469876][  T979]  ? process_one_work+0x490/0x490
+> [  253.482581][  T979]  kthread+0x11c/0x140
+> [  253.493936][  T979]  ? kthread_park+0x80/0x80
+> [  253.505640][  T979]  ret_from_fork+0x22/0x30
+> [  253.517054][  T979] INFO: task kworker/u321:3:1279 blocked for more than 121 seconds.
+> [  253.532420][  T979]       Tainted: G            E     5.10.0-rc7 #3
+> [  253.545890][  T979] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  253.561996][  T979] task:kworker/u321:3  state:D stack:    0 pid: 1279 ppid:     2 flags:0x00004000
+> [  253.578786][  T979] Workqueue: events_unbound async_run_entry_fn
+> [  253.592174][  T979] Call Trace:
+> [  253.602320][  T979]  __schedule+0x31e/0x890
+> [  253.613668][  T979]  schedule+0x3c/0xa0
+> [  253.624618][  T979]  async_synchronize_cookie_domain+0xad/0x140
+> [  253.637935][  T979]  ? finish_wait+0x80/0x80
+> [  253.649351][  T979]  async_port_probe+0x48/0x50
+> [  253.660958][  T979]  async_run_entry_fn+0x39/0x160
+> [  253.672754][  T979]  process_one_work+0x24c/0x490
+> [  253.684404][  T979]  worker_thread+0x30/0x370
+> [  253.695640][  T979]  ? process_one_work+0x490/0x490
+> [  253.707479][  T979]  kthread+0x11c/0x140
+> [  253.718188][  T979]  ? kthread_park+0x80/0x80
+> [  253.729340][  T979]  ret_from_fork+0x22/0x30
+> [  253.740271][  T979] INFO: task kworker/u321:4:1280 blocked for more than 121 seconds.
+> [  253.755320][  T979]       Tainted: G            E     5.10.0-rc7 #3
+> [  253.768593][  T979] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  253.784592][  T979] task:kworker/u321:4  state:D stack:    0 pid: 1280 ppid:     2 flags:0x00004000
+> [  253.801345][  T979] Workqueue: events_unbound async_run_entry_fn
+> [  253.814590][  T979] Call Trace:
+> [  253.824577][  T979]  __schedule+0x31e/0x890
+> [  253.835612][  T979]  schedule+0x3c/0xa0
+> [  253.846144][  T979]  async_synchronize_cookie_domain+0xad/0x140
+> [  253.858998][  T979]  ? finish_wait+0x80/0x80
+> [  253.869835][  T979]  async_port_probe+0x48/0x50
+> [  253.880860][  T979]  async_run_entry_fn+0x39/0x160
+> [  253.892125][  T979]  process_one_work+0x24c/0x490
+> [  253.903287][  T979]  worker_thread+0x30/0x370
+> [  253.914079][  T979]  ? process_one_work+0x490/0x490
+> [  253.925492][  T979]  kthread+0x11c/0x140
+> [  253.935804][  T979]  ? kthread_park+0x80/0x80
+> [  253.946640][  T979]  ret_from_fork+0x22/0x30
+> [  253.957399][  T979] INFO: task kworker/u321:5:1281 blocked for more than 121 seconds.
+> [  253.972326][  T979]       Tainted: G            E     5.10.0-rc7 #3
+> [  253.985522][  T979] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  254.001429][  T979] task:kworker/u321:5  state:D stack:    0 pid: 1281 ppid:     2 flags:0x00004000
+> [  254.018078][  T979] Workqueue: events_unbound async_run_entry_fn
+> [  254.031368][  T979] Call Trace:
+> [  254.041398][  T979]  __schedule+0x31e/0x890
+> [  254.052602][  T979]  schedule+0x3c/0xa0
+> [  254.063412][  T979]  async_synchronize_cookie_domain+0xad/0x140
+> [  254.076681][  T979]  ? finish_wait+0x80/0x80
+> [  254.088045][  T979]  async_port_probe+0x48/0x50
+> [  254.099730][  T979]  async_run_entry_fn+0x39/0x160
+> [  254.111617][  T979]  process_one_work+0x24c/0x490
+> [  254.123299][  T979]  worker_thread+0x30/0x370
+> [  254.134468][  T979]  ? process_one_work+0x490/0x490
+> [  254.146103][  T979]  kthread+0x11c/0x140
+> [  254.156522][  T979]  ? kthread_park+0x80/0x80
+> [  254.167377][  T979]  ret_from_fork+0x22/0x30
+> [  254.178152][  T979]
+> [  254.178152][  T979] Showing all locks held in the system:
+> [  254.198537][  T979] 3 locks held by kworker/u321:0/7:
+> [  254.210141][  T979]  #0: ffff888100051d48 ((wq_completion)events_unbound){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.228569][  T979]  #1: ffffc900000e7e70 ((work_completion)(&entry->work)){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.247359][  T979]  #2: ffff88811f7a00f0 (&shost->scan_mutex){....}-{3:3}, at: scsi_scan_host_selected+0x75/0x110
+> [  254.265687][  T979] 1 lock held by khungtaskd/979:
+> [  254.277739][  T979]  #0: ffffffff824d26c0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x15/0x101
+> [  254.295573][  T979] 3 locks held by kworker/u321:2/1278:
+> [  254.308530][  T979]  #0: ffff888100051d48 ((wq_completion)events_unbound){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.328017][  T979]  #1: ffffc9000f7c3e70 ((work_completion)(&entry->work)){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.347871][  T979]  #2: ffff8881211bf0f0 (&shost->scan_mutex){....}-{3:3}, at: __scsi_add_device+0xaf/0x130
+> [  254.366520][  T979] 2 locks held by kworker/u321:3/1279:
+> [  254.380038][  T979]  #0: ffff888100051d48 ((wq_completion)events_unbound){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.399946][  T979]  #1: ffffc9000f7cbe70 ((work_completion)(&entry->work)){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.420063][  T979] 2 locks held by kworker/u321:4/1280:
+> [  254.433768][  T979]  #0: ffff888100051d48 ((wq_completion)events_unbound){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.453888][  T979]  #1: ffffc9000f7d3e70 ((work_completion)(&entry->work)){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.474411][  T979] 2 locks held by kworker/u321:5/1281:
+> [  254.488640][  T979]  #0: ffff888100051d48 ((wq_completion)events_unbound){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.509333][  T979]  #1: ffffc9000f7dbe70 ((work_completion)(&entry->work)){....}-{0:0}, at: process_one_work+0x1c7/0x490
+> [  254.530378][  T979]
+> [  254.541498][  T979] =============================================
+> [  254.541498][  T979]
+>
