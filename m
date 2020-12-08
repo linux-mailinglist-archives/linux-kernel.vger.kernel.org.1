@@ -2,83 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D7C2D269C
+	by mail.lfdr.de (Postfix) with ESMTP id CBD572D269D
 	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgLHIvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:51:32 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37596 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgLHIvc (ORCPT
+        id S1728509AbgLHIvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:51:47 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9034 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgLHIvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:51:32 -0500
-Date:   Tue, 8 Dec 2020 09:50:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607417450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vhmaTjxVT0XVhHW1xIN82oE/hpEXmuE06ThvXKAzb4s=;
-        b=jxPjds6vX08h7Ax1v6qutO/LQuJWIGVuitHdTtbOVAmULWEygFSXie8TAhzhYNwYF+x905
-        tf5okA/TWqwBLK+bWvRY6kgWmKhxefGkkTJh7Hd1YerSra91CpU2MDAEeSOyEtOfMjMyRF
-        ewJQS90MMrQN+mk138O1lUIUTCgm+W/p/4ntfmG8G8SQ0TG0LveM9+o3cagwt6w7Gw1l2H
-        2z0RjsqIuTMY/4it12UYBNAf0yRTYuhk1KuuntNcNOamNVYts7FGMiBDknSVsoUY3naWqQ
-        VZACKGQz8JtorNaNnqc5EaTRcDoH1kvreyiPcm5LDHM66cqfhFC9fFjxOV+/9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607417450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vhmaTjxVT0XVhHW1xIN82oE/hpEXmuE06ThvXKAzb4s=;
-        b=OOXklvFTylOerTYfEfZMyAS2VVcAjDa0tJfWMCZI+9LToe9+nnbX9sF4KRHGORNNNHxDfx
-        bZAGsJ+GkU6AQaDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: timers: Move clearing of base::timer_running under base::lock
-Message-ID: <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
-References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
- <20201207130753.kpxf2ydroccjzrge@linutronix.de>
- <87a6up7kpt.fsf@nanos.tec.linutronix.de>
- <20201207152533.rybefuzd57kxxv57@linutronix.de>
- <20201207160648.GF2657@paulmck-ThinkPad-P72>
+        Tue, 8 Dec 2020 03:51:46 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cqv5h6TwtzhpPc;
+        Tue,  8 Dec 2020 16:50:32 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 8 Dec 2020
+ 16:51:02 +0800
+Subject: Re: [PATCH v2 2/3] erofs: insert to managed cache after adding to pcl
+To:     Gao Xiang <hsiangkao@redhat.com>, <linux-erofs@lists.ozlabs.org>
+CC:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>
+References: <20201207012346.2713857-1-hsiangkao@redhat.com>
+ <20201207012346.2713857-2-hsiangkao@redhat.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <cfdb46b5-0c66-4560-9069-5a4c21ad9768@huawei.com>
+Date:   Tue, 8 Dec 2020 16:51:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201207160648.GF2657@paulmck-ThinkPad-P72>
+In-Reply-To: <20201207012346.2713857-2-hsiangkao@redhat.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-07 08:06:48 [-0800], Paul E. McKenney wrote:
-> > Yes, but it triggers frequently. Like `rcuc' is somehow is aligned with
-> > the timeout.
+On 2020/12/7 9:23, Gao Xiang wrote:
+> Previously, it could be some concern to call add_to_page_cache_lru()
+> with page->mapping == Z_EROFS_MAPPING_STAGING (!= NULL).
 > 
-> Given that a lot of RCU processing is event-driven based on timers,
-> and given that the scheduling-clock interrupts are synchronized for
-> energy-efficiency reasons on many configs, maybe this alignment is
-> expected behavior?
+> In contrast, page->private is used instead now, so partially revert
+> commit 5ddcee1f3a1c ("erofs: get rid of __stagingpage_alloc helper")
+> with some adaption for simplicity.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 
-No, it is the fact that rcu_preempt has a higher priority than
-ksoftirqd. So immediately after the wakeup (of rcu_preempt) there is a
-context switch and expire_timers() has this:
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-|   raw_spin_unlock_irq(&base->lock);
-|   call_timer_fn(timer, fn, baseclk);
-|   raw_spin_lock_irq(&base->lock);
-|   base->running_timer = NULL;
-|   timer_sync_wait_running(base);
-
-So ->running_timer isn't reset and try_to_del_timer_sync() (that
-del_timer_sync() from schedule_timeout()) returns -1 and then the corner
-case is handled where `expiry_lock' is acquired. So everything goes as
-expected.
-
-> 							Thanx, Paul
-
-Sebastian
+Thanks,
