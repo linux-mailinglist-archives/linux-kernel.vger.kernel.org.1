@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8EA2D2E50
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9768F2D2E57
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgLHPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:32:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730083AbgLHPcy (ORCPT
+        id S1730083AbgLHPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729943AbgLHPeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:32:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607441487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+FMZUGLEZ8IR+pc7weB+jF6Ts3wWL1ODG+l+6NkEMl0=;
-        b=YxlPQMfZFYrAepuQwlk9a/8p1Rukk6PIJmB5yseQGPLZWuzzvVHghWTVGCWDZ8DNVtM16A
-        rIlMK8btKntwF8gaPa2cyFGtYoZqkv+RTybN9GS4HkNhgmxZJOKBuFY9Zavflxt8Ri+9ie
-        smXW68o2BVnrgPtQ+NiBYyMiz7VCLD4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-5pPQGmZZNBy8cRqlCNj0rA-1; Tue, 08 Dec 2020 10:31:25 -0500
-X-MC-Unique: 5pPQGmZZNBy8cRqlCNj0rA-1
-Received: by mail-ed1-f70.google.com with SMTP id cq17so4127021edb.17
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:31:24 -0800 (PST)
+        Tue, 8 Dec 2020 10:34:20 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8148AC061793;
+        Tue,  8 Dec 2020 07:33:40 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id q10so9692026vsr.13;
+        Tue, 08 Dec 2020 07:33:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SJx7BqX/ixE/fzei6WxsOLNMaFjc9YlcOOhXGl/ihUs=;
+        b=JHA2VKifBEKYyWCObgMBJHLB0bchyzTYIPLsLCliJVqROh4kdnI7Jkt84VNfoKIp21
+         DNrpXSQxhe8EMuB46biHFaV480yj+NWjvB4vxXUo399TAaCJl9G99Q+tlg133jaYo1/Q
+         oMIBCYb+R/MJDek4qaJhGI28VZTmDbBU68uj80AIwzYcBIl4Kxwm94wLJoFaywmqPoTd
+         ZI7oK4oEU7GtACbNgPyibjRTS10FKU6RqL0W+Qh0GVGtxV3QNF7gINSoddqSBgz/8Dma
+         /Vyt+hhuovmbIDFVNI1ABB9SaNqcMUfFTWedoMJVwsPwxR/pe5+8pSfMSZ9JPRO2WJkY
+         +8Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+FMZUGLEZ8IR+pc7weB+jF6Ts3wWL1ODG+l+6NkEMl0=;
-        b=OEN8IeK4kLlbM0arDv24J0QBmqWVljx36/+ZE8AAmLoWwTsWXFW10PMoILqiK7h0Y4
-         asG+iZJWRUtctIoL2mFqfDGIETDp+f2v5ipa1Rst9EXJXXtGAztlVagBFTN8bc3vH5H4
-         0NyBTgiSxtm4SGQx+ZRlN14reQ5WMdfRTy0/ROnGD0X6jfwTdGYFj5FTjPxnu/8D5IIs
-         hU8q5+p1D5L1Ny4KYpLxI/Sm06h0Bt0mGh2Fmlc/aY2VEg4O7yXOEV5gj0xVedNP8RSC
-         HN687s0iUDQHsvHQQwwGEFhghGWzn3Brsonb0ZvWqSMGkqAe6SJa6vPpdjO16Jj4+bQs
-         V4FQ==
-X-Gm-Message-State: AOAM530sIxc9OKvufnH5czh3ZEpgO9cbixoKom1BZpmzq1b5bxEbb+Xe
-        TY2bCl0et3kmlqJfFR2HOo7RyM1G4XEY/YSYGORWFHcFgjVHCbR31fKm30jfJeXN7Z8xq1qvl20
-        q1abiMKl2IXLwnkPREvPqiU6MCSr7pYo4+I0PycSg19VTl0PJHe29SI57idZWhlz4LJyPhtvjfM
-        Oc
-X-Received: by 2002:a50:f0dc:: with SMTP id a28mr25458365edm.291.1607441483449;
-        Tue, 08 Dec 2020 07:31:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtQU0RezIwC9tzXq31kmgXqVciy5sBw5mSMcppCnQP7N2IaRcQFo26XwXC19JRgWUuXan+jw==
-X-Received: by 2002:a50:f0dc:: with SMTP id a28mr25458346edm.291.1607441483238;
-        Tue, 08 Dec 2020 07:31:23 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id oq7sm6098333ejb.63.2020.12.08.07.31.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 07:31:22 -0800 (PST)
-Subject: Re: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
- mmio_range_devid_1 with static keyword
-To:     Zou Wei <zou_wei@huawei.com>, srinivas.pandruvada@linux.intel.com,
-        mgross@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f9e29a7e-f5eb-afaf-1d29-4665be99046a@redhat.com>
-Date:   Tue, 8 Dec 2020 16:31:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SJx7BqX/ixE/fzei6WxsOLNMaFjc9YlcOOhXGl/ihUs=;
+        b=uUYc8/3uYqtx8CGI/rECa8MbKfKLzhC/FXdIls6tHAClWa6UNJbugvyL4HjPQHzJQM
+         9nHCO1WX8qqU7X36xfmsvgtRtxSuBYBnJmAJ1yl/gtrt6v+RvK1HdLXnM3J/gaEY1AGw
+         T2eriXdDvjSLsF+3fIephLeu7hu5g4pirumfomYRjtanNVf8cHvjVk6HLBfYhh9td5Lv
+         gPGPnQWbNeXYBJ79L0Nt2oJCYu5GipE6y7Q0p+eQG5OvdToQkvN6QhJdLgARLc0V0enL
+         FgLYySkLcJ1U7U5UOM9DMQfgo9Cz8wYiWsidvVpJ5vZyTDAtt6chQOUXpQ3iHR7KjlI0
+         dy7w==
+X-Gm-Message-State: AOAM5303UFFzI7aCekPk9E/OO1O4R04Sh89K5aauzCzrvyDS23uHnYIu
+        J5+FNNzkwnOpGxFwGfdBb24Rdr0bSqOwcEB8CzI=
+X-Google-Smtp-Source: ABdhPJwm6JaxYxU+kXvZGSDy5QBUoMLJJbDJuUUsoIWBGoXj5yHSW5A/VlIkFXPsmWtaRwMWM9D0QuFgB3G8bV/IDlE=
+X-Received: by 2002:a67:e43:: with SMTP id 64mr16580301vso.40.1607441619668;
+ Tue, 08 Dec 2020 07:33:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201205152814.7867-1-TheSven73@gmail.com>
+In-Reply-To: <20201205152814.7867-1-TheSven73@gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Tue, 8 Dec 2020 10:33:28 -0500
+Message-ID: <CAGngYiXdJ=oLe+A034wGL_rjtjSnEw7DhSJ3sE7M9PAAjkZMTQ@mail.gmail.com>
+Subject: Re: [PATCH net v1 1/2] net: dsa: microchip: fix devicetree parsing of
+ cpu node
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Helmut Grohne <helmut.grohne@intenta.de>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Andrew, Jakub,
 
-On 12/8/20 1:28 PM, Zou Wei wrote:
-> Fix the following sparse warnings:
-> 
-> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:23:24: warning: symbol 'mmio_range_devid_0' was not declared. Should it be static?
-> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:28:24: warning: symbol 'mmio_range_devid_1' was not declared. Should it be static?
-> 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+On Sat, Dec 5, 2020 at 10:28 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> From: Sven Van Asbroeck <thesven73@gmail.com>
+>
+> On the ksz8795, if the devicetree contains a cpu node,
+> devicetree parsing fails and the whole driver errors out.
+>
+> Fix the devicetree parsing code by making it use the
+> correct number of ports.
+>
+> Fixes: 912aae27c6af ("net: dsa: microchip: really look for phy-mode in port nodes")
+> Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # ksz8795
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 > ---
->  drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-> index 2906cfe..ff49025 100644
-> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-> @@ -20,12 +20,12 @@ struct isst_mmio_range {
->  	int end;
->  };
->  
-> -struct isst_mmio_range mmio_range_devid_0[] = {
-> +static struct isst_mmio_range mmio_range_devid_0[] = {
->  	{0x04, 0x14},
->  	{0x20, 0xD0},
->  };
->  
-> -struct isst_mmio_range mmio_range_devid_1[] = {
-> +static struct isst_mmio_range mmio_range_devid_1[] = {
->  	{0x04, 0x14},
->  	{0x20, 0x11C},
->  };
-> 
 
+Any chance that this patch could still get merged?
+I believe this will work fine on both ksz8795 and ksz9477, even though num_ports
+is defined differently, because:
+
+ksz8795:
+/* set the real number of ports */
+dev->ds->num_ports = dev->port_cnt + 1;
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/dsa/microchip/ksz8795.c?h=v5.10-rc7#n1266
+
+ksz9477:
+/* set the real number of ports */
+dev->ds->num_ports = dev->port_cnt;
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/dsa/microchip/ksz9477.c?h=v5.10-rc7#n1585
+
+Would it be possible to merge this into net, so users get working cpu nodes?
+I don't think this will prevent you from harmonizing port_cnt in net-next.
