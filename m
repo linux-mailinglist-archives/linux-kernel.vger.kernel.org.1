@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9202D35CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEB52D35C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730658AbgLHWEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:04:22 -0500
-Received: from mout.gmx.net ([212.227.17.22]:36791 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730608AbgLHWEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:04:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607464945;
-        bh=0W8L1s/+E8M+O5m3NU5Cjqur7xln1/V/UMJdSR+R264=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=UVFUKXAKROTOprum0Bxa8AAlMCbTb8S2jdMLfGiaG0tBNk91Oo0MyMlrfA9v7qdrX
-         zMLoUlsnO4vp5NDEuQW64URRH61u/huMZO/0n36ILGq4CURhs0j7+PLa1rzi8KuRhF
-         lYGhXeLdTjJQBH0KdSpj8HI3VZWeSgEf0zm5rbqM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N63VY-1k6i7M3dxg-016NUN; Tue, 08
- Dec 2020 23:02:24 +0100
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     thierry.reding@gmail.com
-Cc:     u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sean@mess.org, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: [PATCH v3] pwm: bcm2835: Support apply function for atomic configuration
-Date:   Tue,  8 Dec 2020 23:01:45 +0100
-Message-Id: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
+        id S1730530AbgLHWDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726421AbgLHWDA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:03:00 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93E9C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:02:19 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id o25so201151oie.5
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aFLiOxATEwVPZ54YnQmIiBEk09z7ej1KbGicavDyd/4=;
+        b=JR5oMMWrkAg9dt9AY6ede7oX5k900mPAfz3VEE6vi4Aodp+Mv/ZmXxwWkEVyU+O5ca
+         BXjh8rkSKVV0BbEu9cnYsrZQI3ffG3PcQpW1PlkYtsV3xjAd8Rm+D8IWTJ8lO4Y7HiyF
+         z8PDX7Um6dRXa1umfShWKijS/16y02R7nCsx/vlK5HojffTg8jQhQHxCcf9EsEH61U7C
+         XMVR7d2CRplLo6u8Chy8e4j7PkIMciw++68T7CD0hP56A1wjrsrru3Bvuuw/KWXv/WB9
+         MIii2wzQ+eHBPUj9ENe8/sFkSwtihYuT4s3QokRdI5Co+A4tf+Dl4OHE2yucvFkrTph7
+         dp+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aFLiOxATEwVPZ54YnQmIiBEk09z7ej1KbGicavDyd/4=;
+        b=K3QBiOSbxWkRlWMkWeerFecFvo3cwYXws4Jpf7P/phA02otGlNQKLrdNdutmmN89Ni
+         nmF/Kt7KY2nHIvFYlnd5WAXC/RVgCWLiqiQdVN2PrL0hTq+gclwYDKvArdJHtblb/V75
+         FY+lIEG3h92ofp3V38PK4Ff+1Ux3Z4aj2H9/pvZbMaUTMkQVG+oI5vNYAa87/J8ZHtqI
+         PfxiLnCI6+BN0TlA74HyOx0bzdEduiWFcdPUDMb6bMXQuHiOwT/EX98vNj0RojOVTbh7
+         8WKS0uk53n0rW5ySNVRa2ZYtvs7d9TK/emzd8bNgpzdktQeVMj+dfp/38ahcjYn2TSY/
+         BWtQ==
+X-Gm-Message-State: AOAM530Bzrqzy5Ex7c26kM/6roQitV7yKHMUfQkG88cxqT/5Lmks+jgS
+        nNgnD6PGETQx2a2U+yUN78p4UA==
+X-Google-Smtp-Source: ABdhPJxEBsXdgE6F4kOII6gY46qvCzgKEzVaGS1kOzteGyGNXa++TBi8fx6esKChL9Avx/cMo5bgbA==
+X-Received: by 2002:aca:afd0:: with SMTP id y199mr4415574oie.7.1607464939235;
+        Tue, 08 Dec 2020 14:02:19 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h7sm18126otq.21.2020.12.08.14.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 14:02:18 -0800 (PST)
+Date:   Tue, 8 Dec 2020 16:02:16 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] drm/panel: Make backlight attachment lazy
+Message-ID: <X8/36HXL1IYPXA0J@builder.lan>
+References: <20201208044446.973238-1-bjorn.andersson@linaro.org>
+ <X891/LvEJT1bLtjH@ulmo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:aKuR+reSMDTjWPkMggxhK4pXa7GsX+soPSBxaw2X6SiRgJ3gyEf
- eHuRyhr+2p1cY4DXylGklrqH2aM0gQTB+K5IkpcPy8olTJ8MnIdWfT1BIV/jvPBt9Kjvtep
- 8u+LRLFuHosJIDegsOBzZH/oiNvbpdmdzw9niv09U5u4Kzm7sjXf1DLoHJjsVWclPYaiVlI
- zov13P17h6H9/yvHgmFyg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:myZg7KeR1cw=:MRonv6eSgpTO/yMAIm6e4I
- d1W+NUCwofXYYR0/Sqnir9wtHFzgSa2PO/yvwVVOMklldh6o6df2Hmlj8AuX/ErxK8unb7yz6
- sOh48kAXa27KfcHX0Z3rYzFVer0YIYO0QJJr5SRgfjHxREmn9uI46njGNbqoLBwW/QYcUfbez
- tNUky/SCZr6UqMUItZPiaT4kxSjmjTnGt+0Yz2xRBhU7HzXh6t/9TC52RsAiCEL5mriRuraau
- CsODQ6HPHcRHHQV0hB/kUonDEcOK6pgL2iF15KorczqaWw97tDuvEsSNlj8mTbtmOboIagnw8
- cuiIg0k8NJIOsYYZe+U4xXt5Za2bo8PWNgdtqemM8dpBKkYGKgbTuAZ0xoNNn3C8I06+xnGOR
- VwbTrHvlxJG+dXO3CknAWO2ougD/oyNVMRUPF9vkn8reuJG1crchjfU5OaldY7jGpAKRRPRNe
- QSxJrWiP/EdOLkhhi/ddxnxZCtO+feqz08hBGO/A2121Mth8ctN+uXXpYFQUtan5gKZ3WDpsP
- ByyOYi8iLqi5e1DRIGoeLM8BfGuSoqNpVpP6HFOm/9KepSOdXIpaHbRR5vMEH6PTfqCRS/Itz
- fN2VDgQgc0ONIPx6h+sA/wn9f6X9YzbBNV+EBQVBiwwvsGCOpW6u1picVmHUH8tAsiStFRk/t
- 1bdJtRbqpapSYmZHzTUIYna+JCg1EF9BBrwV2jltA/lep4ojiTmWVHxMyo9yEDnvwCEoL/5Fa
- jykH4XD0g5cCikHTgVjQc3881DfAMyK0JbtQbwUHZJT5GjGJK7d0qajGjf1/11FRiSCyfVgSY
- QdqVKyMljJBeirSTWd00ue5CTfQwbg7tCMBtSptJzBojZNvfXcnD0qDWoz/uQmw3OgH4JKFIN
- y5vvwFKstMdTPHgDh4ZA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X891/LvEJT1bLtjH@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VXNlIHRoZSBuZXdlciAuYXBwbHkgZnVuY3Rpb24gb2YgcHdtX29wcyBpbnN0ZWFkIG9mIC5jb25m
-aWcsIC5lbmFibGUsCi5kaXNhYmxlIGFuZCAuc2V0X3BvbGFyaXR5LiBUaGlzIGd1YXJhbnRlZXMg
-YXRvbWljIGNoYW5nZXMgb2YgdGhlIHB3bQpjb250cm9sbGVyIGNvbmZpZ3VyYXRpb24uIEl0IGFs
-c28gcmVkdWNlcyB0aGUgc2l6ZSBvZiB0aGUgZHJpdmVyLgoKU2luY2Ugbm93IHBlcmlvZCBpcyBh
-IDY0IGJpdCB2YWx1ZSwgYWRkIGFuIGV4dHJhIGNoZWNrIHRvIHJlamVjdCBwZXJpb2RzCnRoYXQg
-ZXhjZWVkIHRoZSBwb3NzaWJsZSBtYXggdmFsdWUgZm9yIHRoZSAzMiBiaXQgcmVnaXN0ZXIuCgpU
-aGlzIGhhcyBiZWVuIHRlc3RlZCBvbiBhIFJhc3BiZXJyeSBQSSA0LgoKU2lnbmVkLW9mZi1ieTog
-TGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0tLQoKdjM6IENoZWNrIGFn
-YWluc3QgcGVyaW9kIHRydW5jYXRpb24gKGJhc2VkIG9uIGEgcmV2aWV3IGJ5IFV3ZSBLbGVpbmUt
-S8O2bmlnKQp2MjogRml4IGNvbXBpbGVyIGVycm9yIGZvciA2NCBiaXQgYnVpbGRzCgogZHJpdmVy
-cy9wd20vcHdtLWJjbTI4MzUuYyB8IDcyICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygrKSwgNDYgZGVs
-ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wd20vcHdtLWJjbTI4MzUuYyBiL2RyaXZl
-cnMvcHdtL3B3bS1iY20yODM1LmMKaW5kZXggNjg0MWRjZi4uZDMzOTg5OCAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9wd20vcHdtLWJjbTI4MzUuYworKysgYi9kcml2ZXJzL3B3bS9wd20tYmNtMjgzNS5j
-CkBAIC01OCwxMyArNTgsMTUgQEAgc3RhdGljIHZvaWQgYmNtMjgzNV9wd21fZnJlZShzdHJ1Y3Qg
-cHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20pCiAJd3JpdGVsKHZhbHVlLCBw
-Yy0+YmFzZSArIFBXTV9DT05UUk9MKTsKIH0KIAotc3RhdGljIGludCBiY20yODM1X3B3bV9jb25m
-aWcoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLAotCQkJICAg
-ICAgaW50IGR1dHlfbnMsIGludCBwZXJpb2RfbnMpCitzdGF0aWMgaW50IGJjbTI4MzVfcHdtX2Fw
-cGx5KHN0cnVjdCBwd21fY2hpcCAqY2hpcCwgc3RydWN0IHB3bV9kZXZpY2UgKnB3bSwKKwkJCSAg
-ICAgY29uc3Qgc3RydWN0IHB3bV9zdGF0ZSAqc3RhdGUpCiB7CisKIAlzdHJ1Y3QgYmNtMjgzNV9w
-d20gKnBjID0gdG9fYmNtMjgzNV9wd20oY2hpcCk7CiAJdW5zaWduZWQgbG9uZyByYXRlID0gY2xr
-X2dldF9yYXRlKHBjLT5jbGspOworCXVuc2lnbmVkIGxvbmcgbG9uZyBwZXJpb2Q7CiAJdW5zaWdu
-ZWQgbG9uZyBzY2FsZXI7Ci0JdTMyIHBlcmlvZDsKKwl1MzIgdmFsOwogCiAJaWYgKCFyYXRlKSB7
-CiAJCWRldl9lcnIocGMtPmRldiwgImZhaWxlZCB0byBnZXQgY2xvY2sgcmF0ZVxuIik7CkBAIC03
-Miw2NSArNzQsNDMgQEAgc3RhdGljIGludCBiY20yODM1X3B3bV9jb25maWcoc3RydWN0IHB3bV9j
-aGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2RldmljZSAqcHdtLAogCX0KIAogCXNjYWxlciA9IERJVl9S
-T1VORF9DTE9TRVNUKE5TRUNfUEVSX1NFQywgcmF0ZSk7Ci0JcGVyaW9kID0gRElWX1JPVU5EX0NM
-T1NFU1QocGVyaW9kX25zLCBzY2FsZXIpOworCS8qIHNldCBwZXJpb2QgKi8KKwlwZXJpb2QgPSBE
-SVZfUk9VTkRfQ0xPU0VTVF9VTEwoc3RhdGUtPnBlcmlvZCwgc2NhbGVyKTsKIAotCWlmIChwZXJp
-b2QgPCBQRVJJT0RfTUlOKQorCS8qIGRvbnQgYWNjZXB0IGEgcGVyaW9kIHRoYXQgaXMgdG9vIHNt
-YWxsIG9yIGhhcyBiZWVuIHRydW5jYXRlZCAqLworCWlmICgocGVyaW9kIDwgUEVSSU9EX01JTikg
-fHwgKHBlcmlvZCA+IFUzMl9NQVgpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAotCXdyaXRlbChESVZf
-Uk9VTkRfQ0xPU0VTVChkdXR5X25zLCBzY2FsZXIpLAotCSAgICAgICBwYy0+YmFzZSArIERVVFko
-cHdtLT5od3B3bSkpOwotCXdyaXRlbChwZXJpb2QsIHBjLT5iYXNlICsgUEVSSU9EKHB3bS0+aHdw
-d20pKTsKLQotCXJldHVybiAwOwotfQotCi1zdGF0aWMgaW50IGJjbTI4MzVfcHdtX2VuYWJsZShz
-dHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20pCi17Ci0Jc3RydWN0
-IGJjbTI4MzVfcHdtICpwYyA9IHRvX2JjbTI4MzVfcHdtKGNoaXApOwotCXUzMiB2YWx1ZTsKLQot
-CXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7Ci0JdmFsdWUgfD0gUFdNX0VO
-QUJMRSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKLQl3cml0ZWwodmFsdWUsIHBj
-LT5iYXNlICsgUFdNX0NPTlRST0wpOwotCi0JcmV0dXJuIDA7Ci19Ci0KLXN0YXRpYyB2b2lkIGJj
-bTI4MzVfcHdtX2Rpc2FibGUoc3RydWN0IHB3bV9jaGlwICpjaGlwLCBzdHJ1Y3QgcHdtX2Rldmlj
-ZSAqcHdtKQotewotCXN0cnVjdCBiY20yODM1X3B3bSAqcGMgPSB0b19iY20yODM1X3B3bShjaGlw
-KTsKLQl1MzIgdmFsdWU7CisJd3JpdGVsKCh1MzIpIHBlcmlvZCwgcGMtPmJhc2UgKyBQRVJJT0Qo
-cHdtLT5od3B3bSkpOwogCi0JdmFsdWUgPSByZWFkbChwYy0+YmFzZSArIFBXTV9DT05UUk9MKTsK
-LQl2YWx1ZSAmPSB+KFBXTV9FTkFCTEUgPDwgUFdNX0NPTlRST0xfU0hJRlQocHdtLT5od3B3bSkp
-OwotCXdyaXRlbCh2YWx1ZSwgcGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7Ci19CisJLyogc2V0IGR1
-dHkgY3ljbGUgKi8KKwl2YWwgPSBESVZfUk9VTkRfQ0xPU0VTVF9VTEwoc3RhdGUtPmR1dHlfY3lj
-bGUsIHNjYWxlcik7CisJd3JpdGVsKHZhbCwgcGMtPmJhc2UgKyBEVVRZKHB3bS0+aHdwd20pKTsK
-IAotc3RhdGljIGludCBiY20yODM1X3NldF9wb2xhcml0eShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAs
-IHN0cnVjdCBwd21fZGV2aWNlICpwd20sCi0JCQkJZW51bSBwd21fcG9sYXJpdHkgcG9sYXJpdHkp
-Ci17Ci0Jc3RydWN0IGJjbTI4MzVfcHdtICpwYyA9IHRvX2JjbTI4MzVfcHdtKGNoaXApOwotCXUz
-MiB2YWx1ZTsKKwkvKiBzZXQgcG9sYXJpdHkgKi8KKwl2YWwgPSByZWFkbChwYy0+YmFzZSArIFBX
-TV9DT05UUk9MKTsKIAotCXZhbHVlID0gcmVhZGwocGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7CisJ
-aWYgKHN0YXRlLT5wb2xhcml0eSA9PSBQV01fUE9MQVJJVFlfTk9STUFMKQorCQl2YWwgJj0gfihQ
-V01fUE9MQVJJVFkgPDwgUFdNX0NPTlRST0xfU0hJRlQocHdtLT5od3B3bSkpOworCWVsc2UKKwkJ
-dmFsIHw9IFBXTV9QT0xBUklUWSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKTsKIAot
-CWlmIChwb2xhcml0eSA9PSBQV01fUE9MQVJJVFlfTk9STUFMKQotCQl2YWx1ZSAmPSB+KFBXTV9Q
-T0xBUklUWSA8PCBQV01fQ09OVFJPTF9TSElGVChwd20tPmh3cHdtKSk7CisJLyogZW5hYmxlL2Rp
-c2FibGUgKi8KKwlpZiAoc3RhdGUtPmVuYWJsZWQpCisJCXZhbCB8PSBQV01fRU5BQkxFIDw8IFBX
-TV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pOwogCWVsc2UKLQkJdmFsdWUgfD0gUFdNX1BPTEFS
-SVRZIDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pOworCQl2YWwgJj0gfihQV01fRU5B
-QkxFIDw8IFBXTV9DT05UUk9MX1NISUZUKHB3bS0+aHdwd20pKTsKIAotCXdyaXRlbCh2YWx1ZSwg
-cGMtPmJhc2UgKyBQV01fQ09OVFJPTCk7CisJd3JpdGVsKHZhbCwgcGMtPmJhc2UgKyBQV01fQ09O
-VFJPTCk7CiAKIAlyZXR1cm4gMDsKIH0KIAorCiBzdGF0aWMgY29uc3Qgc3RydWN0IHB3bV9vcHMg
-YmNtMjgzNV9wd21fb3BzID0gewogCS5yZXF1ZXN0ID0gYmNtMjgzNV9wd21fcmVxdWVzdCwKIAku
-ZnJlZSA9IGJjbTI4MzVfcHdtX2ZyZWUsCi0JLmNvbmZpZyA9IGJjbTI4MzVfcHdtX2NvbmZpZywK
-LQkuZW5hYmxlID0gYmNtMjgzNV9wd21fZW5hYmxlLAotCS5kaXNhYmxlID0gYmNtMjgzNV9wd21f
-ZGlzYWJsZSwKLQkuc2V0X3BvbGFyaXR5ID0gYmNtMjgzNV9zZXRfcG9sYXJpdHksCisJLmFwcGx5
-ID0gYmNtMjgzNV9wd21fYXBwbHksCiAJLm93bmVyID0gVEhJU19NT0RVTEUsCiB9OwogCi0tIAoy
-LjcuNAoK
+On Tue 08 Dec 06:47 CST 2020, Thierry Reding wrote:
+
+> On Mon, Dec 07, 2020 at 10:44:46PM -0600, Bjorn Andersson wrote:
+> > Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
+> > means of generating a PWM signal for backlight control of the attached
+> > panel. The provided PWM chip is typically controlled by the
+> > pwm-backlight driver, which if tied to the panel will provide DPMS.
+> > 
+> > But with the current implementation the panel will refuse to probe
+> > because the bridge driver has yet to probe and register the PWM chip,
+> > and the bridge driver will refuse to probe because it's unable to find
+> > the panel.
+> 
+> What you're describing is basically a circular dependency. Can't we get
+> rid of that in some other way? Why exactly does the bridge driver refuse
+> to probe if the panel can't be found?
+> 
+> In other words, I see how the bridge would /use/ the panel in that it
+> forward a video stream to it. But how does the panel /use/ the bridge?
+> 
+
+Yes, this is indeed a circular dependency between the components.
+
+The involved parts are:
+* the bridge driver that implements the PWM chip probe defers on
+  drm_of_find_panel_or_bridge() failing to find the panel.
+* the pwm-backlight driver that consumes the PWM channel probe defer
+  because the pwm_chip was not registered by the bridge.
+* the panel that uses the backlight for DPMS purposes probe defer
+  because drm_panel_of_backlight() fails to find the pwm-backlight.
+
+I looked at means of postponing drm_of_find_panel_or_bridge() to
+drm_bridge_funcs->attach(), but at that time "deferral" would be fatal.
+I looked at registering the pwm_chip earlier, but that would depend on a
+guarantee of the pwm-backlight and panel driver to probe concurrently.
+And the current solution of not tying the backlight to the panel means
+that when userspace decides to DPMS the display the backlight stays on.
+
+
+The proposed solution (hack?) means that DPMS operations happening
+before the pwm-backlight has probed will be missed, so it's not perfect.
+It does however allow the backlight on my laptop to turn off, which is a
+big improvement.
+
+But I'm certainly welcome to suggestions.
+
+Regards,
+Bjorn
