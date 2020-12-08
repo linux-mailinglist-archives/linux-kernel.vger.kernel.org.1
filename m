@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABFA2D345A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551AF2D3466
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgLHUhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:37:35 -0500
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:45321 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731029AbgLHUfk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:35:40 -0500
-Received: by mail-yb1-f195.google.com with SMTP id k78so8401439ybf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:35:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aKT1xt1SMzgu41xYl1MW3Jng/80RbPWksOKFLv9tJCk=;
-        b=MWgn465K5rtATb1PfG2SxloG0m4QVpJGVn4pSNU3oB6bvKQLTTrBzn+Ezpgkhbq9T+
-         kLGWWWR6DzaMi5841XjObOcXqSRNxYEuI7lIl6gh1wWD6KVTKIQsgqvQuXcdzKSPDZPa
-         bwR4rG48okWAr+eUxLOXmYl7eLf0RkBp3WJ85t4nCAfDe9KmMwaHuaULOS6M+gcpQbH5
-         HVx1XjIcfh66Mp0kWz5nGlB8qlqkCHr/+r1rPN8Rw5cv3iFPHiOPd+vQs3FEKbt/kB1Q
-         SQ+16eA56pIWF4oEd175WDw7+WrvNguJNq5d/1YXy38dXxmjCsn31Niag6cEHpjHpRyF
-         jw/Q==
-X-Gm-Message-State: AOAM533+zxzHdu34oE6g4rzR4QlpPYs5U3pP+bqdcIqboHLGeZ0HPf8E
-        r0cgQ5YeIg/2paTQNGPHpgG1NVh7qaCElEv/9Iq/UB+/
-X-Google-Smtp-Source: ABdhPJxmoCXQmrabfSNNrBVKAsAl7RBFcTJxhg9kRju58cMl8ohotUGeMmtj8fg+FiCAyv6LqJXkOS3cTaQrV4YFnOo=
-X-Received: by 2002:a9d:3982:: with SMTP id y2mr17818754otb.260.1607455215857;
- Tue, 08 Dec 2020 11:20:15 -0800 (PST)
+        id S1729172AbgLHUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:39:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgLHUj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:39:27 -0500
+Date:   Tue, 8 Dec 2020 11:22:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607455347;
+        bh=0hoIplBhL2TPhrhpgcVbMyxg8H17FzeKx+l9ZHZK0r0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AWKrbTQP49oNKAXiA4uPh3YzudRhdOK14Op9O74N37SqW+g9n8py37Fjg9ZcDE9BO
+         BQXmmkCblG5xxZsRRw2dKmrtR74Lad9VCDjL8LDjXJJJ146QpmEeQJ0git1MoPdvx7
+         XyiGgrfsPs+1DgpppxLYzSeIbD02mekyJrsmoqdvA00S/hYdWEeHj58Q3GMV8iVLR9
+         uoPXH5aVRB+3fOz47BK5NP7ZvRCpRnhdM7hae3PrfiEoq9ac3OyDdg8VFRGg3rHuBF
+         QNg9zVqse7kSWdem9XkdflYKxVhVJ6OzcebjrjLGvE+acdPwDwSBirGe5Hgawjlse4
+         3Ue1xNPo9ZraA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] net/mlx5_core: remove unused including
+ <generated/utsrelease.h>
+Message-ID: <20201208112226.1bb31229@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
+References: <1607343240-39155-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-References: <20201208190326.27531-1-tiwai@suse.de>
-In-Reply-To: <20201208190326.27531-1-tiwai@suse.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 8 Dec 2020 20:20:04 +0100
-Message-ID: <CAJZ5v0ggQL-poyY8tz14GhZCQLshfsQB58m3Z2iafsiUttkgRw@mail.gmail.com>
-Subject: Re: [PATCH] driver: core: Fix list corruption after device_del()
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 8:03 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> The device_links_purge() function (called from device_del()) tries to
-> remove the links.needs_suppliers list entry, but it's using
-> list_del(), hence it doesn't initialize after the removal.  This is OK
-> for normal cases where device_del() is called via device_destroy().
-> However, it's not guaranteed that the device object will be really
-> deleted soon after device_del().  In a minor case like HD-audio codec
-> reconfiguration that re-initializes the device after device_del(), it
-> may lead to a crash by the corrupted list entry.
->
-> As a simple fix, replace list_del() with list_del_init() in order to
-> make the list intact after the device_del() call.
->
-> Fixes: e2ae9bcc4aaa ("driver core: Add support for linking devices during device addition")
-> Cc: <stable@vger.kernel.org>
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209207
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
+On Mon, 7 Dec 2020 20:14:00 +0800 Zou Wei wrote:
+> Remove including <generated/utsrelease.h> that don't need it.
+>=20
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
->  drivers/base/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index d661ada1518f..e8cb66093f21 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -1386,7 +1386,7 @@ static void device_links_purge(struct device *dev)
->                 return;
->
->         mutex_lock(&wfs_lock);
-> -       list_del(&dev->links.needs_suppliers);
-> +       list_del_init(&dev->links.needs_suppliers);
->         mutex_unlock(&wfs_lock);
->
->         /*
-> --
-> 2.26.2
->
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/n=
+et/ethernet/mellanox/mlx5/core/en_rep.c
+> index 989c70c..82ecc161 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+> @@ -30,7 +30,6 @@
+>   * SOFTWARE.
+>   */
+> =20
+> -#include <generated/utsrelease.h>
+>  #include <linux/mlx5/fs.h>
+>  #include <net/switchdev.h>
+>  #include <net/pkt_cls.h>
+
+
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c: In function =E2=80=98mlx5=
+e_rep_get_drvinfo=E2=80=99:
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: error: =E2=80=98UTS=
+_RELEASE=E2=80=99 undeclared (first use in this function); did you mean =E2=
+=80=98CSS_RELEASED=E2=80=99?
+   66 |  strlcpy(drvinfo->version, UTS_RELEASE, sizeof(drvinfo->version));
+      |                            ^~~~~~~~~~~
+      |                            CSS_RELEASED
+drivers/net/ethernet/mellanox/mlx5/core/en_rep.c:66:28: note: each undeclar=
+ed identifier is reported only once for each function it appears in
+make[6]: *** [drivers/net/ethernet/mellanox/mlx5/core/en_rep.o] Error 1
+make[5]: *** [drivers/net/ethernet/mellanox/mlx5/core] Error 2
+make[4]: *** [drivers/net/ethernet/mellanox] Error 2
+make[3]: *** [drivers/net/ethernet] Error 2
+make[2]: *** [drivers/net] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [drivers] Error 2
+make: *** [__sub-make] Error 2
