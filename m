@@ -2,76 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD3C2D2B74
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A27292D2B7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgLHMwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:52:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729614AbgLHMwS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:52:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CA4C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:51:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jPP/H9e2Iy2Z11xpklhUXCwXSKTIfsWCUPcUcREoAp8=; b=q3km6lEm5+8lRjX5Refq+pkPJO
-        mNPu+lqKdJo91X23htSalt3YXWN3g2hkMTvJBm6QoaeGZPKqOIkqagnbb6lrJYhNdcR08M8Hh4sLJ
-        N6Vh08I1bLW+1+rBBoRG/mRb4qCLDB+BAZ8xXoxPPL7BX7tDmYZOtFNH+l6K4Y89udMFBsKg4hUfA
-        b/MuBagwPHZV9seNdOzccznr36+4bgoWPq1d4EBHxL5PeJn9/cJGKV+6DZi8E5TD9I3dsAiElSKxm
-        hkaoOBijEVa7l/OrvZEQDFZN7v75NFIi9w6luVHSGiJMo4nUHZSvOK7zlBC2QFfgVc9A89SZUh93R
-        WNs1aL9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmcSo-0004fi-Cl; Tue, 08 Dec 2020 12:51:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF22B304B92;
-        Tue,  8 Dec 2020 13:51:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8AC3C200D1814; Tue,  8 Dec 2020 13:51:29 +0100 (CET)
-Date:   Tue, 8 Dec 2020 13:51:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>, keescook@chromium.org
-Subject: Re: Are read-only static labels incompatible with kernel modules?
-Message-ID: <20201208125129.GY2414@hirez.programming.kicks-ass.net>
-References: <CAAeHK+xB0cdJxTvLzRRQuKQkStF+1AN179_8RUvDrpjZy+Utyg@mail.gmail.com>
+        id S1729385AbgLHMxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:53:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgLHMxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:53:40 -0500
+Date:   Tue, 8 Dec 2020 18:22:50 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607431979;
+        bh=oNMSmNezk0/IPDTVM+CthNykiMyH1a+B7oR1jQ/A5qk=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nS3TeL8gHhizbF2IkCQroAS2g3NbunEH1wdGO1pQPI5YADTlJtYo+CrjiBgldISkb
+         2s4VDbA2ivrhORxVZor+wTrCWG/R0iWEn6VamVq+gOm9qCa6Ibq8e1Aiw2Cu7D3sEF
+         LnxEH88hFnjTZQLEUkTE4G9PhRtwQKzagYYW3FKQHKl0OHSZh+Bn+YrBn7wTKjPmVp
+         jSkyhr+c8YFrw7zmOb7FtQy7GNvUv4pVL4N8VtyGWzEvZiZkUFMEHtJULmDazQuvED
+         O/w4jJB7q2pivp25AiJIi/WX76fUJtU0fNzHXkqvsObxLTdogKi0Q1N3FeTVWn09B4
+         Nye3xN+U91oqA==
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
+Message-ID: <20201208125250.GB9925@work>
+References: <20201122170822.21715-1-mani@kernel.org>
+ <20201122170822.21715-3-mani@kernel.org>
+ <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+ <X8ZmfbQp7/BGgxec@localhost>
+ <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+ <X89OOUOG0x0SSxXA@localhost>
+ <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+xB0cdJxTvLzRRQuKQkStF+1AN179_8RUvDrpjZy+Utyg@mail.gmail.com>
+In-Reply-To: <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 09:37:54PM +0100, Andrey Konovalov wrote:
-> Hi,
+On Tue, Dec 08, 2020 at 01:41:52PM +0100, Linus Walleij wrote:
+> On Tue, Dec 8, 2020 at 10:57 AM Johan Hovold <johan@kernel.org> wrote:
+> > [Me]
 > 
-> I'm getting a crash when trying to load a module into a kernel that
-> uses __ro_after_init static labels, see the crash below. The label is
-> defined and initialized in the main kernel binary, and is used in the
-> module. Is this not supported?
+> > > A better approach might be to create an array of names
+> > > prepended with something device-unique like the USB
+> > > bus topology? Or do we need a helper to help naming the
+> > > GPIOs? What would be helpful here?
+> > >
+> > > name = kasprintf(GFP_KERNEL, "%s-NAME", topology_str);
+> >
+> > Well we started discussing this back when we only had the sysfs
+> > interface which suffered from the same problem. I thought the chardev
+> > interface was supposed to get rid of the assumption of a flat name
+> > space? Perhaps in v3 of the ABI. ;P
+> 
+> It's "mostly true" that the line names are unique per-chip actually,
+> because people don't like the nasty warning message. I wonder
+> if anything would really break if I go in and make a patch to
+> enforce it, since all drivers passing ->names in the gpiochip
+> are in the kernel we can check them all.
+> 
+> If the names are unique-per-chip, we can add a restriction like this
+> with the requirement:
+> 
+> depends on !GPIO_SYSFS
+> 
 
-Clearly not, but also, the whole RO thing never went past the
-maintainers (it also seems to be missing a MAINTAINERs entry).
+This sounds reasonable to me.
 
->  static_key_set_linked kernel/jump_label.c:368
->  jump_label_add_module+0x1ec/0x2dc kernel/jump_label.c:658
->  jump_label_module_notify+0x40/0xa4 kernel/jump_label.c:736
+> so it can't even be compiled in if someone is using the sysfs.
+> 
+> That should solve the situation where people are (ab)using
+> the sysfs and getting name collisions as a result.
+> 
+> Then it should be fine for any driver to provide a names array
+> provided all the names are unique on that gpiochip.
+> 
+> I doubt it would break anything, but let's see what Geert says.
+> He has some special usecases in the gpio-aggregator driver
+> which will incidentally look for just linenames when
+> aggregating gpios, but I feel it is a bit thick for it to work
+> with multiple hot-pluggable GPIO chips as well, I don't think
+> that is its usecase. (We all want to be perfect but...)
+> 
+> > But what about any other non-pluggable
+> > IC, which provides a few named GPIO lines and of which there could be
+> > more than one in a system?
+> 
+> I think if there are such, and the lines are unique per-chip
+> we should make the drivers depend on !GPIO_SYSFS.
+> 
+> > The topology is already encoded in sysfs and it seems backwards to have
+> > each and every gpio driver reconstruct it.
+> 
+> I agree.
+> 
+> I think if this driver already has unique line-names per-gpiochip
+> we could actually make it depend on !GPIO_SYSFS and
+> just add the names.
+> 
 
-This, it needs to modify the key, which is RO, to add a list of sites
-from the module.
+Sure thing.
 
-It could probably be fixed..
+Johan, if you are okay with this I can resubmit incorporating Linus's
+suggestion.
+
+Thanks,
+Mani
+
+> Yours,
+> Linus Walleij
