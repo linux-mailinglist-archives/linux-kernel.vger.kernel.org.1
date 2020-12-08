@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C2F2D34A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F852D34E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgLHUyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:54:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726738AbgLHUy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:54:28 -0500
-Date:   Tue, 8 Dec 2020 19:31:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607455924;
-        bh=CW97W/gl30N7Tnql+tuh176jP24e3MGWQGOTMcWXg7U=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lV+2IugjN3UFo+knFDsSpVaQlyXTJ7I7B4tCE9kOPw7gmQx0vV7eOHPtPPodOjgIV
-         xoH7XUFcQK7nVt0AY2KlJL0bnkW0WStPiC/nxVQYDqSjhzep7g0bZrkGYil3sKlMaU
-         KpSGcWlSErt6QN6a/2GTsoIOPgh2lAYRXzeEbx/3J0Iq8mEyuasca1ufSlyvyRhor2
-         ItPYYU3j0hsmW+qQjmi2qlDS/jz41/g96H4XF3TeyvbR+EdZSl4Xfz1OEMfQTKevTM
-         Kyf7LNZ1uypSXCyC/Mkru0Adstn/0VC8YPfzGiqmC/hWWzeGTQ4RBWq6sDqrnn9cLx
-         C7xFTYGlBhHMQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Codrin.Ciubotariu@microchip.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
-        lars@metafoo.de
-Subject: Re: [RFC PATCH] ASoC: pcm_dmaengine: Add support for BE DAIs
-Message-ID: <20201208193156.GJ6686@sirena.org.uk>
-References: <20201202085838.1779525-1-codrin.ciubotariu@microchip.com>
- <20201208170422.GG6686@sirena.org.uk>
- <7ab6bffa-f88e-3e2b-287a-89eee2c01819@microchip.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sdJFN6SSISdF2ksn"
-Content-Disposition: inline
-In-Reply-To: <7ab6bffa-f88e-3e2b-287a-89eee2c01819@microchip.com>
-X-Cookie: Do not dry clean.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726840AbgLHVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:05:50 -0500
+Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21183 "EHLO
+        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728556AbgLHVFr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:05:47 -0500
+X-Greylist: delayed 986 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 16:05:45 EST
+ARC-Seal: i=1; a=rsa-sha256; t=1607460498; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=kZQGFf7/7zBQI+Tu5rkWkea4aw58y3OL2B/ASMccEBehDGuv1/bCGOi0DZ3d4HLQgGtuKwrz8OInF2uEBZlDWO774JPFISEg7lLv4QpeIxYkEFj98mQXfhpBL6eVSQQYjMmAp+oKU9mTbqfVRxk7iD5vCj7jS4Q0NI3cghsk4Bk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1607460498; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=H448thm3zMe2xdtoi7eAhSGNHj9gA9Hxr5FioklSPlc=; 
+        b=NlqhkS++rbDTTwlyMH9XVpHU3wCbY5Dx8nmDwVnmEYzZQKkOcZtDQxj67EXNiDWlBUw/kI0FCC8c/acW3CbzoPrW5eTXuqiZtw34jI0yRsVCCmRo9L9WMhuWgeVnRgbV/poNLMpcH6SePuP5RExEVqEQ3OPXLWsmc1UnOHtL6cs=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        spf=pass  smtp.mailfrom=philipp@uvos.xyz;
+        dmarc=pass header.from=<philipp@uvos.xyz> header.from=<philipp@uvos.xyz>
+Received: from localhost.localdomain (ip-95-222-212-137.hsi15.unitymediagroup.de [95.222.212.137]) by mx.zoho.eu
+        with SMTPS id 1607460495762809.2078998376851; Tue, 8 Dec 2020 21:48:15 +0100 (CET)
+Date:   Tue, 8 Dec 2020 21:48:14 +0100
+From:   Carl Philipp Klemm <philipp@uvos.xyz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-omap@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH] soc: ti: omap-prm: Fix boot time errors for rst_map_012
+ bits 0 and 1
+Message-Id: <20201208214814.a0027492ca1971579fb0090d@uvos.xyz>
+In-Reply-To: <20201208140802.38757-1-tony@atomide.com>
+References: <20201208140802.38757-1-tony@atomide.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue,  8 Dec 2020 16:08:02 +0200
+Tony Lindgren <tony@atomide.com> wrote:
 
---sdJFN6SSISdF2ksn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> We have rst_map_012 used for various accelerators like dsp, ipu and iva.
+> For these use cases, we have rstctrl bit 2 control the subsystem module
+> reset, and have and bits 0 and 1 control the accelerator specific
+> features.
+> 
+> If the bootloader, or kexec boot, has left any accelerator specific
+> reset bits deasserted, deasserting bit 2 reset will potentially enable
+> an accelerator with unconfigured MMU and no firmware. And we may get
+> spammed with a lot by warnings on boot with "Data Access in User mode
+> during Functional access", or depending on the accelerator, the system
+> can also just hang.
+> 
+> This issue can be quite easily reproduced by setting a rst_map_012 type
+> rstctrl register to 0 or 4 in the bootloader, and booting the system.
+> 
+> Let's just assert all reset bits for rst_map_012 type resets. So far
+> it looks like the other rstctrl types don't need this. If it turns out
+> that the other type rstctrl bits also need reset on init, we need to
+> add an instance specific reset mask for the bits to avoid resetting
+> unwanted bits.
+> 
+> Reported-by: Carl Philipp Klemm <philipp@uvos.xyz>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> Cc: Suman Anna <s-anna@ti.com>
+> Cc: Tero Kristo <t-kristo@ti.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/soc/ti/omap_prm.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
+> --- a/drivers/soc/ti/omap_prm.c
+> +++ b/drivers/soc/ti/omap_prm.c
+> @@ -860,6 +860,7 @@ static int omap_prm_reset_init(struct platform_device *pdev,
+>  	const struct omap_rst_map *map;
+>  	struct ti_prm_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>  	char buf[32];
+> +	u32 v;
+>  
+>  	/*
+>  	 * Check if we have controllable resets. If either rstctrl is non-zero
+> @@ -907,6 +908,16 @@ static int omap_prm_reset_init(struct platform_device *pdev,
+>  		map++;
+>  	}
+>  
+> +	/* Quirk handling to assert rst_map_012 bits on reset and avoid errors */
+> +	if (prm->data->rstmap == rst_map_012) {
+> +		v = readl_relaxed(reset->prm->base + reset->prm->data->rstctrl);
+> +		if ((v & reset->mask) != reset->mask) {
+> +			dev_dbg(&pdev->dev, "Asserting all resets: %08x\n", v);
+> +			writel_relaxed(reset->mask, reset->prm->base +
+> +				       reset->prm->data->rstctrl);
+> +		}
+> +	}
+> +
+>  	return devm_reset_controller_register(&pdev->dev, &reset->rcdev);
+>  }
+>  
+> -- 
+> 2.29.2
 
-On Tue, Dec 08, 2020 at 07:26:35PM +0000, Codrin.Ciubotariu@microchip.com w=
-rote:
+Works for me on xt875, idle now also works without userspace hack.
 
-> I do not know too much about the dummy PCM. It seems like it is creating=
-=20
-> a card without DPCM links and fakes a buffer, which is not quite what I=
-=20
-> need. I will investigate more.
-
-Right, that's what I was imagining the second runtime you proposed
-looking like.
-
---sdJFN6SSISdF2ksn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/P1KsACgkQJNaLcl1U
-h9D/hwgAhqvbHaR1KfxYUOgR8OYqIZ8t+Sk/p3dxSXSsUEyD3k/fio5ln55VJvCH
-bif2/LJGtu1Vzk0h0PI+cq09SbWx4gxgxrDC8j9BpAKQ4ETpDLqVIbqIPGWV6ENO
-Rf5LQa0so/cWjlVfSKtvLZb03OoJTttL1irv+4/ZhpZUmQVSB1rrAf32tX8aenwz
-jmn0Iz7Y5yfAxrXSA9siwgXDYbQt9rusqXKebVY4QCZKuZHXEJ7PbRZHg1ez1irq
-NlSM4GbsRFYgqlfKHx3tUmuasVDRA78FdwVx0b7GwyXUSyNrQ3VfblzoXaUdcYIv
-iPOtzRyuvSMDgcJDs6htIqfIPofnTA==
-=tjP1
------END PGP SIGNATURE-----
-
---sdJFN6SSISdF2ksn--
+Tested-by: Carl Philipp Klemm <philipp@uvos.xyz>
