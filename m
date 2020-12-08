@@ -2,247 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736362D3710
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960A02D3716
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731775AbgLHXmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:42:18 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46824 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgLHXmL (ORCPT
+        id S1730301AbgLHXqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729665AbgLHXqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:42:11 -0500
-Received: by mail-ot1-f68.google.com with SMTP id w3so431307otp.13;
-        Tue, 08 Dec 2020 15:41:55 -0800 (PST)
+        Tue, 8 Dec 2020 18:46:01 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A59C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:45:21 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id o5so13710585pgm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:45:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yOCVuAKud10PIJTv8iPXgZJtUqb9EqW2D73UVatsILw=;
+        b=C4+PcK+/ORS0a1Oi66iXuWdF7Y2wtYlDIWlmqI0PZ13LoKh1blc3FfywDyGJoB6dZB
+         BRbNxBDjq1k292vaxBzqvRan3cstZFCKHtKw088dn3QRHhBaCcIx9afmRcBkuoCAXhdL
+         PzYwO5BkDS6swOkFgzQpl/8OCqRxpBK6zXpOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mCzrahJfQzjNGyApJxp330Y639Yd1mbxLODK6PjseoQ=;
-        b=Wrpj1V1N3Vx0P6AMGEWIVjhs3g7Aq8QQXAvfnpPScUH5A8Dm5TQDcEgBxD4JWgpQ/6
-         zgidSaxXnfpHUW0sAHQ5gTzHdv2XnII0Ncdju1x3IOFoIM0FOT1SGbfl8Sgk9z9Mzsaz
-         Vj3BnkycNioaD+Ol4LOqIRMLAACzmuewoR53m25iofGncksVFqzO+cGn2R/oDHGKT5Ce
-         pHtx06JJvLbpdrq33TBRbP/LOEjumG1nzoCeaGkLuLckNJv+vi9pKBSUi/sQX8xblDJs
-         fg/OSJZI4GJ2ULPfKVXArFRQmd25iMdt9NZaJW56xmL08XzQ6ZWX6oncRArXFPChJgDc
-         w+zg==
-X-Gm-Message-State: AOAM533oGeAo4MDTFk7jqoBcRD85Mc7C0uvR8DtVPfcIM4OhLJt2uL6N
-        VgcNCm4cOuML0oS6yfj2xQ==
-X-Google-Smtp-Source: ABdhPJyWhVNI/C53Lkge1VqK7cYq8nLg5rgXAvJRTD/JdewfYLumeU4nJgeCLYUAEw0d3qtY0FuK2g==
-X-Received: by 2002:a9d:73d1:: with SMTP id m17mr420711otk.187.1607470889716;
-        Tue, 08 Dec 2020 15:41:29 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p4sm79330oib.24.2020.12.08.15.41.28
+        bh=yOCVuAKud10PIJTv8iPXgZJtUqb9EqW2D73UVatsILw=;
+        b=Mr1hDlhF3PRWh3/zb/2gJCLzWwE0jRsnKd43l4DDllQ+GyVlTwGR1G7E9XLzFFQJbA
+         xZB/NBmZDDtNgpLIMx0szsmzZ2/7Fxu4hDzYo75QAhgzeVPtTr/YxUJUWwKYNCdg5ipK
+         V+1yzPT9CyAmY1Yt/JGVcS8Ymc50I9lnPEkhLB15I2l/XsJpZDEeiPiflrx7ZI8+hSSe
+         1P/bc+nSqvsgxBhbTHHpd0V2SGlPMp1YZbe3Yv5xua4tkoqlPuQYcHTN0YljN+E8WicT
+         W+F9foAw/4SlCdIFBHSFiKdDJrIuyx0TJXok1Zutt9uxueTsmOxIXGEBy+eFk3ktQT9/
+         LTLw==
+X-Gm-Message-State: AOAM532bJHCRjd2vMPYxHz8JBdJ7+rFYrdgFcHtSUPOb2IjMs+ogHriv
+        qxCYYLVhkNCjIb6ar3DO+t1hwQ==
+X-Google-Smtp-Source: ABdhPJyvPcCiKEX7ONzVKFWom43k5I7abeSnOkUhBj4DSzT25k5f2V4W40gIC5h6VbUPiGiqfeD7Rw==
+X-Received: by 2002:a63:5a52:: with SMTP id k18mr400053pgm.407.1607471120842;
+        Tue, 08 Dec 2020 15:45:20 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id u12sm280658pfn.88.2020.12.08.15.45.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 15:41:28 -0800 (PST)
-Received: (nullmailer pid 3334104 invoked by uid 1000);
-        Tue, 08 Dec 2020 23:41:27 -0000
-Date:   Tue, 8 Dec 2020 17:41:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Wendy Liang <wendy.liang@xilinx.com>
-Cc:     michal.simek@xilinx.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com,
-        rajan.vaja@xilinx.com, tejas.patel@xilinx.com,
-        manish.narani@xilinx.com, ravi.patel@xilinx.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 1/9] dt-binding: soc: xilinx: ai-engine: Add AI engine
- binding
-Message-ID: <20201208234127.GA3303888@robh.at.kernel.org>
-References: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com>
- <1606722505-16194-2-git-send-email-wendy.liang@xilinx.com>
+        Tue, 08 Dec 2020 15:45:20 -0800 (PST)
+Date:   Tue, 8 Dec 2020 15:45:19 -0800
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
+Message-ID: <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
+References: <20201203030846.51669-1-pmalani@chromium.org>
+ <20201208093734.GD680328@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606722505-16194-2-git-send-email-wendy.liang@xilinx.com>
+In-Reply-To: <20201208093734.GD680328@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 29, 2020 at 11:48:17PM -0800, Wendy Liang wrote:
-> Xilinx AI engine array can be partitioned statically for different
-> applications. In the device tree, there will be device node for the AI
-> engine device, and device nodes for the statically configured AI engine
-> partitions. Each of the statically configured partition has a partition
-> ID in the system.
+Hi Heikki,
+
+Thanks a lot for looking at the patch.
+
+On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
 >
-> Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
-> ---
->  .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 +++++++++++++++++++++
->  1 file changed, 126 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
-> new file mode 100644
-> index 0000000..1de5623
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
-> @@ -0,0 +1,126 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/xilinx/xlnx,ai-engine.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Xilinx AI Engine
-> +
-> +maintainers:
-> +  - Wendy Liang <wendy.liang@xilinx.com>
-> +
-> +description: |+
+> On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
+> > Add the Type C bus for plug alternate modes which are being
+> > registered via the Type C connector class. This ensures that udev events
+> > get generated when plug alternate modes are registered (and not just for
+> > partner/port alternate modes), even though the Type C bus doesn't link
+> > plug alternate mode devices to alternate mode drivers.
+>
+> I still don't understand how is the uevent related to the bus? If you
+> check the device_add() function, on line 2917, kobject_uevent() is
+> called unconditionally. The device does not need a bus for that event
+> to be generated.
 
-You don't need '|' unless there's formatting to preserve.
+My initial thought process was to see what is the difference in the adev device
+initialization between partner altmode and plug altmode (the only difference I saw in
+typec_register_altmode() was regarding the bus field).
 
-> +  The Xilinx AI Engine is a tile processor with many cores (up to 400) that
-> +  can run in parallel. The data routing between cores is configured through
-> +  internal switches, and shim tiles interface with external interconnect, such
-> +  as memory or PL.
-> +
-> +properties:
-> +  compatible:
-> +    const: xlnx,ai-engine-v1.0
+Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
+so we don't know if it succeeded or not.
 
-This is soft logic? If not, don't use version numbers.
+In the case of cable plug altmode, I see it fail with the following error[1]:
 
-> +
-> +  reg:
-> +    description: |
-> +      Physical base address and length of the device registers.
+[  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
 
-That's every 'reg' property. Drop.
+I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
 
-> +      The AI engine address space assigned to Linux is defined by Xilinx
-> +      platform design tool.
-> +
-> +  '#address-cells':
-> +    enum: [2]
+static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
+{
+	struct kobj_type *ktype = get_ktype(kobj);
 
-const: 2
+	if (ktype == &device_ktype) {
+		struct device *dev = kobj_to_dev(kobj);
+		if (dev->bus)
+			return 1;
+		if (dev->class)
+			return 1;
+	}
+	return 0;
+}
 
-> +    description: |
-> +      size of cell to describe AI engine range of tiles address.
-> +      It is the location of the starting tile of the range.
-> +      As the AI engine tiles are 2D array, the location of a tile
-> +      is presented as (column, row), the address cell is 2.
-> +
-> +  '#size-cells':
-> +    enum: [2]
-> +    description: |
-> +      size of cell to describe AI engine range of tiles size.
-> +      As the AI engine tiles are 2D array, the size cell is 2.
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +    description: phandle to the associated power domain
-> +
-> +  interrupts:
-> +    maxItems: 3
-> +
-> +  interrupt-names:
-> +    description: |
-> +      Should be "interrupt1", "interrupt2" or "interrupt3".
+So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
+so this check likely returns 1 in that case.
 
-Really, not useful names. If you do have names, they should be a schema, 
-not freeform text.
+In case the provided fix is not right or acceptable, an alternative I can think of is:
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index c13779ea3200..ecb4c7546aae 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -517,6 +517,9 @@ typec_register_altmode(struct device *parent,
+        if (is_typec_partner(parent))
+                alt->adev.dev.bus = &typec_bus;
+ 
++       if (is_typec_plug(parent))
++               alt->adev.dev.class = typec_class;
++
+        ret = device_register(&alt->adev.dev);
+        if (ret) {
+                dev_err(parent, "failed to register alternate mode (%d)\n",
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - power-domains
-> +  - interrupt-parent
+This too ensures that the filter function returns a 1.
 
-Generally, never required because it could be in the parent node.
+Kindly LMK which way (if any) would you prefer.
 
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +patternProperties:
-> +  "^aie_partition@[0-9]+$":
+>
+> Also, I don't understand how are the cable plug alt modes now
+> prevented from being bind to the alt mode drivers?
 
-aie-partition@
+Sorry about this; I am unable to test this out. I just based the observation on the line in Documentation/driver-api/usb/typec_bus.rst
+(Cable Plug Alternate Modes) : "The alternate mode drivers are not bound to cable plug alternate mode devices,
+only to the partner alternate mode devices" . I don't completely understand the bus.c code yet, so assumed that the code
+there checked for the partner type during bind attempts.
 
-The unit-address is just the 1st cell of reg (the row)? Or needs to be 
-row and column, in which case you'd want something like '@0,0'. Also, 
-unit-address values are typically hex, not decimal.
+Of course, based on what the eventual solution is, this statement may no longer be required and I can remove it from the commit message <or>
+I can amend the Documentation to specify that cable plug alt modes can bind to alt mode drivers.
 
-> +    type: object
-> +    description: |
-> +      AI engine partition which is a group of column based tiles of the AI
-> +      engine device. Each AI engine partition is isolated from the other
-> +      AI engine partitions. An AI engine partition is defined by Xilinx
-> +      platform design tools. Each partition has a SHIM row and core tiles rows.
-> +      A SHIM row contains SHIM tiles which are the interface to external
-> +      components. AXI master can access AI engine registers, push data to and
-> +      fetch data from AI engine through the SHIM tiles. Core tiles are the
-> +      compute tiles.
-> +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          It describes the group of tiles of the AI engine partition. It needs
-> +          to include the SHIM row. The format is defined by the parent AI engine
-> +          device node's '#address-cells' and '#size-cells' properties. e.g. a v1
-> +          AI engine device has 2D tiles array, the first row is SHIM row. A
-> +          partition which has 50 columns and 8 rows of core tiles and 1 row of
-> +          SHIM tiles will be presented as <0 0 50 9>.
+Thanks,
 
-You should be able to write some constraints like max row and column 
-values?
+-Prashant
 
-> +
-> +      label:
-> +        maxItems: 1
-
-'label' is not an array. Why do you need label?
-
-> +
-> +      xlnx,partition-id:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: |
-> +          AI engine partition ID, which is defined by Xilinx platform design
-> +          tool to identify the AI engine partition in the system.
-
-I find the use of 'reg' a bit odd here. Maybe using 'reg' for partition 
-would make more sense? Which is more closely associated with how you 
-address the partition?
-
-> +
-> +    required:
-> +      - reg
-> +      - xlnx,partition-id
-> +    additionalProperties: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    bus {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      ai_engine: ai-engine@20000000000 {
-> +        compatible = "xlnx,ai-engine-v1.0";
-> +        reg = <0x200 0x0 0x1 0x0>;
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +        power-domains = <&versal_firmware 0x18224072>;
-> +        interrupt-parent = <&gic>;
-> +        interrupts = <0x0 0x94 0x4>,
-> +                     <0x0 0x95 0x4>,
-> +                     <0x0 0x96 0x4>;
-> +        interrupt-names = "interrupt1", "interrupt2", "interrupt3";
-> +
-> +        aie_partition0: aie_partition@0 {
-> +                /* 50 columns and 8 core tile rows + 1 SHIM row */
-> +                reg = <0 0 50 9>;
-> +                xlnx,partition-id = <1>;
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.7.4
-> 
+[1] https://elixir.bootlin.com/linux/v5.10-rc7/source/lib/kobject_uevent.c#L516
+[2] https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/base/core.c#L1840
