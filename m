@@ -2,227 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5FF2D2746
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307DC2D2749
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbgLHJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:16:35 -0500
-Received: from mail-eopbgr30056.outbound.protection.outlook.com ([40.107.3.56]:21889
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726114AbgLHJQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:16:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l641LYvVh82PwmNXVWXuQDlII1iuHAI8K+yoaC011QwdtrkV6ZMBdU6UO/54Id1JPJQXBKOSFyLtEHbXIxMI9AY5Nb4AGB1FphqeGrY96uNJQIUx9GSVTYjr/ByxeRCQ9Npq36KJpoi/3Oz6SDW723CoL0qQZt3Ww3Ip/AWFLg+PlYLm+jBmoU/kvqQE6yDDMDBNorAu9d0cK8+lBn3xUWf6kZSq70kmyG1gw8VN3Lzh+Veu0GkkFuopEVE/HHcO62frFVvgpvBCJ1WvFMm4Rn9B8QxoOWMLKmZcGFVq5FRAx39hfZUxCIeG9mUjymZ9wcNwOAC14urYqGCP1+AGSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eBK7j0Q8HUmD1nMfqnuTISA9PK2QShQMHcKmHkK3cfk=;
- b=UZ3Dw2S6u/vvUk8k0pkTmg6EtlGVYW0Rowjhk5ukB07idKGzRUpnnrbr4ksbooYYdORnpylFDSCyMtkC6Pw/Dq2bUEQ1e9s+/e6eqix+Op/EORWAp632dyIwRgoXQM5SHARSPH+BL2UECJhZPyeYY1Ex80rfIbh3fy0p1YibhfXuZNQbrkzc6smECemSN9TMmykgtnrOpBe7lfrsfod7TodjyfpQIiCO5hyaNp8OJpr612WAXAHHv1YcPlzOK9TgsSVW7NjKOd4mTGTHmwPW4e0wZFLEx841BrHiVpvQFh5blDLvxqh6fhgqdztCpUpFBuPJ4oo4HyIwDzze7CRYSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eBK7j0Q8HUmD1nMfqnuTISA9PK2QShQMHcKmHkK3cfk=;
- b=VCov1bcKAx335kK8kArDAzBdfm/NjVkETZ+V0GtdhqJ+yYljflCp3spn1H0eqyehGpg5nXqGqRaRWdCumxF1qjCpF9i5iNKq6YpF7QRYjftT9iBoEzQtWcGTeWoZ8TXtBxbkovcbB4wQyIjH39twOWjt9noQfHbLQUigE8knP+w=
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
- by DB7PR04MB5994.eurprd04.prod.outlook.com (2603:10a6:10:89::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
- 2020 09:15:46 +0000
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 09:15:45 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Pawel Laszczak <pawell@cadence.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "balbi@kernel.org" <balbi@kernel.org>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "kurahul@cadence.com" <kurahul@cadence.com>,
-        "nsekhar@ti.com" <nsekhar@ti.com>,
-        "a-govindraju@ti.com" <a-govindraju@ti.com>
-Subject: RE: [PATCH v5 00/10] Introduced new Cadence USBSSP DRD Driver.
-Thread-Topic: [PATCH v5 00/10] Introduced new Cadence USBSSP DRD Driver.
-Thread-Index: AQHWzIV6F7b4cz4k60+SiLt/tGCHOKns7DlQ
-Date:   Tue, 8 Dec 2020 09:15:45 +0000
-Message-ID: <DBBPR04MB7979029B595E54BB150151848BCD0@DBBPR04MB7979.eurprd04.prod.outlook.com>
-References: <20201207103227.606-1-pawell@cadence.com>
-In-Reply-To: <20201207103227.606-1-pawell@cadence.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: cadence.com; dkim=none (message not signed)
- header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [180.164.155.184]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 15dd8d29-410e-4e2a-0165-08d89b59d885
-x-ms-traffictypediagnostic: DB7PR04MB5994:
-x-microsoft-antispam-prvs: <DB7PR04MB5994C2DEB190F3BAF3081D968BCD0@DB7PR04MB5994.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yn3AuO+yaehlg3RZKw32hRbR7e56jiQr/UfcWsvTc6I/DUBJXw0w6i98dBXuFal1WKEGN6PuQ6v7QhdNxvmaiueHXSrtK1+p7PFq9htGFRgIC2T+qGyvE4QiCGC4zEhmaxq5gtOww/nSZL+Nh0WYM+1PTPPRNNOCiVt6rfkwW8cT28jWZpIocfov98hFMz2BmdMkomupkSZbQmW+/ZqzgfpbElYp0wvUhtzdXRHLxwtJJdVuLjQWpQ3SIYnEcrD1rWrV42cnsEA1nqwBnatm2UCWLqcXTi9HeOSrsWuGQ6vfH6we/V8YdSg13d8Q2A9hnz/nl36ns/jWfS/HYEka0Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(508600001)(71200400001)(7696005)(86362001)(8936002)(44832011)(8676002)(26005)(66556008)(83380400001)(66946007)(66476007)(66446008)(76116006)(2906002)(5660300002)(7416002)(52536014)(54906003)(6506007)(6916009)(9686003)(55016002)(64756008)(186003)(33656002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Z29Td0ZzalFBNnRZY0NpejJ5WElqWElSU2JudVJ6bXh6VlBWQ3hkemwyNlJz?=
- =?utf-8?B?WjBDV1dFSUJPLzZEdVdZck8vclJPL0xTdzVlVHJkR2tqRG9mYS9VSDNrd09J?=
- =?utf-8?B?ZVhIam85U1BWeFFldDlxZWhHR3FxNmlYMlk2Z2UzNlFINTJmODdMU0lOajVC?=
- =?utf-8?B?TEJNM2NvYjNoVUMzaUFJRU5IWjkwUnpnWWFxUnU1WTUxM1BjVzBVNTZadm4x?=
- =?utf-8?B?bThyNEZLS3V4SXByWGJXaWs1Mll3aEZHR2l0T2xwbHBrWEFxbUVCcHJSODFk?=
- =?utf-8?B?NkNCWHRia05xYmlDNkVGbnI3WHF0dFNFM2MyUVg5Z1Y1aE1hYW9EbVNXNDUr?=
- =?utf-8?B?QWExdEJXc0ZsL0FTc3M5N3I0TVhhZUJ4VDcxUWlBVEJNZ2o2Zk1FQ3pDZGpU?=
- =?utf-8?B?elhqeHRxMGpsOXJMS3dzbi9ZanBiQU5hNTU4ZDArK0lBNDh6VGMreU12RzhK?=
- =?utf-8?B?d1p0OW92Nm9sNmtvTkZwQXZuRnk1bTN1d2N3UjB6Q1ptQ1FvNkdhT0prWnh3?=
- =?utf-8?B?aHNYY3NQRVVPVW9EZnBsMEIzNFdKcUF3dFh6ZnB4OE5zVGVoaTFxNHBKSTFD?=
- =?utf-8?B?TXVXNHNFd2U5SlhzOHRjKzQ3M0ZpSE9hUldyVTZRc0pkTHFQWExVb21IZzNL?=
- =?utf-8?B?L3p5T1VycHRmQnB4SC9uNG1HWkZoRmVEOXExOU5sZHYyNGFlSTZUa0RQNG5Y?=
- =?utf-8?B?SGhVSkVZaGhGdmxiZnZrZjZibU53bVBNYWtuQXcyWXdCT05DVnlBQ0RtQ0dK?=
- =?utf-8?B?TFcweEtwdGpQZlBGMUtpTWNGZjFWaC8rVk0wZ0dGRGV5VDBBMm9OOWZZMmp6?=
- =?utf-8?B?YU9BNk9NcDU0Q3JtSmJySnl1UnAza1A2ZFpzVEliRldXVWxiUys3WEYwVkMy?=
- =?utf-8?B?VGg5K3ltbWk4S1d3aGxZYmg5OEQ4OWpoL0xyM05wckJpZFRsa1RTV2dLNms1?=
- =?utf-8?B?UHFCRnFNaENTNTZ4aVZVaXE0VEtHTDlZVURiWDhrTkxKY01VaDhiNVFoVWxQ?=
- =?utf-8?B?REx2TEhCZHI3YzRkMTNadmQvSlFScFBFaTIxVHpnYWNlbGNPYmxibzhGNDN3?=
- =?utf-8?B?Q0QyQ1JvRTdva0l5ZGFEOTE5dEZ5NVZnQ2lwdXZXcDdyOEZxUERXUWE4L2hM?=
- =?utf-8?B?ZjRscllMdVVaeHBvZXNjT1YxNGk4UGEvaHgrWHZqRG1pZnE5MkV0cEtCVTAr?=
- =?utf-8?B?V0I2Q1BlTEQySDFGd21WZ3ljVDFLdnRIL2lGNklYblJTTnkvT3hjZDlMVXcv?=
- =?utf-8?B?dk50SHgrK3pPOG93VG9iSEp3Y0hwRVEzdExwQWZNTWRNaGsrcmhjRHBoZkxB?=
- =?utf-8?Q?ue2AbIBwP/F6Q=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728558AbgLHJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgLHJQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:16:46 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AABC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:16:00 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id u19so16834658edx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tKbroCBz7rOKy383pNZ1k7Wl5tQXAIwK8AanppyWRXA=;
+        b=ynaZElSiXc5gn43s0Nrkcc8u6JtLfrLNVgncDYewtSkJU8e8vT/BJSVAcUJ3bPXrrL
+         YfNVfcz9EllKZyAPS7fP6p73r2Yb1BEqHq0fchHuIbtZQwDDN7DWi4FNe+UYHXovmwXQ
+         NoLttNbBOoWzu5jeLSE3InEwSD/y07nkcbe1TUxUHWw0mR3dEfs2v6C4jj4cctGzemRP
+         CVyhROuLp29sUKjDu30S/XqtrFLwtI+G7SvUEflhUjGxe7KIhe8fiiAaJabfdxfQraRz
+         Ybb0V7xVfQJBiKQTg4MfZ/T8rglXkeqdq4fBQPBQGt5yOJHhKCAWuqveOVEPAmEGSuBS
+         Y5ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tKbroCBz7rOKy383pNZ1k7Wl5tQXAIwK8AanppyWRXA=;
+        b=nUp96p0vtz1tkzuPToSpazpIC26AzQeWdlSnxN7uaX7/NkW9qtxGZGbwtd1aJG/rES
+         ZhxZDv03vFlkeccjDZQoKY+UXisEDnO+9AAy9HMq22fLMSbzrbr7mlO4LXycby2xsnfl
+         JPus+naVskGbGxRGgh85iFeP7BGDtboRQ10LPXjzRFfhmUjocKq/sQdaM8R536zl5u4a
+         EKBD2RGZxtSxmBkSi9Z+qJWJHguY4n6iH9KnKrMI0wQfMDDHgKNtzgbBvQ/ThkNscGRr
+         7GhwZo1HOyq+hfPCbm5qEHDuJzcoB0M1qi4Uqf/hTyh6xQGHR7VotOofx/hdWEnPVrM+
+         HbFw==
+X-Gm-Message-State: AOAM531FcRuEFVxGbC22bsdXM7XGDzEqn10sY3aFqD66d2M13I/ICEOO
+        EYRscq0fytwIAJZLhEkNAoTu0lLBFAj1CzXj0hmxbg==
+X-Google-Smtp-Source: ABdhPJwrCpNw6Q4nOUFUhX6r5AE5MDGZtLQsv27hIB8jh4ievkFMx/MJInj7m07ISCBqR9rOWG3KTQO/DAgYlzWNz2c=
+X-Received: by 2002:a50:b742:: with SMTP id g60mr1530053ede.113.1607418959063;
+ Tue, 08 Dec 2020 01:15:59 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15dd8d29-410e-4e2a-0165-08d89b59d885
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 09:15:45.8720
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yj0VmJK6yQXHuHcOYltjkPB6b77sEwq5VQtCI6yXLreL3/9/DAfHxewVD7INLkHUIOLmjvfHMxe/vnR1k1LTXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5994
+References: <20201207203816.18269-1-info@metux.net>
+In-Reply-To: <20201207203816.18269-1-info@metux.net>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 8 Dec 2020 10:15:48 +0100
+Message-ID: <CAMpxmJWinRPUrmpcqsLaE62uAQpZ3Cb1ys3s7oHmeKM6rUUqQg@mail.gmail.com>
+Subject: Re: [PATCH v3] drivers: gpio: put virtual gpio device into their own submenu
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiANCj4gVGhlIENhZGVuY2UgVVNCU1MgRFJEIENvbnRyb2xsZXIgaXMgYSBoaWdobHkgY29u
-ZmlndXJhYmxlIElQIENvcmUgd2hpY2ggY2FuDQo+IGJlIGluc3RhbnRpYXRlZCBhcyBEdWFsLVJv
-bGUgRGV2aWNlIChEUkQpLCBQZXJpcGhlcmFsIE9ubHkgYW5kIEhvc3QgT25seQ0KPiAoWEhDSSlj
-b25maWd1cmF0aW9ucy4NCj4gDQo+IFRoZSBjdXJyZW50IGRyaXZlciBoYXMgYmVlbiB2YWxpZGF0
-ZWQgd2l0aCBGUEdBIGJ1cm5lZC4gV2UgaGF2ZSBzdXBwb3J0IGZvcg0KPiBQQ0llIGJ1cywgd2hp
-Y2ggaXMgdXNlZCBvbiBGUEdBIHByb3RvdHlwaW5nLg0KPiANCj4gVGhlIGhvc3Qgc2lkZSBvZiBV
-U0JTUy1EUkQgY29udHJvbGxlciBpcyBjb21wbGlhbmNlIHdpdGggWEhDSSBzcGVjaWZpY2F0aW9u
-LCBzbw0KPiBpdCB3b3JrcyB3aXRoIHN0YW5kYXJkIFhIQ0kgTGludXggZHJpdmVyLg0KPiANCj4g
-VGhlIGRldmljZSBzaWRlIG9mIFVTQlNTIERSRCBjb250cm9sbGVyIGlzIGNvbXBsaWFudCB3aXRo
-IFhIQ0kuDQo+IFRoZSBhcmNoaXRlY3R1cmUgZm9yIGRldmljZSBzaWRlIGlzIGFsbW9zdCB0aGUg
-c2FtZSBhcyBmb3IgaG9zdCBzaWRlLCBhbmQgbW9zdA0KPiBvZiB0aGUgWEhDSSBzcGVjaWZpY2F0
-aW9uIGNhbiBiZSB1c2VkIHRvIHVuZGVyc3RhbmQgaG93IHRoaXMgY29udHJvbGxlcg0KPiBvcGVy
-YXRlcy4NCj4gDQo+IFRoaXMgY29udHJvbGxlciBhbmQgZHJpdmVyIHN1cHBvcnQgRnVsbCBTcGVl
-ZCwgSGlnaHQgU3BlZWQsIFN1cHBlciBTcGVlZCBhbmQNCj4gU3VwcGVyIFNwZWVkIFBsdXMgVVNC
-IHByb3RvY29sLg0KPiANCj4gVGhlIHByZWZpeCBjZG5zcCB1c2VkIGluIGRyaXZlciBoYXMgY2hv
-c2VuIGJ5IGFuYWxvZ3kgdG8gY2RuMyBkcml2ZXIuDQo+IFRoZSBsYXN0IGxldHRlciBvZiB0aGlz
-IGFjcm9ueW0gbWVhbnMgUExVUy4gVGhlIGZvcm1hbCBuYW1lIG9mIGNvbnRyb2xsZXIgaXMNCj4g
-VVNCU1NQIGJ1dCBpdCdzIHRvIGdlbmVyaWMgc28gSSd2ZSBkZWNpZGVkIHRvIHVzZSBDRE5TUC4N
-Cj4gDQo+IFRoZSBwYXRjaCAxOiBhZGRzIHN1cHBvcnQgZm9yIERSRCBDRE5TUC4NCj4gVGhlIHBh
-dGNoIDI6IHNlcGFyYXRlcyBjb21tb24gY29kZSB0aGF0IGNhbiBiZSByZXVzYWJsZSBieSBjZG5z
-cCBkcml2ZXIuDQo+IFRoZSBwYXRjaCAzOiBtb3ZlcyByZXVzYWJsZSBjb2RlIHRvIHNlcGFyYXRl
-IG1vZHVsZS4NCj4gVGhlIHBhdGNoIDQ6IGNoYW5nZXMgcHJlZml4ZXMgaW4gcmV1c2FibGUgY29k
-ZSBmcm9tIGNkbnMzIHRvIGNvbW1vbiBjZG5zLg0KPiBUaGUgcGF0Y2ggNTogYWRvcHRzIGdhZGdl
-dF9kZXYgcG9pbnRlciBpbiBjZG5zIHN0cnVjdHVyZSB0byBtYWtlIHBvc3NpYmxlDQo+ICAgICAg
-ICAgICAgICB1c2UgaXQgaW4gYm90aCBkcml2ZXJzLg0KPiBUaGUgcGF0Y2hlcyA2LTg6IGFkZCB0
-aGUgbWFpbiBwYXJ0IG9mIGRyaXZlciBhbmQgaGFzIGJlZW4gaW50ZW50aW9uYWxseQ0KPiAgICAg
-ICAgICAgICAgc3BsaXQgaW50byAzIHBhcnQuIEluIG15IG9waW5pb24gc3VjaCBkaXZpc2lvbiBz
-aG91bGQgbm90DQo+ICAgICAgICAgICAgICBhZmZlY3QgdW5kZXJzdGFuZGluZyBhbmQgcmV2aWV3
-aW5nIHRoZSBkcml2ZXIsIGFuZCBjYXVzZSB0aGF0DQo+ICAgICAgICAgICAgICBtYWluIHBhdGNo
-ICg3LzgpIGlzIGxpdHRsZSBzbWFsbGVyLiBQYXRjaCA2IGludHJvZHVjZXMgbWFpbg0KPiAgICAg
-ICAgICAgICAgaGVhZGVyIGZpbGUgZm9yIGRyaXZlciwgNyBpcyB0aGUgbWFpbiBwYXJ0IHRoYXQg
-aW1wbGVtZW50cyBhbGwNCj4gICAgICAgICAgICAgIGZ1bmN0aW9uYWxpdHkgb2YgZHJpdmVyIGFu
-ZCA4IGludHJvZHVjZXMgdHJhY2Vwb2ludHMuDQo+IFRoZSBwYXRjaCA5OiBBZGRzIGNkbnMzIHBy
-ZWZpeGVzIHRvIGZpbGVzIHJlbGF0ZWQgd2l0aCBVU0JTUyBkcml2ZXIuDQo+IHRoZSBwYXRjaCAx
-MDogQWRkcyBVU0JTU1AgRFJEIElQIGRyaXZlciBlbnRyeSB0byBNQUlOVEFJTkVSUyBmaWxlLg0K
-PiANCg0KQXBwbGllZCwgdGhhbmtzLg0KDQpQZXRlcg0KDQo+IENoYW5nbG9nIGZyb20gdjQ6DQo+
-IC0gZml4ZWQgYnVnIGluIGNkbnMzX3BsYXRfcnVudGltZV9yZXN1bWUgYXMgc3VnZ2VzdGVkICBi
-eSBQZXRlciBDaGVuDQo+IC0gZml4ZWQgYnVnIGluIGNkbnMzX3BsYXRfc3VzcGVuZCBhcyBzdWdn
-ZXN0ZWQgIGJ5IFBldGVyIENoZW4NCj4gLSBzb21lIHR5cG9zIGhhdmUgYmVlbiByZW1vdmVkDQo+
-IA0KPiBDaGFuZ2xvZyBmcm9tIHYzOg0KPiAtIGFkZGVkICdUJyB0byBNQUlOVEFJTkVSUyBmaWxl
-IGZvciBDRE5TUCBlbnRyeQ0KPiAtIHVwZGF0ZWQgY29tbW9uIGNvZGUgd2l0aCBsYXRlc3QgY2Ru
-czMgZml4ZXMNCj4gDQo+IENoYW5nbG9nIGZyb20gdjI6DQo+IC0gcmVtb3ZlZCBub3QgdXNlZCBw
-ZGV2IHBhcmFtZXRlciBmcm9tIGNkbnNwX3JlYWQvd2l0ZV82NCBmdW5jdGlvbnMNCj4gLSBmaXhl
-ZCBpbmNvcnJlY3QgdmFsdWUgYXNzaWduZWQgdG8gQ0ROU1BfRU5EUE9JTlRTX05VTSAoMzIgLT4g
-MzEpDQo+IC0gcmVwbGFjZWQgc29tZSBjb25zdGFudCB2YWx1ZSB3aXRoIENETlNQX0VORFBPSU5U
-U19OVU0gbWFjcm8NCj4gLSByZXBsYWNlZCAndHJ1ZScgd2l0aCAnMScgaW4gYml0cyBkZXNjcmlw
-dGlvbiBpbiBjZG5zcC1nYWRnZXQuaCBmaWxlDQo+IC0gZml4ZWQgc29tZSB0eXBvcw0KPiAtIHNv
-bWUgb3RoZXIgbGVzcyBpbXBvcnRhbnQgY2hhbmdlcyBzdWdnZXN0ZWQgYnkgUGV0ZXIgQ2hlbg0K
-PiANCj4gQ2hhbmdsb2cgZnJvbSB2MToNCj4gLSB1cGRhdGVkIGNvbW1vbiBjb2RlIHRvIGxhdGVz
-dCBjZG5zMyBkcml2ZXINCj4gLSBtb3ZlZCBjZG5zcCBkcml2ZXIgZmlsZXMgdG8gY2RuczMgYXMg
-c3VnZ2VzdGVkICBieSBQZXRlciBDaGVuDQo+IC0gcmVtb3ZlZCBkdXBsaWNhdGUgY29kZSBmcm9t
-IGNkbnNwX2VwMF9zZXRfY29uZmlnIGZ1bmN0aW9uDQo+IC0gYWRkZWQgY2RuczMgcHJlZml4ZXMg
-dG8gZmlsZSByZWxhdGVkIHdpdGggVVNCU1MgZHJpdmVyDQo+IC0gdXBkYXRlZCBNQUlOVEFJTkVS
-UyBmaWxlDQo+IC0gZml4ZWQgaXNzdWUgd2l0aCBVMQ0KPiAtIGZpeGVkIGlzc3VlIHdpdGggTDEN
-Cj4gLSBzb21lIGxlc3MgaW1wcm90YW50IGNoYW5nZXMgc3VnZ2VzdGVkICBieSBDaHVuZmVuZyBZ
-dW4NCj4gLS0tDQo+IA0KPiBQYXdlbCBMYXN6Y3phayAoMTApOg0KPiAgIHVzYjogY2RuczM6IEFk
-ZCBzdXBwb3J0IGZvciBEUkQgQ0ROU1ANCj4gICB1c2I6IGNkbnMzOiBTcGxpdCBjb3JlLmMgaW50
-byBjZG5zMy1wbGF0IGFuZCBjb3JlLmMgZmlsZQ0KPiAgIHVzYjogY2RuczM6IE1vdmVzIHJldXNh
-YmxlIGNvZGUgdG8gc2VwYXJhdGUgbW9kdWxlDQo+ICAgdXNiOiBjZG5zMzogUmVmYWN0b3Jpbmcg
-bmFtZXMgaW4gcmV1c2FibGUgY29kZQ0KPiAgIHVzYjogY2RuczM6IENoYW5nZWQgdHlwZSBvZiBn
-YWRnZXRfZGV2IGluIGNkbnMgc3RydWN0dXJlDQo+ICAgdXNiOiBjZG5zcDogRGV2aWNlIHNpZGUg
-aGVhZGVyIGZpbGUgZm9yIENETlNQIGRyaXZlcg0KPiAgIHVzYjogY2Ruc3A6IGNkbnMzIEFkZCBt
-YWluIHBhcnQgb2YgQ2FkZW5jZSBVU0JTU1AgRFJEIERyaXZlcg0KPiAgIHVzYjogY2Ruc3A6IEFk
-ZCB0cmFjZXBvaW50cyBmb3IgQ0ROU1AgZHJpdmVyDQo+ICAgdXNiOiBjZG5zMzogQ2hhbmdlIGZp
-bGUgbmFtZXMgZm9yIGNkbnMzIGRyaXZlci4NCj4gICBNQUlOVEFJTkVSUzogYWRkIENhZGVuY2Ug
-VVNCU1NQIERSRCBJUCBkcml2ZXIgZW50cnkNCj4gDQo+ICBNQUlOVEFJTkVSUyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA5ICsNCj4gIGRyaXZlcnMvdXNiL01ha2VmaWxl
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKw0KPiAgZHJpdmVycy91c2IvY2RuczMv
-S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgIHwgICA2MSArLQ0KPiAgZHJpdmVycy91c2IvY2Ru
-czMvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgIHwgICAzMCArLQ0KPiAgZHJpdmVycy91c2Iv
-Y2RuczMve2RlYnVnLmggPT4gY2RuczMtZGVidWcuaH0gIHwgICAgMA0KPiAgZHJpdmVycy91c2Iv
-Y2RuczMve2VwMC5jID0+IGNkbnMzLWVwMC5jfSAgICAgIHwgICAgNCArLQ0KPiAgLi4uL3VzYi9j
-ZG5zMy97Z2FkZ2V0LmMgPT4gY2RuczMtZ2FkZ2V0LmN9ICAgIHwgICAyOCArLQ0KPiAgLi4uL3Vz
-Yi9jZG5zMy97Z2FkZ2V0LmggPT4gY2RuczMtZ2FkZ2V0Lmh9ICAgIHwgICAgMA0KPiAgZHJpdmVy
-cy91c2IvY2RuczMvY2RuczMtaW14LmMgICAgICAgICAgICAgICAgIHwgICAgMiArLQ0KPiAgZHJp
-dmVycy91c2IvY2RuczMvY2RuczMtcGxhdC5jICAgICAgICAgICAgICAgIHwgIDMxNSArKysNCj4g
-IGRyaXZlcnMvdXNiL2NkbnMzL3t0cmFjZS5jID0+IGNkbnMzLXRyYWNlLmN9ICB8ICAgIDIgKy0N
-Cj4gIGRyaXZlcnMvdXNiL2NkbnMzL3t0cmFjZS5oID0+IGNkbnMzLXRyYWNlLmh9ICB8ICAgIDYg
-Ky0NCj4gIGRyaXZlcnMvdXNiL2NkbnMzL2NkbnNwLWRlYnVnLmggICAgICAgICAgICAgICB8ICA1
-ODMgKysrKw0KPiAgZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtZXAwLmMgICAgICAgICAgICAgICAg
-IHwgIDQ5NSArKysrDQo+ICBkcml2ZXJzL3VzYi9jZG5zMy9jZG5zcC1nYWRnZXQuYyAgICAgICAg
-ICAgICAgfCAyMDE3ICsrKysrKysrKysrKysrDQo+ICBkcml2ZXJzL3VzYi9jZG5zMy9jZG5zcC1n
-YWRnZXQuaCAgICAgICAgICAgICAgfCAxNjAwICsrKysrKysrKysrDQo+ICBkcml2ZXJzL3VzYi9j
-ZG5zMy9jZG5zcC1tZW0uYyAgICAgICAgICAgICAgICAgfCAxMzI1ICsrKysrKysrKw0KPiAgZHJp
-dmVycy91c2IvY2RuczMvY2Ruc3AtcGNpLmMgICAgICAgICAgICAgICAgIHwgIDI1NSArKw0KPiAg
-ZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtcmluZy5jICAgICAgICAgICAgICAgIHwgMjQzOQ0KPiAr
-KysrKysrKysrKysrKysrKw0KPiAgZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtdHJhY2UuYyAgICAg
-ICAgICAgICAgIHwgICAxMiArDQo+ICBkcml2ZXJzL3VzYi9jZG5zMy9jZG5zcC10cmFjZS5oICAg
-ICAgICAgICAgICAgfCAgODQwICsrKysrKw0KPiAgZHJpdmVycy91c2IvY2RuczMvY29yZS5jICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDQ1NSArLS0NCj4gIGRyaXZlcnMvdXNiL2NkbnMzL2NvcmUu
-aCAgICAgICAgICAgICAgICAgICAgICB8ICAgNTQgKy0NCj4gIGRyaXZlcnMvdXNiL2NkbnMzL2Ry
-ZC5jICAgICAgICAgICAgICAgICAgICAgICB8ICAyMjIgKy0NCj4gIGRyaXZlcnMvdXNiL2NkbnMz
-L2RyZC5oICAgICAgICAgICAgICAgICAgICAgICB8ICAgOTQgKy0NCj4gIGRyaXZlcnMvdXNiL2Nk
-bnMzL2dhZGdldC1leHBvcnQuaCAgICAgICAgICAgICB8ICAgMjIgKy0NCj4gIGRyaXZlcnMvdXNi
-L2NkbnMzL2hvc3QtZXhwb3J0LmggICAgICAgICAgICAgICB8ICAgMTMgKy0NCj4gIGRyaXZlcnMv
-dXNiL2NkbnMzL2hvc3QuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgMjIgKy0NCj4gIDI4IGZp
-bGVzIGNoYW5nZWQsIDEwNDAwIGluc2VydGlvbnMoKyksIDUwNyBkZWxldGlvbnMoLSkgIHJlbmFt
-ZQ0KPiBkcml2ZXJzL3VzYi9jZG5zMy97ZGVidWcuaCA9PiBjZG5zMy1kZWJ1Zy5ofSAoMTAwJSkg
-IHJlbmFtZQ0KPiBkcml2ZXJzL3VzYi9jZG5zMy97ZXAwLmMgPT4gY2RuczMtZXAwLmN9ICg5OSUp
-ICByZW5hbWUNCj4gZHJpdmVycy91c2IvY2RuczMve2dhZGdldC5jID0+IGNkbnMzLWdhZGdldC5j
-fSAoOTklKSAgcmVuYW1lDQo+IGRyaXZlcnMvdXNiL2NkbnMzL3tnYWRnZXQuaCA9PiBjZG5zMy1n
-YWRnZXQuaH0gKDEwMCUpICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gZHJpdmVycy91c2IvY2RuczMv
-Y2RuczMtcGxhdC5jICByZW5hbWUgZHJpdmVycy91c2IvY2RuczMve3RyYWNlLmMgPT4NCj4gY2Ru
-czMtdHJhY2UuY30gKDg5JSkgIHJlbmFtZSBkcml2ZXJzL3VzYi9jZG5zMy97dHJhY2UuaCA9PiBj
-ZG5zMy10cmFjZS5ofQ0KPiAoOTklKSAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvdXNiL2Nk
-bnMzL2NkbnNwLWRlYnVnLmggIGNyZWF0ZSBtb2RlDQo+IDEwMDY0NCBkcml2ZXJzL3VzYi9jZG5z
-My9jZG5zcC1lcDAuYyAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+IGRyaXZlcnMvdXNiL2NkbnMzL2Nk
-bnNwLWdhZGdldC5jICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gZHJpdmVycy91c2IvY2RuczMvY2Ru
-c3AtZ2FkZ2V0LmggIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiBkcml2ZXJzL3VzYi9jZG5zMy9jZG5z
-cC1tZW0uYyAgY3JlYXRlIG1vZGUgMTAwNjQ0DQo+IGRyaXZlcnMvdXNiL2NkbnMzL2NkbnNwLXBj
-aS5jICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtcmluZy5j
-ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gZHJpdmVycy91c2IvY2RuczMvY2Ruc3AtdHJhY2UuYyAg
-Y3JlYXRlIG1vZGUgMTAwNjQ0DQo+IGRyaXZlcnMvdXNiL2NkbnMzL2NkbnNwLXRyYWNlLmgNCj4g
-DQo+IC0tDQo+IDIuMTcuMQ0KDQo=
+On Mon, Dec 7, 2020 at 9:38 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
+>
+> Since we already have a few virtual GPIO drivers, and more to come,
+> this category deserves its own submenu.
+>
+> changes v2: fixed menu title (replaced "devices" by "drivers")
+> changes v3: added patch changelog
+
+This should be below the --- under all tags because we don't want this
+in the actual log that goes into git.
+
+>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
+>  drivers/gpio/Kconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index 5d4de5cd6759..8596f9320971 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1590,6 +1590,8 @@ config GPIO_VIPERBOARD
+>
+>  endmenu
+>
+> +menu "Virtual GPIO drivers"
+> +
+>  config GPIO_AGGREGATOR
+>         tristate "GPIO Aggregator"
+>         help
+> @@ -1613,4 +1615,6 @@ config GPIO_MOCKUP
+>           tools/testing/selftests/gpio/gpio-mockup.sh. Reference the usage in
+>           it.
+>
+> +endmenu
+> +
+>  endif
+> --
+> 2.11.0
+>
+
+I fixed up the above and applied the patch, thanks!
+
+Bartosz
