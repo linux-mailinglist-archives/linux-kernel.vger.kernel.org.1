@@ -2,193 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7792D24FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A19DD2D2502
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgLHHxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:53:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S1727831AbgLHHyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727439AbgLHHxn (ORCPT
+        with ESMTP id S1726734AbgLHHyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:53:43 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDE3C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:53:03 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id a12so8453270wrv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:53:02 -0800 (PST)
+        Tue, 8 Dec 2020 02:54:22 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BB7C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:53:42 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y8so577967plp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:53:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CXi+2PsJTdQ7OkC8BUq3icYLy0q/siBwrPMorIdkXmI=;
-        b=slgYNcaH0nW9nVevUan5y/U7dEMbBncrtx69WdctjRC31U1C7Gorjv4bBheK6bofsC
-         okvkIgkPCsqAQK+xp3tbd/PrUedBqj9zD7Z+n4HmOBcrPIGLC2ZDXalkw975AiJlLCos
-         /6IvK4WLcgvqBfg6FkZE8RZmMQ+yGyJemN4r8YrVRdjgpP3LJkTjhOSaD9qmCBV3XQ3P
-         UXMiERUPif/ah6mhgT8Bw3vtRjmuztcIZ5zUUBG6c1c5kZpqxkrAYIPwWEkS+4Ep9U52
-         JumNhZCDgRD4yO6b7uQnjwO7NIPKDrgLNfBpZt3Qa0THy8W5C5pPOJaaesLp6RiLy4DI
-         l9Sw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6yOAVZjGe0LBykCQztVKp2D4Gmc2eJlF3ZDhvK2CW4w=;
+        b=I6+h+plxzfDytT3JY5089iYAUGryc03SX1u46qY0mKqZS/nBI9KbegEu4vDHyaZvR8
+         1gN8VtP1D147cTFIn3dimmElmmW76jgsNjvyGHLhCTrWY/PbxZ2JNdKmCFX4ErbFkjK6
+         HjxKS1TkSg3AOZFe/5hrIX2hAd2b44RDj1bMTGPEEXKy3iMOS7DPGQyzMTKIGLaEinoL
+         QMwcLKR5xgMkmSRwfs3nkZLQtNfN/Kn3deg57xuctwnL+SjgCSeNvHrAVcebgTrCUkC9
+         5VfC3mjMfe9zjGzylGzR1BMiECSMMYtrSnV24QfimsEQvbnmPOGGuiScUPM2EVmWBFSc
+         mGsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=CXi+2PsJTdQ7OkC8BUq3icYLy0q/siBwrPMorIdkXmI=;
-        b=ZUqyyTkB0sZYsOAAUGBlTLUCtYb+/2nGk+eVzUbfJEZlQ5IHh7KpY0XqIPufA3U0Lf
-         GB9b5B9G5VeSuIffR+PszL6l+W3FId9Mogw/sXXhwXb/D+gJxM/BRfb505CNuBp66bpP
-         A7bP6CGI4sCZE6rpvN32WzSYOPoyrvIU5pAWrzX3ZG1PwHlHfx7bYMsBzbFPNTySfQmx
-         a0X8z/N92V6ozz9AuQUq1NpoiZvf2IvyB0h1HHrJLuRlKTyfhxO4ADH+Yo1kKWrOwQtl
-         VKW6oDI4AY39fWFPN1u5ued/3jSbp2o7iF714XtQ7asVKBfeRODHpbs8tbjC1Gnk9xtN
-         g9Og==
-X-Gm-Message-State: AOAM532cWzRP9xjOMKVlsBrWvsxC5L0zA0wSMpvMzk/RkvKRVwE6BX9X
-        TgZdlS2sLEuIQqBA2GVQFf2WBlMxKLou1rMYBYg=
-X-Google-Smtp-Source: ABdhPJxNnvuDjJg0XW26YyOMxs/xEGe/s9gumbXA/cnd/wHWVipu9YY9bkixZzBhp4J7oDDlCmF+oQ==
-X-Received: by 2002:a05:6000:90:: with SMTP id m16mr11377883wrx.165.1607413981244;
-        Mon, 07 Dec 2020 23:53:01 -0800 (PST)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:910e:74fe:9d52:c072? ([2a01:e35:2ec0:82b0:910e:74fe:9d52:c072])
-        by smtp.gmail.com with ESMTPSA id v64sm2141873wme.25.2020.12.07.23.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 23:53:00 -0800 (PST)
-Subject: Re: [PATCH 1/2] dt-bindings: phy: add Amlogic G12A Analog MIPI D-PHY
- bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     vkoul@kernel.org, kishon@ti.com, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201123145157.300456-1-narmstrong@baylibre.com>
- <20201123145157.300456-2-narmstrong@baylibre.com>
- <20201207224446.GA978231@robh.at.kernel.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <eb1471d2-69e3-93e8-2842-bac4b43482a9@baylibre.com>
-Date:   Tue, 8 Dec 2020 08:52:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6yOAVZjGe0LBykCQztVKp2D4Gmc2eJlF3ZDhvK2CW4w=;
+        b=Bi0ah/cGBgNdah1mwT56v1v682sIsa6UcllgxkPp4pQU5Iub5vnCvAtspPUx1ka0Cz
+         NlGYR/AkGy8fvATXS3mUhY60dwcBNjfd7SDObxfRO3Ippl9Sg0kypw26YS/a9HX12O1c
+         g8JvW6x4afmbVy4nP3NlkHQqL08s6FgyMWufYyb7K8DD1uy4WgpCpHo5SwHVwuDzl3SA
+         O1lYiZLGKmjhejWL2NK3XS4lpz9mHQ91yrj0Z8qtKIuXAQClTTLZEP0fRkcnw2o8g5Jo
+         Cz4p49qEv9ubAE4etdvTyfmUBlX5yIWT6LePil6n8KBNNWFyHRGyQul2vE2n0vDvcfrp
+         5ABw==
+X-Gm-Message-State: AOAM530OzrkxyXfP84UQzLV7UCGb021IMkrxtDUoolIWO3uQv4J0seCy
+        BF7H+/tK84SxOHm/PlzQoW1v2EqmA1Ykm2b2ZtZ5/A==
+X-Google-Smtp-Source: ABdhPJwCu+RkIOjZ4EZmnfUZRQMKj2S2yjYBnRNWVVVOr4SzPLOF3SVcLmbjbu4HCM5OrM7HcnuIy//60ukVPxOJPPs=
+X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
+ j8-20020a17090276c8b02900d9d6c3357dmr20261768plt.34.1607414021513; Mon, 07
+ Dec 2020 23:53:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201207224446.GA978231@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201208041847.72122-1-songmuchun@bytedance.com>
+ <20201208041847.72122-8-songmuchun@bytedance.com> <CAM9Jb+jg7dD3u4b8P4X_6ginSM3UwVtmbdQzjaencb0r3_bAuQ@mail.gmail.com>
+In-Reply-To: <CAM9Jb+jg7dD3u4b8P4X_6ginSM3UwVtmbdQzjaencb0r3_bAuQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 8 Dec 2020 15:53:05 +0800
+Message-ID: <CAMZfGtV=tc3=ZbePPEWTA2ziDb1hw8KzJXc+Uiedx+xmXY--XA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 7/7] mm: memcontrol: make the slab
+ calculation consistent
+To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2020 23:44, Rob Herring wrote:
-> On Mon, Nov 23, 2020 at 03:51:56PM +0100, Neil Armstrong wrote:
->> The Amlogic G12A SoCs embeds an Analog MIPI D-PHY to communicate with DSI
->> panels, this adds the bindings.
->>
->> This Analog D-PHY works with a separate Digital MIPI D-PHY.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>  .../phy/amlogic,g12a-mipi-dphy-analog.yaml    | 40 +++++++++++++++++++
->>  1 file changed, 40 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
->> new file mode 100644
->> index 000000000000..28663552f05b
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml
->> @@ -0,0 +1,40 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/phy/amlogic,g12a-mipi-dphy-analog.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Amlogic G12A MIPI analog PHY
->> +
->> +maintainers:
->> +  - Neil Armstrong <narmstrong@baylibre.com>
->> +
->> +description: |+
->> +  The Everything-Else Power Domains node should be the child of a syscon
-> 
-> Everything-Else Power Domains node??
+On Tue, Dec 8, 2020 at 3:21 PM Pankaj Gupta
+<pankaj.gupta.linux@gmail.com> wrote:
+>
+> > Although the ratio of the slab is one, we also should read the ratio
+> > from the related memory_stats instead of hard-coding. And the local
+> > variable of size is already the value of slab_unreclaimable. So we
+> > do not need to read again.
+> >
+> > We can drop the ratio in struct memory_stat. This can make the code
+> > clean and simple. And get rid of the awkward mix of static and runtime
+> > initialization of the memory_stats table.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/memcontrol.c | 112 ++++++++++++++++++++++++++++++++++++--------------------
+> >  1 file changed, 73 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index a40797a27f87..841ea37cc123 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1511,49 +1511,78 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+> >
+> >  struct memory_stat {
+> >         const char *name;
+> > -       unsigned int ratio;
+> >         unsigned int idx;
+> >  };
+> >
+> >  static const struct memory_stat memory_stats[] = {
+> > -       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> > -       { "file", PAGE_SIZE, NR_FILE_PAGES },
+> > -       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> > -       { "pagetables", PAGE_SIZE, NR_PAGETABLE },
+> > -       { "percpu", 1, MEMCG_PERCPU_B },
+> > -       { "sock", PAGE_SIZE, MEMCG_SOCK },
+> > -       { "shmem", PAGE_SIZE, NR_SHMEM },
+> > -       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> > -       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> > -       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> > +       { "anon",                       NR_ANON_MAPPED                  },
+> > +       { "file",                       NR_FILE_PAGES                   },
+> > +       { "kernel_stack",               NR_KERNEL_STACK_KB              },
+> > +       { "pagetables",                 NR_PAGETABLE                    },
+> > +       { "percpu",                     MEMCG_PERCPU_B                  },
+> > +       { "sock",                       MEMCG_SOCK                      },
+> > +       { "shmem",                      NR_SHMEM                        },
+> > +       { "file_mapped",                NR_FILE_MAPPED                  },
+> > +       { "file_dirty",                 NR_FILE_DIRTY                   },
+> > +       { "file_writeback",             NR_WRITEBACK                    },
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       { "anon_thp", PAGE_SIZE, NR_ANON_THPS },
+> > -       { "file_thp", PAGE_SIZE, NR_FILE_THPS },
+> > -       { "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
+> > +       { "anon_thp",                   NR_ANON_THPS                    },
+> > +       { "file_thp",                   NR_FILE_THPS                    },
+> > +       { "shmem_thp",                  NR_SHMEM_THPS                   },
+> >  #endif
+> > -       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> > -       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> > -       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> > -       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> > -       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> > -
+> > -       /*
+> > -        * Note: The slab_reclaimable and slab_unreclaimable must be
+> > -        * together and slab_reclaimable must be in front.
+> > -        */
+> > -       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> > -       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> > +       { "inactive_anon",              NR_INACTIVE_ANON                },
+> > +       { "active_anon",                NR_ACTIVE_ANON                  },
+> > +       { "inactive_file",              NR_INACTIVE_FILE                },
+> > +       { "active_file",                NR_ACTIVE_FILE                  },
+> > +       { "unevictable",                NR_UNEVICTABLE                  },
+> > +       { "slab_reclaimable",           NR_SLAB_RECLAIMABLE_B           },
+> > +       { "slab_unreclaimable",         NR_SLAB_UNRECLAIMABLE_B         },
+> >
+> >         /* The memory events */
+> > -       { "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
+> > -       { "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
+> > -       { "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
+> > -       { "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
+> > -       { "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
+> > -       { "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
+> > -       { "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
+> > +       { "workingset_refault_anon",    WORKINGSET_REFAULT_ANON         },
+> > +       { "workingset_refault_file",    WORKINGSET_REFAULT_FILE         },
+> > +       { "workingset_activate_anon",   WORKINGSET_ACTIVATE_ANON        },
+> > +       { "workingset_activate_file",   WORKINGSET_ACTIVATE_FILE        },
+> > +       { "workingset_restore_anon",    WORKINGSET_RESTORE_ANON         },
+> > +       { "workingset_restore_file",    WORKINGSET_RESTORE_FILE         },
+> > +       { "workingset_nodereclaim",     WORKINGSET_NODERECLAIM          },
+> >  };
+> >
+> > +/* Translate stat items to the correct unit for memory.stat output */
+> > +static int memcg_page_state_unit(int item)
+> > +{
+> > +       int unit;
+> > +
+> > +       switch (item) {
+> > +       case MEMCG_PERCPU_B:
+> > +       case NR_SLAB_RECLAIMABLE_B:
+> > +       case NR_SLAB_UNRECLAIMABLE_B:
+> > +       case WORKINGSET_REFAULT_ANON:
+> > +       case WORKINGSET_REFAULT_FILE:
+> > +       case WORKINGSET_ACTIVATE_ANON:
+> > +       case WORKINGSET_ACTIVATE_FILE:
+> > +       case WORKINGSET_RESTORE_ANON:
+> > +       case WORKINGSET_RESTORE_FILE:
+> > +       case WORKINGSET_NODERECLAIM:
+> > +               unit = 1;
+> > +               break;
+> > +       case NR_KERNEL_STACK_KB:
+> > +               unit = SZ_1K;
+> > +               break;
+> > +       default:
+> > +               unit = PAGE_SIZE;
+> > +               break;
+>  break not needed here, or maybe we can return for every case,
+> that will avoid "unit" variable.
 
-Indeed, it's a typo
+Yeah, thanks.
 
-> 
->> +  node with the required property:
->> +
->> +  - compatible: Should be the following:
->> +                "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
->> +
->> +  Refer to the the bindings described in
->> +  Documentation/devicetree/bindings/mfd/syscon.yaml
->> +
->> +properties:
->> +  compatible:
->> +    const: amlogic,g12a-mipi-dphy-analog
->> +
->> +  "#phy-cells":
->> +    const: 0
->> +
->> +required:
->> +  - compatible
->> +  - "#phy-cells"
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    mpphy: phy {
->> +          compatible = "amlogic,g12a-mipi-dphy-analog";
->> +          #phy-cells = <0>;
->> +    };
->> -- 
->> 2.25.1
->>
+>
+> > +       }
+> > +
+> > +       return unit;
+> > +}
+> > +
+> > +static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+> > +                                                   int item)
+> > +{
+> > +       return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
+> > +}
+> > +
+> >  static char *memory_stat_format(struct mem_cgroup *memcg)
+> >  {
+> >         struct seq_buf s;
+> > @@ -1577,13 +1606,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+> >         for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+> >                 u64 size;
+> >
+> > -               size = memcg_page_state(memcg, memory_stats[i].idx);
+> > -               size *= memory_stats[i].ratio;
+> > +               size = memcg_page_state_output(memcg, memory_stats[i].idx);
+> >                 seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+> >
+> >                 if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+> > -                       size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+> > -                              memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
+> > +                       size +=
+> (memcg,
+> > +                                                       NR_SLAB_RECLAIMABLE_B);
+> >                         seq_buf_printf(&s, "slab %llu\n", size);
+> >                 }
+> >         }
+> > @@ -6377,6 +6405,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
+> >  }
+> >
+> >  #ifdef CONFIG_NUMA
+> > +static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+> > +                                                    int item)
+> > +{
+> > +       return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
+> > +}
+> > +
+> >  static int memory_numa_stat_show(struct seq_file *m, void *v)
+> >  {
+> >         int i;
+> > @@ -6394,8 +6428,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+> >                         struct lruvec *lruvec;
+> >
+> >                         lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > -                       size = lruvec_page_state(lruvec, memory_stats[i].idx);
+> > -                       size *= memory_stats[i].ratio;
+> > +                       size = lruvec_page_state_output(lruvec,
+> > +                                                       memory_stats[i].idx);
+> >                         seq_printf(m, " N%d=%llu", nid, size);
+> >                 }
+> >                 seq_putc(m, '\n');
+> > --
+> > 2.11.0
+> >
+> >
 
+
+
+-- 
+Yours,
+Muchun
