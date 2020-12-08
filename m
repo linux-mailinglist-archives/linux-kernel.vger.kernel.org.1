@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080872D2B0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E832D2B12
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgLHMcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:32:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:48326 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726138AbgLHMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:32:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEF861FB;
-        Tue,  8 Dec 2020 04:31:30 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 243FD3F68F;
-        Tue,  8 Dec 2020 04:31:27 -0800 (PST)
-Subject: Re: [PATCH V4 3/3] thermal: cpufreq_cooling: Reuse sched_cpu_util()
- for SMP platforms
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
-        Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-References: <cover.1606198885.git.viresh.kumar@linaro.org>
- <c0d7c796be7df6ac0102d8c2701fc6b541d2ff7d.1606198885.git.viresh.kumar@linaro.org>
- <95991789-0308-76a9-735b-01ef620031b9@arm.com>
- <20201207121704.hpyw3ij3wvb5s7os@vireshk-i7>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <dfe2693c-8e9a-3103-2135-8c9a87be3ab1@arm.com>
-Date:   Tue, 8 Dec 2020 13:31:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729572AbgLHMdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728878AbgLHMdG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:33:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B03FC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=35pjWeZIwV5ZzKGhstE73Xq/THlWfXAEgRM5OI3Jsww=; b=O4fUd7W5HQS6PKP7LUsYK6PoUp
+        OnmtIgnJzgBSdBtTt8Y1Icy5pU5FO25vPhooeKGBsBrp//bXg/1I7ye1tZAei08xB6darKbHFHLWy
+        kO9T7ZLwEldsUoUb5i2vaN2td/uDZok0yRg2kVO7TNmByp6zMTQcHHZR9jic8uai5cIzZiO/cwfm3
+        ONsaStYaV3wuUaZ8J1rgVZVz4UynbQcQlzWEYtyAD8gevfY/QPOI++6TWBmi0qNkhtiSS810l6iqc
+        047T5j5lAD7eIhv9geTdMamBVap5a2rJjlPhU6ITuqoWLeDgixsUuTR5OSCONLjmsBQOe0HRgV2ez
+        oal1uqKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmcA5-0003ZT-LE; Tue, 08 Dec 2020 12:32:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB8DF304B92;
+        Tue,  8 Dec 2020 13:32:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D65F0200AABB6; Tue,  8 Dec 2020 13:32:04 +0100 (CET)
+Date:   Tue, 8 Dec 2020 13:32:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Waiman Long' <longman@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christopher Yeoh <cyeoh@au1.ibm.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
+Message-ID: <20201208123204.GW2414@hirez.programming.kicks-ass.net>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87k0tybqfy.fsf@x220.int.ebiederm.org>
+ <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+ <20201207090243.GE3040@hirez.programming.kicks-ass.net>
+ <7be81903-14e3-7485-83e7-02e65e80e8c3@redhat.com>
+ <c781c59872e742c2b64f1aa70c30d7e2@AcuMS.aculab.com>
+ <aef54faf-cead-403c-6088-ff52ce1a5dde@redhat.com>
+ <71db845efc7d44b5a7d23b0e55b3a496@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207121704.hpyw3ij3wvb5s7os@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71db845efc7d44b5a7d23b0e55b3a496@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2020 13:17, Viresh Kumar wrote:
-> On 03-12-20, 12:54, Dietmar Eggemann wrote:
->> On 24/11/2020 07:26, Viresh Kumar wrote:
-
-[...]
-
->> When I ran schbench (-t 16 -r 5) on hikey960 I get multiple (~50)
->> instances of ~80ms task activity phase and then ~20ms idle phase on all
->> CPUs.
->>
->> So I assume that scenario 1 is at the beginning (but you mentioned the
->> task were sleeping?)
+On Tue, Dec 08, 2020 at 09:12:36AM +0000, David Laight wrote:
+> From: Waiman Long
+> > Sent: 07 December 2020 19:02
+> ...
+> > > How much more difficult would it be to also add a timeout option?
+> > > I looked at adding one to the mutex code - and fell into a big pile
+> > > of replicated code.
+> > >
+> > > ISTM that one the initial locked exchange (and spin) fails a few
+> > > extra instructions when heading for the sleep don't really matter
+> > >
+> > Actually, I had tried that before. See
+> > 
+> > https://lore.kernel.org/lkml/20190911150537.19527-1-longman@redhat.com/
+> > 
+> > That is for rwsem, but the same can be done for mutex. However, Peter
+> > didn't seem to like the idea of a timeout parameter. Anyway, it is
+> > certainly doable if there is a good use case for it.
 > 
-> I am not able to find the exact values I used, but I did something
-> like this to create a scenario where the old computations shall find
-> the CPU as idle in the last IPA window:
+> 'Unfortunately' my use-case if for an out-of-tree driver.
 > 
-> - schbench -m 2 -t 4 -s 25000 -c 20000 -r 60
-> 
-> - sampling rate of IPA to 10 ms
-> 
-> With this IPA wakes up many times and finds the CPUs to have been idle
-> in the last IPA window (i.e. 10ms).
+> The problem I was solving is a status call blocking because
+> some other code is 'stuck' (probably an oops) with a mutex held.
 
-Ah, this makes sense.
-
-So with this there are only 8 worker threads w/ 20ms runtime and 75ms
-period (30ms message thread time (-C) and 25 latency (-c)).
-
-So much more idle time between two invocations of the worker/message
-threads and more IPA sampling.
-
-[...]
-
->>>  Old: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=800 load={{0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64}} dynamic_power=5280
->>>  New: thermal_power_cpu_get_power: cpus=00000000,000000ff freq=1200000 total_load=708 load={{0x4d,0x5c,0x5c,0x5b,0x5c,0x5c,0x51,0x5b}} dynamic_power=4672
->>>
->>> As can be seen, the idle time based load is 100% for all the CPUs as it
->>> took only the last window into account, but in reality the CPUs aren't
->>> that loaded as shown by the utilization numbers.
->>
->> Is this an IPA sampling at the end of the ~20ms idle phase?
-> 
-> This is during the phase where the CPUs were fully busy for the last
-> period.
-
-OK.
-
+Working around oopses is not a sane use-case. If you oops, you get to
+keep all the pieces.
