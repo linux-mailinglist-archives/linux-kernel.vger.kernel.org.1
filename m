@@ -2,140 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1162D33D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21FD2D3333
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731174AbgLHUQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:16:06 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39572 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730495AbgLHUMu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:12:50 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q22so17224799qkq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:12:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ry0RMMRI6lcJmXGqls40K/Cni7b/pY976045DAMxl2Y=;
-        b=DIBzqTuyEQ8pabG0pQeroxSjIG+k7y6lgeY6qSxlmmBQL3kfPEu4qCIL3QvRTTwXID
-         yZT2SiEwlb1l8WhoBaVRTWJWVYaTMIl2RPLig0/a5ry0v/r4HqJvy1rRW//pLmKekM9T
-         2qonCOQqP/f2YIei8QdsdlRIVNIKgSU/4kiobj/HBwDR5KqDgq5iJDXQLVQu+aRq2nFV
-         Zp5sTNEZ1Rx3YR26hQ+CoRkAkEfueDBQ3guNXb8kTvs6IxsuyuKvUxRqTsq2vx+vLOlM
-         9sRio+v15Z+a9gMVpX22nHZi/x8BI9gZTJBkHH9ZLEccMwjjBL7faYWRLn6cGuJUMQQF
-         9Sgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ry0RMMRI6lcJmXGqls40K/Cni7b/pY976045DAMxl2Y=;
-        b=rY+JHrOYNvVr72S6PdlAXErzeOzdxxXK10U617Gx45CgfJr0Iyy0VKDN0viC7oR8B5
-         UXiurfPaixMMMlOJvq4vII1u3hvJTdKhEoPwHRSv1eIfXGilxuX07VfGHSH0NdZJ3+p1
-         Y++OQ71Fs62TKOR4JAciPD2+Hu7eoyBg2JokB7orc5OspcaB4sQ0cMfAPpVptxBchWdB
-         Wlpc27NwLMiDDcrSTH5Vx0ZI/AAJqTdSkeoO+YAHrcSP4TnN1iOlnHPqMH7UVDuGHJXs
-         M1Z8izvFxbTO3DyBmjRUEx2zJ4tNnlDsDL5efu6nXnYTOt/Wk7gHhEL2OfIunSA/PyyT
-         zhJQ==
-X-Gm-Message-State: AOAM531AzKY1rgnmcTc+LcaEwi9wvKIsJDdxJIDJwu4KxesN1Nhqa9bC
-        nZOzqbCp+n/ExzkpDV+i0P2JeaxKbPJmjVBKDNLDrG/PKlhJUeu7
-X-Google-Smtp-Source: ABdhPJxze+863Tc5BBQQ6G3CBEuPNUuV3WUaoG6kzikJPfonJz4d11Xc68kD2Tz/LW5+/ynUdmpDZH1trcT2XmfbgS4=
-X-Received: by 2002:ac8:1119:: with SMTP id c25mr31773889qtj.315.1607456244239;
- Tue, 08 Dec 2020 11:37:24 -0800 (PST)
+        id S1731305AbgLHUQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731144AbgLHUPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:15:07 -0500
+Date:   Tue, 8 Dec 2020 11:38:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607456307;
+        bh=4xIgevDP7/ZGGz5vmkJ8zIO+NIU+cuUQaVaBwbzuc5I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=puG9BwYSAJ7e6ZPqIbzIEvMJoNdGD/nRqvjr61QKZuIR24H2WQ/1pK7kkTZWTVyVC
+         D8kmlJ/J7d93CeBddN9+EEWdT0Y3L7t5V73jXEqdFRXKY2LtLv2P/P6K6Lr7NeqENU
+         Uwd6Do5ZhKj9PKHpA4LnwicRabU4+KaOiL3DF9yD0IOsY3coqpFmnAo1kTzbqwnK7b
+         kzZdF2sW2PAUfeDcKLJm2KmQCjfTXCfsRSaa2soFiffrtXdMkP+dNMDXcETYfOfARj
+         o3e6m0PsFJYo6u8CaP2lnbReOYw5tiJgxfoG5ddH/wh+qsO7dkAO07xvAC8O0k45Gw
+         lhdFoy7/3V6cw==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Mahesh Bandewar <maheshb@google.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net] bonding: reduce rtnl lock contention in mii monitor
+ thread
+Message-ID: <20201208113820.179ed5ca@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201205234354.1710-1-jarod@redhat.com>
+References: <20201205234354.1710-1-jarod@redhat.com>
 MIME-Version: 1.0
-References: <20201124223917.795844-1-elavila@google.com> <X79CrSX1rnpnbqPd@kroah.com>
- <20201126132613.7f737afe@oasis.local.home> <20201130094846.6b8bc60b@gandalf.local.home>
- <20201130181350.GA1116146@google.com>
-In-Reply-To: <20201130181350.GA1116146@google.com>
-From:   "J. Avila" <elavila@google.com>
-Date:   Tue, 8 Dec 2020 11:37:13 -0800
-Message-ID: <CAGFReeOOBoWqq-Ksdg6c7phS6KgpnK5em_PNKgnUX844fYsoEg@mail.gmail.com>
-Subject: Re: Potential Issue in Tracing Ring Buffer
-To:     William Mcvicker <willmcvicker@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Greg KH <gregkh@linuxfoundation.org>, mingo@redhat.com,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Daniel Mentz <danielmentz@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Steven,
+On Sat,  5 Dec 2020 18:43:54 -0500 Jarod Wilson wrote:
+> I'm seeing a system get stuck unable to bring a downed interface back up
+> when it's got an updelay value set, behavior which ceased when logging
+> spew was removed from bond_miimon_inspect(). I'm monitoring logs on this
+> system over another network connection, and it seems that the act of
+> spewing logs at all there increases rtnl lock contention, because
+> instrumented code showed bond_mii_monitor() never able to succeed in it's
+> attempts to call rtnl_trylock() to actually commit link state changes,
+> leaving the downed link stuck in BOND_LINK_DOWN. The system in question
+> appears to be fine with the log spew being moved to
+> bond_commit_link_state(), which is called after the successful
+> rtnl_trylock().
 
-Thank you once again for all of your support. We saw that you also recently
-merged a change[1] which adds some validation for the timestamps in
-ring_buffer.c. Would you have any recommendations on how to add a more
-lightweight check for time going "backwards" in the timestamps? The idea
-is that we could use this quick test to detect the problem, then run a build
-with your config to dig deeper.
+But it's not called under rtnl_lock AFAICT. So something else is also
+spewing messages?
 
-Thanks,
+While bond_commit_link_state() _is_ called under the lock. So you're
+increasing the retry rate, by putting the slow operation under the
+lock, is that right?
 
-Avila
+Also isn't bond_commit_link_state() called from many more places?
+So we're adding new prints, effectively?
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?h=for-next
+> I'm actually wondering if perhaps we ultimately need/want
+> some bond-specific lock here to prevent racing with bond_close() instead
+> of using rtnl, but this shift of the output appears to work. I believe
+> this started happening when de77ecd4ef02 ("bonding: improve link-status
+> update in mii-monitoring") went in, but I'm not 100% on that.
+> 
+> The addition of a case BOND_LINK_BACK in bond_miimon_inspect() is somewhat
+> separate from the fix for the actual hang, but it eliminates a constant
+> "invalid new link 3 on slave" message seen related to this issue, and it's
+> not actually an invalid state here, so we shouldn't be reporting it as an
+> error.
 
-On Mon, Nov 30, 2020 at 10:13 AM William Mcvicker
-<willmcvicker@google.com> wrote:
->
-> On Mon, Nov 30, 2020 at 09:48:46AM -0500, Steven Rostedt wrote:
-> > On Thu, 26 Nov 2020 13:26:13 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > > On Thu, 26 Nov 2020 06:52:45 +0100
-> > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > > On Tue, Nov 24, 2020 at 10:39:17PM +0000, J. Avila wrote:
-> > > > > Hello,
-> > > > >
-> > > > > In the ftrace logs we've collected internally, we have found that there are
-> > > > > situations where time seems to go backwards; this breaks userspace tools which
-> > > > > expect time to always go forward in these logs. For example, in this snippet
-> > > > > from a db845c running a 5.10-rc4 kernel[1] (thanks for getting us the trace,
-> > > > > John!), we see:
-> > > >
-> > > > Does the patch at:
-> > > >   https://lore.kernel.org/r/20201125225654.1618966-1-minchan@kernel.org
-> > > >
-> > > > resolve this issue for you?
-> > > >
-> > >
-> > > I think I found the bug. Can you apply this patch and let me know if it
-> > > fixes the issue for you?
-> > >
-> > > -- Steve
-> > >
-> > > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > > index dc83b3fa9fe7..bccaf88d3706 100644
-> > > --- a/kernel/trace/ring_buffer.c
-> > > +++ b/kernel/trace/ring_buffer.c
-> > > @@ -3291,7 +3291,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
-> > >                     /* Nothing came after this event between C and E */
-> > >                     info->delta = ts - info->after;
-> > >                     (void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
-> > > -                                         info->after, info->ts);
-> > > +                                         info->after, ts);
-> > >                     info->ts = ts;
-> > >             } else {
-> > >                     /*
-> > >
-> >
-> > Can I get a Tested-by from someone on the Google team, so that I can send
-> > this upstream? It already passed all my internal testing, but I want to
-> > make sure this is the fix for the issue I reference in the change log.
-> >
-> > -- Steve
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
-> Hi Steve,
->
-> Thanks for the quick turnaround! Daniel and I have both tested your patch and
-> verified it's working on our end. Feel free to include:
->
-> Tested-by: Daniel Mentz <danielmentz@google.com>
-> Tested-by: Will McVicker <willmcvicker@google.com>
->
-> --Will
+Let's make it a separate patch, then.
