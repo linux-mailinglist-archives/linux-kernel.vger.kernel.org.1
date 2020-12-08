@@ -2,76 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EB72D3382
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC74D2D33B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgLHUUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        id S1728116AbgLHUXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:23:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgLHUUM (ORCPT
+        with ESMTP id S1726118AbgLHUXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:20:12 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E25C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:19:26 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id g185so3479856wmf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=BUN76cwequ+/VYM+TfjP/RsLBiO7tCwwH45rVFT1fYU=;
-        b=GB9bF4dH48O1e0DK+jTsZh4B37OqnHwxnW+X5RHvICetlFihb9vuCkPErxfa23tjrb
-         Pet2IVW6VLn5YeD89+e5zaijde05qQ4JWh83Pt17ENTtvzAzVkliryrrbMcqEsxJE6QH
-         B4TGkcNp24Rpfo2uezXlz/XhLgR1KdnggvwIY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=BUN76cwequ+/VYM+TfjP/RsLBiO7tCwwH45rVFT1fYU=;
-        b=qF7ITTF7Fhbcs4JymmzbZu3p2lwxHPfW3QKClPhPM5LddycW+ZmXk7MzPLoqruDupn
-         GhO1EOrZt+1xSwZDps2fN+SuRy7JSZRIHSuetXgB55W6RL6FGwngfrqHXLzmDsagzDRN
-         OHHPU08jnpQW1jTvZ77oRYnGUzF1MiV0DVr7RTBIDtNQJk6AXwo2OMNFNqy1uuC1hUP6
-         66Gw4CZlhVLIncyAZUPXnaiM+VXy4VpJX3FrfFXgLXJY4jagPSwU9Voj+ceOS1jjaepf
-         0Ctg5rCZTbv7TF5FyAYYOuwjlADQmMkfzaQyZlUCX78kCpo8xX8N+Ve8JHykbU6F+DJ1
-         5EYQ==
-X-Gm-Message-State: AOAM533Pf0ZznMOFyUZqAo8U7owXu6wfYYaXWQysZjSz9bcHCAzP35zh
-        OyRnResOrfbg/GllKklVTlEiwg==
-X-Google-Smtp-Source: ABdhPJy9OAXN0byqbLPrYyv3q1GNjdlrT9zw1o/Vgfw3TCvskm6gQE5bhU9On/i/pWGL2X7bDHg0xw==
-X-Received: by 2002:a1c:6a0e:: with SMTP id f14mr5240281wmc.102.1607458765212;
-        Tue, 08 Dec 2020 12:19:25 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id k18sm10472971wrd.45.2020.12.08.12.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 12:19:24 -0800 (PST)
-Message-ID: <a057c7ee47aa82acebd0438b786cd424ad67f6d8.camel@chromium.org>
-Subject: Re: [PATCH bpf-next v3] bpf: Only provide bpf_sock_from_file with
- CONFIG_NET
-From:   Florent Revest <revest@chromium.org>
-To:     Randy Dunlap <rdunlap@infradead.org>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, kafai@fb.com, linux-next@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Date:   Tue, 08 Dec 2020 21:19:17 +0100
-In-Reply-To: <c8dd9a41-3e45-fb32-1074-e23ebe3cb2e5@infradead.org>
-References: <20201208173623.1136863-1-revest@chromium.org>
-         <c8dd9a41-3e45-fb32-1074-e23ebe3cb2e5@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Tue, 8 Dec 2020 15:23:46 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6CDC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:22:51 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CrBSS2CGSz1rx8j;
+        Tue,  8 Dec 2020 21:22:48 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CrBSS165fz1qryr;
+        Tue,  8 Dec 2020 21:22:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id wAxyBkqaZCjP; Tue,  8 Dec 2020 21:22:47 +0100 (CET)
+X-Auth-Info: XN9GgVFTCsqN4NMFudgvER1EBciES0UKNg5Oyi5bDEAyg/56E9p6gDiGwvW3RN7U
+Received: from igel.home (ppp-46-244-165-151.dynamic.mnet-online.de [46.244.165.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue,  8 Dec 2020 21:22:47 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id C6DE12C32D8; Tue,  8 Dec 2020 21:22:46 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, guoren@linux.alibaba.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: Fixed kernel test robot warning
+References: <1607455638-4436-1-git-send-email-jrdr.linux@gmail.com>
+        <875z5ccc0h.fsf@igel.home>
+        <CAFqt6zbp56nOfnLvuieMMtpEi7TXuB67bGS_Y=offyiROc=etg@mail.gmail.com>
+X-Yow:  My DIGITAL WATCH has an automatic SNOOZE FEATURE!!
+Date:   Tue, 08 Dec 2020 21:22:46 +0100
+In-Reply-To: <CAFqt6zbp56nOfnLvuieMMtpEi7TXuB67bGS_Y=offyiROc=etg@mail.gmail.com>
+        (Souptick Joarder's message of "Wed, 9 Dec 2020 01:28:44 +0530")
+Message-ID: <871rg0cajt.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 12:06 -0800, Randy Dunlap wrote:
-> On 12/8/20 9:36 AM, Florent Revest wrote:
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> I would say that I didn't ack this version of the patch (hey,
-> it's 3x the size of the v1/v2 patches), but I have just
-> rebuilt with v3, so the Ack is OK.  :)
+On Dez 09 2020, Souptick Joarder wrote:
 
-Oops! I'll be more careful in the future, thank you Randy. ;)
+> On Wed, Dec 9, 2020 at 1:21 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>>
+>> On Dez 09 2020, Souptick Joarder wrote:
+>>
+>> > Kernel test robot throws below warning -
+>> >
+>> >    arch/riscv/kernel/asm-offsets.c:14:6: warning: no previous prototype
+>> > for 'asm_offsets' [-Wmissing-prototypes]
+>> >       14 | void asm_offsets(void)
+>> >          |      ^~~~~~~~~~~
+>> >
+>> > This patch should fixed it.
+>>
+>> Or rename it to main, like most other asm-offsets files.
+>
+> Few asm-offsets files named it as foo(). Does a rename to main() will
+> work straight forward ?
 
+Calling it main will suppress the warning, but other than that it is
+completely irrelevant how you call it.
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
