@@ -2,255 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CBD2D3566
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DFC2D357C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbgLHVhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:37:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
+        id S1729974AbgLHVkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730023AbgLHVhE (ORCPT
+        with ESMTP id S1729627AbgLHVkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:37:04 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BEDC061793;
-        Tue,  8 Dec 2020 13:36:48 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id jx16so26729246ejb.10;
-        Tue, 08 Dec 2020 13:36:48 -0800 (PST)
+        Tue, 8 Dec 2020 16:40:40 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCBBC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 13:40:00 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id f132so88254oib.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 13:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D3mkuqVS814q87loikDpaZu7IaU0Kbf/7WNbywxM0lk=;
-        b=SJX/b33U3+d2bDD5cO+9tiqdcJTxDpDRnpMtJR3QjVWV9CCjvA3ZzBcHhWXC4lMFUT
-         FvMJ+TKrxQH1am4s9WleFY25JBmQUodAJhzoOGjLQddSSNm2Z1RY1uJyxTCHjAn3aV67
-         wpcsw7XM081WsTV8aIYXfZ835wHch6mJ3nb4aI+RmAWrBc5lVbE4CfipVN4yGlZfQaE2
-         uqjIo+GiNgeL2m+4MhgFN81tug31skFG8cb2Z5dXsdTy1YC3FTRKzE22c9vmitgmkjmQ
-         TsYvGFHf3qKNMSqBh9G6D7JhCK+Tw/6KDVkRp68LYFSSqyeChjWYENN3jpRjdHgD+uw5
-         q36w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lLzPDVteSxEGApwG/LMo/pmVaFfWGs7Yb5Crz/Q/Br4=;
+        b=DXxxT9ICXu8ZDJHAYqp3HBzyD1mC1ZJ7VM8WI7eASNLHSGI+KdjygZAUtzMgzOJlQW
+         N3AVw0zUJtqpcHKmTLFZRYbkBgqHj9icvVxKFhcVTZ6pZxHMd/b/8IgHvEHzCiiNkFve
+         x2OPC0J3Pkdtqm5QPWqvXxvlEV4XQtPEkwQDvRSd/g0eC7SMWiaxpSqwUCi0/WwpGmjm
+         Llb+DltQfTNNOfbA05co9KHEaViqvYfw/09FUOlAC0uXkl49uNZ491NIJ57tvWRpNxUB
+         UWjG+qR8f1mH0De/yGZ8/v0RKzbXQblUd/CbgP8vGYKzPfi0hO//4ImcikvBmSi2f2LL
+         ULoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D3mkuqVS814q87loikDpaZu7IaU0Kbf/7WNbywxM0lk=;
-        b=Nd/vw2wp1H61wCU5zzwdSZnQtAaXHeGh+YTtM8z4tYZZLdOUF2lV2RqhZs0cpcxvNF
-         I1Y/0W9Kmbf8LA9tcHCiZHwb3iwg65BwGDG9RcehoQ/T2Qti7Cab/EevYHFABSilTlnl
-         jM/LJ+CKtyG5CAjfRkg7gO03h8hGp+oRF/gjuvTdBSIkVVbz61jzmlaOeZhjREABoUI6
-         TMggVBFwaE41oGU/RQNJxREjuEUJpyB2iZsFstv2wH5UrzI1s/p1Z+sApmMbTCCi+Xx2
-         vwKc9KT3VyrewYFM5qgqmiJb44ae9AG5iMe/2pEi+FQDNKXKelearaP+Fh8h9laa2xhb
-         H4XA==
-X-Gm-Message-State: AOAM531oJ8jnaVpdOfTilRKdHuYkO0X456pD+KhTupQr2SOSCJD7rtvm
-        NpLOtL8RfWtir83MJOQ/T7Q=
-X-Google-Smtp-Source: ABdhPJx8sRGBOrlEfiouGxgEcGiRsq1uXUyhJeycQdZdsXWuHNncIgRrlwF5dlJ3idcIOIZH4JBSSA==
-X-Received: by 2002:a17:906:d9cf:: with SMTP id qk15mr25848350ejb.453.1607463407738;
-        Tue, 08 Dec 2020 13:36:47 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id m3sm68824edj.22.2020.12.08.13.36.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 13:36:47 -0800 (PST)
-Message-ID: <a79d20c320aee5b29d3a3037877829b7a328765b.camel@gmail.com>
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-From:   Bean Huo <huobean@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>, bvanassche@acm.org
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 08 Dec 2020 22:36:46 +0100
-In-Reply-To: <20201207103403.1c9c1045@gandalf.local.home>
-References: <20201206164226.6595-1-huobean@gmail.com>
-         <20201206164226.6595-4-huobean@gmail.com>
-         <20201207103403.1c9c1045@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lLzPDVteSxEGApwG/LMo/pmVaFfWGs7Yb5Crz/Q/Br4=;
+        b=WrBrFruln5PDnF4yA4LyX42titkii9xS6nNgI4sWgRhBZjoDd3+tS0aXZIuZp3XQaU
+         qaMT63spUGZ6PzBKLqqAGH31hqcQrb0vmpbCSuuptXF84KmUDJ3TXJ76Ktm8RmhbrQfr
+         1TmUd2jY6S7rF+4MpKYM/ZTq4s+RNbUEsToPv2+/+8+1+yYG6I6DSaDCZ2+9vO+T690i
+         6KIga2Xb2wOsSnGWKb0wEJpb0/2WPkWCbekbmm5bI3pI/soh5CnnZqGZNDM1j8Ij67vL
+         fOZzcMEKcH4HqrKV9jpAd9ecpqnpuFx/phad30enUH/iFR5/v6T+8Dnfvz+8jQnVtJBX
+         BSqg==
+X-Gm-Message-State: AOAM53207xLDC6VZ/eCx3O6JVQU6ci1xblCiDRyaQhQ6kqgz6AlPFzdM
+        5Dg8HdJt/oxvogcz34/GoWUWAw==
+X-Google-Smtp-Source: ABdhPJycWI/9xeiSd0a5k2WLzMdBrcyoQHESJihhU+dFxsyFspmI/uNqFtKJyTff0MBSSLf7oA36hg==
+X-Received: by 2002:a54:4801:: with SMTP id j1mr4267771oij.104.1607463599958;
+        Tue, 08 Dec 2020 13:39:59 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k5sm44011oot.30.2020.12.08.13.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 13:39:59 -0800 (PST)
+Date:   Tue, 8 Dec 2020 15:39:57 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] drm/panel: Make backlight attachment lazy
+Message-ID: <X8/yrXmEwuq6YZaD@builder.lan>
+References: <20201208044446.973238-1-bjorn.andersson@linaro.org>
+ <20201208054855.GA18863@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208054855.GA18863@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 10:34 -0500, Steven Rostedt wrote:
-> On Sun,  6 Dec 2020 17:42:26 +0100
-> Bean Huo <huobean@gmail.com> wrote:
-> 
-> > From: Bean Huo <beanhuo@micron.com>
+On Mon 07 Dec 23:48 CST 2020, Sam Ravnborg wrote:
+
+> Hi Bjorn,
+> On Mon, Dec 07, 2020 at 10:44:46PM -0600, Bjorn Andersson wrote:
+> > Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
+> > means of generating a PWM signal for backlight control of the attached
+> > panel. The provided PWM chip is typically controlled by the
+> > pwm-backlight driver, which if tied to the panel will provide DPMS.
 > > 
-> > Transaction Specific Fields (TSF) in the UPIU package could be CDB
-> > (SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field),
-> > and
-> > TM I/O parameter (Task Management Input/Output Parameter). But,
-> > currently,
-> > we take all of these as CDB  in the UPIU trace. Thus makes user
-> > confuse
-> > among CDB, OSF, and TM message. So fix it with this patch.
+> > But with the current implementation the panel will refuse to probe
+> > because the bridge driver has yet to probe and register the PWM chip,
+> > and the bridge driver will refuse to probe because it's unable to find
+> > the panel.
 > > 
-> > Signed-off-by: Bean Huo <beanhuo@micron.com>
+> > Mitigate this catch-22 situation by allowing the panel driver to probe
+> > and retry the attachment of the backlight as the panel is turned on or
+> > off.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > > ---
-> >  drivers/scsi/ufs/ufshcd.c  |  9 +++++----
-> >  include/trace/events/ufs.h | 10 +++++++---
-> >  2 files changed, 12 insertions(+), 7 deletions(-)
+> >  drivers/gpu/drm/drm_panel.c | 47 +++++++++++++++++++++++++++----------
+> >  include/drm/drm_panel.h     |  8 +++++++
+> >  2 files changed, 43 insertions(+), 12 deletions(-)
 > > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index 29d7240a61bf..5b2219e44743 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -315,7 +315,8 @@ static void ufshcd_add_cmd_upiu_trace(struct
-> > ufs_hba *hba, unsigned int tag,
+> > diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
+> > index f634371c717a..7487329bd22d 100644
+> > --- a/drivers/gpu/drm/drm_panel.c
+> > +++ b/drivers/gpu/drm/drm_panel.c
+> > @@ -43,6 +43,34 @@ static LIST_HEAD(panel_list);
+> >   * take look at drm_panel_bridge_add() and devm_drm_panel_bridge_add().
+> >   */
+> >  
+> > +#if IS_REACHABLE(CONFIG_BACKLIGHT_CLASS_DEVICE)
+> > +static int drm_panel_of_backlight_lazy(struct drm_panel *panel)
+> > +{
+> > +	struct backlight_device *backlight;
+> > +
+> > +	if (!panel || !panel->dev)
+> > +		return -EINVAL;
+> > +
+> > +	backlight = devm_of_find_backlight(panel->dev);
+> > +
+> > +	if (IS_ERR(backlight)) {
+> > +		if (PTR_ERR(backlight) == -EPROBE_DEFER) {
+> > +			panel->backlight_init_pending = true;
+> > +			return 0;
+> > +		}
+> > +
+> > +		return PTR_ERR(backlight);
+> Use dev_err_probe()
+> 
+
+I need special handling of EPROBE_DEFER, both in terms of remembering
+that we should retry and to not pass the error back to the panel driver.
+
+I also don't want to introduce an error print here.
+
+> > +	}
+> > +
+> > +	panel->backlight = backlight;
+> > +	panel->backlight_init_pending = false;
+> > +
+> > +	return 0;
+> > +}
+> > +#else
+> > +static int drm_panel_of_backlight_lazy(struct drm_panel *panel) { return 0; }
+> > +#endif
+> > +
+> >  /**
+> >   * drm_panel_init - initialize a panel
+> >   * @panel: DRM panel
+> > @@ -161,6 +189,9 @@ int drm_panel_enable(struct drm_panel *panel)
+> >  			return ret;
+> >  	}
+> >  
+> > +	if (panel->backlight_init_pending)
+> > +		drm_panel_of_backlight_lazy(panel);
+> > +
+> >  	ret = backlight_enable(panel->backlight);
+> >  	if (ret < 0)
+> >  		DRM_DEV_INFO(panel->dev, "failed to enable backlight: %d\n",
+> > @@ -187,6 +218,9 @@ int drm_panel_disable(struct drm_panel *panel)
+> >  	if (!panel)
+> >  		return -EINVAL;
+> >  
+> > +	if (panel->backlight_init_pending)
+> > +		drm_panel_of_backlight_lazy(panel);
+> > +
+> >  	ret = backlight_disable(panel->backlight);
+> >  	if (ret < 0)
+> >  		DRM_DEV_INFO(panel->dev, "failed to disable backlight: %d\n",
+> > @@ -328,18 +362,7 @@ EXPORT_SYMBOL(of_drm_get_panel_orientation);
+> >   */
+> >  int drm_panel_of_backlight(struct drm_panel *panel)
 > >  {
-> >  	struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
-> >  
-> > -	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq-
-> > >sc.cdb);
-> > +	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq->header, &rq-
-> > >sc.cdb,
-> > +			  "CDB");
-> >  }
-> >  
-> >  static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba,
-> > unsigned int tag,
-> > @@ -329,7 +330,7 @@ static void ufshcd_add_query_upiu_trace(struct
-> > ufs_hba *hba, unsigned int tag,
-> >  		rq_rsp = (struct utp_upiu_req *)hba-
-> > >lrb[tag].ucd_rsp_ptr;
-> >  
-> >  	trace_ufshcd_upiu(dev_name(hba->dev), str, &rq_rsp->header,
-> > -			  &rq_rsp->qr);
-> > +			  &rq_rsp->qr, "OSF");
-> >  }
-> >  
-> >  static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned
-> > int tag,
-> > @@ -340,10 +341,10 @@ static void ufshcd_add_tm_upiu_trace(struct
-> > ufs_hba *hba, unsigned int tag,
-> >  
-> >  	if (!strcmp("tm_send", str))
-> >  		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp-
-> > >req_header,
-> > -				  &descp->input_param1);
-> > +				  &descp->input_param1, "TM_INPUT");
-> >  	else
-> >  		trace_ufshcd_upiu(dev_name(hba->dev), str, &descp-
-> > >rsp_header,
-> > -				  &descp->output_param1);
-> > +				  &descp->output_param1, "TM_OUTPUT");
+> > -	struct backlight_device *backlight;
+> > -
+> > -	if (!panel || !panel->dev)
+> > -		return -EINVAL;
+> > -
+> > -	backlight = devm_of_find_backlight(panel->dev);
+> > -
+> > -	if (IS_ERR(backlight))
+> > -		return PTR_ERR(backlight);
+> > -
+> > -	panel->backlight = backlight;
+> > -	return 0;
+> > +	return drm_panel_of_backlight_lazy(panel);
+> Could you update the drm_panel_of_backlight() implementation (and
+> do not forget the documentation) and avoid drm_panel_of_backlight_lazy()?
 > 
-> You could save some space on the ring buffer, if you made the above
-> into an
-> enum, and then used print_symbolic().
+
+That sounds reasonable, there's not really a reason for introducing a
+new function for what I'm doing.
+
 > 
 > >  }
+> >  EXPORT_SYMBOL(drm_panel_of_backlight);
+> >  #endif
+> > diff --git a/include/drm/drm_panel.h b/include/drm/drm_panel.h
+> > index 33605c3f0eba..b126abebb2f3 100644
+> > --- a/include/drm/drm_panel.h
+> > +++ b/include/drm/drm_panel.h
+> > @@ -149,6 +149,14 @@ struct drm_panel {
+> >  	 */
+> >  	struct backlight_device *backlight;
 > >  
-> >  static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-> > diff --git a/include/trace/events/ufs.h
-> > b/include/trace/events/ufs.h
-> > index 0bd54a184391..68e8e97a9b47 100644
-> > --- a/include/trace/events/ufs.h
-> > +++ b/include/trace/events/ufs.h
-> > @@ -295,15 +295,17 @@ TRACE_EVENT(ufshcd_uic_command,
-> >  );
+> > +	/**
+> > +	 * @backlight_init_pending
+> > +	 *
+> > +	 * Backlight driver is not yet available so further attempts to
+> > +	 * initialize @backlight is necessary.
+> > +	 */
+> > +	bool backlight_init_pending;
+> > +
 > 
-> 
-> You could make this:
-> 
-> #define TRACE_TSF_TYPES		\
-> 	EM(CDB)			\
-> 	EM(OSF)			\
-> 	EM(TM_INPUT)		\
-> 	EMe(TM_OUTPUT)
-> 
-> #ifndef TRACE_TSF_TYPES_ENUMS
-> #define TRACE_TSF_TYPES_ENUMS
-> #undef EM
-> #undef EMe
-> 
-> #define EM(x)	TRACE_TSF_##x,
-> #define EMe(x)	TRACE_TSF_##x
-> 
-> enum {
-> 	TRACE_TSF_TYPES
-> }
-> #endif /* TRACE_TSF_TYPES_ENUMS */
-> 
-> #undef EM
-> #undef EMe
-> 
-> /* These export the enum names to user space */
-> #define EM(x)	TRACE_DEFINE_ENUM(TRACE_TSF_##x)
-> #define EMe(x)	TRACE_DEFINE_ENUM(TRACE_TSF_##x)
-> 
-> TRACE_TSF_TYPES
-> 
-> #undef EM
-> #undef EMe
-> 
-> /* These are used in the print_symbolic */
-> #define EM(x) { TRACE_TSF_##x, #x },
-> #define EMe(x) { TRACE_TSF_##x, #x }
-> 
-> 
-> >  
-> >  TRACE_EVENT(ufshcd_upiu,
-> > -	TP_PROTO(const char *dev_name, const char *str, void *hdr, void
-> > *tsf),
-> > +	TP_PROTO(const char *dev_name, const char *str, void *hdr, void
-> > *tsf,
-> > +		 const char *tsf_type),
-> 
-> 		int tsf_type;
-> 
-> >  
-> > -	TP_ARGS(dev_name, str, hdr, tsf),
-> > +	TP_ARGS(dev_name, str, hdr, tsf, tsf_type),
-> >  
-> >  	TP_STRUCT__entry(
-> >  		__string(dev_name, dev_name)
-> >  		__string(str, str)
-> >  		__array(unsigned char, hdr, 12)
-> >  		__array(unsigned char, tsf, 16)
-> > +		__string(tsf_type, tsf_type)
-> 
-> 		__field(int, tsf_type)
-> 
-> >  	),
-> >  
-> >  	TP_fast_assign(
-> > @@ -311,12 +313,14 @@ TRACE_EVENT(ufshcd_upiu,
-> >  		__assign_str(str, str);
-> >  		memcpy(__entry->hdr, hdr, sizeof(__entry->hdr));
-> >  		memcpy(__entry->tsf, tsf, sizeof(__entry->tsf));
-> > +		__assign_str(tsf_type, tsf_type);
-> 
-> 
-> 		__entry->tsf_type = tsf_type;
-> 
-> 
-> >  	),
-> >  
-> >  	TP_printk(
-> > -		"%s: %s: HDR:%s, CDB:%s",
-> > +		"%s: %s: HDR:%s, %s:%s",
-> >  		__get_str(str), __get_str(dev_name),
-> >  		__print_hex(__entry->hdr, sizeof(__entry->hdr)),
-> > +		__get_str(tsf_type),
-> 
-> 		print_symbolic(tsf_type, TRACE_TSF_TYPES),
-> 
-> -- Steve
-> 
-> 
-> >  		__print_hex(__entry->tsf, sizeof(__entry->tsf))
-> >  	)
-> >  );
-> 
+> We have not done so today for other fields, but it would be good
+> to document this is for drm_panel use only and drivers shall not touch.
 > 
 
-Thanks Bart and Steve,
-That's nice, I will change them in the next version.
+Of course.
 
-Bean
-
-
-
+Thanks,
+Bjorn
