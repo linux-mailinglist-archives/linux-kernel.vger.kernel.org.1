@@ -2,239 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9BB2D30CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB98E2D30CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbgLHRTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
+        id S1730621AbgLHRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgLHRS7 (ORCPT
+        with ESMTP id S1730436AbgLHRTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:18:59 -0500
-Received: from mx-rz-1.rrze.uni-erlangen.de (mx-rz-1.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C33C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:18:19 -0800 (PST)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-1.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Cr6MX48Lnz8v7b;
-        Tue,  8 Dec 2020 18:18:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
-        t=1607447896; bh=nGL1H2DC0k+G9oqH0k5fF50qkeoY7q+qbbnHqBDBPRg=;
-        h=Subject:References:To:Cc:From:Date:In-Reply-To:From:To:CC:
-         Subject;
-        b=IlDn34bBwHCrumsGXdeOaIhIAbipiytZHARmYbaijw9IcO3hM3LBga1A59CWnxTUx
-         NEwaEMSadOD+Mj5bFVEAkhRV6qlR2WuY53Ibe0FuMPwENCh5W3fuhhOR70TiFGTFg7
-         bF7o3GGcSBOZsVNcJ+KRjlhgvHooJieEn4Tq4tiGRFTd/vVmvWAkz5fjm06H5I9YLX
-         7+v9qy1Ap/0AzeUDdk1D9usAmPZiDe5SB7RFsiohdPx3b3fJGHLs7l7lC5JK32tyJ8
-         LDqX1+6H5cmoob6n/wFLbbEjtSgYRQkzVU0XXzk3pvt3tznE5nfiscuQYCyqfXBAkS
-         EaBBIChfANedA==
-X-Virus-Scanned: amavisd-new at boeck4.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2a02:810d:8080:2d9f::1245
-Received: from [IPv6:2a02:810d:8080:2d9f::1245] (unknown [IPv6:2a02:810d:8080:2d9f::1245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX19ytk193ENKz99m0O62xD9gaood015NZC0=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Cr6MT6YGFz8ssD;
-        Tue,  8 Dec 2020 18:18:13 +0100 (CET)
-Subject: [RFC PATCH v2] checkpatch: rewrite Kconfig parsing
-References: <a07d684c-37ea-b589-c4b1-489e88b5caa5@fau.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     joe@perches.com, apw@canonical.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de
-From:   Nicolai Fischer <nicolai.fischer@fau.de>
-X-Forwarded-Message-Id: <a07d684c-37ea-b589-c4b1-489e88b5caa5@fau.de>
-Message-ID: <97fb4ba0-68b3-8faf-1d98-e4990b2e63e3@fau.de>
-Date:   Tue, 8 Dec 2020 18:18:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 8 Dec 2020 12:19:19 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06D7C061793;
+        Tue,  8 Dec 2020 09:18:38 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id k4so18408529edl.0;
+        Tue, 08 Dec 2020 09:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=YsRTsMesCTliRWq4glF76HNwn9ElWJpIdmHckoW2bvo=;
+        b=C6rysrLLV7sfxL+MVzuGx2dgpynoaKZwkG5aZ+HfF+/4msF1fH8Xam/Rm/CJWSwFmO
+         88pVRExhJ9bYiRSmD5noxb6tqNsZVnaRKHFQhBi46KliVnzSkyXxFp0Utd03rVh9HZr2
+         JbE/0mvw+PnMIl2HuB+rXqehij9oUY1LSyXIBclOeFtvHy+GsW0vFK6BOXHPw/5hgRxU
+         g509UkB/dWzQyXPk+zVIh07+JliwiT2A1g+fFo0Fll5CyKSn4BqVhI/wDf9eWccBEu3g
+         v4O7d6AYBUXLtWUGkZurD1PXupxAwqP0lBivwg+AVU+OKHpI7jrgFWhBRc+VuDFBRrZe
+         S4Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=YsRTsMesCTliRWq4glF76HNwn9ElWJpIdmHckoW2bvo=;
+        b=qgu5YK4SFAeoBEffn9nNcYaCRrF3A248gghwatWkRy7nibI/oPPxNkVfLAlvCzMR4z
+         Xi6eDUyTUJJcdFcH2umsZnbgGFbp/lerTfwtkn6Twut5gxCHq1ByYZzctv45EVCSVkVr
+         C6DT6g41HBfiTxy3vCroe6RJcxwuCy5bgEVAHnUZA9FWBB3Mn/Hu8A9C5RMEl27nPsQl
+         Wc2oRcaj6a5B7UkoPA1z0kLcrpFzqo36Eq8Uk2ZLJ1FzrcLm2eEfNqbRXzd7RhiuAVrH
+         xEkc4j8ycXIJ8XsztxvUTDnNsUJ4eI0Uoey0Rkk5sQNiptsJNsh8csqsVIr01XmR50mB
+         HssA==
+X-Gm-Message-State: AOAM531ANcsjeQcAO8B13+CerG1n13+zqp49An0sSycWsJxFV/sURAfG
+        3FQX8CQMZ32LU7Ura0TtATopK/8Z+dc=
+X-Google-Smtp-Source: ABdhPJxFJFhmprL9FiUn3tPn/fQwnmKhZr5/OMewcYe2zAlrGaCBV56eF5K/klQt3ixGkdieNipNXQ==
+X-Received: by 2002:a05:6402:8cc:: with SMTP id d12mr25266684edz.0.1607447917370;
+        Tue, 08 Dec 2020 09:18:37 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:580f:b429:3aa2:f8b1? (p200300ea8f065500580fb4293aa2f8b1.dip0.t-ipconnect.de. [2003:ea:8f06:5500:580f:b429:3aa2:f8b1])
+        by smtp.googlemail.com with ESMTPSA id ef11sm3659979ejb.15.2020.12.08.09.18.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 09:18:36 -0800 (PST)
+Subject: Re: [PATCH 2/2] PCI/ASPM: Use capability to override ASPM via sysfs
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201208082534.2460215-1-kai.heng.feng@canonical.com>
+ <20201208082534.2460215-2-kai.heng.feng@canonical.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <d47544b3-b9a0-609c-fc97-527c9416f9a0@gmail.com>
+Date:   Tue, 8 Dec 2020 18:18:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <a07d684c-37ea-b589-c4b1-489e88b5caa5@fau.de>
+In-Reply-To: <20201208082534.2460215-2-kai.heng.feng@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch currently only warns if the help text is too short.
-To determine this the diff gets parsed for keywords starting
-a new entry, but several kinds of false positives can occur with
-the current implementation, especially when the config
-is not well formatted.
-
-This patch makes the parsing more robust and includes
-new warnings if:
-1) the help attribute is not specified last
-2) there is no blank line or endif before the next keyword
-3) the help text is not indented 2 spaces more than
-   the attribute itself.
-
-Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
-Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
-Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
----
-
-This patch rewrites most of the Kconfig parsing to address
-the issues mentioned in the first RFC:
-
-1) search for 'help' instead of '---help---'
-> I believe all the '---help---' lines have been converted to just 'help'
-> so the '(?:---)?' bits here could be removed
-
-2) create new warnings:
-> Perhaps it'd be better to create a new warning when the help text
-> block is not the last block of the config section.  Maybe warn when
-> a blank line or endif is not the separator to the next keyword.
-> Maybe warn when the next line after help is not indented 2 more
-> spaces than the help line.
-
-3) fix handling of blank lines and rely on keywords for end of help text
-> This doesn't allow blank lines for multi-paragraph help text either.
+Am 08.12.2020 um 09:25 schrieb Kai-Heng Feng:
+> If we are to use sysfs to change ASPM settings, we may want to override
+> the default ASPM policy.
 > 
-> I think keyword parsing is necessary and some false positives are
-> inevitable as the parsing logic in a line-by-line analyzer will
-> always be incomplete.
+> So use ASPM capability, instead of default policy, to be able to use all
+> possible ASPM states.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/pci/pcie/aspm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 2ea9fddadfad..326da7bbc84d 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1239,8 +1239,7 @@ static ssize_t aspm_attr_store_common(struct device *dev,
+>  
+>  		link->aspm_disable |= state;
+>  	}
+> -
+> -	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+> +	pcie_config_aspm_link(link, link->aspm_capable);
+>  
+I like the idea, because the policy can be changed by the user anyway.
+Therefore I don't see it as a hard system limit.
 
+However I think this change is not sufficient. Each call to
+pcie_config_aspm_link(link, policy_to_aspm_state(link)), e.g. in path
+pcie_aspm_pm_state_change -> pcie_config_aspm_path will reset the
+enabled states to the policy.
 
-It has occurred to us, that kconfig-language.rst does not explicitly
-specify that the help text should be the last attribute, although
-this is the defacto convention. Now that checkpatch actively checks
-for this, we should probably update the documentation accordingly.
-
-
- scripts/checkpatch.pl | 95 +++++++++++++++++++++++++++++++------------
- 1 file changed, 68 insertions(+), 27 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7b086d1cd6c2..52b3fd0c4581 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3299,7 +3299,11 @@ sub process {
- 				      "Do not include the paragraph about writing to the Free Software Foundation's mailing address from the sample GPL notice. The FSF has changed addresses in the past, and may do so again. Linux already includes a copy of the GPL.\n" . $herevet)
- 		}
- 
--# check for Kconfig help text having a real description
-+# Check if Kconfig is well formatted. Warn if help text:
-+# 1) is shorter than $min_conf_desc_length lines
-+# 2) is not specified last
-+# 3) and next keyword are not separated by a blank line or endif
-+# 4) is not indented correctly
- # Only applies when adding the entry originally, after that we do not have
- # sufficient context to determine whether it is indeed long enough.
- 		if ($realfile =~ /Kconfig/ &&
-@@ -3308,46 +3312,83 @@ sub process {
- 		    # (\b) rather than a whitespace character (\s)
- 		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
- 			my $length = 0;
--			my $cnt = $realcnt;
--			my $ln = $linenr + 1;
--			my $f;
- 			my $is_start = 0;
- 			my $is_end = 0;
--			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
--				$f = $lines[$ln - 1];
--				$cnt-- if ($lines[$ln - 1] !~ /^-/);
--				$is_end = $lines[$ln - 1] =~ /^\+/;
-+			my $valid_end = 0;
-+			my $wrong_indent = 0;
-+			my $help_last = 1;
- 
--				next if ($f =~ /^-/);
--				last if (!$file && $f =~ /^\@\@/);
-+			my $cnt = $realcnt;
-+			my $help_indent;
-+			my $last_blank = 0;
-+			for (my $ln = $linenr; $cnt > 0 && defined $lines[$ln]; $ln++) {
-+				my $line = $lines[$ln];
- 
--				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
-+				next if ($line =~ /^-/);
-+				last if (!$file && $line =~ /^\@\@/);
-+				$cnt--;
-+				$line =~ s/^\+//;
-+
-+				if ($line =~ /^\s*(?:bool|tristate|string|hex|int|prompt)\s*["']/) {
- 					$is_start = 1;
--				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
--					$length = -1;
-+				} elsif ($line =~ /^(\s*)help$/) {
-+					$help_indent = $1;
-+					$length = 0;
-+					next;
- 				}
-+				next if ($line =~ /^#.*$/);
-+				next if (!defined $help_indent);
- 
--				$f =~ s/^.//;
--				$f =~ s/#.*//;
--				$f =~ s/^\s+//;
--				next if ($f =~ /^$/);
--
--				# This only checks context lines in the patch
--				# and so hopefully shouldn't trigger false
--				# positives, even though some of these are
--				# common words in help texts
--				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
--						  if|endif|menu|endmenu|source)\b/x) {
-+				if ($line =~ /^\s*$/) {
-+					$last_blank = 1;
-+					next;
-+				}
-+				my $l = $line;
-+				$l =~ s/^$help_indent//;
-+				if ($l =~ /^(?:bool|tristate|string|hex|int|prompt|default|
-+					depends\ on|select|imply|visible\ if|range|option)\b/x) {
-+					$help_last = 0;
-+				} elsif ($line =~/^\s*endif\s*(?:#.*)?$/) {
-+					# line contains only endif keyword and optional comment
-+					# help text is terminated properly
- 					$is_end = 1;
-+					$valid_end = 1;
- 					last;
-+				} elsif ($line =~ /^\s*(?:config|menuconfig|choice|endchoice|
-+					comment|if|menu|endmenu|source)\b/x) {
-+					# match all keywords except endif
-+					$is_end = 1;
-+					if ($last_blank) {
-+						# This generates a false positive if a blank line is followed by an
-+						# 'if' on the next line. But that would probably not be a well formatted text.
-+						$valid_end = 1;
-+						last;
-+					}
-+				}
-+				if ($l !~ /^\ {2}/) {
-+					$wrong_indent = 1;
- 				}
-+				$last_blank = 0;
- 				$length++;
- 			}
--			if ($is_start && $is_end && $length < $min_conf_desc_length) {
-+			if ($is_start && $is_end && !$valid_end) {
-+				WARN("CONFIG_DESCRIPTION",
-+					"help text is not followed by a blank line or endif\n" . $herecurr);
-+			}
-+			if ($is_start && $valid_end && $length < $min_conf_desc_length) {
-+				WARN("CONFIG_DESCRIPTION",
-+				     "help text is too short ($length/$min_conf_desc_length lines)\n" . $herecurr);
-+			}
-+			if ($is_start && $valid_end && $help_last && $wrong_indent) {
-+				WARN("CONFIG_DESCRIPTION",
-+					"help text is not indented 2 spaces more than the help keyword\n" . $herecurr);
-+			}
-+			if ($is_start && !$help_last) {
- 				WARN("CONFIG_DESCRIPTION",
--				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
-+					"help text is not the last attribute\n" . $herecurr);
- 			}
--			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
-+			#print "is_start<$is_start> is_end<$is_end> valid_end <$valid_end>";
-+			#print "help_last <$help_last> length<$length>\n";
- 		}
- 
- # check MAINTAINERS entries
--- 
-2.28.0
+>  	mutex_unlock(&aspm_lock);
+>  	up_read(&pci_bus_sem);
+> 
 
