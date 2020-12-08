@@ -2,241 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814FC2D3043
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CF42D304A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbgLHQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgLHQyr (ORCPT
+        id S1730476AbgLHQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:55:40 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:44221 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729374AbgLHQzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:54:47 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD31C06179C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:54:07 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id c14so2778670qtn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:54:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Li9FNCs+r58sHgUOn9VW6RK53rMll07O7ewT2tY4odA=;
-        b=Fn4TFkg8LVUpkF3uZWMrIIVrR9qv9K0uaOsxdLqirCT+GuhPpBkfyqJKKmc2MzNXA1
-         CRsNfWYertDeSU9pI/MquqCbO8CajOsm/tX2jbcUFfGy1TNFzrKDx3sO+0qJvCRQN6It
-         KtZCzqktmOs+rauKpG+D/8qrzev7UP5cRcFfSqwULKcchhYq28uB38TTglkuOKZoDltL
-         kxJKdECY1Prl+vhlg1wC5vt2ppSsHViN5lVT9PcZZUH8P1J+7StadDEAAHDfTa0Uj/tk
-         6B+Rkoiv3pUmvePjwvEyF8SgAxltomKubLQuTu9IRUWl/fbpNnYxRAyeRxLCpZqJbLHk
-         T2/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Li9FNCs+r58sHgUOn9VW6RK53rMll07O7ewT2tY4odA=;
-        b=S0KtccHyh53bjbXDsJrqZqDHgE1d8/ZjgRPlxQS3CzikrDyCKld2m7JKfDuSpbNxAZ
-         WMhX8pr2vcFuThx3kNvL7sYKtH1qfp5sHXg57282d8cwGdtIKvFWQPYnfm7X+e32RB8K
-         OIEH1IQkoxY3SEQ63OG8qoYiihod4dqryAhYtLCpfDIIXaWeZXcQaUxWbiur5KWpdbAf
-         sQ+380r5uSVRgE3DTz8nLr2djSN61YtbkFFstw+o/hrV4iq4GToU1lZFrHGVi0nptgfn
-         /WgmTKSXo5+vR5yXrwoKQlKyb/44VKw34KoVMvyJPgjt4DB2Q8hCKkah/tbMfOVbdvuL
-         Rx+A==
-X-Gm-Message-State: AOAM532ZJAmv4YFY56WTmfJ7kdCV9yHbWpKh48xtWL22n6wHZZo1/sPJ
-        5xd0q50DP/L8isyoLfXEw253Fg==
-X-Google-Smtp-Source: ABdhPJzKu5k+opBWMLTGG0G/Z/6Z9q2u7NhuuDnQp0Sf5WJDN+jkuUUS2L/iO9uH9pzo+FkgQiLq0g==
-X-Received: by 2002:ac8:59d5:: with SMTP id f21mr31218834qtf.2.1607446446643;
-        Tue, 08 Dec 2020 08:54:06 -0800 (PST)
-Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id z78sm3374497qkb.0.2020.12.08.08.54.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 08:54:05 -0800 (PST)
-Message-ID: <ec5fd04e7bcec92ae021bc4d36373deaa50e96fd.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 0/4] media: meson: Add support for the Amlogic GE2D
- Accelerator Unit
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Neil Armstrong <narmstrong@baylibre.com>, hverkuil@xs4all.nl
-Cc:     linux-amlogic@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Tue, 08 Dec 2020 11:54:04 -0500
-In-Reply-To: <20201117084440.578540-1-narmstrong@baylibre.com>
-References: <20201117084440.578540-1-narmstrong@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 8 Dec 2020 11:55:40 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id D70561BF20A;
+        Tue,  8 Dec 2020 16:54:48 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 17:54:48 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        thierry.reding@gmail.com, krzk@kernel.org, mripard@kernel.org,
+        benh@kernel.crashing.org, emil.l.velikov@gmail.com,
+        mpe@ellerman.id.au, linux-parisc@vger.kernel.org, paulus@samba.org,
+        nicolas.ferre@microchip.com, tony@atomide.com, sam@ravnborg.org,
+        linux@armlinux.org.uk, ludovic.desroches@microchip.com,
+        soc@kernel.org, James.Bottomley@hansenpartnership.com,
+        will@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        daniel.thompson@linaro.org, jernej.skrabec@siol.net,
+        linux-arm-kernel@lists.infradead.org, deller@gmx.de,
+        tsbogend@alpha.franken.de, catalin.marinas@arm.com, wens@csie.org,
+        linux-mips@vger.kernel.org, lee.jones@linaro.org,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 0/5] drop unused BACKLIGHT_GENERIC option
+Message-ID: <20201208165448.GN431442@piout.net>
+References: <20201201222922.3183-1-andrey.zhizhikin@leica-geosystems.com>
+ <160744514229.359082.11487352663734358657.b4-ty@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160744514229.359082.11487352663734358657.b4-ty@arndb.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 17 novembre 2020 à 09:44 +0100, Neil Armstrong a écrit :
-> The GE2D is a 2D accelerator with various features like configurable blitter
-> with alpha blending, frame rotation, scaling, format conversion and colorspace
-> conversion.
-> 
-> The driver implements a Memory2Memory VB2 V4L2 streaming device permitting:
-> - 0, 90, 180, 270deg rotation
-> - horizontal/vertical flipping
-> - source cropping
-> - destination compositing
-> - 32bit/24bit/16bit format conversion
-> 
-> This adds the support for the GE2D version found in the AXG SoCs Family.
-> 
-> The missing features are:
-> - Source scaling
-> - Colorspace conversion
-> - Advanced alpha blending & blitting options
+Hi,
 
-Is there some Open Source software using this driver ? GStreamer got some
-support, but it's mostly focused on CSC and Scaling (flipping should work, but
-rotation is not implemented). But I'm not aware of anything else, hence asking.
+On 08/12/2020 17:34:46+0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> On Tue, 1 Dec 2020 22:29:17 +0000, Andrey Zhizhikin wrote:
+> > Since the removal of generic_bl driver from the source tree in commit
+> > 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> > unused") BACKLIGHT_GENERIC config option became obsolete as well and
+> > therefore subject to clean-up from all configuration files.
+> > 
+> > This series introduces patches to address this removal, separated by
+> > architectures in the kernel tree.
+> > 
+> > [...]
+> 
+> While my plan was to only take the arm specific patches, it seems
+> nobody else has applied the other architecture specific ones,
+> but there have been a lot of Acks. Also, b4 makes it easy to
+> merge the entire branch, so I'll just take all of these.
+> 
+> Applied to arm/defconfig, thanks!
+> 
+> [1/5] ARM: configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 0437141b4e2233ae0109a9584e7a003cd05b0a20
+> [2/5] arm64: defconfig: drop unused BACKLIGHT_GENERIC option
+>       commit: 717c4c8336486781630893508b3347ae18953fae
+> [3/5] MIPS: configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 2257682282531de45929c6006152f6e2ee881b42
 
-> 
-> Dependencies:
-> - Patches 1-3: None
-> - Patch 4: 
-> https://lkml.kernel.org/r/20200915124553.8056-1-narmstrong@baylibre.com (appli
-> ed for 5.11)
-> 
-> Changes since v2:
-> - removed error check in and after get_frame()
-> - moved the v4l2_file_operations lower in the code to avoid adding
-> vidioc_setup_cap_fmt on top
-> - removed all memcpy of pix_fmt
-> - simplified & fixed ge2d_start_streaming
-> - added local buffer type check in vidioc_g_selection instead of using
-> get_frame error
-> - removed impossible <0 rectangle check, fixed error string
-> - added comment on condition after V4L2_CID_ROTATE
-> 
-> Changes since v1:
-> - Rebased on v5.10-rc1
-> 
-> / # v4l2-compliance -s
-> v4l2-compliance SHA: ea16a7ef13a902793a5c2626b0cefc4d956147f3, 64 bits, 64-bit
-> time_t
-> 
-> Compliance test for meson-ge2d device /dev/video0:
-> 
-> Driver Info:
->         Driver name      : meson-ge2d
->         Card type        : meson-ge2d
->         Bus info         : platform:meson-ge2d
->         Driver version   : 5.9.0
->         Capabilities     : 0x84208000
->                 Video Memory-to-Memory
->                 Streaming
->                 Extended Pix Format
->                 Device Capabilities
->         Device Caps      : 0x04208000
->                 Video Memory-to-Memory
->                 Streaming
->                 Extended Pix Format
-> 
-> Required ioctls:
->         test VIDIOC_QUERYCAP: OK
-> 
-> Allow for multiple opens:
->         test second /dev/video0 open: OK
->         test VIDIOC_QUERYCAP: OK
->         test VIDIOC_G/S_PRIORITY: OK
->         test for unlimited opens: OK
-> 
->         test invalid ioctls: OK
-> Debug ioctls:
->         test VIDIOC_DBG_G/S_REGISTER: OK
->         test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
->         test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
->         test VIDIOC_ENUMAUDIO: OK (Not Supported)
->         test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
->         test VIDIOC_G/S_AUDIO: OK (Not Supported)
->         Inputs: 0 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
->         test VIDIOC_G/S_MODULATOR: OK (Not Supported)
->         test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
->         test VIDIOC_ENUMAUDOUT: OK (Not Supported)
->         test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
->         test VIDIOC_G/S_AUDOUT: OK (Not Supported)
->         Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
->         test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
->         test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
->         test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
->         test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls:
->         test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
->         test VIDIOC_QUERYCTRL: OK
->         test VIDIOC_G/S_CTRL: OK
->         test VIDIOC_G/S/TRY_EXT_CTRLS: OK
->         test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
->         test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
->         Standard Controls: 4 Private Controls: 0
-> 
-> Format ioctls:
->         test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
->         test VIDIOC_G/S_PARM: OK (Not Supported)
->         test VIDIOC_G_FBUF: OK (Not Supported)
->         test VIDIOC_G_FMT: OK
->         test VIDIOC_TRY_FMT: OK
->         test VIDIOC_S_FMT: OK
->         test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
->         test Cropping: OK
->         test Composing: OK
->         test Scaling: OK (Not Supported)
-> 
-> Codec ioctls:
->         test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
->         test VIDIOC_G_ENC_INDEX: OK (Not Supported)
->         test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
-> 
-> Buffer ioctls:
->         test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
->         test VIDIOC_EXPBUF: OK
->         test Requests: OK (Not Supported)
-> 
-> Test input 0:
-> 
-> Streaming ioctls:
->         test read/write: OK (Not Supported)
->         test blocking wait: OK
->         Video Capture: Captured 58 buffers                
->         test MMAP (no poll): OK
->         Video Capture: Captured 58 buffers                
->         test MMAP (select): OK
->         Video Capture: Captured 58 buffers                
->         test MMAP (epoll): OK
->         test USERPTR (no poll): OK (Not Supported)
->         test USERPTR (select): OK (Not Supported)
->         test DMABUF: Cannot test, specify --expbuf-device
-> 
-> Total for meson-ge2d device /dev/video0: 52, Succeeded: 52, Failed: 0,
-> Warnings: 0
-> 
-> Neil Armstrong (4):
->   dt-bindings: media: Add bindings for the Amlogic GE2D Accelerator Unit
->   media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit
->   MAINTAINERS: Add myself as maintainer of the Amlogic GE2D driver
->   arm64: dts: meson-axg: add GE2D node
-> 
->  .../bindings/media/amlogic,axg-ge2d.yaml      |   47 +
->  MAINTAINERS                                   |    9 +
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi    |    9 +
->  drivers/media/platform/Kconfig                |   13 +
->  drivers/media/platform/Makefile               |    2 +
->  drivers/media/platform/meson/ge2d/Makefile    |    3 +
->  drivers/media/platform/meson/ge2d/ge2d-regs.h |  360 ++++++
->  drivers/media/platform/meson/ge2d/ge2d.c      | 1091 +++++++++++++++++
->  8 files changed, 1534 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/amlogic,axg-
-> ge2d.yaml
->  create mode 100644 drivers/media/platform/meson/ge2d/Makefile
->  create mode 100644 drivers/media/platform/meson/ge2d/ge2d-regs.h
->  create mode 100644 drivers/media/platform/meson/ge2d/ge2d.c
-> 
+Thomas did applied this one:
+https://lore.kernel.org/linux-arm-kernel/20201204120632.GA10011@alpha.franken.de/
 
+> [4/5] parisc: configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 4e9c44b128d3eb5da129e53c7312240f838c2dbf
+> [5/5] powerpc/configs: drop unused BACKLIGHT_GENERIC option
+>       commit: 4985c506303fb6a41a885d503a6e1f3d3126431d
+> 
+>        Arnd
 
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
