@@ -2,180 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669EC2D2457
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDFA2D245F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbgLHH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:27:56 -0500
-Received: from mail-dm6nam12on2078.outbound.protection.outlook.com ([40.107.243.78]:54855
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725927AbgLHH14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:27:56 -0500
+        id S1727260AbgLHHal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:30:41 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:46812 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725972AbgLHHak (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:30:40 -0500
+Received: from mailhost.synopsys.com (sv2-mailhost1.synopsys.com [10.205.2.133])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id E2AEB401F1;
+        Tue,  8 Dec 2020 07:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1607412580; bh=wLdHXyPv6gAOaRi209/bH8Z4zY/UGJ5AaCAHvJsNpF8=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=TcyV9n2UgdLIpSwGcx1GhjZvyFAClDhEj2Ixa7OaoC6fm7A7X4LPc2gYrALuXnsl1
+         77lhFUJ3hlklKaki/RS0i60zg9sTqUTkY71V7UXHuQ8zgBtCvWCrBBIO2hTTdFHY39
+         yEpgVtw2mbHJXpMQSUGYSvuvzfxtcNrmTfrTZ82PZzBnrDMthZvWZAXPW+06HddC9O
+         4ORGCUq0NZBup9PI0j3oonuUp9EzJR1ul1PsueixC7WuHm0iVOGlaXjzvTi1+A4hGc
+         UNMzNkoLlG6l4tsiEV3IHQhQJ5MWGJPU9WKpWTa+aiwatyRaeRASusNP/ceclokGKd
+         D72VBRMoD1n9A==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id BD25BA0096;
+        Tue,  8 Dec 2020 07:29:36 +0000 (UTC)
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (mail-bl2nam02lp2055.outbound.protection.outlook.com [104.47.38.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 6B2ED4009B;
+        Tue,  8 Dec 2020 07:29:34 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=arturp@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Xaizy1RW";
+        dkim-atps=neutral
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mu9fSHd1QW1vU5KZui2XtpTF8BPR+oMO2dFdcixIASAB9hYEXVOniRNRHLlM1zp4UVP2I7AZaK6rizNZTEOiQHvsk4l7adKHCV86xu1DWPHrnzDFiGGQrXxZ2zd8GDhbV9+eNuyHx6SS/jV5tfsmoKAxqPvBgxgfN7HvI6ogXUB6MiK+7cNLbMhCrEZRZJrE34Pk87KJ1jObRlG4Yhs2TF+1xVasblMdNqsmsWE/VBMmNIx1AXQzk0Il3wzDe8KzL31GH9sdp9eF922TO/Dzpo7Wo9rKmFvv/NB+WLKFEcvoLHYdzAKp31UM66cicvlq78pEzRX0LBCflAQZz2BV/g==
+ b=RewBJh0+PGcNTUXF4YZPKqdenWD0tKJNv16p8FkJwwPMa16b6wx8RzGpD/OWUZDcsu1EbgHOscYRbyNaXQO1RM8uv690w0cqjCMgTS0e6FVUdIAv9olu4PywUZTeV+a1WA3JnSSQG2FKQw2XlhWTDDP5p9Y4uWuTpok8e5Mgj0R7ONbAapj+NRyl7CtczBwKdB4Vb3jP808fQSUJnT+BVi+QqBkyZosKA0ICZfrY/UUu75trVJhGXKFAuRkrl+oIyHgL/MTwZTvKuKn7aJOpZpAikIcaziwDhPsWLa84OyBzL353nH1HeCYuDMvx0KLVqxshapyGcY2n5tOLLI/v7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xIwotGCQQjejC7YTj4qfHU3GmsNZ0GSFnsEvSnJyup0=;
- b=AZYm9XWOqvPMTFgHYdLEaPwrj3VCWhWUU6fNgZLkXafVSeQqa9j5iusLRZ0MLkP9mPj4IYnjTZiEWD/ckZL0mZUuq/MonyVLJSu5CU/UQYiMk4UiTG1tjGaMMvXV0KR4FQ7Ng6vJo4YwJvpVFbIqDeWaReRnUnpnn4g8BkP1lk8nKZIV4PFBPtunDUuo+55o+KOs+M0sB4jVQKklcWSXMZjb6YXUHJdb5OvtmvneHLO2zAe8SRwnz3KoPs4vL2yO3uY9MFy//h+RfbR6Y5To/QZoTn8l1pNqHv2DwUAvfOCReWbwWPHBjkC/J5IzlC3C+sNiqC7owNCwdBKolcvKJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
- smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ bh=wLdHXyPv6gAOaRi209/bH8Z4zY/UGJ5AaCAHvJsNpF8=;
+ b=bQ/1cNqKzTfJHR5O1HzmZcciYg49sP+3LF01lRaKODlcw2RqZ4Utroqrak1abq9diuN0rAAXDa+VtlfKIfuNNr5YR1usTMlAVz1FblB38LUs8qf+5uwnoycM2rJfhiwr2LfaYtKwstDAq6D3s0gBmKybQChE/dkAQ+/AJ/2vWIr/5TTo4nX1mgTchD0XBxtTusE0cSAG60aUKaxxMMsooA04j0/D9A7a4qbqRGgWFSA0KniGinNbU9XUDTJtn7klshJ0r11R7fVqh6CF8m+3KWNN1CVhtz1lQC7uITDpuzXRcHEWgi50gB9S/K3Dn72BBrt0Vz6V/xupoyX9W1jFEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xIwotGCQQjejC7YTj4qfHU3GmsNZ0GSFnsEvSnJyup0=;
- b=Tuc/xTZ9J1xZSCpxyqZtrq+YKWFfBAo3LDgHkDu6tgpFv2ug/kTiaHhEJChPNi0H47Ib/dkJld7jpTr9t5QpMmWBYp1NXO5mLSTL9p7mqUsTOpvrR1Kw5OhdvV+WopJnK4Z5RiZci1TKo+zf7GIUemdzgyuWE1Ju00SJF1d2cK8=
-Received: from SN6PR08CA0028.namprd08.prod.outlook.com (2603:10b6:805:66::41)
- by SN6PR02MB4781.namprd02.prod.outlook.com (2603:10b6:805:9b::21) with
+ bh=wLdHXyPv6gAOaRi209/bH8Z4zY/UGJ5AaCAHvJsNpF8=;
+ b=Xaizy1RWn5yKJFXPXMtZkO/Ep55H64pc7/uZJVYBYaEwiLtY8KIFh3bv6oqosZBYaPD5O1mKECYMFpX8wh27TpUXRmwmKmt6LsTiVGzpfSViwIGEeZUDiys/5vbuES4fHY/e4skjVt2TCF/LaHYfMsYxwSgbc8f0K6YFFSyW4i4=
+Received: from SA0PR12MB4431.namprd12.prod.outlook.com (2603:10b6:806:95::11)
+ by SA0PR12MB4429.namprd12.prod.outlook.com (2603:10b6:806:73::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
- 2020 07:27:02 +0000
-Received: from SN1NAM02FT062.eop-nam02.prod.protection.outlook.com
- (2603:10b6:805:66:cafe::37) by SN6PR08CA0028.outlook.office365.com
- (2603:10b6:805:66::41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend
- Transport; Tue, 8 Dec 2020 07:27:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT062.mail.protection.outlook.com (10.152.72.208) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3632.21 via Frontend Transport; Tue, 8 Dec 2020 07:27:02 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 7 Dec 2020 23:26:46 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Mon, 7 Dec 2020 23:26:46 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- rajan.vaja@xilinx.com,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- robh+dt@kernel.org,
- krzk@kernel.org,
- monstr@monstr.eu,
- linux-kernel@vger.kernel.org,
- laurent.pinchart@ideasonboard.com
-Received: from [172.30.17.109] (port=42068)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1kmXOX-00032f-OU; Mon, 07 Dec 2020 23:26:45 -0800
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-        <git@xilinx.com>, Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <cover.1606917949.git.michal.simek@xilinx.com>
- <272e23e0123f02c559bfa4ada9de73eb197aced8.1606917949.git.michal.simek@xilinx.com>
- <X81fXtxvsc7KE7cK@pendragon.ideasonboard.com>
- <99008851-6c12-3acc-6530-25af08429ff5@xilinx.com>
- <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 06/12] arm64: dts: zynqmp: Add label for zynqmp_ipi
-Message-ID: <4010c2d4-bee1-827b-1079-1f1bbf1f10d1@xilinx.com>
-Date:   Tue, 8 Dec 2020 08:26:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <X86poiQSzv5Uva1r@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Tue, 8 Dec
+ 2020 07:29:32 +0000
+Received: from SA0PR12MB4431.namprd12.prod.outlook.com
+ ([fe80::f5d2:8be1:5fa3:2b90]) by SA0PR12MB4431.namprd12.prod.outlook.com
+ ([fe80::f5d2:8be1:5fa3:2b90%9]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
+ 07:29:32 +0000
+X-SNPS-Relay: synopsys.com
+From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+To:     Xu Wang <vulab@iscas.ac.cn>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: dwc2: Remove redundant null check before
+ clk_prepare_enable/clk_disable_unprepare
+Thread-Topic: [PATCH] usb: dwc2: Remove redundant null check before
+ clk_prepare_enable/clk_disable_unprepare
+Thread-Index: AQHWyhnbF0z7r+GDKk+eLZNbSwNvrqns04iA
+Date:   Tue, 8 Dec 2020 07:29:32 +0000
+Message-ID: <2a1cdaa8-0582-6651-49e6-ee459e6a5f33@synopsys.com>
+References: <20201204083644.2704-1-vulab@iscas.ac.cn>
+In-Reply-To: <20201204083644.2704-1-vulab@iscas.ac.cn>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3e62111-2264-4241-960f-08d89b4aa832
-X-MS-TrafficTypeDiagnostic: SN6PR02MB4781:
-X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-X-Microsoft-Antispam-PRVS: <SN6PR02MB4781C08AEABD7B62F16F443FC6CD0@SN6PR02MB4781.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a8xncvd4SEDzVesXCYyIFaqHX8m6mQDARQA51XGddo4NwSKxPEOZfdNqxTR8cMdLBYieCRUD+0gj5XFH9S4Ff9KwQ3eJc7pWn27TqLQ6Q1rMc/MN2afT0XoXr/L9eiIgVAeBxXAJM9DbBKMl7QzYKwE/foEhq5dncicxRvnKz5lKy+P2iZ461jH+tgZNoZOSofkTvzzWc9G5XHHFLy5ABnN6BxJkeg7bkvWpbWcVjYCeYlE2+eUf/iI/5WTJQ0SccCk/REvvz2kOOK+/RhCVaC6YnQDD1FF0ZVMy8wIzFRdSeFfcJha4qhevO6Fl3FUFXu4UF0prb6vSm96bWTCiMmuYwzbjRzmah4xQX3NosaCq72uuoPWH4JbToBArXKXkolk7j4TvsDC+lBa6jMwZpC+Fgl3vLRmQrtLRHTnoU/5ArUuVXUxWyKKTslOVROz8VTmYD6SYm3noW/zBYYUijQ==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(46966005)(70206006)(36756003)(83380400001)(8936002)(6666004)(70586007)(4326008)(26005)(31686004)(5660300002)(82740400003)(426003)(44832011)(8676002)(478600001)(2616005)(336012)(7636003)(36906005)(9786002)(2906002)(47076004)(356005)(316002)(110136005)(31696002)(186003)(82310400003)(54906003)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 07:27:02.3888
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: iscas.ac.cn; dkim=none (message not signed)
+ header.d=none;iscas.ac.cn; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [176.32.192.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 82652668-1577-4060-202a-08d89b4b0192
+x-ms-traffictypediagnostic: SA0PR12MB4429:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA0PR12MB44298F13721D414370F0D7E1A7CD0@SA0PR12MB4429.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:483;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: q5qrOpZWDgAC51TfIth3V/U+K1zAFAnIS6Ta0gtEk5xpnz/7JphlE4hAsF54YWge+g5tgZojjxDJ9Ds/rzGZ3DJFsCCBQ1R9o1U6fv3BDhduokI4A7d+cIdNq/2txFokNSfNBcTwU0ZvCPibaRZOoUZwTrzez80YDoEGaxFaHT07MeKbMNUrVQx3DbDGXtV+XoxGvnGKTlcOXRfLQk2jRgAKTTAqcyIAV9BKx7yQce2yvsqBl0o/Jw6K1AJP72OU7jJCpuiF/7bHA9xC14487n6d8xzbQ+bN+PdmFzbOJsJuim9Cg4EbrkHq5/rtp/cwUBM9bqA6GUcTEuEaFt0/UqpClC9bauNEXCyugxDCQOVt60SFjoEonA872aKiYFuU
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4431.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(6512007)(8936002)(83380400001)(86362001)(64756008)(2616005)(66946007)(8676002)(66446008)(5660300002)(66476007)(2906002)(71200400001)(6486002)(66556008)(186003)(76116006)(55236004)(26005)(31696002)(91956017)(4326008)(316002)(31686004)(53546011)(478600001)(36756003)(110136005)(54906003)(6506007)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?RUVLOE5QYkU5Mit3Z0l1dXl2Y041OUUrWjN6TWhycUVzY0pDWllCOGUwZHkv?=
+ =?utf-8?B?aDRvcFRVWlFjRzJIS055Q3U4T05TVzlFZmdPU3J5TWVubkFhaXdyTmsxUlNQ?=
+ =?utf-8?B?R0JSeXN0K0x3cnM2SmFJRVVmQWFxWUNyNGNFNjRnUXAyTFpmK2xUWXlnUDI0?=
+ =?utf-8?B?L1VmdUQvcjR4bks0aWZja01pU3VNRkp1VVpsZk0vSXg5UjdNdE10TkZFTlpl?=
+ =?utf-8?B?N3NJZjU5aWdRYWpDWTNpN3dVaFUrUFllSEh1STM5UnpqN0VwS1Y0QjlqVldJ?=
+ =?utf-8?B?M2wzcm16NjNRemlXeW9zOWZPd2p3OFpmOE9QTTV0bkdiU0JIUUN4aHd6Mmhu?=
+ =?utf-8?B?RkQrNnpzRkVhTXNNUEh2b1BITGZOQlNsT2tCd3ltMHF5TExDSk5IWWVvcmpi?=
+ =?utf-8?B?cWU5NnZSL0tFQUx6OEEyQ1hnQkc2dHgwSFQ0aSttaGxVQkNwSWU1YWZUWnRY?=
+ =?utf-8?B?UGFoUEtwdVdIMm5xSlZPMVZZR2tNQlBGaEgzVit6MlBWK000Sk81YXNSVXdW?=
+ =?utf-8?B?d3I5Q3hBeFY5YXQzWTJIL1pkRERCdXV3VVdMTkdLZG9qUnEwZjVQT0Z5MXA5?=
+ =?utf-8?B?RjJNUDJySTlvVFdYVmhVdkdQMWNHTy9QMVpSM1puZjJyV0RwanJzUFlTNEJv?=
+ =?utf-8?B?cnRSSnlhR2s4OW13OGpxR1QzTjZxV29mRFE1YkJCbU9kbXdybmx5a3lQcndt?=
+ =?utf-8?B?YzUzRUZMby9FV1o4U3VrUDEvNUdqWTV5WlU3VXU2TkJkdzNSNkZ2aTZTdjkv?=
+ =?utf-8?B?UXRGbXI3cFRpTFdBelV5R2JTaTdza1dJRkZxUHJscytlSVBKbTEwcFlFTlpP?=
+ =?utf-8?B?dEdXNGFEOUcxVHhhaklmWFZlRlJLNE8zNkNHTStheVR0OG9TR01FQ2MwdnAz?=
+ =?utf-8?B?dFBhNWh5QTYySGYyTXVYejdjM3FMYlNkcW44ZkhBZUJWTW5VNmpwTFg5eFNx?=
+ =?utf-8?B?UTdnTEJEQjJ4S1dxcFR5eVloWkVtR3FKSk52RFBhNnlBQnNPUituMzRua0FF?=
+ =?utf-8?B?dGI5ZmIzbmtiSkhocDE3MndiVVlFaTYvZGF5YmxZa3BwWDU1aExpbG1rYTlj?=
+ =?utf-8?B?WEYzQnFlVU16ajMyZ0ZXK0FlM3JxTWlWaGUzL3VmUndSUXF3OE5mMk9WL0dh?=
+ =?utf-8?B?clFsTGgza1JOc3p4c1NMd1E0YzNaQkZibHlXaWRwYzNDZ1hYSlgwVlNRcHh1?=
+ =?utf-8?B?OWQ4eG50T0hTODErbW5mNTAxTVpUSWMvVWtFWmxVNmxIN3NZemtrQ2Y2QU5T?=
+ =?utf-8?B?aFArb3BQSzJkRjFYZDRGZUYxaS9qcEo1TjJpQnNVTnYxSnhNRTFMcmlqSkMx?=
+ =?utf-8?Q?93oZC1ggypiWQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <358ED385DA2C8F4BA28D76B641D33A6E@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4431.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82652668-1577-4060-202a-08d89b4b0192
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 07:29:32.3225
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3e62111-2264-4241-960f-08d89b4aa832
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT062.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4781
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z904gIa0FFBMqPCh/ohJAkbf1l6gp6R78bZQg1jjOGXK+TXiy2d2nsm6beXKpJ713IdROqbi+jNH0seR4Tlbsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4429
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On 07. 12. 20 23:16, Laurent Pinchart wrote:
-> Hi Michal,
-> 
-> On Mon, Dec 07, 2020 at 10:39:25AM +0100, Michal Simek wrote:
->> On 06. 12. 20 23:46, Laurent Pinchart wrote:
->>> On Wed, Dec 02, 2020 at 03:06:05PM +0100, Michal Simek wrote:
->>>> Add label which is used by bootloader for adding bootloader specific flag.
->>>>
->>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->>>> ---
->>>>
->>>> U-Boot needs to add u-boot,dm-pre-reloc; property
->>>
->>> I'm not entirely sure what best practice rules are in this area, but
->>> shouldn't U-Boot locate the node by name instead of label ?
->>
->> Labels are not listed in dt binding and there are two approaches how to
->> reference nodes. Via full path with node name or via labels.
->> I do normally use labels which are much simple.
-> 
-> Note that labels require the DTB to be compiled with the -@ option,
-> otherwise they're not present in the binary.
-
-U-Boot is using different concept. You can see that there are a lot of
--u-boot.dtsi files in dts folders. These are automatically included to
-DTS before DTC is called. It means you don't need to build overlay to
-get merged.
-
-
-> 
->> And also if you take a look how dtb looks like (convert back to dts) you
->> can see that for example aliases are using full path (just &label) but
->> clocks/gic which is the part of <> is handled via phandles as numbers.
->>
->> And labels names can vary and shouldn't be the part of binding doc as
->> far as I know. But I can be wrong of course.
-> 
-> The DT bindings should document the interface with the operating system,
-> and if applicable, the boot loader. If the boot loader requires a
-> particular label, then it becomes part of the ABI, and I think it should
-> be documented in the bindings.
-
-We have been discussing with Rob some month ago but didn't have a time
-to do step further. Just keep it short Rob was ok to keep bootloader
-binding inside Linux repo.
-
-There is no hardcoding for a particular name. There is just a need to
-have any label. U-Boot needs to have one property(e.g.
-u-boot,dm-pre-reloc;) just to do early allocation.
-The name is just reference and none is really looking for it. It is just
-a way how to include it in much easier way.
-
-Thanks,
-Michal
-
+T24gMTIvNC8yMDIwIDEyOjM2LCBYdSBXYW5nIHdyb3RlOg0KPiBCZWNhdXNlIGNsa19wcmVwYXJl
+X2VuYWJsZSgpIGFuZCBjbGtfZGlzYWJsZV91bnByZXBhcmUoKSBhbHJlYWR5IGNoZWNrZWQNCj4g
+TlVMTCBjbG9jayBwYXJhbWV0ZXIsIHNvIHRoZSBhZGRpdGlvbmFsIGNoZWNrcyBhcmUgdW5uZWNl
+c3NhcnksIGp1c3QNCj4gcmVtb3ZlIHRoZW0uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBYdSBXYW5n
+IDx2dWxhYkBpc2Nhcy5hYy5jbj4NCg0KUmV2aWV3ZWQtYnk6IEFydHVyIFBldHJvc3lhbiA8QXJ0
+aHVyLlBldHJvc3lhbkBzeW5vcHN5cy5jb20+DQoNCj4gLS0tDQo+ICAgZHJpdmVycy91c2IvZHdj
+Mi9wbGF0Zm9ybS5jIHwgMTEgKysrKy0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNl
+cnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNi
+L2R3YzIvcGxhdGZvcm0uYyBiL2RyaXZlcnMvdXNiL2R3YzIvcGxhdGZvcm0uYw0KPiBpbmRleCA1
+ZjE4YWNhYzc0MDYuLmJhMmI0OTFjN2Y4MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy91c2IvZHdj
+Mi9wbGF0Zm9ybS5jDQo+ICsrKyBiL2RyaXZlcnMvdXNiL2R3YzIvcGxhdGZvcm0uYw0KPiBAQCAt
+MTQzLDExICsxNDMsOSBAQCBzdGF0aWMgaW50IF9fZHdjMl9sb3dsZXZlbF9od19lbmFibGUoc3Ry
+dWN0IGR3YzJfaHNvdGcgKmhzb3RnKQ0KPiAgIAlpZiAocmV0KQ0KPiAgIAkJcmV0dXJuIHJldDsN
+Cj4gICANCj4gLQlpZiAoaHNvdGctPmNsaykgew0KPiAtCQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFi
+bGUoaHNvdGctPmNsayk7DQo+IC0JCWlmIChyZXQpDQo+IC0JCQlyZXR1cm4gcmV0Ow0KPiAtCX0N
+Cj4gKwlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoaHNvdGctPmNsayk7DQo+ICsJaWYgKHJldCkN
+Cj4gKwkJcmV0dXJuIHJldDsNCj4gICANCj4gICAJaWYgKGhzb3RnLT51cGh5KSB7DQo+ICAgCQly
+ZXQgPSB1c2JfcGh5X2luaXQoaHNvdGctPnVwaHkpOw0KPiBAQCAtMTk1LDggKzE5Myw3IEBAIHN0
+YXRpYyBpbnQgX19kd2MyX2xvd2xldmVsX2h3X2Rpc2FibGUoc3RydWN0IGR3YzJfaHNvdGcgKmhz
+b3RnKQ0KPiAgIAlpZiAocmV0KQ0KPiAgIAkJcmV0dXJuIHJldDsNCj4gICANCj4gLQlpZiAoaHNv
+dGctPmNsaykNCj4gLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGhzb3RnLT5jbGspOw0KPiArCWNs
+a19kaXNhYmxlX3VucHJlcGFyZShoc290Zy0+Y2xrKTsNCj4gICANCj4gICAJcmV0dXJuIDA7DQo+
+ICAgfQ0KPiANCg==
