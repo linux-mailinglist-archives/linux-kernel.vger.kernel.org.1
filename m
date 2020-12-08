@@ -2,194 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E832D241B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAA12D241D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgLHHOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:14:41 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:16434 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgLHHOk (ORCPT
+        id S1726755AbgLHHPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLHHPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:14:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607411659; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Mqn0rcSrqnI/3QxNQU0p7+wCiRGucPaX14qIV61pDEQ=;
- b=aUQIIOfzN0GG/bJoHDC/5X5ZdLUm2fMELn9M/z4ozEaD9ORMwkZY3Pmu1+Mv7vf2WIM+my9Y
- /bWYgtHcJkIiaYLnSXDduzHAN5DLuv5xozS3xrR+/bcfNFtwuJw6lVGqLMz5XbWP9clwlET/
- cMdhEIBZziSDIFAhYWftN4/XpNE=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fcf27abdc0fd8a3174d7f87 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 07:13:47
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 43000C43464; Tue,  8 Dec 2020 07:13:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 118CBC433CA;
-        Tue,  8 Dec 2020 07:13:46 +0000 (UTC)
+        Tue, 8 Dec 2020 02:15:19 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59825C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:14:39 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m9so11386371pgb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:14:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3qOlsloJgxQkZEy55JDorTCm1I5tHRxkFTRlp6EieeA=;
+        b=cDR/LIN65OUPo8a2wnb5yJ70LfqOZLtBPBOoVg4c6uOnZ2t0/tInUdpHMOmbTvVjaI
+         Vjvd9yBJv+VlVQghaLfPk5OX2gv8gySfFeB9EfaPqgUB7Rv2tGhYBa8unI4U7D2D3sqe
+         I8GfkolWWf32L6zlgAVfncXeW/k6B7001ZyTJi8GZBiEYkgDjBoq5DWL8mA3SeNvp7jG
+         RxNRSEVgAOTt9x3iLI1gXL434cWQDvty0Hcumq61d4ke+kEzhhiuhrN5bBIH5DdufpFt
+         2YALJWXOEYO2gp2KWc1fmYmw55De5H1kRYvJTbz0Pdh8uItsYzwacD3ahbGeUTZ+A8cy
+         vrvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3qOlsloJgxQkZEy55JDorTCm1I5tHRxkFTRlp6EieeA=;
+        b=Cd4GXT2RBU7vT0UFCorUSDIzKD4uLWep+CSpgoq4pFSoh2ZZeCzP83YfuB/cY6MkIK
+         Kd95rFa04cFUbVDE22IZVYwzkrl3Y5SFgURs/djipOsNcvZN7ZpTMBoGIUY0lL8hUL16
+         GFhFKa9hAlIGVQOQ9dZ6Lchdv+0aRPl58W8YSBOO+pv/lnR4izHENzzaiy7j2oCpkqL9
+         kZVi+JEpFYcXn2XGcfHW1timaaJsqUsIv5IbPBtVrw3IEdH3E/2n6tEZS/L5K9YIew4K
+         xjQzv54jQFqzRrAtmNdJCy3tJnuYPyleBrkTIVhRIwO4p/QLtIUlHdbSFf3dQp1I8V9/
+         ylDA==
+X-Gm-Message-State: AOAM532cGj7R6O8DtlL1kZGNItxgts0+OiZTUvy7XnFic0ju/jYn7vgb
+        cliJHw+Wh4GqY6MXY4WGi/qJXA==
+X-Google-Smtp-Source: ABdhPJxmZfF+CnAcve/pdIigoVV18lefAg/7CfvlDUYpdYDSaWxYPJidXa03T2kXUUGN1JSSBlGqDw==
+X-Received: by 2002:a63:561f:: with SMTP id k31mr21413333pgb.227.1607411678623;
+        Mon, 07 Dec 2020 23:14:38 -0800 (PST)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id gp17sm1801318pjb.0.2020.12.07.23.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 23:14:38 -0800 (PST)
+From:   Zong Li <zong.li@sifive.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com, sboyd@kernel.org,
+        schwab@linux-m68k.org, pragnesh.patel@openfive.com,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        yash.shah@sifive.com, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH v6 0/5] clk: add driver for the SiFive FU740
+Date:   Tue,  8 Dec 2020 15:14:27 +0800
+Message-Id: <20201208071432.55583-1-zong.li@sifive.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Dec 2020 15:13:45 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-In-Reply-To: <20201206101335.3418-2-huobean@gmail.com>
-References: <20201206101335.3418-1-huobean@gmail.com>
- <20201206101335.3418-2-huobean@gmail.com>
-Message-ID: <1d99b564f593f91cc13ca682655def29@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-06 18:13, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> Currently UFS WriteBooster driver uses clock scaling up/down to set
-> WB on/off, for the platform which doesn't support 
-> UFSHCD_CAP_CLK_SCALING,
-> WB will be always on. Provide a sysfs attribute to enable/disable WB
-> during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable UFS 
-> WB.
-> 
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/scsi/ufs/ufs-sysfs.c | 40 ++++++++++++++++++++++++++++++++++++
->  drivers/scsi/ufs/ufshcd.c    |  3 +--
->  drivers/scsi/ufs/ufshcd.h    |  2 ++
->  3 files changed, 43 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c 
-> b/drivers/scsi/ufs/ufs-sysfs.c
-> index 08e72b7eef6a..b3bf7fca00e5 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> @@ -189,6 +189,44 @@ static ssize_t auto_hibern8_store(struct device 
-> *dev,
->  	return count;
->  }
-> 
-> +static ssize_t wb_on_show(struct device *dev, struct device_attribute 
-> *attr,
-> +			  char *buf)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +
-> +	return scnprintf(buf, PAGE_SIZE, "%d\n", hba->wb_enabled);
-> +}
-> +
-> +static ssize_t wb_on_store(struct device *dev, struct device_attribute 
-> *attr,
-> +			   const char *buf, size_t count)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +	unsigned int wb_enable;
-> +	ssize_t res;
-> +
-> +	if (ufshcd_is_clkscaling_supported(hba)) {
-> +		/* If the platform supports UFSHCD_CAP_AUTO_BKOPS_SUSPEND, turn
-> +		 * WB on/off will be done while clock scaling up/down.
-> +		 */
+Add a driver for the SiFive FU740 PRCI IP block, which handles more
+clocks than FU540. These patches also refactor the original
+implementation by spliting the dependent-code of fu540 and fu740
+respectively.
 
-Double check comment line format?
+We also add a separate patch for DT binding documentation of FU740 PRCI:
+https://patchwork.kernel.org/project/linux-riscv/patch/20201126030043.67390-1-zong.li@sifive.com/
 
-> +		dev_warn(dev, "To control WB through wb_on is not allowed!\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +	if (!ufshcd_is_wb_allowed(hba))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (kstrtouint(buf, 0, &wb_enable))
-> +		return -EINVAL;
-> +
-> +	if (wb_enable != 0 && wb_enable != 1)
-> +		return -EINVAL;
-> +
-> +	pm_runtime_get_sync(hba->dev);
-> +	res = ufshcd_wb_ctrl(hba, wb_enable);
-> +	pm_runtime_put_sync(hba->dev);
-> +
-> +	return res < 0 ? res : count;
-> +}
-> +
->  static DEVICE_ATTR_RW(rpm_lvl);
->  static DEVICE_ATTR_RO(rpm_target_dev_state);
->  static DEVICE_ATTR_RO(rpm_target_link_state);
-> @@ -196,6 +234,7 @@ static DEVICE_ATTR_RW(spm_lvl);
->  static DEVICE_ATTR_RO(spm_target_dev_state);
->  static DEVICE_ATTR_RO(spm_target_link_state);
->  static DEVICE_ATTR_RW(auto_hibern8);
-> +static DEVICE_ATTR_RW(wb_on);
-> 
->  static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
->  	&dev_attr_rpm_lvl.attr,
-> @@ -205,6 +244,7 @@ static struct attribute *ufs_sysfs_ufshcd_attrs[] = 
-> {
->  	&dev_attr_spm_target_dev_state.attr,
->  	&dev_attr_spm_target_link_state.attr,
->  	&dev_attr_auto_hibern8.attr,
-> +	&dev_attr_wb_on.attr,
->  	NULL
->  };
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 92d433d5f3ca..30332592e624 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -247,7 +247,6 @@ static inline int ufshcd_config_vreg_hpm(struct
-> ufs_hba *hba,
->  static int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag);
->  static int ufshcd_wb_buf_flush_enable(struct ufs_hba *hba);
->  static int ufshcd_wb_buf_flush_disable(struct ufs_hba *hba);
-> -static int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable);
->  static int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool 
-> set);
->  static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
-> enable);
->  static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
-> @@ -5307,7 +5306,7 @@ static void
-> ufshcd_bkops_exception_event_handler(struct ufs_hba *hba)
->  				__func__, err);
->  }
-> 
-> -static int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable)
-> +int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable)
->  {
->  	int ret;
->  	u8 index;
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 61344c49c2cc..c61584dff74a 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -1068,6 +1068,8 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
->  			     u8 *desc_buff, int *buff_len,
->  			     enum query_opcode desc_op);
-> 
-> +int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable);
-> +
->  /* Wrapper functions for safely calling variant operations */
->  static inline const char *ufshcd_get_var_name(struct ufs_hba *hba)
->  {
+Changed in v6:
+ - Modify the patch "Add clock enable and disable ops"
+   by Pragnesh. The changes as follows:
+   - Remove spin lock in enable and disable functions
+   - Call enable_bypass() before PLL output disable
+
+Changed in v5:
+ - Fix copyright format
+ - Add a link of documentation in commit message
+ - Modify build dependency for sifive-prci.c
+ - Add enable and disable functions by Pragnesh Patel
+
+Changed in v4:
+ - Fix the wrong enable bit field shift for FU540 and FU740.
+
+Changed in v3:
+ - Fix the wrong enable bit field shift for FU740.
+
+Changed in v2:
+ - Remove the macro definition for __prci_clock_array.
+ - Indicate the functional changes in commit message.
+ - Using option -M and -C to create patches.
+ - Rebase code to kernel v5.10-rc3.
+
+Pragnesh Patel (1):
+  clk: sifive: Add clock enable and disable ops
+
+Zong Li (4):
+  clk: sifive: Extract prci core to common base
+  clk: sifive: Use common name for prci configuration
+  clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
+  clk: sifive: Fix the wrong bit field shift
+
+ arch/riscv/Kconfig.socs                       |   2 +-
+ drivers/clk/sifive/Kconfig                    |   8 +-
+ drivers/clk/sifive/Makefile                   |   5 +-
+ drivers/clk/sifive/fu540-prci.c               | 585 +-----------------
+ drivers/clk/sifive/fu540-prci.h               |  21 +
+ drivers/clk/sifive/fu740-prci.c               | 120 ++++
+ drivers/clk/sifive/fu740-prci.h               |  21 +
+ drivers/clk/sifive/sifive-prci.c              | 571 +++++++++++++++++
+ drivers/clk/sifive/sifive-prci.h              | 299 +++++++++
+ include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
+ 10 files changed, 1089 insertions(+), 566 deletions(-)
+ create mode 100644 drivers/clk/sifive/fu540-prci.h
+ create mode 100644 drivers/clk/sifive/fu740-prci.c
+ create mode 100644 drivers/clk/sifive/fu740-prci.h
+ create mode 100644 drivers/clk/sifive/sifive-prci.c
+ create mode 100644 drivers/clk/sifive/sifive-prci.h
+ create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
+
+-- 
+2.29.2
+
