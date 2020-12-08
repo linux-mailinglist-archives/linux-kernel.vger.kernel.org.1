@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CE82D28FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0332D2900
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgLHKdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:33:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        id S1729115AbgLHKdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgLHKdU (ORCPT
+        with ESMTP id S1729012AbgLHKdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:33:20 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A7C061749;
-        Tue,  8 Dec 2020 02:32:39 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id i9so16472207ioo.2;
-        Tue, 08 Dec 2020 02:32:39 -0800 (PST)
+        Tue, 8 Dec 2020 05:33:22 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAE5C061794;
+        Tue,  8 Dec 2020 02:32:42 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id o8so16445004ioh.0;
+        Tue, 08 Dec 2020 02:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zasq3hOf488E8r9Qeq/ZBegpZO9Gd3Da9Wxnom9qujU=;
-        b=MkzVELqW4gvyq69eepeuLTWDKPGtIDbI3eYq1IbMJNOu3JG6FCM1ONPULknnSkm0R2
-         D66g1YXGnzNG5TPbb0Y6H5SZu0KtwKAo/Db8vXUuauGCoBsCZXVVbFgxs3RZyUrrC5/E
-         CJ6da9SGcQLG0pCY9c3Fhx2fXEpi6m7fdKyGB0zluRZtQjCkFnkjjPhqzvFHjIVKE27t
-         sfsHDbmoFf4UxJD/iT3CWlJ5NvDQ/MIP7jCb2HYOzYGiobKJCbsvVQAChl5oulE83b22
-         FdEITo599wP0e3aunuwQFB+1SXze9W9CY+boIwIHAgmFsm1C0+MrPnzn/cOlgwAAuJAJ
-         2BZg==
+        bh=R4D59QsHWJqFC21FiVVLBULBi2/XT3U9WgcWBwv/M3U=;
+        b=mjStu7Q0Du0ep2444KcREaNjizDLUWuAh5ixTJWEIfVloeTFC9F/Fv7bJQbUUiKhTv
+         6mUEJUqM4NKkCir6NRIGQM+3h1qBREOXVQX5b669MVNsZxOoEMt2ktuyauUpi6mpED7e
+         eNUD/cGjLe3G8fvI4QLfLBIkW9KRvdEPmrrBrI7wchCdhPye1d17My8vyjkvv+EF4+bv
+         Bcez5RfKzTDM1juVNdGw02/elZ+x1Lp8jnvwRl+Or8mKarvAN5FoVkiSnsn5Vtv7SH5p
+         VLyUDoa8eFA8vtr9d8UA4W4tM6frnFgzs1bzzpPztM+iJiTxblgH5TSYUIU1CgKZ8blg
+         718A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zasq3hOf488E8r9Qeq/ZBegpZO9Gd3Da9Wxnom9qujU=;
-        b=neDJCIYtvjfO1CNMR7dYe43UfmhhmGeqqcylwGj1YFQLjCdmKyqLtYF9WEhKw6byjV
-         QIkvcCzoFJrJjvW04i2EoHPGovApPgjF8u2+/l0NQ8qdxlD/jyTxMoz4oL9myA8DicDh
-         ZOVGcVqgr+fVdA5bnNcG6+rYsJuavStbZ5cLIBwwqHY1YSF5Q5SPi35EexOjSnNVqoAc
-         OJY/dxtCJrSrl8iumy6C8mggmf3Qg1mXT14FabVadHRdP/Z3jqosD/IT6nsZ+Cdn1my/
-         91ppM42I+ysiLncSO8xd1Kg6iiK4t4dpdhHVtgr+tiobNUjiRd038YyUu3skL3yMGMLF
-         RoqQ==
-X-Gm-Message-State: AOAM530xkIWYv0PhEV+SOr8VkACGEBrx7/OQs0tW3KB0X8T+xYMV8TGu
-        wLkJZwcQZVYK0ddUTZQo5dY=
-X-Google-Smtp-Source: ABdhPJy96YyUubZjhxhmB0SZGsED3HyHvkllSTg+UYZftnTs2dvpH0T+GNaNVrv8hWn2WGKbyAcMsA==
-X-Received: by 2002:a6b:6f17:: with SMTP id k23mr24077438ioc.147.1607423559355;
-        Tue, 08 Dec 2020 02:32:39 -0800 (PST)
+        bh=R4D59QsHWJqFC21FiVVLBULBi2/XT3U9WgcWBwv/M3U=;
+        b=Ht9gWrDNv/047/SKQrTryIaB2XCyD/KzEa5t0tcJLgHVjWYliM+3hdWR5MxCrLAO9w
+         xiXXOuAzJcLt+PHWP0zKtzYyfW8ezkX0zpcBj2KjnwgLZIMMoSnbhoxOSwb1Djlf3unV
+         DzPs5QDt6riY77EGFCjZSLq5gY8+qnX3I80oT4YehddqsFkysaUAcx+wvgYSfFC/cdgb
+         PshFtBdjZ1l9JicYrimHGVvDGaf5i2pKkiTOGwLtXATPDiHuTVo5ssu2c38InWZA+oWb
+         ZxUjc0TMmSIw0D08tt1cIfFRcU7cB/yzwzDz/0ZB4np5i1uV5pRaSE2AK9o2fzydnr0C
+         H6BQ==
+X-Gm-Message-State: AOAM531SxvlboG2muQK7Ruf4VduBzRBmGpzE9UzFgV7n/Q0AeYLrjLhe
+        eYne2ddj1K75B/KESMl30XQ=
+X-Google-Smtp-Source: ABdhPJzmPK2SGHVXnuvkJkF96PnI0OFhjDTfm05vwoLmnaYuY4IYkur5MbrWKlsJd7UmOwD/6b415g==
+X-Received: by 2002:a05:6602:2c8f:: with SMTP id i15mr24108972iow.66.1607423561701;
+        Tue, 08 Dec 2020 02:32:41 -0800 (PST)
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id c15sm7584349ils.87.2020.12.08.02.32.37
+        by smtp.gmail.com with ESMTPSA id d18sm5502459ilo.49.2020.12.08.02.32.39
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 02:32:38 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3B81B27C005A;
-        Tue,  8 Dec 2020 05:32:37 -0500 (EST)
+        Tue, 08 Dec 2020 02:32:40 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 7B93027C005A;
+        Tue,  8 Dec 2020 05:32:39 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 08 Dec 2020 05:32:37 -0500
-X-ME-Sender: <xms:RVbPX3WCrkGvzNFgFYapxaEKYp3kfxvIyVPdaDLCIlilqWAOaopG7w>
-    <xme:RVbPX4gDW34apDQUkrCNKmK5PfsSQSW4zxGef6S-JRvsuFDP1WZDsjjuRxHUZtsGI
-    ZhOk6nVyqWmR7MXbg>
+  by compute7.internal (MEProxy); Tue, 08 Dec 2020 05:32:39 -0500
+X-ME-Sender: <xms:RlbPX-FQi8Litr8X1aYqZG08FozLwdN74csPZTC2NIisKtFoagWTtQ>
+    <xme:RlbPX9TdoAPmUx88ZacbVWYf7yo5h5Atw9UMvg6H1Q16Ly-ZLHxyudwISgekiJWVl
+    II51NQZyWP1ecfgog>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -66,13 +66,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudeiucetufdoteggod
     enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
     rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
     gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:RVbPX-_4hRk1ZKu9D9V82Oo9x3vPn7GD-P04aH6dSkgIS3kzyoLnBQ>
-    <xmx:RVbPXyb5dvF3O6eP7PM__UVIMQayorb5pGO27-ICFXxjfhgLU9hjrA>
-    <xmx:RVbPX92TS59YcZoTWsT1WKitQdWVNEq_B6-jGZsxlV0AGJnRp0nltA>
-    <xmx:RVbPX04Uzn3NtM2Md0pFa3arqQbTjFBeBNYeTz9E01H5sByL-u-N3st2_OU>
+X-ME-Proxy: <xmx:RlbPX6csrGHh1C_pIr2gVYbAanFUVQqOfeLwRBTMgV-UODnA02NA-w>
+    <xmx:RlbPX8pnJIv5-jtPFhO5GCArN26zapx40hPRBkOENqkracdtsf8iIA>
+    <xmx:RlbPX78c5bExALZQLRqd29TPiJppXJLDN7v-8DNSZZh6qtDvmQJ4bw>
+    <xmx:R1bPX7APALn5y6VToNWaKei3DjqhAa8zpQZOjpLNSx-bfT6PLcoGNMZMjes>
 Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 04EC824005D;
-        Tue,  8 Dec 2020 05:32:36 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id DFB8424005D;
+        Tue,  8 Dec 2020 05:32:37 -0500 (EST)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -85,9 +85,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC lockdep 1/4] lockdep/selftest: Make HARDIRQ context threaded
-Date:   Tue,  8 Dec 2020 18:31:09 +0800
-Message-Id: <20201208103112.2838119-2-boqun.feng@gmail.com>
+Subject: [RFC lockdep 2/4] lockdep: Allow wait context checking with empty ->held_locks
+Date:   Tue,  8 Dec 2020 18:31:10 +0800
+Message-Id: <20201208103112.2838119-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201208103112.2838119-1-boqun.feng@gmail.com>
 References: <20201208103112.2838119-1-boqun.feng@gmail.com>
@@ -97,29 +97,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we now use spinlock_t instead of raw_spinlock_t in lockdep self
-tests, we should make the emulated HARDIRQ context threaded, otherwise,
-spinlock_t cannot be used in the HARDIRQ context and some test cases
-will fail because of wait context checking when
-PROVE_RAW_LOCK_NESTING=y.
+Currently, the guard for !curr->lockdep_depth in check_wait_context() is
+unnecessary, because the code will work well without it. Moreover, there
+are cases that we will miss if we skip for curr->lockdep_depth == 0. For
+example:
+
+	<in hardirq context>
+	some_irq_handler():
+	  // curr->lockdep_depth == 0
+	  mutex_lock(&some_mutex):
+	    check_wait_context() // skip the check!
+
+Clearly, it's a bug, but due to the skip for !curr->lockdep_depth, we
+cannot detect it in check_wait_context().
+
+Therefore, remove the !curr->lockdep_depth checks and add comments on
+why it's still working without it. The idea is that if we currently
+don't hold any lock, then the current context is the only one we should
+use to check.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- lib/locking-selftest.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/locking/lockdep.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index afa7d4bb291f..0af91a07fd18 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -186,6 +186,7 @@ static void init_shared_classes(void)
- #define HARDIRQ_ENTER()				\
- 	local_irq_disable();			\
- 	__irq_enter();				\
-+	lockdep_hardirq_threaded();		\
- 	WARN_ON(!in_irq());
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c1418b47f625..d4fd52b22804 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4508,7 +4508,7 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 	short curr_inner;
+ 	int depth;
  
- #define HARDIRQ_EXIT()				\
+-	if (!curr->lockdep_depth || !next_inner || next->trylock)
++	if (!next_inner || next->trylock)
+ 		return 0;
+ 
+ 	if (!next_outer)
+@@ -4516,6 +4516,10 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 
+ 	/*
+ 	 * Find start of current irq_context..
++	 *
++	 * Note: if curr->lockdep_depth == 0, we have depth == 0 after the
++	 * "depth++" below, and will skip the second for loop, i.e. using
++	 * the current task context as the curr_inner.
+ 	 */
+ 	for (depth = curr->lockdep_depth - 1; depth >= 0; depth--) {
+ 		struct held_lock *prev = curr->held_locks + depth;
 -- 
 2.29.2
 
