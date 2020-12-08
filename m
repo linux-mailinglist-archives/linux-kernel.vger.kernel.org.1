@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C377B2D265C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6569C2D2659
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgLHIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:37:52 -0500
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:46033 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728194AbgLHIhv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:37:51 -0500
-Received: by mail-ot1-f42.google.com with SMTP id h18so11189350otq.12;
-        Tue, 08 Dec 2020 00:37:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aXDyhPzCieRdhaMthbBXKCwOlq6T9ABtAlajnQOA5AM=;
-        b=jwm037JpRGY64ZC6PTPZ+uFpQfsy1vTw9BsYrhHOvKef8ZuQClWjFICKS8s+h/BY3y
-         2nVcB8XuBX+3CSRZsTm5L/K5GoeN65JQdJUjcJkoUerjpvW+6JukYhBLI/cMO2UE4rYF
-         AABduVI6LSjQXF5i8HRCATdGpAU7z6hPIs1k+7rjkKdjW74NqtRWkfg3wcu3GRkhcVwz
-         94F2ANe9x4MMO6G+EXBhtZkJSUUqHRmfbzXZOABxrQTjBEAxh3HMLAPwYGYAtNZ+hKqv
-         Ug9hcunuBHXQISK9rWvR4bM9tb9gDp56OjX+kfxK7jX1AMIYYMqFI4aabcHRslWiU4wC
-         ho/Q==
-X-Gm-Message-State: AOAM531a2es07/w5dZJlH/5A67Wd4ofRRcowXnjhgG2L5vnK+5jX84uo
-        TN2w0j6/F0dMPM5utp6BS9XdJwCFDctrLeyCQ28=
-X-Google-Smtp-Source: ABdhPJwWi/EZNXz2SL/GMnB/3DnxeKJphp+46T0VmWUZdjOnLvhzG+mxughwd3GBz26RT6HuqDjLxuNa3YH2C0DDS1I=
-X-Received: by 2002:a9d:2203:: with SMTP id o3mr16002385ota.107.1607416631045;
- Tue, 08 Dec 2020 00:37:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201208090555.7159b138@canb.auug.org.au>
-In-Reply-To: <20201208090555.7159b138@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Dec 2020 09:37:00 +0100
-Message-ID: <CAMuHMdVYoxUOUL0zNAPzTJUSR3vGzcJWMzvtCKK=ZxyM=8hk+A@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the clk tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728446AbgLHIho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:37:44 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:8954 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728424AbgLHIho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:37:44 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Cqtp56Sg4z9txrn;
+        Tue,  8 Dec 2020 09:37:01 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id DfpCE-XBGFzF; Tue,  8 Dec 2020 09:37:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cqtp55dPkz9txrj;
+        Tue,  8 Dec 2020 09:37:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8AA7C8B7B3;
+        Tue,  8 Dec 2020 09:37:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id urYMTfDujVrK; Tue,  8 Dec 2020 09:37:02 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 87A838B7B4;
+        Tue,  8 Dec 2020 09:37:01 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 5555866928; Tue,  8 Dec 2020 08:37:01 +0000 (UTC)
+Message-Id: <731bdee26a5a5c81cd815ed624a6fb3bdef8b4db.1607416578.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
+References: <0d37490a067840f53fc5b118869917c0aec9ab87.1607416578.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 4/5] powerpc/fault: Avoid heavy search_exception_tables()
+ verification
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        aneesh.kumar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue,  8 Dec 2020 08:37:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+search_exception_tables() is an heavy operation, we have to avoid it.
+When KUAP is selected, we'll know the fault has been blocked by KUAP.
+Otherwise, it behaves just as if the address was already in the TLBs
+and no fault was generated.
 
-On Mon, Dec 7, 2020 at 11:06 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> In commit
->
->   c3f207f6d23d ("clk: renesas: r8a779a0: Make rcar_r8a779a0_cpg_clk_register() static")
->
-> Fixes tag
->
->   Fixes: c07439dea94050b6 ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
->
-> has these problem(s):
->
->   - Target SHA1 does not exist
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+---
+v3: rebased
+v2: Squashed with the preceeding patch which was re-ordering tests that get removed in this patch.
+---
+ arch/powerpc/mm/fault.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
-Oops, my bad.
-
-> Maybe you meant
->
-> Fixes: 17bcc8035d2d ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
-
-Yes I did.
-
-Mike/Stephen: do you want me to respin my pull requests?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 3fcd34c28e10..1770b41e4730 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -210,28 +210,19 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ 		return true;
+ 	}
+ 
+-	if (!is_exec && address < TASK_SIZE && (error_code & (DSISR_PROTFAULT | DSISR_KEYFAULT)) &&
+-	    !search_exception_tables(regs->nip)) {
+-		pr_crit_ratelimited("Kernel attempted to access user page (%lx) - exploit attempt? (uid: %d)\n",
+-				    address,
+-				    from_kuid(&init_user_ns, current_uid()));
+-	}
+-
+ 	// Kernel fault on kernel address is bad
+ 	if (address >= TASK_SIZE)
+ 		return true;
+ 
+-	// Fault on user outside of certain regions (eg. copy_tofrom_user()) is bad
+-	if (!search_exception_tables(regs->nip))
+-		return true;
+-
+-	// Read/write fault in a valid region (the exception table search passed
+-	// above), but blocked by KUAP is bad, it can never succeed.
+-	if (bad_kuap_fault(regs, address, is_write))
++	// Read/write fault blocked by KUAP is bad, it can never succeed.
++	if (bad_kuap_fault(regs, address, is_write)) {
++		pr_crit_ratelimited("Kernel attempted to %s user page (%lx) - exploit attempt? (uid: %d)\n",
++				    is_write ? "write" : "read", address,
++				    from_kuid(&init_user_ns, current_uid()));
+ 		return true;
++	}
+ 
+-	// What's left? Kernel fault on user in well defined regions (extable
+-	// matched), and allowed by KUAP in the faulting context.
++	// What's left? Kernel fault on user and allowed by KUAP in the faulting context.
+ 	return false;
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
