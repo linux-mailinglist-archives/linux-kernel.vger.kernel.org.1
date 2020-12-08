@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EDE2D2017
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED7E2D1FF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727389AbgLHB27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbgLHB27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:28:59 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA871C061749;
-        Mon,  7 Dec 2020 17:28:17 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v3so6095833plz.13;
-        Mon, 07 Dec 2020 17:28:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
-        b=c+bi86iXy/pSBac/0D9EHuYLqSgzndqvSEaxFibcNpweMKyQygRkZzQDEMO+Qw0UxT
-         /33sCLHGIDMYobzNYwvDSi74tyY8ITvbbDU0Sk258GTxreVez+owDIlHjtcFzsZa3xix
-         ndvhJ1d6ZErYf3EfuNA0LAXY706OqaLr54H27c48TPfhCf0qaS4L6PqOmMCtN1HN3dO1
-         QEJZ6vbRb6gjEs93MG4zMFETc25vJntRNgVRpY1n02Py/AK4BmQHWQK+H8sSTwpOHpWn
-         XXq5k8unAN/YWq7bTwYRW4BFivBs+VzBJ60omZmbh14WbOjmjjO7/mdsrXwe3+w0Qdr2
-         OW+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
-        b=FtNouGG++ajaGcmkXtV6uQMuw3t0t1OnxLxOp0Gx9kPAmYjfZ8Im9dnc7+Bd0KgF9R
-         cLi1FmelndDMsjWnnHJBh3BW1WzuFhlBbf5S5I+yTbPdgAyMkVXz317dC5Ry1ydI3txt
-         X/t1OkPbtzna1dCHuW8uvXncX7cPwz52fym1Tv+5vmqlMySluCSRKgY++JFcDP0ZN3+Y
-         dXxw220srwWFMjbYIeS1BbtVRwT/89ZKaZksSouuYGdu24qOcZYQc+5EqrToAzoz/XQ7
-         EmDRYGubfJcDOBunp8pxM0St85X2W3zLHUpYcJy7PRstdYBUOai7C4KkGPM1ukgJMe9h
-         AK2Q==
-X-Gm-Message-State: AOAM532oLQqZA7JEDiaEI3eP4cncbN0L8Txw1BgfoSI3jTx6XhYjq8zN
-        DXQbxItG1QyX70Cvd/+rWWwp9CiTHUpHMw==
-X-Google-Smtp-Source: ABdhPJxpxLxNICfqOJ5BiNFYHNzVKl0q1JwFffvvXbpF0tW9FuLkpPPBA+bELyA/XOq2JtoKBTRo5w==
-X-Received: by 2002:a17:902:6ac8:b029:da:d645:ab58 with SMTP id i8-20020a1709026ac8b02900dad645ab58mr16864544plt.25.1607390896709;
-        Mon, 07 Dec 2020 17:28:16 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a22sm12495382pfa.215.2020.12.07.17.28.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Dec 2020 17:28:16 -0800 (PST)
-Date:   Mon, 7 Dec 2020 17:25:26 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] ASoC: fsl: Add imx-hdmi machine driver
-Message-ID: <20201208012526.GA21510@Asurada-Nvidia>
-References: <1607251319-5821-1-git-send-email-shengjiu.wang@nxp.com>
- <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
+        id S1726253AbgLHB0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:26:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725995AbgLHB0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 20:26:45 -0500
+Date:   Mon, 7 Dec 2020 17:26:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607390765;
+        bh=dKxMYGEJk/qsfEljvMrUx1suvymwSnTOX+Nd8kkjqAU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lU3x0KdOCyqLG0bPUqEzQKEK6FINx4Paat/QU4vCgl2l6XPe/G3mIHZEWKXCsLA4S
+         Xqshe2PrpSSIwniVht2EnpD6EZClKo8wjvWa2UItV/0bZUs8JzOAK2wOCkXI203DgZ
+         HOXs8HjeblvoAOT8eovsvqpwgxVtKkcWB5OQRaIyhreM2UmzHagvFmCRjKjTNSQRhG
+         QCcNuRlIBUMz2rv95yJL5nXsain7p73KwTPYy5dgTfmdLSHQDexWIanSZiY81TQNRU
+         JpRT12rSlNmCUuvGaLWWuzkA64nlbB+ol4hIE1pTuwmyLmYx5pWGAImV4Ji21Td/GT
+         dUQg/XZ2sK8IQ==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: compress: support chksum
+Message-ID: <X87WK9SOoJ8cn14T@google.com>
+References: <20201126103209.67985-1-yuchao0@huawei.com>
+ <X86Sb2pvD53MzO5+@gmail.com>
+ <e6bc842d-90a2-d4ce-56be-594bcebaea37@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <e6bc842d-90a2-d4ce-56be-594bcebaea37@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 06:41:59PM +0800, Shengjiu Wang wrote:
-> The driver is initially designed for sound card using HDMI
-> interface on i.MX platform. There is internal HDMI IP or
-> external HDMI modules connect with SAI or AUD2HTX interface.
-> It supports both transmitter and receiver devices.
+On 12/08, Chao Yu wrote:
+> On 2020/12/8 4:37, Eric Biggers wrote:
+> > On Thu, Nov 26, 2020 at 06:32:09PM +0800, Chao Yu wrote:
+> > > +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
+> > 
+> > This really could use some parentheses.  People shouldn't have to look up a
+> > C operator precedence table to understand the code.
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Will add parentheses to avoid misread.
+> 
+> > 
+> > > +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+> > > +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+> > > +
+> > > +		if (provided != calculated) {
+> > > +			if (!is_inode_flag_set(dic->inode, FI_COMPRESS_CORRUPT)) {
+> > > +				set_inode_flag(dic->inode, FI_COMPRESS_CORRUPT);
+> > > +				printk_ratelimited(
+> > > +					"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
+> > > +					KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
+> > > +					provided, calculated);
+> > > +			}
+> > > +			set_sbi_flag(sbi, SBI_NEED_FSCK);
+> > > +			WARN_ON_ONCE(1);
+> > 
+> > WARN, WARN_ON_ONCE, BUG, BUG_ON, etc. are only for kernel bugs, not for invalid
+> > inputs from disk or userspace.
+> > 
+> > There is already a log message printed just above, so it seems this WARN_ON_ONCE
+> > should just be removed.
+> 
+> Jaegeuk wants to give WARN_ON and marking a FSCK flag without returning EFSCORRUPTED,
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I think above printk_ratelimited should be enough.
+
+> 
+> Jaegeuk, thoughts?
+> 
+> Thanks,
+> 
+> > 
+> > - Eric
+> > .
+> > 
