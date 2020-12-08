@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E352D268D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760842D2690
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgLHIse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:48:34 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:42143 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgLHIsd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:48:33 -0500
-Received: by mail-wr1-f66.google.com with SMTP id m5so5770690wrx.9;
-        Tue, 08 Dec 2020 00:48:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BrKBGmXKIXaqQceh5B/pGrdX0KS0UAwbEoaskmukc98=;
-        b=CnlkDiLWRNP4VLJUS9M/0HToASVNwE91L3Svqhjz2SgYwbnu6BLqH4o5PkfXYLODj1
-         1QlcYkQPe9PXct8jHuQYxNjbK3a/vG3iaeyJdxrKDMQkysoAY/ge03zjFBHlzoeDm+pA
-         SyLH7K0WtHl1m8Y+0PWPOvBuAcZnqcBI/rxuiA4rcemwO4P1/I9++8nP2xrHmYV7DJsA
-         vz8r6m7p79qBBwIMvqoixJdg0B1OIQr2xQeHfO3fjuwUXzaym3fATSNIJk/bCg6JIllG
-         +nLwAum6AiX8V3qUwx26W9iGIM3WsFLJ4Vp+Yr7kH12biJ8Pd7d3sTcQ1USnztjie1bN
-         GeuA==
-X-Gm-Message-State: AOAM533YWLR+L2CZz/RESVreGQL+soRwEL//q4jUnV+NFUA/eWwBc2AU
-        EuYLuakSVequqj9ez1/TnHIEjp4Koxo=
-X-Google-Smtp-Source: ABdhPJyWAMROP+PK0mBF0qHHxOHNLgfpd53EYC6W7uJnzsNAJQpQgVl4cP5/RA0/PWZoHpWsIU92oQ==
-X-Received: by 2002:a5d:400a:: with SMTP id n10mr24060883wrp.362.1607417271681;
-        Tue, 08 Dec 2020 00:47:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id h15sm13812204wru.4.2020.12.08.00.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 00:47:50 -0800 (PST)
-Date:   Tue, 8 Dec 2020 09:47:49 +0100
-From:   'Krzysztof Kozlowski' <krzk@kernel.org>
-To:     Pankaj Dubey <pankaj.dubey@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        'Sylwester Nawrocki' <snawrocki@kernel.org>,
-        'Marek Szyprowski' <m.szyprowski@samsung.com>,
-        'Bartlomiej Zolnierkiewicz' <b.zolnierkie@samsung.com>,
-        'Arnd Bergmann' <arnd@arndb.de>,
-        'Chanwoo Choi' <cw00.choi@samsung.com>,
-        'Alim Akhtar' <alim.akhtar@samsung.com>
-Subject: Re: [PATCH v2 4/4] soc: samsung: exynos-chipid: convert to driver
- and merge exynos-asv
-Message-ID: <20201208084718.GA6767@kozik-lap>
-References: <20201207190517.262051-1-krzk@kernel.org>
- <CGME20201207190545epcas5p2e46fcf0e430b2ae9a2ecaf140d197327@epcas5p2.samsung.com>
- <20201207190517.262051-5-krzk@kernel.org>
- <001101d6cd2f$f1e4a9a0$d5adfce0$@samsung.com>
+        id S1728377AbgLHIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:49:38 -0500
+Received: from mga09.intel.com ([134.134.136.24]:18181 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgLHIti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:49:38 -0500
+IronPort-SDR: llUxlM0XzVXBBN1SffG6Z6aC+VRx4ZM3kYwRc8kUP1IZPxk8G+RZebdvTX+ZVd8DwkfFkOkiwt
+ mereTPu+h73Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="174002494"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="174002494"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 00:48:51 -0800
+IronPort-SDR: pMczkkcSRYKv/O4u8W5KLpKfRiGFd5mjH1wslwYA8X5ddg7EHrvtiH8YMX2mtQ5UH5SdUgMe/r
+ x4y2bWuiNdPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="347815745"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga002.jf.intel.com with ESMTP; 08 Dec 2020 00:48:49 -0800
+Subject: Re: [RFC PATCH v3.1 00/27] Add support UHS-II for GL9755
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw
+References: <20201106022726.19831-1-takahiro.akashi@linaro.org>
+ <20201125074125.GC62993@laputa>
+ <c8f7e9ad-3e8d-01cc-edeb-5be364bfcc36@intel.com>
+ <20201201030937.GE43403@laputa>
+ <523f9ed9-318e-7121-d58d-c3843d9b9b7c@intel.com>
+ <20201208075815.GC31973@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <5eef5f29-624e-6413-dd9a-eacebf75fbc0@intel.com>
+Date:   Tue, 8 Dec 2020 10:48:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201208075815.GC31973@laputa>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <001101d6cd2f$f1e4a9a0$d5adfce0$@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 12:31:23PM +0530, Pankaj Dubey wrote:
+On 8/12/20 9:58 am, AKASHI Takahiro wrote:
+> Adrian,
 > 
+> On Thu, Dec 03, 2020 at 11:55:23AM +0200, Adrian Hunter wrote:
+>> On 1/12/20 5:09 am, AKASHI Takahiro wrote:
+>>> Adrian,
+>>>
+>>> Thank you for your review comments.
+>>>
+>>> On Thu, Nov 26, 2020 at 10:18:55AM +0200, Adrian Hunter wrote:
+>>>> On 25/11/20 9:41 am, AKASHI Takahiro wrote:
+>>>>> Gentle ping;
+>>>>>
+>>>>> On Fri, Nov 06, 2020 at 11:26:59AM +0900, AKASHI Takahiro wrote:
+>>>>>> This is an interim snapshot of our next version, v4, for enabling
+>>>>>> UHS-II on MMC/SD.
+>>>>>>
+>>>>>> It is focused on 'sdhci' side to address Adrian's comments regarding
+>>>>>> "modularising" sdhci-uhs2.c.
+>>>>>> The whole aim of this version is to get early feedback from Adrian (and
+>>>>>> others) on this issue. Without any consensus about the code structure,
+>>>>>
+>>>>> Any comments so far?
+>>>>>
+>>>>
+>>>> Overall, I like this approach of separating UHS2 from legacy sdhci as much
+>>>> as possible.  The only major change, is to drop support for legacy quirks
+>>>> and features that you do not need.  The reason for that, is that there may
+>>>> be few drivers that end up with UHS-II support (opting instead for SD
+>>>> Express), so there is no point going to a lot of trouble to support things
+>>>> that never get used.
+>>>>
+>>>> From what I have seen that looks like it includes:
+>>>> 	- any quirks
+>>>
+>>> GLI driver (gl9755) needs
+>>>   * SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC
+>>>   * SDHCI_QUIRK2_BROKEN_DDR50
+>>> but they are managed in sdhci code.
+>>>
+>>>> 	- SDHCI LED support
+>>>> 	- external DMA support
+>>>
+>>> Should we add 'depends on !SDHCI_UHS2' to MMC_SDHCI_EXTERNAL_DMA?
+>>>
+>>>> In this regard, the important thing is to have a comment somewhere that
+>>>> lists what is not supported.
+>>>>
+>>>> I have only looked at SDHCI patches so far, and only up to about patch 20,
+>>>> but maybe that gives you enough to go on for a while.
+>>>
+>>> Well, I have almost done.
+>>> Can I expect your comments on the patches #21-#27 as well soon?
+>>
+>> I have made some more comments and that is all for now, except for anything
+>> more you wish to discuss.
 > 
-> > -----Original Message-----
-> > From: Krzysztof Kozlowski <krzk@kernel.org>
-> > Sent: Tuesday, December 8, 2020 12:35 AM
-> > To: Krzysztof Kozlowski <krzk@kernel.org>; linux-arm-
-> > kernel@lists.infradead.org; linux-samsung-soc@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Cc: Sylwester Nawrocki <snawrocki@kernel.org>; Marek Szyprowski
-> > <m.szyprowski@samsung.com>; Bartlomiej Zolnierkiewicz
-> > <b.zolnierkie@samsung.com>; Arnd Bergmann <arnd@arndb.de>; Chanwoo
-> > Choi <cw00.choi@samsung.com>; Alim Akhtar <alim.akhtar@samsung.com>;
-> > Pankaj Dubey <pankaj.dubey@samsung.com>
-> > Subject: [PATCH v2 4/4] soc: samsung: exynos-chipid: convert to driver and
-> > merge exynos-asv
-> > 
-> > The Exynos Chip ID driver on Exynos SoCs has so far only informational
-> > purpose - to expose the SoC device in sysfs.  No other drivers depend on
-> it
-> > so there is really no benefit of initializing it early.
-> > 
+> Thank you.
+> I assume that you don't have any objection against adding extra hooks
+> to sdhci_ops in patch#23 and #25, do you?
+
+No objections at the moment.
+
 > 
-> One of the intention behind initializing Exynos Chip ID driver in early
-> stage was to simplify code in arch/arm/mach-exynos specifically calls such
-> as soc_is_exynosXXXX. 
-> But there were lot of resistance from community to add any such calls (or
-> exported function) from mach-exynos files to the driver file. Whereas some
-> other SoC code is using the same, e.g. tegra_get_chip_id being called from
-> mach-tegra files to drivers/soc/tegra/. Unfortunately we could not accept
-> similar solution for Exynos SoC and hence could not get rid of
-> soc_is_exynosxXXX and similar macros from various file in mach-exynos and
-> eventually converting those files into a full-fledged driver files. 
-> 
-> Any opinion how can we achieve this if we convert Exynos Chip ID driver to a
-> regular driver?
+> If so, since we don't have any critical issues to discuss,
+> I hope that my changes will be contained in the new version
+> where a major rework will be done on the core side by Ben.
 
-a. Some parts of mach code can be moved to drivers and then use OF calls.
-
-b. The ones which cannot be moved, could use soc_device_match() assuming
-   they are called after the soc-bus is operational - so after
-   core_initcalls.
-
-c. The ones which are called early or without cache coherency
-   (soc_device_match() uses krefs()), cannot be converted.
-
-This chip ID conversion indeed kills case (b) above... which I am not
-sure is worth bothering. Which parts of code could be moved like this?
-Not mentioning that none of this work have happened since few years...
-
-Best regards,
-Krzysztof
+Ok
