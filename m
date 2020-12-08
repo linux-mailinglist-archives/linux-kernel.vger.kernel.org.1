@@ -2,163 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADB52D3696
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC892D3698
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731575AbgLHW4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:56:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730728AbgLHW4c (ORCPT
+        id S1731577AbgLHW5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:57:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728147AbgLHW5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:56:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607468105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jMmFPLyXP8JGIe1Wh/MLyyRneAlTvCrBjviV+w9jUaE=;
-        b=Fu4HMd5Sodm2uuDTe7UZqN7Ic+s32lXp0oareG2nzStJS/jxdVzhkL8UESONFtFXpIcAtD
-        +RCC3jNec1ejaDyVj8V0JUJ7KB1VRuNwrTiXNAlJn9DjmmaLEXp6KNyq7b6ZHl73tRVQMQ
-        fqDwSvMZYOQvOBr1R5XEtg6EZ1IAbaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-n3_Fhl-6NBanwYUUiMWqTA-1; Tue, 08 Dec 2020 17:55:03 -0500
-X-MC-Unique: n3_Fhl-6NBanwYUUiMWqTA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 945DB107ACE6;
-        Tue,  8 Dec 2020 22:55:01 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12CC16E521;
-        Tue,  8 Dec 2020 22:54:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <1c752ffe-8118-f9ea-e928-d92783a5c516@infradead.org>
-References: <1c752ffe-8118-f9ea-e928-d92783a5c516@infradead.org> <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org> <0000000000002a530d05b400349b@google.com> <928043.1607416561@warthog.procyon.org.uk>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     dhowells@redhat.com,
-        syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: memory leak in generic_parse_monolithic [+PATCH]
+        Tue, 8 Dec 2020 17:57:24 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7508BC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:56:44 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id r24so659007lfm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:56:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dp63dIdRcJ+RLwNco+dq+wSG9tRy12b3KCEuVvbzzL8=;
+        b=LhNqYMYEDwYKbHkLZ330pI728saYOj9rxKzqq4j1aGuQmsKxAeEGqoVNujajZbkkmQ
+         CRMFF7OWR2loXvYd7gVB2TcOB9g60xRH/EEhVLhSbBWqeao2CwGTCFuIpvf1aeYyl94K
+         PmZNAPNRCemrWOyyf+xxHNkCZjddQnjYUHrLU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dp63dIdRcJ+RLwNco+dq+wSG9tRy12b3KCEuVvbzzL8=;
+        b=T+j3+GAcprKETdjD67OUnDVoCtSExMgsEBIGRPFQy9HG7P7vi3inaN3l0ieOUBiikT
+         QQRtfPNX2UA7/g7De+iuEtjR/6AhBhvVnCnK8Nk/BfTJpi5D6BMdD5bPMCvpflbPyJyn
+         5CKHQJund7NUGh+LmAWzP4/46QtxGc+l2lC/Z6t3YyZt0QH6Kno6tNbptwmSg98P2IC4
+         g1WMHE8+vFKyJFyWnoHzIuAaM0tpBiLpzVUE8ZzpPZHeVuAGAbKWmBlBYdMKqbkkQY65
+         Cl5QhJ243BJBqhWR6FiFHZ1pj3rBLG2N3hSGVxsPUdQbu0uBnR7xdIa5AELfmtIRUuXH
+         iymA==
+X-Gm-Message-State: AOAM532GjKuXmLbH+BhY5eLGnH7PC+HtqfrZXbpde81F8EZI45Yx48aD
+        VuwuhmAa/7jtDsu2rHKmujUpqTP6IfeJTQ==
+X-Google-Smtp-Source: ABdhPJznvdtlbwq9tgsY3O8dCQG01ui4zAdvWMQwzqIz0GkS4rk4o2RyZ7Jhod5WodEyYyx4yZYK8w==
+X-Received: by 2002:ac2:511b:: with SMTP id q27mr4725721lfb.322.1607468202543;
+        Tue, 08 Dec 2020 14:56:42 -0800 (PST)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id o21sm24463lfc.153.2020.12.08.14.56.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 14:56:41 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id 23so637589lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:56:41 -0800 (PST)
+X-Received: by 2002:ac2:4831:: with SMTP id 17mr11506247lft.487.1607468200941;
+ Tue, 08 Dec 2020 14:56:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1030307.1607468099.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 08 Dec 2020 22:54:59 +0000
-Message-ID: <1030308.1607468099@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+ <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+ <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+ <alpine.DEB.2.22.394.2012082339470.16458@hadrien> <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
+ <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 8 Dec 2020 14:56:24 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
+Message-ID: <CAHk-=whCChtPRmGZqZM8XeCAFhfRzX8ts4RFKeXgGUyuNtWGMQ@mail.gmail.com>
+Subject: Re: problem booting 5.10
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Julia Lawall <julia.lawall@inria.fr>,
+        John Garry <john.garry@huawei.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Tue, Dec 8, 2020 at 2:54 PM Martin K. Petersen
+<martin.petersen@oracle.com> wrote:
+>
+> Oh, I just realized the megaraid patch went in through block.
 
-> > Now the backtrace only shows what the state was when the string was al=
-located;
-> > it doesn't show what happened to it after that, so another possibility=
- is that
-> > the filesystem being mounted nicked what vfs_parse_fs_param() had righ=
-tfully
-> > stolen, transferring fc->source somewhere else and then failed to rele=
-ase it -
-> > most likely on mount failure (ie. it's an error handling bug in the
-> > filesystem).
-> > =
+I'll take this as an "ack" for the revert, though ;)
 
-> > Do we know what filesystem it was?
-> =
-
-> Yes, it's call AFS (or kAFS).
-
-Hmmm...  afs parses the string in afs_parse_source() without modifying it,
-then moves the pointer to fc->source (parallelling vfs_parse_fs_param()) a=
-nd
-doesn't touch it again.  fc->source should be cleaned up by do_new_mount()
-calling put_fs_context() at the end of the function.
-
-As far as I can tell with the attached print-insertion patch, it works, ca=
-lled
-by the following commands, some of which are correct and some which aren't=
-:
-
-# mount -t afs none /xfstest.test/ -o dyn
-# umount /xfstest.test =
-
-# mount -t afs "" /xfstest.test/ -o foo
-mount: /xfstest.test: bad option; for several filesystems (e.g. nfs, cifs)=
- you might need a /sbin/mount.<type> helper program.
-# umount /xfstest.test =
-
-umount: /xfstest.test: not mounted.
-# mount -t afs %xfstest.test20 /xfstest.test/ -o foo
-mount: /xfstest.test: bad option; for several filesystems (e.g. nfs, cifs)=
- you might need a /sbin/mount.<type> helper program.
-# umount /xfstest.test =
-
-umount: /xfstest.test: not mounted.
-# mount -t afs %xfstest.test20 /xfstest.test/ =
-
-# umount /xfstest.test =
-
-
-Do you know if the mount was successful and what the mount parameters were=
-?
-
-David
----
-diff --git a/fs/afs/super.c b/fs/afs/super.c
-index 6c5900df6aa5..4c44ec0196c9 100644
---- a/fs/afs/super.c
-+++ b/fs/afs/super.c
-@@ -299,7 +299,7 @@ static int afs_parse_source(struct fs_context *fc, str=
-uct fs_parameter *param)
- 		ctx->cell =3D cell;
- 	}
- =
-
--	_debug("CELL:%s [%p] VOLUME:%*.*s SUFFIX:%s TYPE:%d%s",
-+	kdebug("CELL:%s [%p] VOLUME:%*.*s SUFFIX:%s TYPE:%d%s",
- 	       ctx->cell->name, ctx->cell,
- 	       ctx->volnamesz, ctx->volnamesz, ctx->volname,
- 	       suffix ?: "-", ctx->type, ctx->force ? " FORCE" : "");
-@@ -318,6 +318,8 @@ static int afs_parse_param(struct fs_context *fc, stru=
-ct fs_parameter *param)
- 	struct afs_fs_context *ctx =3D fc->fs_private;
- 	int opt;
- =
-
-+	kenter("%s,%p '%s'", param->key, param->string, param->string);
-+
- 	opt =3D fs_parse(fc, afs_fs_parameters, param, &result);
- 	if (opt < 0)
- 		return opt;
-diff --git a/fs/fs_context.c b/fs/fs_context.c
-index 2834d1afa6e8..f530a33876ce 100644
---- a/fs/fs_context.c
-+++ b/fs/fs_context.c
-@@ -450,6 +450,8 @@ void put_fs_context(struct fs_context *fc)
- 	put_user_ns(fc->user_ns);
- 	put_cred(fc->cred);
- 	put_fc_log(fc);
-+	if (strcmp(fc->fs_type->name, "afs") =3D=3D 0)
-+		printk("PUT %p '%s'\n", fc->source, fc->source);
- 	put_filesystem(fc->fs_type);
- 	kfree(fc->source);
- 	kfree(fc);
-@@ -671,6 +673,8 @@ void vfs_clean_context(struct fs_context *fc)
- 	fc->s_fs_info =3D NULL;
- 	fc->sb_flags =3D 0;
- 	security_free_mnt_opts(&fc->security);
-+	if (strcmp(fc->fs_type->name, "afs") =3D=3D 0)
-+		printk("CLEAN %p '%s'\n", fc->source, fc->source);
- 	kfree(fc->source);
- 	fc->source =3D NULL;
- =
-
+          Linus
