@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806712D27EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282502D2800
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgLHJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:42:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727844AbgLHJmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:42:06 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D4EC061749;
-        Tue,  8 Dec 2020 01:41:25 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id b9so13370369ejy.0;
-        Tue, 08 Dec 2020 01:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gHzl/uWiYLo8FvoZ+prOSIPKAbDS1mKoOLJ/17Oi3Yg=;
-        b=nEEegRY7MAaR/8obBCLLBJ/RpfQwBI8+Bv/vJ+H2oH5JeY7kO9z11Q06qoS1o2ldEa
-         XEhtAo/rr5Su0egvjG0Yl21qWVNRX+OQFbQzPdFZGfQGgzB+Oud72Em9Md0AidYCStzQ
-         d+0XbL9nDFmMnkJSPx9uKvNziCYBTV7rSv62KI8zmKA7VWAWjdWt/W7eH3RdyuNEC4Bf
-         ZtT6rP39kWRtNczuQsQt9ouTBVDEEQ67cYNT7hWKhKIrDTNC7qD+YbilSL03lft6LQ3N
-         hGSC9zVzXEOYAhV30g7MMfYMqXnSbvfAlz37X3/3I46hfMenUcQMd5m8uOTxPcI2CzTN
-         RSsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gHzl/uWiYLo8FvoZ+prOSIPKAbDS1mKoOLJ/17Oi3Yg=;
-        b=mlizTyamxbiJJXBMhVh29C62pznYYuSE6qH4+TlUrr6/++qohr8M5FGepeWjeVx83F
-         HwOQ4Q0eO9Mii1ivNFVWomkCXcM5Od9quhHIWE/rUoVN0hYj96a64e2c0gn9gIqM3iEI
-         ZYF4tv3zwZjQMuOPI5bhCAs500g+41VUEQsl8Zc2hA0HmNg1iE8mV0i/wUW5wykU+sBu
-         x0aAdK6mcbiAmoIKKFwSmIjGkgBIWz8f60sAod7WTTNX0yUSMmbnBTbvBcO0FLZRWUMB
-         +nTrUdhc+IyLrPY0LLsoL22ioR0qRYZ8e/LYPXTdKyUsM13mew/0A1lH7Tb+t61pbC5I
-         rCgg==
-X-Gm-Message-State: AOAM530feeBzFZBHPul7ZRNK585u1K3Ud57EzFtiXFHZSh399QY9ZSyL
-        R/sgYl0AuhyryvAJPPy4s22a8QgFl5A=
-X-Google-Smtp-Source: ABdhPJxsse4stlAtQaFm8734Iz9OFP4KsJGLHm2qf0Sc2QMBu1mMb+k+IgAJISdtcVlfCLITNAyQxA==
-X-Received: by 2002:a17:907:2070:: with SMTP id qp16mr22297756ejb.503.1607420484311;
-        Tue, 08 Dec 2020 01:41:24 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id c14sm16493744edy.56.2020.12.08.01.41.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 01:41:23 -0800 (PST)
-Message-ID: <7a66077d6e5a3590d027756941850d6058ccb40c.camel@gmail.com>
-Subject: Re: [PATCH v2 2/3] scsi: ufs: Keep device active mode only
- fWriteBoosterBufferFlushDuringHibernate == 1
-From:   Bean Huo <huobean@gmail.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 08 Dec 2020 10:41:22 +0100
-In-Reply-To: <DM6PR04MB657584B4590496FA6BF11725FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206101335.3418-1-huobean@gmail.com>
-         <20201206101335.3418-3-huobean@gmail.com>
-         <DM6PR04MB6575AED736BE44CA8D4B8998FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
-         <2ef12e328ecdc411e7d145a331d7c8ce668bf2be.camel@gmail.com>
-         <DM6PR04MB657584B4590496FA6BF11725FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729097AbgLHJn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:43:27 -0500
+Received: from mga05.intel.com ([192.55.52.43]:49287 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728007AbgLHJnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:43:25 -0500
+IronPort-SDR: QEvepFzE65JO+njNslgNHbO+bAX21UjN9RuxhBzlMYM0hODTtspCWEEWL67VQ+cYXo9vs4eW+r
+ 4zP9z/J8cdxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="258570644"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="258570644"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 01:41:40 -0800
+IronPort-SDR: lphYxfNFm97c5yzRygv9/53SK56PjpPxm+/DnB/JV+EIhDyXVumECsDgQq5efEsU6vKblus7xv
+ Rx1DGfH/DGFA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="437322162"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Dec 2020 01:41:37 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 08 Dec 2020 11:41:36 +0200
+Date:   Tue, 8 Dec 2020 11:41:36 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Clear send_discover in
+ tcpm_check_send_discover
+Message-ID: <20201208094136.GH680328@kuha.fi.intel.com>
+References: <20201203031908.1491542-1-badhri@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203031908.1491542-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 09:05 +0000, Avri Altman wrote:
-> > "
-> > If fWriteBoosterBufferFlushDuringHibernate ==0, device will not
-> > flush
-> > WB, even if you keep device as "active mode" and LINK in hibernate
-> > state.
+On Wed, Dec 02, 2020 at 07:19:08PM -0800, Badhri Jagan Sridharan wrote:
+> tcpm_check_send_discover does not clear the send_discover flag
+> when any of the following conditions are not met.
+> 1. data_role is TYPEC_HOST
+> 2. link is pd_capable
 > 
-> OK, so what you are actually saying, is that since we are only
-> toggling this flag once per
-> link startup / recovery, in case of a failure, however rare - the
-> host may be still keep vcc on
-> for nothing, as the device will do nothing in that extra wake time. 
-> Right?
+> Discovery indentity would anyways not be attempted during
+> the current session anymore when the above conditions are not
+> met. Hence clear the send_discover flag here to prevent
+> tcpm_enable_frs_work from rescheduling indefinetly.
 > 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-again, this is a BUG, BUG...
-Bug is a Bug, doesn't matter it is rare or not rare. 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Tell me why we retry three times in ufshcd_query_flag_retry() in case
-of failure?
-
-
-> But every time ufshcd_wb_need_flush() is called we are reading some
-> other flags/attributes?
-> What about them? Why not protecting them as well?
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 3bbc1f10af49..012135ade7b1 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3035,10 +3035,9 @@ static inline enum tcpm_state unattached_state(struct tcpm_port *port)
+>  static void tcpm_check_send_discover(struct tcpm_port *port)
+>  {
+>  	if (port->data_role == TYPEC_HOST && port->send_discover &&
+> -	    port->pd_capable) {
+> +	    port->pd_capable)
+>  		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
+> -		port->send_discover = false;
+> -	}
+> +	port->send_discover = false;
+>  }
+>  
+>  static void tcpm_swap_complete(struct tcpm_port *port, int result)
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
 
-did you read ufshcd_wb_need_flush() fully? they have been properly
-protected.
-
-> Sorry - the whole idea doesn't make any sense to me.
-> 
-
-Thanks very much for sharing your opinion, I am very happy to hear your
-opinion. Because you don't believe this is a bug, I will ask other UFS
-guys to review, let Martin make the last decision.
-
-
-Thanks agaion for your review.
-
-Bean
-
+-- 
+heikki
