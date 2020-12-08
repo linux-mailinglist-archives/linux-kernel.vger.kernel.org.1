@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFFA2D2CB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8FE2D2CAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729644AbgLHOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:11:41 -0500
-Received: from us-smtp-delivery-162.mimecast.com ([216.205.24.162]:23806 "EHLO
-        us-smtp-delivery-162.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729570AbgLHOLk (ORCPT
+        id S1729634AbgLHOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729366AbgLHOLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:11:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
-        t=1607436613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BXu0V4t6ivgnHmivmqUZm/vC38B7H6rpY1ftR4Vv25M=;
-        b=DMOG2iDItHybpn7OULXShP9PO5g/6rm0Mv9A+AORxQNefc5V3V8ggilh/7/dRI2yqSAmeJ
-        noYGul8rLKe/Q7qPkFdK2y+idO1HNUSh+0b1JQnLQ39HHlzzJPE6ybTzbWrDPR3s2wU9Pa
-        f+VUVedfG1YRJfVX3B14YeTH+uH0Hbw=
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
- (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-uIdgjNI3N6uXoocY3YymXA-2; Tue, 08 Dec 2020 09:10:12 -0500
-X-MC-Unique: uIdgjNI3N6uXoocY3YymXA-2
-Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:7712::13) by TU4PR8401MB0477.NAMPRD84.PROD.OUTLOOK.COM
- (2a01:111:e400:770c::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 8 Dec
- 2020 14:10:06 +0000
-Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::fd25:5d10:75b:4dc0]) by TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::fd25:5d10:75b:4dc0%11]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 14:10:06 +0000
-From:   "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-Subject: How do I read kernel audit messages using NETLINK_AUDIT in user space
-Thread-Topic: How do I read kernel audit messages using NETLINK_AUDIT in user
- space
-Thread-Index: AdbNa0m6lK+NIRfeTgKILQO3WoEFmw==
-Date:   Tue, 8 Dec 2020 14:10:06 +0000
-Message-ID: <TU4PR8401MB1216414768A3A701B2CA6BDFF6CD0@TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [49.207.219.217]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f7d1d28-a5ff-478e-673a-08d89b82f716
-x-ms-traffictypediagnostic: TU4PR8401MB0477:
-x-microsoft-antispam-prvs: <TU4PR8401MB0477A34E65273F6F3FFE4741F6CD0@TU4PR8401MB0477.NAMPRD84.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:5797
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: 1wvKSPrVe8lbm3zsN6fYMFoirgmQlrSwXuLHyrhPwhREuvu6f3Tx6F4WNSGsJi+NCNEH39G0oG3wIwMiJvKMfSgi3DhY2r68+08tjWaAjlUafRmChwi1DCf2IMZIhwBrI1vr3LtUg8JmhFjjPnw/pEo23+2NYJvYOUsWoSfK+Gl/CeM914QHxhl1GF9t3xLNMRDi+tN1mpx1Kz/OfVX4/Ys5Rv+CIpMm7F1LuaieraODTQhZQiRW5b6A8YWkQmvfuM5L1+/Q712BRNHWmPs6T9SC1MNYn7QfHJug/utKwevEx5ds57BKE+fH138b8eHw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(376002)(39860400002)(346002)(450100002)(15650500001)(52536014)(83380400001)(6506007)(110136005)(55236004)(8676002)(478600001)(66476007)(86362001)(66946007)(33656002)(2906002)(66446008)(9686003)(186003)(71200400001)(5660300002)(55016002)(7696005)(76116006)(66556008)(8936002)(26005)(316002)(64756008);DIR:OUT;SFP:1102
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?EAkqEWMA0N/I4Hedd/pr8ei8JrdrkPojhRI8MQ86R0es7Czh+TBSmkTGlP3/?=
- =?us-ascii?Q?gyu5P13cMYr1q6WOdkOZpvv+o3QJQq+/Ddh/jLFKRD2LN/e7XcOR6wYctelt?=
- =?us-ascii?Q?GpaovR+u6TjTydC5eRaN1y6VN4O9aVQPBzs1qmarG6RtCMHqlY7E4zSP47e3?=
- =?us-ascii?Q?RwUdSKimCB9t4WnhhsqZ/qn4IX6/yDk29CPL/701lf7woY+1G4+JF1UNLD32?=
- =?us-ascii?Q?qwfkdFLD3v19SC9DWMrxpu+hJWOnm+96+Z/0aMaeg3x0tffxxylDHozLh1f8?=
- =?us-ascii?Q?mDC7Y1amw8o00gr7nfDt4b9bQBp+zmpbZ090QWccn+1jZKz8Nat+m6G8uPda?=
- =?us-ascii?Q?rVrrad5YK/SnijOOUWto+S121AVfffvY6mL4J19nSAYP/U9O6zUOOjniX2O9?=
- =?us-ascii?Q?ca4w9KxlJVAJEYAlWYM2Z9oxSDlGfIr7i/5SaOnaurRymySl8rCx6uPe0q+R?=
- =?us-ascii?Q?j4D68kklcnESyOG0Xu1vCus2n/Cb3dU/3j7QcjiFhxRVVyhF0z7R4Uc/vybT?=
- =?us-ascii?Q?cL6KFpUJWJjP6VHDtjhcbH4kQDyjm+rKDCbH9NEQ0ghTf8w6yxl+PXxZmmU1?=
- =?us-ascii?Q?tiAhVZ9lzv9qST7uq68wQoK9z1rtzxH16jqjcu5ZtG7o6mF+t5kOMFwEPGty?=
- =?us-ascii?Q?/VQEl8Tc/cg9BUCXcLe6d55QTeikGglF5dpJPOLw22oMqFuG+3aD0Hmrnetf?=
- =?us-ascii?Q?pyyUFEdVph8MvTlO2JXr6khkGYqn4FIS+apu44Gqs2YC1cV1rkfgvaA1ym5r?=
- =?us-ascii?Q?A2QxBbKgFMogNpC/390UeYj/1YkqO8NEgfAWO8yCMQyhe26FYNEjs5U0ZC2j?=
- =?us-ascii?Q?m9Uvr+MO5sH2ZpDdPn3ebQB3f+8cWAEh/e1l8pC+2OdP7nDnUqMaSeHqx8Gg?=
- =?us-ascii?Q?d4q3sNCJNLz6jEr2MC75Tw09W2wIfsQkIY/SMQmGeMqNMz4gNwwXbiLZekzW?=
- =?us-ascii?Q?ShBXF5XB0tmz5Or0OWefyiWNXUdynLE9G5/4qsw1wHY=3D?=
-x-ms-exchange-transport-forked: True
-MIME-Version: 1.0
-X-OriginatorOrg: hp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f7d1d28-a5ff-478e-673a-08d89b82f716
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 14:10:06.5539
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mqPyPCQExtQOtQwLb6BSXCvcysLLa+x7/t8HbhG0YhNKnfVQAQvbDUePT0EgkkEnlWugF9ca0CQ3ZY9zv7k3RA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB0477
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA62A171 smtp.mailfrom=jayalakshmi.bhat@hp.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hp.com
-Content-Language: en-US
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+        Tue, 8 Dec 2020 09:11:01 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449AFC061749;
+        Tue,  8 Dec 2020 06:10:36 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b26so14001341pfi.3;
+        Tue, 08 Dec 2020 06:10:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=y+TsitjoIH7JH9XtdYcvo6WGHGk7yTErwwqWOT90yJs=;
+        b=LH/JS4D0m7XlgPj3AwO9UpQ1nBJ/6Y0MA41PnlSZPWYKJ+j1uaoXlRkPA9CA9YHTUn
+         wRe3Bff37TfY2yeNz8U7FtlmjKhLsJYIlbU6o/lTo4aqYAoIVT/pXOQDz5QwtgsJmg9M
+         HxFVv4Elma9ml2rgvM5SSSo0wj8CQ5dZH86Hg7UUKqldAbxXrmDSlHYJltie83X3Bimc
+         MpZ0c3dqqKtsYIm9AV6i68iGtrY1IxT3cwUhMNWFmfpyTVso3Ttto/WoBdEvwBDm6JiA
+         RHIRuoFvQStBC0dlGbzk63MDjUbRc2Lyv6IdC7ljcW/9e732f+LgnXr7grkoFxy2faeo
+         9QIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=y+TsitjoIH7JH9XtdYcvo6WGHGk7yTErwwqWOT90yJs=;
+        b=ZYMkD8WgjXbmoYXY+2XXtym251AGR+sz5TqPfScO+CJzUoTBPP/c7dOnmyoMegKK9Y
+         ggW90vlUJ1N8l89mKH/b07q3u8FhCgMP/bFJH9If+Urz103HDoVTM7elUAIyfSicHp1g
+         SydPutVIei9OfPnMI5I55ZILrHV+Alz/hpkkz+HF4ji/kPj6Dy8j86FxNc9OZlyjSrIQ
+         crazW9dWwHTrqYz6OJ1Y7CDienXbhjVpV1Px/r+U3BBemVLJ/CPutc01PsoaqvI2bizk
+         JasrzJVnxE/7l0r7vgFQ6f8pxC3uyKqEE0AXlpfgC9q5g5szR6twFFoI/mtjVId2tBck
+         QM0g==
+X-Gm-Message-State: AOAM533K4bgV3GCYmJkG7ojTy3rKgUcP4rtZxr9p9eYJvNqI2VzblrYA
+        m2+I6WYNRwHmdm4bm+COaAI=
+X-Google-Smtp-Source: ABdhPJzxMAj44XvY1JnbcrdV2ne9K3OSDAYvDMV0QTQMPNVlGHzRrlDWcsvhB82njiBXQIZKz6NAAg==
+X-Received: by 2002:a65:594b:: with SMTP id g11mr22767467pgu.424.1607436635756;
+        Tue, 08 Dec 2020 06:10:35 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id m15sm9071951pfa.72.2020.12.08.06.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 06:10:34 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH v2 net-next 0/2] nfc: s3fwrn5: Change I2C interrupt trigger to EDGE_RISING
+Date:   Tue,  8 Dec 2020 23:10:10 +0900
+Message-Id: <20201208141012.6033-1-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-I am trying to read kernel audit messages specially generated by XFRM in us=
-er space. I wrote Netlink client stub to read the audit message as below. B=
-ut the call recvfrom gets blocked indefinite.
-Can any one tell me what am I doing wrong?
+For stable Samsung's I2C interrupt handling, I changed the interrupt 
+trigger from IRQ_TYPE_LEVEL_HIGH to IRQ_TYPE_EDGE_RISING and removed 
+the hard coded interrupt trigger type in the i2c module for the flexible 
+control.
 
-Regards,
-Jayalakshmi
+1/2 is the changed dt binding for the edge rising trigger.
+2/2 is to remove the hard coded interrupt trigger type in the i2c module.
 
-#include <sys/socket.h>
-#include <linux/netlink.h>
-#include <stdio.h>
-#include <malloc.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
+ChangeLog:
+ v2:
+  2/2
+   - remove the hard coded interrupt trigger type.
 
-int main()=20
-{
-  int fd =3D socket(AF_NETLINK, SOCK_RAW, NETLINK_AUDIT);
+Bongsu Jeon (2):
+  dt-bindings: net: nfc: s3fwrn5: Change I2C interrupt trigger to
+    EDGE_RISING
+  nfc: s3fwrn5: Remove hard coded interrupt trigger type from the i2c
+    module
 
-  if (fd < 0) {
-    printf("Socket creation failed. try again\n");
-  }
-  else
-  {
-=09struct sockaddr_nl src_addr;
-=09struct sockaddr_nl dest_addr;
-=09struct iovec iov;
-=09struct msghdr msg;
-=09struct nlmsghdr *nlh =3D(struct nlmsghdr *) malloc(NLMSG_SPACE(1024));
-=09
-=09memset(nlh, 0, NLMSG_SPACE(1024));
-=09memset(&iov, 0, sizeof(iov));
+ .../devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml      | 2 +-
+ drivers/nfc/s3fwrn5/i2c.c                                 | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-=09nlh->nlmsg_len   =3D NLMSG_SPACE(1024);
-=09nlh->nlmsg_pid   =3D getpid();
-=09nlh->nlmsg_flags =3D 0;
-
-=09src_addr.nl_family  =3D AF_NETLINK;
-=09src_addr.nl_pid     =3D getpid();
-=09src_addr.nl_groups  =3D 0;
-
-=09bind(fd, (struct sockaddr *)&src_addr, sizeof(src_addr));
-
-=09iov.iov_base =3D (void *)nlh; =20
-=09iov.iov_len =3D nlh->nlmsg_len; =20
-
-=09msg.msg_name =3D (void *)&src_addr;
-=09msg.msg_namelen =3D sizeof(src_addr);
-=09msg.msg_iov =3D &iov;
-=09msg.msg_iovlen =3D 1;
- =20
-    recvfrom(fd, &msg,sizeof(msg),0,(struct sockaddr *) &dest_addr,sizeof(d=
-est_addr));
-    printf("Received message: %s\n", (char *)NLMSG_DATA(nlh));
-    close(fd);
-}
+-- 
+2.17.1
 
