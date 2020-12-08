@@ -2,328 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EC42D200F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E762D2011
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727254AbgLHB2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:28:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgLHB2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:28:19 -0500
-Date:   Mon, 7 Dec 2020 17:27:35 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607390857;
-        bh=QlkTVDWdDlD9axCLfz262+JNRR6RGZ1gEQl4dGSiZ4Y=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cHlyroulfQGJmDEvarbejCUdP9K8ZEq/+OVYpdU6bRV90ly6mp0F728Mz3MtQabRC
-         RGUs2lsWv2qK/bInkoLL0TcxhpHJY5UI7MUp81VPn0ZVhu//q2bAT7GUZwqKSRUZXz
-         JwRnbrKKFdlImxF7DGBGmt/jn/CQ1hl7XrWc/ZPE=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Chinwen Chang <chinwen.chang@mediatek.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>, dsahern@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, liuhangbin@gmail.com,
-        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: mmap_lock: fix use-after-free race and css ref
- leak in tracepoints
-Message-Id: <20201207172735.29a0b3558a11cc194a959052@linux-foundation.org>
-In-Reply-To: <20201207213358.573750-1-axelrasmussen@google.com>
-References: <20201207213358.573750-1-axelrasmussen@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727305AbgLHB2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:28:25 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:8458 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725972AbgLHB2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 20:28:25 -0500
+X-UUID: cbde4ff5a2bd49f9aa694092eee3d9d8-20201208
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=waqy4i20W1JDrFc1FePMwNNNYqRij3lkjq7dJ8MpdPc=;
+        b=R0ZbsB59pC+hzCPr5avn/YkLYFt3BcHa107agaAtFR/xZ2QGQk4WwMxZCwgkfOdcifx/ZH0PByHWdF3c36v17TrCKXm69idOYRWeyFLt+bJKjZ7C7l5T5YeYI6XbMLMNT94uszckr7XT2UashZesO5UUPlCuFAOdtHPpZc5gaKk=;
+X-UUID: cbde4ff5a2bd49f9aa694092eee3d9d8-20201208
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 389684248; Tue, 08 Dec 2020 09:27:39 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 8 Dec
+ 2020 09:27:33 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 8 Dec 2020 09:27:32 +0800
+Message-ID: <1607390856.14736.77.camel@mhfsdcap03>
+Subject: Re: [v4,2/3] PCI: mediatek: Add new generation controller support
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Lukas Wunner <lukas@wunner.de>, Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Sj Huang" <sj.huang@mediatek.com>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>
+Date:   Tue, 8 Dec 2020 09:27:36 +0800
+In-Reply-To: <20201204183052.GA1929838@bjorn-Precision-5520>
+References: <20201204183052.GA1929838@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: E51732604C4D2E44E18A7FAC374C6508F9E0AEBD30C5B828F9E6F2145E867B3A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  7 Dec 2020 13:33:58 -0800 Axel Rasmussen <axelrasmussen@google.com> wrote:
-
-> syzbot reported[1] a use-after-free introduced in 0f818c4bc1f3. The bug
-> is that an ongoing trace event might race with the tracepoint being
-> disabled (and therefore the _unreg() callback being called). Consider
-> this ordering:
-> 
-> T1: trace event fires, get_mm_memcg_path() is called
-> T1: get_memcg_path_buf() returns a buffer pointer
-> T2: trace_mmap_lock_unreg() is called, buffers are freed
-> T1: cgroup_path() is called with the now-freed buffer
-> 
-> The solution in this commit is to switch to mutex + RCU. With the RCU
-> API we can first stop new buffers from being handed out, then wait for
-> existing users to finish, and *then* free the buffers.
-> 
-> I have a simple reproducer program which spins up two pools of threads,
-> doing the following in a tight loop:
-> 
->   Pool 1:
->   mmap(NULL, 4096, PROT_READ | PROT_WRITE,
->        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)
->   munmap()
-> 
->   Pool 2:
->   echo 1 > /sys/kernel/debug/tracing/events/mmap_lock/enable
->   echo 0 > /sys/kernel/debug/tracing/events/mmap_lock/enable
-> 
-> This triggers the use-after-free very quickly. With this patch, I let it
-> run for an hour without any BUGs.
-> 
-> While fixing this, I also noticed and fixed a css ref leak. Previously
-> we called get_mem_cgroup_from_mm(), but we never called css_put() to
-> release that reference. get_mm_memcg_path() now does this properly.
-> 
-> [1]: https://syzkaller.appspot.com/bug?extid=19e6dd9943972fa1c58a
-> 
-
-So... how does this fix differ from the previous version of this fix?
-
-The difference is quite large:
-
---- a/mm/mmap_lock.c~mmap_lock-add-tracepoints-around-lock-acquisition-fix-fix
-+++ a/mm/mmap_lock.c
-@@ -3,13 +3,13 @@
- #include <trace/events/mmap_lock.h>
- 
- #include <linux/mm.h>
--#include <linux/atomic.h>
- #include <linux/cgroup.h>
- #include <linux/memcontrol.h>
- #include <linux/mmap_lock.h>
-+#include <linux/mutex.h>
- #include <linux/percpu.h>
-+#include <linux/rcupdate.h>
- #include <linux/smp.h>
--#include <linux/spinlock.h>
- #include <linux/trace_events.h>
- 
- EXPORT_TRACEPOINT_SYMBOL(mmap_lock_start_locking);
-@@ -19,28 +19,13 @@ EXPORT_TRACEPOINT_SYMBOL(mmap_lock_relea
- #ifdef CONFIG_MEMCG
- 
- /*
-- * This is unfortunately complicated... _reg() and _unreg() may be called
-- * in parallel, separately for each of our three event types. To save memory,
-- * all of the event types share the same buffers. Furthermore, trace events
-- * might happen in parallel with _unreg(); we need to ensure we don't free the
-- * buffers before all inflights have finished. Because these events happen
-- * "frequently", we also want to prevent new inflights from starting once the
-- * _unreg() process begins. And, for performance reasons, we want to avoid any
-- * locking in the trace event path.
-- *
-- * So:
-- *
-- * - Use a spinlock to serialize _reg() and _unreg() calls.
-- * - Keep track of nested _reg() calls with a lock-protected counter.
-- * - Define a flag indicating whether or not unregistration has begun (and
-- *   therefore that there should be no new buffer uses going forward).
-- * - Keep track of inflight buffer users with a reference count.
-+ * Our various events all share the same buffer (because we don't want or need
-+ * to allocate a set of buffers *per event type*), so we need to protect against
-+ * concurrent _reg() and _unreg() calls, and count how many _reg() calls have
-+ * been made.
-  */
--static DEFINE_SPINLOCK(reg_lock);
--static int reg_types_rc; /* Protected by reg_lock. */
--static bool unreg_started; /* Doesn't need synchronization. */
--/* atomic_t instead of refcount_t, as we want ordered inc without locks. */
--static atomic_t inflight_rc = ATOMIC_INIT(0);
-+static DEFINE_MUTEX(reg_lock);
-+static int reg_refcount; /* Protected by reg_lock. */
- 
- /*
-  * Size of the buffer for memcg path names. Ignoring stack trace support,
-@@ -54,119 +39,107 @@ static atomic_t inflight_rc = ATOMIC_INI
-  */
- #define CONTEXT_COUNT 4
- 
--DEFINE_PER_CPU(char *, memcg_path_buf);
--DEFINE_PER_CPU(int, memcg_path_buf_idx);
-+static DEFINE_PER_CPU(char __rcu *, memcg_path_buf);
-+static char **tmp_bufs;
-+static DEFINE_PER_CPU(int, memcg_path_buf_idx);
-+
-+/* Called with reg_lock held. */
-+static void free_memcg_path_bufs(void)
-+{
-+	int cpu;
-+	char **old = tmp_bufs;
-+
-+	for_each_possible_cpu(cpu) {
-+		*(old++) = rcu_dereference_protected(
-+			per_cpu(memcg_path_buf, cpu),
-+			lockdep_is_held(&reg_lock));
-+		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), NULL);
-+	}
-+
-+	/* Wait for inflight memcg_path_buf users to finish. */
-+	synchronize_rcu();
-+
-+	old = tmp_bufs;
-+	for_each_possible_cpu(cpu) {
-+		kfree(*(old++));
-+	}
-+
-+	kfree(tmp_bufs);
-+	tmp_bufs = NULL;
-+}
- 
- int trace_mmap_lock_reg(void)
- {
--	unsigned long flags;
- 	int cpu;
-+	char *new;
- 
--	/*
--	 * Serialize _reg() and _unreg(). Without this, e.g. _unreg() might
--	 * start cleaning up while _reg() is only partially completed.
--	 */
--	spin_lock_irqsave(&reg_lock, flags);
-+	mutex_lock(&reg_lock);
- 
- 	/* If the refcount is going 0->1, proceed with allocating buffers. */
--	if (reg_types_rc++)
-+	if (reg_refcount++)
- 		goto out;
- 
-+	tmp_bufs = kmalloc_array(num_possible_cpus(), sizeof(*tmp_bufs),
-+				 GFP_KERNEL);
-+	if (tmp_bufs == NULL)
-+		goto out_fail;
-+
- 	for_each_possible_cpu(cpu) {
--		per_cpu(memcg_path_buf, cpu) = NULL;
--	}
--	for_each_possible_cpu(cpu) {
--		per_cpu(memcg_path_buf, cpu) = kmalloc(
--			MEMCG_PATH_BUF_SIZE * CONTEXT_COUNT, GFP_NOWAIT);
--		if (per_cpu(memcg_path_buf, cpu) == NULL)
--			goto out_fail;
--		per_cpu(memcg_path_buf_idx, cpu) = 0;
-+		new = kmalloc(MEMCG_PATH_BUF_SIZE * CONTEXT_COUNT, GFP_KERNEL);
-+		if (new == NULL)
-+			goto out_fail_free;
-+		rcu_assign_pointer(per_cpu(memcg_path_buf, cpu), new);
-+		/* Don't need to wait for inflights, they'd have gotten NULL. */
- 	}
- 
--	/* Reset unreg_started flag, allowing new trace events. */
--	WRITE_ONCE(unreg_started, false);
--	/* Add the registration +1 to the inflight refcount. */
--	atomic_inc(&inflight_rc);
--
- out:
--	spin_unlock_irqrestore(&reg_lock, flags);
-+	mutex_unlock(&reg_lock);
- 	return 0;
- 
-+out_fail_free:
-+	free_memcg_path_bufs();
- out_fail:
--	for_each_possible_cpu(cpu) {
--		if (per_cpu(memcg_path_buf, cpu) != NULL)
--			kfree(per_cpu(memcg_path_buf, cpu));
--		else
--			break;
--	}
-+	/* Since we failed, undo the earlier ref increment. */
-+	--reg_refcount;
- 
--	/* Since we failed, undo the earlier increment. */
--	--reg_types_rc;
--
--	spin_unlock_irqrestore(&reg_lock, flags);
-+	mutex_unlock(&reg_lock);
- 	return -ENOMEM;
- }
- 
- void trace_mmap_lock_unreg(void)
- {
--	unsigned long flags;
--	int cpu;
--
--	spin_lock_irqsave(&reg_lock, flags);
-+	mutex_lock(&reg_lock);
- 
- 	/* If the refcount is going 1->0, proceed with freeing buffers. */
--	if (--reg_types_rc)
-+	if (--reg_refcount)
- 		goto out;
- 
--	/* This was the last registration; start preventing new events... */
--	WRITE_ONCE(unreg_started, true);
--	/* Remove the registration +1 from the inflight refcount. */
--	atomic_dec(&inflight_rc);
--	/*
--	 * Wait for inflight refcount to be zero (all inflights stopped). Since
--	 * we have a spinlock we can't sleep, so just spin. Because trace events
--	 * are "fast", and because we stop new inflights from starting at this
--	 * point with unreg_started, this should be a short spin.
--	 */
--	while (atomic_read(&inflight_rc))
--		barrier();
--
--	for_each_possible_cpu(cpu) {
--		kfree(per_cpu(memcg_path_buf, cpu));
--	}
-+	free_memcg_path_bufs();
- 
- out:
--	spin_unlock_irqrestore(&reg_lock, flags);
-+	mutex_unlock(&reg_lock);
- }
- 
- static inline char *get_memcg_path_buf(void)
- {
-+	char *buf;
- 	int idx;
- 
--	/*
--	 * If unregistration is happening, stop. Yes, this check is racy;
--	 * that's fine. It just means _unreg() might spin waiting for an extra
--	 * event or two. Use-after-free is actually prevented by the refcount.
--	 */
--	if (READ_ONCE(unreg_started))
-+	rcu_read_lock();
-+	buf = rcu_dereference(*this_cpu_ptr(&memcg_path_buf));
-+	if (buf == NULL) {
-+		rcu_read_unlock();
- 		return NULL;
--	/*
--	 * Take a reference, unless the registration +1 has been released
--	 * and there aren't already existing inflights (refcount is zero).
--	 */
--	if (!atomic_inc_not_zero(&inflight_rc))
--		return NULL;
--
-+	}
- 	idx = this_cpu_add_return(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE) -
- 	      MEMCG_PATH_BUF_SIZE;
--	return &this_cpu_read(memcg_path_buf)[idx];
-+	return &buf[idx];
- }
- 
- static inline void put_memcg_path_buf(void)
- {
- 	this_cpu_sub(memcg_path_buf_idx, MEMCG_PATH_BUF_SIZE);
--	/* We're done with this buffer; drop the reference. */
--	atomic_dec(&inflight_rc);
-+	rcu_read_unlock();
- }
- 
- /*
-_
+T24gRnJpLCAyMDIwLTEyLTA0IGF0IDEyOjMwIC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
+PiBPbiBGcmksIERlYyAwNCwgMjAyMCBhdCAwODozOTowOUFNICswMTAwLCBMdWthcyBXdW5uZXIg
+d3JvdGU6DQo+ID4gT24gTW9uLCBOb3YgMzAsIDIwMjAgYXQgMTE6MzA6MDVBTSAtMDYwMCwgQmpv
+cm4gSGVsZ2FhcyB3cm90ZToNCj4gPiA+IE9uIE1vbiwgTm92IDIzLCAyMDIwIGF0IDAyOjQ1OjEz
+UE0gKzA4MDAsIEppYW5qdW4gV2FuZyB3cm90ZToNCj4gPiA+ID4gT24gVGh1LCAyMDIwLTExLTE5
+IGF0IDE0OjI4IC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0KPiA+ID4gPiA+ID4gK3N0YXRp
+YyBpbnQgbXRrX3BjaWVfc2V0dXAoc3RydWN0IG10a19wY2llX3BvcnQgKnBvcnQpDQo+ID4gPiA+
+ID4gPiArew0KPiA+IFsuLi5dDQo+ID4gPiA+ID4gPiArCS8qIFRyeSBsaW5rIHVwICovDQo+ID4g
+PiA+ID4gPiArCWVyciA9IG10a19wY2llX3N0YXJ0dXBfcG9ydChwb3J0KTsNCj4gPiA+ID4gPiA+
+ICsJaWYgKGVycikgew0KPiA+ID4gPiA+ID4gKwkJZGV2X25vdGljZShkZXYsICJQQ0llIGxpbmsg
+ZG93blxuIik7DQo+ID4gPiA+ID4gPiArCQlnb3RvIGVycl9zZXR1cDsNCj4gPiA+ID4gPiANCj4g
+PiA+ID4gPiBHZW5lcmFsbHkgaXQgc2hvdWxkIG5vdCBiZSBhIGZhdGFsIGVycm9yIGlmIHRoZSBs
+aW5rIGlzIG5vdCB1cCBhdA0KPiA+ID4gPiA+IHByb2JlLXRpbWUuICBZb3UgbWF5IGJlIGFibGUg
+dG8gaG90LWFkZCBhIGRldmljZSwgb3IgdGhlIGRldmljZSBtYXkNCj4gPiA+ID4gPiBoYXZlIHNv
+bWUgZXh0ZXJuYWwgcG93ZXIgY29udHJvbCB0aGF0IHdpbGwgcG93ZXIgaXQgdXAgbGF0ZXIuDQo+
+ID4gPiA+IA0KPiA+ID4gPiBUaGlzIGlzIGZvciB0aGUgcG93ZXIgc2F2aW5nIHJlcXVpcmVtZW50
+LiBJZiB0aGVyZSBpcyBubyBkZXZpY2UNCj4gPiA+ID4gY29ubmVjdGVkIHdpdGggdGhlIFBDSWUg
+c2xvdCwgdGhlIFBDSWUgTUFDIGFuZCBQSFkgc2hvdWxkIGJlIHBvd2VyZWQNCj4gPiA+ID4gb2Zm
+Lg0KPiA+ID4gPiANCj4gPiA+ID4gSXMgdGhlcmUgYW55IHN0YW5kYXJkIGZsb3cgdG8gc3VwcG9y
+dCBwb3dlciBkb3duIHRoZSBoYXJkd2FyZSBhdA0KPiA+ID4gPiBwcm9iZS10aW1lIGlmIG5vIGRl
+dmljZSBpcyBjb25uZWN0ZWQgYW5kIHBvd2VyIGl0IHVwIHdoZW4gaG90LWFkZCBhDQo+ID4gPiA+
+IGRldmljZT8NCj4gPiA+IA0KPiA+ID4gVGhhdCdzIGEgZ29vZCBxdWVzdGlvbi4gIEkgYXNzdW1l
+IHRoaXMgbG9va3MgbGlrZSBhIHN0YW5kYXJkIFBDSWUNCj4gPiA+IGhvdC1hZGQgZXZlbnQ/DQo+
+ID4gPiANCj4gPiA+IFdoZW4geW91IGhvdC1hZGQgYSBkZXZpY2UsIGRvZXMgdGhlIFJvb3QgUG9y
+dCBnZW5lcmF0ZSBhIFByZXNlbmNlDQo+ID4gPiBEZXRlY3QgQ2hhbmdlZCBpbnRlcnJ1cHQ/ICBU
+aGUgcGNpZWhwIGRyaXZlciBzaG91bGQgZmllbGQgdGhhdA0KPiA+ID4gaW50ZXJydXB0IGFuZCB0
+dXJuIG9uIHBvd2VyIHRvIHRoZSBzbG90IHZpYSB0aGUgUG93ZXIgQ29udHJvbGxlcg0KPiA+ID4g
+Q29udHJvbCBiaXQgaW4gdGhlIFNsb3QgQ29udHJvbCByZWdpc3Rlci4NCj4gPiA+IA0KPiA+ID4g
+RG9lcyB5b3VyIGhhcmR3YXJlIHJlcXVpcmUgc29tZXRoaW5nIG1vcmUgdGhhbiB0aGF0IHRvIGNv
+bnRyb2wgdGhlIE1BQw0KPiA+ID4gYW5kIFBIWSBwb3dlcj8NCj4gPiANCj4gPiBQb3dlciBzYXZp
+bmcgb2YgdW51c2VkIFBDSWUgcG9ydHMgaXMgZ2VuZXJhbGx5IGFjaGlldmVkIHRocm91Z2ggdGhl
+DQo+ID4gcnVudGltZSBQTSBmcmFtZXdvcmsuICBXaGVuIGEgUENJZSBwb3J0IHJ1bnRpbWUgc3Vz
+cGVuZHMsIHRoZSBQQ0llDQo+ID4gY29yZSB3aWxsIHRyYW5zaXRpb24gaXQgdG8gRDNob3QuICBP
+biB0b3Agb2YgdGhhdCwgdGhlIHBsYXRmb3JtDQo+ID4gbWF5IGJlIGFibGUgdG8gdHJhbnNpdGlv
+biB0aGUgcG9ydCB0byBEM2NvbGQuICBDdXJyZW50bHkgb25seSB0aGUNCj4gPiBBQ1BJIHBsYXRm
+b3JtIHN1cHBvcnRzIHRoYXQuICBDb25jZWl2YWJseSwgZGV2aWNldHJlZS1iYXNlZCBzeXN0ZW1z
+DQo+ID4gbWF5IHdhbnQgdG8gZGlzYWJsZSBjZXJ0YWluIGNsb2NrcyBvciByZWd1bGF0b3JzIHdo
+ZW4gYSBQQ0llIHBvcnQNCj4gPiBydW50aW1lIHN1c3BlbmRzLiAgSSB0aGluayB3ZSBkbyBub3Qg
+c3VwcG9ydCB0aGF0IHlldCBidXQgaXQgY291bGQNCj4gPiBiZSBhZGRlZCB0byBkcml2ZXJzL3Bj
+aS9wY2llL3BvcnRkcnYqLg0KPiA+IA0KPiA+IEEgaG90cGx1ZyBwb3J0IGlzIGV4cGVjdGVkIHRv
+IHNpZ25hbCBQREMgYW5kIERMTFNDIGludGVycnVwdHMgZXZlbg0KPiA+IHdoZW4gaW4gRDNob3Qu
+ICBBdCBsZWFzdCB0aGF0J3Mgb3VyIGV4cGVyaWVuY2Ugd2l0aCBUaHVuZGVyYm9sdC4NCj4gPiBU
+byBzdXBwb3J0IGhvdHBsdWcgaW50ZXJydXB0cyBpbiBEM2NvbGQsIHNvbWUgZXh0ZXJuYWwgbWVj
+aGFuaXNtDQo+ID4gKHN1Y2ggYXMgYSBQTUUpIGlzIG5lY2Vzc2FyeSB0byB3YWtlIHVwIHRoZSBw
+b3J0IG9uIGhvdHBsdWcuDQo+ID4gVGhpcyBpcyBhbHNvIHN1cHBvcnRlZCB3aXRoIHJlY2VudCBU
+aHVuZGVyYm9sdCBzeXN0ZW1zLg0KPiA+IA0KPiA+IEJlY2F1c2Ugd2UndmUgc2VlbiB2YXJpb3Vz
+IGluY29tcGF0aWJpbGl0aWVzIHdoZW4gcnVudGltZSBzdXNwZW5kaW5nDQo+ID4gUENJZSBwb3J0
+cywgY2VydGFpbiBjb25kaXRpb25zIG11c3QgYmUgc2F0aXNmaWVkIGZvciBydW50aW1lIFBNDQo+
+ID4gdG8gYmUgZW5hYmxlZC4gIFRoZXkncmUgZW5jb2RlZCBpbiBwY2lfYnJpZGdlX2QzX3Bvc3Np
+YmxlKCkuDQo+ID4gR2VuZXJhbGx5LCBob3RwbHVnIHBvcnRzIG9ubHkgcnVudGltZSBzdXNwZW5k
+IGlmIHRoZXkgYmVsb25nIHRvDQo+ID4gYSBUaHVuZGVyYm9sdCBjb250cm9sbGVyIG9yIGlmIHRo
+ZSBBQ1BJIHBsYXRmb3JtIGV4cGxpY2l0bHkgYWxsb3dzDQo+ID4gcnVudGltZSBQTSAodGhyb3Vn
+aCBwcmVzZW5jZSBvZiBhIF9QUjMgbWV0aG9kIG9yIGEgZGV2aWNlIHByb3BlcnR5KS4NCj4gPiBO
+b24taG90cGx1ZyBwb3J0cyBydW50aW1lIHN1c3BlbmQgaWYgdGhlIEJJT1MgaXMgbmV3ZXIgdGhh
+biAyMDE1DQo+ID4gKGFzIHNwZWNpZmllZCBieSBETUkpLg0KPiA+IA0KPiA+IE9idmlvdXNseSwg
+dGhpcyBwb2xpY3kgaXMgdmVyeSB4ODYtZm9jdXNzZWQgYmVjYXVzZSBib3RoIFRodW5kZXJib2x0
+DQo+ID4gYW5kIERNSSBhcmUgb25seSByZWFsbHkgYSB0aGluZyBvbiB4ODYuICBUaGF0J3MgYWJv
+dXQgdG8gY2hhbmdlIHRob3VnaA0KPiA+IGJlY2F1c2UgQXBwbGUncyBuZXcgYXJtNjQtYmFzZWQg
+TWFjcyBoYXZlIFRodW5kZXJib2x0IGludGVncmF0ZWQgaW50bw0KPiA+IHRoZSBTb0MgYW5kIGFy
+bTY0IFNvQ3MgYXJlIG1ha2luZyBpbnJvYWRzIGluIHRoZSBkYXRhY2VudGVyLCB3aGljaCBpcw0K
+PiA+IGFuIGltcG9ydGFudCB1c2UgY2FzZSBmb3IgUENJZSBob3RwbHVnIChob3Qtc3dhcHBhYmxl
+IE5WTWUgZHJpdmVzKS4NCj4gPiBTbyB3ZSBtYXkgaGF2ZSB0byBhbWVuZCBwY2lfYnJpZGdlX2Qz
+X3Bvc3NpYmxlKCkgdG8gd2hpdGVsaXN0DQo+ID4gUENJZSBwb3J0cyBmb3IgcnVudGltZSBQTSBv
+biBzcGVjaWZpYyBhcmNoZXMgb3Igc3lzdGVtcy4NCj4gDQo+IFRoYW5rcyBmb3IgYWxsIHRoaXMg
+dmVyeSB1c2VmdWwgaW5mb3JtYXRpb24hDQo+IA0KPiBNeSBpbnRlcnByZXRhdGlvbiBmb3IgdGhl
+IG1lZGlhdGVrIHNpdHVhdGlvbjoNCj4gDQo+ICAgLSBJIGFzc3VtZSB0aGlzIHBhdGNoIGxlYXZl
+cyBvciBwdXRzIHRoZSBSb290IFBvcnQgaW4gRDNjb2xkIGlmIG5vDQo+ICAgICBkb3duc3RyZWFt
+IGRldmljZXMgYXJlIHByZXNlbnQuDQo+IA0KPiAgIC0gSSBkb24ndCBzZWUgYW55IHN1cHBvcnQg
+Zm9yIFBNRSBvciBzaW1pbGFyIG1lY2hhbmlzbXMgdG8gc2lnbmFsIGENCj4gICAgIGhvdC1hZGQg
+d2hpbGUgdGhlIFJQIGlzIGluIEQzY29sZC4NCj4gDQo+ICAgLSBTbyBJIGFzc3VtZSB5b3UgZG9u
+J3Qgc3VwcG9ydCBob3QtYWRkIGlmIHRoZSBzbG90IHdhcyBlbXB0eSBhdA0KPiAgICAgYm9vdCBh
+bmQgdGhhdCdzIGFjY2VwdGFibGUgZm9yIHlvdXIgcGxhdGZvcm0uDQoNClllcywgdGhlIGhhcmR3
+YXJlIG9mIFJvb3QgUG9ydCB3aWxsIGJlIHRvdGFsbHkgcG93ZXJlZCBvZmYgYnkgZ2F0aW5nIGl0
+cw0KTVRDTU9TIGFuZCBjbG9ja3MgaWYgdGhlIHNsb3QgaXMgZW1wdHkgYXQgYm9vdCB0aW1lLiBC
+ZWNhdXNlIHdlIGFyZQ0KZm9jdXMgb24gdGhlIHNjZW5hcmlvIG9mIHBvd2VyIHNhdmluZywgaXQn
+cyBhY2NlcHRhYmxlIGlmIHdlIGRvbid0DQpzdXBwb3J0IGhvdC1hZGQuDQoNClRoYW5rcy4NCg0K
 
