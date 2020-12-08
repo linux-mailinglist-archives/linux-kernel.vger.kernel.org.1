@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6312D33A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0102D3387
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgLHUWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:22:39 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:40152 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728257AbgLHUWg (ORCPT
+        id S1729112AbgLHUUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725910AbgLHURu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:22:36 -0500
-Received: by mail-ot1-f67.google.com with SMTP id j12so16995525ota.7;
-        Tue, 08 Dec 2020 12:22:21 -0800 (PST)
+        Tue, 8 Dec 2020 15:17:50 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66305C0613D6;
+        Tue,  8 Dec 2020 12:17:15 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id w3so16382630otp.13;
+        Tue, 08 Dec 2020 12:17:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RDpBBRXCwLTGCWL5RwRoMW+K4EoFZfULoP1L0KjbLbQ=;
+        b=irYTzobUKoW2lTGMu/IWGq9PzYpzkIqG/jEAnrHZvn6pVpX2kuaedn1rquvYZ3zMW6
+         94lYdQyny/ZYxLO2vEtHun0VkZ05N0V05vQkq7+/93gidt0MrRCblN0I6BaAIUZAZVuk
+         Jt3U3xCq/QRqFv106yddgu2FhANtxChbXL1JX1LfSUOQCsbWCGu3TeCZ91Vy8o8IDKvL
+         TWpodQEg6hOkt44m4LWIVdFgq9+ZaM5+FCtlCL0NLTJMTu3pOXMe8F39i1O3QUB8NliM
+         QEvxY9NXUPIrOIVCmFcX/UYA30fz5gnmpMVz6gMwCIqefRr9VPzWFyI98zLzoTrpQQFQ
+         Mm7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IemDVxzYa7kmtRFbPpD/3Ro3fB+xQRwobtjllZYqVA8=;
-        b=unSCZt9Hbeh0O2m4owjBV4lPjxUraDAHazMVSecCmawk73OrUh3yr1aYRFcPu7DiOx
-         ++xDPsmlI9os+vsDSRiK3GV9TU2pb63n4KxQBHkV5Jd19pMA2rsThK1MHkVPnpj7VTFy
-         PQbDpAdJZisa2ecfnIUOuKjZQiT60vE/aEIjjEBfyXgvV3gZ4XRJQrvTlTF+4wil/qkD
-         tGEwUJVBhg1NvAU5uB9p2NYrnZhgWQlujhv3fkbo+fk5ycw5vHthi6JMK/a7NOuspJdr
-         mxb/WzA977plbbSvJNnp4wKI4H/mbVP0AL1tZfayUO2yLL9cziUdqoA7j/JmF7Iqyk8r
-         lE5A==
-X-Gm-Message-State: AOAM530ShR48g+q1x3Y4MS9Fib0W8fAbdVblgH+tRx72u9YloBY/jsBi
-        KidjyL8kAxgsOVapJrwf3KJ00iQQpQ==
-X-Google-Smtp-Source: ABdhPJyBmFzeTk1FwCgWYJjznHH0+Nf+LhDGfslxgPCcIMQp8Ecc+U415pK0risvZR47J6iVFCavaA==
-X-Received: by 2002:a9d:7ac8:: with SMTP id m8mr17674643otn.86.1607457071031;
-        Tue, 08 Dec 2020 11:51:11 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t5sm3628330oth.16.2020.12.08.11.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 11:51:09 -0800 (PST)
-Received: (nullmailer pid 2970461 invoked by uid 1000);
-        Tue, 08 Dec 2020 19:51:08 -0000
-Date:   Tue, 8 Dec 2020 13:51:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     kholk11@gmail.com
-Cc:     konrad.dybcio@somainline.org, linux-media@vger.kernel.org,
-        sakari.ailus@iki.fi, andrey.konovalov@linaro.org,
-        martin.botka@somainline.org, devicetree@vger.kernel.org,
-        mchehab@kernel.org, marijn.suijten@somainline.org,
-        linux-kernel@vger.kernel.org,
-        angelogioacchino.delregno@somainline.org, robh+dt@kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] media: dt-bindings: media: i2c: Add IMX300 CMOS
- sensor binding
-Message-ID: <20201208195108.GA2970383@robh.at.kernel.org>
-References: <20201127223047.2764643-1-kholk11@gmail.com>
- <20201127223047.2764643-3-kholk11@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RDpBBRXCwLTGCWL5RwRoMW+K4EoFZfULoP1L0KjbLbQ=;
+        b=IX7EdcfsInH8uFUe9ocoBSM+3ggi4qQzT492ztJmoN6TOc2rewKm3sq8OLwXitPOVS
+         fAmNRodx8AvOCOp7S6Ndif2lVBKt34yWqlr9Vmq+XmBXFj4TuBFm3yKBlWvhwqxqx1QD
+         moqGGu/qOtASOV3+TM1XpRkM5OFqbD+H+wgDD3j8dzq0JIV/SsXKavy9n3M1Nz6mR3Db
+         FlRqkGn01ZGh21XVvhr0er72eezplPI7B8fkOB53DxUIhXrlFm07VBF6s6mx4sNGdQiF
+         +AH/tRK9aFctwSw42oZBO6vogBdiEmDNrhu1KGT05XNTaV15qyP6gdSWfqeydq05JnYt
+         4GYw==
+X-Gm-Message-State: AOAM5328BMclyiCbQTvX7BSyWqFFOE9v7tOwvocWua1VqeUENYnwU15r
+        dP4Kv84OBcWZ3qyS2gg2k+829e4BkVM=
+X-Google-Smtp-Source: ABdhPJxTVQtJ6ItkrXTOaZOAp9aFVPMT53csV3Hgbgb4zzflb5HrNL1wyLpoX7m9Gyyvf6EphLsnHw==
+X-Received: by 2002:a9d:2ae3:: with SMTP id e90mr18256256otb.105.1607457118066;
+        Tue, 08 Dec 2020 11:51:58 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.51])
+        by smtp.googlemail.com with ESMTPSA id m18sm1321249ooa.24.2020.12.08.11.51.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 11:51:57 -0800 (PST)
+Subject: Re: [PATCH net-next] vrf: handle CONFIG_IPV6 not set for
+ vrf_add_mac_header_if_unset()
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        kernel test robot <lkp@intel.com>
+References: <20201208175210.8906-1-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <30116173-cc7f-f492-f290-faa24db28864@gmail.com>
+Date:   Tue, 8 Dec 2020 12:51:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127223047.2764643-3-kholk11@gmail.com>
+In-Reply-To: <20201208175210.8906-1-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 27 Nov 2020 23:30:47 +0100, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On 12/8/20 10:52 AM, Andrea Mayer wrote:
+> The vrf_add_mac_header_if_unset() is defined within a conditional
+> compilation block which depends on the CONFIG_IPV6 macro.
+> However, the vrf_add_mac_header_if_unset() needs to be called also by IPv4
+> related code and when the CONFIG_IPV6 is not set, this function is missing.
+> As a consequence, the build process stops reporting the error:
 > 
-> Add YAML device tree binding for IMX300 CMOS image sensor, and
-> the relevant MAINTAINERS entries.
+>  ERROR: implicit declaration of function 'vrf_add_mac_header_if_unset'
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> The problem is solved by *only* moving functions
+> vrf_add_mac_header_if_unset() and vrf_prepare_mac_header() out of the
+> conditional block.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 0489390882202 ("vrf: add mac header for tunneled packets when sniffer is attached")
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
 > ---
->  .../bindings/media/i2c/sony,imx300.yaml       | 112 ++++++++++++++++++
->  MAINTAINERS                                   |   7 ++
->  2 files changed, 119 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx300.yaml
+>  drivers/net/vrf.c | 110 +++++++++++++++++++++++-----------------------
+>  1 file changed, 55 insertions(+), 55 deletions(-)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+I should have caught that in my review.
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
