@@ -2,99 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2980E2D27DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A702D27E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbgLHJj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S1729003AbgLHJkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgLHJjY (ORCPT
+        with ESMTP id S1727418AbgLHJkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:39:24 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C2AC061285
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:38:56 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id f24so18324602ljk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Df6CqLv6JOagx1Y8po8wBRxgE1D965nfEA75Zeqy5oU=;
-        b=hiBfGGso9wRtqNNhBBDBX1PZJI4bsFd8GYtW1arlG6wQ4COUeIZUEbdlyvCERMJMNo
-         G3mKLQX6l8yLU9kEnfD7DSvjlpMv/k/voYdOTNP7XWZPPJ/qSQk8mxqGTTh8jNzexWF+
-         IM8Az+l2VS7WmMT17YcIg6P/3wHd3R+VH1SSg9INsPTtt3qSUiUthy5zd7hakcqWkB+O
-         qSfwe3vWou5ZGLP9SOQvoHKDMgFZGQ1O3JUjz3sj++5TS4p8K381xHRqUXYIzwKWdgKO
-         FQZL/lFJPkZkG5N/3mq019RC7s6wgK9FMFx6XuoeVpbfGEDxYEjwM070MoklamNKuEIX
-         cY5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Df6CqLv6JOagx1Y8po8wBRxgE1D965nfEA75Zeqy5oU=;
-        b=d5rs2xTTBYIGyomEzJp/RvdPeKmAEkqoilfqpQCov9kxBqkvDRgaVIqbW5AlT6gqdG
-         b6/0OvFSA+2Cr2fDqA9Ly7ocKZzijJvK6EAlqMzsh1sDVsjipzvqFkKiWAVagPrF56dh
-         P3n76pYKSFSZKhq9umTa7YsSEgyr/IFkPTnJ2nJ/h0l8LS7cIWEPGumSfwqS309I6Kd7
-         hZuj0/EzM1whIDnuBvZvB7EAmlJNyRww3Sg/WqGVqVjJgbSfFNJ7RSg62SVLrfxCpI1B
-         qIfvq7Z8xUptNQyDm7bzZNU9k4RKr3S8nfGW/mtqHWkcoWqWcl7yl/gYRnWZMbUPWaWZ
-         StaA==
-X-Gm-Message-State: AOAM532P2U4eiCnrVjb7qv3OhwgZCTMTr1Xpxeh0mBxlRG15vp93XOo1
-        cNYSrBrnSjgUE1oCbCJR6xHOCZqC5krJF1i+Jnp/vQ==
-X-Google-Smtp-Source: ABdhPJxQWX+drL6yggghfNbiTL59lvfCIOzavoQ1GoTxnH37PaUwIwrN8fyjAkWeHJ5nGm3eQq7eo4VvW5wksxdLa68=
-X-Received: by 2002:a2e:910f:: with SMTP id m15mr10801861ljg.467.1607420334616;
- Tue, 08 Dec 2020 01:38:54 -0800 (PST)
+        Tue, 8 Dec 2020 04:40:03 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E43C061793;
+        Tue,  8 Dec 2020 01:39:05 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqw9c5CMWz9sWC;
+        Tue,  8 Dec 2020 20:39:00 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607420342;
+        bh=czNbbQ+yPaSeZZk6eDCqAlYfX19e+yxxa2fyKIQj9FE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kCSSE6P0sG4BNcLiRIDzdV8pm+zzrC3j1lLYsXS9vzSIUh9H22xhoQtyecYuh0Dpy
+         OLmJ0UU2TRkYxmNW/cuj53vMmYZEIvqdcH5Vd2XkeZ2PS8A6hzd4RNBaBy8PWh1w50
+         XzYqCGJQwdbMONzNz/jCPfv7P1AAEdIACfk/UMnuqk2DjCP9vJuaWSSPsYckim4FVb
+         8NtjnDV+N6lZctNauWCYBRn+LEXlGwjFrykJkaIDauuBi0lsYjyZbdRn8Kty2FGnWn
+         dbDeQCoeeYTCq1AmIulbt2pX3UJ0vS6Wgj0KR2ChlMcQy5TLmmUPUMZ39O75NuY1PR
+         gz8RGKqKlLs7A==
+Date:   Tue, 8 Dec 2020 20:38:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20201208203859.686f83eb@canb.auug.org.au>
+In-Reply-To: <20201208202853.186ae136@canb.auug.org.au>
+References: <20201208202853.186ae136@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201203191135.21576-1-info@metux.net> <20201203191135.21576-2-info@metux.net>
- <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net>
-In-Reply-To: <0080d492-2f07-d1c6-d18c-73d4204a5d40@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 8 Dec 2020 10:38:43 +0100
-Message-ID: <CACRpkdb4R4yHcUV2KbGEC_RkU+QmH6Xg7X+qee8sEa9TURGr8A@mail.gmail.com>
-Subject: Re: Howto listen to/handle gpio state changes ? Re: [PATCH v2 2/2]
- drivers: gpio: add virtio-gpio guest driver
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/2y8xhnXUT/QOOohesLr816Y";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 9:15 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
+--Sig_/2y8xhnXUT/QOOohesLr816Y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The virtio-gpio device/host can raise a signal on line state change.
-> Kinda IRQ, but not actually running through real IRQs, instead by a
-> message running though queue. (hmm, kida MSI ? :o).
+Hi all,
+
+On Tue, 8 Dec 2020 20:28:53 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> I've tried allocating an IRQ range and calling generic_handle_irq(),
-> but then I'm getting unhanled IRQ trap.
+> Hi all,
+>=20
+> After merging the scsi-mkp tree, today's linux-next build (sparc64
+> defconfig) failed like this:
+>=20
+> drivers/mtd/nand/raw/intel-nand-controller.c:17:10: fatal error: linux/mt=
+d/nand_ecc.h: No such file or directory
+>    17 | #include <linux/mtd/nand_ecc.h>
+>       |          ^~~~~~~~~~~~~~~~~~~~~~
 
-This is Bartosz territory, but the gpio-mockup.c driver will insert
-IRQs into the system, he went and added really core stuff
-into kernel/irq to make this happen. Notice that in Kconfig
-it does:
+Clearly, it did not fail like that :-)
 
-select IRQ_SIM
+block/blk-core.c: In function 'blk_queue_enter':
+block/blk-core.c:443:18: error: 'struct request_queue' has no member named =
+'rpm_status'; did you mean 'stats'?
+    if ((pm && q->rpm_status !=3D RPM_SUSPENDED) ||
+                  ^~~~~~~~~~
+                  stats
 
-Then this is used:
-include/linux/irq_sim.h
+> Caused by commit
+>=20
+>   81a395cdc176 ("scsi: block: Do not accept any requests while suspended")
+>=20
+> # CONFIG_PM is not set
+>=20
+> I have applied the following patch:
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 8 Dec 2020 20:12:33 +1100
+> Subject: [PATCH] scsi: block: fix for "scsi: block: Do not accept any req=
+uests while suspended"
+>=20
+> Fixes: 81a395cdc176 ("scsi: block: Do not accept any requests while suspe=
+nded")
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  block/blk-core.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index a71a5c9429d6..9c9aec1382be 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -421,6 +421,18 @@ void blk_cleanup_queue(struct request_queue *q)
+>  }
+>  EXPORT_SYMBOL(blk_cleanup_queue);
+> =20
+> +#ifdef CONFIG_PM
+> +static bool rq_suspended(struct request_queue *q)
+> +{
+> +	return q->rpm_status =3D=3D RPM_SUSPENDED;
+> +}
+> +#else
+> +static bool rq_suspended(struct request_queue *q)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  /**
+>   * blk_queue_enter() - try to increase q->q_usage_counter
+>   * @q: request queue pointer
+> @@ -440,12 +452,10 @@ int blk_queue_enter(struct request_queue *q, blk_mq=
+_req_flags_t flags)
+>  			 * responsible for ensuring that that counter is
+>  			 * globally visible before the queue is unfrozen.
+>  			 */
+> -			if ((pm && q->rpm_status !=3D RPM_SUSPENDED) ||
+> -			    !blk_queue_pm_only(q)) {
+> +			if ((pm && !rq_suspended(q)) || !blk_queue_pm_only(q))
+>  				success =3D true;
+> -			} else {
+> +			else
+>  				percpu_ref_put(&q->q_usage_counter);
+> -			}
+>  		}
+>  		rcu_read_unlock();
+> =20
+> --=20
+> 2.29.2
 
-This is intended for simulating IRQs and both GPIO and IIO use it.
-I think this inserts IRQs from debugfs and I have no idea how
-flexible that is.
+--=20
+Cheers,
+Stephen Rothwell
 
-If it is suitable for what you want to do I don't know but it's
-virtio so...
+--Sig_/2y8xhnXUT/QOOohesLr816Y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Yours,
-Linus Walleij
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PSbMACgkQAVBC80lX
+0GyelAgAm9HI1fl/ZxtU9NuRsgcjpTtPv9KIVpQZHHHEnKZrMKhy5IN2IWkVG0q/
+ENIruQ7HgpCQmACkMFnBl8gArtni72UJVex7o2tuNI8AX8qX+TQiudq9WeDAK5+Z
+6HuxbhETQCp3vOc0S+BspyQOtjgk8/g/En9uCR64NjXibPkWUv7qGqNuvOmvsddO
+xcv7vZge/z9qTtO0hFBcRysiIEO8Y1X7L9jRto4PNnsn9d7/upRXx1AqflbZdQSy
+vOrcyM6tQZPnAnaK8UKel1V9cfEsPpD9Nmbv4N6eP5AYDi4OJh549DBkdw4uSZAy
+UbNwyv5u1szpLG/1sRj2u9UJNEFx9A==
+=vuOX
+-----END PGP SIGNATURE-----
+
+--Sig_/2y8xhnXUT/QOOohesLr816Y--
