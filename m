@@ -2,107 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F6C2D3449
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15A52D345B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgLHUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730247AbgLHUfE (ORCPT
+        id S1728736AbgLHUhf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 15:37:35 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:57202 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730934AbgLHUfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:35:04 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677ACC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:34:24 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id y10so6122034plr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:34:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t4kVyTen2phjdNZnXxG0GnvWjYDxrQja3gblOV7KzQo=;
-        b=Q9W6m/mnga0qeFXrySm9GSeXhfPZXhU8xKd0jpLCI+6EA9HKgA5ijVLTaXD6Rxz18I
-         QT/3/lzvy1roI1Wr0AekpjBBLuA+9bQgQOvzEhku/JmAhsbyyca5WaJgbpmD6YLwLzrk
-         pJgINC2ZZUJez+kXaDZ/gENWWIppmQm6tM4MGst3PCgFjoxN/eWIjVDi9gj/fCrkTVCq
-         yW5nfmrqxM2I9YFjW5VQR0FXuEVzbpb6Te1EQzAVdvqw5nPg07778hIU7IoiuRkPxOYV
-         uc4xO7HG5/y8g/lPUtXbtr/2gt+yIVFUb3PXbwrwavbcArwo2aeQzoS5rnIPU4LgTBjJ
-         g3yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t4kVyTen2phjdNZnXxG0GnvWjYDxrQja3gblOV7KzQo=;
-        b=uRGRRV6pROUpbDZZNW1NlSo5/WAeQg00Xq4Yh3Bpjf/Sl2JAItZN/H/Db6gi7DBl5x
-         1hmWZZIme2Mr4IK2GHvlu3IQQLTttgL5bWcjMno7XPRoKa6R916pFIONOHyOouVAy/vZ
-         lhzdVA8Cn7O7fAYs7PGU3vM+LKLrbK69iYZZsClK2F5ItIIJUpzzoELwo+RjNBF7A9at
-         47/pvae/RDzx8IzNFmp9GL7hZ6ZZ7OMZwO+i4jv54/3xphz7hqZctKoLWC8AaK0SSJDy
-         1vWjOpkWwBzANUSXpe4Dbu3eJU0GTqH/0pTyODSuJthUis8rjRpz1l8ZJNm6ax8+ouQt
-         CmfQ==
-X-Gm-Message-State: AOAM533/QmLN/XrAgONWcLG4ld8iHt/3xDxY9htTrm8JVNX5RdKBRkzm
-        Fmd6B6isuw9JbmSVhxwSJBk=
-X-Google-Smtp-Source: ABdhPJyOXiuxaJwrQFSFiZK7PE6Ls0zhqxHpxnS3jXWcCBqltdHKknoBHsNycA90alC+kG6oFwzXqw==
-X-Received: by 2002:a17:902:6506:b029:da:b472:7131 with SMTP id b6-20020a1709026506b02900dab4727131mr22684238plk.38.1607459663883;
-        Tue, 08 Dec 2020 12:34:23 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id c132sm16279pfc.119.2020.12.08.12.34.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 12:34:22 -0800 (PST)
-Date:   Wed, 9 Dec 2020 05:34:19 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Message-ID: <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-3-john.ogness@linutronix.de>
- <X8n9a2DWUFE/giyB@alley>
+        Tue, 8 Dec 2020 15:35:41 -0500
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kmjhE-0001pY-Lu; Tue, 08 Dec 2020 20:34:53 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id DAC085FEE7; Tue,  8 Dec 2020 12:34:50 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id D2F0F9FAB0;
+        Tue,  8 Dec 2020 12:34:50 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Mahesh Bandewar <maheshb@google.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net] bonding: reduce rtnl lock contention in mii monitor thread
+In-reply-to: <20201205234354.1710-1-jarod@redhat.com>
+References: <20201205234354.1710-1-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Sat, 05 Dec 2020 18:43:54 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X8n9a2DWUFE/giyB@alley>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <11897.1607459690.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Tue, 08 Dec 2020 12:34:50 -0800
+Message-ID: <11900.1607459690@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/12/04 10:12), Petr Mladek wrote:
-> On Tue 2020-12-01 21:59:40, John Ogness wrote:
-> > Currently @clear_seq access is protected by @logbuf_lock. Once
-> > @logbuf_lock is removed some other form of synchronization will be
-> > required. Change the type of @clear_seq to atomic64_t to provide the
-> > synchronization.
-> > 
-> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> > index fc5e3a7d6d89..e9018c4e1b66 100644
-> > --- a/kernel/printk/printk.c
-> > +++ b/kernel/printk/printk.c
-> > @@ -3412,7 +3418,7 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
-> >   */
-> >  void kmsg_dump_rewind_nolock(struct kmsg_dumper *dumper)
-> >  {
-> > -	dumper->cur_seq = clear_seq;
-> > +	dumper->cur_seq = atomic64_read(&clear_seq);
+Jarod Wilson <jarod@redhat.com> wrote:
+
+>I'm seeing a system get stuck unable to bring a downed interface back up
+>when it's got an updelay value set, behavior which ceased when logging
+>spew was removed from bond_miimon_inspect(). I'm monitoring logs on this
+>system over another network connection, and it seems that the act of
+>spewing logs at all there increases rtnl lock contention, because
+>instrumented code showed bond_mii_monitor() never able to succeed in it's
+>attempts to call rtnl_trylock() to actually commit link state changes,
+>leaving the downed link stuck in BOND_LINK_DOWN. The system in question
+>appears to be fine with the log spew being moved to
+>bond_commit_link_state(), which is called after the successful
+>rtnl_trylock(). I'm actually wondering if perhaps we ultimately need/want
+>some bond-specific lock here to prevent racing with bond_close() instead
+>of using rtnl, but this shift of the output appears to work. I believe
+>this started happening when de77ecd4ef02 ("bonding: improve link-status
+>update in mii-monitoring") went in, but I'm not 100% on that.
+
+	We use RTNL not to avoid deadlock with bonding itself, but
+because the "commit" side undertakes actions which require RTNL, e.g.,
+various events will eventually call netdev_lower_state_changed.
+
+	However, the RTNL acquisition is a trylock to avoid the deadlock
+with bond_close.  Moving that out of line here (e.g., putting the commit
+into another work queue event or the like) has the same problem, in that
+bond_close needs to wait for all of the work queue events to finish, and
+it holds RTNL.
+
+	Also, a dim memory says that the various notification messages
+were mostly placed in the "inspect" phase and not the "commit" phase to
+avoid doing printk-like activities with RTNL held.  As a general
+principle, I don't think we want to add more verbiage under RTNL.
+
+>The addition of a case BOND_LINK_BACK in bond_miimon_inspect() is somewhat
+>separate from the fix for the actual hang, but it eliminates a constant
+>"invalid new link 3 on slave" message seen related to this issue, and it's
+>not actually an invalid state here, so we shouldn't be reporting it as an
+>error.
+
+	Do you mean bond_miimon_commit here and not bond_miimon_inspect
+(which already has a case for BOND_LINK_BACK)?
+
+	In principle, bond_miimon_commit should not see _BACK or _FAIL
+state as a new link state, because those states should be managed at the
+bond_miimon_inspect level (as they are the result of updelay and
+downdelay).  These states should not be "committed" in the sense of
+causing notifications or doing actions that require RTNL.
+
+	My recollection is that the "invalid new link" messages were the
+result of a bug in de77ecd4ef02, which was fixed in 1899bb325149
+("bonding: fix state transition issue in link monitoring"), but maybe
+the RTNL problem here induces that in some other fashion.
+
+	Either way, I believe this message is correct as-is.
+
+	-J
+
+>CC: Mahesh Bandewar <maheshb@google.com>
+>CC: Jay Vosburgh <j.vosburgh@gmail.com>
+>CC: Veaceslav Falico <vfalico@gmail.com>
+>CC: Andy Gospodarek <andy@greyhouse.net>
+>CC: "David S. Miller" <davem@davemloft.net>
+>CC: Jakub Kicinski <kuba@kernel.org>
+>CC: Thomas Davis <tadavis@lbl.gov>
+>CC: netdev@vger.kernel.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/bonding/bond_main.c | 26 ++++++----------------
+> include/net/bonding.h           | 38 +++++++++++++++++++++++++++++++++
+> 2 files changed, 44 insertions(+), 20 deletions(-)
+>
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>index 47afc5938c26..cdb6c64f16b6 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -2292,23 +2292,13 @@ static int bond_miimon_inspect(struct bonding *bond)
+> 			bond_propose_link_state(slave, BOND_LINK_FAIL);
+> 			commit++;
+> 			slave->delay = bond->params.downdelay;
+>-			if (slave->delay) {
+>-				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
+>-					   (BOND_MODE(bond) ==
+>-					    BOND_MODE_ACTIVEBACKUP) ?
+>-					    (bond_is_active_slave(slave) ?
+>-					     "active " : "backup ") : "",
+>-					   bond->params.downdelay * bond->params.miimon);
+>-			}
+>+
+> 			fallthrough;
+> 		case BOND_LINK_FAIL:
+> 			if (link_state) {
+> 				/* recovered before downdelay expired */
+> 				bond_propose_link_state(slave, BOND_LINK_UP);
+> 				slave->last_link_up = jiffies;
+>-				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
+>-					   (bond->params.downdelay - slave->delay) *
+>-					   bond->params.miimon);
+> 				commit++;
+> 				continue;
+> 			}
+>@@ -2330,19 +2320,10 @@ static int bond_miimon_inspect(struct bonding *bond)
+> 			commit++;
+> 			slave->delay = bond->params.updelay;
 > 
-> Sigh, atomic64_read() uses a spin lock in the generic implementation
-> that is used on some architectures.
+>-			if (slave->delay) {
+>-				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
+>-					   ignore_updelay ? 0 :
+>-					   bond->params.updelay *
+>-					   bond->params.miimon);
+>-			}
+> 			fallthrough;
+> 		case BOND_LINK_BACK:
+> 			if (!link_state) {
+> 				bond_propose_link_state(slave, BOND_LINK_DOWN);
+>-				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
+>-					   (bond->params.updelay - slave->delay) *
+>-					   bond->params.miimon);
+> 				commit++;
+> 				continue;
+> 			}
+>@@ -2456,6 +2437,11 @@ static void bond_miimon_commit(struct bonding *bond)
+> 
+> 			continue;
+> 
+>+		case BOND_LINK_BACK:
+>+			bond_propose_link_state(slave, BOND_LINK_NOCHANGE);
+>+
+>+			continue;
+>+
+> 		default:
+> 			slave_err(bond->dev, slave->dev, "invalid new link %d on slave\n",
+> 				  slave->link_new_state);
+>diff --git a/include/net/bonding.h b/include/net/bonding.h
+>index adc3da776970..6a09de9a3f03 100644
+>--- a/include/net/bonding.h
+>+++ b/include/net/bonding.h
+>@@ -558,10 +558,48 @@ static inline void bond_propose_link_state(struct slave *slave, int state)
+> 
+> static inline void bond_commit_link_state(struct slave *slave, bool notify)
+> {
+>+	struct bonding *bond = slave->bond;
+>+
+> 	if (slave->link_new_state == BOND_LINK_NOCHANGE)
+> 		return;
+> 
+>+	if (slave->link == slave->link_new_state)
+>+		return;
+>+
+> 	slave->link = slave->link_new_state;
+>+
+>+	switch(slave->link) {
+>+	case BOND_LINK_UP:
+>+		slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
+>+			   (bond->params.downdelay - slave->delay) *
+>+			   bond->params.miimon);
+>+		break;
+>+
+>+	case BOND_LINK_FAIL:
+>+		if (slave->delay) {
+>+			slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
+>+				   (BOND_MODE(bond) ==
+>+				    BOND_MODE_ACTIVEBACKUP) ?
+>+				    (bond_is_active_slave(slave) ?
+>+				     "active " : "backup ") : "",
+>+				   bond->params.downdelay * bond->params.miimon);
+>+		}
+>+		break;
+>+
+>+	case BOND_LINK_DOWN:
+>+		slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
+>+			   (bond->params.updelay - slave->delay) *
+>+			   bond->params.miimon);
+>+		break;
+>+
+>+	case BOND_LINK_BACK:
+>+		if (slave->delay) {
+>+			slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
+>+				   bond->params.updelay * bond->params.miimon);
+>+		}
+>+		break;
+>+	}
+>+
+> 	if (notify) {
+> 		bond_queue_slave_event(slave);
+> 		bond_lower_state_changed(slave);
+>-- 
+>2.28.0
+>
 
-Oh... So on those archs prb is not lockless in fact, it actually
-takes the spin_lock each time we read the descriptor state?
-
-	desc_read()
-	  atomic_long_read(state_var)
-	    atomic64_read()
-	      raw_spin_lock_irqsave(lock, flags)
-	        << NMI panic >>
-
-Am I missing something?
-
-	-ss
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
