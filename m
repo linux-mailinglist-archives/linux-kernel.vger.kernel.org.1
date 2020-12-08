@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73782D2A34
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 795FA2D2A41
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgLHMCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:02:52 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:53094 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgLHMCw (ORCPT
+        id S1729258AbgLHMEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:04:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgLHMEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:02:52 -0500
-Received: by mail-il1-f200.google.com with SMTP id h4so13767336ilq.19
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:02:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ptLqDQ6cimNz4gFNOQpJaAWoh4l9vnK6+rwqXMdFNUM=;
-        b=rOl08DvymQiogTFXB3ybo+ix5Dvm0mu2cwFRzyBVSIsU2jQaCI70AXjR9HGPIl5DA7
-         zmIPxe+S5ErvBgJfa+zoULuNp2vg7wurh0Q7Z2Xd0whtwigJEEa3gh3FQaWfs5ZerzDA
-         b4Qkc7VQoptG2ue8sd4s/9ADvioRufaXsWjAY9Zbe4O1SyLkXpSILl8Rw5s4324dSUSH
-         gU1nU4fmHSpJKX0VThgMVU9jlHtex5WuZZfG7vocM/uPcQ6YESkA75hlylhJNxcQOyCZ
-         YJoh4gVZz6nTLucdsUo4cF4Jy1h9F9bzhkGooquKXisAyTOLMXv9Kxl1/rrUF3TT5yET
-         5VIQ==
-X-Gm-Message-State: AOAM533tllKVNvhH7jwpEgepM9lK/UkqzlvA0Tppl3Qd3PVZJvshiViH
-        PNg84GeerGy5EEaWdXeVHG3dgWHHfVZhU90rk/SbIhnZWFec
-X-Google-Smtp-Source: ABdhPJxGsYHsqnMHtduKr+6+ilPgQEtkjeZWRKy+Rznj6g2RNN7KdCMNnbGX8YMsjaOulGn4sGFV0IkOzspizk95l7yOWztrWiHO
+        Tue, 8 Dec 2020 07:04:38 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956D8C061794;
+        Tue,  8 Dec 2020 04:03:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=nZaYsLuvHfKwLulf6ZtVf9YzHfwxVIDXtVk5mkADo4s=; b=HBN6ollIgYTtUkmnWwRMk/0L+
+        K7bolROOxlrR5DVVnxJjOySfuVimK/ry7Si0kH9VN/4WnEtbBRKsJnAM1P3BIGXTJiAVC1C23P4vu
+        KvFKcRjlq9nd+SatFfZITIDf0/ENJrNh1fPC3JICQZ8d2XiWSf5yAEKbtkidPuLA4NJfYpmL61spV
+        chtKzpHKaHMpfUfFuPDqeBGyWvjw68Hs+c9WcgZ2vQ2p7yokPkaKpe2QY2qtGG1oZJyoQBZeQf/Yk
+        dqPNZx7skGr6L2Hz49jrEcTZ9Ms09sikeLLMOBQ9E3KQ4MZS1jp3dy+y+lnNsa7apfHMcWLW8GIZi
+        Kl5oFwQeg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41326)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kmbim-0000ey-3T; Tue, 08 Dec 2020 12:03:56 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kmbil-0005aQ-Bc; Tue, 08 Dec 2020 12:03:55 +0000
+Date:   Tue, 8 Dec 2020 12:03:55 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the arm tree
+Message-ID: <20201208120355.GQ1551@shell.armlinux.org.uk>
+References: <20201208223919.18a80092@canb.auug.org.au>
+ <CAMj1kXHmQV+CCMS7HAnZP-4U=j3jSq83tvX+2O9ke8biJUcCvg@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:8d:: with SMTP id h13mr24559903iob.163.1607428931082;
- Tue, 08 Dec 2020 04:02:11 -0800 (PST)
-Date:   Tue, 08 Dec 2020 04:02:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000705ff605b5f2b656@google.com>
-Subject: BUG: unable to handle kernel paging request in smc_nl_handle_smcr_dev
-From:   syzbot <syzbot+600fef7c414ee7e2d71b@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kgraul@linux.ibm.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHmQV+CCMS7HAnZP-4U=j3jSq83tvX+2O9ke8biJUcCvg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Dec 08, 2020 at 01:02:05PM +0100, Ard Biesheuvel wrote:
+> On Tue, 8 Dec 2020 at 12:39, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > In commit
+> >
+> >   4812d516af55 ("ARM: 9027/1: head.S: explicitly map DT even if it lives in the first physical section")
+> >
+> > Fixes tag
+> >
+> >   Fixes: 149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear region")
+> >
+> > has these problem(s):
+> >
+> >   - Target SHA1 does not exist
+> >
+> > Maybe you meant
+> >
+> > Fixes: 7a1be318f579 ("ARM: 9012/1: move device tree mapping out of linear region")
+> >
+> 
+> Oops, my bad.
+> 
+> I think we can drop the Fixes tag entirely - I added it to the patch
+> when I sent it to the mailing list because it fixes a patch that had
+> already been queued up by Russell at that point. However, I don't
+> think it is that important to capture this relation in the future,
+> given that they will all end up in the same mainline -rc
 
-syzbot found the following issue on:
+I've already dropped it and fixed the SHA1 reference in the commit
+message.
 
-HEAD commit:    b1f7b098 Merge branch 's390-qeth-next'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=164d246b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2ac2dabe250b3a58
-dashboard link: https://syzkaller.appspot.com/bug?extid=600fef7c414ee7e2d71b
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+600fef7c414ee7e2d71b@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffffffffffffff84
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD b08f067 P4D b08f067 PUD b091067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 21334 Comm: syz-executor.1 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:smc_set_pci_values net/smc/smc_core.h:396 [inline]
-RIP: 0010:smc_nl_handle_smcr_dev.isra.0+0x4bd/0x11b0 net/smc/smc_ib.c:422
-Code: 00 00 00 fc ff df 48 8d 7b 84 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 59 0c 00 00 <0f> b7 43 84 48 8d 7b 86 48 89 fa 48 c1 ea 03 66 89 84 24 ee 00 00
-RSP: 0018:ffffc900018b7228 EFLAGS: 00010246
-RAX: 0000000000000005 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffffffff84
-RBP: ffffffff8ccc6120 R08: 0000000000000001 R09: ffffc900018b7310
-R10: fffff52000316e65 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88802f52d540 R14: dffffc0000000000 R15: ffff888062412014
-FS:  00007f9ce0405700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffff84 CR3: 0000000013c46000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- smc_nl_prep_smcr_dev net/smc/smc_ib.c:469 [inline]
- smcr_nl_get_device+0xdf/0x1f0 net/smc/smc_ib.c:481
- genl_lock_dumpit+0x60/0x90 net/netlink/genetlink.c:623
- netlink_dump+0x4b9/0xb70 net/netlink/af_netlink.c:2268
- __netlink_dump_start+0x642/0x900 net/netlink/af_netlink.c:2373
- genl_family_rcv_msg_dumpit+0x2af/0x310 net/netlink/genetlink.c:686
- genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
- genl_rcv_msg+0x434/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2331
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2385
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2418
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e0f9
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f9ce0404c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e0f9
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffda3a6b65f R14: 00007f9ce04059c0 R15: 000000000119bf8c
-Modules linked in:
-CR2: ffffffffffffff84
----[ end trace 7323b30ca37a03b9 ]---
-RIP: 0010:smc_set_pci_values net/smc/smc_core.h:396 [inline]
-RIP: 0010:smc_nl_handle_smcr_dev.isra.0+0x4bd/0x11b0 net/smc/smc_ib.c:422
-Code: 00 00 00 fc ff df 48 8d 7b 84 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 01 38 d0 7c 08 84 d2 0f 85 59 0c 00 00 <0f> b7 43 84 48 8d 7b 86 48 89 fa 48 c1 ea 03 66 89 84 24 ee 00 00
-RSP: 0018:ffffc900018b7228 EFLAGS: 00010246
-RAX: 0000000000000005 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffffffff84
-RBP: ffffffff8ccc6120 R08: 0000000000000001 R09: ffffc900018b7310
-R10: fffff52000316e65 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88802f52d540 R14: dffffc0000000000 R15: ffff888062412014
-FS:  00007f9ce0405700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffff84 CR3: 0000000013c46000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
