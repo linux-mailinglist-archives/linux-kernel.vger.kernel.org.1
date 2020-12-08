@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDC42D29DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A522D29E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgLHLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:40:11 -0500
-Received: from ozlabs.org ([203.11.71.1]:34673 "EHLO ozlabs.org"
+        id S1729205AbgLHLlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:41:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:47738 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727839AbgLHLkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:40:11 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqyrc2Y8kz9sWR;
-        Tue,  8 Dec 2020 22:39:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607427568;
-        bh=iwmK9bHuxz5cOxlpg1CFMwvGpAin/JFOj0dBjaqX478=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rhvP1HWpUXVquoO2E54sJ5Dwgem7qpfnVuCevdR9gUDQ/0RY3upGzkNGjkpTAP845
-         4rscjCZwKdgXauhWOStB0tYXE73SMdKw4kPCkRcB2MFCHPTZ3r0KyUqot/ZEA3BsyJ
-         X2jO9k07U5/pcoZgYLYvyUo2nsKuTNrbLHMa0vHaXUXyhfS5u/re/BR1CHAq+rhVKF
-         xiBQDU3Cm5M94D0yxWKAP0N/KYOUwFg+UCevjv4L+DwN8qPGXLvh1IHZd5mxmusyOd
-         W+e75p/nEf5lmKzdYz9dx4i8KjjpGezo9nryZHTaUehXa84zA57NAqssd2usq/ONsP
-         2GSOVOzVbPcfw==
-Date:   Tue, 8 Dec 2020 22:39:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the arm tree
-Message-ID: <20201208223919.18a80092@canb.auug.org.au>
+        id S1729078AbgLHLlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 06:41:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82A201FB;
+        Tue,  8 Dec 2020 03:40:30 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBDF03F68F;
+        Tue,  8 Dec 2020 03:40:28 -0800 (PST)
+Date:   Tue, 8 Dec 2020 11:40:23 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org, svarbanov@mm-sol.com,
+        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, devicetree@vger.kernel.org,
+        truong@codeaurora.org
+Subject: Re: [PATCH v5 0/5] Add PCIe support for SM8250 SoC
+Message-ID: <20201208114023.GA31860@e121166-lin.cambridge.arm.com>
+References: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
+ <20201208094712.GA30430@e121166-lin.cambridge.arm.com>
+ <20201208104557.GA8081@work>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g1ARew/zmjZfcqbR+owvSOC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208104557.GA8081@work>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g1ARew/zmjZfcqbR+owvSOC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 08, 2020 at 04:15:57PM +0530, Manivannan Sadhasivam wrote:
+> Hi Lorenzo,
+> 
+> On Tue, Dec 08, 2020 at 09:47:12AM +0000, Lorenzo Pieralisi wrote:
+> > On Tue, Oct 27, 2020 at 10:30:28PM +0530, Manivannan Sadhasivam wrote:
+> > > Hello,
+> > > 
+> > > This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
+> > > There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
+> > > controller and PHYs are mostly comaptible with the ones found on SDM845
+> > > SoC, hence the old drivers are modified to add the support.
+> > > 
+> > > This series has been tested on RB5 board with QCA6391 chipset connected
+> > > onboard.
+> > 
+> > Hi,
+> > 
+> > I would be merging this series, I understand patch {2) was already
+> > taken by Vinod - should I take {1,3,4,5} via the pci tree ?
+> > 
+> 
+> Vinod merged patches 1/5 and 2/5 as they belong to phy subsystem. You
+> can take the rest of the patches via pci tree.
 
-Hi all,
+Would you mind rebasing them on top of my pci/dwc branch (with Bjorn's
+tags) and resend them, I will apply them then.
 
-In commit
-
-  4812d516af55 ("ARM: 9027/1: head.S: explicitly map DT even if it lives in=
- the first physical section")
-
-Fixes tag
-
-  Fixes: 149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear =
-region")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 7a1be318f579 ("ARM: 9012/1: move device tree mapping out of linear r=
-egion")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/g1ARew/zmjZfcqbR+owvSOC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PZecACgkQAVBC80lX
-0GySWwf9FXh32KYLrb0Ba+zOmQVUSBaDBYd4uEpUlc7e3LfJBoIwZzdz2SwpA3jo
-nyhUxU005aFD0H/QTji8A78yEru3cSMqjccQo7Toh1ZBAqqCy2sIyd78FoZ22jb3
-/CZV3wVjVvV8PMxxc+2PAObXcq6b0XoG0mjn+n0eZeE+y+pt7w6kU4V1gyNAX8kq
-NkmKNXlPHzsbo4rh0AFV15T70DO95uZkJv0VvS5wx3AMHRgDe2yJ/EoJSEaA7Ayp
-4s3l/jyCZJxQgKt6VGZgG9llv3cvVQawonzB85nMg/heUeX5G3AYqcPSaClMXErl
-i3GzAqGadGIuz78ifw2S2kEYulDPXA==
-=Sk42
------END PGP SIGNATURE-----
-
---Sig_/g1ARew/zmjZfcqbR+owvSOC--
+Thanks,
+Lorenzo
