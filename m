@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F092D319B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78A02D319E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbgLHSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730813AbgLHSAo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:00:44 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28B4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:59:57 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id p6so7362360plr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:59:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vC+DtXn0h/YwH+m7lTrhoayKAF6AvMOlxSoaUs6f0Qw=;
-        b=YXOIjYUsT5Q8iO3uJgW6RGchkwNRc3yrbF4s3UOEuRdkb/oboZ2dtsGYRnGVvrVZ6G
-         jWGEkGOqFRKVhpvOWMr1GedqB4CUmBTkoTrLB9P5QtkCWrwmh+pmwNMMCj1Ir0gj3ly2
-         0pAPIcXU+1XDt4lpR8zybuSSuIHAKyfUx7HkvtKX6ESuz2YeTczfaRbj1x6Mzs/MiiO2
-         fA7jg6hA8Nqw9ln2HSWoLZdxN4lukDyweQkhPssJgBLv73SNNnBVUXmrSe6OTqB2Wm2B
-         Usw4dlrZVkPVWeO/eFSLtH5id60nrHq8IRZLbUvT7Ze1aRpyrCj6eyxkbMzF89RtBqzG
-         1jTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vC+DtXn0h/YwH+m7lTrhoayKAF6AvMOlxSoaUs6f0Qw=;
-        b=sJ28cKiXl+wafKdVVGDC9dP5j/Bls4pRAS2q2aRm9sxrPVvjrqj6v2wfkAI/sPJLxG
-         /1jm9/KwjeURfwaTPR0vZj6CmdYzRienn9VQK+PgA4YUgXSOEEelh/7cw8rlnOvF2zGU
-         rFFuibtsUIEfV6B1W1zTdHMewIj/uRFtOstYK2QtmIpvhzJHHpQONVoqZKpXaSIuFSuH
-         SnFj2uFMq5DXs6XXa7V/WMvcUtcK2uDO0ZsZU1eyxiSOGAVnH1sNUrUtmJq7lXNbE2p/
-         ts19sXkkNDKA1npq2BCdm/NM5UmMlPDpPtHe7fs8pXVQRGauejw5KLJLWHfgaiPWSjes
-         eLeg==
-X-Gm-Message-State: AOAM533y3Dj5boPuVMIZsONZflogS7lLLPX0Qbd6DF90UvpEe+k/1Rea
-        VrZLnLo12PWSd452vsypjqz0N6vyIVxvDI9uG1uIEA==
-X-Google-Smtp-Source: ABdhPJyQp0/wPv19OW0732e/Fr/ER7bdM1OF8dikRA7UvJl9auQoPnqlNTrQKsD9/y2ExMecMuhrUG47rNfhzR+fCO8=
-X-Received: by 2002:a17:902:8541:b029:da:fcd1:7bf with SMTP id
- d1-20020a1709028541b02900dafcd107bfmr9196778plo.56.1607450397283; Tue, 08 Dec
- 2020 09:59:57 -0800 (PST)
+        id S1730849AbgLHSBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:01:33 -0500
+Received: from mga17.intel.com ([192.55.52.151]:43924 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728633AbgLHSBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 13:01:33 -0500
+IronPort-SDR: NhaJ2NeJ0vXRWo+v1Dzc6hJ7yGezUiaYZWTsmAymsW5FF6qULuMpMGyRIBo45x1ogTtkIJIMrB
+ B3ZXJDArA8IQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153749933"
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="153749933"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 09:59:46 -0800
+IronPort-SDR: Ic1dU1pc5nJGZ/IrOU1CJKLfPu25Q93BX+BmxP1GDNI2LmP9lWhwG7gpmypHnT+CphH1N5AFkr
+ 27iEonVWxjAw==
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="552315963"
+Received: from jcboyle-mobl1.amr.corp.intel.com (HELO [10.209.152.139]) ([10.209.152.139])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 09:59:45 -0800
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium
+ 140
+To:     Chris Chiu <chiu@endlessos.org>, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org
+References: <20201208060414.27646-1-chiu@endlessos.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <91469f2c-01b8-ec7d-8d78-497c66dcde96@linux.intel.com>
+Date:   Tue, 8 Dec 2020 09:12:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201203202737.7c4wrifqafszyd5y@google.com> <20201208054646.2913063-1-maskray@google.com>
-In-Reply-To: <20201208054646.2913063-1-maskray@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 8 Dec 2020 09:59:46 -0800
-Message-ID: <CAKwvOdmuwOPzZZHMh58syoorc4ED5-6_tbxCqhL0Gi65mq58-A@mail.gmail.com>
-Subject: Re: [PATCH v2] firmware_loader: Align .builtin_fw to 8
-To:     Fangrui Song <maskray@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201208060414.27646-1-chiu@endlessos.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 9:46 PM Fangrui Song <maskray@google.com> wrote:
->
-> arm64 references the start address of .builtin_fw (__start_builtin_fw)
-> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
-> relocations. The compiler is allowed to emit the
-> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
-> include/linux/firmware.h is 8-byte aligned.
->
-> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
-> multiple of 8, which may not be the case if .builtin_fw is empty.
-> Unconditionally align .builtin_fw to fix the linker error. 32-bit
-> architectures could use ALIGN(4) but that would add unnecessary
-> complexity, so just use ALIGN(8).
->
-> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> ---
-> Change in v2:
-> * Use output section alignment instead of inappropriate ALIGN_FUNCTION()
 
-Cool, this approach is what we already use for other global arrays;
-such as __tracepoints_ptrs.  (I wonder why we don't use 4B alignment
-for 32b...but 8 is a multiple of 4, so should be fine for 32b
-targets).
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+On 12/8/20 12:04 AM, Chris Chiu wrote:
+> Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
+> thus the heaset functions are not working.
+> 
+> Add quirk for this model to select the correct input map, jack-detect
+> options and channel map to enable jack sensing and headset microphone.
+> This device uses IN1 for its internal MIC and JD2 for jack-detect.
+> 
+> Signed-off-by: Chris Chiu <chiu@endlessos.org>
 
-Build+Boot tested aarch64 and x86_64 with ld.lld and ld.bfd. Did not
-test loading builtin firmware.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
->  include/asm-generic/vmlinux.lds.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index b2b3d81b1535..b97c628ad91f 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -459,7 +459,7 @@
->         }                                                               \
->                                                                         \
->         /* Built-in firmware blobs */                                   \
-> -       .builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {      \
-> +       .builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {    \
->                 __start_builtin_fw = .;                                 \
->                 KEEP(*(.builtin_fw))                                    \
->                 __end_builtin_fw = .;                                   \
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+>   sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index f790514a147d..cd6f7caa43c8 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -421,6 +421,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>   					BYT_RT5640_SSP0_AIF1 |
+>   					BYT_RT5640_MCLK_EN),
+>   	},
+> +	{
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 140 CESIUM"),
+> +		},
+> +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+> +					BYT_RT5640_JD_SRC_JD2_IN4N |
+> +					BYT_RT5640_OVCD_TH_2000UA |
+> +					BYT_RT5640_OVCD_SF_0P75 |
+> +					BYT_RT5640_SSP0_AIF1 |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>   	{
+>   		.matches = {
+>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+> 
