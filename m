@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F6C2D3470
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D3A2D3474
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgLHUlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
+        id S1729481AbgLHUne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728064AbgLHUls (ORCPT
+        with ESMTP id S1728516AbgLHUne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:41:48 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAADC061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:41:08 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id t7so15027737pfh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:41:08 -0800 (PST)
+        Tue, 8 Dec 2020 15:43:34 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2F5C061793;
+        Tue,  8 Dec 2020 12:42:53 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id m12so81030lfo.7;
+        Tue, 08 Dec 2020 12:42:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yIIDS5UbHS+iP04X9nwjtge3+yYkdmmw5G2DdkBGrYg=;
-        b=IVkX5Ca68BCKcdF2xOkQaKNZb1DQ8/6Z6QNaWS1Uq8AEKzm/gAAsk/yGJ+ee2LV99y
-         HpjaYuc8GNVPiaO4QpZTVlts1t17P3M1LJ2DYu5lW/yXfOYfXRp3tfppkOCpAplRqN8I
-         r1tPZx1xvaU5cB76H0VfDTIDF889g469HO1ssh2Mttt6XKRoG4eCefn/YdNAgwWwqfeT
-         O4gHqZBaNgf1uqxs5iKVEn1zSMAjxmVo5iLALFSkBim+58yk5TUhwNypIxfibqBGy9+3
-         fQuDOHw8l/lxThSVFhEgoV2Sb8thNrsKrloY4ePA31BOt4obNo8yC9ZQScECRqOzsKpY
-         Bb5Q==
+        bh=zPEezVzK5/kLNT18lfW/dfChG0nQyJZzaqQoMAH4Ojw=;
+        b=QQB6xX7ZMHg5p+Sz6Bt9MksNDS64p3I6yufe4wI9yXPB/gVrO3fXujcKeeSB9vuEWp
+         3a23umzaJgQ7JDO9BB/hOohKVSl1sHLJFD7X2ep22r/iO4cjIag+ZzLnqcKcoJLlYM7P
+         PWQmJZRCIv4T4OkshRETA/Bfm6Wn9tRDmPwuSGgKVgxWzTb3G6hXpIkqKxAq/7LInnqj
+         8FrUOY274w9bytUgQZYAXOIMIS8YfUivRINu6yrbLQ+czfZb83CQZsgLu6RP/C3o7fg4
+         0Tp8z19OXY/ABUelr4Nx50muS+9ok8KuARMWdmXDpe5/TzKYoF7jsgS7p8XPBEGIfidC
+         b2pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yIIDS5UbHS+iP04X9nwjtge3+yYkdmmw5G2DdkBGrYg=;
-        b=hzkxDTQsryPwc5TUWy0Un7x0Q4LIrOrum5ta1W9WOEmw+goQhRlfDElRUw8JcwK3Oc
-         CdVUxk8HbXm1svRsHnNFvHO+A37EJRDuWa/2O1HgckErjIQAQ03m+MMUqTcGv+QpySFi
-         RZmIb7JJRNYS5k5Inj89/Yvntchlz2f/lqs2q6h3vRCYr9sQYTCtA1x7bh03rvsCqmQ3
-         Mcsp5nfQ/5MVAxQZYC6x1xrA8yHsrD0XlSSqAz6zLGVLEj3GgAFuBYMpRT1oMthS+APh
-         4PHJydYuy4HY/v5+0nybtyYiJ7zXF577F9aXOmH+2EvIcPpAonX1n3KENUjHAeTF0yBl
-         tjew==
-X-Gm-Message-State: AOAM530fHBS0SDCFoNsvV6VdF4Scnf/X6aA5X+Q7kB40NjHB5j/qyS7m
-        ocvSN8CXpE7wnu9Q7NMutXRzlRif/69ihPU8eogSkzhoEhWwEQ==
-X-Google-Smtp-Source: ABdhPJwcshoPsolxrwGrcprrx9t7RVw9VxrK2Lo5vn2Ta5pum1EyTJxBSNXZtrI+Y62Yt9JecxgZ4MO4aWMdSO/IDgc=
-X-Received: by 2002:a17:90b:16cd:: with SMTP id iy13mr5907977pjb.182.1607460067950;
- Tue, 08 Dec 2020 12:41:07 -0800 (PST)
+        bh=zPEezVzK5/kLNT18lfW/dfChG0nQyJZzaqQoMAH4Ojw=;
+        b=ewSN5i4Mv5AJY+uJpSiaqcFSxZIquKEsZw+l00Vtt8DJxNGnMW7B7Q1TbgnF2oLi1N
+         zfT8NVHxQ23ZgcvsUB/M32h1FreG6GZPGc1HdKoiqpgYUAgxUt4vL2qa1DzSe1nOwW8Z
+         fHkF58kfsQ4qXANyiOXMlNK3nQo5lEqXUlpfuuHPjTNJz3MQ/43a8KU0iVQRp6IOk9gQ
+         qkOQIgTbx500TGy9k556xFShe6ZX0cftBlgWkw24ag1uNaJRWMGUBBODpcSMySX9szYM
+         gb7Dc7j4BKczNKXmX8EDadWfajcmb+39Gfr9I2A8x/f7hERe+J1VXjkCrRxhfNcc91Zy
+         y0Aw==
+X-Gm-Message-State: AOAM533C56g5R/wNzy3r0qfzctA46qCNqJSmNG8QMvoYWyUTt2FDY4Ai
+        TeNxjKtDRk8l4ewIGVWOS8ougiwsfVcliEJG+STij9s6TkU=
+X-Google-Smtp-Source: ABdhPJxV3qjQHB6wUEKu9rWrbuLtX9hIHxwZYN45a2xlKjN3Iv09O/zEhJ+iIFYHbTAk33M7azJfMCbvOBT9Bh7Cz4k=
+X-Received: by 2002:a19:950:: with SMTP id 77mr6586265lfj.133.1607460172142;
+ Tue, 08 Dec 2020 12:42:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201208191955.2466057-1-tstrudel@google.com> <X8/ZM7Vm/aD9FdlG@kroah.com>
-In-Reply-To: <X8/ZM7Vm/aD9FdlG@kroah.com>
-From:   Thierry Strudel <tstrudel@google.com>
-Date:   Tue, 8 Dec 2020 12:40:56 -0800
-Message-ID: <CAMGPabUpDKsVHDtVi=Nyir2Si8cgUCvyeX5OcGyKri+6NWu2uw@mail.gmail.com>
-Subject: Re: [PATCH v4] PM: domains: create debugfs nodes when adding power domains
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org> <8a35ff7132f95e24f6d9501e1bec644854fc5078.1605896059.git.gustavoars@kernel.org>
+In-Reply-To: <8a35ff7132f95e24f6d9501e1bec644854fc5078.1605896059.git.gustavoars@kernel.org>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 8 Dec 2020 14:42:40 -0600
+Message-ID: <CAH2r5mtS-A+0N1byiXT3GYHEAkvyZByBdr-G_+ZDGhcfs40qrQ@mail.gmail.com>
+Subject: Re: [PATCH 003/141] cifs: Fix fall-through warnings for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry about that.
-Thanks for the reviews
+Merged into cifs-2.6.git for-next
 
-On Tue, Dec 8, 2020 at 11:49 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Let me know if you see any other cleanup/misc cifs.ko patches that may
+have gotten missed ...
+
+On Fri, Nov 20, 2020 at 12:25 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
 >
-> On Tue, Dec 08, 2020 at 11:19:55AM -0800, Thierry Strudel wrote:
-> > debugfs nodes were created in genpd_debug_init alled in late_initcall
-> > preventing power domains registered though loadable modules to have
-> > a debugfs entry.
-> >
-> > Create/remove debugfs nodes when the power domain is added/removed
-> > to/from the internal gpd_list.
-> >
-> > Signed-off-by: Thierry Strudel <tstrudel@google.com>
-> > Change-Id: I8a2e0616746afe2a6bbd9c24bc3a0eaa84725a75
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+> warnings by explicitly adding multiple break/goto statements instead of
+> just letting the code fall through to the next case.
 >
-> You don't need this, checkpatch.pl should have warned you :)
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  fs/cifs/inode.c     | 1 +
+>  fs/cifs/sess.c      | 1 +
+>  fs/cifs/smbdirect.c | 1 +
+>  3 files changed, 3 insertions(+)
 >
-> > ---
-> > v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
-> > v3: remove extra trailing char added by mistake in v2 - kernel test robot
-> > v4: cleanup includes and regroup CONFIG_DEBUG_FS CPP blocks - Greg
-> >  drivers/base/power/domain.c | 73 +++++++++++++++++++++++--------------
-> >  1 file changed, 45 insertions(+), 28 deletions(-)
+> diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
+> index 9ee5f304592f..ac01f9684b39 100644
+> --- a/fs/cifs/inode.c
+> +++ b/fs/cifs/inode.c
+> @@ -771,6 +771,7 @@ cifs_get_file_info(struct file *filp)
+>                  */
+>                 rc = 0;
+>                 CIFS_I(inode)->time = 0;
+> +               goto cgfi_exit;
+>         default:
+>                 goto cgfi_exit;
+>         }
+> diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c
+> index de564368a887..6c2c42f8d893 100644
+> --- a/fs/cifs/sess.c
+> +++ b/fs/cifs/sess.c
+> @@ -812,6 +812,7 @@ cifs_select_sectype(struct TCP_Server_Info *server, enum securityEnum requested)
+>                                 return NTLMv2;
+>                         if (global_secflags & CIFSSEC_MAY_NTLM)
+>                                 return NTLM;
+> +                       break;
+>                 default:
+>                         break;
+>                 }
+> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+> index b029ed31ef91..10dfe5006792 100644
+> --- a/fs/cifs/smbdirect.c
+> +++ b/fs/cifs/smbdirect.c
+> @@ -246,6 +246,7 @@ smbd_qp_async_error_upcall(struct ib_event *event, void *context)
+>         case IB_EVENT_CQ_ERR:
+>         case IB_EVENT_QP_FATAL:
+>                 smbd_disconnect_rdma_connection(info);
+> +               break;
 >
-> Looks good to me, thanks for fixing it up.  Rafael, will this go through
-> your tree?
+>         default:
+>                 break;
+> --
+> 2.27.0
 >
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
+-- 
+Thanks,
+
+Steve
