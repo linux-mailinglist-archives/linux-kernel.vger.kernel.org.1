@@ -2,156 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17882D2BBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25992D2BCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgLHNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:16:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:48696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727135AbgLHNQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:16:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7181B30E;
-        Tue,  8 Dec 2020 05:15:17 -0800 (PST)
-Received: from [10.57.61.26] (unknown [10.57.61.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 295BB3F718;
-        Tue,  8 Dec 2020 05:15:15 -0800 (PST)
-Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
- EM
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        rjw@rjwysocki.net, vireshk@kernel.org, robh+dt@kernel.org,
-        sboyd@kernel.org, nm@ti.com, daniel.lezcano@linaro.org,
-        morten.rasmussen@arm.com, chris.redpath@arm.com
-References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
- <20201202172356.10508-4-nicola.mazzucato@arm.com>
- <20201208055053.kggxw26kxtnpneua@vireshk-i7>
- <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
- <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
- <20201208112008.niesjrunxq2jz3kt@bogus>
- <1f9daaf8-e850-7c1b-7a32-71367982beaf@arm.com>
- <20201208122222.bp3o6y3xsxo642wd@bogus>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <508c46a8-bf5a-bf29-a1df-c9a96b3de5f6@arm.com>
-Date:   Tue, 8 Dec 2020 13:17:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727660AbgLHNWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:22:17 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:38507 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLHNWQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:22:16 -0500
+Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MDyoU-1kuHrq2lIS-009vG1; Tue, 08 Dec 2020 14:19:38 +0100
+Subject: Re: Pass modules to Linux kernel without initrd
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ben Hutchings <ben@decadent.org.uk>
+References: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
+ <8aac3537-e84b-057d-94d8-0327261daaf8@metux.net>
+ <2f67eee5-b613-43ef-7790-7f29f203c808@molgen.mpg.de>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <b2596c89-fd4b-c7d4-7420-2bcc87ac1eb0@metux.net>
+Date:   Tue, 8 Dec 2020 14:19:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201208122222.bp3o6y3xsxo642wd@bogus>
+In-Reply-To: <2f67eee5-b613-43ef-7790-7f29f203c808@molgen.mpg.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:tRmgtKKoMj3xY5u0SrXpaEWeF8+0i8inAgYi5k8hWom3EtHR9Zy
+ h6zCaU9wqwu68IrQgkpgdyEQoImy/ukKbFBaqckXsbao/pocG0TmBKKFHruveHwn9wIakpF
+ uJB9XU1tqapbu/9IacKUGPTQXaDsjtud74lQnr/KODDUFyGu9BOW2vgnmnpuceoOZN/ssiT
+ UVlAPFLHdm5qlqumG6jkw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JClE20M7Jp4=:j/L9TR2atU62Oa5Lk9MAE5
+ Jztf6us3RTzrJi0DsRufv/Tdy2ghZYiPceplkNnnKdqCTqiAslDrATyLgqeVW3GtIdz86QBis
+ N5rCtCK9k/KKV9UV1yfv5jtvb9yA2XM1OeWUTsvcgDTJTC1gXSqN2QBixioS98hDXsTAGqUAm
+ 8nAR5v3yuN17eb3Ika2QuvuxIPMIyKJ0HOmGsR5F3sj4UZJlS//JzbTw0V0d1897B2sF/Onbh
+ 6ikpQd7Q7Y/+mQMgC7Pa2MAeTDSKp29cCxYCie1aWB8qK52Ck+j+hrghTC2yg1LV6RGCYv+eh
+ KHstBXtfWiN8HCU1c81gpY0AXnELAuoOpecYeVuHeNiRQzcZLbmLYCqJQfr6sgkeHOuKisBZh
+ orjoHaaFGlvDQ+l8qF9gkZk1oHoNR8750m2hjqd6duj6cJsENytrzXyEDUnnC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All, thanks for your feedback, please see below
+On 08.12.20 11:58, Paul Menzel wrote:
 
-On 12/8/20 12:22 PM, Sudeep Holla wrote:
-> On Tue, Dec 08, 2020 at 11:34:36AM +0000, Lukasz Luba wrote:
->>
->>
->> On 12/8/20 11:20 AM, Sudeep Holla wrote:
->>> On Tue, Dec 08, 2020 at 12:56:11PM +0530, Viresh Kumar wrote:
->>>> On 08-12-20, 07:22, Nicola Mazzucato wrote:
->>>>> On 12/8/20 5:50 AM, Viresh Kumar wrote:
->>>>>> On 02-12-20, 17:23, Nicola Mazzucato wrote:
->>>>>>>   	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
->>>>>>>   	if (nr_opp <= 0) {
->>>>>>> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
->>>>>>> -		ret = -EPROBE_DEFER;
->>>>>>> -		goto out_free_opp;
->>>>>>> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
->>>>>>> +		if (ret) {
->>>>>>> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
->>>>>>> +			goto out_free_cpumask;
->>>>>>> +		}
->>>>>>> +
->>>>>>> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
->>>>>>> +		if (ret) {
->>>>>>> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
->>>>>>> +				__func__, ret);
->>>>>>> +			goto out_free_cpumask;
->>>>>>> +		}
->>>>>>> +
->>>>>>
->>>>>> Why do we need to call above two after calling
->>>>>> dev_pm_opp_get_opp_count() ?
->>>>>
->>>>> Sorry, I am not sure to understand your question here. If there are no opps for
->>>>> a device we want to add them to it
->>>>
->>>> Earlier we used to call handle->perf_ops->device_opps_add() and
->>>> dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
->>>> the order changed now ?
->>>>
->>>>
->>>> I am not sure why they would be duplicated in your case. I though
->>>> device_opps_add() is responsible for dynamically adding the OPPs here.
->>>>
->>>
->>> It is because of per-CPU vs per domain drama here. Imagine a system with
->>> 4 CPUs which the firmware puts in individual domains while they all are
->>> in the same perf domain and hence OPP is marked shared in DT.
->>>
->>> Since this probe gets called for all the cpus, we need to skip adding
->>> OPPs for the last 3(add only for 1st one and mark others as shared).
->>> If we attempt to add OPPs on second cpu probe, it *will* shout as duplicate
->>> OPP as we would have already marked it as shared table with the first cpu.
->>> Am I missing anything ? I suggested this as Nicola saw OPP duplicate
->>> warnings when he was hacking up this patch.
->>>
->>>>> otherwise no need as they would be duplicated.
->>>>>> And we don't check the return value of
->>>>>> the below call anymore, moreover we have to call it twice now.
->>>
->>> Yes, that looks wrong, we need to add the check for non zero values, but ....
+> Thank you. I know this and do it myself. But, the requirement is to use
+> the distribution Linux kernel (package). I am sorry for being unclear.
 
-will add the check, thanks
+What about rebuilding the distro package ?
 
->>>
->>>>>
->>>>> This second get_opp_count is required such that we register em with the correct
->>>>> opp number after having added them. Without this the opp_count would not be correct.
->>>>
->>>
->>> ... I have a question here. Why do you need to call
->>>
->>> em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus..)
->>>
->>> on each CPU ? Why can't that be done once for unique opp_shared_cpus ?
+Actually, I wonder why using a generic (bloated) full-blown distro
+when resources are that scarce.
 
-I left it untouched to reduce changes, but I see your point.
 
->>
->> It just have to be called once, for one CPU from the mask. Otherwise for
->> the next CPUs you should see error:
->> "EM: exists for CPU%d"
-> 
-> OK cool, at least it is designed and expected to be used like I thought.
-> Ah, I might have seen those, but never thought it was error message 😄 
-> 
->> It can happen that this print is not seen when the get_cpu_device(cpu)
->> failed, but that would lead to investigation why CPU devices are not
->> there yet.
->>
->> Nicola: have you seen that print?
->>
-> 
-> I assume you must see that and you need to pull this inside if condition
-> to do this once for each performance domain.
+--mtx
 
-I don't see that error, and that's also why I left it there. If there's already
-and em_pd for a device, EM just returns with an error that we don't check.
-
-I agree that it makes more sense to register em for opp_shared_cpus.
-
-> 
-> --
-> Regards,
-> Sudeep
-> 
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
