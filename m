@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3822D2545
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5CA2D254C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgLHH7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:59:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45578 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgLHH7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:59:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 875CEAD6B;
-        Tue,  8 Dec 2020 07:58:40 +0000 (UTC)
-Subject: Re: [PATCH] drm/drv: switch to using devm_add_action_or_reset()
-To:     Tian Tao <tiantao6@hisilicon.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <1607303055-5199-1-git-send-email-tiantao6@hisilicon.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <84176f0f-56e2-c8dd-2f4d-651ec4abe435@suse.de>
-Date:   Tue, 8 Dec 2020 08:58:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727877AbgLHIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:01:04 -0500
+Received: from 2.mo178.mail-out.ovh.net ([46.105.39.61]:40687 "EHLO
+        2.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727517AbgLHIBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:01:03 -0500
+X-Greylist: delayed 626 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 03:01:02 EST
+Received: from player734.ha.ovh.net (unknown [10.108.54.119])
+        by mo178.mail-out.ovh.net (Postfix) with ESMTP id CCA95B3363
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:49:54 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player734.ha.ovh.net (Postfix) with ESMTPSA id 0AFE618C8C42C;
+        Tue,  8 Dec 2020 07:49:42 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006381ab9e9-fc16-4135-a55f-45b014094f44,
+                    F7F8495E9FE719388847EB9DDB8A3A77E3CADC2E) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Qais Yousef <qais.yousef@arm.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] docs: clean up sysctl/kernel: titles, version
+Date:   Tue,  8 Dec 2020 08:49:22 +0100
+Message-Id: <20201208074922.30359-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1607303055-5199-1-git-send-email-tiantao6@hisilicon.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="OBOk2NzH9KUjppU08qVTZvjsi2x5bTcac"
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 3468334663265963397
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OBOk2NzH9KUjppU08qVTZvjsi2x5bTcac
-Content-Type: multipart/mixed; boundary="swqm5MMhWIed7od01E2Dqsm0Nt5PbPvnu";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, airlied@linux.ie, daniel@ffwll.ch
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <84176f0f-56e2-c8dd-2f4d-651ec4abe435@suse.de>
-Subject: Re: [PATCH] drm/drv: switch to using devm_add_action_or_reset()
-References: <1607303055-5199-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1607303055-5199-1-git-send-email-tiantao6@hisilicon.com>
+This cleans up a few titles with extra colons, and removes the
+reference to kernel 2.2. The docs don't yet cover *all* of 5.10 or
+5.11, but I think they're close enough. Most entries are documented,
+and have been checked against current kernels.
 
---swqm5MMhWIed7od01E2Dqsm0Nt5PbPvnu
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index d4b32cc32bb7..7d53146798c0 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -14,7 +14,7 @@ For general info and legal blurb, please look in :doc:`index`.
+ ------------------------------------------------------------------------------
+ 
+ This file contains documentation for the sysctl files in
+-``/proc/sys/kernel/`` and is valid for Linux kernel version 2.2.
++``/proc/sys/kernel/``.
+ 
+ The files in this directory can be used to tune and monitor
+ miscellaneous and general things in the operation of the Linux
+@@ -1095,8 +1095,8 @@ Enables/disables scheduler statistics. Enabling this feature
+ incurs a small amount of overhead in the scheduler but is
+ useful for debugging and performance tuning.
+ 
+-sched_util_clamp_min:
+-=====================
++sched_util_clamp_min
++====================
+ 
+ Max allowed *minimum* utilization.
+ 
+@@ -1106,8 +1106,8 @@ It means that any requested uclamp.min value cannot be greater than
+ sched_util_clamp_min, i.e., it is restricted to the range
+ [0:sched_util_clamp_min].
+ 
+-sched_util_clamp_max:
+-=====================
++sched_util_clamp_max
++====================
+ 
+ Max allowed *maximum* utilization.
+ 
+@@ -1117,8 +1117,8 @@ It means that any requested uclamp.max value cannot be greater than
+ sched_util_clamp_max, i.e., it is restricted to the range
+ [0:sched_util_clamp_max].
+ 
+-sched_util_clamp_min_rt_default:
+-================================
++sched_util_clamp_min_rt_default
++===============================
+ 
+ By default Linux is tuned for performance. Which means that RT tasks always run
+ at the highest frequency and most capable (highest capacity) CPU (in
 
+base-commit: 0477e92881850d44910a7e94fc2c46f96faa131f
+-- 
+2.20.1
 
-Am 07.12.20 um 02:04 schrieb Tian Tao:
-> switch to using devm_add_action_or_reset() instead of devm_add_action.
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-
-I'm surprised that devm_drm_dev_init() didn't already use=20
-devm_add_action_or_reset(). But it doesn't look special, so
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->   drivers/gpu/drm/drm_drv.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-> index 7343038..b92f7fd 100644
-> --- a/drivers/gpu/drm/drm_drv.c
-> +++ b/drivers/gpu/drm/drm_drv.c
-> @@ -675,11 +675,8 @@ static int devm_drm_dev_init(struct device *parent=
-,
->   	if (ret)
->   		return ret;
->  =20
-> -	ret =3D devm_add_action(parent, devm_drm_dev_init_release, dev);
-> -	if (ret)
-> -		devm_drm_dev_init_release(dev);
-> -
-> -	return ret;
-> +	return devm_add_action_or_reset(parent,
-> +					devm_drm_dev_init_release, dev);
->   }
->  =20
->   void *__devm_drm_dev_alloc(struct device *parent,
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---swqm5MMhWIed7od01E2Dqsm0Nt5PbPvnu--
-
---OBOk2NzH9KUjppU08qVTZvjsi2x5bTcac
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/PMi8FAwAAAAAACgkQlh/E3EQov+BE
-9BAAmMZPjUjeeWxDYuc6FgJrELz9Ip1vR9sOpN9vVRc6Gb6oeZQrAUHQZER8dfHuNJyBez10q6G9
-FlyX/WMc3p4viih51xU826TEWomOChZyzrNG325VjKH1wpXdJv5h36EOPzu+VjDrI5SG+obwPsBY
-XnPNO+JWey7Q3l59g9hfcGhKahKVwdyAb0ymasP1o8eD1YeOgFENP0fz2+q8IdY4YpsamuSMixKY
-TxEt6VqTxKBJXrTzgHMIM/VBtCSACg3SwWj40RKgo1vvTR4IPzd33ys7Q/OJ8tqVKslWU/X7J8ij
-vwsv/2IzvoK+eam3deWVVyhqc3fu2xW76xgJbSch2i1sjuiecLhl9aFlVkvzirHy0MMSwoj7Hi5S
-6r+QA9PhUsL8eHcziNzTt7wa1g4v/wyVzqY7HzAQywKPRCsA350ePbUebvrQbELI5kb8SKxfFs27
-/oTOyxuAcT/6KQIuzPQts4KDo406TcHOTTJmB6u4ZqUVYHfZ4oao7ROciq0ib85JlLVYHK6Ihnyl
-RX8KBZQp11jwZKxNTt+U8Mrk/SQpSoWd/fNyLZe6HCdF6o5fVy/HIKdr4DjY0GPd5DFdgsaA7CHO
-C8nvRS/ymdIUm4QkhNPmkTovoG2ElyhKUcrMUCAKMRJ6hij+Voe/8RNgYWmTDH8xd8QD+veJZfHQ
-8V0=
-=+YfB
------END PGP SIGNATURE-----
-
---OBOk2NzH9KUjppU08qVTZvjsi2x5bTcac--
