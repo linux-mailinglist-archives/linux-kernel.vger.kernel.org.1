@@ -2,112 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DD52D34F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC882D351B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgLHVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:09:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
+        id S1729412AbgLHVUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:20:11 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:53448 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbgLHVJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:09:27 -0500
-Date:   Tue, 8 Dec 2020 10:42:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607452944;
-        bh=nY7PYCioAPpxqdRM9+J5Fipi94C2gwsu6XanIKPCqVc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PE/oryX7HwFJx+RjzoAC+WKYBsVdvl7Va8ITfMMJ0oK+p70/YkDApmIfCw5bPMzre
-         oem4djKzUKzH82hsKXYneLHCLrsOeoXIwK/j6JzKBE1axqDQOIxq0j8Qfk7MztXBLx
-         423OPAbOe0u/qnGcPDQgpvLJN9b6pselUBdssPltLU/LG0ZwivACYI9p6uUUbjh+YL
-         pqQN4CNKauFPaSKGawFnKdFzDWJ9xn9Cmza+grsEsIn3XVZJNutglnBbddI2fDFHS+
-         5S/EX3VN/c7Qcb7ZNJod8ahO1fp0BHc1lHR+2HBwhyx5DV8FbQb78Zo9goqg9Hbzta
-         6JsziLPMe/EfA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
- vsock address data structure
-Message-ID: <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
-References: <20201204170235.84387-1-andraprs@amazon.com>
-        <20201204170235.84387-2-andraprs@amazon.com>
-        <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+        id S1726104AbgLHVUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:20:11 -0500
+Received: from zn.tnic (p200300ec2f0f08004da90e847a90bd48.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:4da9:e84:7a90:bd48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 515021EC04BF;
+        Tue,  8 Dec 2020 19:43:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607453000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=/ZQYdyMntojjSpS0VNOBBCh2xJC9JCydUpM1Shp6nLw=;
+        b=VKBSSiMMABTlg4e/gOqwPW/l0D5HODUGSc5er/ZHtC5DNYPpTLEXfdpuF8K9sFZgw4VBpc
+        Xy4p+CvjCfeCNoPlVAz08QqPMi6ReE+AkmIi0VhKyamT4fs+09CAjHc/dRBZXGpRxIty6N
+        isu5dUhGHYWMJdK2EHdjMgTj+Bz30CA=
+Date:   Tue, 8 Dec 2020 19:43:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 07/12] x86: add new features for paravirt patching
+Message-ID: <20201208184315.GE27920@zn.tnic>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120114630.13552-8-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201120114630.13552-8-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 20:23:24 +0200 Paraschiv, Andra-Irina wrote:
-> >> --- a/include/uapi/linux/vm_sockets.h
-> >> +++ b/include/uapi/linux/vm_sockets.h
-> >> @@ -145,7 +145,7 @@
-> >>
-> >>   struct sockaddr_vm {
-> >>        __kernel_sa_family_t svm_family;
-> >> -     unsigned short svm_reserved1;
-> >> +     unsigned short svm_flags;
-> >>        unsigned int svm_port;
-> >>        unsigned int svm_cid;
-> >>        unsigned char svm_zero[sizeof(struct sockaddr) -  
-> > Since this is a uAPI header I gotta ask - are you 100% sure that it's
-> > okay to rename this field?
-> >
-> > I didn't grasp from just reading the patches whether this is a uAPI or
-> > just internal kernel flag, seems like the former from the reading of
-> > the comment in patch 2. In which case what guarantees that existing
-> > users don't pass in garbage since the kernel doesn't check it was 0?  
-> 
-> That's always good to double-check the uapi changes don't break / assume 
-> something, thanks for bringing this up. :)
-> 
-> Sure, let's go through the possible options step by step. Let me know if 
-> I get anything wrong and if I can help with clarifications.
-> 
-> There is the "svm_reserved1" field that is not used in the kernel 
-> codebase. It is set to 0 on the receive (listen) path as part of the 
-> vsock address initialization [1][2]. The "svm_family" and "svm_zero" 
-> fields are checked as part of the address validation [3].
-> 
-> Now, with the current change to "svm_flags", the flow is the following:
-> 
-> * On the receive (listen) path, the remote address structure is 
-> initialized as part of the vsock address init logic [2]. Then patch 3/4 
-> of this series sets the "VMADDR_FLAG_TO_HOST" flag given a set of 
-> conditions (local and remote CID > VMADDR_CID_HOST).
-> 
-> * On the connect path, the userspace logic can set the "svm_flags" 
-> field. It can be set to 0 or 1 (VMADDR_FLAG_TO_HOST); or any other value 
-> greater than 1. If the "VMADDR_FLAG_TO_HOST" flag is set, all the vsock 
-> packets are then forwarded to the host.
-> 
-> * When the vsock transport is assigned, the "svm_flags" field is 
-> checked, and if it has the "VMADDR_FLAG_TO_HOST" flag set, it goes on 
-> with a guest->host transport (patch 4/4 of this series). Otherwise, 
-> other specific flag value is not currently used.
-> 
-> Given all these points, the question remains what happens if the 
-> "svm_flags" field is set on the connect path to a value higher than 1 
-> (maybe a bogus one, not intended so). And it includes the 
-> "VMADDR_FLAG_TO_HOST" value (the single flag set and specifically used 
-> for now, but we should also account for any further possible flags). In 
-> this case, all the vsock packets would be forwarded to the host and 
-> maybe not intended so, having a bogus value for the flags field. Is this 
-> possible case what you are referring to?
+On Fri, Nov 20, 2020 at 12:46:25PM +0100, Juergen Gross wrote:
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index dad350d42ecf..ffa23c655412 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -237,6 +237,9 @@
+>  #define X86_FEATURE_VMCALL		( 8*32+18) /* "" Hypervisor supports the VMCALL instruction */
+>  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+>  #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
+> +#define X86_FEATURE_NOT_XENPV		( 8*32+21) /* "" Inverse of X86_FEATURE_XENPV */
+> +#define X86_FEATURE_NO_PVUNLOCK		( 8*32+22) /* "" No PV unlock function */
+> +#define X86_FEATURE_NO_VCPUPREEMPT	( 8*32+23) /* "" No PV vcpu_is_preempted function */
 
-Correct. What if user basically declared the structure on the stack,
-and only initialized the fields the kernel used to check?
+Ew, negative features. ;-\
 
-This problem needs to be at the very least discussed in the commit
-message.
+/me goes forward and looks at usage sites:
+
++	ALTERNATIVE_2 "jmp *paravirt_iret(%rip);",			\
++		      "jmp native_iret;", X86_FEATURE_NOT_XENPV,	\
++		      "jmp xen_iret;", X86_FEATURE_XENPV
+
+Can we make that:
+
+	ALTERNATIVE_TERNARY "jmp *paravirt_iret(%rip);",
+		      "jmp xen_iret;", X86_FEATURE_XENPV,
+		      "jmp native_iret;", X86_FEATURE_XENPV,
+
+where the last two lines are supposed to mean
+
+			    X86_FEATURE_XENPV ? "jmp xen_iret;" : "jmp native_iret;"
+
+Now, in order to convey that logic to apply_alternatives(), you can do:
+
+struct alt_instr {
+        s32 instr_offset;       /* original instruction */
+        s32 repl_offset;        /* offset to replacement instruction */
+        u16 cpuid;              /* cpuid bit set for replacement */
+        u8  instrlen;           /* length of original instruction */
+        u8  replacementlen;     /* length of new instruction */
+        u8  padlen;             /* length of build-time padding */
+	u8  flags;		/* patching flags */ 			<--- THIS
+} __packed;
+
+and yes, we have had the flags thing in a lot of WIP diffs over the
+years but we've never come to actually needing it.
+
+Anyway, then, apply_alternatives() will do:
+
+	if (flags & ALT_NOT_FEATURE)
+
+or something like that - I'm bad at naming stuff - then it should patch
+only when the feature is NOT set and vice versa.
+
+There in that
+
+	if (!boot_cpu_has(a->cpuid)) {
+
+branch.
+
+Hmm?
+
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+>  #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 2400ad62f330..f8f9700719cf 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -593,6 +593,18 @@ int alternatives_text_reserved(void *start, void *end)
+>  #endif /* CONFIG_SMP */
+>  
+>  #ifdef CONFIG_PARAVIRT
+> +static void __init paravirt_set_cap(void)
+> +{
+> +	if (!boot_cpu_has(X86_FEATURE_XENPV))
+> +		setup_force_cpu_cap(X86_FEATURE_NOT_XENPV);
+> +
+> +	if (pv_is_native_spin_unlock())
+> +		setup_force_cpu_cap(X86_FEATURE_NO_PVUNLOCK);
+> +
+> +	if (pv_is_native_vcpu_is_preempted())
+> +		setup_force_cpu_cap(X86_FEATURE_NO_VCPUPREEMPT);
+> +}
+> +
+>  void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
+>  				     struct paravirt_patch_site *end)
+>  {
+> @@ -616,6 +628,8 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
+>  }
+>  extern struct paravirt_patch_site __start_parainstructions[],
+>  	__stop_parainstructions[];
+> +#else
+> +static void __init paravirt_set_cap(void) { }
+>  #endif	/* CONFIG_PARAVIRT */
+>  
+>  /*
+> @@ -723,6 +737,18 @@ void __init alternative_instructions(void)
+>  	 * patching.
+>  	 */
+>  
+> +	paravirt_set_cap();
+
+Can that be called from somewhere in the Xen init path and not from
+here? Somewhere before check_bugs() gets called.
+
+> +	/*
+> +	 * First patch paravirt functions, such that we overwrite the indirect
+> +	 * call with the direct call.
+> +	 */
+> +	apply_paravirt(__parainstructions, __parainstructions_end);
+> +
+> +	/*
+> +	 * Then patch alternatives, such that those paravirt calls that are in
+> +	 * alternatives can be overwritten by their immediate fragments.
+> +	 */
+>  	apply_alternatives(__alt_instructions, __alt_instructions_end);
+
+Can you give an example here pls why the paravirt patching needs to run
+first?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
