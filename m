@@ -2,232 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF972D2DC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29E52D2DB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730004AbgLHPBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729949AbgLHPB2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:01:28 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DB4C061257
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:00:07 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id lt17so25061798ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:00:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=j+YLOasW8YuUdzuHOZH72Yv1TWfSXfhlcWPLx1oOYs4=;
-        b=d5lAC0NwTBwcfOe0jv09YCUT7qLyfp2JPYcqY8SLtfKKcVMeFynORTs+CBSrmYw5Tu
-         mCLb4mQpr37JnTqLmXEaw75eEENGJpzQxsgRAtLx78UMt9qucis0VKy4QdCNAXgnkAHH
-         uNXRAOqBjPKRgNBvLiP/h0H03bNkNojRdy3I8rBn8sEdgnSsN9iM5eCFGiNBRr7AkefI
-         erOnfFW978ZkDy7WOB7bS+b2Eqn3JEfPkYrB7L9dj5lRhphju2nkB3nIie8lcT96Zc5j
-         M7u5xeqs3JGYzPiQy5+rWGWc7114MpzPojOjEQaJY/aueSd5ASuDEyDaZZyv5x19VksI
-         kOWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=j+YLOasW8YuUdzuHOZH72Yv1TWfSXfhlcWPLx1oOYs4=;
-        b=fdXeS/XwXL9NKm+X4UF0g/i+62xR4xORd18hHgWQ9KVyEAaos0rzOOhY95Gtd7uJld
-         5XCOt2p1g8ghJdQRCSmtTP1qqqRMverhCg88IAoanIq6qSVVjm28cxXUa5HetV8dIL/i
-         HYjJYOibFVACsAkCp7ya41dgD1LHHopSgm93FXERRkzKioo48hpLg03VgpXiwvhrIYPJ
-         6AKYK5c1zg18fqoiP+6KBHoZWx38HlfV5oDtOq9EVXWVN55YhGNDSf2nWUwL1TdQArNo
-         88mbzDDNgFxAFSW5URZvciAZHVM3W294fNe53bwK+x+5VoGWE+JZPSWGVhRcJrbJ51re
-         FUhg==
-X-Gm-Message-State: AOAM5326y3uOpo+iNX4+uSZvmTHuIi/yDVo1opcxGrC3MpBv7T07/wJx
-        cXjkFadWmY4UB0R2zbK5uu2WJw==
-X-Google-Smtp-Source: ABdhPJySWHe8ahhce2NEjnxbVqhml7oJhyYLIFBj4THW/CiuUsPEKuJfkiOk5XdSyfoJ2qGimU8M0Q==
-X-Received: by 2002:a17:906:ce23:: with SMTP id sd3mr23768469ejb.69.1607439606404;
-        Tue, 08 Dec 2020 07:00:06 -0800 (PST)
-Received: from localhost.localdomain (hst-221-90.medicom.bg. [84.238.221.90])
-        by smtp.gmail.com with ESMTPSA id qn4sm4968292ejb.50.2020.12.08.07.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 07:00:05 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 3/3] venus: venc: Add support for CLL and Mastering display controls
-Date:   Tue,  8 Dec 2020 16:59:31 +0200
-Message-Id: <20201208145931.6187-4-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201208145931.6187-1-stanimir.varbanov@linaro.org>
-References: <20201208145931.6187-1-stanimir.varbanov@linaro.org>
+        id S1729994AbgLHPBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729842AbgLHPBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:01:08 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1947239D1;
+        Tue,  8 Dec 2020 15:00:26 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 10:00:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
+ buffer timestamps
+Message-ID: <20201208100024.42bbcd23@gandalf.local.home>
+In-Reply-To: <20201208211411.e41849908381eb493adce0f5@kernel.org>
+References: <20201201160656.7cc6a5e8@gandalf.local.home>
+        <20201208211411.e41849908381eb493adce0f5@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create CLL and Mastering display colour volume v4l2 controls for
-encoder, add handling of HDR10 PQ SEI packet payloads for v4.
+On Tue, 8 Dec 2020 21:14:11 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  3 ++
- drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 +++++
- .../media/platform/qcom/venus/hfi_helper.h    | 20 +++++++++++++
- drivers/media/platform/qcom/venus/venc.c      | 29 +++++++++++++++++++
- .../media/platform/qcom/venus/venc_ctrls.c    | 16 +++++++++-
- 5 files changed, 75 insertions(+), 1 deletion(-)
+> On Tue, 1 Dec 2020 16:06:56 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > A bug was reported about the ftrace ring buffer going backwards:
+> > 
+> > Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
+> > 
+> > In debugging this code, I wrote a C program that uses libtracefs to enable
+> > all events and function tracing (if it exits), and then read the raw ring
+> > buffer binary data and make sure that all the events never go backwards. If
+> > they do, then it does a dump of the ring buffer sub buffer page and shows
+> > the layout of the events and their deltas.
+> > 
+> > This was a very useful tool, and can be used to make sure that the ring
+> > buffer's timestamps are consistently monotonic.  
+> 
+> Yeah, this sounds good to me.
+> 
+> > 
+> > Adding this to the ftrace selftests seems to be a way that this can be
+> > tested more often. But this would introduce the first binary code to the
+> > ftracetests.  
+> 
+> No problem. I think it is better to be placed under ftracetest/bin/ and
+> add a PATH before running testcases.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index f03ed427accd..2bf494020d18 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -256,6 +256,9 @@ struct venc_controls {
- 		u32 hevc;
- 		u32 vp9;
- 	} level;
-+
-+	struct v4l2_ctrl_hdr10_cll_info cll;
-+	struct v4l2_ctrl_hdr10_mastering_display mastering;
- };
- 
- struct venus_buffer {
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 7022368c1e63..081e5a816bca 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1205,6 +1205,14 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*cu);
- 		break;
- 	}
-+	case HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI: {
-+		struct hfi_hdr10_pq_sei *in = pdata, *hdr10 = prop_data;
-+
-+		memcpy(hdr10, in, sizeof(*hdr10));
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*hdr10);
-+		break;
-+	}
-+
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 60ee2479f7a6..8e8dc6b5c855 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -506,6 +506,7 @@
- #define HFI_PROPERTY_PARAM_VENC_VPX_ERROR_RESILIENCE_MODE	0x2005029
- #define HFI_PROPERTY_PARAM_VENC_HIER_B_MAX_NUM_ENH_LAYER	0x200502c
- #define HFI_PROPERTY_PARAM_VENC_HIER_P_HYBRID_MODE		0x200502f
-+#define HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI			0x2005036
- 
- /*
-  * HFI_PROPERTY_CONFIG_VENC_COMMON_START
-@@ -791,6 +792,25 @@ struct hfi_ltr_mark {
- 	u32 mark_frame;
- };
- 
-+struct hfi_mastering_display_colour_sei_payload {
-+	u32 display_primaries_x[3];
-+	u32 display_primaries_y[3];
-+	u32 white_point_x;
-+	u32 white_point_y;
-+	u32 max_display_mastering_luminance;
-+	u32 min_display_mastering_luminance;
-+};
-+
-+struct hfi_content_light_level_sei_payload {
-+	u32 max_content_light;
-+	u32 max_pic_average_light;
-+};
-+
-+struct hfi_hdr10_pq_sei {
-+	struct hfi_mastering_display_colour_sei_payload mastering;
-+	struct hfi_content_light_level_sei_payload cll;
-+};
-+
- struct hfi_framesize {
- 	u32 buffer_type;
- 	u32 width;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 1c61602c5de1..90d7f967cd54 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -588,6 +588,35 @@ static int venc_set_properties(struct venus_inst *inst)
- 			return ret;
- 	}
- 
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		struct hfi_hdr10_pq_sei hdr10;
-+		unsigned int c;
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_HDR10_PQ_SEI;
-+
-+		for (c = 0; c < 3; c++) {
-+			hdr10.mastering.display_primaries_x[c] =
-+				ctr->mastering.display_primaries_x[c];
-+			hdr10.mastering.display_primaries_y[c] =
-+				ctr->mastering.display_primaries_y[c];
-+		}
-+
-+		hdr10.mastering.white_point_x = ctr->mastering.white_point_x;
-+		hdr10.mastering.white_point_y = ctr->mastering.white_point_y;
-+		hdr10.mastering.max_display_mastering_luminance =
-+			ctr->mastering.max_display_mastering_luminance;
-+		hdr10.mastering.min_display_mastering_luminance =
-+			ctr->mastering.min_display_mastering_luminance;
-+
-+		hdr10.cll.max_content_light = ctr->cll.max_content_light_level;
-+		hdr10.cll.max_pic_average_light =
-+			ctr->cll.max_pic_average_light_level;
-+
-+		ret = hfi_session_set_property(inst, ptype, &hdr10);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/* IDR periodicity, n:
- 	 * n = 0 - only the first I-frame is IDR frame
- 	 * n = 1 - all I-frames will be IDR frames
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index cf860e6446c0..2e62666e3ff6 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -208,6 +208,12 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE:
- 		ctr->frame_skip_mode = ctrl->val;
- 		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:
-+		ctr->cll = *ctrl->p_new.p_hdr10_cll;
-+		break;
-+	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
-+		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -223,7 +229,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 33);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 35);
- 	if (ret)
- 		return ret;
- 
-@@ -374,6 +380,14 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			       (1 << V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT)),
- 			       V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_DISABLED);
- 
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_CLL_INFO,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
-+	v4l2_ctrl_new_std_compound(&inst->ctrl_handler, &venc_ctrl_ops,
-+				   V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY,
-+				   v4l2_ctrl_ptr_create(NULL));
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.17.1
+OK.
 
+> 
+> > To make sure that the tests still work on embedded devices (where a
+> > compiler may not even exist), and also since this binary incorporates the
+> > yet-to-be-released libtracefs library, if the make fails, the test exits
+> > with UNTESTED. The UNTESTED is documented as being a place holder which
+> > this would be if the make does not work.  
+> 
+> Hmm, in some embedded environment, we may not have make nor gcc.
+> So it would be better to be build in the kselftest build process as similar
+> to the other kselftests.
+> 
+> What about putting the source code under ftracetest/src/. For the embedded
+> devices, it can be built with cross-tools (and make it static binary if
+> needed) and install it under ftracetest/bin. If we have no cross-build
+> tool etc. we just skip building the binary under ftracetest/bin. And if 
+> the testcase finds there is no binary, it just returns UNRESOLVED or UNTESTED.
+> 
+
+OK. I'll look at how to make this for both cases (embedded and not).
+Because, my current case is to copy the selftests to the machine and run
+them there. So my use case requires the build to happen at test time. But I
+can make it where it wont build if the binary already exists.
+
+> (currently I returns UNRESOLVED when the test target kmodule is not found)
+
+I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
+lack of kernel features or modules. But this is not a lack of the kernel,
+but a lack of user space. If something in user space is lacking (a tool,
+library, or binary), then I thought UNTESTED would be a better option. But
+if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
+I'll keep UNTESTED.
+
+Thanks!
+
+-- Steve
