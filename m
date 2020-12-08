@@ -2,173 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F042D332A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40732D3371
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731237AbgLHUQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:16:08 -0500
-Received: from mail-eopbgr150100.outbound.protection.outlook.com ([40.107.15.100]:50499
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731118AbgLHUNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:13:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G5SvpvZTVbM93v87HEFh7GpR+AG2KdwE9Fshtd3DgRCR82ExSPENjsTHxtrmDHtUJkwBH0bFokJ4KnBlM1jE/LS3ezeQRg1DU4i/AEiywbwts8fgAa0jem6zz5zhw1UHAPHq35/Cle31EL/A5s6QqvD2jy0YLUkFVjojJrSBDS3oz+PPWcYM+va8YnxfdYuuVPY3FhBEc7l2FTD0a2VIOFpeHQGd5qq++ZRi4fHaBPxOjhyJYpJhmnPVkNaROFVFy8cb+3snsrATHNTnYiqMShkZW6kf1dOYQjcKEjf2s0JSiPWP2RhLBWOs1+hl+ZAHD93kp+l9gpvucpYNSD9vQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TJHmbv58TPvR+vptGIBaRrbMiZHMzZt5e0r20CgooM4=;
- b=gSAuMmUSPi42VW9reoVIoZtfInuT2Mbg2azsxvAOgBLzYIVsNldDwfLUMo/LIsBoWr5cLTmgORbxgAq0sujV7JpYJvJgTQ6nd6MjVsJqVkyh6/KmigO1FxAXGQXqzlqjblm7zxnA6UjxMdo14kd04Gxx+dVnQ7+rhtyMj0fYmUxL1sAnPzn+DH9W4tqezu3b6PO3uOlaDSi+bxE9PBLXzuSHzSc6+UDjm2UECept5HzDff94z9/IIYDmPuCAlasDxIDWKNgYKOT++B9Z+kmBVuFbzDLdDPAxy1bFjapuDU7fvrBhjQkOMk/sRIaZ8y1H1jjhcwQdW79grMoifxFhxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TJHmbv58TPvR+vptGIBaRrbMiZHMzZt5e0r20CgooM4=;
- b=a1AWdvR1ahX0GbLB0Muwc7+c+SipoI8CBA18mz0cWa6w8xvno4w77XhOiLDPNVmgHlm+qzn1KfH/5jrGVdfjwaQiRR/oCW+NnBQTrzyUt6A5O1rFvbVzy4kiLOHMaqEnpmN5ss6PmjnoYqHDgktwdLAzNIs0XnIoQGxtnU3vil4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM8PR10MB3988.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e0::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Tue, 8 Dec
- 2020 20:12:58 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
- 20:12:58 +0000
-Subject: Re: [PATCH 02/20] ethernet: ucc_geth: fix definition and size of
- ucc_geth_tx_global_pram
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhao Qiang <qiang.zhao@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Netdev <netdev@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20201205191744.7847-1-rasmus.villemoes@prevas.dk>
- <20201205191744.7847-3-rasmus.villemoes@prevas.dk>
- <CADRPPNTgqwd37VSqiUcv2otGVr4mnQbuv6r887w_yCp=ha1dvA@mail.gmail.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <22fb47eb-9f51-90ca-907d-bf8252424fce@prevas.dk>
-Date:   Tue, 8 Dec 2020 21:12:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CADRPPNTgqwd37VSqiUcv2otGVr4mnQbuv6r887w_yCp=ha1dvA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: BE0P281CA0035.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:14::22) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
+        id S1727753AbgLHUTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:19:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726814AbgLHUSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:18:15 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C37C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:17:22 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id t4so17525713wrr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:17:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4DYUQu0RnUP+8Pjc8kSEgv+OIMP/f6lYTVbWVeSCUVU=;
+        b=Ju1Iv18mwNFn5/Ae0cgOxV/JdmXy9QBSzTW0Oe9JMf0CzPCTshUepaM2gQws0xaoj2
+         crwmzmb9/Y8RdPwiPxgfd1FYlPaz0VeNwQLo19pmQ0P6kPOvVHlZ5AQlTDima693lkbr
+         bEVDG/fMt1zyyk+0CEmy3WthSYSmw3XY+b77o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4DYUQu0RnUP+8Pjc8kSEgv+OIMP/f6lYTVbWVeSCUVU=;
+        b=gDcMVjiI89YKB5Cm4UZoaizS3Grw96DK20JKPVsriGOhbk72apUBc/IzCrM7pASAmJ
+         h59bTMEbjFCmMrVwhYLqcB+Uc9xdQp82goArQfe+xEoJiPuhJgKq6FZk+x/oH9bcMI17
+         BlCodvkImQ/9OQ54suFKz7J0R2x3vq/j/qdMv9U2ZAdotb/btIIic++Y6qQd+0aZYkdf
+         ukPRDMvXhRw167RamoC50fiHjyoePMP3+jI58x9X3pahwkh2O2QUeSQrthZhZWIfoPCe
+         0vHbvCkSYxKuNVSkOFu5LMDB6/9BdUNl0un0OZ7dhHsqdVy7Qxev3DkJSBcyd1QrQLX2
+         hECw==
+X-Gm-Message-State: AOAM530JYOnpQDDgNXHh+/cBgjNR0BBh6OnL06Vb3MXhAJeJImRj8KlP
+        LO0qiIqHk6PllIGhAFQq+KVyjQ==
+X-Google-Smtp-Source: ABdhPJzeLxBx1FYVODACXoFswCazznolernYwOLBDZOPw1S851jsulvLFFLQBPo5tBUg7WXXopPpcw==
+X-Received: by 2002:a5d:4a44:: with SMTP id v4mr18817281wrs.106.1607458641069;
+        Tue, 08 Dec 2020 12:17:21 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id v189sm5312049wmg.14.2020.12.08.12.17.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 12:17:20 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, kafai@fb.com, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v3 1/4] bpf: Be less specific about socket cookies guarantees
+Date:   Tue,  8 Dec 2020 21:15:30 +0100
+Message-Id: <20201208201533.1312057-1-revest@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (5.186.115.188) by BE0P281CA0035.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Tue, 8 Dec 2020 20:12:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 33def56d-0ed2-4114-ba8f-08d89bb5a805
-X-MS-TrafficTypeDiagnostic: AM8PR10MB3988:
-X-Microsoft-Antispam-PRVS: <AM8PR10MB3988CD25F2D859C616CD7BF093CD0@AM8PR10MB3988.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 70JXnLYoVpBkfC9ODUmVpHZ9QIF9v5ckhQODwBQ9l6fu0OTb/zhnB30myUYKyrH2iYZS5wgsHMArGrkpey9YZx8ZDXB9qbMxOaOX/qk7CkGKaLs0xtGCchMy3HWX6Ggl+58sOK4TlZ+NJ7EgvYQfWOlIA3BCmdEaWLYYaGIXHI0L1KQs0TnZo2BxkzTw0MPLskYmkbTA7xxBuiR+rIHoEH5l5Dsk8NINVpcDoXEauYZQtY5XM2v+k3SdyBsn8FNb2td7dkle03Q7hK/lyPlbPlyYM37spoi9llbdeZ3WRmd9SNOVu1VXNwnW8S93euRYSd6SE84m7bLX41YFtYVTRCRNlVecOyn3klRo/EUHry/sycAObKqvUcTHb/2WT2Q0UKoyyDR39DVjhzBR6hVtinFGozKCyp0zPY0v0T2fNWo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(366004)(31696002)(36756003)(8676002)(66946007)(956004)(2616005)(508600001)(26005)(4326008)(8936002)(8976002)(83380400001)(5660300002)(66476007)(6916009)(54906003)(86362001)(16576012)(52116002)(53546011)(66556008)(16526019)(6486002)(44832011)(186003)(2906002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aFFPZzY4cmZSb0tRY1JvN2E2dGJ2bFptZU9ZZ2o0d2cvS2V2OEZyMkRFbmNB?=
- =?utf-8?B?UXVVZGpZOTE5M2FOQ1YvYUlZdnNHWS9JWWVzTTZpSlhVUFg1cEl0OXAwelVs?=
- =?utf-8?B?Yks3UWlMSm5raUErbTk3SXczcTVJQUl1YWYwbFMvWkJ2MHc4Y2JpMkh4c1Nx?=
- =?utf-8?B?OTRGRkZUOUhZUzkxK05XK2c3b3JqY25iWjdKK1RuY2RwYjJsWkd3Snc5T0VI?=
- =?utf-8?B?bGVDQjQwU29CRzhMNEJyMzhXVzZ6OVhpTUUyMmZFK25uTG5qOGVlSHFjZ0NC?=
- =?utf-8?B?WWYvSWJkc3ViSWx4Sk8rbVdJTWZFR1ZneDRDQlZJUU5KNERWRGxxSVd4NnJ0?=
- =?utf-8?B?NHozdlF3c0w0dDFWcmdqTGZROVZXUU9IVHZqTHlqeWxoWGNPb3ZJVGsvY0pR?=
- =?utf-8?B?ak9KU0cyMC84UzFxUWVQalFxZzFsYjBiamNQamJGdHBwOWhVWHo4akJtZFd4?=
- =?utf-8?B?SExzbGg2a3cvenI0SStybVp4UEh5UzkxK1BKRW1lY3doSm05UCtyVXlTVEZn?=
- =?utf-8?B?ZkxLcVVBOE5keWttRW0zSU9kRGxoOWNDTTN3Qkc1VHVpblgvSldaVDhiR2hr?=
- =?utf-8?B?MEhPdU9sVTh3NDBTOGlicWVSZ013dWZ6blFJOU1HaHZDYmc3djZuc2RvRnRv?=
- =?utf-8?B?VDNiV243b3dVckQzVFJLZ09zYTRaM0c4YjZXMlhwSEVWY1ZPblBpZlgyVXlD?=
- =?utf-8?B?YXowSG9RWWFDaUlucytueno0VW5LNUFPNFZBejU2d1d2R0FXYmUxWmdNRUI1?=
- =?utf-8?B?VjkzblpnelVyWThQTkpMeFJuNTg5MFloUjlIelBNcDR6RlRHYnZEWkdjTk4z?=
- =?utf-8?B?bklMZGdlWHF0MTJOOU5ld1NJdk1NR2poSklQVU1aenhVVXhkZkU4Y3Zrc25l?=
- =?utf-8?B?NVMwKzVnc3VsanhEQlFJSG1zdHpCUUlXS2lxZWlST0Z5b3VidVlXU1VzS1ZI?=
- =?utf-8?B?NU10b2FxbFc1NnFKUE4yZ2d6MDdCcmY2Z1lrQlpaNXppSnNHSHBQNy9LMEpx?=
- =?utf-8?B?WVVSbEtvandCWGR5blVvUGEvVnE2UWw1VE4vZ09qNzZ6QnJ3d2laMStENVZ5?=
- =?utf-8?B?dU9pbmdpV09JWE03WllpMUNvUUlLcXJnTWJRdHRZb0NvOWFpNHJjaU9kK0xw?=
- =?utf-8?B?cHlKV1hCTGxiYitXbFV1bVIwMFFMZWVZdmNUWmRkWXo5S2trOUE5RXJEUWNp?=
- =?utf-8?B?azU3TDM4a1E5NXZkaGVMTjQ2U1o3U1RkRHJ3ZnpjZityWktPMjJyQkpKZlVo?=
- =?utf-8?B?c3hNWTQxb1JEanA4MnhsTlNnYUFPVGlsV2ozVG8rQXpiQW0ybEU3dG81aVpN?=
- =?utf-8?Q?mAZHCNGxMlIz9R5V6SKwltMSJyVm6ROUAy?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 20:12:58.1879
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33def56d-0ed2-4114-ba8f-08d89bb5a805
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GmaBXO9Kgf+ce7pPNdl8PGrZpAdN3yPLMelJBkVHepcKGKgwJGDSj4dS4QP7qA3tmyuoJ+xG9tefKOrFCayIHVwZIroYhsG9fBaHutaPw4c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB3988
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2020 20.14, Li Yang wrote:
-> On Sat, Dec 5, 2020 at 1:21 PM Rasmus Villemoes
-> <rasmus.villemoes@prevas.dk> wrote:
->>
->> Table 8-53 in the QUICC Engine Reference manual shows definitions of
->> fields up to a size of 192 bytes, not just 128. But in table 8-111,
->> one does find the text
->>
->>   Base Address of the Global Transmitter Parameter RAM Page. [...]
->>   The user needs to allocate 128 bytes for this page. The address must
->>   be aligned to the page size.
->>
->> I've checked both rev. 7 (11/2015) and rev. 9 (05/2018) of the manual;
->> they both have this inconsistency (and the table numbers are the
->> same).
-> 
-> This does seem to be an inconsistency.  I will try to see if I can
-> find someone who is familiar with this as this is really an old IP.
-> 
-> Figure 8-61 does mention that size = 128 byte + 64 byte if ....    But
-> this part is not clear also.
+Since "92acdc58ab11 bpf, net: Rework cookie generator as per-cpu one"
+socket cookies are not guaranteed to be non-decreasing. The
+bpf_get_socket_cookie helper descriptions are currently specifying that
+cookies are non-decreasing but we don't want users to rely on that.
 
-Hm, indeed, that sentence is simply cut short, it literally says
-"Additional 64 bytes are needed if". The next line contains
-"Hierarchical Scheduler, or IP" in a smaller font, but that seems to be
-a label for the arrow.
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ include/uapi/linux/bpf.h       | 8 ++++----
+ tools/include/uapi/linux/bpf.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-> 
-> The overlapping does seem to be a problem.  Maybe these global
-> parameters are not sampled at runtime or the parameter RAM is really
-> only using 128byte depending on the operation mode.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 30b477a26482..ba59309f4d18 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1650,22 +1650,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 30b477a26482..ba59309f4d18 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1650,22 +1650,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+-- 
+2.29.2.576.ga3fc446d84-goog
 
-Yes, I'm thinking something like that is likely to be the case, since
-this hasn't seemed to ever cause any problems. But who knows, maybe a
-few frames just get fragmented very occasionally becauces the MTU0 field
-spuriously has some random small value.
-
-> 
-> Are you getting useful information by reading from the additional 64
-> bytes, 
-
-AFAICT, after the additional allocation, the extra 64 bytes stay at 0,
-but that's to be expected; they are supposed to be written by the CPU
-and read by the engine AFAIU.
-
-or getting changed behavior for setting these bytes after your
-> changes?
-
-No, as I said:
-
->> I haven't observed any failure that could be attributed to this,
-
-I haven't played around with explicitly writing to those 64 bytes after
-initialization. This whole series started because I searched for the
-string "MTU" in the manual, but at the end, it didn't seem that I
-actually needed to modify those MTU fields.
-
-Rasmus
