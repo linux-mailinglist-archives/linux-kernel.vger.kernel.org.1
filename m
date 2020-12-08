@@ -2,110 +2,541 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8352D212C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CA22D2130
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgLHCyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgLHCyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:54:25 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193F2C061749;
-        Mon,  7 Dec 2020 18:53:45 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id t33so14886917ybd.0;
-        Mon, 07 Dec 2020 18:53:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z8loPG8U58lIBTc9sYS7jiFOqCpefVAOcaLFNAdlAuE=;
-        b=oEk3ysYj1UEoBp87Q3+GjmiJJih8MWcQeZaJNLM+81lwE94R6skRWZz49HmdQ9l9Ye
-         DQIIZ+i0rqNVYS+3Qu05bJ1omqCYvmE7fauyuQAjChS9uiPHDIcz6Zi6tkkCLTekjnzh
-         iuV4eEP45VObgdqssB22lijBhcpr6IDjs4RVxt6pB9WoCsKMm8Q9F167+z9qpuFNnPWV
-         Tyy73zH56HAzob2aVoGh2JBKKiLua8wo0NPOUkbFv7on0vYMu+m7Ts+hkc43Iw7oXeBV
-         gK/8ppbuWY+grT8FaXnhs+aMPZF/YxK4rAHcIEBzMLViwehwBWPKwqnplg4q4IgLAbEG
-         r1cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z8loPG8U58lIBTc9sYS7jiFOqCpefVAOcaLFNAdlAuE=;
-        b=NjyTrKMxK9b8V/kgFCy3BVSIw+kYTsX4p/wfKbgr2BPn1J9tNIzg1PCPiyaMGUWYh9
-         UsU1KS7cKTZW25ISNklZ2tpxKVt1lCxgNFsldoqEuwcVd1vrC2Q76R2HbaPC/ossMDQI
-         mhYYT2RjZ2yO3ppyzYQg0uv2dhrIPuvw8se0n901vRgwG0u1ACVTMsjDgrljPoWDiY5x
-         LbfDKzg7lkQ8Bozu9pABZahWKICM/uECgK9uZ3yn5KPMBG4EYmyiavVVoXi1EVQIgcsH
-         21cbzUPItkqPQoTp6xjojedixYkWcvC0FQkZKW1LkVsyHDkcgxW7nnhiAKD2/9FrAKy7
-         h+cg==
-X-Gm-Message-State: AOAM533BPM5qb3Blk61GxQqNFy2n4sHf9/1BVp9285BRMeQRjt2GS5yW
-        RysVuHzzKYdGy04I/FnA7HpJrgcCThybZasxgEE=
-X-Google-Smtp-Source: ABdhPJxWBAHJvXmx92TJyJDSEvTIKGWGEUng3vk/iImzkp2jtDKRh5C1gX0xnCSTfB8KG2DcXwK4RAy3q90LdAw1mS0=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr26365744ybg.230.1607396024423;
- Mon, 07 Dec 2020 18:53:44 -0800 (PST)
+        id S1728206AbgLHC4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:56:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726830AbgLHC4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:56:04 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20D823976;
+        Tue,  8 Dec 2020 02:55:22 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 21:55:20 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
+ buffer timestamps
+Message-ID: <20201207215520.3da609f4@oasis.local.home>
+In-Reply-To: <20201201160656.7cc6a5e8@gandalf.local.home>
+References: <20201201160656.7cc6a5e8@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201201215900.3569844-1-guro@fb.com> <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
- <20201203032645.GB1568874@carbon.DHCP.thefacebook.com> <6abdd146-c584-9c66-261d-d7d39ff3f499@iogearbox.net>
-In-Reply-To: <6abdd146-c584-9c66-261d-d7d39ff3f499@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Dec 2020 18:53:33 -0800
-Message-ID: <CAEf4BzYe1SDnWBzAP_U7NtUhu_cWa0EEMLv+d-q3YTFvP+y3og@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory accounting
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 4:37 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 12/3/20 4:26 AM, Roman Gushchin wrote:
-> > On Wed, Dec 02, 2020 at 06:54:46PM -0800, Alexei Starovoitov wrote:
-> >> On Tue, Dec 1, 2020 at 1:59 PM Roman Gushchin <guro@fb.com> wrote:
-> >>>
-> >>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
-> >>>     a function to "explain" this case for users.
-> >> ...
-> >>> v9:
-> >>>    - always charge the saved memory cgroup, by Daniel, Toke and Alexei
-> >>>    - added bpf_map_kzalloc()
-> >>>    - rebase and minor fixes
-> >>
-> >> This looks great. Applied.
-> >
-> > Thanks!
-> >
-> >> Please follow up with a change to libbpf's pr_perm_msg().
-> >> That helpful warning should stay for old kernels, but it would be
-> >> misleading for new kernels.
-> >> libbpf probably needs a feature check to make this warning conditional.
-> >
-> > I think we've discussed it several months ago and at that time we didn't
-> > find a good way to check this feature. I'll think again, but if somebody
-> > has any ideas here, I'll appreciate a lot.
->
-> Hm, bit tricky, agree .. given we only throw the warning in pr_perm_msg() for
-> non-root and thus probing options are also limited, otherwise just probing for
-> a helper that was added in this same cycle would have been good enough as a
-> simple heuristic. I wonder if it would make sense to add some hint inside the
-> bpf_{prog,map}_show_fdinfo() to indicate that accounting with memcg is enabled
 
-I think the initial version was emitting 0 for memlock, so that was a
-pretty simple way to prove stuff. But I think it was changed at the
-last minute to emit some non-zero "estimate" of memory used or
-something like that?
+Masami?
 
-> for the prog/map one way or another? Not just for the sake of pr_perm_msg(), but
-> in general for apps to stop messing with rlimit at this point. Maybe also bpftool
-> feature probe could be extended to indicate that as well (e.g. the json output
-> can be fed into Go natively).
+-- Steve
+
+
+On Tue, 1 Dec 2020 16:06:56 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> A bug was reported about the ftrace ring buffer going backwards:
+> 
+> Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
+> 
+> In debugging this code, I wrote a C program that uses libtracefs to enable
+> all events and function tracing (if it exits), and then read the raw ring
+> buffer binary data and make sure that all the events never go backwards. If
+> they do, then it does a dump of the ring buffer sub buffer page and shows
+> the layout of the events and their deltas.
+> 
+> This was a very useful tool, and can be used to make sure that the ring
+> buffer's timestamps are consistently monotonic.
+> 
+> Adding this to the ftrace selftests seems to be a way that this can be
+> tested more often. But this would introduce the first binary code to the
+> ftracetests.
+> 
+> To make sure that the tests still work on embedded devices (where a
+> compiler may not even exist), and also since this binary incorporates the
+> yet-to-be-released libtracefs library, if the make fails, the test exits
+> with UNTESTED. The UNTESTED is documented as being a place holder which
+> this would be if the make does not work.
+> 
+> Thoughts?
+> 
+> Soon-to-be-signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/Makefile b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
+> new file mode 100644
+> index 000000000000..86f96b6fed9f
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
+> @@ -0,0 +1,32 @@
+> +
+> +LD_PATH := -L/usr/local/lib/tracefs/ -L/usr/local/lib/traceevent
+> +
+> +TARGETS = test-ring-buffer
+> +
+> +PKG_CONFIG = pkg-config
+> +TRACEFS_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtracefs 2>/dev/null)
+> +TRACEFS_LIBS = $(shell $(PKG_CONFIG) --libs libtracefs 2>/dev/null)
+> +
+> +TRACEEVENT_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtraceevent 2>/dev/null)
+> +TRACEEVENT_LIBS = $(shell $(PKG_CONFIG) --libs libtraceevent 2>/dev/null)
+> +
+> +ifeq ("$(TRACEFS_INCLUDES)","")
+> +$(error no libtracefs found)
+> +endif
+> +
+> +ifeq ("$(TRACEEVENT_INCLUDES)","")
+> +$(error no libtraceevent found)
+> +endif
+> +
+> +LIBS = $(TRACEFS_LIBS) $(TRACEEVENT_LIBS) -ldl
+> +
+> +CFLAGS := $(TRACEFS_INCLUDES) $(TRACEEVENT_INCLUDES)
+> +
+> +all: $(TARGETS)
+> +
+> +test-ring-buffer: test-ring-buffer.c
+> +	gcc -g -Wall -o $@ $(CFLAGS) $^ $(LIBS)
+> +
+> +clean:
+> +	$(RM) $(TARGETS) *.o
+> +
+> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
+> new file mode 100644
+> index 000000000000..af823e2102ff
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
+> @@ -0,0 +1,399 @@
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <stdarg.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include <unistd.h>
+> +#include <signal.h>
+> +#include <stdbool.h>
+> +#include <sys/types.h>
+> +#include <fcntl.h>
+> +
+> +#include <tracefs.h>
+> +#include <kbuffer.h>
+> +
+> +typedef long long u64;
+> +
+> +static char *THIS_NAME;
+> +static struct tep_handle *tep;
+> +
+> +static void __vdie(const char *fmt, va_list ap, int err)
+> +{
+> +	int ret = errno;
+> +
+> +	if (err && errno)
+> +		perror(THIS_NAME);
+> +	else
+> +		ret = -1;
+> +
+> +	fprintf(stderr, "  ");
+> +	vfprintf(stderr, fmt, ap);
+> +
+> +	fprintf(stderr, "\n");
+> +	exit(ret);
+> +}
+> +
+> +void die(const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +
+> +	va_start(ap, fmt);
+> +	__vdie(fmt, ap, 0);
+> +	va_end(ap);
+> +}
+> +
+> +void pdie(const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +
+> +	va_start(ap, fmt);
+> +	__vdie(fmt, ap, 1);
+> +	va_end(ap);
+> +}
+> +
+> +static void usage(char **argv)
+> +{
+> +	char *arg = argv[0];
+> +	char *p = arg+strlen(arg);
+> +
+> +	while (p >= arg && *p != '/')
+> +		p--;
+> +	p++;
+> +
+> +	printf("\nusage: %s timeout\n"
+> +	       "\n",p);
+> +	exit(-1);
+> +}
+> +
+> +static int tfd;
+> +static int result;
+> +static int done = 1;
+> +
+> +static void stop(int sig)
+> +{
+> +	write(tfd, "0", 1);
+> +	done = 0;
+> +}
+> +
+> +static struct last_info {
+> +	u64			timestamp;
+> +	void 			*content;
+> +	void 			*content_next;
+> +	unsigned long		page;
+> +	int			index;
+> +	int			irq;
+> +	int			sirq;
+> +} *info;
+> +
+> +static int page_size;
+> +
+> +static void *get_meta_data(struct tep_record *record)
+> +{
+> +	void *p = record->data;
+> +	int type_len;
+> +
+> +	if (record->size > 120) {
+> +		int size;
+> +
+> +		p -= 4;
+> +		size = *(unsigned int *)p;
+> +		p -= 4;
+> +		type_len = *(unsigned int *)p;
+> +		if (size != record->size + 4)
+> +			die("Expected size %d but found %d (%d)\n",
+> +			    record->size + 4,
+> +			    size, type_len);
+> +	} else
+> +		p -= 4;
+> +
+> +	return p;
+> +}
+> +
+> +static void init_content(struct last_info *info, int cpu,
+> +			 struct tep_record *record)
+> +{
+> +	int type_len;
+> +	void *p;
+> +
+> +	p = get_meta_data(record);
+> +	p -= 8;
+> +
+> +	type_len = *(unsigned int *)p;
+> +	/* FIXME for big endian */
+> +	type_len = type_len & ((1 << 5) - 1);
+> +	switch (type_len) {
+> +	case KBUFFER_TYPE_TIME_EXTEND:
+> +	case KBUFFER_TYPE_TIME_STAMP:
+> +		p -= 8;
+> +		break;
+> +	}
+> +	p -= sizeof(long);
+> +	memcpy(info[cpu].content, p, (record->data - p) + record->size);
+> +	info[cpu].page = (unsigned long)p;
+> +	info[cpu].content_next = record->data + record->size;
+> +}
+> +
+> +static void update_content(struct last_info *info, int cpu,
+> +			   struct tep_record *record)
+> +{
+> +	int size = (record->data + record->size) - info[cpu].content_next;
+> +	int start = info[cpu].content_next - (void *)info[cpu].page;
+> +
+> +	memcpy(info[cpu].content + start, (void *)info[cpu].page + start, size);
+> +	info[cpu].content_next = record->data + record->size;
+> +}
+> +
+> +static int read_kbuf_record(struct kbuffer *kbuf, struct tep_record *record)
+> +{
+> +	unsigned long long ts;
+> +	void *ptr;
+> +
+> +	ptr = kbuffer_read_event(kbuf, &ts);
+> +	if (!ptr || !record)
+> +		return -1;
+> +
+> +	memset(record, 0, sizeof(*record));
+> +	record->ts = ts;
+> +	record->size = kbuffer_event_size(kbuf);
+> +	record->record_size = kbuffer_curr_size(kbuf);
+> +	record->cpu = 0;
+> +	record->data = ptr;
+> +	record->ref_count = 1;
+> +
+> +	kbuffer_next_event(kbuf, NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned get_delta(void *p)
+> +{
+> +	return (*(unsigned *)p & ((1<<27)-1) << 5) >> 5;
+> +}
+> +
+> +static unsigned long long get_extend_delta(void *p)
+> +{
+> +	unsigned long long delta;
+> +	unsigned long long extend;
+> +
+> +	delta = get_delta(p);
+> +	p += 4;
+> +	extend = *(unsigned *)p;
+> +
+> +	return (extend << 27) + delta;
+> +}
+> +
+> +static void check_meta(void *p, bool show)
+> +{
+> +	int type_len;
+> +
+> +	type_len = *(unsigned *)p & ((1<<5)-1);
+> +	if (show)
+> +		printf(" type_len=%d\n", type_len);
+> +	switch (type_len) {
+> +	case KBUFFER_TYPE_TIME_EXTEND:
+> +		printf("   TIME_EXTEND: delta: %lld\n", get_extend_delta(p));
+> +		break;
+> +	case KBUFFER_TYPE_TIME_STAMP:
+> +		printf("   TIME_STAMP: stamp: %lld\n", get_extend_delta(p));
+> +		break;
+> +	}
+> +}
+> +
+> +static void dump_content(struct last_info *info, int cpu,
+> +			 struct tep_record *this_record)
+> +{
+> +	struct tep_record record;
+> +	struct kbuffer *kbuf;
+> +	enum kbuffer_long_size kls;
+> +	int last = info[cpu].content_next - (void *)info[cpu].page;
+> +	int ret;
+> +	void *p;
+> +
+> +	switch (sizeof(long)) {
+> +	case 4:
+> +		kls = KBUFFER_LSIZE_4;
+> +		break;
+> +	default:
+> +		kls = KBUFFER_LSIZE_8;
+> +		break;
+> +	}
+> +
+> +
+> +	kbuf = kbuffer_alloc(kls, KBUFFER_ENDIAN_LITTLE);
+> +	if (!kbuf)
+> +		die("Allocating kbuffer");
+> +	kbuffer_load_subbuffer(kbuf, info[cpu].content);
+> +
+> +	p = info[cpu].content;
+> +
+> +	printf(" [%lld] PAGE TIME STAMP\n", *(unsigned long long *)p);
+> +
+> +	p += 8 + sizeof(long);
+> +	check_meta(p, true);
+> +
+> +	while (!(ret = read_kbuf_record(kbuf, &record))) {
+> +		struct tep_event *event;
+> +		int id;
+> +
+> +		id = tep_data_type(tep, &record);
+> +		event = tep_find_event(tep, id);
+> +		if (!event) {
+> +			printf("Failed to find event!\n");
+> +			continue;
+> +		}
+> +
+> +		p = get_meta_data(&record);
+> +
+> +		printf(" [%lld] delta:%d (%d)\n", record.ts, get_delta(p), record.size);
+> +
+> +		if (info[cpu].content + last == record.data + record.size)
+> +			break;
+> +
+> +		check_meta(record.data + record.size, false);
+> +	}
+> +	kbuffer_free(kbuf);
+> +
+> +	if (!this_record)
+> +		return;
+> +
+> +	printf("\nDumping record buffer:\n");
+> +
+> +	init_content(info, cpu, this_record);
+> +	dump_content(info, cpu, NULL);
+> +}
+> +
+> +static int callback(struct tep_event *event,
+> +		    struct tep_record *record,
+> +		    int cpu, void *context)
+> +{
+> +	static int done;
+> +	int index;
+> +	int irq, sirq;
+> +	int flags;
+> +
+> +	if (done)
+> +		return 1;
+> +
+> +	if (!info[cpu].content) {
+> +		info[cpu].content = calloc(1, page_size);
+> +		if (!info[cpu].content)
+> +			die("Allocating content");
+> +	}
+> +	if (!info[cpu].page)
+> +		init_content(info, cpu, record);
+> +
+> +	index = (unsigned long)record->data - info[cpu].page;
+> +
+> +	if (index < 0) {
+> +		printf("HERE!\n");
+> +		info[cpu].page = (unsigned long)record->data;
+> +		info[cpu].index += index;
+> +		index = 0;
+> +	}
+> +
+> +	flags = tep_data_flags(event->tep, record);
+> +	irq = !!(flags & TRACE_FLAG_HARDIRQ);
+> +	sirq = !!(flags & TRACE_FLAG_SOFTIRQ);
+> +
+> +	if (info[cpu].timestamp > record->ts) {
+> +		stop(0);
+> +		printf("Record on cpu %d went backwards: %lld to %lld\n"
+> +		       "  last index = %d : this index = %d\n"
+> +		       "  last softirq = %d : last hardirq = %d\n",
+> +		       cpu, info[cpu].timestamp, record->ts,
+> +		       info[cpu].index, index, info[cpu].sirq, info[cpu].irq);
+> +		dump_content(info, cpu, record);
+> +		done = 1;
+> +		result = -1;
+> +		return 1;
+> +	}
+> +
+> +	if (info[cpu].content_next > record->data)
+> +		init_content(info, cpu, record);
+> +	else
+> +		update_content(info, cpu, record);
+> +
+> +	info[cpu].timestamp = record->ts;
+> +	if (info[cpu].index > index) {
+> +		info[cpu].sirq = sirq;
+> +		info[cpu].irq = irq;
+> +	} else {
+> +		info[cpu].sirq |= sirq;
+> +		info[cpu].irq |= irq;
+> +	}
+> +	info[cpu].index = index;
+> +	return 0;
+> +}
+> +
+> +static void test_buffer(struct tep_handle *tep, int timeout)
+> +{
+> +	signal(SIGALRM, stop);
+> +	alarm(timeout);
+> +
+> +	tracefs_iterate_raw_events(tep, NULL, callback, NULL);
+> +}
+> +
+> +int main (int argc, char **argv)
+> +{
+> +	char *current_tracer;
+> +	char *events_enable;
+> +	char *tracing_on;
+> +	int time;
+> +	int cpus;
+> +	int efd;
+> +	int cfd;
+> +
+> +	THIS_NAME = argv[0];
+> +
+> +	if (argc < 2)
+> +		usage(argv);
+> +
+> +	page_size = getpagesize();
+> +
+> +	time = atoi(argv[1]);
+> +	if (time <= 0)
+> +		usage(argv);
+> +
+> +	tep = tracefs_local_events(NULL);
+> +	if (!tep)
+> +		pdie("Error loading events");
+> +
+> +	events_enable = tracefs_instance_get_file(NULL, "events/enable");
+> +	current_tracer = tracefs_instance_get_file(NULL, "current_tracer");
+> +	tracing_on = tracefs_instance_get_file(NULL, "tracing_on");
+> +
+> +	if (!events_enable || !current_tracer || !tracing_on)
+> +		pdie("Allocating strings");
+> +
+> +	cpus = sysconf(_SC_NPROCESSORS_CONF);
+> +
+> +	info = calloc(cpus, sizeof(*info));
+> +	if (!info)
+> +		pdie("Allocating per cpu info");
+> +
+> +	efd = open(events_enable, O_WRONLY);
+> +	if (efd < 0)
+> +		pdie(events_enable);
+> +
+> +	cfd = open(current_tracer, O_WRONLY);
+> +	if (cfd < 0)
+> +		pdie(current_tracer);
+> +
+> +	tfd = open(tracing_on, O_WRONLY);
+> +	if (tfd < 0)
+> +		pdie(current_tracer);
+> +
+> +	write(efd, "1", 1);
+> +	write(cfd, "function", 8);
+> +
+> +	test_buffer(tep, time);
+> +
+> +	write(efd, "0", 1);
+> +	write(cfd, "nop", 3);
+> +	write(tfd, "1", 1);
+> +
+> +	close(efd);
+> +	close(cfd);
+> +	close(tfd);
+> +	exit(result);
+> +}
+> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
+> new file mode 100644
+> index 000000000000..05f628124774
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
+> @@ -0,0 +1,16 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: ftrace - test ring buffer timestamps
+> +
+> +cd $TOP_DIR/test-ring-buffer
+> +if ! make ; then
+> +	cd $TRACING_DIR
+> +	exit_untested
+> +fi
+> +
+> +./test-ring-buffer 10
+> +
+> +make clean
+> +
+> +cd $TRACING_DIR
+> +
+
