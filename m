@@ -2,294 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A5B2D2E85
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1C92D2E8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730189AbgLHPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:43:16 -0500
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:33986 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbgLHPnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:43:16 -0500
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 0B8FeYvD016868;
-        Tue, 8 Dec 2020 10:42:30 -0500
-Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
-        by pbmsgap02.intersil.com with ESMTP id 35858khkcq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 10:42:29 -0500
-Received: from pbmxdp01.intersil.corp (132.158.200.222) by
- pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Tue, 8 Dec 2020 10:42:28 -0500
-Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
- (132.158.200.222) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 8 Dec 2020 10:42:27 -0500
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next 3/4] ptp: clockmatrix: Fix non-zero phase_adj is lost after snap
-Date:   Tue, 8 Dec 2020 10:41:56 -0500
-Message-ID: <1607442117-13661-3-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607442117-13661-1-git-send-email-min.li.xe@renesas.com>
-References: <1607442117-13661-1-git-send-email-min.li.xe@renesas.com>
-X-TM-AS-MML: disable
+        id S1730068AbgLHPoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:44:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729558AbgLHPoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:44:15 -0500
+X-Gm-Message-State: AOAM531ePydIGX3u/l79lcDHPXGe2ebjwM8mBDMwtAOmeNCHZ+5rVJXC
+        wgTLUupM6RsxyFX/lmFRQqhLT45Gm+w+WNokVNE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607442214;
+        bh=CMD5T7V/62c2NnQS9oXG4hQMXT2TDFkAiLnMrvWU3sQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J03SUNfYv5x+fTGOfPb1fx9pwMURZwOlbbPcXpog1DBcQ1Cn01q4QUNQvl9/btRXU
+         LR14nAH24FD7GEfKUmMIIir+nOlRM2JSCic3zOV9hQ5AFBnXWl0/rlNmMR45v1jtAn
+         OLAp5aX5laP/Kac5bA3cbm4q3VwDaaEOR13xx6YT/OyyKQ1h8Rrdo8al9afu5nnKBB
+         5CTCMPj7j+oeJF2vshdVDOKf1N41bEpg7CsAvb7J4QPoMlcxcfE3fPghlb7qp2cIMP
+         d1DaLLeNvBZuyl48oxeKqK/lX41Cku6DhUDdQA9oV1y2iM7Ql8TN1npzBDh4wGEA5w
+         N/0jUHErUu6rQ==
+X-Google-Smtp-Source: ABdhPJycE/+6yXag4eshTTK2HeGTyUbW9jjdl41hbpcJXlRgcXfuaEBrRfaKcncE48q2eb+CZNOSa6sJ54aDoYuAAp0=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr17412967oth.210.1607442214097;
+ Tue, 08 Dec 2020 07:43:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_11:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxlogscore=999 suspectscore=4
- malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080095
-X-Proofpoint-Spam-Reason: mlx
+References: <20201208152857.2162093-1-geert+renesas@glider.be> <20201208152857.2162093-3-geert+renesas@glider.be>
+In-Reply-To: <20201208152857.2162093-3-geert+renesas@glider.be>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 8 Dec 2020 16:43:17 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2viBG-dVQQwRfc9aP=dbdyTypgMJycONu2g4jcnfuFKg@mail.gmail.com>
+Message-ID: <CAK8P3a2viBG-dVQQwRfc9aP=dbdyTypgMJycONu2g4jcnfuFKg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Documentation/kbuild: Document platform dependency practises
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Tue, Dec 8, 2020 at 4:28 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> Document best practises for using architecture and platform dependencies.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  Documentation/kbuild/kconfig-language.rst | 24 +++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+> index 2b746332d8aa6bce..87e9bbe14a21ce83 100644
+> --- a/Documentation/kbuild/kconfig-language.rst
+> +++ b/Documentation/kbuild/kconfig-language.rst
+> @@ -564,6 +564,30 @@ common system, and detect bugs that way.
+>  Note that compile-tested code should avoid crashing when run on a system where
+>  the dependency is not met.
+>
+> +Architecture and platform dependencies
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +Due to the presence of stubs, most drivers can now be compiled on most
+> +architectures.  However, this does not mean it makes sense to have all drivers
+> +available everywhere, as the actual hardware may only exist on specific
+> +architectures and platforms.  This is especially true for on-SoC IP cores,
+> +which may be limited to a specific vendor or SoC family.
+> +
+> +To prevent asking the user about drivers that cannot be used on the system(s)
+> +the user is compiling a kernel for, and if it makes sense, config symbols
+> +controlling the compilation of a driver should contain proper dependencies,
+> +limiting the visibility of the symbol to (a superset of) the platform(s) the
+> +driver can be used on.  The dependency can be an architecture (e.g. ARM) or
+> +platform (e.g. ARCH_OMAP4) dependency.  This makes life simpler not only for
+> +distro config owners, but also for every single developer or user who
+> +configures a kernel.
+> +
+> +Such a dependency can be relaxed by combining it with the compile-testing rule
+> +above, leading to:
+> +
+> +  config FOO
+> +       bool "Support for foo hardware"
+> +       depends on ARCH_FOO_VENDOR || COMPILE_TEST
+> +
+>  Kconfig recursive dependency limitations
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fix non-zero phase_adj is lost after snap. Use ktime_sub
-to do ktime_t subtraction.
+The addition seems useful, but I wonder if we should mention more
+patterns here.:
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- drivers/ptp/ptp_clockmatrix.c | 109 ++++++++++++++++++++++++++++++++++--------
- drivers/ptp/ptp_clockmatrix.h |   5 +-
- 2 files changed, 90 insertions(+), 24 deletions(-)
+- Some drivers are turned on implicitly for a platform, like
 
-diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index 7a660bc..6382041 100644
---- a/drivers/ptp/ptp_clockmatrix.c
-+++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -673,8 +673,9 @@ static int _idtcm_set_dpll_hw_tod(struct idtcm_channel *channel,
- 
- 		if (idtcm->calculate_overhead_flag) {
- 			/* Assumption: I2C @ 400KHz */
--			total_overhead_ns =  ktime_to_ns(ktime_get_raw()
--							 - idtcm->start_time)
-+			ktime_t diff = ktime_sub(ktime_get_raw(),
-+						 idtcm->start_time);
-+			total_overhead_ns =  ktime_to_ns(diff)
- 					     + idtcm->tod_write_overhead_ns
- 					     + SETTIME_CORRECTION;
- 
-@@ -757,6 +758,54 @@ static int _idtcm_set_dpll_scsr_tod(struct idtcm_channel *channel,
- 	return 0;
- }
- 
-+static int get_output_base_addr(u8 outn)
-+{
-+	int base;
-+
-+	switch (outn) {
-+	case 0:
-+		base = OUTPUT_0;
-+		break;
-+	case 1:
-+		base = OUTPUT_1;
-+		break;
-+	case 2:
-+		base = OUTPUT_2;
-+		break;
-+	case 3:
-+		base = OUTPUT_3;
-+		break;
-+	case 4:
-+		base = OUTPUT_4;
-+		break;
-+	case 5:
-+		base = OUTPUT_5;
-+		break;
-+	case 6:
-+		base = OUTPUT_6;
-+		break;
-+	case 7:
-+		base = OUTPUT_7;
-+		break;
-+	case 8:
-+		base = OUTPUT_8;
-+		break;
-+	case 9:
-+		base = OUTPUT_9;
-+		break;
-+	case 10:
-+		base = OUTPUT_10;
-+		break;
-+	case 11:
-+		base = OUTPUT_11;
-+		break;
-+	default:
-+		base = -EINVAL;
-+	}
-+
-+	return base;
-+}
-+
- static int _idtcm_settime(struct idtcm_channel *channel,
- 			  struct timespec64 const *ts)
- {
-@@ -881,6 +930,7 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
- 
- 	ktime_t start;
- 	ktime_t stop;
-+	ktime_t diff;
- 
- 	char buf[TOD_BYTE_COUNT] = {0};
- 
-@@ -900,7 +950,9 @@ static int set_tod_write_overhead(struct idtcm_channel *channel)
- 
- 		stop = ktime_get_raw();
- 
--		current_ns = ktime_to_ns(stop - start);
-+		diff = ktime_sub(stop, start);
-+
-+		current_ns = ktime_to_ns(diff);
- 
- 		if (i == 0) {
- 			lowest_ns = current_ns;
-@@ -1220,11 +1272,19 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
- 			       bool enable, unsigned int outn)
- {
- 	struct idtcm *idtcm = channel->idtcm;
-+	int base;
- 	int err;
- 	u8 val;
- 
--	err = idtcm_read(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
--			 OUT_CTRL_1, &val, sizeof(val));
-+	base = get_output_base_addr(outn);
-+
-+	if (!(base > 0)) {
-+		dev_err(&idtcm->client->dev,
-+			"%s - Unsupported out%d", __func__, outn);
-+		return base;
-+	}
-+
-+	err = idtcm_read(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
- 
- 	if (err)
- 		return err;
-@@ -1234,8 +1294,7 @@ static int idtcm_output_enable(struct idtcm_channel *channel,
- 	else
- 		val &= ~SQUELCH_DISABLE;
- 
--	return idtcm_write(idtcm, OUTPUT_MODULE_FROM_INDEX(outn),
--			   OUT_CTRL_1, &val, sizeof(val));
-+	return idtcm_write(idtcm, (u16)base, OUT_CTRL_1, &val, sizeof(val));
- }
- 
- static int idtcm_output_mask_enable(struct idtcm_channel *channel,
-@@ -1278,6 +1337,23 @@ static int idtcm_perout_enable(struct idtcm_channel *channel,
- 	return idtcm_output_enable(channel, enable, perout->index);
- }
- 
-+static int idtcm_get_pll_mode(struct idtcm_channel *channel,
-+			      enum pll_mode *pll_mode)
-+{
-+	struct idtcm *idtcm = channel->idtcm;
-+	int err;
-+	u8 dpll_mode;
-+
-+	err = idtcm_read(idtcm, channel->dpll_n, DPLL_MODE,
-+			 &dpll_mode, sizeof(dpll_mode));
-+	if (err)
-+		return err;
-+
-+	*pll_mode = (dpll_mode >> PLL_MODE_SHIFT) & PLL_MODE_MASK;
-+
-+	return 0;
-+}
-+
- static int idtcm_set_pll_mode(struct idtcm_channel *channel,
- 			      enum pll_mode pll_mode)
- {
-@@ -1343,7 +1419,7 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
- 	else if (offset_ps < -MAX_ABS_WRITE_PHASE_PICOSECONDS)
- 		offset_ps = -MAX_ABS_WRITE_PHASE_PICOSECONDS;
- 
--	phase_50ps = DIV_ROUND_CLOSEST(div64_s64(offset_ps, 50), 1);
-+	phase_50ps = div_s64(offset_ps, 50);
- 
- 	for (i = 0; i < 4; i++) {
- 		buf[i] = phase_50ps & 0xff;
-@@ -1360,7 +1436,6 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
- {
- 	struct idtcm *idtcm = channel->idtcm;
- 	u8 i;
--	bool neg_adj = 0;
- 	int err;
- 	u8 buf[6] = {0};
- 	s64 fcw;
-@@ -1384,18 +1459,11 @@ static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm)
- 	 * FCW = -------------
- 	 *         111 * 2^4
- 	 */
--	if (scaled_ppm < 0) {
--		neg_adj = 1;
--		scaled_ppm = -scaled_ppm;
--	}
- 
- 	/* 2 ^ -53 = 1.1102230246251565404236316680908e-16 */
- 	fcw = scaled_ppm * 244140625ULL;
- 
--	fcw = div_u64(fcw, 1776);
--
--	if (neg_adj)
--		fcw = -fcw;
-+	fcw = div_s64(fcw, 1776);
- 
- 	for (i = 0; i < 6; i++) {
- 		buf[i] = fcw & 0xff;
-@@ -2062,12 +2130,11 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
- 		}
- 	}
- 
--	err = idtcm_set_pll_mode(channel, PLL_MODE_WRITE_FREQUENCY);
-+	/* Sync pll mode with hardware */
-+	err = idtcm_get_pll_mode(channel, &channel->pll_mode);
- 	if (err) {
- 		dev_err(&idtcm->client->dev,
--			"Failed at line %d in func %s!\n",
--			__LINE__,
--			__func__);
-+			"Error: %s - Unable to read pll mode\n", __func__);
- 		return err;
- 	}
- 
-diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-index dd3436e..3790dfa 100644
---- a/drivers/ptp/ptp_clockmatrix.h
-+++ b/drivers/ptp/ptp_clockmatrix.h
-@@ -15,6 +15,7 @@
- #define FW_FILENAME	"idtcm.bin"
- #define MAX_TOD		(4)
- #define MAX_PLL		(8)
-+#define MAX_OUTPUT	(12)
- 
- #define MAX_ABS_WRITE_PHASE_PICOSECONDS (107374182350LL)
- 
-@@ -49,9 +50,6 @@
- #define PHASE_PULL_IN_THRESHOLD_NS_V487	(15000)
- #define TOD_WRITE_OVERHEAD_COUNT_MAX	(2)
- #define TOD_BYTE_COUNT			(11)
--#define WR_PHASE_SETUP_MS		(5000)
--
--#define OUTPUT_MODULE_FROM_INDEX(index)	(OUTPUT_0 + (index) * 0x10)
- 
- #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
- 
-@@ -125,6 +123,7 @@ struct idtcm_channel {
- 	enum pll_mode		pll_mode;
- 	u8			pll;
- 	u16			output_mask;
-+	u8			output_phase_adj[MAX_OUTPUT][4];
- };
- 
- struct idtcm {
--- 
-2.7.4
+ config FOO
+       bool "Support for foo hardware"
+       depends on ARCH_FOO_VENDOR || COMPILE_TEST
+       default ARCH_FOO_VENDOR
 
+- some drivers can use a feature that may be a loadable module
+  itself, or can compile if that feature is disabled, but the driver
+  itself must not be built-in if the feature is in a loadable module, e.g.
+
+config FOO
+        tristate "Foo device"
+        depends on HWSPINLOCK || (COMPILE_TEST && !HWSPINLOCK)
+
+       Arnd
