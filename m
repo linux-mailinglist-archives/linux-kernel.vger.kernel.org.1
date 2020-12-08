@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB73F2D30DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F652D30DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730348AbgLHRVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgLHRVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:21:53 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF80C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:21:13 -0800 (PST)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 2CE572AE;
-        Tue,  8 Dec 2020 17:21:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2CE572AE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607448073; bh=390xVW35NUxIwledR4CcKZWnzOPfOJL72HXy7aRYR08=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VjeIGrl8J8sIlbjM70+3msIbT+yQm/8CrrMrhln0zIH2X4nOLP4g/C6qe53da7QqC
-         JCCMEfGeUwYT5oIqUfpUTbrB2fA9ddqZYzI7i9WZdxr95z8v/HmOC4R6Jfr+Va04rV
-         3/yssfFobkIpUL6TM64yKkbP4EUocP7+JW4gl6bIUYk0a9Qn6R4ADqC2+eGaZRxGNz
-         e6xtoL/jAAXaM7vweWam7TK0GMf2YUlEHqNQYrbtkVBGKY+Cl07tzizO6M5F3wsnPM
-         Epcy2ItmY5gpPUdjS+sQCwEti5jp4bpJB1+vn2WaMPN6v2rVS4RrafSQUlrymC3vIM
-         C5C1qWLLPZCuw==
-Date:   Tue, 8 Dec 2020 10:21:12 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tom Zanussi <zanussi@kernel.org>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: trace: fix event state structure name
-Message-ID: <20201208102112.2f0dccf9@lwn.net>
-In-Reply-To: <20201207181914.370d4016@gandalf.local.home>
-References: <20201104122113.322452-1-dedekind1@gmail.com>
-        <96720ed0aac00653f9359679665d0ed4b2cc346d.camel@kernel.org>
-        <20201207181914.370d4016@gandalf.local.home>
-Organization: LWN.net
+        id S1730514AbgLHRW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgLHRW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:22:29 -0500
+Date:   Tue, 8 Dec 2020 17:21:43 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+Message-ID: <20201208172143.GB13960@gaia>
+References: <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
+ <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
+ <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+ <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+ <0d0eb6da6a11f76d10e532c157181985@kernel.org>
+ <20201207163405.GD1526@gaia>
+ <874kkx5thq.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874kkx5thq.wl-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Dec 2020 18:19:14 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Fri, 06 Nov 2020 14:47:46 -0600
-> Tom Zanussi <zanussi@kernel.org> wrote:
-> 
-> > Hi Artem,
+On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
+> On Mon, 07 Dec 2020 16:34:05 +0000,
+> Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Mon, Dec 07, 2020 at 04:05:55PM +0000, Marc Zyngier wrote:
+> > > What I'd really like to see is a description of how shared memory
+> > > is, in general, supposed to work with MTE. My gut feeling is that
+> > > it doesn't, and that you need to turn MTE off when sharing memory
+> > > (either implicitly or explicitly).
 > > 
-> > On Wed, 2020-11-04 at 14:21 +0200, Artem Bityutskiy wrote:  
-> > > From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > > 
-> > > The documentation refers to a non-existent 'struct synth_trace_state'
-> > > structure. The correct name is 'struct synth_event_trace_state'.
-> > > 
-> > > In other words, this patch is a mechanical substitution:
-> > > s/synth_trace_state/synth_event_trace_state/g
-> > > 
-> > > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>    
-> > 
-> > Thanks for fixing this!
-> > 
-> > Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-> >   
+> > The allocation tag (in-memory tag) is a property assigned to a physical
+> > address range and it can be safely shared between different processes as
+> > long as they access it via pointers with the same allocation tag (bits
+> > 59:56). The kernel enables such tagged shared memory for user processes
+> > (anonymous, tmpfs, shmem).
 > 
-> Jon,
+> I think that's one case where the shared memory scheme breaks, as we
+> have two kernels in charge of their own tags, and they obviously can't
+> be synchronised
+
+Yes, if you can't trust the other entity to not change the tags, the
+only option is to do an untagged access.
+
+> > What we don't have in the architecture is a memory type which allows
+> > access to tags but no tag checking. To access the data when the tags
+> > aren't known, the tag checking would have to be disabled via either a
+> > prctl() or by setting the PSTATE.TCO bit.
 > 
-> Can you take this patch?
+> I guess that's point (3) in Steven's taxonomy. It still a bit ugly to
+> fit in an existing piece of userspace, specially if it wants to use
+> MTE for its own benefit.
+
+I agree it's ugly. For the device DMA emulation case, the only sane way
+is to mimic what a real device does - no tag checking. For a generic
+implementation, this means that such shared memory should not be mapped
+with PROT_MTE on the VMM side. I guess this leads to your point that
+sharing doesn't work for this scenario ;).
+
+> > The kernel accesses the user memory via the linear map using a match-all
+> > tag 0xf, so no TCO bit toggling. For user, however, we disabled such
+> > match-all tag and it cannot be enabled at run-time (at least not easily,
+> > it's cached in the TLB). However, we already have two modes to disable
+> > tag checking which Qemu could use when migrating data+tags.
 > 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> I wonder whether we will have to have something kernel side to
+> dump/reload tags in a way that matches the patterns used by live
+> migration.
 
-This wasn't sent to me, of course, so I was about to go digging into the
-archive...until I realized I could just feed this email to b4 and
-everything just happens by magic.  How did we ever get by before b4?
+We have something related - ptrace dumps/resores the tags. Can the same
+concept be expanded to a KVM ioctl?
 
-Anyway...applied :)
-
-Thanks,
-
-jon
+-- 
+Catalin
