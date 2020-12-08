@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6802D2007
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF5B2D1FFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbgLHB1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:27:46 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36899 "EHLO
+        id S1726993AbgLHB1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:27:30 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:54205 "EHLO
         out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725995AbgLHB1q (ORCPT
+        by vger.kernel.org with ESMTP id S1725995AbgLHB1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:27:46 -0500
+        Mon, 7 Dec 2020 20:27:30 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id B5DCB5C01C6;
-        Mon,  7 Dec 2020 20:26:39 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 89D2B5C01CA;
+        Mon,  7 Dec 2020 20:26:43 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 07 Dec 2020 20:26:39 -0500
+  by compute3.internal (MEProxy); Mon, 07 Dec 2020 20:26:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=06SREafhLlHLU
-        F3HGq2w3cJFjjzGGkvm2N01mQelkbA=; b=OAFm3oRhzDDWDKvbhxE9mMUm3Z25I
-        roxuoKiyjB9600dFucN8EcjhhvqVdBvqnR2B2dbdW/o7OYHfj08i5nbvqY9VOfde
-        lGhsW4g2F2dXyUTQI6jXlNAZLusV1NZqYP5+wn6ipJXIGCB0enPCSK9VRiGxxtnw
-        K2gkCZpthQncfasyWx49/PnMJaVC+A99ZRymCLvSGl0+C11ZQG5CEeIH3xPpHnoJ
-        rXDXuhCU49IB0GiAXEICy1355o61ahidHDh/QG1GFTWEXw+0xxsp6AgmXFf/pLAB
-        uQchcFMPjZ6PRSjYgSFj7144LXb5qY8POb7uUPi5XrmFvL7ugnm5VbvIQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=hVMm4VwyoVE0E
+        1Ux9HqgKQndPgPApnbPx+tXCVQwpSw=; b=gPq0JoxJqxFh7jKhZ3+g/Itvgkux0
+        Jzu2sz1eIEXJl4VgNsTrg3Td1NpNAN2YJMFBPtBZV21H4QyQUoyHEVOWH0JIA8P+
+        c8ooA6ePil4jLa2URD6m9UxKpYUCsni7DqJQkTHmByhb7fn/0dV1LvDIzbOOXBgw
+        0o0nB1E/RxyD2tK9Sp9weCfX4Coo4gCWMJY/3Y+JKnyJE+HPwl0veRhtWAI3AUgJ
+        8n7UUCU9wLYyEExtYcVl/I0cUkWGV4hJdP5eXK96ejmlolKHYJDSly/xYg/U3TEi
+        xjbp7Rh0DVfLMl13DJrgM5UJZ7/wqE+IwwulUpxKYiz/VUzIz5adQAWbA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=06SREafhLlHLUF3HGq2w3cJFjjzGGkvm2N01mQelkbA=; b=OPYds6hm
-        RHJCd5tiVBLepMkN7CpN060nngtFJi2E2hahrdQfYyQELx4GAY6WtLGWSpaLPgu6
-        UXqcaP9jvQPn72zUd2ZBCEiXxoe74B0WS1zBTfqZHAog9BG552YD1N9JcXFmM5ku
-        ql2dDyHCPh7+zFdX641GLC592YuxuMLmT2KQVBchkJ4RijosXJg5Xv1yoKafsBZy
-        f/acrzHHvYWd2t0EPFuHraMQxF/2BAt1mQEj8gszrkF/z+g5nc9UrQ8XfIp9c/kJ
-        hkrzWsNUP2QgbVh+zQxaz/u6rzHteNJoVvzMbmVGQniEK1HSRr588VCU6buWntFz
-        TKjOqSFsR4f2lw==
-X-ME-Sender: <xms:T9bOX7HGPsx2FdZ_ovMRXGMnsZdTYDbVw_8X1ApNA6c8x-87qqygTg>
-    <xme:T9bOX4W7X06MqffrBJ14TPCKqBr64VoYDDoKlh9jJJ-bDrS5_T7FgKUz7dzTbqdHR
-    Pm18ZdhZ8c1EdI_0Q>
+        fm1; bh=hVMm4VwyoVE0E1Ux9HqgKQndPgPApnbPx+tXCVQwpSw=; b=AdMdbVky
+        ECyrSIqIFO0qcxh34Qwdf1oX/MKj0UXvxr/BWT4OlBzkUUeExIX7cp570TZUYzi7
+        s0hzUKMQu/6F40roQsRW4wA5JCcmQiiS4g0x3PJ2/I+ORfYGu6JbG7XxheBe8KYt
+        KkKKJ8GgLBS1Sfl2/+D6hWvWHbSkbNfN9wvkCKIuKh05zbQv6pruHqZqiQbx8sEx
+        lm6vrJArhdk4694l4z4ke44Xx180IeCNXpXOYryoV6nfYLpMrGd2slQOFRC2gbbX
+        2rtpk+S6JTtlUW4TnxvXU9BZmwyp7YIe5tstUp03mYchOxyXqutkYkWi6ujtqIg9
+        MKekBFyWHSUbpA==
+X-ME-Sender: <xms:U9bOX9rVCoWq7SNVtPBVmtIEFH300vUOoLn2SbY34wXFpssho8PmqQ>
+    <xme:U9bOX_oFrdoVnXpGkyZZWEXKyj_gRjDWZhwr4mbxxFDRGIB30Wl7rsNi7xXEddjzy
+    zXwpkewe66sa628UA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedgfeehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
     jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
     etjeffleffvdduudevieffgeetleevhfetnecukfhppedvtdefrdehjedrvddtkedrudeg
-    ieenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnh
+    ieenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnh
     gurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:T9bOX9KtOI0SdU3qyTI5uOPtzlYgxhMf_bHmFKXYEyIw7Wb0NjSDCw>
-    <xmx:T9bOX5EayKvm7LEOhGauhVotFHFfP_xiHjMsSKWh0R-t2YQfDWJEWg>
-    <xmx:T9bOXxVaAWSp6zjnUGwGgN4-A1Ydj6jNEzam2jmMcsSF2mzPyWk3uw>
-    <xmx:T9bOXwExc3BaVB208QyDqhJynLv3AAISuoMQATX9uRSjyhAm4CYXuw>
+X-ME-Proxy: <xmx:U9bOX6N_4tSmXOowWEl0DoK8lMTbHlh5NIRnfysOPr6mPUp3oPo7yg>
+    <xmx:U9bOX442RGznJaT5H2B25YIYv_TRW6FS6_ilobu6Z2KkEhZytyP5xA>
+    <xmx:U9bOX86SOg2iTtEshd3NKn2-hBsv9b4mZDDecayDSRiCUShvVbBYUA>
+    <xmx:U9bOX7YCrEcJArw-rPGdIb6ZC2IvFLb14Uq7q5w3-g4HTzDsrFPW-w>
 Received: from localhost.localdomain (203-57-208-146.dyn.iinet.net.au [203.57.208.146])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 11A451080057;
-        Mon,  7 Dec 2020 20:26:35 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 225A9108005B;
+        Mon,  7 Dec 2020 20:26:39 -0500 (EST)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     linux-mmc@vger.kernel.org
 Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
         adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-Subject: [PATCH v5 3/6] mmc: sdhci-of-aspeed: Add AST2600 bus clock support
-Date:   Tue,  8 Dec 2020 11:56:12 +1030
-Message-Id: <20201208012615.2717412-4-andrew@aj.id.au>
+Subject: [PATCH v5 4/6] mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
+Date:   Tue,  8 Dec 2020 11:56:13 +1030
+Message-Id: <20201208012615.2717412-5-andrew@aj.id.au>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201208012615.2717412-1-andrew@aj.id.au>
 References: <20201208012615.2717412-1-andrew@aj.id.au>
@@ -73,115 +73,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AST2600 can achieve HS200 speeds with a change to the bus clock
-divisor behaviour. The divisor can also be more accurate with respect
-to the requested clock rate, but keep the one-hot behaviour for
-backwards compatibility with the AST2400 and AST2500.
+Converting degrees of phase to logic delays is irritating to test on
+hardware, so lets exercise the function using KUnit.
 
 Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 37 ++++++++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 4 deletions(-)
+ drivers/mmc/host/Kconfig                |  14 ++++
+ drivers/mmc/host/Makefile               |   1 +
+ drivers/mmc/host/sdhci-of-aspeed-test.c | 100 ++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+)
+ create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 788ec7728227..0a181b104752 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -59,6 +59,7 @@ struct aspeed_sdhci_phase_desc {
- };
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 596f32637315..d6f00d1d6251 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -168,6 +168,20 @@ config MMC_SDHCI_OF_ASPEED
  
- struct aspeed_sdhci_pdata {
-+	unsigned int clk_div_start;
- 	const struct aspeed_sdhci_phase_desc *phase_desc;
- 	size_t nr_phase_descs;
- };
-@@ -200,10 +201,13 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
- {
- 	struct sdhci_pltfm_host *pltfm_host;
- 	unsigned long parent, bus;
-+	struct aspeed_sdhci *sdhci;
- 	int div;
- 	u16 clk;
+ 	  If unsure, say N.
  
- 	pltfm_host = sdhci_priv(host);
-+	sdhci = sdhci_pltfm_priv(pltfm_host);
++config MMC_SDHCI_OF_ASPEED_TEST
++	bool "Tests for the ASPEED SDHCI driver"
++	depends on MMC_SDHCI_OF_ASPEED && KUNIT=y
++	help
++	  Enable KUnit tests for the ASPEED SDHCI driver. Select this
++	  option only if you will boot the kernel for the purpose of running
++	  unit tests (e.g. under UML or qemu).
 +
- 	parent = clk_get_rate(pltfm_host->clk);
- 
- 	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
-@@ -214,7 +218,23 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
- 	if (WARN_ON(clock > host->max_clk))
- 		clock = host->max_clk;
- 
--	for (div = 2; div < 256; div *= 2) {
-+	/*
-+	 * Regarding the AST2600:
-+	 *
-+	 * If (EMMC12C[7:6], EMMC12C[15:8] == 0) then
-+	 *   period of SDCLK = period of SDMCLK.
-+	 *
-+	 * If (EMMC12C[7:6], EMMC12C[15:8] != 0) then
-+	 *   period of SDCLK = period of SDMCLK * 2 * (EMMC12C[7:6], EMMC[15:8])
-+	 *
-+	 * If you keep EMMC12C[7:6] = 0 and EMMC12C[15:8] as one-hot,
-+	 * 0x1/0x2/0x4/etc, you will find it is compatible to AST2400 or AST2500
-+	 *
-+	 * Keep the one-hot behaviour for backwards compatibility except for
-+	 * supporting the value 0 in (EMMC12C[7:6], EMMC12C[15:8]), and capture
-+	 * the 0-value capability in clk_div_start.
-+	 */
-+	for (div = sdhci->pdata->clk_div_start; div < 256; div *= 2) {
- 		bus = parent / div;
- 		if (bus <= clock)
- 			break;
-@@ -316,6 +336,10 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	aspeed_pdata = of_device_get_match_data(&pdev->dev);
-+	if (!aspeed_pdata) {
-+		dev_err(&pdev->dev, "Missing platform configuration data\n");
-+		return -EINVAL;
-+	}
- 
- 	host = sdhci_pltfm_init(pdev, &aspeed_sdhci_pdata, sizeof(*dev));
- 	if (IS_ERR(host))
-@@ -334,7 +358,7 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
- 	else if (slot >= 2)
- 		return -EINVAL;
- 
--	if (dev->pdata && slot < dev->pdata->nr_phase_descs) {
-+	if (slot < dev->pdata->nr_phase_descs) {
- 		dev->phase_desc = &dev->pdata->phase_desc[slot];
- 	} else {
- 		dev_info(&pdev->dev,
-@@ -396,6 +420,10 @@ static int aspeed_sdhci_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct aspeed_sdhci_pdata ast2400_sdhci_pdata = {
-+	.clk_div_start = 2,
++	  The KUnit tests generally exercise parts of the driver that do not
++	  directly touch the hardware, for example, the phase correction
++	  calculations.
++
++	  If unsure, say N.
++
+ config MMC_SDHCI_OF_AT91
+ 	tristate "SDHCI OF support for the Atmel SDMMC controller"
+ 	depends on MMC_SDHCI_PLTFM
+diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+index 451c25fc2c69..3ee59d5802cf 100644
+--- a/drivers/mmc/host/Makefile
++++ b/drivers/mmc/host/Makefile
+@@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
+ obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
+ obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
+ obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
++obj-$(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)	+= sdhci-of-aspeed-test.o
+ obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
+ obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
+ obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
+diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
+new file mode 100644
+index 000000000000..fb79b278fb81
+--- /dev/null
++++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/* Copyright (C) 2020 IBM Corp. */
++
++#include <kunit/test.h>
++
++#include "sdhci-of-aspeed.c"
++
++static void aspeed_sdhci_phase_ddr52(struct kunit *test)
++{
++	int rate = 52000000;
++
++	KUNIT_EXPECT_EQ(test, 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 0));
++	KUNIT_EXPECT_EQ(test, 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 1));
++	KUNIT_EXPECT_EQ(test, 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 2));
++	KUNIT_EXPECT_EQ(test, 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 3));
++	KUNIT_EXPECT_EQ(test, 2,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 4));
++	KUNIT_EXPECT_EQ(test, 3,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 5));
++	KUNIT_EXPECT_EQ(test, 14,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 23));
++	KUNIT_EXPECT_EQ(test, 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 24));
++	KUNIT_EXPECT_EQ(test, 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 25));
++
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 180));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 181));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 182));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 183));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 184));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 185));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 203));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 204));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 205));
++}
++
++static void aspeed_sdhci_phase_hs200(struct kunit *test)
++{
++	int rate = 200000000;
++
++	KUNIT_EXPECT_EQ(test, 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 0));
++	KUNIT_EXPECT_EQ(test, 0,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 5));
++	KUNIT_EXPECT_EQ(test, 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 6));
++	KUNIT_EXPECT_EQ(test, 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 7));
++	KUNIT_EXPECT_EQ(test, 14,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 89));
++	KUNIT_EXPECT_EQ(test, 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 90));
++	KUNIT_EXPECT_EQ(test, 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 91));
++	KUNIT_EXPECT_EQ(test, 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 96));
++
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 180));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 185));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 186));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 187));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 269));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 270));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 271));
++	KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
++			aspeed_sdhci_phase_to_tap(NULL, rate, 276));
++}
++
++static struct kunit_case aspeed_sdhci_test_cases[] = {
++	KUNIT_CASE(aspeed_sdhci_phase_ddr52),
++	KUNIT_CASE(aspeed_sdhci_phase_hs200),
++	{}
 +};
 +
- static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
- 	/* SDHCI/Slot 0 */
- 	[0] = {
-@@ -426,13 +454,14 @@ static const struct aspeed_sdhci_phase_desc ast2600_sdhci_phase[] = {
- };
- 
- static const struct aspeed_sdhci_pdata ast2600_sdhci_pdata = {
-+	.clk_div_start = 1,
- 	.phase_desc = ast2600_sdhci_phase,
- 	.nr_phase_descs = ARRAY_SIZE(ast2600_sdhci_phase),
- };
- 
- static const struct of_device_id aspeed_sdhci_of_match[] = {
--	{ .compatible = "aspeed,ast2400-sdhci", },
--	{ .compatible = "aspeed,ast2500-sdhci", },
-+	{ .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_pdata, },
-+	{ .compatible = "aspeed,ast2500-sdhci", .data = &ast2400_sdhci_pdata, },
- 	{ .compatible = "aspeed,ast2600-sdhci", .data = &ast2600_sdhci_pdata, },
- 	{ }
- };
++static struct kunit_suite aspeed_sdhci_test_suite = {
++	.name = "sdhci-of-aspeed",
++	.test_cases = aspeed_sdhci_test_cases,
++};
++kunit_test_suite(aspeed_sdhci_test_suite);
 -- 
 2.27.0
 
