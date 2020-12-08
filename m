@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D3A2D3474
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DD52D34F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbgLHUne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:43:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728516AbgLHUne (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:43:34 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2F5C061793;
-        Tue,  8 Dec 2020 12:42:53 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id m12so81030lfo.7;
-        Tue, 08 Dec 2020 12:42:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zPEezVzK5/kLNT18lfW/dfChG0nQyJZzaqQoMAH4Ojw=;
-        b=QQB6xX7ZMHg5p+Sz6Bt9MksNDS64p3I6yufe4wI9yXPB/gVrO3fXujcKeeSB9vuEWp
-         3a23umzaJgQ7JDO9BB/hOohKVSl1sHLJFD7X2ep22r/iO4cjIag+ZzLnqcKcoJLlYM7P
-         PWQmJZRCIv4T4OkshRETA/Bfm6Wn9tRDmPwuSGgKVgxWzTb3G6hXpIkqKxAq/7LInnqj
-         8FrUOY274w9bytUgQZYAXOIMIS8YfUivRINu6yrbLQ+czfZb83CQZsgLu6RP/C3o7fg4
-         0Tp8z19OXY/ABUelr4Nx50muS+9ok8KuARMWdmXDpe5/TzKYoF7jsgS7p8XPBEGIfidC
-         b2pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zPEezVzK5/kLNT18lfW/dfChG0nQyJZzaqQoMAH4Ojw=;
-        b=ewSN5i4Mv5AJY+uJpSiaqcFSxZIquKEsZw+l00Vtt8DJxNGnMW7B7Q1TbgnF2oLi1N
-         zfT8NVHxQ23ZgcvsUB/M32h1FreG6GZPGc1HdKoiqpgYUAgxUt4vL2qa1DzSe1nOwW8Z
-         fHkF58kfsQ4qXANyiOXMlNK3nQo5lEqXUlpfuuHPjTNJz3MQ/43a8KU0iVQRp6IOk9gQ
-         qkOQIgTbx500TGy9k556xFShe6ZX0cftBlgWkw24ag1uNaJRWMGUBBODpcSMySX9szYM
-         gb7Dc7j4BKczNKXmX8EDadWfajcmb+39Gfr9I2A8x/f7hERe+J1VXjkCrRxhfNcc91Zy
-         y0Aw==
-X-Gm-Message-State: AOAM533C56g5R/wNzy3r0qfzctA46qCNqJSmNG8QMvoYWyUTt2FDY4Ai
-        TeNxjKtDRk8l4ewIGVWOS8ougiwsfVcliEJG+STij9s6TkU=
-X-Google-Smtp-Source: ABdhPJxV3qjQHB6wUEKu9rWrbuLtX9hIHxwZYN45a2xlKjN3Iv09O/zEhJ+iIFYHbTAk33M7azJfMCbvOBT9Bh7Cz4k=
-X-Received: by 2002:a19:950:: with SMTP id 77mr6586265lfj.133.1607460172142;
- Tue, 08 Dec 2020 12:42:52 -0800 (PST)
+        id S1729606AbgLHVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:09:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726512AbgLHVJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:09:27 -0500
+Date:   Tue, 8 Dec 2020 10:42:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607452944;
+        bh=nY7PYCioAPpxqdRM9+J5Fipi94C2gwsu6XanIKPCqVc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PE/oryX7HwFJx+RjzoAC+WKYBsVdvl7Va8ITfMMJ0oK+p70/YkDApmIfCw5bPMzre
+         oem4djKzUKzH82hsKXYneLHCLrsOeoXIwK/j6JzKBE1axqDQOIxq0j8Qfk7MztXBLx
+         423OPAbOe0u/qnGcPDQgpvLJN9b6pselUBdssPltLU/LG0ZwivACYI9p6uUUbjh+YL
+         pqQN4CNKauFPaSKGawFnKdFzDWJ9xn9Cmza+grsEsIn3XVZJNutglnBbddI2fDFHS+
+         5S/EX3VN/c7Qcb7ZNJod8ahO1fp0BHc1lHR+2HBwhyx5DV8FbQb78Zo9goqg9Hbzta
+         6JsziLPMe/EfA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+Message-ID: <20201208104222.605bb669@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+        <20201204170235.84387-2-andraprs@amazon.com>
+        <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+        <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
 MIME-Version: 1.0
-References: <cover.1605896059.git.gustavoars@kernel.org> <8a35ff7132f95e24f6d9501e1bec644854fc5078.1605896059.git.gustavoars@kernel.org>
-In-Reply-To: <8a35ff7132f95e24f6d9501e1bec644854fc5078.1605896059.git.gustavoars@kernel.org>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 8 Dec 2020 14:42:40 -0600
-Message-ID: <CAH2r5mtS-A+0N1byiXT3GYHEAkvyZByBdr-G_+ZDGhcfs40qrQ@mail.gmail.com>
-Subject: Re: [PATCH 003/141] cifs: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merged into cifs-2.6.git for-next
+On Tue, 8 Dec 2020 20:23:24 +0200 Paraschiv, Andra-Irina wrote:
+> >> --- a/include/uapi/linux/vm_sockets.h
+> >> +++ b/include/uapi/linux/vm_sockets.h
+> >> @@ -145,7 +145,7 @@
+> >>
+> >>   struct sockaddr_vm {
+> >>        __kernel_sa_family_t svm_family;
+> >> -     unsigned short svm_reserved1;
+> >> +     unsigned short svm_flags;
+> >>        unsigned int svm_port;
+> >>        unsigned int svm_cid;
+> >>        unsigned char svm_zero[sizeof(struct sockaddr) -  
+> > Since this is a uAPI header I gotta ask - are you 100% sure that it's
+> > okay to rename this field?
+> >
+> > I didn't grasp from just reading the patches whether this is a uAPI or
+> > just internal kernel flag, seems like the former from the reading of
+> > the comment in patch 2. In which case what guarantees that existing
+> > users don't pass in garbage since the kernel doesn't check it was 0?  
+> 
+> That's always good to double-check the uapi changes don't break / assume 
+> something, thanks for bringing this up. :)
+> 
+> Sure, let's go through the possible options step by step. Let me know if 
+> I get anything wrong and if I can help with clarifications.
+> 
+> There is the "svm_reserved1" field that is not used in the kernel 
+> codebase. It is set to 0 on the receive (listen) path as part of the 
+> vsock address initialization [1][2]. The "svm_family" and "svm_zero" 
+> fields are checked as part of the address validation [3].
+> 
+> Now, with the current change to "svm_flags", the flow is the following:
+> 
+> * On the receive (listen) path, the remote address structure is 
+> initialized as part of the vsock address init logic [2]. Then patch 3/4 
+> of this series sets the "VMADDR_FLAG_TO_HOST" flag given a set of 
+> conditions (local and remote CID > VMADDR_CID_HOST).
+> 
+> * On the connect path, the userspace logic can set the "svm_flags" 
+> field. It can be set to 0 or 1 (VMADDR_FLAG_TO_HOST); or any other value 
+> greater than 1. If the "VMADDR_FLAG_TO_HOST" flag is set, all the vsock 
+> packets are then forwarded to the host.
+> 
+> * When the vsock transport is assigned, the "svm_flags" field is 
+> checked, and if it has the "VMADDR_FLAG_TO_HOST" flag set, it goes on 
+> with a guest->host transport (patch 4/4 of this series). Otherwise, 
+> other specific flag value is not currently used.
+> 
+> Given all these points, the question remains what happens if the 
+> "svm_flags" field is set on the connect path to a value higher than 1 
+> (maybe a bogus one, not intended so). And it includes the 
+> "VMADDR_FLAG_TO_HOST" value (the single flag set and specifically used 
+> for now, but we should also account for any further possible flags). In 
+> this case, all the vsock packets would be forwarded to the host and 
+> maybe not intended so, having a bogus value for the flags field. Is this 
+> possible case what you are referring to?
 
-Let me know if you see any other cleanup/misc cifs.ko patches that may
-have gotten missed ...
+Correct. What if user basically declared the structure on the stack,
+and only initialized the fields the kernel used to check?
 
-On Fri, Nov 20, 2020 at 12:25 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break/goto statements instead of
-> just letting the code fall through to the next case.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  fs/cifs/inode.c     | 1 +
->  fs/cifs/sess.c      | 1 +
->  fs/cifs/smbdirect.c | 1 +
->  3 files changed, 3 insertions(+)
->
-> diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
-> index 9ee5f304592f..ac01f9684b39 100644
-> --- a/fs/cifs/inode.c
-> +++ b/fs/cifs/inode.c
-> @@ -771,6 +771,7 @@ cifs_get_file_info(struct file *filp)
->                  */
->                 rc = 0;
->                 CIFS_I(inode)->time = 0;
-> +               goto cgfi_exit;
->         default:
->                 goto cgfi_exit;
->         }
-> diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c
-> index de564368a887..6c2c42f8d893 100644
-> --- a/fs/cifs/sess.c
-> +++ b/fs/cifs/sess.c
-> @@ -812,6 +812,7 @@ cifs_select_sectype(struct TCP_Server_Info *server, enum securityEnum requested)
->                                 return NTLMv2;
->                         if (global_secflags & CIFSSEC_MAY_NTLM)
->                                 return NTLM;
-> +                       break;
->                 default:
->                         break;
->                 }
-> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-> index b029ed31ef91..10dfe5006792 100644
-> --- a/fs/cifs/smbdirect.c
-> +++ b/fs/cifs/smbdirect.c
-> @@ -246,6 +246,7 @@ smbd_qp_async_error_upcall(struct ib_event *event, void *context)
->         case IB_EVENT_CQ_ERR:
->         case IB_EVENT_QP_FATAL:
->                 smbd_disconnect_rdma_connection(info);
-> +               break;
->
->         default:
->                 break;
-> --
-> 2.27.0
->
-
-
--- 
-Thanks,
-
-Steve
+This problem needs to be at the very least discussed in the commit
+message.
