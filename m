@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C112D2187
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4CF2D218A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgLHDlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 22:41:42 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8723 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgLHDll (ORCPT
+        id S1726640AbgLHDmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:42:06 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:64042 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725863AbgLHDmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 22:41:41 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CqmCl3KNDzkmkY;
-        Tue,  8 Dec 2020 11:40:19 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 11:40:52 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: introduce sb_status sysfs node
-Date:   Tue, 8 Dec 2020 11:40:40 +0800
-Message-ID: <20201208034040.67658-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 7 Dec 2020 22:42:06 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UHwrZ-V_1607398881;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UHwrZ-V_1607398881)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Dec 2020 11:41:22 +0800
+Subject: Re: [PATCH 01/11] mm: use add_page_to_lru_list()
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20201207220949.830352-1-yuzhao@google.com>
+ <20201207220949.830352-2-yuzhao@google.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <cf290655-5353-1fd3-e57f-452b7662b458@linux.alibaba.com>
+Date:   Tue, 8 Dec 2020 11:41:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201207220949.830352-2-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
-status in real time.
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  5 ++++
- fs/f2fs/sysfs.c                         | 36 +++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3dfee94e0618..57ab839dc3a2 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -377,3 +377,8 @@ Description:	This gives a control to limit the bio size in f2fs.
- 		Default is zero, which will follow underlying block layer limit,
- 		whereas, if it has a certain bytes value, f2fs won't submit a
- 		bio larger than that size.
-+
-+What:		/sys/fs/f2fs/<disk>/stat/sb_status
-+Date:		December 2020
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	Show status of f2fs superblock in real time.
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index ebca0b4961e8..1b85e6d16a94 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -101,6 +101,40 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
- 				sbi->sectors_written_start) >> 1)));
- }
- 
-+#define	SB_STATUS(s)	(s ? "yes" : "no")
-+static ssize_t sb_status_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	return sprintf(buf, "IS_DIRTY:		%s\n"
-+				"IS_CLOSE:		%s\n"
-+				"IS_SHUTDOWN:		%s\n"
-+				"IS_RECOVERED:		%s\n"
-+				"IS_RESIZEFS:		%s\n"
-+				"NEED_FSCK:		%s\n"
-+				"POR_DOING:		%s\n"
-+				"NEED_SB_WRITE:		%s\n"
-+				"NEED_CP:		%s\n"
-+				"CP_DISABLED:		%s\n"
-+				"CP_DISABLED_QUICK:	%s\n"
-+				"QUOTA_NEED_FLUSH:	%s\n"
-+				"QUOTA_SKIP_FLUSH:	%s\n"
-+				"QUOTA_NEED_REPAIR:	%s\n",
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_DIRTY)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_CLOSE)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RECOVERED)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_IS_RESIZEFS)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_FSCK)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_POR_DOING)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_SB_WRITE)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_NEED_CP)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_CP_DISABLED_QUICK)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_FLUSH)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_SKIP_FLUSH)),
-+			SB_STATUS(is_sbi_flag_set(sbi, SBI_QUOTA_NEED_REPAIR)));
-+}
-+
- static ssize_t features_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
-@@ -711,7 +745,9 @@ static struct attribute *f2fs_feat_attrs[] = {
- };
- ATTRIBUTE_GROUPS(f2fs_feat);
- 
-+F2FS_GENERAL_RO_ATTR(sb_status);
- static struct attribute *f2fs_stat_attrs[] = {
-+	ATTR_LIST(sb_status),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
--- 
-2.29.2
-
+在 2020/12/8 上午6:09, Yu Zhao 写道:
+> There is add_page_to_lru_list(), and move_pages_to_lru() should reuse
+> it, not duplicate it.
+> 
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
+> ---
+>  mm/vmscan.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 469016222cdb..a174594e40f8 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1821,7 +1821,6 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  	int nr_pages, nr_moved = 0;
+>  	LIST_HEAD(pages_to_free);
+>  	struct page *page;
+> -	enum lru_list lru;
+>  
+>  	while (!list_empty(list)) {
+>  		page = lru_to_page(list);
+> @@ -1866,11 +1865,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  		 * inhibits memcg migration).
+>  		 */
+>  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
+> -		lru = page_lru(page);
+> +		add_page_to_lru_list(page, lruvec, page_lru(page));
+>  		nr_pages = thp_nr_pages(page);
+> -
+> -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+> -		list_add(&page->lru, &lruvec->lists[lru]);
+>  		nr_moved += nr_pages;
+>  		if (PageActive(page))
+>  			workingset_age_nonresident(lruvec, nr_pages);
+> 
