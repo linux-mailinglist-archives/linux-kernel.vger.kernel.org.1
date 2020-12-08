@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075092D2D12
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E062E2D2C7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbgLHOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:25:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56590 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729293AbgLHOZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:25:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607437426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfs7R36tArLHPO/+HIzcgL+lyVc7901iiK5/fepesp8=;
-        b=CnIth2N4YjhmDuSTHAHEnf7P0rGsrexygqGd4pSpi3UvIrXl1xSwDwbT1vwm5rBX7g1fVA
-        dxLvUI4cin34fm8hIHcF2Mcdeg0yQEHlaUvwSnvx8BnzUMFrgU71k+WPxUMIECI9LuXg6e
-        0cwZzRNa7A08ilKZdd7MCgzCCC4XSIE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-aHFPSlkaM7y4stEEN7OEgw-1; Tue, 08 Dec 2020 09:23:45 -0500
-X-MC-Unique: aHFPSlkaM7y4stEEN7OEgw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB78A107ACE3;
-        Tue,  8 Dec 2020 14:23:42 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-8.gru2.redhat.com [10.97.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7DE3960BD8;
-        Tue,  8 Dec 2020 14:23:42 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 8ACC04172ED9; Mon,  7 Dec 2020 20:34:23 -0300 (-03)
-Date:   Mon, 7 Dec 2020 20:34:23 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201207233423.GE27492@fuller.cnet>
-References: <20201203171118.372391-1-mlevitsk@redhat.com>
- <20201203171118.372391-2-mlevitsk@redhat.com>
- <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+        id S1729558AbgLHOBT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 09:01:19 -0500
+Received: from aposti.net ([89.234.176.197]:53850 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728546AbgLHOBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:01:19 -0500
+Date:   Tue, 08 Dec 2020 14:00:22 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 3/5] drm: Add and export =?UTF-8?Q?function=0D=0A?=
+ drm_gem_cma_mmap_noncoherent
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-Id: <MKX0LQ.WS1HU920R7ZP2@crapouillou.net>
+In-Reply-To: <FQI8JQ.KNVZ9XZ67ZV41@crapouillou.net>
+References: <20201102220651.22069-1-paul@crapouillou.net>
+        <20201102220651.22069-4-paul@crapouillou.net>
+        <20201103185058.GA20134@infradead.org>
+        <FQI8JQ.KNVZ9XZ67ZV41@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6uq9abf.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 06, 2020 at 05:19:16PM +0100, Thomas Gleixner wrote:
-> On Thu, Dec 03 2020 at 19:11, Maxim Levitsky wrote:
-> > +	case KVM_SET_TSC_STATE: {
-> > +		struct kvm_tsc_state __user *user_tsc_state = argp;
-> > +		struct kvm_tsc_state tsc_state;
-> > +		u64 host_tsc, wall_nsec;
-> > +
-> > +		u64 new_guest_tsc, new_guest_tsc_offset;
-> > +
-> > +		r = -EFAULT;
-> > +		if (copy_from_user(&tsc_state, user_tsc_state, sizeof(tsc_state)))
-> > +			goto out;
-> > +
-> > +		kvm_get_walltime(&wall_nsec, &host_tsc);
-> > +		new_guest_tsc = tsc_state.tsc;
-> > +
-> > +		if (tsc_state.flags & KVM_TSC_STATE_TIMESTAMP_VALID) {
-> > +			s64 diff = wall_nsec - tsc_state.nsec;
-> > +			if (diff >= 0)
-> > +				new_guest_tsc += nsec_to_cycles(vcpu, diff);
-> > +			else
-> > +				new_guest_tsc -= nsec_to_cycles(vcpu, -diff);
-> > +		}
-> > +
-> > +		new_guest_tsc_offset = new_guest_tsc - kvm_scale_tsc(vcpu, host_tsc);
-> > +		kvm_vcpu_write_tsc_offset(vcpu, new_guest_tsc_offset);
-> 
-> >From a timekeeping POV and the guests expectation of TSC this is
-> fundamentally wrong:
-> 
->       tscguest = scaled(hosttsc) + offset
-> 
-> The TSC has to be viewed systemwide and not per CPU. It's systemwide
-> used for timekeeping and for that to work it has to be synchronized. 
-> 
-> Why would this be different on virt? Just because it's virt or what? 
-> 
-> Migration is a guest wide thing and you're not migrating single vCPUs.
-> 
-> This hackery just papers over he underlying design fail that KVM looks
-> at the TSC per vCPU which is the root cause and that needs to be fixed.
+Hi Christoph,
 
-It already does it: The unified TSC offset is kept at kvm->arch.cur_tsc_offset.
+Le mar. 3 nov. 2020 à 19:13, Paul Cercueil <paul@crapouillou.net> a 
+écrit :
+> Hi Christoph,
+> 
+> Le mar. 3 nov. 2020 à 18:50, Christoph Hellwig <hch@infradead.org> a 
+> écrit :
+>> On Mon, Nov 02, 2020 at 10:06:49PM +0000, Paul Cercueil wrote:
+>>>  This function can be used by drivers that need to mmap dumb buffers
+>>>  created with non-coherent backing memory.
+>>> 
+>>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>>  ---
+>>>   drivers/gpu/drm/drm_gem_cma_helper.c | 39 
+>>> ++++++++++++++++++++++++++++
+>>>   include/drm/drm_gem_cma_helper.h     |  2 ++
+>>>   2 files changed, 41 insertions(+)
+>>> 
+>>>  diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c 
+>>> b/drivers/gpu/drm/drm_gem_cma_helper.c
+>>>  index 3bdd67795e20..4ed63f4896bd 100644
+>>>  --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+>>>  +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+>>>  @@ -387,6 +387,45 @@ int drm_gem_cma_mmap(struct file *filp, 
+>>> struct vm_area_struct *vma)
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(drm_gem_cma_mmap);
+>>> 
+>>>  +/**
+>>>  + * drm_gem_cma_mmap_noncoherent - memory-map a CMA GEM object with
+>>>  + *     non-coherent cache attribute
+>>>  + * @filp: file object
+>>>  + * @vma: VMA for the area to be mapped
+>>>  + *
+>>>  + * Just like drm_gem_cma_mmap, but for a GEM object backed by 
+>>> non-coherent
+>>>  + * memory.
+>>>  + *
+>>>  + * Returns:
+>>>  + * 0 on success or a negative error code on failure.
+>>>  + */
+>>>  +int drm_gem_cma_mmap_noncoherent(struct file *filp, struct 
+>>> vm_area_struct *vma)
+>>>  +{
+>>>  +	struct drm_gem_cma_object *cma_obj;
+>>>  +	int ret;
+>>>  +
+>>>  +	ret = drm_gem_mmap(filp, vma);
+>>>  +	if (ret)
+>>>  +		return ret;
+>>>  +
+>>>  +	cma_obj = to_drm_gem_cma_obj(vma->vm_private_data);
+>>>  +
+>>>  +	/*
+>>>  +	 * Clear the VM_PFNMAP flag that was set by drm_gem_mmap(), and 
+>>> set the
+>>>  +	 * vm_pgoff (used as a fake buffer offset by DRM) to 0 as we 
+>>> want to map
+>>>  +	 * the whole buffer.
+>>>  +	 */
+>>>  +	vma->vm_flags &= ~VM_PFNMAP;
+>>>  +	vma->vm_pgoff = 0;
+>>>  +	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>>>  +
+>>>  +	return remap_pfn_range(vma, vma->vm_start,
+>>>  +			       cma_obj->paddr >> PAGE_SHIFT,
+>>>  +			       vma->vm_end - vma->vm_start,
+>>>  +			       vma->vm_page_prot);
+>> 
+>> Per patch 1 cma_obj->paddr is the dma address, while remap_pfn_range
+>> expects a physical address.  This does not work.
+> 
+> Ok, what would be the correct way to mmap_noncoherent?
+
+Waiting for your input here :)
+
+Cheers,
+-Paul
 
 
