@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFF22D3544
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BF92D354F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgLHVbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:31:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727872AbgLHVbL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:31:11 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6AC0613CF;
-        Tue,  8 Dec 2020 13:30:31 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id m19so26677006ejj.11;
-        Tue, 08 Dec 2020 13:30:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MM65uySM3WXetJR81qISn55UyWapPuFerPV8cOsCP3Y=;
-        b=cHeJ70V64ZHJ4xM4opuM/N0V7rL6IS4EcQ2CN80+bzY8Dk2st7ZezednvLPv0kZnBB
-         9vK8gzF8tf6cL8nTqHoYsSH4DBnibqno/S7tWFruok40FfppcmxsZEJ9I6B9TwrE6KEr
-         sStWLHxwaZUgQg4g8qQIgORa3sZrZuaLDf/ozjJrQZl+8KnMqIDW42ORgoSY7ogVVD8e
-         87eUIawqVE4cKEBIRsSrG36WJJTnnB0u2yi0eUJNFMbTVpnAgcJqq4C0jbIifHWldkzf
-         DwaSddQJTa/rCz3Sqyiv/oJ8E4hCxod9OSzWWCA8pp2SOc9mV/NfILOoQavCe+k//Sxl
-         tUwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MM65uySM3WXetJR81qISn55UyWapPuFerPV8cOsCP3Y=;
-        b=Kcw2lkXUpQjxcUDrZI+DJ27fLfr9GRnP0jHstni9uLyoEayQQpWgbdonL0rG4oBpap
-         ge7WRFY3Nez8Xx+l4tkHFXZC8eKVfygFWXNfjM5sBnZVCf21vbZF8wcGpn9G9ModZ7cr
-         6t84S77etpk/OIt1Ls9MRozBVgZG9y1T8BJp+voDPoFK0IuFTFANNOPeQ3oquANNlMka
-         1JEGhvaOeQST4LZDAwfogD/MWBPF2tCEWXG312HmWnP0SnMpJbAJ4HfyN9ZdVPaQqExR
-         OvBVWB/cdTIPGyRHjM25Y4zo1J7GIpk8RRcj66eb5ym8cQGS3vgP287ZbaYohFxB1YY8
-         6Ntg==
-X-Gm-Message-State: AOAM5308bCJUXY9B0hiBGJBKDrPJVPPK8Ui7g+k92LmkaCIPXe3AnsUu
-        hiE0DV3ylLVtWd38kqwwmDI=
-X-Google-Smtp-Source: ABdhPJy/dxJOq2CWQhw2h4ww0meNqYdCSwA4EfvJVKwBEdTMjAa09YlecAyVbecjCfpXaL/e/t2+Og==
-X-Received: by 2002:a17:906:ca47:: with SMTP id jx7mr25907646ejb.237.1607463030132;
-        Tue, 08 Dec 2020 13:30:30 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id j5sm46682edl.42.2020.12.08.13.30.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 13:30:29 -0800 (PST)
-Message-ID: <4fd0591ce84684448e3f7720321f0c90eb3dccba.camel@gmail.com>
-Subject: Re: [PATCH v1 1/3] scsi: ufs: Distinguish between query REQ and
- query RSP in query trace
-From:   Bean Huo <huobean@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 08 Dec 2020 22:30:28 +0100
-In-Reply-To: <20201207102126.66d8e4f7@gandalf.local.home>
-References: <20201206164226.6595-1-huobean@gmail.com>
-         <20201206164226.6595-2-huobean@gmail.com>
-         <20201207102126.66d8e4f7@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729430AbgLHVdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:33:36 -0500
+Received: from mga12.intel.com ([192.55.52.136]:32713 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727793AbgLHVdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:33:36 -0500
+IronPort-SDR: VAhrJxpyKutXrvbmtA6v7zWLBfvVrMPWcbw3mLp1Yg5B2Xwl8CXA3UAdyONj9wF64o15ape3Sc
+ iVz+iM5ZXafw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153212634"
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="153212634"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 13:32:56 -0800
+IronPort-SDR: Y+f3DI1veGKmX6VjzcwgXkHwdnd1cjjstobayoJ4ZyEvwtexSao5eaJZ+ovVen+hnFysEG5mBK
+ bfjh5UoYi3HQ==
+X-IronPort-AV: E=Sophos;i="5.78,403,1599548400"; 
+   d="scan'208";a="437537590"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 13:32:55 -0800
+Date:   Tue, 8 Dec 2020 13:32:55 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+References: <20201207225703.2033611-1-ira.weiny@intel.com>
+ <20201207225703.2033611-3-ira.weiny@intel.com>
+ <20201207232649.GD7338@casper.infradead.org>
+ <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
+ <20201207234008.GE7338@casper.infradead.org>
+ <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 10:21 -0500, Steven Rostedt wrote:
-> > @@ -321,9 +321,15 @@ static void ufshcd_add_cmd_upiu_trace(struct
-> > ufs_hba *hba, unsigned int tag,
-> >   static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba,
-> > unsigned int tag,
-> >                const char *str)
-> >   {
-> > -     struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
-> > +     struct utp_upiu_req *rq_rsp;
-> > +
+On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
+> On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
+> > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
+> > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
+> > > > > +                            struct page *src_page, size_t src_off,
+> > > > > +                            size_t len)
+> > > > > +{
+> > > > > +     char *dst = kmap_local_page(dst_page);
+> > > > > +     char *src = kmap_local_page(src_page);
+> > > >
+> > > > I appreciate you've only moved these, but please add:
+> > > >
+> > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
+> > >
+> > > I imagine it's not outside the realm of possibility that some driver
+> > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
+> > > it because kmap_atomic() of contiguous pages "just works (TM)".
+> > > Shouldn't this WARN rather than BUG so that the user can report the
+> > > buggy driver and not have a dead system?
+> >
+> > As opposed to (on a HIGHMEM=y system) silently corrupting data that
+> > is on the next page of memory?
 > 
-> I would add:
+> Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
 > 
->         if (!trace_ufshcd_upiu_enabled())
->                 return;
+> > I suppose ideally ...
+> >
+> >         if (WARN_ON(dst_off + len > PAGE_SIZE))
+> >                 len = PAGE_SIZE - dst_off;
+> >         if (WARN_ON(src_off + len > PAGE_SIZE))
+> >                 len = PAGE_SIZE - src_off;
+> >
+> > and then we just truncate the data of the offending caller instead of
+> > corrupting innocent data that happens to be adjacent.  Although that's
+> > not ideal either ... I dunno, what's the least bad poison to drink here?
 > 
-> Why do the work if the trace point is not enabled?
+> Right, if the driver was relying on "corruption" for correct operation.
 > 
-> -- Steve
+> If corruption actual were happening in practice wouldn't there have
+> been screams by now? Again, not necessarily...
+> 
+> At least with just plain WARN the kernel will start screaming on the
+> user's behalf, and if it worked before it will keep working.
 
-Steve,
+So I decided to just sleep on this because I was recently told to not introduce
+new WARN_ON's[1]
 
-Thanks a lot, I will fix it in the next version.
+I don't think that truncating len is worth the effort.  The conversions being
+done should all 'work'  At least corrupting users data in the same way as it
+used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
+to do so while I work through the 0-day issues.  (not sure what is going on
+there.)
 
+However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
+is a bit more critical than the PKS API in that it could result in corrupt
+data.
 
-Thanks,
-Bean
+Ira
 
-
+[1] https://lore.kernel.org/linux-doc/20201103065024.GC75930@kroah.com/
