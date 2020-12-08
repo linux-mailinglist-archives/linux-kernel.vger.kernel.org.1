@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0F42D2B50
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD642D2B54
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729289AbgLHMof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729187AbgLHMof (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:44:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A0BC061793;
-        Tue,  8 Dec 2020 04:43:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QDdAEsOh8knc9vEyiJ/wrX2d0Mqw0DpBXQ+d0TXNCI4=; b=ALellYQKQFkmFFL01r4mkby+ay
-        ToQoFzSlSzP5/o4sYMh/ws5VCuSjGv+lj3SLYXmZcWML/GndqjsJBHey9xIk0/zSCPc3Yh80kizR9
-        nsSwBW6PB7PpQrxcoX1F3XoVYmEe2Hnw9RY3q/Hhr5KBnBKLifd0JMD5oXdfkgJbFekyF3ECun3zI
-        G6XkprqkLMkyw4d9TbhPgR3H3w4VMLqHoqJXiOmYNnzxLbvDSwMBclVG+tGyexpEIlI0D1Chmbcvt
-        7vCE9nVB4B0WvmFvib7oxbCziWIRFjf2c80TzouelZJzos/pMNHJV/4hOloyaFhCVi1DuPDy96kcg
-        oeTz7P3g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmcLL-0006xC-Cg; Tue, 08 Dec 2020 12:43:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83163305C1C;
-        Tue,  8 Dec 2020 13:43:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6457A20819150; Tue,  8 Dec 2020 13:43:44 +0100 (CET)
-Date:   Tue, 8 Dec 2020 13:43:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [PATCH v1 4/4] cpufreq: intel_pstate: Implement the
- ->adjust_perf() callback
-Message-ID: <20201208124344.GX2414@hirez.programming.kicks-ass.net>
-References: <20360841.iInq7taT2Z@kreacher>
- <3342398.tGQZsKHvNY@kreacher>
+        id S1729538AbgLHMpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:45:20 -0500
+Received: from mga18.intel.com ([134.134.136.126]:10589 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgLHMpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:45:19 -0500
+IronPort-SDR: cgeZKVcu8qbtZlqHFO5Qd0zHlNXqnqPTJX3v0J5Tb5aQJ8TWHSanidlm7bzN+bA7Em+ccFFqBG
+ kTJ1ifLjgdrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="161645624"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="161645624"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 04:44:38 -0800
+IronPort-SDR: 5FBxhW2gckfg1OgE7QSEx0t/++EE4kuJg0ngnHpx0J4226zJ7VpQlhNhBrWQqa9psbPVBnnlaK
+ Z0fPxPMKmYwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="552215817"
+Received: from lkp-server01.sh.intel.com (HELO c88bd47c8831) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 08 Dec 2020 04:44:37 -0800
+Received: from kbuild by c88bd47c8831 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kmcM8-0000D8-Sa; Tue, 08 Dec 2020 12:44:36 +0000
+Date:   Tue, 08 Dec 2020 20:44:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/platform] BUILD SUCCESS
+ c9624cb7db1c418cbdc8fd2cde6835f83cd0f8a2
+Message-ID: <5fcf752f.h7LKqXs10lT8DWFM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3342398.tGQZsKHvNY@kreacher>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:38:58PM +0100, Rafael J. Wysocki wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
+branch HEAD: c9624cb7db1c418cbdc8fd2cde6835f83cd0f8a2  x86/platform/uv: Update sysfs documentation
 
-> +static void intel_cpufreq_adjust_perf(unsigned int cpunum,
-> +				      unsigned long min_perf,
-> +				      unsigned long target_perf,
-> +				      unsigned long capacity)
-> +{
-> +	struct cpudata *cpu = all_cpu_data[cpunum];
-> +	int old_pstate = cpu->pstate.current_pstate;
-> +	int cap_pstate, min_pstate, max_pstate, target_pstate;
-> +
-> +	update_turbo_state();
-> +	cap_pstate = global.turbo_disabled ? cpu->pstate.max_pstate :
-> +					     cpu->pstate.turbo_pstate;
-> +
-> +	/* Optimization: Avoid unnecessary divisions. */
-> +
-> +	target_pstate = cap_pstate;
-> +	if (target_perf < capacity)
-> +		target_pstate = DIV_ROUND_UP(cap_pstate * target_perf, capacity);
-> +
-> +	min_pstate = cap_pstate;
-> +	if (min_perf < capacity)
-> +		min_pstate = DIV_ROUND_UP(cap_pstate * min_perf, capacity);
-> +
-> +	if (min_pstate < cpu->pstate.min_pstate)
-> +		min_pstate = cpu->pstate.min_pstate;
-> +
-> +	if (min_pstate < cpu->min_perf_ratio)
-> +		min_pstate = cpu->min_perf_ratio;
-> +
-> +	max_pstate = min(cap_pstate, cpu->max_perf_ratio);
-> +	if (max_pstate < min_pstate)
-> +		max_pstate = min_pstate;
-> +
-> +	target_pstate = clamp_t(int, target_pstate, min_pstate, max_pstate);
-> +
-> +	intel_cpufreq_adjust_hwp(cpu, min_pstate, max_pstate, target_pstate, true);
+elapsed time: 725m
 
-I'm confused... HWP doesn't do pstate, yet everything here is now called
-pstate, help?
+configs tested: 90
+configs skipped: 2
 
-> +
-> +	cpu->pstate.current_pstate = target_pstate;
-> +	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
-> +}
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+h8300                     edosk2674_defconfig
+sh                        edosk7760_defconfig
+powerpc                     pseries_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                        icon_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                           efm32_defconfig
+arm                        clps711x_defconfig
+m68k                       m5275evb_defconfig
+arm                              alldefconfig
+mips                         tb0219_defconfig
+mips                           ip27_defconfig
+powerpc                     tqm8548_defconfig
+ia64                      gensparse_defconfig
+arm                         cm_x300_defconfig
+sh                          rsk7264_defconfig
+arm                         palmz72_defconfig
+c6x                        evmc6472_defconfig
+arm                         s3c2410_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201208
+i386                 randconfig-a006-20201208
+i386                 randconfig-a013-20201208
+i386                 randconfig-a014-20201208
+i386                 randconfig-a011-20201208
+i386                 randconfig-a015-20201208
+i386                 randconfig-a012-20201208
+i386                 randconfig-a016-20201208
+x86_64               randconfig-a004-20201208
+x86_64               randconfig-a006-20201208
+x86_64               randconfig-a005-20201208
+x86_64               randconfig-a001-20201208
+x86_64               randconfig-a002-20201208
+x86_64               randconfig-a003-20201208
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a016-20201208
+x86_64               randconfig-a012-20201208
+x86_64               randconfig-a013-20201208
+x86_64               randconfig-a014-20201208
+x86_64               randconfig-a015-20201208
+x86_64               randconfig-a011-20201208
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
