@@ -2,270 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A560B2D33C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2A42D33CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgLHUZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S1729265AbgLHU0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgLHUZt (ORCPT
+        with ESMTP id S1728674AbgLHU0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:25:49 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB11AC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:25:03 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id g18so13243187pgk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5dRT8uVlJwjIaHGkFNwsvEp2IYayT9YK4fkX5+XH1So=;
-        b=VMOukCZmENMM8B9bRDfq9MiBErortJqoBFgQ3+s/mRR1bKSYJJT0eTpMc1AJYZ9cKE
-         Pil9jDg2oU3SmxTy4KeE7OC7LEWwsS5Qv6cRQBVxBggYcT7A4LMgBX4QcRz/6vs1/WRf
-         sJjlUk/iuVbk6s70oLrKPewQrYBcdLQJSObuMyEKgsS0GkyiBZTN28qUD98lnPq1avGV
-         kKdAHDTRGnmE3EpvFT6SxCE4tiPVpUoMNATdI+PfcfdBuxItsvpi+ylJpHXOSTQrxQ6G
-         aNHY2QYaHmG0wt/4rRYginYT2Hh5zy6mjtAsGWl1QMkvraN4g64dQNuVDjlntzbRSQxE
-         H93A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5dRT8uVlJwjIaHGkFNwsvEp2IYayT9YK4fkX5+XH1So=;
-        b=e0e2FSchJJDKI3Rj2WJ90A0V/y8aFNnMD22rrNGRrseEtn4P3g7enbH/TlefKZI4Fs
-         NYiSwdOitDDJmzfsFpkXlxYAo1BI0JN/bi748j4Po9FAhhTVlwaaQ4M3Ew/SqLVDYSpw
-         Q+ZnswU9wfBRV8XRoUnxpeikxwN0xHSrXUxEw6jyk+z3IdHHQZHkl/WQeDzPqc1EyY/Y
-         JIBSU9ASqgpI338vipLExTBU7TE7g71H0ds3jYiiiZ5ZHyBYUUWWaEMenlxLo2Wz0PVh
-         dyIzScdYQw6wro4EVPP2eCeceRsgEoJLT6/E2+3lGkOahMEXn+QNfx0sP67wyssMLXia
-         Md3w==
-X-Gm-Message-State: AOAM530F2lZW3c0oqsJAfi05Ez162v20vt8I8xSLFJmR8TguWrCHVjEP
-        fDYTLhBBJhl1inKCKT7qKq5uuA==
-X-Google-Smtp-Source: ABdhPJz2n2OIUCzO99uSjxuKeCmXgf3cmmJrqW2FVAj5z2b1z3WzLhUwBv5PxeBy019F9m0VnHvaDA==
-X-Received: by 2002:a63:c60a:: with SMTP id w10mr24027846pgg.211.1607459103338;
-        Tue, 08 Dec 2020 12:25:03 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id y15sm4296190pju.13.2020.12.08.12.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 12:25:02 -0800 (PST)
-Date:   Tue, 8 Dec 2020 13:25:00 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 09/15] remoteproc: Introduce function rproc_detach()
-Message-ID: <20201208202500.GA1601690@xps15>
-References: <20201126210642.897302-1-mathieu.poirier@linaro.org>
- <20201126210642.897302-10-mathieu.poirier@linaro.org>
- <0e705760-b69a-d872-9770-c03dde85ab1c@st.com>
+        Tue, 8 Dec 2020 15:26:11 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD08C06138C
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:25:31 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmjY7-0002vi-U3; Tue, 08 Dec 2020 21:25:27 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmjY6-0001Ng-BT; Tue, 08 Dec 2020 21:25:26 +0100
+Date:   Tue, 8 Dec 2020 21:25:26 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <20201208202526.va32uvkf6rm57a4w@pengutronix.de>
+References: <20201207193629.493241-1-clemens.gruber@pqgruber.com>
+ <20201207220025.42b6g76wq7ph5nvb@pengutronix.de>
+ <X863KNo0IaekkU7q@workstation.tuxnet>
+ <20201208091033.bxzrlad7mjbe3dsp@pengutronix.de>
+ <X89RgpTb3sBBI++w@workstation.tuxnet>
+ <X8+DI7ZN7mXtsxv9@ulmo>
+ <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
+ <X8+waLH58pOaMI06@ulmo>
+ <CAGngYiUP7BBF4i8YFXREA291dBTc4JytAFV9AoSjzMYTW7MyjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="trm6j6bfjek6aps6"
 Content-Disposition: inline
-In-Reply-To: <0e705760-b69a-d872-9770-c03dde85ab1c@st.com>
+In-Reply-To: <CAGngYiUP7BBF4i8YFXREA291dBTc4JytAFV9AoSjzMYTW7MyjQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 07:35:18PM +0100, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> 
-> On 11/26/20 10:06 PM, Mathieu Poirier wrote:
-> > Introduce function rproc_detach() to enable the remoteproc
-> > core to release the resources associated with a remote processor
-> > without stopping its operation.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c | 65 +++++++++++++++++++++++++++-
-> >  include/linux/remoteproc.h           |  1 +
-> >  2 files changed, 65 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > index 928b3f975798..f5adf05762e9 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -1667,7 +1667,7 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
-> >  /*
-> >   * __rproc_detach(): Does the opposite of rproc_attach()
-> >   */
-> > -static int __maybe_unused __rproc_detach(struct rproc *rproc)
-> > +static int __rproc_detach(struct rproc *rproc)
-> >  {
-> >  	struct device *dev = &rproc->dev;
-> >  	int ret;
-> > @@ -1910,6 +1910,69 @@ void rproc_shutdown(struct rproc *rproc)
-> >  }
-> >  EXPORT_SYMBOL(rproc_shutdown);
-> >  
-> > +/**
-> > + * rproc_detach() - Detach the remote processor from the
-> > + * remoteproc core
-> > + *
-> > + * @rproc: the remote processor
-> > + *
-> > + * Detach a remote processor (previously attached to with rproc_actuate()).
-> > + *
-> > + * In case @rproc is still being used by an additional user(s), then
-> > + * this function will just decrement the power refcount and exit,
-> > + * without disconnecting the device.
-> > + *
-> > + * Function rproc_detach() calls __rproc_detach() in order to let a remote
-> > + * processor know that services provided by the application processor are
-> > + * no longer available.  From there it should be possible to remove the
-> > + * platform driver and even power cycle the application processor (if the HW
-> > + * supports it) without needing to switch off the remote processor.
-> > + */
-> > +int rproc_detach(struct rproc *rproc)
-> > +{
-> > +	struct device *dev = &rproc->dev;
-> > +	int ret;
-> > +
-> > +	ret = mutex_lock_interruptible(&rproc->lock);
-> > +	if (ret) {
-> > +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (rproc->state != RPROC_RUNNING && rproc->state != RPROC_ATTACHED) {
-> > +		ret = -EPERM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* if the remote proc is still needed, bail out */
-> > +	if (!atomic_dec_and_test(&rproc->power)) {
-> > +		ret = -EBUSY;
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = __rproc_detach(rproc);
-> > +	if (ret) {
-> > +		atomic_inc(&rproc->power);
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* clean up all acquired resources */
-> > +	rproc_resource_cleanup(rproc);
-> 
-> I started to test the series, I found 2 problems testing in STM32P1 board.
-> 
-> 1) the resource_table pointer is unmapped if the firmware has been booted by the
-> Linux, generating a crash in rproc_free_vring.
-> I attached a fix at the end of the mail.
-> 
-> 2) After the detach, the rproc state is "detached"
-> but it is no longer possible to re-attach to it correctly.
-> Neither if the firmware is standalone, nor if it has been booted
-> by the Linux.
 
-Thanks for the report - I thought both problems had been fixed...
+--trm6j6bfjek6aps6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> I did not investigate, but the issue is probably linked to the resource
-> table address which is set to NULL.
-> 
-> So we either have to fix the problem in order to attach or forbid the transition.
-> 
+Hello Sven,
 
-Perfect timing on your side as I was contemplating sending another revision.
-Let me look at things and I will get back to you.
+On Tue, Dec 08, 2020 at 01:15:10PM -0500, Sven Van Asbroeck wrote:
+> On Tue, Dec 8, 2020 at 11:57 AM Thierry Reding <thierry.reding@gmail.com>=
+ wrote:
+> >
+> > Is this really that complicated? I sounds to me like the only thing that
+> > you need is to have some sort of usage count for the prescaler. Whenever
+> > you want to use the prescaler you check that usage count. If it is zero,
+> > then you can just set it to whatever you need. If it isn't zero, that
+> > means somebody else is already using it and you can't change it, which
+> > means you have to check if you're trying to request the value that's
+> > already set. If so, you can succeed, but otherwise you'll have to fail.
+>=20
+> +1
+> I think your suggestion is an elegant solution to get the required behavi=
+our.
+>=20
+> One possible complication is synchronization. The sysfs interface has a l=
+ock
+> protecting against concurrent pwm_apply() calls. But the in-kernel
+> API (e.g. pwm_apply_state()) doesn't seem to. This is not normally a prob=
+lem
+> when pwm bits are strictly separated. But in this case we have shared sta=
+te
+> (prescale value and use count), so we probably need to protect pwm_apply()
+> with a mutex?
 
-> 
-> Regards,
-> Arnaud
-> 
-> > +
-> > +	rproc_disable_iommu(rproc);
-> > +
-> > +	/*
-> > +	 * Set the remote processor's table pointer to NULL.  Since mapping
-> > +	 * of the resource table to a virtual address is done in the platform
-> > +	 * driver, unmapping should also be done there.
-> > +	 */
-> > +	rproc->table_ptr = NULL;
-> > +out:
-> > +	mutex_unlock(&rproc->lock);
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL(rproc_detach);
-> > +
-> >  /**
-> >   * rproc_get_by_phandle() - find a remote processor by phandle
-> >   * @phandle: phandle to the rproc
-> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> > index da15b77583d3..329c1c071dcf 100644
-> > --- a/include/linux/remoteproc.h
-> > +++ b/include/linux/remoteproc.h
-> > @@ -656,6 +656,7 @@ rproc_of_resm_mem_entry_init(struct device *dev, u32 of_resm_idx, size_t len,
-> >  
-> >  int rproc_boot(struct rproc *rproc);
-> >  void rproc_shutdown(struct rproc *rproc);
-> > +int rproc_detach(struct rproc *rproc);
-> >  int rproc_set_firmware(struct rproc *rproc, const char *fw_name);
-> >  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
-> >  int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t size);
-> > 
-> 
-> From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
-> Date: Tue, 8 Dec 2020 18:54:51 +0100
-> Subject: [PATCH] remoteproc: core: fix detach for unmapped table_ptr
-> 
-> If the firmware has been loaded and started by the kernel, the
-> resource table has probably been mapped by the carveout allocation
-> (see rproc_elf_find_loaded_rsc_table).
-> In this case the memory can have been unmapped before the vrings are free.
-> The result is a crash that occurs in rproc_free_vring while try to use the
-> unmapped pointer.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c
-> b/drivers/remoteproc/remoteproc_core.c
-> index 2b0a52fb3398..3508ffba4a2a 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1964,6 +1964,13 @@ int rproc_detach(struct rproc *rproc)
->  		goto out;
->  	}
-> 
-> +	/*
-> +	 * Prevent case that the installed resource table is no longer
-> +	 * accessible (e.g. memory unmapped), use the cache if available
-> +	 */
-> +	if (rproc->cached_table)
-> +		rproc->table_ptr = rproc->cached_table;
-> +
->  	ret = __rproc_detach(rproc);
->  	if (ret) {
->  		atomic_inc(&rproc->power);
-> @@ -1975,10 +1982,14 @@ int rproc_detach(struct rproc *rproc)
-> 
->  	rproc_disable_iommu(rproc);
-> 
-> +	/* Free the chached table memory that can has been allocated*/
-> +	kfree(rproc->cached_table);
-> +	rproc->cached_table = NULL;
->  	/*
-> -	 * Set the remote processor's table pointer to NULL.  Since mapping
-> -	 * of the resource table to a virtual address is done in the platform
-> -	 * driver, unmapping should also be done there.
-> +	 * Set the remote processor's table pointer to NULL. If mapping
-> +	 * of the resource table to a virtual address has been done in the
-> +	 * platform driver(attachment to an existing firmware),
-> +	 * unmapping should also be done there.
->  	 */
->  	rproc->table_ptr = NULL;
->  out:
-> -- 
-> 2.17.1
-> 
-> 
-> 
+Right, you need a lock. You can look at pwm-imx-tpm.c which has a
+similar limitation.
+=20
+> Not sure if it is currently possible *in practice* for two regulator cons=
+umer
+> drivers to call pwm_apply() from different threads. But Linux is slowly m=
+oving
+> towards asynchronous probing.
+
+You must assume that there is concurrent access to different channels of
+your hardware.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--trm6j6bfjek6aps6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/P4TMACgkQwfwUeK3K
+7AlTvgf/YzgLsmgqn/aeT3CHsBXjedswCXVjC++3uWlBId74+cm5WqS+KkXvOD/z
+W29RHU3w5rBFZeZMGGwGK2X7gVR55v7BSZ59ajVC9FIQb8vMZcgNi7PpINkVdJfu
+BUgTmlm61uyvjt4/21srn1Vq6DY1yqWaClzlGrzy8nK0x14YRE+HayqUF8oxpnYT
+JaAJTcrCtu9R2VMmrpikwLjEonux9eza7gTYku04lKHC3nERn8yoOPRr0ebmqNO7
+6Ar/B0OclhWlfjzMu+UwZ5zPUzbX/U/HVVA8hlJ8qWb5z/KaafGd2bWiZ6PjyEc+
+Mk34wiTinz15tKY56ELRQSfkEheKEQ==
+=q7Tk
+-----END PGP SIGNATURE-----
+
+--trm6j6bfjek6aps6--
