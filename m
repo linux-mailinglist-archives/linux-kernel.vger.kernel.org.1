@@ -2,148 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A302D2102
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636A72D2106
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgLHCl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:41:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
+        id S1728025AbgLHCmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:42:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbgLHCl4 (ORCPT
+        with ESMTP id S1726896AbgLHCmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:41:56 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF18DC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 18:41:15 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id v3so6183795plz.13
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 18:41:15 -0800 (PST)
+        Mon, 7 Dec 2020 21:42:15 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69625C061794;
+        Mon,  7 Dec 2020 18:41:35 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id p12so7621010qvj.13;
+        Mon, 07 Dec 2020 18:41:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rFKMN3Lenb+VaK77PoP0Px7plQtnVT6Nsw8KoPED3Ds=;
-        b=GviSs/sA7OMEyX9L7NulKkRHF51iOhb+ZP4MiSlV1zDEy8K/VWZmn2GDoe/e707lyo
-         Iy8K9sU893iw2hRgcNB3I9mrFRrravJar1qHdHTb+fwqrJ//DCb/i4CQxipeX20P2rL6
-         2mD8H3AsfNbkIwC/00SSaSb/mR1FTAW3UpQ6y2FtTC30CsX+Kx8125GqWvt6Wkpf7EI8
-         cLEr56nouqszr5E0aWMfnM5T/qdSd6XjO/WZI+/SQHHgiMsEvlmUolXN3YOIvDiXOMiO
-         ApD3AX07skTKA+RyADmmrxjd019fpFTfGJEfUl6anx/E6qfFggm+FLko4uTWrFgG3eby
-         mYfw==
+        bh=0XjVgTEL8rQFOCFz+jo+PbV3JFHakTiNHErSrpfLt1A=;
+        b=R78Hyn5Hm0zClT4oLPvwmmGHJ/NZnYOq6YvJ3dok83R6lub3MTs9UuYFq7rJKd39OT
+         Th4OFMSuZKTpC0cqaqwmpfV2DS7shAM4jCyZWVRxKpGLd1fV13sLnIe5xLw9Id19UCZt
+         nQ0hD2CxSht8NDoK/cVvJ+4NFojkfU6qVWK8U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rFKMN3Lenb+VaK77PoP0Px7plQtnVT6Nsw8KoPED3Ds=;
-        b=qp8MVgIy0z+9qmSgZ9XfSlUpL5s7deFWX//KALASOjIvzF6bGWOT75NfPUKQL9TAwb
-         psSK4nFOCjTvR76tnOZdB+x/bMF0WG/M4abGCbM+VVzcsN5ksVLsep+IzKIgDN0T0ZCS
-         +CE4PGWqUisYnez4TjgYf6VZaqZntKqbgd4hWOfG021LKhRquDRJ0yclEVe9PXVvdHuv
-         Jz/XLtTo9qhVXVKRPpuyr5dQGtQShrUPvMhWR1B7Tah0Hx55eJkiK8jxPGlnwhuCgfGF
-         dGN/dkUiV9/JLHLtW89qRaSCdkWpBFbNi9E54cak1aWMN9fnWvbvD+URvAHnYcHgZC5S
-         px3w==
-X-Gm-Message-State: AOAM533DAtp0RmUZzUOossD4w4t41t0Fiy6Mood0RABZAlAOgWDPDldh
-        uT4S1Pb4avbvhn6nzGHl4zulLj3Ie4OjWRQUglKKag==
-X-Google-Smtp-Source: ABdhPJyW0aZTSOOLlbmbXWbngFtXa+woAAz2hOOzBNhuINR6CavZVPHFEJJO+nQyckR2TB3E46z41lVptmbzsWTdXj8=
-X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
- m18-20020a170902bb92b02900d9e9bfb775mr19295660pls.24.1607395275316; Mon, 07
- Dec 2020 18:41:15 -0800 (PST)
+        bh=0XjVgTEL8rQFOCFz+jo+PbV3JFHakTiNHErSrpfLt1A=;
+        b=Hx/rWQMj8zA4OZ/08bUaxcLSeFBDe+WES7vQeDMvVXgGh698oqx+JZuKnmSOCVoRyH
+         ibqEtCzPkBL2T7FKzIROTbgd/ttHIIEO5sh22FyHoPKMpUdA4nt0wjbdg0u3Hek92pjj
+         0HCGxpnghr1TiEN88a+DlxG9CawleQ7UeQ5JPE9aX3RNkCCmiUWL3kPSUavrFv6EeI1u
+         esk/413Zg8l4LRKI676QG3ZstJaC5AGeeHssyhJ904S1fUfE/PTQH9Pea0IarOw/Qbb1
+         Okv9DDnhv9/yzblKoS+4mG9Tj5dsH4A7kM61uuFwnnknWl6hOuY1n20tuJrJtmEr0siq
+         Kfjw==
+X-Gm-Message-State: AOAM530bXklNzm4/i075mlncOuIbTkRrLH5lnPzWQupphOQAf550OZoW
+        p+d76IaZZCwB+5VRf/ZebT1bsmSQv8QoFP2+6FE=
+X-Google-Smtp-Source: ABdhPJxLCLgZLW9LLx4nvn+gh95HaohAb8GesxEGpkQOEjwV4hpPMVrOR5UZf+E5QY+yePtIaXRVmkkT9IVqdA05/aA=
+X-Received: by 2002:a05:6214:c66:: with SMTP id t6mr19789047qvj.43.1607395294632;
+ Mon, 07 Dec 2020 18:41:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201207130018.GJ25569@dhcp22.suse.cz> <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com>
- <20201207150254.GL25569@dhcp22.suse.cz>
-In-Reply-To: <20201207150254.GL25569@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:40:39 +0800
-Message-ID: <CAMZfGtW8FMmNh0pEXJr2KVGPFD-VVWYSJoc_r3h7C+DxJGArdA@mail.gmail.com>
-Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat
- counters to pages or bytes
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
+References: <20201120010315.190737-1-joel@jms.id.au> <20201121185150.GD114144@roeck-us.net>
+In-Reply-To: <20201121185150.GD114144@roeck-us.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 8 Dec 2020 02:41:22 +0000
+Message-ID: <CACPK8Xcf1xhPZNqpxuZE22uqDFR7rb1Wv-RW802bx2S-nphpzA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] occ: Add support for P10
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Eddie James <eajames@linux.ibm.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-fsi@lists.ozlabs.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 11:02 PM Michal Hocko <mhocko@suse.com> wrote:
+On Sat, 21 Nov 2020 at 18:55, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> On Mon 07-12-20 22:52:30, Muchun Song wrote:
-> > On Mon, Dec 7, 2020 at 9:00 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Sun 06-12-20 18:14:39, Muchun Song wrote:
-> > > > Hi,
-> > > >
-> > > > This patch series is aimed to convert all THP vmstat counters to pages
-> > > > and some KiB vmstat counters to bytes.
-> > > >
-> > > > The unit of some vmstat counters are pages, some are bytes, some are
-> > > > HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-> > > > counters to the userspace, we have to know the unit of the vmstat counters
-> > > > is which one. It makes the code complex. Because there are too many choices,
-> > > > the probability of making a mistake will be greater.
-> > > >
-> > > > For example, the below is some bug fix:
-> > > >   - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-> > > >   - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
-> > > >
-> > > > This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
-> > > > And make the unit of the vmstat counters are either pages or bytes. Fewer choices
-> > > > means lower probability of making mistakes :).
-> > > >
-> > > > This was inspired by Johannes and Roman. Thanks to them.
-> > >
-> > > It would be really great if you could summarize the current and after
-> > > the patch state so that exceptions are clear and easier to review. The
+> On Fri, Nov 20, 2020 at 11:33:12AM +1030, Joel Stanley wrote:
+> > Hi Guenter, here's v2 of this series on behalf of Eddie. I made the
+> > change to the compatible string that we spoke about in v2, and I'm happy
+> > for these to go through the hwmon tree.
 > >
-> > Agree. Will do in the next version. Thanks.
-> >
-> >
-> > > existing situation is rather convoluted but we have at least units part
-> > > of the name so it is not too hard to notice that. Reducing exeptions
-> > > sounds nice but I am not really sure it is such an improvement it is
-> > > worth a lot of code churn. Especially when it comes to KB vs B. Counting
-> >
-> > There are two vmstat counters (NR_KERNEL_STACK_KB and
-> > NR_KERNEL_SCS_KB) whose units are KB. If we do this, all
-> > vmstat counter units are either pages or bytes in the end. When
-> > we expose those counters to userspace, it can be easy. You can
-> > reference to:
-> >
-> >     [RESEND PATCH v2 11/12] mm: memcontrol: make the slab calculation consistent
-> >
-> > From this point of view, I think that it is worth doing this. Right?
 >
-> Well, unless I am missing something, we have two counters in bytes, two
-> in kB, both clearly distinguishable by the B/KB suffix. Changing KB to B
-> will certainly reduce the different classes of units, no question about
-> that, but I am not really sure this is worth all the code churn. Maybe
-> others will think otherwise.
+> I'll be happy to do that, as soon as we get a Reviewed-by: tag for the DT
+> change.
+
+Rob has sent that through now, so this should be good to go in.
+
+Thank you.
+
 >
-> As I've said the THP accounting change makes more sense to me because it
-> allows future changes which are already undergoing so there is more
-> merit in those.
-
-OK, will delete the convert of KB to B. Thanks.
-
-> --
-> Michal Hocko
-> SUSE Labs
-
-
-
--- 
-Yours,
-Muchun
+> Thanks,
+> Guenter
+>
+> > v1: https://lore.kernel.org/linux-hwmon/20200501150833.5251-1-eajames@linux.ibm.com/
+> >
+> > The OCC in the P10 has a number of differences from the P9. Add some logic to
+> > handle the differences in accessing the OCC from the service processor, and
+> > support the new temperature sensor type.
+> >
+> > Eddie James (3):
+> >   dt-bindings: fsi: Add P10 OCC device documentation
+> >   fsi: occ: Add support for P10
+> >   hwmon: (occ) Add new temperature sensor type
+> >
+> >  .../devicetree/bindings/fsi/ibm,p9-occ.txt    |  12 +-
+> >  drivers/fsi/fsi-occ.c                         | 125 +++++++++++++-----
+> >  drivers/hwmon/occ/common.c                    |  75 +++++++++++
+> >  3 files changed, 172 insertions(+), 40 deletions(-)
+> >
+> > --
+> > 2.29.2
+> >
