@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E002D2C91
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964202D2C97
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729749AbgLHOE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:04:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34238 "EHLO mail.kernel.org"
+        id S1729685AbgLHOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:05:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37196 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729718AbgLHOE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:04:58 -0500
-X-Gm-Message-State: AOAM533zDXagQPamJcCjm0vSMdgzUH+emfMx+uN/ClQgQharlccWqOTP
-        kZnOvoRe8EndPV8LA2qgHNfXuQDvH6ielxA9QLE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607436257;
-        bh=lDqq2eswXCj3EY+TJU1U1M4S88oFP1VOECqQvTLwIYk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=huKOiS6vTt7nRhQpExK8DNb4h5Pv0evwMKQbfLx0IhhdrFwE8BE1BuC1muVURobOu
-         ST4nLS/ZHopUWB8YZac9l2BdtdjsyetfR6EV89vOuqQvQK/aenAm3V+nG7zVeW+w5F
-         KP4JOUwhIazs461yxwG2MM1FplLvvpGzli9t9KPMQQvPkwg09Tdk5pzardd4CnJ8uc
-         SbnTCXGOTbfgB64ub9z4gZO3MJeC/Af8FnqXPt2Hg7aTY5wQrz/nqTuKXqtiYmhBqa
-         BM2enEXefINKTlup0fU2LRo9J1BS26Lft0qtSthaRTqQVKtMJN7vapHRh/2jgnPjYv
-         pQq9esu8dZCjA==
-X-Google-Smtp-Source: ABdhPJxta+Y1usMiw3UnOu5t+6U7dNLt48uTZSJhRqrZc/PGcWcb8RD8IzREMTmeZYkQoYTac1yDx8/9+QCPcCzh6FM=
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr16580172otu.77.1607436256848;
- Tue, 08 Dec 2020 06:04:16 -0800 (PST)
+        id S1729521AbgLHOFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:05:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607436268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=10SyrdXgUrRdGAnh5WvPbKIV8pyNLoc3QTTb/TrnexM=;
+        b=RfqM41Uoo3BDdJegOLAbRpfKZeaGPHScJLBjg2eLxnshLcpE63sJXTUBZV5PeOKUb+MxEx
+        S4IgQxEn9BlS6hRiNNXn3UTXMzcn4qIyAfAbnuA9c2RDj9gEwP7201egn1CZaASKpURatW
+        LG+a7uy3FqyLDGPQW5O2QtyCbE+QeZ0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0EC7FAC94;
+        Tue,  8 Dec 2020 14:04:28 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 15:04:27 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v3 2/3] printk: define CONSOLE_LOG_MAX in printk.h
+Message-ID: <X8+H6xG+eTyOJ3nu@alley>
+References: <20201207222020.2923-1-john.ogness@linutronix.de>
+ <20201207222020.2923-3-john.ogness@linutronix.de>
+ <87k0tsd9q6.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com>
- <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
- <118876.1607093975@warthog.procyon.org.uk> <955415.1607433903@warthog.procyon.org.uk>
-In-Reply-To: <955415.1607433903@warthog.procyon.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 8 Dec 2020 15:04:05 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXE+oi2Q7OE8o0xP4XabZt-y61NMG3Q3eyRzSG6cG9i4Kg@mail.gmail.com>
-Message-ID: <CAMj1kXE+oi2Q7OE8o0xP4XabZt-y61NMG3Q3eyRzSG6cG9i4Kg@mail.gmail.com>
-Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
-To:     David Howells <dhowells@redhat.com>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-afs@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0tsd9q6.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 14:25, David Howells <dhowells@redhat.com> wrote:
->
-> I wonder - would it make sense to reserve two arrays of scatterlist structs
-> and a mutex per CPU sufficient to map up to 1MiB of pages with each array
-> while the krb5 service is in use?
->
-> That way sunrpc could, say, grab the mutex, map the input and output buffers,
-> do the entire crypto op in one go and then release the mutex - at least for
-> big ops, small ops needn't use this service.
->
-> For rxrpc/afs's use case this would probably be overkill - it's doing crypto
-> on each packet, not on whole operations - but I could still make use of it
-> there.
->
-> However, that then limits the maximum size of an op to 1MiB, plus dangly bits
-> on either side (which can be managed with chained scatterlist structs) and
-> also limits the number of large simultaneous krb5 crypto ops we can do.
->
+On Tue 2020-12-08 08:48:57, John Ogness wrote:
+> On 2020-12-07, John Ogness <john.ogness@linutronix.de> wrote:
+> > CONSOLE_EXT_LOG_MAX for extended console messages is already defined
+> > in printk.h. Define CONSOLE_LOG_MAX there as well so that future
+> > changes can make use of the constant for non-extended console
+> > messages.
+> 
+> Actually this patch is not necessary for this series. Also, this patch
+> should probably modify all the "LOG_LINE_MAX + PREFIX_MAX" calls as
+> well.
 
-Apparently, it is permitted for gss_krb5_cts_crypt() to do a
-kmalloc(GFP_NOFS) in the context from where gss_krb5_aes_encrypt() is
-being invoked, and so I don't see why it wouldn't be possible to
-simply kmalloc() a scatterlist[] of the appropriate size, populate it
-with all the pages, bufs and whatever else gets passed into the
-skcipher, and pass it into the skcipher in one go.
++1
+
+Best Regards,
+Petr
