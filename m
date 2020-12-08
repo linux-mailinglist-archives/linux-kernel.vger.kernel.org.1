@@ -2,51 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901392D23CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88A12D23D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgLHGrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:47:17 -0500
-Received: from [157.25.102.26] ([157.25.102.26]:59082 "EHLO orcam.me.uk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726104AbgLHGrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:47:16 -0500
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id 1CB4A2BE0EC;
-        Tue,  8 Dec 2020 06:46:44 +0000 (GMT)
-Date:   Tue, 8 Dec 2020 06:46:41 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Jinyang He <hejinyang@loongson.cn>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when
- synci_step is zero
-In-Reply-To: <642b9149-6de5-fa04-80e2-aed7367b3cce@loongson.cn>
-Message-ID: <alpine.LFD.2.21.2012071716470.2104409@eddie.linux-mips.org>
-References: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn> <20201202103943.GA9065@alpha.franken.de> <642b9149-6de5-fa04-80e2-aed7367b3cce@loongson.cn>
+        id S1726749AbgLHGrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:47:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgLHGrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:47:55 -0500
+From:   Vinod Koul <vkoul@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Add clock drivers for SM8350
+Date:   Tue,  8 Dec 2020 12:16:57 +0530
+Message-Id: <20201208064702.3654324-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020, Jinyang He wrote:
+This adds rpmhcc and gcc clock controller drivers for the controllers found
+in SM8350 SoC
 
-> Thus, only one synci operation is required when synci_step is 0
-> on Loongson64 platform. I guess that some other platforms have
-> similar implementations on synci, so add judgment conditions in
-> `while` to ensure that at least all platforms perform synci
-> operations once. For those platforms that do not need synci,
-> they just do one more operation similar to nop.
+Changes in v2:
+ - Add r-b from Bjorn
+ - Add the gcc_qupv3_wrap_1_{m|s}_ahb_clk and gcc_qupv3_wrap1_s5_clk
 
- This is non-compliant and looks to me like a risky choice for what was 
-invented to guarantee portability across all MIPS systems.  Compliant 
-software will fail with Loongson64 processors unless patched like this 
-piece, and you don't really have control over all user software out there 
-(I would expect issues with JIT engines and the like).
+Vinod Koul (3):
+  dt-bindings: clock: Add RPMHCC bindings for SM8350
+  clk: qcom: rpmh: add support for SM8350 rpmh clocks
+  dt-bindings: clock: Add SM8350 GCC clock bindings
 
- If only a single SYNCI operation is ever required why wasn't SYNCI_Step 
-set to some large value instead that would in reality prevent looping over 
-SYNCI from happening?
+Vivek Aknurwar (2):
+  clk: qcom: clk-alpha-pll: Add support for Lucid 5LPE PLL
+  clk: qcom: gcc: Add clock driver for SM8350
 
-  Maciej
+ .../bindings/clock/qcom,gcc-sm8350.yaml       |   68 +
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ drivers/clk/qcom/Kconfig                      |    9 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-alpha-pll.c              |  223 +
+ drivers/clk/qcom/clk-alpha-pll.h              |    4 +
+ drivers/clk/qcom/clk-rpmh.c                   |   34 +
+ drivers/clk/qcom/gcc-sm8350.c                 | 3996 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sm8350.h   |  261 ++
+ include/dt-bindings/clock/qcom,rpmh.h         |    8 +
+ 10 files changed, 4605 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm8350.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm8350.h
+
+-- 
+2.26.2
+
