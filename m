@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4852D33B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3212D33B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgLHUYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:24:16 -0500
-Received: from mail-il1-f172.google.com ([209.85.166.172]:33931 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgLHUYO (ORCPT
+        id S1728587AbgLHUXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:23:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728998AbgLHUWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:24:14 -0500
-Received: by mail-il1-f172.google.com with SMTP id x15so16712922ilq.1;
-        Tue, 08 Dec 2020 12:23:53 -0800 (PST)
+        Tue, 8 Dec 2020 15:22:50 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA5C0617B0
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:22:10 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id n7so13224243pgg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:22:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KksDPeWutRhl2xACgV90xOoRvAUNuB/xdjRuh3OGqZI=;
+        b=P5vYhzOOWD8I6gSA+a5XyErnmd39EmGe2ziQEznTSC34ocQA6nP0hrUVtx30wcw+Tq
+         7XB0LbTcIbrMIQIcRWbBTzW0DrWWVI4pOeIflG3c7CLCrMsnqfSM3cw31QVpAE8g8oPq
+         Z3tWaCoJZ2PlOclONd7NWWc8flhCsoZhLOqaYL9kBhKWqyw600THzvmElKRROXl0khyI
+         pbJ19ypih/Vhz7nSsJRgMdM5MI31r9BfLtIoJ4xHjT5eE1a+rWmtzIC6trX39tueoG+J
+         Gb/gJ50UKZFROIr3jhCI76HXT2AVRurQwNJcX6eIKjUeKa8Tq7WhTZJoU17WV1lo/h/A
+         jBnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q6NWRu0JKYjkSKoX9I3d4KbPD1VXfKxekQuoiZAo6xY=;
-        b=GQpkVNGzQHoAryWeOu2uD7PKDafeBbn+3P9QZtInYaggpt2EPSdhbKZej4RG6JB1Wi
-         ItPS3wdyNatCYtkxHCQAMqdGpctI2K/+jTD+svhJh+qd3bTVPGeDI9aq0etXpbXCOtAj
-         UUczEFTWS9SgtKcWaUOCVdwDZZJAMSoDNNikLP67/EGbMsDwRl25OkEM7Rf6oS2HDPT4
-         d7cX4vXC4ZZ6GyoVQi8eov2AXZbuW1wv2j0rsmgxKuB3sjE8ek0ZPCbpIZ0zbSdRxhtz
-         MuDdh4HyUNx2KVVsUcMcuj/MYpso3+EZn1sv0l41juTw2ePwTtFBTl2YaQzu4JKqfIsk
-         D/eg==
-X-Gm-Message-State: AOAM530KC15G2GlQiHNp9UCtE3bdgjFD9IOry6iHniiq3qpcr6IMjisO
-        +Ni2DJ2rM7oBN5u2uVAkQXX+PU8G6V4=
-X-Google-Smtp-Source: ABdhPJy43iErXqaJbEI+KdAzzThDnBtZL2L9D5ebJ78wffo3zIpgAH6EZzghH6bB62zYW4mWiEdN/g==
-X-Received: by 2002:a65:5ac4:: with SMTP id d4mr14854746pgt.50.1607457416741;
-        Tue, 08 Dec 2020 11:56:56 -0800 (PST)
-Received: from [192.168.4.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id h7sm19344124pgi.90.2020.12.08.11.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 11:56:55 -0800 (PST)
-Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201208202853.186ae136@canb.auug.org.au>
- <20201208203859.686f83eb@canb.auug.org.au>
- <20201208175526.GH1298255@rowland.harvard.edu>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <367308ee-25e7-e40e-ba3a-6b2138c20969@acm.org>
-Date:   Tue, 8 Dec 2020 11:56:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KksDPeWutRhl2xACgV90xOoRvAUNuB/xdjRuh3OGqZI=;
+        b=eWs15WBJ/soNVwq+kNg4kGzLpqdJ1LjWIs7oFUQjZLDkTT1j74EwsKq1LTAhgPPIu5
+         vvrsaFRSmasgJzvsgT3Vgpy8tj7itzRVW3nI3O/ewnvW3N+kLX1UEVUpVxFf4d8U6r+r
+         71wX0ASdzYB25tsTQk+U+GqurjQHzshNCnoc2m5dVtW027v2t1rtE5XAC3G4OF7RHmoq
+         1KG8Y0LUfJhzkNDuMEbNjqArR6fTYk92j0Om1FiNSMgpzqB8cBqPxmB+RQftSwoDgcjN
+         2+pIH4XTfm4KuefkmT0pNZF5NYYsZzPtBMZneE59uX6nG/ur1MJmcdOd+Ybl7lZbGyzv
+         xA4Q==
+X-Gm-Message-State: AOAM53322OH2dCSQzOoDdJHMXZKNf/LW3AB+2HbioYyIkE0WhMz/ZWsz
+        1fXO4lS5N557yuD6uB77ApniYKBEiLEYwkmj7LlFTBCQp1U=
+X-Google-Smtp-Source: ABdhPJyfCbcKrOYRJdnfbMWFnq6M7iLjXhIs1Nwn2K2AD+VjibcvpoUMU5l+qG+Wk2sAOPvdaXKnReB92CrLZn/FTC4=
+X-Received: by 2002:a05:6102:a07:: with SMTP id t7mr18143495vsa.30.1607457515239;
+ Tue, 08 Dec 2020 11:58:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208175526.GH1298255@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1607455638-4436-1-git-send-email-jrdr.linux@gmail.com> <875z5ccc0h.fsf@igel.home>
+In-Reply-To: <875z5ccc0h.fsf@igel.home>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 9 Dec 2020 01:28:44 +0530
+Message-ID: <CAFqt6zbp56nOfnLvuieMMtpEi7TXuB67bGS_Y=offyiROc=etg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fixed kernel test robot warning
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, guoren@linux.alibaba.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/20 9:55 AM, Alan Stern wrote:
-> Yes, that certainly is the proper fix.  It's all to easy to miss these
-> issues that depend on your kernel configuration.
-> 
-> Bart, can you fold it into a new version of the patch?
+On Wed, Dec 9, 2020 at 1:21 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>
+> On Dez 09 2020, Souptick Joarder wrote:
+>
+> > Kernel test robot throws below warning -
+> >
+> >    arch/riscv/kernel/asm-offsets.c:14:6: warning: no previous prototype
+> > for 'asm_offsets' [-Wmissing-prototypes]
+> >       14 | void asm_offsets(void)
+> >          |      ^~~~~~~~~~~
+> >
+> > This patch should fixed it.
+>
+> Or rename it to main, like most other asm-offsets files.
 
-Sure, I will do that.
+Few asm-offsets files named it as foo(). Does a rename to main() will
+work straight forward ?
+I don't know much about this area of code.
 
-Thanks,
-
-Bart.
+>
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
