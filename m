@@ -2,247 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13E22D36E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667542D36ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbgLHX10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730364AbgLHX10 (ORCPT
+        id S1731754AbgLHXbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:31:03 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37694 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730438AbgLHXbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:27:26 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FDCC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:26:45 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id y19so708546lfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:26:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UyyMs/oundYi4iw7+VRZ21wCa2Y/3Ei9nnkOvReF5i0=;
-        b=izOsAMnNbCt3VEYvCAsuFPjfgWxcYaLddnsLDkaGqm3f0wWcCu3RTvF1F0efccLHFW
-         VDJT1jWs4gRD/DuuWrHOSVuEfO1kAWNeOuS0lXzhYzZo8x8Px9i7+/NHhvlJ8iebgGP7
-         h9nJv8rrMp0GUv0bvtE0OmV5j8KoqKTl55X0c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UyyMs/oundYi4iw7+VRZ21wCa2Y/3Ei9nnkOvReF5i0=;
-        b=MGE97vrL/EfrosNhvNmYDoYXb3agg5i2IkpvXcGZW5O+5WXAi+eAp0LI0UVzWSHu3l
-         94Qn3N9ym5OUGiUOGHPgY53ziSRje8YDxQRpPameqF7tbFoIuMKdEVSMnGjEWPAOvoej
-         jgzMKhVQeVta5gWszMs+5TLsz/jQGJKX1iWUM8y+z/sTqIA9qnAFzG/6EN+HhW4BM7QK
-         twW9Yf3rWs6fFfdBH20klnQu7zFJDJH9hHMiDtR0GMhfYZiXpLO4HSB/+GSDy8CTsD71
-         p1FEIGIEfQqzWqBWtst0jYDiS6O/wsdmS3rX1MFNgb+V63FpMrgOHDfJmsSBj25vZHq8
-         Udlw==
-X-Gm-Message-State: AOAM531Etkp7DBvd98hHf8V5XuKXghGFmQCAOHyFp1uDGfDV0yNStpjS
-        ks00oB/v8kWFt+FQ+PI53u9aMbrRs217fq2ArHU=
-X-Google-Smtp-Source: ABdhPJwbLlzIPbOzSqekFi3STIJv9VdcUccVzE40tW+f/E8BeyF23pyzToEsRu1ZwFUvbU235FWpMw==
-X-Received: by 2002:a19:f11e:: with SMTP id p30mr5783058lfh.395.1607470004123;
-        Tue, 08 Dec 2020 15:26:44 -0800 (PST)
-Received: from [192.168.10.101] (c83-250-124-157.bredband.comhem.se. [83.250.124.157])
-        by smtp.gmail.com with ESMTPSA id m11sm31985lfl.5.2020.12.08.15.26.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 15:26:43 -0800 (PST)
-Subject: Re: scheduling while atomic in z3fold
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org
-References: <90c4857c53b657147bfb71a281ece9839b0373c2.camel@gmx.de>
- <856b5cc2a3d4eb673743b52956bf1e60dcdf87a1.camel@gmx.de>
- <20201130145229.mhbkrfuvyctniaxi@linutronix.de>
- <05121515e73891ceb9e5caf64b6111fc8ff43fab.camel@gmx.de>
- <20201130160327.ov32m4rapk4h432a@linutronix.de>
- <fca7ecadf1bddafb7e88cbeb4a57d1464c87b044.camel@gmx.de>
- <20201202220826.5chy56mbgvrwmg3d@linutronix.de>
- <abe48cb9ab522659a05d7e41ce07317da2a85163.camel@gmx.de>
- <64ab382309c41ca5c7a601fc3efbb6d2a6e68602.camel@gmx.de>
- <20201203133934.37aotbdjnd36lrxv@linutronix.de>
- <10d5088861ba219f3f7cd657fc95b0bedc19010a.camel@gmx.de>
- <cad7848c-7fd3-b4a4-c079-5896bb47ee49@konsulko.com>
- <3ffed6172820f2e8e821e1b8817dbd0bdd693c26.camel@gmx.de>
- <CAM4kBBL5+xNWq6DWHY6nQjwDTj8PZKem-rGuFvimi7jekjA+Xw@mail.gmail.com>
- <3ec93680c6a27626b23e99d552aa778be7b2ecec.camel@gmx.de>
- <CAM4kBBJ2jqBKdTPWPZEfuc17yiARMr_NwOSoHL_r0eC9n7UpUQ@mail.gmail.com>
- <9bd908b65ef15149458aa060c0daf065f9d45615.camel@gmx.de>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Message-ID: <159ce32b-a7c4-08be-9283-9e38a7c27848@konsulko.com>
-Date:   Wed, 9 Dec 2020 00:26:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 18:31:02 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8NTJ96033962;
+        Tue, 8 Dec 2020 23:29:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : in-reply-to :
+ references : mime-version : content-type : content-transfer-encoding :
+ subject : to : cc : from : message-id; s=corp-2020-01-29;
+ bh=9AlLRDj4NQ6VOsXiI83DjZG72/CtdEP4jRmGMopJUc8=;
+ b=X+A2WizWB2Vpkmi8wutPobdd+c8SsogB7dHyYlOSUQ6YVKyXXEmsti05g4ks6doYHANe
+ 1yrSNen2HTuPEfl5fGcxzjTTPOnIY4cPffm+LIYtriX26+uqbMGWiBmNgQ4iglL/WI43
+ JVUEuqd6aTvVkAz06v5F5EsYk7ErIO02xOTJonnB7Iw+BppPso6KL+ZMuW0pEJtTni4w
+ UMk8fCCPX0Q3rH8sC5Sg8oCFsgSW2TTlScI2JiZ/tMJWGoLVaKJptwJ9zz36eNtL7mgK
+ cWYxUrYVO7RUFq/n7si0a5LBIAcX6y1VSoaODAea3PvpF4+s8Xqn8/UudcJHxjUjuHVh uQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 357yqbwm7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 23:29:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8NQmV9107408;
+        Tue, 8 Dec 2020 23:27:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358ksp8mxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 23:27:51 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8NRjds001727;
+        Tue, 8 Dec 2020 23:27:45 GMT
+Received: from [192.168.86.39] (/209.6.208.110)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 15:27:43 -0800
+Date:   Tue, 08 Dec 2020 18:27:39 -0500
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201208230119.GG27920@zn.tnic>
+References: <20201207231057.26403-1-Ashish.Kalra@amd.com> <20201208222220.GA27599@char.us.oracle.com> <20201208230119.GG27920@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <9bd908b65ef15149458aa060c0daf065f9d45615.camel@gmx.de>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Ashish Kalra <Ashish.Kalra@amd.com>, hch@lst.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
+        dave.hansen@linux-intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, brijesh.singh@amd.com,
+        Thomas.Lendacky@amd.com, Jon.Grimm@amd.com, rientjes@google.com
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Message-ID: <6443B6DC-2C54-48E4-8207-3F2D88B82AC0@oracle.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=996 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+On December 8, 2020 6:01:19 PM EST, Borislav Petkov <bp@alien8=2Ede> wrote:
+>On Tue, Dec 08, 2020 at 05:22:20PM -0500, Konrad Rzeszutek Wilk wrote:
+>> I will fix it up=2E
+>
+>So who's picking this up? If not me then I probably should have a
+>detailed look at the x86 bits before it goes in=2E=2E=2E
 
-On 2020-12-07 16:41, Mike Galbraith wrote:
-> On Mon, 2020-12-07 at 16:21 +0100, Vitaly Wool wrote:
->> On Mon, Dec 7, 2020 at 1:34 PM Mike Galbraith <efault@gmx.de> wrote:
->>>
->>
->>> Unfortunately, that made zero difference.
->>
->> Okay, I suggest that you submit the patch that changes read_lock() to
->> write_lock() in __release_z3fold_page() and I'll ack it then.
->> I would like to rewrite the code so that write_lock is not necessary
->> there but I don't want to hold you back and it isn't likely that I'll
->> complete this today.
-> 
-> Nah, I'm in no rush... especially not to sign off on "Because the
-> little voices in my head said this bit should look like that bit over
-> yonder, and testing _seems_ to indicate they're right about that" :)
-> 
-> 	-Mike
-> 
+I was planning to pick this up (got one more SWIOTLB related patch)=2E
 
-okay, thanks. Would this make things better:
+That said  if you have the time to take a peek at the x86 bits -  that wou=
+ld be awesome!
 
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 18feaa0bc537..340c38a5ffac 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -303,10 +303,9 @@ static inline void put_z3fold_header(struct 
-z3fold_header *zhdr)
-  		z3fold_page_unlock(zhdr);
-  }
 
--static inline void free_handle(unsigned long handle)
-+static inline void free_handle(unsigned long handle, struct 
-z3fold_header *zhdr)
-  {
-  	struct z3fold_buddy_slots *slots;
--	struct z3fold_header *zhdr;
-  	int i;
-  	bool is_free;
-
-@@ -316,22 +315,13 @@ static inline void free_handle(unsigned long handle)
-  	if (WARN_ON(*(unsigned long *)handle == 0))
-  		return;
-
--	zhdr = handle_to_z3fold_header(handle);
-  	slots = handle_to_slots(handle);
-  	write_lock(&slots->lock);
-  	*(unsigned long *)handle = 0;
--	if (zhdr->slots == slots) {
--		write_unlock(&slots->lock);
--		return; /* simple case, nothing else to do */
--	}
-+	if (zhdr->slots != slots)
-+		zhdr->foreign_handles--;
-
--	/* we are freeing a foreign handle if we are here */
--	zhdr->foreign_handles--;
-  	is_free = true;
--	if (!test_bit(HANDLES_ORPHANED, &slots->pool)) {
--		write_unlock(&slots->lock);
--		return;
--	}
-  	for (i = 0; i <= BUDDY_MASK; i++) {
-  		if (slots->slot[i]) {
-  			is_free = false;
-@@ -343,6 +333,8 @@ static inline void free_handle(unsigned long handle)
-  	if (is_free) {
-  		struct z3fold_pool *pool = slots_to_pool(slots);
-
-+		if (zhdr->slots == slots)
-+			zhdr->slots = NULL;
-  		kmem_cache_free(pool->c_handle, slots);
-  	}
-  }
-@@ -525,8 +517,6 @@ static void __release_z3fold_page(struct 
-z3fold_header *zhdr, bool locked)
-  {
-  	struct page *page = virt_to_page(zhdr);
-  	struct z3fold_pool *pool = zhdr_to_pool(zhdr);
--	bool is_free = true;
--	int i;
-
-  	WARN_ON(!list_empty(&zhdr->buddy));
-  	set_bit(PAGE_STALE, &page->private);
-@@ -536,21 +526,6 @@ static void __release_z3fold_page(struct 
-z3fold_header *zhdr, bool locked)
-  		list_del_init(&page->lru);
-  	spin_unlock(&pool->lock);
-
--	/* If there are no foreign handles, free the handles array */
--	read_lock(&zhdr->slots->lock);
--	for (i = 0; i <= BUDDY_MASK; i++) {
--		if (zhdr->slots->slot[i]) {
--			is_free = false;
--			break;
--		}
--	}
--	if (!is_free)
--		set_bit(HANDLES_ORPHANED, &zhdr->slots->pool);
--	read_unlock(&zhdr->slots->lock);
--
--	if (is_free)
--		kmem_cache_free(pool->c_handle, zhdr->slots);
--
-  	if (locked)
-  		z3fold_page_unlock(zhdr);
-
-@@ -973,6 +948,9 @@ static inline struct z3fold_header 
-*__z3fold_alloc(struct z3fold_pool *pool,
-  		}
-  	}
-
-+	if (zhdr && !zhdr->slots)
-+		zhdr->slots = alloc_slots(pool,
-+					can_sleep ? GFP_NOIO : GFP_ATOMIC);
-  	return zhdr;
-  }
-
-@@ -1270,7 +1248,7 @@ static void z3fold_free(struct z3fold_pool *pool, 
-unsigned long handle)
-  	}
-
-  	if (!page_claimed)
--		free_handle(handle);
-+		free_handle(handle, zhdr);
-  	if (kref_put(&zhdr->refcount, release_z3fold_page_locked_list)) {
-  		atomic64_dec(&pool->pages_nr);
-  		return;
-@@ -1429,19 +1407,19 @@ static int z3fold_reclaim_page(struct 
-z3fold_pool *pool, unsigned int retries)
-  			ret = pool->ops->evict(pool, middle_handle);
-  			if (ret)
-  				goto next;
--			free_handle(middle_handle);
-+			free_handle(middle_handle, zhdr);
-  		}
-  		if (first_handle) {
-  			ret = pool->ops->evict(pool, first_handle);
-  			if (ret)
-  				goto next;
--			free_handle(first_handle);
-+			free_handle(first_handle, zhdr);
-  		}
-  		if (last_handle) {
-  			ret = pool->ops->evict(pool, last_handle);
-  			if (ret)
-  				goto next;
--			free_handle(last_handle);
-+			free_handle(last_handle, zhdr);
-  		}
-  next:
-  		if (test_bit(PAGE_HEADLESS, &page->private)) {
-
---
-
-Best regards,
-    Vitaly
