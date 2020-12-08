@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F0D2D25ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9602D26BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgLHIaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:30:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725927AbgLHIaS (ORCPT
+        id S1728430AbgLHJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:00:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728192AbgLHJAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:30:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607416131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TjsxQ2FzOW8Vf+JUFyxyrHDPT5g94+5fVImUHems/bg=;
-        b=ChoAllp3IenSpA3t2pK1BrF2q3L9Wkb8XtczRn4PQ0c3ek8cJSLXBTXLm64eq99hD2lHMu
-        1aTT215YR2bFyQRdg58tIKTHYoKIwdQF4tc4CtQxOKQZXZkdG/at6Hw5lSpoxD7Y1qsMXo
-        YMSYl1/mbHjsWSwhoRIhI9ezZFKphys=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-qE97xquSPL-ru67l_GVtUA-1; Tue, 08 Dec 2020 03:28:49 -0500
-X-MC-Unique: qE97xquSPL-ru67l_GVtUA-1
-Received: by mail-pf1-f198.google.com with SMTP id k17so7426402pfu.21
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:28:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TjsxQ2FzOW8Vf+JUFyxyrHDPT5g94+5fVImUHems/bg=;
-        b=PNO21T0pZethJR6aeSkNtqOflv74Xxy7ppzq4RkCORvObg4TtTAvaFatGXRsJDk5xT
-         Rg+mKY6sZ03ePtMohb4qrJ8n7TvijdOIMV6GXTuhY2UwTQAnSkyHyICj+2xckwP3uD8E
-         JaW3WfBSimlmTjfuNQIbNv8q9wLjLt3dFsVfvs4mXe8uiHdYlzFQWPA9tlJ2I65iw0oV
-         xbBGs2CWN5obkbNN82GIhGis+dMbl318YkG82luKaIyesXH9hX10s3he7hQbGa22tqYZ
-         O25opGpza5fzMnB3u/t8pkBXYpfdA/GoZ29wPr4iPwWTrDVHSIQRjiuYzik4mFvol2B7
-         zzvQ==
-X-Gm-Message-State: AOAM532SAR3D44KTSUVIEClHKoMr5mjstK5nMB4SQStTh/9/rcIxDOm+
-        dR5RdxaEpgS4x2S4lDakGMC+fogtV6Q6xq+k68iIfPOWEJmd5jUUzGLANlkCrwtE0gFiaRxJqYE
-        1P/pybt+ymFpSrD9eSULlGf8o
-X-Received: by 2002:aa7:9f0f:0:b029:19b:c68f:61cd with SMTP id g15-20020aa79f0f0000b029019bc68f61cdmr19311541pfr.45.1607416128451;
-        Tue, 08 Dec 2020 00:28:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyfxiWJVep27zelwlm4PEke2fzHrgHBaLKKZuL5ZDqWxjwE42PCmN/0sqAxIvpULn5YbI4fZA==
-X-Received: by 2002:aa7:9f0f:0:b029:19b:c68f:61cd with SMTP id g15-20020aa79f0f0000b029019bc68f61cdmr19311523pfr.45.1607416128200;
-        Tue, 08 Dec 2020 00:28:48 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id f92sm2218853pjk.54.2020.12.08.00.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 00:28:47 -0800 (PST)
-Date:   Tue, 8 Dec 2020 16:28:37 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH v2 1/3] erofs: get rid of magical Z_EROFS_MAPPING_STAGING
-Message-ID: <20201208082837.GC3006985@xiangao.remote.csb>
-References: <20201207012346.2713857-1-hsiangkao@redhat.com>
- <0fc43d3f-9c79-c7a1-6e41-b5b6932fe571@huawei.com>
+        Tue, 8 Dec 2020 04:00:07 -0500
+X-Greylist: delayed 1682 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Dec 2020 00:59:27 PST
+Received: from centrum.lixper.it (centrum.lixper.it [IPv6:2a01:4f8:221:3c81::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DC9C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:59:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sguazz.it; s=centrum;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=y2w05WLUaDoLIJEGFosg2qYKD3kDFIU2iQVDte6m0a0=;
+        b=I1RSCRZSLLHT0s8V9eSBIvJYbmBxtWQImegAo8x+ZlXV0WA9l0B5Q/7WG/+zs7eMuQdlqage6FwBAtatE2woQpdfUbj5PPGKISK+MbaSieDBkGFhQcq92UBfJ56BeqzhhzNhr+qKGhbkQwATWwtfnj7JKNKFS/YKpHRSNa/FLD0=;
+Received: by centrum.lixper.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.84_2)
+        (envelope-from <giuseppe@sguazz.it>)
+        id 1kmYOe-0000Rp-JM; Tue, 08 Dec 2020 09:30:58 +0100
+Message-ID: <45348197b657d9051a7dcdf711a110388ab41900.camel@sguazz.it>
+Subject: Re: [PATCH v2] powerpc/powermac: Fix low_sleep_handler with
+ CONFIG_VMAP_STACK
+From:   Giuseppe Sacco <giuseppe@sguazz.it>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 08 Dec 2020 09:30:50 +0100
+In-Reply-To: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
+References: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0fc43d3f-9c79-c7a1-6e41-b5b6932fe571@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-GeoIP: IT
+X-SRS:  Sender address rewritten from <giuseppe@sguazz.it> to <SRS0=S1CN=FM=sguazz.it=giuseppe@centrum.lixper.it> by centrum.lixper.it.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 04:15:59PM +0800, Chao Yu wrote:
-> On 2020/12/7 9:23, Gao Xiang wrote:
+Hello Christophe,
 
-...
-
-
-> >   }
-> > -static inline bool z_erofs_put_stagingpage(struct list_head *pagepool,
-> > -					   struct page *page)
-> > +static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
-> > +					      struct page *page)
-> >   {
-> > -	if (!z_erofs_page_is_staging(page))
-> > +	if (!z_erofs_is_shortlived_page(page))
-> >   		return false;
-> > -	/* staging pages should not be used by others at the same time */
-> > -	if (page_ref_count(page) > 1)
-> > +	/* short-lived pages should not be used by others at the same time */
-> > +	if (page_ref_count(page) > 1) {
+Il giorno mar, 08/12/2020 alle 05.24 +0000, Christophe Leroy ha
+scritto:
+> low_sleep_handler() can't restore the context from standard
+> stack because the stack can hardly be accessed with MMU OFF.
 > 
-> Does this be a possible case?
+> Store everything in a global storage area instead of storing
+> a pointer to the stack in that global storage area.
+> 
+> To avoid a complete churn of the function, still use r1 as
+> the pointer to the storage area during restore.
+> 
+> Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
+> Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> This is only build tested. Giuseppe can you test it ? Thanks.
+> 
+> v2: Changed an erroneous 'addis' to 'addi' ; Using bss instead of
+> data section
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/platforms/Kconfig.cputype  |   2 +-
+>  arch/powerpc/platforms/powermac/sleep.S | 132 +++++++++++-----------
+> --
+>  2 files changed, 60 insertions(+), 74 deletions(-)
+[...]
 
-Add more words about this.... since EROFS uses rolling decompression (which means
-the sliding window is limited (e.g. 64k, but some vendors adjust it to 12k for
-example ) even though the uncompressed size is too large (e.g. 128k)), and by
-using get_page(), vmap(), and z_erofs_put_shortlivedpage() to free such usage.
-Since shortlivedpages won't share with other parallel thread, so it's safe to
-just like this to decrease page count (it means how many shared get_page()
-before) and recycle to pagepool (on the last reference for later use.)
+I just tested the v2 patch against latest kernel. Please note that
+yesterday patch was on a kernel named 5.10.0-rc6+, while today's patch
+is on a kernel named 5.10.0-rc7+. Even with the latest kernel updates,
+the patch apply correctly and machine boots normally, fixing the
+problem.
 
-Thanks,
-Gao Xiang
+$ uname -a
+Linux titanium4 5.10.0-rc7+ #3 Tue Dec 8 09:11:20 CET 2020 ppc GNU/Linux
+$ grep VMAP /boot/config-5.10.0-rc7+
+CONFIG_HAVE_ARCH_VMAP_STACK=y
+CONFIG_VMAP_STACK=y
+
+Thank you again.
+
+Bye,
+Giuseppe
+
 
