@@ -2,255 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039A72D234D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3632D234F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgLHFre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:47:34 -0500
-Received: from sonic313-21.consmr.mail.gq1.yahoo.com ([98.137.65.84]:37694
-        "EHLO sonic313-21.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725766AbgLHFre (ORCPT
+        id S1726334AbgLHFrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:47:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgLHFrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:47:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1607406387; bh=7toQZcx2h92+S38+gJdGyvWo31V3J+GK8A0SIDJiVS8=; h=From:To:Cc:Subject:Date:References:From:Subject; b=WJ/bBRyV49RxLxSF1x/m1EinBtqif4Vb6mETJ8m25alTZtiQFjWkEHHtL6WAbaZ/uhm651G0V+gR+PQAUSBkvzmqctUq3GQ8ULH1/n2n/SrfSBLr0j9npDoJWzvGIfaLpOS+AScAMoSkvmL6dnw4Zxj9QYDULwbLnoVjyefYFYzyW017aCeuv1wUUOyNMVw8YBsgQi4HuEf6Fgar4YDfckDCSzsf744FTfr/0PKlqLSzmWimK8vPACcIvSHq2LFU8P25VkDGDEKAyHCuXeueDbcW6SzpuUuGVq4e0xvFKKnPcqzHsN3976pGJ7zH7YCThlbvdPIWNSyIIdLqdE7VeQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1607406387; bh=vOQ5cgi4uLAxGN/EMx7m5C1Fv/lieVJJbjeuYTfqmb9=; h=From:To:Subject:Date:From:Subject; b=tnYXx4SiV3FagTbpBey/3TuP1IIh3q0VB6tsTgl6bs8DwlmjkxvsCZsZDAvQJagoAfS6ljEvCJnEMG0ctAy9UPOXvoc/+UmAAzgPtFX0gImLLjL/eKeylDF5Kly9cYkhNo9HQ4ELRl7nG5PG+kaIq0t5Glep7rA9Ee4ccgnFgWT2f0Cimgl08izKtQPvPC8BJpl2Zr1hwJ4gNMUbd+wYwk3USJWISIecisaxlFDe+aum0zufRUWUcghBXxHytQ8ExjvFEmMvCp+8Cx4hunfB6gwYYUBHyjmYi2vDCnmsRHyDJp5pqRJ2rBmwkz9H7ZJ87A5A/1sJKlYttT35+u5Z0Q==
-X-YMail-OSG: zDqtWYYVM1kNwbQ7yFt51z0o7KV2_Fze26bd3Q3oDw75Hrz12Pfv7yH4cOPdGwY
- noyFImStvCU2BhOOgZOlSoZL7QoGEiqMHtgcynBjhAUwTtN1NpTm0SbeWCWg6XNvIDVdOS_VXJto
- FyALSsoPUYCJtVokaRVjhD92fpJPcSRF9wpgmIPuYoZCSoZ4.TCp52uKafpfQyOWKueUH4eWGwBC
- G5WzRKll.uDnJsMn3noNSCinELQg7mLKKyQs.LnARzW3nFF2fncHpLUmgdGwSBmvWkV8ekShrt2j
- tiXulHGXo93syHlTRgipKeN5wqyLXkSsZaK4elSABiKf6M4PVxT_xOA6KmuHxF36qzTVyHxn6R0Q
- MaLArBVVPbqFgJUX8Ssl.x4aBnnQ7ktfv.FuMYzxx1BGDHw95Hn0_yPUWdAEnS3Nvun3VFdsSzAX
- CbDSmDT_IPn28tUAiivsmcMp2PGxmOKpugZkUGNEhnD4DvSEpJEYRc2iJVljaz6M39Lm8Kh_s17f
- GyKKXxQWgW88Z1DF0sMxCT5Gvxl8am5aDTBdjlI1f9ZcPfDJ4H7DC0a.kYLargOdpdYnuBh4VkjL
- EIh7vsO3HAWZLXtAnQ9CqLstRKM1GO5iFpMB7kWGpMk0D8tL8Ddk5tONYacFIg9YKvP46iHzj4WE
- vsVOOBdwweSQxssm8PetD_YLqKN9WPOK8wFXhVDPn1CZU5TpVD5YVw6cNV..2ZIiezj6c3T1x7B_
- cKzqVZ3e5aiDUJnDPEgpzbT39puaKpDtILrvZZsJcLXCB6IiLc1kJrO.W6UDrzH6TA2yybIXzeWR
- zVhdK8iLtk.ooI9J8mCoBqQ9SstRksgUP02Gyg_pP4W53D5bweeVAVK88QaS3Mln47jo1zZ7kezJ
- HWT4AfI1BDF08WXGRoiqkib1AvDD1XV9Iwpa1dyx.vcUItD570wpRRGfueamo5pYVES4J5GnsSPj
- xVfuIz19QvUc_aD5FxXwl1X.mG4yw27HgypT7S.NIK2rWJtNC2nkCTzfcnapQin2S7duwlEjnmUG
- oInf1OaOsSmuuaCZzk1yDgtNqn7E.vvo5g9wGHm0PThVAcnyaBhZg4el9nxcHaBRPpbj7myXHB02
- UTVVFfu3co9MAZowrGjdLapV7SJqVQI1ybrH84Xr7BtOkYll4BDIYgrJx5CphmBVnMxrV7PBUr9L
- aH3CJV2L8lguFUbMbX2L3oBDDgxVGJ4S0kFxJyUw68AJJFyWCT7UuOPmH_.S67N4.Tbi1Wyt5Ii0
- UEVC7HN8DbaBcexJSlRXnjPOlCEzdqSkl7N6cJO6m95RI4a6Yom8YgOLAmxjgBwOlEViV4rCFyY2
- mJqWQ5nkvCw4augQOjP0Z4syGTaQu31wzvSYVkLbamLgDjneptEi8NfOT3ajkLAkq0qMgSvmlel_
- ySDRZZYn7hzUPt1wozgRUogqvuGDPfA4SwfLvlReJfRa8T2XJah35NT8dTrBF.q_ojV4neNs2mEI
- X20gPHIX.1_7sMfQxxsGHuRHqIXyL79Xh0E5r4SfjZA46Lp4fXmYjZsfDYcFW8nsvWvR8RxCjY6s
- 6pd2HNA3lRBHxJHMsMgR9aTipF6.1jjsynALCCyMy1npBQyl.hhhhXVW4lpNuhVWce.y6cgnMcwF
- QARY3OTCo220ArnaDH6qJ5OMhdV9B2.Z0MYueDgLBFktNjlpnTK6U9IhXUt1kq4nXI1izK0v3a8f
- kovDcWbThcd57GyshIEdi_hvsQeEOANksRoN05m.sMejA0LvUg9VGcp9I0SKC5VqsmYyCq4CZpNQ
- O2jYd0N9DUn90RafIrnv3411lrOfJNIAZqWg2TZX1dW7rECHEBjETPFvMGODd4eGOMo7BbdJrkF4
- LIevSS9RMUEKijvSPfXOtVFZc8hHO6A1lA6wR7mQ2c.wH3Sdd4.pwLpv3k8np7v9V85Uf63B5Kbf
- e6_HazqEvi8oOoJ9kgdQM_zU0XnkHxetkcQ4zH4toBd_yzNduI741CvA5BuefzZ9nxlmNzH5CJ3f
- Igm2G3PWnLr8.CgbKwBfEEs0ZPinpmOD4gl2HhEzgUEZLFWqkJfSrrWHwS_jO_aLV8Qy9QWX_KvI
- rUQro4uCi_sse5_SFETa_miUKtlCHmT6IMgD1PdBJ8h7SVumIPMu_nj27naaI3AHJma80vNqALZT
- 3V.8yPxz1a_t9NDY1oHY7SBulhVCMAZ4SnDSuthdrLLBopoEO03gG3LkLRygVSqnPhlmoDuIypP1
- dM3d0RUZPQFULE.cTRocxCOdVjOtg.9XoHgoxilv7fGO.Uv4VuwF3yfReNr5iD.Fv.rqExuWtBwq
- pWIZJzWUUMg6234hlGwC4S5thcrvKjuk3h.khRD0AvrlHhOC1pvgseU4XT4zV5.S_lpmvnMC7Z1O
- pFrCSOilQCq3ecrLyNyCh28usqatQp7XYlhCRY5f5D427gwsWukgZz71JC32t4Ak8eDqgjKAMt1X
- G7h3P7nwh8ChhohGrMTYxHyzTVU6ig367OmA1cPFLExnqNPN7sQjOw5Dua3QwPqJMim1XGH7dqdV
- a8UrNmYiUFGmiBgzJ1w9h_sbM41S00lVF.tnofo3qT1UZA0jsVBHU4PSt8CiLZ7BV1igLlQ3UDh0
- IHYH7mPNOwmDGXJAAiWK.kQ.jH8aciiawueT55yjI_Jfg1qCrWC4rzN7iOeUXQw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Tue, 8 Dec 2020 05:46:27 +0000
-Received: by smtp406.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID dcc06fca14db8c8945aa97b3b0ce8706;
-          Tue, 08 Dec 2020 05:46:23 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH] erofs: force inplace I/O under low memory scenario
-Date:   Tue,  8 Dec 2020 13:46:00 +0800
-Message-Id: <20201208054600.16302-1-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.24.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-References: <20201208054600.16302-1-hsiangkao.ref@aol.com>
+        Tue, 8 Dec 2020 00:47:35 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBBCC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 21:46:55 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id v18so13065334qta.22
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 21:46:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=e1pDmuZWJgETEHbU+21FKLtGXbFndqwbo33SoyyNrOA=;
+        b=I4pGl9G+/ClTNHjjMWUUmjtSXe/KWlnklWFAGVruixzJ9ve1HKTFph5J7/+L7CQ1eM
+         enCTzlPt6VMoKaxfarFSHypXGTG5f2bXP7LSKasBrsZgIeaA3h7v3/jXSllSTmsrL9q4
+         f0EMIhE+TrKstlvPRLehje0YKMuu99R62Oc58ziQV/oVRCfoMxpyQtmaQ/oVATruw8gx
+         44dr+OlKv3K5cfIRBUcsGtV/XnXKbplNp6v9eB3FsnKqYLrym4w7yUmAMeaDwVMn5xRo
+         FP+owZ35Kgp5aAbP/fCgsme+64nA8KZsWUmEWS14LmBNfBXDfTdPK51JcOZlzdcxZrI8
+         U71A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=e1pDmuZWJgETEHbU+21FKLtGXbFndqwbo33SoyyNrOA=;
+        b=poelaeK7mEQX27BrUpDka+Wlx1/5B6C3Oa3703Xjmjm+e4tXjsFoHXEoRvA3wgD2UC
+         Ram3jVfzgxG16DLlajPVVQUFgPdKSwCZom9WB7j8lur/kj+56v6B8isTPiP9zi2e2FpH
+         V3IwY7p6FJarOiozw4FpRbCBY3uaby5wJzNlPViubjultEX/43XqDYuyF+POrMGNc3HX
+         8Qka+gcRWX+flQTbjer7rqE4JHW4PAE9HBOshQVT8/N/8gu8blEpCfnQ7ArTmVOu2ZKF
+         3dTizeamS4VJBW76Na7f6I8gLWfEmuK+H72GFLqB/rS+Oja6Wny9ZKr+7t70Un2CCTYH
+         1JlA==
+X-Gm-Message-State: AOAM533SGCuvzqHdAZD8ltlB0707MBRW0l4WpLLJN3vp2+EMUD7XQ0YB
+        MutCAOW4BJnMe6sQp+grZ0+hgy27ptnu
+X-Google-Smtp-Source: ABdhPJyJCc0PRQKEaD0Sa/sjBmCtKwQ59nrH4O31YhEiHPcTt3PNHnsxhFeMkS19ZaunISqbWwS9B4Bc0nqH
+Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
+X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+ (user=maskray job=sendgmr) by 2002:a0c:a8d4:: with SMTP id
+ h20mr7977172qvc.52.1607406414446; Mon, 07 Dec 2020 21:46:54 -0800 (PST)
+Date:   Mon,  7 Dec 2020 21:46:46 -0800
+In-Reply-To: <20201203202737.7c4wrifqafszyd5y@google.com>
+Message-Id: <20201208054646.2913063-1-maskray@google.com>
+Mime-Version: 1.0
+References: <20201203202737.7c4wrifqafszyd5y@google.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH v2] firmware_loader: Align .builtin_fw to 8
+From:   Fangrui Song <maskray@google.com>
+To:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+arm64 references the start address of .builtin_fw (__start_builtin_fw)
+with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+relocations. The compiler is allowed to emit the
+R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+include/linux/firmware.h is 8-byte aligned.
 
-Try to forcely switch to inplace I/O under low memory scenario in
-order to avoid direct memory reclaim due to cached page allocation.
+The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+multiple of 8, which may not be the case if .builtin_fw is empty.
+Unconditionally align .builtin_fw to fix the linker error. 32-bit
+architectures could use ALIGN(4) but that would add unnecessary
+complexity, so just use ALIGN(8).
 
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
 ---
-This was commercially used internally for years, but due to customized
-page->mapping before, it cannot cleanly upstream till now. Since magical
-page->mapping is now gone, adapt this to the latest dev branch for
-better low-memory performance (fully use inplace I/O instead.)
+Change in v2:
+* Use output section alignment instead of inappropriate ALIGN_FUNCTION()
+---
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- fs/erofs/compress.h |  3 +++
- fs/erofs/zdata.c    | 49 +++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 44 insertions(+), 8 deletions(-)
-
-diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-index 2bbf47f353ef..c51a741a1232 100644
---- a/fs/erofs/compress.h
-+++ b/fs/erofs/compress.h
-@@ -27,11 +27,13 @@ struct z_erofs_decompress_req {
- };
- 
- #define Z_EROFS_SHORTLIVED_PAGE		(-1UL << 2)
-+#define Z_EROFS_PREALLOCATED_PAGE	(-2UL << 2)
- 
- /*
-  * For all pages in a pcluster, page->private should be one of
-  * Type                         Last 2bits      page->private
-  * short-lived page             00              Z_EROFS_SHORTLIVED_PAGE
-+ * preallocated page (tryalloc) 00              Z_EROFS_PREALLOCATED_PAGE
-  * cached/managed page          00              pointer to z_erofs_pcluster
-  * online page (file-backed,    01/10/11        sub-index << 2 | count
-  *              some pages can be used for inplace I/O)
-@@ -39,6 +41,7 @@ struct z_erofs_decompress_req {
-  * page->mapping should be one of
-  * Type                 page->mapping
-  * short-lived page     NULL
-+ * preallocated page    NULL
-  * cached/managed page  non-NULL or NULL (invalidated/truncated page)
-  * online page          non-NULL
-  *
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index b1b6cd03046f..b84e6a2fb00c 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -20,6 +20,11 @@
- enum z_erofs_cache_alloctype {
- 	DONTALLOC,	/* don't allocate any cached pages */
- 	DELAYEDALLOC,	/* delayed allocation (at the time of submitting io) */
-+	/*
-+	 * try to use cached I/O if page allocation succeeds or fallback
-+	 * to in-place I/O instead to avoid any direct reclaim.
-+	 */
-+	TRYALLOC,
- };
- 
- /*
-@@ -154,13 +159,15 @@ static DEFINE_MUTEX(z_pagemap_global_lock);
- 
- static void preload_compressed_pages(struct z_erofs_collector *clt,
- 				     struct address_space *mc,
--				     enum z_erofs_cache_alloctype type)
-+				     enum z_erofs_cache_alloctype type,
-+				     struct list_head *pagepool)
- {
- 	const struct z_erofs_pcluster *pcl = clt->pcl;
- 	const unsigned int clusterpages = BIT(pcl->clusterbits);
- 	struct page **pages = clt->compressedpages;
- 	pgoff_t index = pcl->obj.index + (pages - pcl->compressed_pages);
- 	bool standalone = true;
-+	gfp_t gfp = mapping_gfp_constraint(mc, GFP_KERNEL) & ~__GFP_DIRECT_RECLAIM;
- 
- 	if (clt->mode < COLLECT_PRIMARY_FOLLOWED)
- 		return;
-@@ -168,6 +175,7 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 	for (; pages < pcl->compressed_pages + clusterpages; ++pages) {
- 		struct page *page;
- 		compressed_page_t t;
-+		struct page *newpage = NULL;
- 
- 		/* the compressed page was loaded before */
- 		if (READ_ONCE(*pages))
-@@ -179,7 +187,17 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 			t = tag_compressed_page_justfound(page);
- 		} else if (type == DELAYEDALLOC) {
- 			t = tagptr_init(compressed_page_t, PAGE_UNALLOCATED);
-+		} else if (type == TRYALLOC) {
-+			gfp |= __GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN;
-+
-+			newpage = erofs_allocpage(pagepool, gfp);
-+			if (!newpage)
-+				goto dontalloc;
-+
-+			set_page_private(newpage, Z_EROFS_PREALLOCATED_PAGE);
-+			t = tag_compressed_page_justfound(newpage);
- 		} else {	/* DONTALLOC */
-+dontalloc:
- 			if (standalone)
- 				clt->compressedpages = pages;
- 			standalone = false;
-@@ -189,8 +207,12 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 		if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t)))
- 			continue;
- 
--		if (page)
-+		if (page) {
- 			put_page(page);
-+		} else if (newpage) {
-+			set_page_private(newpage, 0);
-+			list_add(&newpage->lru, pagepool);
-+		}
- 	}
- 
- 	if (standalone)		/* downgrade to PRIMARY_FOLLOWED_NOINPLACE */
-@@ -560,7 +582,7 @@ static bool should_alloc_managed_pages(struct z_erofs_decompress_frontend *fe,
- }
- 
- static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
--				struct page *page)
-+				struct page *page, struct list_head *pagepool)
- {
- 	struct inode *const inode = fe->inode;
- 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
-@@ -613,11 +635,12 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 
- 	/* preload all compressed pages (maybe downgrade role if necessary) */
- 	if (should_alloc_managed_pages(fe, sbi->ctx.cache_strategy, map->m_la))
--		cache_strategy = DELAYEDALLOC;
-+		cache_strategy = TRYALLOC;
- 	else
- 		cache_strategy = DONTALLOC;
- 
--	preload_compressed_pages(clt, MNGD_MAPPING(sbi), cache_strategy);
-+	preload_compressed_pages(clt, MNGD_MAPPING(sbi),
-+				 cache_strategy, pagepool);
- 
- hitted:
- 	/*
-@@ -1011,6 +1034,16 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
- 	justfound = tagptr_unfold_tags(t);
- 	page = tagptr_unfold_ptr(t);
- 
-+	/*
-+	 * preallocated cached pages, which is used to avoid direct reclaim
-+	 * otherwise, it will go inplace I/O path instead.
-+	 */
-+	if (page->private == Z_EROFS_PREALLOCATED_PAGE) {
-+		WRITE_ONCE(pcl->compressed_pages[nr], page);
-+		set_page_private(page, 0);
-+		tocache = true;
-+		goto out_tocache;
-+	}
- 	mapping = READ_ONCE(page->mapping);
- 
- 	/*
-@@ -1073,7 +1106,7 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
- 		cond_resched();
- 		goto repeat;
- 	}
--
-+out_tocache:
- 	if (!tocache || add_to_page_cache_lru(page, mc, index + nr, gfp)) {
- 		/* turn into temporary page if fails */
- 		set_page_private(page, Z_EROFS_SHORTLIVED_PAGE);
-@@ -1282,7 +1315,7 @@ static int z_erofs_readpage(struct file *file, struct page *page)
- 
- 	f.headoffset = (erofs_off_t)page->index << PAGE_SHIFT;
- 
--	err = z_erofs_do_read_page(&f, page);
-+	err = z_erofs_do_read_page(&f, page, &pagepool);
- 	(void)z_erofs_collector_end(&f.clt);
- 
- 	/* if some compressed cluster ready, need submit them anyway */
-@@ -1336,7 +1369,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 		/* traversal in reverse order */
- 		head = (void *)page_private(page);
- 
--		err = z_erofs_do_read_page(&f, page);
-+		err = z_erofs_do_read_page(&f, page, &pagepool);
- 		if (err)
- 			erofs_err(inode->i_sb,
- 				  "readahead error at page %lu @ nid %llu",
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535..b97c628ad91f 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -459,7 +459,7 @@
+ 	}								\
+ 									\
+ 	/* Built-in firmware blobs */					\
+-	.builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {	\
++	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {	\
+ 		__start_builtin_fw = .;					\
+ 		KEEP(*(.builtin_fw))					\
+ 		__end_builtin_fw = .;					\
 -- 
-2.24.0
+2.29.2.576.ga3fc446d84-goog
 
