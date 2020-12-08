@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB1A2D279A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA562D279D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728825AbgLHJ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:29:15 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:56968 "EHLO mail.skyhub.de"
+        id S1728970AbgLHJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:29:40 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37347 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgLHJ3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:29:15 -0500
-Received: from zn.tnic (p200300ec2f0f0800de4a64cb7778f3c5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:de4a:64cb:7778:f3c5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726584AbgLHJ3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:29:40 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C635D1EC026D;
-        Tue,  8 Dec 2020 10:28:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607419712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=SEzL2nzNk/FXsFQuILd9v1nxUDIDI7trIhGNE78qaZg=;
-        b=VtoYDb5/xfmPAZW6FtfIjHxr9xcDkPYw6D98p7wT+gjKkDx9IvMv4CFazt5NQaAsXmSQQp
-        NsoI8wdhslS+FkU5lLbOKwqQ1GICl0CgZNEqteUCzhcZr7HooUrkWLEYZwIFfMmM3gUPQF
-        U96V1TZ0l1UDF29TewJ01QVl1heuf9c=
-Date:   Tue, 8 Dec 2020 10:28:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kyung Min Park <kyung.min.park@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, cathy.zhang@intel.com
-Subject: Re: [PATCH 1/2] Enumerate AVX512 FP16 CPUID feature flag
-Message-ID: <20201208092828.GA27920@zn.tnic>
-References: <20201208033441.28207-1-kyung.min.park@intel.com>
- <20201208033441.28207-2-kyung.min.park@intel.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqvxy3PWHz9sWC;
+        Tue,  8 Dec 2020 20:28:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607419736;
+        bh=ZIwefV1ijdrVyr9jXrKWDROeAatEmGo9ATyFcJRUVnA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Gt2ZEpq6nGT33L3okHfa3xKZP+ahtmQwTKY2Ak2k7V90QM0jwPiJisSehytWN5ey4
+         /lL3A7EPZpmig9CFHEChTGXFRkYV+9elTPi8sN8a6CVg9Vjh7TyHhwFUx1+A+zbKMq
+         CLhcPW3UbpP2VrSgBTpVcvEUZeMsFhu8CK6f3u5YcrL3qrajTD5/0On4ofeLmQ7Clx
+         SFo7Ym4R5WpoVqTasOwDGYwP8lqgWvkL/1jESSCqd3ycLNLHok1yRN3gXabALlCDTD
+         5afI/kFgMIoxB3FlcD4O1+ulg+iX5bqhkAfDG+uPFOko56hXeZn1ePi5wf4FFEyGY6
+         kitVWhCXAp6PA==
+Date:   Tue, 8 Dec 2020 20:28:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20201208202853.186ae136@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201208033441.28207-2-kyung.min.park@intel.com>
+Content-Type: multipart/signed; boundary="Sig_/TgGmYSiCvy6LQk_oEJFuOEW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 07:34:40PM -0800, Kyung Min Park wrote:
-> Enumerate AVX512 Half-precision floating point (FP16) CPUID feature
-> flag. Compared with using FP32, using FP16 cut the number of bits
-> required for storage in half, reducing the exponent from 8 bits to 5,
-> and the mantissa from 23 bits to 10. Using FP16 also enables developers
-> to train and run inference on deep learning models fast when all
-> precision or magnitude (FP32) is not needed.
-> 
-> A processor supports AVX512 FP16 if CPUID.(EAX=7,ECX=0):EDX[bit 23]
-> is present. The AVX512 FP16 requires AVX512BW feature be implemented
-> since the instructions for manipulating 32bit masks are associated with
-> AVX512BW.
-> 
-> The only in-kernel usage of this is kvm passthrough. The CPU feature
-> flag is shown as "avx512_fp16" in /proc/cpuinfo.
-> 
-> Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index b6b9b3407c22..bec37ec7101e 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -375,6 +375,7 @@
->  #define X86_FEATURE_TSXLDTRK		(18*32+16) /* TSX Suspend Load Address Tracking */
->  #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
->  #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
-> +#define X86_FEATURE_AVX512_FP16		(18*32+23) /* AVX512 FP16 */
->  #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
->  #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
->  #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
-> diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-> index d502241995a3..42af31b64c2c 100644
-> --- a/arch/x86/kernel/cpu/cpuid-deps.c
-> +++ b/arch/x86/kernel/cpu/cpuid-deps.c
-> @@ -69,6 +69,7 @@ static const struct cpuid_dep cpuid_deps[] = {
->  	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
->  	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
->  	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
-> +	{ X86_FEATURE_AVX512_FP16,		X86_FEATURE_AVX512BW  },
->  	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
->  	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
->  	{}
-> -- 
+--Sig_/TgGmYSiCvy6LQk_oEJFuOEW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Borislav Petkov <bp@suse.de>
+Hi all,
 
-Paolo, you can pick those up if you prefer.
+After merging the scsi-mkp tree, today's linux-next build (sparc64
+defconfig) failed like this:
 
-Thx.
+drivers/mtd/nand/raw/intel-nand-controller.c:17:10: fatal error: linux/mtd/=
+nand_ecc.h: No such file or directory
+   17 | #include <linux/mtd/nand_ecc.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~
 
--- 
-Regards/Gruss,
-    Boris.
+Caused by commit
 
-https://people.kernel.org/tglx/notes-about-netiquette
+  81a395cdc176 ("scsi: block: Do not accept any requests while suspended")
+
+# CONFIG_PM is not set
+
+I have applied the following patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 8 Dec 2020 20:12:33 +1100
+Subject: [PATCH] scsi: block: fix for "scsi: block: Do not accept any reque=
+sts while suspended"
+
+Fixes: 81a395cdc176 ("scsi: block: Do not accept any requests while suspend=
+ed")
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ block/blk-core.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index a71a5c9429d6..9c9aec1382be 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -421,6 +421,18 @@ void blk_cleanup_queue(struct request_queue *q)
+ }
+ EXPORT_SYMBOL(blk_cleanup_queue);
+=20
++#ifdef CONFIG_PM
++static bool rq_suspended(struct request_queue *q)
++{
++	return q->rpm_status =3D=3D RPM_SUSPENDED;
++}
++#else
++static bool rq_suspended(struct request_queue *q)
++{
++	return false;
++}
++#endif
++
+ /**
+  * blk_queue_enter() - try to increase q->q_usage_counter
+  * @q: request queue pointer
+@@ -440,12 +452,10 @@ int blk_queue_enter(struct request_queue *q, blk_mq_r=
+eq_flags_t flags)
+ 			 * responsible for ensuring that that counter is
+ 			 * globally visible before the queue is unfrozen.
+ 			 */
+-			if ((pm && q->rpm_status !=3D RPM_SUSPENDED) ||
+-			    !blk_queue_pm_only(q)) {
++			if ((pm && !rq_suspended(q)) || !blk_queue_pm_only(q))
+ 				success =3D true;
+-			} else {
++			else
+ 				percpu_ref_put(&q->q_usage_counter);
+-			}
+ 		}
+ 		rcu_read_unlock();
+=20
+--=20
+2.29.2
+
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TgGmYSiCvy6LQk_oEJFuOEW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PR1UACgkQAVBC80lX
+0GxP0Af/bWpugxzTg9UEnaXMq/YocIVlc5gOTgBFR9OC3eaVR2xNT7kid6ieeQ/u
+HJNsR1hnIcjb2enGJ9peC6eflgQ0Uu+xS6so9asa3Y+CbVakdsOvS55bqdcqBa1l
+l0ee5FoE9Zv5ZWtg6+rA1gnM2TnmTp0KzBUUnK6o7DExYa6GsmOKvx0zJ3dtNGvK
+s42imF1znP+kAToQBX3ZcIS8tAwzVVMoDhsHyIU6b/9hpsg9hnPdDPoXW7uHmNnu
+5SpFG4WKMeyaF8B8t8uExSphLQ9syFXcfYWM/4amzHrJFBlUo6gWeagUfbjrtFov
+EEJJTpzd+I76oq2xwhWSJIXNrHcrBg==
+=x9ij
+-----END PGP SIGNATURE-----
+
+--Sig_/TgGmYSiCvy6LQk_oEJFuOEW--
