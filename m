@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77502D365F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D392D3662
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730644AbgLHWjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:39:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727958AbgLHWjj (ORCPT
+        id S1731021AbgLHWl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:41:27 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:63770 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730517AbgLHWl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:39:39 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2ADC0613CF;
-        Tue,  8 Dec 2020 14:38:59 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id w79so268800qkb.5;
-        Tue, 08 Dec 2020 14:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=nXoogOelth45m3680v5dZQaa0Q3qItZ3ltsEtGhqtc8=;
-        b=M5BfxozHRlw3l2o4rTRpHD5p48CGpDBsna0zK/X+ca/8y0a35teW83GRtEERQzIjUb
-         Nbmqvimz4DicZs/aFRhkzSXUDu0aZXR2NnL54O0HMcDkvpEWEqeCTreeEEGVAgG5JkRu
-         GAzhZYOIQNno3BuwuU63y6cTBdQUXhv4JgQsLMfrYnnRfzYlDwQ/zfJOElw8iJBG4u+M
-         HrpmukNk/oFGIDEhTaJUjNVmeGNfgjAdFjAj0PRJxijg5pKBCEVC7V8vTadFfP827SHY
-         YEVbJt394K3quhKFiDGjAoZymqar07jPFQ6mV5FOn3vPqTw7cSFkQf/okAxMgzLDTg3U
-         8r8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:subject:message-id
-         :mime-version:content-disposition;
-        bh=nXoogOelth45m3680v5dZQaa0Q3qItZ3ltsEtGhqtc8=;
-        b=TWGPGavWff/CqG5BZywHDyX9J7vixqUNLsBFEipoBuKw2DBHPpKuJpGihX4JvTECJo
-         eQci2JTfBpK7pD2ddg/DnMqmA57GEITmWwTG+gu4suys7+MNxU8JzFQNgwF1YjFvDrji
-         uaPOGyKpMKTTh6uZkdtvQsyk0zC8zKYVj4zdvsBpWEkx5IqWz34P2/qXOUDu/cRtiNiW
-         HO45X2z7YS+6ODT4BkQKRb5hqnVA9kCK8xuUCFyEKwQSgJcv5UvvHy6iXNOVcK1MhTFl
-         gYLjUMA5OpLOIz1g72q6+y8ROVrirD8v49Ywg4XZZ3Dq8igerrbY4xjh9cTW7yZiy3OR
-         kaig==
-X-Gm-Message-State: AOAM531NS3huipO6luDr9ZYpJJlOVZRnununNtg0g6I9B9sSyv1oTqv8
-        9Hir/X+eZHUouDlaldMSXGOMa6Ehw+M=
-X-Google-Smtp-Source: ABdhPJz1OtRdaRy8RNImn03gJ3baPUIgjN2QP/MdDMoPzf23TXdxT5EUSAXp9ROoIU1cFLeSnI502A==
-X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr34032820qkh.136.1607467138709;
-        Tue, 08 Dec 2020 14:38:58 -0800 (PST)
-Received: from lclaudio.dyndns.org ([191.177.185.4])
-        by smtp.gmail.com with ESMTPSA id t133sm68705qke.82.2020.12.08.14.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 14:38:58 -0800 (PST)
-Sender: "Luis Claudio R. Goncalves" <lclaudio00@gmail.com>
-From:   "Luis Claudio R. Goncalves" <lclaudio@uudg.org>
-X-Google-Original-From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
-        id A05ED3C0047; Tue,  8 Dec 2020 19:38:55 -0300 (-03)
-Date:   Tue, 8 Dec 2020 19:38:55 -0300
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.9.247-rt162
-Message-ID: <20201208223855.GO348285@uudg.org>
+        Tue, 8 Dec 2020 17:41:26 -0500
+X-IronPort-AV: E=Sophos;i="5.78,404,1599516000"; 
+   d="scan'208";a="481863343"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 23:40:44 +0100
+Date:   Tue, 8 Dec 2020 23:40:44 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: problem booting 5.10
+In-Reply-To: <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien> <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com> <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com> <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+ <9106e994-bb4b-4148-1280-f08f71427420@huawei.com> <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
 
-I'm pleased to announce the 4.9.247-rt162 stable release.
 
-You can get this release via the git tree at:
+On Tue, 8 Dec 2020, Linus Torvalds wrote:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> On Tue, Dec 8, 2020 at 1:14 PM John Garry <john.garry@huawei.com> wrote:
+> >
+> > JFYI, About "scsi: megaraid_sas: Added support for shared host tagset
+> > for cpuhotplug", we did have an issue reported here already from Qian
+> > about a boot hang:
+>
+> Hmm. That does sound like it might be it.
+>
+> At this point, the patches from Ming Lei seem to be a riskier approach
+> than perhaps just reverting the megaraid_sas change?
+>
+> It looks like those patches are queued up for 5.11, and we could
+> re-apply the megaraid_sas change then?
+>
+> Jens, comments?
+>
+> And Julia - if it's that thing, then a
+>
+>     git revert 103fbf8e4020
+>
+> would be the thing to test.
 
-  branch: v4.9-rt
-  Head SHA1: 35e7b01017420a52fa269101a09a0a93815ec65d
+This solves the problem.  Starting from 5.10-rc7 and doing this revert, I
+get a kernel that boots.
 
-Or to build 4.9.247-rt162 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.247.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.247-rt162.patch.xz
-
-Enjoy!
-Luis
-
+thanks,
+julia
