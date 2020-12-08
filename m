@@ -2,200 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A882D29FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831AD2D2A03
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgLHLws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgLHLwr (ORCPT
+        id S1729212AbgLHLxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:53:50 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38776 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgLHLxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:52:47 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B74C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 03:52:06 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id m19so2754726lfb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p3UOlT4T7w2iGiGz4zhACGCaX1lqFN/iswpw5ZnkzrM=;
-        b=K1JWSFkTy6XixhuEVjqMYIhYotaaw0q/FmwnMPxBVqxc3uSIdIQNYkJEUr0zLiMovp
-         Y0J20mo1QFGat7zPDCW9WuyHBkQfBpKMyRvu00gjUJNlb2GAUa17YVVVPqW0lFr9YbDB
-         Rvn30VX44R4T4AkOP2Y2aXUToxPR5Yu1LUL+aHc3tePoKK7BUMW+UqcdeZwpyHa80wQh
-         PTjCv5cb2fOmKBNmTlci7Qko2+3OLqE0zyjN3v/J0afe3bNXScVJI5FqsyXg+g1lmvBr
-         SQTpwTUMlSpA8Z90euuAlNPXWkOlDB2idVQthpeMFDdcIpQ57mTKAFl8wy6LwcJqGkJu
-         Gdqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p3UOlT4T7w2iGiGz4zhACGCaX1lqFN/iswpw5ZnkzrM=;
-        b=ooNPeszeg3Cft24F36kpcqZeGyk5Nxy6ZTNF/bYywPW6lqWITcYcRIvsMEKZQYMLx8
-         8xvjYzNO4Sj8PHKGeSk+YLSeuhh6oqddbk0tXreo39xjd/C9STHDgzRvZVgOtuvwAwJ4
-         NfNa+hzwor8UsjqiNM++vgernFdnXAy09Xz4gDqgiuNupJXi5FHyLVhoTWwJIIhz1Mij
-         Bx5nLf0XO8q+SgrLlqJurTaZSPerIfkDc2pG43SDvsp1wcKKCNbQ0lWwjyMaeGxbpPQ8
-         X1oZ4ihA8Lz84zdRQVIHQqQzm5U4TovqoxVOSHzgpoxFjFRWlNm2bp/ZxNwA2b6AGP1f
-         ahUQ==
-X-Gm-Message-State: AOAM532Wf3xUPpqvivmaG8ItY5RVa48ph0cC2FEMATHOODfh8bzvfMiU
-        zm1V2QVUFOjToy+tiR/Nur8IqRdRlszglMeKUJsPbQ==
-X-Google-Smtp-Source: ABdhPJyvGNe6OrrMd86DoarSRS4TSHMXGop3JNtQfwGOmMDdmgDiMAbQn68Ss0Jc/C7WgtMqQw0ZJt2BEbCZMlIgDP0=
-X-Received: by 2002:a19:6144:: with SMTP id m4mr10079549lfk.546.1607428324986;
- Tue, 08 Dec 2020 03:52:04 -0800 (PST)
+        Tue, 8 Dec 2020 06:53:50 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B8Bq8k7055935;
+        Tue, 8 Dec 2020 05:52:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607428328;
+        bh=qXoKsH8IyPZo+6f6q7lrw5GuImluXxVlgfEO2PcZOVw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=krsumVr5tRDU3fH6ZpB53V1AmLtbtxreSPPOuOAx9dIYcCIkiUUht3+v9pldL8/o8
+         WebKgq63uZz06ihygtxC51zFmp4JLCsmpZtOovFfrJDN3u+tIVp3jU+Jcm4jMyG9ET
+         T2uyOVcGS3lHWvMyNEFpQOLrlxntT1tBrdziEmBM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B8Bq7h6092458
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 8 Dec 2020 05:52:08 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 8 Dec
+ 2020 05:52:07 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 8 Dec 2020 05:52:07 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B8Bq2YX040294;
+        Tue, 8 Dec 2020 05:52:03 -0600
+Subject: Re: [PATCH v3 04/20] dmaengine: ti: k3-udma-glue: Add function to get
+ device pointer for DMA API
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <vkoul@kernel.org>,
+        <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>
+References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
+ <20201208090440.31792-5-peter.ujfalusi@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <83289f9e-723e-4fa5-ec89-c69f0bcc5400@ti.com>
+Date:   Tue, 8 Dec 2020 13:52:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <20201105050736.GA702944@kernel.org> <CAFA6WYPetvod-Wov2n_L5TL771j+-kt+_csyWYT-uM=haEKMZQ@mail.gmail.com>
- <20201106145252.GA10434@kernel.org> <20201204051642.GA154469@kernel.org>
-In-Reply-To: <20201204051642.GA154469@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 8 Dec 2020 17:21:53 +0530
-Message-ID: <CAFA6WYOxkAUxg05kKXAcu2F2YD97MXNSggYgL+uSG7wrBVKoMQ@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] Introduce TEE based Trusted Keys support
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201208090440.31792-5-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
 
-Apologies for the delay in my response as I was busy with other high
-priority work.
 
-On Fri, 4 Dec 2020 at 10:46, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Fri, Nov 06, 2020 at 04:52:52PM +0200, Jarkko Sakkinen wrote:
-> > On Fri, Nov 06, 2020 at 03:02:41PM +0530, Sumit Garg wrote:
-> > > On Thu, 5 Nov 2020 at 10:37, Jarkko Sakkinen <jarkko@kernel.org> wrot=
-e:
-> > > >
-> > > > On Tue, Nov 03, 2020 at 09:31:42PM +0530, Sumit Garg wrote:
-> > > > > Add support for TEE based trusted keys where TEE provides the fun=
-ctionality
-> > > > > to seal and unseal trusted keys using hardware unique key. Also, =
-this is
-> > > > > an alternative in case platform doesn't possess a TPM device.
-> > > > >
-> > > > > This patch-set has been tested with OP-TEE based early TA which i=
-s already
-> > > > > merged in upstream [1].
-> > > >
-> > > > Is the new RPI400 computer a platform that can be used for testing
-> > > > patch sets like this? I've been looking for a while something ARM64
-> > > > based with similar convenience as Intel NUC's, and on the surface
-> > > > this new RPI product looks great for kernel testing purposes.
-> > >
-> > > Here [1] is the list of supported versions of Raspberry Pi in OP-TEE.
-> > > The easiest approach would be to pick up a supported version or else
-> > > do an OP-TEE port for an unsupported one (which should involve minima=
-l
-> > > effort).
-> > >
-> > > [1] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html=
-#what-versions-of-raspberry-pi-will-work
-> > >
-> > > -Sumit
-> >
-> > If porting is doable, then I'll just order RPI 400, and test with QEMU
-> > up until either I port OP-TEE myself or someone else does it.
-> >
-> > For seldom ARM testing, RPI 400 is really convenient device with its
-> > boxed form factor.
->
-> I'm now a proud owner of Raspberry Pi 400 home computer :-)
->
-> I also found instructions on how to boot a custom OS from a USB stick:
->
-> https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/=
-msd.md
->
-> Also, my favorite build system BuildRoot has bunch of of the shelf
-> configs:
->
-> =E2=9E=9C  buildroot-sgx (master) =E2=9C=94 ls -1 configs | grep raspberr=
-y
-> raspberrypi0_defconfig
-> raspberrypi0w_defconfig
-> raspberrypi2_defconfig
-> raspberrypi3_64_defconfig
-> raspberrypi3_defconfig
-> raspberrypi3_qt5we_defconfig
-> raspberrypi4_64_defconfig
-> raspberrypi4_defconfig
-> raspberrypi_defconfig
->
-> I.e. I'm capable of compiling kernel and user space and boot it up
-> with it.
->
-> Further, I can select this compilation option:
->
-> BR2_TARGET_OPTEE_OS:                                                     =
-                                                                           =
-              =E2=94=82
->                                                                          =
-                                                                           =
-                 =E2=94=82
->    OP-TEE OS provides the secure world boot image and the trust          =
-                                                                           =
-                 =E2=94=82
->    application development kit of the OP-TEE project. OP-TEE OS          =
-                                                                           =
-                 =E2=94=82
->    also provides generic trusted application one can embedded            =
-                                                                           =
-                 =E2=94=82
->    into its system.                                                      =
-                                                                           =
-                 =E2=94=82
->                                                                          =
-                                                                           =
-                 =E2=94=82
->    http://github.com/OP-TEE/optee_os
->
-> Is that what I want? If I put this all together and apply your patches,
-> should the expectation be that I can use trusted keys?
->
+On 08/12/2020 11:04, Peter Ujfalusi wrote:
+> Glue layer users should use the device of the DMA for DMA mapping and
+> allocations as it is the DMA which accesses to descriptors and buffers,
+> not the clients
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-Firstly you need to do an OP-TEE port for RPI 400 (refer here [1] for
-guidelines). And then in order to boot up OP-TEE on RPI 400, you can
-refer to Raspberry Pi 3 build instructions [2].
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-[1] https://optee.readthedocs.io/en/latest/architecture/porting_guidelines.=
-html
-[2] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html#build=
--instructions
-
-> Please note that I had a few remarks about your patches (minor but need
-> to be fixed), but this version is already solid enough for testing.
->
-
-Sure, I will incorporate your remarks and Randy's documentation
-comments in the next version.
-
--Sumit
-
-> /Jarkko
+-- 
+Best regards,
+grygorii
