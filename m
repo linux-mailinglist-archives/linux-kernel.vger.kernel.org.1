@@ -2,124 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFFC2D3052
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089612D3056
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730506AbgLHQ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730348AbgLHQ4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:56:45 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06512C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:56:04 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id u21so12354725qtw.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 08:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=zJCFBWmnrCjIsCfIXtOANynWilFtdxBgWzL9qsHoBgk=;
-        b=p+scvweiVtiWtaEakkIVG6rtVNVZdKC4xEMfsVUAkGkAs5h511JtSfYxxQKM14TDDZ
-         fEfsaNp/p3BIDs6/X5JkgItrkLy28f8w/iXwVs8TOXGvhPzn4yLR4EEZGuAWgZpf7hxm
-         oICvzMJUysvE4HibNIZDkAAh0EB5bEH7gm97HngzdHKm0EqEdUZC3jJJlDhbSGP+jrlQ
-         i6flmV7bIH7Uj9jADLa2clZybJ4fkdv64UEfyWf+pYG3D/kAh+qY8Li8uChCQAf6Mi78
-         64m49oUhL9tAhdmz2zf54q2cz/TMbc7BXuA5mmIQNaBFG1KQeFg56u1CVDBfyUkSVxA2
-         DWTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=zJCFBWmnrCjIsCfIXtOANynWilFtdxBgWzL9qsHoBgk=;
-        b=F4P+7UA+8hgN8148AtKwCnQNI8ossF/TVI0+4wyDipCqKt5gNXuUz008HfXbT9bOq3
-         W++SkQYlVW12pQC2+IKWprORKkWJNOnvhsCrdEpQrWhGDjFVd0egVaXX9MjBgdBqRFbW
-         QIRvE8CALyw1zI1t8pdsiP5rxV8IvYzjKhR1lkb5SBYt10aD3XXht5UduiJelvuYorIR
-         qNdtptmApVIJeBrRqPrgzpO5OBpdwbB8r0lf9g5vTOu6w2t5nLclGYXJbrCge80NsLW4
-         a4u0AwAlQ0g7tg/zfqrc5ilsR9sQFonkPkWFqZlNbIeXjWjIFYjggQt+V+t3baLKqvOX
-         Vvnw==
-X-Gm-Message-State: AOAM532J3VXKVSwNv1j8n7ZWDLE8usemEh9Du/yfnbjonZp3lQzyZDAA
-        d7wug/ncaT+1z5AXnMx46k21cA==
-X-Google-Smtp-Source: ABdhPJz6DEGfHZWtsRRNwbE8f3Jk7xHwzlJ8lJRqvWgr85V2qI9546FeZHjPEkuxohNdKuvO79ZOpw==
-X-Received: by 2002:ac8:76c7:: with SMTP id q7mr30486415qtr.317.1607446564196;
-        Tue, 08 Dec 2020 08:56:04 -0800 (PST)
-Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id y22sm4953552qkj.129.2020.12.08.08.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 08:56:03 -0800 (PST)
-Message-ID: <13e1fbc75080aada90fd92954ad1fea39f4c1c7a.camel@ndufresne.ca>
-Subject: Re: [PATCH 0/4] Chunk Heap Support on DMA-HEAP
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        hyesoo.yu@samsung.com, willy@infradead.org, david@redhat.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        sumit.semwal@linaro.org, john.stultz@linaro.org,
-        Brian.Starkey@arm.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org,
-        christian.koenig@amd.com, linaro-mm-sig@lists.linaro.org
-Date:   Tue, 08 Dec 2020 11:56:01 -0500
-In-Reply-To: <20201117181935.3613581-1-minchan@kernel.org>
-References: <20201117181935.3613581-1-minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S1730525AbgLHQ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728752AbgLHQ5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 11:57:11 -0500
+X-Gm-Message-State: AOAM5323WPJTvM6NiM3KhThKK95sHjoVMCgGZdMcCNRYtI/+c087nc5T
+        s9An5cgP2lkMPkJiSDZJmgXGzc22w4nzHNT4j3w=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607446591;
+        bh=B1Ufsz/HjvgeN7kz3QDMw7S3GkByLm0NCuUVzAQn1Nk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rKCUm2Ck4ZHiGtV3Faw/xe/XwRxizs0Y1E8mPa2BPGo+iAQuGAACvB1lE17EvxzKg
+         sdJSkWu621PR6JmuUkZx6X8EHHlXlnOsdG0rDzeO7AVEOFzr87aOubmE2c7gzWt3aK
+         eNJx8xYeGVKWGGDahCTTMnavuRRk2BKfmjTZ/05LYvPKiXmaLW2bTmwopmaLfdSvc0
+         23Vwwr+wxXb8d34MTPd7sKBTslRqgRAlCPdSJcelZFlAj4eFwgUY33mKDeCsiWNeEd
+         r4UMsDp/eQJwFwFv7h6XQMlireK6JR/Smu8K5arF+Eg7NP6qod4JmTEKKPd5LR/6hD
+         7j/SxXQTXGltQ==
+X-Google-Smtp-Source: ABdhPJxgNl1Gj/l80SMEy+MnjbFlb4NpqPf4LKadCXveKp8gHoY+X2lTRnRws8sedD5yQTo7/pGCxoCJogqbCbMdTLQ=
+X-Received: by 2002:a9d:be1:: with SMTP id 88mr17705895oth.210.1607446590334;
+ Tue, 08 Dec 2020 08:56:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201201213707.541432-1-samitolvanen@google.com>
+ <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
+ <CAK8P3a0AyciKoHzrgtaLxP9boo8WqZCe8YfPBzGPQ14PW_2KgQ@mail.gmail.com> <CABCJKudbCD3s0RcSVzbnn4MV=DadKOxOxar3jfiPWucX4JGxCg@mail.gmail.com>
+In-Reply-To: <CABCJKudbCD3s0RcSVzbnn4MV=DadKOxOxar3jfiPWucX4JGxCg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 8 Dec 2020 17:56:13 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a32HwzZYDK3i68fY0JLGCj18RH1iDMq70OZpTrsopyCcw@mail.gmail.com>
+Message-ID: <CAK8P3a32HwzZYDK3i68fY0JLGCj18RH1iDMq70OZpTrsopyCcw@mail.gmail.com>
+Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 17 novembre 2020 à 10:19 -0800, Minchan Kim a écrit :
-> This patchset introduces a new dma heap, chunk heap that makes it
-> easy to perform the bulk allocation of high order pages.
-> It has been created to help optimize the 4K/8K HDR video playback
-> with secure DRM HW to protect contents on memory. The HW needs
-> physically contiguous memory chunks up to several hundred MB memory.
-> 
-> The chunk heap is registered by device tree with alignment and memory
-> node of Contiguous Memory Allocator(CMA). Alignment defines chunk page size.
-> For example, alignment 0x1_0000 means chunk page size is 64KB.
-> The phandle to memory node indicates contiguous memory allocator(CMA).
-> If device node doesn't have cma, the registration of chunk heap fails.
-> 
-> This patchset is against on next-20201110.
+On Tue, Dec 8, 2020 at 5:53 PM 'Sami Tolvanen' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> > A small update here: I see this behavior with every single module
+> > build, including 'tinyconfig' with one module enabled, and 'defconfig'.
+>
+> The .o file here is a thin archive of the bitcode files for the
+> module. We compile .lto.o from that before modpost, because we need an
+> ELF binary to process, and then reuse the .lto.o file when linking the
+> final module.
+>
+> At no point should we link the .o file again, especially not with
+> .lto.o, because that would clearly cause every symbol to be
+> duplicated, so I'm not sure what goes wrong here. Here's the relevant
+> part of scripts/Makefile.modfinal:
+>
+> ifdef CONFIG_LTO_CLANG
+> # With CONFIG_LTO_CLANG, reuse the object file we compiled for modpost to
+> # avoid a second slow LTO link
+> prelink-ext := .lto
+> ...
+> $(modules): %.ko: %$(prelink-ext).o %.mod.o scripts/module.lds FORCE
+>         +$(call if_changed,ld_ko_o)
 
-I believe you have forgot to reference Open Source / Upstream code using this.
+Ah, it's probably a local problem now, as I had a merge conflict against
+linux-next in this Makefile and I must have resolved the conflict incorrectly.
 
-regards,
-Nicolas
-
-> 
-> The patchset includes the following:
->  - cma_alloc_bulk API
->  - export dma-heap API to register kernel module dma heap.
->  - add chunk heap implementation.
->  - devicetree
-> 
-> Hyesoo Yu (3):
->   dma-buf: add export symbol for dma-heap
->   dma-buf: heaps: add chunk heap to dmabuf heaps
->   dma-heap: Devicetree binding for chunk heap
-> 
-> Minchan Kim (1):
->   mm: introduce cma_alloc_bulk API
-> 
->  .../bindings/dma-buf/chunk_heap.yaml          |  52 ++
->  drivers/dma-buf/dma-heap.c                    |   2 +
->  drivers/dma-buf/heaps/Kconfig                 |   9 +
->  drivers/dma-buf/heaps/Makefile                |   1 +
->  drivers/dma-buf/heaps/chunk_heap.c            | 458 ++++++++++++++++++
->  include/linux/cma.h                           |   5 +
->  include/linux/page-isolation.h                |   1 +
->  mm/cma.c                                      | 129 ++++-
->  mm/page_alloc.c                               |  19 +-
->  mm/page_isolation.c                           |   3 +-
->  10 files changed, 666 insertions(+), 13 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/dma-buf/chunk_heap.yaml
->  create mode 100644 drivers/dma-buf/heaps/chunk_heap.c
-> 
-
-
+        Arnd
