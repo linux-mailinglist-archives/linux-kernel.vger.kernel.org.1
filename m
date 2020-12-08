@@ -2,157 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FD82D37D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE1D2D3807
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731936AbgLIAaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731032AbgLIAaO (ORCPT
+        id S1726219AbgLIA4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:56:17 -0500
+Received: from 11.mo6.mail-out.ovh.net ([188.165.38.119]:44544 "EHLO
+        11.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbgLIA4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:30:14 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F151C0613D6;
-        Tue,  8 Dec 2020 16:29:34 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id g18so40680pgk.1;
-        Tue, 08 Dec 2020 16:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GbpsjewlRxITtY3sR9uiPWEMfm6IQxjx3JP1ZlFQH9I=;
-        b=Brt3EU3kQW5J1sQQ6St7GfpphwUSj0rYnwQPPYYfahGFEL3Ci//ru1wBWZkVfABbYo
-         9IHQ+pAkdKf/MIGnKPIBFxM5GEXH+NxLiR1nvSkfwuraeE2mUkxwiPpwmEebj9CpTtyz
-         wdIKzYfuDUYPPLBGbgY00+JWBwW1g4mzi3BU9fgI6jbqx7qeW7swOE0cFDLa1BTEalxX
-         raezDgdBjeamKjuyoUYeZuJr3JBwPpEAaeWxzZz5FxA72aJ3h4ie0RgLzIksy0pFrBoT
-         +1KJ1hNHQew/+uiRl4AnBaJsliAra7LPv/JPF87I39w/n3gEHWYZUEwGyyObBy74ErSp
-         xb+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GbpsjewlRxITtY3sR9uiPWEMfm6IQxjx3JP1ZlFQH9I=;
-        b=uhFmkdWZLi4YL267apEWRFHO6uOFE9arDzGLmCJqIMghlxPpglBY4tjHpoKIWOoq27
-         PZbNe3iqaBSZ75RzXrM0u/g2PoKzsrrJzpTRiDHJpaYLM3KbJrI1gYQBjJYcoQOh65HZ
-         SABh8R+i8GFQBiHU1zZeZzdyfqN4sMSejdb9UtvdRzFiz0iw07pjkpVGWzo2FfN11Az7
-         JmFbW0l4NOx4SvWoTaIWNGK+9xnmALetopt6q1zE6EUH2l2y4XSkYOiVNY64FuGNZXN1
-         k9fdG5GH8ksk7XfgLwBNnj1JGApiKTc6+pbHYIkVlNqI89zXkPcrn74/Nal5I0NiII6C
-         dlMA==
-X-Gm-Message-State: AOAM533hp/he5herP1GJ94vpbUvK0fh5NSahhjbRoz/TdXi4OFph+Vnn
-        fbZG/f3ytajMD1rw9n928kM=
-X-Google-Smtp-Source: ABdhPJxW6ryPy12e5WmsZhYvg8ft9aKmNP3AwcoVQ6s50j/1OvYxhYgdgI/CVFt0HSskHuVmx30CLQ==
-X-Received: by 2002:a17:90b:8d3:: with SMTP id ds19mr98766pjb.186.1607473773968;
-        Tue, 08 Dec 2020 16:29:33 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bf3sm29899pjb.45.2020.12.08.16.29.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 16:29:33 -0800 (PST)
-Subject: Re: [PATCH v2 3/8] net: macb: add function to disable all macb clocks
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, nicolas.ferre@microchip.com,
-        linux@armlinux.org.uk, paul.walmsley@sifive.com, palmer@dabbelt.com
-Cc:     yash.shah@sifive.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <1607343333-26552-1-git-send-email-claudiu.beznea@microchip.com>
- <1607343333-26552-4-git-send-email-claudiu.beznea@microchip.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <aceb90c7-ee7a-43e8-05c7-fe6917b9d688@gmail.com>
-Date:   Tue, 8 Dec 2020 16:29:30 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 19:56:16 -0500
+X-Greylist: delayed 9599 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 19:56:15 EST
+Received: from player691.ha.ovh.net (unknown [10.108.35.90])
+        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 0ED4A234E91
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 22:51:48 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player691.ha.ovh.net (Postfix) with ESMTPSA id E733B190DB0A8;
+        Tue,  8 Dec 2020 21:51:42 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-105G006f6ee3649-1f08-4f40-bb1f-df51397b003c,
+                    F7F8495E9FE719388847EB9DDB8A3A77E3CADC2E) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+From:   Stephen Kitt <steve@sk2.org>
+To:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [patch] close_range.2: new page documenting close_range(2)
+Date:   Tue,  8 Dec 2020 22:51:33 +0100
+Message-Id: <20201208215133.30575-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <1607343333-26552-4-git-send-email-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 17686761638867717394
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudehiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheiledurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 4:15 AM, Claudiu Beznea wrote:
-> Add function to disable all macb clocks.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> ---
->  drivers/net/ethernet/cadence/macb_main.c | 62 ++++++++++++++++----------------
->  1 file changed, 32 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> index b23e986ac6dc..6b8e1109dfd3 100644
-> --- a/drivers/net/ethernet/cadence/macb_main.c
-> +++ b/drivers/net/ethernet/cadence/macb_main.c
-> @@ -3694,6 +3694,16 @@ static void macb_probe_queues(void __iomem *mem,
->  	*num_queues = hweight32(*queue_mask);
->  }
->  
-> +static void macb_clks_disable(struct clk *pclk, struct clk *hclk, struct clk *tx_clk,
-> +			      struct clk *rx_clk, struct clk *tsu_clk)
-> +{
-> +	clk_disable_unprepare(tx_clk);
-> +	clk_disable_unprepare(hclk);
-> +	clk_disable_unprepare(pclk);
-> +	clk_disable_unprepare(rx_clk);
-> +	clk_disable_unprepare(tsu_clk);
+This documents close_range(2) based on information in
+278a5fbaed89dacd04e9d052f4594ffd0e0585de and
+60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
 
-Looks like you should consider using the CLK bulk API:
-clk_bulk_disable_unprepare() and friends.
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+ create mode 100644 man2/close_range.2
+
+diff --git a/man2/close_range.2 b/man2/close_range.2
+new file mode 100644
+index 000000000..62167d9b0
+--- /dev/null
++++ b/man2/close_range.2
+@@ -0,0 +1,112 @@
++.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
++.\"
++.\" %%%LICENSE_START(VERBATIM)
++.\" Permission is granted to make and distribute verbatim copies of this
++.\" manual provided the copyright notice and this permission notice are
++.\" preserved on all copies.
++.\"
++.\" Permission is granted to copy and distribute modified versions of this
++.\" manual under the conditions for verbatim copying, provided that the
++.\" entire resulting derived work is distributed under the terms of a
++.\" permission notice identical to this one.
++.\"
++.\" Since the Linux kernel and libraries are constantly changing, this
++.\" manual page may be incorrect or out-of-date.  The author(s) assume no
++.\" responsibility for errors or omissions, or for damages resulting from
++.\" the use of the information contained herein.  The author(s) may not
++.\" have taken the same level of care in the production of this manual,
++.\" which is licensed free of charge, as they might when working
++.\" professionally.
++.\"
++.\" Formatted or processed versions of this manual, if unaccompanied by
++.\" the source, must acknowledge the copyright and authors of this work.
++.\" %%%LICENSE_END
++.\"
++.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
++.SH NAME
++close_range \- close all file descriptors in a given range
++.SH SYNOPSIS
++.nf
++.B #include <linux/close_range.h>
++.PP
++.BI "int close_range(int " first ", int " last ", unsigned int " flags );
++.fi
++.SH DESCRIPTION
++The
++.BR close_range ()
++system call closes all open file descriptors from
++.I first
++to
++.IR last
++(included).
++.PP
++Errors closing a given file descriptor are currently ignored.
++.PP
++.I flags
++can be set to
++.B CLOSE_RANGE_UNSHARE
++to unshare the range of file descriptors from any other processes,
++.I instead
++of closing them.
++.SH RETURN VALUE
++On success,
++.BR close_range ()
++return 0.
++On error, \-1 is returned and
++.I errno
++is set to indicate the cause of the error.
++.SH ERRORS
++.TP
++.B EINVAL
++.I flags
++is not valid, or
++.I first
++is greater than
++.IR last .
++.TP
++.B EMFILE
++The per-process limit on the number of open file descriptors has been reached
++(see the description of
++.BR RLIMIT_NOFILE
++in
++.BR getrlimit (2)).
++.TP
++.B ENOMEM
++Insufficient kernel memory was available.
++.SH VERSIONS
++.BR close_range ()
++first appeared in Linux 5.9.
++.SH CONFORMING TO
++.BR close_range ()
++is available on Linux and FreeBSD.
++.SH NOTES
++Currently, there is no glibc wrapper for this system call; call it using
++.BR syscall (2).
++.SH USE CASES
++.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
++.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
++.SS Closing file descriptors before exec
++File descriptors can be closed safely using
++.PP
++.in +4n
++.EX
++/* we don't want anything past stderr here */
++close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
++execve(....);
++.EE
++.in
++.PP
++.SS Closing all open file descriptors
++This is commonly implemented (on Linux) by listing open file
++descriptors in
++.B /proc/self/fd/
++and calling
++.BR close (2)
++on each one.
++.BR close_range ()
++can take care of this without requiring
++.B /proc
++and with a single system call, which provides significant performance
++benefits.
++.SH SEE ALSO
++.BR close (2)
+
+base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55
 -- 
-Florian
+2.20.1
+
