@@ -2,259 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536492D255B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ADC2D2561
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgLHIEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:04:48 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:50630 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725927AbgLHIEn (ORCPT
+        id S1727958AbgLHIF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgLHIF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:04:43 -0500
-X-IronPort-AV: E=Sophos;i="5.78,401,1599490800"; 
-   d="scan'208";a="65020046"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 08 Dec 2020 17:04:10 +0900
-Received: from localhost.localdomain (unknown [10.166.252.89])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id D5E6842296C4;
-        Tue,  8 Dec 2020 17:04:10 +0900 (JST)
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org
-Cc:     khiem.nguyen.xt@renesas.com, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 3/3] mfd: bd9571mwv: Add support for BD9574MWF
-Date:   Tue,  8 Dec 2020 17:04:03 +0900
-Message-Id: <1607414643-25498-4-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-References: <1607414643-25498-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        Tue, 8 Dec 2020 03:05:27 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45730C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:04:47 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmXz9-0001CZ-Ua; Tue, 08 Dec 2020 09:04:35 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kmXz7-00047B-Bt; Tue, 08 Dec 2020 09:04:33 +0100
+Date:   Tue, 8 Dec 2020 09:04:33 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+Message-ID: <20201208080433.szy7dek2qvn3d4vb@pengutronix.de>
+References: <20201208044022.972872-1-bjorn.andersson@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4uvrfzmltgxuhkh5"
+Content-Disposition: inline
+In-Reply-To: <20201208044022.972872-1-bjorn.andersson@linaro.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
 
-The new PMIC BD9574MWF inherits features from BD9571MWV.
-Add the support of new PMIC to existing bd9571mwv driver.
+--4uvrfzmltgxuhkh5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-[shimoda: rebase and refactor]
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
----
- drivers/mfd/bd9571mwv.c       | 92 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mfd/bd9571mwv.h | 80 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 172 insertions(+)
+Hello,
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index 57bdb6a..f8f0a87 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -20,6 +20,7 @@ static const struct mfd_cell bd9571mwv_cells[] = {
- 	{ .name = "bd9571mwv-gpio", },
- };
- 
-+/* Regmap for BD9571MWV */
- static const struct regmap_range bd9571mwv_readable_yes_ranges[] = {
- 	regmap_reg_range(BD9571MWV_VENDOR_CODE, BD9571MWV_PRODUCT_REVISION),
- 	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
-@@ -112,6 +113,95 @@ static const struct bd957x_data bd9571mwv_data = {
- 	.num_cells = ARRAY_SIZE(bd9571mwv_cells),
- };
- 
-+static const struct mfd_cell bd9574mwf_cells[] = {
-+	{ .name = "bd9571mwv-gpio", },
-+};
-+
-+/* Regmap for BD9574MWF */
-+static const struct regmap_range bd9574mwf_readable_yes_ranges[] = {
-+	regmap_reg_range(BD9574MWF_VENDOR_CODE, BD9574MWF_PRODUCT_REVISION),
-+	regmap_reg_range(BD9574MWF_GPIO_IN, BD9574MWF_GPIO_IN),
-+	regmap_reg_range(BD9574MWF_GPIO_INT, BD9574MWF_GPIO_INTMASK),
-+	regmap_reg_range(BD9574MWF_GPIO_MUX, BD9574MWF_GPIO_MUX),
-+	regmap_reg_range(BD9574MWF_INT_INTREQ, BD9574MWF_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_readable_table = {
-+	.yes_ranges	= bd9574mwf_readable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_readable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_writable_yes_ranges[] = {
-+	regmap_reg_range(BD9574MWF_GPIO_DIR, BD9574MWF_GPIO_OUT),
-+	regmap_reg_range(BD9574MWF_GPIO_INT_SET, BD9574MWF_GPIO_INTMASK),
-+	regmap_reg_range(BD9574MWF_INT_INTREQ, BD9574MWF_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_writable_table = {
-+	.yes_ranges	= bd9574mwf_writable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_writable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_volatile_yes_ranges[] = {
-+	regmap_reg_range(BD9574MWF_GPIO_IN, BD9574MWF_GPIO_IN),
-+	regmap_reg_range(BD9574MWF_GPIO_INT, BD9574MWF_GPIO_INT),
-+	regmap_reg_range(BD9574MWF_INT_INTREQ, BD9574MWF_INT_INTREQ),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_volatile_table = {
-+	.yes_ranges	= bd9574mwf_volatile_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_volatile_yes_ranges),
-+};
-+
-+static const struct regmap_config bd9574mwf_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.cache_type	= REGCACHE_RBTREE,
-+	.rd_table	= &bd9574mwf_readable_table,
-+	.wr_table	= &bd9574mwf_writable_table,
-+	.volatile_table	= &bd9574mwf_volatile_table,
-+	.max_register	= 0xff,
-+};
-+
-+static const struct regmap_irq bd9574mwf_irqs[] = {
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_MD1, 0,
-+		       BD9574MWF_INT_INTREQ_MD1_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_MD2_E1, 0,
-+		       BD9574MWF_INT_INTREQ_MD2_E1_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_MD2_E2, 0,
-+		       BD9574MWF_INT_INTREQ_MD2_E2_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_PROT_ERR, 0,
-+		       BD9574MWF_INT_INTREQ_PROT_ERR_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_GP, 0,
-+		       BD9574MWF_INT_INTREQ_GP_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_BKUP_HOLD_OF, 0,
-+		       BD9574MWF_INT_INTREQ_BKUP_HOLD_OF_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_WDT_OF, 0,
-+		       BD9574MWF_INT_INTREQ_WDT_OF_INT),
-+	REGMAP_IRQ_REG(BD9574MWF_IRQ_BKUP_TRG, 0,
-+		       BD9574MWF_INT_INTREQ_BKUP_TRG_INT),
-+};
-+
-+static struct regmap_irq_chip bd9574mwf_irq_chip = {
-+	.name		= "bd9574mwf",
-+	.status_base	= BD9574MWF_INT_INTREQ,
-+	.mask_base	= BD9574MWF_INT_INTMASK,
-+	.ack_base	= BD9574MWF_INT_INTREQ,
-+	.init_ack_masked = true,
-+	.num_regs	= 1,
-+	.irqs		= bd9574mwf_irqs,
-+	.num_irqs	= ARRAY_SIZE(bd9574mwf_irqs),
-+};
-+
-+static const struct bd957x_data bd9574mwf_data = {
-+	.product_code_val = BD9574MWF_PRODUCT_CODE_VAL,
-+	.part_number = BD9574MWF_PART_NUMBER,
-+	.regmap_config = &bd9574mwf_regmap_config,
-+	.irq_chip = &bd9574mwf_irq_chip,
-+	.cells = bd9574mwf_cells,
-+	.num_cells = ARRAY_SIZE(bd9574mwf_cells),
-+};
-+
- static int bd9571mwv_identify(struct bd9571mwv *bd)
- {
- 	struct device *dev = bd->dev;
-@@ -182,6 +272,8 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 	product_code = (unsigned int)ret;
- 	if (product_code == BD9571MWV_PRODUCT_CODE_VAL)
- 		bd->data = &bd9571mwv_data;
-+	else if (product_code == BD9574MWF_PRODUCT_CODE_VAL)
-+		bd->data = &bd9574mwf_data;
- 
- 	if (!bd->data) {
- 		dev_err(bd->dev, "No found supported device %d\n",
-diff --git a/include/linux/mfd/bd9571mwv.h b/include/linux/mfd/bd9571mwv.h
-index 0126b52..e9e219b 100644
---- a/include/linux/mfd/bd9571mwv.h
-+++ b/include/linux/mfd/bd9571mwv.h
-@@ -99,6 +99,86 @@ enum bd9571mwv_irqs {
- 	BD9571MWV_IRQ_BKUP_TRG,
- };
- 
-+/* List of registers for BD9574MWF */
-+#define BD9574MWF_VENDOR_CODE			0x00
-+#define BD9574MWF_VENDOR_CODE_VAL		0xdb
-+#define BD9574MWF_PRODUCT_CODE			0x01
-+#define BD9574MWF_PRODUCT_CODE_VAL		0x74
-+#define BD9574MWF_PRODUCT_REVISION		0x02
-+
-+#define BD9574MWF_I2C_FUSA_MODE			0x10
-+#define BD9574MWF_I2C_MD2_E1_BIT_1		0x11
-+#define BD9574MWF_I2C_MD2_E1_BIT_2		0x12
-+
-+#define BD9574MWF_BKUP_MODE_CNT			0x20
-+#define BD9574MWF_BKUP_MODE_STATUS		0x21
-+#define BD9574MWF_BKUP_RECOVERY_CNT		0x22
-+#define BD9574MWF_BKUP_CTRL_TIM_CNT		0x23
-+#define BD9574MWF_WAITBKUP_WDT_CNT		0x24
-+#define BD9574MWF_BKUP_HOLD_TIM_CNT1		0x26
-+#define BD9574MWF_QLLM_CNT			0x27
-+#define BD9574MWF_BKUP_HOLD_TIM_CNT2		0x28
-+
-+#define BD9574MWF_DCDC_FREQ			0x48
-+
-+#define BD9574MWF_VDCORE_VINIT			0x50
-+#define BD9574MWF_VD09_VINIT			0x51
-+#define BD9574MWF_VDCORE_SETVMAX		0x52
-+#define BD9574MWF_VDCORE_SETVID			0x54
-+#define BD9574MWF_VDCORE_MONIVDAC		0x55
-+#define BD9574MWF_VDCORE_PGD_CNT		0x56
-+
-+#define BD9574MWF_GPIO_DIR			0x60
-+#define BD9574MWF_GPIO_OUT			0x61
-+#define BD9574MWF_GPIO_IN			0x62
-+#define BD9574MWF_GPIO_DEB			0x63
-+#define BD9574MWF_GPIO_INT_SET			0x64
-+#define BD9574MWF_GPIO_INT			0x65
-+#define BD9574MWF_GPIO_INTMASK			0x66
-+#define BD9574MWF_GPIO_MUX			0x67
-+
-+#define BD9574MWF_REG_KEEP(n)			(0x70 + (n))
-+
-+#define BD9574MWF_PMIC_INTERNAL_STATUS		0x80
-+#define BD9574MWF_PROT_ERROR_STATUS0		0x81
-+#define BD9574MWF_PROT_ERROR_STATUS1		0x82
-+#define BD9574MWF_PROT_ERROR_STATUS2		0x83
-+#define BD9574MWF_PROT_ERROR_STATUS3		0x84
-+#define BD9574MWF_PROT_ERROR_STATUS4		0x85
-+#define BD9574MWF_PROT_ERROR_STATUS5		0x86
-+#define BD9574MWF_SYS_ERROR_STATUS		0x87
-+
-+#define BD9574MWF_INT_INTREQ			0x90
-+#define BD9574MWF_INT_INTREQ_MD1_INT		BIT(0)
-+#define BD9574MWF_INT_INTREQ_MD2_E1_INT		BIT(1)
-+#define BD9574MWF_INT_INTREQ_MD2_E2_INT		BIT(2)
-+#define BD9574MWF_INT_INTREQ_PROT_ERR_INT	BIT(3)
-+#define BD9574MWF_INT_INTREQ_GP_INT		BIT(4)
-+#define BD9574MWF_INT_INTREQ_BKUP_HOLD_OF_INT	BIT(5)
-+#define BD9574MWF_INT_INTREQ_WDT_OF_INT		BIT(6)
-+#define BD9574MWF_INT_INTREQ_BKUP_TRG_INT	BIT(7)
-+#define BD9574MWF_INT_INTMASK			0x91
-+
-+#define BD9574MWF_SSCG_CNT			0xA0
-+#define BD9574MWF_POFFB_MRB			0xA1
-+#define BD9574MWF_SMRB_WR_PROT			0xA2
-+#define BD9574MWF_SMRB_ASSERT			0xA3
-+#define BD9574MWF_SMRB_STATUS			0xA4
-+
-+#define BD9574MWF_PART_NUMBER			"BD9574MWF"
-+
-+/* Define the BD9574MWF IRQ numbers */
-+enum bd9574mwf_irqs {
-+	BD9574MWF_IRQ_MD1,
-+	BD9574MWF_IRQ_MD2_E1,
-+	BD9574MWF_IRQ_MD2_E2,
-+	BD9574MWF_IRQ_PROT_ERR,
-+	BD9574MWF_IRQ_GP,
-+	BD9574MWF_IRQ_BKUP_HOLD_OF,
-+	BD9574MWF_IRQ_WDT_OF,
-+	BD9574MWF_IRQ_BKUP_TRG,
-+};
-+
- /**
-  * struct bd957x_data - internal data for the bd957x driver
-  *
--- 
-2.7.4
+On Mon, Dec 07, 2020 at 10:40:22PM -0600, Bjorn Andersson wrote:
+> The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
+> with the primary purpose of controlling the backlight of the attached
+> panel. Add an implementation that exposes this using the standard PWM
+> framework, to allow e.g. pwm-backlight to expose this to the user.
+>=20
+> Special thanks to Doug Anderson for suggestions related to the involved
+> math.
 
+Did you test this with CONFIG_PWM_DEBUG? (I think you didn't, because
+otherwise there would be a .get_state callback.)
+
+> @@ -162,6 +171,12 @@ struct ti_sn_bridge {
+>  	struct gpio_chip		gchip;
+>  	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
+>  #endif
+> +#if defined(CONFIG_PWM)
+
+Would it make sense to introduce a separate config symbol for this?
+Something like CONFIG_PWM_SN65DSI87?
+
+> +	struct pwm_chip			pchip;
+> +	bool				pwm_enabled;
+> +	unsigned int			pwm_refclk;
+> +	atomic_t			pwm_pin_busy;
+
+struct ti_sn_bridge has a kernel doc comment describing all members,
+please add a description of the members you introduced here. Please also
+point out that you use pwm_pin_busy to protect against concurrent use of
+the pin as PWM and GPIO.
+
+> +#endif
+>  };
+> =20
+>  static const struct regmap_range ti_sn_bridge_volatile_ranges[] =3D {
+> @@ -499,6 +514,14 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_s=
+n_bridge *pdata)
+> =20
+>  	regmap_update_bits(pdata->regmap, SN_DPPLL_SRC_REG, REFCLK_FREQ_MASK,
+>  			   REFCLK_FREQ(i));
+> +
+> +#if defined(CONFIG_PWM)
+> +	/*
+> +	 * The PWM refclk is based on the value written to SN_DPPLL_SRC_REG,
+> +	 * regardless of its actual sourcing.
+> +	 */
+> +	pdata->pwm_refclk =3D ti_sn_bridge_refclk_lut[i];
+> +#endif
+
+I don't understand this code. 'i' seems to be something more special
+than a counter variable, so I wonder if it should have a better name.
+(This is however an issue separate from this patch, but it would be
+great to first make the code a bit better understandable. Or is this
+only me?)
+
+>  }
+> =20
+>  static void ti_sn_bridge_set_dsi_rate(struct ti_sn_bridge *pdata)
+> @@ -981,6 +1004,161 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_s=
+n_bridge *pdata)
+>  	return 0;
+>  }
+> =20
+> +#if defined(CONFIG_PWM)
+> +static int ti_sn_pwm_pin_request(struct ti_sn_bridge *pdata)
+> +{
+> +	return atomic_xchg(&pdata->pwm_pin_busy, 1) ? -EBUSY : 0;
+> +}
+> +
+> +static void ti_sn_pwm_pin_release(struct ti_sn_bridge *pdata)
+> +{
+> +	atomic_set(&pdata->pwm_pin_busy, 0);
+> +}
+> +
+> +static struct ti_sn_bridge *
+> +pwm_chip_to_ti_sn_bridge(struct pwm_chip *chip)
+
+All your functions share the same function prefix (which is fine), but
+this one doesn't.
+
+> +{
+> +	return container_of(chip, struct ti_sn_bridge, pchip);
+> +}
+> [...]
+> +	if (state->enabled) {
+> +		/*
+> +		 * Per the datasheet the PWM frequency is given by:
+> +		 *
+> +		 * PWM_FREQ =3D REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
+> +		 *
+> +		 * In order to find the PWM_FREQ that best suits the requested
+> +		 * state->period, the PWM_PRE_DIV is calculated with the
+> +		 * maximum possible number of steps (BACKLIGHT_SCALE_MAX). The
+> +		 * actual BACKLIGHT_SCALE is then adjusted down to match the
+> +		 * requested period.
+> +		 *
+> +		 * The BACKLIGHT value is then calculated against the
+> +		 * BACKLIGHT_SCALE, based on the requested duty_cycle and
+> +		 * period.
+> +		 */
+> +		pwm_freq =3D NSEC_PER_SEC / state->period;
+
+Here you should better have some range checking. Consider for example
+state->period being > NSEC_PER_SEC. (Hint: This makes pwm_freq =3D 0 and
+in the next line you divide by pwm_freq.)
+
+> +		pre_div =3D DIV_ROUND_UP(pdata->pwm_refclk / pwm_freq - 1, BACKLIGHT_S=
+CALE_MAX);
+> +		scale =3D (pdata->pwm_refclk / pwm_freq - 1) / pre_div;
+
+I'm still trying to wrap my head around this calculation, but dividing
+by the result of a division is always loosing precision. This is really
+involved and I'm willing to bet this can be done easier and with more
+precision.
+
+=2E.. some time later ...
+
+You wrote "PWM_FREQ =3D REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)",
+so (I think) that means you have:
+
+	period =3D (PWM_PRE_DIV * BACKLIGHT_SCALE + 1) / refclk
+
+right? I deduce from your formula how the duty_cycle is defined and I
+think it's:
+
+	duty_cycle =3D (PWM_PRE_DIV * BACKLIGHT + 1) / refclk
+
+is this right? And now your idea to "best suite the requested period" is
+to select a small divider such that you can still use a big value in
+SCALE to define the period and so have a fine separation for the
+duty_cycle, right?
+
+I will stop doing maths here now until you confirm my steps up to now
+are right.
+
+> +		backlight =3D scale * state->duty_cycle / state->period;
+
+This is an u64 division, you must use do_div for that. Also you're
+losing precision here.
+
+> +		ret =3D regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
+> +		if (ret) {
+> +			dev_err(pdata->dev, "failed to update PWM_PRE_DIV\n");
+> +			goto out;
+> +		}
+> +
+> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, scale);
+> +		ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, backlight);
+
+How does the PWM behave in between these writes? Are the register values
+shadowed until the third write happens (which would be the optimum), or
+does this result in (maybe) emitting an output wave that doesn't
+correspond to the requested setting (assuming the PWM is already enabled
+of course)?
+
+What happens if the value written to SN_BACKLIGHT_SCALE_REG is less than
+the previous value in SN_BACKLIGHT_REG? ti_sn_bridge_write_u16 wraps two
+regmap writes, is there a race, too?
+
+> +	}
+> +
+> +	pwm_en_inv =3D FIELD_PREP(BIT(1), !!state->enabled) |
+> +		     FIELD_PREP(BIT(0), state->polarity =3D=3D PWM_POLARITY_INVERSED);
+
+Please introduce symbolic names for BIT(1) and BIT(0) here.
+
+How does the hardware behave with the enable bit unset? Does it emit the
+inactive level according to the polarity bit?
+
+> +	ret =3D regmap_write(pdata->regmap, SN_PWM_EN_INV_REG, pwm_en_inv);
+> +	if (ret) {
+> +		dev_err(pdata->dev, "failed to update PWM_EN/PWM_INV\n");
+> +		goto out;
+> +	}
+> +
+> +	pdata->pwm_enabled =3D !!state->enabled;
+> +out:
+> +
+> +	if (!pdata->pwm_enabled)
+> +		pm_runtime_put_sync(pdata->dev);
+> +
+> +	return ret;
+> +}
+> +
+> [...]
+> +static struct pwm_device *ti_sn_pwm_of_xlate(struct pwm_chip *pc,
+> +					     const struct of_phandle_args *args)
+> +{
+> +	struct pwm_device *pwm;
+> +
+> +	if (args->args_count !=3D 1)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pwm =3D pwm_request_from_chip(pc, 0, NULL);
+> +	if (IS_ERR(pwm))
+> +		return pwm;
+> +
+> +	pwm->args.period =3D args->args[0];
+> +
+> +	return pwm;
+> +}
+
+This is done to optimise away the 0 needed in each phandle to implement
+the "usual" pwm binding. IMHO this function should either move into the
+pwm core, or you should stick to the usual binding.
+
+Apropos binding: Is there already a binding document for the hardware?
+You should expand it to describe your additions.
+
+> @@ -1282,6 +1476,12 @@ static int ti_sn_bridge_probe(struct i2c_client *c=
+lient,
+>  		return ret;
+>  	}
+> =20
+> +	ret =3D ti_sn_setup_pwmchip(pdata);
+> +	if (ret)  {
+> +		pm_runtime_disable(pdata->dev);
+> +		return ret;
+> +	}
+
+I'm not sure about the purpose of the containing hardware, but I wonder
+if it would be saner to not break probing of the device if adding the
+PWM functionality fails. Ideally the driver would provide an mfd driver
+that allows its components to be probed independently.
+
+>  	i2c_set_clientdata(client, pdata);
+> =20
+>  	pdata->aux.name =3D "ti-sn65dsi86-aux";
+> @@ -1320,6 +1520,8 @@ static int ti_sn_bridge_remove(struct i2c_client *c=
+lient)
+> =20
+>  	drm_bridge_remove(&pdata->bridge);
+> =20
+> +	ti_sn_remove_pwmchip(pdata);
+> +
+>  	return 0;
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4uvrfzmltgxuhkh5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/PM44ACgkQwfwUeK3K
+7Ak/Pgf+Ipt5/DvWkzrssAOU7xprddf4muXBxkoYz10o7JzCGWZM1fqHoRli0Ntr
+sky7x0riw2EMVjWiOwVQsNdRdQuPqBqSTXL7UstjgPa5tSFV4jzu8HrHv+hpIE4K
+K4R71AeaTfLTQKrQEkvf4Ob/R4/9qnBnhgLVMfPFNHMuBRFsaGmOInE9mgTWMyIC
+OIPLoX7xYvzB/6T7gE/ZsUOIr7ZR9TKkCQaWNAT7ngXgQXl23abirY+ZXeARubJX
+Vsz3BIX50Hd6NAkbl+TcOQjhE+L3K+mmWcjN/cZ2zN+/5F+e3HfxHqAT+sjz5uIn
+FIUufFqHxCbr5oKHStsT2tMvrY3SxQ==
+=rExz
+-----END PGP SIGNATURE-----
+
+--4uvrfzmltgxuhkh5--
