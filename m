@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFA42D359A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EDB2D359E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgLHVvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729323AbgLHVvR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:51:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF981C0613D6;
-        Tue,  8 Dec 2020 13:50:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DYsse9W76whGjoHmMZxw0YkyPt6KIsCHj+NH/lrBlYk=; b=mOQ48H7nc0k+2I7h+BwMy31BfF
-        iLgV3xXOj/eZBIhCmO04pdfv9GvFWSMrX2qxQshjy8AUM3ReRrPoG6rV1EHk0QjpD7LKkLC2EGjjJ
-        Gp6da0OP6jYAn/Km9/LJIOcON3sVxc/nZdvk48uPMOm1B4FW8kj8aa66nn++vFIrgu8Y1DK/c16/3
-        cIY4zZ7ROUZ2Fanqmyxf7pdiV571/TZjFwi1KUtWqzyDntnAXYqYQC5IgEmRsSA4hCeMYiNC5KVX5
-        AkiUm1dJ/RUn5iku+DFhv4MmhJsVoArAtqjpfSEnUo36nTPHuarpty/BXFrSVwminLTxCGQKElOmO
-        89Mu033Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmksO-0004D6-F3; Tue, 08 Dec 2020 21:50:28 +0000
-Date:   Tue, 8 Dec 2020 21:50:28 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201208215028.GK7338@casper.infradead.org>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
- <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org>
- <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org>
- <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
- <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+        id S1729938AbgLHVv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:51:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726114AbgLHVv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:51:58 -0500
+Date:   Tue, 8 Dec 2020 13:51:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607464277;
+        bh=yZmkyOw708uk+qtFAUhQepgGFTdqhLTaCVU0MzOV+iU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UKski44zBJYdLaTuXXc4vt9RN0SDBwl/IbQLBKuSbtU2XFv/xDIY1ytzdhosMPM6V
+         0y9D8KWsTrqPerOjKyUOQdjhjZkpQ1nKgzYY9DsHT1/81o1Pb0IoICen2YZIHsRXhX
+         r3eApoF7E6LFxZLmtbhCX2yrMdEzGJoxrhq5sPjIGYMYxlEL67oewNqzhAyym9EFWT
+         u+g71oTEiHLpUotJ+4tQ6jdmCrwODE/u87UOEQAKFBtGn5uueDBqmDlx8MQZcCoLIr
+         vuReeUDid3nl1FSZV9HNZ+1EMrw48l6zeRuzhrJM0rHWus6SDz4SSsG5l1nNQ8Uhpz
+         dXReF28+AjxCg==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        bvanassche@acm.org, martin.petersen@oracle.com,
+        stanley.chu@mediatek.com, Randall Huang <huangrandall@google.com>,
+        Leo Liou <leoliou@google.com>
+Subject: Re: [PATCH v2] scsi: ufs: clear uac for RPMB after ufshcd resets
+Message-ID: <X8/1U8+Dd3UJjKA/@google.com>
+References: <20201201041402.3860525-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20201201041402.3860525-1-jaegeuk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:32:55PM -0800, Ira Weiny wrote:
-> On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
-> > On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
-> > > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > >
-> > > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-> > > > > > +                            struct page *src_page, size_t src_off,
-> > > > > > +                            size_t len)
-> > > > > > +{
-> > > > > > +     char *dst = kmap_local_page(dst_page);
-> > > > > > +     char *src = kmap_local_page(src_page);
-> > > > >
-> > > > > I appreciate you've only moved these, but please add:
-> > > > >
-> > > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
-> > > >
-> > > > I imagine it's not outside the realm of possibility that some driver
-> > > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
-> > > > it because kmap_atomic() of contiguous pages "just works (TM)".
-> > > > Shouldn't this WARN rather than BUG so that the user can report the
-> > > > buggy driver and not have a dead system?
-> > >
-> > > As opposed to (on a HIGHMEM=y system) silently corrupting data that
-> > > is on the next page of memory?
-> > 
-> > Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
-> > 
-> > > I suppose ideally ...
-> > >
-> > >         if (WARN_ON(dst_off + len > PAGE_SIZE))
-> > >                 len = PAGE_SIZE - dst_off;
-> > >         if (WARN_ON(src_off + len > PAGE_SIZE))
-> > >                 len = PAGE_SIZE - src_off;
-> > >
-> > > and then we just truncate the data of the offending caller instead of
-> > > corrupting innocent data that happens to be adjacent.  Although that's
-> > > not ideal either ... I dunno, what's the least bad poison to drink here?
-> > 
-> > Right, if the driver was relying on "corruption" for correct operation.
-> > 
-> > If corruption actual were happening in practice wouldn't there have
-> > been screams by now? Again, not necessarily...
-> > 
-> > At least with just plain WARN the kernel will start screaming on the
-> > user's behalf, and if it worked before it will keep working.
-> 
-> So I decided to just sleep on this because I was recently told to not introduce
-> new WARN_ON's[1]
-> 
-> I don't think that truncating len is worth the effort.  The conversions being
-> done should all 'work'  At least corrupting users data in the same way as it
-> used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
-> to do so while I work through the 0-day issues.  (not sure what is going on
-> there.)
-> 
-> However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
-> is a bit more critical than the PKS API in that it could result in corrupt
-> data.
+From 902e313f0d7ccf5e24491c2badc6dc173ce35fb1 Mon Sep 17 00:00:00 2001
+From: Randall Huang <huangrandall@google.com>
+Date: Tue, 24 Nov 2020 15:29:58 +0800
+Subject: [PATCH] scsi: ufs: clear uac for RPMB after ufshcd resets
 
-zero_user_segments contains:
+If RPMB is not provisioned, we may see RPMB failure after UFS suspend/resume.
+Inject request_sense to clear uac in ufshcd reset flow.
 
-        BUG_ON(end1 > page_size(page) || end2 > page_size(page));
+Signed-off-by: Randall Huang <huangrandall@google.com>
+Signed-off-by: Leo Liou <leoliou@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+---
 
-These should be consistent.  I think we've demonstrated that there is
-no good option here.
+ v2:
+  - fix build warning
+
+ drivers/scsi/ufs/ufshcd.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index dba3ee307307..d6a3a0ba6960 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -220,6 +220,7 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
+ static int ufshcd_eh_host_reset_handler(struct scsi_cmnd *cmd);
+ static int ufshcd_clear_tm_cmd(struct ufs_hba *hba, int tag);
+ static void ufshcd_hba_exit(struct ufs_hba *hba);
++static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int __ufshcd_setup_clocks(struct ufs_hba *hba, bool on,
+ 				 bool skip_ref_clk);
+@@ -6814,7 +6815,8 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 
+ 	/* Establish the link again and restore the device */
+ 	err = ufshcd_probe_hba(hba, false);
+-
++	if (!err)
++		ufshcd_clear_ua_wluns(hba);
+ out:
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+@@ -8304,13 +8306,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 	 * handling context.
+ 	 */
+ 	hba->host->eh_noresume = 1;
+-	if (hba->wlun_dev_clr_ua) {
+-		ret = ufshcd_send_request_sense(hba, sdp);
+-		if (ret)
+-			goto out;
+-		/* Unit attention condition is cleared now */
+-		hba->wlun_dev_clr_ua = false;
+-	}
++	ufshcd_clear_ua_wluns(hba);
+ 
+ 	cmd[4] = pwr_mode << 4;
+ 
+@@ -8331,7 +8327,7 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
+ 
+ 	if (!ret)
+ 		hba->curr_dev_pwr_mode = pwr_mode;
+-out:
++
+ 	scsi_device_put(sdp);
+ 	hba->host->eh_noresume = 0;
+ 	return ret;
+-- 
+2.29.2.576.ga3fc446d84-goog
+
