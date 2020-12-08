@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE3B2D3249
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 644712D3343
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731101AbgLHSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:38:01 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:8166 "EHLO
-        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730854AbgLHSiB (ORCPT
+        id S1731334AbgLHUQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731152AbgLHUPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:38:01 -0500
-X-IronPort-AV: E=Sophos;i="5.78,403,1599516000"; 
-   d="scan'208";a="366953506"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 19:37:18 +0100
-Date:   Tue, 8 Dec 2020 19:37:18 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>
-Subject: Re: problem booting 5.10
-In-Reply-To: <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2012081935580.16458@hadrien>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien> <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 8 Dec 2020 15:15:12 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EECC0613D6;
+        Tue,  8 Dec 2020 12:14:32 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0f08004da90e847a90bd48.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:800:4da9:e84:7a90:bd48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 433751EC053F;
+        Tue,  8 Dec 2020 19:47:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607453247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=N7zLgo+iGnV/6dQc9oAjeLX3V0c+bnEUyOPpx3AqhUE=;
+        b=qVpEjpAW6ERZtUChtOctB0atXOEQ9sLnL3RAG8ruZzpOCH41xOHx3EnwVn4iyhbQl9vBz4
+        HI/Yk9gZwrTzU7nxtY7YhtvWO9Sj8BsNle4GW/6iHTq6qVmAR4dqc+EmS78ViFZXu7SFiJ
+        JS2rHxlWADJXb4GziJW4KqDoA5cUXM0=
+Date:   Tue, 8 Dec 2020 19:47:27 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v15 08/26] x86/mm: Introduce _PAGE_COW
+Message-ID: <20201208184727.GF27920@zn.tnic>
+References: <20201110162211.9207-1-yu-cheng.yu@intel.com>
+ <20201110162211.9207-9-yu-cheng.yu@intel.com>
+ <20201208175014.GD27920@zn.tnic>
+ <218503f6-eec1-94b0-8404-6f92c55799e3@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <218503f6-eec1-94b0-8404-6f92c55799e3@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 08, 2020 at 10:25:15AM -0800, Yu, Yu-cheng wrote:
+> > Both are "R/O + _PAGE_COW". Where's the difference? The dirty bit?
+> 
+> The PTEs are the same for both (a) and (b), but come from different routes.
 
+Do not be afraid to go into detail and explain to me what those routes
+are please.
 
-On Tue, 8 Dec 2020, Linus Torvalds wrote:
+> > > (e) A page where the processor observed a Write=1 PTE, started a write, set
+> > >      Dirty=1, but then observed a Write=0 PTE.
+> > 
+> > How does that happen? Something changed the PTE's W bit to 0 in-between?
+> 
+> Yes.
 
-> On Tue, Dec 8, 2020 at 9:37 AM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > We have not succeeded to boot 5.10 on our Intel(R) Xeon(R) CPU E7-8870 v4 @
-> > 2.10GHz server.  Previous versions (eg 4.19 - 5.9) boot fine.  We have
-> > tried various rcs.
->
-> So the problem started with rc1?
+Also do not scare from going into detail and explaining what you mean
+here. Example?
 
-Yes.
+> > Does _PAGE_COW mean dirty too?
+> 
+> Yes.  Basically [read-only & dirty] is created by software.  Now the
+> software uses a different bit.
 
->
-> Could you try bisecting - even partially?
+That convention:
 
-Sure.
+"[read-only & dirty] is created by software."
 
-Thanks for the feedback.
+needs some prominent writeup somewhere explaining what it is.
 
-julia
+Thx.
 
-> If you do only six
-> bisections, the number of suspect commits drops from 15k to about 230
-> - which likely pinpoints the suspect area.
->
-> That said, your traces certainly makes me go "Hmm. Some thing broke in
-> SCSI device scanning", with the primary one being the
-> wait_for_completion() one - the rest of the stuck processes seem to be
-> stuck in async_synchronize_cookie_domain() and are presumably waiting
-> for this kthread that is waiting for the scan to finish.
->
-> So I'm adding SCSI people to the cc, just in case they go "Hmm..".
->
-> Martin & co - in the next email Julia also quotes
->
-> > [   51.355655][    T7] scsi 0:0:14:0: Direct-Access     ATA      ST2000LM015-2E81 SDM1 PQ: 0 ANSI: 6
-> > Gave up waiting for root file system device.  Common problems:[..]
->
-> which seems to be more of the same pattern with the SCSI scanning failure.
->
-> Of course, it could be some non-scsi patch that causes this, but.. A
-> bisect would hopefully clarify.
->
-> Leaving the (simplified) backtrace quoted below.
->
->                    Linus
->
-> >The backtrace for rc7 is shown below.
-> >
-> > [  253.207171][  T979] INFO: task kworker/u321:2:1278 blocked for more than 120 seconds.
-> > [  253.224089][  T979]       Tainted: G            E     5.10.0-rc7 #3
-> > [  253.239209][  T979] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  253.256990][  T979] task:kworker/u321:2  state:D stack:    0 pid: 1278 ppid:     2 flags:0x00004000
-> > [  253.275552][  T979] Workqueue: events_unbound async_run_entry_fn
-> > [  253.290687][  T979] Call Trace:
-> > [  253.302491][  T979]  __schedule+0x31e/0x890
-> > [  253.315353][  T979]  schedule+0x3c/0xa0
-> > [  253.327688][  T979]  schedule_timeout+0x274/0x310
-> > [  253.379283][  T979]  wait_for_completion+0x8a/0xf0
-> > [  253.392327][  T979]  scsi_complete_async_scans+0x107/0x170
-> > [  253.406115][  T979]  __scsi_add_device+0xf7/0x130
-> > [  253.418974][  T979]  ata_scsi_scan_host+0x98/0x1c0
-> > [  253.431948][  T979]  async_run_entry_fn+0x39/0x160
-> > [  253.444853][  T979]  process_one_work+0x24c/0x490
->
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
