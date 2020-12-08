@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282502D2800
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351D22D27F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgLHJn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:43:27 -0500
-Received: from mga05.intel.com ([192.55.52.43]:49287 "EHLO mga05.intel.com"
+        id S1729080AbgLHJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:42:49 -0500
+Received: from smtp1-g21.free.fr ([212.27.42.1]:43512 "EHLO smtp1-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728007AbgLHJnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:43:25 -0500
-IronPort-SDR: QEvepFzE65JO+njNslgNHbO+bAX21UjN9RuxhBzlMYM0hODTtspCWEEWL67VQ+cYXo9vs4eW+r
- 4zP9z/J8cdxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="258570644"
-X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
-   d="scan'208";a="258570644"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 01:41:40 -0800
-IronPort-SDR: lphYxfNFm97c5yzRygv9/53SK56PjpPxm+/DnB/JV+EIhDyXVumECsDgQq5efEsU6vKblus7xv
- Rx1DGfH/DGFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
-   d="scan'208";a="437322162"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Dec 2020 01:41:37 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 08 Dec 2020 11:41:36 +0200
-Date:   Tue, 8 Dec 2020 11:41:36 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: Clear send_discover in
- tcpm_check_send_discover
-Message-ID: <20201208094136.GH680328@kuha.fi.intel.com>
-References: <20201203031908.1491542-1-badhri@google.com>
+        id S1727982AbgLHJms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:42:48 -0500
+Received: from [IPv6:2a01:e0a:255:1000:c8c5:d1bc:5841:24db] (unknown [IPv6:2a01:e0a:255:1000:c8c5:d1bc:5841:24db])
+        (Authenticated sender: duncan.sands@free.fr)
+        by smtp1-g21.free.fr (Postfix) with ESMTPSA id B0972B0051B;
+        Tue,  8 Dec 2020 10:41:52 +0100 (CET)
+Subject: Re: [PATCH 3/3] drivers: usb: atm: use pr_err() and pr_warn() instead
+ of raw printk()
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     accessrunner-general@lists.sourceforge.net,
+        linux-usb@vger.kernel.org
+References: <20201208093206.24780-1-info@metux.net>
+ <20201208093206.24780-3-info@metux.net>
+From:   Duncan Sands <duncan.sands@free.fr>
+Message-ID: <f5c8d260-f617-4efe-c45e-b5846c24e3c0@free.fr>
+Date:   Tue, 8 Dec 2020 10:41:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203031908.1491542-1-badhri@google.com>
+In-Reply-To: <20201208093206.24780-3-info@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 07:19:08PM -0800, Badhri Jagan Sridharan wrote:
-> tcpm_check_send_discover does not clear the send_discover flag
-> when any of the following conditions are not met.
-> 1. data_role is TYPEC_HOST
-> 2. link is pd_capable
+On 12/8/20 10:32 AM, Enrico Weigelt, metux IT consult wrote:
+> Since we have the nice helpers pr_err() and pr_warn(), use them instead
+> of raw printk().
 > 
-> Discovery indentity would anyways not be attempted during
-> the current session anymore when the above conditions are not
-> met. Hence clear the send_discover flag here to prevent
-> tcpm_enable_frs_work from rescheduling indefinetly.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Acked-by: Duncan Sands <duncan.sands@free.fr>
 
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>   drivers/usb/atm/usbatm.c  | 2 +-
+>   drivers/usb/atm/xusbatm.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 3bbc1f10af49..012135ade7b1 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -3035,10 +3035,9 @@ static inline enum tcpm_state unattached_state(struct tcpm_port *port)
->  static void tcpm_check_send_discover(struct tcpm_port *port)
->  {
->  	if (port->data_role == TYPEC_HOST && port->send_discover &&
-> -	    port->pd_capable) {
-> +	    port->pd_capable)
->  		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
-> -		port->send_discover = false;
-> -	}
-> +	port->send_discover = false;
->  }
->  
->  static void tcpm_swap_complete(struct tcpm_port *port, int result)
-> -- 
-> 2.29.2.576.ga3fc446d84-goog
+> diff --git a/drivers/usb/atm/usbatm.c b/drivers/usb/atm/usbatm.c
+> index 56fe30d247da..1c90aa273a41 100644
+> --- a/drivers/usb/atm/usbatm.c
+> +++ b/drivers/usb/atm/usbatm.c
+> @@ -1278,7 +1278,7 @@ EXPORT_SYMBOL_GPL(usbatm_usb_disconnect);
+>   static int __init usbatm_usb_init(void)
+>   {
+>   	if (sizeof(struct usbatm_control) > sizeof_field(struct sk_buff, cb)) {
+> -		printk(KERN_ERR "%s unusable with this kernel!\n", usbatm_driver_name);
+> +		pr_err("%s unusable with this kernel!\n", usbatm_driver_name);
+>   		return -EIO;
+>   	}
+>   
+> diff --git a/drivers/usb/atm/xusbatm.c b/drivers/usb/atm/xusbatm.c
+> index ffc9810070a3..0befbf63d1cc 100644
+> --- a/drivers/usb/atm/xusbatm.c
+> +++ b/drivers/usb/atm/xusbatm.c
+> @@ -179,7 +179,7 @@ static int __init xusbatm_init(void)
+>   	    num_vendor != num_product ||
+>   	    num_vendor != num_rx_endpoint ||
+>   	    num_vendor != num_tx_endpoint) {
+> -		printk(KERN_WARNING "xusbatm: malformed module parameters\n");
+> +		pr_warn("xusbatm: malformed module parameters\n");
+>   		return -EINVAL;
+>   	}
+>   
+> 
 
--- 
-heikki
