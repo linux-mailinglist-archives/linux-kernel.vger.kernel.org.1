@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058D92D2A04
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEBC2D2A11
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgLHLx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:53:57 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:34863 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729214AbgLHLx5 (ORCPT
+        id S1726296AbgLHL4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:56:41 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:38019 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgLHL4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:53:57 -0500
-Received: by mail-il1-f198.google.com with SMTP id l11so8481631ilq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:53:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5lIivfIegrOSwEr6lH8WZABgvU+Z1wH05JIi4bOtavM=;
-        b=ORN3u0dK2GszIWDBStYgW5z6vUbJbJUqtEnD4LKEZ5z07X43ckiVe1EnOgR1DoWZKE
-         +gGRkiN/es3Bd/EjFC7h5MWWwokzDktPl3dEhIJtVwdcssC/2IwkSVnzyR+hYSYU8LCt
-         u1hujha1LyAh+YTsAM5j8BKFL5Ivk7UqbDFKZ7ZsBDTJ9K8Osu576l7jIB5H8Ka2ZSZn
-         MJSaq88iR85VpdXY+TRt5+aZmSJm3347BFvjT6UC6VDEy6jMgUkFjXRadK8KgLM6lQkp
-         MuflLj3juR5caq2+yyv6GmUK0wkACzVarIzsEQJ76d9ZNo2M1pfgAUKvPs0l8UCEkogq
-         Tv0g==
-X-Gm-Message-State: AOAM531lfxQvkiZ8aGouWH1Xji2pfrXzcbEfXzi+LH1n1XyXZ2iSUDnt
-        pC/Cm3W+EbeOsKzjc053HcuUV2rv+vKZpHb6zJy4KbJ/kSQ7
-X-Google-Smtp-Source: ABdhPJxHNbgZIU2Vh7UiPHS5oMJTw0UHCaSW5jJh4mCgIbTxaoIicxGAwcK70UvhNshe8AU3AZ+zr7iIeL4g5q3sANZcDO5EzuF2
-MIME-Version: 1.0
-X-Received: by 2002:a5e:9612:: with SMTP id a18mr2370150ioq.13.1607428396041;
- Tue, 08 Dec 2020 03:53:16 -0800 (PST)
-Date:   Tue, 08 Dec 2020 03:53:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008c4f0f05b5f29682@google.com>
-Subject: general protection fault in tower_disconnect
-From:   syzbot <syzbot+9be25235b7a69b24d117@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        legousb-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, starblue@users.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 8 Dec 2020 06:56:40 -0500
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 08 Dec 2020 03:55:59 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 08 Dec 2020 03:55:57 -0800
+X-QCInternal: smtphost
+Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 08 Dec 2020 17:25:33 +0530
+Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
+        id 011E520F2D; Tue,  8 Dec 2020 17:25:31 +0530 (IST)
+From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org,
+        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Subject: [PATCH v4] Bluetooth: btqca: Add support to read FW build version for WCN3991 BTSoC
+Date:   Tue,  8 Dec 2020 17:25:29 +0530
+Message-Id: <1607428529-26629-1-git-send-email-gubbaven@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add support to read FW build version from debugfs node.
+This info can be read from
+/sys/kernel/debug/bluetooth/hci0/firmware_info
 
-syzbot found the following issue on:
-
-HEAD commit:    08a02f95 USB: add RESET_RESUME quirk for Snapscan 1212
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=1435927b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d24ee9ecd7ce968e
-dashboard link: https://syzkaller.appspot.com/bug?extid=9be25235b7a69b24d117
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15145f07500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b99413500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9be25235b7a69b24d117@syzkaller.appspotmail.com
-
-usb 1-1: USB disconnect, device number 2
-general protection fault, probably for non-canonical address 0xdffffc0000000013: 0000 [#1] SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000098-0x000000000000009f]
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:tower_disconnect+0x53/0x360 drivers/usb/misc/legousbtower.c:848
-Code: 03 80 3c 02 00 0f 85 15 03 00 00 48 8b ab a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bd 98 00 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 7b 02 00 00 48 c7 c6 40 07 bb 87 48
-RSP: 0018:ffffc9000007f7c0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888117ec0000 RCX: ffffffff8381f807
-RDX: 0000000000000013 RSI: ffffffff83bab792 RDI: 0000000000000098
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff898cc4ef
-R10: 0000000000000002 R11: 0000000000000000 R12: ffff888117ec0090
-R13: ffff888117ec0078 R14: ffff888117ec0030 R15: ffff888117ec0098
-FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f557af47550 CR3: 00000001090f3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
- __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1154
- device_release_driver_internal drivers/base/dd.c:1185 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1208
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xec0 drivers/base/core.c:3115
- usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
- usb_disconnect.cold+0x27d/0x780 drivers/usb/core/hub.c:2218
- hub_port_connect drivers/usb/core/hub.c:5074 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
- port_event drivers/usb/core/hub.c:5509 [inline]
- hub_event+0x1c8a/0x42d0 drivers/usb/core/hub.c:5591
- process_one_work+0x933/0x1520 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x38c/0x460 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace 5aeb1d199be5d5f2 ]---
-RIP: 0010:tower_disconnect+0x53/0x360 drivers/usb/misc/legousbtower.c:848
-Code: 03 80 3c 02 00 0f 85 15 03 00 00 48 8b ab a8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bd 98 00 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 7b 02 00 00 48 c7 c6 40 07 bb 87 48
-RSP: 0018:ffffc9000007f7c0 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888117ec0000 RCX: ffffffff8381f807
-RDX: 0000000000000013 RSI: ffffffff83bab792 RDI: 0000000000000098
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff898cc4ef
-R10: 0000000000000002 R11: 0000000000000000 R12: ffff888117ec0090
-R13: ffff888117ec0078 R14: ffff888117ec0030 R15: ffff888117ec0098
-FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f557af47550 CR3: 00000001090f3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/bluetooth/btqca.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/bluetooth/btqca.h |  1 +
+ 2 files changed, 55 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index f85a55a..f6256a3 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -94,6 +94,53 @@ int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
+ }
+ EXPORT_SYMBOL_GPL(qca_read_soc_version);
+ 
++static int qca_read_fw_build_info(struct hci_dev *hdev)
++{
++	struct sk_buff *skb;
++	struct edl_event_hdr *edl;
++	char cmd, build_label[QCA_FW_BUILD_VER_LEN];
++	int build_lbl_len, err = 0;
++
++	bt_dev_dbg(hdev, "QCA read fw build info");
++
++	cmd = EDL_GET_BUILD_INFO_CMD;
++	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
++				&cmd, 0, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		err = PTR_ERR(skb);
++		bt_dev_err(hdev, "Reading QCA fw build info failed (%d)",
++			   err);
++		return err;
++	}
++
++	edl = (struct edl_event_hdr *)(skb->data);
++	if (!edl) {
++		bt_dev_err(hdev, "QCA read fw build info with no header");
++		err = -EILSEQ;
++		goto out;
++	}
++
++	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
++	    edl->rtype != EDL_GET_BUILD_INFO_CMD) {
++		bt_dev_err(hdev, "QCA Wrong packet received %d %d", edl->cresp,
++			   edl->rtype);
++		err = -EIO;
++		goto out;
++	}
++
++	build_lbl_len = edl->data[0];
++	if (build_lbl_len <= QCA_FW_BUILD_VER_LEN - 1) {
++		memcpy(build_label, edl->data + 1, build_lbl_len);
++		*(build_label + build_lbl_len) = '\0';
++	}
++
++	hci_set_fw_info(hdev, "%s", build_label);
++
++out:
++	kfree_skb(skb);
++	return err;
++}
++
+ static int qca_send_reset(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
+@@ -524,6 +571,13 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 		return err;
+ 	}
+ 
++	if (soc_type == QCA_WCN3991) {
++		/* get fw build info */
++		err = qca_read_fw_build_info(hdev);
++		if (err < 0)
++			return err;
++	}
++
+ 	bt_dev_info(hdev, "QCA setup on UART is completed");
+ 
+ 	return 0;
+diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+index e73b8f8..b19add7 100644
+--- a/drivers/bluetooth/btqca.h
++++ b/drivers/bluetooth/btqca.h
+@@ -11,6 +11,7 @@
+ #define EDL_PATCH_CMD_LEN		(1)
+ #define EDL_PATCH_VER_REQ_CMD		(0x19)
+ #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
++#define EDL_GET_BUILD_INFO_CMD		(0x20)
+ #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
+ #define MAX_SIZE_PER_TLV_SEGMENT	(243)
+ #define QCA_PRE_SHUTDOWN_CMD		(0xFC08)
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
