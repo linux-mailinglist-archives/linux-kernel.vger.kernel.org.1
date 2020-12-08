@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26BB2D2E15
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8992D2E18
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbgLHPWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:22:35 -0500
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:35716 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbgLHPWf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:22:35 -0500
-Received: by mail-oo1-f67.google.com with SMTP id s1so856704oon.2;
-        Tue, 08 Dec 2020 07:22:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C5Acc0ICokF2oxfe/fuyTY8R9eWUIjutjVKsOg+au2o=;
-        b=HdgtGPkBHwKnoSPaQCEJu1VYFfv0DGga8UGoqNXuucqyaqbIttMsdp0IpyvwFApCNB
-         hwLxce6yaYxQQyu73Tck0znCJCPlhrktZLu8iCyNlCOuRXsOH5+H5kdxGSTsUBA90NBG
-         mWVmLIi7gPv8Gz/njrQIXfHEdzyt29bQnaMhc2UbLPJn/1H0nNw6Zchrko/4N/RlS8HJ
-         0P6x9eFzkRl25w6LVF82ZibDNJzGux/rs+kKDeCKn8ZvHvoSSiLVe9+QTpwcSFm5BjG4
-         acDGk+qQ8X4JowGmSoNL1tX4KzQzaiSYi3qX02l7K98xBk2F5qQ1DiIl25GUl8Qw3na5
-         mwfQ==
-X-Gm-Message-State: AOAM530RIPhcGrIC4XDuX0es8z+mJ++2/SrMv5Rr4VMhPdlulPioRvr3
-        bxcglKSDkQBaHiw7KgkI4lnPJZKesg==
-X-Google-Smtp-Source: ABdhPJzkmdNmqS+dh2m97q/lOIeF2VXeYq7Y+mxyU9jm4DamaV4w8FaJVykv1l78z5kmmyM5ayvK5A==
-X-Received: by 2002:a4a:751a:: with SMTP id j26mr9483573ooc.68.1607440914338;
-        Tue, 08 Dec 2020 07:21:54 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x12sm454432oic.51.2020.12.08.07.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 07:21:53 -0800 (PST)
-Received: (nullmailer pid 2540461 invoked by uid 1000);
-        Tue, 08 Dec 2020 15:21:52 -0000
-Date:   Tue, 8 Dec 2020 09:21:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Klein <michael@fossekall.de>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>, linux-pm@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] Documentation: DT: binding documentation for
- regulator-poweroff
-Message-ID: <20201208152152.GA2539955@robh.at.kernel.org>
-References: <20201128103958.q6glewhhch7vtczr@gilmour>
- <20201207142756.17819-1-michael@fossekall.de>
- <20201207142756.17819-3-michael@fossekall.de>
+        id S1730065AbgLHPWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:22:47 -0500
+Received: from mga14.intel.com ([192.55.52.115]:45503 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729929AbgLHPWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:22:47 -0500
+IronPort-SDR: epdtQP32HAMrnaDBik3cKDiiPyAPAv9tiIhLfr+hOMLZ/YDgjMaNVkFBD3vYbtxr9/KwqDuQ+Y
+ EXV8d04QlslA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="173143611"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="173143611"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 07:22:06 -0800
+IronPort-SDR: y5nw9Tc3jMQGZcq5o6QLTDHd90SYx4twMJ64d3nKoQ+fOFzvsfMULiHImqkL1/i5Ea2Fzv+kv9
+ DDRAacyVFmfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="407657274"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga001.jf.intel.com with ESMTP; 08 Dec 2020 07:22:05 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 8 Dec 2020 07:22:05 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 8 Dec 2020 07:22:05 -0800
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.1713.004;
+ Tue, 8 Dec 2020 07:22:05 -0800
+From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+To:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>
+CC:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
+ mmio_range_devid_1 with static keyword
+Thread-Topic: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
+ mmio_range_devid_1 with static keyword
+Thread-Index: AQHWzXXi1lycwfu5hEyc2e0GCUwWdA==
+Date:   Tue, 8 Dec 2020 15:22:04 +0000
+Message-ID: <194d5a3c2c0f99345454004eb81c08d94181b7d7.camel@intel.com>
+References: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8E7951488161AB4CBDD929FE1CDE8E0F@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207142756.17819-3-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 15:27:55 +0100, Michael Klein wrote:
-> Add devicetree binding documentation for regulator-poweroff driver.
-> 
-> Signed-off-by: Michael Klein <michael@fossekall.de>
-> ---
->  .../power/reset/regulator-poweroff.yaml       | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
-> 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/reset/regulator-poweroff.example.dt.yaml: regulator-poweroff: 'REGULATOR-supply' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/reset/regulator-poweroff.example.dt.yaml: regulator-poweroff: 'vcc-dram-supply', 'vcc1v2-supply' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/reset/regulator-poweroff.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1412084
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+T24gVHVlLCAyMDIwLTEyLTA4IGF0IDIwOjI4ICswODAwLCBab3UgV2VpIHdyb3RlOg0KPiBGaXgg
+dGhlIGZvbGxvd2luZyBzcGFyc2Ugd2FybmluZ3M6DQo+IA0KPiBkcml2ZXJzL3BsYXRmb3JtL3g4
+Ni9pbnRlbF9zcGVlZF9zZWxlY3RfaWYvaXNzdF9pZl9tbWlvLmM6MjM6MjQ6DQo+IHdhcm5pbmc6
+IHN5bWJvbCAnbW1pb19yYW5nZV9kZXZpZF8wJyB3YXMgbm90IGRlY2xhcmVkLiBTaG91bGQgaXQg
+YmUNCj4gc3RhdGljPw0KPiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbF9zcGVlZF9zZWxlY3Rf
+aWYvaXNzdF9pZl9tbWlvLmM6Mjg6MjQ6DQo+IHdhcm5pbmc6IHN5bWJvbCAnbW1pb19yYW5nZV9k
+ZXZpZF8xJyB3YXMgbm90IGRlY2xhcmVkLiBTaG91bGQgaXQgYmUNCj4gc3RhdGljPw0KPiANClll
+c3RlcmRheSBJIHNlbnQgYSBwYXRjaCAiW1BBVENIIHYyIDIvM10gcGxhdGZvcm0veDg2OiBJU1NU
+OiBBbGxvdw0KY29uZmlndXJhYmxlIG9mZnNldCByYW5nZSIgdG8gZml4Lg0KDQpUaGFua3MsDQpT
+cmluaXZhcw0KDQo+IFNpZ25lZC1vZmYtYnk6IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2VpLmNvbT4N
+Cj4gLS0tDQo+IMKgZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50ZWxfc3BlZWRfc2VsZWN0X2lmL2lz
+c3RfaWZfbW1pby5jIHwgNCArKy0tDQo+IMKgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
+KSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQNCj4gYS9kcml2ZXJzL3BsYXRmb3Jt
+L3g4Ni9pbnRlbF9zcGVlZF9zZWxlY3RfaWYvaXNzdF9pZl9tbWlvLmMNCj4gYi9kcml2ZXJzL3Bs
+YXRmb3JtL3g4Ni9pbnRlbF9zcGVlZF9zZWxlY3RfaWYvaXNzdF9pZl9tbWlvLmMNCj4gaW5kZXgg
+MjkwNmNmZS4uZmY0OTAyNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50
+ZWxfc3BlZWRfc2VsZWN0X2lmL2lzc3RfaWZfbW1pby5jDQo+ICsrKyBiL2RyaXZlcnMvcGxhdGZv
+cm0veDg2L2ludGVsX3NwZWVkX3NlbGVjdF9pZi9pc3N0X2lmX21taW8uYw0KPiBAQCAtMjAsMTIg
+KzIwLDEyIEBAIHN0cnVjdCBpc3N0X21taW9fcmFuZ2Ugew0KPiDCoMKgwqDCoMKgwqDCoMKgaW50
+IGVuZDsNCj4gwqB9Ow0KPiDCoA0KPiAtc3RydWN0IGlzc3RfbW1pb19yYW5nZSBtbWlvX3Jhbmdl
+X2RldmlkXzBbXSA9IHsNCj4gK3N0YXRpYyBzdHJ1Y3QgaXNzdF9tbWlvX3JhbmdlIG1taW9fcmFu
+Z2VfZGV2aWRfMFtdID0gew0KPiDCoMKgwqDCoMKgwqDCoMKgezB4MDQsIDB4MTR9LA0KPiDCoMKg
+wqDCoMKgwqDCoMKgezB4MjAsIDB4RDB9LA0KPiDCoH07DQo+IMKgDQo+IC1zdHJ1Y3QgaXNzdF9t
+bWlvX3JhbmdlIG1taW9fcmFuZ2VfZGV2aWRfMVtdID0gew0KPiArc3RhdGljIHN0cnVjdCBpc3N0
+X21taW9fcmFuZ2UgbW1pb19yYW5nZV9kZXZpZF8xW10gPSB7DQo+IMKgwqDCoMKgwqDCoMKgwqB7
+MHgwNCwgMHgxNH0sDQo+IMKgwqDCoMKgwqDCoMKgwqB7MHgyMCwgMHgxMUN9LA0KPiDCoH07DQoN
+Cg==
