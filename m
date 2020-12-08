@@ -2,79 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA22E2D26A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBE22D26A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgLHIyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:54:38 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:57275 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727273AbgLHIyi (ORCPT
+        id S1728539AbgLHIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728512AbgLHIwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:54:38 -0500
-Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1Mcp3E-1kCwmM2v6w-00ZvNN; Tue, 08 Dec 2020 09:51:08 +0100
-Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
-To:     Greg KH <greg@kroah.com>, Vladimir Oltean <olteanv@gmail.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
-        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
-        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
-        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-References: <20201202124959.29209-1-info@metux.net>
- <20201205112018.zrddte4hu6kr5bxg@skbuf> <X8us4vsLCh/tXFLh@kroah.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <205b379c-d7fd-f78f-e72a-1344fad09c0f@metux.net>
-Date:   Tue, 8 Dec 2020 09:51:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 8 Dec 2020 03:52:36 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BE8C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:51:50 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id o5so11585949pgm.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:51:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4EpXoHXL4k0cYEYjbXCM3qqNNX/ao/lS1FFGU2tbAsI=;
+        b=npafHANG5pXcGj4u2NdXisvah9MRC0V7E4vMXhflCDTzfT9Qe0koYZDXIDRY6Y05mt
+         hEfBYI7dpxRFVMEvBVY9TZhBWiM3Lro1HfeWmMpoksUFutBn0sDFqAEsMV7F4Kz+LGBd
+         jqDlXEoMkuHatGoik1tgSb4zyBTj3ujruNA/Cw41TOye5EX/9m9sf3yAG9aknrsWOVX2
+         CmySvEeotBmGCZpwmOTgb9I2TtO+TLQryAryqm6YV/JA7nPOKZE1RrSieFZRqmfaf7QV
+         n3eDQJUXilGaKFbL2+MIkj7KpG2Q5YYt38+euySILQmt1Icx7qYL8ScvZSMt9HtSAVNF
+         1VmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4EpXoHXL4k0cYEYjbXCM3qqNNX/ao/lS1FFGU2tbAsI=;
+        b=Se8nskO5yRfqN5og13LMbxTjxw5pl+9eoVFmiNfD13NBfg4TLd24PGawD2zUvk56Kd
+         SM2zJ3K/EXgEmQIv5KASscfBPA+QWDSOrezDZab4VveaFgpnGFrrj44QYfW1V5QdxdU8
+         lvtX+daUVH3iOhcVEdYhLb6ueR5F5sn07UEDXjRgQ3LUMtFxdcU/T43WyeFq8lzBuoW7
+         +Cmi3iOqHl6uNG4xlpo9mG0otCc+UXeS769r/hXO1HKIMLNV7ZBZ65TnZTGP7Se6Nsn6
+         1u65TCBsbyVRVeo5KBuUw0C1R7TNZ8WwgqupQ6N7RtwAmsYhqaAtYWWGjHXNZsVQ+EPZ
+         hViw==
+X-Gm-Message-State: AOAM532KLtnDzxdsNtnEUNqOybtPusfqZB0SO7/aiCFnl0yhvfDnMhFf
+        XdhJbEpt466AvhLve8RpnBK2ELOxj6ZeNw==
+X-Google-Smtp-Source: ABdhPJzIUxxjW1A8LrW3wOYE5e6yVtI0yhINTYPuqVh3vPFj1BR1ngHnYCPJKiFEdfhzAJGCY1cfuQ==
+X-Received: by 2002:a17:90a:6f42:: with SMTP id d60mr3298129pjk.44.1607417509662;
+        Tue, 08 Dec 2020 00:51:49 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id e29sm14173828pfj.174.2020.12.08.00.51.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 08 Dec 2020 00:51:48 -0800 (PST)
+Date:   Tue, 8 Dec 2020 14:21:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: Re: [PATCH v1 2/4] cpufreq: schedutil: Adjust utilization instead of
+ frequency
+Message-ID: <20201208085146.pzem6t3mt44xwxkm@vireshk-i7>
+References: <20360841.iInq7taT2Z@kreacher>
+ <1916732.tSaCp9PeQq@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <X8us4vsLCh/tXFLh@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:75He4GTwP2Pvr21utgxi6AvViAZ7g5MjhAO11u3+NPpSzLfFLc1
- 05qvQ/DIJ15MDosO2cS6TKULJURaScDofuDcOX/+B3gM0L36yNx9z3A3Qb2AatOm0CS3zNd
- 9NhWFabN63eqogzR2Omj5Ny/VL6I72XtMp2k5RZAfmbTKm6Z3ApiKhcN1+i/l7u4m/l2G+e
- AZO2kaBUH4MmtQv1RiCfw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gDrGPN27EYA=:3RlVwi+Jn1Kc7zgvTGKFkt
- fT4zNzzqalCRi84tpWOeKt6fl/A7qaVbjhfEbgQrfLXEmRA948xdC42+C44p5Wk6ADZELEpBz
- LjMRDZGEhvuAWEY+W5TBshM9KPisBiw/uxRmavaZpX4eVerxAA7KVL734pmLnYNJF5QwOoHxn
- /aUVEjbUn0MvlcQ9ibl9caueSVpnu1789fVOd+Y8qKckwxpSO8krjmBZWKIGr4AUmyzouG3ww
- j4kSICRJb3f9XGmjTKOO+icXVFvqtq67E1qAkRmPA071mzZ2wt7nxseN5AsYlI/RDOUI3RQD9
- g+qYs44exDr9Kda/3AyCXIwd8v+XfxBkDZoBNYc7DvOP0rxNE5HZxSJANqqNu71g9itTl71/P
- 767N1iog4QbsBbgAOOxW/VN1hBJgy9O28or7m9S3zrZm4kaQDBZMr2kMkOIDG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1916732.tSaCp9PeQq@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.12.20 16:53, Greg KH wrote:
->> How do we feel about deleting this not really informative message
->> altogether in a future patch?
+On 07-12-20, 17:29, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> It too should be removed.  If drivers are working properly, they are
-> quiet.
+> When avoiding reduction of the frequency after the target CPU has
+> been busy since the previous frequency update, adjust the utilization
+> instead of adjusting the frequency, because doing so is more prudent
+> (it is done to counter a possible utilization deficit after all) and
+> it will allow some code to be shared after a subsequent change.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c |   11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+> ===================================================================
+> --- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
+> +++ linux-pm/kernel/sched/cpufreq_schedutil.c
+> @@ -437,7 +437,7 @@ static void sugov_update_single(struct u
+>  {
+>  	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
+>  	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+> -	unsigned int cached_freq = sg_policy->cached_raw_freq;
+> +	unsigned long prev_util = sg_cpu->util;
+>  	unsigned int next_f;
+>  
+>  	sugov_iowait_boost(sg_cpu, time, flags);
+> @@ -451,17 +451,14 @@ static void sugov_update_single(struct u
+>  	sugov_get_util(sg_cpu);
+>  	sugov_iowait_apply(sg_cpu, time);
+>  
+> -	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+>  	/*
+>  	 * Do not reduce the frequency if the CPU has not been idle
+>  	 * recently, as the reduction is likely to be premature then.
+>  	 */
+> -	if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
+> -		next_f = sg_policy->next_freq;
+> +	if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
+> +		sg_cpu->util = prev_util;
+>  
+> -		/* Restore cached freq as next_freq has changed */
+> -		sg_policy->cached_raw_freq = cached_freq;
+> -	}
+> +	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
 
-Just sent a separate patch for removing this message. I'll rebase my
-patch queue when this patch went through.
+I don't think we can replace freq comparison by util, or at least it will give
+us a different final frequency and the behavior is changed.
 
+Lets take an example, lets say current freq is 1 GHz and max is 1024.
 
---mtx
+Round 1: Lets say util is 1000
+
+next_f = 1GHz * 1.25 * 1000/1024 = 1.2 GHz
+
+Round 2: Lets say util has come down to 900 here,
+
+before the patch:
+
+next_f = 1.2 GHz * 1.25 * 900/1024 = 1.31 GHz
+
+after the patch:
+
+next_f = 1.2 GHz * 1.25 * 1000/1024 = 1.45 GHz
+
+Or did I make a mistake here ?
 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+viresh
