@@ -2,80 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847892D2BD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E561D2D2BE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgLHN0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:26:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45402 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729025AbgLHN0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607433913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=idJ8/WupSy/edQ30Crz8uX2zPv1PKuxsc+ILe2DB9b0=;
-        b=VhETD7ZYtnQQ0Gt3WtMubeZMQnovVXe2us8sJvZWIZ0eXPUIBzLT/pOOpChYKJ/FU8wOOJ
-        oB91gjmESmep9nm52cgEau5kiQ+13pzpmXaEfVZH7YMUadBkKK0OX9CDY6vaHVwKbJoC8J
-        E2kVEu5QolvbB+eoKege17KMzMieNiA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-kqSR4vZoPnaCpsCt-8xsaA-1; Tue, 08 Dec 2020 08:25:09 -0500
-X-MC-Unique: kqSR4vZoPnaCpsCt-8xsaA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EEB2107ACF5;
-        Tue,  8 Dec 2020 13:25:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 938835D6AB;
-        Tue,  8 Dec 2020 13:25:04 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <118876.1607093975@warthog.procyon.org.uk>
-References: <118876.1607093975@warthog.procyon.org.uk> <2F96670A-58DC-43A6-A20E-696803F0BFBA@oracle.com> <160518586534.2277919.14475638653680231924.stgit@warthog.procyon.org.uk>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     dhowells@redhat.com, Bruce Fields <bfields@fieldses.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org
-Subject: Re: Why the auxiliary cipher in gss_krb5_crypto.c?
+        id S1728720AbgLHN33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:29:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726080AbgLHN33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:29:29 -0500
+From:   Will Deacon <will@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: [PATCH v5 00/15] An alternative series for asymmetric AArch32 systems
+Date:   Tue,  8 Dec 2020 13:28:20 +0000
+Message-Id: <20201208132835.6151-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <955414.1607433903.1@warthog.procyon.org.uk>
-Date:   Tue, 08 Dec 2020 13:25:03 +0000
-Message-ID: <955415.1607433903@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I wonder - would it make sense to reserve two arrays of scatterlist structs
-and a mutex per CPU sufficient to map up to 1MiB of pages with each array
-while the krb5 service is in use?
+Hi all,
 
-That way sunrpc could, say, grab the mutex, map the input and output buffers,
-do the entire crypto op in one go and then release the mutex - at least for
-big ops, small ops needn't use this service.
+Christmas has come early: it's time for version five of these patches
+which have previously appeared here:
 
-For rxrpc/afs's use case this would probably be overkill - it's doing crypto
-on each packet, not on whole operations - but I could still make use of it
-there.
+  v1: https://lore.kernel.org/r/20201027215118.27003-1-will@kernel.org
+  v2: https://lore.kernel.org/r/20201109213023.15092-1-will@kernel.org
+  v3: https://lore.kernel.org/r/20201113093720.21106-1-will@kernel.org
+  v4: https://lore.kernel.org/r/20201124155039.13804-1-will@kernel.org
 
-However, that then limits the maximum size of an op to 1MiB, plus dangly bits
-on either side (which can be managed with chained scatterlist structs) and
-also limits the number of large simultaneous krb5 crypto ops we can do.
+and which started life as a reimplementation of some patches from Qais:
 
-David
+  https://lore.kernel.org/r/20201021104611.2744565-1-qais.yousef@arm.com
+
+There's also now a nice writeup on LWN:
+
+  https://lwn.net/Articles/838339/
+
+and rumours of a feature film are doing the rounds.
+
+[subscriber-only, but if you're reading this then you should really
+ subscribe.]
+
+The aim of this series is to allow 32-bit ARM applications to run on
+arm64 SoCs where not all of the CPUs support the 32-bit instruction set.
+Unfortunately, such SoCs are real and will continue to be productised
+over the next few years at least. I can assure you that I'm not just
+doing this for fun.
+
+Changes in v5 include:
+
+  * Teach cpuset_cpus_allowed() about task_cpu_possible_mask() so that
+    we can avoid returning incompatible CPUs for a given task. This
+    means that sched_setaffinity() can be used with larger masks (like
+    the online mask) from userspace and also allows us to take into
+    account the cpuset hierarchy when forcefully overriding the affinity
+    for a task on execve().
+
+  * Honour task_cpu_possible_mask() when attaching a task to a cpuset,
+    so that the resulting affinity mask does not contain any incompatible
+    CPUs (since it would be rejected by set_cpus_allowed_ptr() otherwise).
+
+  * Moved overriding of the affinity mask into the scheduler core rather
+    than munge affinity masks directly in the architecture backend.
+
+  * Extended comments and documentation.
+
+  * Some renaming and cosmetic changes.
+
+I'm pretty happy with this now, although it still needs review and will
+require rebasing to play nicely with the SCA changes in -next.
+
+Cheers,
+
+Will
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Morten Rasmussen <morten.rasmussen@arm.com>
+Cc: Qais Yousef <qais.yousef@arm.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Quentin Perret <qperret@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: kernel-team@android.com
+
+--->8
+
+
+Will Deacon (15):
+  arm64: cpuinfo: Split AArch32 registers out into a separate struct
+  arm64: Allow mismatched 32-bit EL0 support
+  KVM: arm64: Kill 32-bit vCPUs on systems with mismatched EL0 support
+  arm64: Kill 32-bit applications scheduled on 64-bit-only CPUs
+  arm64: Advertise CPUs capable of running 32-bit applications in sysfs
+  sched: Introduce task_cpu_possible_mask() to limit fallback rq
+    selection
+  cpuset: Don't use the cpu_possible_mask as a last resort for cgroup v1
+  cpuset: Honour task_cpu_possible_mask() in guarantee_online_cpus()
+  sched: Reject CPU affinity changes based on task_cpu_possible_mask()
+  sched: Introduce force_compatible_cpus_allowed_ptr() to limit CPU
+    affinity
+  arm64: Implement task_cpu_possible_mask()
+  arm64: exec: Adjust affinity for compat tasks with mismatched 32-bit
+    EL0
+  arm64: Prevent offlining first CPU with 32-bit EL0 on mismatched
+    system
+  arm64: Hook up cmdline parameter to allow mismatched 32-bit EL0
+  arm64: Remove logic to kill 32-bit tasks on 64-bit-only cores
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   9 +
+ .../admin-guide/kernel-parameters.txt         |   8 +
+ arch/arm64/include/asm/cpu.h                  |  44 ++--
+ arch/arm64/include/asm/cpucaps.h              |   3 +-
+ arch/arm64/include/asm/cpufeature.h           |   8 +-
+ arch/arm64/include/asm/mmu_context.h          |  13 ++
+ arch/arm64/kernel/cpufeature.c                | 219 ++++++++++++++----
+ arch/arm64/kernel/cpuinfo.c                   |  53 +++--
+ arch/arm64/kernel/process.c                   |  19 +-
+ arch/arm64/kvm/arm.c                          |  11 +-
+ include/linux/cpuset.h                        |   3 +-
+ include/linux/mmu_context.h                   |   8 +
+ include/linux/sched.h                         |   1 +
+ kernel/cgroup/cpuset.c                        |  39 ++--
+ kernel/sched/core.c                           | 112 +++++++--
+ 15 files changed, 426 insertions(+), 124 deletions(-)
+
+-- 
+2.29.2.576.ga3fc446d84-goog
 
