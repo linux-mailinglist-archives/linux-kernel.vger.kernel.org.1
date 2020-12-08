@@ -2,152 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AB12D25CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E332D25D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgLHI0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:26:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9033 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727983AbgLHI0C (ORCPT
+        id S1728229AbgLHI0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:26:50 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:43461 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728192AbgLHI0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:26:02 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqtX05LC1zhpDC;
-        Tue,  8 Dec 2020 16:24:48 +0800 (CST)
-Received: from [10.174.187.47] (10.174.187.47) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 16:25:13 +0800
-Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-4-lushenming@huawei.com>
- <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
- <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
- <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
- <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
- <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
- <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
- <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
- <274dafb2e21f49326a64bb575e668793@kernel.org>
- <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
-Message-ID: <77f60f4e-a832-97aa-7ec6-da9d596438b2@huawei.com>
-Date:   Tue, 8 Dec 2020 16:25:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 8 Dec 2020 03:26:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607415984; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xq3oy99zl2gR3nMQordnnBYArUynP/cy+s33+204NZY=; b=h6ClbUnqO7RQxaN1g2sHLi68KcLxTbZh0RvH9W/GclLb5B8RK1b4rhd8SxOOo/ra05B8d4KC
+ 6bxHSC7Df//agKXSlY7+iql0sJUvtXVjNrNCEel6LW6pnjUSh/1QWOcPj8qXVwpsR6ZoNuW9
+ thLntheUSlDhda7uwgyAoLGg0P8=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fcf389096285165cdaf9a8d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 08:25:52
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2A2F1C433CA; Tue,  8 Dec 2020 08:25:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E7D8C433CA;
+        Tue,  8 Dec 2020 08:25:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E7D8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     youghand@codeaurora.org
+Cc:     ath10k@lists.infradead.org, briannorris@chromium.org,
+        dianders@chromium.org, kuabhs@chromium.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        pillair@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH v2] ath10k: skip the wait for completion to recovery in shutdown path
+Date:   Tue,  8 Dec 2020 13:55:24 +0530
+Message-Id: <20201208082524.20451-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20201126171553.2097-1-youghand@codeaurora.org>
+References: <20201126171553.2097-1-youghand@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.47]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/1 20:15, Shenming Lu wrote:
-> On 2020/12/1 19:50, Marc Zyngier wrote:
->> On 2020-12-01 11:40, Shenming Lu wrote:
->>> On 2020/12/1 18:55, Marc Zyngier wrote:
->>>> On 2020-11-30 07:23, Shenming Lu wrote:
->>>>
->>>> Hi Shenming,
->>>>
->>>>> We are pondering over this problem these days, but still don't get a
->>>>> good solution...
->>>>> Could you give us some advice on this?
->>>>>
->>>>> Or could we move the restoring of the pending states (include the sync
->>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
->>>>> which is completely corresponding to save_pending_tables (more symmetric?)
->>>>> and don't expose GICv4...
->>>>
->>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
->>>
->>> Yeah, it is a a QEMU thing...
->>>
->>>> We don't really have that concept in KVM, so I'd appreciate if you could
->>>> be a bit more explicit on this.
->>>
->>> My thought is to add a new interface (to QEMU) for the restoring of
->>> the pending states, which is completely corresponding to
->>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
->>> And it is called from the GIC VM state change handler in QEMU, which
->>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
->>> but before the starting (running) of the VFIO device.
->>
->> Right, that makes sense. I still wonder how much the GIC save/restore
->> stuff differs from other architectures that implement similar features,
->> such as x86 with VT-D.
-> 
-> I am not familiar with it...
-> 
->>
->> It is obviously too late to change the userspace interface, but I wonder
->> whether we missed something at the time.
-> 
-> The interface seems to be really asymmetrical?...
-> 
-> Or is there a possibility that we could know which irq is hw before the VFIO
-> device calls kvm_vgic_v4_set_forwarding()?
-> 
-> Thanks,
-> Shenming
-> 
->>
->> Thanks,
->>
->>         M.
-> .
-> 
+On Thu, Nov 26, 2020 at 9:16 AM Youghandhar Chintala
+<youghand@codeaurora.org> wrote:
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1790,9 +1790,6 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>
+>         reinit_completion(&ar->driver_recovery);
+>
+> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
 
-Hi Marc,
+You are skipping recovery in ath10k_snoc_remove() which is a remove callback
+and also called in shutdown callback. So that means it is also called when
+you unload the ath10k module and not just when the system reboots/shutdown.
+While it makes sense to not skip recovery in shutdown/reboot sequence because
+the system is going down, it might very well be needed in case of unloading
+the module because we expect the system to be up and stable after unloading
+the ath10k module and we should be able to reload the ath10k module smoothly.
 
-I am learning VT-d Posted Interrupt (PI) these days.
-
-As far as I can tell, the posted interrupts are firstly recorded in the Posted
-Interrupt Request (*PIR*) field of the Posted Interrupt Descriptor (a temporary
-storage area (data structure in memory) which is specific to PI), and when the
-vCPU is running, a notification event (host vector) will be generated and sent
-to the CPU (the target vCPU is currently scheduled on it), which will cause the
-CPU to transfer the posted interrupt in the PIR field to the *Virtual-APIC page*
-(a data structure in kvm, the virtual interrupts delivered through kvm are put
-here, and it is also accessed by the VMX microcode (the layout matches the register
-layout seen by the guest)) of the vCPU and directly deliver it to the vCPU.
-
-So they only have to sync the PIR field to the Virtual-APIC page for the migration
-saving, and do nothing for the resuming...
-
-Besides, on x86 the setting of the IRQ bypass is independent of the VM interrupt
-setup...
-
-Not sure if I have missed something.
-
-In addition, I found that the enabling of the vAPIC is at the end of the migration
-(just before the VM start) on x86. So I am wondering if we could move the calling
-of *vgic_enable_lpis()* back, and transfer the pending state to the VPT there if the
-irq is hw (and I think the semantics of this function should include the transfer).
-In fact, this function is dependent on the restoring of the vgic(lpi_list)...
-
-After exploration, there seems to be no perfect place to transfer the pending states
-to HW in order to be compatible with the existing interface and under the current
-architecture, but we have to choose one solution?
+If you remove that now and try to reload the ath10k module, won't that leave
+the system in possibly an inconsistent state because we skipped recovery in
+module remove and then we are trying to load the ath10k module when the
+recovery is not yet complete? In other words, you need to test ath10k module
+load/unload as well in addition to reboot tests to make sure this works as
+expected or else you will need a separate shutdown callback which skips the
+recovery part.
 
 Thanks,
-Shenming
+Sai
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
