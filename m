@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869332D3086
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0BC2D3090
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730632AbgLHRFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:05:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730586AbgLHRFQ (ORCPT
+        id S1730421AbgLHRJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:09:32 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728679AbgLHRJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:05:16 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327D3C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:04:36 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r3so16991295wrt.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:04:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RE0ZyDjS9csHRr+SxXqoIyxGXkIUMbwk5h1vfdVY/Jo=;
-        b=sHlLDbSAF1DHYdjAU2pYOuCdGNMyW0m8wRXesU4XKzdY7L8cOA7KxxWcIyncPuP/Rf
-         J5BMIUU1VUeu7dJep3IeI4J1P7fWgkWZfiN9lpjieRsuVKTRBxIXDFl82TdM3yestIgI
-         thpEfYzDr+j8vl8CJgOhItUm8gw0FDjF8yeTypCo6xsHJhelJRzl4ecDaybLPmkiQiGR
-         e/q/jZRaRfzLCm+kaQzRjA2tBOQGX3p//WfiweKUZzk9/4O05taoof1qznyXp35Yd6TG
-         /bAN33zHiuwKk1KFHRqIgDE+XsR/G/d4m50ymoIf6GxU4KdAnbszijyDW0JgPxDv7wWW
-         8IlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RE0ZyDjS9csHRr+SxXqoIyxGXkIUMbwk5h1vfdVY/Jo=;
-        b=FskJDswPBDC0xNTcTkI6SRDUiksM00YehAR0Rhb9CKMBlRtD74SX4MSMfx1kAkwINQ
-         9VCGeKm0yROC1A9KiwXRnnp5wI++6+fR7o39UvcAON2NwXnnmO521Dk8+7aQLstkX/DU
-         TwYJp4kxyxwuyCV4Vm+ADOHsZKz4ie3TBRp2Yq+53HdeNkZz6DaAcR0OAaVh9qm2Hmar
-         r1IrDG5YTyJwMG8etlEe/Mmq6FdoWzsAMxnWJak9drEDCcTG9sNgdiImUlKYMkBLGHkZ
-         8Pv7gQ7uIs042lukWDuxqmGu6Sf6UYLdsj3BCpcwM+8ThdLZs3qx+xV+SPM2J5NdQPCr
-         GO/Q==
-X-Gm-Message-State: AOAM531a1xGdmdcvuePEI3OW3nnlYaxeVsL2vCmMZmSJIN4n0LcHBP8n
-        Alou6Wx6DW+Axa6TRICYty+Zfw==
-X-Google-Smtp-Source: ABdhPJyIqFaUGn8WR2vjV5uSHTLO4k57M1T9jQtvOKXr26z8FICzPerdL4TvpBshQfn1WT/csPmoJQ==
-X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr2533857wrx.76.1607447074798;
-        Tue, 08 Dec 2020 09:04:34 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id 35sm20913983wro.71.2020.12.08.09.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 09:04:33 -0800 (PST)
-Date:   Tue, 8 Dec 2020 17:04:29 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v3 12/14] bpf: Pull tools/build/feature biz into
- selftests Makefile
-Message-ID: <X8+yHRxv2g7dXeNP@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-13-jackmanb@google.com>
- <CAEf4BzbEfPScq_qMVJkDxfWBh-oRhY5phFr=517pam80YcpgMg@mail.gmail.com>
- <X8oEOPViOhR8XdH6@google.com>
- <CAEf4BzaEystdQ3PbaZXhmpTfqbs410BVCEToHfKLgx-3wAm-KA@mail.gmail.com>
- <X84LPVp3PqfESx9U@google.com>
- <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
+        Tue, 8 Dec 2020 12:09:31 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8H53pE102777;
+        Tue, 8 Dec 2020 12:07:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=MZ7ovSGWvDyzVOlz/bs+1cG//Ep+jGNzjI98A0YkdF0=;
+ b=d20BGCCfUGfbibnjvvhOFSWhZ/z3xqLtbywy8JRivaZzKTiW4Q/v03i9AtHBCELsQrsa
+ ii+JyhSMERpCQsOIJdWLwaKZ+NW7Tgds9ONI0LnBm52ZT7vZaQ1ByFKEERFEp23YJ43a
+ MlgUrnYdAE7AsrZQI7u2CcyoI94v5gCCyIVzBw9wHS73eRAXG7UcBeyJpjtmKkEdF96Y
+ X08hihoovRLKAt2S05nffmor4yMLBPTOpZtYD2KAElu1Y99L06GVcGoJYDO2CSftkQwv
+ QChpRphuhIAg1lN611DnyeGcSt+MnxDUbI3E+UDxxdgdWw78RIG6mJVGGZHthYBUb/3E +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5ufyrpv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 12:07:25 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8H5P9t105606;
+        Tue, 8 Dec 2020 12:07:24 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5ufyrms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 12:07:24 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8H6gFB008135;
+        Tue, 8 Dec 2020 17:07:21 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3581fhks5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 17:07:21 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8H7I8m50528692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Dec 2020 17:07:18 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 47EF152052;
+        Tue,  8 Dec 2020 17:07:18 +0000 (GMT)
+Received: from sig-9-65-221-14.ibm.com (unknown [9.65.221.14])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 0240852057;
+        Tue,  8 Dec 2020 17:07:13 +0000 (GMT)
+Message-ID: <6c0428647fc83c2220e15e62dc1b566d250b7968.camel@linux.ibm.com>
+Subject: Re: [PATCH v8 3/4] doc: trusted-encrypted: updates with TEE as a
+ new trust source
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        jarkko.sakkinen@linux.intel.com, jejb@linux.ibm.com,
+        Elaine Palmer <erpalmer@us.ibm.com>
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        George Wilson <gcwilson@us.ibm.com>
+Date:   Tue, 08 Dec 2020 12:07:13 -0500
+In-Reply-To: <f00c8c7dd1e184e139e6cb5aba2b4a1c5fc68363.camel@linux.ibm.com>
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+         <1604419306-26105-4-git-send-email-sumit.garg@linaro.org>
+         <f00c8c7dd1e184e139e6cb5aba2b4a1c5fc68363.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:19:12PM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 7, 2020 at 3:00 AM Brendan Jackman <jackmanb@google.com> wrote:
-> >
-> > On Fri, Dec 04, 2020 at 11:00:24AM -0800, Andrii Nakryiko wrote:
-> > > On Fri, Dec 4, 2020 at 1:41 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > > >
-> > > > On Thu, Dec 03, 2020 at 01:01:27PM -0800, Andrii Nakryiko wrote:
-> > > > > On Thu, Dec 3, 2020 at 8:07 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > > > > >
-[...]
-> >
-> > Ah right gotcha. Then yeah I think we can do this:
-> >
-> >  BPF_ATOMICS_SUPPORTED = $(shell \
-> >         echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
-> >         | $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
+Hi Sumit, Jarkko,
+
+On Tue, 2020-12-08 at 10:55 -0500, Mimi Zohar wrote:
+> Re-posting Elaine Palmer's comments, inline below, trimmed and properly
+> formatted.
+
+Continued ...
+
+Thank you for the detailed descriptions and examples of trust sources
+for Trusted Keys.  A group of us in IBM (Stefan Berger, Ken Goldman,
+Zhongshu Gu, Nayna Jain, Elaine Palmer, George Wilson, Mimi Zohar) have
+some concerns with extending trusted keys to new sources without
+providing a threat model.   The following is based on our internal
+discussions.
+
+> * Threat model
 > 
-> Looks like it would work, yes.
-/
-> Curious what "-x cpp-output" does?
+> The strength and appropriateness of TPMs and TEEs for a given purpose
+> must be assessed when using them to protect security-relevant data.
 
-That's just to tell Clang what language to expect, since it can't infer
-it from a file extension:
+The original Trusted Keys implementation assumed discrete physical TPMs
+for key protection[1].  However, even physical TPMs themselves vary
+based on the manufacturer and systems in which they are placed.  The
+embedded chipset, firmware load, algorithms, packaging, pins, and
+countermeasures vary.  (Threats and mitigations on physical TPMs are
+well documented, e.g., "Threat Model of a Scenario Based on Trusted
+Platform Module 2.0 Specification” (http://ceur-ws.org/Vol-1011/6.pdf).
 
-  $ echo foo | clang -S -
-  clang-10: error: -E or -x required when input is from standard input
+Extending Trusted Keys to support new trust sources needs to provide
+consumers of these new sources enough information so that they can
+create their own threat models tailored to their use cases.
 
-Yonghong pointed out that we can actually just use `-x c`.
+Just as each new LSM needs to comply with Documentation/security/lsm-
+development.rst, we recommend each new source should provide a high-
+level threat model.  We suggest documenting environmental assumptions
+and dependencies in a high-level threat model for each additional trust
+source.  An example of a high-level threat model is "Common Security
+Threats v1.0” (
+https://www.opencompute.org/documents/common-security-threats-notes-1-pdf
+ ).
+
+Thank you,
+
+Elaine (and Mimi)
+
+
+[1] Specific to Trusted Keys and TPMs, there is some discussion of
+threats and mitigations in the Integrity_overview.pdf on the IMA wiki:
+
+"The trusted key component does two things to help with secure key management on Linux. First, it provides a kernel key ring service in which the symmetric encryption keys are never visible in plain text to userspace. The keys are created in the kernel, and sealed by a hardware device such as a TPM, with userspace seeing only the sealed blobs. Malicious or compromised applications cannot steal a trusted key, since only the kernel can see the unsealed blobs. Secondly, the trusted keys can tie key unsealing to the integrity measurements, so that keys cannot be stolen in an offline attack, such as by booting an unlocked Linux image from CD or USB.  As the measurements will be different, the TPM chip will refuse to unseal the keys, even for the kernel."
+
