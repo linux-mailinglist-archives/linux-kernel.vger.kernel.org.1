@@ -2,187 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B3D2D243C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91862D244C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgLHHVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:21:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:43324 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgLHHVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:21:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB0D130E;
-        Mon,  7 Dec 2020 23:20:45 -0800 (PST)
-Received: from [10.57.34.152] (unknown [10.57.34.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9AB3B3F718;
-        Mon,  7 Dec 2020 23:20:43 -0800 (PST)
-Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
- EM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
- <20201202172356.10508-4-nicola.mazzucato@arm.com>
- <20201208055053.kggxw26kxtnpneua@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
-Date:   Tue, 8 Dec 2020 07:22:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726278AbgLHHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgLHHYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:24:38 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E2C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:23:57 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id y23so1432334wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:23:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bwnZcJKOltLC78EdCJTTIZysg34xmbCEL+7ZUfnNors=;
+        b=AZufqmYyhIhiIjIXjTNyh2J9tNPyJ/WjQvSjd60viGbcy6GE4yOkipfzzs3Yd3nGrK
+         zzdEigae73Y3oNfJfTSEIGxTOKW0g7mSZpzCX+B1KhzUnNvuEVi21ujVjlN7uj8LZQ5/
+         CxhTuiDmpGfWSIVaLeECasOAflAsFj2jM7M125qmr1N+8dP/rD28XmdRHK/WrRyEz1Rl
+         Lvxva7DN7Cd94jq7XnSe/3DBFF2Gy3MvH8ArnQVryjdrMF1sJ4/JORUiWCHX+4tYQt8H
+         R4f+uolTnhOINvG6Jc+hTUauTim4L/AKv8xWP/4pnjJRZEaSybGonIFRIXggYWpclFCQ
+         ucHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bwnZcJKOltLC78EdCJTTIZysg34xmbCEL+7ZUfnNors=;
+        b=LYm7dWC6TRltlUtu09cqie6PvIzcRIkmD/7dz8Z0alK/POYT1KA6Vrm3G/ex0mCvu9
+         8fMUBQngeooDNU71VsDsmzGCShRVCpecQYNqFfxvJYwd3pSy3GtMbbDpAOxoegNfb25O
+         G9Dv5QyS5kQMwuRpUsfLlc2WRfTDbeAaYigjtbFS1P7Ffoq5q87FGqdyB/YLJW6oT4TL
+         F/yQ9wFikn+seLQvJEuE3J03D31mioVCxSbYim5GWfW4d62OPkw6D4cCM2zzcJKi1nrA
+         t5ztOKEkpOJJFQ89k3KYfTlGDOTj21ajr4S8ImjVLwbp+T0lTXeiQST6GBrtnYl4Uh+b
+         c0Kg==
+X-Gm-Message-State: AOAM533BdYY1m+SS1ahf6IvgJ5FlaxeaYqQAADwmfu83kzMNpAdsL9+a
+        YiPMBpNdnlbH1K0dARE9VqW4s4wtaN4dvFVG560tkQ==
+X-Google-Smtp-Source: ABdhPJxr4+o94bHYhKcEmobnJ9PgmKWvNErqCzXT8KkYnhyRDLin/XHz0bPr2OLcOhJnyokzuUQFUb9zkQ0GKOQ0ZTM=
+X-Received: by 2002:a7b:cf37:: with SMTP id m23mr2415823wmg.37.1607412236344;
+ Mon, 07 Dec 2020 23:23:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208055053.kggxw26kxtnpneua@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-2-surenb@google.com>
+ <20201125231322.GF1484898@google.com> <CAJuCfpGCc49g5+T+V3SxZ6eVteLac6xVRx+1z6G2a8P4-Cr7bA@mail.gmail.com>
+ <20201125234322.GG1484898@google.com> <CAJuCfpFuWqMEXJij_qHhyGpuFXLuJ7-DcHgcc9760NhBHhuLHw@mail.gmail.com>
+In-Reply-To: <CAJuCfpFuWqMEXJij_qHhyGpuFXLuJ7-DcHgcc9760NhBHhuLHw@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 7 Dec 2020 23:23:45 -0800
+Message-ID: <CAJuCfpFW=ruDA-FX6Uj7P8__J7RcbQuWwdQfhSuXm6SUWZeCXQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
+ entire memory range
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>, linux-api@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+On Mon, Nov 30, 2020 at 11:01 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Wed, Nov 25, 2020 at 3:43 PM Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > On Wed, Nov 25, 2020 at 03:23:40PM -0800, Suren Baghdasaryan wrote:
+> > > On Wed, Nov 25, 2020 at 3:13 PM Minchan Kim <minchan@kernel.org> wrote:
+> > > >
+> > > > On Mon, Nov 23, 2020 at 09:39:42PM -0800, Suren Baghdasaryan wrote:
+> > > > > process_madvise requires a vector of address ranges to be provided for
+> > > > > its operations. When an advice should be applied to the entire process,
+> > > > > the caller process has to obtain the list of VMAs of the target process
+> > > > > by reading the /proc/pid/maps or some other way. The cost of this
+> > > > > operation grows linearly with increasing number of VMAs in the target
+> > > > > process. Even constructing the input vector can be non-trivial when
+> > > > > target process has several thousands of VMAs and the syscall is being
+> > > > > issued during high memory pressure period when new allocations for such
+> > > > > a vector would only worsen the situation.
+> > > > > In the case when advice is being applied to the entire memory space of
+> > > > > the target process, this creates an extra overhead.
+> > > > > Add PMADV_FLAG_RANGE flag for process_madvise enabling the caller to
+> > > > > advise a memory range of the target process. For now, to keep it simple,
+> > > > > only the entire process memory range is supported, vec and vlen inputs
+> > > > > in this mode are ignored and can be NULL and 0.
+> > > > > Instead of returning the number of bytes that advice was successfully
+> > > > > applied to, the syscall in this mode returns 0 on success. This is due
+> > > > > to the fact that the number of bytes would not be useful for the caller
+> > > > > that does not know the amount of memory the call is supposed to affect.
+> > > > > Besides, the ssize_t return type can be too small to hold the number of
+> > > > > bytes affected when the operation is applied to a large memory range.
+> > > >
+> > > > Can we just use one element in iovec to indicate entire address rather
+> > > > than using up the reserved flags?
+> > > >
+> > > >         struct iovec {
+> > > >                 .iov_base = NULL,
+> > > >                 .iov_len = (~(size_t)0),
+> > > >         };
+> > > >
+> > > > Furthermore, it would be applied for other syscalls where have support
+> > > > iovec if we agree on it.
+> > > >
+> > >
+> > > The flag also changes the return value semantics. If we follow your
+> > > suggestion we should also agree that in this mode the return value
+> > > will be 0 on success and negative otherwise instead of the number of
+> > > bytes madvise was applied to.
+> >
+> > Well, return value will depends on the each API. If the operation is
+> > desruptive, it should return the right size affected by the API but
+> > would be okay with 0 or error, otherwise.
+>
+> I'm fine with dropping the flag, I just thought with the flag it would
+> be more explicit that this is a special mode operating on ranges. This
+> way the patch also becomes simpler.
+> Andrew, Michal, Christian, what do you think about such API? Should I
+> change the API this way / keep the flag / change it in some other way?
 
-thanks for looking into this. Please find below
 
-On 12/8/20 5:50 AM, Viresh Kumar wrote:
-> On 02-12-20, 17:23, Nicola Mazzucato wrote:
->> By design, SCMI performance domains define the granularity of
->> performance controls, they do not describe any underlying hardware
->> dependencies (although they may match in many cases).
->>
->> It is therefore possible to have some platforms where hardware may have
->> the ability to control CPU performance at different granularity and choose
->> to describe fine-grained performance control through SCMI.
->>
->> In such situations, the energy model would be provided with inaccurate
->> information based on controls, while it still needs to know the
->> performance boundaries.
->>
->> To restore correct functionality, retrieve information of CPUs under the
->> same v/f domain from operating-points-v2 in DT, and pass it on to EM.
->>
->> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
->> ---
->>  drivers/cpufreq/scmi-cpufreq.c | 51 +++++++++++++++++++++++-----------
->>  1 file changed, 35 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
->> index 491a0a24fb1e..f505efcc62b1 100644
->> --- a/drivers/cpufreq/scmi-cpufreq.c
->> +++ b/drivers/cpufreq/scmi-cpufreq.c
->> @@ -127,6 +127,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->>  	struct cpufreq_frequency_table *freq_table;
->>  	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
->>  	bool power_scale_mw;
->> +	cpumask_var_t opp_shared_cpus;
->>  
->>  	cpu_dev = get_cpu_device(policy->cpu);
->>  	if (!cpu_dev) {
->> @@ -134,30 +135,45 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->>  		return -ENODEV;
->>  	}
->>  
->> -	ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
->> -	if (ret) {
->> -		dev_warn(cpu_dev, "failed to add opps to the device\n");
->> -		return ret;
->> -	}
->> +	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
->> +		return -ENOMEM;
->>  
->>  	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
->>  	if (ret) {
->>  		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
->> -		return ret;
->> +		goto out_free_cpumask;
->>  	}
->>  
->> -	ret = dev_pm_opp_set_sharing_cpus(cpu_dev, policy->cpus);
->> -	if (ret) {
->> -		dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
->> -			__func__, ret);
->> -		return ret;
->> +	/*
->> +	 * The OPP 'sharing cpus' info may come from dt through an empty opp
->> +	 * table and opp-shared. If found, it takes precedence over the SCMI
->> +	 * domain IDs info.
->> +	 */
->> +	ret = dev_pm_opp_of_get_sharing_cpus(cpu_dev, opp_shared_cpus);
->> +	if (ret || !cpumask_weight(opp_shared_cpus)) {
->> +		/*
->> +		 * Either opp-table is not set or no opp-shared was found,
->> +		 * use the information from SCMI domain IDs.
->> +		 */
->> +		cpumask_copy(opp_shared_cpus, policy->cpus);
->>  	}
->>  
->>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
->>  	if (nr_opp <= 0) {
->> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
->> -		ret = -EPROBE_DEFER;
->> -		goto out_free_opp;
->> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
->> +		if (ret) {
->> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
->> +			goto out_free_cpumask;
->> +		}
->> +
->> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
->> +		if (ret) {
->> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
->> +				__func__, ret);
->> +			goto out_free_cpumask;
->> +		}
->> +
-> 
-> Why do we need to call above two after calling
-> dev_pm_opp_get_opp_count() ?
-
-Sorry, I am not sure to understand your question here. If there are no opps for
-a device we want to add them to it, otherwise no need as they would be duplicated.
-
-And we don't check the return value of
-> the below call anymore, moreover we have to call it twice now.
-
-This second get_opp_count is required such that we register em with the correct
-opp number after having added them. Without this the opp_count would not be correct.
-
-Hope I have answered your questions.
-> 
->> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
->>  	}
->>  
->>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
->> @@ -191,15 +207,18 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->>  		handle->perf_ops->fast_switch_possible(handle, cpu_dev);
->>  
->>  	power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
->> -	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus,
->> +	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus,
->>  				    power_scale_mw);
->>  
->> -	return 0;
->> +	ret = 0;
-> 
-> ret is already 0 here.
-
-true, nice spot, thanks
-
-> 
->> +	goto out_free_cpumask;
->>  
->>  out_free_priv:
->>  	kfree(priv);
->>  out_free_opp:
->>  	dev_pm_opp_remove_all_dynamic(cpu_dev);
->> +out_free_cpumask:
->> +	free_cpumask_var(opp_shared_cpus);
->>  
->>  	return ret;
->>  }
->> -- 
->> 2.27.0
-> 
+Friendly ping to get some feedback on the proposed API please.
