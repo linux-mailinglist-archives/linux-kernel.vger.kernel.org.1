@@ -2,137 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFD12D36EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A45A2D36F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731582AbgLHXab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:30:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgLHXaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:30:30 -0500
-Date:   Tue, 8 Dec 2020 15:29:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607470190;
-        bh=WgVApkYVoKhoTRwTRt6e7T2tWvuWR7kTKpTqXuuxxg4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iiZ+qqjv7e9/5krZWYNYd7SFRCQswxLmzz8oBYlNM+T8rXi4hoTq/ivCbjxK7iFIx
-         ASdchJuMgv8wr3vq13A5Nh2gwdsrTdXiUkr916DuHKKZ/v7LdUIG6vbzDLU5zW+3bP
-         p3BWxV6sNs9Y1g57AUxoJuoIuWwEjey+alR2xCWrZPzSBzEDzM5Idhn0wFozmCz1Bd
-         FMdm+IX/dozpKWg/2rD8lqsFFb4ROcvu1MhCglmsvTrjAvfQVj49z8xf5JG0PkwVDi
-         RsPU6AnLJjhCdpebcgooXzrhCfTjOfSip/9Hnvma/zP4H0UzTg2hpuq5k5fz8vQYDw
-         8QCGPBP8WKmNA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH net v1 1/2] lan743x: improve performance: fix
- rx_napi_poll/interrupt ping-pong
-Message-ID: <20201208152948.006606b3@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <CAGngYiVpToas=offBuPgQ6t8wru64__NQ7MnNDYb0i0E+m6ebw@mail.gmail.com>
-References: <20201206034408.31492-1-TheSven73@gmail.com>
-        <20201208115035.74221c31@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-        <CAGngYiVpToas=offBuPgQ6t8wru64__NQ7MnNDYb0i0E+m6ebw@mail.gmail.com>
+        id S1731737AbgLHXc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLHXc1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 18:32:27 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E749CC0613CF;
+        Tue,  8 Dec 2020 15:31:41 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id t3so13664713pgi.11;
+        Tue, 08 Dec 2020 15:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=lpfVDguGDyrEWkSY8dCZf2JjX0LDrKbc5iVzSIp5LgU=;
+        b=hR2Qtn2JADmgo0f/O6KupgUHz/LI6+QTySBQYwwXyZuTs3Qn6Xf6QLMc6bL5/RyqSM
+         iGMmOwfhxubzvqoxBmojoF5uQNT1VS6cQlMlCvX9+a34pxwru8sdZKpRIxn8Myb/OKOS
+         fAmnUsQpvDDElUbSZwfF6SIKEQBpp7sFMtrZ/7iy6ad+Z9ZYRCy5p3QpwLiMFLSw9+2u
+         FHoqm9rdi0wer9v2h7NraUcmvxlSkzejotHqPa2hK7MNplJtgEXc6dJBdSnKwUTxcbrU
+         2CtljOrZBUhYJQOEd94BfHYaxfmFUJSAOgRL4L/vHnodyMS9GLDhbNb7RpqXd1OMrdiP
+         HOjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=lpfVDguGDyrEWkSY8dCZf2JjX0LDrKbc5iVzSIp5LgU=;
+        b=EWGvP7WLwYPP9d8BDgrK0M7WotzU497bPvqWFX4SD8Vz3WpFQ/SxF8NfVPNr8omUTu
+         kcA4kM0Y1bzeFvuU/T3O1t52sjuscrqp1QQ7iNVjQFufj0UOIqhNjO62/ul8dTNUFntU
+         Z/I9INRSSXFHN8BRH3x0hpsWlGs/O3TQclHo448RHZR3jlVuNcf0RNYpunKQtK30+iF4
+         ttwe9YWpnvEF/3CfOviF0xBaC9qVSOywFsnHRD1w634rXQiWRKYDxZGZSsON9qyObYib
+         uwq+4gBLG6bYyEYBArpbKaEwjG3+RVe3mHSSW2cukW5SoZT3/EbOdprtStRH5aMorhyN
+         1MOg==
+X-Gm-Message-State: AOAM531NU7inr7prbi5KoQ5Gjy03GVwijTgmqpvWR8AuvadIES61K/EU
+        wKIYq95NM2kXkUSUcz9gpzQ7/JhPp30BNlAb+CY=
+X-Google-Smtp-Source: ABdhPJx8Xv3qz1j3UzxnU/yeWpZww1hzaEuOkcOD1LeLf+uLjptM0OCHgc9cZuafl4GCZkM0SbC6fQ==
+X-Received: by 2002:a63:5010:: with SMTP id e16mr383174pgb.422.1607470301500;
+        Tue, 08 Dec 2020 15:31:41 -0800 (PST)
+Received: from localhost ([2405:6580:31a1:500:1ac0:4dff:fe39:5426])
+        by smtp.gmail.com with ESMTPSA id d6sm245582pfo.199.2020.12.08.15.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 15:31:40 -0800 (PST)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Wei Huang <whuang2@amd.com>
+Cc:     rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        bp@alien8.de, x86@kernel.org
+Subject: Re: [RFC PATCH 1/4] cpufreq: acpi-cpufreq: Re-factor overriding
+ ACPI PSD
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+        <20201125144847.3920-2-punitagrawal@gmail.com>
+        <52d9b72c-5935-c28c-21cf-b24c6928de81@amd.com>
+Date:   Wed, 09 Dec 2020 08:31:38 +0900
+In-Reply-To: <52d9b72c-5935-c28c-21cf-b24c6928de81@amd.com> (Wei Huang's
+        message of "Mon, 7 Dec 2020 13:29:03 -0600")
+Message-ID: <87y2i7oox1.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 17:23:08 -0500 Sven Van Asbroeck wrote:
-> On Tue, Dec 8, 2020 at 2:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >  
-> > >
-> > > +done:
-> > >       /* update RX_TAIL */
-> > >       lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
-> > >                         rx_tail_flags | rx->last_tail);
-> > > -done:
-> > > +  
-> >
-> > I assume this rings the doorbell to let the device know that more
-> > buffers are available? If so it's a little unusual to do this at the
-> > end of NAPI poll. The more usual place would be to do this every n
-> > times a new buffer is allocated (in lan743x_rx_init_ring_element()?)
-> > That's to say for example ring the doorbell every time a buffer is put
-> > at an index divisible by 16.  
-> 
-> Yes, I believe it tells the device that new buffers have become available.
-> 
-> I wonder why it's so unusual to do this at the end of a napi poll? Omitting
-> this could result in sub-optimal use of buffers, right?
-> 
-> Example:
-> - tail is at position 0
-> - core calls napi_poll(weight=64)
-> - napi poll consumes 15 buffers and pushes 15 skbs, then ring empty
-> - index not divisible by 16, so tail is not updated
-> - weight not reached, so napi poll re-enables interrupts and bails out
-> 
-> Result: now there are 15 buffers which the device could potentially use, but
-> because the tail wasn't updated, it doesn't know about them.
+Hi Wei,
 
-Perhaps 16 for a device with 64 descriptors is rather high indeed.
-Let's say 8. If the device misses 8 packet buffers on the ring, 
-that should be negligible. 
+Wei Huang <whuang2@amd.com> writes:
 
-Depends on the cost of the CSR write, usually packet processing is
-putting a lot of pressure on the memory subsystem of the CPU, hence
-amortizing the write over multiple descriptors helps. The other thing
-is that you could delay the descriptor writes to write full cache lines,
-but I don't think that will help on IMX6.
+> On 11/25/20 8:48 AM, Punit Agrawal wrote:
+>> Re-factor the code to override the firmware provided frequency domain
+>> information (via PSD) to localise the checks in one function.
+>> 
+>> No functional change intended.
+>> 
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> Cc: Wei Huang <wei.huang2@amd.com>
+>> ---
+>>  drivers/cpufreq/acpi-cpufreq.c | 17 +++++++++++++++--
+>>  1 file changed, 15 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+>> index 1e4fbb002a31..b1e7df96d428 100644
+>> --- a/drivers/cpufreq/acpi-cpufreq.c
+>> +++ b/drivers/cpufreq/acpi-cpufreq.c
+>> @@ -191,6 +191,20 @@ static int check_amd_hwpstate_cpu(unsigned int cpuid)
+>>  	return cpu_has(cpu, X86_FEATURE_HW_PSTATE);
+>>  }
+>>  
+>> +static int override_acpi_psd(unsigned int cpu_id)
+>          ^^^^^
+> int is fine, but it might be better to use bool. Otherwise I don't see
+> any issues with this patch.
 
-> It does make sense to update the tail more frequently than only at the end
-> of the napi poll, though?
-> 
-> I'm new to napi polling, so I'm quite interested to learn about this.
+Makes sense - I will switch to a boolean in the next update.
 
-There is a tracepoint which records how many packets NAPI has polled:
-napi:napi_poll, you can see easily what your system is doing.
+Thanks for taking a look.
 
-What you want to avoid is the situation where the device already used
-up all the descriptors by the time driver finishes the Rx processing.
-That'd result in drops. So the driver should push the buffers back to
-the device reasonably early.
+Punit
 
-With a ring of 64 descriptors and NAPI budget of 64 it's not unlikely
-that the ring will be completely used when processing runs.
-
-> > > +     /* up to half of elements in a full rx ring are
-> > > +      * extension frames. these do not generate skbs.
-> > > +      * to prevent napi/interrupt ping-pong, limit default
-> > > +      * weight to the smallest no. of skbs that can be
-> > > +      * generated by a full rx ring.
-> > > +      */
-> > >       netif_napi_add(adapter->netdev,
-> > >                      &rx->napi, lan743x_rx_napi_poll,
-> > > -                    rx->ring_size - 1);
-> > > +                    (rx->ring_size - 1) / 2);  
-> >
-> > This is rather unusual, drivers should generally pass NAPI_POLL_WEIGHT
-> > here.  
-> 
-> I agree. The problem is that a full ring buffer of 64 buffers will only
-> contain 32 buffers with network data - the others are timestamps.
-> 
-> So napi_poll(weight=64) can never reach its full weight. Even with a full
-> buffer, it always assumes that it has to stop polling, and re-enable
-> interrupts, which results in a ping-pong.
-
-Interesting I don't think we ever had this problem before. Let me CC
-Eric to see if he has any thoughts on the case. AFAIU you should think
-of the weight as way of arbitrating between devices (if there is more
-than one). 
-
-NAPI does not do any deferral (in wall clock time terms) of processing,
-so the only difference you may get for lower weight is that softirq
-kthread will get a chance to kick in earlier.
-
-> Would it be better to fix the weight counting? Increase the count
-> for every buffer consumed, instead of for every skb pushed?
-
+>
+>> +{
+>> +	struct cpuinfo_x86 *c = &boot_cpu_data;
+>> +
+>> +	if (c->x86_vendor == X86_VENDOR_AMD) {
+>> +		if (!check_amd_hwpstate_cpu(cpu_id))
+>> +			return false;
+>> +
+>> +		return c->x86 < 0x19;
+>> +	}
+>> +
+>> +	return false;
+>> +}
+>> +
+>>  static unsigned extract_io(struct cpufreq_policy *policy, u32 value)
+>>  {
+>>  	struct acpi_cpufreq_data *data = policy->driver_data;
+>> @@ -691,8 +705,7 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>>  		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
+>>  	}
+>>  
+>> -	if (check_amd_hwpstate_cpu(cpu) && boot_cpu_data.x86 < 0x19 &&
+>> -	    !acpi_pstate_strict) {
+>> +	if (override_acpi_psd(cpu) && !acpi_pstate_strict) {
+>>  		cpumask_clear(policy->cpus);
+>>  		cpumask_set_cpu(cpu, policy->cpus);
+>>  		cpumask_copy(data->freqdomain_cpus,
+>> 
