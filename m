@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A592D1EB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E312D1EBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 01:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgLHAAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 19:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgLHAAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 19:00:12 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2416C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 15:59:31 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id b62so14303137otc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 15:59:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ADhDNSNt6I8G4BtstjMfXOHtK2RWSiGfFOI+5bfvv/g=;
-        b=vmxkKZSv7VtJpr+t5DKiSVA794FYtcGFDnbYWzkb632YWPmVzxoA6KiZkk9K9ZjCmK
-         K+afPxSRTfRy7lbRd1heu0q0NEiNVE3YQgrrL1Go5S77wRwoWFpsIUtZ9hmNddMNv7iY
-         MRcsv7KdtV7Qkd0buVKHVyc5DEMB7XUs3Iqt08298ZrD4FB3EiRYUnc6CoPsQtha8o8V
-         ZI/b1YN2CYP3IAvVFA0ceq/8TjMIat1YlJlCWJ6XB5+dJw+MdwXGuA8M1+43WreAokso
-         Ek6GISInoQc8aJHQsU/FCAnweyQnfiSt4cfS6mfSFNkcA8rejc1TIf5gOeLpjjPg9XOi
-         8CDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ADhDNSNt6I8G4BtstjMfXOHtK2RWSiGfFOI+5bfvv/g=;
-        b=X4R6tDF9nUBhd9k0XL/5/7X5yC4lQT33OfVfsQva2o6nYTKTvIqODQRFNPzeKJe/hQ
-         WtCbfskj6pAIBHhyDHNDemME0mgydIBUyevRQrXJGxe2WW5RRMSfN7nfXwRwmUaV28LM
-         A3p7M7qFfotSHktkOQLoiwIwsZ4PDui0HgtfM7UkGM8GDBhRccYG/BFHTHYPI65JmSUf
-         xyLAooVKsj09WDVGYy93pmcyGpWLXtd283nzPuQ90OCCHv/DOmUanEXlOORr0StxtwY8
-         OKI5v6ePMrUeMDM2vxwtAmAn2vxpYQm8LzDWmzMtinJ26oDYUiHObP/mYZlG1jlFRLDx
-         F3VQ==
-X-Gm-Message-State: AOAM5332mw91eN9X7Jr3usXqVHq/y7+VweegQQUGq0C0uLqSNvKLzCsm
-        JdTLL3pOgd1YD3VAAtIcfbbRdO9Fzw0F427D4e5ahA==
-X-Google-Smtp-Source: ABdhPJxVnIzHHS2bwBxnDCWUT4TZipV2qBZNEk39qhR5IcdxUxY4wTyuUeyLIUup9wRfLyQrxQPkpjsz+0beZ3xqopQ=
-X-Received: by 2002:a9d:d01:: with SMTP id 1mr14556642oti.295.1607385571022;
- Mon, 07 Dec 2020 15:59:31 -0800 (PST)
+        id S1728234AbgLHABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 19:01:47 -0500
+Received: from mout.gmx.net ([212.227.15.19]:48449 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726207AbgLHABr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 19:01:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607385603;
+        bh=wvtwafmRpa5o7FnknQH0FLf14PhWObhwf1sB2Xashig=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=bAYgifTVJ7vR2Ea2fItrfoK1BZS+/ht27lJjLRVNR5iAXHRY/M5StKlyDhimYcdO6
+         6hsUaNJQmbiR6goMzQSzDM/9bW2Qe5RYGo1vrnyPbSBvefLyVgla8KGzAbSEwZBbok
+         tDhVEJ5VVsPq7liNSzyO1YZ0pAC7Le+1/gbEvSMY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N8GMk-1k8fqt11vc-014E2I; Tue, 08
+ Dec 2020 01:00:03 +0100
+Subject: Re: [PATCH v2] pwm: bcm2835: Support apply function for atomic
+ configuration
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Sean Young <sean@mess.org>
+Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-pwm@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <4683237c-7b40-11ab-b3c0-f94a5dd39b4d@gmx.de>
+ <20201204084417.GA2154@gofer.mess.org>
+ <20201204111326.qjux6k2472dmukot@pengutronix.de>
+ <20201204113846.GA6547@gofer.mess.org>
+ <20201204232834.xzsafkzfmfpw7pqz@pengutronix.de>
+ <20201205173444.GA1265@gofer.mess.org>
+ <20201205192510.o76pjs3yc524nwvm@pengutronix.de>
+ <20201206141941.GA24807@gofer.mess.org>
+ <20201207081628.tm3yg7az5k5sbivu@pengutronix.de>
+ <20201207094320.GA10460@gofer.mess.org>
+ <20201207135209.htp7plyotjxp37q2@pengutronix.de>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <ad83f03b-869d-44e1-5db9-d5e91a0c0da3@gmx.de>
+Date:   Tue, 8 Dec 2020 01:00:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201007014417.29276-1-sean.j.christopherson@intel.com>
- <99334de1-ba3d-dfac-0730-e637d39b948f@yandex.ru> <20201008175951.GA9267@linux.intel.com>
- <7efe1398-24c0-139f-29fa-3d89b6013f34@yandex.ru> <20201009040453.GA10744@linux.intel.com>
- <5dfa55f3-ecdf-9f8d-2d45-d2e6e54f2daa@yandex.ru> <20201009153053.GA16234@linux.intel.com>
- <b38dff0b-7e6d-3f3e-9724-8e280938628a@yandex.ru> <c206865e-b2da-b996-3d48-2c71d7783fbc@redhat.com>
- <c0c473c1-93af-2a52-bb35-c32f9e96faea@yandex.ru>
-In-Reply-To: <c0c473c1-93af-2a52-bb35-c32f9e96faea@yandex.ru>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 7 Dec 2020 15:59:19 -0800
-Message-ID: <CALMp9eSMt1DwXL=wE-xyHcOyCvZzzHdgZ=N9Pqdm1CW6aSzOKw@mail.gmail.com>
-Subject: Re: KVM_SET_CPUID doesn't check supported bits (was Re: [PATCH 0/6]
- KVM: x86: KVM_SET_SREGS.CR4 bug fixes and cleanup)
-To:     stsp <stsp2@yandex.ru>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201207135209.htp7plyotjxp37q2@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9LTnKuUWkzb+9t5TXmpWktlN8X27SbL8PRv/wO+Yb/T2Ncr1Oh7
+ ROYMUo89lqZYg5T43iSExDPBF99psOQzkqsSKHvW30QRSmBpgODTqfLzELAD3LMW5HcqWeA
+ 7+qSN3osa06fkvygaa1zQg7Dzg8ziHJ8URrmaIeGRgoif3k4Hw5w+l6245cFpzYDVtFz6n8
+ NExj7xIsO0UWwzJ+TgmlQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qn4Zb7/VqAU=:SKP1eIFfNnl30EvA80MARf
+ QqFrADljiJpGWQ7mnIqKI7R9tvbrMjHF5yeMZUeXlt91i4RACGzahV9v2IdXc/VZoUyfu+ajo
+ oujMvUsg+deWlVTY7Livpe4PU7DxZEK9g19M/gCrbU1GJDHOM8i8UQrAOcOqfvgIheeb2pPNw
+ CYlQ2x0YOEPUur4Sx5OZ9l6frviE0xzNrCXF0ADVZp7qBBLWGL7lw6SyzJZ+RZwb+cA7mSuYl
+ v/9jbiwF9G5vQ0BCOwWJhqtwB0M9mWef8DDz44RZIlvBDZeXIiWV0KW3fKXVkM1coy+oPGmMF
+ azCmkbA1cLB9oEG1Noqyq3azlkEY0u47cq6hlCt0jWLspYKKnan1b9srOUtUPRwf/PFE8tjC/
+ 4mPZLTAUOB0erDLdL18qrqN60GPegVNrmeJRkMibhj6rmUMxfz/ktPrvfC6tSBLiuK8LqKh6p
+ SOO2u4B4p4NCgZKkVQOvjOlsHZvkaI6F2ixjHZ8i1q5Fb3qIjLN46geBw8yXQ//RiMuHQAws/
+ COqVNXPgoAOEJFxRcgNilOYcjBTZZZyC0qcGX0nYPUuU7KDRZ18aJXL/AnYhlTtLtRtPdIf5J
+ WZEjIs3KFplP6xF8kzhJatgljXSBwQBDBEVS3QpTHEyqDKicSGZv/bMOoczqoRSakOVLsgwKi
+ anrsfPlQJsqnimAv3PPy5I48f9uurlEr0qgurcgPVQAP+qtML9siyWFg19ic1jb1k65kQzkfB
+ gb5+1U1VIN+GkTVyORDAR7TTmM84uSmV7syo0mBcJes6/jGAEqniNxrMILypd92CYVE9W6vkQ
+ snAk9IZYuHzRzLIhxiuIcQHSrdfcUp1obv2j+uc9//vTfYAWsWJD//dliTTuY8egTnhLEc6cG
+ IhNsYqG5vRrTzeakTAmw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 3:47 AM stsp <stsp2@yandex.ru> wrote:
->
-> 07.12.2020 14:29, Paolo Bonzini =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On 07/12/20 12:24, stsp wrote:
-> >> It tries to enable VME among other things.
-> >> qemu appears to disable VME by default,
-> >> unless you do "-cpu host". So we have a situation where
-> >> the host (which is qemu) doesn't have VME,
-> >> and guest (dosemu) is trying to enable it.
-> >> Now obviously KVM_SET_CPUID doesn't check anyting
-> >> at all and returns success. That later turns
-> >> into an invalid guest state.
-> >>
-> >>
-> >> Question: should KVM_SET_CPUID check for
-> >> supported bits, end return error if not everything
-> >> is supported?
-> >
-> > No, it is intentional.  Most bits of CPUID are not ever checked by
-> > KVM, so userspace is supposed to set values that makes sense
-> By "that makes sense" you probably
-> meant to say "bits_that_makes_sense masked
-> with the ones returned by KVM_GET_SUPPORTED_CPUID"?
->
-> So am I right that KVM_SET_CPUID only "lowers"
-> the supported bits? In which case I don't need to
-> call it at all, but instead just call KVM_GET_SUPPORTED_CPUID
-> and see if the needed bits are supported, and
-> exit otherwise, right?
+Hi,
 
-"Lowers" is a tricky concept for CPUID information. Some feature bits
-report 0 for "present" and 1 for "not-present." Some multi-bit fields
-are interpreted as numbers, which may be signed or unsigned. Some
-multi-bit fields are strings. Some fields have dependencies on other
-fields. Etc.
+On 07.12.20 at 14:52, Uwe Kleine-K=F6nig wrote:
+
+>
+> Given that the bcm2835 driver is quite trivial I would be happy to
+> create a series that "fixes" the driver to round down and provide a
+> prototype for pwm_round_nearest for you to test on pwm-ir-tx. A willing
+> tester and a real use-case were the single two things that stopped me
+> investing time here.
+>
+
+Should I send a v3 of the .apply() support for the bcm2835 driver before y=
+ou start
+such a rework? The v3 would contain the check against truncation of the pe=
+riod but
+keep the round-closest strategy as it is.
+
+Regards,
+Lino
+
