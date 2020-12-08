@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BB72D3208
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF3F2D320E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730998AbgLHSV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:21:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730468AbgLHSVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:21:55 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5E3823B46;
-        Tue,  8 Dec 2020 18:21:14 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kmhbs-00H9Yx-CO; Tue, 08 Dec 2020 18:21:12 +0000
+        id S1730940AbgLHSY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:24:28 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:25760 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730424AbgLHSY1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 13:24:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607451867; x=1638987867;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=eYoKHhsuFogOJORm3zmz7AyHSCi/zgwQzoYHkuz2KUI=;
+  b=R37+7srN2s0vL0+TCd+prVUC9lPcNV6cJVmeKDge80EM9LGF5KDqFP8T
+   x4lbmQbxDvWHuoy3OWakYEPywEXEZ/2OWHctXOfZVkcxjwrqrmerWw4JY
+   RG0TA4t2Lrf6n71maTb9whhyKzh+Bopqv6LnOk25DuqfoQUmZ7shvwfQP
+   U=;
+X-IronPort-AV: E=Sophos;i="5.78,403,1599523200"; 
+   d="scan'208";a="94388883"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 08 Dec 2020 18:23:39 +0000
+Received: from EX13D16EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id 0BAA6A18C1;
+        Tue,  8 Dec 2020 18:23:38 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.184) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 8 Dec 2020 18:23:33 +0000
+Subject: Re: [PATCH net-next v2 1/4] vm_sockets: Include flags field in the
+ vsock address data structure
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20201204170235.84387-1-andraprs@amazon.com>
+ <20201204170235.84387-2-andraprs@amazon.com>
+ <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <73ff948f-f455-7205-bfaa-5b468b2528c2@amazon.com>
+Date:   Tue, 8 Dec 2020 20:23:24 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Dec 2020 18:21:12 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Steven Price <steven.price@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-In-Reply-To: <20201208172143.GB13960@gaia>
-References: <20201119184248.4bycy6ouvaxqdiiy@kamzik.brq.redhat.com>
- <db5ad775fa7cfe7defbd78d9ca6ccfd8@kernel.org>
- <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
- <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
- <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
- <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
- <0d0eb6da6a11f76d10e532c157181985@kernel.org> <20201207163405.GD1526@gaia>
- <874kkx5thq.wl-maz@kernel.org> <20201208172143.GB13960@gaia>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <7ff14490e253878d0735633b792e1ea9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, steven.price@arm.com, peter.maydell@linaro.org, haibo.xu@linaro.org, linux-kernel@vger.kernel.org, quintela@redhat.com, richard.henderson@linaro.org, qemu-devel@nongnu.org, dgilbert@redhat.com, tglx@linutronix.de, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, Dave.Martin@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20201207132908.130a5f24@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.184]
+X-ClientProxiedBy: EX13D47UWC002.ant.amazon.com (10.43.162.83) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-08 17:21, Catalin Marinas wrote:
-> On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
->> On Mon, 07 Dec 2020 16:34:05 +0000,
->> Catalin Marinas <catalin.marinas@arm.com> wrote:
->> > On Mon, Dec 07, 2020 at 04:05:55PM +0000, Marc Zyngier wrote:
->> > > What I'd really like to see is a description of how shared memory
->> > > is, in general, supposed to work with MTE. My gut feeling is that
->> > > it doesn't, and that you need to turn MTE off when sharing memory
->> > > (either implicitly or explicitly).
->> >
->> > The allocation tag (in-memory tag) is a property assigned to a physical
->> > address range and it can be safely shared between different processes as
->> > long as they access it via pointers with the same allocation tag (bits
->> > 59:56). The kernel enables such tagged shared memory for user processes
->> > (anonymous, tmpfs, shmem).
->> 
->> I think that's one case where the shared memory scheme breaks, as we
->> have two kernels in charge of their own tags, and they obviously can't
->> be synchronised
-> 
-> Yes, if you can't trust the other entity to not change the tags, the
-> only option is to do an untagged access.
-> 
->> > What we don't have in the architecture is a memory type which allows
->> > access to tags but no tag checking. To access the data when the tags
->> > aren't known, the tag checking would have to be disabled via either a
->> > prctl() or by setting the PSTATE.TCO bit.
->> 
->> I guess that's point (3) in Steven's taxonomy. It still a bit ugly to
->> fit in an existing piece of userspace, specially if it wants to use
->> MTE for its own benefit.
-> 
-> I agree it's ugly. For the device DMA emulation case, the only sane way
-> is to mimic what a real device does - no tag checking. For a generic
-> implementation, this means that such shared memory should not be mapped
-> with PROT_MTE on the VMM side. I guess this leads to your point that
-> sharing doesn't work for this scenario ;).
+CgpPbiAwNy8xMi8yMDIwIDIzOjI5LCBKYWt1YiBLaWNpbnNraSB3cm90ZToKPiBPbiBGcmksIDQg
+RGVjIDIwMjAgMTk6MDI6MzIgKzAyMDAgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+PiBkaWZmIC0t
+Z2l0IGEvaW5jbHVkZS91YXBpL2xpbnV4L3ZtX3NvY2tldHMuaCBiL2luY2x1ZGUvdWFwaS9saW51
+eC92bV9zb2NrZXRzLmgKPj4gaW5kZXggZmQwZWQ3MjIxNjQ1ZC4uNDY3MzUzNzZhNTdhOCAxMDA2
+NDQKPj4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L3ZtX3NvY2tldHMuaAo+PiArKysgYi9pbmNs
+dWRlL3VhcGkvbGludXgvdm1fc29ja2V0cy5oCj4+IEBAIC0xNDUsNyArMTQ1LDcgQEAKPj4KPj4g
+ICBzdHJ1Y3Qgc29ja2FkZHJfdm0gewo+PiAgICAgICAgX19rZXJuZWxfc2FfZmFtaWx5X3Qgc3Zt
+X2ZhbWlseTsKPj4gLSAgICAgdW5zaWduZWQgc2hvcnQgc3ZtX3Jlc2VydmVkMTsKPj4gKyAgICAg
+dW5zaWduZWQgc2hvcnQgc3ZtX2ZsYWdzOwo+PiAgICAgICAgdW5zaWduZWQgaW50IHN2bV9wb3J0
+Owo+PiAgICAgICAgdW5zaWduZWQgaW50IHN2bV9jaWQ7Cj4+ICAgICAgICB1bnNpZ25lZCBjaGFy
+IHN2bV96ZXJvW3NpemVvZihzdHJ1Y3Qgc29ja2FkZHIpIC0KPiBTaW5jZSB0aGlzIGlzIGEgdUFQ
+SSBoZWFkZXIgSSBnb3R0YSBhc2sgLSBhcmUgeW91IDEwMCUgc3VyZSB0aGF0IGl0J3MKPiBva2F5
+IHRvIHJlbmFtZSB0aGlzIGZpZWxkPwo+Cj4gSSBkaWRuJ3QgZ3Jhc3AgZnJvbSBqdXN0IHJlYWRp
+bmcgdGhlIHBhdGNoZXMgd2hldGhlciB0aGlzIGlzIGEgdUFQSSBvcgo+IGp1c3QgaW50ZXJuYWwg
+a2VybmVsIGZsYWcsIHNlZW1zIGxpa2UgdGhlIGZvcm1lciBmcm9tIHRoZSByZWFkaW5nIG9mCj4g
+dGhlIGNvbW1lbnQgaW4gcGF0Y2ggMi4gSW4gd2hpY2ggY2FzZSB3aGF0IGd1YXJhbnRlZXMgdGhh
+dCBleGlzdGluZwo+IHVzZXJzIGRvbid0IHBhc3MgaW4gZ2FyYmFnZSBzaW5jZSB0aGUga2VybmVs
+IGRvZXNuJ3QgY2hlY2sgaXQgd2FzIDA/CgpUaGF0J3MgYWx3YXlzIGdvb2QgdG8gZG91YmxlLWNo
+ZWNrIHRoZSB1YXBpIGNoYW5nZXMgZG9uJ3QgYnJlYWsgLyBhc3N1bWUgCnNvbWV0aGluZywgdGhh
+bmtzIGZvciBicmluZ2luZyB0aGlzIHVwLiA6KQoKU3VyZSwgbGV0J3MgZ28gdGhyb3VnaCB0aGUg
+cG9zc2libGUgb3B0aW9ucyBzdGVwIGJ5IHN0ZXAuIExldCBtZSBrbm93IGlmIApJIGdldCBhbnl0
+aGluZyB3cm9uZyBhbmQgaWYgSSBjYW4gaGVscCB3aXRoIGNsYXJpZmljYXRpb25zLgoKVGhlcmUg
+aXMgdGhlICJzdm1fcmVzZXJ2ZWQxIiBmaWVsZCB0aGF0IGlzIG5vdCB1c2VkIGluIHRoZSBrZXJu
+ZWwgCmNvZGViYXNlLiBJdCBpcyBzZXQgdG8gMCBvbiB0aGUgcmVjZWl2ZSAobGlzdGVuKSBwYXRo
+IGFzIHBhcnQgb2YgdGhlIAp2c29jayBhZGRyZXNzIGluaXRpYWxpemF0aW9uIFsxXVsyXS4gVGhl
+ICJzdm1fZmFtaWx5IiBhbmQgInN2bV96ZXJvIiAKZmllbGRzIGFyZSBjaGVja2VkIGFzIHBhcnQg
+b2YgdGhlIGFkZHJlc3MgdmFsaWRhdGlvbiBbM10uCgpOb3csIHdpdGggdGhlIGN1cnJlbnQgY2hh
+bmdlIHRvICJzdm1fZmxhZ3MiLCB0aGUgZmxvdyBpcyB0aGUgZm9sbG93aW5nOgoKKiBPbiB0aGUg
+cmVjZWl2ZSAobGlzdGVuKSBwYXRoLCB0aGUgcmVtb3RlIGFkZHJlc3Mgc3RydWN0dXJlIGlzIApp
+bml0aWFsaXplZCBhcyBwYXJ0IG9mIHRoZSB2c29jayBhZGRyZXNzIGluaXQgbG9naWMgWzJdLiBU
+aGVuIHBhdGNoIDMvNCAKb2YgdGhpcyBzZXJpZXMgc2V0cyB0aGUgIlZNQUREUl9GTEFHX1RPX0hP
+U1QiIGZsYWcgZ2l2ZW4gYSBzZXQgb2YgCmNvbmRpdGlvbnMgKGxvY2FsIGFuZCByZW1vdGUgQ0lE
+ID4gVk1BRERSX0NJRF9IT1NUKS4KCiogT24gdGhlIGNvbm5lY3QgcGF0aCwgdGhlIHVzZXJzcGFj
+ZSBsb2dpYyBjYW4gc2V0IHRoZSAic3ZtX2ZsYWdzIiAKZmllbGQuIEl0IGNhbiBiZSBzZXQgdG8g
+MCBvciAxIChWTUFERFJfRkxBR19UT19IT1NUKTsgb3IgYW55IG90aGVyIHZhbHVlIApncmVhdGVy
+IHRoYW4gMS4gSWYgdGhlICJWTUFERFJfRkxBR19UT19IT1NUIiBmbGFnIGlzIHNldCwgYWxsIHRo
+ZSB2c29jayAKcGFja2V0cyBhcmUgdGhlbiBmb3J3YXJkZWQgdG8gdGhlIGhvc3QuCgoqIFdoZW4g
+dGhlIHZzb2NrIHRyYW5zcG9ydCBpcyBhc3NpZ25lZCwgdGhlICJzdm1fZmxhZ3MiIGZpZWxkIGlz
+IApjaGVja2VkLCBhbmQgaWYgaXQgaGFzIHRoZSAiVk1BRERSX0ZMQUdfVE9fSE9TVCIgZmxhZyBz
+ZXQsIGl0IGdvZXMgb24gCndpdGggYSBndWVzdC0+aG9zdCB0cmFuc3BvcnQgKHBhdGNoIDQvNCBv
+ZiB0aGlzIHNlcmllcykuIE90aGVyd2lzZSwgCm90aGVyIHNwZWNpZmljIGZsYWcgdmFsdWUgaXMg
+bm90IGN1cnJlbnRseSB1c2VkLgoKR2l2ZW4gYWxsIHRoZXNlIHBvaW50cywgdGhlIHF1ZXN0aW9u
+IHJlbWFpbnMgd2hhdCBoYXBwZW5zIGlmIHRoZSAKInN2bV9mbGFncyIgZmllbGQgaXMgc2V0IG9u
+IHRoZSBjb25uZWN0IHBhdGggdG8gYSB2YWx1ZSBoaWdoZXIgdGhhbiAxIAoobWF5YmUgYSBib2d1
+cyBvbmUsIG5vdCBpbnRlbmRlZCBzbykuIEFuZCBpdCBpbmNsdWRlcyB0aGUgCiJWTUFERFJfRkxB
+R19UT19IT1NUIiB2YWx1ZSAodGhlIHNpbmdsZSBmbGFnIHNldCBhbmQgc3BlY2lmaWNhbGx5IHVz
+ZWQgCmZvciBub3csIGJ1dCB3ZSBzaG91bGQgYWxzbyBhY2NvdW50IGZvciBhbnkgZnVydGhlciBw
+b3NzaWJsZSBmbGFncykuIEluIAp0aGlzIGNhc2UsIGFsbCB0aGUgdnNvY2sgcGFja2V0cyB3b3Vs
+ZCBiZSBmb3J3YXJkZWQgdG8gdGhlIGhvc3QgYW5kIAptYXliZSBub3QgaW50ZW5kZWQgc28sIGhh
+dmluZyBhIGJvZ3VzIHZhbHVlIGZvciB0aGUgZmxhZ3MgZmllbGQuIElzIHRoaXMgCnBvc3NpYmxl
+IGNhc2Ugd2hhdCB5b3UgYXJlIHJlZmVycmluZyB0bz8KClRoYW5rcywKQW5kcmEKClsxXSBodHRw
+czovL21hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW43L3Zzb2NrLjcuaHRtbApbMl0gCmh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4
+LmdpdC90cmVlL25ldC92bXdfdnNvY2svdnNvY2tfYWRkci5jI24xNApbM10gCmh0dHBzOi8vZ2l0
+Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC90
+cmVlL25ldC92bXdfdnNvY2svdnNvY2tfYWRkci5jI24yMwoKCgpBbWF6b24gRGV2ZWxvcG1lbnQg
+Q2VudGVyIChSb21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIg
+U3RyZWV0LCBVQkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlh
+LiBSZWdpc3RlcmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAw
+NS4K
 
-Exactly ;-)
-
->> > The kernel accesses the user memory via the linear map using a match-all
->> > tag 0xf, so no TCO bit toggling. For user, however, we disabled such
->> > match-all tag and it cannot be enabled at run-time (at least not easily,
->> > it's cached in the TLB). However, we already have two modes to disable
->> > tag checking which Qemu could use when migrating data+tags.
->> 
->> I wonder whether we will have to have something kernel side to
->> dump/reload tags in a way that matches the patterns used by live
->> migration.
-> 
-> We have something related - ptrace dumps/resores the tags. Can the same
-> concept be expanded to a KVM ioctl?
-
-Yes, although I wonder whether we should integrate this deeply into
-the dirty-log mechanism: it would be really interesting to dump the
-tags at the point where the page is flagged as clean from a dirty-log
-point of view. As the page is dirtied, discard the saved tags.
-
-It is probably expensive, but it ensures that the VMM sees consistent
-tags (if the page is clean, the tags are valid). Of course, it comes
-with the added requirement that the VMM allocates enough memory to
-store the tags, which may be a tall order. I'm not sure how to
-give a consistent view to userspace otherwise.
-
-It'd be worth looking at how much we can reuse from the ptrace (and
-I expect swap?) code to implement this.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
