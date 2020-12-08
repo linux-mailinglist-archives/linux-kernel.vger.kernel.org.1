@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E27A2D2D2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14032D2D2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgLHOZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:25:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
+        id S1729896AbgLHO0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:26:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728786AbgLHOZt (ORCPT
+        with ESMTP id S1729457AbgLHO0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:25:49 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE2BC06179C
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:25:08 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id i9so827758wrc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:25:08 -0800 (PST)
+        Tue, 8 Dec 2020 09:26:20 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF54C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:25:10 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id c1so4466343wrq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BjhXUzKj/3SLZy5uNzA4C/K6PgPdZs4Iy7Z8pRwTud8=;
-        b=MKIjDRNE/vH7SgozRRbntqZl5L9nka4a7Ks+O6ij33TKr2hIkODBY1hA1/m+K1veuj
-         WmwIcpss4zZkKtcl7qo6wg+/fLKsBGX8FIHtR4xNHEfnIbVAC3cMcFL2+jTyZ9XTZYJu
-         t0Kw8BRj5oukfXXBP2W3+TB6ljiySnAkgPs6ymhbS7wS2GHlFlJXwNF6FEUgQYtSbD3y
-         wF2yRIF0xdIEf/V8Kgv5FInnkg1QXYusNQChJp6+OmEWnCJq5cKCAqzVfPUNWdTbqXrY
-         oRhEBOujqBZKugx2DJAg6xp+aIgxxcE8BBKxRWh2ALqOgMNrYVnlyCrf2uyr5wu76iEH
-         S7Jw==
+        bh=/OsSmUS/TA4WzvLCDGFMnERywT0JtFSnemYNOkWYU7I=;
+        b=cDmmm0JhZog6Xpj0xnjDgjeGpv3JmrqqAS/Hzljmtb8vCenaWLk0Ip2XeAbYBS9NqG
+         qTsMIEOZtuf8EF7qteO+W8tpzKkzx/uo957in9mqwbKHsZMWpNpdi+BoYHz9fMaBQ1tg
+         Dzt8LNJ1VAjZQuATmdisp9eUPX8q90eYl6YgQTCE4z4PCr1nx2+P7/buuKoRG6NHG8Aj
+         46wk2xK1UOFU4WpTk3SghsahwJ/PcFhU7EYNW4J6ys7RaNjB2VMJko+6b9L31x4niW2K
+         0brar/neIAiT9q2EGjPKdN0j711bn51YXlrehLWLF3H/yZiZF8jdIXIPPYylY64Q0oSU
+         xl1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BjhXUzKj/3SLZy5uNzA4C/K6PgPdZs4Iy7Z8pRwTud8=;
-        b=nYXDOfJ6d+DjQynHkC+HozhuIyLWYRQkLI0BnAvD5BN30cigQjO2MGU0JD6isQCMXt
-         3x3Ln46fNFH6gGatoVvpTVfv4hBssAZL1gP5DVlNI7kbRRbLFjK0ZAmUpPOLCKhtDrZr
-         0zZwr5XO4mwEiPFm4RZlgn9g8N3rD5TZwNYKSVEB7rvaaMKIJVGz8uj77HIpWwpzNijV
-         VoLT20mDcPxYYVEifHGTO0eBGacxk2pXUMI2wA+f0X43hFiT02JVyXlgqLjgTaJXXKL0
-         aVlIAX44mwIlv3Tes5mrvoTmUyBxI/zFMcCxSeHTNxwbtdCFUovdxScXK/aESw05/5z/
-         HWKA==
-X-Gm-Message-State: AOAM530vwpVKI6v4pvBZ1b1LWNTTvDIUbwcqQ9gwQw4WwlA+VyzvkOIV
-        kNHOG+RMbqn07Hgeho2k+m8P1Q==
-X-Google-Smtp-Source: ABdhPJzoJxdQFiXPcs1IzkqG8RhT6d83cMB1+XcYtV3yavJzRs/oL8cti6OQk1Eth3W4tH2A/bO10Q==
-X-Received: by 2002:adf:e449:: with SMTP id t9mr24998689wrm.257.1607437507409;
-        Tue, 08 Dec 2020 06:25:07 -0800 (PST)
+        bh=/OsSmUS/TA4WzvLCDGFMnERywT0JtFSnemYNOkWYU7I=;
+        b=lLHQASTa3tQ1m6elFN0AO5DUo0JkayQngBJdEQn4lec0Rq3OvcjvmS3kKwpljamQOn
+         9JfRoGGSE/usWp3g03oeOLbHNWdxHNNrH9t9OxPsCQTWrJ+uh3MuQiZZajbrzpGoguGh
+         H5QsdG+yjYwMb7CoIixRDAU27wv2GBKfFyYW1wpsKKFX2eEwwKyKaoKV26RYj4qsaMdN
+         2n5nT9KFA6o38BBmspa7/ipr6Jkj+NuLZz/boGLb1I1+2EPwB/uiiJYs/yoeSHDSJxsh
+         o6scHqUZL05ibdCYLfIdYrZ/G5NcFVQJBHV+yA+YuOTzaHZKv6DuydUVq2nftTbgB/Rf
+         untg==
+X-Gm-Message-State: AOAM5333hlbRWrZuK9JA3txT+TN8Mmb82JGyOgJr/lpzlKXlMNd06TRw
+        Ij6JMqUBiLOeW5QHhPER78/odQ==
+X-Google-Smtp-Source: ABdhPJzAbt6RsNvdFXhB3aG8NC2B+lzZJ++35G/5BqR/OlHQfGVdFuDj/qtCUap6ioQzj3F+kC4a2g==
+X-Received: by 2002:adf:e444:: with SMTP id t4mr25488751wrm.152.1607437509535;
+        Tue, 08 Dec 2020 06:25:09 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:258e:cb26:cef:a620])
-        by smtp.gmail.com with ESMTPSA id 101sm14275907wrc.11.2020.12.08.06.25.06
+        by smtp.gmail.com with ESMTPSA id z21sm3843405wmk.20.2020.12.08.06.25.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 06:25:06 -0800 (PST)
+        Tue, 08 Dec 2020 06:25:08 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
@@ -58,9 +58,9 @@ Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH 4/6] kvm: arm64: Minor cleanup of hyp variables used in host
-Date:   Tue,  8 Dec 2020 14:24:50 +0000
-Message-Id: <20201208142452.87237-5-dbrazdil@google.com>
+Subject: [PATCH 5/6] kvm: arm64: Remove unused includes in psci-relay.c
+Date:   Tue,  8 Dec 2020 14:24:51 +0000
+Message-Id: <20201208142452.87237-6-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201208142452.87237-1-dbrazdil@google.com>
 References: <20201208142452.87237-1-dbrazdil@google.com>
@@ -70,105 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Small cleanup moving declarations of hyp-exported variables to
-kvm_host.h and using macros to avoid having to refer to them with
-kvm_nvhe_sym() in host.
-
-No functional change intended.
+Minor cleanup removing unused includes.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/kvm_host.h | 6 ++++++
- arch/arm64/kvm/arm.c              | 4 +---
- arch/arm64/kvm/hyp/nvhe/hyp-smp.c | 6 +++---
- arch/arm64/kvm/va_layout.c        | 5 ++---
- 4 files changed, 12 insertions(+), 9 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 828d50d40dc2..bce2452b305c 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -260,6 +260,12 @@ struct kvm_host_psci_config {
- extern struct kvm_host_psci_config kvm_nvhe_sym(kvm_host_psci_config);
- #define kvm_host_psci_config CHOOSE_NVHE_SYM(kvm_host_psci_config)
+diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+index 0d6f4aa39621..1f7237e45148 100644
+--- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
++++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
+@@ -7,11 +7,8 @@
+ #include <asm/kvm_asm.h>
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+-#include <kvm/arm_hypercalls.h>
+ #include <linux/arm-smccc.h>
+ #include <linux/kvm_host.h>
+-#include <linux/psci.h>
+-#include <kvm/arm_psci.h>
+ #include <uapi/linux/psci.h>
  
-+extern s64 kvm_nvhe_sym(hyp_physvirt_offset);
-+#define hyp_physvirt_offset CHOOSE_NVHE_SYM(hyp_physvirt_offset)
-+
-+extern u64 kvm_nvhe_sym(hyp_cpu_logical_map)[NR_CPUS];
-+#define hyp_cpu_logical_map CHOOSE_NVHE_SYM(hyp_cpu_logical_map)
-+
- struct vcpu_reset_state {
- 	unsigned long	pc;
- 	unsigned long	r0;
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 6a2f4e01b04f..836ca763b91d 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -65,8 +65,6 @@ static bool vgic_present;
- static DEFINE_PER_CPU(unsigned char, kvm_arm_hardware_enabled);
- DEFINE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
- 
--extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
--
- int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
-@@ -1602,7 +1600,7 @@ static void init_cpu_logical_map(void)
- 	 * allow any other CPUs from the `possible` set to boot.
- 	 */
- 	for_each_online_cpu(cpu)
--		kvm_nvhe_sym(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
-+		hyp_cpu_logical_map[cpu] = cpu_logical_map(cpu);
- }
- 
- static bool init_psci_relay(void)
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-index cbab0c6246e2..2997aa156d8e 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
-@@ -14,14 +14,14 @@
-  * Other CPUs should not be allowed to boot because their features were
-  * not checked against the finalized system capabilities.
-  */
--u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
-+u64 __ro_after_init hyp_cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
- 
- u64 cpu_logical_map(unsigned int cpu)
- {
--	if (cpu >= ARRAY_SIZE(__cpu_logical_map))
-+	if (cpu >= ARRAY_SIZE(hyp_cpu_logical_map))
- 		hyp_panic();
- 
--	return __cpu_logical_map[cpu];
-+	return hyp_cpu_logical_map[cpu];
- }
- 
- unsigned long __hyp_per_cpu_offset(unsigned int cpu)
-diff --git a/arch/arm64/kvm/va_layout.c b/arch/arm64/kvm/va_layout.c
-index 914732b88c69..70fcd6a12fe1 100644
---- a/arch/arm64/kvm/va_layout.c
-+++ b/arch/arm64/kvm/va_layout.c
-@@ -34,17 +34,16 @@ static u64 __early_kern_hyp_va(u64 addr)
- }
- 
- /*
-- * Store a hyp VA <-> PA offset into a hyp-owned variable.
-+ * Store a hyp VA <-> PA offset into a EL2-owned variable.
-  */
- static void init_hyp_physvirt_offset(void)
- {
--	extern s64 kvm_nvhe_sym(hyp_physvirt_offset);
- 	u64 kern_va, hyp_va;
- 
- 	/* Compute the offset from the hyp VA and PA of a random symbol. */
- 	kern_va = (u64)lm_alias(__hyp_text_start);
- 	hyp_va = __early_kern_hyp_va(kern_va);
--	CHOOSE_NVHE_SYM(hyp_physvirt_offset) = (s64)__pa(kern_va) - (s64)hyp_va;
-+	hyp_physvirt_offset = (s64)__pa(kern_va) - (s64)hyp_va;
- }
- 
- /*
+ #include <nvhe/trap_handler.h>
 -- 
 2.29.2.576.ga3fc446d84-goog
 
