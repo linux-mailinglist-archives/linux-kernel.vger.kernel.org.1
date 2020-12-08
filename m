@@ -2,51 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12D72D22FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C782D22F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgLHFUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:20:36 -0500
-Received: from [124.74.155.170] ([124.74.155.170]:17107 "EHLO mail.shpdh.org"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725936AbgLHFUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:20:35 -0500
-X-Greylist: delayed 381 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 00:20:35 EST
-Received: from User (172.16.90.42) by cashub1.shpdhoa.org (172.16.13.23) with
- Microsoft SMTP Server id 14.3.389.1; Tue, 8 Dec 2020 13:13:15 +0800
-Reply-To: <garymark20177@gmail.com>
-From:   Gary Mark <sysadmin@shpdhoa.org>
-Subject: Your ATM card is ready for delivery.......................
-Date:   Tue, 8 Dec 2020 06:13:25 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
+        id S1726445AbgLHFOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgLHFOd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:14:33 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30A5C061749;
+        Mon,  7 Dec 2020 21:13:46 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id l200so18176594oig.9;
+        Mon, 07 Dec 2020 21:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=sadeGNSRFPIoFTYVcdnZgjQ48y5NGBk9I5/A99DQWxI=;
+        b=cpVQ2N3UgmfVIMaW6R2J3zD6cpcTbxMKt3p989Si/sfb4z4ZV7G7BW8MahYbrh9NXv
+         vWP0ADO22BMuB+0IzKhtV78tueAQETXob4RzsVu9nPlYCgHY5T4nWRZNW8O+nnYHIrzv
+         xvcaaUka8DfQzoK26lm2xSO9IUCOoIX5UNeLzuxLO0CZrlmTRzTvAQrlABeNmO97Z9TS
+         AH7ZVil+/KwsPA5SXsijirdQWsh5E4YG7fAwMp8Crcxgn5o0KIbLdQpozumJWUFDBqmT
+         qsLt/ejhpH23deonD4c1081rIQXY8l1IH1e7Lh+x+cEJ/EtBYeUQ8qPhYV+ggL5g8pSV
+         jNSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=sadeGNSRFPIoFTYVcdnZgjQ48y5NGBk9I5/A99DQWxI=;
+        b=EhSmINKde7lSdtTfhZQKAqftnrgm/M737GSJkanJfQgWbaSlMfXierN3r/jjNoHRbv
+         9N5wT23Wb14bMcYaW5gU/LFvq2OcXOyLkkJoz5Zv/w0oR0BLdKOioUkAq9NkdvsoEgNm
+         wEEeY2OQSgbLmrUuylzZM5bRr/nbvsScWA9gV6EfPb2icID6JX/JgZTzJPOLigTsojTl
+         jQCcd9tFuAbMzqTgjdQ+5hWpzQlvWQJR0PlBaZTUhh4ApvDIPTJylqYDvXm4CrtUmCWJ
+         41b0XpudlLcot9n14whBVqLFWca40ZOV4nTCFPL34lorM0+CbeWrxNz50x07MwNu+9YL
+         nVZw==
+X-Gm-Message-State: AOAM531J0nY1I/wbQCSAajHZvnq/YDiiGXIaIm5GLrptaU3+2eBZ7q6R
+        /Sdz1ZXjBz4szq1/5Q/is7Y=
+X-Google-Smtp-Source: ABdhPJwvgYPuGDuISfyb1O2jLRFnr7KA0IUoNzmcX4++qlC6Wglm7ptMgEUFuTZNZAPknczARLNy4Q==
+X-Received: by 2002:aca:f456:: with SMTP id s83mr1505805oih.58.1607404426497;
+        Mon, 07 Dec 2020 21:13:46 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id v5sm3131017oob.40.2020.12.07.21.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 21:13:45 -0800 (PST)
+Date:   Mon, 07 Dec 2020 21:13:40 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fcf0b8413fe_9ab3208ce@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-6-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-6-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 05/11] bpf: Move BPF_STX reserved field check
+ into BPF_STX verifier code
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <7316344f-1935-418c-ae5b-7c184a1a8330@CASHUB1.shpdhoa.org>
-To:     Undisclosed recipients:;
-X-Originating-IP: [172.16.90.42]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCAMMED VICTIM USD1 MILLION BENEFICIARY..
-We have arrested all the fraud people that has been cheating you and
-collecting your money here in Lagos Nigeria we are the new ATM CARD office
-here in Lagos Nigeria now your ATM CARD will reach your hand
-today or tomorrow it will cost you only $179 that is all once
-this fees is paid we will give you delivery tracking number to enable
-you know when it reach your home.
-This is the Name where you can make the payment.
-Receiver Name:Austin Ogbogu
-Location: Lagos Nigeria.
-Your Sender name..
-MTCN Number.
-Your sender address.
+Brendan Jackman wrote:
+> I can't find a reason why this code is in resolve_pseudo_ldimm64;
+> since I'll be modifying it in a subsequent commit, tidy it up.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  kernel/bpf/verifier.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
 
-Send the fee through Ria money transfer or by Small world.
-
-Thanks
-Mr.Gary Mark.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
