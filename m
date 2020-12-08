@@ -2,191 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF882D35AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59AF2D35B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730345AbgLHVz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S1730056AbgLHV73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:59:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728138AbgLHVz0 (ORCPT
+        with ESMTP id S1727958AbgLHV72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:55:26 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDADC061794;
-        Tue,  8 Dec 2020 13:54:46 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id b190so63860vka.0;
-        Tue, 08 Dec 2020 13:54:46 -0800 (PST)
+        Tue, 8 Dec 2020 16:59:28 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FBC061794;
+        Tue,  8 Dec 2020 13:58:48 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id y18so126517qki.11;
+        Tue, 08 Dec 2020 13:58:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HR742pSiozhDUPorvG6dtxyKOv7q/SNwr6kisht7zzA=;
-        b=h4T0raMh3KbTUvZ3AtEZnAJ+RNv/5sWKxDoJ4Us2l1UBl7knAE13nyuHSFrDRzYxQ/
-         +xtBjJn3so3TjyFcZGNNIEFWn76LcRzfksgNbqIpfQizCNbyNTCIeoBpnj46adOhaGpW
-         fJQaJYHP8+2XsjkypZ7Y4riwLL0SQlcBv47pPPxgKl9j/eIbO+IXGLJ4p5OWGzH3DLJ7
-         TDj5YyrimCHlWpA0ZFrdgna3yYERfdnuJkQoyuKEq7drEd69g4n/xJz8/L2lAFDRZ+TF
-         rO/YJI8qbErhwUlCwyBkql+2eDYjrJ2icrHb3F+rkHwOfqtM956YKbbDrT+yoBgYvQel
-         OG2w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G/NMXMjSBkeIHnho7dTPVvi7pj5oBgIZnaCU/I3zMQ0=;
+        b=A+ZPhYYidA+pxagEZ71U9PLXKR2ENZsU2cAPqf/cWywzna9sleFqTCgNsklgCl2m2K
+         v3ywjeGYg8PvoHfYdt9NBbcoD9MsPMTfetUuqRIz7A4tYrMV+U5kez6ouFsyf70yIdcU
+         EYptzInGQ2B9gw3CSzTCgAqHsYMdBXLFeZi/YhENnT73SvXs8JJmVmF0FTtM4Qt8Eb45
+         NLs3u4j3l0E4+cf/t6DRoBLRWXUzjUpYSTsXHW7nJsLiwg96mqnLY2fAmV/voeHte4vH
+         y7NYTqblDdJYPoA0iKzESYeBuBi5BQSxL2+Xm6TIk4AYf1Ibh2anA9qzix4Od2KvsKX+
+         XD5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HR742pSiozhDUPorvG6dtxyKOv7q/SNwr6kisht7zzA=;
-        b=r35qZ5hh8AEmnujFwpUmpQ4pLPkTLE4VX3hb82Ow4tG6MOs6gTtD4FG4yrmAvuVQZX
-         ECqiTEjFRr0wJMpN9h85LhesXYJYnga4N/KOORVfZmuZEvc+1HZuT93dzikjiimbbAaO
-         EGWmwvjGqcJTtwjnuaSIQW6xserSfPQxhPXh07xRWp5RcguT6s3/pVcwP7HhjoBdgHBR
-         dteViHIzwTxlWTKP8aQbfR1/oXN91CaPXl/aks++PKszNjb9QFBfSROZZyFxj83q61Mj
-         /aA2RfgFG92Ks7CbanUpzKYovizGwS2slQHnflavzCU1ct+kYOukGPsEcIaEAxU5IoN6
-         cPxQ==
-X-Gm-Message-State: AOAM530msUslFx5SwHMKxkEdY+KVfTAP+PQNQoEf1g04xjmv+5dwGqUF
-        ThlLuM1LLgSJX4xD8V1U9UZNNiAVUZech7Rmrlc=
-X-Google-Smtp-Source: ABdhPJwClku4a+kRFN2kpMmxUeEoRZvBWlSISSn096dijLJ8C2hF/on6fRQtls+JjaMLhT4Dt65tcOirmrHQcIhQwR0=
-X-Received: by 2002:a1f:5587:: with SMTP id j129mr19403233vkb.0.1607464484835;
- Tue, 08 Dec 2020 13:54:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G/NMXMjSBkeIHnho7dTPVvi7pj5oBgIZnaCU/I3zMQ0=;
+        b=kbtchNeM0c7tQ16D+lf0FscQfsarOnHxLIxxxhtZyO66XLzpOiDCTSmkx9MBVRfzoG
+         Ecsh/u0n3J8so8Jr90YM80ILiqLXLRcNukQVDnjCrGNJ3axbai8QiSocIOMw7QcsPRV2
+         V7x8t20VFNlRFd9WTHjXeOQkcrVeZHhhaXUcZUQa0ZSWvrpmE1oKYODlDdig9Qoiq0ag
+         683xBeRtYttO2WLR6Em/U/aeuTz/HesgpTDm2lA8SRZWdeMa9TyerQCJSSbvmE+bjW7q
+         /echx5QKcE7aYMuBhujIxaJ/I8JTfOWQX3r2Tfnxikw9NiSY1toAi6Rd50NznzmrYI3C
+         18dA==
+X-Gm-Message-State: AOAM532YQRRG2yl7BJEGqgmtPY2ENrRyEEXTLKLZed0Qjx6TulC76HqS
+        ZJZnx3TLNym2DcetJFGbZT+IdI0WZpc=
+X-Google-Smtp-Source: ABdhPJwO4H460UEGuYPNbcYEti5OdjUPd0UKdYp6/7QoqZbPWMUfoX+ZeAyy5sfrywJGz3eB0Pep1A==
+X-Received: by 2002:a05:620a:622:: with SMTP id 2mr32323807qkv.436.1607464727640;
+        Tue, 08 Dec 2020 13:58:47 -0800 (PST)
+Received: from LeoBras.ibmuc.com ([2804:14d:8084:8e41:9b0d:571e:a65:b5d8])
+        by smtp.gmail.com with ESMTPSA id w22sm35819qtt.76.2020.12.08.13.58.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 13:58:46 -0800 (PST)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Leonardo Bras <leobras.c@gmail.com>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] powerpc/kvm: Fix mask size for emulated msgsndp
+Date:   Tue,  8 Dec 2020 18:57:08 -0300
+Message-Id: <20201208215707.31149-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201206034408.31492-1-TheSven73@gmail.com> <20201206034408.31492-2-TheSven73@gmail.com>
- <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201208114314.743ee6ec@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 8 Dec 2020 16:54:33 -0500
-Message-ID: <CAGngYiVSHRGC+eOCeF3Kyj_wOVqxJHvoc9fXRk-w+sVRjeSpcw@mail.gmail.com>
-Subject: Re: [PATCH net v1 2/2] lan743x: boost performance: limit PCIe
- bandwidth requirement
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub, thank you so much for reviewing this patchset !
+According to ISAv3.1 and ISAv3.0b, the msgsndp is described to split RB in:
+msgtype <- (RB) 32:36
+payload <- (RB) 37:63
+t       <- (RB) 57:63
 
-On Tue, Dec 8, 2020 at 2:43 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> > When the chip is working with the default 1500 byte MTU, a 9K
-> > dma buffer goes from chip -> cpu per 1500 byte frame. This means
-> > that to get 1G/s ethernet bandwidth, we need 6G/s PCIe bandwidth !
-> >
-> > Fix by limiting the rx ring dma buffer size to the current MTU
-> > size.
->
-> I'd guess this is a memory allocate issue, not a bandwidth thing.
-> for 9K frames the driver needs to do order-2 allocations of 16K.
-> For 1500 2K allocations are sufficient (which is < 1 page, hence
-> a lot cheaper).
+The current way of getting 'msgtype', and 't' is missing their MSB:
+msgtype: ((arg >> 27) & 0xf) : Gets (RB) 33:36, missing bit 32
+t:       (arg &= 0x3f)       : Gets (RB) 58:63, missing bit 57
 
-That's a good question. I used perf to create a flame graph of what
-the cpu was doing when receiving data at high speed. It showed that
-__dma_page_dev_to_cpu took up most of the cpu time. Which is triggered
-by dma_unmap_single(9K, DMA_FROM_DEVICE).
+Fixes this by applying the correct mask.
 
-So I assumed that it's a PCIe dma bandwidth issue, but I could be wrong -
-I didn't do any PCIe bandwidth measurements.
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+---
+Changes since v1:
+- Commit message 's/LSB/MSB/', because ISA ordering is big-endian.
 
->
-> > Tested with iperf3 on a freescale imx6 + lan7430, both sides
-> > set to mtu 1500 bytes.
-> >
-> > Before:
-> > [ ID] Interval           Transfer     Bandwidth       Retr
-> > [  4]   0.00-20.00  sec   483 MBytes   203 Mbits/sec    0
-> > After:
-> > [ ID] Interval           Transfer     Bandwidth       Retr
-> > [  4]   0.00-20.00  sec  1.15 GBytes   496 Mbits/sec    0
-> >
-> > And with both sides set to MTU 9000 bytes:
-> > Before:
-> > [ ID] Interval           Transfer     Bandwidth       Retr
-> > [  4]   0.00-20.00  sec  1.87 GBytes   803 Mbits/sec   27
-> > After:
-> > [ ID] Interval           Transfer     Bandwidth       Retr
-> > [  4]   0.00-20.00  sec  1.98 GBytes   849 Mbits/sec    0
-> >
-> > Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
-> > Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
->
-> This is a performance improvement, not a fix, it really needs to target
-> net-next.
+ arch/powerpc/kvm/book3s_hv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I thought it'd be cool if 'historic' kernels could benefit from this performance
-improvement too, but yeah if it's against policy it should go into net-next.
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index e3b1839fc251..5af0a429cee8 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -1241,9 +1241,9 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
+ 	switch (get_xop(inst)) {
+ 	case OP_31_XOP_MSGSNDP:
+ 		arg = kvmppc_get_gpr(vcpu, rb);
+-		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
++		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
+ 			break;
+-		arg &= 0x3f;
++		arg &= 0x7f;
+ 		if (arg >= kvm->arch.emul_smt_mode)
+ 			break;
+ 		tvcpu = kvmppc_find_vcpu(kvm, vcpu->vcpu_id - thr + arg);
+@@ -1256,7 +1256,7 @@ static int kvmppc_emulate_doorbell_instr(struct kvm_vcpu *vcpu)
+ 		break;
+ 	case OP_31_XOP_MSGCLRP:
+ 		arg = kvmppc_get_gpr(vcpu, rb);
+-		if (((arg >> 27) & 0xf) != PPC_DBELL_SERVER)
++		if (((arg >> 27) & 0x1f) != PPC_DBELL_SERVER)
+ 			break;
+ 		vcpu->arch.vcore->dpdes = 0;
+ 		vcpu->arch.doorbell_request = 0;
+-- 
+2.25.4
 
-What about the other patch in the patchset (ping-pong). Should it go into
-net-next as well?
-
->
-> > diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-> > index ebb5e0bc516b..2bded1c46784 100644
-> > --- a/drivers/net/ethernet/microchip/lan743x_main.c
-> > +++ b/drivers/net/ethernet/microchip/lan743x_main.c
-> > @@ -1957,11 +1957,11 @@ static int lan743x_rx_next_index(struct lan743x_rx *rx, int index)
-> >
-> >  static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
-> >  {
-> > -     int length = 0;
-> > +     struct net_device *netdev = rx->adapter->netdev;
-> >
-> > -     length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> > -     return __netdev_alloc_skb(rx->adapter->netdev,
-> > -                               length, GFP_ATOMIC | GFP_DMA);
-> > +     return __netdev_alloc_skb(netdev,
-> > +                               netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING,
-> > +                               GFP_ATOMIC | GFP_DMA);
-> >  }
-> >
-> >  static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
-> > @@ -1969,9 +1969,10 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
-> >  {
-> >       struct lan743x_rx_buffer_info *buffer_info;
-> >       struct lan743x_rx_descriptor *descriptor;
-> > -     int length = 0;
-> > +     struct net_device *netdev = rx->adapter->netdev;
-> > +     int length;
-> >
-> > -     length = (LAN743X_MAX_FRAME_SIZE + ETH_HLEN + 4 + RX_HEAD_PADDING);
-> > +     length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
-> >       descriptor = &rx->ring_cpu_ptr[index];
-> >       buffer_info = &rx->buffer_info[index];
-> >       buffer_info->skb = skb;
-> > @@ -2157,8 +2158,8 @@ static int lan743x_rx_process_packet(struct lan743x_rx *rx)
-> >                       int index = first_index;
-> >
-> >                       /* multi buffer packet not supported */
-> > -                     /* this should not happen since
-> > -                      * buffers are allocated to be at least jumbo size
-> > +                     /* this should not happen since buffers are allocated
-> > +                      * to be at least the mtu size configured in the mac.
-> >                        */
-> >
-> >                       /* clean up buffers */
-> > @@ -2632,9 +2633,13 @@ static int lan743x_netdev_change_mtu(struct net_device *netdev, int new_mtu)
-> >       struct lan743x_adapter *adapter = netdev_priv(netdev);
-> >       int ret = 0;
-> >
-> > +     if (netif_running(netdev))
-> > +             return -EBUSY;
->
-> That may cause a regression to users of the driver who expect to be
-> able to set the MTU when the device is running. You need to disable
-> the NAPI, pause the device, swap the buffers for smaller / bigger ones
-> and restart the device.
-
-That's what I tried first, but I quickly ran into a spot of trouble:
-restarting the device may fail (unlikely but possible). So when the user tries
-to change the mtu and that errors out, they might end up with a stopped device.
-Is that acceptable behaviour? If so, I'll add it to the patch.
-
->
-> >       ret = lan743x_mac_set_mtu(adapter, new_mtu);
-> >       if (!ret)
-> >               netdev->mtu = new_mtu;
-> > +
-> >       return ret;
-> >  }
-> >
->
