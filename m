@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F852D34E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E3D2D34A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgLHVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:05:50 -0500
-Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21183 "EHLO
-        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728556AbgLHVFr (ORCPT
+        id S1728797AbgLHUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727193AbgLHUw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:05:47 -0500
-X-Greylist: delayed 986 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 16:05:45 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1607460498; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=kZQGFf7/7zBQI+Tu5rkWkea4aw58y3OL2B/ASMccEBehDGuv1/bCGOi0DZ3d4HLQgGtuKwrz8OInF2uEBZlDWO774JPFISEg7lLv4QpeIxYkEFj98mQXfhpBL6eVSQQYjMmAp+oKU9mTbqfVRxk7iD5vCj7jS4Q0NI3cghsk4Bk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1607460498; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=H448thm3zMe2xdtoi7eAhSGNHj9gA9Hxr5FioklSPlc=; 
-        b=NlqhkS++rbDTTwlyMH9XVpHU3wCbY5Dx8nmDwVnmEYzZQKkOcZtDQxj67EXNiDWlBUw/kI0FCC8c/acW3CbzoPrW5eTXuqiZtw34jI0yRsVCCmRo9L9WMhuWgeVnRgbV/poNLMpcH6SePuP5RExEVqEQ3OPXLWsmc1UnOHtL6cs=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        spf=pass  smtp.mailfrom=philipp@uvos.xyz;
-        dmarc=pass header.from=<philipp@uvos.xyz> header.from=<philipp@uvos.xyz>
-Received: from localhost.localdomain (ip-95-222-212-137.hsi15.unitymediagroup.de [95.222.212.137]) by mx.zoho.eu
-        with SMTPS id 1607460495762809.2078998376851; Tue, 8 Dec 2020 21:48:15 +0100 (CET)
-Date:   Tue, 8 Dec 2020 21:48:14 +0100
-From:   Carl Philipp Klemm <philipp@uvos.xyz>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-omap@vger.kernel.org, Dave Gerlach <d-gerlach@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH] soc: ti: omap-prm: Fix boot time errors for rst_map_012
- bits 0 and 1
-Message-Id: <20201208214814.a0027492ca1971579fb0090d@uvos.xyz>
-In-Reply-To: <20201208140802.38757-1-tony@atomide.com>
-References: <20201208140802.38757-1-tony@atomide.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+        Tue, 8 Dec 2020 15:52:27 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3645DC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:51:41 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id u4so1929590plr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IDh1X7OB7wW8jbY8KXws0mweSxrU0MD7uaeCBRTpxI4=;
+        b=BuT/VqEtkyxPV+Bb5g5ZS76YF4g46mfxn22JjYtqxYsYpZIXcEHaWhHkmAUTOC82dD
+         o5ZhFxiZFBwLdR15mLm5sTKV7SOrIt5e3E5et/a7SOmzSELTcgDQIDM3GaiNoR6lCNIg
+         taOzVyA+1S6l8GlBh1NuxgNy+El2nUSpz+rYn9yiUBd5Td9CLiGZbdE4iUhyRzZ6YVN9
+         +uhFmx6stxm4DyTJrj94Vrk27rHtkgMmBv30zKL1mFXQeoxeGQRveDxj1XpP00sQo4Oe
+         1CBLgQ2Kd19sYpqSJxtfeb1lNJtz/rwHaoscoiW4wIERtUvtBO+YR2/aBlw+ImuQDEOC
+         h8Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IDh1X7OB7wW8jbY8KXws0mweSxrU0MD7uaeCBRTpxI4=;
+        b=jeph9hi5ZBRlsuS1mNzY5FqH2tZcH3qc7P/X97eI1zSjh0FNOWD6WLdFaXpYLN0RSc
+         HfLfMmHXgb+qBbsIf2v/lp59TTgGsvSNMba7hOnUlhjgOJSgF1b79OorUZWaDi+FfFYZ
+         L2LH1EG7DTFiDtWSZxtnKYcqWlF9zvIxTNowTIz2a3g3LFlYDvlIN7z+pDlSexnFq9c+
+         yLND6TkvyiMX6+wJX/eM44aF362RdgusFhSy04T4rqN8lbfHeLBmnTBWM8rb+UzwSwRj
+         8VEPot/IkDWshrZAMQka9h8q/k5UZSYeMd5Aubv5iX5yH0UZSK4Hzj6bMLxGj0L+DNQ6
+         C1KQ==
+X-Gm-Message-State: AOAM530tZHClr86H+fgW70VvRT4VreKfS36AAXhkcLFXoCcOuomiLW8/
+        jkYzoAdG7W+CDK/eQ6UK4o8=
+X-Google-Smtp-Source: ABdhPJwYfGUca0k7wAXMk4KHtDu1qAKlqwa/YKCCkTjvnk0A7b7tq7c0sV7T/nj4ZX8+QId9aZFS/g==
+X-Received: by 2002:a17:902:aa8b:b029:da:ef22:8675 with SMTP id d11-20020a170902aa8bb02900daef228675mr1319869plr.15.1607460700672;
+        Tue, 08 Dec 2020 12:51:40 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id x10sm26156pff.214.2020.12.08.12.51.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 12:51:39 -0800 (PST)
+Date:   Wed, 9 Dec 2020 05:51:37 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: consoles: was: [PATCH next v2 3/3] printk: remove logbuf_lock,
+ add syslog_lock
+Message-ID: <X8/nWUD1bKeQQ74Z@jagdpanzerIV.localdomain>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-4-john.ogness@linutronix.de>
+ <X8phf/jITFd7nV38@alley>
+ <X8sPGfe2kWkAqsl1@jagdpanzerIV.localdomain>
+ <X836yrIxyIp5y+Qq@alley>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X836yrIxyIp5y+Qq@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  8 Dec 2020 16:08:02 +0200
-Tony Lindgren <tony@atomide.com> wrote:
+On (20/12/07 10:50), Petr Mladek wrote:
+[..]
+> > and then some call into the scheduler
+> > (or other kernel core functions) under semaphore's spin_lock.
+> > For instance
+> > 
+> > 	up()
+> > 	 raw_spin_lock_irqsave(&sem->lock)
+> > 	   __up()
+> > 	     wake_up_process()
+> > 	       try_to_wake_up()
+> 
+> This problem is partly solved by printk_deferred(). In each
+> case, printk_safe() does not help here.
 
-> We have rst_map_012 used for various accelerators like dsp, ipu and iva.
-> For these use cases, we have rstctrl bit 2 control the subsystem module
-> reset, and have and bits 0 and 1 control the accelerator specific
-> features.
-> 
-> If the bootloader, or kexec boot, has left any accelerator specific
-> reset bits deasserted, deasserting bit 2 reset will potentially enable
-> an accelerator with unconfigured MMU and no firmware. And we may get
-> spammed with a lot by warnings on boot with "Data Access in User mode
-> during Functional access", or depending on the accelerator, the system
-> can also just hang.
-> 
-> This issue can be quite easily reproduced by setting a rst_map_012 type
-> rstctrl register to 0 or 4 in the bootloader, and booting the system.
-> 
-> Let's just assert all reset bits for rst_map_012 type resets. So far
-> it looks like the other rstctrl types don't need this. If it turns out
-> that the other type rstctrl bits also need reset on init, we need to
-> add an instance specific reset mask for the bits to avoid resetting
-> unwanted bits.
-> 
-> Reported-by: Carl Philipp Klemm <philipp@uvos.xyz>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Santosh Shilimkar <ssantosh@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Cc: Tero Kristo <t-kristo@ti.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->  drivers/soc/ti/omap_prm.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
-> --- a/drivers/soc/ti/omap_prm.c
-> +++ b/drivers/soc/ti/omap_prm.c
-> @@ -860,6 +860,7 @@ static int omap_prm_reset_init(struct platform_device *pdev,
->  	const struct omap_rst_map *map;
->  	struct ti_prm_platform_data *pdata = dev_get_platdata(&pdev->dev);
->  	char buf[32];
-> +	u32 v;
->  
->  	/*
->  	 * Check if we have controllable resets. If either rstctrl is non-zero
-> @@ -907,6 +908,16 @@ static int omap_prm_reset_init(struct platform_device *pdev,
->  		map++;
->  	}
->  
-> +	/* Quirk handling to assert rst_map_012 bits on reset and avoid errors */
-> +	if (prm->data->rstmap == rst_map_012) {
-> +		v = readl_relaxed(reset->prm->base + reset->prm->data->rstctrl);
-> +		if ((v & reset->mask) != reset->mask) {
-> +			dev_dbg(&pdev->dev, "Asserting all resets: %08x\n", v);
-> +			writel_relaxed(reset->mask, reset->prm->base +
-> +				       reset->prm->data->rstctrl);
-> +		}
-> +	}
-> +
->  	return devm_reset_controller_register(&pdev->dev, &reset->rcdev);
->  }
->  
-> -- 
-> 2.29.2
+printk_deferred() has never been used in all the critical code paths.
+So I think printk_safe does help here; it takes care of all the
+remaining cases, that are not "partly solved by printk_deferred()".
 
-Works for me on xt875, idle now also works without userspace hack.
+> I still do _not_ see a reason to keep printk_safe()!
 
-Tested-by: Carl Philipp Klemm <philipp@uvos.xyz>
+Not sure I'm following, sorry. To put it simply - we better keep
+printk_safe until "new recursion prevention" >= printk_safe().
+In this patch set "new recursion prevention" < printk_safe().
+
+	-ss
