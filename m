@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ADE2D36D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9532D36E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731721AbgLHXVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730631AbgLHXVu (ORCPT
+        id S1731740AbgLHXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:23:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731731AbgLHXXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:21:50 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD7DC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 15:21:10 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id d4so368882ybs.20
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 15:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=RkYejoYtU5rEdTUD5zzQDLUD6flQABfm3pjNRsDWnhw=;
-        b=U5jd0SnK8ncssMH6v/nbhguQppOaI8JiKuk9Ope2/lds+NhUYZVeczzm4aKDm7vacL
-         /3v0b1uPLR0A442K/bHuhlCr78ePFZUI9kpvrJhLpzwlbewFy+/uc9EU8iRFbuPvyMoj
-         j7YLNxsTnlczNG7HHlA/wdbUNa7NyTDh6cxs/DBc77ePrKXnfFvInz7fupfr8zhgDDKh
-         RE4nPUQD8u4jbOXTBxGRM9mZ2BEH405BL2sb6o/Bdmg2WgZLHuNoe5aUG4bE7iP0zbjf
-         DUefTH2XxEQvl/4KCV0sQLhZgE80NEqtoy8eGzHkKjAHFTYkdpVzcQtoJYnNUkb3Mli/
-         zeVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=RkYejoYtU5rEdTUD5zzQDLUD6flQABfm3pjNRsDWnhw=;
-        b=J1yG9y5eTcN+t31TDanCnNxIpBbYHAP1N2cGW/OsBjdkwGqeFVoVIH3R48sXAo0aR9
-         4/gJ2WNwa7LyfSYgEeYcPMIRze+moG7eTXmD0+tUzHiS6Ulw9ih+8fnKKc1VHEmrdUMp
-         2+M3FEkSCmEjNI4QeaqrZjsJikz0zH2a7VF+7IJGsuGFamVg4ygbHCiGybfdv1ADRCd8
-         eZU17GsUyKKSGLZGowjJ1ZcsM/R2RjZR7wqrNQq/W7SDjWZRejc6TtXUg1lrFloKvCU2
-         AgSMOkEIKO097BHE75dt2N/A//1h3NZJH1s30ADQsYYCP57hAOZeWRzLpQjZfJ8g9/EL
-         1/VQ==
-X-Gm-Message-State: AOAM533mLv/uWVzd6v4HHiQANG20m/WfTqwYnF0IdfSddNJ/zF/dRSF3
-        R3GC0U3pLKcL2pKJPcpSAL1PESc65qq6Wg==
-X-Google-Smtp-Source: ABdhPJwOpnOwA59Us+sn/RxLRTa0nbDwj11pBl1GRIuAuovOsQgC4EAD/SxKC4Xjk1mXBodRpjQV9l9rMcUmWw==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:5f49:: with SMTP id
- h9mr25542601ybm.99.1607469669726; Tue, 08 Dec 2020 15:21:09 -0800 (PST)
-Date:   Tue,  8 Dec 2020 15:21:02 -0800
-Message-Id: <20201208232102.339587-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH] kunit: tool: simplify kconfig is_subset_of() logic
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 8 Dec 2020 18:23:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607469712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GqTl8ne3MpfBFToDfCcb9stsXmHRL3JBm8iFVeCCNHU=;
+        b=EGdioaUg1e8jHGLaHNXi5jDE6VaweZLjtuCZ8MdqXs40lmR4ZaO9Qtr94C5cHD2daeF85P
+        64KPH7u582srp/kiUultwbwbZy7jjmHot4rLY38sxTgGkW08o951W8YBf1ocSBayKc7TXY
+        g4r2hsQy1lHtqz0JwI5SdcHE/xrOc4g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-9cVGwTtHOa2d_LPq51-9Nw-1; Tue, 08 Dec 2020 18:21:50 -0500
+X-MC-Unique: 9cVGwTtHOa2d_LPq51-9Nw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0E4ECC657;
+        Tue,  8 Dec 2020 23:21:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 632431042AA6;
+        Tue,  8 Dec 2020 23:21:37 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <e6d9fd7e-ea43-25a6-9f1e-16a605de0f2d@infradead.org>
+References: <e6d9fd7e-ea43-25a6-9f1e-16a605de0f2d@infradead.org> <1c752ffe-8118-f9ea-e928-d92783a5c516@infradead.org> <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org> <0000000000002a530d05b400349b@google.com> <928043.1607416561@warthog.procyon.org.uk> <1030308.1607468099@warthog.procyon.org.uk>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: memory leak in generic_parse_monolithic [+PATCH]
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1093803.1607469696.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 08 Dec 2020 23:21:36 +0000
+Message-ID: <1093804.1607469696@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't use an O(nm) algorithm* and make it more readable by using a dict.
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-*Most obviously, it does a nested for-loop over the entire other config.
-A bit more subtle, it calls .entries(), which constructs a set from the
-list for _every_ outer iteration.
+> Here's the syzbot reproducer:
+> https://syzkaller.appspot.com/x/repro.c?x=3D129ca3d6500000
+> =
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_config.py | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+> The "interesting" mount params are:
+> 	source=3D%^]$[+%](${:\017k[)-:,source=3D%^]$[+.](%{:\017\200[)-:,\000
+> =
 
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
-index 02ffc3a3e5dc..f1101075d458 100644
---- a/tools/testing/kunit/kunit_config.py
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -40,15 +40,14 @@ class Kconfig(object):
- 		self._entries.append(entry)
- 
- 	def is_subset_of(self, other: 'Kconfig') -> bool:
-+		other_dict = {e.name: e.value for e in other.entries()}
- 		for a in self.entries():
--			found = False
--			for b in other.entries():
--				if a.name != b.name:
-+			b = other_dict.get(a.name)
-+			if b is None:
-+				if a.value == 'n':
- 					continue
--				if a.value != b.value:
--					return False
--				found = True
--			if a.value != 'n' and found == False:
-+				return False
-+			elif a.value != b:
- 				return False
- 		return True
- 
+> There is no other AFS activity: nothing mounted, no cells known (or
+> whatever that is), etc.
+> =
 
-base-commit: c6f7e1510b872c281ff603a3108c084b6548d35c
--- 
-2.29.2.576.ga3fc446d84-goog
+> I don't recall if the mount was successful and I can't test it just now.
+> My laptop is mucked up.
+> =
+
+> =
+
+> Be aware that this report could just be a false positive: it waits
+> for 5 seconds then looks for a memleak. AFAIK, it's possible that the "l=
+eaked"
+> memory is still in valid use and will be freed some day.
+
+Bah.  Multiple source=3D parameters.  I don't reject the second one, but j=
+ust
+overwrite fc->source.
+
+David
 
