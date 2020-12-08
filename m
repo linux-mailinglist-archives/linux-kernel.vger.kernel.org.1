@@ -2,158 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59362D23BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA8D2D23C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgLHGm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgLHGm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:42:57 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34204C061749;
-        Mon,  7 Dec 2020 22:42:11 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id d8so7044581otq.6;
-        Mon, 07 Dec 2020 22:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=GHGxlyc9EsC37JwbegkZqr7jGQdGFYOwxkgqYx90MSM=;
-        b=khMqjn8XFM3wXwNerjZdteRluOxbgVrO255TekQJBKHqEG4eRFH/2fZY1vil/jVsQq
-         n/Vl8tDhkFawgivSqDCpOAZfdKC72fw9sh4ajL47G+Pu1XGKwU81TRKGFVOVo4V6J6P3
-         HkfJybWiRrFqji/JDvvOqPUghlYQiaEOCog8IbiELJ8+nysn1KsIPxB7Yp3R2svfoT2F
-         fIV4kGq3WTV/f1cCqr4C26giyHO/NMb0B1JkGQidVuH5jz1SU8SbglIPxMCUqn19sZ1g
-         XCQ5cQaVVpXa/IHZ6FCmC04jX5vqLAnNjif2Msx2j8MewjA1igk3UPIkZb229Zor6mBm
-         x4jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=GHGxlyc9EsC37JwbegkZqr7jGQdGFYOwxkgqYx90MSM=;
-        b=pbvhn2DbKG+1eEVU97eaaAdPLMPw2YN1POr2FwyU3KDf+pLU6K/4Ri1AszH7YDc9sx
-         oZgPjaf1XxfXUPR3PIhgnX7iTaaNaLzsCad/uyfaT3FRCFnlCt66RQ3TH0Mc1F0c5Saj
-         i7ABzqDtdjEO1xSKVlqmawCzeuYXgdotyr5ak2CC0LxcVl0azO9aFB5l8QijRIdsbrbF
-         8zZxPvGUtIHt9nKhhP0bq0sz8JJPda6IdregFO5wWXiTVg9BxAi5n2oBsmhifX1p8tE/
-         l19U8QkwYeWoe1iJ0jazVNgFNaIQl99+ubIrU0yUet4K43zxRh3FypjLjyJFcCWXVo5T
-         YI2Q==
-X-Gm-Message-State: AOAM531PhQA1sCUoYIrkIjF7FsaIkgN6dy0gSOM+Ign2Dc3HB9e+amqc
-        IdANOVkX8O9G4XLk2UQa37U=
-X-Google-Smtp-Source: ABdhPJzhoxk6OeXWhDdD+pSpD0FxTfnqsQjv5SlnNFWdEZ8g5jZ1uJcmMPmTgcr1WwlcYEo2vnDZHg==
-X-Received: by 2002:a05:6830:1482:: with SMTP id s2mr5848385otq.296.1607409730674;
-        Mon, 07 Dec 2020 22:42:10 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id u141sm318252oie.46.2020.12.07.22.42.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 22:42:10 -0800 (PST)
-Date:   Mon, 07 Dec 2020 22:42:02 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fcf203ab087a_d22720855@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-8-jackmanb@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-8-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 07/11] bpf: Add instructions for
- atomic_[cmp]xchg
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726420AbgLHGpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:45:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbgLHGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:45:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D9B2FAB63;
+        Tue,  8 Dec 2020 06:44:30 +0000 (UTC)
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+To:     dgilbert@interlog.com, Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        linux-scsi@vger.kernel.org
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <20201207141123.GC31159@lst.de>
+ <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+ <194d7813-8c8c-85c8-e0c8-94aaab7c291e@interlog.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <9b2f5ab2-3358-fcce-678f-982ef79c9252@suse.de>
+Date:   Tue, 8 Dec 2020 07:44:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <194d7813-8c8c-85c8-e0c8-94aaab7c291e@interlog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brendan Jackman wrote:
-> This adds two atomic opcodes, both of which include the BPF_FETCH
-> flag. XCHG without the BPF_FETCH flag would naturally encode
-> atomic_set. This is not supported because it would be of limited
-> value to userspace (it doesn't imply any barriers). CMPXCHG without
-> BPF_FETCH woulud be an atomic compare-and-write. We don't have such
-> an operation in the kernel so it isn't provided to BPF either.
+On 12/7/20 11:12 PM, Douglas Gilbert wrote:
+> On 2020-12-07 9:56 a.m., Hannes Reinecke wrote:
+>> On 12/7/20 3:11 PM, Christoph Hellwig wrote:
+>>> So, I'm really worried about:
+>>>
+>>>   a) a good use case.  GC in f2fs or btrfs seem like good use cases, as
+>>>      does accelating dm-kcopyd.  I agree with Damien that lifting 
+>>> dm-kcopyd
+>>>      to common code would also be really nice.  I'm not 100% sure it 
+>>> should
+>>>      be a requirement, but it sure would be nice to have
+>>>      I don't think just adding an ioctl is enough of a use case for 
+>>> complex
+>>>      kernel infrastructure.
+>>>   b) We had a bunch of different attempts at SCSI XCOPY support form 
+>>> IIRC
+>>>      Martin, Bart and Mikulas.  I think we need to pull them into this
+>>>      discussion, and make sure whatever we do covers the SCSI needs.
+>>>
+>> And we shouldn't forget that the main issue which killed all previous 
+>> implementations was a missing QoS guarantee.
+>> It's nice to have simply copy, but if the implementation is _slower_ 
+>> than doing it by hand from the OS there is very little point in even 
+>> attempting to do so.
+>> I can't see any provisions for that in the TPAR, leading me to the 
+>> assumption that NVMe simple copy will suffer from the same issue.
+>>
+>> So if we can't address this I guess this attempt will fail, too.
 > 
-> There are two significant design decisions made for the CMPXCHG
-> instruction:
+> I have been doing quite a lot of work and testing in my sg driver rewrite
+> in the copy and compare area. The baselines for performance are dd and
+> io_uring-cp (in liburing). There are lots of ways to improve on them. Here
+> are some:
+>     - the user data need never pass through the user space (could
+>       mmap it out during the READ if there is a good reason). Only the
+>       metadata (e.g. NVMe or SCSI commands) needs to come from the user
+>       space and errors, if any, reported back to the user space.
+>     - break a large copy (or compare) into segments, with each segment
+>       a "comfortable" size for the OS to handle, say 256 KB
+>     - there is one constraint: the READ in each segment must complete
+>       before its paired WRITE can commence
+>       - extra constraint for some zoned disks: WRITEs must be
+>         issued in order (assuming they are applied in that order, if
+>         not, need to wait until each WRITE completes)
+>     - arrange for READ WRITE pair in each segment to share the same bio
+>     - have multiple slots each holding a segment (i.e. a bio and
+>       metadata to process a READ-WRITE pair)
+>     - re-use each slot's bio for the following READ-WRITE pair
+>     - issue the READs in each slot asynchronously and do an interleaved
+>       (io)poll for completion. Then issue the paired WRITE
+>       asynchronously
+>     - the above "slot" algorithm runs in one thread, so there can be
+>       multiple threads doing the same algorithm. Segment manager needs
+>       to be locked (or use an atomics) so that each segment (identified
+>       by its starting LBAs) is issued once and only once when the
+>       next thread wants a segment to copy
 > 
->  - To solve the issue that this operation fundamentally has 3
->    operands, but we only have two register fields. Therefore the
->    operand we compare against (the kernel's API calls it 'old') is
->    hard-coded to be R0. x86 has similar design (and A64 doesn't
->    have this problem).
+> Running multiple threads gives diminishing or even worsening returns.
+> Runtime metrics on lock contention and storage bus capacity may help
+> choosing the number of threads. A simpler approach might be add more
+> threads until the combined throughput increase is less than 10% say.
 > 
->    A potential alternative might be to encode the other operand's
->    register number in the immediate field.
 > 
->  - The kernel's atomic_cmpxchg returns the old value, while the C11
->    userspace APIs return a boolean indicating the comparison
->    result. Which should BPF do? A64 returns the old value. x86 returns
->    the old value in the hard-coded register (and also sets a
->    flag). That means return-old-value is easier to JIT.
+> The 'compare' that I mention is based on the SCSI VERIFY(BYTCHK=1) command
+> (or NVMe NVM Compare command). Using dd logic, a disk to disk compare can
+> be implemented with not much more work than changing the WRITE to a VERIFY
+> command. This is a different approach to the Linux cmp utility which
+> READs in both sides and does a memcmp() type operation. Using ramdisks
+> (from the scsi_debug driver) the compare operation (max ~ 10 GB/s) was
+> actually faster than the copy (max ~ 7 GB/s). I put this down to WRITE
+> operations taking a write lock over the store while the VERIFY only
+> needs a read lock so many VERIFY operations can co-exist on the same
+> store. Unfortunately on real SAS and NVMe SSDs that I tested the
+> performance of the VERIFY and NVM Compare commands is underwhelming.
+> For comparison, using scsi_debug ramdisks, dd copy throughput was
+> < 1 GB/s and io_uring-cp was around 2-3 GB/s. The system was Ryzen
+> 3600 based.
 > 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
+Which is precisely my concern.
+Simple copy might be efficient for one particular implementation, but it 
+might be completely off the board for others.
+But both will be claiming to support it, and us having no idea whether 
+choosing simple copy will speed up matters or not.
+Without having a programmatic way to figure out the speed of the 
+implementation we have to detect the performance ourselves, like the 
+benchmarking loop RAID5 does.
+I was hoping to avoid that, and just ask the device/controller; but that 
+turned out to be in vain.
 
-Sorry if this is a dup, client crashed while I sent the previous version
-and don't see it on the list.
+Cheers,
 
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3608,11 +3608,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
->  
->  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
->  {
-> +	int load_reg;
->  	int err;
->  
->  	switch (insn->imm) {
->  	case BPF_ADD:
->  	case BPF_ADD | BPF_FETCH:
-> +	case BPF_XCHG:
-> +	case BPF_CMPXCHG:
->  		break;
->  	default:
->  		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
-> @@ -3634,6 +3637,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  	if (err)
->  		return err;
->  
-> +	if (insn->imm == BPF_CMPXCHG) {
-> +		/* Check comparison of R0 with memory location */
-> +		err = check_reg_arg(env, BPF_REG_0, SRC_OP);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-
-Need to think a bit more on this, but do we need to update is_reg64() here
-as well?
-
->  	if (is_pointer_value(env, insn->src_reg)) {
->  		verbose(env, "R%d leaks addr into mem\n", insn->src_reg);
->  		return -EACCES;
-> @@ -3664,8 +3674,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  	if (!(insn->imm & BPF_FETCH))
->  		return 0;
->  
-> -	/* check and record load of old value into src reg  */
-> -	err = check_reg_arg(env, insn->src_reg, DST_OP);
-> +	if (insn->imm == BPF_CMPXCHG)
-> +		load_reg = BPF_REG_0;
-> +	else
-> +		load_reg = insn->src_reg;
-> +
-> +	/* check and record load of old value */
-> +	err = check_reg_arg(env, load_reg, DST_OP);
->  	if (err)
->  		return err;
->  
-
-Thanks,
-John
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
