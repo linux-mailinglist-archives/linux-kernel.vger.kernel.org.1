@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7522D362B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AED42D363A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731128AbgLHWXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S1731435AbgLHWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:25:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730450AbgLHWXy (ORCPT
+        with ESMTP id S1730393AbgLHWZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:23:54 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CBFC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:23:13 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id qw4so66974ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:23:13 -0800 (PST)
+        Tue, 8 Dec 2020 17:25:44 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD972C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:25:03 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id v8so10393379vso.2
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vDvIgwM3KYUr0vGzGaIWWHLyAec1spjaULYt1zzdT4s=;
-        b=lcCLQiHgKOnWsKLetWZmR5QtSD6blr1zwiw554WVg0AiNLsDu/kt6/L2pZGQeRHIlR
-         sk4AVKxRad9oVAN0P4xpOslW8DxPRoB5wUGIl/7BR8VDXluBCoCy3GltHE+FXzPRrQxR
-         wQej/D6bXtMRk92njXQqKJZQH8etZbXv83JEtSOT5th+HgexH+PpCMk0aUGWuYCayWqM
-         vOXlOUNv+ppF55wtH9HFHRDVUrwvk/2TbLHkv8ldtjRRWc/2AULYvbscWV+jss9n54tu
-         WpKpNOLYTePYoJy7ePGx930oJcVthHof02l6Ltv8q8N765mB7nbm99dZ7SnDj/JyCKdm
-         eCNA==
+        bh=AxYYdD625aASAaVaKZf+ek64hWUOmEA30M0W7p5diOs=;
+        b=PWCPTPXdf9qzkpa8lQrpH0dg+cA2CjB8tVpfj3R15FX88qylOFpgSJt6UiRye6R/Xi
+         aLLzYbaTq8/LqfFulq/ntwHbHeb7wmAAEBKarvhDc+O1d2rO6Ue+8tP6oQT+UyHlyE2i
+         UnZP7lb07czgcJmcm1C5mfNG8xfH9K7FwigtA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vDvIgwM3KYUr0vGzGaIWWHLyAec1spjaULYt1zzdT4s=;
-        b=WWL9X9PSt9j9pLleQZ1HTAHTpSFyMrYRdBUc0Mb7wwCxQGXExkk9xh/JKve3OI/oyR
-         ZyEM6fpbr22Ztz2y8LfaZvwkGqd3iQ487YVEgrWuQrEF427zFXrB+fA5uuvNUSccjbTu
-         c2BPwxC0UhgWkj+6Ob0WlY5p3TPSrmk1f2FCYz8zGqMPP0tcjeWLsCl5OvF3DMqZziAo
-         wyG+GHY58Rh98KvGQTHrioEfpMT9fg3gXHvRbxZXMSGIjW6iDW43+89DPaaoH0fmGb4h
-         Xi/lVhCE6zYbO9Pldt20RVm7Jsvvs92dyXQ7AqrmCGrw2njn23apsKbF8qZr48XgwcjN
-         EeSw==
-X-Gm-Message-State: AOAM533/PCZmj30CjPm8mGT6I/13Ktm0vGlOHxzUh+AU9g0h9pQ6Hf1G
-        hJV/HL9rcdsIgKZcZl5WiQW0s1RwJFs0hgWDhNFmGA==
-X-Google-Smtp-Source: ABdhPJz7hpkHYZQB8gPmkyjxkrTY7+BAotTEDsjnew5emDltxEq0pnKaMyyY9J6ssfhQwUmQYIos3XCw3hu+XH++d88=
-X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr23993748ejb.264.1607466192389;
- Tue, 08 Dec 2020 14:23:12 -0800 (PST)
+        bh=AxYYdD625aASAaVaKZf+ek64hWUOmEA30M0W7p5diOs=;
+        b=lHjbSAsw4w/RmGWYIhOtQHwrOyZAm7E/ok3J2i0/peGqrsqHbV7u9fCpfpeiJ2yZRt
+         p/YXrEtVHIi0znb/mByqgmskj4wcsH4WHUqlH9EQsDjbIcBsB2X2uZr4SaXOFQT7acYr
+         abKcHUxMHJuZtDI5YIlLjo0gwG/s4/BG5Uzr1GK6f02DdHPb3kIxYu+DXe9XbMbo2sGh
+         f6rVoJf5dKwVrrjQSbwGoYgRAQn+0yA+1uRJDP/nimkyo4yxBdIQIoZw9R6vtzYgxva7
+         XXY4QSdJ6p5QRRNOXvAY4gufsewjkYIL3masPhIPms4qkSeBo7DHGXGBZcT+TC2e8C5p
+         Fm+A==
+X-Gm-Message-State: AOAM532ZYfuyER0AaavfKuZEOqSaWVOQ2x+GNU9BFi8zHlMwsxwyxgGW
+        SzWCFr0biosCeWNQhHTTZAHX+tBw8RXyhw==
+X-Google-Smtp-Source: ABdhPJyjCVC2FCs9Vby3nXEuZ9xQPJkAnvhKLcFN5R5flg6ql4Fjfo2TBbTom+DkXnp3k+JaqjfsYA==
+X-Received: by 2002:a67:89c8:: with SMTP id l191mr279116vsd.8.1607466302718;
+        Tue, 08 Dec 2020 14:25:02 -0800 (PST)
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com. [209.85.221.172])
+        by smtp.gmail.com with ESMTPSA id s6sm31286vkk.20.2020.12.08.14.25.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 14:25:01 -0800 (PST)
+Received: by mail-vk1-f172.google.com with SMTP id i62so71468vkb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:25:01 -0800 (PST)
+X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr214325vka.17.1607466301140;
+ Tue, 08 Dec 2020 14:25:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207225703.2033611-1-ira.weiny@intel.com> <20201207225703.2033611-3-ira.weiny@intel.com>
- <20201207232649.GD7338@casper.infradead.org> <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org> <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
- <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com> <20201208215028.GK7338@casper.infradead.org>
-In-Reply-To: <20201208215028.GK7338@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 8 Dec 2020 14:23:10 -0800
-Message-ID: <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201202200252.986230-1-swboyd@chromium.org>
+In-Reply-To: <20201202200252.986230-1-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 8 Dec 2020 14:24:49 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VQ5GxedWDm6cFfTirEFCS2Mmb--Ey8s_cnSyPSE3MPmA@mail.gmail.com>
+Message-ID: <CAD=FV=VQ5GxedWDm6cFfTirEFCS2Mmb--Ey8s_cnSyPSE3MPmA@mail.gmail.com>
+Subject: Re: [PATCH v3] iio: sx9310: Fix semtech,avg-pos-strength setting when
+ > 16
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 1:51 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Dec 08, 2020 at 01:32:55PM -0800, Ira Weiny wrote:
-> > On Mon, Dec 07, 2020 at 03:49:55PM -0800, Dan Williams wrote:
-> > > On Mon, Dec 7, 2020 at 3:40 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Mon, Dec 07, 2020 at 03:34:44PM -0800, Dan Williams wrote:
-> > > > > On Mon, Dec 7, 2020 at 3:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > > >
-> > > > > > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> > > > > > > +static inline void memcpy_page(struct page *dst_page, size_t dst_off,
-> > > > > > > +                            struct page *src_page, size_t src_off,
-> > > > > > > +                            size_t len)
-> > > > > > > +{
-> > > > > > > +     char *dst = kmap_local_page(dst_page);
-> > > > > > > +     char *src = kmap_local_page(src_page);
-> > > > > >
-> > > > > > I appreciate you've only moved these, but please add:
-> > > > > >
-> > > > > >         BUG_ON(dst_off + len > PAGE_SIZE || src_off + len > PAGE_SIZE);
-> > > > >
-> > > > > I imagine it's not outside the realm of possibility that some driver
-> > > > > on CONFIG_HIGHMEM=n is violating this assumption and getting away with
-> > > > > it because kmap_atomic() of contiguous pages "just works (TM)".
-> > > > > Shouldn't this WARN rather than BUG so that the user can report the
-> > > > > buggy driver and not have a dead system?
-> > > >
-> > > > As opposed to (on a HIGHMEM=y system) silently corrupting data that
-> > > > is on the next page of memory?
-> > >
-> > > Wouldn't it fault in HIGHMEM=y case? I guess not necessarily...
-> > >
-> > > > I suppose ideally ...
-> > > >
-> > > >         if (WARN_ON(dst_off + len > PAGE_SIZE))
-> > > >                 len = PAGE_SIZE - dst_off;
-> > > >         if (WARN_ON(src_off + len > PAGE_SIZE))
-> > > >                 len = PAGE_SIZE - src_off;
-> > > >
-> > > > and then we just truncate the data of the offending caller instead of
-> > > > corrupting innocent data that happens to be adjacent.  Although that's
-> > > > not ideal either ... I dunno, what's the least bad poison to drink here?
-> > >
-> > > Right, if the driver was relying on "corruption" for correct operation.
-> > >
-> > > If corruption actual were happening in practice wouldn't there have
-> > > been screams by now? Again, not necessarily...
-> > >
-> > > At least with just plain WARN the kernel will start screaming on the
-> > > user's behalf, and if it worked before it will keep working.
-> >
-> > So I decided to just sleep on this because I was recently told to not introduce
-> > new WARN_ON's[1]
-> >
-> > I don't think that truncating len is worth the effort.  The conversions being
-> > done should all 'work'  At least corrupting users data in the same way as it
-> > used to...  ;-)  I'm ok with adding the WARN_ON's and I have modified the patch
-> > to do so while I work through the 0-day issues.  (not sure what is going on
-> > there.)
-> >
-> > However, are we ok with adding the WARN_ON's given what Greg KH told me?  This
-> > is a bit more critical than the PKS API in that it could result in corrupt
-> > data.
->
-> zero_user_segments contains:
->
->         BUG_ON(end1 > page_size(page) || end2 > page_size(page));
->
-> These should be consistent.  I think we've demonstrated that there is
-> no good option here.
+Hi,
 
-True, but these helpers are being deployed to many new locations where
-they were not used before.
+On Wed, Dec 2, 2020 at 12:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> This DT property can be 0, 16, and then 64, but not 32. The math here
+> doesn't recognize this slight bump in the power of 2 numbers and
+> translates a DT property of 64 into the register value '3' when it
+> really should be '2'. Fix it by subtracting one more if the number being
+> translated is larger than 31. Also use clamp() because we're here.
+>
+> Cc: Daniel Campello <campello@chromium.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
+> Changes from v2 (https://lore.kernel.org/r/20201120182944.543428-1-swboyd@chromium.org):
+>  * Use clamp()
+>  * Add comment to clarify
+>
+> Changes from v1 (https://lore.kernel.org/r/20201120073842.3232458-1-swboyd@chromium.org):
+>  * Changed ternary to consider 17 to 31 as the same as 16
+>
+>  drivers/iio/proximity/sx9310.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
