@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D19C2D2CC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFFA2D2CB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgLHOMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:12:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729749AbgLHOMQ (ORCPT
+        id S1729644AbgLHOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:11:41 -0500
+Received: from us-smtp-delivery-162.mimecast.com ([216.205.24.162]:23806 "EHLO
+        us-smtp-delivery-162.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729570AbgLHOLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:12:16 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09600C0619DB
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:10:49 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id y16so19606113ljk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2ColZvFMxeBX2F8jNmrJL1c8E3SYpy08jyj4gqYNN2Q=;
-        b=F/qSEHHimCf8rH5UvNdUHXdgEwBU/rlqYccUOT2bxodbri/gk8Sqdibs2NMzsEAzcO
-         4fhuiTBh6X4oPFv+D/gcuFPlTIPxOnCo4aG7Ug774m46ZqCtdh/SpQLhZupl49F9snVP
-         NmCHLqUJtiVHRKBdHRKM+2zhZjQq/e0bc+w9x2tYgEAQzp6jMn+B34IavMEOChJn8xIS
-         fcJsg60GI2pDYzfwYtgm15jMZ5Bx1KqMBii7Wc6NPAY/c3x6+WED5RWHnluhJ277kGvd
-         fI17OZy2hTIKsgJk915wEy8Cm5yboxfD7X3jvKgO+whSRnemVeNclz5Cyb13d6StDetT
-         XF5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2ColZvFMxeBX2F8jNmrJL1c8E3SYpy08jyj4gqYNN2Q=;
-        b=CfLaRNNwkLQ8pUNuw45/1gmGrYZU2SnbNbLSOy9TOXL/cVmqiCCFb+GtMjddgCyfTB
-         OK9/RnvC2aHJYhVg1dyPsB8SiinXzcBad2W/lVPLojdCr0EYdSvnapOhEogk2T5Lo8DA
-         EX9GZ2Uqy247CVDP6RzMJ3AYKYiYlycmAzANQHRQFlglimw6dnxDYIOudlMM6UI2JuP/
-         IUJB7A1PN3u7A2aUM7KdX+qII1aoT3EA8kCjGGQFsBP6OdKwvBlsWTBoqmp/2e+l7xnd
-         rZs96asG54UrFs6K/n4NHUd5YqeaEeubMDi4COSh2H7/4ZV76/DjEnjAwSdjNo/3sPyF
-         nyCw==
-X-Gm-Message-State: AOAM531sN7NubaCsEHN7QNIHo3ChHjn1m3sBScr4K8JSFEKa6riXXme+
-        Ts5GAUwtOuaj31i1KXi3aP9qgw==
-X-Google-Smtp-Source: ABdhPJwqXbavh17S7UTzCBV4act1/virkJITv41YRbvHOFx1U7eHC/c5oyg1pfML1LrsGvfd8ErFug==
-X-Received: by 2002:a05:651c:113c:: with SMTP id e28mr2820609ljo.252.1607436647436;
-        Tue, 08 Dec 2020 06:10:47 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id h23sm417017ljh.115.2020.12.08.06.10.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 06:10:46 -0800 (PST)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, robh+dt@kernel.org, s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, praneeth@ti.com,
-        rogerq@ti.com
-Subject: [PATCH v4 6/6] remoteproc: pru: Add support for various PRU cores on K3 J721E SoCs
-Date:   Tue,  8 Dec 2020 15:10:02 +0100
-Message-Id: <20201208141002.17777-7-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
-References: <20201208141002.17777-1-grzegorz.jaszczyk@linaro.org>
+        Tue, 8 Dec 2020 09:11:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
+        t=1607436613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BXu0V4t6ivgnHmivmqUZm/vC38B7H6rpY1ftR4Vv25M=;
+        b=DMOG2iDItHybpn7OULXShP9PO5g/6rm0Mv9A+AORxQNefc5V3V8ggilh/7/dRI2yqSAmeJ
+        noYGul8rLKe/Q7qPkFdK2y+idO1HNUSh+0b1JQnLQ39HHlzzJPE6ybTzbWrDPR3s2wU9Pa
+        f+VUVedfG1YRJfVX3B14YeTH+uH0Hbw=
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-uIdgjNI3N6uXoocY3YymXA-2; Tue, 08 Dec 2020 09:10:12 -0500
+X-MC-Unique: uIdgjNI3N6uXoocY3YymXA-2
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:7712::13) by TU4PR8401MB0477.NAMPRD84.PROD.OUTLOOK.COM
+ (2a01:111:e400:770c::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 8 Dec
+ 2020 14:10:06 +0000
+Received: from TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fd25:5d10:75b:4dc0]) by TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::fd25:5d10:75b:4dc0%11]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
+ 14:10:06 +0000
+From:   "Bhat, Jayalakshmi Manjunath" <jayalakshmi.bhat@hp.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Subject: How do I read kernel audit messages using NETLINK_AUDIT in user space
+Thread-Topic: How do I read kernel audit messages using NETLINK_AUDIT in user
+ space
+Thread-Index: AdbNa0m6lK+NIRfeTgKILQO3WoEFmw==
+Date:   Tue, 8 Dec 2020 14:10:06 +0000
+Message-ID: <TU4PR8401MB1216414768A3A701B2CA6BDFF6CD0@TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [49.207.219.217]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7f7d1d28-a5ff-478e-673a-08d89b82f716
+x-ms-traffictypediagnostic: TU4PR8401MB0477:
+x-microsoft-antispam-prvs: <TU4PR8401MB0477A34E65273F6F3FFE4741F6CD0@TU4PR8401MB0477.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:5797
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: 1wvKSPrVe8lbm3zsN6fYMFoirgmQlrSwXuLHyrhPwhREuvu6f3Tx6F4WNSGsJi+NCNEH39G0oG3wIwMiJvKMfSgi3DhY2r68+08tjWaAjlUafRmChwi1DCf2IMZIhwBrI1vr3LtUg8JmhFjjPnw/pEo23+2NYJvYOUsWoSfK+Gl/CeM914QHxhl1GF9t3xLNMRDi+tN1mpx1Kz/OfVX4/Ys5Rv+CIpMm7F1LuaieraODTQhZQiRW5b6A8YWkQmvfuM5L1+/Q712BRNHWmPs6T9SC1MNYn7QfHJug/utKwevEx5ds57BKE+fH138b8eHw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(376002)(39860400002)(346002)(450100002)(15650500001)(52536014)(83380400001)(6506007)(110136005)(55236004)(8676002)(478600001)(66476007)(86362001)(66946007)(33656002)(2906002)(66446008)(9686003)(186003)(71200400001)(5660300002)(55016002)(7696005)(76116006)(66556008)(8936002)(26005)(316002)(64756008);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?EAkqEWMA0N/I4Hedd/pr8ei8JrdrkPojhRI8MQ86R0es7Czh+TBSmkTGlP3/?=
+ =?us-ascii?Q?gyu5P13cMYr1q6WOdkOZpvv+o3QJQq+/Ddh/jLFKRD2LN/e7XcOR6wYctelt?=
+ =?us-ascii?Q?GpaovR+u6TjTydC5eRaN1y6VN4O9aVQPBzs1qmarG6RtCMHqlY7E4zSP47e3?=
+ =?us-ascii?Q?RwUdSKimCB9t4WnhhsqZ/qn4IX6/yDk29CPL/701lf7woY+1G4+JF1UNLD32?=
+ =?us-ascii?Q?qwfkdFLD3v19SC9DWMrxpu+hJWOnm+96+Z/0aMaeg3x0tffxxylDHozLh1f8?=
+ =?us-ascii?Q?mDC7Y1amw8o00gr7nfDt4b9bQBp+zmpbZ090QWccn+1jZKz8Nat+m6G8uPda?=
+ =?us-ascii?Q?rVrrad5YK/SnijOOUWto+S121AVfffvY6mL4J19nSAYP/U9O6zUOOjniX2O9?=
+ =?us-ascii?Q?ca4w9KxlJVAJEYAlWYM2Z9oxSDlGfIr7i/5SaOnaurRymySl8rCx6uPe0q+R?=
+ =?us-ascii?Q?j4D68kklcnESyOG0Xu1vCus2n/Cb3dU/3j7QcjiFhxRVVyhF0z7R4Uc/vybT?=
+ =?us-ascii?Q?cL6KFpUJWJjP6VHDtjhcbH4kQDyjm+rKDCbH9NEQ0ghTf8w6yxl+PXxZmmU1?=
+ =?us-ascii?Q?tiAhVZ9lzv9qST7uq68wQoK9z1rtzxH16jqjcu5ZtG7o6mF+t5kOMFwEPGty?=
+ =?us-ascii?Q?/VQEl8Tc/cg9BUCXcLe6d55QTeikGglF5dpJPOLw22oMqFuG+3aD0Hmrnetf?=
+ =?us-ascii?Q?pyyUFEdVph8MvTlO2JXr6khkGYqn4FIS+apu44Gqs2YC1cV1rkfgvaA1ym5r?=
+ =?us-ascii?Q?A2QxBbKgFMogNpC/390UeYj/1YkqO8NEgfAWO8yCMQyhe26FYNEjs5U0ZC2j?=
+ =?us-ascii?Q?m9Uvr+MO5sH2ZpDdPn3ebQB3f+8cWAEh/e1l8pC+2OdP7nDnUqMaSeHqx8Gg?=
+ =?us-ascii?Q?d4q3sNCJNLz6jEr2MC75Tw09W2wIfsQkIY/SMQmGeMqNMz4gNwwXbiLZekzW?=
+ =?us-ascii?Q?ShBXF5XB0tmz5Or0OWefyiWNXUdynLE9G5/4qsw1wHY=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: hp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TU4PR8401MB1216.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f7d1d28-a5ff-478e-673a-08d89b82f716
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 14:10:06.5539
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mqPyPCQExtQOtQwLb6BSXCvcysLLa+x7/t8HbhG0YhNKnfVQAQvbDUePT0EgkkEnlWugF9ca0CQ3ZY9zv7k3RA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TU4PR8401MB0477
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA62A171 smtp.mailfrom=jayalakshmi.bhat@hp.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hp.com
+Content-Language: en-US
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+Hi All,
 
-The K3 J721E family of SoCs have a revised version of the AM65x ICSSG IP
-and contains two instances of this newer ICSSG IP. Each ICSSG processor
-subsystem contains 2 primary PRU cores, 2 auxiliary PRU cores called RTUs,
-and 2 new auxiliary cores called Transmit PRUs (Tx_PRUs).
+I am trying to read kernel audit messages specially generated by XFRM in us=
+er space. I wrote Netlink client stub to read the audit message as below. B=
+ut the call recvfrom gets blocked indefinite.
+Can any one tell me what am I doing wrong?
 
-Enhance the existing PRU remoteproc driver to support these new PRU
-and RTU cores by using specific compatibles. The cores have the same
-memory copying limitations as on AM65x, so reuses the custom memcpy
-function within the driver's ELF loader implementation. The initial
-names for the firmware images for each PRU core are retrieved from
-DT nodes, and can be adjusted through sysfs if required.
+Regards,
+Jayalakshmi
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
-v3->v4:
-- No changes.
+#include <sys/socket.h>
+#include <linux/netlink.h>
+#include <stdio.h>
+#include <malloc.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-v2->v3:
-- Add Reviewed-by: tag
----
- drivers/remoteproc/pru_rproc.c | 3 +++
- 1 file changed, 3 insertions(+)
+int main()=20
+{
+  int fd =3D socket(AF_NETLINK, SOCK_RAW, NETLINK_AUDIT);
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index 421ebbc1c02d..2667919d76b3 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -850,6 +850,9 @@ static const struct of_device_id pru_rproc_match[] = {
- 	{ .compatible = "ti,am654-pru",		.data = &k3_pru_data },
- 	{ .compatible = "ti,am654-rtu",		.data = &k3_rtu_data },
- 	{ .compatible = "ti,am654-tx-pru",	.data = &k3_tx_pru_data },
-+	{ .compatible = "ti,j721e-pru",		.data = &k3_pru_data },
-+	{ .compatible = "ti,j721e-rtu",		.data = &k3_rtu_data },
-+	{ .compatible = "ti,j721e-tx-pru",	.data = &k3_tx_pru_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, pru_rproc_match);
--- 
-2.29.0
+  if (fd < 0) {
+    printf("Socket creation failed. try again\n");
+  }
+  else
+  {
+=09struct sockaddr_nl src_addr;
+=09struct sockaddr_nl dest_addr;
+=09struct iovec iov;
+=09struct msghdr msg;
+=09struct nlmsghdr *nlh =3D(struct nlmsghdr *) malloc(NLMSG_SPACE(1024));
+=09
+=09memset(nlh, 0, NLMSG_SPACE(1024));
+=09memset(&iov, 0, sizeof(iov));
+
+=09nlh->nlmsg_len   =3D NLMSG_SPACE(1024);
+=09nlh->nlmsg_pid   =3D getpid();
+=09nlh->nlmsg_flags =3D 0;
+
+=09src_addr.nl_family  =3D AF_NETLINK;
+=09src_addr.nl_pid     =3D getpid();
+=09src_addr.nl_groups  =3D 0;
+
+=09bind(fd, (struct sockaddr *)&src_addr, sizeof(src_addr));
+
+=09iov.iov_base =3D (void *)nlh; =20
+=09iov.iov_len =3D nlh->nlmsg_len; =20
+
+=09msg.msg_name =3D (void *)&src_addr;
+=09msg.msg_namelen =3D sizeof(src_addr);
+=09msg.msg_iov =3D &iov;
+=09msg.msg_iovlen =3D 1;
+ =20
+    recvfrom(fd, &msg,sizeof(msg),0,(struct sockaddr *) &dest_addr,sizeof(d=
+est_addr));
+    printf("Received message: %s\n", (char *)NLMSG_DATA(nlh));
+    close(fd);
+}
 
