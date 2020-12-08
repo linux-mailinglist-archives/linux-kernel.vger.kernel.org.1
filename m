@@ -2,178 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CDB2D2651
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A812D2656
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgLHIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:37:10 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:12559 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgLHIhJ (ORCPT
+        id S1728381AbgLHIhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:37:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23743 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728364AbgLHIhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:37:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607417219; x=1638953219;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=q1DH6kRuyviLmTYp38knzwXFGKa/OX2gmvXYF9HACHo=;
-  b=aH2Khs1cJ/FF4bbJcuIl/ocvqGn02yK3pmdmKTXnq89XfHNdcaOr+sFk
-   baYUJT/mQ1MNiq9Cnw/j0hokKSuilS1xOWX19WALn6DiZmzjJdIsixvkN
-   ybJoAAsvgqQNLvUGlyRDUnGSY6VKlno/x0jH5TNdCcn8iWiCwk2Pi0vF1
-   MhVxvKgB8st/nt3dlXhEqmCvwp6ov2TvlJlaMYmm0AYQkDIok8oHJ75rD
-   RcnmToMTMP0qInUpPTIxrsoa5ZnrQufec6Re7u+LC5DnE/17PvMTB8ePo
-   7DSPXKB92sDxAljRNJ8pNLxuPCH7Zd9EDElA7cgbbIFX/AQSKvA782uE8
-   g==;
-IronPort-SDR: HyB+qzGtRsSaeD1G0y7UDw2EAKBs6pvZ1Nm2NwMj9wlftayFjYjl05JqGV/+rjGFXMR3SeM5W2
- 1Hl/09Yy6shGqnxBbEahqr2zqw6hGTivTOw/+dFtC5E0kZnq00X9BYtMSefUTTO8r2HE1ijHiG
- v6oJEKjesUsk7tVIbu/vXz211BTfABg8LhW9gTj6qI3n1gQJ6S8oxn43puolx279giVV7bb31Q
- DKRghU4Is9rlatKyOj3P+MjUzmepwQTeHA1PHYBlRklAT+iIzxSvjZ9xDOVOzlSmFYcqoF9tdG
- z0s=
-X-IronPort-AV: E=Sophos;i="5.78,402,1599494400"; 
-   d="scan'208";a="258387568"
-Received: from mail-cys01nam02lp2052.outbound.protection.outlook.com (HELO NAM02-CY1-obe.outbound.protection.outlook.com) ([104.47.37.52])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Dec 2020 16:45:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mjbxGnBxUxI++I5oYm7YkvBVWHWIOOHMEbH0G2h1Is20hWRJfY1dyzmpwJIjS4Bti3TB8zAC/qHxr+rd36xRwfUCeiwuODvw1r3+7zzKU5+Ce/0FWaLez6gP4mODxgat+9GzoBiGUZCOq5+OVcRtEj4+9l2l3gSrjtARix1qqE7sAS+Avah92sgC8vtfkCTmnhseP88XlQSCwszusd/l09Wai167oYEiYsTrrib1u9t0ywe+wRWJesnI21Rpf/Nm5C+1pPe60E2z8Fojlel4ZDhXVZarDFHSxHx+uIM8MS+YWc2ssICEOq6NW7mAoeu+AZEodkW73fZ03SJETSugDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q1DH6kRuyviLmTYp38knzwXFGKa/OX2gmvXYF9HACHo=;
- b=P5DVWUijL0VSm+TL9hjjKdgvBGJ4WzW7ly0Rp60d1UJw6RGVNanWeUYXbQm49LF/ytryTUpJD4FhFdddXjJTN17fPUT2Zp7MbL1ficDYL3ApdWZwCWHMWKZoeckkI44rxCK1qnndPYHnNFhl46AVC53lCGNs7XyBpWEnysSxvW5fQq7NQZwR7ozyT9SRM8WlbfyDoKzDxFL6ve2jaTmybq+I4WvinSBBQT1wkw5UN09AprN6QpMALtMZDVxwV0weFYlhoiFJ46NpvTvaTCG+brnzgMBjitpyRs7PBtxvs7owt//22TmygvGsib5cHgl6Gb38Vh0yGiqpXF6NmErysw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q1DH6kRuyviLmTYp38knzwXFGKa/OX2gmvXYF9HACHo=;
- b=DKnwiJaS/4Lk4nzitDfK7EssMd8K+mndiublIsWF58JtbY9HBPGN1nO+DAv+YkFXTmmDu2I6APIpua9JHhi7PaLnXW4rcFAQChtUEExvnrc1jCtNmsM1y+paOcXpJUs0TLSXMn8D3qr06u70f2qywmCBd7eHmJsWeCUqiJjdKCo=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB4425.namprd04.prod.outlook.com (2603:10b6:5:a1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.18; Tue, 8 Dec 2020 08:35:57 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 08:35:57 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bean Huo <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>
-Subject: RE: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-Thread-Topic: [PATCH v1 3/3] scsi: ufs: Make UPIU trace easier differentiate
- among CDB, OSF, and TM
-Thread-Index: AQHWy+7VP58/cpTtqkiyF4OIctzYqqnrRKJQgAA3pwCAAWEF4A==
-Date:   Tue, 8 Dec 2020 08:35:57 +0000
-Message-ID: <DM6PR04MB65757385EE651DBAAC468BD1FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20201206164226.6595-1-huobean@gmail.com>
-         <20201206164226.6595-4-huobean@gmail.com>
-         <DM6PR04MB6575197B8626D3F91C9231C4FCCE0@DM6PR04MB6575.namprd04.prod.outlook.com>
- <c4333f6ad6172d991f6afdaea3698c75fb0f7c36.camel@gmail.com>
-In-Reply-To: <c4333f6ad6172d991f6afdaea3698c75fb0f7c36.camel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 597fa360-f4ad-45d7-66d7-08d89b5448cb
-x-ms-traffictypediagnostic: DM6PR04MB4425:
-x-microsoft-antispam-prvs: <DM6PR04MB4425AD1198C24A65F806F455FCCD0@DM6PR04MB4425.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IWJfVJsGEtMi5UnM7fo+WR24RrGK56lE2B4Ikn2Qb1xrG26Ays1P3FfqA3p0b8+kfQ4oVv+N5T1EIre1qHHY65ePtj6GOUW4v3Rs5xRdEJLpL6qI0DDRUIIA47Lp70HMdnntJvsatDqOWk8i8x55LqCXtAyQXncGTJVoRuzNZbmVBL4DQNyYisMnEdv+BOc18OmgjWtc9EAApB80ftivRbu+JSoIytpt6xZkIAQCEVrNJ0hOGT1Wl3ulRxb32sIrs1yROzO5dYiXPK+Z5H0kjNFfuBLaTQnsppcCsSwx/EnKIDgAYZssXZegAIOp+IPY833M4rVbWQbJ6ceLDgbeX79W9S7nXjBRvuLBkOkyuuL1bzMCm0VF7Dz2mGTC29I8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(396003)(376002)(136003)(64756008)(26005)(71200400001)(55016002)(7696005)(478600001)(83380400001)(110136005)(7416002)(2906002)(66446008)(76116006)(4326008)(86362001)(186003)(9686003)(33656002)(8676002)(8936002)(66556008)(52536014)(6506007)(66476007)(66946007)(921005)(54906003)(5660300002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Q004cFJtQUg1MTdUWGQ0a1A2ZFRXQXd4SUo2Wld4dkRGeUtKOEFzZ1N4VW1E?=
- =?utf-8?B?OUVWNmFoUEM1R1BNU290OCt6RDFyZWh0T25HeEhwQXd1RzFNT0kvZGgzV3I4?=
- =?utf-8?B?Mno0eXlPVzhOMFUzN1hqR3liMVhjMXh3Y3hxR21UdU1wcmpmMnFuVlVWeFRa?=
- =?utf-8?B?Nml4ejJUMkZTWmlWSE1EQjdLNUcxR01kaFZHdHlFV0VDWEtvazdDamFVREdi?=
- =?utf-8?B?WFU1TWViTzltTVVNRUpUcjcrYTAxSSt3U0N2ZlJpNGxqc05RNEsyRGp1SWRm?=
- =?utf-8?B?UVFqOHRKdWtCckIxcnl0c1huSERNVGZTNDdQNkEyeTZWVWlEYmExb080Mlov?=
- =?utf-8?B?SUJVbnF4eUZUb0NPM05QZ2xnc2MyNkNPNVdXbGpkRUpVd1VhcUkvOEFPaktB?=
- =?utf-8?B?djFhSHQ3SzJudWRlK2hCNEt4dVFORlFNcmMxUnNTR3EvR3NiYkpIVXlZaTA0?=
- =?utf-8?B?WkVheW1IZ2oxbHRtaWZXczJkQ2s4cHJOK2loVVpMZjdiNnFsR1hSZE9oMTc1?=
- =?utf-8?B?VlJxa2IxQlZ0VzJwT0xNMDJlendsVUlHU3dNcGFhcWFEazF1K29MRWZMdUY3?=
- =?utf-8?B?VWVsaGF4anFUeXJsV1YrcWNnNURJZVdiWmwxZG9BdmJBTXFBSVNySzRmTVU2?=
- =?utf-8?B?amhDaDluL2pJVWlaOU4wcG8wOUNkbWIydVpZc1J2bEh3WXV2MzhpSUczdjhB?=
- =?utf-8?B?bG00YWtrclZNTk94My8rSHhibmJDWGZ2NEtzaWY1N2F1RGNGN2Jlb0REQ280?=
- =?utf-8?B?K0E1czNnQm9rTW85UEVldkZWcFBsdXVmVWVMcnpmcFVDMFZ2SXdBeldKdnZ3?=
- =?utf-8?B?RXdINTgybjVScUdyeXZadWhNWFBZZFIyYUNPKzFGS1YzVUg4Z3d6SGo3Wnd6?=
- =?utf-8?B?QnNGNE5Wbkp3OGJqWW13SEJVVmp5UDg2M2NwRE9OaUt4VFdwdFBUdzViUzR4?=
- =?utf-8?B?S0dzbmtzZzJDZ1p4ZWR5ZlZJd0dGQVJSU3NLNTZtNmFFTi9aS0NRUlBlZEdO?=
- =?utf-8?B?VXoybXp0UDFFV3E5Q2FGMmZ0UXJjUGNuNHZMeHQzWng4R0ZRV0V1bW1QVEJ2?=
- =?utf-8?B?QWtIV1FzajAxTXY4NklSNDU0T0xZaW51ZVgrb2RMTEc4U2xHQXVaVVpHbVdH?=
- =?utf-8?B?STJZSVl2Mk9SaXJhdmNDRGZrd3paMkUwcXhNSnlWVWRQTHhRdGR4aHZKMTBt?=
- =?utf-8?B?VXlJcEQrMFB0NGpZYnNTcWZwdURiQXZwUUUxeVc4U3N5cWdxbTZFRTA4RGFl?=
- =?utf-8?B?RWF0cjNEcWtOVWZEcSs3aVZtQW5aOU9yRlg5dzZldXJZN2ZxeVVGd3FyNG9x?=
- =?utf-8?Q?W6Rf8TOJk6N+c=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 8 Dec 2020 03:37:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607416567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0DvwN+nbpM7GczMlB5PaNqfbUXqBsL7aXUwvB7aLZR4=;
+        b=WC1vYy7Zwia9RI9KbcpXEZT3HwXd9L/U+Ep6I3GCAYciol1GAcTdYA4ztBOzr+ZHY8FaEv
+        lIomJnghxhYN70y9PCYPSjh48n5C1N6aUoq3Pk14QFOsimFyeeLwmWSlAhBRS1pG43CghN
+        uvrbvMndemReJt5v1TcTN8AzPwyUmGo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-dxz25ZAtOHqbSlHdfc70PQ-1; Tue, 08 Dec 2020 03:36:05 -0500
+X-MC-Unique: dxz25ZAtOHqbSlHdfc70PQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F77380EDA3;
+        Tue,  8 Dec 2020 08:36:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 99B985D6AB;
+        Tue,  8 Dec 2020 08:36:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org>
+References: <6db2af99-e6e3-7f28-231e-2bdba05ca5fa@infradead.org> <0000000000002a530d05b400349b@google.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     dhowells@redhat.com,
+        syzbot <syzbot+86dc6632faaca40133ab@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: memory leak in generic_parse_monolithic [+PATCH]
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 597fa360-f4ad-45d7-66d7-08d89b5448cb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 08:35:57.2996
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RSDrradbLfSwqofbMcWtm7D2VgF+2vAigX4LqjbZRsdf/CrlVOxjxdIabHUCRClT4yt1aZlAgQ1q9BhU1Hpy6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4425
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <928042.1607416561.1@warthog.procyon.org.uk>
+Date:   Tue, 08 Dec 2020 08:36:01 +0000
+Message-ID: <928043.1607416561@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gT24gTW9uLCAyMDIwLTEyLTA3IGF0IDA3OjU3ICswMDAwLCBBdnJpIEFsdG1hbiB3cm90
-ZToNCj4gPiA+ICAgICAgICAgIFRQX3ByaW50aygNCj4gPiA+IC0gICAgICAgICAgICAgICAiJXM6
-ICVzOiBIRFI6JXMsIENEQjolcyIsDQo+ID4gPiArICAgICAgICAgICAgICAgIiVzOiAlczogSERS
-OiVzLCAlczolcyIsDQo+ID4gPiAgICAgICAgICAgICAgICAgIF9fZ2V0X3N0cihzdHIpLCBfX2dl
-dF9zdHIoZGV2X25hbWUpLA0KPiA+ID4gICAgICAgICAgICAgICAgICBfX3ByaW50X2hleChfX2Vu
-dHJ5LT5oZHIsIHNpemVvZihfX2VudHJ5LT5oZHIpKSwNCj4gPiA+ICsgICAgICAgICAgICAgICBf
-X2dldF9zdHIodHNmX3R5cGUpLA0KPiA+DQo+ID4gVGhpcyBicmVha3Mgd2hhdCBjdXJyZW50IHBh
-cnNlcnMgZXhwZWN0cy4NCj4gPiBXaHkgc3RyIGlzIG5vdCBlbm91Z2ggdG8gZGlzdGluZ3Vpc2gg
-YmV0d2VlbiB0aGUgY29tbWFuZD8NCj4gPg0KPiA+IFRoYW5rcywNCj4gPiBBdnJpDQo+IA0KPiBI
-aSBBdnJpDQo+IFR0IGRvbmVzbid0IGJyZWFrIG9yaWdpbmFsIENEQiBwYXJzZXIuIGZvciB0aGUg
-Q0RCLCBpdCBpcyBzdGlsbCB0aGUNCj4gc2FtZSBhcyBiZWZvcmUuIEhlcmUganVzdCBtYWtlIFRy
-YW5zYWN0aW9uIFNwZWNpZmljIEZpZWxkcyBpbiB0aGUgVVBJVQ0KPiBwYWNrYWdlIG11Y2ggY2xl
-YXJlci4NCkl0IGRvZXMgYnJlYWtzIG91ciBjdXJyZW50IHBhcnNlciB0aGF0IGV4cGVjdHMgIkNE
-QjoiIGZvciBhbGwgdXBpdSB0eXBlcw0KDQo+IA0KPiBJIG1lbnRpb25lZCBpbiB0aGUgY29tbWl0
-cyBtZXNzYWdlOg0KPiANCj4gVHJhbnNhY3Rpb24gU3BlY2lmaWMgRmllbGRzIChUU0YpIGluIHRo
-ZSBVUElVIHBhY2thZ2UgY291bGQgYmUgQ0RCDQo+IChTQ1NJL1VGUyBDb21tYW5kIERlc2NyaXB0
-b3IgQmxvY2spLCBPU0YgKE9wY29kZSBTcGVjaWZpYyBGaWVsZCksIGFuZA0KPiBUTSBJL08gcGFy
-YW1ldGVyIChUYXNrIE1hbmFnZW1lbnQgSW5wdXQvT3V0cHV0IFBhcmFtZXRlcikuIEJ1dCB3ZQ0K
-PiBkaWRuJ3QgZGlmZmVyZW5jaWF0ZSB0aGVtLiB3ZSB0YWtlIGFsbCBvZiB0aGVzZSBhcyBDREIu
-IFRoaXMgaXMgd3JvbmcuDQo+IA0KPiBJIHdhbnQgdG8gbWFrZSBpdCBjbGVhcmVyIGFuZCBtYWtl
-IFVQSVUgdHJhY2UgaW4gbGluZSB3aXRoIHRoZSBTcGVjLg0KPiB3aGF0J3MgbW9yZSwgIGhvdyBk
-byB5b3UgZmlsdGVyIE9TRiwgVE0gcGFyYW1ldGVycyB3aXRoIGN1cnJlbnQgVVBJVQ0KPiB0cmFj
-ZT8geW91IHRha2UgYWxsIG9mIHRoZW0gYXMgQ0RCPyBpZiBzbywgSSB0aGluaywgaXQncyBiZXR0
-ZXIgdG8NCj4gY2hhbmdlIHBhcnNlci4NCkluZGVlZCwgaXQgaXMganVzdCBhIHNtYWxsIGNoYW5n
-ZSwgYnV0IGJyZWFraW5nIHVzZXItc3BhY2UgaXMgbm90IGFuIGFjY2VwdGFibGUgYXBwcm9hY2gu
-DQpBbHNvLCB0aGUgdXBpdSB0cmFjZXIgd2FzIG5ldmVyIG1lYW50IHRvIGJlIGh1bWFuLXJlYWRh
-YmxlOiBpdCBqdXN0IGR1bXAgdGhlIHVwaXUsDQpXaGljaCBjb250YWlucyBhbGwgdGhlIGluZm8g
-cmVxdWlyZWQgdG8gcGFyc2UgaXQgYW55d2F5LA0KU28gYnJlYWtpbmcgdXNlci1zcGFjZSBqdXN0
-IHRvIG1ha2luZyBpdCBtb3JlIHJlYWRhYmxlIGRvZXNuJ3QgcmVhbGx5IG1ha2Ugc2Vuc2U/DQoN
-Ckxvb2tpbmcgYXQgdGhlIHByZXZpb3VzIDIgcGF0Y2hlcyBvZiB0aGlzIHNlcmllcywgSSB3YXMg
-aG9waW5nIHRoYXQgeW91IHdpbGwgZG8gdGhlIHNhbWUgZm9yDQpDb21tYW5kIHVwaXUsIGFzIHdl
-bGw/DQpBZ2FpbiAtIHNhbWUgY29tbWVudDogaWYgeW91IGFyZSBkb2luZyB0aGF0IG5lZWQgdG8g
-Y2hhbmdlIHRoZSBzdHIgbm90IHRvIGJyZWFrIGN1cnJlbnQgcGFyc2Vycy4NCg0KVGhhbmtzLA0K
-QXZyaQ0KDQoNCj4gDQo+IFRoYW5rcywNCj4gQmVhbg0KPiANCj4gDQo+IA0KPiANCj4gDQoNCg==
+Randy Dunlap <rdunlap@infradead.org> wrote:
+
+> Otherwise please look at the patch below.
+
+The patch won't help, since it's not going through sys_fsconfig() - worse, it
+introduces two new errors.
+
+>  		fc->source = param->string;
+> -		param->string = NULL;
+
+This will cause the string now attached to fc->source to be freed by the
+caller.  No, the original is doing the correct thing here.  The point is to
+steal the string.
+
+> @@ -262,7 +262,9 @@ static int vfs_fsconfig_locked(struct fs
+>
+> -		return vfs_parse_fs_param(fc, param);
+> +		ret = vfs_parse_fs_param(fc, param);
+> +		kfree(param->string);
+> +		return ret;
+
+But your stack trace shows you aren't going through sys_fsconfig(), so this
+function isn't involved.  Further, this introduces a double free, since
+sys_fsconfig() frees param.string after it drops uapi_mutex.
+
+Looking at the backtrace:
+
+>      kmemdup_nul+0x2d/0x70 mm/util.c:151
+>      vfs_parse_fs_string+0x6e/0xd0 fs/fs_context.c:155
+>      generic_parse_monolithic+0xe0/0x130 fs/fs_context.c:201
+>      do_new_mount fs/namespace.c:2871 [inline]
+>      path_mount+0xbbb/0x1170 fs/namespace.c:3205
+>      do_mount fs/namespace.c:3218 [inline]
+>      __do_sys_mount fs/namespace.c:3426 [inline]
+>      __se_sys_mount fs/namespace.c:3403 [inline]
+>      __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+
+A couple of possibilities spring to mind from that: maybe
+vfs_parse_fs_string() is not releasing the param.string - but that's not the
+problem since we stole the string and the free is definitely there at the
+bottom of the function:
+
+	int vfs_parse_fs_string(struct fs_context *fc, const char *key,
+				const char *value, size_t v_size)
+	{
+	...
+		kfree(param.string);
+		return ret;
+	}
+
+or fc->source is not being cleaned up in vfs_clean_context() - but that's
+there as well:
+
+	void vfs_clean_context(struct fs_context *fc)
+	{
+	...
+		kfree(fc->source);
+		fc->source = NULL;
+
+In either of these cases, I would expect this to have already become evident
+from other filesystem mounts as there would be a lot of leaking going on,
+particularly with the first.
+
+Now the backtrace only shows what the state was when the string was allocated;
+it doesn't show what happened to it after that, so another possibility is that
+the filesystem being mounted nicked what vfs_parse_fs_param() had rightfully
+stolen, transferring fc->source somewhere else and then failed to release it -
+most likely on mount failure (ie. it's an error handling bug in the
+filesystem).
+
+Do we know what filesystem it was?
+
+David
+
