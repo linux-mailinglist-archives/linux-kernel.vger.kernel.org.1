@@ -2,108 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FA72D2418
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3DE2D2443
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgLHHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:14:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:43164 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbgLHHOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:14:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48A8231B;
-        Mon,  7 Dec 2020 23:13:28 -0800 (PST)
-Received: from [10.57.34.152] (unknown [10.57.34.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26F033F718;
-        Mon,  7 Dec 2020 23:13:26 -0800 (PST)
-Subject: Re: [PATCH v4 1/4] dt-bindings/opp: Update documentation for
- opp-shared
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
- <20201202172356.10508-2-nicola.mazzucato@arm.com>
- <20201208042924.kv7tqsbstoanqham@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <bfb6a380-645e-d721-4610-be73ab4f2dcd@arm.com>
-Date:   Tue, 8 Dec 2020 07:15:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726993AbgLHHV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:21:59 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9032 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726698AbgLHHV7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:21:59 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Cqs646G7rzhpK9;
+        Tue,  8 Dec 2020 15:20:44 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 8 Dec 2020 15:21:05 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>
+CC:     <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
+Subject: [PATCH v6] coresight: etm4x: Modify core-commit of cpu to avoid the overflow of HiSilicon ETM
+Date:   Tue, 8 Dec 2020 15:19:20 +0800
+Message-ID: <1607411960-54363-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20201208042924.kv7tqsbstoanqham@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+The ETM device can't keep up with the core pipeline when cpu core
+is at full speed. This may cause overflow within core and its ETM.
+This is a common phenomenon on ETM devices.
 
-thanks for your comments. I will update subject and content as you suggested.
+On HiSilicon Hip08 platform, a specific feature is added to set
+core pipeline. So commit rate can be reduced manually to avoid ETM
+overflow.
 
-Regards,
-Nicola
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+---
+Change since v1:
+- add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+  to keep specific feature off platforms which don't use it.
+Change since v2:
+- remove some unused variable.
+Change since v3:
+- use read/write_sysreg_s() to access register.
+Change since v4:
+- rename the call back function to a more generic name, and fix some
+  compile warnings.
+Change since v5:
+- add function comments about HISI_HIP08_CORE_COMMIT_REG, and use
+  explicitly masked values when update register.
 
-On 12/8/20 4:29 AM, Viresh Kumar wrote:
-> Subject should rather be:
-> 
-> dt-bindings: opp: Allow empty OPP tables
-> 
-> On 02-12-20, 17:23, Nicola Mazzucato wrote:
->> Currently the optional property opp-shared is used within an opp table
->> to tell that a set of devices share their clock/voltage lines (and the
->> opp points).
->> It is therefore possible to use an empty opp table to convey only that
->> information, useful in situations where the opp points are provided via
->> other means (hardware. firmware, etc).
->>
->> Update the documentation to remark this additional case and provide an
->> example.
->>
->> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
->> ---
->>  Documentation/devicetree/bindings/opp/opp.txt | 53 +++++++++++++++++++
->>  1 file changed, 53 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
->> index 9847dfeeffcb..a5f1f993eab9 100644
->> --- a/Documentation/devicetree/bindings/opp/opp.txt
->> +++ b/Documentation/devicetree/bindings/opp/opp.txt
->> @@ -72,6 +72,9 @@ Optional properties:
->>    switch their DVFS state together, i.e. they share clock/voltage/current lines.
->>    Missing property means devices have independent clock/voltage/current lines,
->>    but they share OPP tables.
->> +  This optional property can be used without any OPP nodes when its only purpose
->> +  is to describe a dependency of clock/voltage/current lines among a set of
->> +  devices.
-> 
-> And instead of this, we should rather update "OPP nodes:" section like
-> this:
-> 
-> diff --git a/Documentation/devicetree/bindings/opp/opp.txt b/Documentation/devicetree/bindings/opp/opp.txt
-> index 9847dfeeffcb..28077ce3a845 100644
-> --- a/Documentation/devicetree/bindings/opp/opp.txt
-> +++ b/Documentation/devicetree/bindings/opp/opp.txt
-> @@ -63,11 +63,13 @@ This describes the OPPs belonging to a device. This node can have following
->  - compatible: Allow OPPs to express their compatibility. It should be:
->    "operating-points-v2".
->  
-> +Optional properties:
->  - OPP nodes: One or more OPP nodes describing voltage-current-frequency
->    combinations. Their name isn't significant but their phandle can be used to
-> -  reference an OPP.
-> +  reference an OPP. These are mandatory except for the case where the OPP table
-> +  is present only to indicate dependency between devices using the opp-shared
-> +  property.
->  
-> -Optional properties:
->  - opp-shared: Indicates that device nodes using this OPP Table Node's phandle
->    switch their DVFS state together, i.e. they share clock/voltage/current lines.
->    Missing property means devices have independent clock/voltage/current lines,
-> 
+ drivers/hwtracing/coresight/Kconfig                |  9 ++
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 98 ++++++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-etm4x.h      |  8 ++
+ 3 files changed, 115 insertions(+)
+
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index c119824..1cc3601 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called coresight-etm4x.
+
++config ETM4X_IMPDEF_FEATURE
++	bool "Control overflow impdef support in CoreSight ETM 4.x driver "
++	depends on CORESIGHT_SOURCE_ETM4X
++	help
++	  This control provides overflow implement define for CoreSight
++	  ETM 4.x tracer module which could not reduce commit race
++	  automatically, and could avoid overflow within ETM tracer module
++	  and its cpu core.
++
+ config CORESIGHT_STM
+ 	tristate "CoreSight System Trace Macrocell driver"
+ 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index abd706b..0cbc92a 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+  */
+
++#include <linux/bitops.h>
+ #include <linux/kernel.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+@@ -28,7 +29,9 @@
+ #include <linux/perf_event.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/property.h>
++
+ #include <asm/sections.h>
++#include <asm/sysreg.h>
+ #include <asm/local.h>
+ #include <asm/virt.h>
+
+@@ -103,6 +106,97 @@ struct etm4_enable_arg {
+ 	int rc;
+ };
+
++#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
++
++#define HISI_HIP08_AMBA_ID		0x000b6d01
++#define ETM4_AMBA_MASK			0xfffff
++#define HISI_HIP08_CORE_COMMIT_MASK	0x3000
++#define HISI_HIP08_CORE_COMMIT_SHIFT	12
++#define HISI_HIP08_CORE_COMMIT_FULL	0b00
++#define HISI_HIP08_CORE_COMMIT_LVL_1	0b01
++#define HISI_HIP08_CORE_COMMIT_REG	sys_reg(3, 1, 15, 2, 5)
++
++struct etm4_arch_features {
++	void (*arch_callback)(bool enable);
++};
++
++static bool etm4_hisi_match_pid(unsigned int id)
++{
++	return (id & ETM4_AMBA_MASK) == HISI_HIP08_AMBA_ID;
++}
++
++static void etm4_hisi_config_core_commit(bool enable)
++{
++	u8 commit = enable ? HISI_HIP08_CORE_COMMIT_LVL_1 :
++		    HISI_HIP08_CORE_COMMIT_FULL;
++	u64 val;
++
++	/*
++	 * bit 12 and 13 of HISI_HIP08_CORE_COMMIT_REG are used together
++	 * to set core-commit, 2'b00 means cpu is at full speed, 2'b01,
++	 * 2'b10, 2'b11 mean reduce pipeline speed, and 2'b01 means level-1
++	 * speed(minimun value). So bit 12 and 13 should be cleared together.
++	 */
++	val = read_sysreg_s(HISI_HIP08_CORE_COMMIT_REG);
++	val &= ~HISI_HIP08_CORE_COMMIT_MASK;
++	val |= commit << HISI_HIP08_CORE_COMMIT_SHIFT;
++	write_sysreg_s(val, HISI_HIP08_CORE_COMMIT_REG);
++}
++
++static struct etm4_arch_features etm4_features[] = {
++	[ETM4_IMPDEF_HISI_CORE_COMMIT] = {
++		.arch_callback = etm4_hisi_config_core_commit,
++	},
++	{},
++};
++
++static void etm4_enable_arch_specific(struct etmv4_drvdata *drvdata)
++{
++	struct etm4_arch_features *ftr;
++	int bit;
++
++	for_each_set_bit(bit, drvdata->arch_features, ETM4_IMPDEF_FEATURE_MAX) {
++		ftr = &etm4_features[bit];
++
++		if (ftr->arch_callback)
++			ftr->arch_callback(true);
++	}
++}
++
++static void etm4_disable_arch_specific(struct etmv4_drvdata *drvdata)
++{
++	struct etm4_arch_features *ftr;
++	int bit;
++
++	for_each_set_bit(bit, drvdata->arch_features, ETM4_IMPDEF_FEATURE_MAX) {
++		ftr = &etm4_features[bit];
++
++		if (ftr->arch_callback)
++			ftr->arch_callback(false);
++	}
++}
++
++static void etm4_check_arch_features(struct etmv4_drvdata *drvdata,
++				      unsigned int id)
++{
++	if (etm4_hisi_match_pid(id))
++		set_bit(ETM4_IMPDEF_HISI_CORE_COMMIT, drvdata->arch_features);
++}
++#else
++static void etm4_enable_arch_specific(struct etmv4_drvdata *drvdata)
++{
++}
++
++static void etm4_disable_arch_specific(struct etmv4_drvdata *drvdata)
++{
++}
++
++static void etm4_check_arch_features(struct etmv4_drvdata *drvdata,
++				     unsigned int id)
++{
++}
++#endif /* CONFIG_ETM4X_IMPDEF_FEATURE */
++
+ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+ {
+ 	int i, rc;
+@@ -110,6 +204,7 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+ 	struct device *etm_dev = &drvdata->csdev->dev;
+
+ 	CS_UNLOCK(drvdata->base);
++	etm4_enable_arch_specific(drvdata);
+
+ 	etm4_os_unlock(drvdata);
+
+@@ -476,6 +571,7 @@ static void etm4_disable_hw(void *info)
+ 	int i;
+
+ 	CS_UNLOCK(drvdata->base);
++	etm4_disable_arch_specific(drvdata);
+
+ 	if (!drvdata->skip_power_up) {
+ 		/* power can be removed from the trace unit now */
+@@ -1547,6 +1643,8 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+ 		drvdata->boot_enable = true;
+ 	}
+
++	etm4_check_arch_features(drvdata, id->id);
++
+ 	return 0;
+ }
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index eefc737..3dd3e06 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -8,6 +8,7 @@
+
+ #include <asm/local.h>
+ #include <linux/spinlock.h>
++#include <linux/types.h>
+ #include "coresight-priv.h"
+
+ /*
+@@ -203,6 +204,11 @@
+ /* Interpretation of resource numbers change at ETM v4.3 architecture */
+ #define ETM4X_ARCH_4V3	0x43
+
++enum etm_impdef_type {
++	ETM4_IMPDEF_HISI_CORE_COMMIT,
++	ETM4_IMPDEF_FEATURE_MAX,
++};
++
+ /**
+  * struct etmv4_config - configuration information related to an ETMv4
+  * @mode:	Controls various modes supported by this ETM.
+@@ -415,6 +421,7 @@ struct etmv4_save_state {
+  * @state_needs_restore: True when there is context to restore after PM exit
+  * @skip_power_up: Indicates if an implementation can skip powering up
+  *		   the trace unit.
++ * @arch_features: Bitmap of arch features of etmv4 devices.
+  */
+ struct etmv4_drvdata {
+ 	void __iomem			*base;
+@@ -463,6 +470,7 @@ struct etmv4_drvdata {
+ 	struct etmv4_save_state		*save_state;
+ 	bool				state_needs_restore;
+ 	bool				skip_power_up;
++	DECLARE_BITMAP(arch_features, ETM4_IMPDEF_FEATURE_MAX);
+ };
+
+ /* Address comparator access types */
+--
+2.8.1
+
