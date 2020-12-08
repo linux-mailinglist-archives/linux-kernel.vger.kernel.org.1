@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4EA2D200E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0FD2D201C
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 02:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgLHB2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 20:28:09 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:52939 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725877AbgLHB2J (ORCPT
+        id S1727470AbgLHB3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 20:29:31 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35734 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgLHB3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 20:28:09 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 862C25C01C2;
-        Mon,  7 Dec 2020 20:26:51 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 07 Dec 2020 20:26:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=R9UFuHjtAK1qQ
-        YI8cmha4Thpo1402hfejrmvtlGfR4Y=; b=CB4B5WBpU5PRnXh6D5dJU0njXoZ6L
-        tUXluZyWKu+xmDzAl8s1iQc0jcIVinmfbvQdwDizxvm6CPcmsNl/4r/lsThRnQ8m
-        fuw5DF0aU1A/TEDkQTfEXpg0I1FctmODsXqgjWYSJmoSCi0XtB96TSkuAr4w/Jn0
-        KnndiOVgtHXOmzr1sXeaUJh3mTDViEENUkxKGDyn9IUIKRH5RFZ/O1MxoaX4t8By
-        edWp34YMkFqozlw6SoIfjMsDEduKoz8y0wigzN8ngYFI8QStqfRgHSjgD7h797Tq
-        H1lZg98rg+HHl0MDonM3B8rRMC7/iSGtdZM6gy8zqGClnOYZR/l6oG2hA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=R9UFuHjtAK1qQYI8cmha4Thpo1402hfejrmvtlGfR4Y=; b=rnqoeTLi
-        r4PnuJaD/397smYmsTkLYT3t3UBVMyQMZ/zU+Tph0w7lMvN3NfRBEsMrcFKVxo+I
-        iXw4a1UyuipUU0SuqPAG0tkGplRKmtSnHHE7kQ3vxapaNCzGUr775F9tX3csxopc
-        2lpqFPFfgPcZYaTyNzDapBEnSvQEZasjnMlOkHACLSuKm2O0Uj3ExLabQYdmd5VB
-        p+lKwOM2r0nKX63qQUR5kmhqvAzxfTROmf7KZg42BheeExIuVchyu4H63303kptw
-        aOup8k8UMS+CwQux0PMB90Dca5oI4zkS9n5879bP40MAXi0hMVK+eH1yXYFnYj8z
-        3L0+M7UUDatKWg==
-X-ME-Sender: <xms:W9bOX9ou9hefyOvzn3e4_sXUbmZqb580zlYmTdTABlvDB-p5aVCI5w>
-    <xme:W9bOX_rq1-bSW9yiLqY59P0lLFZ8kByIUvoZyx3kEdRHUntrTUVY5RfMvahk-09qn
-    az1-MpcRmd8qDsUsQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
-    jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
-    etjeffleffvdduudevieffgeetleevhfetnecukfhppedvtdefrdehjedrvddtkedrudeg
-    ieenucevlhhushhtvghrufhiiigvpeehnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnh
-    gurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:W9bOX6MA5KiyQxjPr2tryr71LYy0UTEt6aeKSxyScBkQErPcOP90Bg>
-    <xmx:W9bOX44jzvZYxVHOXYkAPCE9oldodWnkXAUPYiievg5BzgwatIluKw>
-    <xmx:W9bOX8574nAlS1Lqve19-5F1OT_aJr1HOYyu2rIMdJOL_Qm_41J48w>
-    <xmx:W9bOX7YnWng6L6RYUlGEX2KBQjg8xaSdjwIvi6vMQ2_TotI8MsoGCw>
-Received: from localhost.localdomain (203-57-208-146.dyn.iinet.net.au [203.57.208.146])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 073701080063;
-        Mon,  7 Dec 2020 20:26:47 -0500 (EST)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
-        adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, ryan_chen@aspeedtech.com
-Subject: [PATCH v5 6/6] ARM: dts: rainier: Add eMMC clock phase compensation
-Date:   Tue,  8 Dec 2020 11:56:15 +1030
-Message-Id: <20201208012615.2717412-7-andrew@aj.id.au>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201208012615.2717412-1-andrew@aj.id.au>
-References: <20201208012615.2717412-1-andrew@aj.id.au>
+        Mon, 7 Dec 2020 20:29:30 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B81SR9h064042;
+        Tue, 8 Dec 2020 01:28:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=fk47qCz258HOn/ymeHmrCxhgOgh2epzdVLIPU2HNlng=;
+ b=eBcmAYpWLLBHnff75JXrjZ91eNxCr7SjwEliG6xhYqWAf9f503aLHotQzOjrCTZoafud
+ cxynaObPkqjtqc3lwjT3VY0vr3uzrY7dNZGiRt2J0bzJ+u3/RTCYy4L/oWZxnQEkcnF/
+ AsumJhCJqQl8hLXzQRAbEjbRslIfC0MXZvCYUr6vW4Tv63/h2HBR5KJWHAALWXfTMA6A
+ ZXl6PDg/qBz33UTUHWhDoxDQRSSZ6OO4QpKi58TbmHudJx+hS/gQ1SgsWz0UiKAzLfmH
+ fZVrOuEjux1y4XIvASDcesGWII6cEQBq/LFCgNgRuq34aV94N+vZCGNqSVGxwyIU6Jxd JQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35825m0d55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 01:28:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B81EjFI122693;
+        Tue, 8 Dec 2020 01:26:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 358ksmwwcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 01:26:26 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B81QM0e012637;
+        Tue, 8 Dec 2020 01:26:22 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 17:26:22 -0800
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scsi: NCR5380: Remove context check
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blf51426.fsf@ca-mkp.ca.oracle.com>
+References: <alpine.LNX.2.23.453.2012051512300.6@nippy.intranet>
+        <20201206075157.19067-1-a.darwish@linutronix.de>
+Date:   Mon, 07 Dec 2020 20:26:19 -0500
+In-Reply-To: <20201206075157.19067-1-a.darwish@linutronix.de> (Ahmed
+        S. Darwish's message of "Sun, 6 Dec 2020 08:51:57 +0100")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=822 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080004
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=850 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Determined by scope measurements at speed.
 
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
----
- arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 1 +
- 1 file changed, 1 insertion(+)
+Ahmed,
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-index 21ae880c7530..ab8d37d49f30 100644
---- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-@@ -186,6 +186,7 @@ &pinctrl_emmc_default {
- 
- &emmc {
- 	status = "okay";
-+	clk-phase-mmc-hs200 = <180>, <180>;
- };
- 
- &fsim0 {
+> NCR5380_poll_politely2() uses in_interrupt() and irqs_disabled() to
+> check if it is safe to sleep.
+
+Applied to 5.11/scsi-staging, thanks!
+
 -- 
-2.27.0
-
+Martin K. Petersen	Oracle Linux Engineering
