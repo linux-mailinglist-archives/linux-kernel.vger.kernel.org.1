@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D2A2D223B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ACE2D223D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 05:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbgLHEsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 23:48:01 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35170 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727258AbgLHEsA (ORCPT
+        id S1727302AbgLHErp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 23:47:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgLHErp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 23:48:00 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B84kqxV039474;
-        Mon, 7 Dec 2020 22:46:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607402812;
-        bh=ab8TR71D8wvDMjyDs6nWrexGzGp6Fis30WChrKD0GJI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=I1KcsdWfGGYKukU1vhdrJMy3dUirqKSS8jiSFV+azOygxU/WmetaeoFr4QPN7fk2O
-         UxFK+NyVzyVyTqtyzzKkTiA5UZ3MYqpYSyGYUd55RbkWH+14VndD7BbKV2RBM8eASt
-         vb+sJt5xjkxsIKdGHs+vPyuQAw00hfK8AW8HWujc=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B84kqEQ098505
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Dec 2020 22:46:52 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 7 Dec
- 2020 22:46:52 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 7 Dec 2020 22:46:52 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B84kkoW053051;
-        Mon, 7 Dec 2020 22:46:47 -0600
-Subject: Re: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local
- or remote side of bridge
-To:     "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
-References: <20201111153559.19050-1-kishon@ti.com>
- <20201111153559.19050-17-kishon@ti.com>
- <f39cf769993541e2a46bfe4d777ccf46@intel.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <6a493055-eef0-5722-e24b-449a11cf8a36@ti.com>
-Date:   Tue, 8 Dec 2020 10:16:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 7 Dec 2020 23:47:45 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A4DC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 20:47:05 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id 11so14765609oty.9
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 20:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=da6PKTWsCyZHw4eyw0pntgWjnDdHSWAPm8s0stvFDrc=;
+        b=zpioTPZoMCTaJaZo9r8XdicxPVP9Ax6XoHa/ab4tiwSh/tGNnWIxi5V2QzGk+lIN+W
+         tCrYSz0h8GHsb3H98iKhudKLU9HlmlJ5tung6HEasNHC+JJfuLL1qb+387bVu2G215J8
+         lZWz7EhC1m18Lm84BitA35AR4gRqMuhVHyutbuUV/ZOfXzcSemkT2CwAMOeB1VrU/0kI
+         XoilliRHB2sq+Bu5fFWrE+qsnoizyC37uyPPsaJFN43A2YAzBBNEPyI5zRtrMsmtqJ34
+         jwLP4BcVLGRBTGfYTivTpXptWUX0+eRnvtspNhfs4F0CY8lINuqMo2m/Y8h5h24mgmEs
+         bFDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=da6PKTWsCyZHw4eyw0pntgWjnDdHSWAPm8s0stvFDrc=;
+        b=FgAsr6LSwApoFtKimWL4HWUq4tBIIIEIi+xSvqEEJ5MuSB3sSvosVMhQeohjXwwPiw
+         +hWVSEP+VHCbT7YkUd35Coq9UTZuDxly35QMiS9nxeCohPqGs3Awj2fhJNaziGsX4lpJ
+         XY+q6UMWgv2fveRiokLb6rKHfFErBU6YK2+7uqLH+fGLmzBonPNjto9taswLB2tdO7LC
+         qlZE9C4GRK43KW4QdhLDUOQoFZ1SQPujSQJlT9ODPKJ9Ytphj2gl26dNkVKw1zoCGYbl
+         VvBaWEcDzDVwXXQuugRYZKkWBGLhm+vNo4LuioD7jatmnty/kkPJ9VY1oDSY43h6vJ9e
+         52IQ==
+X-Gm-Message-State: AOAM532vK1vBOgRrIaYz/15da/4+8AbXOaeP76rRlb68+Rwwrq8YANGB
+        tZrVurpAhOSSjncr2FXo11tl9Q==
+X-Google-Smtp-Source: ABdhPJygPDX8spy29K585WQ++C/zIl2uSDbkg9k+lngebC/ETdHvooZMPcPFBqaE4ubiHmUBfAmeGg==
+X-Received: by 2002:a9d:634b:: with SMTP id y11mr8792599otk.70.1607402824715;
+        Mon, 07 Dec 2020 20:47:04 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j204sm1151843oih.15.2020.12.07.20.47.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 20:47:04 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: c630: Add backlight controller
+Date:   Mon,  7 Dec 2020 22:47:03 -0600
+Message-Id: <20201208044703.973382-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <f39cf769993541e2a46bfe4d777ccf46@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+The Lenovo Yoga C630 uses the PWM controller in the TI SN65DSI86 bridge
+chip to provide a signal for the backlight control and has TLMM GPIO 11
+attached to some regulator that drives the backlight.
 
-On 07/12/20 9:25 pm, Jiang, Dave wrote:
-> 
-> 
->> -----Original Message-----
->> From: Kishon Vijay Abraham I <kishon@ti.com>
->> Sent: Wednesday, November 11, 2020 8:36 AM
->> To: Bjorn Helgaas <bhelgaas@google.com>; Jonathan Corbet
->> <corbet@lwn.net>; Kishon Vijay Abraham I <kishon@ti.com>; Lorenzo
->> Pieralisi <lorenzo.pieralisi@arm.com>; Arnd Bergmann <arnd@arndb.de>;
->> Jon Mason <jdmason@kudzu.us>; Jiang, Dave <dave.jiang@intel.com>;
->> Allen Hubbe <allenbh@gmail.com>; Tom Joseph <tjoseph@cadence.com>;
->> Rob Herring <robh@kernel.org>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; linux-
->> pci@vger.kernel.org; linux-doc@vger.kernel.org; linux-
->> kernel@vger.kernel.org; linux-ntb@googlegroups.com
->> Subject: [PATCH v8 16/18] NTB: tool: Enable the NTB/PCIe link on the local or
->> remote side of bridge
->>
->> Invoke ntb_link_enable() to enable the NTB/PCIe link on the local or remote
->> side of the bridge.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->>  drivers/ntb/test/ntb_tool.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c index
->> b7bf3f863d79..8230ced503e3 100644
->> --- a/drivers/ntb/test/ntb_tool.c
->> +++ b/drivers/ntb/test/ntb_tool.c
->> @@ -1638,6 +1638,7 @@ static int tool_probe(struct ntb_client *self, struct
->> ntb_dev *ntb)
->>
->>  	tool_setup_dbgfs(tc);
->>
->> +	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
-> 
-> The tool expects the user to enable the link via debugfs according to documentation. Is this necessary?
+Unfortunately the regulator attached to this gpio is also powering the
+camera, so turning off backlight result in the detachment of the camera
+as well.
 
-right, it can be enabled using debugfs. Will drop this patch.
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Thank You,
-Kishon
+This depends on the implementation of the pwm_chip in the TI SN65DSI86 bridge
+driver [1], but posting this for reference and testing of said patch. The patch
+can further be improved by the inclusion of something like [2] and by adding
+"backlight = <&backlight>; to the panel node, which will result in DPMS
+operations turning the panel on and off.
+
+[1] https://lore.kernel.org/linux-arm-msm/20201208044022.972872-1-bjorn.andersson@linaro.org/
+[2] https://lore.kernel.org/lkml/20201208044446.973238-1-bjorn.andersson@linaro.org/
+
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index bdd5d92ee6c3..851e5833cab5 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -64,6 +64,12 @@ sn65dsi86_refclk: sn65dsi86-refclk {
+ 
+ 		clock-frequency = <19200000>;
+ 	};
++
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&sn65dsi86 1000000>;
++		enable-gpios = <&tlmm 11 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ &adsp_pas {
+@@ -385,6 +391,8 @@ sn65dsi86: bridge@2c {
+ 		clocks = <&sn65dsi86_refclk>;
+ 		clock-names = "refclk";
+ 
++		#pwm-cells = <1>;
++
+ 		ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+2.29.2
+
