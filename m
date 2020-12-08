@@ -2,106 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29E52D2DB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F20D52D2DC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729994AbgLHPBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:01:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729842AbgLHPBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:01:08 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1947239D1;
-        Tue,  8 Dec 2020 15:00:26 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 10:00:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
- buffer timestamps
-Message-ID: <20201208100024.42bbcd23@gandalf.local.home>
-In-Reply-To: <20201208211411.e41849908381eb493adce0f5@kernel.org>
-References: <20201201160656.7cc6a5e8@gandalf.local.home>
-        <20201208211411.e41849908381eb493adce0f5@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729947AbgLHPB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729379AbgLHPB0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:01:26 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E96C0611CC
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:00:32 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id n26so24990746eju.6
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EwLGS2M7y7kAQoWd9CP/FtUXOvPaPRZho3I3VBDdvSE=;
+        b=mh4HWibLr/WMMNOUtj568Jf2f5UknXO+4WtgQnrWBt/nMR44C2d5d7/UyNG5IDZ/xM
+         SF3OBmS9HyGRKgJpxN3Dxoz9PSPPAK4AwvbYsSB6L6ju4uj4kgzwByolft4z4Nl5RgIF
+         wJFKIb46oEAJ9yL5nNtS/4zvxL4qfQWMs5IeSDxNyqKawyW7c1PRuuy6NmENffy1wBF9
+         /vHk9c7ZxLV94bRpDGGW/m+uXHE6f2nsLmct1OsWGTjXdUcVav9QDLjdXvWWJRHmrZDO
+         Sf8bRbFEo9TYtvDgpyO1JB8HtDRalk/d+fI+Pv7CsKqh4U/xREDDK7Bs7AsjcH4Hi2nF
+         5eWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EwLGS2M7y7kAQoWd9CP/FtUXOvPaPRZho3I3VBDdvSE=;
+        b=ch2dq5vPTmByjfpd2zAWSCXbwQ+XvpokqXDr/9671T8ogfC3NWgoslSvebk/KqEXgs
+         tESlA5exK8fdH6HS1EEAAv4ChdFBdefUxrgG8vvrBgfsQdn0pzytROsqDcya2bbQ7ZD9
+         mkiwe2zeuJumjdKCjCkJqG8y+o7tdaFMgzcxQ5TaAPNDn3AU258vlIj/SvG3twxPz62g
+         +t8/4v3ermHWxl6MRNDs6y8agAEQrOGb1tvOiGB+EEplWjsLMVc++526Klsalu+amt4/
+         2u5wNDam6aeL2IKJXlxlVImEyC77YM4VtfCYm3BYQkSDGKLAYJEktKckg4Vg++REyT2t
+         CtPw==
+X-Gm-Message-State: AOAM531kj2YGKv0HoEXMqp1UDM4mtQid6HBJbBPDh4mxjdx4PbED0nYb
+        sg/DdIzE7ASpJDi1upoNzK4V/g==
+X-Google-Smtp-Source: ABdhPJwak8sUz3xv3qH0vNk5T/u+IokUT+RE1bbpNw6/No1+dlQHNjDcl/oAuNU4+D+u2oAHmTQfzg==
+X-Received: by 2002:a17:906:e18:: with SMTP id l24mr22630567eji.434.1607439630987;
+        Tue, 08 Dec 2020 07:00:30 -0800 (PST)
+Received: from [192.168.1.9] (hst-221-93.medicom.bg. [84.238.221.93])
+        by smtp.googlemail.com with ESMTPSA id ot18sm15822687ejb.54.2020.12.08.07.00.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:00:30 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] v4l: Add HDR10 static metadata controls
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20201123230257.31690-1-stanimir.varbanov@linaro.org>
+ <20201123230257.31690-2-stanimir.varbanov@linaro.org>
+ <17035750-c01e-1601-756b-6c2c87e6b828@xs4all.nl>
+ <c0346859-91b2-90b9-16b6-f0c364351562@linaro.org>
+ <3d6a99b2-5467-d6ce-f602-f81da615c912@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <2c5559f3-c88f-d2d0-b369-e2947564b3b6@linaro.org>
+Date:   Tue, 8 Dec 2020 17:00:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <3d6a99b2-5467-d6ce-f602-f81da615c912@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 21:14:11 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi Hans,
 
-> On Tue, 1 Dec 2020 16:06:56 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+On 12/7/20 11:21 AM, Hans Verkuil wrote:
+> On 07/12/2020 10:06, Stanimir Varbanov wrote:
+>>
+>>
+>> On 12/2/20 1:12 PM, Hans Verkuil wrote:
+>>> On 24/11/2020 00:02, Stanimir Varbanov wrote:
+>>>> Add Content light level and Mastering display colour volume v4l2
+>>>> compounf controls, relevant payload structures and validation.
+>>>
+>>> compounf -> compound
+>>>
+>>>>
+>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>> ---
+>>>>  drivers/media/v4l2-core/v4l2-ctrls.c | 62 ++++++++++++++++++++++++++++
+>>>>  include/media/hdr10-ctrls.h          | 55 ++++++++++++++++++++++++
+>>>>  include/media/v4l2-ctrls.h           |  3 ++
+>>>>  3 files changed, 120 insertions(+)
+>>>>  create mode 100644 include/media/hdr10-ctrls.h
+>>>>
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> index ad47d00e28d6..028630576401 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> @@ -1024,6 +1024,9 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>>>  	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
+>>>>  	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
+>>>>  
+>>>> +	case V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
+>>>> +	case V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
+>>>> +
+>>>>  	/* CAMERA controls */
+>>>>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+>>>>  	case V4L2_CID_CAMERA_CLASS:		return "Camera Controls";
+>>>> @@ -1461,6 +1464,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>>>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
+>>>>  		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
+>>>>  		break;
+>>>> +	case V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO:
+>>>> +		*type = V4L2_CTRL_TYPE_HDR10_CLL_INFO;
+>>>> +		break;
+>>>> +	case V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY:
+>>>> +		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+>>>> +		break;
+>>>>  	case V4L2_CID_UNIT_CELL_SIZE:
+>>>>  		*type = V4L2_CTRL_TYPE_AREA;
+>>>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>>>> @@ -1775,6 +1784,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>>>> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>>>>  	struct v4l2_area *area;
+>>>>  	void *p = ptr.p + idx * ctrl->elem_size;
+>>>>  	unsigned int i;
+>>>> @@ -1934,6 +1944,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>>>  		zero_padding(*p_hevc_slice_params);
+>>>>  		break;
+>>>>  
+>>>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>>>> +		break;
+>>>> +
+>>>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>>>> +		p_hdr10_mastering = p;
+>>>> +
+>>>> +		for (i = 0; i < 3; ++i) {
+>>>> +			if (p_hdr10_mastering->display_primaries_x[i] <
+>>>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_LOW ||
+>>>> +			    p_hdr10_mastering->display_primaries_x[i] >
+>>>> +				V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH ||
+>>>> +			    p_hdr10_mastering->display_primaries_y[i] <
+>>>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW ||
+>>>> +			    p_hdr10_mastering->display_primaries_y[i] >
+>>>> +				V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH)
+>>>> +				return -EINVAL;
+>>>> +		}
+>>>> +
+>>>> +		if (p_hdr10_mastering->white_point_x <
+>>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW ||
+>>>> +		    p_hdr10_mastering->white_point_x >
+>>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH ||
+>>>> +		    p_hdr10_mastering->white_point_y <
+>>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW ||
+>>>> +		    p_hdr10_mastering->white_point_y >
+>>>> +			V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH)
+>>>> +			return -EINVAL;
+>>>> +
+>>>> +		if (p_hdr10_mastering->max_luminance <
+>>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW ||
+>>>> +		    p_hdr10_mastering->max_luminance >
+>>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_HIGH ||
+>>>> +		    p_hdr10_mastering->min_luminance <
+>>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_LOW ||
+>>>> +		    p_hdr10_mastering->min_luminance >
+>>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+>>>> +			return -EINVAL;
+>>>> +
+>>>> +		if (p_hdr10_mastering->max_luminance ==
+>>>> +			V4L2_HDR10_MASTERING_MAX_LUMA_LOW &&
+>>>> +		    p_hdr10_mastering->min_luminance ==
+>>>> +			V4L2_HDR10_MASTERING_MIN_LUMA_HIGH)
+>>>> +			return -EINVAL;
+>>>> +
+>>>> +		break;
+>>>> +
+>>>>  	case V4L2_CTRL_TYPE_AREA:
+>>>>  		area = p;
+>>>>  		if (!area->width || !area->height)
+>>>> @@ -2626,6 +2682,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>>>>  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
+>>>>  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
+>>>>  		break;
+>>>> +	case V4L2_CTRL_TYPE_HDR10_CLL_INFO:
+>>>> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_cll_info);
+>>>> +		break;
+>>>> +	case V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY:
+>>>> +		elem_size = sizeof(struct v4l2_ctrl_hdr10_mastering_display);
+>>>> +		break;
+>>>>  	case V4L2_CTRL_TYPE_AREA:
+>>>>  		elem_size = sizeof(struct v4l2_area);
+>>>>  		break;
+>>>> diff --git a/include/media/hdr10-ctrls.h b/include/media/hdr10-ctrls.h
+>>>> new file mode 100644
+>>>> index 000000000000..f6f77edc0b60
+>>>> --- /dev/null
+>>>> +++ b/include/media/hdr10-ctrls.h
+>>>> @@ -0,0 +1,55 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/*
+>>>> + * These are the HEVC state controls for use with stateless HEVC
+>>>> + * codec drivers.
+>>>> + *
+>>>> + * It turns out that these structs are not stable yet and will undergo
+>>>> + * more changes. So keep them private until they are stable and ready to
+>>>> + * become part of the official public API.
+>>>> + */
+>>>> +
+>>>> +#ifndef _HDR10_CTRLS_H_
+>>>> +#define _HDR10_CTRLS_H_
+>>>> +
+>>>> +/*
+>>>> + * Content light level information.
+>>>> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.35
+>>>> + */
+>>>> +#define V4L2_CID_MPEG_VIDEO_HDR10_CLL_INFO	(V4L2_CID_MPEG_BASE + 1017)
+>>>> +#define V4L2_CTRL_TYPE_HDR10_CLL_INFO		0x0123
+>>>> +
+>>>> +struct v4l2_ctrl_hdr10_cll_info {
+>>>> +	__u16 max_content_light_level;
+>>>> +	__u16 max_pic_average_light_level;
+>>>> +};
+>>>> +
+>>>> +/*
+>>>> + * Mastering display colour volume.
+>>>> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.28
+>>>> + */
+>>>> +#define V4L2_CID_MPEG_VIDEO_HDR10_MASTERING_DISPLAY (V4L2_CID_MPEG_BASE + 1018)
+>>>
+>>> I don't think this should be part of the codec control class. It is also needed
+>>> for HDMI receivers, for example.
+>>>
+>>> I think it is better to create a new "Colorimetry" control class for controls like
+>>> this.
+>>
+>> I guess in this case I need to create a new ext-ctrls-colorimetry.rst,
+>> right?
 > 
-> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > 
-> > A bug was reported about the ftrace ring buffer going backwards:
-> > 
-> > Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
-> > 
-> > In debugging this code, I wrote a C program that uses libtracefs to enable
-> > all events and function tracing (if it exits), and then read the raw ring
-> > buffer binary data and make sure that all the events never go backwards. If
-> > they do, then it does a dump of the ring buffer sub buffer page and shows
-> > the layout of the events and their deltas.
-> > 
-> > This was a very useful tool, and can be used to make sure that the ring
-> > buffer's timestamps are consistently monotonic.  
+> Yes.
 > 
-> Yeah, this sounds good to me.
+>>
+>>>
+>>> But I advise that you wait until this PR is merged:
+>>> https://patchwork.linuxtv.org/project/linux-media/patch/d68da172-b251-000f-653d-38a8a4c7b715@xs4all.nl/
+>>>
+>>> Note that you also need to add validation support for this to std_validate_compound()
+>>> and possibly add initialization to std_init_compound() is v4l2-ctrls.c.
+>>
+>> The patch has validation for mastering display already. But I wonder do
+>> we really need this validation because CTA-861-G is more liberal about
+>> the values comparing with Rec. ITU-T H.265. Or the other option is to
+>> combine both of them?
 > 
-> > 
-> > Adding this to the ftrace selftests seems to be a way that this can be
-> > tested more often. But this would introduce the first binary code to the
-> > ftracetests.  
+> After thinking about this a bit more, validation makes no sense for decoders
+> or HDMI/DP receivers: you have no control over the contents of this data in
+> those cases, it should just contain what you receive as-is, and if you receive
+> buggy data, then userspace has to decide what to do with that.
 > 
-> No problem. I think it is better to be placed under ftracetest/bin/ and
-> add a PATH before running testcases.
+> This is something that should be documented, I think. You have to be aware as
+> userspace that the data needs to be checked for validity.
+> 
+> For encoders and HDMI/DP output validation would make sense, but I think that
+> for now we should just drop validation altogether.
 
-OK.
+Well, my doubts expressed above wasn't do we need validation or not but
+for the ranges of the parameters CTA-861-G vs Rec. ITU-T H.265.
+
+In that regard I think it is better to have validation for encoders
+because out of spec ranges could be dangerous for display panels.
 
 > 
-> > To make sure that the tests still work on embedded devices (where a
-> > compiler may not even exist), and also since this binary incorporates the
-> > yet-to-be-released libtracefs library, if the make fails, the test exits
-> > with UNTESTED. The UNTESTED is documented as being a place holder which
-> > this would be if the make does not work.  
+> Regards,
 > 
-> Hmm, in some embedded environment, we may not have make nor gcc.
-> So it would be better to be build in the kselftest build process as similar
-> to the other kselftests.
+> 	Hans
 > 
-> What about putting the source code under ftracetest/src/. For the embedded
-> devices, it can be built with cross-tools (and make it static binary if
-> needed) and install it under ftracetest/bin. If we have no cross-build
-> tool etc. we just skip building the binary under ftracetest/bin. And if 
-> the testcase finds there is no binary, it just returns UNRESOLVED or UNTESTED.
+>>
+>>>
+>>> Regards,
+>>>
+>>> 	Hans
+>>>
+>>>> +#define V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY	0x0124
+>>>> +
+>>>> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_LOW	5
+>>>> +#define V4L2_HDR10_MASTERING_PRIMARIES_X_HIGH	37000
+>>>> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_LOW	5
+>>>> +#define V4L2_HDR10_MASTERING_PRIMARIES_Y_HIGH	42000
+>>>> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_LOW	5
+>>>> +#define V4L2_HDR10_MASTERING_WHITE_POINT_X_HIGH	37000
+>>>> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_LOW	5
+>>>> +#define V4L2_HDR10_MASTERING_WHITE_POINT_Y_HIGH	42000
+>>>> +#define V4L2_HDR10_MASTERING_MAX_LUMA_LOW	50000
+>>>> +#define V4L2_HDR10_MASTERING_MAX_LUMA_HIGH	100000000
+>>>> +#define V4L2_HDR10_MASTERING_MIN_LUMA_LOW	1
+>>>> +#define V4L2_HDR10_MASTERING_MIN_LUMA_HIGH	50000
+>>>> +
+>>>> +struct v4l2_ctrl_hdr10_mastering_display {
+>>>> +	__u16 display_primaries_x[3];
+>>>> +	__u16 display_primaries_y[3];
+>>>> +	__u16 white_point_x;
+>>>> +	__u16 white_point_y;
+>>>> +	__u32 max_luminance;
+>>>> +	__u32 min_luminance;
+>>>> +};
+>>>> +
+>>>> +#endif
+>>>> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+>>>> index 4fbace0fc7e5..81bd026fc1ea 100644
+>>>> --- a/include/media/v4l2-ctrls.h
+>>>> +++ b/include/media/v4l2-ctrls.h
+>>>> @@ -19,6 +19,7 @@
+>>>>   */
+>>>>  #include <media/mpeg2-ctrls.h>
+>>>>  #include <media/fwht-ctrls.h>
+>>>> +#include <media/hdr10-ctrls.h>
+>>>>  #include <media/h264-ctrls.h>
+>>>>  #include <media/vp8-ctrls.h>
+>>>>  #include <media/hevc-ctrls.h>
+>>>> @@ -80,6 +81,8 @@ union v4l2_ctrl_ptr {
+>>>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>>>> +	struct v4l2_ctrl_hdr10_cll_info *p_hdr10_cll;
+>>>> +	struct v4l2_ctrl_hdr10_mastering_display *p_hdr10_mastering;
+>>>>  	struct v4l2_area *p_area;
+>>>>  	void *p;
+>>>>  	const void *p_const;
+>>>>
+>>>
+>>
 > 
 
-OK. I'll look at how to make this for both cases (embedded and not).
-Because, my current case is to copy the selftests to the machine and run
-them there. So my use case requires the build to happen at test time. But I
-can make it where it wont build if the binary already exists.
-
-> (currently I returns UNRESOLVED when the test target kmodule is not found)
-
-I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
-lack of kernel features or modules. But this is not a lack of the kernel,
-but a lack of user space. If something in user space is lacking (a tool,
-library, or binary), then I thought UNTESTED would be a better option. But
-if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
-I'll keep UNTESTED.
-
-Thanks!
-
--- Steve
+-- 
+regards,
+Stan
