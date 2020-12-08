@@ -2,108 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F132D26AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7313E2D26A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgLHIzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:55:05 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:30474 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgLHIzE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:55:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607417680; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=dPCdplZ+XxOGGp7/+lsbg8A1a02KAIt7v+rAxEUucJU=; b=JqRUmmAyCLjy6XWKrL95yMWfQQZl+50K5GrJ8a10h3m8lFCstA2N4531EKNn4fP7NcQ1d0E1
- rjBFhCwbQtsz51dkVFRJ78U+yKJcrECB9uApVO33QEmhSvIlEN5EcDNf+R9zmiqdr/uMYlmE
- /BN1LoeZhwcChiYlHQUAO2Hv99k=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fcf3f334afea88893f32a6f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 08:54:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 595E0C433CA; Tue,  8 Dec 2020 08:54:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24025C433C6;
-        Tue,  8 Dec 2020 08:54:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 24025C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wireless <linux-wireless@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the wireless-drivers-next tree
-References: <20201208194944.19ee46f4@canb.auug.org.au>
-Date:   Tue, 08 Dec 2020 10:54:05 +0200
-In-Reply-To: <20201208194944.19ee46f4@canb.auug.org.au> (Stephen Rothwell's
-        message of "Tue, 8 Dec 2020 19:49:43 +1100")
-Message-ID: <87im9cel02.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1728440AbgLHIy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:54:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727273AbgLHIy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:54:56 -0500
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] tracing: Disable ftrace selftests when any tracer is running
+Date:   Tue,  8 Dec 2020 17:54:09 +0900
+Message-Id: <160741764955.3448999.3347769358299456915.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201207183842.5374eed6@gandalf.local.home>
+References: <20201207183842.5374eed6@gandalf.local.home>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+Disable ftrace selftests when any tracer (kernel command line options
+like ftrace=, trace_events=, kprobe_events=, and boot-time tracing)
+starts running because selftest can disturb it.
 
-> After merging the wireless-drivers-next tree, today's linux-next build
-> (powerpc allyesconfig) failed like this:
->
-> ld: drivers/net/wireless/realtek/rtw88/rtw8822ce.o:(.rodata.rtw_pm_ops+0x0): multiple definition of `rtw_pm_ops'; drivers/net/wireless/realtek/rtw88/rtw8822be.o:(.rodata.rtw_pm_ops+0x0): first defined here
-> ld: drivers/net/wireless/realtek/rtw88/rtw8723de.o:(.rodata.rtw_pm_ops+0x0): multiple definition of `rtw_pm_ops'; drivers/net/wireless/realtek/rtw88/rtw8822be.o:(.rodata.rtw_pm_ops+0x0): first defined here
-> ld: drivers/net/wireless/realtek/rtw88/rtw8821ce.o:(.rodata.rtw_pm_ops+0x0): multiple definition of `rtw_pm_ops'; drivers/net/wireless/realtek/rtw88/rtw8822be.o:(.rodata.rtw_pm_ops+0x0): first defined here
-> ld: drivers/net/wireless/realtek/rtw88/pci.o:(.rodata.rtw_pm_ops+0x0): multiple definition of `rtw_pm_ops'; drivers/net/wireless/realtek/rtw88/rtw8822be.o:(.rodata.rtw_pm_ops+0x0): first defined here
->
-> Caused by commit
->
->   2e86ef413ab3 ("rtw88: pci: Add prototypes for .probe, .remove and .shutdown")
->
-> I have applied the following patch:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 8 Dec 2020 19:35:18 +1100
-> Subject: [PATCH] rtw88: pci: "extern" is necessary for header declarations of data
->
-> Fixes: 2e86ef413ab3 ("rtw88: pci: Add prototypes for .probe, .remove and .shutdown")
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/net/wireless/realtek/rtw88/pci.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/realtek/rtw88/pci.h b/drivers/net/wireless/realtek/rtw88/pci.h
-> index cda56919a5f0..7cdefe229824 100644
-> --- a/drivers/net/wireless/realtek/rtw88/pci.h
-> +++ b/drivers/net/wireless/realtek/rtw88/pci.h
-> @@ -214,7 +214,7 @@ struct rtw_pci {
->  	void __iomem *mmap;
->  };
->  
-> -const struct dev_pm_ops rtw_pm_ops;
-> +extern const struct dev_pm_ops rtw_pm_ops;
+Currently ftrace= and trace_events= are checked, but kprobe_events
+has a different flag, and boot-time tracing didn't checked. This unifies
+the disabled flag and all of those boot-time tracing features sets
+the flag.
 
-Thanks, just an hour ago I applied an identical patch from Ping:
+This also fixes warnings on kprobe-event selftest
+(CONFIG_FTRACE_STARTUP_TEST=y and CONFIG_KPROBE_EVENTS=y) with boot-time
+tracing (ftrace.event.kprobes.EVENT.probes) like below;
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next.git/commit/?id=91aeaf09a6eed83cae0d0fad20a97699b1c8b812
+[   59.803496] trace_kprobe: Testing kprobe tracing:
+[   59.804258] ------------[ cut here ]------------
+[   59.805682] WARNING: CPU: 3 PID: 1 at kernel/trace/trace_kprobe.c:1987 kprobe_trace_self_tests_ib
+[   59.806944] Modules linked in:
+[   59.807335] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7+ #172
+[   59.808029] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/204
+[   59.808999] RIP: 0010:kprobe_trace_self_tests_init+0x5f/0x42b
+[   59.809696] Code: e8 03 00 00 48 c7 c7 30 8e 07 82 e8 6d 3c 46 ff 48 c7 c6 00 b2 1a 81 48 c7 c7 7
+[   59.812439] RSP: 0018:ffffc90000013e78 EFLAGS: 00010282
+[   59.813038] RAX: 00000000ffffffef RBX: 0000000000000000 RCX: 0000000000049443
+[   59.813780] RDX: 0000000000049403 RSI: 0000000000049403 RDI: 000000000002deb0
+[   59.814589] RBP: ffffc90000013e90 R08: 0000000000000001 R09: 0000000000000001
+[   59.815349] R10: 0000000000000001 R11: 0000000000000000 R12: 00000000ffffffef
+[   59.816138] R13: ffff888004613d80 R14: ffffffff82696940 R15: ffff888004429138
+[   59.816877] FS:  0000000000000000(0000) GS:ffff88807dcc0000(0000) knlGS:0000000000000000
+[   59.817772] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   59.818395] CR2: 0000000001a8dd38 CR3: 0000000002222000 CR4: 00000000000006a0
+[   59.819144] Call Trace:
+[   59.819469]  ? init_kprobe_trace+0x6b/0x6b
+[   59.819948]  do_one_initcall+0x5f/0x300
+[   59.820392]  ? rcu_read_lock_sched_held+0x4f/0x80
+[   59.820916]  kernel_init_freeable+0x22a/0x271
+[   59.821416]  ? rest_init+0x241/0x241
+[   59.821841]  kernel_init+0xe/0x10f
+[   59.822251]  ret_from_fork+0x22/0x30
+[   59.822683] irq event stamp: 16403349
+[   59.823121] hardirqs last  enabled at (16403359): [<ffffffff810db81e>] console_unlock+0x48e/0x580
+[   59.824074] hardirqs last disabled at (16403368): [<ffffffff810db786>] console_unlock+0x3f6/0x580
+[   59.825036] softirqs last  enabled at (16403200): [<ffffffff81c0033a>] __do_softirq+0x33a/0x484
+[   59.825982] softirqs last disabled at (16403087): [<ffffffff81a00f02>] asm_call_irq_on_stack+0x10
+[   59.827034] ---[ end trace 200c544775cdfeb3 ]---
+[   59.827635] trace_kprobe: error on probing function entry.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Fixes: 4d655281eb1b ("tracing/boot Add kprobe event support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ kernel/trace/trace.c          |   19 +++++++++++++------
+ kernel/trace/trace.h          |    5 +++++
+ kernel/trace/trace_boot.c     |    2 ++
+ kernel/trace/trace_events.c   |    2 +-
+ kernel/trace/trace_kprobe.c   |    9 +++------
+ kernel/trace/trace_selftest.c |    2 +-
+ 6 files changed, 25 insertions(+), 14 deletions(-)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 7d53c5bdea3e..2ad43d94ed92 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -68,10 +68,21 @@ bool ring_buffer_expanded;
+ static bool __read_mostly tracing_selftest_running;
+ 
+ /*
+- * If a tracer is running, we do not want to run SELFTEST.
++ * If boot-time tracing including tracers/events via kernel cmdline
++ * is running, we do not want to run SELFTEST.
+  */
+ bool __read_mostly tracing_selftest_disabled;
+ 
++#ifdef CONFIG_FTRACE_STARTUP_TEST
++void __init disable_tracing_selftest(const char *reason)
++{
++	if (!tracing_selftest_disabled) {
++		tracing_selftest_disabled = true;
++		pr_info("Ftrace startup test is disabled due to %s\n", reason);
++	}
++}
++#endif
++
+ /* Pipe tracepoints to printk */
+ struct trace_iterator *tracepoint_print_iter;
+ int tracepoint_printk;
+@@ -2112,11 +2123,7 @@ int __init register_tracer(struct tracer *type)
+ 	apply_trace_boot_options();
+ 
+ 	/* disable other selftests, since this will break it. */
+-	tracing_selftest_disabled = true;
+-#ifdef CONFIG_FTRACE_STARTUP_TEST
+-	printk(KERN_INFO "Disabling FTRACE selftests due to running tracer '%s'\n",
+-	       type->name);
+-#endif
++	disable_tracing_selftest("running a tracer");
+ 
+  out_unlock:
+ 	return ret;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 1dadef445cd1..6784b572ce59 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -896,6 +896,8 @@ extern bool ring_buffer_expanded;
+ extern bool tracing_selftest_disabled;
+ 
+ #ifdef CONFIG_FTRACE_STARTUP_TEST
++extern void __init disable_tracing_selftest(const char *reason);
++
+ extern int trace_selftest_startup_function(struct tracer *trace,
+ 					   struct trace_array *tr);
+ extern int trace_selftest_startup_function_graph(struct tracer *trace,
+@@ -919,6 +921,9 @@ extern int trace_selftest_startup_branch(struct tracer *trace,
+  */
+ #define __tracer_data		__refdata
+ #else
++static inline void __init disable_tracing_selftest(const char *reason)
++{
++}
+ /* Tracers are seldom changed. Optimize when selftests are disabled. */
+ #define __tracer_data		__read_mostly
+ #endif /* CONFIG_FTRACE_STARTUP_TEST */
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index c22a152ef0b4..a82f03f385f8 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -344,6 +344,8 @@ static int __init trace_boot_init(void)
+ 	trace_boot_init_one_instance(tr, trace_node);
+ 	trace_boot_init_instances(trace_node);
+ 
++	disable_tracing_selftest("running boot-time tracing");
++
+ 	return 0;
+ }
+ /*
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 47a71f96e5bc..802f3e7d8b8b 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -3201,7 +3201,7 @@ static __init int setup_trace_event(char *str)
+ {
+ 	strlcpy(bootup_event_buf, str, COMMAND_LINE_SIZE);
+ 	ring_buffer_expanded = true;
+-	tracing_selftest_disabled = true;
++	disable_tracing_selftest("running event tracing");
+ 
+ 	return 1;
+ }
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index b911e9f6d9f5..b29f92c51b1a 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -25,11 +25,12 @@
+ 
+ /* Kprobe early definition from command line */
+ static char kprobe_boot_events_buf[COMMAND_LINE_SIZE] __initdata;
+-static bool kprobe_boot_events_enabled __initdata;
+ 
+ static int __init set_kprobe_boot_events(char *str)
+ {
+ 	strlcpy(kprobe_boot_events_buf, str, COMMAND_LINE_SIZE);
++	disable_tracing_selftest("running kprobe events");
++
+ 	return 0;
+ }
+ __setup("kprobe_event=", set_kprobe_boot_events);
+@@ -1887,8 +1888,6 @@ static __init void setup_boot_kprobe_events(void)
+ 		ret = trace_run_command(cmd, create_or_delete_trace_kprobe);
+ 		if (ret)
+ 			pr_warn("Failed to add event(%d): %s\n", ret, cmd);
+-		else
+-			kprobe_boot_events_enabled = true;
+ 
+ 		cmd = p;
+ 	}
+@@ -1973,10 +1972,8 @@ static __init int kprobe_trace_self_tests_init(void)
+ 	if (tracing_is_disabled())
+ 		return -ENODEV;
+ 
+-	if (kprobe_boot_events_enabled) {
+-		pr_info("Skipping kprobe tests due to kprobe_event on cmdline\n");
++	if (tracing_selftest_disabled)
+ 		return 0;
+-	}
+ 
+ 	target = kprobe_trace_selftest_target;
+ 
+diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+index 4738ad48a667..6f28b8b11ead 100644
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -787,7 +787,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
+ 
+ 	/* Have we just recovered from a hang? */
+ 	if (graph_hang_thresh > GRAPH_MAX_FUNC_TEST) {
+-		tracing_selftest_disabled = true;
++		disable_tracing_selftest("recovering from a hang");
+ 		ret = -1;
+ 		goto out;
+ 	}
+
