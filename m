@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98BB2D3460
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABFA2D345A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgLHUi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728971AbgLHUi1 (ORCPT
+        id S1728872AbgLHUhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:37:35 -0500
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:45321 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731029AbgLHUfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:38:27 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0521C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:37:41 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id s21so15013635pfu.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=cOsptZpbaXZdyHeq1KoGUWDMF3slisUiT0yak+RYvVg=;
-        b=V1HJf+WKm8xtLqwvNnhsLkSQVipGbGBajM1F2ZUQcrOTQ2iu39pW4KdaTgszCgwjnq
-         tGzWVJdaHcBvZzl5aaqYttQ5TUOZCZZeqIs09s44Q9oB+hsnPkOAZotzWpI8i00QVucJ
-         ZkqvlVBVZSwtlbZua/brIaYJZ/+yexmmd5LKCv3G/Ku5t2DBPxqLPlTYem2pm7/BQHwc
-         Y2739VDQ3AMdHUYiNTI4cIVwWH1a3RA/iMrBvYTFlKq7M7ehhFBWisKxwf1Ty4u4bQp6
-         Q+maaFLNMOJu0B6hXcWTKH/5A8HPZ32RGxpfIbbSJvjpSfD8VZYPzolUFR9zjcbs0rIx
-         4beQ==
+        Tue, 8 Dec 2020 15:35:40 -0500
+Received: by mail-yb1-f195.google.com with SMTP id k78so8401439ybf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:35:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cOsptZpbaXZdyHeq1KoGUWDMF3slisUiT0yak+RYvVg=;
-        b=qfeNHpD/sT4wv/PwgB+mWFVluujRtrr8GSABKfK/N1eKaNHc4qPNDNrcqgf2ljeTiw
-         B88q2G2trCnlKZjmj2CFmd9SsoNwuxdhap4Buy73iWXe1Nffvnp2/b5s/3Zl/NNApril
-         /I4EVDeDWQGMmP9iTYLXtYrFBuNUFod+CkMapw+Yt0qW1bDd8XbhZMU1Q9fA2fTWiC6r
-         VVqCLRncxt448GiGIpkyUrg1Mt1YoPeVxVpbtMTQ0sKSALCQG66REfyvTrKsiNMTFi7y
-         /+4AGpM6kXd3BtOzKDyMO7IrAej/EWZnmIFTTvsl9yTInNXswMe1n6JrfHvpHr3ZrExi
-         ooLQ==
-X-Gm-Message-State: AOAM530bByNAbTkHCH7Kqyiombqi8pH1dFQ64Q2b0C6Zi4jsjCw6YAMm
-        j8QjJlU7ngrtu3qjZS5uOhU8aIhJoR9YGloy
-X-Google-Smtp-Source: ABdhPJxyhjHPDKKo2JqsB/7HDITrAO23pyfmgSy+gat1GDFvuRxWeDGk6joJ5fCWRlKZVFhCYSjLzQ==
-X-Received: by 2002:a62:7693:0:b029:19d:92fb:4ec1 with SMTP id r141-20020a6276930000b029019d92fb4ec1mr21819903pfc.4.1607455203885;
-        Tue, 08 Dec 2020 11:20:03 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id i4sm16499994pgg.67.2020.12.08.11.20.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 11:20:03 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCH] arm64: dts: meson: add i2c3/rtc nodes and vrtc alias to GT-King/GT-King-Pro
-Date:   Tue,  8 Dec 2020 11:20:02 -0800
-Message-Id: <160745519765.13209.7401462503756984105.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201201062135.18241-1-christianshewitt@gmail.com>
-References: <20201201062135.18241-1-christianshewitt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aKT1xt1SMzgu41xYl1MW3Jng/80RbPWksOKFLv9tJCk=;
+        b=MWgn465K5rtATb1PfG2SxloG0m4QVpJGVn4pSNU3oB6bvKQLTTrBzn+Ezpgkhbq9T+
+         kLGWWWR6DzaMi5841XjObOcXqSRNxYEuI7lIl6gh1wWD6KVTKIQsgqvQuXcdzKSPDZPa
+         bwR4rG48okWAr+eUxLOXmYl7eLf0RkBp3WJ85t4nCAfDe9KmMwaHuaULOS6M+gcpQbH5
+         HVx1XjIcfh66Mp0kWz5nGlB8qlqkCHr/+r1rPN8Rw5cv3iFPHiOPd+vQs3FEKbt/kB1Q
+         SQ+16eA56pIWF4oEd175WDw7+WrvNguJNq5d/1YXy38dXxmjCsn31Niag6cEHpjHpRyF
+         jw/Q==
+X-Gm-Message-State: AOAM533+zxzHdu34oE6g4rzR4QlpPYs5U3pP+bqdcIqboHLGeZ0HPf8E
+        r0cgQ5YeIg/2paTQNGPHpgG1NVh7qaCElEv/9Iq/UB+/
+X-Google-Smtp-Source: ABdhPJxmoCXQmrabfSNNrBVKAsAl7RBFcTJxhg9kRju58cMl8ohotUGeMmtj8fg+FiCAyv6LqJXkOS3cTaQrV4YFnOo=
+X-Received: by 2002:a9d:3982:: with SMTP id y2mr17818754otb.260.1607455215857;
+ Tue, 08 Dec 2020 11:20:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20201208190326.27531-1-tiwai@suse.de>
+In-Reply-To: <20201208190326.27531-1-tiwai@suse.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 8 Dec 2020 20:20:04 +0100
+Message-ID: <CAJZ5v0ggQL-poyY8tz14GhZCQLshfsQB58m3Z2iafsiUttkgRw@mail.gmail.com>
+Subject: Re: [PATCH] driver: core: Fix list corruption after device_del()
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Dec 2020 06:21:35 +0000, Christian Hewitt wrote:
-> The GT-King and GT-King-Pro boxes have an RTC chip and power cell, so enable it.
-> 
-> GTKING:~ # dmesg | grep rtc
-> [    5.237245] meson-vrtc ff8000a8.rtc: registered as rtc1
-> [    5.261869] rtc-hym8563 0-0051: registered as rtc0
-> [    5.265016] rtc-hym8563 0-0051: setting system clock to 2020-11-30T09:16:54 UTC (1606727814)
+On Tue, Dec 8, 2020 at 8:03 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> The device_links_purge() function (called from device_del()) tries to
+> remove the links.needs_suppliers list entry, but it's using
+> list_del(), hence it doesn't initialize after the removal.  This is OK
+> for normal cases where device_del() is called via device_destroy().
+> However, it's not guaranteed that the device object will be really
+> deleted soon after device_del().  In a minor case like HD-audio codec
+> reconfiguration that re-initializes the device after device_del(), it
+> may lead to a crash by the corrupted list entry.
+>
+> As a simple fix, replace list_del() with list_del_init() in order to
+> make the list intact after the device_del() call.
+>
+> Fixes: e2ae9bcc4aaa ("driver core: Add support for linking devices during device addition")
+> Cc: <stable@vger.kernel.org>
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209207
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Applied, thanks!
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[1/1] arm64: dts: meson: add i2c3/rtc nodes and vrtc alias to GT-King/GT-King-Pro
-      commit: 7704b100719cf0fead976a1bc839c60ee552d045
-
-Best regards,
--- 
-Kevin Hilman <khilman@baylibre.com>
+> ---
+>  drivers/base/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index d661ada1518f..e8cb66093f21 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -1386,7 +1386,7 @@ static void device_links_purge(struct device *dev)
+>                 return;
+>
+>         mutex_lock(&wfs_lock);
+> -       list_del(&dev->links.needs_suppliers);
+> +       list_del_init(&dev->links.needs_suppliers);
+>         mutex_unlock(&wfs_lock);
+>
+>         /*
+> --
+> 2.26.2
+>
