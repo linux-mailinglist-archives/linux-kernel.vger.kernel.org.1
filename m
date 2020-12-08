@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5CA2D254C
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE912D2548
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgLHIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:01:04 -0500
-Received: from 2.mo178.mail-out.ovh.net ([46.105.39.61]:40687 "EHLO
-        2.mo178.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727517AbgLHIBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:01:03 -0500
-X-Greylist: delayed 626 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 03:01:02 EST
-Received: from player734.ha.ovh.net (unknown [10.108.54.119])
-        by mo178.mail-out.ovh.net (Postfix) with ESMTP id CCA95B3363
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 08:49:54 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player734.ha.ovh.net (Postfix) with ESMTPSA id 0AFE618C8C42C;
-        Tue,  8 Dec 2020 07:49:42 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006381ab9e9-fc16-4135-a55f-45b014094f44,
-                    F7F8495E9FE719388847EB9DDB8A3A77E3CADC2E) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] docs: clean up sysctl/kernel: titles, version
-Date:   Tue,  8 Dec 2020 08:49:22 +0100
-Message-Id: <20201208074922.30359-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        id S1727843AbgLHIA3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 03:00:29 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:56160 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727420AbgLHIA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:00:28 -0500
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam01-ex.h3c.com with ESMTP id 0B87wqWN085203;
+        Tue, 8 Dec 2020 15:58:52 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 15:58:54 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Tue, 8 Dec 2020 15:58:54 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sched/rt: Print curr when RT throttling activated
+Thread-Topic: [PATCH] sched/rt: Print curr when RT throttling activated
+Thread-Index: AQHWyUqT3q2oDjHX10eYLLyUvd1ib6nk66QAgAfwkIA=
+Date:   Tue, 8 Dec 2020 07:58:54 +0000
+Message-ID: <f3265adc26d4416dacf157f61fa60ad6@h3c.com>
+References: <20201203075129.17902-1-tian.xianting@h3c.com>
+ <20201203093956.6dd8a753@gandalf.local.home>
+In-Reply-To: <20201203093956.6dd8a753@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 3468334663265963397
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejhedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeegrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0B87wqWN085203
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This cleans up a few titles with extra colons, and removes the
-reference to kernel 2.2. The docs don't yet cover *all* of 5.10 or
-5.11, but I think they're close enough. Most entries are documented,
-and have been checked against current kernels.
+Thanks,
+We met an issue that a normal thread can't get cpu, 
+And at this moment, we found 'sched: RT throttling activated' log.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- Documentation/admin-guide/sysctl/kernel.rst | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+So I think this patch is useful for such issue.
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index d4b32cc32bb7..7d53146798c0 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -14,7 +14,7 @@ For general info and legal blurb, please look in :doc:`index`.
- ------------------------------------------------------------------------------
- 
- This file contains documentation for the sysctl files in
--``/proc/sys/kernel/`` and is valid for Linux kernel version 2.2.
-+``/proc/sys/kernel/``.
- 
- The files in this directory can be used to tune and monitor
- miscellaneous and general things in the operation of the Linux
-@@ -1095,8 +1095,8 @@ Enables/disables scheduler statistics. Enabling this feature
- incurs a small amount of overhead in the scheduler but is
- useful for debugging and performance tuning.
- 
--sched_util_clamp_min:
--=====================
-+sched_util_clamp_min
-+====================
- 
- Max allowed *minimum* utilization.
- 
-@@ -1106,8 +1106,8 @@ It means that any requested uclamp.min value cannot be greater than
- sched_util_clamp_min, i.e., it is restricted to the range
- [0:sched_util_clamp_min].
- 
--sched_util_clamp_max:
--=====================
-+sched_util_clamp_max
-+====================
- 
- Max allowed *maximum* utilization.
- 
-@@ -1117,8 +1117,8 @@ It means that any requested uclamp.max value cannot be greater than
- sched_util_clamp_max, i.e., it is restricted to the range
- [0:sched_util_clamp_max].
- 
--sched_util_clamp_min_rt_default:
--================================
-+sched_util_clamp_min_rt_default
-+===============================
- 
- By default Linux is tuned for performance. Which means that RT tasks always run
- at the highest frequency and most capable (highest capacity) CPU (in
+Could I get more comments?  Thanks in advance
+-----Original Message-----
+From: Steven Rostedt [mailto:rostedt@goodmis.org] 
+Sent: Thursday, December 03, 2020 10:40 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com; vincent.guittot@linaro.org; dietmar.eggemann@arm.com; bsegall@google.com; mgorman@suse.de; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
 
-base-commit: 0477e92881850d44910a7e94fc2c46f96faa131f
--- 
-2.20.1
+On Thu, 3 Dec 2020 15:51:29 +0800
+Xianting Tian <tian.xianting@h3c.com> wrote:
+
+> We may meet the issue, that one RT thread occupied the cpu by 
+> 950ms/1s, The RT thread maybe is a business thread or other unknown thread.
+> 
+> Currently, it only outputs the print "sched: RT throttling activated"
+> when RT throttling happen. It is hard to know what is the RT thread, 
+> For further analysis, we need add more prints.
+> 
+> This patch is to print current RT task when RT throttling activated, 
+> It help us to know what is the RT thread in the first time.
+
+I think this can be useful information to include.
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  kernel/sched/rt.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c index 
+> f215eea6a..8913f38cb 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -946,7 +946,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+>  	return rt_task_of(rt_se)->prio;
+>  }
+>  
+> -static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+> +static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct 
+> +task_struct *curr)
+>  {
+>  	u64 runtime = sched_rt_runtime(rt_rq);
+>  
+> @@ -970,7 +970,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+>  		 */
+>  		if (likely(rt_b->rt_runtime)) {
+>  			rt_rq->rt_throttled = 1;
+> -			printk_deferred_once("sched: RT throttling activated\n");
+> +			printk_deferred_once("sched: RT throttling activated (curr: pid %d, comm %s)\n",
+> +						curr->pid, curr->comm);
+>  		} else {
+>  			/*
+>  			 * In case we did anyway, make it go away, @@ -1026,7 +1027,7 @@ 
+> static void update_curr_rt(struct rq *rq)
+>  		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+>  			raw_spin_lock(&rt_rq->rt_runtime_lock);
+>  			rt_rq->rt_time += delta_exec;
+> -			if (sched_rt_runtime_exceeded(rt_rq))
+> +			if (sched_rt_runtime_exceeded(rt_rq, curr))
+>  				resched_curr(rq);
+>  			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+>  		}
 
