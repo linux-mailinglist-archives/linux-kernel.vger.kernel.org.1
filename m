@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C58D2D2D7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9353B2D2D80
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgLHOtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:49:09 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3883 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729497AbgLHOtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:49:08 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fcf923c0000>; Tue, 08 Dec 2020 06:48:28 -0800
-Received: from [10.25.96.159] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
- 2020 14:48:24 +0000
-Subject: Re: Re: Re: [PATCH v6 0/6] Tegra210 audio graph card
-To:     Mark Brown <broonie@kernel.org>
-CC:     <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
-        <sharadg@nvidia.com>, <jonathanh@nvidia.com>,
-        <kuninori.morimoto.gx@renesas.com>, <linux-tegra@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>
-References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
- <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
- <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
- <20201207123131.GB5694@sirena.org.uk>
- <14d2a6cc-9ca6-f6dd-ae83-6fc75d5361eb@nvidia.com>
- <20201208121312.GB6686@sirena.org.uk>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <a6ecb66e-db25-dcfa-4a70-d9b2fad75cd9@nvidia.com>
-Date:   Tue, 8 Dec 2020 20:18:21 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729909AbgLHOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:49:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:50044 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729471AbgLHOtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:49:18 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5605830E;
+        Tue,  8 Dec 2020 06:48:32 -0800 (PST)
+Received: from red-moon.arm.com (unknown [10.57.35.71])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D39B3F718;
+        Tue,  8 Dec 2020 06:48:30 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        truong@codeaurora.org, bjorn.andersson@linaro.org,
+        bhelgaas@google.com, agross@kernel.org
+Subject: Re: [PATCH v6 0/3] Add PCIe support for SM8250 SoC
+Date:   Tue,  8 Dec 2020 14:48:23 +0000
+Message-Id: <160743888873.26304.531428152524309821.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201208121402.178011-1-mani@kernel.org>
+References: <20201208121402.178011-1-mani@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201208121312.GB6686@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607438908; bh=dyvnc0MmI74AElyJHGT+49gBQdAAzpK9ZrjPVG7orQk=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=DsrT4YBllGyINM0Ec6xRs09oDm2LV9RIFeIKyWvSkr6J2K+KAe7yUXCmqCd/DWKUX
-         BVd+59fyvUZOhxlrcr66ogVnuv/6Cn0dT8NYy9NH2q8V5DF8wCVzQd0z//znj5xrs1
-         UAq/YiDQzxRAIJsetEndNVkDPVqaPFJriLXP8R9//2PIbmm4qEwwfEZyb+KqeSTrWf
-         PsGFvNCebs/lB/NqeXwrWGu3jBBoE1eGPhHMTL85+VCJZJCZUXN5iFOwK/srsxVNlh
-         ZKc4ipjo4L8JdgUyc8nlcZoH27U/07ccaWR8StxT1Uq47TlY1anlHcqPHOqespFlWu
-         4RBNqXZgiMpXg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 8 Dec 2020 17:43:59 +0530, Manivannan Sadhasivam wrote:
+> This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
+> There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
+> controller and PHYs are mostly comaptible with the ones found on SDM845
+> SoC, hence the old drivers are modified to add the support.
+> 
+> This series has been tested on RB5 board with QCA6391 chipset connected
+> onboard.
+> 
+> [...]
 
->>> No, this was sent by a b4 bug - notice the "no commit info" there, they
->>> weren't applied.
->> Oh I see! I guess review would be still pending then.
-> I don't seem to have them in my backlog so either there was feedback
-> from someone else I was expecting to see addressed or some other issue.
+Applied to pci/dwc, thanks!
 
-I am pretty sure that it is not because of any outstanding comments, 
-because I got none on v6 and previous v5 feedback was taken care. May be 
-this is because of the doc dependency I listed in the cover letter?
+[1/3] dt-bindings: pci: qcom: Document PCIe bindings for SM8250 SoC
+      https://git.kernel.org/lpieralisi/pci/c/458168247c
+[2/3] PCI: qcom: Add SM8250 SoC support
+      https://git.kernel.org/lpieralisi/pci/c/e1dd639e37
+[3/3] PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
+      https://git.kernel.org/lpieralisi/pci/c/1c6072c743
 
-[Sorry I had to resend this reply. I accidentally replied from my 
-personal email earlier and many people/DLs were missing on that]
+Thanks,
+Lorenzo
