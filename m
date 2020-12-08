@@ -2,88 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B852D3445
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A5B2D346B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730408AbgLHUe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:34:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730338AbgLHUe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:34:26 -0500
-Date:   Tue, 8 Dec 2020 21:16:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607454968;
-        bh=4YSWBy4Ze2XZ3O8tBftNKde9EUBuyuIjWyN2ZrpIxvM=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nVhOppfF7il/vCHcMJCm1p+Lwcwkzojx2RGNhEPtG1Dv+YTRJ9vEAXICqnFy8m/7l
-         LczP4xd8OmolrTxvA4gv1axoL84PJcFJTd+onQ5SPme9rVbXItlpxzqx9I5AS6bBpp
-         o/mwtf7F3RUk4qEJdpqfyF/zgb23zfEHFOArRlYM4g9XygiZ3iVKm0dM+4QiR1tQDY
-         WqnO+lsDOfT4jkJl7dQFu3aqsF0XEUg6K2V8+0BV1L8iN4st3b7HlAa0xmzKjIen+A
-         7NirlgEudHRNsUeIXfl+9ta6Kl5XgiNWnlVBYgFmM01AcncsTQMbWvOuRPDcyERUEx
-         ezwxmXxjQUxCg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH v13 0/4] userspace MHI client interface driver
-Message-ID: <20201208191603.GJ4430@unreal>
-References: <1606533966-22821-1-git-send-email-hemantk@codeaurora.org>
- <20201201112901.7f13e26c@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <c6359962-a378-ed03-0fab-c2f6c8a1b8eb@codeaurora.org>
- <20201201120302.474d4c9b@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <817a4346-efb7-cfe5-0678-d1b60d06627d@codeaurora.org>
- <20201201185506.77c4b3df@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <f22eaead-fd25-8b20-7ca1-ae3f535347d4@codeaurora.org>
- <20201206083302.GA691268@unreal>
- <20201208165927.GE9925@work>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208165927.GE9925@work>
+        id S1729264AbgLHUkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:40:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729241AbgLHUka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:40:30 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9F3C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:39:50 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id h9so24183211ybj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:39:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=GVBCj7++kadYslQEKiUiOvXrT6u8C535LweeV3vmr3w=;
+        b=GpYQ3QJDvynec7G8eavuJvRKmeokXYwUk/DvyDC3rQCo/JzL2hcmyvtT1WwRGq8Lmy
+         TvllJRWIfWUzwn3OnjP1wF9jAfazM/mHTaMU/s1zmWuAUVNodHwc0n1dWMhXio7aUxEO
+         PMx0pHNYbALD8pWiIGYiCWiQvYvP7ILmIER+SxFtR1oIsqgPsKeQNrDHXLRQ6zfaIlHN
+         CIFmnrE3RtuUSUHW1vk8gNefCJXG1SfDqGOdY5j0xptgOnB9UHUu/gP1saxNS6Ok9ui5
+         ols2KlUjDbo8F6agl1LN0ziyQv7ectxlEvOAbQ0rNWDudDW74lmyuAHw71C4de4CQctE
+         clAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=GVBCj7++kadYslQEKiUiOvXrT6u8C535LweeV3vmr3w=;
+        b=S1aJ4Q3QtC1AFI68tpXDsSjgedYdwoyxBiuOOPVh0YhiTbIyozzzzLKACG4oir40Rf
+         X+5bZE+S/sxaqbpbSh7WGIuYW6OlBCS3fe0oOv0+iLO7JqPck0Z+1du0DvSs4D69af/6
+         +zSOkk+4KEsrWfzyDsaHgeOMKdzefA45/5jcO6LafQ+RgCeub/X5DP/EviJygrC+ZBf7
+         V83jVnpJZjNrYxagjpvvAly2G8pvi02NdP2Nj8bl5WtCUDq+ejzxO9Gqpy8K7MPXENCe
+         EFgYnucbD+S0xvPO/JYSKuUTzcM0qZArQWQM/KzCAz67BSN+NDZSx1xtJB+s5JnRJ+zj
+         dbDA==
+X-Gm-Message-State: AOAM531B6OVx30xwZZe5bu0XRAn1et4IU5+Ei0UBRWLREDJ27nNIZoQy
+        rmAjI+ioFsBwO1EpOlaodJpLVfGmqUHz+A==
+X-Google-Smtp-Source: ABdhPJxrfnJgi+EoEPqJXFI0NQkBlW/M60oMpPttVL+nDa9ZdrF2cemzNk1oPOuI5AUEOsRmwN6J+aV3XRjjQA==
+Sender: "tstrudel via sendgmr" <tstrudel@legoland2.mtv.corp.google.com>
+X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:7220:84ff:fe09:fd20])
+ (user=tstrudel job=sendgmr) by 2002:a25:bb8f:: with SMTP id
+ y15mr98605ybg.451.1607455204168; Tue, 08 Dec 2020 11:20:04 -0800 (PST)
+Date:   Tue,  8 Dec 2020 11:19:55 -0800
+Message-Id: <20201208191955.2466057-1-tstrudel@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH v4] PM: domains: create debugfs nodes when adding power domains
+From:   Thierry Strudel <tstrudel@google.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Strudel <tstrudel@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:29:27PM +0530, Manivannan Sadhasivam wrote:
-> On Sun, Dec 06, 2020 at 10:33:02AM +0200, Leon Romanovsky wrote:
-> > On Tue, Dec 01, 2020 at 09:59:53PM -0700, Jeffrey Hugo wrote:
-> > > On 12/1/2020 7:55 PM, Jakub Kicinski wrote:
-> > > > On Tue, 1 Dec 2020 13:48:36 -0700 Jeffrey Hugo wrote:
-> > > > > On 12/1/2020 1:03 PM, Jakub Kicinski wrote:
-> > > > > > On Tue, 1 Dec 2020 12:40:50 -0700 Jeffrey Hugo wrote:
-> > > > > > > On 12/1/2020 12:29 PM, Jakub Kicinski wrote:
-> > > > > > > > On Fri, 27 Nov 2020 19:26:02 -0800 Hemant Kumar wrote:
-> > > > > > > > > This patch series adds support for UCI driver. UCI driver enables userspace
-> > > > > > > > > clients to communicate to external MHI devices like modem and WLAN. UCI driver
-> > > > > > > > > probe creates standard character device file nodes for userspace clients to
-> > > > > > > > > perform open, read, write, poll and release file operations. These file
-> > > > > > > > > operations call MHI core layer APIs to perform data transfer using MHI bus
-> > > > > > > > > to communicate with MHI device. Patch is tested using arm64 based platform.
-> > > > > > > >
-> > > > > > > > Wait, I thought this was for modems.
-> > > > > > > >
->
-> [...]
->
-> > Like it or not, but Jakub is absolutely right with his claim that
-> > providing user-visible interfaces without any standardization is proven
-> > as wrong.
-> >
->
-> Everybody agrees with standardizing things but the problem is, the
-> standardization will only happen when more than one person implements the
-> same functionality.
+debugfs nodes were created in genpd_debug_init alled in late_initcall
+preventing power domains registered though loadable modules to have
+a debugfs entry.
 
-From my experience in RDMA and netdev, I can't agree with both of your
-statements. There are a lot of people who see standardization as a bad
-thing. Also we are pushing even one person to make user visible interfaces
-right from the beginning without relation to how wide it will be adopted
-later.
+Create/remove debugfs nodes when the power domain is added/removed
+to/from the internal gpd_list.
 
-Thanks
+Signed-off-by: Thierry Strudel <tstrudel@google.com>
+Change-Id: I8a2e0616746afe2a6bbd9c24bc3a0eaa84725a75
+---
+v2: fix forward declaration and genpd_debugfs_dir being NULL - Ulf
+v3: remove extra trailing char added by mistake in v2 - kernel test robot
+v4: cleanup includes and regroup CONFIG_DEBUG_FS CPP blocks - Greg
+ drivers/base/power/domain.c | 73 +++++++++++++++++++++++--------------
+ 1 file changed, 45 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 2cb5e04cf86c..49c87607cba7 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -21,6 +21,7 @@
+ #include <linux/suspend.h>
+ #include <linux/export.h>
+ #include <linux/cpu.h>
++#include <linux/debugfs.h>
+ 
+ #include "power.h"
+ 
+@@ -210,6 +211,18 @@ static void genpd_sd_counter_inc(struct generic_pm_domain *genpd)
+ }
+ 
+ #ifdef CONFIG_DEBUG_FS
++static struct dentry *genpd_debugfs_dir;
++
++static void genpd_debug_add(struct generic_pm_domain *genpd);
++
++static void genpd_debug_remove(struct generic_pm_domain *genpd)
++{
++	struct dentry *d;
++
++	d = debugfs_lookup(genpd->name, genpd_debugfs_dir);
++	debugfs_remove(d);
++}
++
+ static void genpd_update_accounting(struct generic_pm_domain *genpd)
+ {
+ 	ktime_t delta, now;
+@@ -234,6 +247,8 @@ static void genpd_update_accounting(struct generic_pm_domain *genpd)
+ 	genpd->accounting_time = now;
+ }
+ #else
++static inline void genpd_debug_add(struct generic_pm_domain *genpd) {}
++static inline void genpd_debug_remove(struct generic_pm_domain *genpd) {}
+ static inline void genpd_update_accounting(struct generic_pm_domain *genpd) {}
+ #endif
+ 
+@@ -1827,6 +1842,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
+ 
+ 	mutex_lock(&gpd_list_lock);
+ 	list_add(&genpd->gpd_list_node, &gpd_list);
++	genpd_debug_add(genpd);
+ 	mutex_unlock(&gpd_list_lock);
+ 
+ 	return 0;
+@@ -1860,6 +1876,7 @@ static int genpd_remove(struct generic_pm_domain *genpd)
+ 		kfree(link);
+ 	}
+ 
++	genpd_debug_remove(genpd);
+ 	list_del(&genpd->gpd_list_node);
+ 	genpd_unlock(genpd);
+ 	cancel_work_sync(&genpd->power_off_work);
+@@ -2764,14 +2781,6 @@ core_initcall(genpd_bus_init);
+ /***        debugfs support        ***/
+ 
+ #ifdef CONFIG_DEBUG_FS
+-#include <linux/pm.h>
+-#include <linux/device.h>
+-#include <linux/debugfs.h>
+-#include <linux/seq_file.h>
+-#include <linux/init.h>
+-#include <linux/kobject.h>
+-static struct dentry *genpd_debugfs_dir;
+-
+ /*
+  * TODO: This function is a slightly modified version of rtpm_status_show
+  * from sysfs.c, so generalize it.
+@@ -3047,9 +3056,34 @@ DEFINE_SHOW_ATTRIBUTE(total_idle_time);
+ DEFINE_SHOW_ATTRIBUTE(devices);
+ DEFINE_SHOW_ATTRIBUTE(perf_state);
+ 
+-static int __init genpd_debug_init(void)
++static void genpd_debug_add(struct generic_pm_domain *genpd)
+ {
+ 	struct dentry *d;
++
++	if (!genpd_debugfs_dir)
++		return;
++
++	d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
++
++	debugfs_create_file("current_state", 0444,
++			    d, genpd, &status_fops);
++	debugfs_create_file("sub_domains", 0444,
++			    d, genpd, &sub_domains_fops);
++	debugfs_create_file("idle_states", 0444,
++			    d, genpd, &idle_states_fops);
++	debugfs_create_file("active_time", 0444,
++			    d, genpd, &active_time_fops);
++	debugfs_create_file("total_idle_time", 0444,
++			    d, genpd, &total_idle_time_fops);
++	debugfs_create_file("devices", 0444,
++			    d, genpd, &devices_fops);
++	if (genpd->set_performance_state)
++		debugfs_create_file("perf_state", 0444,
++				    d, genpd, &perf_state_fops);
++}
++
++static int __init genpd_debug_init(void)
++{
+ 	struct generic_pm_domain *genpd;
+ 
+ 	genpd_debugfs_dir = debugfs_create_dir("pm_genpd", NULL);
+@@ -3057,25 +3091,8 @@ static int __init genpd_debug_init(void)
+ 	debugfs_create_file("pm_genpd_summary", S_IRUGO, genpd_debugfs_dir,
+ 			    NULL, &summary_fops);
+ 
+-	list_for_each_entry(genpd, &gpd_list, gpd_list_node) {
+-		d = debugfs_create_dir(genpd->name, genpd_debugfs_dir);
+-
+-		debugfs_create_file("current_state", 0444,
+-				d, genpd, &status_fops);
+-		debugfs_create_file("sub_domains", 0444,
+-				d, genpd, &sub_domains_fops);
+-		debugfs_create_file("idle_states", 0444,
+-				d, genpd, &idle_states_fops);
+-		debugfs_create_file("active_time", 0444,
+-				d, genpd, &active_time_fops);
+-		debugfs_create_file("total_idle_time", 0444,
+-				d, genpd, &total_idle_time_fops);
+-		debugfs_create_file("devices", 0444,
+-				d, genpd, &devices_fops);
+-		if (genpd->set_performance_state)
+-			debugfs_create_file("perf_state", 0444,
+-					    d, genpd, &perf_state_fops);
+-	}
++	list_for_each_entry(genpd, &gpd_list, gpd_list_node)
++		genpd_debug_add(genpd);
+ 
+ 	return 0;
+ }
+-- 
+2.29.2.576.ga3fc446d84-goog
+
