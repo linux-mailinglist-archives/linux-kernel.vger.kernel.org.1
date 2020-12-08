@@ -2,125 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC342D2FF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3EB2D2FF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730241AbgLHQli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:41:38 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40038 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728679AbgLHQlh (ORCPT
+        id S1730463AbgLHQlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730257AbgLHQln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:41:37 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607445655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iq3ZgfbLiNh1DRbKNB8RtarB5zocyMl+IvwCrRY4efk=;
-        b=QvT6lUSM1ljLedM+bk5U6sdWNgx9/wbsKML2tTtr4lSqF7mo+yTooxJH0tSp+Zbo3gS+6A
-        VKsy2m0U+sSr88M0D50DIZW1GYnfzDUohIsA4Meax2SrU5sIIfI918x1UmzjA9FZiAMHOA
-        VHSAdjMh5BoIQtuHUTllixZ6VXUX/BrteI0hBG97GyZ1Um/0DUXOPK5NVQ0xOuEoYjv1Uw
-        C+5sqmmHTl9BymtN0inwXNIKB+jhDt0Fd9IXq0pnaVsWh27dnRNng6n5rGPaTvEKqdK3tx
-        kGScmjSDRGBE4vvHLi+21cCGgcIxXhyJ4RILoPH8Lz8ACw03Q2gX4mjo1sxZdA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607445655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Iq3ZgfbLiNh1DRbKNB8RtarB5zocyMl+IvwCrRY4efk=;
-        b=Mf3MTvcLP8LeKWQiIe+uRXjllsWBuKTimcyW5BgxQoQ16nudU1gZeR0rXUNtxyXtywjWHB
-        cgyyKiir1JzVPZCQ==
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Oliver Upton <oupton@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <CAOQ_Qsj6THRPj2ta3PdOxUJeCj8KxPnLkWV8EGpvN_J=qUv74A@mail.gmail.com> <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
-Date:   Tue, 08 Dec 2020 17:40:54 +0100
-Message-ID: <87lfe82quh.fsf@nanos.tec.linutronix.de>
+        Tue, 8 Dec 2020 11:41:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1CEC0613D6;
+        Tue,  8 Dec 2020 08:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NMqhQXFvhSVNTGBBUTvkzNDsEmmLv8BXIjRUXuQR1PA=; b=fBKqRdzNgO2taBufpfsIv0owb3
+        dpe3g7A1vOOMY9UhPDDZLHc0LOlsC+LIBDhlRZPvwlmXQQZsjmaf5RghYYPebuC6nmmQz5sQyB6HT
+        DcX996N8PGX5dcDGGObL4aUq4bkgB5hXwh5vxVS050YetMTvrpVEkvTBB2g4czES2FFZ8CQnOYzr5
+        7otWfELANedPzbfZjAvum3+TKQgAjs2plkyVMoH5hCZMdnojfqQal7GnTaAMBmZoBkrn3/T5+AxVY
+        o3cqjMiFJmfqw/uWHZFY2+Xzi7ys4OhEjUu4gwvaTpdndanwNnlInNs9eKHroS+AZ46IpgqoQrVAT
+        sA/qA0Aw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmg2p-0001el-FN; Tue, 08 Dec 2020 16:40:55 +0000
+Date:   Tue, 8 Dec 2020 16:40:55 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
+Message-ID: <20201208164055.GI7338@casper.infradead.org>
+References: <20201207225703.2033611-1-ira.weiny@intel.com>
+ <20201207225703.2033611-3-ira.weiny@intel.com>
+ <20201208122316.GH7338@casper.infradead.org>
+ <20201208163814.GN1563847@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208163814.GN1563847@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08 2020 at 13:13, Maxim Levitsky wrote:
-> On Mon, 2020-12-07 at 11:29 -0600, Oliver Upton wrote:
->> 
->> How would a VMM maintain the phase relationship between guest TSCs
->> using these ioctls?
->
-> By using the nanosecond timestamp. 
->  
-> While I did made it optional in the V2 it was done for the sole sake of being 
-> able to set TSC on (re)boot to 0 from qemu, and for cases when qemu migrates 
-> from a VM where the feature is not enabled.
-> In this case the tsc is set to the given value exactly, just like you
-> can do today with KVM_SET_MSRS.
-> In all other cases the nanosecond timestamp will be given.
->  
-> When the userspace uses the nanosecond timestamp, the phase relationship
-> would not only be maintained but be exact, even if TSC reads were not
-> synchronized and even if their restore on the target wasn't synchronized as well.
->  
-> Here is an example:
->  
-> Let's assume that TSC on source/target is synchronized, and that the guest TSC
-> is synchronized as well.
->
-> Let's call the guest TSC frequency F (guest TSC increments by F each second)
->  
-> We do KVM_GET_TSC_STATE on vcpu0 and receive (t0,tsc0).
-> We do KVM_GET_TSC_STATE on vcpu1 after 1 second passed (exaggerated) 
-> and receive (t0 + 1s, tsc0 + F)
+On Tue, Dec 08, 2020 at 08:38:14AM -0800, Ira Weiny wrote:
+> On Tue, Dec 08, 2020 at 12:23:16PM +0000, Matthew Wilcox wrote:
+> > On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
+> > > Placing these functions in 'highmem.h' is suboptimal especially with the
+> > > changes being proposed in the functionality of kmap.  From a caller
+> > > perspective including/using 'highmem.h' implies that the functions
+> > > defined in that header are only required when highmem is in use which is
+> > > increasingly not the case with modern processors.  Some headers like
+> > > mm.h or string.h seem ok but don't really portray the functionality
+> > > well.  'pagemap.h', on the other hand, makes sense and is already
+> > > included in many of the places we want to convert.
+> > 
+> > pagemap.h is for the page cache.  It's not for "random page
+> > functionality".  Yes, I know it's badly named.  No, I don't want to
+> > rename it.  These helpers should go in highmem.h along with zero_user().
+> 
+> I could have sworn you suggested pagemap.h.  But I can't find the evidence on
+> lore.  :-/   hehehe...
+> 
+> In the end the code does not care.  I have a distaste for highmem.h because it
+> is no longer for 'high memory'.  And I think a number of driver writers who are
+> targeting 64bit platforms just don't care any more.  So as we head toward
+> memory not being mapped by the kernel for other reasons I think highmem needs
+> to be 'rebranded' if not renamed.
 
-Why?
-
-You freeeze the VM and store the realtime timestamp of doing that. At
-that point assuming a full sync host system the only interesting thing
-to store is the guest offset which is the same on all vCPUs and it is
-known already.
-
-So on restore the only thing which needs to be adjusted is the guest
-wide offset.
-
-     newoffset = oldoffset + (now - tfreeze)
-
-Then set newoffset for all vCPUs. Anything else is complexity for no
-value and bound to fall apart in hard to debug ways.
-
-The offset is still the same for all vCPUs whether you can restore them
-in the same nanosecond or whether you need 3 minutes for each one. It
-does not matter because when you restore vCPU1 3 minutes after vCPU0
-then TSC has advanced 3 minutes as well. It's still correct from the
-guest POV.
-
-Even if you support TSCADJUST and let the guest write to it does not
-change the per guest offset at all. TSCADJUST is per [v]CPU and adds on
-top:
-
-    tscvcpu = tsc_host + guest_offset + TSC_ADJUST
-
-Scaling is just orthogonal and does not change any of this.
-
-Thanks,
-
-        tglx
+Rename highmem.h to kmap.h?
