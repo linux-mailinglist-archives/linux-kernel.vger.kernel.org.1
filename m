@@ -2,541 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CA22D2130
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A592D2134
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgLHC4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:56:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbgLHC4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:56:04 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728349AbgLHC5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728189AbgLHC5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:57:04 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB35C0613D6;
+        Mon,  7 Dec 2020 18:56:24 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E20D823976;
-        Tue,  8 Dec 2020 02:55:22 +0000 (UTC)
-Date:   Mon, 7 Dec 2020 21:55:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
- buffer timestamps
-Message-ID: <20201207215520.3da609f4@oasis.local.home>
-In-Reply-To: <20201201160656.7cc6a5e8@gandalf.local.home>
-References: <20201201160656.7cc6a5e8@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqlF12rsmz9sVl;
+        Tue,  8 Dec 2020 13:56:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607396182;
+        bh=r8+uOSzGpxl+5jLLfliEOhOhtbGEiNYgxRCcBs9RC9Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UrFDK+zWIE02Kg5KLpRaKz8YaO/Xsk2hcP+QbzyUxbWl5XnEaIlZMDBg9Dg2hVzzN
+         na18K4nW1vs3VNbgYp3R3hbwuvtmoyupzZHSBJveECSb7JyCY6koDg7vTnNNLQQfhm
+         Om11WRufM0zym1ilFOyubfR1ihKIWW8cj758MUbWc52RguborWnQBaGayqYWXECU5F
+         /en9wIijdL/KK+cxXVTzFHan972IAx401OxPt1AbG3VyIwWsM8mCylklagJ4gmlQFV
+         Jfjg8uBAPtCwJtSN0x93cSxx1OsDFoEgHUV9V04wwOs5/qgDqFf67Cj3mydTvJbtae
+         RE/O0C8jMIdPw==
+Date:   Tue, 8 Dec 2020 13:56:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: linux-next: manual merge of the amdgpu tree with the pci tree
+Message-ID: <20201208135620.237dbbd1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/vSyjXCFW1.ut1/TKTkltAH6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/vSyjXCFW1.ut1/TKTkltAH6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Masami?
+Hi all,
 
--- Steve
+Today's linux-next merge of the amdgpu tree got a conflict in:
 
+  drivers/pci/pcie/err.c
 
-On Tue, 1 Dec 2020 16:06:56 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+between commits:
 
-> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> A bug was reported about the ftrace ring buffer going backwards:
-> 
-> Link: https://lore.kernel.org/r/20201124223917.795844-1-elavila@google.com
-> 
-> In debugging this code, I wrote a C program that uses libtracefs to enable
-> all events and function tracing (if it exits), and then read the raw ring
-> buffer binary data and make sure that all the events never go backwards. If
-> they do, then it does a dump of the ring buffer sub buffer page and shows
-> the layout of the events and their deltas.
-> 
-> This was a very useful tool, and can be used to make sure that the ring
-> buffer's timestamps are consistently monotonic.
-> 
-> Adding this to the ftrace selftests seems to be a way that this can be
-> tested more often. But this would introduce the first binary code to the
-> ftracetests.
-> 
-> To make sure that the tests still work on embedded devices (where a
-> compiler may not even exist), and also since this binary incorporates the
-> yet-to-be-released libtracefs library, if the make fails, the test exits
-> with UNTESTED. The UNTESTED is documented as being a place holder which
-> this would be if the make does not work.
-> 
-> Thoughts?
-> 
-> Soon-to-be-signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
-> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/Makefile b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
-> new file mode 100644
-> index 000000000000..86f96b6fed9f
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/Makefile
-> @@ -0,0 +1,32 @@
-> +
-> +LD_PATH := -L/usr/local/lib/tracefs/ -L/usr/local/lib/traceevent
-> +
-> +TARGETS = test-ring-buffer
-> +
-> +PKG_CONFIG = pkg-config
-> +TRACEFS_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtracefs 2>/dev/null)
-> +TRACEFS_LIBS = $(shell $(PKG_CONFIG) --libs libtracefs 2>/dev/null)
-> +
-> +TRACEEVENT_INCLUDES = $(shell $(PKG_CONFIG) --cflags libtraceevent 2>/dev/null)
-> +TRACEEVENT_LIBS = $(shell $(PKG_CONFIG) --libs libtraceevent 2>/dev/null)
-> +
-> +ifeq ("$(TRACEFS_INCLUDES)","")
-> +$(error no libtracefs found)
-> +endif
-> +
-> +ifeq ("$(TRACEEVENT_INCLUDES)","")
-> +$(error no libtraceevent found)
-> +endif
-> +
-> +LIBS = $(TRACEFS_LIBS) $(TRACEEVENT_LIBS) -ldl
-> +
-> +CFLAGS := $(TRACEFS_INCLUDES) $(TRACEEVENT_INCLUDES)
-> +
-> +all: $(TARGETS)
-> +
-> +test-ring-buffer: test-ring-buffer.c
-> +	gcc -g -Wall -o $@ $(CFLAGS) $^ $(LIBS)
-> +
-> +clean:
-> +	$(RM) $(TARGETS) *.o
-> +
-> diff --git a/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
-> new file mode 100644
-> index 000000000000..af823e2102ff
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test-ring-buffer/test-ring-buffer.c
-> @@ -0,0 +1,399 @@
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <stdarg.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include <unistd.h>
-> +#include <signal.h>
-> +#include <stdbool.h>
-> +#include <sys/types.h>
-> +#include <fcntl.h>
-> +
-> +#include <tracefs.h>
-> +#include <kbuffer.h>
-> +
-> +typedef long long u64;
-> +
-> +static char *THIS_NAME;
-> +static struct tep_handle *tep;
-> +
-> +static void __vdie(const char *fmt, va_list ap, int err)
-> +{
-> +	int ret = errno;
-> +
-> +	if (err && errno)
-> +		perror(THIS_NAME);
-> +	else
-> +		ret = -1;
-> +
-> +	fprintf(stderr, "  ");
-> +	vfprintf(stderr, fmt, ap);
-> +
-> +	fprintf(stderr, "\n");
-> +	exit(ret);
-> +}
-> +
-> +void die(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	__vdie(fmt, ap, 0);
-> +	va_end(ap);
-> +}
-> +
-> +void pdie(const char *fmt, ...)
-> +{
-> +	va_list ap;
-> +
-> +	va_start(ap, fmt);
-> +	__vdie(fmt, ap, 1);
-> +	va_end(ap);
-> +}
-> +
-> +static void usage(char **argv)
-> +{
-> +	char *arg = argv[0];
-> +	char *p = arg+strlen(arg);
-> +
-> +	while (p >= arg && *p != '/')
-> +		p--;
-> +	p++;
-> +
-> +	printf("\nusage: %s timeout\n"
-> +	       "\n",p);
-> +	exit(-1);
-> +}
-> +
-> +static int tfd;
-> +static int result;
-> +static int done = 1;
-> +
-> +static void stop(int sig)
-> +{
-> +	write(tfd, "0", 1);
-> +	done = 0;
-> +}
-> +
-> +static struct last_info {
-> +	u64			timestamp;
-> +	void 			*content;
-> +	void 			*content_next;
-> +	unsigned long		page;
-> +	int			index;
-> +	int			irq;
-> +	int			sirq;
-> +} *info;
-> +
-> +static int page_size;
-> +
-> +static void *get_meta_data(struct tep_record *record)
-> +{
-> +	void *p = record->data;
-> +	int type_len;
-> +
-> +	if (record->size > 120) {
-> +		int size;
-> +
-> +		p -= 4;
-> +		size = *(unsigned int *)p;
-> +		p -= 4;
-> +		type_len = *(unsigned int *)p;
-> +		if (size != record->size + 4)
-> +			die("Expected size %d but found %d (%d)\n",
-> +			    record->size + 4,
-> +			    size, type_len);
-> +	} else
-> +		p -= 4;
-> +
-> +	return p;
-> +}
-> +
-> +static void init_content(struct last_info *info, int cpu,
-> +			 struct tep_record *record)
-> +{
-> +	int type_len;
-> +	void *p;
-> +
-> +	p = get_meta_data(record);
-> +	p -= 8;
-> +
-> +	type_len = *(unsigned int *)p;
-> +	/* FIXME for big endian */
-> +	type_len = type_len & ((1 << 5) - 1);
-> +	switch (type_len) {
-> +	case KBUFFER_TYPE_TIME_EXTEND:
-> +	case KBUFFER_TYPE_TIME_STAMP:
-> +		p -= 8;
-> +		break;
-> +	}
-> +	p -= sizeof(long);
-> +	memcpy(info[cpu].content, p, (record->data - p) + record->size);
-> +	info[cpu].page = (unsigned long)p;
-> +	info[cpu].content_next = record->data + record->size;
-> +}
-> +
-> +static void update_content(struct last_info *info, int cpu,
-> +			   struct tep_record *record)
-> +{
-> +	int size = (record->data + record->size) - info[cpu].content_next;
-> +	int start = info[cpu].content_next - (void *)info[cpu].page;
-> +
-> +	memcpy(info[cpu].content + start, (void *)info[cpu].page + start, size);
-> +	info[cpu].content_next = record->data + record->size;
-> +}
-> +
-> +static int read_kbuf_record(struct kbuffer *kbuf, struct tep_record *record)
-> +{
-> +	unsigned long long ts;
-> +	void *ptr;
-> +
-> +	ptr = kbuffer_read_event(kbuf, &ts);
-> +	if (!ptr || !record)
-> +		return -1;
-> +
-> +	memset(record, 0, sizeof(*record));
-> +	record->ts = ts;
-> +	record->size = kbuffer_event_size(kbuf);
-> +	record->record_size = kbuffer_curr_size(kbuf);
-> +	record->cpu = 0;
-> +	record->data = ptr;
-> +	record->ref_count = 1;
-> +
-> +	kbuffer_next_event(kbuf, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned get_delta(void *p)
-> +{
-> +	return (*(unsigned *)p & ((1<<27)-1) << 5) >> 5;
-> +}
-> +
-> +static unsigned long long get_extend_delta(void *p)
-> +{
-> +	unsigned long long delta;
-> +	unsigned long long extend;
-> +
-> +	delta = get_delta(p);
-> +	p += 4;
-> +	extend = *(unsigned *)p;
-> +
-> +	return (extend << 27) + delta;
-> +}
-> +
-> +static void check_meta(void *p, bool show)
-> +{
-> +	int type_len;
-> +
-> +	type_len = *(unsigned *)p & ((1<<5)-1);
-> +	if (show)
-> +		printf(" type_len=%d\n", type_len);
-> +	switch (type_len) {
-> +	case KBUFFER_TYPE_TIME_EXTEND:
-> +		printf("   TIME_EXTEND: delta: %lld\n", get_extend_delta(p));
-> +		break;
-> +	case KBUFFER_TYPE_TIME_STAMP:
-> +		printf("   TIME_STAMP: stamp: %lld\n", get_extend_delta(p));
-> +		break;
-> +	}
-> +}
-> +
-> +static void dump_content(struct last_info *info, int cpu,
-> +			 struct tep_record *this_record)
-> +{
-> +	struct tep_record record;
-> +	struct kbuffer *kbuf;
-> +	enum kbuffer_long_size kls;
-> +	int last = info[cpu].content_next - (void *)info[cpu].page;
-> +	int ret;
-> +	void *p;
-> +
-> +	switch (sizeof(long)) {
-> +	case 4:
-> +		kls = KBUFFER_LSIZE_4;
-> +		break;
-> +	default:
-> +		kls = KBUFFER_LSIZE_8;
-> +		break;
-> +	}
-> +
-> +
-> +	kbuf = kbuffer_alloc(kls, KBUFFER_ENDIAN_LITTLE);
-> +	if (!kbuf)
-> +		die("Allocating kbuffer");
-> +	kbuffer_load_subbuffer(kbuf, info[cpu].content);
-> +
-> +	p = info[cpu].content;
-> +
-> +	printf(" [%lld] PAGE TIME STAMP\n", *(unsigned long long *)p);
-> +
-> +	p += 8 + sizeof(long);
-> +	check_meta(p, true);
-> +
-> +	while (!(ret = read_kbuf_record(kbuf, &record))) {
-> +		struct tep_event *event;
-> +		int id;
-> +
-> +		id = tep_data_type(tep, &record);
-> +		event = tep_find_event(tep, id);
-> +		if (!event) {
-> +			printf("Failed to find event!\n");
-> +			continue;
-> +		}
-> +
-> +		p = get_meta_data(&record);
-> +
-> +		printf(" [%lld] delta:%d (%d)\n", record.ts, get_delta(p), record.size);
-> +
-> +		if (info[cpu].content + last == record.data + record.size)
-> +			break;
-> +
-> +		check_meta(record.data + record.size, false);
-> +	}
-> +	kbuffer_free(kbuf);
-> +
-> +	if (!this_record)
-> +		return;
-> +
-> +	printf("\nDumping record buffer:\n");
-> +
-> +	init_content(info, cpu, this_record);
-> +	dump_content(info, cpu, NULL);
-> +}
-> +
-> +static int callback(struct tep_event *event,
-> +		    struct tep_record *record,
-> +		    int cpu, void *context)
-> +{
-> +	static int done;
-> +	int index;
-> +	int irq, sirq;
-> +	int flags;
-> +
-> +	if (done)
-> +		return 1;
-> +
-> +	if (!info[cpu].content) {
-> +		info[cpu].content = calloc(1, page_size);
-> +		if (!info[cpu].content)
-> +			die("Allocating content");
-> +	}
-> +	if (!info[cpu].page)
-> +		init_content(info, cpu, record);
-> +
-> +	index = (unsigned long)record->data - info[cpu].page;
-> +
-> +	if (index < 0) {
-> +		printf("HERE!\n");
-> +		info[cpu].page = (unsigned long)record->data;
-> +		info[cpu].index += index;
-> +		index = 0;
-> +	}
-> +
-> +	flags = tep_data_flags(event->tep, record);
-> +	irq = !!(flags & TRACE_FLAG_HARDIRQ);
-> +	sirq = !!(flags & TRACE_FLAG_SOFTIRQ);
-> +
-> +	if (info[cpu].timestamp > record->ts) {
-> +		stop(0);
-> +		printf("Record on cpu %d went backwards: %lld to %lld\n"
-> +		       "  last index = %d : this index = %d\n"
-> +		       "  last softirq = %d : last hardirq = %d\n",
-> +		       cpu, info[cpu].timestamp, record->ts,
-> +		       info[cpu].index, index, info[cpu].sirq, info[cpu].irq);
-> +		dump_content(info, cpu, record);
-> +		done = 1;
-> +		result = -1;
-> +		return 1;
-> +	}
-> +
-> +	if (info[cpu].content_next > record->data)
-> +		init_content(info, cpu, record);
-> +	else
-> +		update_content(info, cpu, record);
-> +
-> +	info[cpu].timestamp = record->ts;
-> +	if (info[cpu].index > index) {
-> +		info[cpu].sirq = sirq;
-> +		info[cpu].irq = irq;
-> +	} else {
-> +		info[cpu].sirq |= sirq;
-> +		info[cpu].irq |= irq;
-> +	}
-> +	info[cpu].index = index;
-> +	return 0;
-> +}
-> +
-> +static void test_buffer(struct tep_handle *tep, int timeout)
-> +{
-> +	signal(SIGALRM, stop);
-> +	alarm(timeout);
-> +
-> +	tracefs_iterate_raw_events(tep, NULL, callback, NULL);
-> +}
-> +
-> +int main (int argc, char **argv)
-> +{
-> +	char *current_tracer;
-> +	char *events_enable;
-> +	char *tracing_on;
-> +	int time;
-> +	int cpus;
-> +	int efd;
-> +	int cfd;
-> +
-> +	THIS_NAME = argv[0];
-> +
-> +	if (argc < 2)
-> +		usage(argv);
-> +
-> +	page_size = getpagesize();
-> +
-> +	time = atoi(argv[1]);
-> +	if (time <= 0)
-> +		usage(argv);
-> +
-> +	tep = tracefs_local_events(NULL);
-> +	if (!tep)
-> +		pdie("Error loading events");
-> +
-> +	events_enable = tracefs_instance_get_file(NULL, "events/enable");
-> +	current_tracer = tracefs_instance_get_file(NULL, "current_tracer");
-> +	tracing_on = tracefs_instance_get_file(NULL, "tracing_on");
-> +
-> +	if (!events_enable || !current_tracer || !tracing_on)
-> +		pdie("Allocating strings");
-> +
-> +	cpus = sysconf(_SC_NPROCESSORS_CONF);
-> +
-> +	info = calloc(cpus, sizeof(*info));
-> +	if (!info)
-> +		pdie("Allocating per cpu info");
-> +
-> +	efd = open(events_enable, O_WRONLY);
-> +	if (efd < 0)
-> +		pdie(events_enable);
-> +
-> +	cfd = open(current_tracer, O_WRONLY);
-> +	if (cfd < 0)
-> +		pdie(current_tracer);
-> +
-> +	tfd = open(tracing_on, O_WRONLY);
-> +	if (tfd < 0)
-> +		pdie(current_tracer);
-> +
-> +	write(efd, "1", 1);
-> +	write(cfd, "function", 8);
-> +
-> +	test_buffer(tep, time);
-> +
-> +	write(efd, "0", 1);
-> +	write(cfd, "nop", 3);
-> +	write(tfd, "1", 1);
-> +
-> +	close(efd);
-> +	close(cfd);
-> +	close(tfd);
-> +	exit(result);
-> +}
-> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
-> new file mode 100644
-> index 000000000000..05f628124774
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/ring-buffer.tc
-> @@ -0,0 +1,16 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# description: ftrace - test ring buffer timestamps
-> +
-> +cd $TOP_DIR/test-ring-buffer
-> +if ! make ; then
-> +	cd $TRACING_DIR
-> +	exit_untested
-> +fi
-> +
-> +./test-ring-buffer 10
-> +
-> +make clean
-> +
-> +cd $TRACING_DIR
-> +
+  8f1bbfbc3596 ("PCI/ERR: Rename reset_link() to reset_subordinates()")
+  0791721d8007 ("PCI/ERR: Use "bridge" for clarity in pcie_do_recovery()")
+  05e9ae19ab83 ("PCI/ERR: Add pci_walk_bridge() to pcie_do_recovery()")
 
+from the pci tree and commit:
+
+  36a8901e900a ("PCI/ERR: Fix reset logic in pcie_do_recovery() call")
+
+from the amdgpu tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/pci/pcie/err.c
+index 510f31f0ef6d,4a2735b70fa6..000000000000
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@@ -146,61 -146,49 +146,82 @@@ out
+  	return 0;
+  }
+ =20
+ +/**
+ + * pci_walk_bridge - walk bridges potentially AER affected
+ + * @bridge:	bridge which may be a Port, an RCEC, or an RCiEP
+ + * @cb:		callback to be called for each device found
+ + * @userdata:	arbitrary pointer to be passed to callback
+ + *
+ + * If the device provided is a bridge, walk the subordinate bus, including
+ + * any bridged devices on buses under this bus.  Call the provided callba=
+ck
+ + * on each device found.
+ + *
+ + * If the device provided has no subordinate bus, e.g., an RCEC or RCiEP,
+ + * call the callback on the device itself.
+ + */
+ +static void pci_walk_bridge(struct pci_dev *bridge,
+ +			    int (*cb)(struct pci_dev *, void *),
+ +			    void *userdata)
+ +{
+ +	if (bridge->subordinate)
+ +		pci_walk_bus(bridge->subordinate, cb, userdata);
+ +	else
+ +		cb(bridge, userdata);
+ +}
+ +
+  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ -			pci_channel_state_t state,
+ -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
+ +		pci_channel_state_t state,
+ +		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
+  {
+ +	int type =3D pci_pcie_type(dev);
+ +	struct pci_dev *bridge;
+  	pci_ers_result_t status =3D PCI_ERS_RESULT_CAN_RECOVER;
+ -	struct pci_bus *bus;
+ +	struct pci_host_bridge *host =3D pci_find_host_bridge(dev->bus);
+ =20
+  	/*
+ -	 * Error recovery runs on all subordinates of the first downstream port.
+ -	 * If the downstream port detected the error, it is cleared at the end.
+ +	 * If the error was detected by a Root Port, Downstream Port, RCEC,
+ +	 * or RCiEP, recovery runs on the device itself.  For Ports, that
+ +	 * also includes any subordinate devices.
+ +	 *
+ +	 * If it was detected by another device (Endpoint, etc), recovery
+ +	 * runs on the device and anything else under the same Port, i.e.,
+ +	 * everything under "bridge".
+  	 */
+ -	if (!(pci_pcie_type(dev) =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
+ -	      pci_pcie_type(dev) =3D=3D PCI_EXP_TYPE_DOWNSTREAM))
+ -		dev =3D dev->bus->self;
+ -	bus =3D dev->subordinate;
+ +	if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
+ +	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM ||
+ +	    type =3D=3D PCI_EXP_TYPE_RC_EC ||
+ +	    type =3D=3D PCI_EXP_TYPE_RC_END)
+ +		bridge =3D dev;
+ +	else
+ +		bridge =3D pci_upstream_bridge(dev);
+ =20
+ -	pci_dbg(dev, "broadcast error_detected message\n");
+ +	pci_dbg(bridge, "broadcast error_detected message\n");
+  	if (state =3D=3D pci_channel_io_frozen) {
+ -		pci_walk_bus(bus, report_frozen_detected, &status);
+ +		pci_walk_bridge(bridge, report_frozen_detected, &status);
++ 		/*
++ 		 * After resetting the link using reset_link() call, the
++ 		 * possible value of error status is either
++ 		 * PCI_ERS_RESULT_DISCONNECT (failure case) or
++ 		 * PCI_ERS_RESULT_NEED_RESET (success case).
++ 		 * So ignore the return value of report_error_detected()
++ 		 * call for fatal errors.
++ 		 *
++ 		 * In EDR mode, since AER and DPC Capabilities are owned by
++ 		 * firmware, reported_error_detected() will return error
++ 		 * status PCI_ERS_RESULT_NO_AER_DRIVER. Continuing
++ 		 * pcie_do_recovery() with error status as
++ 		 * PCI_ERS_RESULT_NO_AER_DRIVER will report recovery failure
++ 		 * irrespective of recovery status. But successful reset_link()
++ 		 * call usually recovers all fatal errors. So ignoring the
++ 		 * status result of report_error_detected() also helps EDR based
++ 		 * error recovery.
++ 		 */
+ -		status =3D reset_link(dev);
+ +		status =3D reset_subordinates(bridge);
+- 		if (status !=3D PCI_ERS_RESULT_RECOVERED) {
++ 		if (status =3D=3D PCI_ERS_RESULT_RECOVERED) {
++ 			status =3D PCI_ERS_RESULT_NEED_RESET;
++ 		} else {
++ 			status =3D PCI_ERS_RESULT_DISCONNECT;
+ -			pci_warn(dev, "link reset failed\n");
+ +			pci_warn(bridge, "subordinate device reset failed\n");
+  			goto failed;
+  		}
+  	} else {
+@@@ -215,13 -203,25 +236,25 @@@
+ =20
+  	if (status =3D=3D PCI_ERS_RESULT_NEED_RESET) {
+  		/*
+- 		 * TODO: Should call platform-specific
+- 		 * functions to reset slot before calling
+- 		 * drivers' slot_reset callbacks?
++ 		 * TODO: Optimize the call to pci_reset_bus()
++ 		 *
++ 		 * There are two components to pci_reset_bus().
++ 		 *
++ 		 * 1. Do platform specific slot/bus reset.
++ 		 * 2. Save/Restore all devices in the bus.
++ 		 *
++ 		 * For hotplug capable devices and fatal errors,
++ 		 * device is already in reset state due to link
++ 		 * reset. So repeating platform specific slot/bus
++ 		 * reset via pci_reset_bus() call is redundant. So
++ 		 * can optimize this logic and conditionally call
++ 		 * pci_reset_bus().
+  		 */
++ 		pci_reset_bus(dev);
++=20
+  		status =3D PCI_ERS_RESULT_RECOVERED;
+ -		pci_dbg(dev, "broadcast slot_reset message\n");
+ -		pci_walk_bus(bus, report_slot_reset, &status);
+ +		pci_dbg(bridge, "broadcast slot_reset message\n");
+ +		pci_walk_bridge(bridge, report_slot_reset, &status);
+  	}
+ =20
+  	if (status !=3D PCI_ERS_RESULT_RECOVERED)
+
+--Sig_/vSyjXCFW1.ut1/TKTkltAH6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/O61QACgkQAVBC80lX
+0GxS7gf6AtvsAJWfM7CDYoHHHKSrvuJrc68lEJjilsdwnuZcYrlCA2vA1C0O2sHx
+dsIYV1svCF6NGuKklzNrzfrcG2O/bWX4MEt5Mla4qEHMokZrmYHheuLkV53WDiE0
+jqK7ktFMtN9iFeXHLV5b6cSiiJqFAblNhN6ejzOXZQ70jAuTmpn4HNqbnHx6flQt
+3/rvgOgrvemVCk0tdvA57DHvh4g7tJUlnuukzCYuTquUQihGX5VAqBz00q3nYb9f
+RZbmf8KerDK2tPXQX80wRZphmWABjPT8ZW+OkcsDaSUqjfHl1sBalmBjV/Wxo+1X
+DyxN4rwUQx4RHqCk/eq88PY9rRQFYg==
+=ffAF
+-----END PGP SIGNATURE-----
+
+--Sig_/vSyjXCFW1.ut1/TKTkltAH6--
