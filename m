@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ACC2D3199
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F092D319B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730860AbgLHR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
+        id S1730865AbgLHSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgLHR70 (ORCPT
+        with ESMTP id S1730813AbgLHSAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:59:26 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44034C061749;
-        Tue,  8 Dec 2020 09:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=xpPrMtRvHw9uqYWab0h0BufwacaQTlL6o1POPE2Agm0=; b=ujqn2sNEqBW65hdKJbVwhyiG1I
-        q4h6IPSVJMUPyS8qmJfMk3lQTvdUQ/axMqLnNICqsLCh3A0jm7G1ifHG9cR3Fnsh0HhGPojPvl39k
-        VEoEAIS6jB/Ik5kgCUOspdU6i/lw2M5sWEvMVtApWv4YoTC/HjtWgLGR/T7UP/Z5x9swPOVQSnCOd
-        a+DFbupqke6wOcA6HjN+2ufyF2MqIkGP4Ic6ZhPUpaR5lDQyWUgKCtjp1wSLWZPOyDicUUYPwel6B
-        0kjRicsFxiqa7Rqrhr3nGXAB2PfMNCXELi13TMqybrAjLsIQr0JG9/IXRhxNOrWJn1DfcfSv+aOJm
-        x18Tfs8g==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmhG3-0007v4-7W; Tue, 08 Dec 2020 17:58:39 +0000
-Subject: Re: [PATCH] Update documentation to reflect what
- TAINT_CPU_OUT_OF_SPEC means nowadays
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>
-Cc:     Borislav Petkov <bp@alien8.de>, Stephen Kitt <steve@sk2.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>,
-        Yue Hu <huyue2@yulong.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201202153244.709752-1-me@mathieu.digital>
- <20201208105439.23e2349b@lwn.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1254edd7-25ee-b73d-da2c-194d38ba7890@infradead.org>
-Date:   Tue, 8 Dec 2020 09:58:32 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 8 Dec 2020 13:00:44 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28B4C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:59:57 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id p6so7362360plr.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vC+DtXn0h/YwH+m7lTrhoayKAF6AvMOlxSoaUs6f0Qw=;
+        b=YXOIjYUsT5Q8iO3uJgW6RGchkwNRc3yrbF4s3UOEuRdkb/oboZ2dtsGYRnGVvrVZ6G
+         jWGEkGOqFRKVhpvOWMr1GedqB4CUmBTkoTrLB9P5QtkCWrwmh+pmwNMMCj1Ir0gj3ly2
+         0pAPIcXU+1XDt4lpR8zybuSSuIHAKyfUx7HkvtKX6ESuz2YeTczfaRbj1x6Mzs/MiiO2
+         fA7jg6hA8Nqw9ln2HSWoLZdxN4lukDyweQkhPssJgBLv73SNNnBVUXmrSe6OTqB2Wm2B
+         Usw4dlrZVkPVWeO/eFSLtH5id60nrHq8IRZLbUvT7Ze1aRpyrCj6eyxkbMzF89RtBqzG
+         1jTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vC+DtXn0h/YwH+m7lTrhoayKAF6AvMOlxSoaUs6f0Qw=;
+        b=sJ28cKiXl+wafKdVVGDC9dP5j/Bls4pRAS2q2aRm9sxrPVvjrqj6v2wfkAI/sPJLxG
+         /1jm9/KwjeURfwaTPR0vZj6CmdYzRienn9VQK+PgA4YUgXSOEEelh/7cw8rlnOvF2zGU
+         rFFuibtsUIEfV6B1W1zTdHMewIj/uRFtOstYK2QtmIpvhzJHHpQONVoqZKpXaSIuFSuH
+         SnFj2uFMq5DXs6XXa7V/WMvcUtcK2uDO0ZsZU1eyxiSOGAVnH1sNUrUtmJq7lXNbE2p/
+         ts19sXkkNDKA1npq2BCdm/NM5UmMlPDpPtHe7fs8pXVQRGauejw5KLJLWHfgaiPWSjes
+         eLeg==
+X-Gm-Message-State: AOAM533y3Dj5boPuVMIZsONZflogS7lLLPX0Qbd6DF90UvpEe+k/1Rea
+        VrZLnLo12PWSd452vsypjqz0N6vyIVxvDI9uG1uIEA==
+X-Google-Smtp-Source: ABdhPJyQp0/wPv19OW0732e/Fr/ER7bdM1OF8dikRA7UvJl9auQoPnqlNTrQKsD9/y2ExMecMuhrUG47rNfhzR+fCO8=
+X-Received: by 2002:a17:902:8541:b029:da:fcd1:7bf with SMTP id
+ d1-20020a1709028541b02900dafcd107bfmr9196778plo.56.1607450397283; Tue, 08 Dec
+ 2020 09:59:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208105439.23e2349b@lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201203202737.7c4wrifqafszyd5y@google.com> <20201208054646.2913063-1-maskray@google.com>
+In-Reply-To: <20201208054646.2913063-1-maskray@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 8 Dec 2020 09:59:46 -0800
+Message-ID: <CAKwvOdmuwOPzZZHMh58syoorc4ED5-6_tbxCqhL0Gi65mq58-A@mail.gmail.com>
+Subject: Re: [PATCH v2] firmware_loader: Align .builtin_fw to 8
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/20 9:54 AM, Jonathan Corbet wrote:
-> On Wed,  2 Dec 2020 16:32:43 +0100
-> Mathieu Chouquet-Stringer <me@mathieu.digital> wrote:
-> 
->> 	Hello Jonathan,
->>
->> Here's a patch updating the meaning of TAINT_CPU_OUT_OF_SPEC after
->> Borislav introduced changes in a7e1f67ed29f and upcoming patches in tip.
->>
->> TAINT_CPU_OUT_OF_SPEC now means a bit more what it implies as the
->> flag isn't set just because of a CPU misconfiguration or mismatch.
->> Historically it was for SMP kernel oops on an officially SMP incapable
->> processor but now it also covers CPUs whose MSRs have been incorrectly
->> poked at from userspace, drivers being used on non supported
->> architectures, broken firmware, mismatched CPUs, ...
->>
->> Update documentation and script to reflect that.
->>
->> Signed-off-by: Mathieu Chouquet-Stringer <me@mathieu.digital>
-> 
-> Hearing no objection, I've applied this.
+On Mon, Dec 7, 2020 at 9:46 PM Fangrui Song <maskray@google.com> wrote:
+>
+> arm64 references the start address of .builtin_fw (__start_builtin_fw)
+> with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+> relocations. The compiler is allowed to emit the
+> R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+> include/linux/firmware.h is 8-byte aligned.
+>
+> The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+> multiple of 8, which may not be the case if .builtin_fw is empty.
+> Unconditionally align .builtin_fw to fix the linker error. 32-bit
+> architectures could use ALIGN(4) but that would add unnecessary
+> complexity, so just use ALIGN(8).
+>
+> Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>
+> ---
+> Change in v2:
+> * Use output section alignment instead of inappropriate ALIGN_FUNCTION()
 
+Cool, this approach is what we already use for other global arrays;
+such as __tracepoints_ptrs.  (I wonder why we don't use 4B alignment
+for 32b...but 8 is a multiple of 4, so should be fine for 32b
+targets).
 
-Hm, I was glad to read this new info since my old testing laptop
-now tells me that it needs a microcode update.  :(
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Build+Boot tested aarch64 and x86_64 with ld.lld and ld.bfd. Did not
+test loading builtin firmware.
+
+> ---
+>  include/asm-generic/vmlinux.lds.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index b2b3d81b1535..b97c628ad91f 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -459,7 +459,7 @@
+>         }                                                               \
+>                                                                         \
+>         /* Built-in firmware blobs */                                   \
+> -       .builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {      \
+> +       .builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {    \
+>                 __start_builtin_fw = .;                                 \
+>                 KEEP(*(.builtin_fw))                                    \
+>                 __end_builtin_fw = .;                                   \
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
 
 
 -- 
-~Randy
-
+Thanks,
+~Nick Desaulniers
