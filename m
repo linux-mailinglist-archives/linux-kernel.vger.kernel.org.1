@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD43C2D29B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F252D29BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgLHLXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:23:49 -0500
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:47075 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgLHLXt (ORCPT
+        id S1729148AbgLHLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:25:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47177 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728983AbgLHLZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:23:49 -0500
-Received: by mail-ej1-f67.google.com with SMTP id bo9so23988592ejb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:23:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/vQIR8cILfXFY8rOgnw9V9vTbP76cwtxK2fEgl/bYiA=;
-        b=o945JsLOiCQ1LCDPvDCiHcQmIeppXrVmBS95NsM1QzPr3wYYeKQb+UXQj9zVQeI/Yo
-         BNwLQDP0ok/jUEXUB2kvZ27TkkGxL/BzOPJQaRZGtCo1gOsrrf4TtljX1sF8/JbZzfW+
-         r3yQQpYscqh+ignl4hqv9j0OHFColtvf2mCDZWG7Bp+nFs6Wt0hsJnV/n6ZyPzTwP5WF
-         2cJdFcUF1LvCxSwwwa3jcMMwre1WRTvUu2hyGvPzGvBL1K37TjXSY/KPeOhwG5wvG29I
-         OxSGK1E7EvThZjcHDbjgrCQW7U7Pc/N2neDWDo6szV//HCvhP60qkr3SdtbZlb+tsFof
-         T3rw==
-X-Gm-Message-State: AOAM5318qlNiiTObYjidS1O04j6xcaBaqLYidVzn0xbsBeiZEidUqvYW
-        sBx7bepJoxM9wHTNqlFPbTJVagnyh8iZNA==
-X-Google-Smtp-Source: ABdhPJz1q4ahsSdr2WBU7qTuMJWyp18EfLFBlJ7kK5b8cVJwtgj05uA2lYGuY8aFxYd5y5a5yrHNDQ==
-X-Received: by 2002:a17:907:444f:: with SMTP id on23mr23201089ejb.300.1607426586733;
-        Tue, 08 Dec 2020 03:23:06 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id qn4sm4476420ejb.50.2020.12.08.03.23.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 03:23:05 -0800 (PST)
-Subject: Re: [PATCH] tty: Remove dead termiox code
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org
-References: <20201203020331.2394754-1-jannh@google.com>
- <5cca5126-60ba-d123-0f7d-47fdbac4c4db@kernel.org>
- <X8nwnXQKOYWBWBZ+@kroah.com>
- <93834a92-b342-aaee-c400-2883d5df0cdc@kernel.org>
- <20201208111312.GA27425@infradead.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <c1c9fc04-02eb-2260-195b-44c357f057c0@kernel.org>
-Date:   Tue, 8 Dec 2020 12:23:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 8 Dec 2020 06:25:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607426665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LtCo72TfeKmFl6M1Uz4zaJ8a+OPs0eUphJ7mDeWhrv8=;
+        b=Q4dGfZEtcwmzDVJ6GFmoaaNZg25Q3/bXuuJpLXHU9VVmAQZ8v9bSppHBdxbPFPpWOL71Ua
+        IyQNkKCmREQKiOfYPHGt2j4/cXOMna+jYZJhVNm7TNbuIikNwGu6GG9iMQQR7LbqQmXAyO
+        yOEE2YOZ7ZqmrCWqBxvSoHLy/jIDWyY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-u54GPkF2Obyv-VNJM2ywhg-1; Tue, 08 Dec 2020 06:24:23 -0500
+X-MC-Unique: u54GPkF2Obyv-VNJM2ywhg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4034E180A086;
+        Tue,  8 Dec 2020 11:24:20 +0000 (UTC)
+Received: from starship (unknown [10.35.206.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BE3919D80;
+        Tue,  8 Dec 2020 11:24:13 +0000 (UTC)
+Message-ID: <69a4b9888a179529607d22615caa647b5fbf051d.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Tue, 08 Dec 2020 13:24:11 +0200
+In-Reply-To: <885C1725-B479-47F6-B08D-A7181637A80A@amacapital.net>
+References: <636fecc20b0143128b484f159ff795ff65d05b82.camel@redhat.com>
+         <885C1725-B479-47F6-B08D-A7181637A80A@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201208111312.GA27425@infradead.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08. 12. 20, 12:13, Christoph Hellwig wrote:
-> On Fri, Dec 04, 2020 at 09:20:39AM +0100, Jiri Slaby wrote:
->>>>> Delete this dead code; but leave the definition of struct termiox in the
->>>>> UAPI headers intact.
->>>>
->>>> I am thinking -- can/should we mark the structure as deprecated so that
->>>> userspace stops using it eventually?
->>>
->>> If it doesn't do anything, how can userspace even use it today?  :)
->>
->> Well, right. I am in favor to remove it, BUT: what if someone tries that
->> ioctl and bails out if EINVAL is returned. I mean: if they define a local
->> var of that struct type and pass it to the ioctl, we would break the build
->> by removing the struct completely. Even if the code didn't do anything
->> useful, it still could be built. So is this very potential breakage OK?
+On Mon, 2020-12-07 at 10:04 -0800, Andy Lutomirski wrote:
+> > On Dec 7, 2020, at 9:00 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > 
+> > ﻿On Mon, 2020-12-07 at 08:53 -0800, Andy Lutomirski wrote:
+> > > > > On Dec 7, 2020, at 8:38 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > > 
+> > > > ﻿On Mon, Dec 07 2020 at 14:16, Maxim Levitsky wrote:
+> > > > > > On Sun, 2020-12-06 at 17:19 +0100, Thomas Gleixner wrote:
+> > > > > > From a timekeeping POV and the guests expectation of TSC this is
+> > > > > > fundamentally wrong:
+> > > > > > 
+> > > > > >     tscguest = scaled(hosttsc) + offset
+> > > > > > 
+> > > > > > The TSC has to be viewed systemwide and not per CPU. It's systemwide
+> > > > > > used for timekeeping and for that to work it has to be synchronized. 
+> > > > > > 
+> > > > > > Why would this be different on virt? Just because it's virt or what? 
+> > > > > > 
+> > > > > > Migration is a guest wide thing and you're not migrating single vCPUs.
+> > > > > > 
+> > > > > > This hackery just papers over he underlying design fail that KVM looks
+> > > > > > at the TSC per vCPU which is the root cause and that needs to be fixed.
+> > > > > 
+> > > > > I don't disagree with you.
+> > > > > As far as I know the main reasons that kvm tracks TSC per guest are
+> > > > > 
+> > > > > 1. cases when host tsc is not stable 
+> > > > > (hopefully rare now, and I don't mind making
+> > > > > the new API just refuse to work when this is detected, and revert to old way
+> > > > > of doing things).
+> > > > 
+> > > > That's a trainwreck to begin with and I really would just not support it
+> > > > for anything new which aims to be more precise and correct.  TSC has
+> > > > become pretty reliable over the years.
+> > > > 
+> > > > > 2. (theoretical) ability of the guest to introduce per core tsc offfset
+> > > > > by either using TSC_ADJUST (for which I got recently an idea to stop
+> > > > > advertising this feature to the guest), or writing TSC directly which
+> > > > > is allowed by Intel's PRM:
+> > > > 
+> > > > For anything halfways modern the write to TSC is reflected in TSC_ADJUST
+> > > > which means you get the precise offset.
+> > > > 
+> > > > The general principle still applies from a system POV.
+> > > > 
+> > > >    TSC base (systemwide view) - The sane case
+> > > > 
+> > > >    TSC CPU  = TSC base + TSC_ADJUST
+> > > > 
+> > > > The guest TSC base is a per guest constant offset to the host TSC.
+> > > > 
+> > > >    TSC guest base = TSC host base + guest base offset
+> > > > 
+> > > > If the guest want's this different per vCPU by writing to the MSR or to
+> > > > TSC_ADJUST then you still can have a per vCPU offset in TSC_ADJUST which
+> > > > is the offset to the TSC base of the guest.
+> > > 
+> > > How about, if the guest wants to write TSC_ADJUST, it can turn off all paravirt features and keep both pieces?
+> > > 
+> > 
+> > This is one of the things I had in mind recently.
+> > 
+> > Even better, we can stop advertising TSC_ADJUST in CPUID to the guest 
+> > and forbid it from writing it at all.
 > 
-> Um, we do guarantee a stable ABI.  We have never guaranteed that all old
-> crappy code will continue to compile, although we avoid gratious
-> breakage.  And assuming there ever was code using termiox (which I'm not
-> sure about to start with) it will surely have some form of feature
-> check, and I think we are better off with that feature check not
-> detecting the presence as that would be completely pointless.
+> Seems reasonable to me.
 > 
-> Or in short: by keeping the uapi definition we do userspace software a
-> disfavor.
+> It also seems okay for some MSRs to stop working after the guest enabled new PV timekeeping.
+This is a very good idea!
 
-OK, even better. I will remove it once I get to it (if noone beats me to 
-it, of course).
+> 
+> I do have a feature request, though: IMO it would be quite nifty if the new kvmclock structure could also expose NTP corrections. In other words, if you could expose enough info to calculate CLOCK_MONOTONIC_RAW, CLOCK_MONOTONIC, and CLOCK_REALTIME, then we could have paravirt NTP.
+> 
+> Bonus points if whatever you do for CLOCK_REALTIME also exposes leap seconds in a race free way :). But I suppose that just exposing TAI and letting the guest deal with the TAI - UTC offset itself would get the job done just fine.
 
-thanks,
--- 
-js
-suse labs
+This is a good idea too.
+As I understand it, this gives a justification to a new kvmclock purpose,
+which wouldn't be focused anymore on correcting the tsc shortcomings
+(unstable/unscalable tsc), but more on things like that.
+I like that idea.
+
+Best regards,
+	Maxim Levitsky
+
+
