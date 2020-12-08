@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AED42D363A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE622D363E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731435AbgLHWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730393AbgLHWZo (ORCPT
+        id S1731468AbgLHW0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:26:55 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:45671 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730297AbgLHW0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:25:44 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD972C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 14:25:03 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id v8so10393379vso.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AxYYdD625aASAaVaKZf+ek64hWUOmEA30M0W7p5diOs=;
-        b=PWCPTPXdf9qzkpa8lQrpH0dg+cA2CjB8tVpfj3R15FX88qylOFpgSJt6UiRye6R/Xi
-         aLLzYbaTq8/LqfFulq/ntwHbHeb7wmAAEBKarvhDc+O1d2rO6Ue+8tP6oQT+UyHlyE2i
-         UnZP7lb07czgcJmcm1C5mfNG8xfH9K7FwigtA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AxYYdD625aASAaVaKZf+ek64hWUOmEA30M0W7p5diOs=;
-        b=lHjbSAsw4w/RmGWYIhOtQHwrOyZAm7E/ok3J2i0/peGqrsqHbV7u9fCpfpeiJ2yZRt
-         p/YXrEtVHIi0znb/mByqgmskj4wcsH4WHUqlH9EQsDjbIcBsB2X2uZr4SaXOFQT7acYr
-         abKcHUxMHJuZtDI5YIlLjo0gwG/s4/BG5Uzr1GK6f02DdHPb3kIxYu+DXe9XbMbo2sGh
-         f6rVoJf5dKwVrrjQSbwGoYgRAQn+0yA+1uRJDP/nimkyo4yxBdIQIoZw9R6vtzYgxva7
-         XXY4QSdJ6p5QRRNOXvAY4gufsewjkYIL3masPhIPms4qkSeBo7DHGXGBZcT+TC2e8C5p
-         Fm+A==
-X-Gm-Message-State: AOAM532ZYfuyER0AaavfKuZEOqSaWVOQ2x+GNU9BFi8zHlMwsxwyxgGW
-        SzWCFr0biosCeWNQhHTTZAHX+tBw8RXyhw==
-X-Google-Smtp-Source: ABdhPJyjCVC2FCs9Vby3nXEuZ9xQPJkAnvhKLcFN5R5flg6ql4Fjfo2TBbTom+DkXnp3k+JaqjfsYA==
-X-Received: by 2002:a67:89c8:: with SMTP id l191mr279116vsd.8.1607466302718;
-        Tue, 08 Dec 2020 14:25:02 -0800 (PST)
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com. [209.85.221.172])
-        by smtp.gmail.com with ESMTPSA id s6sm31286vkk.20.2020.12.08.14.25.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 14:25:01 -0800 (PST)
-Received: by mail-vk1-f172.google.com with SMTP id i62so71468vkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 14:25:01 -0800 (PST)
-X-Received: by 2002:a1f:3fc9:: with SMTP id m192mr214325vka.17.1607466301140;
- Tue, 08 Dec 2020 14:25:01 -0800 (PST)
+        Tue, 8 Dec 2020 17:26:54 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 8EC2A10ED;
+        Tue,  8 Dec 2020 17:26:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 08 Dec 2020 17:26:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nkwarfield.io;
+         h=date:from:to:cc:subject:message-id:mime-version:content-type;
+         s=fm3; bh=93kAimUHuURvl/m8SQ6dsmBkazfQnzIkpniefjGMWU0=; b=qsi7z
+        D62duOvWPi4ET9Smy9P8MKlIoAXC13tu6wsyZyjGUvRmZDOhgMHFiSbdxNg+Vpwy
+        h9Dj3CMJnthvP6X77f+7pSMSbc/aST8SkCsgRFb82yPiNBrHWTuwVXTrS4F0DgEV
+        EPgPanSLqUs31Un4CjGKLkkh94rZ1wVLSFH5kilmKnHcH4Z6F/fjID/nqDYt90hX
+        Db+ZYoNYzVCp2vlg6UK5czw8BgDccaWyUpF3gwbdd908YJe1pYEFYIljESE6V50L
+        V32+dTCDjiLwh1bt+AHIGtnHxFn2hxMYxxuNTQUvJnHCGNFKKXFigYd8aDo9BHJv
+        gC3fvYWVQaDTPDT9g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=93kAimUHuURvl/m8SQ6dsmBkazfQn
+        zIkpniefjGMWU0=; b=bvvCNF2PVTLkBG5Z9iTVQ4hqAapTc0vYH4YtYI2OxC6zB
+        UECGV+NitvLPzkSZPKGfeGvaXjIwEQeCRkg+6ggfjYYhQXiBXPL/tb+KyTvzlMW2
+        2d/EpVcx0hi6SJ9D/4DhoQGereliWLOocUB9RrNg8ysUzFagzH/3b6uFmfdeBiMR
+        l0TWqPH6ALtuoVMXVU4OrSH/k73L+66/NTIUfp1EmQ3SPS2c2PU6NyH23fu3ofQR
+        I4h9C7wGJHfj0txk01W54sj1YHjfL9Q0BkRZxLu4FfcDk5iEukh2VFg8/IAoKf2i
+        mxLYAykw9REfD1F4n+KtVXRr28J7i1ecUfEAiTBLQ==
+X-ME-Sender: <xms:f_3PX57uHuVVnysGIRx5pAftp0LRJJU2NS1BkVdZ7asJ5jodiX27rg>
+    <xme:f_3PXxebH8Rv5nMe8LzM8Vyl70tzs-m5UZHxWim0jLy9VecWrx7HFC7RKV-26aRbn
+    MmXiOXdwBjz6uhN0ng>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgudeifecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkgggtugesthdtredttddtvdenucfhrhhomheppfhitghhohhl
+    rghsucghrghrfhhivghlugcuoehnihgtkhesnhhkfigrrhhfihgvlhgurdhioheqnecugg
+    ftrfgrthhtvghrnhepgfdugfekhefftdekuedukedvheettdehudeugfffgfffjeevgfdu
+    udffgffhjeejnecukfhppedutdegrdefgedrleelrdejieenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihgtkhesnhhkfigrrhhfihgvlhgu
+    rdhioh
+X-ME-Proxy: <xmx:f_3PX9DAH6ve09LwgWj3DJWtzTYYIFxPsWi0_M50zKZ4PMcXFR7sLA>
+    <xmx:f_3PX08uwTBb5YV_OZDVVCgV9TTH-YukttFHFp3nLBdlZD4i7MQ04A>
+    <xmx:f_3PX4L_RdOiwlHPronP8CX7SJ1TDAE1yukKOIVf6B76KjM2yPPDcw>
+    <xmx:gP3PX3VmchpQn9vAaziq_l7jP4r43dcFVH72q7xC9wSc_gkUXnhKig>
+Received: from coffee.localdomain (cpe-104-34-99-76.socal.res.rr.com [104.34.99.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B490A24005C;
+        Tue,  8 Dec 2020 17:26:06 -0500 (EST)
+Date:   Tue, 8 Dec 2020 14:25:29 -0800
+From:   Nicholas Warfield <nick@nkwarfield.io>
+To:     Manish Chopra <manishc@marvell.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        nick@nkwarfield.io
+Subject: [PATCH] staging: qlge: remove duplicate word in comment
+Message-ID: <X8/9WWP3S1GrVNaa@coffee.localdomain>
 MIME-Version: 1.0
-References: <20201202200252.986230-1-swboyd@chromium.org>
-In-Reply-To: <20201202200252.986230-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 8 Dec 2020 14:24:49 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VQ5GxedWDm6cFfTirEFCS2Mmb--Ey8s_cnSyPSE3MPmA@mail.gmail.com>
-Message-ID: <CAD=FV=VQ5GxedWDm6cFfTirEFCS2Mmb--Ey8s_cnSyPSE3MPmA@mail.gmail.com>
-Subject: Re: [PATCH v3] iio: sx9310: Fix semtech,avg-pos-strength setting when
- > 16
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch fixes the checkpatch warning:
 
-On Wed, Dec 2, 2020 at 12:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> This DT property can be 0, 16, and then 64, but not 32. The math here
-> doesn't recognize this slight bump in the power of 2 numbers and
-> translates a DT property of 64 into the register value '3' when it
-> really should be '2'. Fix it by subtracting one more if the number being
-> translated is larger than 31. Also use clamp() because we're here.
->
-> Cc: Daniel Campello <campello@chromium.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Evan Green <evgreen@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->
-> Changes from v2 (https://lore.kernel.org/r/20201120182944.543428-1-swboyd@chromium.org):
->  * Use clamp()
->  * Add comment to clarify
->
-> Changes from v1 (https://lore.kernel.org/r/20201120073842.3232458-1-swboyd@chromium.org):
->  * Changed ternary to consider 17 to 31 as the same as 16
->
->  drivers/iio/proximity/sx9310.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+WARNING: Possible repeated word: 'each'
+1712: FILE: qlge.h:1712.h
++ * that are each each 64-bits in length. There are a total of
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Nicholas Warfield <nick@nkwarfield.io>
+---
+ drivers/staging/qlge/qlge.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/qlge/qlge.h b/drivers/staging/qlge/qlge.h
+index b295990e361b..0381f3f56bc7 100644
+--- a/drivers/staging/qlge/qlge.h
++++ b/drivers/staging/qlge/qlge.h
+@@ -1709,7 +1709,7 @@ enum {
+ #define ETS_REGS_DUMP_WORD_COUNT		10
+ 
+ /* Each probe mux entry stores the probe type plus 64 entries
+- * that are each each 64-bits in length. There are a total of
++ * that are each 64-bits in length. There are a total of
+  * 34 (PRB_MX_ADDR_VALID_TOTAL) valid probes.
+  */
+ #define PRB_MX_ADDR_PRB_WORD_COUNT		(1 + (PRB_MX_ADDR_MAX_MUX * 2))
+-- 
+2.29.2
+
