@@ -2,67 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1B72D2D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 118732D2D4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgLHOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgLHOf7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:35:59 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138C2C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 06:35:19 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id cw27so17787049edb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=YBrZpQIXvuBlfrOy5BJyWiwxuG+0gYNONvi5R93BcMQ=;
-        b=MQuDEUDLn7rJAIJgshc6HT4IiiNMudeAGsNOKK5L0OQ1XR5T3/PbVgsv3KSRkJ712V
-         S15Mz0Lz/dXWd+EqEo4Cm26THqi+c98uY26VzWID6bTjIrotThzSELPpUgWhjkZjXQv5
-         4e8iAF6DH9BUlF3XYp/COQNZBRu1ThePCSVzUBL1SjtLpRrUeQwKqdfPoO1TLJxhJvtB
-         EpQt9gli/vynA3bSBKRfdjToKPxYKjbP2FSmGC0SNkCy1x4Gb418TXNr4DPxs190LpG4
-         3Z8uUCUpg1LICIRXLvUN5Yj5NxISqQefhvJWITXWppRl2iYIcYLVQhvhDAlmuPFGI4Ep
-         3vnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=YBrZpQIXvuBlfrOy5BJyWiwxuG+0gYNONvi5R93BcMQ=;
-        b=DHZLt7TqDeeL/6F7yJS7JIrWZgAiZMrwEVQvMRl6y85hFYObIFs9EiIuczy5Vx/ztv
-         GENdfiGKhvLkKMd9JmmJec9e+UeRDbBDYPDkA1/CloZwQgs2zJ+z1NDN0F72hKlPilwf
-         Eob8mjFIxYGFKFiVeHDREr+ltv05kMEGWHxXEfcmcILAmC6gb/7UGmw1SxyBONpQOWIE
-         /fwlZKApSu5QPn16ZnxtBirZrqBJSlpFE7sQCgDLj3xxXbsF6JvPJQczmXBpSMNTzJvC
-         85bKaSXl0nubqGXLM47KwVsh6U/wv0uo1n4uDWP16hgimeqjEPR770vzU4UPSYD2PTvP
-         xKHg==
-X-Gm-Message-State: AOAM533oTIYYqvUukEmJNXOc6LWa60q4VUUAufXibueI6ALAIV2eOEd4
-        RFdMjBELImj1GjmxSj/mPibf/hP5o00yWPJDoOAETwYq
-X-Google-Smtp-Source: ABdhPJwN6w8RI5Wk+ia5nisQ99KFmQFWpU6rTckQfE+n6N235YPa5KsMRjTiPFv+W6PcCBrdVX5vv5+wSo71eU0oTxM=
-X-Received: by 2002:a50:d1d3:: with SMTP id i19mr24704588edg.72.1607438117450;
- Tue, 08 Dec 2020 06:35:17 -0800 (PST)
+        id S1729711AbgLHOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:37:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726080AbgLHOho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:37:44 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0171423A6C;
+        Tue,  8 Dec 2020 14:37:02 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 09:37:01 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Tianxianting <tian.xianting@h3c.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
+Message-ID: <20201208093701.3a890235@gandalf.local.home>
+In-Reply-To: <f3265adc26d4416dacf157f61fa60ad6@h3c.com>
+References: <20201203075129.17902-1-tian.xianting@h3c.com>
+        <20201203093956.6dd8a753@gandalf.local.home>
+        <f3265adc26d4416dacf157f61fa60ad6@h3c.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a55:9c51:0:b029:af:62b5:b959 with HTTP; Tue, 8 Dec 2020
- 06:35:16 -0800 (PST)
-From:   Iyke Frank <barfrank1982@gmail.com>
-Date:   Tue, 8 Dec 2020 15:35:16 +0100
-Message-ID: <CAB8rBOkqnvj1ajdX2uZ0iOi0PC+zOLaGQwTGqwa39A+1LvV10Q@mail.gmail.com>
-Subject: Re: Hello
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
 
-I hereby officially invite you for inheritance claim belonging to late client.
-I am inviting you because I have been mandated by his financial
-institution here in my country where this fund was deposited to
-present a surviving relative.
-I will give you full details as soon you grant me audience.
+Peter?
 
-Yours Sincerely,
+-- Steve
 
-Mr. Frank Iyke. Esq
+
+On Tue, 8 Dec 2020 07:58:54 +0000
+Tianxianting <tian.xianting@h3c.com> wrote:
+
+> Thanks,
+> We met an issue that a normal thread can't get cpu, 
+> And at this moment, we found 'sched: RT throttling activated' log.
+> 
+> So I think this patch is useful for such issue.
+> 
+> Could I get more comments?  Thanks in advance
+> -----Original Message-----
+> From: Steven Rostedt [mailto:rostedt@goodmis.org] 
+> Sent: Thursday, December 03, 2020 10:40 PM
+> To: tianxianting (RD) <tian.xianting@h3c.com>
+> Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com; vincent.guittot@linaro.org; dietmar.eggemann@arm.com; bsegall@google.com; mgorman@suse.de; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
+> 
+> On Thu, 3 Dec 2020 15:51:29 +0800
+> Xianting Tian <tian.xianting@h3c.com> wrote:
+> 
+> > We may meet the issue, that one RT thread occupied the cpu by 
+> > 950ms/1s, The RT thread maybe is a business thread or other unknown thread.
+> > 
+> > Currently, it only outputs the print "sched: RT throttling activated"
+> > when RT throttling happen. It is hard to know what is the RT thread, 
+> > For further analysis, we need add more prints.
+> > 
+> > This patch is to print current RT task when RT throttling activated, 
+> > It help us to know what is the RT thread in the first time.  
+> 
+> I think this can be useful information to include.
+> 
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> -- Steve
+> 
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> > ---
+> >  kernel/sched/rt.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c index 
+> > f215eea6a..8913f38cb 100644
+> > --- a/kernel/sched/rt.c
+> > +++ b/kernel/sched/rt.c
+> > @@ -946,7 +946,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
+> >  	return rt_task_of(rt_se)->prio;
+> >  }
+> >  
+> > -static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+> > +static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct 
+> > +task_struct *curr)
+> >  {
+> >  	u64 runtime = sched_rt_runtime(rt_rq);
+> >  
+> > @@ -970,7 +970,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
+> >  		 */
+> >  		if (likely(rt_b->rt_runtime)) {
+> >  			rt_rq->rt_throttled = 1;
+> > -			printk_deferred_once("sched: RT throttling activated\n");
+> > +			printk_deferred_once("sched: RT throttling activated (curr: pid %d, comm %s)\n",
+> > +						curr->pid, curr->comm);
+> >  		} else {
+> >  			/*
+> >  			 * In case we did anyway, make it go away, @@ -1026,7 +1027,7 @@ 
+> > static void update_curr_rt(struct rq *rq)
+> >  		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+> >  			raw_spin_lock(&rt_rq->rt_runtime_lock);
+> >  			rt_rq->rt_time += delta_exec;
+> > -			if (sched_rt_runtime_exceeded(rt_rq))
+> > +			if (sched_rt_runtime_exceeded(rt_rq, curr))
+> >  				resched_curr(rq);
+> >  			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+> >  		}  
+
