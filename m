@@ -2,132 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499EC2D20CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAB62D20D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgLHC1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
+        id S1727744AbgLHC2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgLHC1W (ORCPT
+        with ESMTP id S1727075AbgLHC2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:27:22 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFDCC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 18:26:42 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id 11so6176542pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 18:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8uyek9MkTmVFbzSBRjPGvZAHmGE/+Xxg4KtWWjpNIQM=;
-        b=YPa5oW5Hgi1GhmfO+I8COAhhJ1zpJhBu3US5LoUescGZWhMX6Y3lQW0U3KTjwmn293
-         fhctzsSt5F9cFgmK4rpOaoVzygUNv/wq0alLedG+kjPBThKbaDnIxgVVEnpKstL2f98S
-         VlE7DpOtpIrICE5enlkHBREoTYhqvZW+vCfyCwfzgJrqLOLOF1JWnCq+C8BGfgYcqC8V
-         kEAEiKYAvFcbyNPJnR9rVKS/Rt3z5c+UNoVCewMEvV1F4yVXI54ukFZmnOJG+6mRssyS
-         UFSxwr0DtKP8q2Rf8O+wrblQwBigLOhR1/8jOT2rwGyN6a+A4uvUsKcmFHBa1+C5ojzM
-         KX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8uyek9MkTmVFbzSBRjPGvZAHmGE/+Xxg4KtWWjpNIQM=;
-        b=SOd55qBlUJaT8vTsHLNI21Z2/74/Z/HLZ/aaWxpUwHEBiSUu5QFmof40u//zwqC4RR
-         CT6IKw7WRGRnh/d9bdYTpfhz9JlepZ8yzdh7ZVkBwMFVOh//I6GSA7P7BnRn3Uc0fJcl
-         5hMncCMdZURvQdjTJL2jN2Cs5g/ZC3Qa2Yd9RiytwKvykuopP+vtFsuGRf+zJ4wjzVTq
-         KOIPB3gCnAIeJufIyQWsuDdPevp7meYvQE9cahQg35KLyJ7+/sk6HOrnRenifi/w2k0C
-         bpbZM0IaebFCAALX3RsL40skGbZGOGNa36PGuL7RduRCOMdjEzT7s/nRg0dLMDDpqZiu
-         biAg==
-X-Gm-Message-State: AOAM5324x9BOoLgdDAFvhDOc8xmf8Ihn62Kv2kIeT2GBcCbjTgI/jdef
-        RZRlrWdihh9HNrxHbpuCRHq2HG8qXFwmeKxJt8cycQ==
-X-Google-Smtp-Source: ABdhPJyCq3UF1fpgl0WcY/IWKImwVBiH+TUtaeJ0hWsOuC6cDWgqA4zTZpgtjMbTdH04swBbXun4cYCZlCpRJYe1Y4Q=
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr1867229pjq.13.1607394401606;
- Mon, 07 Dec 2020 18:26:41 -0800 (PST)
+        Mon, 7 Dec 2020 21:28:38 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93893C061793;
+        Mon,  7 Dec 2020 18:27:58 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqkcC1YMnz9sVl;
+        Tue,  8 Dec 2020 13:27:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607394476;
+        bh=Gdnq684lFz9atgY1eOCUXr2MAA6CAdhLY3wRaXZ8zAQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hZbvXxLnnkungkLgzMGYvh+9zf8f2Ys0Y3qZNCbE2l9kvCv+MINgu+w+HYapZuhdM
+         QyghCZmmZoWFBOPERilNlXqCY3qAc042jjFvHcCVcj4gKQk42puS+k5O5QmXOo4Hst
+         aDedSVwd4REUhOg7y3g/SV2LErlO8UI7mxIhtQUIKGGdJwyUvebVQ3DMfyTqafhEdy
+         17i1xUJuspPAvJ1HzTLkK84XKnLtAxBIUwO7qzDR7gkIbsnDBzKxIIb0eFsfYIoUC3
+         N1Sy3KgKBvYkOkVEjEdmPggAPhCVSm5GHvbsQlOjG2Rt453KYFg0Rl7ouM5bSVVMj/
+         uOvO8CsJbkpGQ==
+Date:   Tue, 8 Dec 2020 13:27:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: linux-next: manual merge of the drm tree with the pci tree
+Message-ID: <20201208132632.7c3a6a41@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <CAMZfGtWvLEytN5gBN+OqntrNXNd3eNRWrfnkeCozvARmpTNAXw@mail.gmail.com>
- <600fd7e2-70b4-810f-8d12-62cba80af80d@oracle.com> <CAMZfGtX2mu1tyE_898mQeEpmP4Pd+rEKOHpYF=KN=5v4WExpig@mail.gmail.com>
- <20201207183814.GA3786@localhost.localdomain>
-In-Reply-To: <20201207183814.GA3786@localhost.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:26:05 +0800
-Message-ID: <CAMZfGtVpTyUfpU7KXY8XZWxpguxLdZ=JmPAyHm4eipQ9o_Z6Bw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v7 00/15] Free some vmemmap pages of
- hugetlb page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, dave.hansen@linux.intel.com,
-        hpa@zytor.com, x86@kernel.org, bp@alien8.de, mingo@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        pawan.kumar.gupta@linux.intel.com, mchehab+huawei@kernel.org,
-        paulmck@kernel.org, viro@zeniv.linux.org.uk,
-        Peter Zijlstra <peterz@infradead.org>, luto@kernel.org,
-        oneukum@suse.com, jroedel@suse.de,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        anshuman.khandual@arm.com, Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/wlM0Vl045sL0mWGkCn0hMk+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:38 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Fri, Dec 04, 2020 at 11:39:31AM +0800, Muchun Song wrote:
-> > On Fri, Dec 4, 2020 at 7:49 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> > > As previously mentioned, I feel qualified to review the hugetlb changes
-> > > and some other closely related changes.  However, this patch set is
-> > > touching quite a few areas and I do not feel qualified to make authoritative
-> > > statements about them all.  I too hope others will take a look.
-> >
-> > Agree. I also hope others can take a look at other modules(e.g.
-> > sparse-vmemmap, memory-hotplug). Thanks for everyone's efforts
-> > on this.
->
-> I got sidetracked by some other stuff but I plan to continue reviewing
-> this series.
+--Sig_/wlM0Vl045sL0mWGkCn0hMk+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Many thanks, Oscar.
+Hi all,
 
->
-> One thing that came to my mind is that if we do as David suggested in
-> patch#4, and we move it towards the end to actually __enable__ this
-> once all the infrastructure is there (unless hstate->nr_vmemmap_pages
-> differs from 0 we should not be doing any work AFAIK), we could also
-> move patch#6 to the end (right before the enablement), kill patch#7
-> and only leave patch#13.
->
-> The reason for that (killing patch#7 and leaving patch#13 only)
-> is that it does not make much sense to me to disable PMD-mapped vmemmap
-> depending on the CONFIG_HUGETLB_xxxxx as that is enabled by default
-> to replace that later by the boot kernel parameter.
-> It looks more natural to me to disable it when we introduce the kernel
-> boot parameter, before the actual enablement of the feature.
+Today's linux-next merge of the drm tree got a conflict in:
 
-Thanks for your suggestions. I agree with you. :)
+  drivers/gpu/vga/vga_switcheroo.c
 
->
-> As I said, I plan to start the review again, but the order above would
-> make more sense to me.
->
-> thanks
->
-> --
-> Oscar Salvador
-> SUSE L3
+between commit:
 
+  99efde6c9bb7 ("PCI/PM: Rename pci_wakeup_bus() to pci_resume_bus()")
 
+from the pci tree and commit:
 
--- 
-Yours,
-Muchun
+  9572e6693cd7 ("vga_switcheroo: simplify the return expression of vga_swit=
+cheroo_runtime_resume")
+
+from the drm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/vga/vga_switcheroo.c
+index 8843b078ad4e,1401fd52f37a..000000000000
+--- a/drivers/gpu/vga/vga_switcheroo.c
++++ b/drivers/gpu/vga/vga_switcheroo.c
+@@@ -1039,12 -1038,8 +1038,8 @@@ static int vga_switcheroo_runtime_resum
+  	mutex_lock(&vgasr_mutex);
+  	vga_switcheroo_power_switch(pdev, VGA_SWITCHEROO_ON);
+  	mutex_unlock(&vgasr_mutex);
+ -	pci_wakeup_bus(pdev->bus);
+ +	pci_resume_bus(pdev->bus);
+- 	ret =3D dev->bus->pm->runtime_resume(dev);
+- 	if (ret)
+- 		return ret;
+-=20
+- 	return 0;
++ 	return dev->bus->pm->runtime_resume(dev);
+  }
+ =20
+  /**
+
+--Sig_/wlM0Vl045sL0mWGkCn0hMk+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/O5KoACgkQAVBC80lX
+0GyHNwgAjCac81ZtbZtstu/Gjqw5/GfHTHKRcW4TbLX4TXUgLFFkYKeXljFP4cve
+q5CYQHeQo8Kh6fl3pbj0934BYUZcDSuFQgm5r7MKCAURB0Qkp5xTrKyZjnZu3oUO
+q4qxK/Ljhzqu9sqTcMHOB8iDweUkPYn0BnYx/+W/gr8++rPlnNxjMUY8W+Eii1hW
+fe9T6K0YuA2xpE0pTb97Hn4DgWQOv1IPiPAjoY//KxeVedV3VZuNPeNCKG/xefM6
+ArZvkW1HhZk4rZsPzAyvudQbW4O9Jc3o99EdmRDos1jv6GjI70wUWIYBMre1//zh
+BQkkw4LerfwLQByhsI3owyNrWIaiMQ==
+=r5+o
+-----END PGP SIGNATURE-----
+
+--Sig_/wlM0Vl045sL0mWGkCn0hMk+--
