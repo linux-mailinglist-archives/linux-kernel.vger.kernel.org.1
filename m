@@ -2,336 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8682D2327
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D422D2341
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgLHFZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:25:08 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:18723 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgLHFZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:25:08 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CqpWm09mMz9txxN;
-        Tue,  8 Dec 2020 06:24:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id K75cl8fjJSud; Tue,  8 Dec 2020 06:24:19 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CqpWl6Dqkz9txxL;
-        Tue,  8 Dec 2020 06:24:19 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 97A188B775;
-        Tue,  8 Dec 2020 06:24:20 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uKGzaSS8OsI3; Tue,  8 Dec 2020 06:24:20 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A79F8B773;
-        Tue,  8 Dec 2020 06:24:20 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0AA1066846; Tue,  8 Dec 2020 05:24:19 +0000 (UTC)
-Message-Id: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc/powermac: Fix low_sleep_handler with
- CONFIG_VMAP_STACK
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, giuseppe@sguazz.it
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue,  8 Dec 2020 05:24:19 +0000 (UTC)
+        id S1726680AbgLHFca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:32:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbgLHFc3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:32:29 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82CDC061749;
+        Mon,  7 Dec 2020 21:31:48 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id s75so15168265oih.1;
+        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
+        b=uPiDefoQYkKUSYVjpVcGFbjGGdgwvk2tmiacvGTPf1f1XKPLLEnQVTwTCx8tWNScnC
+         5j6c5sfjBEHrnhNhCj80/FWk0MTp670DUW5Dv4G2IUCx3Yd324y+YBTw3C7sot2KNTxS
+         eCd3u/BKvQq6Lpsj9pg4Rx9/ID1ezkPBxSBAbr8Jo3UhV8nfB4LGtur/M6evKWpsYeYr
+         Kta/pLzpmNREVmoWhp6gm736Rm4VmhVwhQGYxgwokNPamv1ZXQjxZyDMm48/vCgeZrty
+         wSK63DtyX5nZNX5tTgWgFTkRVDrwHvF2voN8metmYSxDRY2JPRc2BNn9ZyShUI48DnYx
+         jpbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
+        b=Yj3+PodwHv4IHqN6pEM54QjgYmla+7zdSq5uCsHEPb4Cvl24ck0M70n8Ym7PhGiwEM
+         vzu1lhXtqtk0n0+tKMP4cnBS3UMjgWFPhyMDHzbSKL7O2i78fvjezgJK40lHBrReqlJ7
+         PUTf0bC1sXMiQ6WDPT1Q3RgnJ3aiaTsn9xYWSiaEe43ePJY9m13B58ff4F/d+OiI6h+F
+         gBeirQPdsfhEjYLHUkz2lKm7t+NTTxmAfAAXsIVTjy2pbJBiXtNwoNTqovKdePnu96Yl
+         RITqXEgIIYSL55XKgvsfFmtVgdORhVpWK2Qb1jOBl93xr0O8JbKJsqsyQy+JxvfHGw4U
+         K6og==
+X-Gm-Message-State: AOAM5324hFs+SPHM4q2CLyBpS9jqpRLl8Hhgtm9JNWLKOGg3PlsW+BwK
+        0K4Z0pOSaCCF7ZK1lEUH8Tc=
+X-Google-Smtp-Source: ABdhPJx81dPrD6uJgJG8T7kA9bYfspa122kKDg8FYUgX72z8Wkl9JIPiXbCZyYapxK4XUnxjFnoHoQ==
+X-Received: by 2002:aca:2411:: with SMTP id n17mr1539117oic.43.1607405508392;
+        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id k30sm2930191ool.34.2020.12.07.21.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 21:31:47 -0800 (PST)
+Date:   Mon, 07 Dec 2020 21:31:40 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-7-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-7-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
+ atomic_fetch_add instruction
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-low_sleep_handler() can't restore the context from standard
-stack because the stack can hardly be accessed with MMU OFF.
+Brendan Jackman wrote:
+> The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
+> instructions, in order to have the previous value of the
+> atomically-modified memory location loaded into the src register
+> after an atomic op is carried out.
+> 
+> Suggested-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-Store everything in a global storage area instead of storing
-a pointer to the stack in that global storage area.
+I like Yonghong suggestion 
 
-To avoid a complete churn of the function, still use r1 as
-the pointer to the storage area during restore.
+ #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)               \
+     BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
 
-Reported-by: Giuseppe Sacco <giuseppe@sguazz.it>
-Fixes: cd08f109e262 ("powerpc/32s: Enable CONFIG_VMAP_STACK")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-This is only build tested. Giuseppe can you test it ? Thanks.
+otherwise LGTM. One observation to consider below.
 
-v2: Changed an erroneous 'addis' to 'addi' ; Using bss instead of data section
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/platforms/Kconfig.cputype  |   2 +-
- arch/powerpc/platforms/powermac/sleep.S | 132 +++++++++++-------------
- 2 files changed, 60 insertions(+), 74 deletions(-)
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index c194c4ae8bc7..32a9c4c09b98 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -36,7 +36,7 @@ config PPC_BOOK3S_6xx
- 	select PPC_HAVE_PMU_SUPPORT
- 	select PPC_HAVE_KUEP
- 	select PPC_HAVE_KUAP
--	select HAVE_ARCH_VMAP_STACK if !ADB_PMU
-+	select HAVE_ARCH_VMAP_STACK
- 
- config PPC_85xx
- 	bool "Freescale 85xx"
-diff --git a/arch/powerpc/platforms/powermac/sleep.S b/arch/powerpc/platforms/powermac/sleep.S
-index 7e0f8ba6e54a..d497a60003d2 100644
---- a/arch/powerpc/platforms/powermac/sleep.S
-+++ b/arch/powerpc/platforms/powermac/sleep.S
-@@ -44,7 +44,8 @@
- #define SL_TB		0xa0
- #define SL_R2		0xa8
- #define SL_CR		0xac
--#define SL_R12		0xb0	/* r12 to r31 */
-+#define SL_LR		0xb0
-+#define SL_R12		0xb4	/* r12 to r31 */
- #define SL_SIZE		(SL_R12 + 80)
- 
- 	.section .text
-@@ -63,105 +64,107 @@ _GLOBAL(low_sleep_handler)
- 	blr
- #else
- 	mflr	r0
--	stw	r0,4(r1)
--	stwu	r1,-SL_SIZE(r1)
-+	lis	r11,sleep_storage@ha
-+	addi	r11,r11,sleep_storage@l
-+	stw	r0,SL_LR(r11)
- 	mfcr	r0
--	stw	r0,SL_CR(r1)
--	stw	r2,SL_R2(r1)
--	stmw	r12,SL_R12(r1)
-+	stw	r0,SL_CR(r11)
-+	stw	r1,SL_SP(r11)
-+	stw	r2,SL_R2(r11)
-+	stmw	r12,SL_R12(r11)
- 
- 	/* Save MSR & SDR1 */
- 	mfmsr	r4
--	stw	r4,SL_MSR(r1)
-+	stw	r4,SL_MSR(r11)
- 	mfsdr1	r4
--	stw	r4,SL_SDR1(r1)
-+	stw	r4,SL_SDR1(r11)
- 
- 	/* Get a stable timebase and save it */
- 1:	mftbu	r4
--	stw	r4,SL_TB(r1)
-+	stw	r4,SL_TB(r11)
- 	mftb	r5
--	stw	r5,SL_TB+4(r1)
-+	stw	r5,SL_TB+4(r11)
- 	mftbu	r3
- 	cmpw	r3,r4
- 	bne	1b
- 
- 	/* Save SPRGs */
- 	mfsprg	r4,0
--	stw	r4,SL_SPRG0(r1)
-+	stw	r4,SL_SPRG0(r11)
- 	mfsprg	r4,1
--	stw	r4,SL_SPRG0+4(r1)
-+	stw	r4,SL_SPRG0+4(r11)
- 	mfsprg	r4,2
--	stw	r4,SL_SPRG0+8(r1)
-+	stw	r4,SL_SPRG0+8(r11)
- 	mfsprg	r4,3
--	stw	r4,SL_SPRG0+12(r1)
-+	stw	r4,SL_SPRG0+12(r11)
- 
- 	/* Save BATs */
- 	mfdbatu	r4,0
--	stw	r4,SL_DBAT0(r1)
-+	stw	r4,SL_DBAT0(r11)
- 	mfdbatl	r4,0
--	stw	r4,SL_DBAT0+4(r1)
-+	stw	r4,SL_DBAT0+4(r11)
- 	mfdbatu	r4,1
--	stw	r4,SL_DBAT1(r1)
-+	stw	r4,SL_DBAT1(r11)
- 	mfdbatl	r4,1
--	stw	r4,SL_DBAT1+4(r1)
-+	stw	r4,SL_DBAT1+4(r11)
- 	mfdbatu	r4,2
--	stw	r4,SL_DBAT2(r1)
-+	stw	r4,SL_DBAT2(r11)
- 	mfdbatl	r4,2
--	stw	r4,SL_DBAT2+4(r1)
-+	stw	r4,SL_DBAT2+4(r11)
- 	mfdbatu	r4,3
--	stw	r4,SL_DBAT3(r1)
-+	stw	r4,SL_DBAT3(r11)
- 	mfdbatl	r4,3
--	stw	r4,SL_DBAT3+4(r1)
-+	stw	r4,SL_DBAT3+4(r11)
- 	mfibatu	r4,0
--	stw	r4,SL_IBAT0(r1)
-+	stw	r4,SL_IBAT0(r11)
- 	mfibatl	r4,0
--	stw	r4,SL_IBAT0+4(r1)
-+	stw	r4,SL_IBAT0+4(r11)
- 	mfibatu	r4,1
--	stw	r4,SL_IBAT1(r1)
-+	stw	r4,SL_IBAT1(r11)
- 	mfibatl	r4,1
--	stw	r4,SL_IBAT1+4(r1)
-+	stw	r4,SL_IBAT1+4(r11)
- 	mfibatu	r4,2
--	stw	r4,SL_IBAT2(r1)
-+	stw	r4,SL_IBAT2(r11)
- 	mfibatl	r4,2
--	stw	r4,SL_IBAT2+4(r1)
-+	stw	r4,SL_IBAT2+4(r11)
- 	mfibatu	r4,3
--	stw	r4,SL_IBAT3(r1)
-+	stw	r4,SL_IBAT3(r11)
- 	mfibatl	r4,3
--	stw	r4,SL_IBAT3+4(r1)
-+	stw	r4,SL_IBAT3+4(r11)
- 
- BEGIN_MMU_FTR_SECTION
- 	mfspr	r4,SPRN_DBAT4U
--	stw	r4,SL_DBAT4(r1)
-+	stw	r4,SL_DBAT4(r11)
- 	mfspr	r4,SPRN_DBAT4L
--	stw	r4,SL_DBAT4+4(r1)
-+	stw	r4,SL_DBAT4+4(r11)
- 	mfspr	r4,SPRN_DBAT5U
--	stw	r4,SL_DBAT5(r1)
-+	stw	r4,SL_DBAT5(r11)
- 	mfspr	r4,SPRN_DBAT5L
--	stw	r4,SL_DBAT5+4(r1)
-+	stw	r4,SL_DBAT5+4(r11)
- 	mfspr	r4,SPRN_DBAT6U
--	stw	r4,SL_DBAT6(r1)
-+	stw	r4,SL_DBAT6(r11)
- 	mfspr	r4,SPRN_DBAT6L
--	stw	r4,SL_DBAT6+4(r1)
-+	stw	r4,SL_DBAT6+4(r11)
- 	mfspr	r4,SPRN_DBAT7U
--	stw	r4,SL_DBAT7(r1)
-+	stw	r4,SL_DBAT7(r11)
- 	mfspr	r4,SPRN_DBAT7L
--	stw	r4,SL_DBAT7+4(r1)
-+	stw	r4,SL_DBAT7+4(r11)
- 	mfspr	r4,SPRN_IBAT4U
--	stw	r4,SL_IBAT4(r1)
-+	stw	r4,SL_IBAT4(r11)
- 	mfspr	r4,SPRN_IBAT4L
--	stw	r4,SL_IBAT4+4(r1)
-+	stw	r4,SL_IBAT4+4(r11)
- 	mfspr	r4,SPRN_IBAT5U
--	stw	r4,SL_IBAT5(r1)
-+	stw	r4,SL_IBAT5(r11)
- 	mfspr	r4,SPRN_IBAT5L
--	stw	r4,SL_IBAT5+4(r1)
-+	stw	r4,SL_IBAT5+4(r11)
- 	mfspr	r4,SPRN_IBAT6U
--	stw	r4,SL_IBAT6(r1)
-+	stw	r4,SL_IBAT6(r11)
- 	mfspr	r4,SPRN_IBAT6L
--	stw	r4,SL_IBAT6+4(r1)
-+	stw	r4,SL_IBAT6+4(r11)
- 	mfspr	r4,SPRN_IBAT7U
--	stw	r4,SL_IBAT7(r1)
-+	stw	r4,SL_IBAT7(r11)
- 	mfspr	r4,SPRN_IBAT7L
--	stw	r4,SL_IBAT7+4(r1)
-+	stw	r4,SL_IBAT7+4(r11)
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 
- 	/* Backup various CPU config stuffs */
-@@ -180,9 +183,9 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	lis	r5,grackle_wake_up@ha
- 	addi	r5,r5,grackle_wake_up@l
- 	tophys(r5,r5)
--	stw	r5,SL_PC(r1)
-+	stw	r5,SL_PC(r11)
- 	lis	r4,KERNELBASE@h
--	tophys(r5,r1)
-+	tophys(r5,r11)
- 	addi	r5,r5,SL_PC
- 	lis	r6,MAGIC@ha
- 	addi	r6,r6,MAGIC@l
-@@ -194,12 +197,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	tophys(r3,r3)
- 	stw	r3,0x80(r4)
- 	stw	r5,0x84(r4)
--	/* Store a pointer to our backup storage into
--	 * a kernel global
--	 */
--	lis r3,sleep_storage@ha
--	addi r3,r3,sleep_storage@l
--	stw r5,0(r3)
- 
- 	.globl	low_cpu_offline_self
- low_cpu_offline_self:
-@@ -279,7 +276,7 @@ _GLOBAL(core99_wake_up)
- 	lis	r3,sleep_storage@ha
- 	addi	r3,r3,sleep_storage@l
- 	tophys(r3,r3)
--	lwz	r1,0(r3)
-+	addi	r1,r3,SL_PC
- 
- 	/* Pass thru to older resume code ... */
- _ASM_NOKPROBE_SYMBOL(core99_wake_up)
-@@ -399,13 +396,6 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	blt	1b
- 	sync
- 
--	/* restore the MSR and turn on the MMU */
--	lwz	r3,SL_MSR(r1)
--	bl	turn_on_mmu
--
--	/* get back the stack pointer */
--	tovirt(r1,r1)
--
- 	/* Restore TB */
- 	li	r3,0
- 	mttbl	r3
-@@ -419,28 +409,24 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
- 	mtcr	r0
- 	lwz	r2,SL_R2(r1)
- 	lmw	r12,SL_R12(r1)
--	addi	r1,r1,SL_SIZE
--	lwz	r0,4(r1)
--	mtlr	r0
--	blr
--_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
- 
--turn_on_mmu:
--	mflr	r4
--	tovirt(r4,r4)
-+	/* restore the MSR and SP and turn on the MMU and return */
-+	lwz	r3,SL_MSR(r1)
-+	lwz	r4,SL_LR(r1)
-+	lwz	r1,SL_SP(r1)
- 	mtsrr0	r4
- 	mtsrr1	r3
- 	sync
- 	isync
- 	rfi
--_ASM_NOKPROBE_SYMBOL(turn_on_mmu)
-+_ASM_NOKPROBE_SYMBOL(grackle_wake_up)
- 
- #endif /* defined(CONFIG_PM) || defined(CONFIG_CPU_FREQ) */
- 
--	.section .data
-+	.section .bss
- 	.balign	L1_CACHE_BYTES
- sleep_storage:
--	.long 0
-+	.space SL_SIZE
- 	.balign	L1_CACHE_BYTES, 0
- 
- #endif /* CONFIG_PPC_BOOK3S_32 */
--- 
-2.25.0
+>  arch/x86/net/bpf_jit_comp.c    |  4 ++++
+>  include/linux/filter.h         |  1 +
+>  include/uapi/linux/bpf.h       |  3 +++
+>  kernel/bpf/core.c              | 13 +++++++++++++
+>  kernel/bpf/disasm.c            |  7 +++++++
+>  kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
+>  tools/include/linux/filter.h   | 11 +++++++++++
+>  tools/include/uapi/linux/bpf.h |  3 +++
+>  8 files changed, 66 insertions(+), 9 deletions(-)
 
+[...]
+
+> @@ -3652,8 +3656,20 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+>  		return err;
+>  
+>  	/* check whether we can write into the same memory */
+> -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> +	if (err)
+> +		return err;
+> +
+> +	if (!(insn->imm & BPF_FETCH))
+> +		return 0;
+> +
+> +	/* check and record load of old value into src reg  */
+> +	err = check_reg_arg(env, insn->src_reg, DST_OP);
+
+This will mark the reg unknown. I think this is fine here. Might be nice
+to carry bounds through though if possible
+
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+>  }
+>  
