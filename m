@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785532D31C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9B62D31E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730911AbgLHSLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:11:47 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34804 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730456AbgLHSLq (ORCPT
+        id S1730978AbgLHSQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:16:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730468AbgLHSQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:11:46 -0500
-Received: by mail-ot1-f68.google.com with SMTP id a109so1047034otc.1;
-        Tue, 08 Dec 2020 10:11:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oBNTyUWhSAqkBnW8hBY2mAf7KmbIaIYVcQeU3Ce+eq4=;
-        b=NhFkkEMNIpWL8Z0MBvAjsknS507ICs50jF/qLdZ4olT0hwJbBr/p5BaEugIpzxVN7z
-         XD3nxOKshz5FbtdTW2yRV0Nk9TrI8nTjf5i6fkXvyyENQNU6k7Xt6NhOFvK8ubEBKotI
-         3f3xcUPQopt69zMv5cZuq73b2lA+CPZSUKszeiB1R/cB1mbMosSa1YhvhB1O0+hFxPM+
-         /8/WGvG56EmgwGRcT9VtcjMCvNQayQNt1AWvFG3GxsEpalQ3LAzJEfTXsb1rQpnHrejD
-         Nlqk3sFM+91CfOpUA7h975Ml96ewTAfFQ87G/XWtMAB0GhHY6xOn3ERpro8iXwtnz37B
-         UVww==
-X-Gm-Message-State: AOAM530s4odEveaUw0KpY9sAfpdH20hzp/GwPCPoIiF3H/2FgLtNUFvW
-        qUjrDRrHqZOjb8MwVEvHWA==
-X-Google-Smtp-Source: ABdhPJy+BHGNYI3+qlqJeH91NS1xoptQd/XHGygt8zXvnsSo0KUnlavQziPe5xK2II+//WW4zBIrIA==
-X-Received: by 2002:a9d:6d83:: with SMTP id x3mr17523152otp.285.1607451065760;
-        Tue, 08 Dec 2020 10:11:05 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i4sm3498940oos.31.2020.12.08.10.11.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 10:11:04 -0800 (PST)
-Received: (nullmailer pid 2810507 invoked by uid 1000);
-        Tue, 08 Dec 2020 18:11:03 -0000
-Date:   Tue, 8 Dec 2020 12:11:03 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        ulf.hansson@linaro.org, jorge.ramirez-ortiz@linaro.org,
-        broonie@kernel.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
-        nks@flawful.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        konrad.dybcio@somainline.org, martin.botka@somainline.org,
-        marijn.suijten@somainline.org, phone-devel@vger.kernel.org
-Subject: Re: [PATCH 13/13] dt-bindings: cpufreq: qcom-hw: Add bindings for
- 8998
-Message-ID: <20201208181103.GA2795715@robh.at.kernel.org>
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
- <20201126184559.3052375-14-angelogioacchino.delregno@somainline.org>
+        Tue, 8 Dec 2020 13:16:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607451284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M9T5kVr+CAbU/Pqq1HubTPf8M564HNxJMPku0hKIlCY=;
+        b=CONGvZf+gnY0rtarZdEzrEQHSNLbM5MN9JRhzPoAtAiFVoC4XKZHmNvkBsIJyWVfRfA7NZ
+        F8529mw/8c2anZVbp/HdYPQd/6HA7uJkuFkBrfYGprAGyABMnMS372zDUyTpiEY+sfbenP
+        mGa77Dn/eOdCbwgVQ1sLuyRvSCCO2b0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-pdftyMXzODOmvHNI7kaGyA-1; Tue, 08 Dec 2020 13:14:42 -0500
+X-MC-Unique: pdftyMXzODOmvHNI7kaGyA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D8B8804002;
+        Tue,  8 Dec 2020 18:14:40 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-8.gru2.redhat.com [10.97.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D5D160877;
+        Tue,  8 Dec 2020 18:14:39 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 51416405CBC7; Tue,  8 Dec 2020 15:11:07 -0300 (-03)
+Date:   Tue, 8 Dec 2020 15:11:07 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201208181107.GA31442@fuller.cnet>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <20201207232920.GD27492@fuller.cnet>
+ <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126184559.3052375-14-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 07:45:59PM +0100, AngeloGioacchino Del Regno wrote:
-> The OSM programming addition has been done under the
-> qcom,cpufreq-hw-8998 compatible name: specify the requirement
-> of two additional register spaces for this functionality.
+On Tue, Dec 08, 2020 at 05:02:07PM +0100, Thomas Gleixner wrote:
+> On Tue, Dec 08 2020 at 16:50, Maxim Levitsky wrote:
+> > On Mon, 2020-12-07 at 20:29 -0300, Marcelo Tosatti wrote:
+> >> > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
+> >> > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
+> >> > +
+> >> > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
+> >> > +KVM will adjust the guest TSC value by the time that passed since the moment
+> >> > +CLOCK_REALTIME timestamp was saved in the struct and current value of
+> >> > +CLOCK_REALTIME, and set the guest's TSC to the new value.
+> >> 
+> >> This introduces the wraparound bug in Linux timekeeping, doesnt it?
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 31 ++++++++++++++++---
->  1 file changed, 27 insertions(+), 4 deletions(-)
+> Which bug?
+
+max_cycles overflow. Sent a message to Maxim describing it.
+
 > 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> index 94a56317b14b..f64cea73037e 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> +++ b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
-> @@ -23,17 +23,21 @@ properties:
->            - qcom,cpufreq-epss
->  
->    reg:
-> +    description: Base address and size of the RBCPR register region
-
-That doesn't make sense given you have 2 regions.
-
->      minItems: 2
->      maxItems: 2
-
-maxItems: 4
-
->  
->    reg-names:
->      description:
-> -      Frequency domain register region for each domain.
-> -    items:
-> -      - const: "freq-domain0"
-> -      - const: "freq-domain1"
-> +      Frequency domain register region for each domain. If OSM programming
-> +      does not happen in the bootloader and has to be done in this driver,
-> +      then also the OSM domain region osm-domain[0-1] has to be provided.
-
-Don't write free form text for what can be expressed as schema.
-
-> +    minItems: 2
-> +    maxItems: 2
-
-You obviously haven't tried this change with 8998. It will fail with 
-more than 2. What you need here is:
-
-minItems: 2
-maxItems: 4
-
-items:
-  - const: "freq-domain0"
-  - const: "freq-domain1"
-  - const: "osm-domain0"
-  - const: "osm-domain1"
-
-And then...
-
->  
->    clock-names:
-> +    minItems: 2
-> +    maxItems: 2
->      - const: xo
->      - const: ref
->  
-> @@ -53,9 +57,28 @@ properties:
->        property with phandle to a cpufreq_hw followed by the Domain ID(0/1)
->        in the CPU DT node.
->  
-> +allOf:
-> + - if:
-> +     properties:
-> +       reg-names:
-> +         contains:
-> +           const: qcom,cpufreq-hw-8998
-> +   then:
-> +     properties:
-> +       reg:
-> +         minItems: 4
-> +         maxItems: 4
-> +       reg-names:
-
-...here just:
-
-minItems: 4
-
-And you'll need an 'else' clause with 'maxItems: 2' for reg and 
-reg-names.
-
-> +         items:
-> +           - const: "freq-domain0"
-> +           - const: "freq-domain1"
-> +           - const: "osm-domain0"
-> +           - const: "osm-domain1"
-> +
->  required:
->    - compatible
->    - reg
-> +  - reg-names
-
-You can't make something that was optional now required. (Unless it was 
-a mistake and all existing users always had 'reg-names'.)
-
->    - clock-names
->    - clocks
->    - "#freq-domain-cells"
-> -- 
-> 2.29.2
+> > It does.
+> > Could you prepare a reproducer for this bug so I get a better idea about
+> > what are you talking about?
+> >
+> > I assume you need very long (like days worth) jump to trigger this bug
+> > and for such case we can either work around it in qemu / kernel 
+> > or fix it in the guest kernel and I strongly prefer the latter.
+> >
+> > Thomas, what do you think about it?
 > 
+> For one I have no idea which bug you are talking about and if the bug is
+> caused by the VMM then why would you "fix" it in the guest kernel.
+
+1) Stop guest, save TSC value of cpu-0 = V.
+2) Wait for some amount of time = W.
+3) Start guest, load TSC value with V+W.
+
+Can cause an overflow on Linux timekeeping.
+
+> Aside of that I think I made it pretty clear what the right thing to do
+> is.
+
+Sure: the notion of a "unique TSC offset" already exists (it is detected
+by write TSC logic, and not explicit in the interface, though).
+
+But AFAIK it works pretty well.
+
+Exposing a single TSC value on the interface level seems alright to
+me...
+
