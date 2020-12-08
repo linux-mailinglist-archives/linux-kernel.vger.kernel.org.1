@@ -2,58 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CA22D2774
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4D52D2791
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgLHJYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:24:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgLHJYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:24:30 -0500
-Date:   Tue, 8 Dec 2020 10:24:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607419430;
-        bh=mZVy2pRIiyr7mLTIx6XBmnVNxKXAmuJ8ic/WhcvBWe0=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TLQa13cbNAMva21QmYWyu1U3mjEHlZk4HGf5buD5E+aD1kkvFaVhIWSe6tRoAXGXC
-         MPyiVypgpOcjmCr9/uARUPvNkz6FiOscSb5dDkiAuyMoCeEhWNmpTQocEXlRyImpXA
-         kYGhbRP6FAwusHlDBcpRU34Nk3wHwnF79gfa+hoU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/32] 4.19.162-rc1 review
-Message-ID: <X89GaniY7R8LhjTO@kroah.com>
-References: <20201206111555.787862631@linuxfoundation.org>
- <20201207083042.GA26438@amd>
+        id S1728958AbgLHJ0g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 8 Dec 2020 04:26:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728710AbgLHJ0a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:26:30 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD6AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 01:25:49 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kmZFd-0004D0-NE; Tue, 08 Dec 2020 10:25:41 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kmZFb-0004Fu-52; Tue, 08 Dec 2020 10:25:39 +0100
+Message-ID: <07c0b7a0caf47ddef27e55e6d6887fa55305d9d5.camel@pengutronix.de>
+Subject: Re: [PATCH v2 1/3] reset: hisilicon: correct vendor prefix
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date:   Tue, 08 Dec 2020 10:25:39 +0100
+In-Reply-To: <20201204014236.1158-2-thunder.leizhen@huawei.com>
+References: <20201204014236.1158-1-thunder.leizhen@huawei.com>
+         <20201204014236.1158-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207083042.GA26438@amd>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 09:30:42AM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 4.19.162 release.
-> > There are 32 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Tue, 08 Dec 2020 11:15:42 +0000.
-> > Anything received after that time might be too late.
-> 
-> CIP testing did not find any problems here:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-4.19.y
-> 
-> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+Hi Zhen,
 
-Thanks for testing this one and letting me know.
+On Fri, 2020-12-04 at 09:42 +0800, Zhen Lei wrote:
+> The vendor prefix of "Hisilicon Limited" is "hisilicon", it is clearly
+> stated in "vendor-prefixes.yaml".
+> 
+> Fixes: 1527058736fa ("reset: hisilicon: add reset-hi3660")
+> Fixes: 35ca8168133c ("arm64: dts: Add dts files for Hisilicon Hi3660 SoC")
+> Fixes: dd8c7b78c11b ("arm64: dts: Add devicetree for Hisilicon Hi3670 SoC")
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Cc: Zhangfei Gao <zhangfei.gao@linaro.org>
+> Cc: Chen Feng <puck.chen@hisilicon.com>
+> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi | 4 ++--
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi | 2 +-
+>  drivers/reset/hisilicon/reset-hi3660.c    | 2 +-
 
-greg k-h
+Please keep device tree patches and reset driver patch separate, as they
+were in v1.
+
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> index 49c19c6879f95ce..bfb1375426d2b58 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+> @@ -345,7 +345,7 @@
+>  		crg_rst: crg_rst_controller {
+>  			compatible = "hisilicon,hi3660-reset";
+>  			#reset-cells = <2>;
+> -			hisi,rst-syscon = <&crg_ctrl>;
+> +			hisilicon,rst-syscon = <&crg_ctrl>;
+>  		};
+>  
+>  
+> @@ -376,7 +376,7 @@
+>  
+>  		iomcu_rst: reset {
+>  			compatible = "hisilicon,hi3660-reset";
+> -			hisi,rst-syscon = <&iomcu>;
+> +			hisilicon,rst-syscon = <&iomcu>;
+>  			#reset-cells = <2>;
+>  		};
+>  
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> index 85b0dfb35d6d396..5c5a5dc964ea848 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> @@ -155,7 +155,7 @@
+>  			compatible = "hisilicon,hi3670-reset",
+>  				     "hisilicon,hi3660-reset";
+>  			#reset-cells = <2>;
+> -			hisi,rst-syscon = <&crg_ctrl>;
+> +			hisilicon,rst-syscon = <&crg_ctrl>;
+>  		};
+>  
+>  		pctrl: pctrl@e8a09000 {
+> diff --git a/drivers/reset/hisilicon/reset-hi3660.c b/drivers/reset/hisilicon/reset-hi3660.c
+> index a7d4445924e558c..8f1953159a65b31 100644
+> --- a/drivers/reset/hisilicon/reset-hi3660.c
+> +++ b/drivers/reset/hisilicon/reset-hi3660.c
+> @@ -83,7 +83,7 @@ static int hi3660_reset_probe(struct platform_device *pdev)
+>  	if (!rc)
+>  		return -ENOMEM;
+>  
+> -	rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-syscon");
+> +	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
+
+This should fall back to the deprecated compatible, for example:
+
+	rc->map = syscon_regmap_lookup_by_phandle(np, "hisilicon,rst-syscon");
+	if (PTR_ERR(rc->map) == -ENODEV)
+		rc->map = syscon_regmap_lookup_by_phandle(np, "hisi,rst-
+syscon");
+
+>  	if (IS_ERR(rc->map)) {
+>  		dev_err(dev, "failed to get hi3660,rst-syscon\n");
+>  		return PTR_ERR(rc->map);
+
+regards
+Philipp
