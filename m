@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC1C2D27C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D402D27CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728905AbgLHJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:35:08 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:47020 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727482AbgLHJfH (ORCPT
+        id S1728619AbgLHJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbgLHJg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:35:07 -0500
-Received: by mail-lj1-f196.google.com with SMTP id f24so18311081ljk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 01:34:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n46FeDvrQgslntB/QvyVhRFq+v4FH13erjugPCMtV1w=;
-        b=fXx4Y53DkBhBO0xIwVRAmR32ASJocd0agEanjnHZ1OO9DjlIrjr1xGPHnM0WVoODYk
-         pfcaLP1Qhe7rDeG+t1uibXANFb/QQH/H637Yoa+TtA+zv+oY/TYlGd04dAlYVFlNiuwm
-         ANU1r0EQovXQUvubU5ymsZv1w4LR9foMY4rmGW9IZ9WNFzBvGPR67SGPAr4jSOUOaJBx
-         M1u1gNCrCE0S7bkAd4N6XHr9BoPu+5VYq3Gs4SmsLoecFyqcEHIgoNVQRqGEDc0t1IXm
-         s6bB8basSbLZRWT3nHi1XHp1qHg9znlrI2PH2VtmKZX11zmgAYiu/MrV8BQeBqS6tJbl
-         Cllg==
-X-Gm-Message-State: AOAM531VAsFpDctXuJ7cbqpFxBOE0ELPB7+CNQBfwOcMHZm9/oQvFmr+
-        iHyS55yRyoTju/+Og9oz774=
-X-Google-Smtp-Source: ABdhPJy02FhKhfSnq0GfVhtpL9g3uz6VqfvBEbr919u7Jtx3QetFzJxS0YPPKSyOlaXDZZGUZhCqMA==
-X-Received: by 2002:a2e:7119:: with SMTP id m25mr679541ljc.229.1607420065262;
-        Tue, 08 Dec 2020 01:34:25 -0800 (PST)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id g69sm739199lfd.161.2020.12.08.01.34.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:34:24 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kmZOg-0002UD-GE; Tue, 08 Dec 2020 10:35:02 +0100
-Date:   Tue, 8 Dec 2020 10:35:02 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     johan@kernel.org, vaibhav.sr@gmail.com, elder@kernel.org,
-        gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
-        aibhav.sr@gmail.com, greybus-dev@lists.linaro.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: audio: Fix possible leak free widgets
- in gbaudio_dapm_free_controls
-Message-ID: <X89IxvbYWjuyaQDT@localhost>
-References: <20201205103827.31244-1-wanghai38@huawei.com>
+        Tue, 8 Dec 2020 04:36:58 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB08C061749;
+        Tue,  8 Dec 2020 01:36:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rfxjMnKfa23WCYW/uF05Lo63iUpOoHmG+cW0xP/UtyU=; b=SSGKYnga74+cAFWbhRPcCOdcBP
+        JDqUwZsReurrIA9rgUdaHS+L9ewZyFAgZ7Fs5LCRZmTdJHjZT7Xo+U926ln6+dqOc6LWjAQEFBakC
+        FjNyhVCXMu9Ok5QpiThTlRsKU1MzVXRpL0I2WtN1Nkf5Rjda09Br44yQjhoUI9EN66z/Ct4dFLdq6
+        lvnxhAITpjvh6D2bASrQboKrnwAEKv+YK5L8aqOVKQe9b6RrzqMpo3K4cuedPIh+iFwVlSR4bWu0z
+        MR0xFyc2NjgwGDedU96N9Mc7+O8QACNWFQgkBIct7vFOuz8dWqGthwCAQmNbSukNAtz+LXT+YMDF0
+        84K1QaZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmZPF-0001SM-Fi; Tue, 08 Dec 2020 09:35:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7037F3007CD;
+        Tue,  8 Dec 2020 10:35:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 55E43200C65DC; Tue,  8 Dec 2020 10:35:35 +0100 (CET)
+Date:   Tue, 8 Dec 2020 10:35:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201208093535.GS2414@hirez.programming.kicks-ass.net>
+References: <20201203171118.372391-1-mlevitsk@redhat.com>
+ <20201203171118.372391-2-mlevitsk@redhat.com>
+ <87a6uq9abf.fsf@nanos.tec.linutronix.de>
+ <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
+ <87a6up606r.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201205103827.31244-1-wanghai38@huawei.com>
+In-Reply-To: <87a6up606r.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 06:38:27PM +0800, Wang Hai wrote:
-> In gbaudio_dapm_free_controls(), if one of the widgets is not found, an error
-> will be returned directly, which will cause the rest to be unable to be freed,
-> resulting in leak.
-> 
-> This patch fixes the bug. If if one of them is not found, just skip and free the others.
+On Mon, Dec 07, 2020 at 05:38:36PM +0100, Thomas Gleixner wrote:
+> For anything halfways modern the write to TSC is reflected in TSC_ADJUST
+> which means you get the precise offset.
 
-Apart from the typo, please break your lines at 72 columns or so (not
-needed for the Fixes tag).
-
-> Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  drivers/staging/greybus/audio_helper.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-> index 237531ba60f3..3011b8abce38 100644
-> --- a/drivers/staging/greybus/audio_helper.c
-> +++ b/drivers/staging/greybus/audio_helper.c
-> @@ -135,7 +135,8 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
->  		if (!w) {
->  			dev_err(dapm->dev, "%s: widget not found\n",
->  				widget->name);
-> -			return -EINVAL;
-> +			widget++;
-> +			continue;
->  		}
->  		widget++;
->  #ifdef CONFIG_DEBUG_FS
-
-Not sure if we can ever have the widget lookup fail, but at least this
-looks consistent now.
-
-Reviewed-by: Johan Hovold <johan@kernel.org>
-
-Johan
+IIRC this is true for everything that has TSC_ADJUST.
