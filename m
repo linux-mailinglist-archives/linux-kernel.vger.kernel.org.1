@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D402D27CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F322D27D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgLHJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgLHJg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:36:58 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB08C061749;
-        Tue,  8 Dec 2020 01:36:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rfxjMnKfa23WCYW/uF05Lo63iUpOoHmG+cW0xP/UtyU=; b=SSGKYnga74+cAFWbhRPcCOdcBP
-        JDqUwZsReurrIA9rgUdaHS+L9ewZyFAgZ7Fs5LCRZmTdJHjZT7Xo+U926ln6+dqOc6LWjAQEFBakC
-        FjNyhVCXMu9Ok5QpiThTlRsKU1MzVXRpL0I2WtN1Nkf5Rjda09Br44yQjhoUI9EN66z/Ct4dFLdq6
-        lvnxhAITpjvh6D2bASrQboKrnwAEKv+YK5L8aqOVKQe9b6RrzqMpo3K4cuedPIh+iFwVlSR4bWu0z
-        MR0xFyc2NjgwGDedU96N9Mc7+O8QACNWFQgkBIct7vFOuz8dWqGthwCAQmNbSukNAtz+LXT+YMDF0
-        84K1QaZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmZPF-0001SM-Fi; Tue, 08 Dec 2020 09:35:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7037F3007CD;
-        Tue,  8 Dec 2020 10:35:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 55E43200C65DC; Tue,  8 Dec 2020 10:35:35 +0100 (CET)
-Date:   Tue, 8 Dec 2020 10:35:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201208093535.GS2414@hirez.programming.kicks-ass.net>
-References: <20201203171118.372391-1-mlevitsk@redhat.com>
- <20201203171118.372391-2-mlevitsk@redhat.com>
- <87a6uq9abf.fsf@nanos.tec.linutronix.de>
- <1dbbeefc7c76c259b55582468ccd3aab35a6de60.camel@redhat.com>
- <87a6up606r.fsf@nanos.tec.linutronix.de>
+        id S1728971AbgLHJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:37:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:46318 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726418AbgLHJhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:37:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A791130E;
+        Tue,  8 Dec 2020 01:37:00 -0800 (PST)
+Received: from [10.57.1.242] (unknown [10.57.1.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD07A3F68F;
+        Tue,  8 Dec 2020 01:36:58 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
+ updated without ops
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
+Date:   Tue, 8 Dec 2020 09:36:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6up606r.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:38:36PM +0100, Thomas Gleixner wrote:
-> For anything halfways modern the write to TSC is reflected in TSC_ADJUST
-> which means you get the precise offset.
+Hi Daniel,
 
-IIRC this is true for everything that has TSC_ADJUST.
+On 12/7/20 7:05 PM, Daniel Lezcano wrote:
+> The actual code is silently ignoring a thermal zone update when a
+> driver is requesting it without a get_temp ops set.
+> 
+> That looks not correct, as the caller should not have called this
+> function if the thermal zone is unable to read the temperature.
+> 
+> That makes the code less robust as the check won't detect the driver
+> is inconsistently using the thermal API and that does not help to
+> improve the framework as these circumvolutions hide the problem at the
+> source.
+
+Make sense.
+
+> 
+> In order to detect the situation when it happens, let's add a warning
+> when the update is requested without the get_temp() ops set.
+> 
+> Any warning emitted will have to be fixed at the source of the
+> problem: the caller must not call thermal_zone_device_update if there
+> is not get_temp callback set.
+> 
+> As the check is done in thermal_zone_get_temperature() via the
+> update_temperature() function, it is pointless to have the check and
+> the WARN in the thermal_zone_device_update() function. Just remove the
+> check and let the next call to raise the warning.
+> 
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Amit Kucheria <amitk@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>   drivers/thermal/thermal_core.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 90e38cc199f4..1bd23ff2247b 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -448,17 +448,17 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+>   	monitor_thermal_zone(tz);
+>   }
+>   
+> -static void update_temperature(struct thermal_zone_device *tz)
+> +static int update_temperature(struct thermal_zone_device *tz)
+>   {
+>   	int temp, ret;
+>   
+>   	ret = thermal_zone_get_temp(tz, &temp);
+>   	if (ret) {
+>   		if (ret != -EAGAIN)
+> -			dev_warn(&tz->device,
+> -				 "failed to read out thermal zone (%d)\n",
+> -				 ret);
+> -		return;
+> +			dev_warn_once(&tz->device,
+> +				      "failed to read out thermal zone (%d)\n",
+> +				      ret);
+> +		return ret;
+>   	}
+>   
+>   	mutex_lock(&tz->lock);
+> @@ -469,6 +469,8 @@ static void update_temperature(struct thermal_zone_device *tz)
+>   	trace_thermal_temperature(tz);
+>   
+>   	thermal_genl_sampling_temp(tz->id, temp);
+> +
+> +	return 0;
+>   }
+>   
+>   static void thermal_zone_device_init(struct thermal_zone_device *tz)
+> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct thermal_zone_device *tz,
+>   	if (atomic_read(&in_suspend))
+>   		return;
+>   
+> -	if (!tz->ops->get_temp)
+> +	if (update_temperature(tz))
+>   		return;
+>   
+> -	update_temperature(tz);
+> -
+
+I think the patch does a bit more. Previously we continued running the
+code below even when the thermal_zone_get_temp() returned an error (due
+to various reasons). Now we stop and probably would not schedule next
+polling, not calling:
+handle_thermal_trip() and monitor_thermal_zone()
+
+I would left update_temperature(tz) as it was and not check the return.
+The function thermal_zone_get_temp() can protect itself from missing
+tz->ops->get_temp(), so we should be safe.
+
+What do you think?
+
+Regards,
+Lukasz
