@@ -2,233 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8481D2D2E0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9752D2E10
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgLHPWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:22:04 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:45505 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729334AbgLHPWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:22:04 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Cr3mc0sP8zB09b1;
-        Tue,  8 Dec 2020 16:21:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id amiY2y3Yyv5n; Tue,  8 Dec 2020 16:21:20 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Cr3mb6pFsz9v42n;
-        Tue,  8 Dec 2020 16:21:19 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 86EE78B7CA;
-        Tue,  8 Dec 2020 16:21:21 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qgY2TNo5a1GV; Tue,  8 Dec 2020 16:21:21 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A724A8B7BE;
-        Tue,  8 Dec 2020 16:21:20 +0100 (CET)
-Subject: Re: [PATCH 18/20] ethernet: ucc_geth: add helper to replace repeated
- switch statements
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Li Yang <leoyang.li@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Zhao Qiang <qiang.zhao@nxp.com>
-References: <20201205191744.7847-1-rasmus.villemoes@prevas.dk>
- <20201205191744.7847-19-rasmus.villemoes@prevas.dk>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <ed16ea1d-5017-96bd-c1a9-5201f51231fd@csgroup.eu>
-Date:   Tue, 8 Dec 2020 16:21:20 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1730023AbgLHPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:22:09 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:34519 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729334AbgLHPWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:22:08 -0500
+Received: by mail-ot1-f66.google.com with SMTP id a109so491728otc.1;
+        Tue, 08 Dec 2020 07:21:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IQ3hrRr5CR/EHc+P2sk3O7yO90fJ2PV9jiKrnTl/JOE=;
+        b=Gb/FuTyn+nNaXeU7lOwcaB4pBKAMoV/igr3nasJEYZdNFWb4VNztcBDxS42qpT45ji
+         RhXa5veknPwRYxAFDQZxvgswRvvFas7YF2dLATvpEV//3r/KSLiOk3wAktB8wxFJPegd
+         /jGZOZGT7Q3rn7aHuVMYNZdAiqf5xLK1tJ4ZRj+vMGSlRylfsr7SV7LUdHS2auc+iajp
+         7CiKeCt0/odUuFgDc1wpQSWKWFb5MNdA3ccp32A9b9R7mo8DtNCjkgZAGiCn0EbdqW7C
+         zTcAHO0dIuj/7yeT0X9Ho+CMsK6XgiVoa5oARzblssGqv+fmDFGWSQOS5YGRa0LZHnO+
+         PGcw==
+X-Gm-Message-State: AOAM531LXgfZsZR5UI9BRKC49e6Cm29pXjjhFpz8cHQbhJHS94/fX+Lp
+        y9Kbn3QjGtjakytnWM9hVw==
+X-Google-Smtp-Source: ABdhPJzmCHNnVAHVBS3T6eGsSQKp+szBNnE+KgDyZOtKt+lyLKF1btlAQoWaO2PnCHLoZUrZlxBiKg==
+X-Received: by 2002:a05:6830:1352:: with SMTP id r18mr16663484otq.73.1607440887454;
+        Tue, 08 Dec 2020 07:21:27 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u130sm3717886oib.53.2020.12.08.07.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 07:21:25 -0800 (PST)
+Received: (nullmailer pid 2539592 invoked by uid 1000);
+        Tue, 08 Dec 2020 15:21:23 -0000
+Date:   Tue, 8 Dec 2020 09:21:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        devicetree@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        linux-arm-kernel@lists.infradead.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-snps-arc@lists.infradead.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Felipe Balbi <balbi@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Roger Quadros <rogerq@ti.com>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 10/19] dt-bindings: usb: Convert DWC USB3 bindings to
+ DT schema
+Message-ID: <20201208152123.GA2539227@robh.at.kernel.org>
+References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
+ <20201205152427.29537-11-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20201205191744.7847-19-rasmus.villemoes@prevas.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205152427.29537-11-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 05/12/2020 à 20:17, Rasmus Villemoes a écrit :
-> The translation from the ucc_geth_num_of_threads enum value to the
-> actual count can be written somewhat more compactly with a small
-> lookup table, allowing us to replace the four switch statements.
+On Sat, 05 Dec 2020 18:24:17 +0300, Serge Semin wrote:
+> DWC USB3 DT node is supposed to be compliant with the Generic xHCI
+> Controller schema, but with additional vendor-specific properties, the
+> controller-specific reference clocks and PHYs. So let's convert the
+> currently available legacy text-based DWC USB3 bindings to the DT schema
+> and make sure the DWC USB3 nodes are also validated against the
+> usb-xhci.yaml schema.
 > 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> Note 1. we have to discard the nodename restriction of being prefixed with
+> "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
+> are supposed to be named as "^usb(@.*)".
+> 
+> Note 2. The clock-related properties are marked as optional to match the
+> DWC USB3 driver expectation and to improve the bindings mainainability
+> so in case if there is a glue-node it would the responsible for the
+> clocks initialization.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
 > ---
->   drivers/net/ethernet/freescale/ucc_geth.c | 100 +++++-----------------
->   1 file changed, 22 insertions(+), 78 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
-> index 3aebea191b52..a26d1feb7dab 100644
-> --- a/drivers/net/ethernet/freescale/ucc_geth.c
-> +++ b/drivers/net/ethernet/freescale/ucc_geth.c
-> @@ -70,6 +70,20 @@ static struct {
->   module_param_named(debug, debug.msg_enable, int, 0);
->   MODULE_PARM_DESC(debug, "Debug verbosity level (0=none, ..., 0xffff=all)");
->   
-> +static int ucc_geth_thread_count(enum ucc_geth_num_of_threads idx)
-> +{
-> +	static const u8 count[] = {
-> +		[UCC_GETH_NUM_OF_THREADS_1] = 1,
-> +		[UCC_GETH_NUM_OF_THREADS_2] = 2,
-> +		[UCC_GETH_NUM_OF_THREADS_4] = 4,
-> +		[UCC_GETH_NUM_OF_THREADS_6] = 6,
-> +		[UCC_GETH_NUM_OF_THREADS_8] = 8,
-> +	};
-> +	if (idx >= ARRAY_SIZE(count))
-> +		return 0;
-> +	return count[idx];
-> +}
-
-I think you would allow GCC to provide a much better optimisation with something like:
-
-static int ucc_geth_thread_count(enum ucc_geth_num_of_threads idx)
-{
-	if (idx == UCC_GETH_NUM_OF_THREADS_1)
-		return 1;
-	if (idx == UCC_GETH_NUM_OF_THREADS_2)
-		return 2;
-	if (idx == UCC_GETH_NUM_OF_THREADS_4)
-		return 4;
-	if (idx == UCC_GETH_NUM_OF_THREADS_6)
-		return 6;
-	if (idx == UCC_GETH_NUM_OF_THREADS_8)
-		return 8;
-	return 0;
-}
-
-> +
->   static const struct ucc_geth_info ugeth_primary_info = {
->   	.uf_info = {
->   		    .rtsm = UCC_FAST_SEND_IDLES_BETWEEN_FRAMES,
-> @@ -668,32 +682,12 @@ static void dump_regs(struct ucc_geth_private *ugeth)
->   		in_be32(&ugeth->ug_regs->scam));
->   
->   	if (ugeth->p_thread_data_tx) {
-> -		int numThreadsTxNumerical;
-> -		switch (ugeth->ug_info->numThreadsTx) {
-> -		case UCC_GETH_NUM_OF_THREADS_1:
-> -			numThreadsTxNumerical = 1;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_2:
-> -			numThreadsTxNumerical = 2;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_4:
-> -			numThreadsTxNumerical = 4;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_6:
-> -			numThreadsTxNumerical = 6;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_8:
-> -			numThreadsTxNumerical = 8;
-> -			break;
-> -		default:
-> -			numThreadsTxNumerical = 0;
-> -			break;
-> -		}
-> +		int count = ucc_geth_thread_count(ugeth->ug_info->numThreadsTx);
->   
->   		pr_info("Thread data TXs:\n");
->   		pr_info("Base address: 0x%08x\n",
->   			(u32)ugeth->p_thread_data_tx);
-> -		for (i = 0; i < numThreadsTxNumerical; i++) {
-> +		for (i = 0; i < count; i++) {
->   			pr_info("Thread data TX[%d]:\n", i);
->   			pr_info("Base address: 0x%08x\n",
->   				(u32)&ugeth->p_thread_data_tx[i]);
-> @@ -702,32 +696,12 @@ static void dump_regs(struct ucc_geth_private *ugeth)
->   		}
->   	}
->   	if (ugeth->p_thread_data_rx) {
-> -		int numThreadsRxNumerical;
-> -		switch (ugeth->ug_info->numThreadsRx) {
-> -		case UCC_GETH_NUM_OF_THREADS_1:
-> -			numThreadsRxNumerical = 1;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_2:
-> -			numThreadsRxNumerical = 2;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_4:
-> -			numThreadsRxNumerical = 4;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_6:
-> -			numThreadsRxNumerical = 6;
-> -			break;
-> -		case UCC_GETH_NUM_OF_THREADS_8:
-> -			numThreadsRxNumerical = 8;
-> -			break;
-> -		default:
-> -			numThreadsRxNumerical = 0;
-> -			break;
-> -		}
-> +		int count = ucc_geth_thread_count(ugeth->ug_info->numThreadsRx);
->   
->   		pr_info("Thread data RX:\n");
->   		pr_info("Base address: 0x%08x\n",
->   			(u32)ugeth->p_thread_data_rx);
-> -		for (i = 0; i < numThreadsRxNumerical; i++) {
-> +		for (i = 0; i < count; i++) {
->   			pr_info("Thread data RX[%d]:\n", i);
->   			pr_info("Base address: 0x%08x\n",
->   				(u32)&ugeth->p_thread_data_rx[i]);
-> @@ -2315,45 +2289,15 @@ static int ucc_geth_startup(struct ucc_geth_private *ugeth)
->   	uf_regs = uccf->uf_regs;
->   	ug_regs = ugeth->ug_regs;
->   
-> -	switch (ug_info->numThreadsRx) {
-> -	case UCC_GETH_NUM_OF_THREADS_1:
-> -		numThreadsRxNumerical = 1;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_2:
-> -		numThreadsRxNumerical = 2;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_4:
-> -		numThreadsRxNumerical = 4;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_6:
-> -		numThreadsRxNumerical = 6;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_8:
-> -		numThreadsRxNumerical = 8;
-> -		break;
-> -	default:
-> +	numThreadsRxNumerical = ucc_geth_thread_count(ug_info->numThreadsRx);
-> +	if (!numThreadsRxNumerical) {
->   		if (netif_msg_ifup(ugeth))
->   			pr_err("Bad number of Rx threads value\n");
->   		return -EINVAL;
->   	}
->   
-> -	switch (ug_info->numThreadsTx) {
-> -	case UCC_GETH_NUM_OF_THREADS_1:
-> -		numThreadsTxNumerical = 1;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_2:
-> -		numThreadsTxNumerical = 2;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_4:
-> -		numThreadsTxNumerical = 4;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_6:
-> -		numThreadsTxNumerical = 6;
-> -		break;
-> -	case UCC_GETH_NUM_OF_THREADS_8:
-> -		numThreadsTxNumerical = 8;
-> -		break;
-> -	default:
-> +	numThreadsTxNumerical = ucc_geth_thread_count(ug_info->numThreadsTx);
-> +	if (!numThreadsTxNumerical) {
->   		if (netif_msg_ifup(ugeth))
->   			pr_err("Bad number of Tx threads value\n");
->   		return -EINVAL;
+> Changelog v2:
+> - Discard '|' from the descriptions, since we don't need to preserve
+>   the text formatting in any of them.
+> - Drop quotes from around the string constants.
+> - Fix the "clock-names" prop description to be referring the enumerated
+>   clock-names instead of the ones from the Databook.
 > 
+> Changelog v3:
+> - Apply usb-xhci.yaml# schema only if the controller is supposed to work
+>   as either host or otg.
+> 
+> Changelog v4:
+> - Apply usb-drd.yaml schema first. If the controller is configured
+>   to work in a gadget mode only, then apply the usb.yaml schema too,
+>   otherwise apply the usb-xhci.yaml schema.
+> - Discard the Rob'es Reviewed-by tag. Please review the patch one more
+>   time.
+> 
+> Changelog v5:
+> - Add "snps,dis-split-quirk" property to the DWC USB3 DT schema.
+> - Add a commit log text about the clock-related property changes.
+> - Make sure dr_mode exist to apply the USB-gadget-only schema.
+> ---
+>  .../devicetree/bindings/usb/dwc3.txt          | 128 -------
+>  .../devicetree/bindings/usb/snps,dwc3.yaml    | 312 ++++++++++++++++++
+>  2 files changed, 312 insertions(+), 128 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
