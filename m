@@ -2,375 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2322D3163
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99E82D3162
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgLHRnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:43:41 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52158 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgLHRnk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:43:40 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8HcLHg056845;
-        Tue, 8 Dec 2020 12:42:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=QLwqM6lUuCwkK7Rp8EwVSZRsKJ4/bLLbkqDznGsEu9g=;
- b=Lc94QAAGsKP5BpM22WwqgBScqanIKxAU1/GM7/3bOfqkZEFk96s9ju7RxmGGnF+htkSU
- CaoMPFSirF8vDhbP0FT6W8EZu86m6p+G3xSukIZJD8GZ25hKN9wxUBXomcmZNRrFbRtr
- iM/vWEFdWsSLnZW0YoWTChkREj7pZ+UoFHX5grZKeYAGV4TdIiPvJPy3NvP/xDEgj5hZ
- RYhhZO1WGyZDKS78/U8iRuMY5Ak0HHF1fIP+KEtPY+iNtVa6aZG/COk/jpLEUpAF0cqM
- 3AE6CbZrE2caJP0JErXVJE0DRY4revVwusurEd+q8OzYPXGnH6TiZZUStmwAmsEqhlMb Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5t4ffck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 12:42:45 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8HcrLK061639;
-        Tue, 8 Dec 2020 12:42:45 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35a5t4ffcc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 12:42:44 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8Hg5bL023565;
-        Tue, 8 Dec 2020 17:42:44 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 3581u9qs80-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 17:42:44 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8Hggrw18809198
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 17:42:42 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBF756A04D;
-        Tue,  8 Dec 2020 17:42:42 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 573C56A047;
-        Tue,  8 Dec 2020 17:42:42 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.54.209])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 17:42:42 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id E0C3C2E35A1; Tue,  8 Dec 2020 23:12:37 +0530 (IST)
-Date:   Tue, 8 Dec 2020 23:12:37 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] powerpc/smp: Add support detecting thread-groups
- sharing L2 cache
-Message-ID: <20201208174237.GB14206@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607057327-29822-3-git-send-email-ego@linux.vnet.ibm.com>
- <20201207124039.GI528281@linux.vnet.ibm.com>
+        id S1730806AbgLHRnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730732AbgLHRnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:43:33 -0500
+Date:   Tue, 8 Dec 2020 19:42:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607449372;
+        bh=BftUl2M64lQHtLnTxOiHMi7sfSYR5CWaxkC+KmCM7iA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CboFcSX9DF/ccKwCw3g3G7AMkHU6RwGXd6EhUwYLarUVQmQqkTTu1hVbbYLlT9Pu4
+         6ol3agoXGVmewMw36lEqKoJV2CxCo7MeHPX6SQIZt76KJ4zyKEtJBRPW/dPshNI1r5
+         OIKqh783vTlDFY1ymcE4sZNQ+/omhudZi2YeZJlsOTyERbDfj/+SjNI7ixm/dNByUS
+         LV0ahU5geeb5mURgtpNiMSdgO6HExtXNo8W5419tfGmGseHd8v5j9k3Ps0NBsH3SAe
+         LoGGh7Ckb8QT9z461GlIqQ9Gxy8zvmI5g2vRz+3KXv5BXZcFOjLKSHU8bpHY1QlW7/
+         CU+tRnzAJpCRQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v3 3/4] tpm_tis: Disable interrupts if interrupt storm
+ detected
+Message-ID: <20201208174246.GB58213@kernel.org>
+References: <20201205014340.148235-1-jsnitsel@redhat.com>
+ <20201205014340.148235-4-jsnitsel@redhat.com>
+ <87tusy7n3b.fsf@nanos.tec.linutronix.de>
+ <20201207192803.GH5487@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207124039.GI528281@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080104
+In-Reply-To: <20201207192803.GH5487@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Srikar,
-
-On Mon, Dec 07, 2020 at 06:10:39PM +0530, Srikar Dronamraju wrote:
-> * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-04 10:18:46]:
+On Mon, Dec 07, 2020 at 03:28:03PM -0400, Jason Gunthorpe wrote:
+> On Sun, Dec 06, 2020 at 08:26:16PM +0100, Thomas Gleixner wrote:
+> > Just as a side note. I was looking at tpm_tis_probe_irq_single() and
+> > that function is leaking the interrupt request if any of the checks
+> > afterwards fails, except for the final interrupt probe check which does
+> > a cleanup. That means on fail before that the interrupt handler stays
+> > requested up to the point where the module is removed. If that's a
+> > shared interrupt and some other device is active on the same line, then
+> > each interrupt from that device will call into the TPM code. Something
+> > like the below is needed.
+> > 
+> > Also the X86 autoprobe mechanism is interesting:
+> > 
+> > 	if (IS_ENABLED(CONFIG_X86))
+> > 		for (i = 3; i <= 15; i++)
+> > 			if (!tpm_tis_probe_irq_single(chip, intmask, 0, i))
+> > 				return;
+> > 
+> > The third argument is 'flags' which is handed to request_irq(). So that
+> > won't ever be able to probe a shared interrupt. But if an interrupt
+> > number > 0 is handed to tpm_tis_core_init() the interrupt is requested
+> > with IRQF_SHARED. Same issue when the chip has an interrupt number in
+> > the register. It's also requested exclusive which is pretty likely
+> > to fail on ancient x86 machines.
 > 
-> > From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-> > 
-> > On POWER systems, groups of threads within a core sharing the L2-cache
-> > can be indicated by the "ibm,thread-groups" property array with the
-> > identifier "2".
-> > 
-> > This patch adds support for detecting this, and when present, populate
-> > the populating the cpu_l2_cache_mask of every CPU to the core-siblings
-> > which share L2 with the CPU as specified in the by the
-> > "ibm,thread-groups" property array.
-> > 
-> > On a platform with the following "ibm,thread-group" configuration
-> > 		 00000001 00000002 00000004 00000000
-> > 		 00000002 00000004 00000006 00000001
-> > 		 00000003 00000005 00000007 00000002
-> > 		 00000002 00000004 00000000 00000002
-> > 		 00000004 00000006 00000001 00000003
-> > 		 00000005 00000007
-> > 
-> > Without this patch, the sched-domain hierarchy for CPUs 0,1 would be
-> > 	CPU0 attaching sched-domain(s):
-> > 	domain-0: span=0,2,4,6 level=SMT
-> > 	domain-1: span=0-7 level=CACHE
-> > 	domain-2: span=0-15,24-39,48-55 level=MC
-> > 	domain-3: span=0-55 level=DIE
-> > 
-> > 	CPU1 attaching sched-domain(s):
-> > 	domain-0: span=1,3,5,7 level=SMT
-> > 	domain-1: span=0-7 level=CACHE
-> > 	domain-2: span=0-15,24-39,48-55 level=MC
-> > 	domain-3: span=0-55 level=DIE
-> > 
-> > The CACHE domain at 0-7 is incorrect since the ibm,thread-groups
-> > sub-array
-> > [00000002 00000002 00000004
-> >  00000000 00000002 00000004 00000006
-> >  00000001 00000003 00000005 00000007]
-> > indicates that L2 (Property "2") is shared only between the threads of a single
-> > group. There are "2" groups of threads where each group contains "4"
-> > threads each. The groups being {0,2,4,6} and {1,3,5,7}.
-> > 
-> > With this patch, the sched-domain hierarchy for CPUs 0,1 would be
-> >      	CPU0 attaching sched-domain(s):
-> > 	domain-0: span=0,2,4,6 level=SMT
-> > 	domain-1: span=0-15,24-39,48-55 level=MC
-> > 	domain-2: span=0-55 level=DIE
-> > 
-> > 	CPU1 attaching sched-domain(s):
-> > 	domain-0: span=1,3,5,7 level=SMT
-> > 	domain-1: span=0-15,24-39,48-55 level=MC
-> > 	domain-2: span=0-55 level=DIE
-> > 
-> > The CACHE domain with span=0,2,4,6 for CPU 0 (span=1,3,5,7 for CPU 1
-> > resp.) gets degenerated into the SMT domain. Furthermore, the
-> > last-level-cache domain gets correctly set to the SMT sched-domain.
-> > 
-> > Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> > ---
-> >  arch/powerpc/kernel/smp.c | 66 +++++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 58 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> > index 6a242a3..a116d2d 100644
-> > --- a/arch/powerpc/kernel/smp.c
-> > +++ b/arch/powerpc/kernel/smp.c
-> > @@ -76,6 +76,7 @@
-> >  struct task_struct *secondary_current;
-> >  bool has_big_cores;
-> >  bool coregroup_enabled;
-> > +bool thread_group_shares_l2;
+> It is very likely none of this works any more, it has been repeatedly
+> reworked over the years and just left behind out of fear someone needs
+> it. I've thought it should be deleted for a while now.
 > 
-> Either keep this as static in this patch or add its declaration
->
-
-This will be used in Patch 3 in kernel/cacheinfo.c, but not any other
-place. Hence I am not making it static here.
-
-
-> > 
-> >  DEFINE_PER_CPU(cpumask_var_t, cpu_sibling_map);
-> >  DEFINE_PER_CPU(cpumask_var_t, cpu_smallcore_map);
-> > @@ -99,6 +100,7 @@ enum {
-> > 
-> >  #define MAX_THREAD_LIST_SIZE	8
-> >  #define THREAD_GROUP_SHARE_L1   1
-> > +#define THREAD_GROUP_SHARE_L2   2
-> >  struct thread_groups {
-> >  	unsigned int property;
-> >  	unsigned int nr_groups;
-> > @@ -107,7 +109,7 @@ struct thread_groups {
-> >  };
-> > 
-> >  /* Maximum number of properties that groups of threads within a core can share */
-> > -#define MAX_THREAD_GROUP_PROPERTIES 1
-> > +#define MAX_THREAD_GROUP_PROPERTIES 2
-> > 
-> >  struct thread_groups_list {
-> >  	unsigned int nr_properties;
-> > @@ -121,6 +123,13 @@ struct thread_groups_list {
-> >   */
-> >  DEFINE_PER_CPU(cpumask_var_t, cpu_l1_cache_map);
-> > 
-> > +/*
-> > + * On some big-cores system, thread_group_l2_cache_map for each CPU
-> > + * corresponds to the set its siblings within the core that share the
-> > + * L2-cache.
-> > + */
-> > +DEFINE_PER_CPU(cpumask_var_t, thread_group_l2_cache_map);
-> > +
+> I suppose the original logic was to try and probe without SHARED
+> because a probe would need exclusive access to the interrupt to tell
+> if the TPM was actually the source, not some other device.
 > 
-> NIT:
-> We are trying to confuse ourselves with the names.
-> For L1 we have cpu_l2_cache_map to store the tasks from the thread group.
-> but cpu_smallcore_map for keeping track of tasks.
->
-
-I suppose you mean cpu_l1_cache_map here. We are using
-cpu_smallcore_map, because when the ibm,thread-groups-property=1, it
-shares both L1 and the instruction data flow (SMT). We already have a
-cpu_smt_map, hence, this was named cpu_smallcore_map a couple of years
-ago when I wrote that patch.
-
-
-> For L2 we have thread_group_l2_cache_map to store the tasks from the thread
-> group.  but cpu_l2_cache_map for keeping track of tasks.
-
+> It is all very old and very out of step with current thinking, IMHO. I
+> skeptical that TPM interrupts were ever valuable enough to deserve
+> this in the first place.
 > 
-> I think we should do some renaming to keep the names consistent.
-> I would say probably say move the current cpu_l2_cache_map to
-> cpu_llc_cache_map and move the new aka  thread_group_l2_cache_map as
-> cpu_l2_cache_map to be somewhat consistent.
+> Jason
 
-Hmm.. cpu_llc_cache_map is still very generic. We want to have
-something that defines l2 map.
++1 for removing it.
 
-I agree that we need to keep it consistent. How about renaming
-cpu_l1_cache_map to thread_groups_l1_cache_map ?
-
-That way thread_groups_l1_cache_map and thread_groups_l2_cache_map
-refer to the corresponding L1 and L2 siblings as discovered from
-ibm,thread-groups property.
-
-We have the cpu_smallcore_mask and the cpu_l2_cache_map unchanged as
-it was before.
-
-
-> 
-> >  /* SMP operations for this machine */
-> >  struct smp_ops_t *smp_ops;
-> > 
-> > @@ -840,7 +851,8 @@ static int init_cpu_cache_map(int cpu, unsigned int cache_property)
-> >  	if (!dn)
-> >  		return -ENODATA;
-> > 
-> > -	if (!(cache_property == THREAD_GROUP_SHARE_L1))
-> > +	if (!(cache_property == THREAD_GROUP_SHARE_L1 ||
-> > +	      cache_property == THREAD_GROUP_SHARE_L2))
-> >  		return -EINVAL;
-> > 
-> >  	if (!cpu_tgl->nr_properties) {
-> > @@ -867,7 +879,10 @@ static int init_cpu_cache_map(int cpu, unsigned int cache_property)
-> >  		goto out;
-> >  	}
-> > 
-> > -	mask = &per_cpu(cpu_l1_cache_map, cpu);
-> > +	if (cache_property == THREAD_GROUP_SHARE_L1)
-> > +		mask = &per_cpu(cpu_l1_cache_map, cpu);
-> > +	else if (cache_property == THREAD_GROUP_SHARE_L2)
-> > +		mask = &per_cpu(thread_group_l2_cache_map, cpu);
-> > 
-> >  	zalloc_cpumask_var_node(mask, GFP_KERNEL, cpu_to_node(cpu));
-> > 
-> > @@ -973,6 +988,16 @@ static int init_big_cores(void)
-> >  	}
-> > 
-> >  	has_big_cores = true;
-> > +
-> > +	for_each_possible_cpu(cpu) {
-> > +		int err = init_cpu_cache_map(cpu, THREAD_GROUP_SHARE_L2);
-> > +
-> > +		if (err)
-> > +			return err;
-> > +	}
-> > +
-> > +	thread_group_shares_l2 = true;
-> 
-> Why do we need a separate loop. Why cant we merge this in the above loop
-> itself?
-
-
-No, there are platforms where one THREAD_GROUP_SHARE_L1 exists while
-THREAD_GROUP_SHARE_L2 doesn't exist. It becomes easier if these are
-separately tracked. Also, what do we gain if we put this in the same
-loop? It will be (nr_possible_cpus * 2 * invocations of
-init_cpu_cache_map()) as opposed to 2 * (nr_possible_cpus *
-invocations of init_cpu_cache_map()). Isn't it ?
-
-
-
-
-> 
-> > +	pr_info("Thread-groups in a core share L2-cache\n");
-> 
-> Can this be moved to a pr_debug? Does it help any regular user/admins to
-> know if thread-groups shared l2 cache. Infact it may confuse users on what
-> thread groups are and which thread groups dont share cache.
-> I would prefer some other name than thread_group_shares_l2 but dont know any
-> better alternatives and may be my choices are even worse.
-
-Would you be ok with "L2 cache shared by threads of the small core" ?
-
-
-> 
-> >  	return 0;
-> >  }
-> > 
-> > @@ -1287,6 +1312,31 @@ static bool update_mask_by_l2(int cpu, cpumask_var_t *mask)
-> >  	if (has_big_cores)
-> >  		submask_fn = cpu_smallcore_mask;
-> > 
-> > +
-> 
-> NIT: extra blank line?
-
-Will remove this. 
-> 
-> > +	/*
-> > +	 * If the threads in a thread-group share L2 cache, then then
-> > +	 * the L2-mask can be obtained from thread_group_l2_cache_map.
-> > +	 */
-> > +	if (thread_group_shares_l2) {
-> > +		/* Siblings that share L1 is a subset of siblings that share L2.*/
-> > +		or_cpumasks_related(cpu, cpu, submask_fn, cpu_l2_cache_mask);
-> > +		if (*mask) {
-> > +			cpumask_andnot(*mask,
-> > +				       per_cpu(thread_group_l2_cache_map, cpu),
-> > +				       cpu_l2_cache_mask(cpu));
-> > +		} else {
-> > +			mask = &per_cpu(thread_group_l2_cache_map, cpu);
-> > +		}
-> > +
-> > +		for_each_cpu(i, *mask) {
-> > +			if (!cpu_online(i))
-> > +				continue;
-> > +			set_cpus_related(i, cpu, cpu_l2_cache_mask);
-> > +		}
-> > +
-> > +		return true;
-> > +	}
-> > +
-> 
-> Ah this can be simplified to:
-> if (thread_group_shares_l2) {
-> 	cpumask_set_cpu(cpu, cpu_l2_cache_mask(cpu));
-> 
-> 	for_each_cpu(i, per_cpu(thread_group_l2_cache_map, cpu)) {
-> 		if (cpu_online(i))
-> 			set_cpus_related(i, cpu, cpu_l2_cache_mask);
-> 	}
-
-Don't we want to enforce that the siblings sharing L1 be a subset of
-the siblings sharing L2 ? Or do you recommend putting in a check for
-that somewhere ?
-
-
-> }
-> 
-> No?
-> 
-> >  	l2_cache = cpu_to_l2cache(cpu);
-> >  	if (!l2_cache || !*mask) {
-> >  		/* Assume only core siblings share cache with this CPU */
-> 
-> -- 
-> Thanks and Regards
-> Srikar Dronamraju
+/Jarkko
