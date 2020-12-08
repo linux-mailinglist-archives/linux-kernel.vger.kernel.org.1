@@ -2,169 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBADA2D2C67
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5382D2C6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729706AbgLHN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:57:24 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:37939 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729680AbgLHN5X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:57:23 -0500
-X-UUID: 04896d5bc9764a2e8ec41ba1c2bb8256-20201208
-X-UUID: 04896d5bc9764a2e8ec41ba1c2bb8256-20201208
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 510762096; Tue, 08 Dec 2020 21:56:38 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 8 Dec 2020 21:56:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 8 Dec 2020 21:56:34 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
-        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v2 2/2] scsi: ufs: Uninline ufshcd_vops_device_reset function
-Date:   Tue, 8 Dec 2020 21:56:35 +0800
-Message-ID: <20201208135635.15326-3-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201208135635.15326-1-stanley.chu@mediatek.com>
-References: <20201208135635.15326-1-stanley.chu@mediatek.com>
+        id S1729731AbgLHN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:57:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729678AbgLHN5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:57:31 -0500
+Date:   Tue, 8 Dec 2020 13:56:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607435810;
+        bh=r+SNDjdn1cT+19+hYK3dnLdSKkvOwWFHhZnR6xbs9b4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IEU6PrMiyN6gfVyUTtAY/XV2HMYTkelCmMBqubxCwtCpAQAXVCG2GqWZbATIlW1y2
+         tYPwqdXR4ap+x8XbgCT43+vW/isxYFykdEpPinmVsfsfREURAaps9sNPy96G+H88QX
+         JGqWUy0BAE97QyipEjxygtNvXYrAnIEKnJt3YKVTyQXUuY9hb3dTuQ3MmlTv9LdLQl
+         00/IOFheqyhRmQROS2saMaboz9xGgievUiZj06fHP26iRGYOaeJGwydys5T8cKaY3c
+         x2HYpR0PK94eVx/oxF6XP7HVMawe59nIAK3TuDa0W6SHrad7J3i9IWqKbpTSpN9Bs4
+         4CyXFYa/9oGkg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaojuxin@loongson.cn,
+        yangtiezhu@loongson.cn
+Subject: Re: [PATCH v2 1/4] spi: LS7A: Add Loongson LS7A SPI controller
+ driver support
+Message-ID: <20201208135644.GC6686@sirena.org.uk>
+References: <1607413467-17698-1-git-send-email-zhangqing@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 101DC9A9E8D7F51DCEBAB7D3E09A549AADA7E869E7FE7D2790AA99B6101A000D2000:8
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zCKi3GIZzVBPywwA"
+Content-Disposition: inline
+In-Reply-To: <1607413467-17698-1-git-send-email-zhangqing@loongson.cn>
+X-Cookie: Do not dry clean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since more and more statements showing up in ufshcd_vops_device_reset(),
-uninline it to allow compiler making possibly better optimization.
 
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- drivers/scsi/ufs/ufshcd.c | 27 ++++++++++++++++++++++-----
- drivers/scsi/ufs/ufshcd.h | 19 +++++--------------
- 2 files changed, 27 insertions(+), 19 deletions(-)
+--zCKi3GIZzVBPywwA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index c1c401b2b69d..b2ca1a6ad426 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -580,6 +580,23 @@ static void ufshcd_print_pwr_info(struct ufs_hba *hba)
- 		 hba->pwr_info.hs_rate);
- }
- 
-+static void ufshcd_device_reset(struct ufs_hba *hba)
-+{
-+	int err;
-+
-+	err = ufshcd_vops_device_reset(hba);
-+
-+	if (!err) {
-+		ufshcd_set_ufs_dev_active(hba);
-+		if (ufshcd_is_wb_allowed(hba)) {
-+			hba->wb_enabled = false;
-+			hba->wb_buf_flush_enabled = false;
-+		}
-+	}
-+	if (err != -EOPNOTSUPP)
-+		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
-+}
-+
- void ufshcd_delay_us(unsigned long us, unsigned long tolerance)
- {
- 	if (!us)
-@@ -3932,7 +3949,7 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 
- 	/* Reset the attached device */
--	ufshcd_vops_device_reset(hba);
-+	ufshcd_device_reset(hba);
- 
- 	ret = ufshcd_host_reset_and_restore(hba);
- 
-@@ -6933,7 +6950,7 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
- 
- 	do {
- 		/* Reset the attached device */
--		ufshcd_vops_device_reset(hba);
-+		ufshcd_device_reset(hba);
- 
- 		err = ufshcd_host_reset_and_restore(hba);
- 	} while (err && --retries);
-@@ -8712,7 +8729,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	 * further below.
- 	 */
- 	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
--		ufshcd_vops_device_reset(hba);
-+		ufshcd_device_reset(hba);
- 		WARN_ON(!ufshcd_is_link_off(hba));
- 	}
- 	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
-@@ -8722,7 +8739,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- set_dev_active:
- 	/* Can also get here needing to exit DeepSleep */
- 	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
--		ufshcd_vops_device_reset(hba);
-+		ufshcd_device_reset(hba);
- 		ufshcd_host_reset_and_restore(hba);
- 	}
- 	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
-@@ -9321,7 +9338,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	}
- 
- 	/* Reset the attached device */
--	ufshcd_vops_device_reset(hba);
-+	ufshcd_device_reset(hba);
- 
- 	ufshcd_init_crypto(hba);
- 
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 36d367eb8139..9bb5f0ed4124 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -1216,21 +1216,12 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
- 		hba->vops->dbg_register_dump(hba);
- }
- 
--static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
-+static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
- {
--	if (hba->vops && hba->vops->device_reset) {
--		int err = hba->vops->device_reset(hba);
--
--		if (!err) {
--			ufshcd_set_ufs_dev_active(hba);
--			if (ufshcd_is_wb_allowed(hba)) {
--				hba->wb_enabled = false;
--				hba->wb_buf_flush_enabled = false;
--			}
--		}
--		if (err != -EOPNOTSUPP)
--			ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
--	}
-+	if (hba->vops && hba->vops->device_reset)
-+		return hba->vops->device_reset(hba);
-+
-+	return -EOPNOTSUPP;
- }
- 
- static inline void ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
--- 
-2.18.0
+On Tue, Dec 08, 2020 at 03:44:24PM +0800, Qing Zhang wrote:
 
+> v2:
+> - keep Kconfig and Makefile sorted
+> - make the entire comment a C++ one so things look more intentional
+
+You say this but...
+
+> +++ b/drivers/spi/spi-ls7a.c
+> @@ -0,0 +1,324 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Loongson LS7A SPI Controller driver
+> + *
+> + * Copyright (C) 2020 Loongson Technology Corporation Limited
+> + */
+
+=2E..this is still a mix of C and C++ comments?
+
+> +static int set_cs(struct ls7a_spi *ls7a_spi, struct spi_device  *spi, in=
+t val)
+> +{
+> +	int cs =3D ls7a_spi_read_reg(ls7a_spi, SFCS) & ~(0x11 << spi->chip_sele=
+ct);
+> +
+> +	if (spi->mode  & SPI_CS_HIGH)
+> +		val =3D !val;
+> +	ls7a_spi_write_reg(ls7a_spi, SFCS,
+> +		(val ? (0x11 << spi->chip_select):(0x1 << spi->chip_select)) | cs);
+> +
+> +	return 0;
+> +}
+
+Why not just expose this to the core and let it handle things? =20
+
+Please also write normal conditional statements to improve legibility.
+There's quite a lot of coding style issues in this with things like
+missing spaces=20
+
+> +	if (t) {
+> +		hz =3D t->speed_hz;
+> +		if (!hz)
+> +			hz =3D spi->max_speed_hz;
+> +	} else
+> +		hz =3D spi->max_speed_hz;
+
+If one branch of the conditional has braces please use them on both to
+improve legibility.
+
+> +static int  ls7a_spi_transfer_one_message(struct spi_master *master,
+> +                                         struct spi_message *m)
+
+I don't understand why the driver is implementing transfer_one_message()
+- it looks like this is just open coding the standard loop that the
+framework provides and should just be using transfer_one().
+
+> +		r =3D ls7a_spi_write_read(spi, t);
+> +		if (r < 0) {
+> +			status =3D r;
+> +			goto error;
+> +			}
+
+The indentation here isn't following the kernel coding style.
+
+> +	master =3D spi_alloc_master(&pdev->dev, sizeof(struct ls7a_spi));
+> +	if (!master)
+> +		return -ENOMEM;
+
+Why not use devm_ here?
+
+> +	ret =3D devm_spi_register_master(dev, master);
+> +	if (ret)
+> +		goto err_free_master;
+
+The driver uses devm_spi_register_master() here but...
+
+> +static void ls7a_spi_pci_remove(struct pci_dev *pdev)
+> +{
+> +	struct spi_master *master =3D pci_get_drvdata(pdev);
+> +	struct ls7a_spi *spi;
+> +
+> +	spi =3D spi_master_get_devdata(master);
+> +	if (!spi)
+> +		return;
+> +
+> +	pci_release_regions(pdev);
+
+=2E..releases the PCI regions in the remove() function before the SPI
+controller is freed so the controller could still be active.
+
+--zCKi3GIZzVBPywwA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/PhhsACgkQJNaLcl1U
+h9DApAf9FL27ZdJ5EY5dvTCrBunyvu4kKI1aW2smyMKHDqAMCdh/Bx13j76pLcJN
+o3fc67vf4TtI4B8m1IExFSXuZLDlERimQplJSh1eG5KYm+em4ryKK1fDHM6+Rdl0
+kpu946yiVUJ7hF8zFyJof1dgiwrWY7hOsmbhPi3fGCFDqQpx3Pi9+tmUUVj9YgCa
+5ZyVOZH5q88ShNcmCkAvZbK9/9f/nYB9+t6575rvbQlCH6pbGcwoEGuqJ/V0IsFS
+PKqJiP/X9/f5rfb0SNe2HNV6WExewivMg2YnUOEldPNh2NNGx4o2VJaLOPlm9iTz
+8pjE5qTLBCCQeROluQCMEwm2cPf0EQ==
+=xEfq
+-----END PGP SIGNATURE-----
+
+--zCKi3GIZzVBPywwA--
