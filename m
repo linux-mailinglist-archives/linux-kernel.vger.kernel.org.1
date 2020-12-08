@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C86C2D29CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACFA2D29D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbgLHLcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:32:16 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34462 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729031AbgLHLcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:32:16 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8BU1e6148438;
-        Tue, 8 Dec 2020 11:31:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=n9Vzzz9JyUSKWqhgwt+EcBwNm7sdSMdz33I19pCtH/8=;
- b=t4cCHBz9eHE/WDlGePsNoEnPl5t+XFViu5hyoUA3zHnVuFOesb01E44hHPoW1MIf+8Xh
- xKMZ7oWhffbC/mlj8aZC5ZaQn/EwY1sntTRTz1TylvdxZz8VkEscXJwr6ydhrBQZPtDS
- IwIq+2zJMk/BSHzpU31RrYQtGxaeIclVu3QZSbTiV323glTyQsI6fdsjkYRmteyojztm
- CGekIinEdrIhhdO3osV/YbD0IpxJZ5rQymdKhXUH6mMLVtDxgeZXVS/Fhymvi3cQmKEo
- xZ5C8+i27K9S2i0ybr0I1KcjXIF3zFQdvC2Yg6Svru/ZhxMR6rXcE4icUjN1hOT6FRMI 8Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m2ah3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 11:31:12 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8BUe94104196;
-        Tue, 8 Dec 2020 11:31:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 358kysr2nj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 11:31:11 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B8BV1oC016947;
-        Tue, 8 Dec 2020 11:31:01 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 03:31:01 -0800
-Date:   Tue, 8 Dec 2020 14:30:53 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@i4.cs.fau.de, gregkh@linuxfoundation.org,
-        ij72uhux@stud.informatik.uni-erlangen.de,
-        sakari.ailus@linux.intel.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 06/12] media: atomisp: Add parentheses
-Message-ID: <20201208113053.GB2767@kadam>
-References: <20201207192638.15219-1-Philipp.Gerlesberger@fau.de>
- <20201207192638.15219-7-Philipp.Gerlesberger@fau.de>
+        id S1729031AbgLHLf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:35:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:47674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726338AbgLHLf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 06:35:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 525361FB;
+        Tue,  8 Dec 2020 03:34:41 -0800 (PST)
+Received: from [10.57.1.242] (unknown [10.57.1.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 207623F68F;
+        Tue,  8 Dec 2020 03:34:37 -0800 (PST)
+Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
+ EM
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        rjw@rjwysocki.net, vireshk@kernel.org, robh+dt@kernel.org,
+        sboyd@kernel.org, nm@ti.com, daniel.lezcano@linaro.org,
+        morten.rasmussen@arm.com, chris.redpath@arm.com
+References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+ <20201202172356.10508-4-nicola.mazzucato@arm.com>
+ <20201208055053.kggxw26kxtnpneua@vireshk-i7>
+ <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
+ <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
+ <20201208112008.niesjrunxq2jz3kt@bogus>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <1f9daaf8-e850-7c1b-7a32-71367982beaf@arm.com>
+Date:   Tue, 8 Dec 2020 11:34:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207192638.15219-7-Philipp.Gerlesberger@fau.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080073
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080073
+In-Reply-To: <20201208112008.niesjrunxq2jz3kt@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:26:33PM +0100, Philipp Gerlesberger wrote:
-> ERROR:COMPLEX_MACRO: Macros with complex values should be
-> enclosed in parentheses
+
+
+On 12/8/20 11:20 AM, Sudeep Holla wrote:
+> On Tue, Dec 08, 2020 at 12:56:11PM +0530, Viresh Kumar wrote:
+>> On 08-12-20, 07:22, Nicola Mazzucato wrote:
+>>> On 12/8/20 5:50 AM, Viresh Kumar wrote:
+>>>> On 02-12-20, 17:23, Nicola Mazzucato wrote:
+>>>>>   	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>>>>>   	if (nr_opp <= 0) {
+>>>>> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
+>>>>> -		ret = -EPROBE_DEFER;
+>>>>> -		goto out_free_opp;
+>>>>> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+>>>>> +		if (ret) {
+>>>>> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
+>>>>> +			goto out_free_cpumask;
+>>>>> +		}
+>>>>> +
+>>>>> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
+>>>>> +		if (ret) {
+>>>>> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+>>>>> +				__func__, ret);
+>>>>> +			goto out_free_cpumask;
+>>>>> +		}
+>>>>> +
+>>>>
+>>>> Why do we need to call above two after calling
+>>>> dev_pm_opp_get_opp_count() ?
+>>>
+>>> Sorry, I am not sure to understand your question here. If there are no opps for
+>>> a device we want to add them to it
+>>
+>> Earlier we used to call handle->perf_ops->device_opps_add() and
+>> dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
+>> the order changed now ?
+>>
+>>
+>> I am not sure why they would be duplicated in your case. I though
+>> device_opps_add() is responsible for dynamically adding the OPPs here.
+>>
 > 
-> Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
-> ---
->  .../media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h    | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> It is because of per-CPU vs per domain drama here. Imagine a system with
+> 4 CPUs which the firmware puts in individual domains while they all are
+> in the same perf domain and hence OPP is marked shared in DT.
 > 
-> diff --git a/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h b/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
-> index 9cd3d92b34c9..2c02dd1cf27a 100644
-> --- a/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
-> +++ b/drivers/staging/media/atomisp/pci/runtime/rmgr/interface/ia_css_rmgr.h
-> @@ -22,8 +22,8 @@
->  #define STORAGE_CLASS_RMGR_H extern
->  #define STORAGE_CLASS_RMGR_C
->  #else				/* __INLINE_RMGR__ */
-> -#define STORAGE_CLASS_RMGR_H static inline
-> -#define STORAGE_CLASS_RMGR_C static inline
-> +#define STORAGE_CLASS_RMGR_H (static inline)
-> +#define STORAGE_CLASS_RMGR_C (static inline)
+> Since this probe gets called for all the cpus, we need to skip adding
+> OPPs for the last 3(add only for 1st one and mark others as shared).
+> If we attempt to add OPPs on second cpu probe, it *will* shout as duplicate
+> OPP as we would have already marked it as shared table with the first cpu.
+> Am I missing anything ? I suggested this as Nicola saw OPP duplicate
+> warnings when he was hacking up this patch.
+> 
+>>> otherwise no need as they would be duplicated.
+>>>> And we don't check the return value of
+>>>> the below call anymore, moreover we have to call it twice now.
+> 
+> Yes, that looks wrong, we need to add the check for non zero values, but ....
+> 
+>>>
+>>> This second get_opp_count is required such that we register em with the correct
+>>> opp number after having added them. Without this the opp_count would not be correct.
+>>
+> 
+> ... I have a question here. Why do you need to call
+> 
+> em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, opp_shared_cpus..)
+> 
+> on each CPU ? Why can't that be done once for unique opp_shared_cpus ?
 
-This will break the build.
+It just have to be called once, for one CPU from the mask. Otherwise for
+the next CPUs you should see error:
+"EM: exists for CPU%d"
+It can happen that this print is not seen when the get_cpu_device(cpu)
+failed, but that would lead to investigation why CPU devices are not
+there yet.
 
-You should just remove these defines.  They don't make any sort of
-sense.  The programmer should know what things need to be static and
-what not.  Generally leave "inline" out, and let the compiler decide.
-If you have a legit reason to think you are smarter than the compiler
-(benchmarking data) then probably __always_inline is more appropriate.
+Nicola: have you seen that print?
 
-regards,
-dan carpenter
 
