@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAF12D2C75
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 14:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0442D2C77
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgLHN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 08:59:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59146 "EHLO mail.kernel.org"
+        id S1729461AbgLHN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 08:59:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728546AbgLHN7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:59:44 -0500
-X-Gm-Message-State: AOAM531/rjdkMLkXtJZqVh5ndqjD594BchOThXkrKcJs18slVv3cmf9L
-        oRx+KUWS7DMO98zLBub/n/4W7TgZpyDBeqTpkpM=
+        id S1728546AbgLHN7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:59:40 -0500
+Date:   Tue, 8 Dec 2020 13:58:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607435943;
-        bh=77HVStyyXX1Pgy5zmoyOyQEPooYc3GGLgYGD12JjNMw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V7qDwVhG3gecJGhol6Ike5wg7CosFyxhl1m1sYpQdPBixF5UVNgETKJaj3Q8j0VqM
-         DnSfS+iAy2AYNiMsrBDyBqDsHUcmQXdhB/88XprAJULuyhu7mSx5/nAUIVkTmU5jZb
-         UoEnwyt0Phn+3MP9pbluTpxm1jjr+RsrBtFNrAGPKP+e18Cg1L8cUHPKydqO+vW7lr
-         sep53IjAfdBKspkmrT8HzTaqvCKYFyPtBp6G5/hYGqA4Y25UHHtR882SSuUOtLyMT7
-         YnpnnZ+xpkag+KWK2t1w2AQlIavNpBtudPADLTaEOSNZurvhzo6Q/gMnsVCT7d0pZs
-         SgkPQmwVGqlFg==
-X-Google-Smtp-Source: ABdhPJzbbFo39L5/f8usODzWGuXBtaIc9x6K8uqLzlRNVMHrBQiyt8ZvbtR8IVirlhP18K9q04YQVyIqIjNM4nND/bM=
-X-Received: by 2002:a5d:4101:: with SMTP id l1mr7874896wrp.196.1607435941883;
- Tue, 08 Dec 2020 05:59:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20201207084752.1665-1-thunder.leizhen@huawei.com> <20201207084752.1665-2-thunder.leizhen@huawei.com>
-In-Reply-To: <20201207084752.1665-2-thunder.leizhen@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 8 Dec 2020 14:58:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a13CdDzdPOG_2ps4dXLaZC8jUDTPJDpp8Di-u87qBpRzQ@mail.gmail.com>
-Message-ID: <CAK8P3a13CdDzdPOG_2ps4dXLaZC8jUDTPJDpp8Di-u87qBpRzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ARM: dts: mmp2-olpc-xo-1-75: clear the warnings
- when make dtbs
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Lubomir Rintel <lkundrak@v3.sk>, Pavel Machek <pavel@ucw.cz>,
-        Arnd Bergmann <arnd@arndb.de>,
+        s=k20201202; t=1607435939;
+        bh=LSi8ojieKrceW+5RgQBGS8ZrcFvoD00bJOloiQQsde8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oeQs8CzOCWTSMfkz4eCD7YHB7Frnchx+/kKH76wMpAI5OD15M56PfFz71t19uC8jV
+         7iWI6jDbrJAP7PZoQHtZKNdyASAkQwHlUuOsL9wlWglrqFTfPPOsQ5Q9ivYMulRchU
+         8lQkbqEOxaqHiyUTyAVpU0RCMi2wv/UYJuMNdp5JPM+gi7VN/gUXZiKpSwrdCzLU1T
+         xqfQP5RvLCh4P/Pq+cNADAb7v2U0XPreZ2B57MkXHpX58CG/RMnMxkHHu8OHDYez/V
+         kQNI/2bsKI+oNe6O8oCOczAWacrFUnjCVHLYklFateSxTn1L+U55nwmfm5zxCV0tqb
+         iy6xwS5IwCHQA==
+From:   Mark Brown <broonie@kernel.org>
+To:     zhangqing <zhangqing@loongson.cn>
+Cc:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaojuxin@loongson.cn,
+        yangtiezhu@loongson.cn
+Subject: Re: [PATCH v2 2/4] spi: Add devicetree bindings documentation for
+ Loongson SPI
+Message-ID: <20201208135852.GD6686@sirena.org.uk>
+References: <1607413467-17698-1-git-send-email-zhangqing@loongson.cn>
+ <1607413467-17698-2-git-send-email-zhangqing@loongson.cn>
+ <b97c4d59-3279-f67d-d951-1e9436faa640@gmail.com>
+ <20e7dafc-8c67-79e4-e64a-a08e21101678@loongson.cn>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ylS2wUBXLOxYXZFQ"
+Content-Disposition: inline
+In-Reply-To: <20e7dafc-8c67-79e4-e64a-a08e21101678@loongson.cn>
+X-Cookie: Do not dry clean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 9:47 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> The check_spi_bus_bridge() in scripts/dtc/checks.c requires that the node
-> have "spi-slave" property must with "#address-cells = <0>" and
-> "#size-cells = <0>". But currently both "#address-cells" and "#size-cells"
-> properties are deleted, the corresponding default values are 2 and 1. As a
-> result, the check fails and below warnings is displayed.
->
-> arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): \
-> /soc/apb@d4000000/spi@d4037000: incorrect #address-cells for SPI bus
->   also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
-> arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): \
-> /soc/apb@d4000000/spi@d4037000: incorrect #size-cells for SPI bus
->   also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
-> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dtb: Warning (spi_bus_reg): \
-> Failed prerequisite 'spi_bus_bridge'
->
-> Because the value of "#size-cells" is already defined as zero in the node
-> "ssp3: spi@d4037000" in arch/arm/boot/dts/mmp2.dtsi. So we only need to
-> explicitly add "#address-cells = <0>" and keep "#size-cells" no change.
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Right, I already sent the same patch earlier.
+--ylS2wUBXLOxYXZFQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Lubomir, can I apply this to the fixes branch?
+On Tue, Dec 08, 2020 at 06:47:10PM +0800, zhangqing wrote:
+> On 12/08/2020 04:40 PM, Sergei Shtylyov wrote:
 
->  arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts b/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
-> index adde62d6fce73b9..82da44dacba7172 100644
-> --- a/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
-> +++ b/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts
-> @@ -224,7 +224,7 @@
->
->  &ssp3 {
->         /delete-property/ #address-cells;
-> -       /delete-property/ #size-cells;
-> +       #address-cells = <0>;
->         spi-slave;
->         status = "okay";
->         ready-gpios = <&gpio 125 GPIO_ACTIVE_HIGH>;
-> --
-> 1.8.3
->
->
+> > > +Required properties:
+
+> > > +- #interrupts: No hardware interrupt.
+
+> >    You say it's a required prop, yet yuoe example doesn't have it...
+
+>         I want to emphasize here that LS7A SPI has no hardware interrupts,
+> and DT is not actually used.
+
+There is no need to do this, and documenting the property as required
+just makes things confusing here.
+
+--ylS2wUBXLOxYXZFQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/PhpwACgkQJNaLcl1U
+h9C+nQf+P3HpOh15bXGyJm/WK8G7yzmX7Hv6UzcGcFZJnIlhktCKW1mZahTIWPvQ
+ybY5eb0NrxsC39cXRHqOx1ozKvMh38EsKq5WyYyicucZ2ThoWbGHe8X/GWbN6sHj
+e9opkqQascDoyhI6lA9F+243z2iwiZpE8kKFDtEuAt4bCt5r7OoEoC3hfir9VEnL
+h+Mn/7eKFOTwzzfihSxxCqNVXNqiFW9mRL9j/D0kkCc4LkoIIA1RCCMpOHuVHG8N
+6xoBagHxkjF+0MIZnxdeBv5lKG7ZrU6v4xU3HW9m5mFoYudGM+uQIaTP5eam3dhU
+pmAHS9SmXX0L1kGbD7e+sGjb0NFH5Q==
+=fOh1
+-----END PGP SIGNATURE-----
+
+--ylS2wUBXLOxYXZFQ--
