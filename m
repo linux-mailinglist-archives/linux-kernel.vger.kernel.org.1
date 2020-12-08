@@ -2,117 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817C12D3107
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD122D310E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730708AbgLHR2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:28:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
+        id S1730717AbgLHR3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728914AbgLHR2J (ORCPT
+        with ESMTP id S1728495AbgLHR3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:28:09 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50E4C061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 09:27:28 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id x16so25687850ejj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 09:27:28 -0800 (PST)
+        Tue, 8 Dec 2020 12:29:38 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB6AC061793;
+        Tue,  8 Dec 2020 09:28:52 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c12so7433042pfo.10;
+        Tue, 08 Dec 2020 09:28:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Sw45E94f6bWYHfaoTxJHDqPOotXZzGeB8fmv0qtq6V0=;
-        b=gA+GQCNJXRoAfRN879RAl4Jrzvvb2LXlgDT2f1X+32OjsNLhJ+Kvaqh3bJrcqiiHhg
-         X4Xj/eaar9XKQRiHT+RbEFC8KJc3oR3An7o/FfWd0swvP5eoSredwp5PedaRuLwQtn4v
-         7+TQHKQPSEdk3+MEIu82giUEmijJuWwVUiIrY=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1eCjyv5AYQr2qxuLo6/ait7gDzN7SzMmyZr3TYkqLG4=;
+        b=ZmI14GuVeT5a+LFPJTmG0K/1PeM+gSpk1flxbpHVzSZh2uuGl69LDd5vVkOZKaWWnj
+         zdUxr07jZJK53rlRRYtmCJGeiocmgsUeatjkry3S6k17Qtzfrh+C4r9U8SQ3jthMjRFl
+         mgv0R9f+Sd7jSCxcZrXsAVH9KQZY8kpU9W1qhALvNJWY0e8DNdTlqWT6eGdTFlpXoUyz
+         VjCV6cJQNXOX2ZinMWe9x+i6zqJ+gz/jh4n7iGHUTv3ll+PB+n6wUnUOulzwELgyQSEk
+         vPmcyJJ5CAIu0eRHN2Fp6iC2n9KI61y1598gt2VZ1QsZQli7c4IW5D2Sw71OF5zmd18k
+         o9kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Sw45E94f6bWYHfaoTxJHDqPOotXZzGeB8fmv0qtq6V0=;
-        b=acM/PDD71e1sWJL0jMfl30Iq5quiOHctpMwETcgj2ZoB94Rbj/4a5g/qiy9Och9r4q
-         RBokgdBzG2eUekYyiPkt+8PMBEo2MAx8+OiysBABN1ap17WOOQUiVhFk1kOqroCCg7wH
-         nlQ/lFj1e/1GGYQkxf+RDSWM8mHSEyDP71CEA/f5PMli/fXglKST9WPFmJ43wow82DDb
-         uSgjAGUZVsqTYK6w17zCrQTCY1O3BmFITVn/4YyoEZ2Ut3vO6zdrWcvkkozu0eolcm8x
-         AU40y+lXpyZY/Tpu/UDsq3UkB/5CRLMfqccD1HZ40Q/2nDsNoSpM2lbyyp6AZVLFYxP0
-         f4iQ==
-X-Gm-Message-State: AOAM532XqcSWvAuTSBHQEDd3xzdfwDxZP17TGdBnjmEAvUoyl2y9M8vd
-        oj3kxMcT9AY6JCTde+25/+AcjQ==
-X-Google-Smtp-Source: ABdhPJw2LcySVIaLOpAQPEgkBS2otenSBfxIGClQbE+UoPY1pt0XT9dUp7wHlH7ffJBv0vuOkSRHiA==
-X-Received: by 2002:a17:906:7fcd:: with SMTP id r13mr24554164ejs.242.1607448447399;
-        Tue, 08 Dec 2020 09:27:27 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id qu21sm16197447ejb.95.2020.12.08.09.27.26
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=1eCjyv5AYQr2qxuLo6/ait7gDzN7SzMmyZr3TYkqLG4=;
+        b=sLBs/99VdZjgNyavUN+xzvZ0RxSwhiDxFGKS50g3Z83HfIB4ocrvcLstAUKcbzJfQJ
+         GQenZd4F3/+ATtUfX4dmLWGF3tOTYMyYbua56p5eZhAfJKppWEYa4FQ53txTmmU/3ACM
+         TcwJ0N/3p8PhCMdIucphKFYRJ9gcX0Rs7PLEbJROuHH3l995jPY/aiFyH+zo6+wQokP9
+         szGCtumrLvX+p59oYH2XlmTvvTsDHELRCybj59UJdegy1nzAILyLTtR8642WQqYYZQnu
+         IAynhuWKbv5m2q3OAgfUHDfDvykHdGALD/3FuU9yZ+l1o9VDgi62WoVOVKa9HFhhH077
+         W2UQ==
+X-Gm-Message-State: AOAM532laOOOeaCuqzHeBBXl+QM9Y8hV38CS6K8a7t0N+CGa1eu9cZLL
+        +P4rDQCKoALoQu7nJzagNHA=
+X-Google-Smtp-Source: ABdhPJxmyvNMMzVsga0L1faMWDx4HgMYMUroGfCmiEvwynPjPl7a2bzIW0LukZZb7Xtd4kuIsLktzQ==
+X-Received: by 2002:a17:90a:3ee3:: with SMTP id k90mr5172362pjc.164.1607448531916;
+        Tue, 08 Dec 2020 09:28:51 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id f7sm18019852pfe.30.2020.12.08.09.28.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 09:27:26 -0800 (PST)
-Message-ID: <889510dcd76082a63f218b8187b1d11004fb1849.camel@chromium.org>
-Subject: Re: [PATCH bpf-next v2] bpf: Only call sock_from_file with
- CONFIG_NET
-From:   Florent Revest <revest@chromium.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org, rdunlap@infradead.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 08 Dec 2020 18:27:25 +0100
-In-Reply-To: <20201207213300.fy6xevnoidh2vk37@kafai-mbp.dhcp.thefacebook.com>
-References: <20201207200605.650192-1-revest@chromium.org>
-         <20201207213300.fy6xevnoidh2vk37@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Tue, 08 Dec 2020 09:28:51 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 8 Dec 2020 09:28:49 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7] zram: break the strict dependency from lzo
+Message-ID: <X8+30biXWgNRlKRM@google.com>
+References: <20201207121245.50529-1-rsalvaterra@gmail.com>
+ <X8+3X2piRUi/jIa/@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X8+3X2piRUi/jIa/@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-07 at 13:33 -0800, Martin KaFai Lau wrote:
-> On Mon, Dec 07, 2020 at 09:06:05PM +0100, Florent Revest wrote:
-> > This avoids
-> >   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
-> >   bpf_trace.c:(.text+0xe23): undefined reference to
-> > `sock_from_file'
-> > When compiling a kernel with BPF and without NET.
+On Tue, Dec 08, 2020 at 09:26:55AM -0800, Minchan Kim wrote:
+> On Mon, Dec 07, 2020 at 12:12:45PM +0000, Rui Salvaterra wrote:
+> > From the beginning, the zram block device always enabled CRYPTO_LZO, since
+> > lzo-rle is hardcoded as the fallback compression algorithm. As a consequence, on
+> > systems where another compression algorithm is chosen (e.g. CRYPTO_ZSTD), the
+> > lzo kernel module becomes unused, while still having to be built/loaded.
 > > 
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  kernel/trace/bpf_trace.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
+> > This patch removes the hardcoded lzo-rle dependency and allows the user to
+> > select the default compression algorithm for zram at build time. The previous
+> > behaviour is kept, as the default algorithm is still lzo-rle.
 > > 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 0cf0a6331482..29ec2b3b1cc4 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1272,7 +1272,11 @@ const struct bpf_func_proto
-> > bpf_snprintf_btf_proto = {
-> >  
-> >  BPF_CALL_1(bpf_sock_from_file, struct file *, file)
-> >  {
-> > +#ifdef CONFIG_NET
-> >  	return (unsigned long) sock_from_file(file);
-> > +#else
-> > +	return 0;
-> > +#endif
-> >  }
-> Should bpf_sock_from_file_proto belong to
-> tracing_prog_func_proto() instead of bpf_tracing_func_proto()?
-> bpf_skc_to_*_proto is also in tracing_prog_func_proto()
-> where there is an existing "#ifdef CONFIG_NET".
+> > Suggested-by: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+> > Suggested-by: Minchan Kim <minchan@kernel.org>
+> > Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+> Acked-by: Minchan Kim <minchan@kernel.org>
 
-I'm happy to move bpf_sock_from_file to tracing_prog_func_proto if
-you'd prefer that. I'm actually unsure what the difference would be,
-those function names are confusing, but this works for our use-case. :)
-
-However, by itself, that wouldn't address the problem reported by Randy
-since the helper definition would still be compiled and have an
-undefined reference to sock_from_file. The existing socket helpers (for
-example skc_to_tcp_sock) can get away without a patch like mine because
-they are defined in net/core/filter.c which only gets compiled with
-CONFIG_NET.
-
-I will send a v3 where I move the sock_from_file helper definition to
-net/core/filter.c and also move the usage of the helper to
-tracing_prog_func_proto under CONFIG_NET and then you can feel free to
-merge v2 or v3 depending on which approach you prefer (or a followup
-version if I mess up again... :D)
-
+Ccing Andrew
