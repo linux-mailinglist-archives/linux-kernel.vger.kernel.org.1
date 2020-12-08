@@ -2,60 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613052D23C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353CE2D23C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgLHGpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:45:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57062 "EHLO mail.kernel.org"
+        id S1726553AbgLHGps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:45:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36764 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgLHGpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:45:20 -0500
-Date:   Tue, 8 Dec 2020 08:44:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607409879;
-        bh=945L8ljNOuFzzRfnEh+kXCUa029xewKJnPnsaYRdk0o=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=stVnIgDZ45/X9nUWqzxcDFaZlQA5OQ8rk4HX/IWyAjtxT0gh6SpfAynHxRfbk7U3X
-         l45qSeXO9QbsG1sC0vQSQpMi5ydLdwaNgqsXY9utR+Upx6XkZOBZl9KXWOv+2IS1oj
-         QRiT+KV0NO+zWuu0y+YzMjg9Z0eHGdoA7ROT6sIOM+J3VhYENdbt5EhLYycEMmZE8Y
-         I3XfinKzU0N2DrDQF1UsWBYI7fA+UPBw/jafzNW2VNSY3b7uzEO3zUMhwk0EFpTvHM
-         Sm+ED7qeKXAiq7fYSKi9U7tTo+YsvA5ozPuYn5QoOt95NTSgqA4uFicyt4HC36QGTX
-         Ef3imcBLHYJKw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] RDMA/restrack: update kernel documentation for
- ib_create_named_qp()
-Message-ID: <20201208064432.GD4430@unreal>
-References: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+        id S1725881AbgLHGpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:45:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607409900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B4qg8nuNsxBlC4DVeh6XkCDOdkWU5AaPYPIvqXZwoWc=;
+        b=scyISi7ME3Gq3/i8CXTrCBsOP935pKa2XKl78EaIrNxlDRWowtnUGxdtAm7s9LrfREKdOy
+        FWK7WbcTmBREAojJC7QOGleFGoP6IeP8OdBIrHuGQNH9yqws4z+BeJ8lTdF+81DYGt6k27
+        a6hiFsmx7u9vzAhXvxzUhSHuVuKoX5M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BAE4DAD41;
+        Tue,  8 Dec 2020 06:45:00 +0000 (UTC)
+To:     Jason Andryuk <jandryuk@gmail.com>
+Cc:     xen-devel <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201207133024.16621-1-jgross@suse.com>
+ <20201207133024.16621-3-jgross@suse.com>
+ <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
+Message-ID: <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
+Date:   Tue, 8 Dec 2020 07:45:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207173255.13355-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="cV2DFq5HhB0DJvGp9vWxAtDSVVIuHsGaz"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:32:55PM +0100, Lukas Bulwahn wrote:
-> Commit 66f57b871efc ("RDMA/restrack: Support all QP types") extends
-> ib_create_qp() to a named ib_create_named_qp(), which takes the caller's
-> name as argument, but it did not add the new argument description to the
-> function's kerneldoc.
->
-> make htmldocs warns:
->
->   ./drivers/infiniband/core/verbs.c:1206: warning: Function parameter or
->   member 'caller' not described in 'ib_create_named_qp'
->
-> Add a description for this new argument based on the description of the
-> same argument in other related functions.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cV2DFq5HhB0DJvGp9vWxAtDSVVIuHsGaz
+Content-Type: multipart/mixed; boundary="AAtAYjElSB8dHXTdN4ldFSOorn5hlu7Z3";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Jason Andryuk <jandryuk@gmail.com>
+Cc: xen-devel <xen-devel@lists.xenproject.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <72bc4417-076c-78f0-9c7e-5a9c95e79fb2@suse.com>
+Subject: Re: [PATCH 2/2] xen: don't use page->lru for ZONE_DEVICE memory
+References: <20201207133024.16621-1-jgross@suse.com>
+ <20201207133024.16621-3-jgross@suse.com>
+ <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
+In-Reply-To: <CAKf6xpuqdY=TctOjNsnTTexeBpkV+HMkOHFsAd4vxUudBpxizA@mail.gmail.com>
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+--AAtAYjElSB8dHXTdN4ldFSOorn5hlu7Z3
+Content-Type: multipart/mixed;
+ boundary="------------66A30C87FE131471BF04702D"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------66A30C87FE131471BF04702D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 07.12.20 21:48, Jason Andryuk wrote:
+> On Mon, Dec 7, 2020 at 8:30 AM Juergen Gross <jgross@suse.com> wrote:
+>>
+>> Commit 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated
+>> memory") introduced usage of ZONE_DEVICE memory for foreign memory
+>> mappings.
+>>
+>> Unfortunately this collides with using page->lru for Xen backend
+>> private page caches.
+>>
+>> Fix that by using page->zone_device_data instead.
+>>
+>> Fixes: 9e2369c06c8a18 ("xen: add helpers to allocate unpopulated memor=
+y")
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>=20
+> Would it make sense to add BUG_ON(is_zone_device_page(page)) and the
+> opposite as appropriate to cache_enq?
+
+No, I don't think so. At least in the CONFIG_ZONE_DEVICE case the
+initial list in a PV dom0 is populated from extra memory (basically
+the same, but not marked as zone device memory explicitly).
+
+Juergen
+
+--------------66A30C87FE131471BF04702D
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------66A30C87FE131471BF04702D--
+
+--AAtAYjElSB8dHXTdN4ldFSOorn5hlu7Z3--
+
+--cV2DFq5HhB0DJvGp9vWxAtDSVVIuHsGaz
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/PIOwFAwAAAAAACgkQsN6d1ii/Ey+A
+EAf/dhnf9lD4yl339gf4XqzB1RM2geEGVVrTakAgm+2STBVKC/sca9ZwNDewAWomR3QbcZPy23vu
+lZ1Lzh62FFvgXobXU67jMDGjIsNwc5zO17aU7agx+1YbYsxY97mzgODXzf54XmQOeDWPQ4VFjl7E
+JVH8b8PMoNG1YqiH0GdhAp4N3BMtmVRWhCDNO17HEtbvKrPNEPaDwovyYZdwzIXh18tlyuW0DM94
+FxBSW4ec4iEfU/wtGYRg/fBxWUVxWVxjW12GVYtk6C25uUD4FsWxjuz+DauULUL2iYDJK+sYMlaE
+6Ho7PjarAqu2WNKtgWvlZNJ22+//nmLy5Wq1cM3rvg==
+=6KS0
+-----END PGP SIGNATURE-----
+
+--cV2DFq5HhB0DJvGp9vWxAtDSVVIuHsGaz--
