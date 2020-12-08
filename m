@@ -2,179 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7042D217F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818CC2D219E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 04:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgLHDcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 22:32:00 -0500
-Received: from mga02.intel.com ([134.134.136.20]:46793 "EHLO mga02.intel.com"
+        id S1726709AbgLHD4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 22:56:15 -0500
+Received: from mga14.intel.com ([192.55.52.115]:59706 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgLHDcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 22:32:00 -0500
-IronPort-SDR: s6+I1U1B/M9aX9Gsszwj8rhKuXuOtDPcv3rXQVxhJdm8QAeMQrkZac/SPhmcmx9YK+gx2HXnVc
- yIc9WhWuEQ6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="160872012"
+        id S1726556AbgLHD4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 22:56:15 -0500
+IronPort-SDR: S78jpoF0QNdalHYH0mrKvDC521k/uhLx+oCgLXdAYuJ6pImjLdmXvVV060jTM5JRR1RWo2Wlws
+ nbUny04lgLeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="173060178"
 X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="160872012"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 19:31:19 -0800
-IronPort-SDR: pNNua7Ow68fyNMc5o9Wots083CTqVXUZl9cUR+X7HInueZpjI/C449XIgU5smIRQ0N1h/QIbQU
- yru/tF+ZR53g==
-X-ExtLoop1: 1
+   d="scan'208";a="173060178"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 19:55:34 -0800
+IronPort-SDR: 5VaoYfYOjT0IMeSQT265ZQRj5OkGBhDd2r6N47s5OhVUEHIPti3esmiz3cT4ndAAmFnFIN8xC+
+ KIFlg74j+JXA==
 X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="367551695"
-Received: from lkp-server01.sh.intel.com (HELO 6c6df46aa5de) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Dec 2020 19:31:18 -0800
-Received: from kbuild by 6c6df46aa5de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kmTif-00004Q-HA; Tue, 08 Dec 2020 03:31:17 +0000
-Date:   Tue, 08 Dec 2020 11:30:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 72ebb5ff806f9a421a2a53cdfe6c4ebbab243bd5
-Message-ID: <5fcef35b.QpwyGvmXnfGPWvfg%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="363469714"
+Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 19:55:34 -0800
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, kyung.min.park@intel.com,
+        cathy.zhang@intel.com
+Subject: [PATCH 0/2] Enumerate and expose AVX512_FP16 feature 
+Date:   Mon,  7 Dec 2020 19:34:39 -0800
+Message-Id: <20201208033441.28207-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: 72ebb5ff806f9a421a2a53cdfe6c4ebbab243bd5  x86/alternative: Update text_poke_bp() kernel-doc comment
+Introduce AVX512_FP16 feature and expose it to KVM CPUID for processors
+that support it. KVM reports this information and guests can make use
+of it.
 
-elapsed time: 721m
+Detailed information on the instruction and CPUID feature flag can be found
+in the latest "extensions" manual [1].
 
-configs tested: 117
-configs skipped: 2
+Reference:
+[1]. https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Cathy Zhang (1):
+  x86: Expose AVX512_FP16 for supported CPUID
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-powerpc                      walnut_defconfig
-arm                         palmz72_defconfig
-arm                          simpad_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                      arches_defconfig
-um                             i386_defconfig
-arm                   milbeaut_m10v_defconfig
-m68k                       bvme6000_defconfig
-nios2                               defconfig
-nds32                               defconfig
-powerpc                     tqm8555_defconfig
-arc                          axs103_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           ip28_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                 mpc832x_rdb_defconfig
-c6x                         dsk6455_defconfig
-m68k                        m5272c3_defconfig
-arm                     eseries_pxa_defconfig
-arm                          pcm027_defconfig
-powerpc                      makalu_defconfig
-sh                          rsk7201_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                     powernv_defconfig
-m68k                        mvme16x_defconfig
-arm                           tegra_defconfig
-powerpc                     tqm8540_defconfig
-sh                                  defconfig
-powerpc                      pasemi_defconfig
-arc                         haps_hs_defconfig
-arm                        multi_v5_defconfig
-mips                           ci20_defconfig
-powerpc                      chrp32_defconfig
-mips                         db1xxx_defconfig
-m68k                       m5249evb_defconfig
-arc                        nsim_700_defconfig
-arm                       omap2plus_defconfig
-arm                         lpc18xx_defconfig
-sh                          sdk7780_defconfig
-m68k                       m5275evb_defconfig
-mips                         tb0287_defconfig
-m68k                             alldefconfig
-arm                           omap1_defconfig
-um                            kunit_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201207
-i386                 randconfig-a004-20201207
-i386                 randconfig-a001-20201207
-i386                 randconfig-a002-20201207
-i386                 randconfig-a006-20201207
-i386                 randconfig-a003-20201207
-x86_64               randconfig-a016-20201207
-x86_64               randconfig-a012-20201207
-x86_64               randconfig-a014-20201207
-x86_64               randconfig-a013-20201207
-x86_64               randconfig-a015-20201207
-x86_64               randconfig-a011-20201207
-i386                 randconfig-a014-20201207
-i386                 randconfig-a013-20201207
-i386                 randconfig-a011-20201207
-i386                 randconfig-a015-20201207
-i386                 randconfig-a012-20201207
-i386                 randconfig-a016-20201207
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Kyung Min Park (1):
+  Enumerate AVX512 FP16 CPUID feature flag
 
-clang tested configs:
-x86_64               randconfig-a004-20201207
-x86_64               randconfig-a006-20201207
-x86_64               randconfig-a002-20201207
-x86_64               randconfig-a001-20201207
-x86_64               randconfig-a005-20201207
-x86_64               randconfig-a003-20201207
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
+ arch/x86/kvm/cpuid.c               | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+2.17.1
+
