@@ -2,189 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C713C2D3187
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFA82D317E
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 18:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730841AbgLHRzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 12:55:49 -0500
-Received: from smtp.uniroma2.it ([160.80.6.22]:42059 "EHLO smtp.uniroma2.it"
+        id S1730775AbgLHRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 12:53:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730180AbgLHRzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:55:48 -0500
-Received: from localhost.localdomain ([160.80.103.126])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 0B8HsS0D019221
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 8 Dec 2020 18:54:29 +0100
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH net-next] vrf: handle CONFIG_IPV6 not set for vrf_add_mac_header_if_unset()
-Date:   Tue,  8 Dec 2020 18:52:10 +0100
-Message-Id: <20201208175210.8906-1-andrea.mayer@uniroma2.it>
-X-Mailer: git-send-email 2.20.1
+        id S1727998AbgLHRxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:53:14 -0500
+Date:   Tue, 8 Dec 2020 18:52:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607449953;
+        bh=Clyd8wsF42MLs+BYjnRgk6Cf7bRTJ+OHX7KRH3KHb10=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a252YZ1QaLzoMLsx81xGbdQ6jJ/yH6bvMLMF/p7V15c/ETAuWv7sHyJ4RXBowIy3H
+         RVfz3hkC6VzYsTGLFaoR/eNpjeueGAoSB9CcGGsWAU7211qXYWmxJU3beqCpty80fr
+         lmngaJnWge+Rdd7hTziPT51NdHNqxNUUyXiMFAHIO/u1LrjxvjE7AwkuX+NkiwW5cw
+         egMil+WI0Bne8FQEX2XTjDpgHhFi/gW5mtx8klqfp12e7yA0KHPhmPqH1WCD3NJOzk
+         Ir/Fjk0HwVtd02G9nsvinzQZKuPUw5Byh4r/VV1OLynQBEkKUK8rrElHnoj0awpdMt
+         HOmMnSigIyI/Q==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     boqun.feng@gmail.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: One potential issue with concurrent execution of RCU callbacks...
+Message-ID: <20201208175230.GB3916@lothringen>
+References: <20201208145810.GA4875@paulmck-ThinkPad-P72>
+ <20201208155457.GA3916@lothringen>
+ <20201208171927.GS2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208171927.GS2657@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vrf_add_mac_header_if_unset() is defined within a conditional
-compilation block which depends on the CONFIG_IPV6 macro.
-However, the vrf_add_mac_header_if_unset() needs to be called also by IPv4
-related code and when the CONFIG_IPV6 is not set, this function is missing.
-As a consequence, the build process stops reporting the error:
+On Tue, Dec 08, 2020 at 09:19:27AM -0800, Paul E. McKenney wrote:
+> On Tue, Dec 08, 2020 at 04:54:57PM +0100, Frederic Weisbecker wrote:
+> > On Tue, Dec 08, 2020 at 06:58:10AM -0800, Paul E. McKenney wrote:
+> > > Hello, Frederic,
+> > > 
+> > > Boqun just asked if RCU callbacks ran in BH-disabled context to avoid
+> > > concurrent execution of the same callback.  Of course, this raises the
+> > > question of whether a self-posting callback can have two instances of
+> > > itself running concurrently while a CPU is in the process of transitioning
+> > > between softirq and rcuo invocation of callbacks.
+> > > 
+> > > I believe that the answer is "no" because BH-disabled context is
+> > > an implicit RCU read-side critical section.  Therefore, the initial
+> > > invocation of the RCU callback must complete in order for a new grace
+> > > period to complete, and a new grace period must complete before the
+> > > second invocation of that same callback to start.
+> > > 
+> > > Does that make sense, or am I missing something?
+> > 
+> > Sounds like a good explanation. But then why are we actually calling
+> > the entire rcu_do_batch() under BH-disabled context? Was it to quieten
+> > lockdep against rcu_callback_map ?
+> 
+> Inertia and lack of complaints about it.  ;-)
+> 
+> Plus when called from softirq, neither local_bh_disable() nor
+> rcu_read_lock() is necessary, and so represents pointless overhead.
+> 
+> > Wouldn't rcu_read_lock() around callbacks invocation be enough? Or is
+> > there another reason for the BH-disabled context that I'm missing?
+> 
+> There are likely to be callback functions that use spin_lock() instead
+> of spin_lock_bh() because they know that they are invoked in BH-disabled
+> context.
 
- ERROR: implicit declaration of function 'vrf_add_mac_header_if_unset'
+Ah right. So perhaps we can keep local_bh_disable() instead.
 
-The problem is solved by *only* moving functions
-vrf_add_mac_header_if_unset() and vrf_prepare_mac_header() out of the
-conditional block.
+> 
+> But what does this change help?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 0489390882202 ("vrf: add mac header for tunneled packets when sniffer is attached")
-Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
----
- drivers/net/vrf.c | 110 +++++++++++++++++++++++-----------------------
- 1 file changed, 55 insertions(+), 55 deletions(-)
+It reduces the code scope running with BH disabled.
+Also narrowing down helps to understand what it actually protects.
 
-diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
-index 259d5cbacf2c..571bd03ebd81 100644
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -1237,6 +1237,61 @@ static struct sk_buff *vrf_rcv_nfhook(u8 pf, unsigned int hook,
- 	return skb;
- }
- 
-+static int vrf_prepare_mac_header(struct sk_buff *skb,
-+				  struct net_device *vrf_dev, u16 proto)
-+{
-+	struct ethhdr *eth;
-+	int err;
-+
-+	/* in general, we do not know if there is enough space in the head of
-+	 * the packet for hosting the mac header.
-+	 */
-+	err = skb_cow_head(skb, LL_RESERVED_SPACE(vrf_dev));
-+	if (unlikely(err))
-+		/* no space in the skb head */
-+		return -ENOBUFS;
-+
-+	__skb_push(skb, ETH_HLEN);
-+	eth = (struct ethhdr *)skb->data;
-+
-+	skb_reset_mac_header(skb);
-+
-+	/* we set the ethernet destination and the source addresses to the
-+	 * address of the VRF device.
-+	 */
-+	ether_addr_copy(eth->h_dest, vrf_dev->dev_addr);
-+	ether_addr_copy(eth->h_source, vrf_dev->dev_addr);
-+	eth->h_proto = htons(proto);
-+
-+	/* the destination address of the Ethernet frame corresponds to the
-+	 * address set on the VRF interface; therefore, the packet is intended
-+	 * to be processed locally.
-+	 */
-+	skb->protocol = eth->h_proto;
-+	skb->pkt_type = PACKET_HOST;
-+
-+	skb_postpush_rcsum(skb, skb->data, ETH_HLEN);
-+
-+	skb_pull_inline(skb, ETH_HLEN);
-+
-+	return 0;
-+}
-+
-+/* prepare and add the mac header to the packet if it was not set previously.
-+ * In this way, packet sniffers such as tcpdump can parse the packet correctly.
-+ * If the mac header was already set, the original mac header is left
-+ * untouched and the function returns immediately.
-+ */
-+static int vrf_add_mac_header_if_unset(struct sk_buff *skb,
-+				       struct net_device *vrf_dev,
-+				       u16 proto)
-+{
-+	if (skb_mac_header_was_set(skb))
-+		return 0;
-+
-+	return vrf_prepare_mac_header(skb, vrf_dev, proto);
-+}
-+
- #if IS_ENABLED(CONFIG_IPV6)
- /* neighbor handling is done with actual device; do not want
-  * to flip skb->dev for those ndisc packets. This really fails
-@@ -1310,61 +1365,6 @@ static void vrf_ip6_input_dst(struct sk_buff *skb, struct net_device *vrf_dev,
- 	skb_dst_set(skb, &rt6->dst);
- }
- 
--static int vrf_prepare_mac_header(struct sk_buff *skb,
--				  struct net_device *vrf_dev, u16 proto)
--{
--	struct ethhdr *eth;
--	int err;
--
--	/* in general, we do not know if there is enough space in the head of
--	 * the packet for hosting the mac header.
--	 */
--	err = skb_cow_head(skb, LL_RESERVED_SPACE(vrf_dev));
--	if (unlikely(err))
--		/* no space in the skb head */
--		return -ENOBUFS;
--
--	__skb_push(skb, ETH_HLEN);
--	eth = (struct ethhdr *)skb->data;
--
--	skb_reset_mac_header(skb);
--
--	/* we set the ethernet destination and the source addresses to the
--	 * address of the VRF device.
--	 */
--	ether_addr_copy(eth->h_dest, vrf_dev->dev_addr);
--	ether_addr_copy(eth->h_source, vrf_dev->dev_addr);
--	eth->h_proto = htons(proto);
--
--	/* the destination address of the Ethernet frame corresponds to the
--	 * address set on the VRF interface; therefore, the packet is intended
--	 * to be processed locally.
--	 */
--	skb->protocol = eth->h_proto;
--	skb->pkt_type = PACKET_HOST;
--
--	skb_postpush_rcsum(skb, skb->data, ETH_HLEN);
--
--	skb_pull_inline(skb, ETH_HLEN);
--
--	return 0;
--}
--
--/* prepare and add the mac header to the packet if it was not set previously.
-- * In this way, packet sniffers such as tcpdump can parse the packet correctly.
-- * If the mac header was already set, the original mac header is left
-- * untouched and the function returns immediately.
-- */
--static int vrf_add_mac_header_if_unset(struct sk_buff *skb,
--				       struct net_device *vrf_dev,
--				       u16 proto)
--{
--	if (skb_mac_header_was_set(skb))
--		return 0;
--
--	return vrf_prepare_mac_header(skb, vrf_dev, proto);
--}
--
- static struct sk_buff *vrf_ip6_rcv(struct net_device *vrf_dev,
- 				   struct sk_buff *skb)
- {
--- 
-2.20.1
-
+Thanks.
