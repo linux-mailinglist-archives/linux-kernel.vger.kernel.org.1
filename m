@@ -2,115 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BA92D31F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF27E2D31F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 19:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731026AbgLHSRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 13:17:47 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44290 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgLHSRr (ORCPT
+        id S1731018AbgLHSRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 13:17:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53608 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730495AbgLHSRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 13:17:47 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B8IAdTL001510
-        for <linux-kernel@vger.kernel.org>; Tue, 8 Dec 2020 10:17:06 -0800
+        Tue, 8 Dec 2020 13:17:42 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B8IEbqB004331
+        for <linux-kernel@vger.kernel.org>; Tue, 8 Dec 2020 10:17:01 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=zF7TKjeMGeTJA1F8d9UqcWIY+Uih4p6v+u1n/NmAXF4=;
- b=CxWABtrL/NXizuCFn2l1ThtbcHu2PDrl2yYWEaByjQYle56pniiDwkMCuk2yrVabL5tK
- TjZsoxXekpJuqLF7EYlP3V0q9BTycPop9Tg94uIoKv4TLsevVzUNUXHHSZRtbfzqQYLD
- MdGl4dAivcCLacciNa5aClWTS7ooxd46ffk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 358u4urwew-7
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=ucygfOVdOs3VMz6smFGXM0NvoMFPkoLlO3SJi2PIuoo=;
+ b=HYbbR6xk5/4+egJGuRDuyDWgKGMgp1cnbOIQny3kkFOl8ptO51qVLoTD2kEzM15WPKYY
+ IoBlTzkkx9acICSon1M0Ux4lQS1LyDqGkanvvDunSwRQgqRMieyGrbY2DrPtkvUWZ4pA
+ ZLVGCnq8JaPaUIRuDblQaIZrTyAp/cCZJCk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3588ku3djh-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 10:17:06 -0800
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 10:17:00 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Dec 2020 10:17:03 -0800
+ 15.1.1979.3; Tue, 8 Dec 2020 10:16:59 -0800
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id ED37F62E4EC6; Tue,  8 Dec 2020 10:16:50 -0800 (PST)
+        id 4ABA862E4EC6; Tue,  8 Dec 2020 10:16:56 -0800 (PST)
 From:   Song Liu <songliubraving@fb.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <kernel-team@fb.com>, <peterz@infradead.org>, <mingo@redhat.com>,
         <acme@kernel.org>, <mark.rutland@arm.com>,
         <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
         <namhyung@kernel.org>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH v3 0/2] Introduce perf-stat -b for BPF programs
-Date:   Tue, 8 Dec 2020 10:16:44 -0800
-Message-ID: <20201208181646.3044417-1-songliubraving@fb.com>
+Subject: [PATCH v3 1/2] perf: support build BPF skeletons with perf
+Date:   Tue, 8 Dec 2020 10:16:45 -0800
+Message-ID: <20201208181646.3044417-2-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20201208181646.3044417-1-songliubraving@fb.com>
+References: <20201208181646.3044417-1-songliubraving@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2020-12-08_14:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=1 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 adultscore=0 mlxlogscore=924
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012080113
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=1 clxscore=1015
+ phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080113
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set introduces perf-stat -b option to count events for BPF programs.
-This is similar to bpftool-prog-profile. But perf-stat makes it much more
-flexible.
+BPF programs are useful in perf to profile BPF programs. BPF skeleton is
+by far the easiest way to write BPF tools. Enable building BPF skeletons
+in util/bpf_skel. A dummy bpf skeleton is added. More bpf skeletons will
+be added for different use cases.
 
-Changes v2 =3D> v3:
-  1. Small fixes in Makefile.perf and bpf_counter.c (Jiri)
-  2. Rebased on top of bpf-next. This is because 1/2 conflicts with some
-     patches in bpftool/Makefile.
-
-Changes PATCH v1 =3D> PATCH v2:
-  1. Various fixes in Makefiles. (Jiri)
-  2. Fix an build warning/error with gcc-10. (Jiri)
-
-Changes RFC v2 =3D> PATCH v1:
-  1. Support counting on multiple BPF programs.
-  2. Add BPF handling to target__validate().
-  3. Improve Makefile. (Jiri)
-
-Changes RFC v1 =3D> RFC v2:
-  1. Use bootstrap version of bpftool. (Jiri)
-  2. Set default to not building bpf skeletons. (Jiri)
-  3. Remove util/bpf_skel/Makefile, keep all the logic in Makefile.perf.
-     (Jiri)
-  4. Remove dependency to vmlinux.h in the two skeletons. The goal here i=
-s
-     to enable building perf without building kernel (vmlinux) first.
-     Note: I also removed the logic that build vmlinux.h. We can add that
-     back when we have to use it (to access big kernel structures).
-
-Song Liu (2):
-  perf: support build BPF skeletons with perf
-  perf-stat: enable counting events for BPF programs
-
- tools/bpf/bpftool/Makefile                    |   3 +
- tools/build/Makefile.feature                  |   4 +-
- tools/perf/Makefile.config                    |   9 +
- tools/perf/Makefile.perf                      |  48 ++-
- tools/perf/builtin-stat.c                     |  77 ++++-
- tools/perf/util/Build                         |   1 +
- tools/perf/util/bpf_counter.c                 | 297 ++++++++++++++++++
- tools/perf/util/bpf_counter.h                 |  73 +++++
- tools/perf/util/bpf_skel/.gitignore           |   3 +
- .../util/bpf_skel/bpf_prog_profiler.bpf.c     |  93 ++++++
- tools/perf/util/evsel.c                       |  11 +
- tools/perf/util/evsel.h                       |   6 +
- tools/perf/util/stat-display.c                |   4 +-
- tools/perf/util/target.c                      |  34 +-
- tools/perf/util/target.h                      |  10 +
- tools/scripts/Makefile.include                |   1 +
- 16 files changed, 655 insertions(+), 19 deletions(-)
- create mode 100644 tools/perf/util/bpf_counter.c
- create mode 100644 tools/perf/util/bpf_counter.h
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ tools/bpf/bpftool/Makefile          |  3 ++
+ tools/build/Makefile.feature        |  4 ++-
+ tools/perf/Makefile.config          |  9 ++++++
+ tools/perf/Makefile.perf            | 48 +++++++++++++++++++++++++++--
+ tools/perf/util/bpf_skel/.gitignore |  3 ++
+ tools/scripts/Makefile.include      |  1 +
+ 6 files changed, 65 insertions(+), 3 deletions(-)
  create mode 100644 tools/perf/util/bpf_skel/.gitignore
- create mode 100644 tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
 
---
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index f897cb5fb12d0..390af1a52601e 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -139,6 +139,9 @@ endif
+ BPFTOOL_BOOTSTRAP :=3D $(BOOTSTRAP_OUTPUT)bpftool
+=20
+ BOOTSTRAP_OBJS =3D $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_=
+writer.o gen.o btf.o)
++
++bootstrap: $(BPFTOOL_BOOTSTRAP)
++
+ OBJS =3D $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+=20
+ VMLINUX_BTF_PATHS ?=3D $(if $(O),$(O)/vmlinux)				\
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 97cbfb31b7625..74e255d58d8d0 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -99,7 +99,9 @@ FEATURE_TESTS_EXTRA :=3D                  \
+          clang                          \
+          libbpf                         \
+          libpfm4                        \
+-         libdebuginfod
++         libdebuginfod			\
++         clang-bpf-co-re
++
+=20
+ FEATURE_TESTS ?=3D $(FEATURE_TESTS_BASIC)
+=20
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index ce8516e4de34f..fe234b8bfeefb 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -621,6 +621,15 @@ ifndef NO_LIBBPF
+   endif
+ endif
+=20
++ifdef BUILD_BPF_SKEL
++  $(call feature_check,clang-bpf-co-re)
++  ifeq ($(feature-clang-bpf-co-re), 0)
++    dummy :=3D $(error Error: clang too old. Please install recent clang=
+)
++  endif
++  $(call detected,CONFIG_PERF_BPF_SKEL)
++  CFLAGS +=3D -DBUILD_BPF_SKEL
++endif
++
+ dwarf-post-unwind :=3D 1
+ dwarf-post-unwind-text :=3D BUG
+=20
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 62f3deb1d3a8b..9ea9047a621bc 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -126,6 +126,8 @@ include ../scripts/utilities.mak
+ #
+ # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
+ #
++# Define BUILD_BPF_SKEL to enable BPF skeletons
++#
+=20
+ # As per kernel Makefile, avoid funny character set dependencies
+ unexport LC_ALL
+@@ -175,6 +177,12 @@ endef
+=20
+ LD +=3D $(EXTRA_LDFLAGS)
+=20
++HOSTCC  ?=3D gcc
++HOSTLD  ?=3D ld
++HOSTAR  ?=3D ar
++CLANG   ?=3D clang
++LLVM_STRIP ?=3D llvm-strip
++
+ PKG_CONFIG =3D $(CROSS_COMPILE)pkg-config
+ LLVM_CONFIG ?=3D llvm-config
+=20
+@@ -731,7 +739,8 @@ prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-c=
+mds.h archheaders $(drm_ioc
+ 	$(x86_arch_prctl_code_array) \
+ 	$(rename_flags_array) \
+ 	$(arch_errno_name_array) \
+-	$(sync_file_range_arrays)
++	$(sync_file_range_arrays) \
++	bpf-skel
+=20
+ $(OUTPUT)%.o: %.c prepare FORCE
+ 	$(Q)$(MAKE) -f $(srctree)/tools/build/Makefile.build dir=3D$(build-dir)=
+ $@
+@@ -1004,7 +1013,42 @@ config-clean:
+ python-clean:
+ 	$(python-clean)
+=20
+-clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBC=
+MD)-clean $(LIBPERF)-clean config-clean fixdep-clean python-clean
++SKEL_OUT :=3D $(abspath $(OUTPUT)util/bpf_skel)
++SKEL_TMP_OUT :=3D $(abspath $(SKEL_OUT)/.tmp)
++SKELETONS :=3D
++
++ifdef BUILD_BPF_SKEL
++BPFTOOL :=3D $(SKEL_TMP_OUT)/bootstrap/bpftool
++LIBBPF_SRC :=3D $(abspath ../lib/bpf)
++BPF_INCLUDE :=3D -I$(SKEL_TMP_OUT)/.. -I$(BPF_PATH) -I$(LIBBPF_SRC)/..
++
++$(SKEL_TMP_OUT):
++	$(Q)$(MKDIR) -p $@
++
++$(BPFTOOL): | $(SKEL_TMP_OUT)
++	CFLAGS=3D $(MAKE) -C ../bpf/bpftool \
++		OUTPUT=3D$(SKEL_TMP_OUT)/ bootstrap
++
++$(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_TMP_OU=
+T)
++	$(call QUIET_CLANG, $@)
++	$(Q)$(CLANG) -g -O2 -target bpf $(BPF_INCLUDE) -c $(filter util/bpf_ske=
+l/%.bpf.c,$^) \
++	-o $@ && $(LLVM_STRIP) -g $@
++
++$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
++	$(QUIET_GENSKEL)$(BPFTOOL) gen skeleton $< > $@
++
++bpf-skel: $(SKELETONS)
++
++else # BUILD_BPF_SKEL
++
++bpf-skel:
++
++endif # BUILD_BPF_SKEL
++
++bpf-skel-clean:
++	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
++
++clean:: $(LIBTRACEEVENT)-clean $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBC=
+MD)-clean $(LIBPERF)-clean config-clean fixdep-clean python-clean bpf-ske=
+l-clean
+ 	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archiv=
+e $(OUTPUT)perf-with-kcore $(LANG_BINDINGS)
+ 	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.=
+cmd' -delete -o -name '\.*.d' -delete
+ 	$(Q)$(RM) $(OUTPUT).config-detected
+diff --git a/tools/perf/util/bpf_skel/.gitignore b/tools/perf/util/bpf_sk=
+el/.gitignore
+new file mode 100644
+index 0000000000000..5263e9e6c5d83
+--- /dev/null
++++ b/tools/perf/util/bpf_skel/.gitignore
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0-only
++.tmp
++*.skel.h
+\ No newline at end of file
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.incl=
+ude
+index 1358e89cdf7d6..62119ce69ad9a 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -127,6 +127,7 @@ ifneq ($(silent),1)
+ 			 $(MAKE) $(PRINT_DIR) -C $$subdir
+ 	QUIET_FLEX     =3D @echo '  FLEX     '$@;
+ 	QUIET_BISON    =3D @echo '  BISON    '$@;
++	QUIET_GENSKEL  =3D @echo '  GEN-SKEL '$@;
+=20
+ 	descend =3D \
+ 		+@echo	       '  DESCEND  '$(1); \
+--=20
 2.24.1
+
