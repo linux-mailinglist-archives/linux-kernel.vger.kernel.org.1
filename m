@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66752D29D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B717B2D29DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbgLHLhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:37:39 -0500
-Received: from mail-m974.mail.163.com ([123.126.97.4]:44478 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728818AbgLHLhj (ORCPT
+        id S1729180AbgLHLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:38:16 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2221 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728974AbgLHLiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:37:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=JFdQz613CrrAqkk0wa
-        rhc6uhxkVWpMeQ+fnHZ1p81kY=; b=ThuyozpUOKUf/rwBFvmPA6biBGFQr7Utxm
-        jWYOSmmI3uV7FR5vzc1RlENMdJxtxIZMJLJE3olOO+H+c4uU+xtBGMaoglqYbBMt
-        9Dy8lIZp0NA1pl7+X+whSqu8pduLTfm15Eq6JP6KFzIbze2OPPduxCmjeD881Cks
-        ZtGwu/Vc8=
-Received: from localhost.localdomain (unknown [202.112.113.212])
-        by smtp4 (Coremail) with SMTP id HNxpCgBnd2stZc9f36G3bg--.51101S4;
-        Tue, 08 Dec 2020 19:36:16 +0800 (CST)
-From:   Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_uap_bss_param_prepare
-Date:   Tue,  8 Dec 2020 19:36:07 +0800
-Message-Id: <20201208113607.24967-1-ruc_zhangxiaohui@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: HNxpCgBnd2stZc9f36G3bg--.51101S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr43urWUZrWUuw1rArW7XFb_yoW8WFyxpF
-        Z0gay8Cr18Zr1qkrs7Ja1DGas0ga1UKF13urZ5A34rCr1ftr1fZFyUKFy09ry7uan7t34j
-        9r48J3Z5Zrn3GFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRKQ6JUUUUU=
-X-Originating-IP: [202.112.113.212]
-X-CM-SenderInfo: puxfs6pkdqw5xldrx3rl6rljoofrz/1tbiHhD0MFSIrffLfAAAs7
+        Tue, 8 Dec 2020 06:38:16 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cqykd5SJwz67NFV;
+        Tue,  8 Dec 2020 19:34:17 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 12:37:33 +0100
+Received: from [10.210.169.98] (10.210.169.98) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 8 Dec 2020 11:37:32 +0000
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+From:   John Garry <john.garry@huawei.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
+        <kashyap.desai@broadcom.com>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+ <20201202033134.GD494805@T590>
+ <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
+ <20201203005505.GB540033@T590>
+ <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+Message-ID: <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+Date:   Tue, 8 Dec 2020 11:36:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.98]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+On 03/12/2020 09:26, John Garry wrote:
+> On 03/12/2020 00:55, Ming Lei wrote:
+> 
+> Hi Ming,
+> 
+>>> Yeah, so I said that was another problem which you mentioned there, 
+>>> which
+>>> I'm not addressing, but I don't think that I'm making thing worse here.
+>> The thing is that this patch does not fix the issue completely.
+>>
+>>> So AFAICS, the blk-mq/sched code doesn't wait for any "readers" to be
+>>> finished, such as those running blk_mq_queue_tag_busy_iter or
+>>> blk_mq_tagset_busy_iter() in another context.
+>>>
+>>> So how about the idea of introducing some synchronization primitive, 
+>>> such as
+>>> semaphore, which those "readers" must grab and release at start and 
+>>> end (of
+>>> iter), to ensure the requests are not freed during the iteration?
+>> It looks good, however devil is in details, please make into patch for
+>> review.
+> 
+> OK, but another thing to say is that I need to find a somewhat reliable 
+> reproducer for the potential problem you mention. So far this patch 
+> solves the issue I see (in that kasan stops warning). Let me analyze 
+> this a bit further.
+> 
 
-mwifiex_uap_bss_param_prepare() calls memcpy() without checking
-the destination size may trigger a buffer overflower,
-which a local user could use to cause denial of service or the
-execution of arbitrary code.
-Fix it by putting the length check before calling memcpy().
+Hi Ming,
 
-Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
----
- drivers/net/wireless/marvell/mwifiex/uap_cmd.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I am just looking at this again, and have some doubt on your concern [0].
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/uap_cmd.c b/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-index b48a85d79..fb937c7ee 100644
---- a/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-+++ b/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-@@ -496,13 +496,16 @@ mwifiex_uap_bss_param_prepare(u8 *tlv, void *cmd_buf, u16 *param_size)
- 	struct mwifiex_ie_types_wmmcap *wmm_cap;
- 	struct mwifiex_uap_bss_param *bss_cfg = cmd_buf;
- 	int i;
-+	int ssid_size;
- 	u16 cmd_size = *param_size;
- 
- 	if (bss_cfg->ssid.ssid_len) {
- 		ssid = (struct host_cmd_tlv_ssid *)tlv;
- 		ssid->header.type = cpu_to_le16(TLV_TYPE_UAP_SSID);
- 		ssid->header.len = cpu_to_le16((u16)bss_cfg->ssid.ssid_len);
--		memcpy(ssid->ssid, bss_cfg->ssid.ssid, bss_cfg->ssid.ssid_len);
-+		ssid_size = bss_cfg->ssid.ssid_len > strlen(ssid->ssid) ?
-+				strlen(ssid->ssid) : bss_cfg->ssid.ssid_len;
-+		memcpy(ssid->ssid, bss_cfg->ssid.ssid, ssid_size);
- 		cmd_size += sizeof(struct mwifiex_ie_types_header) +
- 			    bss_cfg->ssid.ssid_len;
- 		tlv += sizeof(struct mwifiex_ie_types_header) +
--- 
-2.17.1
+ From checking blk_mq_queue_tag_busy_iter() specifically, don't we 
+actually guard against this with the q->q_usage_counter mechanism? That 
+is, an agent needs to grab a q counter ref when attempting the iter. 
+This will fail when the queue IO sched is being changed, as we freeze 
+the queue during this time, which is when the requests are freed, so no 
+agent can hold a reference to a freed request then. And same goes for 
+blk_mq_update_nr_requests(), where we freeze the queue.
 
+But I didn't see such a guard for blk_mq_tagset_busy_iter().
+
+Thanks,
+John
+
+[0] https://lore.kernel.org/linux-block/20200826123453.GA126923@T590/
+
+Ps. sorry for sending twice
