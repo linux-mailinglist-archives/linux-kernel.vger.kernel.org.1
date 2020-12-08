@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916DC2D236F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13422D236D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 07:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgLHGFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 01:05:05 -0500
-Received: from mga02.intel.com ([134.134.136.20]:3070 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgLHGFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:05:05 -0500
-IronPort-SDR: U/bLdPpvXhNUxGJevlgs093LQpw5mqFYA/xps+mmJTq91do1DybkmRTFlvC2XobotkjEHNivWd
- MXEldIInH5YQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="160886034"
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="160886034"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 22:03:19 -0800
-IronPort-SDR: LzhTYhB2twy+C+SMYM3uq1XmQFVAJC5YqUD4Fz5BMYP04TFtCwcSngBuD4Zp63BUP6L01Z9YD4
- +kJZe0iE/K8A==
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; 
-   d="scan'208";a="317648360"
-Received: from unknown (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.92.217])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2020 22:03:18 -0800
-Subject: Re: [PATCH v12 0/5] Simplify PCIe native ownership
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     ashok.raj@intel.com, knsathya@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20201126011816.711106-1-helgaas@kernel.org>
- <b1cb1ad6-e047-8c7a-0abe-b9feee844e59@linux.intel.com>
- <98b11c1b-24b2-5e36-7f08-b96fa772ddd2@linux.intel.com>
-Message-ID: <f8769d38-1026-90b7-2380-71aea5f21c61@linux.intel.com>
-Date:   Mon, 7 Dec 2020 22:03:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726340AbgLHGFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 01:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgLHGFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:05:02 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B10EC061749
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 22:04:22 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id s21so12867348pfu.13
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 22:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMuZSE/uoFYolW2OlTfv3RER4FPEswrWEWDqIA4AjXQ=;
+        b=Qyoemjm4Cg39/yxDoF8iiqYCMs1sPutlX9o+JmeiG9ZmSBixbBCSYKnEtRR2dUB9uQ
+         fOs1eIl4DYk0FSY1Q8Pe1h1nvh3nPi7I71EFegeWGw9gmukg9mCWzgxwp2TXX/0FKtGp
+         GMhrNRNvbHHz5YhxyDPIjkrxmppVffuUaiyj9SMO0YAc4ul7QoArir3saw32T0PqVR9L
+         ScL5nugtH6t2XBuvLgoBrDR+o2EmkeqvRHRosE2+GDL5DegYFeezOk0ci2eF42cW/sQN
+         Izxgj0a3GFjErxSXkai1Of2J7KPa6xRSrHt+6Bx1bJNSxKqr2zVCNhT4+8Ro+dYmVJjP
+         EeUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMuZSE/uoFYolW2OlTfv3RER4FPEswrWEWDqIA4AjXQ=;
+        b=aU+WwAggroxY0sLemrgZERRXXqL+gb9X30N+i+7K+vCmQ2pxq797ocd072UbU8Q6fG
+         nxsy8xoGoyyLfRoL5hzVrT5ZlSuanOKg/09ASzxag/jGdYN+n6UpS6pz/XacQJ7dpluh
+         3FDX5WrNGBcmnI7hKol+nCtZv6zvR+aW4EaJijGDKe4/S9M47oOtQ6VcGn5fpjnKgWa9
+         +e/2FKewfS94Do9NdmVIhuTxkqSBD96BHGg5Ul4iP02Q+FYI+YgWxSRY1dVSglLio+Re
+         EewV5EpTnQT5IznXet2WDQsoDaR0dvPZduwd86P3d8d6+Pf6JJqJRZLRJf5Oblp9qymk
+         cACA==
+X-Gm-Message-State: AOAM531PjUlYCLxxfwYI4PT/JojKJtk7LdsmqIrmX63PwnozePhyE1K4
+        xpqDFKdMJnnUUjTDp7X8eHyXJQ==
+X-Google-Smtp-Source: ABdhPJxx7alrk0jc+iLSK57paLZQN/zJcOWCv7kDfvNGIjWLPdejZP3xOKqO2/iPOTo4TggKi4kc3w==
+X-Received: by 2002:a17:90b:19cf:: with SMTP id nm15mr2603816pjb.63.1607407461666;
+        Mon, 07 Dec 2020 22:04:21 -0800 (PST)
+Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
+        by smtp.googlemail.com with ESMTPSA id k189sm18632615pfd.99.2020.12.07.22.04.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 22:04:21 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
+Date:   Tue,  8 Dec 2020 14:04:14 +0800
+Message-Id: <20201208060414.27646-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <98b11c1b-24b2-5e36-7f08-b96fa772ddd2@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
+thus the heaset functions are not working.
 
-On 11/30/20 5:11 PM, Kuppuswamy, Sathyanarayanan wrote:
-> Hi Bjorn,
-> 
-> On 11/25/20 7:48 PM, Kuppuswamy, Sathyanarayanan wrote:
->> Along with above patch, you also left following two cleanup patches. Is this
->> intentional? Following fixes have no dependency on pcie_ports_dpc_native change.
->>
->> [PATCH v11 4/5] PCI/portdrv: Remove redundant pci_aer_available() check in DPC enable logic
->> [PATCH v11 5/5] PCI/DPC: Move AER/DPC dependency checks out of DPC driver
-> 
-> Any comment? If you want me to add these patches in my re-submission, please
-> let me know.
-Gentle ping. Any comments?
-> 
+Add quirk for this model to select the correct input map, jack-detect
+options and channel map to enable jack sensing and headset microphone.
+This device uses IN1 for its internal MIC and JD2 for jack-detect.
 
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index f790514a147d..cd6f7caa43c8 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -421,6 +421,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 140 CESIUM"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.20.1
+
