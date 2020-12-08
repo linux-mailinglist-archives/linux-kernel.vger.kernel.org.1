@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772642D27EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2B02D27E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729018AbgLHJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:41:03 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:38377 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbgLHJlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:41:03 -0500
-Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MvJwN-1jvZBj1E2L-00rDGh; Tue, 08 Dec 2020 10:38:18 +0100
-Subject: Re: Pass modules to Linux kernel without initrd
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ben Hutchings <ben@decadent.org.uk>
-References: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <8aac3537-e84b-057d-94d8-0327261daaf8@metux.net>
-Date:   Tue, 8 Dec 2020 10:38:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729011AbgLHJkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:40:21 -0500
+Received: from mga03.intel.com ([134.134.136.65]:5141 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726584AbgLHJkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:40:20 -0500
+IronPort-SDR: MN5Z6TeplJhskw44HRxOCjBXpmgAMk7mQQyYwvPSOZ1YuZxNB2m6v7PCNiAIawaB1nopT6AYdf
+ PEFaAPzKGdHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="173974783"
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="173974783"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 01:38:44 -0800
+IronPort-SDR: DstkOSJ9V+YZ75HUEGl4+M/zYZfi1LZN4DdG8PKi1d6yrhEJkugptWPNcOyiooU70P9xUHg8Pc
+ BpXZVSHoLzzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,402,1599548400"; 
+   d="scan'208";a="437320615"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Dec 2020 01:38:41 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 08 Dec 2020 11:38:41 +0200
+Date:   Tue, 8 Dec 2020 11:38:41 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        rajmohan.mani@intel.com, azhar.shaikh@intel.com
+Subject: Re: [PATCH] usb: typec: intel_pmc_mux: Use correct response message
+ bits
+Message-ID: <20201208093841.GE680328@kuha.fi.intel.com>
+References: <20201203220813.16281-1-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <6fbaf375-389d-6581-55a1-78bbe2852e2d@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:f6ndVt5QD7gllhRB5CIJ1/rw1/p+1mzsCSVykyvECSBFUdLe/M2
- t8HwMZgxwcGliGuWUHdA1VE2vzcbghW1IZlJHjBsquAblwFpIGUS43Z+F9z4pjk/EPJ/JSc
- JwJITsvm53nZx9Xi2847d5Z8/WBJOEpzvqUgrMicJEByo377FQ/Li7R0wjdrDrZJvRQgDmT
- ZNN0zMdes6qv+7r1vWfng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ymnzZM7htwQ=:3WW+WzHeJn60wk/8rjW6fv
- sfA0PFb5XAA+8ZT9OL+H9HCgmjyO61pUehF2wvkxFs49wm+KJocMbuqAX6aLzIT4rNkiE3zpq
- +uC3W0Sd33klB1l6khZw8yDgQGdhsXeqCrUCO07ZivI9IwKDcd5jHzo0Gla0V5dTRhTw+/HWf
- kSFqG3TFH+gYsyRMPqx7gWvIDSGY/xlMSXg3+thiqCnrT6kfwdOoNcu0PYs7R8j47PJo00Chs
- Z4KhrOwbgOL1phx960KhK6jUSdSn92x2rT1s4gIuA75jfxfLw7ubhC32xEIqUtsUvu7RATF8J
- VI45htDEkJopg2p61UGZn32pXnFwTcKMRhyXV2F93RelHZEIGLE9kyOnLN3z0PjdTFqcG6NLY
- 1Zf6PNXDTtwSkBV3JxcerGKtgyrpxGNLqjRZ6YQd1yH7IVmPzceIr6xqR5Dqe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203220813.16281-1-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.12.20 10:24, Paul Menzel wrote:
+On Thu, Dec 03, 2020 at 02:08:13PM -0800, Utkarsh Patel wrote:
+> When Intel PMC Mux agent driver receives the response message from PMC, it
+> checks for the same response bits for all the mux states.
+> Corrected it by checking correct response message bits, Bit 8 & 9 for the
+> SAFE Mode and Alternate Modes and Bit 16 & 17 for the Connect and
+> Disconnect Modes.
+> 
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
 
-> Similar to passing firmware and microcode update files to Linux or
-> building these into the Linux kernel image, would it be possible to
-> append the required modules to the Linux kernel image, and Linux would
-> load these?
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Indeed, yes it does. Just set the corresponding CONFIG_ symbols to 'y'
-instead of 'm'. If you don't need to dynamically load any modules
-(already have everything you need compiled-in), you can completely
-disable module support via disabling CONFIG_MODULES.
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index aa3211f1c4c3..e58ae8a7fefb 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -176,6 +176,7 @@ static int hsl_orientation(struct pmc_usb_port *port)
+>  static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
+>  {
+>  	u8 response[4];
+> +	u8 status_res;
+>  	int ret;
+>  
+>  	/*
+> @@ -189,9 +190,13 @@ static int pmc_usb_command(struct pmc_usb_port *port, u8 *msg, u32 len)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (response[2] & PMC_USB_RESP_STATUS_FAILURE) {
+> -		if (response[2] & PMC_USB_RESP_STATUS_FATAL)
+> +	status_res = (msg[0] & 0xf) < PMC_USB_SAFE_MODE ?
+> +		     response[2] : response[1];
+> +
+> +	if (status_res & PMC_USB_RESP_STATUS_FAILURE) {
+> +		if (status_res & PMC_USB_RESP_STATUS_FATAL)
+>  			return -EIO;
+> +
+>  		return -EBUSY;
+>  	}
+>  
+> -- 
+> 2.17.1
 
-For embedded systems, this is quite common. I'm also using it for
-trimmed down virtualized workloads that don't ever need to dynamically
-load modules.
-
---mtx
+thanks,
 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+heikki
