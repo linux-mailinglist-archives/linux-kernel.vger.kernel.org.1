@@ -2,181 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E9F2D2452
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1782D2454
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgLHH02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S1727151AbgLHH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgLHH02 (ORCPT
+        with ESMTP id S1725881AbgLHH0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:26:28 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926EEC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:25:42 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id z20so3412464qtq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:25:42 -0800 (PST)
+        Tue, 8 Dec 2020 02:26:54 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B488CC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:26:14 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id q3so11420301pgr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:26:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a48Lc0r9Pex+nfdSjXokaIFSEHhKwRZpwM5apuHQUXw=;
-        b=ZVhbIhkK26XpUkqdyi6SZYbjrNClTqoRwngPEaPyNDsVq5bgkBC2R9ohv7mXlvFeOS
-         fKGR8Gk03lYtRwX8mJuITy2ZztQiHAGIeJIKgIKt158473V0dFzphvn/VBtepEz5b3yC
-         eU/hwOBonpXFdqZJ6/Ke8+tWHDFr+9kok8Q7pImQvsoc6eWG/aF78Zdbvzpu/1AA4lm7
-         Vc+RfofKwGboJt9vbP8iZhaoWqQNOTDH7XdWek6uL/DE3sYkhjmKCFYzmbQYe4czzzLM
-         Dqx9CK/Cv1LIAOJ97bDuwEYSSH5U+ScczEVVg+3roXWu3QOtT9J/cCxlCBrliBqv/+TF
-         ziAQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xIO9JpAUTkGihgKfEbKVJG87paWf400pgZOMT6qA8FE=;
+        b=kqnmJKaFMQuWu6HFIqgafDBOiqqHESjea4lcVKgJ0l9uGDpUCLpa8XvTbA6HbFvE4p
+         MNG602dmJPD4fkUykE1mNYHhG/HbZIzwHJ2ugWFjryaw+RgY60Z64rFI39/UKaUd0P/E
+         N5c7APiqSA3IjR60Ie0bEKUZTwI8uSatcRxFIVoSGkjp3f65UUjSh5TbJuVyziyTZR/Z
+         wc1mCMGP0v1lPFNZy3R+IybyDB2hIrKyY2NKuFmiWURyl3PoHWIQv4Nowm5tukQlF2VA
+         0QllOhEqjJOs8py44htGROATBKVmIrQc9vdFIri1ZAGQylv8pdEXyvDpVklXOMykBWb3
+         hPFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a48Lc0r9Pex+nfdSjXokaIFSEHhKwRZpwM5apuHQUXw=;
-        b=qA/NHMc18fJd38sCSNaqK/G8O5XMLXvrJaF2iJWQ3Kcu3ubOYwEt/hf4+XGsLiqcIT
-         mndNulObWyPZFEZc7J2WAba+mWJvX67OT7ak5PZ8uT6yO9JvRVCUN+O4jS/vozRmN4RJ
-         v2opy5cEAJxssneJ6T/uwg8YSpwhWFoXpiPFSzeBBeX83bZ5z6F9Yti/F7MwBo/3W515
-         eAd+ghnWDcuKBC0cvbnDBnEviL2UuSNFkeHjza98g3S2z3tJxh/7uDcrMuFVNzcfI19n
-         5w6hYxg//H1NaNiIx33ESaDO6olNOpeoNJVFQphNqZ9CnFyYDZRRcGOloC/BgpBjHVfb
-         2bXg==
-X-Gm-Message-State: AOAM530sBN8j0W//8X806EAx0FvW0lu26ys5wSmWj2UHUl36xF7l7o+9
-        FTUZLbH/xUfuJ+Qr4t59O3eUsOJ+9zmmuwbV4+0keg==
-X-Google-Smtp-Source: ABdhPJyJdpFX+jh8hbZjH/CvWHSVOuvzztK0ZIPUiUSrhvJryT5dOBuqbwRTaLFdbeSLhIMD+pqsbecHyYQjdfGImdM=
-X-Received: by 2002:ac8:4e1c:: with SMTP id c28mr28117287qtw.67.1607412341539;
- Mon, 07 Dec 2020 23:25:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xIO9JpAUTkGihgKfEbKVJG87paWf400pgZOMT6qA8FE=;
+        b=WjVMRQxv0tDkTEiARIl3SJPY3ohc6BB3pOKVXzRX9U+u2ElAOujWQMeHeUdsBOTSqW
+         FNQtkzaP66hhU1LRkEVUSGF3OBEtTYmdMhV5EIyeW0OawZlyfPYTDBzhsH0Ht1fPhdmT
+         HdCVoMyq49Tr0uuk76q6Mw+zSPQ87y6/lQFDdDTZTZUp4EtSwoQOxLAMG9bKEvzFxHqu
+         AlNjgJqpT2kP1wFy65XjKs8pXL2COJ+skYtOzEZ2e4QEbE8MuhfZ05AlDgSNbVTvW4U5
+         OwrIn5olgdhToZIawZaw4K0CSzNhnwpLgHuNG8H6xOI7ptmf/4Ghfs1ZY4a3T0MlY/ET
+         gr5w==
+X-Gm-Message-State: AOAM533JW3F6MSy9loIJgBxZVa0KtquqUC6d7i/2IAgX0wiLehDvRZnl
+        zBDIfa6SHrNg6+SUnY3Oa7DTyw==
+X-Google-Smtp-Source: ABdhPJygsLIE8kXIDMBPSc4wcTQOzDstg4xV38cF/UKmPk0Qdzt8EiD+wh7Q4PaOhB+xCiQMoWO2Ag==
+X-Received: by 2002:a65:4544:: with SMTP id x4mr22229571pgr.183.1607412374264;
+        Mon, 07 Dec 2020 23:26:14 -0800 (PST)
+Received: from localhost ([122.172.136.109])
+        by smtp.gmail.com with ESMTPSA id l66sm14409613pgl.24.2020.12.07.23.26.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 23:26:13 -0800 (PST)
+Date:   Tue, 8 Dec 2020 12:56:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+Subject: Re: [PATCH v4 3/4] scmi-cpufreq: get opp_shared_cpus from opp-v2 for
+ EM
+Message-ID: <20201208072611.ptsqupv4y2wybs6p@vireshk-i7>
+References: <20201202172356.10508-1-nicola.mazzucato@arm.com>
+ <20201202172356.10508-4-nicola.mazzucato@arm.com>
+ <20201208055053.kggxw26kxtnpneua@vireshk-i7>
+ <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
 MIME-Version: 1.0
-References: <000000000000a4832105b5de5453@google.com>
-In-Reply-To: <000000000000a4832105b5de5453@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 8 Dec 2020 08:25:30 +0100
-Message-ID: <CACT4Y+aEfWE2xUKZ4CDcBQuUN1TO=GVLu5CuPi0WAZ2A1jjE0w@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_lru_populate
-To:     syzbot <syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com>,
-        guro@fb.com, Eric Dumazet <edumazet@google.com>
-Cc:     andrii@kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e4d3134-f9b2-31fa-b454-fb30265a80b5@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 12:43 PM syzbot
-<syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    bcd684aa net/nfc/nci: Support NCI 2.x initial sequence
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12001bd3500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3cb098ab0334059f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ec2234240c96fdd26b93
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f7f2ef500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103833f7500000
->
-> The issue was bisected to:
->
-> commit b93ef089d35c3386dd197e85afb6399bbd54cfb3
-> Author: Martin KaFai Lau <kafai@fb.com>
-> Date:   Mon Nov 16 20:01:13 2020 +0000
->
->     bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1103b837500000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1303b837500000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1503b837500000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com
-> Fixes: b93ef089d35c ("bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage")
+On 08-12-20, 07:22, Nicola Mazzucato wrote:
+> On 12/8/20 5:50 AM, Viresh Kumar wrote:
+> > On 02-12-20, 17:23, Nicola Mazzucato wrote:
+> >>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+> >>  	if (nr_opp <= 0) {
+> >> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
+> >> -		ret = -EPROBE_DEFER;
+> >> -		goto out_free_opp;
+> >> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+> >> +		if (ret) {
+> >> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
+> >> +			goto out_free_cpumask;
+> >> +		}
+> >> +
+> >> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
+> >> +		if (ret) {
+> >> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+> >> +				__func__, ret);
+> >> +			goto out_free_cpumask;
+> >> +		}
+> >> +
+> > 
+> > Why do we need to call above two after calling
+> > dev_pm_opp_get_opp_count() ?
+> 
+> Sorry, I am not sure to understand your question here. If there are no opps for
+> a device we want to add them to it
 
-I assume this is also
+Earlier we used to call handle->perf_ops->device_opps_add() and
+dev_pm_opp_set_sharing_cpus() before calling dev_pm_opp_get_opp_count(), why is
+the order changed now ?
 
-#syz fix: bpf: Avoid overflows involving hash elem_size
+> otherwise no need as they would be duplicated.
 
+I am not sure why they would be duplicated in your case. I though
+device_opps_add() is responsible for dynamically adding the OPPs here.
 
-> BUG: unable to handle page fault for address: fffff5200471266c
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 32e3a067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 8503 Comm: syz-executor608 Not tainted 5.10.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
-> RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
-> Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
-> RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
-> RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
-> RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
-> RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
-> R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
-> R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
-> FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  prealloc_init kernel/bpf/hashtab.c:319 [inline]
->  htab_map_alloc+0xf6e/0x1230 kernel/bpf/hashtab.c:507
->  find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
->  map_create kernel/bpf/syscall.c:829 [inline]
->  __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4374
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x4402e9
-> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007ffe77af23b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402e9
-> RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0d00000000000000
-> RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401af0
-> R13: 0000000000401b80 R14: 0000000000000000 R15: 0000000000000000
-> Modules linked in:
-> CR2: fffff5200471266c
-> ---[ end trace 4f3928bacde7b3ed ]---
-> RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
-> RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
-> Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
-> RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
-> RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
-> RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
-> RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
-> R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
-> R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
-> FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a4832105b5de5453%40google.com.
+> > And we don't check the return value of
+> > the below call anymore, moreover we have to call it twice now.
+> 
+> This second get_opp_count is required such that we register em with the correct
+> opp number after having added them. Without this the opp_count would not be correct.
+
+What if the count is still 0 ? What about deferred probe we were doing earlier ?
+
+-- 
+viresh
