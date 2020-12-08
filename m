@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81962D36BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82F52D36C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 00:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731666AbgLHXK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 18:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731635AbgLHXK5 (ORCPT
+        id S1731636AbgLHXMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 18:12:22 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:46291 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLHXMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 18:10:57 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC72FC0611CF;
-        Tue,  8 Dec 2020 15:09:15 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id e2so5300835pgi.5;
-        Tue, 08 Dec 2020 15:09:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2v4ewJaopHSzDI+DwTqOHMuKOxJL31/waRJy0KATXk=;
-        b=N3i3PhIr+jNJYBGrCo2zIv9HEv4hatrFtdys1BL4Ant4wyVpMRiHmWMdJcMd+Sgk5+
-         lYdPi1muwdjfCrMuc999QvZmNvNKCYP7bQsoZoZtglUzmVFcMknaJfiBQFcH6vwH6jil
-         6yG+POfIzZLV+Qzdpby269NEXsXDEAS/h4Kxn6La5Mq15EDgaJn6nGs6sixBjkEN8tou
-         5c4ajVsbL7dR6LGCa0rSZ+1Y5KSIkbP5VUO76KCiLqJY37gKe1ZZkd8+9kXsZX7d6yt5
-         LSN4vcJAQF4wrSGFeirPkzJ9sRGQF6eecTMtmDReD13QSilY1cfwI0MzPj2WTPIpwrSB
-         xegg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2v4ewJaopHSzDI+DwTqOHMuKOxJL31/waRJy0KATXk=;
-        b=sG6ye4zFEJ5OBNizu7XLtlOse7/OSE11Tc2EeEUvGI8XKVeEGw5918N4PY3Lm5wzNP
-         CuuYToAzM+khz5cLrCtUeuQYAIXGN8eDxXFYxcXwbT2TRBFMav2TmcAfb+tI+Z9M3K00
-         4U0DEK3f65IriERt2b3qLVJ0WptAzJPvHtjeEWg/wdNhkOchiTFfJ0FBoFt2tvn1j8Rd
-         z13SeaLeHDfe5feeBVBnkr7lOnuq5wnMbtj/2Bi9gxQnfTtkA5lDRQpK+/oDsoXqqVN0
-         q8o6v+lKi1/UGQSe41DlimPokXmXwzfAlrtTocqw8tw3y8xFOv/IZgznlspFwFFWGOu1
-         wzqA==
-X-Gm-Message-State: AOAM533k1uPRAKb94QvKA11ZoeyQGz3Kc4XiybsTHxDD46IPDjCIp0Ws
-        MWPgToiv6Fiv7NZqlTwHxAUCm0hmgiCo/lGJWg==
-X-Google-Smtp-Source: ABdhPJz8g6xTSM7AKTfGX9fbLOhKNrljyr0sBtTMIjTK4Tck1XKVHMaoCQWc8d0ZBhlgcJi4uIAJoUma4tR5Tu5PbiQ=
-X-Received: by 2002:a17:90a:f0c1:: with SMTP id fa1mr41508pjb.148.1607468955364;
- Tue, 08 Dec 2020 15:09:15 -0800 (PST)
+        Tue, 8 Dec 2020 18:12:21 -0500
+X-Originating-IP: 62.210.143.248
+Received: from weirdfishes.localdomain (62-210-143-248.rev.poneytelecom.eu [62.210.143.248])
+        (Authenticated sender: m@thi.eu.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A3724240002;
+        Tue,  8 Dec 2020 23:11:36 +0000 (UTC)
+Received: by weirdfishes.localdomain (Postfix, from userid 1000)
+        id 206BD720488DE; Wed,  9 Dec 2020 00:11:36 +0100 (CET)
+Date:   Wed, 9 Dec 2020 00:11:36 +0100
+From:   Mathieu Chouquet-Stringer <me@mathieu.digital>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        Stephen Kitt <steve@sk2.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Naoki Hayama <naoki.hayama@lineo.co.jp>,
+        Yue Hu <huyue2@yulong.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Update documentation to reflect what
+ TAINT_CPU_OUT_OF_SPEC means nowadays
+Message-ID: <20201208231136.GA1455290@weirdfishes>
+Mail-Followup-To: Mathieu Chouquet-Stringer <me@mathieu.digital>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        Stephen Kitt <steve@sk2.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Naoki Hayama <naoki.hayama@lineo.co.jp>, Yue Hu <huyue2@yulong.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201202153244.709752-1-me@mathieu.digital>
+ <20201208105439.23e2349b@lwn.net>
+ <1254edd7-25ee-b73d-da2c-194d38ba7890@infradead.org>
 MIME-Version: 1.0
-References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
- <20201208080559.6131e8da@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201208080559.6131e8da@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Tue, 8 Dec 2020 23:09:04 +0000
-Message-ID: <CALjTZvZzdYSpZtsfV18YGrqrUMc0NcuzPOffLLnBAEpi9+6+fg@mail.gmail.com>
-Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     luciano.coelho@intel.com, johannes.berg@intel.com,
-        mordechay.goodstein@intel.com, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxwifi@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1254edd7-25ee-b73d-da2c-194d38ba7890@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jakub,
+	Hello,
 
-On Tue, 8 Dec 2020 at 16:06, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Just to confirm - is this a regression in 5.10-rc? Does 5.9 work
-> smoothly in the problematic scenario?
+On Tue, Dec 08, 2020 at 09:58:32AM -0800, Randy Dunlap wrote:
+> On 12/8/20 9:54 AM, Jonathan Corbet wrote:
+> > On Wed,  2 Dec 2020 16:32:43 +0100
+> > Mathieu Chouquet-Stringer <me@mathieu.digital> wrote:
+> >> Signed-off-by: Mathieu Chouquet-Stringer <me@mathieu.digital>
+> > 
+> > Hearing no objection, I've applied this.
 
-Good question. It's definitely a regression, though I don't remember
-exactly the last working version I had. I *think* 5.9 was working, but
-I can't be sure without testing.
+Thanks Jon.
 
-Thanks,
-Rui
+> Hm, I was glad to read this new info since my old testing laptop
+> now tells me that it needs a microcode update.  :(
+
+In my case I first saw the error because tuned uses
+x86_energy_perf_policy which uses to poke at MSRs [1]. And that was
+tainting my kernel and I initially couldn't understand why.
+
+It's been fixed but will be released in an upcoming kernel version (it's
+in tip at the moment [2]).
+
+Thanks to Borislav for work and for helping me out!
+
+[1] https://lore.kernel.org/lkml/20201117210018.GA4247@weirdfishes/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=fe0a5788624c8b8f113a35bbe4636e37f9321241
+-- 
+Mathieu Chouquet-Stringer                             me@mathieu.digital
+            The sun itself sees not till heaven clears.
+	             -- William Shakespeare --
