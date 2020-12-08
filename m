@@ -2,132 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814022D2E55
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8EA2D2E50
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730132AbgLHPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:33:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729471AbgLHPdS (ORCPT
+        id S1730127AbgLHPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:32:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730083AbgLHPcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:33:18 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4B2C0613D6;
-        Tue,  8 Dec 2020 07:32:32 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id n142so6085777qkn.2;
-        Tue, 08 Dec 2020 07:32:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NSzebNPhajLq432NNakK3AqX4FUCpmwsnxgH+v2U6H4=;
-        b=rD85Gnws16zwR8LBE4ytRyXYYmkCOueu1ojR3EYl+JabsiBCgv8ReifyyQadQFkIfM
-         owwkVIfGutlr03Pvee4vMEdppIHtrtIsBDGjGUewuMacTDXZHU3heSWNuq6hSC1OE4iV
-         IW1CBXkmzBGLHrVe+leYaB+YOwV/qFLoKbwNmoKu8VzD+WClbkOQpUiXPYs4Nnf/jfVS
-         sF0PCvi4A741IQpuErhcugSPly8Sau50i5yWB+W2DnQtyE2BunhDI+HlObdlRoOv64Vp
-         VJQE4javnkKBEUGQklf9mMxBASkTqO6o8QBJz2/FZPSyMON4Lfn2lEnkj4A/NVX7sjN9
-         phqA==
+        Tue, 8 Dec 2020 10:32:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607441487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+FMZUGLEZ8IR+pc7weB+jF6Ts3wWL1ODG+l+6NkEMl0=;
+        b=YxlPQMfZFYrAepuQwlk9a/8p1Rukk6PIJmB5yseQGPLZWuzzvVHghWTVGCWDZ8DNVtM16A
+        rIlMK8btKntwF8gaPa2cyFGtYoZqkv+RTybN9GS4HkNhgmxZJOKBuFY9Zavflxt8Ri+9ie
+        smXW68o2BVnrgPtQ+NiBYyMiz7VCLD4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-5pPQGmZZNBy8cRqlCNj0rA-1; Tue, 08 Dec 2020 10:31:25 -0500
+X-MC-Unique: 5pPQGmZZNBy8cRqlCNj0rA-1
+Received: by mail-ed1-f70.google.com with SMTP id cq17so4127021edb.17
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:31:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NSzebNPhajLq432NNakK3AqX4FUCpmwsnxgH+v2U6H4=;
-        b=Vr5N39vfY5L6DJR9uMr9cat2xzuANSaAr6S9OMNHb2RtUaY3ZDijFqjBahpAzTxZnh
-         iGxDGBX7j6aRaEQs+3D7ShTKlmVt1JNTkR1SR1juo6VDZk442NpKlZxF8WNAgOGofM0R
-         NMO4ju/KuA30AlnbaKx12RrFqWchP5nlNZAPkquH0dsMtxOrEEy5YMqGTV/RZV3v/27R
-         Fb+XbSJT1MBs/vKm2s3VKl/IRewxAlTskNZsnYnQIusOAXowY2YpP32nQaP4uJGs+XYs
-         kdzUWgMhZnypfZBWY7OtlI1HEowhePEdGQ+5uLPplHAB+Ei/E1hQ63019Et3gOgOmWs6
-         P9QA==
-X-Gm-Message-State: AOAM533Ckhn1EDiUrWS5dBKeKNBwA/YSwJQTA/IVQ6L0OWtTtL3atGpb
-        o3kJx19lvvrfDJN1IZYiuhM=
-X-Google-Smtp-Source: ABdhPJycDXNDYNb34PZoZAjb+h10MHtfLAjdMtdyK4fk9jbtN12d8/thyy4A6Q4Htc9tzHzBBgXeTQ==
-X-Received: by 2002:a37:8485:: with SMTP id g127mr8321683qkd.233.1607441551543;
-        Tue, 08 Dec 2020 07:32:31 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id d2sm5993826qtp.71.2020.12.08.07.32.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 07:32:30 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 48A3027C0060;
-        Tue,  8 Dec 2020 10:32:29 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 08 Dec 2020 10:32:29 -0500
-X-ME-Sender: <xms:ipzPXxpm6i5Zb8EIfBNNULO7NLbkasMxVFG7uNgZB_59hoPmoEZIrQ>
-    <xme:ipzPXzrxdoW-TDNlSKIhPzwUeSL4Zb5HikjQYQD0TJBZDBlrFJ1P41q6wYEX2pq_A
-    u2eFaw7dXAO6OCRPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:i5zPX-MpN1WwQTdwk9sMceBSfmHam309gNBlMH9UqmhB9iKBRQcklg>
-    <xmx:i5zPX84zRpSR4FvL5twIkf76WGvHGUUHCPzqHj8Jl-BgJU2TQZMd_Q>
-    <xmx:i5zPXw7nmtYEjttmlPWyZ3wL59wrA3jPWMvqDWcCyNUptjComaAMXQ>
-    <xmx:jZzPXwiGFk6WtUM5IDtzG0Q4SUu7TjouQ7MSfbwjVGfWYdDJi7_ENp_jWyE>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AD8441080067;
-        Tue,  8 Dec 2020 10:32:26 -0500 (EST)
-Date:   Tue, 8 Dec 2020 23:31:11 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC lockdep 4/4] lockdep/selftest: Add wait context selftests
-Message-ID: <20201208153111.GJ3025@boqun-archlinux>
-References: <20201208103112.2838119-1-boqun.feng@gmail.com>
- <20201208103112.2838119-5-boqun.feng@gmail.com>
- <20201208143324.GB2414@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+FMZUGLEZ8IR+pc7weB+jF6Ts3wWL1ODG+l+6NkEMl0=;
+        b=OEN8IeK4kLlbM0arDv24J0QBmqWVljx36/+ZE8AAmLoWwTsWXFW10PMoILqiK7h0Y4
+         asG+iZJWRUtctIoL2mFqfDGIETDp+f2v5ipa1Rst9EXJXXtGAztlVagBFTN8bc3vH5H4
+         0NyBTgiSxtm4SGQx+ZRlN14reQ5WMdfRTy0/ROnGD0X6jfwTdGYFj5FTjPxnu/8D5IIs
+         hU8q5+p1D5L1Ny4KYpLxI/Sm06h0Bt0mGh2Fmlc/aY2VEg4O7yXOEV5gj0xVedNP8RSC
+         HN687s0iUDQHsvHQQwwGEFhghGWzn3Brsonb0ZvWqSMGkqAe6SJa6vPpdjO16Jj4+bQs
+         V4FQ==
+X-Gm-Message-State: AOAM530sIxc9OKvufnH5czh3ZEpgO9cbixoKom1BZpmzq1b5bxEbb+Xe
+        TY2bCl0et3kmlqJfFR2HOo7RyM1G4XEY/YSYGORWFHcFgjVHCbR31fKm30jfJeXN7Z8xq1qvl20
+        q1abiMKl2IXLwnkPREvPqiU6MCSr7pYo4+I0PycSg19VTl0PJHe29SI57idZWhlz4LJyPhtvjfM
+        Oc
+X-Received: by 2002:a50:f0dc:: with SMTP id a28mr25458365edm.291.1607441483449;
+        Tue, 08 Dec 2020 07:31:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxtQU0RezIwC9tzXq31kmgXqVciy5sBw5mSMcppCnQP7N2IaRcQFo26XwXC19JRgWUuXan+jw==
+X-Received: by 2002:a50:f0dc:: with SMTP id a28mr25458346edm.291.1607441483238;
+        Tue, 08 Dec 2020 07:31:23 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id oq7sm6098333ejb.63.2020.12.08.07.31.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 07:31:22 -0800 (PST)
+Subject: Re: [PATCH -next] platform/x86: ISST: Mark mmio_range_devid_0 and
+ mmio_range_devid_1 with static keyword
+To:     Zou Wei <zou_wei@huawei.com>, srinivas.pandruvada@linux.intel.com,
+        mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f9e29a7e-f5eb-afaf-1d29-4665be99046a@redhat.com>
+Date:   Tue, 8 Dec 2020 16:31:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208143324.GB2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <1607430489-116200-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 03:33:24PM +0100, Peter Zijlstra wrote:
-> On Tue, Dec 08, 2020 at 06:31:12PM +0800, Boqun Feng wrote:
-> > These tests are added for two purposes:
-> > 
-> > *	Test the implementation of wait context checks and related
-> > 	annotations.
-> > 
-> > *	Semi-document the rules for wait context nesting when
-> > 	PROVE_RAW_LOCK_NESTING=y.
-> 
-> Documentation/locking/locktypes.rst should have that.
-> 
+Hi,
 
-Thanks for the pointer!
+On 12/8/20 1:28 PM, Zou Wei wrote:
+> Fix the following sparse warnings:
+> 
+> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:23:24: warning: symbol 'mmio_range_devid_0' was not declared. Should it be static?
+> drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c:28:24: warning: symbol 'mmio_range_devid_1' was not declared. Should it be static?
+> 
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-I miss it before, and it's really a comprehensive document for lock
-nesting rules. Still I think more rules can be (and should be) put in
-that document: a broader idea is the context nesting rule (e.g. whether
-a spinlock_t is allowed in a hard irq handler). And the document
-reminders me that I'm missing some locks (e.g local_lock) in the test
-cases. So will improve both the document and the test cases in the next
-version. In the meanwhile, feel free to point out any mistake or
-misunderstanding of mine in the rules or the tests, I'm really still
-learning through these locks with PREEMPT_RT into consideration, thanks!
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
 Regards,
-Boqun
 
-> > The test cases are only avaible for PROVE_RAW_LOCK_NESTING=y, as wait
-> > context checking makes more sense for that configuration.
+Hans
+
+> ---
+>  drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Looks about right ;-)
+> diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+> index 2906cfe..ff49025 100644
+> --- a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+> +++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
+> @@ -20,12 +20,12 @@ struct isst_mmio_range {
+>  	int end;
+>  };
+>  
+> -struct isst_mmio_range mmio_range_devid_0[] = {
+> +static struct isst_mmio_range mmio_range_devid_0[] = {
+>  	{0x04, 0x14},
+>  	{0x20, 0xD0},
+>  };
+>  
+> -struct isst_mmio_range mmio_range_devid_1[] = {
+> +static struct isst_mmio_range mmio_range_devid_1[] = {
+>  	{0x04, 0x14},
+>  	{0x20, 0x11C},
+>  };
+> 
+
