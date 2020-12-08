@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B717B2D29DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDC42D29DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgLHLiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:38:16 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2221 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgLHLiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:38:16 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Cqykd5SJwz67NFV;
-        Tue,  8 Dec 2020 19:34:17 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 8 Dec 2020 12:37:33 +0100
-Received: from [10.210.169.98] (10.210.169.98) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 8 Dec 2020 11:37:32 +0000
-Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-From:   John Garry <john.garry@huawei.com>
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
-        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
-        <kashyap.desai@broadcom.com>
-References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
- <20201202033134.GD494805@T590>
- <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
- <20201203005505.GB540033@T590>
- <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
-Message-ID: <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
-Date:   Tue, 8 Dec 2020 11:36:58 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1729133AbgLHLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:40:11 -0500
+Received: from ozlabs.org ([203.11.71.1]:34673 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727839AbgLHLkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 06:40:11 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cqyrc2Y8kz9sWR;
+        Tue,  8 Dec 2020 22:39:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607427568;
+        bh=iwmK9bHuxz5cOxlpg1CFMwvGpAin/JFOj0dBjaqX478=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rhvP1HWpUXVquoO2E54sJ5Dwgem7qpfnVuCevdR9gUDQ/0RY3upGzkNGjkpTAP845
+         4rscjCZwKdgXauhWOStB0tYXE73SMdKw4kPCkRcB2MFCHPTZ3r0KyUqot/ZEA3BsyJ
+         X2jO9k07U5/pcoZgYLYvyUo2nsKuTNrbLHMa0vHaXUXyhfS5u/re/BR1CHAq+rhVKF
+         xiBQDU3Cm5M94D0yxWKAP0N/KYOUwFg+UCevjv4L+DwN8qPGXLvh1IHZd5mxmusyOd
+         W+e75p/nEf5lmKzdYz9dx4i8KjjpGezo9nryZHTaUehXa84zA57NAqssd2usq/ONsP
+         2GSOVOzVbPcfw==
+Date:   Tue, 8 Dec 2020 22:39:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the arm tree
+Message-ID: <20201208223919.18a80092@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.169.98]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/g1ARew/zmjZfcqbR+owvSOC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2020 09:26, John Garry wrote:
-> On 03/12/2020 00:55, Ming Lei wrote:
-> 
-> Hi Ming,
-> 
->>> Yeah, so I said that was another problem which you mentioned there, 
->>> which
->>> I'm not addressing, but I don't think that I'm making thing worse here.
->> The thing is that this patch does not fix the issue completely.
->>
->>> So AFAICS, the blk-mq/sched code doesn't wait for any "readers" to be
->>> finished, such as those running blk_mq_queue_tag_busy_iter or
->>> blk_mq_tagset_busy_iter() in another context.
->>>
->>> So how about the idea of introducing some synchronization primitive, 
->>> such as
->>> semaphore, which those "readers" must grab and release at start and 
->>> end (of
->>> iter), to ensure the requests are not freed during the iteration?
->> It looks good, however devil is in details, please make into patch for
->> review.
-> 
-> OK, but another thing to say is that I need to find a somewhat reliable 
-> reproducer for the potential problem you mention. So far this patch 
-> solves the issue I see (in that kasan stops warning). Let me analyze 
-> this a bit further.
-> 
+--Sig_/g1ARew/zmjZfcqbR+owvSOC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ming,
+Hi all,
 
-I am just looking at this again, and have some doubt on your concern [0].
+In commit
 
- From checking blk_mq_queue_tag_busy_iter() specifically, don't we 
-actually guard against this with the q->q_usage_counter mechanism? That 
-is, an agent needs to grab a q counter ref when attempting the iter. 
-This will fail when the queue IO sched is being changed, as we freeze 
-the queue during this time, which is when the requests are freed, so no 
-agent can hold a reference to a freed request then. And same goes for 
-blk_mq_update_nr_requests(), where we freeze the queue.
+  4812d516af55 ("ARM: 9027/1: head.S: explicitly map DT even if it lives in=
+ the first physical section")
 
-But I didn't see such a guard for blk_mq_tagset_busy_iter().
+Fixes tag
 
-Thanks,
-John
+  Fixes: 149a3ffe62b9dbc3 ("9012/1: move device tree mapping out of linear =
+region")
 
-[0] https://lore.kernel.org/linux-block/20200826123453.GA126923@T590/
+has these problem(s):
 
-Ps. sorry for sending twice
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 7a1be318f579 ("ARM: 9012/1: move device tree mapping out of linear r=
+egion")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/g1ARew/zmjZfcqbR+owvSOC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PZecACgkQAVBC80lX
+0GySWwf9FXh32KYLrb0Ba+zOmQVUSBaDBYd4uEpUlc7e3LfJBoIwZzdz2SwpA3jo
+nyhUxU005aFD0H/QTji8A78yEru3cSMqjccQo7Toh1ZBAqqCy2sIyd78FoZ22jb3
+/CZV3wVjVvV8PMxxc+2PAObXcq6b0XoG0mjn+n0eZeE+y+pt7w6kU4V1gyNAX8kq
+NkmKNXlPHzsbo4rh0AFV15T70DO95uZkJv0VvS5wx3AMHRgDe2yJ/EoJSEaA7Ayp
+4s3l/jyCZJxQgKt6VGZgG9llv3cvVQawonzB85nMg/heUeX5G3AYqcPSaClMXErl
+i3GzAqGadGIuz78ifw2S2kEYulDPXA==
+=Sk42
+-----END PGP SIGNATURE-----
+
+--Sig_/g1ARew/zmjZfcqbR+owvSOC--
