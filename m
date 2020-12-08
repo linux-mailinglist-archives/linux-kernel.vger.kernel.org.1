@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662672D3687
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325B92D368B
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 23:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731538AbgLHWys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 17:54:48 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:54078 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731025AbgLHWyr (ORCPT
+        id S1731549AbgLHWzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 17:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730812AbgLHWy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:54:47 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MnJuE167148;
-        Tue, 8 Dec 2020 22:53:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=hAIubkLRTmjxI2uaTzm/opTnOUm9VcffeoFejA8gEzw=;
- b=Y4TP2qsJuoeEkKBeE7LjRoRkO/abjtUGLaXwS5/KVk2i6OK5cCEKJnAuoMeoqGPvU9Wx
- 4lvcchXLKvIulhId2m2TduuVGOXFIH4tCxz5cAb7OrIgxuNYhB5bfCwS036lWEb3FIwo
- cXBmoZcb4YPtlvp6IRFfKb3u31ldXAGCIziDD4JbkF2+js1aWBZCsoXbhaE71FetyFfs
- jNlhAjJPMzuQ/u0SXiOB08pZXOGv1+3x+tfAoW/JrBa64n6t7fLo6B7581e1pRkGRmqc
- yx89NkKyGU7rThUbiu6bSoaLvb9Qkim94yM80Zse/4JWnh4mIglHYljggC+Br2Of2bYB 9g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35825m5du4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 22:53:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MofXq046047;
-        Tue, 8 Dec 2020 22:53:45 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 358kytms2h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 22:53:45 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8Mrh9S016961;
-        Tue, 8 Dec 2020 22:53:44 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 14:53:43 -0800
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: problem booting 5.10
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtynud0n.fsf@ca-mkp.ca.oracle.com>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
-        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
-        <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
-        <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
-        <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
-        <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
-        <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
-        <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk>
-Date:   Tue, 08 Dec 2020 17:53:41 -0500
-In-Reply-To: <ca63ada5-76a6-dae9-e759-838386831f83@kernel.dk> (Jens Axboe's
-        message of "Tue, 8 Dec 2020 15:47:00 -0700")
+        Tue, 8 Dec 2020 17:54:59 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA2C061794;
+        Tue,  8 Dec 2020 14:54:19 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c198so14823wmd.0;
+        Tue, 08 Dec 2020 14:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
+        b=LhH39ZJllmZgRfTf/stoFJUkdm/dcAq3xnEuGAp8Va6ittVOc4iIH8MTdfV7F3DXgY
+         j3v5mJq/mSgfFDthJdNwlTUTwaCdcDGtJ9nyTJRCiBh7Bcz28jPFFincwK7yvmYqww+u
+         DAKUE12Za6tSxJ7Rbe0zSQt5qrwj+HIt2wgsec2kNK5HLwOFFyLjlQsWs7zXeSE4c+qB
+         CnxDu+nEbuB6rOAyoyuc9jUtZDFbOJxyqkE3eylvSJUrWtUSSw6hC2tAP4Uz/ne32UcK
+         bbFq2NUfAMF+5bmOEe43HzoPU6V9+bYd7SP94MCjgLKDEkRjS+HLojKmjx+3QNpVvf7V
+         GcdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
+        b=MY63rgHCCnisO9qVA1gf5tmemcitzdYr41OGqSFl6tN4reyZx7Zwwtbg8BJbqduaFf
+         CP8rb8CYruDB2RUgfFKvnV+FVVnsnGgRSOxXkffhWQqzlIZfqKd49gfRBuP9AtW+K69B
+         EoX5lHTl0NSMTZxO11RnPjgHVai45g+y3RPll8lr9edVJF8yE9puia4DdnGxWautqLQu
+         22pnJECqT9wOMzmHaOpk0/6E9fOTZMoW9FOoNtt6t5dIj4zIyvksTwlEG6EFX7M6tXAY
+         d1lFQNLVITAgJRKtkDVxkz7TWPKghugTTYy67Eoua5rBRxqTFds/q+ZQiDP4+1Bvwxqx
+         t0Lw==
+X-Gm-Message-State: AOAM530UdjG8ydEoaDtsBcYSrGAfo00kpvKML0Vz6kEq3TX+/klBe+zq
+        3rvHBl8CIoHZiij7v0XYXEyP8ULgahwTqYCjoc0=
+X-Google-Smtp-Source: ABdhPJw400Ws44xNLBD4ZTOJFxkw8sVbXemco2YVdG5lmPlUv7qXS9ndgp56DxsGieEi2wCieOAMSG4duQr34HnEoD0=
+X-Received: by 2002:a1c:b742:: with SMTP id h63mr64902wmf.122.1607468057844;
+ Tue, 08 Dec 2020 14:54:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- malwarescore=0 suspectscore=1 mlxlogscore=999 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080143
+References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
+ <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
+ <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com> <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+In-Reply-To: <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Wed, 9 Dec 2020 07:54:06 +0900
+Message-ID: <CAM7-yPQ_Ak+uzPadeuAUCjv-MP=aK1HuKXC=czzM_+=wWCvnLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
+        masahiroy@kernel.org, peterz@infradead.org,
+        peter.enderborg@sony.com, krzk@kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
+        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
+        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
+        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
+        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        dushistov@mail.ru,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature
 
-Jens,
+But, I think it's not quite a kernel-wide change just add the
+correspondent function to find_last_bit.
+So, if we add this feature, maybe some users will use it in near future.
+As my fault, I sent this patch without cover in patch [0/8] to explain why
+So, I will send this patch again to take some review...
 
-> Thanks for testing! Linus, do you just want to revert this, or do you
-> want me to queue it up?
+Sorry to make a noise again and Thanks to advice.
 
-Oh, I just realized the megaraid patch went in through block.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+On Sun, Dec 6, 2020 at 6:01 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 6.12.20 =D0=B3. 10:56 =D1=87., Yun Levi wrote:
+> >> This, and the change above this, are not related to this patch so you
+> >> might not want to include them.
+> >
+> >> Also, why is this patch series even needed?  I don't see a justificati=
+on
+> >> for it anywhere, only "what" this patch is, not "why".
+> >
+> > I think the find_last_zero_bit will help to improve in
+> > 7th patch's change and It can be used in the future.
+> > But if my thinking is bad.. Please let me know..
+> >
+> > Thanks.
+> > Levi.
+> >
+>
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature. Also do you have measurements showing it indeed improves
+> performances?
