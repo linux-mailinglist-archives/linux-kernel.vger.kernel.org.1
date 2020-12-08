@@ -2,155 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921BF2D2A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4947B2D2A98
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgLHMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:16:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727550AbgLHMQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:16:30 -0500
-X-Gm-Message-State: AOAM531pCNf3+pt4/gxI7ev0HTiugt+kVRX+mWEA0Xc3ccWL5NzuNlxw
-        Q5DMJzmliyrBsBbl/PytXnxnVlcQgL24/EPkz3M=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607429749;
-        bh=K94MQ6q50UGiEvhj+VB0lG6N0jZujxUWTttppsr8gwM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ns4p/v7H7ScAMGSZF+uiL0GLrzuK92X4fsakgAnSLuAme/K5fEsEi38bY3jw803Wy
-         audkXq/WYB7RTMZ3yOuTK6onrxqVBtnoYqkkvLnvpNRPrQxrYcO6XAo70lbZp3Wa4T
-         9qu4teHx4OR4D7tI19aZUR6LPG7nQ4wU5rtl2vcxyqBk81XPqwKBpVKsGaiwHXIJuy
-         PuNNq9XDDyWTO1GKhaqTq1XoK2qrf9wdaOmxVotAI6FaDwC0nVzQIN5BYHWvkh+7Pl
-         TIDC46XqhgPtl/QkCcf02gs7jdiOHkHzlufEr692R+gOJKVmFAwvvzdy3POnIF8teL
-         9TV0RUdUG0tPw==
-X-Google-Smtp-Source: ABdhPJwYXzEbw5wojirREdrWvTDFdS68u6lSRc1TxQHV80oZ08BdPpLLWGJpTl+WAoAqOweiNLoKVC/CXI7Rr5nYmRU=
-X-Received: by 2002:a05:6808:9a9:: with SMTP id e9mr2451121oig.4.1607429748222;
- Tue, 08 Dec 2020 04:15:48 -0800 (PST)
+        id S1729401AbgLHMV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727784AbgLHMV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:21:58 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BC6C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:21:18 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id m19so24243444ejj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:21:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IAI5d5pS3efjsbXLYKh2mpe6utm2q/uw9y9/qssJFDE=;
+        b=SWYPVvs1v5zMXa7VMWQMNpj3ZF+7g4QlHRba+Z1qnK+/erhw4fLhgQBPaqqnnlSoDf
+         S976I6ob+lwEb5r2qXXsTcKvZsOXfm+evYsywKQr6G40vEA30YKzZhXfojwvQdkuJ3YQ
+         Av2hiGFDRCZ3sLe+aXd+MSwMXm6VDhjk3xlBYdRSeN9bzQ+QV3x2JxBxKK2bzEpR6Ou1
+         sNJg7yQohGgqCz62wGe35Kz1eyakKWEWGYWmFC+wBoM9GX/+WnNGAP3L55mqVAsu7yDV
+         fHXMp841PHLXyped1FUxxpLKDzw2rDDwOdIiz/ZrD2LfTvtDb24UwhmCztFOPPNpTmCG
+         NWuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IAI5d5pS3efjsbXLYKh2mpe6utm2q/uw9y9/qssJFDE=;
+        b=lw5Ga+pKgQezECiOQGzTYCTT0U19f2oo7+E6TjcVhfFn0Os4wHSIOwXwvHyMvqwuKQ
+         OAz1ocqPbvYuxZ0f+UKa55xNyTsFA5AYqa/8wVvQ74f4tueZRaEMY10VX1+YpAZjcy9p
+         6/MHtE9U90RowDurzwJM+oshX9/hjVlujl8drmr94tJk7ErrwBgJWJiO3pVs9XDOMl3d
+         ha0YxvWYBU1VxnX+QC57IrH/43njWFhAJGt73R3mBo+XOvOkynbCBdeNd7MIaPuVByHj
+         fdo+fwEYvh60VYgIco51r06QuChCsIbTsUwXtzJveKwW4sYrfXtNES8a2WJjSmINWO4w
+         WZGQ==
+X-Gm-Message-State: AOAM530rn+wI4TGIO6YM857YwwEqDr4+qFPvONQw5YuRL7cet+9SfaR8
+        A+8i/bHOLLWdR12/wWRq7dtN4g==
+X-Google-Smtp-Source: ABdhPJxhL6i6yFmZQunp7bazoVScU9q+jr5k0Xgzao5BDSe6y/H+nh7mEFR+wnSA5Kolq55NeVPyBQ==
+X-Received: by 2002:a17:906:718b:: with SMTP id h11mr6669589ejk.241.1607430076628;
+        Tue, 08 Dec 2020 04:21:16 -0800 (PST)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id e3sm15781214ejq.96.2020.12.08.04.21.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 04:21:15 -0800 (PST)
+From:   "Javier =?utf-8?B?R29uesOhbGV6?=" <javier@javigon.com>
+X-Google-Original-From: Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
+Date:   Tue, 8 Dec 2020 13:21:15 +0100
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     dgilbert@interlog.com, Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        nj.shetty@samsung.com, joshi.k@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+Message-ID: <20201208122115.jy7s3w2wr3ysxvkk@mpHalley>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+ <20201204094659.12732-1-selvakuma.s1@samsung.com>
+ <20201207141123.GC31159@lst.de>
+ <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+ <194d7813-8c8c-85c8-e0c8-94aaab7c291e@interlog.com>
+ <9b2f5ab2-3358-fcce-678f-982ef79c9252@suse.de>
 MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
-In-Reply-To: <20201201213707.541432-1-samitolvanen@google.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 8 Dec 2020 13:15:31 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
-Message-ID: <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b2f5ab2-3358-fcce-678f-982ef79c9252@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 10:37 PM 'Sami Tolvanen' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> This patch series adds support for building the kernel with Clang's
-> Link Time Optimization (LTO). In addition to performance, the primary
-> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> to be used in the kernel. Google has shipped millions of Pixel
-> devices running three major kernel versions with LTO+CFI since 2018.
->
-> Most of the patches are build system changes for handling LLVM
-> bitcode, which Clang produces with LTO instead of ELF object files,
-> postponing ELF processing until a later stage, and ensuring initcall
-> ordering.
->
-> Note that arm64 support depends on Will's memory ordering patches
-> [1]. I will post x86_64 patches separately after we have fixed the
-> remaining objtool warnings [2][3].
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
-> [2] https://lore.kernel.org/lkml/20201120040424.a3wctajzft4ufoiw@treble/
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git/log/?h=objtool-vmlinux
->
-> You can also pull this series from
->
->   https://github.com/samitolvanen/linux.git lto-v8
+On 08.12.2020 07:44, Hannes Reinecke wrote:
+>On 12/7/20 11:12 PM, Douglas Gilbert wrote:
+>>On 2020-12-07 9:56 a.m., Hannes Reinecke wrote:
+>>>On 12/7/20 3:11 PM, Christoph Hellwig wrote:
+>>>>So, I'm really worried about:
+>>>>
+>>>>  a) a good use case.  GC in f2fs or btrfs seem like good use cases, as
+>>>>     does accelating dm-kcopyd.  I agree with Damien that 
+>>>>lifting dm-kcopyd
+>>>>     to common code would also be really nice.  I'm not 100% 
+>>>>sure it should
+>>>>     be a requirement, but it sure would be nice to have
+>>>>     I don't think just adding an ioctl is enough of a use case 
+>>>>for complex
+>>>>     kernel infrastructure.
+>>>>  b) We had a bunch of different attempts at SCSI XCOPY support 
+>>>>form IIRC
+>>>>     Martin, Bart and Mikulas.  I think we need to pull them into this
+>>>>     discussion, and make sure whatever we do covers the SCSI needs.
+>>>>
+>>>And we shouldn't forget that the main issue which killed all 
+>>>previous implementations was a missing QoS guarantee.
+>>>It's nice to have simply copy, but if the implementation is 
+>>>_slower_ than doing it by hand from the OS there is very little 
+>>>point in even attempting to do so.
+>>>I can't see any provisions for that in the TPAR, leading me to the 
+>>>assumption that NVMe simple copy will suffer from the same issue.
+>>>
+>>>So if we can't address this I guess this attempt will fail, too.
+>>
+>>I have been doing quite a lot of work and testing in my sg driver rewrite
+>>in the copy and compare area. The baselines for performance are dd and
+>>io_uring-cp (in liburing). There are lots of ways to improve on them. Here
+>>are some:
+>>    - the user data need never pass through the user space (could
+>>      mmap it out during the READ if there is a good reason). Only the
+>>      metadata (e.g. NVMe or SCSI commands) needs to come from the user
+>>      space and errors, if any, reported back to the user space.
+>>    - break a large copy (or compare) into segments, with each segment
+>>      a "comfortable" size for the OS to handle, say 256 KB
+>>    - there is one constraint: the READ in each segment must complete
+>>      before its paired WRITE can commence
+>>      - extra constraint for some zoned disks: WRITEs must be
+>>        issued in order (assuming they are applied in that order, if
+>>        not, need to wait until each WRITE completes)
+>>    - arrange for READ WRITE pair in each segment to share the same bio
+>>    - have multiple slots each holding a segment (i.e. a bio and
+>>      metadata to process a READ-WRITE pair)
+>>    - re-use each slot's bio for the following READ-WRITE pair
+>>    - issue the READs in each slot asynchronously and do an interleaved
+>>      (io)poll for completion. Then issue the paired WRITE
+>>      asynchronously
+>>    - the above "slot" algorithm runs in one thread, so there can be
+>>      multiple threads doing the same algorithm. Segment manager needs
+>>      to be locked (or use an atomics) so that each segment (identified
+>>      by its starting LBAs) is issued once and only once when the
+>>      next thread wants a segment to copy
+>>
+>>Running multiple threads gives diminishing or even worsening returns.
+>>Runtime metrics on lock contention and storage bus capacity may help
+>>choosing the number of threads. A simpler approach might be add more
+>>threads until the combined throughput increase is less than 10% say.
+>>
+>>
+>>The 'compare' that I mention is based on the SCSI VERIFY(BYTCHK=1) command
+>>(or NVMe NVM Compare command). Using dd logic, a disk to disk compare can
+>>be implemented with not much more work than changing the WRITE to a VERIFY
+>>command. This is a different approach to the Linux cmp utility which
+>>READs in both sides and does a memcmp() type operation. Using ramdisks
+>>(from the scsi_debug driver) the compare operation (max ~ 10 GB/s) was
+>>actually faster than the copy (max ~ 7 GB/s). I put this down to WRITE
+>>operations taking a write lock over the store while the VERIFY only
+>>needs a read lock so many VERIFY operations can co-exist on the same
+>>store. Unfortunately on real SAS and NVMe SSDs that I tested the
+>>performance of the VERIFY and NVM Compare commands is underwhelming.
+>>For comparison, using scsi_debug ramdisks, dd copy throughput was
+>>< 1 GB/s and io_uring-cp was around 2-3 GB/s. The system was Ryzen
+>>3600 based.
+>>
+>Which is precisely my concern.
+>Simple copy might be efficient for one particular implementation, but 
+>it might be completely off the board for others.
+>But both will be claiming to support it, and us having no idea whether 
+>choosing simple copy will speed up matters or not.
+>Without having a programmatic way to figure out the speed of the 
+>implementation we have to detect the performance ourselves, like the 
+>benchmarking loop RAID5 does.
+>I was hoping to avoid that, and just ask the device/controller; but 
+>that turned out to be in vain.
 
-I've tried pull this into my randconfig test tree to give it a spin.
-So far I have
-not managed to get a working build out of it, the main problem so far being
-that it is really slow to build because the link stage only uses one CPU.
-These are the other issues I've seen so far:
+I believe it makes sense to do extensive characterization to understand
+how the host and device implementation behave. However, I do not believe
+we will get far if the requirement is that any acceleration has to
+outperform the legacy path under all circumstances and implementations.
 
-- one build seems to take even longer to link. It's currently at 35GB RAM
-  usage and 40 minutes into the final link, but I'm worried it might
-not complete
-  before it runs out of memory.  I only have 128GB installed, and google-chrome
-  uses another 30GB of that, and I'm also doing some other builds in parallel.
-  Is there a minimum recommended amount of memory for doing LTO builds?
+At this moment in time, this is a feature very much targeted to
+eliminating the extra read/write traffic generated by ZNS host GC.
 
-- One build failed with
- ld.lld -EL -maarch64elf -mllvm -import-instr-limit=5 -r -o vmlinux.o
--T .tmp_initcalls.lds --whole-archive arch/arm64/kernel/head.o
-init/built-in.a usr/built-in.a arch/arm64/built-in.a kernel/built-in.a
-certs/built-in.a mm/built-in.a fs/built-in.a ipc/built-in.a
-security/built-in.a crypto/built-in.a block/built-in.a
-arch/arm64/lib/built-in.a lib/built-in.a drivers/built-in.a
-sound/built-in.a net/built-in.a virt/built-in.a --no-whole-archive
---start-group arch/arm64/lib/lib.a lib/lib.a
-./drivers/firmware/efi/libstub/lib.a --end-group
-  "ld.lld: error: arch/arm64/kernel/head.o: invalid symbol index"
-  after about 30 minutes
-
-- CONFIG_CPU_BIG_ENDIAN doesn't seem to work with lld, and LTO
-  doesn't work with ld.bfd.
-  I've added a CPU_LITTLE_ENDIAN dependency to
-  ARCH_SUPPORTS_LTO_CLANG{,THIN}
-
-- one build failed with
-  "ld.lld: error: Never resolved function from blockaddress (Producer:
-'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
-  Not sure how to debug this
-
-- one build seems to have dropped all symbols the string operations
-from vmlinux,
-  so while the link goes through, modules cannot be loaded:
- ERROR: modpost: "memmove" [drivers/media/rc/rc-core.ko] undefined!
- ERROR: modpost: "memcpy" [net/wireless/cfg80211.ko] undefined!
- ERROR: modpost: "memcpy" [net/8021q/8021q.ko] undefined!
- ERROR: modpost: "memset" [net/8021q/8021q.ko] undefined!
- ERROR: modpost: "memcpy" [net/unix/unix.ko] undefined!
- ERROR: modpost: "memset" [net/sched/cls_u32.ko] undefined!
- ERROR: modpost: "memcpy" [net/sched/cls_u32.ko] undefined!
- ERROR: modpost: "memset" [net/sched/sch_skbprio.ko] undefined!
- ERROR: modpost: "memcpy" [net/802/garp.ko] undefined!
- I first thought this was related to a clang-12 bug I saw the other day, but
- this also happens with clang-11
-
-- many builds complain about thousands of duplicate symbols in the kernel, e.g.
-  ld.lld: error: duplicate symbol: qrtr_endpoint_post
- >>> defined in net/qrtr/qrtr.lto.o
- >>> defined in net/qrtr/qrtr.o
- ld.lld: error: duplicate symbol: init_module
- >>> defined in crypto/842.lto.o
- >>> defined in crypto/842.o
- ld.lld: error: duplicate symbol: init_module
- >>> defined in net/netfilter/nfnetlink_log.lto.o
- >>> defined in net/netfilter/nfnetlink_log.o
- ld.lld: error: duplicate symbol: vli_from_be64
- >>> defined in crypto/ecc.lto.o
- >>> defined in crypto/ecc.o
- ld.lld: error: duplicate symbol: __mod_of__plldig_clk_id_device_table
- >>> defined in drivers/clk/clk-plldig.lto.o
- >>> defined in drivers/clk/clk-plldig.o
-
-Not sure if these are all known issues. If there is one you'd like me try
-take a closer look at for finding which config options break it, I can try
-
-     Arnd
+This said, we do see the value in aligning with existing efforts to
+offload copy under other use cases, so if you have a set of tests we can
+run to speak the same language, we would be happy to take them and adapt
+them to the fio extensions we have posted for testing this too.
