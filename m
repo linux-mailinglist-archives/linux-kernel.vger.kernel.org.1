@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05062D2DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA122D2DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730044AbgLHPEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:04:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
+        id S1729926AbgLHPF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:05:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729963AbgLHPD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:03:59 -0500
-Date:   Tue, 8 Dec 2020 07:03:09 -0800
+        id S1729587AbgLHPF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:05:26 -0500
+Date:   Tue, 8 Dec 2020 07:04:46 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607439789;
-        bh=or1DcCapyMZAKhkw6/vP2TDxE1YfQnLkxL6zq42F2js=;
+        s=k20201202; t=1607439886;
+        bh=KIsLRem+6hmsW80d/+NaUnBYFXS6q1ZASBK6XHnoAro=;
         h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aeauVlPdyqN7Wev4D/DKw8dA5uKQphqz58QLydTXHAAW40ucaXta5MhCDVQMm/ZNN
-         EbCQ7avmA+j5nl2K2z8Cbh1PftPqaxW4yYzel3EO7IpZWQ1aaZ6r6sZxQiwznHcFdx
-         kciyO1GDch/6fW6IJE3QjJ9mYPKWCkphPQl586eBEIOb+s8+5C4wxEN3gePy+9Qo8X
-         ZqCGt6KlTaKSG+v1WpQSrWYWeXRbCMxwWPH8c3DyUQyKe2eoDkUqrtrWn53WOvOHxU
-         6tgGTK/C8SQSv8NNy65P/j7kCRXqlUAHxkBzaxhIrLQC7tky374Rg9RyQWhcl8o6UE
-         ++KeByZtXs43Q==
+        b=ZwBLAa1Y3fjPwwvd6RYhG5Xp9+zN5stdMitEBNCNUexd/XYW4vlxhxsSMqlMtyUPN
+         rs9SG9pmhW9/EzsYlNJtx8q80tZoHQZrrk/HiKoRvXOTl9jXcgzFFl4fNCjnOss0XP
+         YzyEsdI/4ylHFSCgRnAx/tlSAaWWmJbVxabqL1Swgb57xRhI0tABg9dmRfoaJEiyA5
+         Yf/EOArLiQ17+UWXzhff8f1Wv9WcQgIrCJdulH7zS9a98+Tth55JWAuYnN2cNjKbNu
+         5RLIXyNp9mxcJUN850DKPCNe6LUmyRxPY34MFm/VAHtjJQcYzX08gv3QZ/B+w4jFHk
+         lgzQFmlDyyC5A==
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marco Elver <elver@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
         kasan-dev <kasan-dev@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        syzbot+23a256029191772c2f02@syzkaller.appspotmail.com,
-        syzbot+56078ac0b9071335a745@syzkaller.appspotmail.com,
-        syzbot+867130cb240c41f15164@syzkaller.appspotmail.com
-Subject: Re: [patch 3/3] tick: Annotate tick_do_timer_cpu data races
-Message-ID: <20201208150309.GP2657@paulmck-ThinkPad-P72>
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: timers: Move clearing of base::timer_running under base::lock
+Message-ID: <20201208150446.GQ2657@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20201206211253.919834182@linutronix.de>
- <20201206212002.876987748@linutronix.de>
- <20201207120943.GS3021@hirez.programming.kicks-ass.net>
- <87y2i94igo.fsf@nanos.tec.linutronix.de>
- <CANpmjNNQiTbnkkj+ZHS5xxQuQfnWN_JGwSnN-_xqfa=raVrXHQ@mail.gmail.com>
- <20201207194406.GK2657@paulmck-ThinkPad-P72>
- <20201208081129.GQ2414@hirez.programming.kicks-ass.net>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+ <20201207130753.kpxf2ydroccjzrge@linutronix.de>
+ <87a6up7kpt.fsf@nanos.tec.linutronix.de>
+ <20201207152533.rybefuzd57kxxv57@linutronix.de>
+ <20201207160648.GF2657@paulmck-ThinkPad-P72>
+ <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201208081129.GQ2414@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 09:11:29AM +0100, Peter Zijlstra wrote:
-> On Mon, Dec 07, 2020 at 11:44:06AM -0800, Paul E. McKenney wrote:
+On Tue, Dec 08, 2020 at 09:50:49AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2020-12-07 08:06:48 [-0800], Paul E. McKenney wrote:
+> > > Yes, but it triggers frequently. Like `rcuc' is somehow is aligned with
+> > > the timeout.
+> > 
+> > Given that a lot of RCU processing is event-driven based on timers,
+> > and given that the scheduling-clock interrupts are synchronized for
+> > energy-efficiency reasons on many configs, maybe this alignment is
+> > expected behavior?
 > 
-> > Also, in this particular case, why data_race() rather than READ_ONCE()?
-> > Do we really expect the compiler to be able to optimize this case
-> > significantly without READ_ONCE()?
+> No, it is the fact that rcu_preempt has a higher priority than
+> ksoftirqd. So immediately after the wakeup (of rcu_preempt) there is a
+> context switch and expire_timers() has this:
 > 
-> It's about intent and how the code reads. READ_ONCE() is something
-> completely different from data_race(). data_race() is correct here.
+> |   raw_spin_unlock_irq(&base->lock);
+> |   call_timer_fn(timer, fn, baseclk);
+> |   raw_spin_lock_irq(&base->lock);
+> |   base->running_timer = NULL;
+> |   timer_sync_wait_running(base);
+> 
+> So ->running_timer isn't reset and try_to_del_timer_sync() (that
+> del_timer_sync() from schedule_timeout()) returns -1 and then the corner
+> case is handled where `expiry_lock' is acquired. So everything goes as
+> expected.
 
-Why?
+Makes sense!  Thank you for the explanation!
 
 							Thanx, Paul
