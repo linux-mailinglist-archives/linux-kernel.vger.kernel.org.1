@@ -2,270 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19DD2D2502
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDEC2D2505
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 08:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgLHHyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 02:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgLHHyW (ORCPT
+        id S1727839AbgLHHyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 02:54:51 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:51441 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgLHHyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:54:22 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BB7C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 23:53:42 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id y8so577967plp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 23:53:41 -0800 (PST)
+        Tue, 8 Dec 2020 02:54:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1607414090; x=1638950090;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4ad5cGzT8QzM0pMsjbawY7yd5r5HJDtKuzrKBzpztRI=;
+  b=epYb8vwYMLqT9YKLvBWdT9ZUSZbmTYpngBrRDlSFMmGlzfwmL4waTOyk
+   Q9i+4VOEuod+HkkzvYJYJpi2y8/0ue5NdS8IRA8Pw1soR2uJZRSj1YjV2
+   L5gV5ShTh8BeQNGBppONeFlyGrLD00KqipiHI+CNEGwqWqnlKkMgXQDdW
+   VxkIB+Ve4tBB4YP74jo6SKysAZxh3kc66e48867YbOuuyP1aAzetUAI7O
+   ki+6Fo/CWldIqlJryhIjH7pq22denIPX7yRS6B/KH2Dkx8tjBQGzuUF2a
+   uns6wa6lzELCHrJYf/QH66X2BvQhy8LAHUcq3OXWmcdd0nTiX61WRzeKm
+   w==;
+IronPort-SDR: c3FXbp5qS/GpeDk5lA72M0/slte1XHg72uWtGrOqfoQnCcfzcZct1F3/4qZFTF5ritxwtv7ngR
+ aJWlm5707ttExZJXWtQcCwBw22PZy9/mbeXFU1Nufo2x6sjWX92vzxgBSfTURppygt8EcjmwZB
+ lAoERR8VR6AJYPsYecyBPuhXc4SU9d3A1XqQtl/RhUe0QTmWqWDl5Vv+ZDGXI9E/BkQmIlikWC
+ Zs3izzDWez5wRGLeOVvAaSZunrhcgOHDTGfh9S7+asdHx5ToiaGsu70Md/1WuqxwrrCIlnbwop
+ 6vs=
+X-IronPort-AV: E=Sophos;i="5.78,401,1599494400"; 
+   d="scan'208";a="155877826"
+Received: from mail-bn8nam11lp2176.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.176])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Dec 2020 15:53:43 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KcK3e5sYOhVdIvP6mkHMMMGS4vseANn0qfZaVhWukQ03ta/xdZxGbNEHrH3FTCfukDj+dB7OWpVvi/bNfHZdV/adFaXAoA0Lh1Zi/kjGYuEppjzN7p1bFdOis4BxemrJ3BgNH7rLLDD0KKhSeCW7PvkYwZ5ov+phkgmUJSihCzuvbt2SmOFx72NJQluC7FNfDhmVWYlFodzmslbFLzkO6d8qfhKP+E7Km0xpNo/6VtvHXE3FjIFIWDFoGms0TT/n4Jt6kfBeq1x57zeZx9Pmcj2DZuaAOfwz7lErYZDITailVp5bCW2bxbg/l2FJu33Ap7/yJtpw0CXHTpTfCH+LYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4ad5cGzT8QzM0pMsjbawY7yd5r5HJDtKuzrKBzpztRI=;
+ b=dTziYwP41pMYYPtMrhdCYAxgiQv8vevm9x4oRLhViHDIGljnp8RL/B5pbBpTqUPmK/fRV0bidCbNvke1QzChzvw3257++KgwUuM23CFSTr76VIzKnDK8xjra3vllUFjcmKdq+0gzJg1jm6EcARyp1jj24nbuTp9GOxmFYr50AYBxeuN9qZCduEptDLvF4ZI7IQy4Q+ko+H9X6ZoF3SeX7Vy62z7SeF7qeKGwIGVYVNoLAdFStcFnr162SwHJrQBxuxFLkuVbZeJOf6F5iQOUEH2ME7w6EMUgJ0sabTqBONlrZjRWBoMOGB61I+/aPqZIDDYZcUIJ3DBA775kmd68QQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6yOAVZjGe0LBykCQztVKp2D4Gmc2eJlF3ZDhvK2CW4w=;
-        b=I6+h+plxzfDytT3JY5089iYAUGryc03SX1u46qY0mKqZS/nBI9KbegEu4vDHyaZvR8
-         1gN8VtP1D147cTFIn3dimmElmmW76jgsNjvyGHLhCTrWY/PbxZ2JNdKmCFX4ErbFkjK6
-         HjxKS1TkSg3AOZFe/5hrIX2hAd2b44RDj1bMTGPEEXKy3iMOS7DPGQyzMTKIGLaEinoL
-         QMwcLKR5xgMkmSRwfs3nkZLQtNfN/Kn3deg57xuctwnL+SjgCSeNvHrAVcebgTrCUkC9
-         5VfC3mjMfe9zjGzylGzR1BMiECSMMYtrSnV24QfimsEQvbnmPOGGuiScUPM2EVmWBFSc
-         mGsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6yOAVZjGe0LBykCQztVKp2D4Gmc2eJlF3ZDhvK2CW4w=;
-        b=Bi0ah/cGBgNdah1mwT56v1v682sIsa6UcllgxkPp4pQU5Iub5vnCvAtspPUx1ka0Cz
-         NlGYR/AkGy8fvATXS3mUhY60dwcBNjfd7SDObxfRO3Ippl9Sg0kypw26YS/a9HX12O1c
-         g8JvW6x4afmbVy4nP3NlkHQqL08s6FgyMWufYyb7K8DD1uy4WgpCpHo5SwHVwuDzl3SA
-         O1lYiZLGKmjhejWL2NK3XS4lpz9mHQ91yrj0Z8qtKIuXAQClTTLZEP0fRkcnw2o8g5Jo
-         Cz4p49qEv9ubAE4etdvTyfmUBlX5yIWT6LePil6n8KBNNWFyHRGyQul2vE2n0vDvcfrp
-         5ABw==
-X-Gm-Message-State: AOAM530OzrkxyXfP84UQzLV7UCGb021IMkrxtDUoolIWO3uQv4J0seCy
-        BF7H+/tK84SxOHm/PlzQoW1v2EqmA1Ykm2b2ZtZ5/A==
-X-Google-Smtp-Source: ABdhPJwCu+RkIOjZ4EZmnfUZRQMKj2S2yjYBnRNWVVVOr4SzPLOF3SVcLmbjbu4HCM5OrM7HcnuIy//60ukVPxOJPPs=
-X-Received: by 2002:a17:902:76c8:b029:d9:d6c3:357d with SMTP id
- j8-20020a17090276c8b02900d9d6c3357dmr20261768plt.34.1607414021513; Mon, 07
- Dec 2020 23:53:41 -0800 (PST)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4ad5cGzT8QzM0pMsjbawY7yd5r5HJDtKuzrKBzpztRI=;
+ b=o88QpJJ7FjwdYyQzM/diOUOzHjoDGWdyEPuZz8DOMjVoG/Za99xkmhtm12bAk3IywVhSQ7N7iGJwtrZBdirq1dOqRkCPyaT97WyE4qxVhPKLiePQz0GvUj1bh+DToZ5Wn61txFpRy7tfjRxqvhEwz6tn7lJYKM83InUv1sp1EGA=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB0538.namprd04.prod.outlook.com (2603:10b6:3:9f::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3632.21; Tue, 8 Dec 2020 07:53:41 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::a564:c676:b866:34f6%8]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
+ 07:53:41 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] scsi: ufs: Fix wrong print message in dev_err()
+Thread-Topic: [PATCH 2/2] scsi: ufs: Fix wrong print message in dev_err()
+Thread-Index: AQHWzMtuS+PgTXOBdUOHwvhHmi+fg6ns1Lng
+Date:   Tue, 8 Dec 2020 07:53:41 +0000
+Message-ID: <DM6PR04MB65750A4923359135E3F50340FCCD0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201207190137.6858-1-huobean@gmail.com>
+ <20201207190137.6858-3-huobean@gmail.com>
+In-Reply-To: <20201207190137.6858-3-huobean@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2f55c4f6-2ebf-426c-b335-08d89b4e617b
+x-ms-traffictypediagnostic: DM5PR04MB0538:
+x-microsoft-antispam-prvs: <DM5PR04MB053824E7E9CA9944190B2178FCCD0@DM5PR04MB0538.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2276;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: n5jJMTmY+mG8x++Awj+uWQZo6hK0SU94Mhu48ZVFOq/kPo5L0iBu9AhAiyfBM3DFX2XhP7NycrOsv68c4hhOGyA7ryZzbOdSixKGBXz6JGSXZJnMsynKZjStCGMOmcR4ylF6XS1X21+2/RZ5NMCzZToOIRxfIVWUcnrkvB9Ug2uQAaV4R0KcVc7J5xzAHuCjM3KkubPIZiQz3LbDsKIAVPum03cOn7otyofLXNvIb6PVBxjBbdjoOagZtgo4aRgzzpCDQn2rO8+/cYjm3D5dzDokc4N8z2C46Tiv8ficg5Z0K2kKC19TZhx/MPXWxg8BMm76gqeQ2Ylu3+3HhB9qrHbuaj0Y5kKqAiBZ4/s/Fno186u5cSlCb+WQ+1M5h6zZ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(376002)(366004)(9686003)(86362001)(71200400001)(55016002)(54906003)(33656002)(921005)(2906002)(66946007)(76116006)(66446008)(478600001)(5660300002)(316002)(110136005)(558084003)(26005)(4326008)(8676002)(66556008)(6506007)(83380400001)(52536014)(15650500001)(7416002)(8936002)(64756008)(66476007)(186003)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Lp8yohqlFl5ZEIlCDIaheOpWbBdzHgZ7Sl0cufvFXuT9rjSuo/Psyz0A7W93?=
+ =?us-ascii?Q?E7a9UeEeaHQCx49LG+1y2ull3pr0cZ8lpBLbMw+4ui3Gvc6qQV+ryUclX/ac?=
+ =?us-ascii?Q?PlLd2AHQ7vSI32U96HjpMA+jZkPvBt0t49awJkMM2M8M99s5r3VbSkh7cxoy?=
+ =?us-ascii?Q?brHVA9ZjMYXVo3BH8+qrA1YjoXa1YXCJc7dkbawJlUpXZyJw2RtKHcBdvUiV?=
+ =?us-ascii?Q?CwDVg5789lWmYfZbdR9jfFN0YWNYFJkI+0xL/fdFqp9PqJPzFrFW9S7WOdjG?=
+ =?us-ascii?Q?a20F2oWXJQ0a/Jxpo/OI2uePy6bzvVx8aaEDGPOdrXnU/KyB/rGIvzDTiq6H?=
+ =?us-ascii?Q?GjewSYZb4Xk6PL4cLibXzFlttACl0opcXKM7bKIvNJA5rk2g39f1wjQoN9Lf?=
+ =?us-ascii?Q?gOsbNV7NuSaSQEkbjw7KGQxBz9R1Rapsataei3Rw1BbVZPTvsgrf77Nr2OsV?=
+ =?us-ascii?Q?2rCBXOxhJEf8C0Jr6yRHZDKJYXsfrmkZwb0U73P2j6snbjo6ReXWRE1Naw6i?=
+ =?us-ascii?Q?KiAnEd5hhxzHCtIa9uYBM12AVQ/59oakPMF8nRjwhp8PjI8g0WH4MjyP5bjv?=
+ =?us-ascii?Q?+XRVdFXRG/X9yWuwH5HCY4WY5N9Vac7hfgYCvKLFbvRVQmq5+LnRjvWi8DsE?=
+ =?us-ascii?Q?6aoTHgS+6qYytGnOmyKAzH/fmz0RCMAgkl1hP9WxtHK9BEiHabxgJkb6ndHy?=
+ =?us-ascii?Q?8S4vdTleDJGUEPOjgB7gpEAxxf+7Lwi5gw98KmP+DpfaRFMT+AIoluqlLmuS?=
+ =?us-ascii?Q?zKDmFQLnPKOOV88HCP/LBHtEYUTwyqfU21ysc2lp/kJV2jeoTd3hCFnksWLy?=
+ =?us-ascii?Q?+FpU691T2gR/aGI8EFMohN6Dx+fTgmkSENAhMbb7iNLbVS2WaEs9pt40SRy2?=
+ =?us-ascii?Q?0/J0f65gDPZq6fk415oTI8Txt1+SG9jnECtjo8/uFH5Oe1lr5BZqCuaw+9Vo?=
+ =?us-ascii?Q?e0Q+24ebb8htJckmtOsyIlJUEDKrK6mikUJXI+BByi4=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201208041847.72122-1-songmuchun@bytedance.com>
- <20201208041847.72122-8-songmuchun@bytedance.com> <CAM9Jb+jg7dD3u4b8P4X_6ginSM3UwVtmbdQzjaencb0r3_bAuQ@mail.gmail.com>
-In-Reply-To: <CAM9Jb+jg7dD3u4b8P4X_6ginSM3UwVtmbdQzjaencb0r3_bAuQ@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 15:53:05 +0800
-Message-ID: <CAMZfGtV=tc3=ZbePPEWTA2ziDb1hw8KzJXc+Uiedx+xmXY--XA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 7/7] mm: memcontrol: make the slab
- calculation consistent
-To:     Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f55c4f6-2ebf-426c-b335-08d89b4e617b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 07:53:41.6553
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Er/cuKfdyUtm5nxENiZannD13fprP9ZJThlHh4pJner3Xk3ntmfpDY1NILiRXA8F9AlKvgQyhb9Vf5U1Vm2EUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:21 PM Pankaj Gupta
-<pankaj.gupta.linux@gmail.com> wrote:
->
-> > Although the ratio of the slab is one, we also should read the ratio
-> > from the related memory_stats instead of hard-coding. And the local
-> > variable of size is already the value of slab_unreclaimable. So we
-> > do not need to read again.
-> >
-> > We can drop the ratio in struct memory_stat. This can make the code
-> > clean and simple. And get rid of the awkward mix of static and runtime
-> > initialization of the memory_stats table.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 112 ++++++++++++++++++++++++++++++++++++--------------------
-> >  1 file changed, 73 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index a40797a27f87..841ea37cc123 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1511,49 +1511,78 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
-> >
-> >  struct memory_stat {
-> >         const char *name;
-> > -       unsigned int ratio;
-> >         unsigned int idx;
-> >  };
-> >
-> >  static const struct memory_stat memory_stats[] = {
-> > -       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
-> > -       { "file", PAGE_SIZE, NR_FILE_PAGES },
-> > -       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-> > -       { "pagetables", PAGE_SIZE, NR_PAGETABLE },
-> > -       { "percpu", 1, MEMCG_PERCPU_B },
-> > -       { "sock", PAGE_SIZE, MEMCG_SOCK },
-> > -       { "shmem", PAGE_SIZE, NR_SHMEM },
-> > -       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-> > -       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-> > -       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-> > +       { "anon",                       NR_ANON_MAPPED                  },
-> > +       { "file",                       NR_FILE_PAGES                   },
-> > +       { "kernel_stack",               NR_KERNEL_STACK_KB              },
-> > +       { "pagetables",                 NR_PAGETABLE                    },
-> > +       { "percpu",                     MEMCG_PERCPU_B                  },
-> > +       { "sock",                       MEMCG_SOCK                      },
-> > +       { "shmem",                      NR_SHMEM                        },
-> > +       { "file_mapped",                NR_FILE_MAPPED                  },
-> > +       { "file_dirty",                 NR_FILE_DIRTY                   },
-> > +       { "file_writeback",             NR_WRITEBACK                    },
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -       { "anon_thp", PAGE_SIZE, NR_ANON_THPS },
-> > -       { "file_thp", PAGE_SIZE, NR_FILE_THPS },
-> > -       { "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
-> > +       { "anon_thp",                   NR_ANON_THPS                    },
-> > +       { "file_thp",                   NR_FILE_THPS                    },
-> > +       { "shmem_thp",                  NR_SHMEM_THPS                   },
-> >  #endif
-> > -       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-> > -       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> > -       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-> > -       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-> > -       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-> > -
-> > -       /*
-> > -        * Note: The slab_reclaimable and slab_unreclaimable must be
-> > -        * together and slab_reclaimable must be in front.
-> > -        */
-> > -       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-> > -       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-> > +       { "inactive_anon",              NR_INACTIVE_ANON                },
-> > +       { "active_anon",                NR_ACTIVE_ANON                  },
-> > +       { "inactive_file",              NR_INACTIVE_FILE                },
-> > +       { "active_file",                NR_ACTIVE_FILE                  },
-> > +       { "unevictable",                NR_UNEVICTABLE                  },
-> > +       { "slab_reclaimable",           NR_SLAB_RECLAIMABLE_B           },
-> > +       { "slab_unreclaimable",         NR_SLAB_UNRECLAIMABLE_B         },
-> >
-> >         /* The memory events */
-> > -       { "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
-> > -       { "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
-> > -       { "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
-> > -       { "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
-> > -       { "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
-> > -       { "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
-> > -       { "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
-> > +       { "workingset_refault_anon",    WORKINGSET_REFAULT_ANON         },
-> > +       { "workingset_refault_file",    WORKINGSET_REFAULT_FILE         },
-> > +       { "workingset_activate_anon",   WORKINGSET_ACTIVATE_ANON        },
-> > +       { "workingset_activate_file",   WORKINGSET_ACTIVATE_FILE        },
-> > +       { "workingset_restore_anon",    WORKINGSET_RESTORE_ANON         },
-> > +       { "workingset_restore_file",    WORKINGSET_RESTORE_FILE         },
-> > +       { "workingset_nodereclaim",     WORKINGSET_NODERECLAIM          },
-> >  };
-> >
-> > +/* Translate stat items to the correct unit for memory.stat output */
-> > +static int memcg_page_state_unit(int item)
-> > +{
-> > +       int unit;
-> > +
-> > +       switch (item) {
-> > +       case MEMCG_PERCPU_B:
-> > +       case NR_SLAB_RECLAIMABLE_B:
-> > +       case NR_SLAB_UNRECLAIMABLE_B:
-> > +       case WORKINGSET_REFAULT_ANON:
-> > +       case WORKINGSET_REFAULT_FILE:
-> > +       case WORKINGSET_ACTIVATE_ANON:
-> > +       case WORKINGSET_ACTIVATE_FILE:
-> > +       case WORKINGSET_RESTORE_ANON:
-> > +       case WORKINGSET_RESTORE_FILE:
-> > +       case WORKINGSET_NODERECLAIM:
-> > +               unit = 1;
-> > +               break;
-> > +       case NR_KERNEL_STACK_KB:
-> > +               unit = SZ_1K;
-> > +               break;
-> > +       default:
-> > +               unit = PAGE_SIZE;
-> > +               break;
->  break not needed here, or maybe we can return for every case,
-> that will avoid "unit" variable.
-
-Yeah, thanks.
-
->
-> > +       }
-> > +
-> > +       return unit;
-> > +}
-> > +
-> > +static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
-> > +                                                   int item)
-> > +{
-> > +       return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
-> > +}
-> > +
-> >  static char *memory_stat_format(struct mem_cgroup *memcg)
-> >  {
-> >         struct seq_buf s;
-> > @@ -1577,13 +1606,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
-> >         for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
-> >                 u64 size;
-> >
-> > -               size = memcg_page_state(memcg, memory_stats[i].idx);
-> > -               size *= memory_stats[i].ratio;
-> > +               size = memcg_page_state_output(memcg, memory_stats[i].idx);
-> >                 seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
-> >
-> >                 if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
-> > -                       size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
-> > -                              memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-> > +                       size +=
-> (memcg,
-> > +                                                       NR_SLAB_RECLAIMABLE_B);
-> >                         seq_buf_printf(&s, "slab %llu\n", size);
-> >                 }
-> >         }
-> > @@ -6377,6 +6405,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
-> >  }
-> >
-> >  #ifdef CONFIG_NUMA
-> > +static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
-> > +                                                    int item)
-> > +{
-> > +       return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
-> > +}
-> > +
-> >  static int memory_numa_stat_show(struct seq_file *m, void *v)
-> >  {
-> >         int i;
-> > @@ -6394,8 +6428,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
-> >                         struct lruvec *lruvec;
-> >
-> >                         lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-> > -                       size = lruvec_page_state(lruvec, memory_stats[i].idx);
-> > -                       size *= memory_stats[i].ratio;
-> > +                       size = lruvec_page_state_output(lruvec,
-> > +                                                       memory_stats[i].idx);
-> >                         seq_printf(m, " N%d=%llu", nid, size);
-> >                 }
-> >                 seq_putc(m, '\n');
-> > --
-> > 2.11.0
-> >
-> >
-
-
-
--- 
-Yours,
-Muchun
+> From: Bean Huo <beanhuo@micron.com>
+>=20
+> Change dev_err() print message from "dme-reset" to "dme_enable" in
+> function
+> ufshcd_dme_enable().
+>=20
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+Acked-by: Avri Altman <avri.altman@wdc.com?
