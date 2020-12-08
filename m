@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F962D20D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EDC2D20E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgLHCaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbgLHCap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:30:45 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24DFC061793
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Dec 2020 18:29:59 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w6so12412390pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Dec 2020 18:29:59 -0800 (PST)
+        id S1727844AbgLHChH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:37:07 -0500
+Received: from mail-eopbgr1400049.outbound.protection.outlook.com ([40.107.140.49]:61024
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727075AbgLHChG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 7 Dec 2020 21:37:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ixJBst3nLmPw3oUgqFnfg0TrAe1tbFEXeBD0FtmwBI1UVcpCUIiEM2IwKNkmNvizr4mTUTXUaZLKNIVhZQ1Q/MNo4Ktpj3QIYa4CZtQT9eVdNwRu2+HbmGRWb0xLysHrf4kIS+mxMBFKSwrivlb5OAAHalZbHrCj5kgPVQNnfvDaUJFdcgpoB2LTt7wzgHpZr6yw5BJGGllWZGmo2frz2o97M1LFbc1SyW5gwCUPCleGqqpeblqb2eyxHgE9uqdqfy3T0PuDg64bEdxhDYd0/+HAKcskK5hezWQEkoi8y2rIxuNyRyI4OOO03i7jHbbR6G0izjXyrCZuxx2S4aF0CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1aKlP0qRPFYtHfVr57TXLqkAzpQJ9XBfvxaOJP9UvNA=;
+ b=LoNgUITpk3UMc/2aO2PVNDvdhUK2ypWyfbRoVJRtMx609cqqnOodic0nLciZ/UtekXlO2C50oMRwa0LwiYifPss8dOaS4haJdOP62XTC7Y2Uh+8b/WsqI3v4XKIhZvjdYdvAhQQqUwnkxrlnTgUWsoiXy4C5Dfusn12B25Uq5cm8hqe6wXWWUy4YU9EC2TYsyW02wCkV1W8t8JHe6D5KXl1UYWSJILFiD9ESD8reTfUOl4z742Etf9/U3D0L/FANv99EYZ75gtMGHzymcVRh21oTs7gVY+ZWSIZFSrDV4QGODQb0sYfwV9ftuhNOXqPUK4VK6ppw9DasXQubyeMeOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CH7xlBpG5Zzki/I0pNBCcovPXjgp215OcunjJaNzVcc=;
-        b=V7atJSCte4bFOWHk0qsCWTfnLuJ+UxQ/uwlkqIATLHBwZoo+PiUsnBOD/Eh8d5fLjb
-         fic9D7J2wW7Kfc/uN96HMHD1VaNDk6m8UIHLD5y9sGrwLWk2uvmxbvLOc+pMpAIHp9en
-         UZkOvNmBlt7mPlN/HxiVH1/FDjn6Kcjq5ueHMQVzwHAK6DH730S3sPzUFDeOku8m4POh
-         4uT1KDIT9Icxs9Cg6+xXE/3D1v/iNGPP7OUKux/LT6sanoaCOsbpxYx6Rv7dr0u+mHcY
-         O0g3F8kKAW6PnnhlrhwoPeTuyUEGrPHdo3RTKoNBx+FOfTcMKLNHoU9LrgpGakM5r8hI
-         FTRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CH7xlBpG5Zzki/I0pNBCcovPXjgp215OcunjJaNzVcc=;
-        b=FjSoS7ccAptrxwlpxPWr4V4o3D+TzwoYVS5QRXdd4yAU9GSVKXjn5eqpYJ52IUi4eE
-         qQ9rMWfUF2rW0K7+df85nGIvrcJ3qdEJvKus689/bK164JNNgQPIGgfmXA9MlI3eTXB7
-         UHF9bdoiyJV7qqbkbLPfwyDrmnKQJ8/bY8QU8WyKtSo7lAvCS+1hU4cMrlL3/rqipfmp
-         J6RK5MvVyffJ2PZE8+466cgVHUdrwA3eLapUl9x3nbtwjy7TUIu4PYs/XWNc28+ddmNa
-         kZX3qvVBur88or/UhZTbCFS+Mhb4N0jLGO+sld3NE8GtnFbxdycXbezFUe0xnS7O/fbz
-         7u4Q==
-X-Gm-Message-State: AOAM532OlTvzGugg4AkPVlWYqs6Lr+n+DAFTkDBwdyCmXXJo7aKkapXF
-        KtIizYE+kjIN86oA+IY5QpXryNv+EwE7Dfudj1Uvnw==
-X-Google-Smtp-Source: ABdhPJwI3l3/WB76hY98qBrEl4dHP2d0i5nm9nEZOXM8eR46LqK7k0o9abK6NTHcscRg/YWXx1w38Nu3nHWFGCRaIrA=
-X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr1807265pjr.229.1607394599426;
- Mon, 07 Dec 2020 18:29:59 -0800 (PST)
+ d=necglobal.onmicrosoft.com; s=selector1-necglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1aKlP0qRPFYtHfVr57TXLqkAzpQJ9XBfvxaOJP9UvNA=;
+ b=r7p6M/OfliqKtCFbx1TZxbIv7nlyALhJDfhjbMw7tZh7IStS3Bw4IKn3ttUhT1+rHlQFFzmtyr53uXih9xcIOnJF5VOu8RcHmjlPtgpCiBBNOelqpUgU3yPBZRkpMleZDgt7W7UX+pCfsP+QElldOf0mdmK2DNvETjZ5hA7UJgw=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB5930.jpnprd01.prod.outlook.com (2603:1096:404:8055::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
+ 2020 02:34:46 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::8453:2ddb:cf2b:d244]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::8453:2ddb:cf2b:d244%7]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
+ 02:34:46 +0000
+From:   =?iso-2022-jp?B?SE9SSUdVQ0hJIE5BT1lBKBskQktZOH0hIUQ+TGkbKEIp?= 
+        <naoya.horiguchi@nec.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Oscar Salvador <osalvador@suse.de>,
+        "n-horiguchi@ah.jp.nec.com" <n-horiguchi@ah.jp.nec.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm,memory_failure: Always pin the page in
+ madvise_inject_error
+Thread-Topic: [PATCH] mm,memory_failure: Always pin the page in
+ madvise_inject_error
+Thread-Index: AQHWzH4hO9bKFpDJuEiM7pqnWm2hdKnseNQAgAADkgA=
+Date:   Tue, 8 Dec 2020 02:34:46 +0000
+Message-ID: <20201208023446.GA10757@hori.linux.bs1.fc.nec.co.jp>
+References: <20201207094818.8518-1-osalvador@suse.de>
+ <20201207182200.21f97d90211c78609ffd7351@linux-foundation.org>
+In-Reply-To: <20201207182200.21f97d90211c78609ffd7351@linux-foundation.org>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=nec.com;
+x-originating-ip: [165.225.110.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 65208571-5143-4281-241d-08d89b21d429
+x-ms-traffictypediagnostic: TYAPR01MB5930:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB5930D57EB7F01A8BB6684E76E7CD0@TYAPR01MB5930.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1bE2sjvOSoQTyiqvBkg6xDSm0bsYmCLvH2DalAR8WdKeB1ZvjgCh6+v/VmkiR5mWqXrBlqBqlIQuZtMvwrh3AsIICxbBtTQXODNq1VOF7l0NWal2uP6kzvHdwNVIHZjM1FfEMs9PXsbK3gRWdKGleQnsh/yueKUZQj9u3cx59JSbP0pSqzlQOKT7XsqnTM7Ogg5C+/GGG2Pk8584XkxIiq7Q4YIzZciZelFQNXtumuww8eugy3dkxE+vjaRY8q5JFYH92crM+dxmCNOz+A6tqFgQ4ELRpfNADGT6p0uaKls/lwxe9dsOhJf+JJM8+uYuK8icOrXJnwYENhlS9ctVZA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(6506007)(66946007)(71200400001)(508600001)(9686003)(86362001)(26005)(55236004)(8676002)(4326008)(6512007)(64756008)(66556008)(1076003)(6916009)(54906003)(66476007)(186003)(8936002)(5660300002)(2906002)(33656002)(66446008)(83380400001)(6486002)(85182001)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?N29TSk1DeC9Jamt6UU5ncXNXYWtRSTlQY0dtTGwwNzUxYmpZU05URFJt?=
+ =?iso-2022-jp?B?RnF6NEN2akZtRSsxWmpFdTRWRFBySUY5SHVCdjVoYlV3QnJXZGxYNm81?=
+ =?iso-2022-jp?B?bEpibzFCVy9iWkIzMGEwTmdZK2tzSlRpN3orY3NIVEdIVzNjNGxCVHVP?=
+ =?iso-2022-jp?B?OHR6bTdrRjQ5eVdEYjVneldCeDREd25FakRTRnpXZUZJYm05dks3YStR?=
+ =?iso-2022-jp?B?N01KTFdXMW1SblkybWZRSk91MnVQaUs5QmxPWWFBckJ0Uml5Si9aa2VN?=
+ =?iso-2022-jp?B?NUVDU1VFcmZBUmtXZVVmQnlUVmdmMnVQdUk4blg3c01xRld0c3NTMHlj?=
+ =?iso-2022-jp?B?Qmw3MUVFUWhON3FEWTU3Qll0ZmZPTGF2cHlZYWRtM1lXZnhPRk05MzEz?=
+ =?iso-2022-jp?B?OEo1dW5vMzA0SEdkR2Z1WngzeE1pNC9kaVMxWDQyMityY2tzakdCZUkw?=
+ =?iso-2022-jp?B?bXRlOElvRmNTWnRzck5zUUxIYXpQMUNZNi81d3hUdGNTV25uRGhRcGRM?=
+ =?iso-2022-jp?B?aTU4ZThPd3hGZHd0U09meG1HM2ZwN25MemoyR2pjWGNDaXA3MnpsazNC?=
+ =?iso-2022-jp?B?V0svMlE1RzNaZnBaMzRpZ2szTWR2ZFVheTdpa1JnUzY3eTA4MmF6TUl0?=
+ =?iso-2022-jp?B?dmVwWFRWOG9wUmI1RzhCbXRqZ2sybDFvYUp1SzdVLzVNc2p5NlV1TXNQ?=
+ =?iso-2022-jp?B?R0NULzhwWWlxVFhDYVhCVDl0aVNQYW41Z05zZEQ1OVRCQldZeFdPTis0?=
+ =?iso-2022-jp?B?VUdYSXFaL2JmUVVnMWU2RGNDYmlmUFJKVzdqQWNibWQ5R2JPSUNyNDNM?=
+ =?iso-2022-jp?B?WmtJWFhuZ3JhVzFFQWtjT1BYZktSRW9VVExaMWRRdVhFVFVNNkRYYS9o?=
+ =?iso-2022-jp?B?azhkL1NSd0k4MlFPK050c1RDdk9hY2JQSjZYUjUrOFBRekFhOWdNZnM4?=
+ =?iso-2022-jp?B?bFluYjQ2R1pvRjdhaGtUTzIxRmpSOFpPdG82OFQvcE5qbXBUUFF3ejN5?=
+ =?iso-2022-jp?B?YlF0Z3BCbWcvUDN6RXJCWVVrR1c1OWZRcTlVTUt6SnVxTWJSOUdoL1JM?=
+ =?iso-2022-jp?B?UnE1ZnUwb3BzWTVmeFZ3SkQwRm1nMStBOVZrT01ka2V4bHBMTmNoVHN3?=
+ =?iso-2022-jp?B?M1FvY0N6a2pZdEhPUythWEhhVG9jM2k5YXBYUTZSbVBZbHQ0TlRWa09L?=
+ =?iso-2022-jp?B?Z0dYa2FEbEdxUnRhMkFQR21CeC9zMWQ4dzNEa3JpUzZ1cVpaVkt1VVRr?=
+ =?iso-2022-jp?B?eEZMZlE3NGl4bU9ULzRZN2pNUGV2TkR6aFdZbGs1aVoyZ3R3cXlnYVFS?=
+ =?iso-2022-jp?B?dlBRNWpTdkc3UldEcFZiT3VOQnVva3J5MVRJeEppNy93dU5tSVFJSnRN?=
+ =?iso-2022-jp?B?VFMzVXRjODF1eFFaelI4dWVBZFJuODZzWEtLSC9xWHlBc1QrN3F4bE4v?=
+ =?iso-2022-jp?B?TGQ2RHZYV290UDRSTWRRNA==?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <5D6917F77437494398313077B256598B@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201207130018.GJ25569@dhcp22.suse.cz> <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com>
- <20201207150254.GL25569@dhcp22.suse.cz> <30ebae81-86e8-80db-feb6-d7c47dbaccb2@infradead.org>
-In-Reply-To: <30ebae81-86e8-80db-feb6-d7c47dbaccb2@infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:29:23 +0800
-Message-ID: <CAMZfGtUumSm5Adoz+XTzZmjxV7krGQKffuh6NaBP0FVgTFtoJg@mail.gmail.com>
-Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat
- counters to pages or bytes
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65208571-5143-4281-241d-08d89b21d429
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 02:34:46.7997
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fzxysoeHHimEGW29KQCoZT7MbSzq2OLoUqlGbS0tNkMFvwo7ZS/AcxyM0VjuGpydwTNjNG7mI2tI3cDGc1peVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5930
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 2:51 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 12/7/20 7:02 AM, Michal Hocko wrote:
-> > On Mon 07-12-20 22:52:30, Muchun Song wrote:
-> >> On Mon, Dec 7, 2020 at 9:00 PM Michal Hocko <mhocko@suse.com> wrote:
-> >>>
-> >>> On Sun 06-12-20 18:14:39, Muchun Song wrote:
-> >>>> Hi,
-> >>>>
-> >>>> This patch series is aimed to convert all THP vmstat counters to pages
-> >>>> and some KiB vmstat counters to bytes.
-> >>>>
-> >>>> The unit of some vmstat counters are pages, some are bytes, some are
-> >>>> HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-> >>>> counters to the userspace, we have to know the unit of the vmstat counters
-> >>>> is which one. It makes the code complex. Because there are too many choices,
-> >>>> the probability of making a mistake will be greater.
-> >>>>
-> >>>> For example, the below is some bug fix:
-> >>>>   - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-> >>>>   - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
-> >>>>
-> >>>> This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
-> >>>> And make the unit of the vmstat counters are either pages or bytes. Fewer choices
-> >>>> means lower probability of making mistakes :).
-> >>>>
-> >>>> This was inspired by Johannes and Roman. Thanks to them.
-> >>>
-> >>> It would be really great if you could summarize the current and after
-> >>> the patch state so that exceptions are clear and easier to review. The
-> >>
-> >> Agree. Will do in the next version. Thanks.
-> >>
-> >>
-> >>> existing situation is rather convoluted but we have at least units part
-> >>> of the name so it is not too hard to notice that. Reducing exeptions
-> >>> sounds nice but I am not really sure it is such an improvement it is
-> >>> worth a lot of code churn. Especially when it comes to KB vs B. Counting
-> >>
-> >> There are two vmstat counters (NR_KERNEL_STACK_KB and
-> >> NR_KERNEL_SCS_KB) whose units are KB. If we do this, all
-> >> vmstat counter units are either pages or bytes in the end. When
-> >> we expose those counters to userspace, it can be easy. You can
-> >> reference to:
-> >>
-> >>     [RESEND PATCH v2 11/12] mm: memcontrol: make the slab calculation consistent
-> >>
-> >> From this point of view, I think that it is worth doing this. Right?
-> >
-> > Well, unless I am missing something, we have two counters in bytes, two
-> > in kB, both clearly distinguishable by the B/KB suffix. Changing KB to B
-> > will certainly reduce the different classes of units, no question about
-> > that, but I am not really sure this is worth all the code churn. Maybe
-> > others will think otherwise.
-> >
-> > As I've said the THP accounting change makes more sense to me because it
-> > allows future changes which are already undergoing so there is more
-> > merit in those.
-> >
->
-> Hi,
->
-> Are there any documentation changes that go with these patches?
-> Or are none needed?
->
-> If the patches change the output in /proc/* or /sys/* then I expect
-> there would need to be some doc changes.
+On Mon, Dec 07, 2020 at 06:22:00PM -0800, Andrew Morton wrote:
+> On Mon,  7 Dec 2020 10:48:18 +0100 Oscar Salvador <osalvador@suse.de> wro=
+te:
+>=20
+> > madvise_inject_error() uses get_user_pages_fast to translate the
+> > address we specified to a page.
+> > After [1], we drop the extra reference count for memory_failure() path.
+> > That commit says that memory_failure wanted to keep the pin in order
+> > to take the page out of circulation.
+> >=20
+> > The truth is that we need to keep the page pinned, otherwise the
+> > page might be re-used after the put_page() and we can end up messing
+> > with someone else's memory.
+> >=20
+> > E.g:
+> >=20
+> > CPU0
+> > process X					CPU1
+> >  madvise_inject_error
+> >   get_user_pages
+> >    put_page
+> > 					page gets reclaimed
+> > 					process Y allocates the page
+> >   memory_failure
+> >    // We mess with process Y memory
+> >=20
+> > madvise() is meant to operate on a self address space, so messing with
+> > pages that do not belong to us seems the wrong thing to do.
+> > To avoid that, let us keep the page pinned for memory_failure as well.
+> >=20
+> > Pages for DAX mappings will release this extra refcount in
+> > memory_failure_dev_pagemap.
+>=20
+> Does the bug have any known user-visible effects?  Is a deliberate
+> exploit conceivable?
+>=20
+> IOW, cc:stable and if so, why?
 
-Oh, we do not change the output. It is transparent to userspace.
+This interface is a testing feature and only available only for privileged
+(CAP_SYS_ADMIN) users, so I don't think that this bug is critical. But if
+someone think it need to go to stable, I'm fine with that.
 
-Thanks.
-
->
-> And is there any chance of confusing userspace s/w (binary or scripts)
-> with these changes?
->
-> thanks.
-> --
-> ~Randy
->
-
-
--- 
-Yours,
-Muchun
+Thanks,
+Naoya Horiguchi=
