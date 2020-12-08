@@ -2,159 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE102D2D63
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053A52D2D68
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgLHOoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:44:09 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56356 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727716AbgLHOoJ (ORCPT
+        id S1729634AbgLHOpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:45:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726080AbgLHOpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:44:09 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B8EYEbW107606;
-        Tue, 8 Dec 2020 09:43:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YqlUT3QtrcaCnwPB13xNS3AW6f4j/xqpDHcXITx4d04=;
- b=AQT3gEz3N3Q27A8i38nsSrYKk0hdyc3D8g68rtQBnKjEuLbuzzGU1zd+rL317vOi1eqx
- xhp/ZiXFF1OmQbnLn87K/Wm273tQ0Bca8nNY+lGJeLQZgxp88hAwn48cGkTb6qBCk1B3
- 8mlCRzpKge/ssWbBgyeB4WV+2wvzX+EdlL7A3ckMI2PTD4lh3JI+x0HXIC83F4RT9+/F
- 5ot4yEtUdPpYB+2fNfRKXwgYLwQZD2gPBKQmWh7rjjhxmbLbkgFSuaqcBXwOcXPIDQQi
- SNsWwMOOz7g63TgkZtscgFHZjQIz2uFg69Z91OJ0XMsnXkjCnZcI73weroX7AT36PtnE Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359s0rxhwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 09:43:23 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B8EZVV8121065;
-        Tue, 8 Dec 2020 09:43:23 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 359s0rxhvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 09:43:23 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B8EhKD4027332;
-        Tue, 8 Dec 2020 14:43:21 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 35958q0y5e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Dec 2020 14:43:21 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B8EhIr259834754
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Dec 2020 14:43:18 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B2C24204C;
-        Tue,  8 Dec 2020 14:43:18 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0817542041;
-        Tue,  8 Dec 2020 14:43:18 +0000 (GMT)
-Received: from li-e35baacc-2106-11b2-a85c-8f97eb669a6e.ibm.com (unknown [9.145.53.240])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Dec 2020 14:43:17 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Skip test 68 for Powerpc
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Kajol Jain <kjain@linux.ibm.com>, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, irogers@google.com,
-        rbernon@codeweavers.com, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com
-References: <20201104082954.57338-1-tmricht@linux.ibm.com>
- <20201119135022.36340-1-kjain@linux.ibm.com>
- <4a2908ca-6b75-c688-ec3b-7f37783f08cc@linux.ibm.com>
- <20201207163524.GF125383@kernel.org>
-From:   Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-Message-ID: <763d4593-d581-0971-338c-b811925be45b@linux.ibm.com>
-Date:   Tue, 8 Dec 2020 15:43:17 +0100
+        Tue, 8 Dec 2020 09:45:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607438616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cfa7wLpbxuEZq+R+bI/0NtkJcPb3sJm2JZkzYyHbJ5Q=;
+        b=HVah9qDgV+SP6M9VQgyO1bv/7XqZ0qJnL+CF0iSf2QeIBmI2kkFd5FbxMAuaMKjdtl29VW
+        TybudDAYnpRzeQ99knKrm+L0Ttfkh/e/n66vsKBCoh2+vBFl71Q2C2lXu9sZZtdC3m8+6H
+        49qClm+dOi8cr1mDk2wf1sCfirjdkJE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-Q0mGymiaN0Cc8fdacmJkNA-1; Tue, 08 Dec 2020 09:43:35 -0500
+X-MC-Unique: Q0mGymiaN0Cc8fdacmJkNA-1
+Received: by mail-ed1-f70.google.com with SMTP id e11so6672481edn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 06:43:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cfa7wLpbxuEZq+R+bI/0NtkJcPb3sJm2JZkzYyHbJ5Q=;
+        b=cnNvG66h/YeL6IQ9fahsEF8LMn0WAhRz2GMl26jHYs9B1+HzM45m0M3d57yajL1I2d
+         BzC3iXpcwOT6rnlLnSfRmlFTv1mAFzuO3tCOmWeay2vYO1XhkZGiU9xgRlpXHkHUzl2N
+         hn5qySAPPZxBSUEoQuuZxSMh55ZMESDY2DcHAm9CoAuMtbDvd3sHlLJpa3jHOh48iqqs
+         YZODDXHgh54MFoPKV2C/D7/NkcxI/YlPonD0DdhRK+zgFpfPUxm4UyhIo3o63We7j+Rg
+         w2sygR7QzFJVz7KP5Unqq6G8oFkxZ8JKeqSe7nFXIKDFSYaX9F36HKP2cj6X9QT146BA
+         OajA==
+X-Gm-Message-State: AOAM531lkWzl1YBXNMf/Cy0h7L0ZbxFFvDI/pUgDhG4ZCp7uOYUyr/Xk
+        cpbqDk6vRyP58ZlB6vgG1BWiz0cJv0URIoP6RR6pzkFP1uxFxyVEBNnvYQVkBkCR6Nb52sc4T9n
+        G7FIIwABlVSHIhL/yqfAuGxI0
+X-Received: by 2002:aa7:c355:: with SMTP id j21mr15707869edr.338.1607438613754;
+        Tue, 08 Dec 2020 06:43:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxVK8XivqJ/1pcRHYJCIxWdI292tXW8b7gOaiPbwlEw7m6LZ2VDFHJf49ClPgz7+ckFHOSH7g==
+X-Received: by 2002:aa7:c355:: with SMTP id j21mr15707853edr.338.1607438613544;
+        Tue, 08 Dec 2020 06:43:33 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id d14sm18083317edn.31.2020.12.08.06.43.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 06:43:32 -0800 (PST)
+Subject: Re: [PATCH v2 1/9] platform/surface: Add Surface Aggregator subsystem
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201203212640.663931-2-luzmaximilian@gmail.com>
+ <fd24d99a-e4f4-2030-e9bb-bcd549ce4bb9@redhat.com>
+ <ac50a0c7-806e-d949-6440-620ec966099a@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9748d778-b5e9-c80c-5968-a77b3203d769@redhat.com>
+Date:   Tue, 8 Dec 2020 15:43:31 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201207163524.GF125383@kernel.org>
+In-Reply-To: <ac50a0c7-806e-d949-6440-620ec966099a@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_09:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1011 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 spamscore=0 malwarescore=0 bulkscore=0 mlxscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012080086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/20 5:35 PM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 24, 2020 at 03:04:53PM +0530, Ravi Bangoria escreveu:
+Hi,
+
+On 12/8/20 3:37 PM, Maximilian Luz wrote:
+
+<snip>
+
+>>> +
+>>> +    obj = acpi_evaluate_dsm_typed(handle, &SSAM_SSH_DSM_GUID,
+>>> +                      SSAM_SSH_DSM_REVISION, func, NULL,
+>>> +                      ACPI_TYPE_INTEGER);
+>>> +    if (!obj)
+>>> +        return -EIO;
+>>> +
+>>> +    val = obj->integer.value;
+>>> +    ACPI_FREE(obj);
+>>> +
+>>> +    if (val > U32_MAX)
+>>> +        return -ERANGE;
+>>> +
+>>> +    *ret = val;
+>>> +    return 0;
+>>> +}
+> 
+> [...]
+> 
+>>> +/**
+>>> + * ssam_controller_start() - Start the receiver and transmitter threads of the
+>>> + * controller.
+>>> + * @ctrl: The controller.
+>>> + *
+>>> + * Note: When this function is called, the controller should be properly
+>>> + * hooked up to the serdev core via &struct serdev_device_ops. Please refer
+>>> + * to ssam_controller_init() for more details on controller initialization.
+>>> + *
+>>> + * This function must be called from an exclusive context with regards to the
+>>> + * state, if necessary, by locking the controller via ssam_controller_lock().
 >>
->>
->> On 11/19/20 7:20 PM, Kajol Jain wrote:
->>> Commit ed21d6d7c48e6e ("perf tests: Add test for PE binary format support")
->>> adds a WINDOWS EXE file named tests/pe-file.exe, which is
->>> examined by the test case 'PE file support'. As powerpc doesn't support
->>> it, we are skipping this test.
->>>
->>> Result in power9 platform before this patach:
->>> [command]# ./perf test -F 68
->>> 68: PE file support                               : Failed!
->>>
->>> Result in power9 platform after this patch:
->>> [command]# ./perf test -F 68
->>> 68: PE file support                               : Skip
->>>
->>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->>
->> Reviewed-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+>> Again you are being a bit hand-wavy (I assume you know what I mean by that)
+>> wrt the locking requirements. If possible I would prefer clearly spelled out
+>> locking requirements in the form of "this and that lock must be held when
+>> calling this function". Preferably backed-up by lockdep_assert-s asserting
+>> these conditions.
 > 
-> But why is it failing? I.e. what is that
+> The reason for this is that this function specifically is currently only
+> called during initialization, when the controller has not been published
+> yet, i.e. when we have an exclusive reference to the controller.
 > 
->  perf test -v -F 68
+> I'll change this to fully enforce locking (with lockdep_assert).
 > 
-> outputs?
+>> And maybe if you are a bit stricter with always holding the lock when
+>> calling this, you can also drop the WRITE_ONCE and the comment about it
+>> (in all places where you do this).
 > 
-> Using 'perf report' on a perf.data file containing samples in such
-> binaries, collected on x86 should work on whatever workstation a
-> developer uses.
-> 
-> Say, on a MacBook aarch64 one can look at a perf.data file collected on
-> a x86_64 system where Wine running a PE binary was present.
-> 
-> - Arnaldo
-> 
+> The WRITE_ONCE is only there to ensure that the basic test in
+> ssam_request_sync_submit() can be done. I always try to be explicit
+> about access that can happen without the respective locks being held.
 
-Hi 
+Yes I saw the matching READ_ONCE later on (as the comment indicated
+I would), which made it more obvious to me why the WRITE_ONCE is here,'
+so maybe I should have gone back and updated this comment.
 
-What is the distro you are using?
-I observed the same issue on s390 but this was fixed for fedora33 somehow.
-The error just went away after a dnf update....
+Anyways, keeping the WRITE_ONCE + READ_ONCE for this is fine.
 
-[root@m35lp76 perf]# cat /etc/fedora-release 
-Fedora release 33 (Thirty Three)
-[root@m35lp76 perf]# ./perf test -F 68
-68: PE file support                                                 : Ok
-[root@m35lp76 perf]# 
+> Unfortunately it's not feasible to hold the reader lock in
+> ssam_request_sync_submit() due to reentrancy. Specifically, as the lock,
+> if at all (i.e. if this is not a client driver bound to the controller),
+> must be held not only during submission but until the request has been
+> completed. Note that if we would hold the lock during submission, this
+> is just a smoke-test.
 
+Ack.
 
-However on my fedora32 machine it still fails:
-[root@t35lp46 perf]# cat /etc/fedora-release 
-Fedora release 32 (Thirty Two)
-[root@t35lp46 perf]# ./perf test -F 68
-68: PE file support                                                 : FAILED!
-[root@t35lp46 perf]# 
+<more snip>
 
-Note that I am running the same kernel on both machines: linux 5.10.0rc7 downloaded
-this morning.
+Regards,
 
+Hans
 
--- 
-Thomas Richter, Dept 3252, IBM s390 Linux Development, Boeblingen, Germany
---
-Vorsitzender des Aufsichtsrats: Gregor Pillen
-Geschäftsführung: Dirk Wittkopp
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
