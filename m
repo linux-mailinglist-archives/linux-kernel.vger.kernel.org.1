@@ -2,129 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D422D2341
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E742D2343
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 06:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgLHFca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 00:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgLHFc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:32:29 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82CDC061749;
-        Mon,  7 Dec 2020 21:31:48 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id s75so15168265oih.1;
-        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
-        b=uPiDefoQYkKUSYVjpVcGFbjGGdgwvk2tmiacvGTPf1f1XKPLLEnQVTwTCx8tWNScnC
-         5j6c5sfjBEHrnhNhCj80/FWk0MTp670DUW5Dv4G2IUCx3Yd324y+YBTw3C7sot2KNTxS
-         eCd3u/BKvQq6Lpsj9pg4Rx9/ID1ezkPBxSBAbr8Jo3UhV8nfB4LGtur/M6evKWpsYeYr
-         Kta/pLzpmNREVmoWhp6gm736Rm4VmhVwhQGYxgwokNPamv1ZXQjxZyDMm48/vCgeZrty
-         wSK63DtyX5nZNX5tTgWgFTkRVDrwHvF2voN8metmYSxDRY2JPRc2BNn9ZyShUI48DnYx
-         jpbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
-        b=Yj3+PodwHv4IHqN6pEM54QjgYmla+7zdSq5uCsHEPb4Cvl24ck0M70n8Ym7PhGiwEM
-         vzu1lhXtqtk0n0+tKMP4cnBS3UMjgWFPhyMDHzbSKL7O2i78fvjezgJK40lHBrReqlJ7
-         PUTf0bC1sXMiQ6WDPT1Q3RgnJ3aiaTsn9xYWSiaEe43ePJY9m13B58ff4F/d+OiI6h+F
-         gBeirQPdsfhEjYLHUkz2lKm7t+NTTxmAfAAXsIVTjy2pbJBiXtNwoNTqovKdePnu96Yl
-         RITqXEgIIYSL55XKgvsfFmtVgdORhVpWK2Qb1jOBl93xr0O8JbKJsqsyQy+JxvfHGw4U
-         K6og==
-X-Gm-Message-State: AOAM5324hFs+SPHM4q2CLyBpS9jqpRLl8Hhgtm9JNWLKOGg3PlsW+BwK
-        0K4Z0pOSaCCF7ZK1lEUH8Tc=
-X-Google-Smtp-Source: ABdhPJx81dPrD6uJgJG8T7kA9bYfspa122kKDg8FYUgX72z8Wkl9JIPiXbCZyYapxK4XUnxjFnoHoQ==
-X-Received: by 2002:aca:2411:: with SMTP id n17mr1539117oic.43.1607405508392;
-        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id k30sm2930191ool.34.2020.12.07.21.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 21:31:47 -0800 (PST)
-Date:   Mon, 07 Dec 2020 21:31:40 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-7-jackmanb@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-7-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
- atomic_fetch_add instruction
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1726774AbgLHFc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 00:32:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:41792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbgLHFc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:32:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B38741FB;
+        Mon,  7 Dec 2020 21:32:11 -0800 (PST)
+Received: from [10.163.87.7] (unknown [10.163.87.7])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D80663F718;
+        Mon,  7 Dec 2020 21:32:08 -0800 (PST)
+Subject: Re: [RFC V2 3/3] s390/mm: Define arch_get_mappable_range()
+To:     David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
+References: <1606706992-26656-1-git-send-email-anshuman.khandual@arm.com>
+ <1606706992-26656-4-git-send-email-anshuman.khandual@arm.com>
+ <20201202203233.GB11274@osiris>
+ <24905c32-f6c1-97a0-000f-f822b9870ea5@arm.com> <20201203115133.GB9994@osiris>
+ <4d6c9ec4-f1be-46b9-5d67-5c53f5afedc5@redhat.com>
+ <62c60c9e-20d6-25bd-94d0-78bfed0f2476@arm.com>
+ <02dfe6f5-efb6-c04d-c34a-a1e7393625cf@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <9e80ad53-d203-d7d2-3fc8-92fa860bc869@arm.com>
+Date:   Tue, 8 Dec 2020 11:02:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <02dfe6f5-efb6-c04d-c34a-a1e7393625cf@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brendan Jackman wrote:
-> The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
-> instructions, in order to have the previous value of the
-> atomically-modified memory location loaded into the src register
-> after an atomic op is carried out.
+
+
+On 12/7/20 2:33 PM, David Hildenbrand wrote:
+> On 07.12.20 05:38, Anshuman Khandual wrote:
+>>
+>>
+>> On 12/3/20 5:31 PM, David Hildenbrand wrote:
+>>> On 03.12.20 12:51, Heiko Carstens wrote:
+>>>> On Thu, Dec 03, 2020 at 06:03:00AM +0530, Anshuman Khandual wrote:
+>>>>>>> diff --git a/arch/s390/mm/extmem.c b/arch/s390/mm/extmem.c
+>>>>>>> index 5060956b8e7d..cc055a78f7b6 100644
+>>>>>>> --- a/arch/s390/mm/extmem.c
+>>>>>>> +++ b/arch/s390/mm/extmem.c
+>>>>>>> @@ -337,6 +337,11 @@ __segment_load (char *name, int do_nonshared, unsigned long *addr, unsigned long
+>>>>>>>  		goto out_free_resource;
+>>>>>>>  	}
+>>>>>>>  
+>>>>>>> +	if (seg->end + 1 > VMEM_MAX_PHYS || seg->end + 1 < seg->start_addr) {
+>>>>>>> +		rc = -ERANGE;
+>>>>>>> +		goto out_resource;
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>>  	rc = vmem_add_mapping(seg->start_addr, seg->end - seg->start_addr + 1);
+>>>>>>>  	if (rc)
+>>>>>>>  		goto out_resource;
+>>>>>>> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+>>>>>>> index b239f2ba93b0..06dddcc0ce06 100644
+>>>>>>> --- a/arch/s390/mm/vmem.c
+>>>>>>> +++ b/arch/s390/mm/vmem.c
+>>>>>>> @@ -532,14 +532,19 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
+>>>>>>>  	mutex_unlock(&vmem_mutex);
+>>>>>>>  }
+>>>>>>>  
+>>>>>>> +struct range arch_get_mappable_range(void)
+>>>>>>> +{
+>>>>>>> +	struct range memhp_range;
+>>>>>>> +
+>>>>>>> +	memhp_range.start = 0;
+>>>>>>> +	memhp_range.end =  VMEM_MAX_PHYS;
+>>>>>>> +	return memhp_range;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>>  int vmem_add_mapping(unsigned long start, unsigned long size)
+>>>>>>>  {
+>>>>>>>  	int ret;
+>>>>>>>  
+>>>>>>> -	if (start + size > VMEM_MAX_PHYS ||
+>>>>>>> -	    start + size < start)
+>>>>>>> -		return -ERANGE;
+>>>>>>> -
+>>>>>>
+>>>>>> I really fail to see how this could be considered an improvement for
+>>>>>> s390. Especially I do not like that the (central) range check is now
+>>>>>> moved to the caller (__segment_load). Which would mean potential
+>>>>>> additional future callers would have to duplicate that code as well.
+>>>>>
+>>>>> The physical range check is being moved to the generic hotplug code
+>>>>> via arch_get_mappable_range() instead, making the existing check in
+>>>>> vmem_add_mapping() redundant. Dropping the check there necessitates
+>>>>> adding back a similar check in __segment_load(). Otherwise there
+>>>>> will be a loss of functionality in terms of range check.
+>>>>>
+>>>>> May be we could just keep this existing check in vmem_add_mapping()
+>>>>> as well in order avoid this movement but then it would be redundant
+>>>>> check in every hotplug path.
+>>>>>
+>>>>> So I guess the choice is to either have redundant range checks in
+>>>>> all hotplug paths or future internal callers of vmem_add_mapping()
+>>>>> take care of the range check.
+>>>>
+>>>> The problem I have with this current approach from an architecture
+>>>> perspective: we end up having two completely different methods which
+>>>> are doing the same and must be kept in sync. This might be obvious
+>>>> looking at this patch, but I'm sure this will go out-of-sync (aka
+>>>> broken) sooner or later.
+>>>
+>>> Exactly, there should be one function only that was the whole idea of
+>>> arch_get_mappable_range().
+>>>
+>>>>
+>>>> Therefore I would really like to see a single method to do the range
+>>>> checking. Maybe you could add a callback into architecture code, so
+>>>> that such an architecture specific function could also be used
+>>>> elsewhere. Dunno.
+>>>>
+>>>
+>>> I think we can just switch to using "memhp_range_allowed()" here then
+>>> after implementing arch_get_mappable_range().
+>>>
+>>> Doesn't hurt to double check in vmem_add_mapping() - especially to keep
+>>> extmem working without changes. At least for callers of memory hotplug
+>>> it's then clear which values actually won't fail deep down in arch code.
+>>
+>> But there is a small problem here. memhp_range_allowed() is now defined
+>> and available with CONFIG_MEMORY_HOTPLUG where as vmem_add_mapping() and
+>> __segment_load() are generally available without any config dependency.
+>> So if CONFIG_MEMORY_HOTPLUG is not enabled there will be a build failure
+>> in vmem_add_mapping() for memhp_range_allowed() symbol.
+>>
+>> We could just move VM_BUG_ON(!memhp_range_allowed(start, size, 1)) check
+>> from vmem_add_mapping() to arch_add_memory() like on arm64 platform. But
+>> then __segment_load() would need that additional new check to compensate
+>> as proposed earlier.
+>>
+>> Also leaving vmem_add_mapping() and __segment_load() unchanged will cause
+>> the address range check to be called three times on the hotplug path i.e
+>>
+>> 1. register_memory_resource()
+>> 2. arch_add_memory()
+>> 3. vmem_add_mapping()
+>>
+>> Moving memhp_range_allowed() check inside arch_add_memory() seems better
+>> and consistent with arm64. Also in the future, any platform which choose
+>> to override arch_get_mappable() will have this additional VM_BUG_ON() in
+>> their arch_add_memory().
 > 
-> Suggested-by: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
+> Yeah, it might not make sense to add these checks all over the place.
+> The important part is that
+> 
+> 1. There is a check somewhere (and if it's deep down in arch code)
+> 2. There is an obvious way for callers to find out what valid values are.
+> 
+> 
+> I guess it would be good enough to
+> 
+> a) Factor out getting arch ranges into arch_get_mappable_range()
+> b) Provide memhp_get_pluggable_range()
 
-I like Yonghong suggestion 
+Have posted V1 earlier in the day which hopefully accommodates all previous
+suggestions but otherwise do let me know if anything else still needs to be
+improved upon.
 
- #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)               \
-     BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
+https://lore.kernel.org/linux-mm/1607400978-31595-1-git-send-email-anshuman.khandual@arm.com/
 
-otherwise LGTM. One observation to consider below.
+> 
+> Both changes only make sense with an in-tree user. I'm planning on using
+> this functionality in virtio-mem code. I can pickup your patches, drop
+> the superfluous checks, and use it from virtio-mem code. Makese sense
+> (BTW, looks like we'll see aarch64 support for virtio-mem soon)?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-
->  arch/x86/net/bpf_jit_comp.c    |  4 ++++
->  include/linux/filter.h         |  1 +
->  include/uapi/linux/bpf.h       |  3 +++
->  kernel/bpf/core.c              | 13 +++++++++++++
->  kernel/bpf/disasm.c            |  7 +++++++
->  kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
->  tools/include/linux/filter.h   | 11 +++++++++++
->  tools/include/uapi/linux/bpf.h |  3 +++
->  8 files changed, 66 insertions(+), 9 deletions(-)
-
-[...]
-
-> @@ -3652,8 +3656,20 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  		return err;
->  
->  	/* check whether we can write into the same memory */
-> -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
-> +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
-> +	if (err)
-> +		return err;
-> +
-> +	if (!(insn->imm & BPF_FETCH))
-> +		return 0;
-> +
-> +	/* check and record load of old value into src reg  */
-> +	err = check_reg_arg(env, insn->src_reg, DST_OP);
-
-This will mark the reg unknown. I think this is fine here. Might be nice
-to carry bounds through though if possible
-
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
->  }
->  
+I have not been following virtio-mem closely. But is there something pending
+on arm64 platform which prevents virtio-mem enablement ?
