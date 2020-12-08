@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D812D3462
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131852D3426
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 21:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgLHUjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 15:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728981AbgLHUjO (ORCPT
+        id S1730022AbgLHUaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 15:30:39 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:55886 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728460AbgLHUad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 15:39:14 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98921C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 12:38:28 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id l200so20819022oig.9
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 12:38:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JQYt/4VgCiEwd3op5jlCPhHU8pQtIJ/B1ftm9vhFDbM=;
-        b=elBXLPE9EtSolehwqod4JujVxpIlOQ+VeIEW8OSE9jod4LBKN1G7JgblBCuMqt7Z9I
-         J+5q4Ho+3/TnxKhBIQY8EwD0ZAN0G5fghei/Lr9fI40OVHw+jPBMqhdNUcRyokZrO3y0
-         WgzXG3aRwasbIiezVdjhx/D6QCe1aFXa90IBE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JQYt/4VgCiEwd3op5jlCPhHU8pQtIJ/B1ftm9vhFDbM=;
-        b=Kcd6W+PhMaVlR7kEYisaXZkLCUy3GgzB1afBBJNueTZhNjRdEgGbEH12CXReJhAWW8
-         6yfS7bmnZ2y1mZXS1PunIMRN/RvLoxRdL+5dXToGZ0zs6UWfKgoItLkF2C09mVMVJ1Xi
-         zg29JLzgpkzM2bUqFoyDaUGEpwHbYOMe9XyeD1WfSyOKAr44Be3v91J6yl8IQs1go9km
-         n0rSGRv9AXbwUV1T61DFXpAIvExe0FgtNE9LS5YobfJWG5FTk5uqWm6X9sn9YuyfR/O8
-         /RpARp9vN5KcQdpGBlZDzH2uMtzazfh55QKub01u1fg3xy8f4eHqktFeYzQKTHhjg5yX
-         48iQ==
-X-Gm-Message-State: AOAM533FX+86nN7GJFUZ64BYdQtyhNQEvhVaYYx3gCrVUVc+DCHJKW02
-        Py4EDj5oMQ73Q1ajbWKLmgQxA6a7Yiw9bQ==
-X-Google-Smtp-Source: ABdhPJzYISC7NbRu50gss/bA0GhIefHs3UML0AGtTBVZhMwvS87M72rfI4rl0O/dNREDDcRUYzPMUw==
-X-Received: by 2002:aca:d5c3:: with SMTP id m186mr3808373oig.73.1607453803598;
-        Tue, 08 Dec 2020 10:56:43 -0800 (PST)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com. [209.85.167.172])
-        by smtp.gmail.com with ESMTPSA id v92sm1980387otb.75.2020.12.08.10.56.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 10:56:42 -0800 (PST)
-Received: by mail-oi1-f172.google.com with SMTP id y74so20457890oia.11
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 10:56:42 -0800 (PST)
-X-Received: by 2002:aca:c443:: with SMTP id u64mr3807625oif.117.1607453801518;
- Tue, 08 Dec 2020 10:56:41 -0800 (PST)
+        Tue, 8 Dec 2020 15:30:33 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8ItVTP193430;
+        Tue, 8 Dec 2020 18:59:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=7qzXZe0gMYZQ/xhFXJ1/oXcs7VbDKuFEC3Igf2zwT+E=;
+ b=k1kZayqwsoOm1cXk/dUfWUcR9cm6x1JlMoXC4Zn6sl9h1LF4gm6RQL/MzZ7woIUv/cGO
+ w6PYKyK5k8MCvUrfIbxGGin41bykvY3AAMQobARud8H+nPZ2tdNYrvUkZ60iBZUtXY/b
+ 8Y/fpSN6XH559/jY4b4OJawjR6mQiPuLaJ02cQFN9Cbe4Kc29HoBZ79dh/459eBen1yl
+ FbKYTGv1hfsIx/YCN17VDmwUj+0WLSn/hXp25xbTmk7xAR6SlrALyGQpuw2VvXhAnURa
+ Im1B+qt6FiY5cO4iN4/vvcJFv+9tRyGzwThwDQwJaP9Hxr/WVkIB6M9IIVaswIis7i0F 9Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mqvep4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 18:59:18 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8IsnfF150260;
+        Tue, 8 Dec 2020 18:59:17 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358ksp082v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 18:59:17 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8IxD5U019445;
+        Tue, 8 Dec 2020 18:59:13 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 10:59:13 -0800
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>
+Subject: Re: problem booting 5.10
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+Date:   Tue, 08 Dec 2020 13:59:11 -0500
+In-Reply-To: <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 8 Dec 2020 10:31:49 -0800")
 MIME-Version: 1.0
-References: <20201208154343.6946-1-ruc_zhangxiaohui@163.com>
-In-Reply-To: <20201208154343.6946-1-ruc_zhangxiaohui@163.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Tue, 8 Dec 2020 10:56:29 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXPiY5AQDu2snHSqBDA0BYi79_hmNAjsKmXm1cFrgoxo4Q@mail.gmail.com>
-Message-ID: <CA+ASDXPiY5AQDu2snHSqBDA0BYi79_hmNAjsKmXm1cFrgoxo4Q@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mwifiex: Fix possible buffer overflows in mwifiex_uap_bss_param_prepare
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=942 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=956
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(FWIW, this author's mail has been routed to my spam mailbox. That's
-partly my fault and/or my "choice" of mail provider, but that's why I
-only see these once Kalle replies to them.)
 
-On Tue, Dec 8, 2020 at 8:03 AM Xiaohui Zhang <ruc_zhangxiaohui@163.com> wrote:
->
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->
-> mwifiex_uap_bss_param_prepare() calls memcpy() without checking
-> the destination size may trigger a buffer overflower,
-> which a local user could use to cause denial of service or the
-> execution of arbitrary code.
-> Fix it by putting the length check before calling memcpy().
->
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->  drivers/net/wireless/marvell/mwifiex/uap_cmd.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/marvell/mwifiex/uap_cmd.c b/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-> index b48a85d79..937c75e89 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/uap_cmd.c
-> @@ -502,7 +502,8 @@ mwifiex_uap_bss_param_prepare(u8 *tlv, void *cmd_buf, u16 *param_size)
->                 ssid = (struct host_cmd_tlv_ssid *)tlv;
->                 ssid->header.type = cpu_to_le16(TLV_TYPE_UAP_SSID);
->                 ssid->header.len = cpu_to_le16((u16)bss_cfg->ssid.ssid_len);
-> -               memcpy(ssid->ssid, bss_cfg->ssid.ssid, bss_cfg->ssid.ssid_len);
-> +               memcpy(ssid->ssid, bss_cfg->ssid.ssid,
-> +                      min_t(u32, bss_cfg->ssid.ssid_len, strlen(ssid->ssid)));
+Linus,
 
-This strlen() check makes no sense to me. We are *writing* to
-ssid->ssid, so its initial contents are either zero or garbage --
-strlen() will either give a zero or unpredictable value. I'm pretty
-sure that's not what you intend.
+> So I'm adding SCSI people to the cc, just in case they go "Hmm..".
 
-On the other hand, it's hard to determine what the proper bound here
-*should* be. This 'ssid' struct is really just a pointer into
-mwifiex_cmd_uap_sys_config()'s uap_sys_config (struct
-host_cmd_ds_sys_config), which doesn't have any defined length -- its
-length is only given by way of its surrounding buffers/structs.
-Altogether, the code is hard to reason about.
+Only change in this department was:
 
-Anyway, this patch is wrong, so NAK.
+831e3405c2a3 scsi: core: Don't start concurrent async scan on same host
 
-Brian
+which went into -rc2. I can't think of anything in -rc1 which would
+affect scanning.
 
->                 cmd_size += sizeof(struct mwifiex_ie_types_header) +
->                             bss_cfg->ssid.ssid_len;
->                 tlv += sizeof(struct mwifiex_ie_types_header) +
-> --
-> 2.17.1
->
+I'll take a look this afternoon.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
