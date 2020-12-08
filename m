@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C882D2CDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C83A2D2CE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgLHOPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729377AbgLHOP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:15:29 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4367C061749;
-        Tue,  8 Dec 2020 06:14:48 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id c7so17722810edv.6;
-        Tue, 08 Dec 2020 06:14:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ntk4ARBzMoRorjAN5A/E5yNdlDF2+4r0PmHqGriz3Rk=;
-        b=C1J+nDwNp1ZdfO0ijKKGYCbe99/mqtc9zuQRgAg/JScQqexUHY1PPSPDgFbHxcUdH4
-         0TVK2oVf7BcaaS1BOYAiozfNKMlkzEti9NkTZsBSpQD1qHpLKIqKkzEpzkGUgALoAfC9
-         HBAQ4QAeupYVrqxd/pHK8xPuxm1/BVCfP2fP7irCwx1fX5eDThEFz0a6CIhOys9RgI+I
-         SjasLmQGCz/8U3j0UVCR5Nnb7VXUqRTgJsxaezQcB8qWBOCLO1HrEjE6yFodpfazBswf
-         cvZlWMFljWu5RxB1eJZRiJ/E02SbkC7dw9A2Ai/rUA++HUb8wkQQBevHmDDD71L3xMHv
-         doUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ntk4ARBzMoRorjAN5A/E5yNdlDF2+4r0PmHqGriz3Rk=;
-        b=CTGWhRLYv4DaRTwDdjEdIZQCN7RhH2HbA1EJtNZhz2Hs8I9O0GM/2gVuaVl0+OwNgu
-         oW4RuAuo/VA+jfTkX20gsMj595+uH676sZuVhscLnf60Vq71Sip2UWlWPyK0q2r2KHJN
-         wddDNEE1NutG9QMbGGlTrXoBKVu6/4D52VgU6oYakFp1+KUWG3pc3Zw9yGc3Of3H9Lls
-         KwnIXg+Di2ZhqiydMeX4/uA1YcKsZfMA+K91Op84OGtEmwr+4n+XQnQL5rlmglBIA6rp
-         8NZ4CmsgIrwsLU/sTGMMOvvTwAkhjGMYA0o5qgZX5WQMptgi0bur3Ky/im3eAYlSRqt3
-         bX3w==
-X-Gm-Message-State: AOAM530Lku/B+3bhtRo04Fczhmo04XTWGQfMkdDmo9sHRU/ntFJFwszS
-        qejmcLrcZAVub8RHSQXD7Ug=
-X-Google-Smtp-Source: ABdhPJwwn/b2Lb5c51CunsFgtGkimppN1lP894M6Gb0uMhuNwt9iTzSJoKqU1aGPUVT5ALatSoaYlg==
-X-Received: by 2002:a50:a410:: with SMTP id u16mr24994533edb.274.1607436887471;
-        Tue, 08 Dec 2020 06:14:47 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id g9sm17305447edw.67.2020.12.08.06.14.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 08 Dec 2020 06:14:47 -0800 (PST)
-Message-ID: <b01dacacb713ced3bd9cf07ec7a00b4eac5b5a1a.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] scsi: ufs: Uninline ufshcd_vops_device_reset
- function
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com
-Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
-        matthias.bgg@gmail.com, bvanassche@acm.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
-        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
-        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
-        jiajie.hao@mediatek.com, alice.chao@mediatek.com
-Date:   Tue, 08 Dec 2020 15:14:45 +0100
-In-Reply-To: <20201208135635.15326-3-stanley.chu@mediatek.com>
-References: <20201208135635.15326-1-stanley.chu@mediatek.com>
-         <20201208135635.15326-3-stanley.chu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729293AbgLHOQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:16:13 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:44308 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729377AbgLHOQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:16:13 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kmdm3-00ApGj-QR; Tue, 08 Dec 2020 15:15:27 +0100
+Date:   Tue, 8 Dec 2020 15:15:27 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jean Pihet <jean.pihet@newoldbits.com>
+Cc:     netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ryan Barnett <ryan.barnett@rockwellcollins.com>,
+        Conrad Ratschan <conrad.ratschan@rockwellcollins.com>,
+        Hugo Cornelis <hugo.cornelis@essensium.com>,
+        Arnout Vandecappelle <arnout.vandecappelle@essensium.com>
+Subject: Re: [PATCH v2] net: dsa: ksz8795: adjust CPU link to host interface
+Message-ID: <20201208141527.GI2475764@lunn.ch>
+References: <20201201083408.51006-1-jean.pihet@newoldbits.com>
+ <20201201184100.GN2073444@lunn.ch>
+ <CAORVsuXv5Gw18EeHwP36EkzF4nN5PeGerBQQa-6ruWAQRX+GoQ@mail.gmail.com>
+ <20201201204516.GA2324545@lunn.ch>
+ <CAORVsuXtVYKh_nCvCdA7PUWJeJbVJWD43jtkiFwXeg2Qo1mG+A@mail.gmail.com>
+ <20201208021131.GE2475764@lunn.ch>
+ <CAORVsuX9w_JHjM88YhT02k93vbF3SZmxwYt-E_Tth8xTP04V2w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAORVsuX9w_JHjM88YhT02k93vbF3SZmxwYt-E_Tth8xTP04V2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 21:56 +0800, Stanley Chu wrote:
-> Since more and more statements showing up in
-> ufshcd_vops_device_reset(),
-> uninline it to allow compiler making possibly better optimization.
+> > Hi Jean
+> >
+> > I never said i was too specific to your board. There are other boards
+> > using different switches like this. This is where the commit message
+> > is so important. Without understanding Why? it is hard to point you in
+> > the right direction.
+> >
+> > So you setup is:
+> >
+> > SoC - MAC - PHY - PHY - MAC - Switch.
+> >
+> > The SoC MAC driver is looking after the first PHY?
 > 
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-reviewed-by: Bean Huo <beanhuo@micron.com>
+> No, the connection is at the MAC level, via RGMII but it is missing the MDC/
+> MDIO signals. That means we have to fix the auto-neg parameters from the DT.
 
+So the PHY is there, but you cannot talk to it? It has strapping
+resisters to make it auto-neg to the other PHY?
+
+Some switches default their CPU port to the maximum speed the port can
+do. But not all do. It is worth checking that.
+
+> On the 4.14 LTS kernel we are working with, the setup of the parameters is done
+> via adjust_link. Since the phylink conversion adjust_link is not required
+> anymore, is this correct?
+
+4.14 is dead in terms of development. Anything you contribute needs to
+be for net-next, and then you need to figure out how to backport
+it. Using v5.4 will help with that, since it is much closer, and v5.10
+will be LTS. Given the change to phylink, you probably want as new a
+kernel as possible. If you put a fixed-link property in the "CPU"
+node, phylink should do the right thing for you.
+
+      Andrew
