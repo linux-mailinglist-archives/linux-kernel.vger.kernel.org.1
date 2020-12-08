@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7572D2589
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD852D2576
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 09:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgLHIPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 03:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727135AbgLHIPa (ORCPT
+        id S1727965AbgLHIOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 03:14:36 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:53597 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgLHIOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:15:30 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0ACC061794
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 00:14:50 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p6so6592810plr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 00:14:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jirsaBDzo/DYSNUUoXouAzzmgq1svQEaxyCrEMF0PXQ=;
-        b=pwpBCMF7Ac589F0MWudfWG4J+an8qdcMMOsk0y9sgAoZarcFOYz8DrfioDizcINnOT
-         7pOvQlqWZg8T6tGF+YsQ4xMUkKPEVbbJ4tpd42ELM/9PtVfTTj9l16wvIU/TqaYY0/gA
-         mMN1G4EHG9fQTICKsAhVYuBAPaVQEA3lzjTeoCOA9p2IiLkG6FjSiv/1UutWpjwZ8dHO
-         X1QLEWdcWCTfc/Yt6B/TUgW24EpKhB9pYv3ysNuXKwFGeemzinErYjz9s+71mnLioFwc
-         pmaijRgmPQehqjO+c2UwgoJWBmISmgX2yeYJLwjdevljYvKnOzfKyE84dRrC70Q/bWKA
-         dZWw==
+        Tue, 8 Dec 2020 03:14:35 -0500
+Received: by mail-wm1-f65.google.com with SMTP id k10so1356787wmi.3;
+        Tue, 08 Dec 2020 00:14:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jirsaBDzo/DYSNUUoXouAzzmgq1svQEaxyCrEMF0PXQ=;
-        b=SvbiT+54esegF17JI29goO8OvUazVXDpqFG38R9JkPF3pbYYNLNAKW3oQgnEV/dt+a
-         Ng9pvih4jMi3XL2muSD7lCR3ghY/ookzHJ0OE4gl+CG4YJyJiHA1vEgeHLeisf6LsmVj
-         3hEhofXNa4XFC+MkjmSzbDllvx/qY5IhQv82HHUrUnQXFu03wtul4Ar2OxGICt2WwVle
-         pVQglg/KtfA6l+v/y5LPrhJyJpvrW/f9d6aeKma6uavQ38HfjSWrQLYnXPmTLzxLhqle
-         X6JgM1l53yvwr+NQc9+uCw1fDjFa7o4/+T8r65JJ5r9pNCFOUaV1LWZMMmWrA+RBrZlT
-         OMdA==
-X-Gm-Message-State: AOAM531CfV51YjB5Z0VyaTP2mNLikjC1gb3uPu1OW8kC3LHk5u8p6l2P
-        /2X7NHB/6UxBP9Mogtx78UY=
-X-Google-Smtp-Source: ABdhPJwaUxxTgog3OXfOln84McY3YXKOUbbMLj8G6MGMSX3lgwUOYCqXLjNNBRPTyLr5s68ommc2Ag==
-X-Received: by 2002:a17:902:d385:b029:da:c6e4:5cab with SMTP id e5-20020a170902d385b02900dac6e45cabmr20235431pld.7.1607415290168;
-        Tue, 08 Dec 2020 00:14:50 -0800 (PST)
-Received: from robinhsu-p520.ntc.corp.google.com ([2401:fa00:fc:202:1ea0:b8ff:fe77:fe45])
-        by smtp.gmail.com with ESMTPSA id 19sm2665387pfu.85.2020.12.08.00.14.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yve/ZADh457qg7/+Dy6j2VWCsLzLDQxW7IculdMabgw=;
+        b=iudvjKp0Hse5eTwK6AbgVcZTPmjckXRnu63DjMMwHkE4vjiKmLDLFeFRP8u5OXr8OF
+         7h+fIxpC3jS1AWDk1DGFaS9ssOJr60dQlsP6Y25npypaO01WuY4QmkP+ZLpMzI/UwnCb
+         VGJzB/LokT/DSsYUai7aQk1yUYvCDAkh9pYuPd8GW65Mkroin8RaT1IEyn5PeVhy+tS9
+         7J+uHw5IxR7NqOuTACaiFJUWCPxY3UQvPF4aC+ks3kR4QyY18H0ROTcZYq69PNq2eaOp
+         WUuC8JnUPsh1M1BxRFcv/33GqrZsvfCucjhLQGPSMzb5MqE9tKcL915kwezW5Z0smgDY
+         sGgg==
+X-Gm-Message-State: AOAM532EaeSFgjyiL/s99wnpqXAzTiKGD2P4VQnfClFd4X8MqI+qhE4J
+        XZoe6pLXo5R5y8JrccJeCPY=
+X-Google-Smtp-Source: ABdhPJzct0mSavW2Re8RCZYEbB9nX5jsRfbK4x1GZ/R7YI+2oplEjfaegPoKXVXSZoIbTskLyPV1SQ==
+X-Received: by 2002:a1c:e3c4:: with SMTP id a187mr2645626wmh.58.1607415232866;
+        Tue, 08 Dec 2020 00:13:52 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z8sm2158130wmg.17.2020.12.08.00.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 00:14:49 -0800 (PST)
-From:   Robin Hsu <robinh3123@gmail.com>
-To:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
-        chao@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
-Subject: [PATCH 3/3] f2fs-tools:sload.f2fs compress: Fixed automake
-Date:   Tue,  8 Dec 2020 16:13:44 +0800
-Message-Id: <20201208081344.652430-4-robinh3123@gmail.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201208081344.652430-1-robinh3123@gmail.com>
-References: <20201208081344.652430-1-robinh3123@gmail.com>
+        Tue, 08 Dec 2020 00:13:51 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:13:50 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kun Yi <kunyi@google.com>
+Subject: Re: [PATCH 4/4] dt-bindings: hwmon: convert AD ADM1275 bindings to
+ dt-schema
+Message-ID: <20201208081350.GA5088@kozik-lap>
+References: <20201117220807.208747-1-krzk@kernel.org>
+ <20201117220807.208747-4-krzk@kernel.org>
+ <20201207211259.GA832269@robh.at.kernel.org>
+ <20201208001916.GA59429@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201208001916.GA59429@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Hsu <robinhsu@google.com>
+On Mon, Dec 07, 2020 at 04:19:16PM -0800, Guenter Roeck wrote:
+> On Mon, Dec 07, 2020 at 03:12:59PM -0600, Rob Herring wrote:
+> > On Tue, Nov 17, 2020 at 11:08:07PM +0100, Krzysztof Kozlowski wrote:
+> > > Convert the Analog Devices ADM1275 bindings to dt-schema.
+> > > 
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > ---
+> > >  .../bindings/hwmon/adi,adm1275.yaml           | 58 +++++++++++++++++++
+> > >  .../devicetree/bindings/hwmon/adm1275.txt     | 25 --------
+> > >  Documentation/hwmon/adm1275.rst               |  2 +-
+> > >  3 files changed, 59 insertions(+), 26 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1275.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/hwmon/adm1275.txt
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/hwmon/adi,adm1275.yaml b/Documentation/devicetree/bindings/hwmon/adi,adm1275.yaml
+> > > new file mode 100644
+> > > index 000000000000..2cad28c499dc
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwmon/adi,adm1275.yaml
+> > > @@ -0,0 +1,58 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +
+> > > +$id: http://devicetree.org/schemas/hwmon/adi,adm1275.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Analog Devices ADM1075/ADM127x/ADM129x digital power monitors
+> > > +
+> > > +maintainers:
+> > > +  - Krzysztof Kozlowski <krzk@kernel.org>
+> > > +
+> > > +description: |
+> > > +  The ADM1293 and ADM1294 are high accuracy integrated digital power monitors
+> > > +  that offer digital current, voltage, and power monitoring using an on-chip,
+> > > +  12-bit analog-to-digital converter (ADC), communicated through a PMBus
+> > > +  compliant I2C interface.
+> > > +
+> > > +  Datasheets:
+> > > +    https://www.analog.com/en/products/adm1294.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - adi,adm1075
+> > > +      - adi,adm1272
+> > > +      - adi,adm1275
+> > > +      - adi,adm1276
+> > > +      - adi,adm1278
+> > > +      - adi,adm1293
+> > > +      - adi,adm1294
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  shunt-resistor-micro-ohms:
+> > > +    description:
+> > > +      Shunt resistor value in micro-Ohm.
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > 
+> > Don't need a type if you have units. With that dropped,
+> > 
+> 
+> Sorry, I am not familiar with the terminology. Does that refer to
+> the '$ref' line ?
 
-Fixed automake for sload.f2fs compression support
+Yes, it's the $ref line which can be safely removed. The core dt-schema
+applies such $ref if the property name ends with '-micro-ohms'.
 
-./configure automatcally compile in liblzo2 (for sload to support -a LZO)
-and liblz4 (for sload to support -a LZ4), whhen the libraries present.
-
-Signed-off-by: Robin Hsu <robinhsu@google.com>
----
- configure.ac     | 12 ++++++++++++
- fsck/Makefile.am |  9 ++++++---
- 2 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/configure.ac b/configure.ac
-index 1e5619d..01d1a05 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -52,6 +52,18 @@ AC_PATH_PROG([LDCONFIG], [ldconfig],
-        [$PATH:/sbin])
- 
- # Checks for libraries.
-+AC_CHECK_LIB([lzo2], [main],
-+	[AC_SUBST([liblzo2_LIBS], ["-llzo2"])
-+		AC_DEFINE([HAVE_LIBLZO2], [1],
-+		[Define if you have liblzo2])
-+	], [], [])
-+
-+AC_CHECK_LIB([lz4], [main],
-+	[AC_SUBST([liblz4_LIBS], ["-llz4"])
-+		AC_DEFINE([HAVE_LIBLZ4], [1],
-+		[Define if you have liblz4])
-+	], [], [])
-+
- PKG_CHECK_MODULES([libuuid], [uuid])
- 
- AS_IF([test "x$with_selinux" != "xno"],
-diff --git a/fsck/Makefile.am b/fsck/Makefile.am
-index 1fc7310..74bc4b8 100644
---- a/fsck/Makefile.am
-+++ b/fsck/Makefile.am
-@@ -3,12 +3,15 @@
- AM_CPPFLAGS = ${libuuid_CFLAGS} -I$(top_srcdir)/include
- AM_CFLAGS = -Wall
- sbin_PROGRAMS = fsck.f2fs
--noinst_HEADERS = common.h dict.h dqblk_v2.h f2fs.h fsck.h node.h quotaio.h quotaio_tree.h quotaio_v2.h xattr.h
-+noinst_HEADERS = common.h dict.h dqblk_v2.h f2fs.h fsck.h node.h quotaio.h \
-+		quotaio_tree.h quotaio_v2.h xattr.h compress_wrapper.h
- include_HEADERS = $(top_srcdir)/include/quota.h
- fsck_f2fs_SOURCES = main.c fsck.c dump.c mount.c defrag.c resize.c \
--		node.c segment.c dir.c sload.c xattr.c \
-+		node.c segment.c dir.c sload.c xattr.c compress_wrapper.c \
- 		dict.c mkquota.c quotaio.c quotaio_tree.c quotaio_v2.c
--fsck_f2fs_LDADD = ${libselinux_LIBS} ${libuuid_LIBS} $(top_builddir)/lib/libf2fs.la
-+fsck_f2fs_LDADD = ${libselinux_LIBS} ${libuuid_LIBS} \
-+	${liblzo2_LIBS} ${liblz4_LIBS} \
-+	$(top_builddir)/lib/libf2fs.la
- 
- install-data-hook:
- 	ln -sf fsck.f2fs $(DESTDIR)/$(sbindir)/dump.f2fs
--- 
-2.29.2.576.ga3fc446d84-goog
+Best regards,
+Krzysztof
 
