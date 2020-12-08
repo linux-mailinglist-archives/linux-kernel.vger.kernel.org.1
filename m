@@ -2,172 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A162D2E08
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC052D2E0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729815AbgLHPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S1729909AbgLHPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbgLHPUW (ORCPT
+        with ESMTP id S1729379AbgLHPUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:20:22 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8271C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:19:41 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id lt17so25157145ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:19:41 -0800 (PST)
+        Tue, 8 Dec 2020 10:20:34 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501EEC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:19:54 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id f24so19980970ljk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:19:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tzsovbIcXxZbPQxa4va4cD/Nj2m9EEN+fh5YzE4Jzs8=;
-        b=LIISehDJDsl6HTopwe/jucDF24nCTz1G8nlyh+9KRUuUtct7+FPmwGsXDHGyRLcPqA
-         eIw8lkpOY8J+eZZxQmwNfaD/ZhW4CkThjQXbVuTXBgFYpbcso2UBE1vXiPPeL6DhUAOq
-         wKcxqkm7Ht7yABSRkClc/mk9YfOaNxB7klZO+X0XURwWsZLoaYhQyCI9jT9Rd0xqnuIa
-         YgWwhskPwHcu2QAfTBQfuhmxEbDG6r3TBmHRORywU0D2UnaZZUekwKDwlck1261pjW25
-         dek3wZ/Hs1ikTl2tf4UoyaY2jzH7UNu7YkUNvuG9HwGeSuj5qlvNiyeutnlgYHi8X8KN
-         33iA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Me1Hf/Cdi3kKip0U1Ne9HhgL9kDjgNH3pBgdMTwceuo=;
+        b=yVcnWg8cYTjBfJFA8cYSxoLVrLkBgv4MV7PKXmUjaFNZBGpw8Gz+bhjqNbTxg3Gw49
+         rc33XM18c1tE9/APiOrPNDLzj94JJBdEcyL1bqE5DNBWClhLS52CWEt19nOtqQyoecpx
+         mCLKx5mhumj6Iwae+QTPOis/f85Fkkl5JyUm+PX1UQi0zSQkoIMcOcDh1eXZfMlms07S
+         qvRHHDioV4/6JaX8ro1P/EV2TY6sqHsQyzSgt5at+T9ISl+DZ1k4alqjO1ZIMBrv2t7M
+         VtJN9y48+T3/cudY+EqVttyrnUtDbldPc6gvGO65jKuyRQg9mDXj7R/Oy7e9iOf6X4tj
+         nBCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tzsovbIcXxZbPQxa4va4cD/Nj2m9EEN+fh5YzE4Jzs8=;
-        b=EEGxiI4YYj16UvlZhINlJ2lNG19ct6nx74FGfAmQGmFRmFC+ifWOUFpDSodrdEtHFq
-         VTQV+qB023+oHh/requEsjApKvIE9cJr7ue+ntajkXgeRE0i3vAqRzCGQrKZT/Wx+OG7
-         4AVs+OH0uPZ/H9DvdXKHwHWl52RmlqviTcIR8NK/uhZxxx81o4QRMINUhY7Mx1qmekeq
-         uw2VcYWTWBnH853I7LPq5XkOv8vw+0F+ggevEx/YOihtZlRaBy8mEQWtVToKLtm1749C
-         WcPPKrqFzQp9PxKkIrutCpnbCOopIFMUjHeTjxlPCzKt/Rb+e/QasqusVBXDRxS0s/DY
-         gF+w==
-X-Gm-Message-State: AOAM533qtpvRzR7rKRaAFww2EBG1H7Ep2XBcllo7OLrFlNEKN0HeWm0i
-        y6jwqiECHao4NpZ8uVaEbkPoa3UmWfBhUA==
-X-Google-Smtp-Source: ABdhPJydZdkG3wGvgB36lJwRqm/woilf61nCHZ/fOBuVBoiFpKzGu3Kf8yD/KwpEy0Lnn7aCCVoITw==
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr8513471eja.409.1607440779779;
-        Tue, 08 Dec 2020 07:19:39 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b? ([2a01:e34:ed2f:f020:7b:3cd9:3112:fa1b])
-        by smtp.googlemail.com with ESMTPSA id v24sm17529631edw.23.2020.12.08.07.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Dec 2020 07:19:39 -0800 (PST)
-Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
- updated without ops
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
- <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
- <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
- <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7dff767d-3089-584e-f77d-33018faa38ea@linaro.org>
-Date:   Tue, 8 Dec 2020 16:19:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Me1Hf/Cdi3kKip0U1Ne9HhgL9kDjgNH3pBgdMTwceuo=;
+        b=UKzAOD4e4teKHhKT3+AnxleZcUFazehIfRKYcH7/E35thmu+7U2CAhv85t+OBwjuXl
+         CXBy1+NkNv6HZDBSRzbs5XNnWh1KluGQ31RXKQSHOi7AMnL9AUhYMUoBzJgV96xahTvn
+         VYtdni1Kyi0HYhOJIp2I6Nzy0VFXlPaXURfWnE57iADwmDmxNPZGIk3/PP0DkSv0Aq8+
+         ztHnEA2zVslsJEM1RtB/Py4jQiRAtU63hnetWqqo6+70o+0jOgyJVSMuVVoXMjALXYSn
+         yV/LVoEmSpBpMh7/goBeHS/czBwr8T33Fd+/oqBT4GNcpwgnMfD7tfyrC9Mgk+rZzV7T
+         /aKw==
+X-Gm-Message-State: AOAM533N8aOfLEJF1dWYmLFDoLNbieKjvVVKRKNu2hUWxhZ/1/ug5nl2
+        jxpNffBVew4JMLks1iHyE6JkuOSkFybDG0hgmIbeqA==
+X-Google-Smtp-Source: ABdhPJzRTKVLBhWGEzAHP8+r3pHcy1PPM/fyqQrbmap1mZizTETMNvwtgKGSs3jcgpf/mMIVUdtbCDaBmWpzCgXZc68=
+X-Received: by 2002:a2e:9913:: with SMTP id v19mr3955192lji.209.1607440791659;
+ Tue, 08 Dec 2020 07:19:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201207091516.24683-1-mgorman@techsingularity.net>
+ <20201207091516.24683-2-mgorman@techsingularity.net> <25a8c4bd-792b-2851-b10a-c4375eb83dfe@arm.com>
+ <20201208105900.GG3371@techsingularity.net> <CAKfTPtBgo5vCrN87fqKjyaowONLMWeUusLmvE4bmGmDq10+Yrw@mail.gmail.com>
+ <20201208133650.GI3371@techsingularity.net> <CAKfTPtDbUoVSvnjFrpomvTJD0jCA6vH_Y3LP=csW8fHntOG_6A@mail.gmail.com>
+ <20201208135358.GJ3371@techsingularity.net> <CAKfTPtCqGXJa=GfpBZk5To-xVWVtVL8YVMab9PoxFN1=vOwTWQ@mail.gmail.com>
+ <20201208151226.GK3371@techsingularity.net>
+In-Reply-To: <20201208151226.GK3371@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 8 Dec 2020 16:19:40 +0100
+Message-ID: <CAKfTPtAUb50SHtDQs0xeehrPGqkyA6HqFQ3=nUbtOCGj62Fc9A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] sched/fair: Remove SIS_AVG_CPU
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2020 15:37, Lukasz Luba wrote:
-> 
-> 
-> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
->>
->> Hi Lukasz,
->>
->> On 08/12/2020 10:36, Lukasz Luba wrote:
->>> Hi Daniel,
->>
->> [ ... ]
->>
->>>>      static void thermal_zone_device_init(struct thermal_zone_device
->>>> *tz)
->>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
->>>> thermal_zone_device *tz,
->>>>        if (atomic_read(&in_suspend))
->>>>            return;
->>>>    -    if (!tz->ops->get_temp)
->>>> +    if (update_temperature(tz))
->>>>            return;
->>>>    -    update_temperature(tz);
->>>> -
->>>
->>> I think the patch does a bit more. Previously we continued running the
->>> code below even when the thermal_zone_get_temp() returned an error (due
->>> to various reasons). Now we stop and probably would not schedule next
->>> polling, not calling:
->>> handle_thermal_trip() and monitor_thermal_zone()
->>
->> I agree there is a change in the behavior.
->>
->>> I would left update_temperature(tz) as it was and not check the return.
->>> The function thermal_zone_get_temp() can protect itself from missing
->>> tz->ops->get_temp(), so we should be safe.
->>>
->>> What do you think?
->>
->> Does it make sense to handle the trip point if we are unable to read the
->> temperature?
->>
->> The lines following the update_temperature() are:
->>
->>   - thermal_zone_set_trips() which needs a correct tz->temperature
->>
->>   - handle_thermal_trip() which needs a correct tz->temperature to
->> compare with
->>
->>   - monitor_thermal_zone() which needs a consistent tz->passive. This one
->> is updated by the governor which is in an inconsistent state because the
->> temperature is not updated.
->>
->> The problem I see here is how the interrupt mode and the polling mode
->> are existing in the same code path.
->>
->> The interrupt mode can call thermal_notify_framework() for critical/hot
->> trip points without being followed by a monitoring. But for the other
->> trip points, the get_temp is needed.
-> 
-> Yes, I agree that we can bail out when there is no .get_temp() callback
-> and even not schedule next polling in such case.
-> But I am just not sure if we can bail out and not schedule the next
-> polling, when there is .get_temp() populated and the driver returned
-> an error only at that moment, e.g. indicating some internal temporary,
-> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
-> The thermal_zone_get_temp() would pass the error to update_temperature()
-> but we return, losing the next try. We would not check the temperature
-> again.
+On Tue, 8 Dec 2020 at 16:12, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Tue, Dec 08, 2020 at 03:47:40PM +0100, Vincent Guittot wrote:
+> > > I considered it but made the choice to exclude the cost of cpumask_and()
+> > > from the avg_scan_cost instead. It's minor but when doing the original
+> >
+> > At the cost of a less readable code
+> >
+>
+> Slightly less readable, yes.
+>
+> > > prototype, I didn't think it was appropriate to count the cpumask
+> > > clearing as part of the scan cost as it's not directly related.
+> >
+> > hmm... I think it is because the number of loop is directly related to
+> > the allowed cpus
+> >
+>
+> While that is true, the cost of initialising the map is constant and
+> what is most important is tracking the scan cost which is variable.
+> Without SIS_AVG_CPU, the cpumask init can go before SIS_PROP without any
+> penalty so is this version preferable?
 
-Hmm, right. I agree with your point.
+yes looks good to me
 
-What about the following changes:
-
- - Add the new APIs:
-
-   thermal_zone_device_critical(struct thermal_zone_device *tz);
-     => emergency poweroff
-
-   thermal_zone_device_hot(struct thermal_zone_device *tz);
-     => userspace notification
-
- - Add a big fat WARN when thermal_zone_device_update is called with
-.get_temp == NULL because that must not happen.
-
-If the .get_temp is NULL it is because we only have a HOT/CRITICAL
-thermal trip points where we don't care about the temperature and
-governor decision, right ?
-
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>
+> --8<--
+> sched/fair: Move avg_scan_cost calculations under SIS_PROP
+>
+> As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
+> even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
+> check and while we are at it, exclude the cost of initialising the CPU
+> mask from the average scan cost.
+>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ac7b34e7372b..5c41875aec23 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6153,6 +6153,8 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>         if (!this_sd)
+>                 return -1;
+>
+> +       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +
+>         if (sched_feat(SIS_PROP)) {
+>                 u64 avg_cost, avg_idle, span_avg;
+>
+> @@ -6168,11 +6170,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>                         nr = div_u64(span_avg, avg_cost);
+>                 else
+>                         nr = 4;
+> -       }
+> -
+> -       time = cpu_clock(this);
+>
+> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +               time = cpu_clock(this);
+> +       }
+>
+>         for_each_cpu_wrap(cpu, cpus, target) {
+>                 if (!--nr)
+> @@ -6181,8 +6181,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>                         break;
+>         }
+>
+> -       time = cpu_clock(this) - time;
+> -       update_avg(&this_sd->avg_scan_cost, time);
+> +       if (sched_feat(SIS_PROP)) {
+> +               time = cpu_clock(this) - time;
+> +               update_avg(&this_sd->avg_scan_cost, time);
+> +       }
+>
+>         return cpu;
+>  }
