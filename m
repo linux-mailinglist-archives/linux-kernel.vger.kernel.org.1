@@ -2,247 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158D52D29F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A882D29FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 12:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgLHLu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 06:50:26 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:31793 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgLHLu0 (ORCPT
+        id S1729178AbgLHLws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 06:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgLHLwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 06:50:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607428200; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FkqLTEMpg1x4ZA0MtdLK6Mz8IsLgEyzLo+OLRkpYN+U=;
- b=LvYosOI7jr0BBRKX7HdIVDZ1ErmbmPA1di5dJIcrZWZipDPjBRR/QNVHamQjOatLv/oWTNHE
- OMN1eum79UA0rm2nZan2ERgxUBXIV0qNkexnc2+Qqdf/lSKwFOrPkFnise33f3cz50+JIHiq
- Z4Rk7DzYRdoZLebMuoEAEgTTCsM=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5fcf684dfc7bcec1182dff31 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 11:49:33
- GMT
-Sender: gubbaven=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2A44C43462; Tue,  8 Dec 2020 11:49:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: gubbaven)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6599C433ED;
-        Tue,  8 Dec 2020 11:49:31 +0000 (UTC)
+        Tue, 8 Dec 2020 06:52:47 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B74C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 03:52:06 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id m19so2754726lfb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 03:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=p3UOlT4T7w2iGiGz4zhACGCaX1lqFN/iswpw5ZnkzrM=;
+        b=K1JWSFkTy6XixhuEVjqMYIhYotaaw0q/FmwnMPxBVqxc3uSIdIQNYkJEUr0zLiMovp
+         Y0J20mo1QFGat7zPDCW9WuyHBkQfBpKMyRvu00gjUJNlb2GAUa17YVVVPqW0lFr9YbDB
+         Rvn30VX44R4T4AkOP2Y2aXUToxPR5Yu1LUL+aHc3tePoKK7BUMW+UqcdeZwpyHa80wQh
+         PTjCv5cb2fOmKBNmTlci7Qko2+3OLqE0zyjN3v/J0afe3bNXScVJI5FqsyXg+g1lmvBr
+         SQTpwTUMlSpA8Z90euuAlNPXWkOlDB2idVQthpeMFDdcIpQ57mTKAFl8wy6LwcJqGkJu
+         Gdqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p3UOlT4T7w2iGiGz4zhACGCaX1lqFN/iswpw5ZnkzrM=;
+        b=ooNPeszeg3Cft24F36kpcqZeGyk5Nxy6ZTNF/bYywPW6lqWITcYcRIvsMEKZQYMLx8
+         8xvjYzNO4Sj8PHKGeSk+YLSeuhh6oqddbk0tXreo39xjd/C9STHDgzRvZVgOtuvwAwJ4
+         NfNa+hzwor8UsjqiNM++vgernFdnXAy09Xz4gDqgiuNupJXi5FHyLVhoTWwJIIhz1Mij
+         Bx5nLf0XO8q+SgrLlqJurTaZSPerIfkDc2pG43SDvsp1wcKKCNbQ0lWwjyMaeGxbpPQ8
+         X1oZ4ihA8Lz84zdRQVIHQqQzm5U4TovqoxVOSHzgpoxFjFRWlNm2bp/ZxNwA2b6AGP1f
+         ahUQ==
+X-Gm-Message-State: AOAM532Wf3xUPpqvivmaG8ItY5RVa48ph0cC2FEMATHOODfh8bzvfMiU
+        zm1V2QVUFOjToy+tiR/Nur8IqRdRlszglMeKUJsPbQ==
+X-Google-Smtp-Source: ABdhPJyvGNe6OrrMd86DoarSRS4TSHMXGop3JNtQfwGOmMDdmgDiMAbQn68Ss0Jc/C7WgtMqQw0ZJt2BEbCZMlIgDP0=
+X-Received: by 2002:a19:6144:: with SMTP id m4mr10079549lfk.546.1607428324986;
+ Tue, 08 Dec 2020 03:52:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Dec 2020 17:19:31 +0530
-From:   gubbaven@codeaurora.org
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BlueZ development <linux-bluetooth@vger.kernel.org>,
-        Hemantg <hemantg@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
-Subject: Re: [PATCH v3] Bluetooth: hci_qca: Add support to read FW build
- version for WCN3991 BTSoC
-In-Reply-To: <AD0B5336-49BA-49D2-90DB-1D18A74C2883@holtmann.org>
-References: <1606998001-17424-1-git-send-email-gubbaven@codeaurora.org>
- <AD0B5336-49BA-49D2-90DB-1D18A74C2883@holtmann.org>
-Message-ID: <bee4c48536ee454adba762e30d9221c6@codeaurora.org>
-X-Sender: gubbaven@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
+ <20201105050736.GA702944@kernel.org> <CAFA6WYPetvod-Wov2n_L5TL771j+-kt+_csyWYT-uM=haEKMZQ@mail.gmail.com>
+ <20201106145252.GA10434@kernel.org> <20201204051642.GA154469@kernel.org>
+In-Reply-To: <20201204051642.GA154469@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 8 Dec 2020 17:21:53 +0530
+Message-ID: <CAFA6WYOxkAUxg05kKXAcu2F2YD97MXNSggYgL+uSG7wrBVKoMQ@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] Introduce TEE based Trusted Keys support
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+Hi Jarkko,
 
-On 2020-12-03 19:28, Marcel Holtmann wrote:
-> Hi Venkata,
-> 
->> Add support to read FW build version from debugfs node.
->> This info can be read from
->> /sys/kernel/debug/bluetooth/hci0/ibs/fw_build_info
->> 
->> Signed-off-by: Venkata Lakshmi Narayana Gubba 
->> <gubbaven@codeaurora.org>
->> ---
->> drivers/bluetooth/btqca.c   | 48 
->> +++++++++++++++++++++++++++++++++++++++++++++
->> drivers/bluetooth/btqca.h   |  8 ++++++++
->> drivers/bluetooth/hci_qca.c | 34 ++++++++++++++++++++++++++++++++
->> 3 files changed, 90 insertions(+)
->> 
->> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
->> index f85a55a..660eea5 100644
->> --- a/drivers/bluetooth/btqca.c
->> +++ b/drivers/bluetooth/btqca.c
->> @@ -94,6 +94,54 @@ int qca_read_soc_version(struct hci_dev *hdev, 
->> struct qca_btsoc_version *ver,
->> }
->> EXPORT_SYMBOL_GPL(qca_read_soc_version);
->> 
->> +int qca_read_fw_build_info(struct hci_dev *hdev, u8 *fw_build)
->> +{
->> +	struct sk_buff *skb;
->> +	struct edl_event_hdr *edl;
->> +	char cmd;
->> +	int err = 0;
->> +	int build_lbl_len;
->> +
->> +	bt_dev_dbg(hdev, "QCA read fw build info");
->> +
->> +	cmd = EDL_GET_BUILD_INFO_CMD;
->> +	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, 
->> EDL_PATCH_CMD_LEN,
->> +				&cmd, 0, HCI_INIT_TIMEOUT);
->> +	if (IS_ERR(skb)) {
->> +		err = PTR_ERR(skb);
->> +		bt_dev_err(hdev, "Reading QCA fw build info failed (%d)",
->> +			   err);
->> +		return err;
->> +	}
->> +
->> +	edl = (struct edl_event_hdr *)(skb->data);
->> +	if (!edl) {
->> +		bt_dev_err(hdev, "QCA read fw build info with no header");
->> +		err = -EILSEQ;
->> +		goto out;
->> +	}
->> +
->> +	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
->> +	    edl->rtype != EDL_GET_BUILD_INFO_CMD) {
->> +		bt_dev_err(hdev, "QCA Wrong packet received %d %d", edl->cresp,
->> +			   edl->rtype);
->> +		err = -EIO;
->> +		goto out;
->> +	}
->> +
->> +	build_lbl_len = edl->data[0];
->> +	if (build_lbl_len <= QCA_FW_BUILD_VER_LEN - 2) {
->> +		memcpy(fw_build, &edl->data[1], build_lbl_len);
->> +		*(fw_build + build_lbl_len) = '\n';
->> +		*(fw_build + build_lbl_len + 1) = '\0';
->> +	}
->> +
->> +out:
->> +	kfree_skb(skb);
->> +	return err;
->> +}
->> +EXPORT_SYMBOL_GPL(qca_read_fw_build_info);
->> +
->> static int qca_send_reset(struct hci_dev *hdev)
->> {
->> 	struct sk_buff *skb;
->> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
->> index e73b8f8..ac1b76a 100644
->> --- a/drivers/bluetooth/btqca.h
->> +++ b/drivers/bluetooth/btqca.h
->> @@ -11,6 +11,7 @@
->> #define EDL_PATCH_CMD_LEN		(1)
->> #define EDL_PATCH_VER_REQ_CMD		(0x19)
->> #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
->> +#define EDL_GET_BUILD_INFO_CMD		(0x20)
->> #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
->> #define MAX_SIZE_PER_TLV_SEGMENT	(243)
->> #define QCA_PRE_SHUTDOWN_CMD		(0xFC08)
->> @@ -154,6 +155,7 @@ int qca_read_soc_version(struct hci_dev *hdev, 
->> struct qca_btsoc_version *ver,
->> 			 enum qca_btsoc_type);
->> int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr);
->> int qca_send_pre_shutdown_cmd(struct hci_dev *hdev);
->> +int qca_read_fw_build_info(struct hci_dev *hdev, u8 *fw_build);
->> static inline bool qca_is_wcn399x(enum qca_btsoc_type soc_type)
->> {
->> 	return soc_type == QCA_WCN3990 || soc_type == QCA_WCN3991 ||
->> @@ -195,4 +197,10 @@ static inline int 
->> qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
->> {
->> 	return -EOPNOTSUPP;
->> }
->> +
->> +static inline int qca_read_fw_build_info(struct hci_dev *hdev, u8 
->> *fw_build)
->> +{
->> +	return -EOPNOTSUPP;
->> +}
->> +
->> #endif
->> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->> index 4a96368..56616b0 100644
->> --- a/drivers/bluetooth/hci_qca.c
->> +++ b/drivers/bluetooth/hci_qca.c
->> @@ -180,6 +180,7 @@ struct qca_data {
->> 	u64 rx_votes_off;
->> 	u64 votes_on;
->> 	u64 votes_off;
->> +	u8 fw_build[QCA_FW_BUILD_VER_LEN];
->> };
->> 
->> enum qca_speed_type {
->> @@ -621,12 +622,33 @@ static int qca_open(struct hci_uart *hu)
->> 	return 0;
->> }
->> 
->> +static ssize_t fw_build_read(struct file *file, char __user 
->> *user_buf,
->> +			     size_t count, loff_t *ppos)
->> +{
->> +	struct hci_dev *hdev = file->private_data;
->> +	struct hci_uart *hu = hci_get_drvdata(hdev);
->> +	struct qca_data *qca = hu->priv;
->> +	u8 length = 0;
->> +
->> +	length = strlen(qca->fw_build);
->> +
->> +	return simple_read_from_buffer(user_buf, count, ppos, qca->fw_build,
->> +				       length);
->> +}
->> +
->> +static const struct file_operations fw_build_fops = {
->> +	.open = simple_open,
->> +	.read = fw_build_read,
->> +};
->> +
->> static void qca_debugfs_init(struct hci_dev *hdev)
->> {
->> 	struct hci_uart *hu = hci_get_drvdata(hdev);
->> 	struct qca_data *qca = hu->priv;
->> 	struct dentry *ibs_dir;
->> 	umode_t mode;
->> +	enum qca_btsoc_type soc_type = qca_soc_type(hu);
->> +	int ret;
->> 
->> 	if (!hdev->debugfs)
->> 		return;
->> @@ -659,12 +681,24 @@ static void qca_debugfs_init(struct hci_dev 
->> *hdev)
->> 	debugfs_create_u64("votes_off", mode, ibs_dir, &qca->votes_off);
->> 	debugfs_create_u32("vote_on_ms", mode, ibs_dir, &qca->vote_on_ms);
->> 	debugfs_create_u32("vote_off_ms", mode, ibs_dir, &qca->vote_off_ms);
->> +	if (soc_type == QCA_WCN3991) {
->> +		debugfs_create_file("fw_build_info", mode, ibs_dir, hdev,
->> +				    &fw_build_fops);
->> +	}
-> 
-> what is wrong with using hci_set_fw_info?
-[Venkata] :
-Sure.I will use hci_set_fw_info.I will update this in next patch.
-> 
-> Regards
-> 
-> Marcel
+Apologies for the delay in my response as I was busy with other high
+priority work.
+
+On Fri, 4 Dec 2020 at 10:46, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> On Fri, Nov 06, 2020 at 04:52:52PM +0200, Jarkko Sakkinen wrote:
+> > On Fri, Nov 06, 2020 at 03:02:41PM +0530, Sumit Garg wrote:
+> > > On Thu, 5 Nov 2020 at 10:37, Jarkko Sakkinen <jarkko@kernel.org> wrot=
+e:
+> > > >
+> > > > On Tue, Nov 03, 2020 at 09:31:42PM +0530, Sumit Garg wrote:
+> > > > > Add support for TEE based trusted keys where TEE provides the fun=
+ctionality
+> > > > > to seal and unseal trusted keys using hardware unique key. Also, =
+this is
+> > > > > an alternative in case platform doesn't possess a TPM device.
+> > > > >
+> > > > > This patch-set has been tested with OP-TEE based early TA which i=
+s already
+> > > > > merged in upstream [1].
+> > > >
+> > > > Is the new RPI400 computer a platform that can be used for testing
+> > > > patch sets like this? I've been looking for a while something ARM64
+> > > > based with similar convenience as Intel NUC's, and on the surface
+> > > > this new RPI product looks great for kernel testing purposes.
+> > >
+> > > Here [1] is the list of supported versions of Raspberry Pi in OP-TEE.
+> > > The easiest approach would be to pick up a supported version or else
+> > > do an OP-TEE port for an unsupported one (which should involve minima=
+l
+> > > effort).
+> > >
+> > > [1] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html=
+#what-versions-of-raspberry-pi-will-work
+> > >
+> > > -Sumit
+> >
+> > If porting is doable, then I'll just order RPI 400, and test with QEMU
+> > up until either I port OP-TEE myself or someone else does it.
+> >
+> > For seldom ARM testing, RPI 400 is really convenient device with its
+> > boxed form factor.
+>
+> I'm now a proud owner of Raspberry Pi 400 home computer :-)
+>
+> I also found instructions on how to boot a custom OS from a USB stick:
+>
+> https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/=
+msd.md
+>
+> Also, my favorite build system BuildRoot has bunch of of the shelf
+> configs:
+>
+> =E2=9E=9C  buildroot-sgx (master) =E2=9C=94 ls -1 configs | grep raspberr=
+y
+> raspberrypi0_defconfig
+> raspberrypi0w_defconfig
+> raspberrypi2_defconfig
+> raspberrypi3_64_defconfig
+> raspberrypi3_defconfig
+> raspberrypi3_qt5we_defconfig
+> raspberrypi4_64_defconfig
+> raspberrypi4_defconfig
+> raspberrypi_defconfig
+>
+> I.e. I'm capable of compiling kernel and user space and boot it up
+> with it.
+>
+> Further, I can select this compilation option:
+>
+> BR2_TARGET_OPTEE_OS:                                                     =
+                                                                           =
+              =E2=94=82
+>                                                                          =
+                                                                           =
+                 =E2=94=82
+>    OP-TEE OS provides the secure world boot image and the trust          =
+                                                                           =
+                 =E2=94=82
+>    application development kit of the OP-TEE project. OP-TEE OS          =
+                                                                           =
+                 =E2=94=82
+>    also provides generic trusted application one can embedded            =
+                                                                           =
+                 =E2=94=82
+>    into its system.                                                      =
+                                                                           =
+                 =E2=94=82
+>                                                                          =
+                                                                           =
+                 =E2=94=82
+>    http://github.com/OP-TEE/optee_os
+>
+> Is that what I want? If I put this all together and apply your patches,
+> should the expectation be that I can use trusted keys?
+>
+
+Firstly you need to do an OP-TEE port for RPI 400 (refer here [1] for
+guidelines). And then in order to boot up OP-TEE on RPI 400, you can
+refer to Raspberry Pi 3 build instructions [2].
+
+[1] https://optee.readthedocs.io/en/latest/architecture/porting_guidelines.=
+html
+[2] https://optee.readthedocs.io/en/latest/building/devices/rpi3.html#build=
+-instructions
+
+> Please note that I had a few remarks about your patches (minor but need
+> to be fixed), but this version is already solid enough for testing.
+>
+
+Sure, I will incorporate your remarks and Randy's documentation
+comments in the next version.
+
+-Sumit
+
+> /Jarkko
