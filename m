@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FDE2D2AA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FBF2D2AB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbgLHMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729388AbgLHMYH (ORCPT
+        id S1728306AbgLHM0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:26:33 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:49267 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726584AbgLHM0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:24:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48261C061794;
-        Tue,  8 Dec 2020 04:23:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UNxXJNXqQX33pzDKLkLUQwPsiKXBBcwJYZRxFVbPnps=; b=O/IQVntJZbkpB69wJ39eyVCtkh
-        JJARkVk4MvbcQkuYX8rGTsvb5Rnge7YOct0s4PSHnT8xJQQ3Z3HO/eEacoUd8ngR4xNlDzEYf0XEA
-        Y1fuio0PpOhmsPUHvCz0tsnCrzYCRFQ7/NXClDyiron7GGQy5BKz9xb48TpFc969jU7mPY48b8tr9
-        IiEkGx4OcDfrwzT/IxJum56BPO5ug6IBVYKBxLTiz+zeZm2T9WaKxY1B2hLi/WIdV2LHpG0tebefB
-        CzhZR/bwnsyYY+guh6tWs2ghinTb9ieumMIQFRnzfmwVXsrNClVsLUjiC/UUyMCoFu7tsdcYRybJ4
-        RFGAsSLQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmc1U-0002xv-Sc; Tue, 08 Dec 2020 12:23:16 +0000
-Date:   Tue, 8 Dec 2020 12:23:16 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201208122316.GH7338@casper.infradead.org>
-References: <20201207225703.2033611-1-ira.weiny@intel.com>
- <20201207225703.2033611-3-ira.weiny@intel.com>
+        Tue, 8 Dec 2020 07:26:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607430374; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=xwubYQmXFozrF3h5pSqCHE8wPqNs2HP3Fa3BhJgvhZ4=; b=v3txPADZcLNIPcRm8UnicnHCyZik051UXP6dmpyPnYZcQoYkx9PpU18D12m3eroIKJIdRWPI
+ plI3usCAvA7or8CnMjbxncplh1HOsbCK+Yx5tf1KN2Q1s93lZRP6rumXQ49fp0nGoEJIrvV8
+ /E4Uc74rODERF6oa0GQH+RKlEEQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fcf70c756444c64458a7014 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 12:25:43
+ GMT
+Sender: sampnimm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CE299C433C6; Tue,  8 Dec 2020 12:25:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sampnimm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33964C433CA;
+        Tue,  8 Dec 2020 12:25:42 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207225703.2033611-3-ira.weiny@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 08 Dec 2020 17:55:42 +0530
+From:   sampnimm@codeaurora.org
+To:     linux-firmware@kernel.org, jwboyer@kernel.org
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantg@codeaurora.org, gubbaven@codeaurora.org,
+        abhishekpandit@chromium.org, bgodavar@codeaurora.org
+Subject: Request to Update WCN3991 FW files
+Message-ID: <d83f762bf0b5e27f624a57c17c9dc3db@codeaurora.org>
+X-Sender: sampnimm@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 02:57:03PM -0800, ira.weiny@intel.com wrote:
-> Placing these functions in 'highmem.h' is suboptimal especially with the
-> changes being proposed in the functionality of kmap.  From a caller
-> perspective including/using 'highmem.h' implies that the functions
-> defined in that header are only required when highmem is in use which is
-> increasingly not the case with modern processors.  Some headers like
-> mm.h or string.h seem ok but don't really portray the functionality
-> well.  'pagemap.h', on the other hand, makes sense and is already
-> included in many of the places we want to convert.
+Hello Team,
 
-pagemap.h is for the page cache.  It's not for "random page
-functionality".  Yes, I know it's badly named.  No, I don't want to
-rename it.  These helpers should go in highmem.h along with zero_user().
+       Please include updated firmware bins for WCN3991.
+       Snapshot of pull request is as below, let me know if anything is 
+missing.
+
+>>>>> 	
+
+The following changes since commit 
+7455a36066741a6e52fba65e04f6451b4cdfd9c4:
+
+   Merge branch 'guc_v49' of 
+git://anongit.freedesktop.org/drm/drm-firmware into main (2020-11-30 
+09:26:11 -0500)
+
+are available in the git repository at:
+
+   https://github.com/sampnimm/linux-firmware-BT.git master
+
+for you to fetch changes up to 1a08ec9262e943c1e50b1223e3feb5845936b5a6:
+
+   QCA : Updated firmware files for WCN3991 (2020-12-08 17:38:49 +0530)
+
+----------------------------------------------------------------
+sampnimm (1):
+       QCA : Updated firmware files for WCN3991
+
+  qca/crbtfw32.tlv | Bin 126892 -> 126772 bytes
+  qca/crnv32.bin   | Bin 5407 -> 5407 bytes
+  qca/crnv32u.bin  | Bin 5407 -> 5407 bytes
+  3 files changed, 0 insertions(+), 0 deletions(-)
+
+<<<<<
+
+
+Thanks,
+Sampath
