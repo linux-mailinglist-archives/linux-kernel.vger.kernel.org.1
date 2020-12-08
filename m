@@ -2,193 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1AE2D2B6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1696D2D2B5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgLHMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:51:26 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9131 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729268AbgLHMvZ (ORCPT
+        id S1729335AbgLHMsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726415AbgLHMsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:51:25 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cr0QD0b00z15Ymv;
-        Tue,  8 Dec 2020 20:50:12 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 8 Dec 2020 20:50:35 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 4/4] dt-bindings: reset: convert Hisilicon reset controller bindings to json-schema
-Date:   Tue, 8 Dec 2020 20:46:41 +0800
-Message-ID: <20201208124641.1787-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201208124641.1787-1-thunder.leizhen@huawei.com>
-References: <20201208124641.1787-1-thunder.leizhen@huawei.com>
+        Tue, 8 Dec 2020 07:48:41 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181A4C061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:48:01 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id lt17so24465665ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NgHihUTd+8szXhbah4UFbE+y3fSYCEd9zdqGCjkaDzw=;
+        b=WFWOF3V9cRyu2nIq5NK9+VZ+FAiNCr+N9FyT+rua3G5wp+KPE363LLgBXKWAbuBool
+         ed13CAEv7+wQTsfNOZ5jct4HFDIFAGWV95iwrqMYEyBnHphDaNL31lVycYKizreIGeNX
+         lgMW+nxZAICYvevTAUExrsFQp/gSP7GaCLmkpjNYgUqScbeP/ABa21DS+fooUWRaEiBY
+         AOcBKNcXOUuFaN+Ux0i3Ghj8Wm+1DJXBWJk/YArCKyU4UwK+ovhzo4acyJ95k+NYpz5X
+         1DE5yUHzEoKCoUSSlJLMpiudN1A0ulWS1aowxrBmH6KTV8ke3oY2TFe4uR/OD0iGSOI0
+         9YPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NgHihUTd+8szXhbah4UFbE+y3fSYCEd9zdqGCjkaDzw=;
+        b=VQUPp1cfTZBFrNHkXV72UxytFy9x3TUVHo/VfgyuRzagtISdGQYl5YnuoHz9uFMLFw
+         OShL8seoJvkximS28OBmMAUg+MeY9dLFZozu22OfMDtgMrhcfYcDzbMQDFJjagFeITAn
+         A6FOMsZCjY87Zi3XIyyg0YP3gSNymOTpAonTMlo7LckLHWywdVlW6WY94by2/P+sItj1
+         jOKPK2uWrw0jTYaFjhZ/4lW4NYS15AybBEAmjeAd1nvaqVYhmTrFRHQ2iIgpPZYeAY+z
+         HZccO6mZOG9znsszspWii9Xih2g9YwqE2UNdWh6j19/u85C3eWVUEjaVLnBtbTIg25X7
+         XQdw==
+X-Gm-Message-State: AOAM533jbzpOGNLWsjqoOfn39ksFmtHeroHhorNL+oIxvK32LvO6bYWN
+        vUNDU3fxi4z0qZSbQ/k/qBE=
+X-Google-Smtp-Source: ABdhPJyfRsTDgoBEjiOtdymI2Zjr+9e60XqlWbIrOscHO+pCAfyo6AOUmP5fQApLQ03obglVJVhJsg==
+X-Received: by 2002:a17:906:c51:: with SMTP id t17mr23796267ejf.523.1607431679728;
+        Tue, 08 Dec 2020 04:47:59 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id pv24sm12507494ejb.101.2020.12.08.04.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 04:47:58 -0800 (PST)
+Date:   Tue, 8 Dec 2020 13:47:56 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] drm/panel: Make backlight attachment lazy
+Message-ID: <X891/LvEJT1bLtjH@ulmo>
+References: <20201208044446.973238-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="q/F3zxIokLeqOpPH"
+Content-Disposition: inline
+In-Reply-To: <20201208044446.973238-1-bjorn.andersson@linaro.org>
+User-Agent: Mutt/2.0.2 (d9268908) (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Hisilicon reset controller binding to DT schema format using
-json-schema.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../bindings/reset/hisilicon,hi3660-reset.txt      | 44 -------------
- .../bindings/reset/hisilicon,hi3660-reset.yaml     | 77 ++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
- create mode 100644 Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
+--q/F3zxIokLeqOpPH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-deleted file mode 100644
-index aefd26710f9e87d..000000000000000
---- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--Hisilicon System Reset Controller
--======================================
--
--Please also refer to reset.txt in this directory for common reset
--controller binding usage.
--
--The reset controller registers are part of the system-ctl block on
--hi3660 and hi3670 SoCs.
--
--Required properties:
--- compatible: should be one of the following:
--		 "hisilicon,hi3660-reset" for HI3660
--		 "hisilicon,hi3670-reset", "hisilicon,hi3660-reset" for HI3670
--- hisilicon,rst-syscon: phandle of the reset's syscon.
--- #reset-cells : Specifies the number of cells needed to encode a
--  reset source.  The type shall be a <u32> and the value shall be 2.
--
--	 Cell #1 : offset of the reset assert control
--	           register from the syscon register base
--		   offset + 4: deassert control register
--		   offset + 8: status control register
--	 Cell #2 : bit position of the reset in the reset control register
--
--Example:
--	iomcu: iomcu@ffd7e000 {
--		compatible = "hisilicon,hi3660-iomcu", "syscon";
--		reg = <0x0 0xffd7e000 0x0 0x1000>;
--	};
--
--	iomcu_rst: iomcu_rst_controller {
--		compatible = "hisilicon,hi3660-reset";
--		hisilicon,rst-syscon = <&iomcu>;
--		#reset-cells = <2>;
--	};
--
--Specifying reset lines connected to IP modules
--==============================================
--example:
--
--        i2c0: i2c@..... {
--                ...
--		resets = <&iomcu_rst 0x20 3>; /* offset: 0x20; bit: 3 */
--                ...
--        };
-diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-new file mode 100644
-index 000000000000000..9bf40952e5b7d28
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/reset/hisilicon,hi3660-reset.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon System Reset Controller
-+
-+maintainers:
-+  - Wei Xu <xuwei5@hisilicon.com>
-+
-+description: |
-+  Please also refer to reset.txt in this directory for common reset
-+  controller binding usage.
-+  The reset controller registers are part of the system-ctl block on
-+  hi3660 and hi3670 SoCs.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: hisilicon,hi3660-reset
-+      - items:
-+          - const: hisilicon,hi3670-reset
-+          - const: hisilicon,hi3660-reset
-+
-+  hisilicon,rst-syscon:
-+    description: phandle of the reset's syscon.
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  '#reset-cells':
-+    description: |
-+      Specifies the number of cells needed to encode a reset source.
-+      Cell #1 : offset of the reset assert control register from the syscon
-+                register base
-+                offset + 4: deassert control register
-+                offset + 8: status control register
-+      Cell #2 : bit position of the reset in the reset control register
-+    const: 2
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/hi3660-clock.h>
-+
-+    iomcu: iomcu@ffd7e000 {
-+        compatible = "hisilicon,hi3660-iomcu", "syscon";
-+        reg = <0xffd7e000 0x1000>;
-+    };
-+
-+    iomcu_rst: iomcu_rst_controller {
-+        compatible = "hisilicon,hi3660-reset";
-+        hisilicon,rst-syscon = <&iomcu>;
-+        #reset-cells = <2>;
-+    };
-+
-+    /* Specifying reset lines connected to IP modules */
-+    i2c@ffd71000 {
-+        compatible = "snps,designware-i2c";
-+        reg = <0xffd71000 0x1000>;
-+        interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        clock-frequency = <400000>;
-+        clocks = <&crg_ctrl HI3660_CLK_GATE_I2C0>;
-+        resets = <&iomcu_rst 0x20 3>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
-+        status = "disabled";
-+    };
-+...
--- 
-1.8.3
+On Mon, Dec 07, 2020 at 10:44:46PM -0600, Bjorn Andersson wrote:
+> Some bridge chips, such as the TI SN65DSI86 DSI/eDP bridge, provides
+> means of generating a PWM signal for backlight control of the attached
+> panel. The provided PWM chip is typically controlled by the
+> pwm-backlight driver, which if tied to the panel will provide DPMS.
+>=20
+> But with the current implementation the panel will refuse to probe
+> because the bridge driver has yet to probe and register the PWM chip,
+> and the bridge driver will refuse to probe because it's unable to find
+> the panel.
 
+What you're describing is basically a circular dependency. Can't we get
+rid of that in some other way? Why exactly does the bridge driver refuse
+to probe if the panel can't be found?
 
+In other words, I see how the bridge would /use/ the panel in that it
+forward a video stream to it. But how does the panel /use/ the bridge?
+
+Thierry
+
+--q/F3zxIokLeqOpPH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/PdfoACgkQ3SOs138+
+s6EFeQ/7BAokHQ30+o814DNtowr9AuLiWatODNQMti31IRlmkHjiTufMsqzMIdyc
+QEs6lj2pyv9pLS3kq7QVwsrViuPkRix+Fvn6BxN9aWeEqI5pbDMb3Jp4oGdCTt11
+AvvA2bNXfgYKKXqVIOA36G/U/AKpAMvXSGsl8raUgar0pRp2Mp5G+y4tiLUCfJFN
+E1jLSBRJz0VnhazWFifRzCsAAOkZcirgZgcTOkOIxRoI3YjtpaMOkHfa1gPIpGJq
+DOJFXcFRasj6BocWtowGQn12fMyO+NFG6IrXzYZ1BNlCe5/ZCKgWXdXGOPexTfhn
+xMm4J0Ppshqr1pradhF3Hil7zRW65HrS1Ea8WcKuAjJOLFm3svYjR7Cwgd5TyPhD
+DIJlvWcFqmpgOxqbYMkemFLvBAVN5BPDhwpiu7w3Kg/1IRGRvMgp5JvbbRas2mvO
+Ddeths3bMPCX3yzVc6q65R9jcUNw5mMW60vy5TVbjguBgPt+4nYgDHUmSMEykPD5
+vGL84/6DVzXwwKmKKq4BNJmWqcVbMW7DxlYJ51xZsW/NGrjgLStm/kThSMp0wB1y
+WmQM3sS1+DxUlPZuAUtAbUB6IyjXMqatDda0M5ySZ88HuCYebOYXV/rrnr8mIAiC
+IjSI6dzAANnqUt2KGNMP69MD4wZjS1qTND90QIM3ZlekbUk3Kqk=
+=BoBp
+-----END PGP SIGNATURE-----
+
+--q/F3zxIokLeqOpPH--
