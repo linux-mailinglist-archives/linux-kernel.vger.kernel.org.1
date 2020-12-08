@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E282D3532
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFF22D3544
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 22:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgLHV0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 16:26:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41382 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgLHV0c (ORCPT
+        id S1729248AbgLHVbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 16:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgLHVbL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:26:32 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607462750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rf13uxdJMX6X2A2KphFC2fFuIHsEuOIYeDTKo8orZ4s=;
-        b=eRM4DOkk2Xj3oAxXP3PYRU6jMGCOEBcO8WzVoJNWlY3L1nrKrXTFHeuDcmSTUTob0l8EDa
-        mUdmBPkKNt5v8qQLxgR5AZX9uaCh0FzZGMqzYa1F3QovnnmcoIbD2a6CHIZPJBmLTbjqaN
-        /FSnIc0NhPoupqLO5KoSPEpAWP8ViB6PblHu+IU6DGo0G4SHWdJQHUYNacReW+Lk1U8hQF
-        vjdVvwZJi5MhXP3vw/mJ9Hl7rHVhcnSZlghhIcDv4TSglIwI/fDeomKkM/z64fKrpIw1LZ
-        lSs9xWBKk23DRJI0/NwcD79Ml3hyqRzKDxloq1SOTWufiPJxiMu9MNFb6kJpNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607462750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rf13uxdJMX6X2A2KphFC2fFuIHsEuOIYeDTKo8orZ4s=;
-        b=3zCq5WdAdssMHnE/fHhnu7Isq6zwpsJ3AcjW//MgpuVNUKB5QEOdX/iSBQDxlp3ccVWW8k
-        WMhuftppJflw9RAw==
-To:     Andy Lutomirski <luto@amacapital.net>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-In-Reply-To: <CALCETrWKSdro=0YkaamU-RXpa+2sPzBKct4SPi1SmgL2yS62AQ@mail.gmail.com>
-References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com> <20201207232920.GD27492@fuller.cnet> <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com> <87sg8g2sn4.fsf@nanos.tec.linutronix.de> <6f64558a029574444da417754786f711c2fec407.camel@redhat.com> <CALCETrWKSdro=0YkaamU-RXpa+2sPzBKct4SPi1SmgL2yS62AQ@mail.gmail.com>
-Date:   Tue, 08 Dec 2020 22:25:49 +0100
-Message-ID: <878sa82dnm.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 8 Dec 2020 16:31:11 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F6AC0613CF;
+        Tue,  8 Dec 2020 13:30:31 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id m19so26677006ejj.11;
+        Tue, 08 Dec 2020 13:30:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MM65uySM3WXetJR81qISn55UyWapPuFerPV8cOsCP3Y=;
+        b=cHeJ70V64ZHJ4xM4opuM/N0V7rL6IS4EcQ2CN80+bzY8Dk2st7ZezednvLPv0kZnBB
+         9vK8gzF8tf6cL8nTqHoYsSH4DBnibqno/S7tWFruok40FfppcmxsZEJ9I6B9TwrE6KEr
+         sStWLHxwaZUgQg4g8qQIgORa3sZrZuaLDf/ozjJrQZl+8KnMqIDW42ORgoSY7ogVVD8e
+         87eUIawqVE4cKEBIRsSrG36WJJTnnB0u2yi0eUJNFMbTVpnAgcJqq4C0jbIifHWldkzf
+         DwaSddQJTa/rCz3Sqyiv/oJ8E4hCxod9OSzWWCA8pp2SOc9mV/NfILOoQavCe+k//Sxl
+         tUwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MM65uySM3WXetJR81qISn55UyWapPuFerPV8cOsCP3Y=;
+        b=Kcw2lkXUpQjxcUDrZI+DJ27fLfr9GRnP0jHstni9uLyoEayQQpWgbdonL0rG4oBpap
+         ge7WRFY3Nez8Xx+l4tkHFXZC8eKVfygFWXNfjM5sBnZVCf21vbZF8wcGpn9G9ModZ7cr
+         6t84S77etpk/OIt1Ls9MRozBVgZG9y1T8BJp+voDPoFK0IuFTFANNOPeQ3oquANNlMka
+         1JEGhvaOeQST4LZDAwfogD/MWBPF2tCEWXG312HmWnP0SnMpJbAJ4HfyN9ZdVPaQqExR
+         OvBVWB/cdTIPGyRHjM25Y4zo1J7GIpk8RRcj66eb5ym8cQGS3vgP287ZbaYohFxB1YY8
+         6Ntg==
+X-Gm-Message-State: AOAM5308bCJUXY9B0hiBGJBKDrPJVPPK8Ui7g+k92LmkaCIPXe3AnsUu
+        hiE0DV3ylLVtWd38kqwwmDI=
+X-Google-Smtp-Source: ABdhPJy/dxJOq2CWQhw2h4ww0meNqYdCSwA4EfvJVKwBEdTMjAa09YlecAyVbecjCfpXaL/e/t2+Og==
+X-Received: by 2002:a17:906:ca47:: with SMTP id jx7mr25907646ejb.237.1607463030132;
+        Tue, 08 Dec 2020 13:30:30 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id j5sm46682edl.42.2020.12.08.13.30.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Dec 2020 13:30:29 -0800 (PST)
+Message-ID: <4fd0591ce84684448e3f7720321f0c90eb3dccba.camel@gmail.com>
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Distinguish between query REQ and
+ query RSP in query trace
+From:   Bean Huo <huobean@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 08 Dec 2020 22:30:28 +0100
+In-Reply-To: <20201207102126.66d8e4f7@gandalf.local.home>
+References: <20201206164226.6595-1-huobean@gmail.com>
+         <20201206164226.6595-2-huobean@gmail.com>
+         <20201207102126.66d8e4f7@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08 2020 at 09:33, Andy Lutomirski wrote:
-> On Tue, Dec 8, 2020 at 8:26 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
->
-> IIRC we introduced mul_u64_u32_shift() for roughly this reason,but we
-> don't seem to be using it in the relevant code paths.  We should be
-> able to use the same basic math with wider intermediates to allow very
-> large intervals between updates.
+On Mon, 2020-12-07 at 10:21 -0500, Steven Rostedt wrote:
+> > @@ -321,9 +321,15 @@ static void ufshcd_add_cmd_upiu_trace(struct
+> > ufs_hba *hba, unsigned int tag,
+> >   static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba,
+> > unsigned int tag,
+> >                const char *str)
+> >   {
+> > -     struct utp_upiu_req *rq = hba->lrb[tag].ucd_req_ptr;
+> > +     struct utp_upiu_req *rq_rsp;
+> > +
+> 
+> I would add:
+> 
+>         if (!trace_ufshcd_upiu_enabled())
+>                 return;
+> 
+> Why do the work if the trace point is not enabled?
+> 
+> -- Steve
 
-That's 128 bit math and _NO_ we are not going there for various
-reasons.
+Steve,
 
-Hint1: There is a world outside of x8664 and TSC.
-Hint2: Even on x8664 and TSC it comes with performance overhead
+Thanks a lot, I will fix it in the next version.
+
 
 Thanks,
+Bean
 
-        tglx
+
