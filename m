@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118732D2D4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A922D2D58
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 15:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgLHOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 09:37:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLHOho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 09:37:44 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1729570AbgLHOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 09:38:20 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:48230 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729833AbgLHOiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 09:38:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607438273; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=wiV0QTircYBZpIpZ7N0y4YXP4M00dXIopNRPONBsgZU=; b=P3oBCUqgiVTbioDYFMityKhcJu9TYIu2rXu5pQGyCMl/6fnViMyHtjPfdFLv/ZdfI4kwy/rK
+ h6LVSC28/+pgUuQYwxS9oXjw71L4v0vY3C7C0UxpyvoXRVNoMyy92YH5Jm9+YgytZwZtpvA2
+ YLSWn9LX/StnDEvsYWw7Kj1ijYI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fcf8fa68b2b8953181467dc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 08 Dec 2020 14:37:26
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46898C433C6; Tue,  8 Dec 2020 14:37:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0171423A6C;
-        Tue,  8 Dec 2020 14:37:02 +0000 (UTC)
-Date:   Tue, 8 Dec 2020 09:37:01 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Tianxianting <tian.xianting@h3c.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>
-Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
-Message-ID: <20201208093701.3a890235@gandalf.local.home>
-In-Reply-To: <f3265adc26d4416dacf157f61fa60ad6@h3c.com>
-References: <20201203075129.17902-1-tian.xianting@h3c.com>
-        <20201203093956.6dd8a753@gandalf.local.home>
-        <f3265adc26d4416dacf157f61fa60ad6@h3c.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E6E8C433CA;
+        Tue,  8 Dec 2020 14:37:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E6E8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: Re: [PATCH] [v11] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20201208115719.349553-1-srini.raju@purelifi.com>
+Date:   Tue, 08 Dec 2020 16:37:17 +0200
+In-Reply-To: <20201208115719.349553-1-srini.raju@purelifi.com> (Srinivasan
+        Raju's message of "Tue, 8 Dec 2020 17:27:04 +0530")
+Message-ID: <878sa84b4y.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-Peter?
+> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+> and LiFi-XL USB devices.
+>
+> This driver implementation has been based on the zd1211rw driver.
+>
+> Driver is based on 802.11 softMAC Architecture and uses
+> native 802.11 for configuration and management.
+>
+> The driver is compiled and tested in ARM, x86 architectures and
+> compiled in powerpc architecture.
+>
+> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
 
--- Steve
+Please limit how often you send a new version of this driver. It does
+not speed up the review, quite the opposite actually as you just flood
+the patchwork (and my inbox). Especially if there are only cosmetic
+changes there's no point of sending a new version immediately, only send
+a new version when there are major changes.
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-On Tue, 8 Dec 2020 07:58:54 +0000
-Tianxianting <tian.xianting@h3c.com> wrote:
-
-> Thanks,
-> We met an issue that a normal thread can't get cpu, 
-> And at this moment, we found 'sched: RT throttling activated' log.
-> 
-> So I think this patch is useful for such issue.
-> 
-> Could I get more comments?  Thanks in advance
-> -----Original Message-----
-> From: Steven Rostedt [mailto:rostedt@goodmis.org] 
-> Sent: Thursday, December 03, 2020 10:40 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com; vincent.guittot@linaro.org; dietmar.eggemann@arm.com; bsegall@google.com; mgorman@suse.de; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] sched/rt: Print curr when RT throttling activated
-> 
-> On Thu, 3 Dec 2020 15:51:29 +0800
-> Xianting Tian <tian.xianting@h3c.com> wrote:
-> 
-> > We may meet the issue, that one RT thread occupied the cpu by 
-> > 950ms/1s, The RT thread maybe is a business thread or other unknown thread.
-> > 
-> > Currently, it only outputs the print "sched: RT throttling activated"
-> > when RT throttling happen. It is hard to know what is the RT thread, 
-> > For further analysis, we need add more prints.
-> > 
-> > This patch is to print current RT task when RT throttling activated, 
-> > It help us to know what is the RT thread in the first time.  
-> 
-> I think this can be useful information to include.
-> 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> -- Steve
-> 
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> > ---
-> >  kernel/sched/rt.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c index 
-> > f215eea6a..8913f38cb 100644
-> > --- a/kernel/sched/rt.c
-> > +++ b/kernel/sched/rt.c
-> > @@ -946,7 +946,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
-> >  	return rt_task_of(rt_se)->prio;
-> >  }
-> >  
-> > -static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
-> > +static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct 
-> > +task_struct *curr)
-> >  {
-> >  	u64 runtime = sched_rt_runtime(rt_rq);
-> >  
-> > @@ -970,7 +970,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
-> >  		 */
-> >  		if (likely(rt_b->rt_runtime)) {
-> >  			rt_rq->rt_throttled = 1;
-> > -			printk_deferred_once("sched: RT throttling activated\n");
-> > +			printk_deferred_once("sched: RT throttling activated (curr: pid %d, comm %s)\n",
-> > +						curr->pid, curr->comm);
-> >  		} else {
-> >  			/*
-> >  			 * In case we did anyway, make it go away, @@ -1026,7 +1027,7 @@ 
-> > static void update_curr_rt(struct rq *rq)
-> >  		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
-> >  			raw_spin_lock(&rt_rq->rt_runtime_lock);
-> >  			rt_rq->rt_time += delta_exec;
-> > -			if (sched_rt_runtime_exceeded(rt_rq))
-> > +			if (sched_rt_runtime_exceeded(rt_rq, curr))
-> >  				resched_curr(rq);
-> >  			raw_spin_unlock(&rt_rq->rt_runtime_lock);
-> >  		}  
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
