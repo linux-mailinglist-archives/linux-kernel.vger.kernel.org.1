@@ -2,170 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57822D2728
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11642D26FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 10:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgLHJGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 04:06:55 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:52325 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728544AbgLHJGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:06:53 -0500
-Received: by mail-wm1-f67.google.com with SMTP id a6so1478365wmc.2;
-        Tue, 08 Dec 2020 01:06:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yp6QbU20dThiZX55YMgwP3N0UblwKDOB7By25gccL7c=;
-        b=sAkl74s0WB5ZfNOAbD2UvPb6wQvtsATgZcXpAWIvJPYyO9Gnj82zefH+j+mA6scCBa
-         C2u0UJFnaTTz+PjGtSPqHgRvh43B+xJvF0L5m3B47G6QGs9o9fY8FybnBq7MULJ7Qw0H
-         6XXGE15XlCZ+kWjWQV7xP/Tjn5xD4MmOHdaLYVkIKo6ffAfbc8mVff4b/CoMQg7Un5Tf
-         w35MXK5YqacT9+gxhjVae4DiMM8obQSCjqNzIn7sQzxEL0hkJunqclnqKnLRG5bYhKV9
-         CcDVdfKY7D1imMptnU4FW5RfWcFzgGcHzp2mvt8/0iCCvDdnEjNS08bpL6xWttlRY9Mg
-         aXDg==
-X-Gm-Message-State: AOAM5310pkQ1y6XOuCuJPxvkP5F0B1NhzRtON7EHLTW9bh3RTQSjG1aK
-        Oy+SopdJjlk/UKGsYdL4n5s=
-X-Google-Smtp-Source: ABdhPJy9qWTsAHTIyarbSwMqk6HSg5nF0G3ha8z2BhOwMciZ8zVRzeZ0zOwuEFo3aEIZXSVCkNduYg==
-X-Received: by 2002:a1c:4843:: with SMTP id v64mr2900420wma.186.1607418364268;
-        Tue, 08 Dec 2020 01:06:04 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id i11sm19196228wrm.1.2020.12.08.01.06.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:06:03 -0800 (PST)
-Date:   Tue, 8 Dec 2020 10:06:01 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     "S.j. Wang" <shengjiu.wang@nxp.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: imx8mn: Fix duplicate node name
-Message-ID: <20201208090601.GA8347@kozik-lap>
-References: <VI1PR0402MB334257A91BBAFE48C7AACD56E3CD0@VI1PR0402MB3342.eurprd04.prod.outlook.com>
+        id S1728784AbgLHJFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 04:05:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728192AbgLHJFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:05:45 -0500
+Date:   Tue, 8 Dec 2020 10:06:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607418298;
+        bh=Mxm4tMc0lHI8bH/rVnSlJy9zQmdRnBcybnvarWYeXXg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yE8rQ4cCeTYmHpAZV1twhXooXpSNffV/wzJ4rqpRmIfBkKkORQmkjmFsObfxuoaVO
+         biU1+JtbWqp9niROIfCYuRWDjP/hR7mARtp+xKRM+VMwQMJXiGLuA3k522da1ZiDWP
+         o5Nlgv8cOrjJYPp/embz6olO9XR5icUZKAOkGSu0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Brian King <brking@linux.vnet.ibm.com>,
+        Pradeep Satyanarayana <pradeeps@linux.vnet.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 4.19 11/32] ibmvnic: notify peers when failover and
+ migration happen
+Message-ID: <X89B/ob8dDZpHHee@kroah.com>
+References: <20201206111555.787862631@linuxfoundation.org>
+ <20201206111556.317195640@linuxfoundation.org>
+ <20201206170708.GA4901@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <VI1PR0402MB334257A91BBAFE48C7AACD56E3CD0@VI1PR0402MB3342.eurprd04.prod.outlook.com>
+In-Reply-To: <20201206170708.GA4901@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 08:57:49AM +0000, S.j. Wang wrote:
-> > On Tue, Dec 08, 2020 at 08:44:51AM +0000, S.j. Wang wrote:
-> > > > > > >
-> > > > > > > On Mon, Dec 07, 2020 at 02:21:40PM +0100, Krzysztof Kozlowski
-> > wrote:
-> > > > > > > > On Mon, Dec 07, 2020 at 02:53:24PM +0800, Shengjiu Wang wrote:
-> > > > > > > > > Error log:
-> > > > > > > > > sysfs: cannot create duplicate filename
-> > > > > > > '/bus/platform/devices/30000000.bus'
-> > > > > > > > >
-> > > > > > > > > The spba bus name is duplicate with aips bus name.
-> > > > > > > > > Refine spba bus name to fix this issue.
-> > > > > > > > >
-> > > > > > > > > Fixes: 970406eaef3a ("arm64: dts: imx8mn: Enable
-> > > > > > > > > Asynchronous Sample Rate Converter")
-> > > > > > > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > > > > > > > ---
-> > > > > > > > >  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
-> > > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > > > > > > > b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > > > > > > > index fd669c0f3fe5..30762eb4f0a7 100644
-> > > > > > > > > --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > > > > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > > > > > > > @@ -246,7 +246,7 @@ aips1: bus@30000000 {
-> > > > > > > > >                     #size-cells = <1>;
-> > > > > > > > >                     ranges;
-> > > > > > > > >
-> > > > > > > > > -                   spba: bus@30000000 {
-> > > > > > > > > +                   spba: spba-bus@30000000 {
-> > > > > > > >
-> > > > > > > > The proper node name is "bus" so basically you introduce
-> > > > > > > > wrong name to other problem.  Introducing wrong names at
-> > > > > > > > least requires a
-> > > > comment.
-> > > > > > >
-> > > > > > > I just noticed that my message was barely understandable... so
-> > > > > > > let me
-> > > > fix it:
-> > > > > > >
-> > > > > > > The proper node name is "bus" so basically you introduce wrong
-> > > > > > > name to _fix_ other problem.  Introducing wrong names at least
-> > > > requires a comment.
-> > > > > > >
-> > > > > > > > However the actual problem here is not in node names but in
-> > > > addresses:
-> > > > > > > >
-> > > > > > > >       aips1: bus@30000000 {
-> > > > > > > >               spba: bus@30000000 {
-> > > > > > > >
-> > > > > > > > You have to devices with the same unit address. How do you
-> > > > > > > > share the address space?
-> > > > > > > >
-> > > > > > > > I think this should be rather fixed.
-> > > > > > >
-> > > > > > > And again, hungry keyboard ate a letter, so:
-> > > > > > >
-> > > > > > > You have _two_ devices with the same unit address. How do you
-> > > > > > > share the address space?
-> > > > > > > I think this should be rather fixed.
-> > > > > > >
-> > > > > >
-> > > > > > spba is the first block of aips1 space, so it has same start
-> > > > > > address as aips1.
-> > > > >
-> > > > > The reference manual describes it "Reserved for SDMA2 internal
-> > > > > memory", so indeed it is first address but does it have to be mapped?
-> > > > > Anyway, why don't you use ranges to remove the conflict?
-> > > >
-> > > > The IO address space remapping could be a solution but there is
-> > > > another problem - the hardware representation in DT does not match
-> > > > what reference manual is saying.
-> > > >
-> > > > The AIPS bus @30000000 has several IPs:
-> > > >  - SAI2@30020000
-> > > >  - ...
-> > > >  - GPIO1@30200000
-> > > >
-> > > > However in DTS you will find additional SPBA bus for 30000000 -
-> > 300c0000.
-> > > > It's not really the SDMA, as SDMA is at different address. It is
-> > > > rather an address space which SDMA should map... but it is not a bus
-> > with children.
-> > > > Adding spba-bus@30000000 with its children does not look like
-> > > > correct representation of HW in DTS.
-> > > >
-> > >
-> > > In the RM, it says AIPS-1 (s_b_1, via SPBA) Glob. Module Enable.
-> > > Range is (30000000 - 300FFFFF)
+On Sun, Dec 06, 2020 at 06:07:08PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > From: Lijun Pan <ljp@linux.ibm.com>
 > > 
-> > No, AIPS-1 is till 303F_FFFF.
+> > [ Upstream commit 98025bce3a6200a0c4637272a33b5913928ba5b8 ]
+> > 
+> > Commit 61d3e1d9bc2a ("ibmvnic: Remove netdev notify for failover resets")
+> > excluded the failover case for notify call because it said
+> > netdev_notify_peers() can cause network traffic to stall or halt.
+> > Current testing does not show network traffic stall
+> > or halt because of the notify call for failover event.
+> > netdev_notify_peers may be used when a device wants to inform the
+> > rest of the network about some sort of a reconfiguration
+> > such as failover or migration.
+> > 
+> > It is unnecessary to call that in other events like
+> > FATAL, NON_FATAL, CHANGE_PARAM, and TIMEOUT resets
+> > since in those scenarios the hardware does not change.
+> > If the driver must do a hard reset, it is necessary to notify peers.
 > 
-> Yes,  AIPSA-1 is till 303F_FFFF,  but it is divided to 2 parts.
-> (30000000 - 300FFFFF) is the first part. 
+> Something went wrong here.
 > 
-> Please go to table 2-3 AIPS1 memory map in RM.  In the "region" column,
-> There is " AIPS-1 (s_b_1, via SPBA) Glob. Module Enable". It means
-> This part is connect to SPBA bus.
+> > @@ -1877,8 +1877,9 @@ static int do_reset(struct ibmvnic_adapt
+> >  	for (i = 0; i < adapter->req_rx_queues; i++)
+> >  		napi_schedule(&adapter->napi[i]);
+> >  
+> > -	if (adapter->reset_reason != VNIC_RESET_FAILOVER &&
+> > -	    adapter->reset_reason != VNIC_RESET_CHANGE_PARAM) {
+> > +	if ((adapter->reset_reason != VNIC_RESET_FAILOVER &&
+> > +	     adapter->reset_reason != VNIC_RESET_CHANGE_PARAM) ||
+> > +	     adapter->reset_reason == VNIC_RESET_MOBILITY) {
+> 
+> This condition does not make sense... part after || is redundant.
+> 
+> Mainline changed != in FAILOVER test to ==, so it does not have same
+> problem.
 
-Thanks, I see it now. Indeed you have two buses which start at the same
-address space. You can:
-1. Remap addresses,
-2. Rename APIS and SPBA to bus-1 and bus-2,
-3. Add specific (non-generic) name to spba-bus which you did initially.
+Odd, ok, I'll just go drop this patch from the queue, thanks.
 
-All of these are rather workarounds so I don't mind your approach (3).
-
-Best regards,
-Krzysztof
-
+greg k-h
