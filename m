@@ -2,162 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0EC2D2FB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437D92D2FBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 17:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgLHQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 11:30:51 -0500
-Received: from mail-bn7nam10on2125.outbound.protection.outlook.com ([40.107.92.125]:31072
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726080AbgLHQau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 11:30:50 -0500
+        id S1730348AbgLHQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 11:31:47 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:53388 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730162AbgLHQbr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 11:31:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1607445040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d0GJtz0zOfg3ilKmpm5pbT1rah50qJjsOnh8T+hQ2lk=;
+        b=OnnrSj4/0hoFABNZyT/rjst3e4Z+yZsw1c2eJWYf7SAYowEsp2tHi9VDQkYjg2Zl4E8f/h
+        hJPuPB1Edlbw8xxBAsc0YIpK9Eev9z21Pwv4uT6lFXZ+OMGZLm9JZP3+YL+ow7RvpJyYFV
+        njZBd6CAn4eyxQVmeXZNeF60HFHeXow=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-19-oO2uXQ7ROW26YyaIrkdVmA-1; Tue, 08 Dec 2020 17:30:38 +0100
+X-MC-Unique: oO2uXQ7ROW26YyaIrkdVmA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Li3HPu6YKFNDCb7385ifWatY0yW2VnJAuChD3OYJOKmtgM7b19BrJjFTobfc0PVT+330IJ6Upvf5uJQ5xDjb6XMwL3jteIZT0k5/lRVI2w8BN2A+AWXyAvCv5SP+n7ofU7hsjLUAaevv9AJVbbxYEyG12FbRaBEUVgk8KkRExo5c+lX6tXJNph+ZadRC//zB1SDieqmz4J0pwzqAxJYkB4u/sRFTl9/ZqJQia3D/yyQ6JddHpqzU6U6fklVKZ2ikGB9Abz7dwrwRgHF3GVo5BkyF5eWU8MSsWGrvRag3CQudtq8Mwu6m2tB64K/GO4O6m3K3QgA28KayS1DWJoZ5Bg==
+ b=UZT89CxLFJcY8Tp4yAZpRkVbsx88SBIJ//bdXG5NpgriDYC7oGkVyhZd+ukTOGR8cTjkx2VlTm4fTUxH3IoYXG+fIghdvsXth2NU0gqmqlBPdukvM9J37U8MJHi62cr965BpRJ19FDbeCLPqnpaeEQuYOsg9zaH3+dqadBP/BoF+EXDtv/kISPfWi41h9XBGuqx2leedsxQRtgG7tB8TyzfmlbpP/FHwQWMKRuP4ra7kPw+05tD1yCCulYma1wgNxwWC5ROAPg3XN3jaZ8TUYXxjoDQfUnq69/ypnUU8BHO114+ESJPNRXk15yTiyS62nRBZeGrFSskZAgFqNAcb9Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ATqYt+i4EYKelfUq06susMRgdpqZ1TeGueMy2qmfR4=;
- b=acwK265NIx9ZS357mmvdfCW3d1Kw1xgzzKDxHWrQiLbE6Bm2QG1CVKlGlGGC6+dCWMhwHz8VXN67QeRaxhtZ464IoZI3BNTdI6YUAnzY0e36BpktTkOtR1fA5K25bpz7EDFXyZvwm21DyNGGjmkZirjTPzsi89waYCK9wXjqt0hGqufrbSBdwm+0sHgzm3LokKnj4QD054yf8p3n2+kidvKeWgzn3THWW5R1KSM+gt17YnOGDpZVzSS4KJD2Q8wqD4Q9Bkkzcxg41ktMw1CI1xeDqyuV+dg+41KhRARsdIzJbS0ve5utXjUM0iyvgnmOx4hLPXiKdwCZRTCPShOxPw==
+ bh=d0GJtz0zOfg3ilKmpm5pbT1rah50qJjsOnh8T+hQ2lk=;
+ b=IeDqaqZMSQAkmIkxneuvaa/RHOwI2g1gkVQyM29S+hFsmFSy2qk2B5ObBmsZ4VnTYg2yCrSIGbsDdTXflejIQA44x6bwJ6j/4EhT6Jp96XTtQPv7cEWJWI7L+uQd5Afof7igTPOimcGjh1LLD7pT8KGLS86DWiV4qd26JMm4KcJYEjp2LpQON4Xvsuxp11gqbomdFlDSQoGjLsBnr8j0/0RhIwGKDBAu2vwAXiVu8Sd2ZI+zFT0NT6ODJ/5ZXKLgoRmT4pc5PbA+NDCctoxL4vBZ/kch9PMtOpUJo5yjOwoJbQ7FtZO6RN01fq5NHITG4hUbTn51tpLn2Iz+4D4BmQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+ATqYt+i4EYKelfUq06susMRgdpqZ1TeGueMy2qmfR4=;
- b=IJLE8RCeoGrJhnCD81geYoWFy3i0sUGsvIQJgN06GO6ZzdnWJH/VaY88sn/YIhL66JQ3U88uyr8tnFMq4NTp5Fb4hycyNsSlbdR3mybTmAs4zLa2hQ8galfZSVFEFzBn0AHOGjIzCwMuK4qjIAKVkgPdVIUfQToXkRPRub+7SXU=
-Received: from (2603:10b6:303:7a::15) by
- MW4PR21MB1908.namprd21.prod.outlook.com (2603:10b6:303:7b::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.3; Tue, 8 Dec 2020 16:30:01 +0000
-Received: from MW4PR21MB1860.namprd21.prod.outlook.com
- ([fe80::bca7:6c8d:8df0:bfe1]) by MW4PR21MB1860.namprd21.prod.outlook.com
- ([fe80::bca7:6c8d:8df0:bfe1%3]) with mapi id 15.20.3654.003; Tue, 8 Dec 2020
- 16:30:01 +0000
-From:   KY Srinivasan <kys@microsoft.com>
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] [PATCH 1/1] scsi: Fix possible buffer overflows in
- storvsc_queuecommand
-Thread-Topic: [EXTERNAL] [PATCH 1/1] scsi: Fix possible buffer overflows in
- storvsc_queuecommand
-Thread-Index: AQHWzWTRxBnrkVn9uUeS8hL1fcJMJKntYokQ
-Date:   Tue, 8 Dec 2020 16:30:01 +0000
-Message-ID: <MW4PR21MB186053CCB0D774831A3B9501A0CD1@MW4PR21MB1860.namprd21.prod.outlook.com>
-References: <20201208131918.31534-1-ruc_zhangxiaohui@163.com>
-In-Reply-To: <20201208131918.31534-1-ruc_zhangxiaohui@163.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b75e7c58-a8c3-47a3-b65d-0409b213bdbb;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-08T16:24:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: 163.com; dkim=none (message not signed)
- header.d=none;163.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2601:600:a27f:86b0:15a4:1ab8:b79c:38e5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5ed09bea-5e5b-4b75-4a15-08d89b9682f2
-x-ms-traffictypediagnostic: MW4PR21MB1908:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR21MB1908CFAA0D6CDC0DB1C49DFDA0CD1@MW4PR21MB1908.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AE8FUr9z+VCqtHCQUvaOqhevNyS6mFvmaXbA6cjNGTNYcd5odDMAH+nYcAmAOczUxNJpF+TD7ssGZSao1rjANw2u0pY0HZmKs/816WZvLvRaja5kUo0Rtc2hzlz9tVA7dmSdpA7/nCuLXtSzqX8XlPtmrgVIk7VXy2ipW1rNZa9gfiljg1q3JSgM2EniAsdqyy16tlufEnxDKsZfWUmGMXsuYzIZpc6wRBivUE+NIXTDb2BGAIOJNxGz9sebTCjXXeI4mTTGV98bCrZMsjw2pQItTmX79RdqtJQcT9UwhMyZbAoM487p5/nxk4lUNtaQpgasoaMBeGZ4JV+NOPWoLA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB1860.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(55016002)(9686003)(2906002)(82950400001)(82960400001)(10290500003)(8936002)(83380400001)(478600001)(8676002)(33656002)(86362001)(7696005)(52536014)(316002)(5660300002)(71200400001)(6506007)(110136005)(53546011)(64756008)(186003)(66476007)(66556008)(66446008)(8990500004)(66946007)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?UDXKHYS5r0J5XmNEu7ZqS23Rzx4CGwEXH/Vr9PZeO1oP8BSh/MQeYLgfbX0L?=
- =?us-ascii?Q?7F4yoUlGcqXtqbMRfUpsvdBFMTbxuVKuLLWEq2O+HcP1OS3ZW5CnKVl5VUiO?=
- =?us-ascii?Q?h3S46wN2UoSHRjco9RphBentlWROTXGQrQdpgSM+ef8zWZCBg6x7CmPNZSLd?=
- =?us-ascii?Q?VJu7sNschxBYicA2QD+lcRewyUaHNpx/LmxC3P9qd9OGXEcXFbFE3F4QX0hC?=
- =?us-ascii?Q?qGmGHC1aF2rk+Chh+8h1RtnjTmYFd4G0ahIATI3kkBYBa5BwwwnBhExT/4wl?=
- =?us-ascii?Q?y3S3Q81iT+itSFfT4YXl14PYWGZE3Wr6PObwDHYQewUPjzBFeoByPBASCygB?=
- =?us-ascii?Q?aZ4NAlXZxRYFNJSiz0JTs5jh8TAcT4EQGsFcoayHTwYLVPJfa1ZSnbYbrh+5?=
- =?us-ascii?Q?3fkziBSAzPIqKWZUPHxm2czHM9JyfU4KJQ+CtHIKrP5HlFwrT9iVxZJJf5SG?=
- =?us-ascii?Q?dKfSzZQEWZ4XzAhHHm30lrgPxr+EHYRveSa21c3ljeVYLlAInfpiqAYKEUE6?=
- =?us-ascii?Q?IXkFF90IlRjjrL4xIMFj5UAUcEBSLxKRcNYGwvLYXrjK5SjbAucJs5b1jzyq?=
- =?us-ascii?Q?TeI0jFxVfQp47ckRdMaKBJbbmM3wwawurOFW4lQ9dEv2o56YymwHyGe6ITU4?=
- =?us-ascii?Q?0nOp4VS05/rtKwnOsw4VlXa5AaOPmpsKWM1cJ7eLGxwse55yajNsX7miT0cq?=
- =?us-ascii?Q?6/uwc22K0wr2cRuNuLPm9LDhx60RunmBA269d3NQJUnsCdH8QpTVB7+8zdK5?=
- =?us-ascii?Q?CvBUUxi0WLYYNKfbSJ7+cDKuv6FaMUmGiTpxU62IkodU3DrN8sEIlsInrzDA?=
- =?us-ascii?Q?W0xQz2deTGcRmHvs3C7Fcm9jj4KvgJEIFAHsyF+p9mNpRH246KDhaKhgR6Te?=
- =?us-ascii?Q?FuzQPi8WKrcITBhf8NWZHosa/3AWVzDfpb1u2IpmryvdsDj4bsMewe5GegZ7?=
- =?us-ascii?Q?UlDdw7/0RiMQQxtLowV0My+Gpl1AVLnSALaNmqyYluCCnf3JMyrIUACSsMvE?=
- =?us-ascii?Q?EcNtP/Awz/7BgbWbgSo96u7KqSiG/6QMydF6NE5WlIRuN8o=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB4530.eurprd04.prod.outlook.com (2603:10a6:208:70::28)
+ by AM8PR04MB7297.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 8 Dec
+ 2020 16:30:38 +0000
+Received: from AM0PR04MB4530.eurprd04.prod.outlook.com
+ ([fe80::797c:6e40:f893:4082]) by AM0PR04MB4530.eurprd04.prod.outlook.com
+ ([fe80::797c:6e40:f893:4082%6]) with mapi id 15.20.3654.012; Tue, 8 Dec 2020
+ 16:30:37 +0000
+Message-ID: <1607445035.2673.64.camel@suse.com>
+Subject: Re: [PATCH v1 0/4] cpufreq: Allow drivers to receive more
+ information from the governor
+From:   Giovanni Gherdovich <ggherdovich@suse.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>
+Date:   Tue, 08 Dec 2020 17:30:35 +0100
+In-Reply-To: <20360841.iInq7taT2Z@kreacher>
+References: <20360841.iInq7taT2Z@kreacher>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.250.132.148]
+X-ClientProxiedBy: AM0PR03CA0057.eurprd03.prod.outlook.com (2603:10a6:208::34)
+ To AM0PR04MB4530.eurprd04.prod.outlook.com (2603:10a6:208:70::28)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-ni6k.dhcp.prg.suse.com (195.250.132.148) by AM0PR03CA0057.eurprd03.prod.outlook.com (2603:10a6:208::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18 via Frontend Transport; Tue, 8 Dec 2020 16:30:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a84e458-c33b-424d-8fc7-08d89b969889
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7297:
+X-Microsoft-Antispam-PRVS: <AM8PR04MB729745A48FF0EFEB8F34581093CD0@AM8PR04MB7297.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3JAZa7TyD5Ndh33bHfi0crW6C/jxWPkJltmGQEZSb2j3pY9u5LlPNKqUiVdaclmckMt2iF9u1MQ8JWzIQu2gf/+s2kr9ymZT3wwO/lDpUFjHOkqZ3tC4ZzVQ+HcU3RbYxr85GsXMPLBmIU8MscgNvVN0UpjMaH2ISaNzrh+0bHOaiIRJUqro6ZrgNZMg9lBgvPi/K8jIUYyRZUUel3/HXcAlYZeZRdf5endTO6KC54WXoXdSoUb4U6CdP+3SqMFgsnMkkdYtHo4RWTKaCUC+G7JH8SX03U0O2ydIvYWxpA9zaAuDJTbxrTbt2x40GX8/8EbWUJfI3QmOXbphmzq1VVhSUghT13OTCqMiig2ps+JIpRJXLwuJBkPWSxnNNNJRyZuaWVPiW95cWcGT8WnZsJ5hAjDCe8Xrd1khNidCK4o84C21ijJAVWxKdqsNHn6vnKusqY6kfwFkpCkCG3mJpw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4530.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(54906003)(52116002)(103116003)(4744005)(2906002)(110136005)(8676002)(36756003)(956004)(66946007)(6486002)(5660300002)(26005)(8936002)(66556008)(4326008)(2616005)(186003)(966005)(66476007)(16526019)(7696005)(508600001)(99106002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S0E2Z25pQlZYaTJSQjhRQmFqRDAvQVdvNHNRZmowaFpTSjZvbXlxcjFiZ1dk?=
+ =?utf-8?B?YXdxbEYvNU4xT0V6bXhEZHQ2NHZFdGh4MlhQOXk2bGdLbUdIOXdoTitlcTVY?=
+ =?utf-8?B?S282ZlRrNmJkeHlmS1JlQllBSGk4VExySGJHSnlhRFVUWEV4akZreGlxVE5X?=
+ =?utf-8?B?OU5oNUd5Y0E3UkJ6ODFjUzhaWnBXY3J1anRyVnF4OEtvSlFoeEFjOEtPOXpz?=
+ =?utf-8?B?SmxFcGhiTEpCTThFNkFWWnU3Q1p2NkhtYVJ1VEZqU0dTZHpUMUdIK3huclZn?=
+ =?utf-8?B?TFZuRFVXcmJQLzd0YXZRZFA2REU3ZGdZc2Z1WlBBZjNDU3FncjcyTzFPb1Mx?=
+ =?utf-8?B?TnpMWFd6dDIxN1J2WE1nRk9nVEFtaVpvK3kxQ1J0VjZCV084QTI2eGRTaU8x?=
+ =?utf-8?B?NlFWWFRUOFdEMlBxS0tWZ0Q3SG43SEdyd1Z3cjBMcXhQbWs5aWVIUlBQSGV5?=
+ =?utf-8?B?UjRIVzZLSzJJdGROeDlpNTl5SFVPa2VuMXVQTWlKUitjTWQrUzRLbTkxVGFD?=
+ =?utf-8?B?TUQ2VmN6bnZvZ2J1YVJDb1VKd09RaUlVNXkyL0YrbGk2SFlKOXJWWDR1RHY0?=
+ =?utf-8?B?VmVDc2dVWWFFQkVSODFraVBlbE9WWDBCNkNSMjBzSUpKT3A2dWp0RUZjRVFj?=
+ =?utf-8?B?U1lSMlRsREVJSlh4S0ZXL1k3azZ3aE9mWm0xVGMrRmpPUHRGWVZWOVIyMFNT?=
+ =?utf-8?B?dlBabmwxWGFmK2d3bndOdW9TblRsNW4zZ2dsaTlLOHNDK25xWnl5VkhLenJJ?=
+ =?utf-8?B?TmJBVHFHRjFGaTJUcFl6eW45U1BpazY2NHQrb0NUVE1SNUdUeXliaUo0T1li?=
+ =?utf-8?B?OWQwLzB5VkVhME4vL0cycWJnMzFVdVZoZVJtUUFrR281UnUyMW8zQlA0dDRq?=
+ =?utf-8?B?SWFkQ3FUb1FyOGU3TC9pUi9zVGhrU0ZmcEdUWVZIOUtodlBxNWVkaHd6QVdH?=
+ =?utf-8?B?eUxZbXhzTFpNand6TExFdmozU2Z2YVFnb1l5cWJqQ0x4YzZSUE5ZMzdTT3po?=
+ =?utf-8?B?OW1HWXhkUXlTZWZjVHArVVUxK28vcVFyWnc0OHA1QVk5dHljZVRxamQvOWZR?=
+ =?utf-8?B?NGl1eEFCNEFDanRRaHJlc0NmVkVLa2pMSHM0bUoxQUUvY2w4Wk9XVWRGVDdW?=
+ =?utf-8?B?Zi9TRitmY3cwZlhCODRsalZjTkh6d3prb1p0Q0VDVDY5aUpqYk1kdjZCNHNu?=
+ =?utf-8?B?STl5RVlhazBocFNqNnRPTEJYVDVnRXdGR0IxWGh0UzBVN0ZkVWl1VHYvTVor?=
+ =?utf-8?B?M3E4Mnk2K3VWN3ZpMG5JSzJ1K0RrL2VoN1AvUWJtZ3NxSlRGcE11dGlzR2oy?=
+ =?utf-8?Q?msfbp8oKq5rYJduoOBNaqOwx0OSRAjry/x?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4530.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB1860.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ed09bea-5e5b-4b75-4a15-08d89b9682f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Dec 2020 16:30:01.6405
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 16:30:37.7797
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2GW/7UNSfL8zXJIOGjffL3MZs5DptUmuQ+1+flcDXH6MymU0E55toV8pYo8hePt+xUPKvMB7iek2bOA69/zmTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1908
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a84e458-c33b-424d-8fc7-08d89b969889
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a0FRkjW8wndOihe7NuNqmK6ZafIyVO0TwP/ni2LbbYzDaNs8hYGcD1YB7CTuJK2hl59wN4pFQrMXKvPOZtedl3/MQFTphXJA5Ty+35w8Vcg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7297
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-12-07 at 17:25 +0100, Rafael J. Wysocki wrote:
+> Hi,
+> 
+> This is based on the RFC posted a few days ago:
+> 
+> https://lore.kernel.org/linux-pm/1817571.2o5Kk4Ohv2@kreacher/
+> 
+> The majority of the original cover letter still applies, so let me quote it
+> here:
+> [...]
+
+Hello Rafael,
+
+I'd like to test this patch, as I have concerns on how it performs against the
+current intel_pstate passive + HWP + schedutil (which leaves HWP.REQ.DESIRED
+untouched).
+
+I'll get results within a week. Do you mind holding back the merge until then?
 
 
-> -----Original Message-----
-> From: Xiaohui Zhang <ruc_zhangxiaohui@163.com>
-> Sent: Tuesday, December 8, 2020 5:19 AM
-> To: Xiaohui Zhang <ruc_zhangxiaohui@163.com>; KY Srinivasan
-> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Stephen
-> Hemminger <sthemmin@microsoft.com>; Wei Liu <wei.liu@kernel.org>;
-> James E.J. Bottomley <jejb@linux.ibm.com>; Martin K. Petersen
-> <martin.petersen@oracle.com>; linux-hyperv@vger.kernel.org; linux-
-> scsi@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [EXTERNAL] [PATCH 1/1] scsi: Fix possible buffer overflows in
-> storvsc_queuecommand
->=20
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
->=20
-> storvsc_queuecommand() calls memcpy() without checking the destination si=
-ze
-> may trigger a buffer overflower, which a local user could use to cause de=
-nial of
-> service or the execution of arbitrary code.
-> Fix it by putting the length check before calling memcpy().
->=20
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> ---
->  drivers/scsi/storvsc_drv.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c inde=
-x
-> 0c65fbd41..09b60a4c0 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -1729,6 +1729,8 @@ static int storvsc_queuecommand(struct Scsi_Host
-> *host, struct scsi_cmnd *scmnd)
->=20
->  	vm_srb->cdb_length =3D scmnd->cmd_len;
->=20
-> +	if (vm_srb->cdb_length > STORVSC_MAX_CMD_LEN)
-> +		vm_srb->cdb_length =3D STORVSC_MAX_CMD_LEN;
->  	memcpy(vm_srb->cdb, scmnd->cmnd, vm_srb->cdb_length);
-
-The data  structure is sized correctly to handle the max command length. Be=
-sides
-your check is bogus - you cannot truncate the command!
-
-K. Y
->=20
->  	sgl =3D (struct scatterlist *)scsi_sglist(scmnd);
-> --
-> 2.17.1
+Thanks!
+Giovanni Gherdovich
 
