@@ -2,275 +2,432 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40CC2D2EDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615D52D2EE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 16:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730255AbgLHP5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 10:57:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729558AbgLHP5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 10:57:24 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FDF823AA9;
-        Tue,  8 Dec 2020 15:56:42 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kmfM0-00H7fO-1u; Tue, 08 Dec 2020 15:56:40 +0000
+        id S1730267AbgLHP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 10:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730194AbgLHP6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 10:58:14 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B15DC061749
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 07:57:27 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id m12so2378413lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 07:57:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2SicOyfmaMdL1MLfu2Q8psj0uudwpeekiTFOrfE68YM=;
+        b=YRFassPIPivsdrWyCZUyiZbiml2TvqvrbU0VPRIe1/q0G/zP/lt0GaRYZtDqBmDmEc
+         fYMTtEl7uyUxDFg3jC3lEUA2WxO8RYes6v8QLHqpIuReCNK1i2sWfWzBmMe2PhNAcIMG
+         nuOmmkJSgDOEh+N4toSqMFiHxygR6eaTla/Md9v/WUcwrvIBJAfj7hOutQ4EX22/N6UN
+         A6U/kp21oUwPVyb9Y6sAJm/DhdvOx3ttUGC2InUzGs85Tl87HejcAS14Y63xvUzFqTe4
+         m4qlYDvGM1Dw6rZmbgkp0UG/0AUvwjN+kOENBWHkTcagLtk6I5A3acHVccePxszTq4Rr
+         wRmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2SicOyfmaMdL1MLfu2Q8psj0uudwpeekiTFOrfE68YM=;
+        b=jZIa2gyz2J5Ua8ncPXaXEVRfqooINEYfRaOq5RNWaZFUmYIuGIMJ6XZIIrBbmZpYOw
+         v/0qN+n6Lo39jXQPRIfsmoO2sOET66kqN08aEHOlXfK01956QO1mT9lt/w74Cc1lT5/w
+         RfeSwZNgS9M1o/LrqubA1sKQGppgEvIgnXIFE+awlWEM4LxfP1ZJjaVstGB7+XHAWeLY
+         8OXkOZFuOAfxBsQ7iUQNBxnDJbOVJ3xDbuOyaiqQc/DuhRmnzNIh0+kpXYw8I7Z4tmhG
+         DCpRQ0Sz30ZjoIYy4G77qCeEz1p/jyF6VcO0a1bJ5q5TFshIM4JJhSAzWx0adK6OK0eC
+         C77A==
+X-Gm-Message-State: AOAM533es7U2wEsZy1Oq1qCXpJ+Mufn0uotNSxRPaYZK6MhvH7Wl4IaP
+        9Kb6aM7xWjknF0guCZMDRmWuPBeEoLBh+4a9VDPZtw==
+X-Google-Smtp-Source: ABdhPJznTEFQo99cHYANLDIzcwxw/Imetpq4a8f4Twd+OxhdTKj8oogGWLy/HWJpHtIIPg4fD6QBBrkHl+rQFLoNnic=
+X-Received: by 2002:a19:418e:: with SMTP id o136mr10965512lfa.80.1607443045588;
+ Tue, 08 Dec 2020 07:57:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 08 Dec 2020 15:56:39 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 1/6] kvm: arm64: Prevent use of invalid PSCI v0.1 function
- IDs
-In-Reply-To: <20201208142452.87237-2-dbrazdil@google.com>
-References: <20201208142452.87237-1-dbrazdil@google.com>
- <20201208142452.87237-2-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <e3f93946d66c0312a9778e49f1d85abe@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201203171118.372391-1-mlevitsk@redhat.com> <20201203171118.372391-2-mlevitsk@redhat.com>
+ <CAOQ_Qsj6THRPj2ta3PdOxUJeCj8KxPnLkWV8EGpvN_J=qUv74A@mail.gmail.com> <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
+In-Reply-To: <d3dd82950301517e47630cc86fa0e6dc84f63f90.camel@redhat.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Tue, 8 Dec 2020 09:57:14 -0600
+Message-ID: <CAOQ_QshBUdSO_m9kAtSjx5Ti1Nn3RUC1bauGEorNWTajcLu=dw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-08 14:24, David Brazdil wrote:
-> PSCI driver exposes a struct containing the PSCI v0.1 function IDs
-> configured in the DT. However, the struct does not convey the
-> information whether these were set from DT or contain the default value
-> zero. This could be a problem for PSCI proxy in KVM protected mode.
-> 
-> Extend config passed to KVM with a bit mask with individual bits set
-> depending on whether the corresponding function pointer in psci_ops is
-> set, eg. set bit for PSCI_CPU_SUSPEND if psci_ops.cpu_suspend != NULL.
-> 
-> Previously config was split into multiple global variables. Put
-> everything into a single struct for convenience.
-> 
-> Reported-by: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h    | 20 +++++++++++
->  arch/arm64/kvm/arm.c                 | 14 +++++---
->  arch/arm64/kvm/hyp/nvhe/psci-relay.c | 53 +++++++++++++++++++++-------
->  3 files changed, 70 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> index 11beda85ee7e..828d50d40dc2 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -17,6 +17,7 @@
->  #include <linux/jump_label.h>
->  #include <linux/kvm_types.h>
->  #include <linux/percpu.h>
-> +#include <linux/psci.h>
->  #include <asm/arch_gicv3.h>
->  #include <asm/barrier.h>
->  #include <asm/cpufeature.h>
-> @@ -240,6 +241,25 @@ struct kvm_host_data {
->  	struct kvm_pmu_events pmu_events;
->  };
-> 
-> +#define KVM_HOST_PSCI_0_1_CPU_SUSPEND	BIT(0)
-> +#define KVM_HOST_PSCI_0_1_CPU_ON	BIT(1)
-> +#define KVM_HOST_PSCI_0_1_CPU_OFF	BIT(2)
-> +#define KVM_HOST_PSCI_0_1_MIGRATE	BIT(3)
-> +
-> +struct kvm_host_psci_config {
-> +	/* PSCI version used by host. */
-> +	u32 version;
-> +
-> +	/* Function IDs used by host if version is v0.1. */
-> +	struct psci_0_1_function_ids function_ids_0_1;
-> +
-> +	/* Bitmask of functions enabled for v0.1, bits KVM_HOST_PSCI_0_1_*. 
-> */
-> +	unsigned int enabled_functions_0_1;
+On Tue, Dec 8, 2020 at 5:13 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> On Mon, 2020-12-07 at 11:29 -0600, Oliver Upton wrote:
+> > On Thu, Dec 3, 2020 at 11:12 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > > These two new ioctls allow to more precisly capture and
+> > > restore guest's TSC state.
+> > >
+> > > Both ioctls are meant to be used to accurately migrate guest TSC
+> > > even when there is a significant downtime during the migration.
+> > >
+> > > Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> > > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > > ---
+> > >  Documentation/virt/kvm/api.rst | 65 ++++++++++++++++++++++++++++++
+> > >  arch/x86/kvm/x86.c             | 73 ++++++++++++++++++++++++++++++++++
+> > >  include/uapi/linux/kvm.h       | 15 +++++++
+> > >  3 files changed, 153 insertions(+)
+> > >
+> > > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> > > index 70254eaa5229f..ebecfe4b414ce 100644
+> > > --- a/Documentation/virt/kvm/api.rst
+> > > +++ b/Documentation/virt/kvm/api.rst
+> > > @@ -4826,6 +4826,71 @@ If a vCPU is in running state while this ioctl is invoked, the vCPU may
+> > >  experience inconsistent filtering behavior on MSR accesses.
+> > >
+> > >
+> > > +4.127 KVM_GET_TSC_STATE
+> > > +----------------------------
+> > > +
+> > > +:Capability: KVM_CAP_PRECISE_TSC
+> > > +:Architectures: x86
+> > > +:Type: vcpu ioctl
+> > > +:Parameters: struct kvm_tsc_state
+> > > +:Returns: 0 on success, < 0 on error
+> > > +
+> > > +::
+> > > +
+> > > +  #define KVM_TSC_STATE_TIMESTAMP_VALID 1
+> > > +  #define KVM_TSC_STATE_TSC_ADJUST_VALID 2
+> > > +  struct kvm_tsc_state {
+> > > +       __u32 flags;
+> > > +       __u64 nsec;
+> > > +       __u64 tsc;
+> > > +       __u64 tsc_adjust;
+> > > +  };
+> > > +
+> > > +flags values for ``struct kvm_tsc_state``:
+> > > +
+> > > +``KVM_TSC_STATE_TIMESTAMP_VALID``
+> > > +
+> > > +  ``nsec`` contains nanoseconds from unix epoch.
+> > > +    Always set by KVM_GET_TSC_STATE, might be omitted in KVM_SET_TSC_STATE
+> > > +
+> > > +``KVM_TSC_STATE_TSC_ADJUST_VALID``
+> > > +
+> > > +  ``tsc_adjust`` contains valid IA32_TSC_ADJUST value
+> > > +
+> > > +
+> > > +This ioctl allows the user space to read the guest's IA32_TSC,IA32_TSC_ADJUST,
+> > > +and the current value of host's CLOCK_REALTIME clock in nanoseconds since unix
+> > > +epoch.
+> > > +
+> > > +
+> > > +4.128 KVM_SET_TSC_STATE
+> > > +----------------------------
+> > > +
+> > > +:Capability: KVM_CAP_PRECISE_TSC
+> > > +:Architectures: x86
+> > > +:Type: vcpu ioctl
+> > > +:Parameters: struct kvm_tsc_state
+> > > +:Returns: 0 on success, < 0 on error
+> > > +
+> > > +::
+> > > +
+> > > +This ioctl allows to reconstruct the guest's IA32_TSC and TSC_ADJUST value
+> > > +from the state obtained in the past by KVM_GET_TSC_STATE on the same vCPU.
+> > > +
+> > > +If 'KVM_TSC_STATE_TIMESTAMP_VALID' is set in flags,
+> > > +KVM will adjust the guest TSC value by the time that passed since the moment
+> > > +CLOCK_REALTIME timestamp was saved in the struct and current value of
+> > > +CLOCK_REALTIME, and set the guest's TSC to the new value.
+> > > +
+> > > +Otherwise KVM will set the guest TSC value to the exact value as given
+> > > +in the struct.
+> > > +
+> > > +if KVM_TSC_STATE_TSC_ADJUST_VALID is set, and guest supports IA32_MSR_TSC_ADJUST,
+> > > +then its value will be set to the given value from the struct.
+> > > +
+> > > +It is assumed that either both ioctls will be run on the same machine,
+> > > +or that source and destination machines have synchronized clocks.
+> > > +
+> > >  5. The kvm_run structure
+> > >  ========================
+> > >
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index a3fdc16cfd6f3..9b8a2fe3a2398 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -2438,6 +2438,21 @@ static bool kvm_get_walltime_and_clockread(struct timespec64 *ts,
+> > >
+> > >         return gtod_is_based_on_tsc(do_realtime(ts, tsc_timestamp));
+> > >  }
+> > > +
+> > > +
+> > > +static void kvm_get_walltime(u64 *walltime_ns, u64 *host_tsc)
+> > > +{
+> > > +       struct timespec64 ts;
+> > > +
+> > > +       if (kvm_get_walltime_and_clockread(&ts, host_tsc)) {
+> > > +               *walltime_ns = timespec64_to_ns(&ts);
+> > > +               return;
+> > > +       }
+> > > +
+> > > +       *host_tsc = rdtsc();
+> > > +       *walltime_ns = ktime_get_real_ns();
+> > > +}
+> > > +
+> > >  #endif
+> > >
+> > >  /*
+> > > @@ -3757,6 +3772,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+> > >         case KVM_CAP_X86_USER_SPACE_MSR:
+> > >         case KVM_CAP_X86_MSR_FILTER:
+> > >         case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
+> > > +#ifdef CONFIG_X86_64
+> > > +       case KVM_CAP_PRECISE_TSC:
+> > > +#endif
+> > >                 r = 1;
+> > >                 break;
+> > >         case KVM_CAP_SYNC_REGS:
+> > > @@ -4999,6 +5017,61 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+> > >         case KVM_GET_SUPPORTED_HV_CPUID:
+> > >                 r = kvm_ioctl_get_supported_hv_cpuid(vcpu, argp);
+> > >                 break;
+> > > +#ifdef CONFIG_X86_64
+> > > +       case KVM_GET_TSC_STATE: {
+> > > +               struct kvm_tsc_state __user *user_tsc_state = argp;
+> > > +               u64 host_tsc;
+> > > +
+> > > +               struct kvm_tsc_state tsc_state = {
+> > > +                       .flags = KVM_TSC_STATE_TIMESTAMP_VALID
+> > > +               };
+> > > +
+> > > +               kvm_get_walltime(&tsc_state.nsec, &host_tsc);
+> > > +               tsc_state.tsc = kvm_read_l1_tsc(vcpu, host_tsc);
+> > > +
+> > > +               if (guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST)) {
+> > > +                       tsc_state.tsc_adjust = vcpu->arch.ia32_tsc_adjust_msr;
+> > > +                       tsc_state.flags |= KVM_TSC_STATE_TSC_ADJUST_VALID;
+> > > +               }
+> >
+> > [...]
+> >
+> > > +
+> > > +               r = -EFAULT;
+> > > +               if (copy_to_user(user_tsc_state, &tsc_state, sizeof(tsc_state)))
+> > > +                       goto out;
+> > > +               r = 0;
+> > > +               break;
+> > > +       }
+> > > +       case KVM_SET_TSC_STATE: {
+> > > +               struct kvm_tsc_state __user *user_tsc_state = argp;
+> > > +               struct kvm_tsc_state tsc_state;
+> > > +               u64 host_tsc, wall_nsec;
+> > > +
+> > > +               u64 new_guest_tsc, new_guest_tsc_offset;
+> > > +
+> > > +               r = -EFAULT;
+> > > +               if (copy_from_user(&tsc_state, user_tsc_state, sizeof(tsc_state)))
+> > > +                       goto out;
+> > > +
+> > > +               kvm_get_walltime(&wall_nsec, &host_tsc);
+> > > +               new_guest_tsc = tsc_state.tsc;
+> > > +
+> > > +               if (tsc_state.flags & KVM_TSC_STATE_TIMESTAMP_VALID) {
+> > > +                       s64 diff = wall_nsec - tsc_state.nsec;
+> > > +                       if (diff >= 0)
+> > > +                               new_guest_tsc += nsec_to_cycles(vcpu, diff);
+> > > +                       else
+> > > +                               new_guest_tsc -= nsec_to_cycles(vcpu, -diff);
+> > > +               }
+> > > +
+> > > +               new_guest_tsc_offset = new_guest_tsc - kvm_scale_tsc(vcpu, host_tsc);
+> > > +               kvm_vcpu_write_tsc_offset(vcpu, new_guest_tsc_offset);
+> >
+> > How would a VMM maintain the phase relationship between guest TSCs
+> > using these ioctls?
+>
+> By using the nanosecond timestamp.
+>
+> While I did made it optional in the V2 it was done for the sole sake of being
+> able to set TSC on (re)boot to 0 from qemu, and for cases when qemu migrates
+> from a VM where the feature is not enabled.
+> In this case the tsc is set to the given value exactly, just like you
+> can do today with KVM_SET_MSRS.
+> In all other cases the nanosecond timestamp will be given.
+>
+> When the userspace uses the nanosecond timestamp, the phase relationship
+> would not only be maintained but be exact, even if TSC reads were not
+> synchronized and even if their restore on the target wasn't synchronized as well.
+>
+> Here is an example:
+>
+> Let's assume that TSC on source/target is synchronized, and that the guest TSC
+> is synchronized as well.
 
-Nit: the conventional type for bitmaps is 'unsigned long'.
-Also, "enabled" seems odd. Isn't it actually "available"?
+Can this assumption be reasonably made though?
 
-> +};
-> +
-> +extern struct kvm_host_psci_config kvm_nvhe_sym(kvm_host_psci_config);
-> +#define kvm_host_psci_config CHOOSE_NVHE_SYM(kvm_host_psci_config)
-> +
->  struct vcpu_reset_state {
->  	unsigned long	pc;
->  	unsigned long	r0;
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 6e637d2b4cfb..6a2f4e01b04f 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -66,8 +66,6 @@ static DEFINE_PER_CPU(unsigned char,
-> kvm_arm_hardware_enabled);
->  DEFINE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
-> 
->  extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
-> -extern u32 kvm_nvhe_sym(kvm_host_psci_version);
-> -extern struct psci_0_1_function_ids
-> kvm_nvhe_sym(kvm_host_psci_0_1_function_ids);
-> 
->  int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
->  {
-> @@ -1618,8 +1616,16 @@ static bool init_psci_relay(void)
->  		return false;
->  	}
-> 
-> -	kvm_nvhe_sym(kvm_host_psci_version) = psci_ops.get_version();
-> -	kvm_nvhe_sym(kvm_host_psci_0_1_function_ids) = 
-> get_psci_0_1_function_ids();
-> +	kvm_host_psci_config.version = psci_ops.get_version();
-> +
-> +	if (kvm_host_psci_config.version == PSCI_VERSION(0, 1)) {
-> +		kvm_host_psci_config.function_ids_0_1 = get_psci_0_1_function_ids();
-> +		kvm_host_psci_config.enabled_functions_0_1 =
-> +			(psci_ops.cpu_suspend ? KVM_HOST_PSCI_0_1_CPU_SUSPEND : 0) |
-> +			(psci_ops.cpu_off ? KVM_HOST_PSCI_0_1_CPU_OFF : 0) |
-> +			(psci_ops.cpu_on ? KVM_HOST_PSCI_0_1_CPU_ON : 0) |
-> +			(psci_ops.migrate ? KVM_HOST_PSCI_0_1_MIGRATE : 0);
-> +	}
->  	return true;
->  }
-> 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> index 08dc9de69314..0d6f4aa39621 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/psci-relay.c
-> @@ -22,9 +22,8 @@ void kvm_hyp_cpu_resume(unsigned long r0);
->  void __noreturn __host_enter(struct kvm_cpu_context *host_ctxt);
-> 
->  /* Config options set by the host. */
-> -__ro_after_init u32 kvm_host_psci_version;
-> -__ro_after_init struct psci_0_1_function_ids 
-> kvm_host_psci_0_1_function_ids;
-> -__ro_after_init s64 hyp_physvirt_offset;
-> +struct kvm_host_psci_config __ro_after_init kvm_host_psci_config;
-> +s64 __ro_after_init hyp_physvirt_offset;
+NTP could very well step or scale CLOCK_REALTIME when we are in the
+middle of saving or restoring TSCs, which could possibly result in
+observable drift between vCPUs. Calculating elapsed time between
+save/restore once per VM would avoid this issue altogether.
 
-Unrelated change?
+> Let's call the guest TSC frequency F (guest TSC increments by F each second)
+>
+> We do KVM_GET_TSC_STATE on vcpu0 and receive (t0,tsc0).
+> We do KVM_GET_TSC_STATE on vcpu1 after 1 second passed (exaggerated)
+> and receive (t0 + 1s, tsc0 + F)
+>
+>
+> We do KVM_SET_TSC_STATE at t0 + 10s on vcpu0 after migration,
+> and vcpu0's guest tsc is set to tsc0 + F[(t0 + 10s) - t0] = tsc0 + 10*F
+>
+> We do KVM_SET_TSC_STATE at nsec0 + 12s on vcpu1 (also exaggerated)
+> and  get [tsc0+F] + F[(t0 + 12s) - (t0+1s)] = tsc0 + 12*F
+>
+> Since 2 seconds passed by, both vCPUs have now their TSC set to tsc0 + 12*F.
+>
+> I use kvm's own functions to read the CLOCK_REALTIME, which are done
+> in such a way that you first read host TSC once and then convert it to
+> nanoseconds by scaling/offsetting it as the kernel would, thus
+> there is no random error introduced here.
 
-> 
->  #define __hyp_pa(x) ((phys_addr_t)((x)) + hyp_physvirt_offset)
-> 
-> @@ -54,12 +53,41 @@ static u64 get_psci_func_id(struct kvm_cpu_context
-> *host_ctxt)
->  	return func_id;
->  }
-> 
-> +static inline bool is_psci_0_1_function_enabled(unsigned int fn_bit)
+Agreed. In fact, my suggestion of yielding TSC offset controls to
+userspace falls short in this regard, since userspace can't make the
+same guarantee that the clockread was derived from its paired TSC
+value.
 
-Don't bother with "inline" outside of an include file. It really
-doesn't mean much (the compiler is free to ignore it), and it is
-likely that the compiler will optimise better without guidance
-(not to mention this is hardly a fast path anyway).
+> So except numerical errors,
+> (which are unavoidable anyway, and should be neglectable) this algorithm should
+> both keep the TSC in sync, and even keep its absolute time reference
+> as accurate as the clock synchronization between the host and the target is.
+>
+> (an offset between source and destination clocks will affect
+> all the TSCs in the same manner, as long as both
+> source and destination clocks are stable)
+>
+>
+> >
+> > For as bugged as the old way of doing things is (i.e. the magic
+> > handling of IA32_TSC), it was at least possible to keep guest TSCs in
+> > sync across a live migration so long as you satisfied the conditions
+> > where KVM decides to fudge the TSCs on your behalf. However, if we
+> > migrate the TSCs by value with an optional timestamp to account for
+> > elapsed time, it would appear that the guest TSC offset is likely to
+> > be inconsistent across vCPUs as the offset calculations above do not
+> > use a fixed host tsc timestamp across all vCPUs.
+>
+> >
+> > The reason I'd suggested yielding control of the tsc offset controls
+> > to userspace is that they're unaffected by such variations in per-vCPU
+> > calculations. Not only that, userspace can decide how it wants TSCs to
+> > be handled across a migration explicitly instead of relying on the
+> > above computation being done in the kernel.
+> >
+> > > +
+> > > +               if (tsc_state.flags & KVM_TSC_STATE_TSC_ADJUST_VALID)
+> > > +                       if (guest_cpuid_has(vcpu, X86_FEATURE_TSC_ADJUST))
+> > > +                               vcpu->arch.ia32_tsc_adjust_msr = tsc_state.tsc_adjust;
+> >
+> > How is this ioctl's handling of the TSC_ADJUST msr an improvement over
+> > KVM_{GET,SET}_MSRS like before? It seems orthogonal to the rest of the
+> > intended API as it isn't involved your computation above.
+>
+> It's more a refactoring thing. The goal is to avoid 'magic' handling
+> of host accesses in KVM_{GET,SET}_MSRS and instead make them
+> behave the same way as if the guest read that msr.
+> That can be useful for debug and such.
+>
+> The second patch adds a KVM quirk, which should be disabled
+> when the new API is used.
+>
+> When disabled, it makes it hard to use the KVM_{GET,SET}_MSRS
+> to set both TSC and TSC_ADJUST at the same time to given values,
+> since these msrs are tied to each other when guest writes them,
+> and the quirk disables the special (untied) write we had for host writes
+> to these msrs.
+>
+>
+> Think of these new ioctls as a way to saving and restoring
+> the internal TSC state, without bothering even to think what is inside.
+> Kind of like we save/restore the nested state.
 
-> +{
-> +	return kvm_host_psci_config.enabled_functions_0_1 & fn_bit;
-> +}
-> +
-> +static inline bool is_psci_0_1_cpu_suspend(u64 func_id)
-> +{
-> +	return is_psci_0_1_function_enabled(KVM_HOST_PSCI_0_1_CPU_SUSPEND) &&
-> +	       (func_id == 
-> kvm_host_psci_config.function_ids_0_1.cpu_suspend);
-> +}
-> +
-> +static inline bool is_psci_0_1_cpu_on(u64 func_id)
-> +{
-> +	return is_psci_0_1_function_enabled(KVM_HOST_PSCI_0_1_CPU_ON) &&
-> +	       (func_id == kvm_host_psci_config.function_ids_0_1.cpu_on);
-> +}
-> +
-> +static inline bool is_psci_0_1_cpu_off(u64 func_id)
-> +{
-> +	return is_psci_0_1_function_enabled(KVM_HOST_PSCI_0_1_CPU_OFF) &&
-> +	       (func_id == kvm_host_psci_config.function_ids_0_1.cpu_off);
-> +}
-> +
-> +static inline bool is_psci_0_1_migrate(u64 func_id)
-> +{
-> +	return is_psci_0_1_function_enabled(KVM_HOST_PSCI_0_1_MIGRATE) &&
-> +	       (func_id == kvm_host_psci_config.function_ids_0_1.migrate);
-> +}
-> +
->  static bool is_psci_0_1_call(u64 func_id)
->  {
-> -	return (func_id == kvm_host_psci_0_1_function_ids.cpu_suspend) ||
-> -	       (func_id == kvm_host_psci_0_1_function_ids.cpu_on) ||
-> -	       (func_id == kvm_host_psci_0_1_function_ids.cpu_off) ||
-> -	       (func_id == kvm_host_psci_0_1_function_ids.migrate);
-> +	return is_psci_0_1_cpu_suspend(func_id) ||
-> +	       is_psci_0_1_cpu_on(func_id) ||
-> +	       is_psci_0_1_cpu_off(func_id) ||
-> +	       is_psci_0_1_migrate(func_id);
->  }
-> 
->  static bool is_psci_0_2_call(u64 func_id)
-> @@ -71,7 +99,7 @@ static bool is_psci_0_2_call(u64 func_id)
-> 
->  static bool is_psci_call(u64 func_id)
->  {
-> -	switch (kvm_host_psci_version) {
-> +	switch (kvm_host_psci_config.version) {
->  	case PSCI_VERSION(0, 1):
->  		return is_psci_0_1_call(func_id);
->  	default:
-> @@ -248,12 +276,11 @@ asmlinkage void __noreturn
-> kvm_host_psci_cpu_entry(bool is_cpu_on)
-> 
->  static unsigned long psci_0_1_handler(u64 func_id, struct
-> kvm_cpu_context *host_ctxt)
->  {
-> -	if ((func_id == kvm_host_psci_0_1_function_ids.cpu_off) ||
-> -	    (func_id == kvm_host_psci_0_1_function_ids.migrate))
-> +	if (is_psci_0_1_cpu_off(func_id) || is_psci_0_1_migrate(func_id))
->  		return psci_forward(host_ctxt);
-> -	else if (func_id == kvm_host_psci_0_1_function_ids.cpu_on)
-> +	else if (is_psci_0_1_cpu_on(func_id))
->  		return psci_cpu_on(func_id, host_ctxt);
-> -	else if (func_id == kvm_host_psci_0_1_function_ids.cpu_suspend)
-> +	else if (is_psci_0_1_cpu_suspend(func_id))
->  		return psci_cpu_suspend(func_id, host_ctxt);
->  	else
->  		return PSCI_RET_NOT_SUPPORTED;
-> @@ -304,7 +331,7 @@ bool kvm_host_psci_handler(struct kvm_cpu_context
-> *host_ctxt)
->  	if (!is_psci_call(func_id))
->  		return false;
-> 
-> -	switch (kvm_host_psci_version) {
-> +	switch (kvm_host_psci_config.version) {
->  	case PSCI_VERSION(0, 1):
->  		ret = psci_0_1_handler(func_id, host_ctxt);
->  		break;
+I agree that the quirk is useful for the guest touching TSC and
+TSC_ADJUST, but host writes to the TSC_ADJUST MSR are unaffected by
+any sync issues. As such, it seems the existing plumbing for
+KVM_{GET,SET}_MSRS VMMs are using seems sufficient.
 
-Otherwise looks OK. Don't bother respinning the series for
-my comments, I can tidy things up as I apply it if there
-are no other issues.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> Best regards,
+>         Maxim Levitsky
+>
+>
+> >
+> > > +               r = 0;
+> > > +               break;
+> > > +       }
+> > > +#endif
+> > >         default:
+> > >                 r = -EINVAL;
+> > >         }
+> > > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > > index 886802b8ffba3..bf4c38fd58291 100644
+> > > --- a/include/uapi/linux/kvm.h
+> > > +++ b/include/uapi/linux/kvm.h
+> > > @@ -1056,6 +1056,7 @@ struct kvm_ppc_resize_hpt {
+> > >  #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
+> > >  #define KVM_CAP_SYS_HYPERV_CPUID 191
+> > >  #define KVM_CAP_DIRTY_LOG_RING 192
+> > > +#define KVM_CAP_PRECISE_TSC 193
+> > >
+> > >  #ifdef KVM_CAP_IRQ_ROUTING
+> > >
+> > > @@ -1169,6 +1170,16 @@ struct kvm_clock_data {
+> > >         __u32 pad[9];
+> > >  };
+> > >
+> > > +
+> > > +#define KVM_TSC_STATE_TIMESTAMP_VALID 1
+> > > +#define KVM_TSC_STATE_TSC_ADJUST_VALID 2
+> > > +struct kvm_tsc_state {
+> > > +       __u32 flags;
+> > > +       __u64 nsec;
+> > > +       __u64 tsc;
+> > > +       __u64 tsc_adjust;
+> > > +};
+> > > +
+> > >  /* For KVM_CAP_SW_TLB */
+> > >
+> > >  #define KVM_MMU_FSL_BOOKE_NOHV         0
+> > > @@ -1563,6 +1574,10 @@ struct kvm_pv_cmd {
+> > >  /* Available with KVM_CAP_DIRTY_LOG_RING */
+> > >  #define KVM_RESET_DIRTY_RINGS          _IO(KVMIO, 0xc7)
+> > >
+> > > +/* Available with KVM_CAP_PRECISE_TSC*/
+> > > +#define KVM_SET_TSC_STATE          _IOW(KVMIO,  0xc8, struct kvm_tsc_state)
+> > > +#define KVM_GET_TSC_STATE          _IOR(KVMIO,  0xc9, struct kvm_tsc_state)
+> > > +
+> > >  /* Secure Encrypted Virtualization command */
+> > >  enum sev_cmd_id {
+> > >         /* Guest initialization commands */
+> > > --
+> > > 2.26.2
+> > >
+>
+>
