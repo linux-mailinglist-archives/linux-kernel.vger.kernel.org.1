@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236E92D28BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6DF2D28CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 11:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgLHKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 05:23:05 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:54088 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgLHKXE (ORCPT
+        id S1728679AbgLHK03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 05:26:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728469AbgLHK03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 05:23:04 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8AJxfK077292;
-        Tue, 8 Dec 2020 10:22:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=bDpup61JQB7pGAElZJfmkjVjo0h73q1FN5gq4ahyO/4=;
- b=VLd16BYJ53p7OPDvr8SQXQsQ4hvfNq/K6TRt+L0i1Q3Q3uFbZETTFmPyXuHOZemLfACP
- mr+mGohHhdtAG/bWSzDHVnRe9UM0SNXWwGgxmdG/bQ1sSBwWrSUSWpY4IU6Hxuk314bq
- NkYgpPCGXT1w4IklflyC9nUpHj+gsVkVLE1E9pDC9rQ7kvreBFun1r5uEnwwXB88Brfi
- Qduh5khUVYy6vJA+6CNaaNpcQzMidpIZy9RCmVhEDKOONZZULqEZazQ6gjlDCdl6l2BO
- efJCXGPe14rLpZFeKs477LbxICkQ/FQCQib3Y73hhaW7F6YKvbNpnrhQ57MYPIKCGYOZ xw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3581mqt2fb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 10:22:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8AKVX9102150;
-        Tue, 8 Dec 2020 10:22:00 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m3xhydg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 10:22:00 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8ALqxs013074;
-        Tue, 8 Dec 2020 10:21:52 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 02:21:52 -0800
-Date:   Tue, 8 Dec 2020 13:21:44 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@i4.cs.fau.de, gregkh@linuxfoundation.org,
-        ij72uhux@stud.informatik.uni-erlangen.de,
-        sakari.ailus@linux.intel.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 01/12] media: atomsip: Convert comments to C99
- initializers
-Message-ID: <20201208102144.GA2767@kadam>
-References: <20201207192638.15219-1-Philipp.Gerlesberger@fau.de>
- <20201207192638.15219-2-Philipp.Gerlesberger@fau.de>
+        Tue, 8 Dec 2020 05:26:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607423102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSUgtdQ8lYRnilvpEn/TCJNcxm35wEax0rs6wowzfsQ=;
+        b=LjJ9PGInUGNbxPrjePNdfL6RODchigccowN3m3ugUFm07/iIHMIrVWblnt9GKC8bFM9LRn
+        2/7igR6iQUPcjc+YfuZC4FoDHqpq49frxeZt3euiY2HyIIp83YdnBnKJC4K2zG55hnTSPf
+        pXYhrBSFAxPuStqMOVdjMJJGi/IHXls=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-VsnSABsiPH-Mfvx5zLxH2w-1; Tue, 08 Dec 2020 05:24:58 -0500
+X-MC-Unique: VsnSABsiPH-Mfvx5zLxH2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54AA2809DC9;
+        Tue,  8 Dec 2020 10:24:57 +0000 (UTC)
+Received: from krava (unknown [10.40.193.58])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BE7FE5D6AB;
+        Tue,  8 Dec 2020 10:24:54 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 11:24:53 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] perf-stat: enable counting events for BPF programs
+Message-ID: <20201208102453.GA4135722@krava>
+References: <20201204061310.3196812-1-songliubraving@fb.com>
+ <20201204061310.3196812-3-songliubraving@fb.com>
+ <20201207220703.GA4116109@krava>
+ <C94864E9-CE05-4AEA-A986-731BFC0C95FF@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201207192638.15219-2-Philipp.Gerlesberger@fau.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9828 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080064
+In-Reply-To: <C94864E9-CE05-4AEA-A986-731BFC0C95FF@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:26:27PM +0100, Philipp Gerlesberger wrote:
-> The struct initalizers have been changed as recommended on
-> https://kernelnewbies.org/KernelJanitors/Todo
-> 
-> Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
-> ---
->  .../atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c  | 30 +++++++++----------
->  1 file changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c b/drivers/staging/media/atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c
-> index b4f53be18e7f..af61d05e88d3 100644
-> --- a/drivers/staging/media/atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c
-> +++ b/drivers/staging/media/atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c
-> @@ -31,33 +31,33 @@ static struct ia_css_rmgr_vbuf_handle handle_table[NUM_HANDLES];
->   * @brief VBUF resource pool - refpool
->   */
->  static struct ia_css_rmgr_vbuf_pool refpool = {
-> -	false,			/* copy_on_write */
-> -	false,			/* recycle */
-> -	0,			/* size */
-> -	0,			/* index */
-> -	NULL,			/* handles */
-> +	.copy_on_write	= false,
-> +	.recycle	= false,
-> +	.size		= 0,
-> +	.index		= 0,
-> +	.handles	= NULL,
+On Tue, Dec 08, 2020 at 01:36:57AM +0000, Song Liu wrote:
 
-If you're using C99 initializers then you can remove all the false, 0
-and NULL members.
+SNIP
 
-regards,
-dan carpenter
+> > 
+> > I'm still getting
+> > 
+> > [root@dell-r440-01 perf]# ./perf stat -b 38
+> > libbpf: elf: skipping unrecognized data section(9) .eh_frame
+> > libbpf: elf: skipping relo section(15) .rel.eh_frame for section(9) .eh_frame
+> > libbpf: XXX is not found in vmlinux BTF
+> > libbpf: failed to load object 'bpf_prog_profiler_bpf'
+> > libbpf: failed to load BPF skeleton 'bpf_prog_profiler_bpf': -2
+> > ...
+> > 
+> > with id 38 being:
+> > 
+> > 38: tracepoint  name sys_enter  tag 03418b72a610af75  gpl
+> >        loaded_at 2020-12-07T22:54:05+0100  uid 0
+> >        xlated 272B  jited 153B  memlock 4096B  map_ids 1
+> > 
+> > how is this supposed to work when there's XXX in the
+> > program's section? libbpf is trying to find XXX in
+> > kernel BTF and fails of course
+> 
+> I think this is because this program doesn't have BTF. The actual failed
+> function was bpf_program__set_attach_target(). So the error message above
+> should be "Failed to _open_ bpf skeleton". I will fix the error messages. 
+
+ah right, it's bpftrace program, so there's no BTF loaded for the program
+I'll check if there's a way to add it, it'd be shame not to have this
+feature for bpftrace programs
+
+there's no way around it, right? we need btf id of the program to attach
+fentry/fexit to it
+
+I think we need to fail the function if there's error detected,
+and also check on the prog_name and fail if it's not found
+
+plus change all those pr_debug to pr_err in bpf_program_profiler_load_one
+
+jirka
 
