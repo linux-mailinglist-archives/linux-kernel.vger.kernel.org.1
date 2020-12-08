@@ -2,108 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918C62D2A2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6274D2D2A33
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 13:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgLHMC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 07:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727610AbgLHMCZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 07:02:25 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596F0C061749
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 04:01:45 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c79so13713249pfc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 04:01:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PmpbR0lNoj9VnAkrz0sCDobCoEgFQge5RfqspxivGXA=;
-        b=RFTDK+74SxIEeKDK4dhFG2z9kiUFS6U05JkOfvTezHJMMLCE3wTHwQdSBJYI2l+2bT
-         eGsNFO2krKW6nOrR49Y5cqW02yWv1jyoCU/EdIi0wv32a9TtMJUHoBtLyrlJyNvBLDtC
-         YbrIAZIs21AL/r/M8zU9PMZm/2IOa8s66hU/1J0U9XsRNxImhWCj2i03Sn7HAu/uNqkx
-         37AY8F+T57z5TbVkoTeRfI2omicBCn626AC30PU+QBkD3w3DrVWBAzclvOjcbSvCzLKL
-         sp6wVoYdB4kZrJ0q76QGDI9348zUIyUNpnCDLpv76+h5GRZHZ1v/CAMxcXrNfITWyFG6
-         So1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PmpbR0lNoj9VnAkrz0sCDobCoEgFQge5RfqspxivGXA=;
-        b=eMvFrxe2UDs87uur3YIasE21Mgqzjfglf9IVXBp3M5C3meps8ffjrOdq6AONeiXLgm
-         2mwQTk5PlMOc8jjQDhQlGneWnz9kLbyr+sbD3s5SYUlBB16/xUUWXDngJEWybUyHwaXq
-         uBNggabCjDLQ3HN27147Jcm72MUrMGwkziQ9NUGm3fbu4XGTtRtVhuwrnN7KSYBuzbRI
-         dhGe/0Z5ocVOsfsUHUsfzt3s7UnoMJu3/tJhb7PSo3jSIfkvjEOCD9R5R5LxGAalC5GA
-         EXryZ+HQNEHew507Sw457zXBKE/YfCi4EgEqZcZK5HMqVrEaYTSmQyVnTtIJg8xN/mAs
-         R3sQ==
-X-Gm-Message-State: AOAM532iXHxGa2wvdzhHswdTy5IZyhQMIVPHKakrSlpSlwk+Onlrp8kp
-        w9gGWh41htWP0Amz2cXBIiPA
-X-Google-Smtp-Source: ABdhPJycYufHqsyhMb1VD/taJ1qit7vFzrYrEC1Ux3Jc/jPVFgc42OtPriVLNnnaB74avvOfDi0nLw==
-X-Received: by 2002:a17:90a:9483:: with SMTP id s3mr3956210pjo.61.1607428904737;
-        Tue, 08 Dec 2020 04:01:44 -0800 (PST)
-Received: from thinkpad ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id z5sm11867314pff.44.2020.12.08.04.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 04:01:44 -0800 (PST)
-Date:   Tue, 8 Dec 2020 17:31:35 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org, svarbanov@mm-sol.com,
-        bhelgaas@google.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org,
-        truong@codeaurora.org
-Subject: Re: [PATCH v5 0/5] Add PCIe support for SM8250 SoC
-Message-ID: <20201208120135.GA139519@thinkpad>
-References: <20201027170033.8475-1-manivannan.sadhasivam@linaro.org>
- <20201208094712.GA30430@e121166-lin.cambridge.arm.com>
- <20201208104557.GA8081@work>
- <20201208114023.GA31860@e121166-lin.cambridge.arm.com>
+        id S1729286AbgLHMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 07:02:47 -0500
+Received: from ozlabs.org ([203.11.71.1]:49651 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726825AbgLHMCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 07:02:47 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CqzLb6bnhz9sVn;
+        Tue,  8 Dec 2020 23:01:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607428921;
+        bh=JEri3CU8kWrV81KglUKUp+7iowgZEiWf9+9m9XNHnMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=o4J2J2b40/3bQfI+Auy2gC8waE4x0NCrBR/jCkCWWGBr/Tl5GsMQCJrXeuGqioy4q
+         gxskM6vJDXpNQZ1ZfwHQsiUxBKWsIW8Bu+ToxNDNAKY7PC9uI03kW5JpiV0PsvrEUP
+         bNMOjG3/ew2r3pBL5Oh0xSibhLFio3aBK9vlra1/U8Zh+tMMPGTeWDAI5Dk9U3d5fc
+         xTuUd2VwNw4d2c5FKGnRKgIKTCtz9ZJ4fJxIQWntU1cBlFkkt9IXjlXa0u1vZqAp+N
+         50u1qFmz3uIjNCftsyPdiI9V+G5oMyxh9r+8zhc6yy67apUiBj3XQRWpvc2Nz7JuMf
+         4NQfP0qygF1DA==
+Date:   Tue, 8 Dec 2020 23:01:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Malaterre <malat@debian.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: linux-next: build warning after merge of the akpm tree
+Message-ID: <20201208230157.42c42789@canb.auug.org.au>
+In-Reply-To: <20201204210000.660293c6@canb.auug.org.au>
+References: <20201204210000.660293c6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208114023.GA31860@e121166-lin.cambridge.arm.com>
+Content-Type: multipart/signed; boundary="Sig_/FcK_nGNcdk4IZE8gzaZ87Qo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:40:23AM +0000, Lorenzo Pieralisi wrote:
-> On Tue, Dec 08, 2020 at 04:15:57PM +0530, Manivannan Sadhasivam wrote:
-> > Hi Lorenzo,
-> > 
-> > On Tue, Dec 08, 2020 at 09:47:12AM +0000, Lorenzo Pieralisi wrote:
-> > > On Tue, Oct 27, 2020 at 10:30:28PM +0530, Manivannan Sadhasivam wrote:
-> > > > Hello,
-> > > > 
-> > > > This series adds PCIe support for Qualcomm SM8250 SoC with relevant PHYs.
-> > > > There are 3 PCIe instances on this SoC each with different PHYs. The PCIe
-> > > > controller and PHYs are mostly comaptible with the ones found on SDM845
-> > > > SoC, hence the old drivers are modified to add the support.
-> > > > 
-> > > > This series has been tested on RB5 board with QCA6391 chipset connected
-> > > > onboard.
-> > > 
-> > > Hi,
-> > > 
-> > > I would be merging this series, I understand patch {2) was already
-> > > taken by Vinod - should I take {1,3,4,5} via the pci tree ?
-> > > 
-> > 
-> > Vinod merged patches 1/5 and 2/5 as they belong to phy subsystem. You
-> > can take the rest of the patches via pci tree.
-> 
-> Would you mind rebasing them on top of my pci/dwc branch (with Bjorn's
-> tags) and resend them, I will apply them then.
-> 
+--Sig_/FcK_nGNcdk4IZE8gzaZ87Qo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sure, will send now.
+Hi Stephen,
 
-Thanks,
-Mani
+On Fri, 4 Dec 2020 21:00:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Hi all,
+>=20
+> After merging the akpm tree, today's linux-next build (powerpc
+> allyesconfig) produced warnings like this:
+>=20
+> ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/op=
+rofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
+>=20
+> (lots of these latter ones)
 
-> Thanks,
-> Lorenzo
+781584 of them today!
+
+> I don't know what produced these, but it is in the akpm-current or
+> akpm trees.
+
+Presumably the result of commit
+
+  186c3e18dba3 ("ubsan: enable for all*config builds")
+
+from the akpm-current tree.
+
+arch/powerpc/kernel/vmlinux.lds.S has:
+
+#ifdef CONFIG_PPC32
+        .data : AT(ADDR(.data) - LOAD_OFFSET) {
+                DATA_DATA
+#ifdef CONFIG_UBSAN
+                *(.data..Lubsan_data*)
+                *(.data..Lubsan_type*)
+#endif
+                *(.data.rel*)
+                *(SDATA_MAIN)
+
+added by commit
+
+  beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* se=
+ctions explicitly")
+
+in 2018, but no equivalent for 64 bit.
+
+I will try the following patch tomorrow:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 8 Dec 2020 22:58:24 +1100
+Subject: [PATCH] powerpc: Add .data..Lubsan_data*/.data..Lubsan_type* secti=
+ons explicitly
+
+Similarly to commit
+
+  beba24ac5913 ("powerpc/32: Add .data..Lubsan_data*/.data..Lubsan_type* se=
+ctions explicitly")
+
+since CONFIG_UBSAN bits can now be enabled for all*config.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/powerpc/kernel/vmlinux.lds.S | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinu=
+x.lds.S
+index 3b4c26e94328..0318ba436f34 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -296,6 +296,10 @@ SECTIONS
+ #else
+ 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+ 		DATA_DATA
++#ifdef CONFIG_UBSAN
++		*(.data..Lubsan_data*)
++		*(.data..Lubsan_type*)
++#endif
+ 		*(.data.rel*)
+ 		*(.toc1)
+ 		*(.branch_lt)
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/FcK_nGNcdk4IZE8gzaZ87Qo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/PazUACgkQAVBC80lX
+0Gz11wgAhzi/cE1n0K51pPVWQ2WdxspNEl2+9Nst5oZsnWYPae6UeDHxSaLegFHX
+RW9X1VpB5SqcwNspo0aBBl1fGGU+XleJt6mi17r1xNE6G8fCbsYTAXYbb0s5z0wh
+W++Qf/MoepUOmnM25LJvAM9jZ7XUj3z1Nys2CQnLXxKR1YyvO911RmNwMUXpTMiu
+D+sukC0NY0B6VDy1ffuH7UlRY1cTOE6EwiV5YW7xF0UFtzbXWtIBt49eh7rFdkMV
+rU7MirxnECHFENWa2II0I+EfGPLrbmPI0V6MIEF46NuxpERh1WaIhO9UeOZ+ADGc
+aDx/c97p0/QQaq5T4QNeoemt9tYzLA==
+=O0Y/
+-----END PGP SIGNATURE-----
+
+--Sig_/FcK_nGNcdk4IZE8gzaZ87Qo--
