@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DA72D20B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038192D20BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Dec 2020 03:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgLHCUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Dec 2020 21:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S1727693AbgLHCVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Dec 2020 21:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727721AbgLHCUE (ORCPT
+        with ESMTP id S1725877AbgLHCVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:20:04 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7FEC061749;
-        Mon,  7 Dec 2020 18:19:24 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id r127so14765351yba.10;
-        Mon, 07 Dec 2020 18:19:24 -0800 (PST)
+        Mon, 7 Dec 2020 21:21:38 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCD7C061749;
+        Mon,  7 Dec 2020 18:20:58 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id 186so849164qkj.3;
+        Mon, 07 Dec 2020 18:20:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3e5yK6qRaJSts87vr4iK+gogcjS5ZNykHJ/giIrEtNo=;
-        b=JerUqYVWOu2O7kPpeTO+IvwVCdjr7P6wLGRCrIt1JJ1d6iAReD8EDq3NH7MSIs2ySi
-         /MYDCAC+/SHl181jQ0097cb+z0iB8gLnRvS20/ArRfF3pD/JoQ6T3MEVEtr5hQOmbHqV
-         cNRjXGz/IwdHoHFqeNaChqlEz8/3LKjygf6XbiDqAyAmit3uI/4yhrMUvjluCBK782Ma
-         YuF9xdTZsEJKW/MsjopsRhsE15nw/intfObdxInLtsJgA0spzFTIiZa0WlypMXvrtFtu
-         1ULLNtArSk9t3nRdVQp6KEsuX2qa78hH4aLF/jRUotRPRFsktg+vosbA/1JXjbcDdXe9
-         lI4w==
+        bh=tRTmRR6i5ldsnDvLccKv0+2Lb/JpoYzM8sB3u0+LQeA=;
+        b=CuiuUZ7cRzFVO+dKyyJQyf5ZHldpCmyxXrYWWL6lsEzQY2wslizR1rDI+AF6q4277L
+         ixAreq4zBPDp3igSHHfdLP/YL6WtVuz8hh7uWrKiXZ812wu1hzrh+5Hcw3o5DTh3M3JB
+         edRA4LLoiXWYh9drK4Cr+LTjjRzDxwRZf8+tw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3e5yK6qRaJSts87vr4iK+gogcjS5ZNykHJ/giIrEtNo=;
-        b=SuKB/JbRrpSYdOfSVeXxvD7W/5nLv1FqZdsyneKE/RwNALa4CBwVJ67hL87XOglIhK
-         fX4k8frAyIO0QauYIW1t0RXZeJu3eBfY8zgfOsRFNyXc9VVKBGN5WBvI9lx2hUqVvgRe
-         +/FwS9/VzWeLnDTbo1DOSv8lqU5Q2+2bBiJ7OcNd+s8RzMudc246sQ8+09cr3Q86ncGw
-         /Pw4HxsrSy/5QLJGrijd2AFmirAzpAaTdfllY5pG2sITbPL+4Q96RKaG4yrI6ERuFiIH
-         FObu0RbwqE9w+i5XD3XSjl0rk83hHfP1ge4s5dw2fJWu4bqkDGhbtIIjXs/fWZifZQ/x
-         s6kA==
-X-Gm-Message-State: AOAM532ZNTfzX5VF0TNHda03eNL6TvucheBM63uBTDylfx7LH4m24ZZK
-        8/7kn492UYkc++ffXQNlLzkgP/EUOAc+7uhnIXk=
-X-Google-Smtp-Source: ABdhPJyncWwteByh29hl2Y7yQYcwAPlMmJncRXGd8NWQMXIcujJHZUTJwuHSGpoxDAKxgfAyhkbMIcz38bHIhJCdY9M=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr10005932ybg.27.1607393963407;
- Mon, 07 Dec 2020 18:19:23 -0800 (PST)
+        bh=tRTmRR6i5ldsnDvLccKv0+2Lb/JpoYzM8sB3u0+LQeA=;
+        b=r74prnFoibLQm3ztmkdcSzh5nBGoYzHdaRtRUtucLLTnUZP7FgRSaouQztxNw+Htzs
+         xU7iSb40mSIvL8Wt7uhXuj4MYbZna7YVvTd6CXiCxiO/P9IsIm1+8QELJX6DP7b/9C+9
+         WDXuUjChkqwOvUhLyVMm8Oyh0YnyKt/bcnBa6OJfmaACH/88G+dJ2XuVDmqiPQf8fZEs
+         gM9BIAn5LQTTgKxkbmZx0l/IeV+zQkM7/knuSxJO5Y44GHN4WQ19khcaV5f6bfS16HNy
+         9f1/lvOvbtKGMUYZdOaaFb0C2PBofC9t60ouMZhgShkhn3FHLd9D9v+rOoUQ4plcHwGT
+         Ap4g==
+X-Gm-Message-State: AOAM532Od+I2wmK6d7+mPJb/DyMfF7KKjc9j/27aBaUaTiJzEet3D+bB
+        jNq6YP/5t3q+djmY8LqckQs/uqZXtkQBjfepS0I=
+X-Google-Smtp-Source: ABdhPJw2ud19QUIg0leAoNjEpRtpBSdzoxEzw3u5EdIlzVd2mY+5KlLyp1VjqJyVAMszDwkqz31ae+WntOV9qGaODIQ=
+X-Received: by 2002:a05:620a:7e8:: with SMTP id k8mr27038811qkk.273.1607394057671;
+ Mon, 07 Dec 2020 18:20:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203160245.1014867-1-jackmanb@google.com> <20201203160245.1014867-13-jackmanb@google.com>
- <CAEf4BzbEfPScq_qMVJkDxfWBh-oRhY5phFr=517pam80YcpgMg@mail.gmail.com>
- <X8oEOPViOhR8XdH6@google.com> <CAEf4BzaEystdQ3PbaZXhmpTfqbs410BVCEToHfKLgx-3wAm-KA@mail.gmail.com>
- <X84LPVp3PqfESx9U@google.com>
-In-Reply-To: <X84LPVp3PqfESx9U@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Dec 2020 18:19:12 -0800
-Message-ID: <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 12/14] bpf: Pull tools/build/feature biz into
- selftests Makefile
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>
+References: <20201202051634.490-1-wangzhiqiang.bj@bytedance.com> <20201202051634.490-2-wangzhiqiang.bj@bytedance.com>
+In-Reply-To: <20201202051634.490-2-wangzhiqiang.bj@bytedance.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 8 Dec 2020 02:20:45 +0000
+Message-ID: <CACPK8XfVGSy=ST8afmcA-VTRZEdf-5-LSbXbd5DZ7LQ999mcxA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add LCLK to lpc-snoop
+To:     John Wang <wangzhiqiang.bj@bytedance.com>
+Cc:     xuxiaohan@bytedance.com,
+        =?UTF-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 3:00 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Wed, 2 Dec 2020 at 05:16, John Wang <wangzhiqiang.bj@bytedance.com> wrote:
 >
-> On Fri, Dec 04, 2020 at 11:00:24AM -0800, Andrii Nakryiko wrote:
-> > On Fri, Dec 4, 2020 at 1:41 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > >
-> > > On Thu, Dec 03, 2020 at 01:01:27PM -0800, Andrii Nakryiko wrote:
-> > > > On Thu, Dec 3, 2020 at 8:07 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > > > >
-> > > > > This is somewhat cargo-culted from the libbpf build. It will be used
-> > > > > in a subsequent patch to query for Clang BPF atomics support.
-> > > > >
-> > > > > Change-Id: I9318a1702170eb752acced35acbb33f45126c44c
-> > > >
-> > > > Haven't seen this before. What's this Change-Id business?
-> > >
-> > > Argh, apologies. Looks like it's time for me to adopt a less error-prone
-> > > workflow for sending patches.
-> > >
-> > > (This is noise from Gerrit, which we sometimes use for internal reviews)
-> > >
-> > > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/.gitignore |  1 +
-> > > > >  tools/testing/selftests/bpf/Makefile   | 38 ++++++++++++++++++++++++++
-> > > > >  2 files changed, 39 insertions(+)
-> > > >
-> > > > All this just to detect the support for clang atomics?... Let's not
-> > > > pull in the entire feature-detection framework unnecessarily,
-> > > > selftests Makefile is complicated enough without that.
-> > >
-> > > Then the test build would break for people who haven't updated Clang.
-> > > Is that acceptable?
-> > >
-> > > I'm aware of cases where you need to be on a pretty fresh Clang for
-> > > tests to _pass_ so maybe it's fine.
-> >
-> > I didn't mean to drop any detection of this new feature. I just didn't
-> > want a new dependency on tools' feature probing framework. See
-> > IS_LITTLE_ENDIAN and get_sys_includes, we already have various feature
-> > detection-like stuff in there. So we can do this with a one-liner. I
-> > just want to keep it simple. Thanks.
->
-> Ah right gotcha. Then yeah I think we can do this:
->
->  BPF_ATOMICS_SUPPORTED = $(shell \
->         echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
->         | $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
 
-Looks like it would work, yes. Curious what "-x cpp-output" does?
+Can you add a note here about why we are adding these so it's clear is
+a fix/enhancement?
+
+Also add a Fixes line for both patches.
+
+> Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+
+
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+
+> ---
+>  arch/arm/boot/dts/aspeed-g4.dtsi | 1 +
+>  arch/arm/boot/dts/aspeed-g5.dtsi | 1 +
+>  arch/arm/boot/dts/aspeed-g6.dtsi | 1 +
+>  3 files changed, 3 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g4.dtsi b/arch/arm/boot/dts/aspeed-g4.dtsi
+> index f606fc01ff13..2364b660f2e4 100644
+> --- a/arch/arm/boot/dts/aspeed-g4.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g4.dtsi
+> @@ -370,6 +370,7 @@ lpc_snoop: lpc-snoop@10 {
+>                                                 compatible = "aspeed,ast2400-lpc-snoop";
+>                                                 reg = <0x10 0x8>;
+>                                                 interrupts = <8>;
+> +                                               clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+>                                                 status = "disabled";
+>                                         };
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
+> index 19288495f41a..30bbf7452b90 100644
+> --- a/arch/arm/boot/dts/aspeed-g5.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g5.dtsi
+> @@ -496,6 +496,7 @@ lpc_snoop: lpc-snoop@10 {
+>                                                 compatible = "aspeed,ast2500-lpc-snoop";
+>                                                 reg = <0x10 0x8>;
+>                                                 interrupts = <8>;
+> +                                               clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+>                                                 status = "disabled";
+>                                         };
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> index 97ca743363d7..4b1013870fb1 100644
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -520,6 +520,7 @@ lpc_snoop: lpc-snoop@0 {
+>                                                 compatible = "aspeed,ast2600-lpc-snoop";
+>                                                 reg = <0x0 0x80>;
+>                                                 interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>;
+> +                                               clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+>                                                 status = "disabled";
+>                                         };
+>
+> --
+> 2.25.1
+>
