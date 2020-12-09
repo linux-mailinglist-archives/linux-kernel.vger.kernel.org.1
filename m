@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED352D38EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726C82D3909
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgLICmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:42:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:56860 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgLICmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:42:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6F1C1042;
-        Tue,  8 Dec 2020 18:41:15 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0AC43F66B;
-        Tue,  8 Dec 2020 18:41:12 -0800 (PST)
-Subject: Re: [PATCH V2 0/2] mm/debug_vm_pgtable: Some minor updates
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        steven.price@arm.com, christophe.leroy@csgroup.eu,
-        gerald.schaefer@linux.ibm.com, vgupta@synopsys.com,
-        paul.walmsley@sifive.com
-References: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <5ac12290-536d-968c-1ca6-10918403bb8f@arm.com>
-Date:   Wed, 9 Dec 2020 08:11:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727055AbgLICym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:54:42 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:41220 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgLICyg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:54:36 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92ZLbv193227;
+        Wed, 9 Dec 2020 02:43:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=mVMv5/81Agpr6XuQ1R6ctAlZm6JEeHFZTjeufEXtpgk=;
+ b=OR05Dk1edGfx1vgrVzv5ff6FouXdc09xLx3/vp/WoQAJAMAeJqnzKKUrjMypuerqI69o
+ WfVoTHgwWizHMJZJk8YNO9v6IZTjgSlOCwfFJC2Eyfn9CBmNwOyEJNQRKlO/XzsfEUVo
+ Ifz9PKE/mtklWN5C+jPy/W2EgimXwGYV+aYdv/EGejj1WXxypIUhs7I8EI3L9n4T9Pgz
+ trx/v/MQP8Jvd/wkVL5iyEQvZ7qjvqNcLogdMkkYApCDarGICMO6AJJv06J+qL9YRidq
+ 8B5qPForc1uzpStwboLmMp5dupirp29MsZ0Yag8tMqQMNCdbpuXRb7OT0ttx9ghtTwAS LQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqbx2cp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 02:43:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92Zngi160763;
+        Wed, 9 Dec 2020 02:43:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 358m4ytww4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 02:43:26 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B92hLmL000768;
+        Wed, 9 Dec 2020 02:43:22 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 18:43:21 -0800
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Subject: Re: [PATCH v1 0/2] scsi: ufs: Allow regulators being always on
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1tusvsnr5.fsf@ca-mkp.ca.oracle.com>
+References: <20201207054955.24366-1-stanley.chu@mediatek.com>
+Date:   Tue, 08 Dec 2020 21:43:17 -0500
+In-Reply-To: <20201207054955.24366-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Mon, 7 Dec 2020 13:49:53 +0800")
 MIME-Version: 1.0
-In-Reply-To: <1606825169-5229-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=926
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=940
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Stanley,
 
-On 12/1/20 5:49 PM, Anshuman Khandual wrote:
-> This series contains some cleanups and new test suggestions from Catalin
-> from an earlier discussion.
-> 
-> https://lore.kernel.org/linux-mm/20201123142237.GF17833@gaia/
-> 
-> This series is based on v5.10-rc6 and has been tested on arm64 and x86 but
-> has only been build tested on riscv, s390, arc etc. It would be great if
-> folks could test this on these platforms as well. Thank you.
-> 
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+> This series allow vendors to keep the regulator always-on, and provide
+> an implementation on MediaTek UFS platforms.
 
-Hello Gerald/Christophe/Vineet/Paul,
+Applied to 5.11/scsi-staging, thanks!
 
-Could you please give this series a quick test on s390, ppc, arc,
-and riscv platforms. Thank you.
-
-- Anshuman
+-- 
+Martin K. Petersen	Oracle Linux Engineering
