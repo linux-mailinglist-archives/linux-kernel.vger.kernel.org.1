@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E60A2D447D
+	by mail.lfdr.de (Postfix) with ESMTP id 329C82D447C
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730884AbgLIOhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:37:43 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39450 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLIOhl (ORCPT
+        id S1733099AbgLIOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:37:23 -0500
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:60987 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731331AbgLIOhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:37:41 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0B9EaSmQ102124;
-        Wed, 9 Dec 2020 08:36:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607524588;
-        bh=iaQVHNYxJpWkMNbC/2TKJjISMK1mUEKpvDp5u8woOWM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lNi9IYg7OKjtdvUwjypn/M0tsNmzLTK/4vaVQWXCwvX3qsphnZSV7pbS8+eXLujZa
-         GtK5bdW9z2SoSswdk/Ey9mXNOtYC0KWagg6xuYpbbfIrEwmk/D32Vq/9ZzCpcJlKOa
-         iFHFo9GkotcI+iTTFBZ8pQB0235ZZGKGvWkqZE5g=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0B9EaSqx041674
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Dec 2020 08:36:28 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 9 Dec
- 2020 08:36:28 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 9 Dec 2020 08:36:28 -0600
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0B9EaPeJ075567;
-        Wed, 9 Dec 2020 08:36:26 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     <linux-kernel@vger.kernel.org>, Michael Walle <michael@walle.cc>,
-        <linux-mtd@lists.infradead.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Richard Weinberger <richard@nod.at>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v8 0/7] mtd: spi-nor: keep lock bits if they are non-volatile
-Date:   Wed, 9 Dec 2020 20:06:10 +0530
-Message-ID: <160744362728.26394.4055203896031176694.b4-ty@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201203162959.29589-1-michael@walle.cc>
-References: <20201203162959.29589-1-michael@walle.cc>
+        Wed, 9 Dec 2020 09:37:22 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 49D3C1C3F43
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 14:36:23 +0000 (GMT)
+Received: (qmail 10606 invoked from network); 9 Dec 2020 14:36:23 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Dec 2020 14:36:22 -0000
+Date:   Wed, 9 Dec 2020 14:36:21 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Aubrey Li <aubrey.li@linux.intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        bsegall@google.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20201209143510.GO3371@techsingularity.net>
+References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On Thu, 3 Dec 2020 17:29:52 +0100, Michael Walle wrote:
-> I bundled this as a series, because otherwise there will be conflicts
-> because the "remove global protection flag" patches modify the same lines
-> as the main patch.
+On Wed, Dec 09, 2020 at 02:24:04PM +0800, Aubrey Li wrote:
+> Add idle cpumask to track idle cpus in sched domain. Every time
+> a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
+> target. And if the CPU is not in idle, the CPU is cleared in idle
+> cpumask during scheduler tick to ratelimit idle cpumask update.
 > 
-> There are now two more patches:
->   mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
->   mtd: spi-nor: ignore errors in spi_nor_unlock_all()
-> Both are fixes and are first in this series. This will ensure that they
-> might be cherry-picked without conflicts as the following patches touches
-> the same lines.
+> When a task wakes up to select an idle cpu, scanning idle cpumask
+> has lower cost than scanning all the cpus in last level cache domain,
+> especially when the system is heavily loaded.
 > 
-> [...]
+> Benchmarks including hackbench, schbench, uperf, sysbench mysql
+> and kbuild were tested on a x86 4 socket system with 24 cores per
+> socket and 2 hyperthreads per core, total 192 CPUs, no regression
+> found.
+> 
 
-Appreciate all the hard work!
+I ran this patch with tbench on top of of the schedstat patches that
+track SIS efficiency. The tracking adds overhead so it's not a perfect
+performance comparison but the expectation would be that the patch reduces
+the number of runqueues that are scanned
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next, thanks!
-[1/7] mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
-      https://git.kernel.org/mtd/c/989d4b72ba
-[2/7] mtd: spi-nor: ignore errors in spi_nor_unlock_all()
-      https://git.kernel.org/mtd/c/bdb1a75e4b
-[3/7] mtd: spi-nor: atmel: remove global protection flag
-      https://git.kernel.org/mtd/c/e6204d4620
-[4/7] mtd: spi-nor: sst: remove global protection flag
-      https://git.kernel.org/mtd/c/a833383732
-[5/7] mtd: spi-nor: intel: remove global protection flag
-      https://git.kernel.org/mtd/c/afcf93e9d6
-[6/7] mtd: spi-nor: atmel: fix unlock_all() for AT25FS010/040
-      https://git.kernel.org/mtd/c/8c174d1511
-[7/7] mtd: spi-nor: keep lock bits if they are non-volatile
-      https://git.kernel.org/mtd/c/31ad3eff09
+tbench4
+                          5.10.0-rc6             5.10.0-rc6
+                      schedstat-v1r1          idlemask-v7r1
+Hmean     1        504.76 (   0.00%)      500.14 *  -0.91%*
+Hmean     2       1001.22 (   0.00%)      970.37 *  -3.08%*
+Hmean     4       1930.56 (   0.00%)     1880.96 *  -2.57%*
+Hmean     8       3688.05 (   0.00%)     3537.72 *  -4.08%*
+Hmean     16      6352.71 (   0.00%)     6439.53 *   1.37%*
+Hmean     32     10066.37 (   0.00%)    10124.65 *   0.58%*
+Hmean     64     12846.32 (   0.00%)    11627.27 *  -9.49%*
+Hmean     128    22278.41 (   0.00%)    22304.33 *   0.12%*
+Hmean     256    21455.52 (   0.00%)    20900.13 *  -2.59%*
+Hmean     320    21802.38 (   0.00%)    21928.81 *   0.58%*
 
---
-Regards
-Vignesh
+Not very optimistic result. The schedstats indicate;
 
+                                5.10.0-rc6     5.10.0-rc6
+                            schedstat-v1r1  idlemask-v7r1
+Ops TTWU Count               5599714302.00  5589495123.00
+Ops TTWU Local               2687713250.00  2563662550.00
+Ops SIS Search               5596677950.00  5586381168.00
+Ops SIS Domain Search        3268344934.00  3229088045.00
+Ops SIS Scanned             15909069113.00 16568899405.00
+Ops SIS Domain Scanned      13580736097.00 14211606282.00
+Ops SIS Failures             2944874939.00  2843113421.00
+Ops SIS Core Search           262853975.00   311781774.00
+Ops SIS Core Hit              185189656.00   216097102.00
+Ops SIS Core Miss              77664319.00    95684672.00
+Ops SIS Recent Used Hit       124265515.00   146021086.00
+Ops SIS Recent Used Miss      338142547.00   403547579.00
+Ops SIS Recent Attempts       462408062.00   549568665.00
+Ops SIS Search Efficiency            35.18          33.72
+Ops SIS Domain Search Eff            24.07          22.72
+Ops SIS Fast Success Rate            41.60          42.20
+Ops SIS Success Rate                 47.38          49.11
+Ops SIS Recent Success Rate          26.87          26.57
+
+The field I would expect to decrease is SIS Domain Scanned -- the number
+of runqueues that were examined but it's actually worse and graphing over
+time shows it's worse for the client thread counts.  select_idle_cpu()
+is definitely being called because "Domain Search" is 10 times higher than
+"Core Search" and there "Core Miss" is non-zero.
+
+I suspect the issue is that the mask is only marked busy from the tick
+context which is a very wide window. If select_idle_cpu() picks an idle
+CPU from the mask, it's still marked as idle in the mask.
+
+-- 
+Mel Gorman
+SUSE Labs
