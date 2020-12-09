@@ -2,60 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C582D437E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96812D438E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732615AbgLINkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:40:40 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9571 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732425AbgLINk2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:40:28 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrdS82h2TzM1nV;
-        Wed,  9 Dec 2020 21:39:04 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 21:39:36 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-afs@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH net-next] net: ipa: convert comma to semicolon
-Date:   Wed, 9 Dec 2020 21:40:03 +0800
-Message-ID: <20201209134003.1679-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+        id S1732438AbgLINv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:51:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726555AbgLINv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:51:58 -0500
+Date:   Wed, 9 Dec 2020 22:51:14 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607521877;
+        bh=/LQG4cARkA17CaFYwLH0PCTQMyl71BRL/5TpniO12f4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hOdIma+vmYQhM0v5m8mn082Sb/t63aSEcKu9Aqh8lW5eCnxcYDcM4Bb5XnUCouK/i
+         lJgdYK+hmAn416FqDVphDKiRBk5x4Yjr4jqKHjiHX4nLc8Ob9t2IIcSe+sXBH7bUVl
+         7KmOI+nbYDPvsjvegcyblrmF9/qc0uhdLNQgJxu4WbHs8sPGhH1EZ6VEO5R/70y41J
+         pR6VgazP7aEc1Y+MYim2Q0g0YncJbgsYqx693fgRqkwEnfpVc9+5E5S+tpBjRa9Pr/
+         Q6JpkUOy23JIINlpGa0X4aFb6bX6Bxku8chzYIfntiFBK9cETsIeSdIFU8W38nxsBO
+         Lj0NHohmFjOIA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, axelrasmussen@google.com,
+        mhiramat@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] tracing: Update synth command errors
+Message-Id: <20201209225114.9bb1f53caa5bc101a6e31a4b@kernel.org>
+In-Reply-To: <20201208125340.407150f2@gandalf.local.home>
+References: <cover.1603723933.git.zanussi@kernel.org>
+        <8671adc7ce95ff1d5c7b037d371467e96f7f2914.1603723933.git.zanussi@kernel.org>
+        <20201207201304.627bfe48@oasis.local.home>
+        <44b9e471f0d3b77ab0a2bf11024e2e72c1f1a80d.camel@kernel.org>
+        <20201208125340.407150f2@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Tue, 8 Dec 2020 12:53:40 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/net/ipa/ipa_qmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, 08 Dec 2020 11:34:41 -0600
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Unfortunately, you're correct, if you have a script that creates a
+> > synthetic event without semicolons, this patchset will break it, as I
+> > myself found out and fixed in patch 4 ([PATCH v3 4/5] selftests/ftrace:
+> > Add synthetic event field separators) [4].
+> > 
+> > So whereas before this would work, even though it shouldn't have in the
+> > first place:
+> > 
+> >   # echo 'wakeup_latency  u64 lat pid_t pid char comm[16]' >
+> > synthetic_events
+> > 
+> > it now has to be:
+> > 
+> >   # echo 'wakeup_latency  u64 lat; pid_t pid; char comm[16]' >
+> > synthetic_events
+> > 
+> > So yeah, this patchset fixes a set of parsing bugs for things that
+> > shouldn't have been accepted as valid, but shouldn't break things that
+> > are obviously valid.
+> > 
+> > If it's too late to fix them, though, I guess we'll just have to live
+> > with them, or some other option?
+> 
+> 
+> I would suggest allowing the old interface work (with no new features, for
+> backward compatibility), but new things like "char comm[16]" we require
+> semicolons.
+> 
+> One method to do this is to add to the start of reading the string, and
+> checking if it has semicolons. If it does not, we create a new string with
+> them, but make sure that the string does not include new changes.
+> 
+> 	strncpy_from_user(buffer, user_buff, sizeof(buffer));
+> 
+> 	if (!strstr(buffer, ";")) {
+> 		if (!audit_old_buffer(buffer))
+> 			goto error;
+> 		insert_colons(buffer);
+> 	}
+> 
+> 
+> That is, if the buffer does not have semicolons, then check if it is a
+> valid "old format", and if not, we error out. Otherwise, we insert the
+> colons into the buffer, and process that as if the user put in colons:
+> 
+> That is:
+> 
+> 	echo 'wakeup_latency u64 lat pid_t pid' > synthetic_events
+> 
+> would change the buffer to:
+> 
+> 	"wakeup_latency u64 lat; pid_t pid;"
+> 
+> And then put it through the normal processing. I think its OK that if the
+> user were to cat out the synthetic events, it would see the semicolons even
+> if it did not add them. As I don't think that will break userspace.
+> 
+> Does that make sense?
 
-diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
-index 5090f0f923ad..174f093b66b8 100644
---- a/drivers/net/ipa/ipa_qmi.c
-+++ b/drivers/net/ipa/ipa_qmi.c
-@@ -413,7 +413,7 @@ static void ipa_client_init_driver_work(struct work_struct *work)
- 	int ret;
- 
- 	ipa_qmi = container_of(work, struct ipa_qmi, init_driver_work);
--	qmi = &ipa_qmi->client_handle,
-+	qmi = &ipa_qmi->client_handle;
- 
- 	ipa = container_of(ipa_qmi, struct ipa, qmi);
- 	dev = &ipa->pdev->dev;
+This makes sense. Anyway, what I considered were
+- synthetic_events interface doesn't provide syntax error reports
+- synthetic_events interface is not self-reproducive*.
+
+*) I meant
+
+$ cat synthetic_events > saved_events
+$ cat saved_events > synthetic_events
+
+  should work. But this does *NOT* mean
+
+$ cat user-input > synthetic_events
+$ cat synthetic_events > saved_events
+$ diff user-input saved_events # no diff
+
+So input and output can be different, but the output can be input again.
+
+Thank you,
+
 -- 
-2.22.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
