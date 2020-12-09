@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F6A2D47AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8B62D47AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732716AbgLIRP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:15:56 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:53948 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732465AbgLIRPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:15:55 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H9t8e029294;
-        Wed, 9 Dec 2020 17:15:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=GQzgVddlfJObRit2YhIKh68Sp3ASwM4cNjH+dHYmMHU=;
- b=OAUo0kRaFa1VpvjYtoMgZKKhtJu/v1YtY75hZ7nE1xruv1AmIDkxOIBnkplwG4amzks/
- 81s8Hgtv1XxkGMaKcicTfrZEel3ERhgSzbBUeil7dZsDcZhuRb5BDwBqTy/f9UCU73IB
- DyCmHtMqUs8GsHeVvUsSy9kQ+7wBoVRdKYVTGgDH5vnjx+d1boNDI7wCFUruFVURfjC9
- +9QIE326Ej9iRQvzYfr7eiQLQxs5LafbeRlkREC9a3+CWaaHPEA25UdqPfobNxfiX+Q/
- /r3tK1jcpVi+iMTQ/tuBDau336KF1gSDAs8yPIimAOnTfKbd4DVcwyKzHuMTDQDBFL/X 4w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 357yqc1eap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:15:02 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HAxx4071029;
-        Wed, 9 Dec 2020 17:15:02 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 358ksqd7tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:15:01 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9HF0Bs017545;
-        Wed, 9 Dec 2020 17:15:00 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:14:59 -0800
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Karen Xie <kxie@chelsio.com>,
-        linux-scsi@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH] SCSI: cxgb4i: fix TLS dependency
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq15z5arjec.fsf@ca-mkp.ca.oracle.com>
-References: <20201208220505.24488-1-rdunlap@infradead.org>
-Date:   Wed, 09 Dec 2020 12:14:58 -0500
-In-Reply-To: <20201208220505.24488-1-rdunlap@infradead.org> (Randy Dunlap's
-        message of "Tue, 8 Dec 2020 14:05:05 -0800")
+        id S1732622AbgLIRRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:17:14 -0500
+Received: from mga09.intel.com ([134.134.136.24]:45059 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730313AbgLIRRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:17:14 -0500
+IronPort-SDR: y/vqRmtrvoIxDU4GVtZ49tl6G2vEtbc5hXXmB/C1UAF75/W/wL0muqkbHZL2Kn+RYNV2lPrONe
+ 0PY2u5wCRR6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="174257010"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="174257010"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 09:15:27 -0800
+IronPort-SDR: q7zIyuVIcEnae6mwQz9ohdlc4C19lujeNhJs+YXiBQyEnlH3Mg7MhKBmBnN2SRf4rxqh+ALpvr
+ s48AF+/Vr5TQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="437868841"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 09 Dec 2020 09:15:24 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 09 Dec 2020 19:15:24 +0200
+Date:   Wed, 9 Dec 2020 19:15:24 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: typec: Add bus type for plug alt modes
+Message-ID: <20201209171524.GK680328@kuha.fi.intel.com>
+References: <20201203030846.51669-1-pmalani@chromium.org>
+ <20201208093734.GD680328@kuha.fi.intel.com>
+ <CACeCKaehg=HTuQNLtQaJZWvTnOFYM9b1BWfM+WX_ebiZ-_i8JQ@mail.gmail.com>
+ <20201209161356.GI680328@kuha.fi.intel.com>
+ <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACeCKacdcGi_6VW7F9agN+bgRH7gAXLDxK7DngE=fPkYT-CWNQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prashant,
 
-Randy,
+On Wed, Dec 09, 2020 at 08:22:52AM -0800, Prashant Malani wrote:
+> Hi Heikki,
+> 
+> On Wed, Dec 9, 2020 at 8:14 AM Heikki Krogerus
+> <heikki.krogerus@linux.intel.com> wrote:
+> >
+> > On Tue, Dec 08, 2020 at 03:45:19PM -0800, Prashant Malani wrote:
+> > > Hi Heikki,
+> > >
+> > > Thanks a lot for looking at the patch.
+> > >
+> > > On Tue, Dec 8, 2020 at 1:37 AM Heikki Krogerus <heikki.krogerus@linux.intel.com> wrote:
+> > > >
+> > > > On Wed, Dec 02, 2020 at 07:08:47PM -0800, Prashant Malani wrote:
+> > > > > Add the Type C bus for plug alternate modes which are being
+> > > > > registered via the Type C connector class. This ensures that udev events
+> > > > > get generated when plug alternate modes are registered (and not just for
+> > > > > partner/port alternate modes), even though the Type C bus doesn't link
+> > > > > plug alternate mode devices to alternate mode drivers.
+> > > >
+> > > > I still don't understand how is the uevent related to the bus? If you
+> > > > check the device_add() function, on line 2917, kobject_uevent() is
+> > > > called unconditionally. The device does not need a bus for that event
+> > > > to be generated.
+> > >
+> > > My initial thought process was to see what is the difference in the adev device
+> > > initialization between partner altmode and plug altmode (the only difference I saw in
+> > > typec_register_altmode() was regarding the bus field).
+> > >
+> > > Yes, kobject_uevent() is called unconditionally, but it's return value isn't checked,
+> > > so we don't know if it succeeded or not.
+> > >
+> > > In the case of cable plug altmode, I see it fail with the following error[1]:
+> > >
+> > > [  114.431409] kobject: 'port1-plug0.0' (000000004ad42956): kobject_uevent_env: filter function caused the event to drop!
+> > >
+> > > I think the filter function which is called is this one: drivers/base/core.c: dev_uevent_filter() [2]
+> > >
+> > > static int dev_uevent_filter(struct kset *kset, struct kobject *kobj)
+> > > {
+> > >       struct kobj_type *ktype = get_ktype(kobj);
+> > >
+> > >       if (ktype == &device_ktype) {
+> > >               struct device *dev = kobj_to_dev(kobj);
+> > >               if (dev->bus)
+> > >                       return 1;
+> > >               if (dev->class)
+> > >                       return 1;
+> > >       }
+> > >       return 0;
+> > > }
+> > >
+> > > So, both the "if (dev->bus)" and "if (dev->class)" checks are failing here. In the case of partner alt modes, bus is set by the class.c code
+> > > so this check likely returns 1 in that case.
+> >
+> > OK. I understand the issue now. So I would say that the proper
+> > solution to this problem is to link the alt modes with the class
+> > instead of the bus. That is much smaller change IMO.
+> 
+> Got it. Just to confirm that I understand correctly, do you mean:
+> 1. Only cable plug alt modes should be linked with the class instead of the bus.
+> 
+> <or>
+> 
+> 2. All alt modes (cable plug, partner, port) should be linked with the
+> class instead of the bus
+> 
+> My initial interpretation is 1.) since the bus linkage would be
+> necessary to match alt mode drivers to partner alt mode devices.
+> But, my understanding of the bus code is limited so I could be wrong;
+> could you kindly clarify?
 
-> SCSI_CXGB4_ISCSI selects CHELSIO_T4. The latter depends on
-> TLS || TLS=n, so since 'select' does not check dependencies of
-> the selected symbol, SCSI_CXGB4_ISCSI should also depend on
-> TLS || TLS=n.
->
-> This prevents the following kconfig warning and restricts
-> SCSI_CXGB4_ISCSI to 'm' whenever TLS=m.
+We don't need to care about the bus here. A device can be part of a
+bus and a class at the same time. I don't think there is any reason to
+limit the class to only plug alt modes, so let's just assign it to all
+of them.
 
-Applied to 5.11/scsi-staging, thanks!
+thanks,
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+heikki
