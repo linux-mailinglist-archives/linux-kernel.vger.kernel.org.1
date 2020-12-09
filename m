@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421032D4B89
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186F72D4B6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388298AbgLIUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388305AbgLIUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Dec 2020 15:16:22 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:38997 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388112AbgLIUQM (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388287AbgLIUQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:16:12 -0500
-Received: by mail-ot1-f65.google.com with SMTP id d8so2661225otq.6;
-        Wed, 09 Dec 2020 12:15:56 -0800 (PST)
+        Wed, 9 Dec 2020 15:16:20 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793F1C0613D6;
+        Wed,  9 Dec 2020 12:15:40 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id r24so4865644lfm.8;
+        Wed, 09 Dec 2020 12:15:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=29gZ51AkHeHCkCBWFFsi9l3IwIA6vH7qxHMCsXGWoI0=;
+        b=bdM2JCllWcdfTu9dV/dczeEr2cO+tdrNi4Hxo3cI99rlZ3mxfb4yc4FQ4lpFJJKAan
+         jfnWrJUgV7MgyhEfa2Twq7zGjbehVdekhkXeeoO6t/tbQ992RhF6Eq4qiqfXjSxfjuEW
+         wsgpnPhwx30QVLLKklpcr+x8XnVnAXn+hzGQleARi8IKninKono1ji9hcVUzcC021A2d
+         xnfrHpxmimMNYW7VEfpGeLWmuh5o5DJatorJbWcDGojJOy3M94DMcmb31oNcg/tIXbNj
+         /C6aWTQPKjPQwrrgoHYMOHWDbpU4xRlSddyLykYCUd/Myg5e+SfOFOTB0toOU912f3e5
+         rbQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HkZkOlvU17tWN9kGhwEHEyzk6vBPnUYvFHyetdZXKVA=;
-        b=tA/i7RnmWDmwrK7r+NW9/AQrGHqd/VxnZG/MQmFiulzPxS6ihR2PIXOZSwo4a3bP55
-         85X/FJ4mQzH6EU8haMSo/o5mKzZ8CE2Vw8Uv9aJSyX/537Qe3ZXlYCfRsZgeG+jAtPbf
-         oNWZWDTJJqUkfO+Or1fsdbsurD6x3qMFYttJxuCiZgOK3R2WHmqarw6NlTCAFN5yjz/t
-         wtXYdDBdCSFgkw8Qj5smSEJK8Xf4mpdo1ApqligZesDhlaKBJbZVRRj3QM9Y5e6DAGUs
-         P6gPlHtYSQp+XOGg6ALh2JkwDybd6QsdkYRiewFsc0bYi9PvLe7ejuTCPLqMutcsGhq3
-         Plrw==
-X-Gm-Message-State: AOAM532iYVHRNtFTp1ZWbZ0K/HaCh5YV8VZud1CLP0IchFL8qe6YC5xk
-        z5u4GquODPWqAvaECC9KLDz7pFtuyA==
-X-Google-Smtp-Source: ABdhPJz6SA76JGYn9n/Qh4vb6FiikJm900RuCu35Bj3qJ5ugpBm0a7qioElUowlY/gcxRlS7VcXqAQ==
-X-Received: by 2002:a9d:7f84:: with SMTP id t4mr3198018otp.302.1607544930935;
-        Wed, 09 Dec 2020 12:15:30 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i1sm518487ool.43.2020.12.09.12.15.29
+        bh=29gZ51AkHeHCkCBWFFsi9l3IwIA6vH7qxHMCsXGWoI0=;
+        b=VrSob6Jxpo3fm0LYlHJM5cNz4g8w+3a+9qs96BJkQnK8jBoCyBZusfm/ycjJKfE6Sc
+         ROFK8f6EjBYqiuEptjWjrAk0TIbm2OpQhzSkSLV7lNfi92JSmz1xlFa7Ky7UXkO7DxUw
+         SbNxZCxr5Z+fQNyQoeg/ln/ykvJYyTsv4XYfg9wd4Ms+vLVtpxJivhFtUE2r2DYGUweE
+         4sLAw/OK83p+5TWbZuxtaQqzmh4XBiA9plBEapAMQSVPKqFruYv9eEBAZpaCSNCTN0dE
+         u8sU9fceMt7Ba73z3/Za/VVE08H0xJIa7iTNUw8j9u+gHtvo1EYEoiPkz9fJ9p597Mkr
+         vjow==
+X-Gm-Message-State: AOAM530x1XdxI4ei4efkApPikLq8RdjGQv21XOwJe4kUUO22A2+PRpqi
+        HDwChlikfbIFeJviMAMoLtU=
+X-Google-Smtp-Source: ABdhPJzyUdycABRT6q1y12AqHQ1EOoHiKlplfWlMDq+dTWG+8zhZDCN5CnHtSbiwWHaPhugBgGZk0g==
+X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr1438133lfn.640.1607544938712;
+        Wed, 09 Dec 2020 12:15:38 -0800 (PST)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id o21sm275096lfc.153.2020.12.09.12.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:15:29 -0800 (PST)
-Received: (nullmailer pid 867331 invoked by uid 1000);
-        Wed, 09 Dec 2020 20:15:28 -0000
-Date:   Wed, 9 Dec 2020 14:15:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     thierry.reding@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
-        linux-tegra@vger.kernel.org, sharadg@nvidia.com,
-        linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [RESEND PATCH 1/2] dt-bindings: tegra: Convert HDA doc to
- json-schema
-Message-ID: <20201209201528.GA867274@robh.at.kernel.org>
-References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
- <1607006202-4078-2-git-send-email-spujar@nvidia.com>
+        Wed, 09 Dec 2020 12:15:37 -0800 (PST)
+Date:   Wed, 9 Dec 2020 23:15:35 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max
+ speed
+Message-ID: <20201209201535.32g4kwpzo45jiqr3@mobilestation>
+References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
+ <20201209194636.32f4ioxxdggezklr@mobilestation>
+ <20201209195420.GD4790@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1607006202-4078-2-git-send-email-spujar@nvidia.com>
+In-Reply-To: <20201209195420.GD4790@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Dec 2020 20:06:41 +0530, Sameer Pujar wrote:
-> Convert Tegra HDA doc to YAML format.
+On Wed, Dec 09, 2020 at 07:54:20PM +0000, Mark Brown wrote:
+> On Wed, Dec 09, 2020 at 10:46:36PM +0300, Serge Semin wrote:
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../bindings/sound/nvidia,tegra30-hda.txt          | 35 --------
->  .../bindings/sound/nvidia,tegra30-hda.yaml         | 98 ++++++++++++++++++++++
->  2 files changed, 98 insertions(+), 35 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
+> > On Wed, Dec 09, 2020 at 07:35:14PM +0200, Tudor Ambarus wrote:
+> 
+> > > Make sure the max_speed_hz of spi_device does not override
+> > > the max_speed_hz of controller.
+> 
+> > I have doubts that's right thing to do. It seems better to let
+> > the controller driver to handle the speed clamping itself, while
+> > to leave the SPI client device max_speed_hz field describing the
+> > device speed capability. Moreover the SPI-transfers passed to the
+> > controller will have a SPI-bus speed fixed in accordance with the
+> > controller and client device capabilities anyway.
+> > See the __spi_validate() method for details:
+> > https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/spi/spi.c#L3570
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Right, in general we aim to do this sort of fixup on the transfers
+> and messages rather than the devices, I guess we might be missing
+> validation in some of the flash acceleration paths or was this an issue
+> seen through inspection?
+
+In case of DW SPI driver we just make sure the SPI-client device
+speed set in the max_speed_hz doesn't exceed the controller SPI-bus
+clock frequency and clamp it if it does. So the driver is safe in that
+matter.
+
+-Sergey
