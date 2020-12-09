@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EA92D4C70
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A856F2D4C86
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730686AbgLIVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 16:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S2387934AbgLIVIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 16:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgLIVFY (ORCPT
+        with ESMTP id S2387903AbgLIVIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 16:05:24 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCE9C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 13:04:43 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l11so5095620lfg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:04:43 -0800 (PST)
+        Wed, 9 Dec 2020 16:08:01 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535D9C0613CF;
+        Wed,  9 Dec 2020 13:07:21 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id x4so1685117vsp.7;
+        Wed, 09 Dec 2020 13:07:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WwSKHrmHmEJGWwO8q35qAr+m2UELcccwDz7jvO6KV+0=;
-        b=IGmsBh+7AADorFbyaW+61TYjRjnM3bZ+NPiz+O5Dtl9xXc7x2VzpA6Qi+F5WOMjgq6
-         uMLjKW4msweI0isgQir1zt5KsIkczApET555uk/vdNU6Y07CL9TzUCflnfZuK/y+iqje
-         yIw7qBjbKEo3ew5HYtrYmvAXUyDO9SGwq8BK8=
+        bh=VxXmfsC48piD08BrnCt/ALLaaGzDfMADF2GaWqoLuKs=;
+        b=DDd9Dw0XtEWlv2CcAAkjkbk/y38KVl8EPHV94DC5i47P9E17B184nBih06nF6nOkNs
+         HmAztudi2TXU8AkQSu+ntuzWFqxN55ZUy6mEDtqsYVGbZ9l9ujq5aTwtPvrgs92A6kqe
+         IH5z6+oV4t9Il6jB5yg25StPrfr7mG04ibRVHhaz3lymsKM7oytmVf8mHnCVXb4yOp11
+         xOSIAp1Y4a36tuDrYju5m/vElRVdVbeZ35Zcmxf4s8L/zxOtrnNVmVcJc+IZCiU117yQ
+         FeVpwFDDvkkv9mWkPTLbwsmYgmNKaJGsqNHZtIhN68iZ3JAeeO2koGgmGjndak2QV3M/
+         +mNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WwSKHrmHmEJGWwO8q35qAr+m2UELcccwDz7jvO6KV+0=;
-        b=nXKHSG8Aza4nhU0pM8PEUeLeClcFXehuXR37cavWgWyKkq8vls0BNoTiy1QP39uvBD
-         RtXOzeT20Q5Xt6nw0LKk2iU3XLEVbMGH1nhIIll7KN0ArgeKIi/ARa2iGWfPEGlVbUdn
-         J2x4epcEiQMhInwPGZvlfka09zVSM8K32UD+0gC7zbk0UCM3nTVi1K64Hn2VHkV+V2DR
-         Wwv0mXBUoY+9aXsaWsb69rO8TqYpHdxsZHc3GK3Qez6wa1tii43RooVzOU+owSvV1DIV
-         nqkbKuFOoedJIG6Zo04//Hlqr9bokue2r4HdBVVRbrH5R7b6p5dV2RGUmwVS/2SJHOOn
-         Vkzw==
-X-Gm-Message-State: AOAM533oQKkVm5Rei77w/j480LINZKiFAV2mnpgetmXgbc+zBIekatxt
-        uxwHN2l6O+mrE7p1fjAeeruVVri1cbFSRA==
-X-Google-Smtp-Source: ABdhPJzUYRX9ZuksO2l2iCr6mfgoJOdwrKhohrcuXZFWFq/HnUo7CcQYcrb6joODg0pNdirNNNFoQQ==
-X-Received: by 2002:ac2:43c1:: with SMTP id u1mr610299lfl.38.1607547882022;
-        Wed, 09 Dec 2020 13:04:42 -0800 (PST)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id g15sm286097lfd.42.2020.12.09.13.04.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 13:04:39 -0800 (PST)
-Received: by mail-lj1-f180.google.com with SMTP id t22so4155668ljk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 13:04:39 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr1768604ljc.411.1607547879048;
- Wed, 09 Dec 2020 13:04:39 -0800 (PST)
+        bh=VxXmfsC48piD08BrnCt/ALLaaGzDfMADF2GaWqoLuKs=;
+        b=SgJrgm32IzSgoXqhmSVnY61AEJEgr3fVDoZc9uAJj4o6WRshFaH/IScPCsWsm+jix+
+         RFJdCsmlOtBXr38NrkrVfTduVb3RepfghmOZO4W4raEzZvvzj0PVP6gH8qQKXLTmrBiZ
+         CP+syrovBdnTg8QLOg+hFr0zgodOQqRD5EUHM1M4Zj3WJLHByrzbdGgikpwXUbiUqM0k
+         6dOhapmHdmSUA6ss47tY6C0omLbKI6ljvOPIUuscGxK0sEQ9QzgCv9Jvjb4BJT7USAPm
+         trWcgAyZDrZHtcwld+yS06OQvmbjnd1LmjZmzcRyMJBwDjh3Cb0N6PMuItL0rkN8w7jL
+         aGZw==
+X-Gm-Message-State: AOAM530KN7oy3Ikk2a2Pu2L4YG7MKFZMCX5Ig5x6sFvxnmGePYIqMd7W
+        XZetQepFE+N04xoshlDaJAgXQBmpUkCOPqF8ans=
+X-Google-Smtp-Source: ABdhPJyDLmYaq3PbITlL8LI4D1jfsMMZ9PSO7aS+lqAMdnYbGExYj7b4qC60sH+8w7q1o4uPN6oQdKBZ+hLfWoBeDFE=
+X-Received: by 2002:a67:f519:: with SMTP id u25mr4390265vsn.39.1607548040444;
+ Wed, 09 Dec 2020 13:07:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20201209163950.8494-1-will@kernel.org> <20201209163950.8494-2-will@kernel.org>
- <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
- <20201209184049.GA8778@willie-the-truck> <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
- <20201209203203.GU7338@casper.infradead.org>
-In-Reply-To: <20201209203203.GU7338@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 9 Dec 2020 13:04:22 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjCk9frb1Y+pkzh-vXGdvbs5=B=2NanG6yGLY35s99wBg@mail.gmail.com>
-Message-ID: <CAHk-=wjCk9frb1Y+pkzh-vXGdvbs5=B=2NanG6yGLY35s99wBg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
+ <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
+ <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
+ <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
+ <CALjTZvYZEbgfLEzxQdafJT6CFz76prA4+YM2EGA8k5Dgn3gigw@mail.gmail.com> <CANUX_P1YWSudJfwyuFVg-qdBHwQvQJiZayZBMY8E4it0qwB5Hw@mail.gmail.com>
+In-Reply-To: <CANUX_P1YWSudJfwyuFVg-qdBHwQvQJiZayZBMY8E4it0qwB5Hw@mail.gmail.com>
+From:   Emmanuel Grumbach <egrumbach@gmail.com>
+Date:   Wed, 9 Dec 2020 23:07:09 +0200
+Message-ID: <CANUX_P0sOAdRjOgg=ogAHmQdTXp5UKyW2XQQRComa4Rv3Y-toQ@mail.gmail.com>
+Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Coelho, Luciano" <luciano.coelho@intel.com>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Dec 9, 2020 at 10:47 PM Emmanuel Grumbach <egrumbach@gmail.com> wrote:
 >
-> If a filesystem has put an Uptodate page into the page cache, the
-> rest of the kernel can read it without telling the filesystem.
+> On Wed, Dec 9, 2020 at 10:40 PM Rui Salvaterra <rsalvaterra@gmail.com> wrote:
+> >
+> > Hi, Emmanuel,
+> >
+> > On Wed, 9 Dec 2020 at 20:32, Emmanuel Grumbach <egrumbach@gmail.com> wrote:
+> > >
+> > > Rui, I looked at the register dump and looks like you're using AMT on
+> > > your system?
+> > > Can you confirm?
+> >
+> > AMT? You mean Intel Active Management? Heavens, no, not that I know
+> > of! This is a personal laptop (Lenovo B51-80). (And I'd personally
+> > kill the ME with fire, if I could.)
+>
+> Yes, I mean that thing. No VPRO sticker on the laptop?
+> Weird... So apparently I was wrong about the register value.
 
-XFS does the same thing for xfs_file_read_iter() too.
+Indeed, the bit is reverse logic. So we can put that aside.
+Frankly, I have no clue. You can try our backport tree to bisect,
+should be easier..
+What I see here is that your GP_CTRL value is 080003d8
 
-Not that I disagree with you - when you mmap a file, once it's mapped
-you see the data without any lock anyway. So it's all kinds of
-pointless to serialize the page fault, because that's simply not
-relevant. The lock will be gone by the time the user actually sees the
-data.
+#define CSR_GP_CNTRL_REG_FLAG_HW_RF_KILL_SW          (0x08000000)
+which means sense since apparently, HW RF-Kill was asserted.
+#define CSR_GP_CNTRL_REG_FLAG_GOING_TO_SLEEP         (0x00000010)
+Which means that the device is going to sleep... And that's the problem:
 
-But hey, the XFS people have their opinions.
+iwl_trans_pcie_grab_nic_access:
+        ret = iwl_poll_bit(trans, CSR_GP_CNTRL,
+                           CSR_GP_CNTRL_REG_VAL_MAC_ACCESS_EN,
+                           (CSR_GP_CNTRL_REG_FLAG_MAC_CLOCK_READY |
+                            CSR_GP_CNTRL_REG_FLAG_GOING_TO_SLEEP), 15000);
+        if (unlikely(ret < 0)) {
+                u32 cntrl = iwl_read32(trans, CSR_GP_CNTRL);
 
-              Linus
+                WARN_ONCE(1,
+                          "Timeout waiting for hardware access
+(CSR_GP_CNTRL 0x%08x)\n",
+                          cntrl);
+
+but I'd expect the splat in your log...
+Or maybe you can't load the firmware?
+
+Can you try this:
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index 2fffbbc8462f..748300752630 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -2121,6 +2121,7 @@ static bool
+iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans,
+         * track nic_access anyway.
+         */
+        __release(&trans_pcie->reg_lock);
++       mdelay(1);
+        return true;
+ }
+
+If that helps, then... I'd have no clue why it helps, but this
+specific device caused us trouble like bad timing after
+grab_nic_access..
+
+
+>
+> >
+> > Thanks,
+> > Rui
