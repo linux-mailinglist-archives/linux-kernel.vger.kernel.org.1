@@ -2,112 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F652D4902
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C152D4903
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733096AbgLIS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:28:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        id S1733003AbgLIS3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:29:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgLIS2q (ORCPT
+        with ESMTP id S1726449AbgLIS3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:28:46 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629ADC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:28:06 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id v85so2742659oia.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EMdXn/we+ASAb31gRQdJr6+sKTP4Qjrqm7l5vM7/2N0=;
-        b=uBjDfzU8tJe6+V30aOzUET0Fi/1DWGtprJdABI/JEt+ZE2s94Y30fhKOBxmqCUuDeF
-         fCcuThp2wkHoxOI9GJmd/AiRPoHa0OZCK5WvKsYdMHLxuoZqZkPae4ik5Rs50LTv7UeP
-         WBe9p+LoNI1L76wVobsLQC868+hlmkTN5wIhYZYSXca0eIiTDq7OWBi6ZpodCQNmeqSp
-         f9iV5sMKIXZ7cde2m1WxX3kjYqxldYCrtpw2IF15hMkzldHDeUBuifaPwEl/hkntsmNy
-         KxRuzDUyZHihNDp5TVjZ9G5WE5RYOOhQgQS2IIcd5F33cWzTIOb/CxOyKXAwwGHpqBlh
-         CLpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EMdXn/we+ASAb31gRQdJr6+sKTP4Qjrqm7l5vM7/2N0=;
-        b=OoeqMZTVCG0f90Qf2UZXwgzjbxaQSH/44nmKPmvr0woWpC8MRx9i2KCHwR+GBzUUX4
-         eZ3+3lMqYOv8RekSuFl+keezT+oBsBID/JxZXfIXGPzWm5OYX/HuDDTO7MkaFKtbnRvn
-         aUIx541tBY2J65KRYE8IF/CJqPCEyZ4rC7PKotVo2KuqjiPFUUZPVhcNsYWzO50x1kUY
-         e/RqS0A8TLXtlKhuZRp8D9bFO2lINH+RJG+c7wuvgHqzP4ETxuE3WtkaVMbhiBA6V/Re
-         lS2lFW2FqbW0j0xv5oTQrl8pSWWRKjZAuy1xvXod/blImniKmem0v73Ai07GAhsJRdzy
-         UMxw==
-X-Gm-Message-State: AOAM531ruf9knW/H1cgaLRVVuZpNOH5RigvPCQFK3IH+6fliLU9VF/Gw
-        BsOtJVPX2itZySxvrrIAMVKm/g==
-X-Google-Smtp-Source: ABdhPJwXF7F87GnE1UfMS2EBOABWhLPgRg1PmpgpVMqLuUiQHVmPOMnB+cm8yzRRg6ho4iiOn74A4w==
-X-Received: by 2002:aca:5889:: with SMTP id m131mr2737051oib.41.1607538485699;
-        Wed, 09 Dec 2020 10:28:05 -0800 (PST)
-Received: from [10.10.121.52] (fixed-187-189-51-144.totalplay.net. [187.189.51.144])
-        by smtp.gmail.com with ESMTPSA id k5sm461045oot.30.2020.12.09.10.28.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 10:28:04 -0800 (PST)
-Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <haibo.xu@linaro.org>,
-        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juan Quintela <quintela@redhat.com>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Dave Martin <Dave.Martin@arm.com>
-References: <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
- <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
- <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
- <0d0eb6da6a11f76d10e532c157181985@kernel.org> <20201207163405.GD1526@gaia>
- <874kkx5thq.wl-maz@kernel.org> <20201208172143.GB13960@gaia>
- <7ff14490e253878d0735633b792e1ea9@kernel.org> <20201209124443.GB13566@gaia>
- <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org> <20201209152741.GC13566@gaia>
-From:   Richard Henderson <richard.henderson@linaro.org>
-Message-ID: <8c39b104-39c3-7cca-82b9-2e47d7cb9a9a@linaro.org>
-Date:   Wed, 9 Dec 2020 12:27:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 9 Dec 2020 13:29:31 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4363EC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:28:51 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607538529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1/G0px9XqDscrgZxnqctR4DOelbKvcKboOAeKPUSAvA=;
+        b=dt8QQERC9EBkIjRbXw+jnAKns/JDX0DJhw+bGqfkSZKs21QSUr9bxsOMCOH5H0BbnOu5q0
+        NvHz0r5+twmopMqXIH53hMmZnxkwAztU035bBRw7/T3CFwe7+yaBEIChoEbqTEZseLzIS2
+        LSaMk497rAssc0BtmXVzusAU/CuPteoBHIKTsFqMGiV1r+tmLAGYnkk40LL3f6IYe9yaT4
+        +A7GdiWUdhsxMrtnlbUhbHCu5X1NlZSdNSfHVYUo/u4VBVgUepXGfiJQm+6J/Dq81jhDUc
+        mvrUmH/rk4AcEwkb62WdB8BQZXZc1X/CJhc002K3hyxH1gr/W+3UG4QCBQqFag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607538529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1/G0px9XqDscrgZxnqctR4DOelbKvcKboOAeKPUSAvA=;
+        b=V9oddA+L1YqKVGDGcoLJ4YY+sLLaYeA6SQbksDx2ccLzboMUc+/6ciSohAV7pgAI+/OlD/
+        /ArGFKw9yciVziAQ==
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     Prarit Bhargava <prarit@redhat.com>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Peter Xu <peterx@redhat.com>
+Subject: Re: "irq 4: Affinity broken due to vector space exhaustion." warning on restart of ttyS0 console
+In-Reply-To: <20201209063304.GF23060@syu-laptop>
+References: <3ba26c8d-04ac-1822-d5c2-4a8906f7fd9a@redhat.com> <871rh1gcck.fsf@nanos.tec.linutronix.de> <20201209063304.GF23060@syu-laptop>
+Date:   Wed, 09 Dec 2020 19:28:49 +0100
+Message-ID: <87wnxqzvdq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201209152741.GC13566@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 9:27 AM, Catalin Marinas wrote:
-> On Wed, Dec 09, 2020 at 01:25:18PM +0000, Marc Zyngier wrote:
->> Would this syscall operate on the guest address space? Or on the VMM's
->> own mapping?
-...
-> Whatever is easier for the VMM, I don't think it matters as long as the
-> host kernel can get the actual physical address (and linear map
-> correspondent). Maybe simpler if it's the VMM address space as the
-> kernel can check the access permissions in case you want to hide the
-> guest memory from the VMM for other reasons (migration is also off the
-> table).
+Hi Shung-Hsi!
 
-Indeed, such a syscall is no longer specific to vmm's and may be used for any
-bulk move of tags that userland might want.
+On Wed, Dec 09 2020 at 14:33, Shung-Hsi Yu wrote:
+> On Tue, Nov 10, 2020 at 09:56:27PM +0100, Thomas Gleixner wrote:
+>> The real problem is irqbalanced aggressively exhausting the vector space
+>> of a _whole_ socket to the point that there is not a single vector left
+>> for serial. That's the problem you want to fix.
+>
+> I believe this warning also gets triggered even when there's _no_ vector
+> exhaustion.
+>
+> This seem to happen when the IRQ's affinity mask is set (wrongly) to CPUs on
+> a different NUMA node (e.g. cpumask_of_node(1) when the irqd->irq == 0).
+>
+>   $ lscpu
+>   ...
+>   NUMA node0 CPU(s):   0-25,52-77
+>   NUMA node1 CPU(s):   26-51,78-103
+>
+>   $ cat /sys/kernel/debug/tracing/trace
+>            ...
+>     (agetty)-3004    [047] d...    81.777152: vector_activate: irq=4 is_managed=0 can_reserve=1 reserve=0
+>     (agetty)-3004    [047] d...    81.777157: vector_alloc: irq=4 vector=0 reserved=1 ret=-22
+>     ----------------------------------------> irq_matrix_alloc() failed with
+>                                               EINVAL because the cpumask
+>                                               passed in is empty, which is a
+>                                               result of affmask being
+>                                               (ff,ffffc000,000fffff,fc000000)
+>                                               and cpumask_of_node(node)
+>                                               being
+>                                               (00,00003fff,fff00000,03ffffff). 
+>
+>     (agetty)-3004    [047] d...    81.789349: irq_matrix_alloc: bit=33 cpu=1 online=1 avl=199 alloc=2 managed=1 online_maps=104 global_avl=20688, global_rsvd=341, total_alloc=216
+>     (agetty)-3004    [047] d...    81.789351: vector_alloc: irq=4 vector=33 reserved=1 ret=0
+>     (agetty)-3004    [047] d...    81.789353: vector_update: irq=4 vector=33 cpu=1 prev_vector=0 prev_cpu=26
+>     (agetty)-3004    [047] d...    81.789355: vector_config: irq=4 vector=33 cpu=1 apicdest=0x00000002
+>     ----------------------------------------> "irq 4: Affinity broken due to
+>                                               vector space exhaustion."
+>                                               warning shows up
+>
 
-> Without syscalls, an option would be for the VMM to create two mappings:
-> one with PROT_MTE for migration and the other without for normal DMA
-> etc. That's achievable using memfd_create() or shm_open() and two mmap()
-> calls, only one having PROT_MTE. The VMM address space should be
-> sufficiently large to map two guest IPAs.
+Ok. That's a different story. Nice explanation!
 
-I would have thought that the best way is to use TCO, so that we don't have to
-have dual mappings (and however many MB of extra page tables that might imply).
+But the fix is not to tone down the warning. The proper fix is to do the
+search in the correct order.
 
+Thanks,
 
-r~
+        tglx
+---
+ arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -273,20 +273,24 @@ static int assign_irq_vector_any_locked(
+ 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
+ 	int node = irq_data_get_node(irqd);
+ 
+-	if (node == NUMA_NO_NODE)
+-		goto all;
+-	/* Try the intersection of @affmsk and node mask */
+-	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
+-	if (!assign_vector_locked(irqd, vector_searchmask))
+-		return 0;
+-	/* Try the node mask */
+-	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
+-		return 0;
+-all:
++	if (node != NUMA_NO_NODE) {
++		/* Try the intersection of @affmsk and node mask */
++		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
++		if (!assign_vector_locked(irqd, vector_searchmask))
++			return 0;
++	}
++
+ 	/* Try the full affinity mask */
+ 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
+ 	if (!assign_vector_locked(irqd, vector_searchmask))
+ 		return 0;
++
++	if (node != NUMA_NO_NODE) {
++		/* Try the node mask */
++		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
++			return 0;
++	}
++
+ 	/* Try the full online mask */
+ 	return assign_vector_locked(irqd, cpu_online_mask);
+ }
