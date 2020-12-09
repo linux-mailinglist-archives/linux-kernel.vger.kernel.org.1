@@ -2,188 +2,1652 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B952D499B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6FE2D49A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387543AbgLIS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:56:39 -0500
-Received: from mail-eopbgr30070.outbound.protection.outlook.com ([40.107.3.70]:40961
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387457AbgLIS4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:56:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nd57WO60sLWcdh2yqkpcObaQE9gIlqp6CLv+Q2PZU6E8egjLNYqtfqO7OwvPJIz/i4KaHOCS7Y88FKcCrXdz8GfntpukXgBY8Y+gY81tqlyJkm8junfYMz19yjtnLkpazreNoBWdEnyG/yf9uYWs11jPE5Dap+kjiXslqismrlTyH5+NoVYV7vxVhQNPQFuu37Z2zoqG8XDwI+zMZvBxvz+KWjgrVdJaWu6tBhS+TAThoExzxvXfR1J5l2sb2OapPRK4JsUpeCQyp77rdmYrnDA6xAoNDdFMdVxzTWaD0kz6nxm7/ZFXRNXeptIP/CYQPQgk9gNIm8QnvYPyVUwRnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XvOIxUw80IL5FOvmhRKO1JIZpUOEtLilCrajRZj2RBI=;
- b=LzT9lEKm4l+uACijyY6feNIP7XinSUULtBnS0vQ/zSyeSxZow/KkFCejTSWNlDTvDClkZGy0WVlqbk2IrkIKdfACeUw0DJrtvnDKB/Pb1FP5/Q4Qkz+xE2MPvE0GtykAIWD/XrpbQmAr0GE8CQmjokrwE214zzSBAT8IrB/d44ZM4Vau5hHBoPV+52X/NSHQWnCwVZxCNFlj3ZgqBS3YSzKCq1UPTrwSKFL07/veS/Hth+xATBraM/n9q5peSrV4+5KXyTetebDI1772+UAbRwRRcWS11OyAuG0uI2/IxqkYaGweTrDcd/hKz8WDJX/tv2Kzn1TdGOBZLn/y65+hOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XvOIxUw80IL5FOvmhRKO1JIZpUOEtLilCrajRZj2RBI=;
- b=Ac9wrJedKMCoXjRgFpAebmuyqEUUgZPtCzw/X293g6PC5j+KlM1wJQ1tYDgTr+XaWXqzEivJ2sVdKsW+eNtkSZSUMK3/FHdm7TuK4Tj2DajEkwy1E6Vk/F6EZgbnUakiibBnB2S/k/tZTXJJttJR6upKqGNp1QAN2wXdZ6HETrE=
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com (2603:10a6:209:3f::17)
- by AM7PR04MB6775.eurprd04.prod.outlook.com (2603:10a6:20b:102::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
- 2020 18:55:47 +0000
-Received: from AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::f022:b0a2:ee2b:2ddc]) by AM6PR04MB3976.eurprd04.prod.outlook.com
- ([fe80::f022:b0a2:ee2b:2ddc%6]) with mapi id 15.20.3654.014; Wed, 9 Dec 2020
- 18:55:47 +0000
-From:   Madalin Bucur <madalin.bucur@nxp.com>
-To:     Patrick Havelange <patrick.havelange@essensium.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net 1/4] net: freescale/fman: Split the main resource
- region reservation
-Thread-Topic: [PATCH net 1/4] net: freescale/fman: Split the main resource
- region reservation
-Thread-Index: AQHWyXtSU15lz2QhZ0iXI1B/qYMSiKnlgUwAgAfQMQCAABdiMIABcACAgABKVyA=
-Date:   Wed, 9 Dec 2020 18:55:47 +0000
-Message-ID: <AM6PR04MB3976721D38D6EAE91E6F3F37ECCC0@AM6PR04MB3976.eurprd04.prod.outlook.com>
-References: <20201203135039.31474-1-patrick.havelange@essensium.com>
- <20201203135039.31474-2-patrick.havelange@essensium.com>
- <AM6PR04MB39764190C3CC885EAA84E8B3ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <e488ed95-3672-fdcb-d678-fdd4eb9a8b4b@essensium.com>
- <AM6PR04MB3976F905489C0CB2ECD1A6FAECCC0@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <8c28d03a-8831-650c-cf17-9a744d084479@essensium.com>
-In-Reply-To: <8c28d03a-8831-650c-cf17-9a744d084479@essensium.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: essensium.com; dkim=none (message not signed)
- header.d=none;essensium.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [81.196.28.131]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 85a847ad-7a04-45af-b388-08d89c740a16
-x-ms-traffictypediagnostic: AM7PR04MB6775:
-x-microsoft-antispam-prvs: <AM7PR04MB67750FA46179ECAB571C1F64ECCC0@AM7PR04MB6775.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ogwD4TpZ4Je0iwVix7lBZWPKDz0VBOnTxdEQs47QE6O3JH6AT6FeHDjsv9QQoKCt02xCoA50W51+KBqIlZdM5lxohM0+byZOW7LH2vbX0Jaq4GwMELYzs06opuxFkwIzZOOElGAYq+RJa0t/YzMe+iv6Ruk+a3GmXXaVUTke306NRpjMtbTnTaG0xdHND/5Fd89ycQURHDuot5SplIV5o+iLE8oZ7POKmPT/Bvlnq5optHXgID7wFS7rpWmrkN29O5GQC2nRExkhe5tSXl98vg3lNYoBs85Ip1q7LtjGcS5iTTPMfsOsldIkPh/9sRYTLCoMUf6in7QpZPZJ/TzrFQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3976.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(66446008)(8936002)(9686003)(66476007)(86362001)(33656002)(66556008)(5660300002)(8676002)(2906002)(66946007)(64756008)(55016002)(71200400001)(52536014)(76116006)(83380400001)(110136005)(508600001)(186003)(26005)(44832011)(6506007)(53546011)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?V1NHM1pubE9oYmgzR0hFODdnRzc3d2pzZGFmNE9Rc2xORG5SNzVuWlI4QTdp?=
- =?utf-8?B?RGJFZ1VqQkRhSWhzUUd0SVZkMm4xa0plWHhXNkdMdnNYcHRVSUt4dFpSSlpE?=
- =?utf-8?B?eTdXdGVPRkl0N1dsK0pqYjE4NGdBN292YVlaV2p5QTlRb2FXRVU0ZnBKclVK?=
- =?utf-8?B?d0hhMFRIbk5udGMxcitSeTk3Ris1ald1TmtXcWlEM3BhT1hyVzlaRTRkQXdp?=
- =?utf-8?B?WGZ6Vk04YjhPV21URWJML2Z2NUZxMmwxTFUvZUY3K2g1NE0wQ1kydXlzVlJF?=
- =?utf-8?B?Sm9YOFpNdVFISzNlRE1KZjdscXpHc0s4SU93UmJVMkRWQVFmRHZLYnZTenho?=
- =?utf-8?B?cU5DNkFLM1BsZlpxK0lCZS9WSVFGZXh2NXlMYUpFZjBjaVV3djJ3MXA2U2o5?=
- =?utf-8?B?aWlCYmRwVWZDTU5MaG5RblZxK3p0amY3T2lkdk11dnFwM095c1NEYUlpNzdN?=
- =?utf-8?B?cHU1a3crVVJwbDhNdUs3L2NJUm1HTmUvdkRyQmNZQ3lDS0tab3pXeFIzdnE3?=
- =?utf-8?B?MnM3Y3MvTzlQQkpid01Ya0xRZnRaSFZiMzlXTUxtdFJYVTZ1NGRPSWlaTTJY?=
- =?utf-8?B?b0dyczdnNWVlKzdYbVVTWjJpbFB6eW5LWjVoQWxjVGkyakVqemJuU0ZYTFZ0?=
- =?utf-8?B?UldWTy9vTE9KeWprYVh5am95SFpzVE13eVFLTVVaaER3N0V2VG1sdklsR05F?=
- =?utf-8?B?cXhnUEpPUVR5RlV3cmtOUnRvTTBMNEJQYTI5VVhUT1JNSi9YdFUrMG1CRU5h?=
- =?utf-8?B?UGtEbnlzekFubVc3cDQ2R3lVZVN1dTNMeFhYMjcrV1djb0dnSWdwM2pVbCtG?=
- =?utf-8?B?bTZEeTV1SHdGMjY5dm81QU1sUlZaU1JKY2c4ZGZOUUlVRkVabTgxeW1JZWRJ?=
- =?utf-8?B?ZWxrVFZjK2d5LzJadXhjSnNvbEszUUVoQ1FRMHVrbDk4MGU4YmNkU2hQZEpz?=
- =?utf-8?B?SXlrYmhYMmdRMmkvby9OQmY3N0N0bFJ6dWNPSE5Ja3M1SDA4emJCSDdQaVkz?=
- =?utf-8?B?blFaN0Z1NjJSTHJmUWdzVjh2MjIyMjJBa1ZvY0VsV0FBZHVYNzZ2M1pSVVdq?=
- =?utf-8?B?SXRIQlJyb1JCNCtYWDY5Ly9obTZpT2FQaGFqWUR0VWdDVFYzUG4xMmcxeFph?=
- =?utf-8?B?bndhOGpqT1lJUXhKQXJmRDhtdithRVFTZXk0MUdZeWdKNHNjK2wvS1ZNTWpE?=
- =?utf-8?B?bWl3YUZDTFBzNmgxNFN2QXpmcEVCbFBWeFhiQjE4U3JUR3hQUmQvQjdiWldk?=
- =?utf-8?B?UTRORWVKOHNHeHppZEl2dmQ4MG95bHdnWnRlWXdhWXY1Rlp4NGZKTDFYL2lG?=
- =?utf-8?Q?zfDHDMlUDer5o=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2387582AbgLIS5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:57:43 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:48878 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387575AbgLIS5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:57:42 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 55EF7123AF4;
+        Wed,  9 Dec 2020 19:56:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607540216;
+        bh=J4W5daBRvdMd8Es1JLQk2gSJd30s5J/Bv6B0tOSvS4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YrHeyEEXjKgAaajVTg3LMtZHuJUNE1MaFgCQk91q+rtxEb6HQ8zxp1fAW//oTCgqk
+         KgLra+3b18TqGoW9X+tvoPL3raAp0vQBHKEYAFBMqp2YR1nXDa2/GBw1EVZr/sH4Zl
+         PmkboPZKG+ojdZ7/rkIQvuYPGiso9NFs6zuPUDfGm5uNRACQIJOTrX9clwzAbDkHXi
+         ZqWfnxkNTjCoWtguVA5fHwWmMyG6Ah3TYN4wcvZkArlbN3TmFOQpE9F5VUGMB/wAqy
+         L+EXmO0OPDwUJw3CkW5nfD7M3jNLTSKa/JksG5ylmrOq21m4bhbBWRkgajiaoQz/B4
+         9bMuJBsuwNrxQ==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6ccqEX4vNDJ1; Wed,  9 Dec 2020 19:56:16 +0100 (CET)
+Received: from dincontrollerdev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 3FE33123AF2;
+        Wed,  9 Dec 2020 19:56:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607540176;
+        bh=J4W5daBRvdMd8Es1JLQk2gSJd30s5J/Bv6B0tOSvS4E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dxsdDQtpmyoqAnkyGLZWt8wLQpLPQXixPLQS7qygLH4JRLqKEPAHSLxMYXy5pr4O+
+         MjLbHHIbsM/I/PiwCvbj9PiYwfzG3MN/udhcp/DFPivfd8tqwVLKze2m2/hpusy+pk
+         dA3XJ/w5EYm/KSU4GpcX7QsnW+ELeu1pszwx8PK/qQ/Yy/vJz86UPuFyIXgmOknN+I
+         eEKqf1aq4lak86ebmdjGH2hHW0orM/4NY5QkHl2256ZcpKSvNkWrEiCR1SMFA9nExM
+         Wzws88BG065PgDD7sGaWwAApxkAw778qcUQprPcObbqKkoVmf2UhdM5ucsKhLHhyza
+         j8dkcel2F5YQQ==
+Date:   Wed, 9 Dec 2020 18:56:13 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH] Staging: silabs si4455 serial driver
+Message-ID: <20201209185613.GB30918@dincontrollerdev>
+References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+ <20201209124206.GG2767@kadam>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3976.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85a847ad-7a04-45af-b388-08d89c740a16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 18:55:47.1684
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Yc8k667gPOCrPTZGVgBOyvMQAyoZ/jFupmU2cbwNvQIkc4IYf1Ry/4juj95jGs8UpZYi5Qt6YwZRE2deZzb7cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6775
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201209124206.GG2767@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQYXRyaWNrIEhhdmVsYW5nZSA8
-cGF0cmljay5oYXZlbGFuZ2VAZXNzZW5zaXVtLmNvbT4NCj4gU2VudDogMDkgRGVjZW1iZXIgMjAy
-MCAxNjoxNw0KPiBUbzogTWFkYWxpbiBCdWN1ciA8bWFkYWxpbi5idWN1ckBueHAuY29tPjsgRGF2
-aWQgUy4gTWlsbGVyDQo+IDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1
-YmFAa2VybmVsLm9yZz47DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQgMS80XSBuZXQ6IGZyZWVz
-Y2FsZS9mbWFuOiBTcGxpdCB0aGUgbWFpbiByZXNvdXJjZQ0KPiByZWdpb24gcmVzZXJ2YXRpb24N
-Cj4gDQo+ID4+PiBhcmVhLiBJJ20gYXNzdW1pbmcgdGhpcyBpcyB0aGUgcHJvYmxlbSB5b3UgYXJl
-IHRyeWluZyB0byBhZGRyZXNzIGhlcmUsDQo+ID4+PiBiZXNpZGVzIHRoZSBzdGFjayBjb3JydXB0
-aW9uIGlzc3VlLg0KPiA+Pg0KPiA+PiBZZXMgZXhhY3RseS4NCj4gPj4gSSBkaWQgbm90IGFkZCB0
-aGlzIGJlaGF2aW91ciAoaGF2aW5nIGEgbWFpbiByZWdpb24gYW5kIHN1YmRyaXZlcnMgdXNpbmcN
-Cj4gPj4gc3VicmVnaW9ucyksIEknbSBqdXN0IHRyeWluZyB0byBjb3JyZWN0IHdoYXQgaXMgYWxy
-ZWFkeSB0aGVyZS4NCj4gPj4gRm9yIGV4YW1wbGU6IHRoaXMgaXMgc29tZSBjb250ZW50IG9mIC9w
-cm9jL2lvbWVtIGZvciBvbmUgYm9hcmQgSSdtDQo+ID4+IHdvcmtpbmcgd2l0aCwgd2l0aCB0aGUg
-Y3VycmVudCBleGlzdGluZyBjb2RlOg0KPiA+PiBmZmU0MDAwMDAtZmZlNGZkZmZmIDogZm1hbg0K
-PiA+PiAgICAgZmZlNGUwMDAwLWZmZTRlMGZmZiA6IG1hYw0KPiA+PiAgICAgZmZlNGUyMDAwLWZm
-ZTRlMmZmZiA6IG1hYw0KPiA+PiAgICAgZmZlNGU0MDAwLWZmZTRlNGZmZiA6IG1hYw0KPiA+PiAg
-ICAgZmZlNGU2MDAwLWZmZTRlNmZmZiA6IG1hYw0KPiA+PiAgICAgZmZlNGU4MDAwLWZmZTRlOGZm
-ZiA6IG1hYw0KPiA+Pg0KPiA+PiBhbmQgbm93IHdpdGggbXkgcGF0Y2hlczoNCj4gPj4gZmZlNDAw
-MDAwLWZmZTRmZGZmZiA6IC9zb2NAZmZlMDAwMDAwL2ZtYW5ANDAwMDAwDQo+ID4+ICAgICBmZmU0
-MDAwMDAtZmZlNDgwZmZmIDogZm1hbg0KPiA+PiAgICAgZmZlNDg4MDAwLWZmZTQ4OGZmZiA6IGZt
-YW4tcG9ydA0KPiA+PiAgICAgZmZlNDg5MDAwLWZmZTQ4OWZmZiA6IGZtYW4tcG9ydA0KPiA+PiAg
-ICAgZmZlNDhhMDAwLWZmZTQ4YWZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAgZmZlNDhiMDAwLWZm
-ZTQ4YmZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAgZmZlNDhjMDAwLWZmZTQ4Y2ZmZiA6IGZtYW4t
-cG9ydA0KPiA+PiAgICAgZmZlNGE4MDAwLWZmZTRhOGZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAg
-ZmZlNGE5MDAwLWZmZTRhOWZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAgZmZlNGFhMDAwLWZmZTRh
-YWZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAgZmZlNGFiMDAwLWZmZTRhYmZmZiA6IGZtYW4tcG9y
-dA0KPiA+PiAgICAgZmZlNGFjMDAwLWZmZTRhY2ZmZiA6IGZtYW4tcG9ydA0KPiA+PiAgICAgZmZl
-NGMwMDAwLWZmZTRkZmZmZiA6IGZtYW4NCj4gPj4gICAgIGZmZTRlMDAwMC1mZmU0ZTBmZmYgOiBt
-YWMNCj4gPj4gICAgIGZmZTRlMjAwMC1mZmU0ZTJmZmYgOiBtYWMNCj4gPj4gICAgIGZmZTRlNDAw
-MC1mZmU0ZTRmZmYgOiBtYWMNCj4gPj4gICAgIGZmZTRlNjAwMC1mZmU0ZTZmZmYgOiBtYWMNCj4g
-Pj4gICAgIGZmZTRlODAwMC1mZmU0ZThmZmYgOiBtYWMNCj4gPj4NCj4gPj4+IFdoaWxlIGZvciB0
-aGUgbGF0dGVyIEkgdGhpbmsgd2UgY2FuDQo+ID4+PiBwdXQgdG9nZXRoZXIgYSBxdWljayBmaXgs
-IGZvciB0aGUgZm9ybWVyIEknZCBsaWtlIHRvIHRha2UgYSBiaXQgb2YNCj4gdGltZQ0KPiA+Pj4g
-dG8gc2VsZWN0IHRoZSBiZXN0IGZpeCwgaWYgb25lIGlzIHJlYWxseSBuZWVkZWQuIFNvLCBwbGVh
-c2UsIGxldCdzDQo+IHNwbGl0DQo+ID4+PiB0aGUgdHdvIHByb2JsZW1zIGFuZCBmaXJzdCBhZGRy
-ZXNzIHRoZSBpbmNvcnJlY3Qgc3RhY2sgbWVtb3J5IHVzZS4NCj4gPj4NCj4gPj4gSSBoYXZlIG5v
-IGlkZWEgaG93IHlvdSBjYW4gZml4IGl0IHdpdGhvdXQgYSAobW9yZSBjb3JyZWN0IHRoaXMgdGlt
-ZSkNCj4gPj4gZHVtbXkgcmVnaW9uIHBhc3NlZCBhcyBwYXJhbWV0ZXIgKGFuZCB5b3UgZG9uJ3Qg
-d2FudCB0byB1c2UgdGhlIGZpcnN0DQo+ID4+IHBhdGNoKS4gQnV0IHRoZW4gaXQgd2lsbCBiZSB1
-c2VsZXNzIHRvIGRvIHRoZSBjYWxsIGFueXdheSwgYXMgaXQgd29uJ3QNCj4gPj4gZG8gYW55IHBy
-b3BlciB2ZXJpZmljYXRpb24gYXQgYWxsLCBzbyBpdCBjb3VsZCBhbHNvIGJlIHJlbW92ZWQgZW50
-aXJlbHksDQo+ID4+IHdoaWNoIGJlZ3MgdGhlIHF1ZXN0aW9uLCB3aHkgZG8gaXQgYXQgYWxsIGlu
-IHRoZSBmaXJzdCBwbGFjZSAodGhlDQo+ID4+IGRldm1fcmVxdWVzdF9tZW1fcmVnaW9uKS4NCj4g
-Pj4NCj4gPj4gSSdtIG5vdCBhbiBleHBlcnQgaW4gdGhhdCBwYXJ0IG9mIHRoZSBjb2RlIHNvIGZl
-ZWwgZnJlZSB0byBjb3JyZWN0IG1lDQo+IGlmDQo+ID4+IEkgbWlzc2VkIHNvbWV0aGluZy4NCj4g
-Pj4NCj4gPj4gQlIsDQo+ID4+DQo+ID4+IFBhdHJpY2sgSC4NCj4gPg0KPiA+IEhpLCBQYXRyaWNr
-LA0KPiA+DQo+ID4gdGhlIERQQUEgZW50aXRpZXMgYXJlIGRlc2NyaWJlZCBpbiB0aGUgZGV2aWNl
-IHRyZWUuIEFkZGluZyBzb21lDQo+IGhhcmRjb2RpbmcgaW4NCj4gPiB0aGUgZHJpdmVyIGlzIG5v
-dCByZWFsbHkgdGhlIHNvbHV0aW9uIGZvciB0aGlzIHByb2JsZW0uIEFuZCBJJ20gbm90IHN1cmUN
-Cj4gd2UgaGF2ZQ0KPiANCj4gSSdtIG5vdCBzZWVpbmcgYW55IHByb2JsZW0gaGVyZSwgdGhlIG9m
-ZnNldHMgdXNlZCBieSB0aGUgZm1hbiBkcml2ZXINCj4gd2VyZSBhbHJlYWR5IHRoZXJlLCBJIGp1
-c3QgcmVvcmdhbml6ZWQgdGhlbSBpbiAyIGJsb2Nrcy4NCj4gDQo+ID4gYSBjbGVhciBwcm9ibGVt
-IHN0YXRlbWVudCB0byBzdGFydCB3aXRoLiBDYW4geW91IGhlbHAgbWUgb24gdGhhdCBwYXJ0Pw0K
-PiANCj4gLSBUaGUgY3VycmVudCBjYWxsIHRvIF9fZGV2bV9yZXF1ZXN0X3JlZ2lvbiBpbiBmbWFu
-X3BvcnQuYyBpcyBub3QgY29ycmVjdC4NCj4gDQo+IE9uZSB3YXkgdG8gZml4IHRoaXMgaXMgdG8g
-dXNlIGRldm1fcmVxdWVzdF9tZW1fcmVnaW9uLCBob3dldmVyIHRoaXMNCj4gcmVxdWlyZXMgdGhh
-dCB0aGUgbWFpbiBmbWFuIHdvdWxkIG5vdCBiZSByZXNlcnZpbmcgdGhlIHdob2xlIHJlZ2lvbi4N
-Cj4gVGhpcyBsZWFkcyB0byB0aGUgc2Vjb25kIHByb2JsZW06DQo+IC0gTWFrZSBzdXJlIHRoZSBt
-YWluIGZtYW4gZHJpdmVyIGlzIG5vdCByZXNlcnZpbmcgdGhlIHdob2xlIHJlZ2lvbi4NCj4gDQo+
-IElzIHRoYXQgY2xlYXJlciBsaWtlIHRoaXMgPw0KPiANCj4gUGF0cmljayBILg0KDQpUaGUgb3Zl
-cmxhcHBpbmcgSU8gYXJlYXMgcmVzdWx0IGZyb20gdGhlIGRldmljZSB0cmVlIGRlc2NyaXB0aW9u
-LCB0aGF0IGluIHR1cm4NCm1pbWljcyB0aGUgSFcgZGVzY3JpcHRpb24gaW4gdGhlIG1hbnVhbC4g
-SWYgd2UgcmVhbGx5IHdhbnQgdG8gcmVtb3ZlIHRoZSBuZXN0aW5nLA0Kd2Ugc2hvdWxkIGNoYW5n
-ZSB0aGUgZGV2aWNlIHRyZWVzLCBub3QgdGhlIGRyaXZlcnMuIElmIHdlIHdhbnQgdG8gaGFjayBp
-dCwNCmluc3RlYWQgb2Ygc3BsaXR0aW5nIGlvcmVtYXBzLCB3ZSBjYW4gcmVzZXJ2ZSA0IGtCIGlu
-IHRoZSBGTWFuIGRyaXZlciwNCmFuZCBrZWVwIHRoZSBpb3JlbWFwIGFzIGl0IGlzIG5vdywgd2l0
-aCB0aGUgYmVuZWZpdCBvZiBsZXNzIGNvZGUgY2h1cm4uDQpJbiB0aGUgZW5kLCB3aGF0IHRoZSBy
-ZXNlcnZhdGlvbiBpcyB0cnlpbmcgdG8gYWNoaWV2ZSBpcyB0byBtYWtlIHN1cmUgdGhlcmUNCmlz
-IGEgc2luZ2xlIGRyaXZlciBjb250cm9sbGluZyBhIGNlcnRhaW4gcGVyaXBlaGVyYWwsIGFuZCB0
-aGlzIGJhc2ljDQpyZXF1aXJlbWVudCB3b3VsZCBiZSBhZGRyZXNzZWQgYnkgdGhhdCBjaGFuZ2Ug
-cGx1cyBkZXZtX29mX2lvbWFwKCkgZm9yIGNoaWxkDQpkZXZpY2VzIChwb3J0cywgTUFDcykuDQoN
-Ck1hZGFsaW4NCg==
+On Wed, Dec 09, 2020 at 03:42:06PM +0300, Dan Carpenter wrote:
+> Change the From email header to say your name.
+> 
+> The patch is corrupted and can't be applied.  Please read the first
+> paragraphs of Documentation/process/email-clients.rst
+> 
+> This driver is pretty small and it might be easier to clean it up first
+> before merging it into staging.  Run checkpatch.pl --strict on the
+> driver.
+> 
+> > --- /dev/null
+> > +++ b/drivers/staging/si4455/si4455.c
+> > @@ -0,0 +1,1465 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> > + *
+> > + */
+> > +#include <linux/bitops.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/device.h>
+> > +#include <linux/gpio/driver.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of_gpio.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/serial_core.h>
+> > +#include <linux/serial.h>
+> > +#include <linux/tty.h>
+> > +#include <linux/tty_flip.h>
+> > +#include <linux/spi/spi.h>
+> > +#include <linux/uaccess.h>
+> > +#include "si4455_api.h"
+> > +
+> > +#define PORT_SI4455						1096
+> > +#define SI4455_NAME						"si4455"
+> > +#define SI4455_MAJOR						432
+> > +#define SI4455_MINOR						567
+> > +#define SI4455_UART_NRMAX					1
+> > +#define SI4455_FIFO_SIZE					64
+> > +
+> > +#define SI4455_CMD_ID_EZCONFIG_CHECK				0x19
+> > +#define SI4455_CMD_ID_PART_INFO					0x01
+> > +#define SI4455_CMD_REPLY_COUNT_PART_INFO			9
+> > +#define SI4455_CMD_ID_GET_INT_STATUS				0x20
+> > +#define SI4455_CMD_REPLY_COUNT_GET_INT_STATUS			8
+> > +#define SI4455_CMD_ID_FIFO_INFO					0x15
+> > +#define SI4455_CMD_ARG_COUNT_FIFO_INFO				2
+> > +#define SI4455_CMD_REPLY_COUNT_FIFO_INFO			2
+> > +#define SI4455_CMD_FIFO_INFO_ARG_TX_BIT				0x01
+> > +#define SI4455_CMD_FIFO_INFO_ARG_RX_BIT				0x02
+> > +#define SI4455_CMD_ID_READ_CMD_BUFF				0x44
+> > +#define SI4455_CMD_ID_READ_RX_FIFO				0x77
+> > +#define SI4455_CMD_ID_WRITE_TX_FIFO				0x66
+> > +#define SI4455_CMD_ID_START_RX					0x32
+> > +#define SI4455_CMD_ARG_COUNT_START_RX				8
+> > +#define SI4455_CMD_START_RX_ARG_RXTIMEOUT_STATE_ENUM_RX		8
+> > +#define SI4455_CMD_START_RX_ARG_RXVALID_STATE_ENUM_RX		8
+> > +#define SI4455_CMD_START_RX_ARG_RXINVALID_STATE_ENUM_RX		8
+> > +#define SI4455_CMD_ID_START_TX					0x31
+> > +#define SI4455_CMD_ARG_COUNT_START_TX				5
+> > +#define SI4455_CMD_ID_CHANGE_STATE				0x34
+> > +#define SI4455_CMD_ARG_COUNT_CHANGE_STATE			2
+> > +#define SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY	3
+> > +#define SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_MASK	0x08
+> > +#define SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_BIT	0x08
+> > +#define SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT	0x20
+> > +#define SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT	0x10
+> > +#define SI4455_CMD_GET_INT_STATUS_REP_CRC_ERROR_BIT		0x08
+> 
+> These names are unreadably long and just make the code messy.
+> 
+> > +#define SI4455_CMD_ID_GET_MODEM_STATUS				0x22
+> > +#define SI4455_CMD_ARG_COUNT_GET_MODEM_STATUS			2
+> > +#define SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS			8
+> > +
+> > +struct si4455_part_info {
+> > +	u8				CHIPREV;
+> > +	u16				PART;
+> > +	u8				PBUILD;
+> > +	u16				ID;
+> > +	u8				CUSTOMER;
+> > +	u8				ROMID;
+> > +	u8				BOND;
+> 
+> Also the huge gap between the type and the struct member makes it
+> hard to read.
+> 
+> 	u8  chip_rev;
+> 	u16 part;
+> 	u8  pbuild;
+> 
+> etc.
+> 
+> > +};
+> > +
+> > +struct si4455_int_status {
+> > +	u8				INT_PEND;
+> > +	u8				INT_STATUS;
+> > +	u8				PH_PEND;
+> > +	u8				PH_STATUS;
+> > +	u8				MODEM_PEND;
+> > +	u8				MODEM_STATUS;
+> > +	u8				CHIP_PEND;
+> > +	u8				CHIP_STATUS;
+> > +};
+> > +
+> > +struct si4455_modem_status {
+> > +	u8				MODEM_PEND;
+> > +	u8				MODEM_STATUS;
+> > +	u8				CURR_RSSI;
+> > +	u8				LATCH_RSSI;
+> > +	u8				ANT1_RSSI;
+> > +	u8				ANT2_RSSI;
+> > +	u16			AFC_FREQ_OFFSET;
+> > +};
+> > +
+> > +struct si4455_fifo_info {
+> > +	u8				RX_FIFO_COUNT;
+> > +	u8				TX_FIFO_SPACE;
+> > +};
+> > +
+> > +struct si4455_one {
+> > +	struct uart_port		port;
+> > +	struct work_struct		tx_work;
+> > +};
+> > +
+> > +struct si4455_port {
+> > +	struct mutex			mutex;
+> > +	int				power_count;
+> > +	struct gpio_desc		*shdn_gpio;
+> > +	struct si4455_part_info		part_info;
+> > +	struct si4455_modem_status	modem_status;
+> > +	struct si4455_iocbuff		configuration;
+> > +	struct si4455_iocbuff		patch;
+> > +	u32				tx_channel;
+> > +	u32				rx_channel;
+> > +	u32				package_size;
+> > +	bool				configured;
+> > +	bool				tx_pending;
+> > +	bool				rx_pending;
+> > +	u32				current_rssi;
+> > +	struct si4455_one		one;
+> > +};
+> 
+> Since the struct is not defined by the spec then don't bother aligning
+> the members.  It just makes changing the code complicated because you
+> have to re-align stuff.  Just put a single space between the type and
+> the name.
+> 
+> 
+> > +
+> > +static struct uart_driver si4455_uart = {
+> > +	.owner			= THIS_MODULE,
+> > +	.driver_name		= SI4455_NAME,
+> > +#ifdef CONFIG_DEVFS_FS
+> > +	.dev_name		= "ttySI%d",
+> > +#else
+> > +	.dev_name		= "ttySI",
+> > +#endif
+> > +	.major			= SI4455_MAJOR,
+> > +	.minor			= SI4455_MINOR,
+> > +	.nr			= SI4455_UART_NRMAX,
+> > +};
+> > +
+> > +static int si4455_get_response(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data);
+> 
+> Remove unecessary declarations like this.
+> 
+> > +static int si4455_send_command(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data);
+> > +static int si4455_send_command_get_response(struct uart_port *port,
+> > +						int outLength,
+> > +						u8 *outData,
+> > +						int inLength,
+> > +						u8 *inData);
+> > +static int si4455_read_data(struct uart_port *port,
+> > +				u8 command,
+> > +				int pollCts,
+> > +				int length,
+> > +				u8 *data);
+> > +static int si4455_write_data(struct uart_port *port,
+> > +				u8 command,
+> > +				int pollCts,
+> > +				int length,
+> > +				u8 *data);
+> > +static int si4455_poll_cts(struct uart_port *port);
+> > +static void si4455_set_power(struct si4455_port *priv,
+> > +				int on);
+> > +static int si4455_get_part_info(struct uart_port *port,
+> > +				struct si4455_part_info *result);
+> > +
+> > +static int si4455_get_response(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	int ret = -EIO;
+> 
+> Remove unecessary initializations.  It disables static checkers' ability
+> to find uninitialized variable bugs so it leads to bugs.
+> 
+> > +	u8 dataOut[] = { SI4455_CMD_ID_READ_CMD_BUFF };
+> > +	u8 *dataIn = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
+> 
+> Never put functions which can fail in the declaration block.  It leads
+> to "forgot to check for NULL bugs" which is the case here.
+> 
+> Don't use devm_ for this.  It has a different lifetime.  Use normal
+> kzalloc().
+> 
+> > +	struct spi_transfer xfer[] = {
+> > +		{
+> > +			.tx_buf = dataOut,
+> > +			.len = sizeof(dataOut),
+> > +		}, {
+> > +			.rx_buf = dataIn,
+> > +			.len = 1 + length,
+> > +		}
+> > +	};
+> > +	int errCnt = 10000;
+> > +
+> > +	while (errCnt > 0) {
+> 
+> while (--cnt > 9) {
+> 
+> > +		dataOut[0] = SI4455_CMD_ID_READ_CMD_BUFF;
+> > +		ret = spi_sync_transfer(to_spi_device(port->dev),
+> > +					xfer,
+> > +					ARRAY_SIZE(xfer));
+> > +		if (ret == 0) {
+> 
+> Always do Error Handling as opposed to success handling.
+> 
+> 		if (ret)
+> 			break;
+> 
+> > +			if (dataIn[0] == 0xFF) {
+> > +				if ((length > 0) && (data != NULL)) {
+> > +					memcpy(data, &dataIn[1], length);
+> > +				} else {
+> > +					if (length > 0)
+> > +						ret = -EINVAL;
+> > +				}
+> > +				break;
+> > +			}
+> > +			usleep_range(100, 200);
+> > +		} else {
+> > +			break;
+> > +		}
+> > +		errCnt--;
+> > +	}
+> > +	if (errCnt == 0) {
+> > +		dev_err(port->dev, "si4455_poll_cts:errCnt==%i", errCnt);
+> > +		ret = -EIO;
+> > +	}
+> > +	if (dataIn != NULL)
+> > +		devm_kfree(port->dev, dataIn);
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_send_command(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = si4455_poll_cts(port);
+> > +	if (ret == 0) {
+> 
+> 	ret = si4455_poll_cts(port);
+> 	if (ret) {
+> 		dev_err(port->dev, "%s: si4455_poll_cts error(%i)", __func__,
+> 			ret);
+> 		return ret;
+> 	}
+> 
+> All the checks need to be reversed.  The printk only needs two lines.
+> 
+> 
+> > +		ret = spi_write(to_spi_device(port->dev), data, length);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: spi_write error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +		}
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_poll_cts error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_send_command_get_response(struct uart_port *port,
+> > +						int outLength,
+> > +						u8 *outData,
+> > +						int inLength,
+> > +						u8 *inData)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = si4455_send_command(port, outLength, outData);
+> > +	if (!ret) {
+> > +		ret = si4455_get_response(port, inLength, inData);
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_send_command error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_read_data(struct uart_port *port,
+> > +				u8 command,
+> > +				int pollCts,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	int ret = 0;
+> > +	u8 dataOut[] = { command };
+> > +	struct spi_transfer xfer[] = {
+> > +		{
+> > +			.tx_buf = dataOut,
+> > +			.len = sizeof(dataOut),
+> > +		}, {
+> > +			.rx_buf = data,
+> > +			.len = length,
+> > +		}
+> > +	};
+> > +
+> > +	if (pollCts)
+> > +		ret = si4455_poll_cts(port);
+> 
+> 	if (poll) {
+> 		ret = si4455_poll_cts(port);
+> 		if (ret)
+> 			return ret;
+> 	}
+> 
+> > +
+> > +	if (ret == 0) {
+> > +		ret = spi_sync_transfer(to_spi_device(port->dev),
+> > +					xfer,
+> > +					ARRAY_SIZE(xfer));
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: spi_sync_transfer error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +		}
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_write_data(struct uart_port *port,
+> > +				u8 command,
+> > +				int pollCts,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	int ret = 0;
+> > +	u8 *dataOut = NULL;
+> > +
+> > +	if (pollCts)
+> > +		ret = si4455_poll_cts(port);
+> > +
+> > +	if (ret == 0) {
+> > +		dataOut = devm_kzalloc(port->dev, 1 + length, GFP_KERNEL);
+> 
+> Use vanilla kzalloc().
+> 
+> > +		if (dataOut != NULL) {
+> > +			dataOut[0] = command;
+> > +			memcpy(&dataOut[1], data, length);
+> > +			ret = spi_write(to_spi_device(port->dev),
+> > +					dataOut,
+> > +					1 + length);
+> > +			if (ret) {
+> > +				dev_err(port->dev,
+> > +					"%s: spi_write error(%i)",
+> > +					__func__,
+> > +					ret);
+> > +			}
+> > +		} else {
+> > +			dev_err(port->dev,
+> > +				"%s: devm_kzalloc error",
+> > +				__func__);
+> > +			ret = -ENOMEM;
+> > +		}
+> > +	}
+> > +	if (dataOut != NULL)
+> > +		devm_kfree(port->dev, dataOut);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_poll_cts(struct uart_port *port)
+> > +{
+> > +	return si4455_get_response(port, 0, NULL);
+> > +}
+> > +
+> > +static void si4455_set_power(struct si4455_port *priv,
+> > +				int on)
+> > +{
+> > +	if (priv->shdn_gpio) {
+> 
+> Reverse this test:
+> 
+> 	if (!priv->shdn_gpio)
+> 		return;
+> 
+> > +		if (on) {
+> > +			gpiod_direction_output(priv->shdn_gpio, 0);
+> > +			usleep_range(4000, 5000);
+> > +			gpiod_set_value(priv->shdn_gpio, 1);
+> > +			usleep_range(4000, 5000);
+> > +		} else {
+> > +			gpiod_direction_output(priv->shdn_gpio, 0);
+> > +		}
+> > +	}
+> > +}
+> > +
+> > +static int si4455_s_power(struct device *dev,
+> > +				int on)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(dev);
+> > +
+> > +	dev_dbg(dev, "%s(on=%d)\n", __func__, on);
+> > +	if (s->power_count == !on)
+> > +		si4455_set_power(s, on);
+> > +	s->power_count += on ? 1 : -1;
+> > +	WARN_ON(s->power_count < 0);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int si4455_get_part_info(struct uart_port *port,
+> > +				struct si4455_part_info *result)
+> > +{
+> > +	int ret;
+> > +	u8 dataOut[] = { SI4455_CMD_ID_PART_INFO };
+> > +	u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
+> > +
+> > +	ret = si4455_send_command_get_response(port,
+> > +						sizeof(dataOut),
+> > +						dataOut,
+> > +						sizeof(dataIn),
+> > +						dataIn);
+> 
+> This can fit on two lines:
+> 
+> 	ret = si4455_send_command_get_response(port, sizeof(dataOut), dataOut,
+> 					       sizeof(dataIn), dataIn);
+> 
+> 
+> > +	if (ret == 0) {
+> > +		result->CHIPREV = dataIn[0];
+> > +		memcpy(&result->PART, &dataIn[1], sizeof(result->PART));
+> > +		result->PBUILD = dataIn[3];
+> > +		memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
+> > +		result->CUSTOMER = dataIn[6];
+> > +		result->ROMID = dataIn[7];
+> > +		result->BOND = dataIn[8];
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_send_command_get_response error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_get_int_status(struct uart_port *port,
+> > +					u8 phClear,
+> > +					u8 modemClear,
+> > +					u8 chipClear,
+> > +					struct si4455_int_status *result)
+> > +{
+> > +	int ret;
+> > +	u8 dataOut[] = {
+> > +		SI4455_CMD_ID_GET_INT_STATUS,
+> > +		phClear,
+> > +		modemClear,
+> > +		chipClear
+> > +	};
+> > +	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_INT_STATUS];
+> > +
+> > +	ret = si4455_send_command_get_response(port,
+> > +						sizeof(dataOut),
+> > +						dataOut,
+> > +						sizeof(dataIn),
+> > +						dataIn);
+> > +	if (ret == 0) {
+> > +		result->INT_PEND       = dataIn[0];
+> > +		result->INT_STATUS     = dataIn[1];
+> > +		result->PH_PEND        = dataIn[2];
+> > +		result->PH_STATUS      = dataIn[3];
+> > +		result->MODEM_PEND     = dataIn[4];
+> > +		result->MODEM_STATUS   = dataIn[5];
+> > +		result->CHIP_PEND      = dataIn[6];
+> > +		result->CHIP_STATUS    = dataIn[7];
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_send_command_get_response error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_get_modem_status(struct uart_port *port,
+> > +					u8 modemClear,
+> > +					struct si4455_modem_status *result)
+> > +{
+> > +	int ret;
+> > +	u8 dataOut[] = {
+> > +		SI4455_CMD_ID_GET_MODEM_STATUS,
+> > +		modemClear,
+> > +	};
+> > +	u8 dataIn[SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS];
+> > +
+> > +	ret = si4455_send_command_get_response(port,
+> > +						sizeof(dataOut),
+> > +						dataOut,
+> > +						sizeof(dataIn),
+> > +						dataIn);
+> > +	if (ret == 0) {
+> > +		result->MODEM_PEND      = dataIn[0];
+> > +		result->MODEM_STATUS    = dataIn[1];
+> > +		result->CURR_RSSI       = dataIn[2];
+> > +		result->LATCH_RSSI      = dataIn[3];
+> > +		result->ANT1_RSSI       = dataIn[4];
+> > +		result->ANT2_RSSI       = dataIn[5];
+> > +		memcpy(&result->AFC_FREQ_OFFSET,
+> > +			&dataIn[6],
+> > +			sizeof(result->AFC_FREQ_OFFSET));
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_send_command_get_response error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_fifo_info(struct uart_port *port,
+> > +				u8 fifo,
+> > +				struct si4455_fifo_info *result)
+> > +{
+> > +	int ret = 0;
+> > +	u8 dataOut[SI4455_CMD_ARG_COUNT_FIFO_INFO] = {
+> > +		SI4455_CMD_ID_FIFO_INFO, fifo
+> > +	};
+> > +	u8 dataIn[SI4455_CMD_REPLY_COUNT_FIFO_INFO] = { 0 };
+> > +
+> > +	ret = si4455_send_command_get_response(port,
+> > +						sizeof(dataOut),
+> > +						dataOut,
+> > +						sizeof(dataIn),
+> > +						dataIn);
+> > +	if (ret == 0) {
+> > +		result->RX_FIFO_COUNT  = dataIn[0];
+> > +		result->TX_FIFO_SPACE  = dataIn[1];
+> > +	} else {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_send_command_get_response error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_read_rx_fifo(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	return si4455_read_data(port,
+> > +				SI4455_CMD_ID_READ_RX_FIFO,
+> > +				0,
+> > +				length,
+> > +				data);
+> > +}
+> > +
+> > +static int si4455_write_tx_fifo(struct uart_port *port,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	return si4455_write_data(port,
+> > +					SI4455_CMD_ID_WRITE_TX_FIFO,
+> > +					0,
+> > +					length,
+> > +					data);
+> > +}
+> > +
+> > +static int si4455_rx(struct uart_port *port,
+> > +			u32 channel,
+> > +			u8 condition,
+> > +			u16 length,
+> > +			u8 nextState1,
+> > +			u8 nextState2,
+> > +			u8 nextState3)
+> > +{
+> > +	u8 dataOut[SI4455_CMD_ARG_COUNT_START_RX];
+> > +
+> > +	dataOut[0] = SI4455_CMD_ID_START_RX;
+> > +	dataOut[1] = channel;
+> > +	dataOut[2] = condition;
+> > +	dataOut[3] = (u8)(length >> 8);
+> > +	dataOut[4] = (u8)(length);
+> > +	dataOut[5] = nextState1;
+> > +	dataOut[6] = nextState2;
+> > +	dataOut[7] = nextState3;
+> > +
+> > +	return si4455_send_command(port,
+> > +					SI4455_CMD_ARG_COUNT_START_RX,
+> > +					dataOut);
+> > +}
+> > +
+> > +static int si4455_tx(struct uart_port *port,
+> > +			u8 channel,
+> > +			u8 condition,
+> > +			u16 length)
+> > +{
+> > +	u8 dataOut[/*6*/ SI4455_CMD_ARG_COUNT_START_TX];
+> > +
+> > +	dataOut[0] = SI4455_CMD_ID_START_TX;
+> > +	dataOut[1] = channel;
+> > +	dataOut[2] = condition;
+> > +	dataOut[3] = (u8)(length >> 8);
+> > +	dataOut[4] = (u8)(length);
+> > +	/*TODO: radioCmd[5] = 0x44; in case of rev c2a*/
+> > +
+> > +	return si4455_send_command(port,
+> > +					/*6*/ SI4455_CMD_ARG_COUNT_START_TX,
+> > +					dataOut);
+> > +}
+> > +
+> > +static int si4455_change_state(struct uart_port *port,
+> > +				u8 nextState1)
+> > +{
+> > +	u8 dataOut[SI4455_CMD_ARG_COUNT_CHANGE_STATE];
+> > +
+> > +	dataOut[0] = SI4455_CMD_ID_CHANGE_STATE;
+> > +	dataOut[1] = (u8)nextState1;
+> > +
+> > +	return si4455_send_command(port,
+> > +					SI4455_CMD_ARG_COUNT_CHANGE_STATE,
+> > +					dataOut);
+> > +}
+> > +
+> > +static int si4455_begin_tx(struct uart_port *port,
+> > +				u32 channel,
+> > +				int length,
+> > +				u8 *data)
+> > +{
+> > +	int ret = 0;
+> > +	struct si4455_int_status intStatus = { 0 };
+> > +	struct si4455_fifo_info fifoInfo = { 0 };
+> > +
+> > +	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
+> > +	if ((length > SI4455_FIFO_SIZE) || (length < 0))
+> > +		ret = -EINVAL;
+> > +
+> > +	if (ret == 0) {
+> > +		ret = si4455_change_state(port,
+> > +			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_change_state error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			goto end;
+> > +		}
+> > +		ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_get_int_status error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			goto end;
+> > +		}
+> > +		ret = si4455_fifo_info(port,
+> > +					SI4455_CMD_FIFO_INFO_ARG_TX_BIT,
+> > +					&fifoInfo);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_fifo_info error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			goto end;
+> > +		}
+> > +		ret = si4455_write_tx_fifo(port, (u16)length, data);
+> 
+> No need to cast this.
+> 
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_write_tx_fifo error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			goto end;
+> 
+> Just return directly.  Do nothing gotos just end up introducing "Forgot
+> to set the error code" bugs.
+> 
+> > +		}
+> > +		ret = si4455_tx(port,
+> > +				(u8)channel,
+> > +				0x30,
+> > +				(u16)length);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_tx error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			goto end;
+> > +		}
+> > +	}
+> > +end:
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_end_tx(struct uart_port *port)
+> > +{
+> > +	int ret = 0;
+> > +	struct si4455_int_status intStatus = { 0 };
+> > +
+> > +	ret = si4455_change_state(port,
+> > +			SI4455_CMD_CHANGE_STATE_ARG_NEW_STATE_ENUM_READY);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_change_state error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +		goto end;
+> > +	}
+> > +	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_get_int_status error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +		goto end;
+> > +	}
+> > +end:
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_begin_rx(struct uart_port *port,
+> > +				u32 channel,
+> > +				u32 length)
+> > +{
+> > +	int ret = 0;
+> > +	struct si4455_int_status intStatus = { 0 };
+> > +	struct si4455_fifo_info fifoInfo = { 0 };
+> > +
+> > +	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
+> > +	ret = si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_get_int_status error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +		goto end;
+> > +	}
+> > +	ret = si4455_fifo_info(port,
+> > +				SI4455_CMD_FIFO_INFO_ARG_RX_BIT,
+> > +				&fifoInfo);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_fifo_info error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +		goto end;
+> > +	}
+> > +	ret = si4455_rx(port,
+> > +			channel,
+> > +			0x00,
+> > +			length,
+> > +			SI4455_CMD_START_RX_ARG_RXTIMEOUT_STATE_ENUM_RX,
+> > +			SI4455_CMD_START_RX_ARG_RXVALID_STATE_ENUM_RX,
+> > +			SI4455_CMD_START_RX_ARG_RXINVALID_STATE_ENUM_RX);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: si4455_rx error(%i)",
+> > +			__func__,
+> > +			ret);
+> > +		goto end;
+> > +	}
+> > +end:
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_end_rx(struct uart_port *port,
+> > +				u32 length,
+> > +				u8 *data)
+> > +{
+> > +	return si4455_read_rx_fifo(port, length, data);
+> > +}
+> > +
+> > +static int si4455_configure(struct uart_port *port,
+> > +				u8 *configurationData)
+> > +{
+> > +	int ret = 0;
+> > +	u8 col;
+> > +	u8 response;
+> > +	u8 numOfBytes;
+> > +	struct si4455_int_status intStatus = { 0 };
+> > +	u8 radioCmd[16u];
+> > +
+> > +	/* While cycle as far as the pointer points to a command */
+> > +	while (*configurationData != 0x00) {
+> > +		/* Commands structure in the array:
+> > +		 * --------------------------------
+> > +		 * LEN | <LEN length of data>
+> > +		 */
+> > +		numOfBytes = *configurationData++;
+> > +		dev_dbg(port->dev,
+> > +			"%s: numOfBytes(%u)",
+> > +			__func__,
+> > +			numOfBytes);
+> > +		if (numOfBytes > 16u) {
+> > +			/* Initial configuration of Si4x55 */
+> > +			if (SI4455_CMD_ID_WRITE_TX_FIFO
+> > +				 == *configurationData) {
+> > +				if (numOfBytes > 128u) {
+> > +					/* Number of command bytes exceeds
+> > +					 * maximal allowable length
+> > +					 */
+> > +					dev_err(port->dev,
+> > +						"%s: command length
+> > error(%i)",
+> > +						__func__,
+> > +						numOfBytes);
+> > +					ret = -EINVAL;
+> > +					break;
+> > +				}
+> > +
+> > +				/* Load array to the device */
+> > +				configurationData++;
+> > +				ret = si4455_write_data(port,
+> > +						SI4455_CMD_ID_WRITE_TX_FIFO,
+> > +						1,
+> > +						numOfBytes - 1,
+> > +						configurationData);
+> > +				if (ret) {
+> > +					dev_err(port->dev,
+> > +						"%s: si4455_write_data
+> > error(%i)",
+> > +						__func__,
+> > +						ret);
+> > +					break;
+> > +				}
+> > +
+> > +				/* Point to the next command */
+> > +				configurationData += numOfBytes - 1;
+> > +
+> > +				/* Continue command interpreter */
+> > +				continue;
+> > +			} else {
+> > +				/* Number of command bytes exceeds
+> > +				 * maximal allowable length
+> > +				 */
+> > +				ret = -EINVAL;
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		for (col = 0u; col < numOfBytes; col++) {
+> > +			radioCmd[col] = *configurationData;
+> > +			configurationData++;
+> > +		}
+> > +
+> > +		dev_dbg(port->dev,
+> > +			"%s: radioCmd[0](%u)",
+> > +			__func__,
+> > +			radioCmd[0]);
+> > +		ret = si4455_send_command_get_response(port,
+> > +							numOfBytes,
+> > +							radioCmd,
+> > +							1,
+> > +							&response);
+> > +		if (ret) {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_send_command_get_response
+> > error(%i)",
+> > +				__func__,
+> > +				ret);
+> > +			break;
+> > +		}
+> > +
+> > +		/* Check response byte of EZCONFIG_CHECK command */
+> > +		if (radioCmd[0] == SI4455_CMD_ID_EZCONFIG_CHECK) {
+> > +			if (response) {
+> > +				/* Number of command bytes exceeds
+> > +				 * maximal allowable length
+> > +				 */
+> > +				ret = -EIO;
+> > +				dev_err(port->dev,
+> > +					"%s: EZConfig check error(%i)",
+> > +					__func__,
+> > +					radioCmd[0]);
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		/* Get and clear all interrupts.  An error has occurred...
+> > */
+> > +		si4455_get_int_status(port, 0, 0, 0, &intStatus);
+> > +		if (intStatus.CHIP_PEND
+> > +			&
+> > SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_MASK) {
+> > +			ret = -EIO;
+> > +			dev_err(port->dev,
+> > +				"%s: chip error(%i)",
+> > +				__func__,
+> > +				intStatus.CHIP_PEND);
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_re_configure(struct uart_port *port)
+> > +{
+> > +	int ret = 0;
+> > +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> > +
+> > +	mutex_lock(&s->mutex);
+> > +	s->configured = 0;
+> > +	if (s->power_count > 0)
+> > +		si4455_s_power(port->dev, 0);
+> > +
+> > +	si4455_s_power(port->dev, 1);
+> > +	if (s->configuration.length > 0) {
+> > +		ret = si4455_configure(port, s->configuration.data);
+> > +		if (ret == 0)
+> > +			s->configured = 1;
+> > +
+> > +	}
+> > +	mutex_unlock(&s->mutex);
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_do_work(struct uart_port *port)
+> > +{
+> > +	int ret = 0;
+> > +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> > +	struct circ_buf *xmit = &port->state->xmit;
+> > +	unsigned int tx_pending = 0;
+> > +	unsigned int tx_to_end = 0;
+> > +	u8 *data = NULL;
+> > +
+> > +	mutex_lock(&s->mutex);
+> > +	if (s->configured && (s->power_count > 0)) {
+> > +		if (!(uart_circ_empty(xmit)
+> > +			|| uart_tx_stopped(port)
+> > +			|| s->tx_pending)) {
+> > +			tx_pending = uart_circ_chars_pending(xmit);
+> > +			if (s->package_size > 0) {
+> > +				if (tx_pending >= s->package_size) {
+> > +					tx_pending = s->package_size;
+> > +					data = devm_kzalloc(port->dev,
+> > +						s->package_size,
+> > +						GFP_KERNEL);
+> > +					tx_to_end =
+> > CIRC_CNT_TO_END(xmit->head,
+> > +								xmit->tail,
+> > +
+> > UART_XMIT_SIZE);
+> > +					if (tx_to_end < tx_pending) {
+> > +						memcpy(data,
+> > +							xmit->buf +
+> > xmit->tail,
+> > +							tx_to_end);
+> > +						memcpy(data,
+> > +							xmit->buf,
+> > +							tx_pending -
+> > tx_to_end);
+> > +					} else {
+> > +						memcpy(data,
+> > +							xmit->buf +
+> > xmit->tail,
+> > +							tx_pending);
+> > +					}
+> > +					if (si4455_begin_tx(port,
+> > +							s->tx_channel,
+> > +							tx_pending,
+> > +							data) == 0) {
+> > +						s->tx_pending = true;
+> > +					}
+> > +					devm_kfree(port->dev, data);
+> > +				}
+> > +			} else {
+> > +				//TODO: variable packet length
+> > +			}
+> > +		}
+> > +		if (!s->tx_pending) {
+> > +			if (s->package_size > 0) {
+> > +				ret = si4455_begin_rx(port,
+> > +							s->rx_channel,
+> > +							s->package_size);
+> > +			} else {
+> > +				//TODO: variable packet length
+> > +			}
+> > +		}
+> > +	}
+> > +	mutex_unlock(&s->mutex);
+> > +	return ret;
+> > +}
+> > +
+> > +static void si4455_handle_rx_pend(struct si4455_port *s)
+> > +{
+> > +	struct uart_port *port = &s->one.port;
+> > +	u8 *data = NULL;
+> > +	int sret = 0;
+> > +	int i = 0;
+> > +
+> > +	if (s->package_size > 0) {
+> > +		data = devm_kzalloc(port->dev,
+> > +					s->package_size,
+> > +					GFP_KERNEL);
+> > +		sret = si4455_end_rx(port,
+> > +				s->package_size,
+> > +				data);
+> > +		if (sret == 0) {
+> > +			for (i = 0; i < s->package_size; i++) {
+> > +				uart_insert_char(port,
+> > +					0,
+> > +					0,
+> > +					data[i],
+> > +					TTY_NORMAL);
+> > +				port->icount.rx++;
+> > +			}
+> > +			tty_flip_buffer_push(&port->state->port);
+> > +		} else {
+> > +			dev_err(port->dev,
+> > +				"%s: si4455_end_rx error(%i)",
+> > +				__func__,
+> > +				sret);
+> > +		}
+> > +		devm_kfree(port->dev, data);
+> > +	} else {
+> > +		//TODO: variable packet length
+> > +	}
+> > +}
+> > +
+> > +static void si4455_handle_tx_pend(struct si4455_port *s)
+> > +{
+> > +	struct uart_port *port = &s->one.port;
+> > +	struct circ_buf *xmit = &port->state->xmit;
+> > +
+> > +	if (s->tx_pending) {
+> > +		if (s->package_size) {
+> > +			port->icount.tx += s->package_size;
+> > +			xmit->tail = (xmit->tail + s->package_size)
+> > +					& (UART_XMIT_SIZE - 1);
+> > +		} else {
+> > +			//TODO: variable packet length
+> > +		}
+> > +		si4455_end_tx(port);
+> > +		s->tx_pending = 0;
+> > +	}
+> > +}
+> > +
+> > +static irqreturn_t si4455_port_irq(struct si4455_port *s)
+> > +{
+> > +	struct uart_port *port = &s->one.port;
+> > +	irqreturn_t ret = IRQ_NONE;
+> > +	struct si4455_int_status intStatus = { 0 };
+> > +	struct si4455_fifo_info fifoInfo = { 0 };
+> > +
+> > +	mutex_lock(&s->mutex);
+> > +	if (s->configured && (s->power_count > 0)) {
+> > +		if (!si4455_get_int_status(port, 0, 0, 0, &intStatus)) {
+> > +			si4455_get_modem_status(port, 0, &s->modem_status);
+> > +			if (intStatus.CHIP_PEND
+> > +			& SI4455_CMD_GET_CHIP_STATUS_REP_CMD_ERROR_PEND_BIT)
+> > {
+> > +				dev_err(port->dev,
+> > +					"%s: CHIP_STATUS:CMD_ERROR_PEND",
+> > +					__func__);
+> > +			} else if (intStatus.PH_PEND
+> > +			&
+> > SI4455_CMD_GET_INT_STATUS_REP_PACKET_SENT_PEND_BIT) {
+> > +				dev_dbg(port->dev,
+> > +					"%s: PH_STATUS:PACKET_SENT_PEND",
+> > +					__func__);
+> > +				si4455_handle_tx_pend(s);
+> > +			} else if (intStatus.PH_PEND
+> > +			& SI4455_CMD_GET_INT_STATUS_REP_PACKET_RX_PEND_BIT)
+> > {
+> > +				dev_dbg(port->dev,
+> > +					"%s: PH_STATUS:PACKET_RX_PEND",
+> > +					__func__);
+> > +				s->current_rssi = s->modem_status.CURR_RSSI;
+> > +				si4455_fifo_info(port, 0, &fifoInfo);
+> > +				si4455_handle_rx_pend(s);
+> > +			} else if (intStatus.PH_PEND
+> > +			& SI4455_CMD_GET_INT_STATUS_REP_CRC_ERROR_BIT) {
+> > +				dev_dbg(port->dev,
+> > +					"%s: PH_STATUS:CRC_ERROR_PEND",
+> > +					__func__);
+> > +			}
+> > +			ret = IRQ_HANDLED;
+> > +		}
+> > +	} else {
+> > +		ret = IRQ_HANDLED;
+> > +	}
+> > +	mutex_unlock(&s->mutex);
+> > +	si4455_do_work(port);
+> > +	return ret;
+> > +}
+> > +
+> > +static irqreturn_t si4455_ist(int irq,
+> > +				void *dev_id)
+> > +{
+> > +	struct si4455_port *s = (struct si4455_port *)dev_id;
+> > +	bool handled = false;
+> > +
+> > +	if (si4455_port_irq(s) == IRQ_HANDLED)
+> > +		handled = true;
+> > +
+> > +	return IRQ_RETVAL(handled);
+> > +}
+> > +
+> > +static void si4455_tx_proc(struct work_struct *ws)
+> > +{
+> > +	struct si4455_one *one = container_of(ws,
+> > +					struct si4455_one,
+> > +					tx_work);
+> > +
+> > +	si4455_do_work(&one->port);
+> > +}
+> > +
+> > +static unsigned int si4455_tx_empty(struct uart_port *port)
+> > +{
+> > +	return TIOCSER_TEMT;
+> > +}
+> > +
+> > +static unsigned int si4455_get_mctrl(struct uart_port *port)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +	return TIOCM_DSR | TIOCM_CAR;
+> > +}
+> > +
+> > +static void si4455_set_mctrl(struct uart_port *port,
+> > +				unsigned int mctrl)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +}
+> 
+> Delete all these empty functions.
+> 
+> > +
+> > +static void si4455_break_ctl(struct uart_port *port,
+> > +				int break_state)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +}
+> > +
+> > +static void si4455_set_termios(struct uart_port *port,
+> > +				struct ktermios *termios,
+> > +				struct ktermios *old)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +}
+> > +
+> > +static int si4455_rs485_config(struct uart_port *port,
+> > +				struct serial_rs485 *rs485)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int si4455_startup(struct uart_port *port)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +	si4455_s_power(port->dev, 1);
+> > +	return 0;
+> > +}
+> > +
+> > +static void si4455_shutdown(struct uart_port *port)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +	si4455_s_power(port->dev, 0);
+> > +}
+> > +
+> > +static const char *si4455_type(struct uart_port *port)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> > +
+> > +	if (port->type == PORT_SI4455) {
+> 
+> Reverse this test.
+> 
+> > +		if (s->part_info.ROMID == 3)
+> > +			return "SI4455-B1A";
+> > +		else if (s->part_info.ROMID == 6)
+> > +			return "SI4455-C2A";
+> > +
+> > +	}
+> > +	return NULL;
+> > +}
+> > +
+> > +static int si4455_request_port(struct uart_port *port)
+> > +{
+> > +	/* Do nothing */
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +	return 0;
+> > +}
+> > +
+> > +static void si4455_config_port(struct uart_port *port,
+> > +				int flags)
+> > +{
+> > +	dev_dbg(port->dev, "%s", __func__);
+> 
+> Delete all these debug statements which only print the name of the
+> function.  Use ftrace for this instead.
+> 
+> > +	if (flags & UART_CONFIG_TYPE)
+> > +		port->type = PORT_SI4455;
+> > +}
+> > +
+> > +static int si4455_verify_port(struct uart_port *port,
+> > +				struct serial_struct *s)
+> > +{
+> > +	if ((s->type != PORT_UNKNOWN) && (s->type != PORT_SI4455))
+> > +		return -EINVAL;
+> > +
+> > +	if (s->irq != port->irq)
+> > +		return -EINVAL;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void si4455_start_tx(struct uart_port *port)
+> > +{
+> > +	struct si4455_one *one = container_of(port,
+> > +					struct si4455_one,
+> > +					port);
+> > +
+> > +	dev_dbg(port->dev, "%s", __func__);
+> > +
+> > +	if (!work_pending(&one->tx_work))
+> > +		schedule_work(&one->tx_work);
+> > +
+> > +}
+> > +
+> > +static int si4455_ioctl(struct uart_port *port,
+> > +			unsigned int cmd,
+> > +			unsigned long arg)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(port->dev);
+> > +	int ret = 0;
+> > +
+> > +	dev_dbg(port->dev, "%s(%u)", __func__, cmd);
+> > +	switch (cmd) {
+> > +	case SI4455_IOC_SEZC:
+> > +	memcpy(&s->configuration, (void *)arg, sizeof(s->configuration));
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_SEZC, length(%i)",
+> > +		__func__,
+> > +		cmd,
+> > +		s->configuration.length);
+> > +	ret = si4455_re_configure(port);
+> 
+> This needs to indented another tab.
+> 
+> 	switch (cmd) {
+> 	case SI4455_IOC_SEZC:
+> 		memcpy(&s->configuration, (void *)arg, sizeof(s->configuration));
+> 
+> Eep!!!
+> 
+> Don't use memcpy() here.  Use copy_from_user().
+> 
+> 	void __user *argp = arg;
+> 
+> 		if (copy_from_user(&s->configuration, argp,
+> 				   sizeof(s->configuration)))
+> 			return -EFAULT;
+> 
+> > +	break;
+> > +	case SI4455_IOC_CEZC:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_CEZC",
+> > +		__func__,
+> > +		cmd);
+> > +	memset(&s->configuration, 0x00, sizeof(s->configuration));
+> > +	ret = si4455_re_configure(port);
+> > +	break;
+> > +	case SI4455_IOC_SEZP:
+> > +	memcpy(&s->patch, (void *)arg, sizeof(s->patch));
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_SEZP, length(%i)",
+> > +		__func__,
+> > +		cmd,
+> > +		s->configuration.length);
+> > +	break;
+> > +	case SI4455_IOC_CEZP:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_CEZP",
+> > +		__func__,
+> > +		cmd);
+> > +	memset(&s->patch, 0x00, sizeof(s->patch));
+> > +	break;
+> > +	case SI4455_IOC_STXC:
+> > +	s->tx_channel = *((u32 *)arg);
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_STXC, tx_channel(%i)",
+> > +		__func__,
+> > +		cmd,
+> > +		s->tx_channel);
+> > +	break;
+> > +	case SI4455_IOC_GTXC:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_GTXC",
+> > +		__func__,
+> > +		cmd);
+> > +	*((u32 *)arg) = s->tx_channel;
+> > +	break;
+> > +	case SI4455_IOC_SRXC:
+> > +	s->rx_channel = *((u32 *)arg);
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_SRXC, rx_channel(%i)",
+> > +		__func__,
+> > +		cmd,
+> > +		s->rx_channel);
+> > +	break;
+> > +	case SI4455_IOC_GRXC:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_GRXC",
+> > +		__func__,
+> > +		cmd);
+> > +	*((u32 *)arg) = s->rx_channel;
+> > +	break;
+> > +	case SI4455_IOC_SSIZ:
+> > +	s->package_size = *((u32 *)arg);
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_SSIZ, package_size(%i)",
+> > +		__func__,
+> > +		cmd,
+> > +		s->package_size);
+> > +	break;
+> > +	case SI4455_IOC_GSIZ:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_GSIZ",
+> > +		__func__,
+> > +		cmd);
+> > +	*((u32 *)arg) = s->package_size;
+> > +	break;
+> > +	case SI4455_IOC_GRSSI:
+> > +	dev_dbg(port->dev,
+> > +		"%s(%u): SI4455_IOC_GRSSI",
+> > +		__func__,
+> > +		cmd);
+> > +	*((u32 *)arg) = s->current_rssi;
+> > +	break;
+> > +	default:
+> > +		ret = -ENOIOCTLCMD;
+> > +	break;
+> > +	}
+> > +
+> > +	if (ret == 0)
+> > +		si4455_do_work(port);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +
+> > +static void si4455_null_void(struct uart_port *port)
+> > +{
+> > +	/* Do nothing */
+> > +}
+> > +
+> > +static const struct uart_ops si4455_ops = {
+> > +	.tx_empty		= si4455_tx_empty,
+> > +	.set_mctrl		= si4455_set_mctrl,
+> > +	.get_mctrl		= si4455_get_mctrl,
+> > +	.stop_tx		= si4455_null_void,
+> > +	.start_tx		= si4455_start_tx,
+> > +	.stop_rx		= si4455_null_void,
+> > +	.break_ctl		= si4455_break_ctl,
+> > +	.startup		= si4455_startup,
+> > +	.shutdown		= si4455_shutdown,
+> > +	.set_termios		= si4455_set_termios,
+> > +	.type			= si4455_type,
+> > +	.request_port		= si4455_request_port,
+> > +	.release_port		= si4455_null_void,
+> > +	.config_port		= si4455_config_port,
+> > +	.verify_port		= si4455_verify_port,
+> > +	.ioctl			= si4455_ioctl,
+> > +};
+> > +
+> > +static int __maybe_unused si4455_suspend(struct device *dev)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(dev);
+> > +
+> > +	uart_suspend_port(&si4455_uart, &s->one.port);
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused si4455_resume(struct device *dev)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(dev);
+> > +
+> > +	uart_resume_port(&si4455_uart, &s->one.port);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static SIMPLE_DEV_PM_OPS(si4455_pm_ops, si4455_suspend, si4455_resume);
+> > +
+> > +static int si4455_probe(struct device *dev,
+> > +			int irq)
+> > +{
+> > +	int ret;
+> > +	struct si4455_port *s;
+> > +
+> > +	/* Alloc port structure */
+> > +	dev_dbg(dev, "%s\n", __func__);
+> > +	s = devm_kzalloc(dev, sizeof(*s), GFP_KERNEL);
+> > +	if (!s) {
+> > +		dev_err(dev, "Error allocating port structure\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	dev_set_drvdata(dev, s);
+> > +	mutex_init(&s->mutex);
+> > +
+> > +	s->shdn_gpio = devm_gpiod_get(dev, "shdn", GPIOD_OUT_HIGH);
+> > +	if (IS_ERR(s->shdn_gpio)) {
+> > +		dev_err(dev, "Unable to reguest shdn gpio\n");
+> > +		ret = -EINVAL;
+> 
+> Preserve the error code:
+> 
+> 		ret = PTR_ERR(s->shdn_gpio);
+> 
+> > +		goto out_generic;
+> > +	}
+> > +
+> > +	/* Initialize port data */
+> > +	s->one.port.dev	= dev;
+> > +	s->one.port.line = 0;
+> > +	s->one.port.irq	= irq;
+> > +	s->one.port.type	= PORT_SI4455;
+> > +	s->one.port.fifosize	= SI4455_FIFO_SIZE;
+> > +	s->one.port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+> > +	s->one.port.iotype	= UPIO_PORT;
+> > +	s->one.port.iobase	= 0x00;
+> > +	s->one.port.membase	= (void __iomem *)~0;
+> > +	s->one.port.rs485_config = si4455_rs485_config;
+> > +	s->one.port.ops	= &si4455_ops;
+> > +
+> > +	si4455_s_power(dev, 1);
+> > +
+> > +	//detect
+> > +	ret = si4455_get_part_info(&s->one.port, &s->part_info);
+> > +	dev_dbg(dev, "si4455_get_part_info()==%i", ret);
+> > +	if (ret == 0) {
+> > +		dev_dbg(dev, "partInfo.CHIPREV= %u", s->part_info.CHIPREV);
+> > +		dev_dbg(dev, "partInfo.PART= %u", s->part_info.PART);
+> > +		dev_dbg(dev, "partInfo.PBUILD= %u", s->part_info.PBUILD);
+> > +		dev_dbg(dev, "partInfo.ID= %u", s->part_info.ID);
+> > +		dev_dbg(dev, "partInfo.CUSTOMER= %u",
+> > s->part_info.CUSTOMER);
+> > +		dev_dbg(dev, "partInfo.ROMID= %u", s->part_info.ROMID);
+> > +		dev_dbg(dev, "partInfo.BOND= %u", s->part_info.BOND);
+> > +		if (s->part_info.PART != 0x5544) {
+> > +			dev_err(dev, "PART(%u) error", s->part_info.PART);
+> > +			ret = -ENODEV;
+> > +		}
+> > +	}
+> > +	si4455_s_power(dev, 0);
+> > +	if (ret)
+> > +		goto out_generic;
+> > +
+> > +	/* Initialize queue for start TX */
+> > +	INIT_WORK(&s->one.tx_work, si4455_tx_proc);
+> > +
+> > +	/* Register port */
+> > +	ret = uart_add_one_port(&si4455_uart, &s->one.port);
+> > +	if (ret) {
+> > +		s->one.port.dev = NULL;
+> > +		goto out_uart;
+> > +	}
+> > +
+> > +	/* Setup interrupt */
+> > +	ret = devm_request_threaded_irq(dev,
+> > +					irq,
+> > +					NULL,
+> > +					si4455_ist,
+> > +					IRQF_ONESHOT | IRQF_SHARED,
+> > +					dev_name(dev),
+> > +					s);
+> > +	if (!ret)
+> > +		return 0;
+> 
+> This is "Last if condition is reversed" anti-pattern.  Always do error
+> handling, never success handling.
+> 
+> > +
+> > +	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
+> > +
+> > +out_uart:
+> > +	uart_remove_one_port(&si4455_uart, &s->one.port);
+> > +out_generic:
+> > +	mutex_destroy(&s->mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int si4455_remove(struct device *dev)
+> > +{
+> > +	struct si4455_port *s = dev_get_drvdata(dev);
+> > +
+> > +	cancel_work_sync(&s->one.tx_work);
+> > +	uart_remove_one_port(&si4455_uart, &s->one.port);
+> > +
+> > +	mutex_destroy(&s->mutex);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id __maybe_unused si4455_dt_ids[] = {
+> > +	{ .compatible = "silabs,si4455" },
+> > +	{ .compatible = "silabs,si4455b1a" },
+> > +	{ .compatible = "silabs,si4455c2a" },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, si4455_dt_ids);
+> > +
+> > +static int si4455_spi_probe(struct spi_device *spi)
+> > +{
+> > +	int ret;
+> > +
+> > +	/* Setup SPI bus */
+> > +	spi->bits_per_word	= 8;
+> > +	spi->mode		    = SPI_MODE_0;
+> > +	spi->max_speed_hz   = 100000;
+> 
+> This white space is whacky.
+> 
+> 
+> > +	ret = spi_setup(spi);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (spi->dev.of_node) {
+> > +		const struct of_device_id *of_id
+> > +			= of_match_device(si4455_dt_ids, &spi->dev);
+> > +		if (!of_id)
+> > +			return -ENODEV;
+> > +
+> > +	}
+> > +
+> > +	return si4455_probe(&spi->dev, spi->irq);
+> > +}
+> 
+> Anyway, hopefully that's some ideas.
+> 
+> regards,
+> dan carpenter
+> 
+> 
+
+Thank you for your suggestions. I made the canges suggested by you.
+
+I'll test the driver in my development environment, then I'll come back with a new patch soon.
+
+I set up a mail client on my linux dev environment, I hope my mails/patches/codes will be in proper quality in the future.
+
+Üdvözlettel / Best regards:
+József Horváth
+
+
