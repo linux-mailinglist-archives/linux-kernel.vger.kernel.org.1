@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA812D4087
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471BC2D4089
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730349AbgLILBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
+        id S1730364AbgLILBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:01:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730217AbgLILBb (ORCPT
+        with ESMTP id S1730351AbgLILBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:01:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5237DC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jQNJqFn2pfwvahjCE/gxSS2ui3h3u7/sHMgAsutT6ik=; b=qgHEcjaX3oqkvKY0oefuCQAeZ7
-        JVE3rbPaYilnmZpQM5sx1iaiPtQvXZCdyb4nyJpPPKdWSPoTMLYIvTwlWwktoIfnAB2Uka1kPluaA
-        mlyRUPu+TOn1cESAXJa7itoWR/5pe2cRha05XegSfV6xiZpbAbEvTAULBhZJC5LXbOH5i/I1IHJCx
-        Df4cTdO1Yqc1+JQDyvZlGHU2CkZicup+uqY/nLqRi0oitxr2R2GOXQPY9EdX76t+A4dRin6ybAKAE
-        n977BTYtHjsxF/r9p08G9S7hAQvCVJTy7XJasojTxpdFmjVHfWvbD7bFaDUSZ3hji25JV4VbCxMlB
-        vBxtmFiA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmxDA-00079i-69; Wed, 09 Dec 2020 11:00:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 208813011F0;
-        Wed,  9 Dec 2020 12:00:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0AF69209B20EF; Wed,  9 Dec 2020 12:00:43 +0100 (CET)
-Date:   Wed, 9 Dec 2020 12:00:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
-Message-ID: <20201209110042.GW3021@hirez.programming.kicks-ass.net>
-References: <20201201205341.3871-1-john.ogness@linutronix.de>
- <20201201205341.3871-3-john.ogness@linutronix.de>
- <X8n9a2DWUFE/giyB@alley>
- <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
- <875z5c9bhn.fsf@jogness.linutronix.de>
- <20201209081623.GI2414@hirez.programming.kicks-ass.net>
- <20201209092204.GD1667627@google.com>
- <X9Cq9SMaCy3lGhXJ@jagdpanzerIV.localdomain>
+        Wed, 9 Dec 2020 06:01:47 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F58BC0613D6;
+        Wed,  9 Dec 2020 03:01:06 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrYxq5HpPz9sWK;
+        Wed,  9 Dec 2020 22:01:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607511663;
+        bh=r/+GDOAquGqdEZzrfqtfidqClQ+Qy/mmW4yr/SaiIGs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=XiMPL5A4IbeMeNE3K663OW8J/txEMWtx3Kk/v841f7llOtuE11PvGSI6VH9ZM0asc
+         N6FsXHUKN3TPAsl+LQ3z7U5O5MNb4Tak10bcgWHezZGp0truYA08NVFliP7Y7JFiEA
+         qaVPgWxtIva8KGl7TTmhdA3bVIcQIQ785jZZ6k1rej+OyY8K35Osde24w6bQzRZEZs
+         I3BgUviRdr+c1PBuBrh9+sQSL6LNdqUEbAdriTLL+u2mRGu43dGL2aJTwAd6G+64PE
+         ffa+HtCEagwEDF9q3Zrn+28+4yg3VqX3rpBKSFQl2Nmyia90NFbbyGqZIuVSPqax0b
+         tOzaEWDHiVcwA==
+Date:   Wed, 9 Dec 2020 22:01:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
+Message-ID: <20201209220102.04ecee26@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9Cq9SMaCy3lGhXJ@jagdpanzerIV.localdomain>
+Content-Type: multipart/signed; boundary="Sig_/YpPyNQR/DJ_TJ406ZLTpqxI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:46:13PM +0900, Sergey Senozhatsky wrote:
-> On (20/12/09 18:22), Sergey Senozhatsky wrote:
-> > > 
-> > > Please put on your eye cancer gear and inspect the atomic implementation
-> > > of PA-RISC, Sparc32, feh, I forgot who else.
-> > > 
-> > > Those SMP capable architectures are gifted with just one XCHG like
-> > > atomic instruction :/ Anyway, as said in the other email, they also
-> > > don't have NMIs so it mostly works.
-> 
-> PeterZ, thanks for the pointers!
-> 
-> 
-> > Hmm, wow. OK, I definitely want to look further.
-> > 
-> > When some CONFIG_DEBUG_FOO_BAR code wants to pr_err from prb->atomic_op
-> > on those archs then we deadlock in printk once again?
-> 
-> E.g. arch/sparc/lib/atomic32.c
-> 
-> 	spinlock_t __atomic_hash[ATOMIC_HASH_SIZE];
-> 	atomic_foo()
-> 	{
-> 		spin_lock_irqsave(ATOMIC_HASH(v), flags)
-> 		...
-> 		spin_unlock_irqrestore(ATOMIC_HASH(v), flags);
-> 	}
-> 
-> So another potential re-entry path is
-> 
-> 	atomic_foo()
-> 	 spin_lock_irqsave(ATOMIC_HASH(v), flags)
-> 	  printk()
-> 	   prb()
-> 	    atomic_foo()
-> 	     spin_lock_irqsave(ATOMIC_HASH(v), flags)
-> 
-> which can deadlock, in theory, if both atomics HASH to the same
-> key (same spin_lock).
+--Sig_/YpPyNQR/DJ_TJ406ZLTpqxI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yep, but see the 'mostly' in the 'they mostly work'. Given the
-limitiations of these architectures there's really only so much you can
-do.
+Hi all,
+
+Commit
+
+  ab7eff24a1e9 ("dt-bindings: net: dsa: b53: Add YAML bindings")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YpPyNQR/DJ_TJ406ZLTpqxI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Qrm4ACgkQAVBC80lX
+0Gw86gf9Gskg+S3ROvXZv+qMCqkwGPrpora52Uqp8cvCQIa2DG9FDQAY44JKcT27
+fKC2EJuMLV8Qnq42GqeEdKV4K5acMrrRa4+tmCXulIm0WGJpTt2Bq/p+V4HKYbcb
+ne9643X0hTOgnBhrMnag99D9MVSzoHRLd6guiCZtYEsXHtrSRN6i5Tg+mU1cTeQT
+hBKjJsYIy5H8D8nQT91a0of4oPCFCbB/wKq7ak2dS4ZEFtGWzy+qkHXnkix59oO8
+fHMaaUAJVL8cMUivii2iX5eK18sgeyLQzYhiKOatBouRHubqPgLe3TcZXuua6RVY
+0AWeBMe+STY1SwY3KxiTNkrQescyYg==
+=AkHD
+-----END PGP SIGNATURE-----
+
+--Sig_/YpPyNQR/DJ_TJ406ZLTpqxI--
