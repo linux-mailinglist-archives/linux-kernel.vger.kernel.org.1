@@ -2,115 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B30E2D3F8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A8A2D3F89
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729726AbgLIKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:08:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56543 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728631AbgLIKIU (ORCPT
+        id S1729711AbgLIKHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:07:54 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9046 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728613AbgLIKHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:08:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607508413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4m7vcxbiJttn8QYkTQIy6cn6rx9Zw5Muq0IpNVCW1eU=;
-        b=aewuL5p6AwUz2iP28V6V5OjjUwzUJHiHrcOrfmfJm4SKQ047Ui+nu+sY9mS3dZ3AYT4wS5
-        lH5PsaXDBUEVopWPxfQyACpVJMpXQ2fUo7WkUv4Xd3ffpi4wxMSpUl9uKdAGA5KPs4om5p
-        WGWfODAfWyNI3/0uNXKfUCqmZ3BzFI0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-KYNyJPTwP3ei1ybgJrgtcQ-1; Wed, 09 Dec 2020 05:06:49 -0500
-X-MC-Unique: KYNyJPTwP3ei1ybgJrgtcQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D5848030AF;
-        Wed,  9 Dec 2020 10:06:46 +0000 (UTC)
-Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA1BF5D9D3;
-        Wed,  9 Dec 2020 10:06:40 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
- vmemmap if struct page size is not power of two
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20201130151838.11208-1-songmuchun@bytedance.com>
- <20201130151838.11208-7-songmuchun@bytedance.com>
- <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
- <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
-Date:   Wed, 9 Dec 2020 11:06:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 9 Dec 2020 05:07:54 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrXl40Bz5zhnGq;
+        Wed,  9 Dec 2020 18:06:40 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 9 Dec 2020
+ 18:07:09 +0800
+Subject: Re: [PATCH] erofs: force inplace I/O under low memory scenario
+To:     Gao Xiang <hsiangkao@aol.com>, <linux-erofs@lists.ozlabs.org>
+CC:     LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
+        Gao Xiang <hsiangkao@redhat.com>
+References: <20201208054600.16302-1-hsiangkao.ref@aol.com>
+ <20201208054600.16302-1-hsiangkao@aol.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <85f41db3-8d64-240a-7876-9f3b3dea29cb@huawei.com>
+Date:   Wed, 9 Dec 2020 18:07:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201208054600.16302-1-hsiangkao@aol.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.12.20 11:03, Muchun Song wrote:
-> On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 30.11.20 16:18, Muchun Song wrote:
->>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
->>> when the size of struct page is a power of two.
->>>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>> ---
->>>  mm/hugetlb_vmemmap.c | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>>
->>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>> index 51152e258f39..ad8fc61ea273 100644
->>> --- a/mm/hugetlb_vmemmap.c
->>> +++ b/mm/hugetlb_vmemmap.c
->>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
->>>       unsigned int nr_pages = pages_per_huge_page(h);
->>>       unsigned int vmemmap_pages;
->>>
->>> +     if (!is_power_of_2(sizeof(struct page))) {
->>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
->>
->> I'd just drop that pr_info(). Users are able to observe that it's
->> working (below), so they are able to identify that it's not working as well.
+On 2020/12/8 13:46, Gao Xiang wrote:
+> From: Gao Xiang <hsiangkao@redhat.com>
 > 
-> The below is just a pr_debug. Do you suggest converting it to pr_info?
+> Try to forcely switch to inplace I/O under low memory scenario in
+> order to avoid direct memory reclaim due to cached page allocation.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+> ---
+> This was commercially used internally for years, but due to customized
+> page->mapping before, it cannot cleanly upstream till now. Since magical
+> page->mapping is now gone, adapt this to the latest dev branch for
+> better low-memory performance (fully use inplace I/O instead.)
+> 
+>   fs/erofs/compress.h |  3 +++
+>   fs/erofs/zdata.c    | 49 +++++++++++++++++++++++++++++++++++++--------
+>   2 files changed, 44 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+> index 2bbf47f353ef..c51a741a1232 100644
+> --- a/fs/erofs/compress.h
+> +++ b/fs/erofs/compress.h
+> @@ -27,11 +27,13 @@ struct z_erofs_decompress_req {
+>   };
+>   
+>   #define Z_EROFS_SHORTLIVED_PAGE		(-1UL << 2)
+> +#define Z_EROFS_PREALLOCATED_PAGE	(-2UL << 2)
+>   
+>   /*
+>    * For all pages in a pcluster, page->private should be one of
+>    * Type                         Last 2bits      page->private
+>    * short-lived page             00              Z_EROFS_SHORTLIVED_PAGE
+> + * preallocated page (tryalloc) 00              Z_EROFS_PREALLOCATED_PAGE
+>    * cached/managed page          00              pointer to z_erofs_pcluster
+>    * online page (file-backed,    01/10/11        sub-index << 2 | count
+>    *              some pages can be used for inplace I/O)
+> @@ -39,6 +41,7 @@ struct z_erofs_decompress_req {
+>    * page->mapping should be one of
+>    * Type                 page->mapping
+>    * short-lived page     NULL
+> + * preallocated page    NULL
+>    * cached/managed page  non-NULL or NULL (invalidated/truncated page)
+>    * online page          non-NULL
+>    *
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index b1b6cd03046f..b84e6a2fb00c 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -20,6 +20,11 @@
+>   enum z_erofs_cache_alloctype {
+>   	DONTALLOC,	/* don't allocate any cached pages */
+>   	DELAYEDALLOC,	/* delayed allocation (at the time of submitting io) */
+> +	/*
+> +	 * try to use cached I/O if page allocation succeeds or fallback
+> +	 * to in-place I/O instead to avoid any direct reclaim.
+> +	 */
+> +	TRYALLOC,
+>   };
+>   
+>   /*
+> @@ -154,13 +159,15 @@ static DEFINE_MUTEX(z_pagemap_global_lock);
+>   
+>   static void preload_compressed_pages(struct z_erofs_collector *clt,
+>   				     struct address_space *mc,
+> -				     enum z_erofs_cache_alloctype type)
+> +				     enum z_erofs_cache_alloctype type,
+> +				     struct list_head *pagepool)
+>   {
+>   	const struct z_erofs_pcluster *pcl = clt->pcl;
+>   	const unsigned int clusterpages = BIT(pcl->clusterbits);
+>   	struct page **pages = clt->compressedpages;
+>   	pgoff_t index = pcl->obj.index + (pages - pcl->compressed_pages);
+>   	bool standalone = true;
+> +	gfp_t gfp = mapping_gfp_constraint(mc, GFP_KERNEL) & ~__GFP_DIRECT_RECLAIM;
 
-Good question. I wonder if users really have to know in most cases.
-Maybe pr_debug() is good enough in environments where we want to debug
-why stuff is not working as expected.
+Could be local as there is only one place uses it.
 
--- 
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
 Thanks,
 
-David / dhildenb
-
+>   
+>   	if (clt->mode < COLLECT_PRIMARY_FOLLOWED)
+>   		return;
+> @@ -168,6 +175,7 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
+>   	for (; pages < pcl->compressed_pages + clusterpages; ++pages) {
+>   		struct page *page;
+>   		compressed_page_t t;
+> +		struct page *newpage = NULL;
+>   
+>   		/* the compressed page was loaded before */
+>   		if (READ_ONCE(*pages))
+> @@ -179,7 +187,17 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
+>   			t = tag_compressed_page_justfound(page);
+>   		} else if (type == DELAYEDALLOC) {
+>   			t = tagptr_init(compressed_page_t, PAGE_UNALLOCATED);
+> +		} else if (type == TRYALLOC) {
+> +			gfp |= __GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN;
+> +
+> +			newpage = erofs_allocpage(pagepool, gfp);
+> +			if (!newpage)
+> +				goto dontalloc;
+> +
+> +			set_page_private(newpage, Z_EROFS_PREALLOCATED_PAGE);
+> +			t = tag_compressed_page_justfound(newpage);
+>   		} else {	/* DONTALLOC */
+> +dontalloc:
+>   			if (standalone)
+>   				clt->compressedpages = pages;
+>   			standalone = false;
+> @@ -189,8 +207,12 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
+>   		if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t)))
+>   			continue;
+>   
+> -		if (page)
+> +		if (page) {
+>   			put_page(page);
+> +		} else if (newpage) {
+> +			set_page_private(newpage, 0);
+> +			list_add(&newpage->lru, pagepool);
+> +		}
+>   	}
+>   
+>   	if (standalone)		/* downgrade to PRIMARY_FOLLOWED_NOINPLACE */
+> @@ -560,7 +582,7 @@ static bool should_alloc_managed_pages(struct z_erofs_decompress_frontend *fe,
+>   }
+>   
+>   static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+> -				struct page *page)
+> +				struct page *page, struct list_head *pagepool)
+>   {
+>   	struct inode *const inode = fe->inode;
+>   	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+> @@ -613,11 +635,12 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+>   
+>   	/* preload all compressed pages (maybe downgrade role if necessary) */
+>   	if (should_alloc_managed_pages(fe, sbi->ctx.cache_strategy, map->m_la))
+> -		cache_strategy = DELAYEDALLOC;
+> +		cache_strategy = TRYALLOC;
+>   	else
+>   		cache_strategy = DONTALLOC;
+>   
+> -	preload_compressed_pages(clt, MNGD_MAPPING(sbi), cache_strategy);
+> +	preload_compressed_pages(clt, MNGD_MAPPING(sbi),
+> +				 cache_strategy, pagepool);
+>   
+>   hitted:
+>   	/*
+> @@ -1011,6 +1034,16 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+>   	justfound = tagptr_unfold_tags(t);
+>   	page = tagptr_unfold_ptr(t);
+>   
+> +	/*
+> +	 * preallocated cached pages, which is used to avoid direct reclaim
+> +	 * otherwise, it will go inplace I/O path instead.
+> +	 */
+> +	if (page->private == Z_EROFS_PREALLOCATED_PAGE) {
+> +		WRITE_ONCE(pcl->compressed_pages[nr], page);
+> +		set_page_private(page, 0);
+> +		tocache = true;
+> +		goto out_tocache;
+> +	}
+>   	mapping = READ_ONCE(page->mapping);
+>   
+>   	/*
+> @@ -1073,7 +1106,7 @@ static struct page *pickup_page_for_submission(struct z_erofs_pcluster *pcl,
+>   		cond_resched();
+>   		goto repeat;
+>   	}
+> -
+> +out_tocache:
+>   	if (!tocache || add_to_page_cache_lru(page, mc, index + nr, gfp)) {
+>   		/* turn into temporary page if fails */
+>   		set_page_private(page, Z_EROFS_SHORTLIVED_PAGE);
+> @@ -1282,7 +1315,7 @@ static int z_erofs_readpage(struct file *file, struct page *page)
+>   
+>   	f.headoffset = (erofs_off_t)page->index << PAGE_SHIFT;
+>   
+> -	err = z_erofs_do_read_page(&f, page);
+> +	err = z_erofs_do_read_page(&f, page, &pagepool);
+>   	(void)z_erofs_collector_end(&f.clt);
+>   
+>   	/* if some compressed cluster ready, need submit them anyway */
+> @@ -1336,7 +1369,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
+>   		/* traversal in reverse order */
+>   		head = (void *)page_private(page);
+>   
+> -		err = z_erofs_do_read_page(&f, page);
+> +		err = z_erofs_do_read_page(&f, page, &pagepool);
+>   		if (err)
+>   			erofs_err(inode->i_sb,
+>   				  "readahead error at page %lu @ nid %llu",
+> 
