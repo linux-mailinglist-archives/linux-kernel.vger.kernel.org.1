@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF6F2D4923
+	by mail.lfdr.de (Postfix) with ESMTP id C80F02D4924
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733158AbgLIShL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S1733171AbgLIShd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:37:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728625AbgLIShL (ORCPT
+        with ESMTP id S1727559AbgLIShd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:37:11 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13FFC0613CF;
-        Wed,  9 Dec 2020 10:36:30 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id k2so2746740oic.13;
-        Wed, 09 Dec 2020 10:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=InI8kMxZ0SE9l75DuOndEZGfmarmC3cXjv+qNAPdxJc=;
-        b=LsJ2BETuCnGZplnCDnz9ZU/yhWlpFhGebvqCV1GITkN7ifDJZbUx21OQBZDu8otKZB
-         Z+rOS2JXHh+o5IkyMq4Rc0lcJohqNOsjejAD9dEUKG8GhAYYNOHhwNUPfgz3AXsq0aU9
-         CL/YfPZi64bVyKE9IFBwOyqY25PxEaerntKM7SjeuNrv74hq1FkXppsCbWMY3CNpjHwR
-         rhBIsXUCAFQAnnd6RNtR1eBwY8PQ2B1cx5W+f/M37LmJRc7iIP8v7FyhjGTctyy9J+FK
-         K5dEzwZIjoijlFv9OKZTwHKfBdHItKvhwbVZoldEDyQ/AC6pDxi48+t4og7mu1yjzM6N
-         +xQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=InI8kMxZ0SE9l75DuOndEZGfmarmC3cXjv+qNAPdxJc=;
-        b=CJ5F5ZbgDs5berxM48iAuhQ3fr2u2KZ3BGXAGT8q4kQcUE4pxhWIyOefgTGwmAGe3W
-         EI0ee06h77pPLcx8Mb5nARvF9pRvIAx7rjnRnnpJLtlNEKex4aU7Q3/Fwd20I/Mn0HUh
-         P8Y/JC2/vJi9lMjbb0TRHzetOXP740ijpARMmn6WU/vSeZJPghpPtBy0XTVE3TYAtvj3
-         2v7xkZSdM37TVajQdG/hw4B7FCCMYriDvVpt2g1FvFmQu2iZMT9Li8dOsoteogtxD6SL
-         77zN4Nnyp6q2iKUPPjvnkXqBC9n+SmgWCoLsqMqVTuFgrN4xCqVYzf9KxxCX09BmFarL
-         LRbg==
-X-Gm-Message-State: AOAM530BHIe4z/88fxJb/dXFHNnBJRlPG/tXFIH1YfW3QG6TiKCKIfl9
-        R+Bbvdf+cWPDxSeEMEIFsTQ=
-X-Google-Smtp-Source: ABdhPJxac6zOWQSSOhowGRR+mBoaphIpZOvtYniHZef00B2ugFhDq6F63R87YXZdizEmrtE/U13eKw==
-X-Received: by 2002:aca:aa83:: with SMTP id t125mr2702550oie.103.1607538990199;
-        Wed, 09 Dec 2020 10:36:30 -0800 (PST)
-Received: from frodo.comcast.net ([2601:284:8203:5970::fb22])
-        by smtp.googlemail.com with ESMTPSA id e8sm540375oti.76.2020.12.09.10.36.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 10:36:29 -0800 (PST)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>, stable@vger.kernel.org,
-        Jason Baron <jbaron@akamai.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dyndbg: fix use before null check
-Date:   Wed,  9 Dec 2020 11:36:25 -0700
-Message-Id: <20201209183625.2432329-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 9 Dec 2020 13:37:33 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B09C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:36:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YaidPVlCxOibO+8c1Y8zsApUURZrb2kkqSHr+hyl+7A=; b=Udgs5SOt8G6nHTapDFKcxpRuha
+        AA1iApPdtIiQ0fQU4USFuLG8i3fmxoldKlOapZEXkVt3d5bYssVBG7EjG30o7U6UHusm++edgHPFB
+        JV0cg22HL1c/XmdABD6Q9mFfFZN4/L+opKB0xpv5aGX6X2vMqvuoyISLRG1yIJIGbXW+OxntWwcVR
+        GUAfyzjS1TDJVWiCHym4ug1b9trTGu8ogSWH+R9scRsOIKruzkVW6dAmlNsxTsb3qRzvz/9AJyOBR
+        3tvjiZf/N9cWXVId+i91QyZ5GmUbjvOiOeW92KlYvY2px4co+2zIcmTG6S6ddhL/4MQX3vmbD8SAZ
+        XnI0J/hw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kn4KJ-000100-4Y; Wed, 09 Dec 2020 18:36:35 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DD1DC980EF2; Wed,  9 Dec 2020 19:36:33 +0100 (CET)
+Date:   Wed, 9 Dec 2020 19:36:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Vasiliy Kulikov <segoon@openwall.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christopher Yeoh <cyeoh@au1.ibm.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 2/3] rwsem: Implement down_read_interruptible
+Message-ID: <20201209183633.GA6190@worktop.programming.kicks-ass.net>
+References: <87tut2bqik.fsf@x220.int.ebiederm.org>
+ <87k0tybqfy.fsf@x220.int.ebiederm.org>
+ <620f0908-c70a-9e54-e1b5-71d086b20756@redhat.com>
+ <20201207090243.GE3040@hirez.programming.kicks-ass.net>
+ <87360hy5hp.fsf@x220.int.ebiederm.org>
+ <20201208145257.GE2414@hirez.programming.kicks-ass.net>
+ <87tuswup9g.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuswup9g.fsf@x220.int.ebiederm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit a2d375eda771 ("dyndbg: refine export, rename to
-dynamic_debug_exec_queries()"), a string is copied before checking it
-isn't NULL.  Fix this, report a usage/interface error, and return the
-proper error code.
+On Tue, Dec 08, 2020 at 12:27:39PM -0600, Eric W. Biederman wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> 
+> > On Mon, Dec 07, 2020 at 09:56:34AM -0600, Eric W. Biederman wrote:
+> >
+> >> Do you want to pull these two into a topic branch in the tip tree
+> >> based on v10-rc1?
+> >
+> > I'll go do that. I'll let the robots chew on it before pushing it out
+> > though, I'll reply once it's in tip.git.
+> 
+> Thanks,
 
-Fixes: a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
-Cc: stable@vger.kernel.org
---
--v2 drop comment tweak, improve commit message
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- lib/dynamic_debug.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index bd7b3aaa93c3..c70d6347afa2 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -561,9 +561,14 @@ static int ddebug_exec_queries(char *query, const char *modname)
- int dynamic_debug_exec_queries(const char *query, const char *modname)
- {
- 	int rc;
--	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	char *qry; /* writable copy of query */
- 
--	if (!query)
-+	if (!query) {
-+		pr_err("non-null query/command string expected\n");
-+		return -EINVAL;
-+	}
-+	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	if (!qry)
- 		return -ENOMEM;
- 
- 	rc = ddebug_exec_queries(qry, modname);
--- 
-2.29.2
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/rwsem
 
