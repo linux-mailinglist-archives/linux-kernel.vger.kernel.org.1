@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8172D4793
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392E02D479A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732605AbgLIRLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:11:15 -0500
-Received: from sauhun.de ([88.99.104.3]:59362 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732644AbgLIRKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:10:49 -0500
-Received: from localhost (p54b3328b.dip0.t-ipconnect.de [84.179.50.139])
-        by pokefinder.org (Postfix) with ESMTPSA id 763D22C056C;
-        Wed,  9 Dec 2020 18:10:04 +0100 (CET)
-Date:   Wed, 9 Dec 2020 18:09:48 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Kevin Herbert <kph@platinasystems.com>
-Cc:     Biwen Li <biwen.li@oss.nxp.com>, leoyang.li@nxp.com,
-        linux@rempel-privat.de, kernel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        xiaoning.wang@nxp.com, o.rempel@pengutronix.de,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
-        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-Subject: Re: [v10] i2c: imx: support slave mode for imx I2C driver
-Message-ID: <20201209170948.GA2249@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Kevin Herbert <kph@platinasystems.com>,
-        Biwen Li <biwen.li@oss.nxp.com>, leoyang.li@nxp.com,
-        linux@rempel-privat.de, kernel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        xiaoning.wang@nxp.com, o.rempel@pengutronix.de,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
-        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-References: <20201111113255.28710-1-biwen.li@oss.nxp.com>
- <20201202151033.GC874@kunai>
- <CABP=6zZcmsFUVwUaAH7f2-RqFHz71GLDnSfLreUo5GA3Y58HYA@mail.gmail.com>
+        id S1732392AbgLIRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:13:16 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50068 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbgLIRNQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:13:16 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H9vOA047456;
+        Wed, 9 Dec 2020 17:12:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Wucwn6QESXraR5YDfQ3+qZuJ9R/NnVq54XD1k3uySBE=;
+ b=sHVa17eGBnxU/vNfSzQvaPkOFJx4lSoe95KuAo5vugYfbFCmhg7VYQYXjwzVS6zt+odP
+ 1LQbudC0DQIEx4UCOpmj9qyC2048+l6CSOqFvTStzMvXcOt37nhe7h2QCRzMNWhiXXER
+ DKE2ciadEW7myEXPNmeYx1UPDcp9tb9hvB0G1suZJxV8YN7XCk1AHVd/tfFhUpVXbkuy
+ PwMXhBNH21a2UaoROEfh/3dG5FEsprisef4da6fXD7guX/awfyZklY9CdRJzE1lxp1YZ
+ ebjyR+rxO2H+DsNr2Gk6Zq+Ux5ItlY54ahn12ZhikufNP2WxW4+qwORSOl5ohpd/lv7s 9g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3581mr1888-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 17:12:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HBuWU054557;
+        Wed, 9 Dec 2020 17:12:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m50w22w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 17:12:15 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9HC90C010234;
+        Wed, 9 Dec 2020 17:12:10 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Dec 2020 09:12:09 -0800
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <cang@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <nguyenb@codeaurora.org>,
+        <bjorn.andersson@linaro.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Subject: Re: [PATCH v2 0/2] scsi: ufs: Re-enable WB after device reset
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blf2rjj6.fsf@ca-mkp.ca.oracle.com>
+References: <20201208135635.15326-1-stanley.chu@mediatek.com>
+Date:   Wed, 09 Dec 2020 12:12:05 -0500
+In-Reply-To: <20201208135635.15326-1-stanley.chu@mediatek.com> (Stanley Chu's
+        message of "Tue, 8 Dec 2020 21:56:33 +0800")
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
-Content-Disposition: inline
-In-Reply-To: <CABP=6zZcmsFUVwUaAH7f2-RqFHz71GLDnSfLreUo5GA3Y58HYA@mail.gmail.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Stanley,
 
-On Wed, Dec 09, 2020 at 09:03:50AM -0800, Kevin Herbert wrote:
-> What is the protocol for the I2C_SLAVE_STOP event? I am working on my own
-> backend, and I've only tried it with this i.mx driver, and I do not recei=
-ve
-> I2C_SLAVE_STOP at the end of every I2C transaction. It was my expectation
-> I'd receive this event at the end of every frame. In my testing, I've nev=
-er
-> received this event at all.
->=20
-> Where are the I2C registers on the i.mx documented? My board is an i.mx6s=
-x.
+> This series fixes up an issue that WB is not re-enabled after device
+> reset.
 
-Hmm, from a glimpse, it looks the STOP event is only sent after a write
-and not after a read? Does this match your findings?
+Applied to 5.11/scsi-staging, thanks!
 
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/RBNcACgkQFA3kzBSg
-KbaJ6RAAsPJyZ/MTajnOltJDXCtbBT6yb5qWPfZdpA5WpP2cwsZPxmcGPzizkSDb
-nOKC61fPCtAxq2tG1wnpdKzzLqsVD/BA90Cq3UckfP5H7LAqfzUAGuemAr6nsWo5
-8ZBUbvFYgig9gyl7FtAuR3fRXGv62zPfkJm9y9dCb8RxXpMNQB348OKzxar+hfoU
-njjwZNHBx9hachkRLocKub/hzfwk0QupYlTxEvwfMlTKGt1jFCPZCc1xN1fQpJZw
-z7hCP1QiNp0sItuO4EIfaakfAXI3sdWXP0/RqvLs1O9OZBuCRPDj1zoMClWmaVDE
-qT/9Fsf5ZweBrHcvmbUH90OUvMwLnxr4Lfd21rYRnSm6WWK+tNVbOnB/lRdbR7p2
-tMjsz2WzawunVhjRp8Oxi1AozedyVqt43JuTqsUz/GTFrh0ouzC+Bcg/a9hvsI3Q
-/3Iw+brpYxQ2fWo4zmN7VAshXdY42sYV4A7V5si5KJlsurZdi4Iw6cy+Fjj+RF3R
-VHLcgEEPMacqHDdjo3DDsBPb8U6dtMrrCjPVEmenN04HMnIC+MiHz8qXAY/bdIo/
-It7NhRCpJd49j1Dui8tYANV4iEDCjL1nyGIXFfI2PfEHcu+k+S9OEnqMEgYPR7ue
-5rtKl+6UfNumK+JMkgeQL6A9SQxS/3pxJteJD1fVbp7zNqzBFyw=
-=PZhw
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
+-- 
+Martin K. Petersen	Oracle Linux Engineering
