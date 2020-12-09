@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8712D48DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CA72D48DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730111AbgLISWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:22:55 -0500
-Received: from gproxy7-pub.mail.unifiedlayer.com ([70.40.196.235]:57934 "EHLO
-        gproxy7-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728099AbgLISWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:22:55 -0500
-Received: from cmgw10.unifiedlayer.com (unknown [10.9.0.10])
-        by gproxy7.mail.unifiedlayer.com (Postfix) with ESMTP id D709B215D9B
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 11:22:09 -0700 (MST)
-Received: from bh-25.webhostbox.net ([208.91.199.152])
-        by cmsmtp with ESMTP
-        id n46LkuYFLDlydn46LkgV0h; Wed, 09 Dec 2020 11:22:09 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=A9VCwZeG c=1 sm=1 tr=0
- a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
- a=zTNgK-yGK50A:10:nop_rcvd_month_year
- a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=BaYeErv0AAAA:8
- a=hvDuBlm12bxQwZt2C7QA:9 a=CjuIK1q_8ugA:10:nop_charset_2
- a=bGQ4bMmlmPoowcvdo74j:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I8GmfP6hpRJ1e9IcmORUcQZIbZU+pUVsAZcRYdV366o=; b=2owOs5slhd2Er91GDytGijQzhG
-        ql02CyIKfBEmDVeDfLbOvmdRxcHGFtfWyH1TjWHq2LyU9kd7VS5GcdPmmSdIPQH1W/b4IkEl54tYr
-        umG1kgsEQsnFfHDf9Fua1FOxWOrW75fAGjujja+diQFjkYs5i7VuaR5O5dJ79NK2Vj6PiE/FxP80O
-        XSIwrzlKGFyiSTA2rYGftSao2d+KGzx2g82Ec/MwAvtIhEGQmXlI5DULDUgtggX1ewwft7QNuagL6
-        tORV/R3k312LbFUgWOwl8XiPaQc+z1lKyBY7rjwR/WabmLD9NxcpH8f5jwJ2rjIzlokIKqnBHbiCG
-        ChMaxPsg==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:49884 helo=localhost)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <linux@roeck-us.net>)
-        id 1kn46K-003bYP-UD; Wed, 09 Dec 2020 18:22:09 +0000
-Date:   Wed, 9 Dec 2020 10:22:07 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ld-version: use /usr/bin/env awk for shebank
-Message-ID: <20201209182207.GA143260@roeck-us.net>
-References: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
+        id S1732911AbgLISXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:23:13 -0500
+Received: from mga09.intel.com ([134.134.136.24]:50943 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731010AbgLISXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:23:12 -0500
+IronPort-SDR: 7at3vIrTFF+kRPfauPKVIm/rEZTAy0tYe8LpJp9+xcZ9Jk4bFXrjJWoLj6YmmyGopPaCfmETxI
+ tdvv3xvY6Ubg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174269377"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="174269377"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 10:21:24 -0800
+IronPort-SDR: prqyeNZqGcbVk2UUGVs3f5otPajswSnH0Lzw0YM9JS9crpTSNEkwdFmcTa7qxHbqiFUqpJxT1g
+ gEkHf1YhfxVg==
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="408170410"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 10:21:22 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kn46a-00DCT9-Kt; Wed, 09 Dec 2020 20:22:24 +0200
+Date:   Wed, 9 Dec 2020 20:22:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Auger Eric <eric.auger@redhat.com>, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
+ platform_get_mem_or_io_resource()
+Message-ID: <20201209182224.GU4077@smile.fi.intel.com>
+References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+ <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
+ <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
+ <20201203130719.GX4077@smile.fi.intel.com>
+ <X9Djagfnvsr7V6Ey@kroah.com>
+ <20201209164816.GS4077@smile.fi.intel.com>
+ <X9EBGV/Tnuk/HzOH@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1606828650-29841-1-git-send-email-asmadeus@codewreck.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1kn46K-003bYP-UD
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:49884
-X-Source-Auth: guenter@roeck-us.net
-X-Email-Count: 1
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+In-Reply-To: <X9EBGV/Tnuk/HzOH@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 02:17:29PM +0100, Dominique Martinet wrote:
-> /usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
-> using /usr/bin/env to have it look in PATH is more robust
-> 
-> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-> Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-> ---
-> I've been carrying these two patchs for local kernel development on
-> nixos for a while, I don't think it'd break anything for anyone so
-> might as well submit these -- please consider it :)
-> 
->  scripts/ld-version.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> index f2be0ff9a738..05476b8f8925 100755
-> --- a/scripts/ld-version.sh
-> +++ b/scripts/ld-version.sh
-> @@ -1,4 +1,4 @@
-> -#!/usr/bin/awk -f
-> +#!/usr/bin/env -S awk -f
+On Wed, Dec 09, 2020 at 05:53:45PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Dec 09, 2020 at 06:48:16PM +0200, Andy Shevchenko wrote:
+> > On Wed, Dec 09, 2020 at 03:47:06PM +0100, Greg Kroah-Hartman wrote:
+> > > On Thu, Dec 03, 2020 at 03:07:19PM +0200, Andy Shevchenko wrote:
+> > > > On Thu, Dec 03, 2020 at 01:54:38PM +0100, Auger Eric wrote:
 
-This patch results in:
+...
 
-/usr/bin/env: invalid option -- 'S'
-Try '/usr/bin/env --help' for more information.
-init/Kconfig:39: syntax error
-init/Kconfig:38: invalid statement
-scripts/kconfig/Makefile:80: recipe for target 'defconfig' failed
+> > > > Greg, do I need to do anything else with this series?
 
-when using:
+> > > Have them taken by the vfio maintainers?  I'm not that person :)
 
-env (GNU coreutils) 8.28
+> > But it can't be done with a first patch that provides a new API.
+> > The rest seems under your realm, if I didn't miss anything.
+> > Btw, VFIO agreed on the change (as per given tags).
 
-or any other version of "env" which doesn't support "-S".
+> Ok, can you resend all of these, with the vfio tags added, so I know to
+> take them all?
 
-Guenter
+Sure. Will do soon.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
