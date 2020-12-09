@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788F12D3910
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6C52D3918
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgLIC5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:57:05 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9399 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgLIC5F (ORCPT
+        id S1726974AbgLIDFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 22:05:33 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54294 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgLIDFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:57:05 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrM9z2SZLz7BgZ;
-        Wed,  9 Dec 2020 10:55:51 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 9 Dec 2020
- 10:56:20 +0800
-Subject: Re: [PATCH v3] erofs: avoiding using generic_block_bmap
-To:     Gao Xiang <hsiangkao@redhat.com>,
-        Huang Jianan <huangjianan@oppo.com>
-CC:     <linux-erofs@lists.ozlabs.org>, <guoweichao@oppo.com>,
-        <zhangshiming@oppo.com>, <linux-kernel@vger.kernel.org>
-References: <20201208131108.7607-1-huangjianan@oppo.com>
- <c71fe6a9-06ba-3871-6e0b-104f58df1df7@oppo.com>
- <20201209024415.GA33948@xiangao.remote.csb>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <fd9d991d-c048-500f-ca52-f186c42974b1@huawei.com>
-Date:   Wed, 9 Dec 2020 10:56:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 8 Dec 2020 22:05:32 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B933vWE013387;
+        Wed, 9 Dec 2020 03:04:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : in-reply-to : message-id : references : date : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=im6KM1TeupZ7+OOqaL16g9WQ+py93dKnhY0FXeXUVrg=;
+ b=CgT2u9G+DufvhAow7IPt573MPTsgelj/WTscwwx8qiipLPEte677SGvrA95oyHIIFtj1
+ +3aR1DPmDfiFXTj8R7jfEEoEGfhshcE9Gx3L6Uo+9pfEEoMODoRGJZT0Lcj6RhSkp4Cb
+ WIFVPvCeWshgSTiRQt7KK9u8u1zZCjvG0ImXHSnNpCGrIkXXRIuo+LM0uAL3AuMP+l3c
+ gfAF4QZAXkme6Ee3vL2DjCy2x/3J9GHF7wL6u6tyPA+OqvqYgnAX0CbRpsEILyu//66a
+ J/RvZqMLg7j+p1VGXFJgqMeh0BMS4ue9hQpCCkOzcvS02jsee+Wj38jGCf3JKgAapMr0 NA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3581mqwxu4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 03:04:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92tiw1007609;
+        Wed, 9 Dec 2020 03:04:26 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 358m4yujv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 03:04:26 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B934MK3021556;
+        Wed, 9 Dec 2020 03:04:22 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 19:04:20 -0800
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/2] add simple copy support
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+In-Reply-To: <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de> (Hannes Reinecke's
+        message of "Mon, 7 Dec 2020 15:56:15 +0100")
+Organization: Oracle Corporation
+Message-ID: <yq1im9bsn0a.fsf@ca-mkp.ca.oracle.com>
+References: <CGME20201204094719epcas5p23b3c41223897de3840f92ae3c229cda5@epcas5p2.samsung.com>
+        <20201204094659.12732-1-selvakuma.s1@samsung.com>
+        <20201207141123.GC31159@lst.de>
+        <01fe46ac-16a5-d4db-f23d-07a03d3935f3@suse.de>
+Date:   Tue, 08 Dec 2020 22:02:35 -0500
 MIME-Version: 1.0
-In-Reply-To: <20201209024415.GA33948@xiangao.remote.csb>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090018
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=999
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/9 10:44, Gao Xiang wrote:
-> Hi Jianan and Chao,
-> 
-> On Wed, Dec 09, 2020 at 10:34:54AM +0800, Huang Jianan wrote:
->>
->> 在 2020/12/8 21:11, Huang Jianan 写道:
-> 
-> ...
-> 
->>> -
->>>    static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
->>>    {
->>>    	struct inode *inode = mapping->host;
->>> +	struct erofs_map_blocks map = {
->>> +		.m_la = blknr_to_addr(iblock),
->>
->> Sorry for my mistake, it should be:
->>
->> .m_la = blknr_to_addr(block),
->>
-> 
-> Sigh, since my ro_fsstress doesn't cover bmap interface... I mean do we need
-> to add some testcase for this? (But it needs to be fixed anyway, plus this patch
-> looks good to me....)
-> 
-> Hi Chao,
-> could you kindly leave some free slot for this patch and
-> 
-> erofs: force inplace I/O under low memory scenario
-> https://lore.kernel.org/r/20201208054600.16302-1-hsiangkao@aol.com
 
-Will review soon. :)
+Hannes,
 
-Thanks,
+[Sorry I'm late to the discussion here, had a few fires going in
+addition to the end of the kernel cycle]
 
-> 
-> Since I'd like to merge these all for 5.11-rc1 (so we could have more time to
-> test until the next LTS version), since 5.10 is a LTS version, I tend to not
-> introduce any big modification (so in the past months, "erofs: force inplace
-> I/O under low memory scenario" never upstreamed at all.)
-> 
-> Thanks,
-> Gao Xiang
-> 
-> 
-> .
-> 
+> And we shouldn't forget that the main issue which killed all previous
+> implementations was a missing QoS guarantee.
+
+That and the fact that our arbitrary stacking situation was hard to
+resolve.
+
+The QoS guarantee was somewhat addressed by Fred in T10. But I agree we
+need some sort of toggle.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
