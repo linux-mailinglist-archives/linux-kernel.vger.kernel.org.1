@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D32D472B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5D72D471F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgLIQvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:51:53 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44984 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731919AbgLIQvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:51:44 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9GnveJ006038;
-        Wed, 9 Dec 2020 16:49:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=aRzahDN3jrem43Dn7bs3wc1568IMmJINjeUBUe+Oeqg=;
- b=np0QO0hOj3BMAFZtfgednlvJm2gcmb+elYDY6Cpw9zoYFbzRNf2Rf7CiX9GruqbfSC6O
- bNDWHiPtNnTtSCB+WJdhLpbOSIssHY6Un+Ox7y+1zm231EAMoDwMXTvUXZuaV3Y+jx9z
- pgegtWjc8qjnG4XV6IejkkAmUZVxnP/6TNEWrvcShTPfQpGCz34ic1sc2Tz36JvK6E2T
- szl9FTs7rQHiMW8fbGWXIxVMq53dcXqXCz3d2hLqP/af2Jq+mTG/UxRFJyPG1CJmZrlr
- 88dbnOffSbGN3k/sGMfzZdUm69LPypn6/gJwyGzb3p49kwVdkYf/6ELRdeh481ZTHTE5 lQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3581mr1424-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 16:49:57 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9Gjm9S157085;
-        Wed, 9 Dec 2020 16:47:53 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 358m50uye0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 16:47:53 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9GlmPJ026437;
-        Wed, 9 Dec 2020 16:47:49 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 08:47:48 -0800
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: Re: problem booting 5.10
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1sg8fq641.fsf@ca-mkp.ca.oracle.com>
-References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
-        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
-        <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
-        <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
-        <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
-        <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
-        <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
-        <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
-        <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
-        <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
-Date:   Wed, 09 Dec 2020 11:47:46 -0500
-In-Reply-To: <alpine.DEB.2.22.394.2012091644010.2691@hadrien> (Julia Lawall's
-        message of "Wed, 9 Dec 2020 16:44:29 +0100 (CET)")
+        id S1730787AbgLIQtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:49:01 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64346 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727156AbgLIQtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:49:01 -0500
+IronPort-SDR: 8vL2cbFoN8Sci9uWKh8bJ4nOymwuYvkLF9m1nWsWbcqaylA/Tt4AWmqU8kDPai+Ct6REQ2utv0
+ XBFWwXU9omPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153913835"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="153913835"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 08:47:15 -0800
+IronPort-SDR: 6xvAWiJglxtnxpO0kZJ80PwAlRLuWCAd/Zq7n4ngzD+rekWQjdcFdwC1Vb3WC6zrkzYQM4qQpH
+ yxkcVd/6RciQ==
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
+   d="scan'208";a="318354384"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 08:47:14 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kn2dU-00DB7u-33; Wed, 09 Dec 2020 18:48:16 +0200
+Date:   Wed, 9 Dec 2020 18:48:16 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Auger Eric <eric.auger@redhat.com>, linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
+ platform_get_mem_or_io_resource()
+Message-ID: <20201209164816.GS4077@smile.fi.intel.com>
+References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
+ <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
+ <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
+ <20201203130719.GX4077@smile.fi.intel.com>
+ <X9Djagfnvsr7V6Ey@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=980
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090117
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=992
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090118
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9Djagfnvsr7V6Ey@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 09, 2020 at 03:47:06PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Dec 03, 2020 at 03:07:19PM +0200, Andy Shevchenko wrote:
+> > On Thu, Dec 03, 2020 at 01:54:38PM +0100, Auger Eric wrote:
+> > > On 10/27/20 6:58 PM, Andy Shevchenko wrote:
+> > > > Switch to use new platform_get_mem_or_io_resource() instead of
+> > > > home grown analogue.
+> > > > 
+> > > > Cc: Eric Auger <eric.auger@redhat.com>
+> > > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > > Cc: Cornelia Huck <cohuck@redhat.com>
+> > > > Cc: kvm@vger.kernel.org
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Acked-by: Eric Auger <eric.auger@redhat.com>
+> > 
+> > Thanks!
+> > 
+> > Greg, do I need to do anything else with this series?
+> 
+> Have them taken by the vfio maintainers?  I'm not that person :)
 
-Julia,
-
-> 5.10-rc7 plus these three commits boots fine.
-
-Great! Thanks for confirming.
+But it can't be done with a first patch that provides a new API.
+The rest seems under your realm, if I didn't miss anything.
+Btw, VFIO agreed on the change (as per given tags).
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+With Best Regards,
+Andy Shevchenko
+
+
