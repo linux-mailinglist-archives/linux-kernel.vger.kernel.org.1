@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2842D4B41
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA522D4B3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732420AbgLIUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:08:34 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:32891 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgLIUId (ORCPT
+        id S1731791AbgLIUHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:07:17 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35610 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728197AbgLIUHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:08:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607544339;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:From:
-        Subject:Sender;
-        bh=kAc/V5WPeRumZiIL2C7//K0I/ag/3WCMLZkC6BLUYIY=;
-        b=tnN7fzM2sHaoRsjb6kd5YC4nSvZyYh+2wNJp1HWOjmlzWWEcAW5n6FmAPu13bk5z5Q
-        qvt4r9ji543zqihPd9srP18YijIbM///g6yetmY+beKKCdM7KH+yHq1Hnkd2BQBt3ldj
-        1z+IHyg/pUVwJ8xr1eU2IQxPtpuPftD5ekq8qUz+8b5iwkeGXK0/w1gupIgTJ/NduzYs
-        qTXalCN7L5drpsBjmByj2+Z5Iu9hLfTx3n+Wl9DUu3z6qv5NHI/IH/Z2LsoiNeo9Eba0
-        4bwnenL9wr/FGtrrFVaHk0P8sy903uS7eGcvJ+Q9vSNnEAKs2XqXsV19gAqhvF6R+Ajq
-        vr6g==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlafXAoNHQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.6.2 DYNA|AUTH)
-        with ESMTPSA id 908871wB9K5P8MV
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 9 Dec 2020 21:05:25 +0100 (CET)
-Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and gpio descriptors
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+        Wed, 9 Dec 2020 15:07:17 -0500
+Received: by mail-ot1-f65.google.com with SMTP id i6so2647350otr.2;
+        Wed, 09 Dec 2020 12:07:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1HYLsU5STC7VJ/5b/CCDAd83oFpysf8ukWCgZzpkajw=;
+        b=ODhUBWEkqDHe1S1TbWIbB6qYr/xwIxCAh/0pwJz0LZ9VjnVb+kd3mQOtf2sn5Fsgyk
+         Z0vO/Jioa5bNXj+RTRsF+8HzQCW2sZoUsZrgKADJFNW/nbSRkV8CvyWuhr+qhC1DSWDW
+         e7rGpZo4+w4PhdbhMxz9cMiiUY6fEhQqabE9nlDqynHCutWPF9HhshHDKyiOgtLmwAZs
+         uPXtzemgLkB1uk6ZQ6FSvHe3bV/oUCoeRDrkx8Pin8+VF1EYu+JR+jZAg1+1PwIQFhL2
+         7BcpVQ4CZKTIIk0jFd0utTh/rwba8IygoqhOFZyKQvni+CMZgKsz2jF2M+5Yq+mtTKvs
+         l6tQ==
+X-Gm-Message-State: AOAM531AMiJyRgnw39DIpnP3Oq2u+ufbdFr0gfOS0E7FzSZHDMyh942J
+        PFy9WWwEKfDgpq2NWMM+Aw==
+X-Google-Smtp-Source: ABdhPJxOThJOKUGLNNKnA40U7hoYgiUoo0PMRXTR8QsxpXqzTs5LHfDKWfPAWRI5HkfXBrHXfL6l/Q==
+X-Received: by 2002:a9d:6414:: with SMTP id h20mr3238999otl.28.1607544395563;
+        Wed, 09 Dec 2020 12:06:35 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c1sm585262ots.68.2020.12.09.12.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:06:34 -0800 (PST)
+Received: (nullmailer pid 854981 invoked by uid 1000);
+        Wed, 09 Dec 2020 20:06:32 -0000
+Date:   Wed, 9 Dec 2020 14:06:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kun Yi <kunyi@google.com>
+Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jdelvare@suse.com,
+        supreeth.venkatesh@amd.com, robh+dt@kernel.org, linux@roeck-us.net,
+        mark.rutland@arm.com, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH linux hwmon-next v4 3/3] dt-bindings: (hwmon/sbtsi_tmep)
+ Add SB-TSI hwmon driver bindings
+Message-ID: <20201209200632.GA854934@robh.at.kernel.org>
+References: <20201202165601.1532213-1-kunyi@google.com>
+ <20201202165601.1532213-4-kunyi@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20201209210133.44ab9c97@aktux>
-Date:   Wed, 9 Dec 2020 21:05:24 +0100
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <09D41BD9-F6BA-4566-8151-ACB3B2274B52@goldelico.com>
-References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com> <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com> <3FA1D050-3BD5-4A97-9D83-520CCF75D147@goldelico.com> <CAGngYiVL9M72hFRWnmT_8RRX9pUTSLsNuYz6mUo0Be4Vivk7Xw@mail.gmail.com> <20201209210133.44ab9c97@aktux>
-To:     Andreas Kemnade <andreas@kemnade.info>
-X-Mailer: Apple Mail (2.3124)
+Content-Disposition: inline
+In-Reply-To: <20201202165601.1532213-4-kunyi@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+On Wed, 02 Dec 2020 08:56:01 -0800, Kun Yi wrote:
+> Document device tree bindings for AMD SB-TSI emulated temperature
+> sensor.
+> 
+> Signed-off-by: Kun Yi <kunyi@google.com>
+> ---
+>  .../devicetree/bindings/hwmon/amd,sbtsi.yaml  | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+> 
 
-> Am 09.12.2020 um 21:01 schrieb Andreas Kemnade <andreas@kemnade.info>:
->=20
-> On Wed, 9 Dec 2020 14:04:26 -0500
-> Sven Van Asbroeck <thesven73@gmail.com> wrote:
->=20
->> On Wed, Dec 9, 2020 at 1:16 PM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>>=20
->>> This is also what made me wonder if that is really intended because =
-then
->>> the whole discussion about the cs-gpio-flags and inversion and the =
-fixes
->>> would not have been needed. The current code and fixes are all about
->>> not ignoring the flags... =20
->>=20
->> The inversion you witnessed was a bug caused by spi client drivers =
-that
->> simply "plow over" the SPI_CS_HIGH mode flag. This includes the panel =
-driver
->> you're using, see:
->> =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dr=
-ivers/gpu/drm/panel/panel-tpo-td028ttec1.c?h=3Dv5.10-rc6#n337
->>=20
-> ah, it would be set in spi->mode and is cleared by
->=20
-> spi->mode =3D SPI_MODE_3;
->=20
->=20
-> Hmm, but we have
->                      spi-cpol;
->                        spi-cpha;
-> in devicetree. Why do we need that spi->mode line at all?
-
-Because it is there in almost all or at least many drivers.
-
-But I have tested with=20
-
-> spi->mode |=3D SPI_MODE_3;
-
-which should keep the mode intact. Right? That did not work either.
-
-So let's not derail the discussion by moving to the code of some
-specific driver. Even if that is wrong it does not solve what
-this patch wants to solve.
-
-BR and thanks,
-Nikolaus
-
+Reviewed-by: Rob Herring <robh@kernel.org>
