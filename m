@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C412D4DE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFB12D4E17
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388856AbgLIWdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:33:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388604AbgLIWc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:32:57 -0500
-Date:   Wed, 9 Dec 2020 17:32:06 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Stanislaw Gruszka <stf_xl@wp.pl>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-Message-ID: <20201209223206.GA1935@home.goodmis.org>
-References: <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
- <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
- <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
- <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
- <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
- <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
- <20201209144628.GA3474@wp.pl>
- <20201209150826.GP7338@casper.infradead.org>
- <20201209155148.GA5552@wp.pl>
- <20201209180552.GA28692@infradead.org>
+        id S2389035AbgLIWic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:38:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55026 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389017AbgLIWh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 17:37:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607553391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cSrpEENT4BnIOutizsuJT3GtR1FFCTPvbLdR2uZhziE=;
+        b=X9k3SUCuk/SgPtrKZZ31Iu/xNDA8HyDmEZDPdWFjMmgVIo05lD9FFEewzeZvXyt9Le9cyR
+        aYvFh2QWW4jO59HMs4rRiUelV8Or5Iy2w/Vl4pPgiAt3ymytcCbOCkOJSirhr/K5znmP7F
+        SbYyyxKDkTYxF90joVsZJfptm/932UM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-hfsCSptnNgifgsVVCKkZLA-1; Wed, 09 Dec 2020 17:36:26 -0500
+X-MC-Unique: hfsCSptnNgifgsVVCKkZLA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 430AE8712DA;
+        Wed,  9 Dec 2020 22:36:16 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA11D5D9CA;
+        Wed,  9 Dec 2020 22:36:15 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 17:36:15 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Song Liu <songliubraving@fb.com>, axboe@kernel.dk
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com,
+        Matthew Ruffell <matthew.ruffell@canonical.com>,
+        Xiao Ni <xni@redhat.com>
+Subject: Re: Revert "dm raid: remove unnecessary discard limits for raid10"
+Message-ID: <20201209223615.GA2752@redhat.com>
+References: <20201209215814.2623617-1-songliubraving@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209180552.GA28692@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201209215814.2623617-1-songliubraving@fb.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 06:05:52PM +0000, Christoph Hellwig wrote:
-> On Wed, Dec 09, 2020 at 04:51:48PM +0100, Stanislaw Gruszka wrote:
-> > On Wed, Dec 09, 2020 at 03:08:26PM +0000, Matthew Wilcox wrote:
-> > > On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
-> > > > At this point of release cycle we should probably go with revert,
-> > > > but I think the main problem is that BPF and ERROR_INJECTION use
-> > > > function that is not intended to be used externally. For external users
-> > > > add_to_page_cache_lru() and add_to_page_cache_locked() are exported
-> > > > and I think those should be used (see the patch below).
-> > > 
-> > > FWIW, I intend to do some consolidation/renaming in this area.  I
-> > > trust that will not be a problem?
-> > 
-> > If it does not break anything, it will be not a problem ;-)
-> > 
-> > It's possible that __add_to_page_cache_locked() can be a global symbol
-> > with add_to_page_cache_lru() + add_to_page_cache_locked() being just
-> > static/inline wrappers around it.
+On Wed, Dec 09 2020 at  4:58pm -0500,
+Song Liu <songliubraving@fb.com> wrote:
+
+> This reverts commit f0e90b6c663a7e3b4736cb318c6c7c589f152c28.
 > 
-> So what happens to BTF if we change this area entirely?  Your IDs
-> sound like some kind of ABI to me, which is extremely scary.
+> Matthew Ruffell reported data corruption in raid10 due to the changes
+> in discard handling [1]. Revert these changes before we find a proper fix.
+> 
+> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1907262/
+> Cc: Matthew Ruffell <matthew.ruffell@canonical.com>
+> Cc: Xiao Ni <xni@redhat.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
-Is BTF becoming the new tracepoint? That is, random additions of things like:
+If you're reverting all the MD code that enabled this DM change, then
+obviously the DM change must be reverted too.  But please do _not_
+separate the DM revert from the MD reverts.
 
-   BTF_ID(func,__add_to_page_cache_locked)
+Please include this in a v2 pull request to Jens.
 
-Like was done in commit 1e6c62a882155 ("bpf: Introduce sleepable BPF
-programs") without any notification to the maintainers of the
-__add_to_page_cache_locked code, will suddenly become an API?
+Mike
 
-There's no mention in the change log to why __add_to_page_cache_locked was
-added. And interesting enough, __add_to_page_cache_locked is not in any header
-file, which is why it was switched to static.
-
--- Steve
-
+> ---
+>  drivers/md/dm-raid.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+> index 9c1f7c4de65b3..dc8568ab96f24 100644
+> --- a/drivers/md/dm-raid.c
+> +++ b/drivers/md/dm-raid.c
+> @@ -3728,6 +3728,17 @@ static void raid_io_hints(struct dm_target *ti, struct queue_limits *limits)
+>  
+>  	blk_limits_io_min(limits, chunk_size_bytes);
+>  	blk_limits_io_opt(limits, chunk_size_bytes * mddev_data_stripes(rs));
+> +
+> +	/*
+> +	 * RAID10 personality requires bio splitting,
+> +	 * RAID0/1/4/5/6 don't and process large discard bios properly.
+> +	 */
+> +	if (rs_is_raid10(rs)) {
+> +		limits->discard_granularity = max(chunk_size_bytes,
+> +						  limits->discard_granularity);
+> +		limits->max_discard_sectors = min_not_zero(rs->md.chunk_sectors,
+> +							   limits->max_discard_sectors);
+> +	}
+>  }
+>  
+>  static void raid_postsuspend(struct dm_target *ti)
+> -- 
+> 2.24.1
+> 
 
