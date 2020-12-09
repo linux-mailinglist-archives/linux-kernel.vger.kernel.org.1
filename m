@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5D42D3A6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7034B2D3A70
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727404AbgLIFZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726943AbgLIFZz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:25:55 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CB2C0613D6;
-        Tue,  8 Dec 2020 21:25:15 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kmryS-00025T-Qr; Wed, 09 Dec 2020 06:25:12 +0100
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1607063223.git.linux@leemhuis.info>
- <20201208104445.0f82ae78@lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v4 0/3] New documentation text describing how to report
- issues (aka "reporting-bugs rewritten")
-Message-ID: <578165ed-a62d-17df-32ba-188248639d12@leemhuis.info>
-Date:   Wed, 9 Dec 2020 06:25:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727460AbgLIF0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:26:22 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54501 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726943AbgLIF0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 00:26:21 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrQVl3D2Rz9sWK;
+        Wed,  9 Dec 2020 16:25:35 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607491535;
+        bh=MKm4YaY54mjqQIyd8PdoeI0X0w5w3qrs01+JxPtWH+o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qJsTL8N+5C5RPvw4bU9LKO0l78qaCsQgXqBOgzatTk6omk/0TsgCk7b8KGiXogR8b
+         MnVy/M2y5AwI9Hp0tuobm0j9TwUMfDxzvNjfqpN5GKrZxRJoE5dwO7OhPWK5Fr8nCE
+         Ro9Wh3ap7sGl2TYGp9QoIgQ1LLpViHWZLfT4xZoZoOp2HLi4Or7v0HP+asGA1e3TEs
+         1F1aSyDyHhYiFtWn8PXRZ6O9doTfYgFA3Nv/GfJRfkLycHxiq3616kzsiFRPu/hPoa
+         jvF47JGGjahch0GwYo8aJ0oKwbbv+VFX9COyu0QTVBRrpjc1/WKTwvWrN1fJ3RK6xH
+         xdWYtFKlEqjEA==
+Date:   Wed, 9 Dec 2020 16:25:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Mackerras <paulus@ozlabs.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the kvm-ppc tree
+Message-ID: <20201209162531.4280c64c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201208104445.0f82ae78@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1607491515;bbc4c3aa;
-X-HE-SMSGID: 1kmryS-00025T-Qr
+Content-Type: multipart/signed; boundary="Sig_/Lc/qF7pK5aKwhOR94Lv+UsV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.12.20 um 18:44 schrieb Jonathan Corbet:
-> On Fri,  4 Dec 2020 07:43:47 +0100
-> Thorsten Leemhuis <linux@leemhuis.info> wrote:
-> 
->> This series adds a new and mostly finished document describing how to report
->> issues with the Linux kernel to its developers.
-> OK, I have applied this series.
+--Sig_/Lc/qF7pK5aKwhOR94Lv+UsV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Great, many thx! When I sent the first rfc I had expected it would take 
-a lot longer to reach this point. But well, there is still a lot to do, 
-just that it will happen in-tree now. Will keep an eye on things and 
-work towards getting the remaining issues resolved.
+Hi all,
 
-Side note: Just sent the first (brown paper bag) patch for the text[1], 
-as I messed up in one of the last few changes I did -- and obviously I 
-only noticed this stupid mistake after you merged it. :-/ Sorry for the 
-trouble.
+Commit
 
-Ciao, Thorsten
+  2259c17f0188 ("kvm: x86: Sink cpuid update into vendor-specific set_cr4 f=
+unctions")
 
-https://lore.kernel.org/linux-doc/d3894ba4a302beed661304cbcdc062c6dcfe3e58.1607489877.git.linux@leemhuis.info/
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Lc/qF7pK5aKwhOR94Lv+UsV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/QX8sACgkQAVBC80lX
+0Gy8CAf+OOZ65xPguEYDcWvr3OpIL9NWhNwdkhiczLFIj22julIjkxLnKOwqBHvx
+pNVGmcbT0PsRkvxbBD9IEkeBWmH274K21lUJI5v3jDR6AONqmv4Pg9YuX9F5lO+g
+K+ZTz2jvDxrH4RKO3tugl2GL9Eb45z5LxDTLtWV4xf2997tQa+dXBbTtiMuXZ+7o
+0BDQMevbJ773nTWcmwHD8wnKKvOdJ2Y/l6QmrEp9I+rv/f79z6a6lma2FUQ1O3Qg
+cRuFl4NPe7o8SsizJyODY9MAfqXFqMALqpSutF1eqDrdr7lb9lLTHAjProJpzZHC
+hm3r97V+K/hOiEa80GBB0yxIbjkNmQ==
+=geIM
+-----END PGP SIGNATURE-----
+
+--Sig_/Lc/qF7pK5aKwhOR94Lv+UsV--
