@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA322D469C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61C52D469F
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731812AbgLIQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:19:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35412 "EHLO mail.kernel.org"
+        id S1731957AbgLIQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:21:37 -0500
+Received: from nautica.notk.org ([91.121.71.147]:43620 "EHLO nautica.notk.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730122AbgLIQTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:19:49 -0500
-Date:   Wed, 9 Dec 2020 21:49:04 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607530748;
-        bh=UiXw9GG/DxEw7106Ul5j+DKt0C+sVjoN2mmwscIn3M4=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qNmXn9vqgwyd7EBbR3MWxpNvfbeLCADe5ocMmuLy3CZKkKiJmx+PbMTmt+Jqg+pXG
-         1dCWrPdDGsNSt5ai85SKlbGJhMNuTK1RMGt/V1k0Hv3wbde7TljnYSpURbtGbjDoVV
-         n7pAaKEsRKuRiIyoUuHNUj97U07YZv32zos5p+qxAUbf7Dp3XUts0Rbgasy88jK47l
-         gksEfM8mxjrwP/Zm1khRhOpQkOm8O81OpqEZ0KzS6CT73NeSMlLPVTRfYYwedAmRO4
-         6eZrZKKbSg/XETd9nB38bVxAYmumWsUIFVu+1XBkLrkWRa/kmWA5/oMXQnyNsT76Jb
-         Ro42h4kenOQfA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.11
-Message-ID: <20201209161904.GL8403@vkoul-mobl>
-References: <20201209125657.GJ8403@vkoul-mobl>
- <X9DRB9bHUvb0UV7u@kroah.com>
+        id S1731338AbgLIQVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:21:21 -0500
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 33C14C009; Wed,  9 Dec 2020 17:20:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1607530835; bh=keyoWzApK04/Bs9zCELFJu/kJwHnZGUNf7oCPH/UEoU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yZWf3cTDPiCpzyz1E21AfgwszWxOKRIc3SGpOdKG92wbSuOqyswoELlXOhBA9x6wz
+         i2qmRj5vltbWK/V/hMBJe1ug4F1XqoNY+ENI9oBUBeYVKWCrG4YtulddGBN/3OMNDf
+         zA4VkSni3oSfPc9F3+160zuFkaNh+QdVljP6LH+b1MFaFZnEoS5uGNWgRzM8mhN6BY
+         1ij9Z2KoluBQ/odFJcQd/yV2Elzqig2GfZ3p1gqlgQhGc/LyszqId3pnI4qswt4Bbz
+         2Xt/Z0pWnEP0W+OO3Gg92N/qP3m7XuRIyejvR7k88I3HASK6eU/QURwBFnhcz5uaNp
+         xEU5BrD7MLTrw==
+Date:   Wed, 9 Dec 2020 17:20:20 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Subject: Re: Broken /usr/bin/env (invalid option)
+Message-ID: <20201209162020.GA15684@nautica>
+References: <20201209122437.GA26815@kozik-lap>
+ <20201209130709.GB15469@nautica>
+ <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X9DRB9bHUvb0UV7u@kroah.com>
+In-Reply-To: <CAJKOXPfXkZdVUuunpvLOCEim0TfRwG62hvrZu_R8vGkA+ZOapQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-12-20, 14:28, Greg KH wrote:
-> On Wed, Dec 09, 2020 at 06:26:57PM +0530, Vinod Koul wrote:
-> > Hello Greg,
-> > 
-> > Here is the pull request for phy susbsystem. All the changes are already
-> > in linux-next, sorry for delayed request this time.
-> > 
-> > The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-> > 
-> >   Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-> > 
-> > are available in the Git repository at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.11
+Krzysztof Kozlowski wrote on Wed, Dec 09, 2020:
+> > Hm, what version of env is that?
+> > I only checked on a couple of systems that env -S exists, but it might
+> > not be available (e.g. now I'm looking, at least busybox env does not
+> > provide -S)
 > 
-> Note I do have the following error when sending out emails for this:
-> 
-> Commit: 4ea0bf2a52f1 ("phy: tegra: xusb: Fix usb_phy device driver field")
-> 	Fixes tag: Fixes: e8f7d2f409a1 ("phy: tegra: xusb: Add usb-phy support")
-> 	Has these problem(s):
-> 	        - empty lines surround the Fixes tag
-> 
-> Try to watch out for that in the future.
+> $ env --version
+> env (GNU coreutils) 8.25
 
-Thanks I do and manually fix up and checkpatch also complains so my
-apply script should have let me know, not sure how this got missed.
+Ok, so this is a much newer option than I thought it was, sorry for my
+lack of checking.
+I know we no longer support older gccs but it's probably best to keep
+supporting this.
 
-Apologies for this
--- 
-~Vinod
+> > I don't see any way to make this work out of the box for me (awk not in
+> > /usr/bin) and you (env not supporting -S), but I guess I can keep that
+> > patch around locally...
+> 
+> You could add a wrapper which uses PATH or searches for the awk...
+> kind of reimplement other tools. Another solution is to clearly
+> document the requirements for the build system and explicitly say that
+> older systems like four-year Ubuntu are not supported.
+
+Well there definitely are ways, but I'm not sure it's worth it...
+For example another idea is just to use /bin/sh (which is mandated to
+exist) and have it invoke awk, the script is short enough to just quote
+it.
+
+
+Yamada-san, how about this instead?
+But to be honest I'm fine with dropping my patch altogether, I'll work
+around it locally if it's too much.
+---
+From d53ef3b4c55aa2ea5f9ae887b3e1ace368f30f66 Mon Sep 17 00:00:00 2001
+From: Dominique Martinet <asmadeus@codewreck.org>
+Date: Wed, 15 Jul 2020 16:00:13 +0200
+Subject: [PATCH] ld-version: use /bin/sh then awk for shebank
+
+/usr/bin/awk is not garanteed to exist (and doesn't on e.g. nixos),
+using /bin/sh and invoking awk to have it look in PATH is more robust.
+
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+
+diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+index f2be0ff9a738..02dbad7b5613 100755
+--- a/scripts/ld-version.sh
++++ b/scripts/ld-version.sh
+@@ -1,11 +1,11 @@
+-#!/usr/bin/awk -f
++#!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+ # extract linker version number from stdin and turn into single number
+-       {
++awk '{
+        gsub(".*\\)", "");
+        gsub(".*version ", "");
+        gsub("-.*", "");
+        split($1,a, ".");
+        print a[1]*100000000 + a[2]*1000000 + a[3]*10000;
+        exit
+-       }
++}'
+
