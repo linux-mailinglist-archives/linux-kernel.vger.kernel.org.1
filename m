@@ -2,85 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3092D4B17
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0564A2D4B25
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388035AbgLITzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:55:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729904AbgLITzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:55:08 -0500
-Date:   Wed, 9 Dec 2020 19:54:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607543667;
-        bh=U6M7AWAv6/CKWCwL3u7zyzCT2QpPcnIsDTnxCILhtoE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B5oePjpSYh/pjaTGOBdUkD/N7rmXPeOGWuunrd7QJVC9tLjyz3Gu+CnZOXuqP2JDd
-         f7t1X14sl/CQtxf/+P/TN2h1DDCIbfBYvWFJl0Fv8c3rHGS3pZf6H8aDwUa8+Q7Qhq
-         0G21lwqvUiJjyiVhgX9p/0HIeFGKwazd2PzjLYv1iBV+4T31h6qF7pg/HSPshlUk7H
-         tGgCc+GIG4NDEeKu6GcUoT+AtckMhzVhXQw+niZS76SAwF72Zyx7BowkZle4akVw87
-         TXxBbXhHQXS8b6YknfSt56wB8/uT/t2KUmaat/YT48sUXK3w+15Sa1hk7rA9JXeWN1
-         eCoiWm2cN6RCQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max
- speed
-Message-ID: <20201209195420.GD4790@sirena.org.uk>
-References: <20201209173514.93328-1-tudor.ambarus@microchip.com>
- <20201209194636.32f4ioxxdggezklr@mobilestation>
+        id S1731303AbgLIT7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:59:39 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33710 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729464AbgLIT7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 14:59:38 -0500
+Received: by mail-ot1-f68.google.com with SMTP id b18so2618858ots.0;
+        Wed, 09 Dec 2020 11:59:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+pvzbHKq5P+CN5Drt0/pztOsI1TY4xEzgPuXa4sIK7Y=;
+        b=owRw0KWslDkSOGupNtTLmDFEH2YcK7oBKc2H6inJ93GYYmY1a71abqyVhSgZ+P/dSV
+         zT8M481pbEj/PqqVW3bwGZB5ieyoqtlJJO+BsRd7uoFMfyGfyKAqze3S/Fr1zQ8wRUv1
+         cSX8dsecdRAMrejJoP+NSSYhWahUfjVpJY37F/tYkGbeNAhfuVx7lfzU5aJJTusKsrE4
+         GXx/tY6oRID+T9AXzBvAJQSm9kWa+Y8qkjcmIhev/wQa4QN/Y98ODSlUyAWp1i4Wdxog
+         yxsj73j0Kd6dMXmRXr4DMZto95dQi1UQmU4ROaCaOOkhbOxuKrDF/nXtejnudgp+Zi0S
+         Q3Rg==
+X-Gm-Message-State: AOAM533U0fDab+D4cjJfbMpvORu8lEB0KqPN29QVP01jkQhjCBgIYGbM
+        yETp0CvlqllubJphAL0tWeQjEVilPw==
+X-Google-Smtp-Source: ABdhPJxEVPLrdafqyzcpp1ev7QPjSU0+xop7tvZS/JozmphNa69mJdgiNkDOfyS6uPvlK984SZ17uw==
+X-Received: by 2002:a9d:7304:: with SMTP id e4mr3236056otk.228.1607543936929;
+        Wed, 09 Dec 2020 11:58:56 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i82sm506208oia.2.2020.12.09.11.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 11:58:56 -0800 (PST)
+Received: (nullmailer pid 844417 invoked by uid 1000);
+        Wed, 09 Dec 2020 19:58:54 -0000
+Date:   Wed, 9 Dec 2020 13:58:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz, matthias.bgg@gmail.com,
+        dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v11 4/5] dt-bindings: leds: Add bindings for MT6360 LED
+Message-ID: <20201209195854.GA838381@robh.at.kernel.org>
+References: <1606906011-25633-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1606906011-25633-5-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YToU2i3Vx8H2dn7O"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201209194636.32f4ioxxdggezklr@mobilestation>
-X-Cookie: sillema sillema nika su
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1606906011-25633-5-git-send-email-gene.chen.richtek@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 02, 2020 at 06:46:50PM +0800, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add bindings document for LED support on MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  .../devicetree/bindings/leds/leds-mt6360.yaml      | 159 +++++++++++++++++++++
+>  1 file changed, 159 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-mt6360.yaml b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> new file mode 100644
+> index 0000000..73c67b1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-mt6360.yaml
+> @@ -0,0 +1,159 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-mt6360.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LED driver for MT6360 PMIC from MediaTek Integrated.
+> +
+> +maintainers:
+> +  - Gene Chen <gene_chen@richtek.com>
+> +
+> +description: |
+> +  This module is part of the MT6360 MFD device.
+> +  see Documentation/devicetree/bindings/mfd/mt6360.yaml
+> +  Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
+> +  and 4-channel RGB LED support Register/Flash/Breath Mode
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6360-led
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "(^led@[0-5]$|led)":
 
---YToU2i3Vx8H2dn7O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+"^(multi-)?led@[0-5]$":
 
-On Wed, Dec 09, 2020 at 10:46:36PM +0300, Serge Semin wrote:
-
-> On Wed, Dec 09, 2020 at 07:35:14PM +0200, Tudor Ambarus wrote:
-
-> > Make sure the max_speed_hz of spi_device does not override
-> > the max_speed_hz of controller.
-
-> I have doubts that's right thing to do. It seems better to let
-> the controller driver to handle the speed clamping itself, while
-> to leave the SPI client device max_speed_hz field describing the
-> device speed capability. Moreover the SPI-transfers passed to the
-> controller will have a SPI-bus speed fixed in accordance with the
-> controller and client device capabilities anyway.
-> See the __spi_validate() method for details:
-> https://elixir.bootlin.com/linux/v5.10-rc7/source/drivers/spi/spi.c#L3570
-
-Right, in general we aim to do this sort of fixup on the transfers
-and messages rather than the devices, I guess we might be missing
-validation in some of the flash acceleration paths or was this an issue
-seen through inspection?
-
---YToU2i3Vx8H2dn7O
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/RK2sACgkQJNaLcl1U
-h9AOogf/bm8GIbL9U7qDE6v/ghRo5Tj9+6YBvMNAsTKtmGctQqMB2AYegZ2VEeHQ
-9EuV70kEux34udEG4pgmOqcSyZOt1WWgkkE6BvEHQHONgZ9y75JkyIfBk3/iuwpN
-HIOugg60B1ZaJShUIQynQj5RWKlgZ/T4ksR+v5BGB30kZzirOgtSKEQ7o0bDKyAy
-1q1RK9r9ycVfWsqHQz9aFEoYWBmC9i/qyUxD0enjx+BjTEar7daNI1XrG4z5Bnzl
-6TpHTUSdFa+RLQP0gQ7/ltCBca2z9jDd96xk6jNTcjrEJhXSbuIA/BhCUDjG7WtY
-13AEwYvRAZMXSkYSuiNoXA9Y6S/N+g==
-=TYn1
------END PGP SIGNATURE-----
-
---YToU2i3Vx8H2dn7O--
+> +    type: object
+> +    $ref: common.yaml#
+> +    description:
+> +      Properties for a single LED.
+> +
+> +    properties:
+> +      reg:
+> +        description: Index of the LED.
+> +        enum:
+> +          - 0 # LED output ISINK1
+> +          - 1 # LED output ISINK2
+> +          - 2 # LED output ISINK3
+> +          - 3 # LED output ISINKML
+> +          - 4 # LED output FLASH1
+> +          - 5 # LED output FLASH2
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +   #include <dt-bindings/leds/common.h>
+> +   led-controller {
+> +     compatible = "mediatek,mt6360-led";
+> +     #address-cells = <1>;
+> +     #size-cells = <0>;
+> +
+> +     multi-led@0 {
+> +       reg = <0>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_RGB>;
+> +       led-max-microamp = <24000>;
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +       led@0 {
+> +         reg = <0>;
+> +         color = <LED_COLOR_ID_RED>;
+> +       };
+> +       led@1 {
+> +         reg = <1>;
+> +         color = <LED_COLOR_ID_GREEN>;
+> +       };
+> +       led@2 {
+> +         reg = <2>;
+> +         color = <LED_COLOR_ID_BLUE>;
+> +       };
+> +     };
+> +     led@3 {
+> +       reg = <3>;
+> +       function = LED_FUNCTION_MOONLIGHT;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       led-max-microamp = <150000>;
+> +     };
+> +     led@4 {
+> +       reg = <4>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <1>;
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +     led@5 {
+> +       reg = <5>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <2>;
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +   };
+> +
+> +  - |
+> +
+> +   led-controller {
+> +     compatible = "mediatek,mt6360-led";
+> +     #address-cells = <1>;
+> +     #size-cells = <0>;
+> +
+> +     led@0 {
+> +       reg = <0>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_RED>;
+> +       led-max-microamp = <24000>;
+> +     };
+> +     led@1 {
+> +       reg = <1>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_GREEN>;
+> +       led-max-microamp = <24000>;
+> +     };
+> +     led@2 {
+> +       reg = <2>;
+> +       function = LED_FUNCTION_INDICATOR;
+> +       color = <LED_COLOR_ID_BLUE>;
+> +       led-max-microamp = <24000>;
+> +     };
+> +     led@3 {
+> +       reg = <3>;
+> +       function = LED_FUNCTION_MOONLIGHT;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       led-max-microamp = <150000>;
+> +     };
+> +     led@4 {
+> +       reg = <4>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <1>;
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +     led@5 {
+> +       reg = <5>;
+> +       function = LED_FUNCTION_FLASH;
+> +       color = <LED_COLOR_ID_WHITE>;
+> +       function-enumerator = <2>;
+> +       led-max-microamp = <200000>;
+> +       flash-max-microamp = <500000>;
+> +       flash-max-timeout-us = <1024000>;
+> +     };
+> +   };
+> +...
+> -- 
+> 2.7.4
+> 
