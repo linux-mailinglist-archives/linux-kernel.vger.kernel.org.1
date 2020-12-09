@@ -2,126 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB382D4200
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D43FF2D4213
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 13:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgLIMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:18:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43162 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731611AbgLIMSU (ORCPT
+        id S1731491AbgLIMVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 07:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731429AbgLIMVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:18:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607516214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FGNvVuHxlofEiNqFwm4S5XvgARTAcfm7dvdf/jd/fjk=;
-        b=H4pc/ExOcw0h+p+FFgqgAilcnzYtx+9FB1ZWESHBx0vI3RTx0M6njErjzYyu37INE99kOq
-        ruZKdBvO8VDao2dau9IZbVOeOKh09NPnfZiIBx6RMqcTEmnjQWDxzeGwkJZ96DS8IJ9rhG
-        UQ3q/JS8yHPVXxhZs3gCj2f7zheMMFI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-jxs4pzDNPgK02AI51EzWGA-1; Wed, 09 Dec 2020 07:16:51 -0500
-X-MC-Unique: jxs4pzDNPgK02AI51EzWGA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00AA6A0CDC;
-        Wed,  9 Dec 2020 12:16:45 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-67.rdu2.redhat.com [10.10.116.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CBA2460BD8;
-        Wed,  9 Dec 2020 12:16:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 18/18] certs: Replace K{U,G}IDT_INIT() with
- GLOBAL_ROOT_{U,G}ID
-From:   David Howells <dhowells@redhat.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        David Woodhouse <dwmw2@infradead.org>, dhowells@redhat.com,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 09 Dec 2020 12:16:42 +0000
-Message-ID: <160751620296.1238376.1118832878833351723.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
-References: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Wed, 9 Dec 2020 07:21:08 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2DCC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:20:27 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id y17so1502909wrr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 04:20:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aHCC0yRuI2Aim1ZZrGfctlyo8NKoBLz1xesJmBQo8bs=;
+        b=PQVtFyoXOjUSWtR0QJvOn8aslWm/UdWawnoWNycULCE2ti+XJj54hslJj7MmdfJQHP
+         vvp+yY8grrMtvdvBLPTkvcpMa0TsLh391vZNEI6/ZGEpSpDt6XccPdtGGDSpjrkObqFE
+         JkR8gJX2GFfegtnNRCxPwi3k4flMOZ+SIUTYOitNRJ1vp3OunYPaEP9awKKyrhQBgblC
+         xgplTBBXa+uUWjUNyJ3MHfuYEKyGPbPL1JpvD6N8CjBJWasqJSlBOb453RU0a1NfsmY3
+         H6/kOE7NI86AuJXx0yRKJZ8JocGPyzq59txDZcfLQNQyPGUBcMeH5LtDudLBJ8nNH8pj
+         709A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aHCC0yRuI2Aim1ZZrGfctlyo8NKoBLz1xesJmBQo8bs=;
+        b=S6HDNAscHxcfKGhwUBZ52N1lSKzGHFhcJmX9C/wgrUT070p28XyM16irY6uxudGKMr
+         AW8ZxxUcmaqUmu0mmKJOtSKqw3lecxQRPyv95DyhIUiyQX4SiWytEW08TRRM+DrSWsfN
+         lfiE4r1Kz6PIW759eSiwdXOhMLqHorofncg1RwFpD/YKKc9wCPswoET7oMcDeIzBz1Dp
+         52s6LV/pH3wlbmE4PpBUyIjggal2e10az5MVhfLDBQp/cI58wS4P/GeK0OWz5MB+vBgr
+         RnIQKGX3s9vkawVd7KZEehtuhRizLDUiXQ9q1TjSq86dlKljqgc5C1HbZSNC5MdFeFqv
+         OTWg==
+X-Gm-Message-State: AOAM5328XsjyUuRptcMcRFUNt5wZ5wKkEMLZbKYF0LqJ9xV/m1jrAs8b
+        JhFUB4+NUq9a3dsAvL1A+D6QQcGTYo5q6Q==
+X-Google-Smtp-Source: ABdhPJwCAx9d6RPtrhjLPCHIJkDSQRUPCHEEfrSRPfijPR0WZIwVheBUpkgD+CINnKd5rVQ68vS7iQ==
+X-Received: by 2002:a5d:6cc9:: with SMTP id c9mr79792wrc.411.1607516425978;
+        Wed, 09 Dec 2020 04:20:25 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad? ([2a01:e34:ed2f:f020:8cf2:3820:1fbd:70ad])
+        by smtp.googlemail.com with ESMTPSA id l11sm2969614wmh.46.2020.12.09.04.20.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 04:20:25 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Emit a warning if the thermal zone is
+ updated without ops
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rui.zhang@intel.com, Thara Gopinath <thara.gopinath@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201207190530.30334-1-daniel.lezcano@linaro.org>
+ <2b8ce280-cb91-fb23-d19a-00dcee2a3e5a@arm.com>
+ <81e25f27-344e-f6c2-5f08-68068348f7ba@linaro.org>
+ <dd5f9f97-ab30-5bb0-1211-66d211035968@arm.com>
+ <7dff767d-3089-584e-f77d-33018faa38ea@linaro.org>
+ <90989e59-f880-93df-7fbf-74c26fa8258f@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <652ae54b-45aa-eef2-bf96-b4eae941ef04@linaro.org>
+Date:   Wed, 9 Dec 2020 13:20:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <90989e59-f880-93df-7fbf-74c26fa8258f@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+On 09/12/2020 11:41, Lukasz Luba wrote:
+> 
+> 
+> On 12/8/20 3:19 PM, Daniel Lezcano wrote:
+>> On 08/12/2020 15:37, Lukasz Luba wrote:
+>>>
+>>>
+>>> On 12/8/20 1:51 PM, Daniel Lezcano wrote:
+>>>>
+>>>> Hi Lukasz,
+>>>>
+>>>> On 08/12/2020 10:36, Lukasz Luba wrote:
+>>>>> Hi Daniel,
+>>>>
+>>>> [ ... ]
+>>>>
+>>>>>>       static void thermal_zone_device_init(struct thermal_zone_device
+>>>>>> *tz)
+>>>>>> @@ -553,11 +555,9 @@ void thermal_zone_device_update(struct
+>>>>>> thermal_zone_device *tz,
+>>>>>>         if (atomic_read(&in_suspend))
+>>>>>>             return;
+>>>>>>     -    if (!tz->ops->get_temp)
+>>>>>> +    if (update_temperature(tz))
+>>>>>>             return;
+>>>>>>     -    update_temperature(tz);
+>>>>>> -
+>>>>>
+>>>>> I think the patch does a bit more. Previously we continued running the
+>>>>> code below even when the thermal_zone_get_temp() returned an error
+>>>>> (due
+>>>>> to various reasons). Now we stop and probably would not schedule next
+>>>>> polling, not calling:
+>>>>> handle_thermal_trip() and monitor_thermal_zone()
+>>>>
+>>>> I agree there is a change in the behavior.
+>>>>
+>>>>> I would left update_temperature(tz) as it was and not check the
+>>>>> return.
+>>>>> The function thermal_zone_get_temp() can protect itself from missing
+>>>>> tz->ops->get_temp(), so we should be safe.
+>>>>>
+>>>>> What do you think?
+>>>>
+>>>> Does it make sense to handle the trip point if we are unable to read
+>>>> the
+>>>> temperature?
+>>>>
+>>>> The lines following the update_temperature() are:
+>>>>
+>>>>    - thermal_zone_set_trips() which needs a correct tz->temperature
+>>>>
+>>>>    - handle_thermal_trip() which needs a correct tz->temperature to
+>>>> compare with
+>>>>
+>>>>    - monitor_thermal_zone() which needs a consistent tz->passive.
+>>>> This one
+>>>> is updated by the governor which is in an inconsistent state because
+>>>> the
+>>>> temperature is not updated.
+>>>>
+>>>> The problem I see here is how the interrupt mode and the polling mode
+>>>> are existing in the same code path.
+>>>>
+>>>> The interrupt mode can call thermal_notify_framework() for critical/hot
+>>>> trip points without being followed by a monitoring. But for the other
+>>>> trip points, the get_temp is needed.
+>>>
+>>> Yes, I agree that we can bail out when there is no .get_temp() callback
+>>> and even not schedule next polling in such case.
+>>> But I am just not sure if we can bail out and not schedule the next
+>>> polling, when there is .get_temp() populated and the driver returned
+>>> an error only at that moment, e.g. indicating some internal temporary,
+>>> issue like send queue full, so such as -EBUSY, or -EAGAIN, etc.
+>>> The thermal_zone_get_temp() would pass the error to update_temperature()
+>>> but we return, losing the next try. We would not check the temperature
+>>> again.
+>>
+>> Hmm, right. I agree with your point.
+>>
+>> What about the following changes:
+>>
+>>   - Add the new APIs:
+>>
+>>     thermal_zone_device_critical(struct thermal_zone_device *tz);
+>>       => emergency poweroff
+>>
+>>     thermal_zone_device_hot(struct thermal_zone_device *tz);
+>>       => userspace notification
+>
+> They look promising, I have to look into the existing code.
+> When they would be called?
 
-Align with the new macros and add appropriate include files.
+They can be called directly by the driver when there is no get_temp
+callback instead of calling thermal_zone_device_update, and by the usual
+code path via handle_critical_trip function.
 
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
----
+Also that can solve the issue [1] when registering a device which is
+already too hot [1] by adding the ops in the thermal zone.
 
- certs/blacklist.c      |    4 ++--
- certs/system_keyring.c |    5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+[1] https://lkml.org/lkml/2020/11/28/166
 
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index 029471947838..bffe4c6f4a9e 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -14,6 +14,7 @@
- #include <linux/ctype.h>
- #include <linux/err.h>
- #include <linux/seq_file.h>
-+#include <linux/uidgid.h>
- #include <keys/system_keyring.h>
- #include "blacklist.h"
- 
-@@ -156,8 +157,7 @@ static int __init blacklist_init(void)
- 
- 	blacklist_keyring =
- 		keyring_alloc(".blacklist",
--			      KUIDT_INIT(0), KGIDT_INIT(0),
--			      current_cred(),
-+			      GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
- 			      (KEY_POS_ALL & ~KEY_POS_SETATTR) |
- 			      KEY_USR_VIEW | KEY_USR_READ |
- 			      KEY_USR_SEARCH,
-diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index 798291177186..4b693da488f1 100644
---- a/certs/system_keyring.c
-+++ b/certs/system_keyring.c
-@@ -11,6 +11,7 @@
- #include <linux/cred.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-+#include <linux/uidgid.h>
- #include <linux/verification.h>
- #include <keys/asymmetric-type.h>
- #include <keys/system_keyring.h>
-@@ -98,7 +99,7 @@ static __init int system_trusted_keyring_init(void)
- 
- 	builtin_trusted_keys =
- 		keyring_alloc(".builtin_trusted_keys",
--			      KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
-+			      GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
- 			      ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
- 			      KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH),
- 			      KEY_ALLOC_NOT_IN_QUOTA,
-@@ -109,7 +110,7 @@ static __init int system_trusted_keyring_init(void)
- #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
- 	secondary_trusted_keys =
- 		keyring_alloc(".secondary_trusted_keys",
--			      KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
-+			      GLOBAL_ROOT_UID, GLOBAL_ROOT_GID, current_cred(),
- 			      ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
- 			       KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH |
- 			       KEY_USR_WRITE),
+>>   - Add a big fat WARN when thermal_zone_device_update is called with
+>> .get_temp == NULL because that must not happen.
+> 
+> Good idea
+> 
+>>
+>> If the .get_temp is NULL it is because we only have a HOT/CRITICAL
+>> thermal trip points where we don't care about the temperature and
+>> governor decision, right ?
+>>
+> 
+> That is a good question. Let me dig into the code. I would say yes - we
+> don't have to hassle with governor in this circumstances.
 
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
