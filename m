@@ -2,81 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471BC2D4089
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2E82D408E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgLILBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:01:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730351AbgLILBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:01:47 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F58BC0613D6;
-        Wed,  9 Dec 2020 03:01:06 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1730386AbgLILCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:02:12 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:35054 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730396AbgLILCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:02:02 -0500
+Received: from zn.tnic (p200300ec2f0f480029f89b316a92fa4b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4800:29f8:9b31:6a92:fa4b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrYxq5HpPz9sWK;
-        Wed,  9 Dec 2020 22:01:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607511663;
-        bh=r/+GDOAquGqdEZzrfqtfidqClQ+Qy/mmW4yr/SaiIGs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XiMPL5A4IbeMeNE3K663OW8J/txEMWtx3Kk/v841f7llOtuE11PvGSI6VH9ZM0asc
-         N6FsXHUKN3TPAsl+LQ3z7U5O5MNb4Tak10bcgWHezZGp0truYA08NVFliP7Y7JFiEA
-         qaVPgWxtIva8KGl7TTmhdA3bVIcQIQ785jZZ6k1rej+OyY8K35Osde24w6bQzRZEZs
-         I3BgUviRdr+c1PBuBrh9+sQSL6LNdqUEbAdriTLL+u2mRGu43dGL2aJTwAd6G+64PE
-         ffa+HtCEagwEDF9q3Zrn+28+4yg3VqX3rpBKSFQl2Nmyia90NFbbyGqZIuVSPqax0b
-         tOzaEWDHiVcwA==
-Date:   Wed, 9 Dec 2020 22:01:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
-Message-ID: <20201209220102.04ecee26@canb.auug.org.au>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5BD4E1EC01A8;
+        Wed,  9 Dec 2020 12:01:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607511680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=odvtSZ4rtQ9RXPUmC1vjPu4wD5GU1GAgtOtn0lfHqJI=;
+        b=gdEd77om2fC0yzLB5dzY0aaXRBXcSVG5uo+RRqey9DI28QTCNwGFz7f5/tDQBzJpseBcMR
+        Wml9VA2cr8O8EHdKg8uL12tkYANx5bNqb9ov1aNFWTkBgFoOM0zyWioCqPsmfSaSd5JlhK
+        Cv6poinGTu5GfRGlQLFcNSwddIFv6aA=
+Date:   Wed, 9 Dec 2020 12:01:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     konrad.wilk@oracle.com, hch@lst.de, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org, dave.hansen@linux-intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, Thomas.Lendacky@amd.com, Jon.Grimm@amd.com,
+        rientjes@google.com
+Subject: Re: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV
+ guests.
+Message-ID: <20201209110115.GA18203@zn.tnic>
+References: <20201207231057.26403-1-Ashish.Kalra@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YpPyNQR/DJ_TJ406ZLTpqxI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201207231057.26403-1-Ashish.Kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YpPyNQR/DJ_TJ406ZLTpqxI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> Subject: Re: [PATCH v8] swiotlb: Adjust SWIOTBL bounce buffer size for SEV guests.
 
-Hi all,
+Fix subject prefix to "x86, swiotlb: ... SWIOTLB ... for SEV guests
 
-Commit
+Fix typo and no fullstop at the end.
 
-  ab7eff24a1e9 ("dt-bindings: net: dsa: b53: Add YAML bindings")
+On Mon, Dec 07, 2020 at 11:10:57PM +0000, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> For SEV, all DMA to and from guest has to use shared (un-encrypted) pages.
+> SEV uses SWIOTLB to make this happen without requiring changes to device
+> drivers.  However, depending on workload being run, the default 64MB of
+				 ^
+				 the
 
-is missing a Signed-off-by from its committer.
+> SWIOTLB might not be enough and SWIOTLB may run out of buffers to use
 
---=20
-Cheers,
-Stephen Rothwell
+				s/SWIOTLB/it/
 
---Sig_/YpPyNQR/DJ_TJ406ZLTpqxI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> for DMA, resulting in I/O errors and/or performance degradation for
+> high I/O workloads.
+> 
+> Adjust the default size of SWIOTLB for SEV guests using a
+> percentage of the total memory available to guest for SWIOTLB buffers.
+					     ^
+					     the
 
------BEGIN PGP SIGNATURE-----
+> 
+> Using late_initcall() interface to invoke swiotlb_adjust() does not
+> work as the size adjustment needs to be done before mem_encrypt_init()
+> and reserve_crashkernel() which use the allocated SWIOTLB buffer size,
+> hence call it explicitly from setup_arch().
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Qrm4ACgkQAVBC80lX
-0Gw86gf9Gskg+S3ROvXZv+qMCqkwGPrpora52Uqp8cvCQIa2DG9FDQAY44JKcT27
-fKC2EJuMLV8Qnq42GqeEdKV4K5acMrrRa4+tmCXulIm0WGJpTt2Bq/p+V4HKYbcb
-ne9643X0hTOgnBhrMnag99D9MVSzoHRLd6guiCZtYEsXHtrSRN6i5Tg+mU1cTeQT
-hBKjJsYIy5H8D8nQT91a0of4oPCFCbB/wKq7ak2dS4ZEFtGWzy+qkHXnkix59oO8
-fHMaaUAJVL8cMUivii2iX5eK18sgeyLQzYhiKOatBouRHubqPgLe3TcZXuua6RVY
-0AWeBMe+STY1SwY3KxiTNkrQescyYg==
-=AkHD
------END PGP SIGNATURE-----
+So setup_arch() is x86-specific and already a dumping ground for all
+kinds of init stuff.
 
---Sig_/YpPyNQR/DJ_TJ406ZLTpqxI--
+Why don't you call swiotlb_adjust() in mem_encrypt_init() where it
+already does swiotlb stuff - swiotlb_update_mem_attributes() - and avoid
+all the arch-agnostic function glue?
+
+That is, unless Konrad wants to do other swiotlb adjusting on !x86 too...
+
+> The SWIOTLB default size adjustment needs to be added as an architecture
+> specific interface/callback to allow architectures such as those supporting
+> memory encryption to adjust/expand SWIOTLB size for their use.
+
+So are other arches wanting this or is this just an assumption? If
+latter, you can do x86 only now and let the others extend it when they
+really need it.
+
+> v5 fixed build errors and warnings as
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/kernel/setup.c   |  2 ++
+>  arch/x86/mm/mem_encrypt.c | 37 +++++++++++++++++++++++++++++++++++++
+>  include/linux/swiotlb.h   |  6 ++++++
+>  kernel/dma/swiotlb.c      | 22 ++++++++++++++++++++++
+>  4 files changed, 67 insertions(+)
+> 
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index 1bcfbcd2bfd7..d1b8d60040cf 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -485,7 +485,44 @@ static void print_mem_encrypt_feature_info(void)
+>  	pr_cont("\n");
+>  }
+>  
+> +/*
+> + * The percentage of guest memory used here for SWIOTLB buffers
+> + * is more of an approximation of the static adjustment which
+> + * is 128M for <1G guests, 256M for 1G-4G guests and 512M for >4G guests.
+> + */
+> +#define SEV_ADJUST_SWIOTLB_SIZE_PERCENT	6
+> +
+>  /* Architecture __weak replacement functions */
+> +unsigned long __init arch_swiotlb_adjust(unsigned long iotlb_default_size)
+> +{
+> +	unsigned long size = iotlb_default_size;
+> +
+> +	/*
+> +	 * For SEV, all DMA has to occur via shared/unencrypted pages.
+> +	 * SEV uses SWOTLB to make this happen without changing device
+> +	 * drivers. However, depending on the workload being run, the
+> +	 * default 64MB of SWIOTLB may not be enough and`SWIOTLB may
+> +	 * run out of buffers for DMA, resulting in I/O errors and/or
+> +	 * performance degradation especially with high I/O workloads.
+
+<--- newline in the comment here.
+
+> +	 * Adjust the default size of SWIOTLB for SEV guests using
+> +	 * a percentage of guest memory for SWIOTLB buffers.
+> +	 * Also as the SWIOTLB bounce buffer memory is allocated
+	       ^
+	       ,
+
+> +	 * from low memory, ensure that the adjusted size is within
+> +	 * the limits of low available memory.
+> +	 *
+> +	 */
+> +	if (sev_active()) {
+> +		phys_addr_t total_mem = memblock_phys_mem_size();
+> +
+> +		size = total_mem * SEV_ADJUST_SWIOTLB_SIZE_PERCENT / 100;
+> +		size = clamp_val(size, iotlb_default_size, SZ_1G);
+> +		pr_info("SWIOTLB bounce buffer size adjusted to %luMB for SEV",
+> +			size >> 20);
+> +	}
+> +
+> +	return size;
+> +}
+> +
+>  void __init mem_encrypt_init(void)
+>  {
+>  	if (!sme_me_mask)
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
