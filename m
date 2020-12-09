@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466E92D40A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC3D2D40A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730443AbgLILFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:05:54 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:32041 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgLILFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:05:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607511924; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=R1eA7K+kLgc5Me1oF+PjqvgKANOliO8GkXvNmcPSg7A=; b=ZlQfFhIJi6kGOQPGBGdyGu6rSGdyyuZb38y9UU5O4AHZOr02A2zYBRtXGilrS+KKlbHYg0/b
- ZBSrJFtxSn/dPxLfBjhVw+g3PXFZE3kk8YSpOJSEbM7WDrq0+7Gmw0+nf6CDCyn8CFe629WF
- xxCaXFdPmmxEU1IOmb7pY0gMrY8=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fd0af526d5c2f1d20013055 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 11:04:50
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B3D80C43461; Wed,  9 Dec 2020 11:04:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.77.97])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FE48C433C6;
-        Wed,  9 Dec 2020 11:04:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5FE48C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH] drivers: qcom: rpmh-rsc: Do not read back the register
- write on trigger
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <1606211610-15168-1-git-send-email-mkshah@codeaurora.org>
- <CAD=FV=Xk_1=eCvqLPPnYLrQWf1zVy+iEHs=DWEubb6n5ub3Wxw@mail.gmail.com>
- <CAD=FV=XafiNR+vZc2nM6JzhU7xPm9v3eeeR5SMhBM3k3mmsZDQ@mail.gmail.com>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <37d7a6e4-8773-6de2-8914-b39e656ed2f0@codeaurora.org>
-Date:   Wed, 9 Dec 2020 16:34:43 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1730451AbgLILGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:06:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730371AbgLILFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:05:52 -0500
+X-Gm-Message-State: AOAM532FxAIWtrz3GcSyx8ySr6w4NVRAuNl3+Yw2/Go2Qoxe4JcouzN2
+        jqzgKGpF1/Qt2pg2OT7C4FHzxSyrQmnmPBquyy8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607511910;
+        bh=iHRngC0ANhFxQ/UVZdui4aIYpUOkA29G/4HhBsdC2io=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R3Dmty8vAYJKDiZUPF1JhJ/fkjvu0FhjsyBn5KjqeSujEf6PHTNzyF+WXZ/w76xNg
+         QS+fe+Efir3U1mO7MR1r5psbffnGBO/51pjVdNN2MbZ3G5h5uUNQIx+KsGYuw5KtWU
+         vW0zaQr7ETLlHN8lNEGbzDZ+z543kEozSdv2WDChe55Pnmgrr37nJBqHI6WqI6SHPq
+         y99YomOV0Dk9i8y21F7gJ8XLaIifIlWXOG/j1puForpugoXaf3ekzTHrhVQamBLSfh
+         bjhCYQDhx0hHgqM5nOmG5LstUgXtDzlYhZlc6Bup6iZS5Yo5Rl8C0XFMbjw3hBPKaW
+         ntlLsccWVXYJA==
+X-Google-Smtp-Source: ABdhPJw4nzqzhKDzwtsLZDLztoFI6ZeiCH2UTXAydkS35zR5J+dVfmgmICP5TGbv6BtesRfz9ElkAS+JEn2VttiomRY=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr1211764otm.305.1607511909951;
+ Wed, 09 Dec 2020 03:05:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XafiNR+vZc2nM6JzhU7xPm9v3eeeR5SMhBM3k3mmsZDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+References: <20201208164821.2686082-1-paul@crapouillou.net>
+ <20201208164821.2686082-2-paul@crapouillou.net> <CAFr9PX=EgQSXeATLn++DSHkkQar35rpLGh978J5Lnw9jS8XMrw@mail.gmail.com>
+In-Reply-To: <CAFr9PX=EgQSXeATLn++DSHkkQar35rpLGh978J5Lnw9jS8XMrw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 9 Dec 2020 12:04:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a37rQz6ihEJBZNkOARJXJE7U9TX7pCUhyQjQn6fJw+jUQ@mail.gmail.com>
+Message-ID: <CAK8P3a37rQz6ihEJBZNkOARJXJE7U9TX7pCUhyQjQn6fJw+jUQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: ingenic: Only support SoCs enabled in config
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Linus Walleij <linus.walleij@linaro.org>, od@zcrc.me,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-On 12/4/2020 2:47 AM, Doug Anderson wrote:
-> Hi,
+On Wed, Dec 9, 2020 at 11:13 AM Daniel Palmer <daniel@0x0f.com> wrote:
 >
-> On Thu, Dec 3, 2020 at 1:15 PM Doug Anderson <dianders@chromium.org> wrote:
->> Hi,
->>
->> On Tue, Nov 24, 2020 at 1:53 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->>> From: Lina Iyer <ilina@codeaurora.org>
->>>
->>> When triggering a TCS to send its contents, reading back the trigger
->>> value may return an incorrect value. That is because, writing the
->>> trigger may raise an interrupt which could be handled immediately and
->>> the trigger value could be reset in the interrupt handler.
->>>
->>> A write_tcs_reg_sync() would read back the value that is written and try
->>> to match it to the value written to ensure that the value is written,
->>> but if that value is different, we may see false error for same.
->>>
->>> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
->>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->>> ---
->>>   drivers/soc/qcom/rpmh-rsc.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->> Fixes: 658628e7ef78 ("drivers: qcom: rpmh-rsc: add RPMH controller for
->> QCOM SoCs")
->> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Ugh, brain-fart.  Not Signed-off-by, but:
+> Hi Paul and others,
 >
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Sorry to hijack this but I actually want to do something similar to
+> this in some other drivers.
+> The targets I'm working with have only 64MB of ram so I want to remove
+> code wherever possible.
+> Is there any reason to do it like this instead of wrapping the whole
+> unneeded of_device_id struct in an #ifdef?
+> For example there is a rule that the compatible strings have to be
+> present even if the driver isn't usable or something?
 
-Thanks for the review, i will send v2 adding Fixes: tag.
+No, there is no such rule, but adding lots of #ifdef checks in this
+file would be much less readable and more error-prone, as you'd
+have to make sure the two #ifdef blocks around the structure
+match the one for the ID table, and any function that is called
+by more than one SoC has the correct combination of A || B || D
+checks, and nobody ever gets that right.
 
-Thanks,
-Maulik
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+      Arnd
