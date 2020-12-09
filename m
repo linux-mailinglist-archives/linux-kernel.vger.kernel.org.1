@@ -2,119 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B572D4375
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7732D4372
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732587AbgLINjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:39:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38714 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732565AbgLINjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:39:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7974AC9A;
-        Wed,  9 Dec 2020 13:38:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6D7281E133E; Wed,  9 Dec 2020 14:38:42 +0100 (CET)
-Date:   Wed, 9 Dec 2020 14:38:42 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+f427adf9324b92652ccc@syzkaller.appspotmail.com>
-Cc:     amir73il@gmail.com, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: kernel BUG at fs/notify/dnotify/dnotify.c:LINE! (2)
-Message-ID: <20201209133842.GA28118@quack2.suse.cz>
-References: <000000000000be4c9505b4c35420@google.com>
+        id S1732571AbgLINjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:39:24 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8738 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732537AbgLINjV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:39:21 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrdQl1hmRzklNb;
+        Wed,  9 Dec 2020 21:37:51 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 21:38:24 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-afs@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <michael.jamet@intel.com>,
+        <mika.westerberg@linux.intel.com>, <YehezkelShB@gmail.com>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: thunderbolt: convert comma to semicolon
+Date:   Wed, 9 Dec 2020 21:38:52 +0800
+Message-ID: <20201209133852.1475-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000be4c9505b4c35420@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Replace a comma between expression statements by a semicolon.
 
-so I was debugging the dnotify crash below (it's 100% reproducible for me)
-and I came to the following. The reproducer opens 'file0' on FUSE
-filesystem which is a directory at that point. Then it attached dnotify
-mark to the directory 'file0' and then it does something to the FUSE fs
-which I don't understand but the result is that when FUSE is unmounted the
-'file0' inode is actually a regular file (note that I've verified this is
-really the same inode pointer). This then confuses dnotify which doesn't
-tear down its structures properly and eventually crashes. So my question
-is: How can an inode on FUSE filesystem morph from a dir to a regular file?
-I presume this could confuse much more things than just dnotify?
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/thunderbolt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Before I dwelve more into FUSE internals, any idea Miklos what could have
-gone wrong and how to debug this further?
-
-								Honza
-
-On Mon 23-11-20 02:05:16, syzbot wrote:
-> syzbot found the following issue on:
-> 
-> HEAD commit:    27bba9c5 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11b82225500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=330f3436df12fd44
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f427adf9324b92652ccc
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d3f015500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17162d4d500000
-> 
-> Bisection is inconclusive: the issue happens on the oldest tested release.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16570525500000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15570525500000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11570525500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f427adf9324b92652ccc@syzkaller.appspotmail.com
-> 
-> wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
-> ------------[ cut here ]------------
-> kernel BUG at fs/notify/dnotify/dnotify.c:118!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 648 Comm: kworker/u4:4 Not tainted 5.10.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events_unbound fsnotify_mark_destroy_workfn
-> RIP: 0010:dnotify_free_mark fs/notify/dnotify/dnotify.c:118 [inline]
-> RIP: 0010:dnotify_free_mark+0x4b/0x60 fs/notify/dnotify/dnotify.c:112
-> Code: 80 3c 02 00 75 26 48 83 bd 80 00 00 00 00 75 15 e8 0a d3 a0 ff 48 89 ee 48 8b 3d 68 8c 1d 0b 5d e9 aa 06 e2 ff e8 f5 d2 a0 ff <0f> 0b e8 ae 4d e2 ff eb d3 66 90 66 2e 0f 1f 84 00 00 00 00 00 41
-> RSP: 0018:ffffc90002f1fc38 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffffff8958ae60 RCX: 1ffff920005e3f95
-> RDX: ffff888012601a40 RSI: ffffffff81cf5ceb RDI: ffff88801aea2080
-> RBP: ffff88801aea2000 R08: 0000000000000001 R09: ffffffff8ebb170f
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880171a2000
-> R13: ffffc90002f1fc98 R14: ffff88801aea2010 R15: ffff88801aea2018
-> FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000056045fa95978 CR3: 0000000012121000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  fsnotify_final_mark_destroy+0x71/0xb0 fs/notify/mark.c:205
->  fsnotify_mark_destroy_workfn+0x1eb/0x340 fs/notify/mark.c:840
->  process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
->  kthread+0x3af/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> Modules linked in:
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/net/thunderbolt.c b/drivers/net/thunderbolt.c
+index 3160443ef3b9..ae83d66195a5 100644
+--- a/drivers/net/thunderbolt.c
++++ b/drivers/net/thunderbolt.c
+@@ -1241,7 +1241,7 @@ static int tbnet_probe(struct tb_service *svc, const struct tb_service_id *id)
+ 	dev->max_mtu = TBNET_MAX_MTU - ETH_HLEN;
+ 
+ 	net->handler.uuid = &tbnet_svc_uuid;
+-	net->handler.callback = tbnet_handle_packet,
++	net->handler.callback = tbnet_handle_packet;
+ 	net->handler.data = net;
+ 	tb_register_protocol_handler(&net->handler);
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.22.0
+
