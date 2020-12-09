@@ -2,50 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E771B2D4C59
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2292D4C5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 22:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgLIU71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbgLIU7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:59:11 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C311123B99;
-        Wed,  9 Dec 2020 20:58:30 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 15:58:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: Re: fs/namei.c: Make status likely to be ECHILD in lookup_fast()
-Message-ID: <20201209155828.7109f8dd@gandalf.local.home>
-In-Reply-To: <20201209203500.GQ3579531@ZenIV.linux.org.uk>
-References: <20201209152403.6d6cf9ba@gandalf.local.home>
-        <20201209203500.GQ3579531@ZenIV.linux.org.uk>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731895AbgLIU7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgLIU7q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:59:46 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01A8C0613CF;
+        Wed,  9 Dec 2020 12:59:05 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id l7so1324149qvt.4;
+        Wed, 09 Dec 2020 12:59:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
+        b=gphtz3zP8o+6zS3N+NSHv4/V28d6PSJir32f2MrZa2gKRKJDXP6TvwxbeBOq3deiDV
+         LlTp1Xc1fAAHw05jQqUsRiHBgY+ruguxqVbvb5cIlP3sy2WcS9YLU0Q5r6+dgB/iJTKB
+         vXdpg4K3iNVlSaW+QLGwC6orshyfnLvJ2mg0jYpB8AYnV66ox0Dd0Tv1asOBtczplSjD
+         YDAeLZ7WJooce78KC5lMONcwo6GD3XoXqxfLF58l8ufOJZp/UuMkKulOibk9ILEZpfhj
+         AkwSNALY3spqQNHSCUdoyrkmftK/32r7rM91m9khiDAb+5KieKcWlZ8xJIKJ13BZCNCP
+         oSGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
+        b=sMiJld+mKPSEiab5L9VVUpfoI4QMQXez3EYYuCh7A/HVfx6VfY49p9B519aPlCzrgz
+         k/XSEUEIwKzHm2N8Qx/9cuDZgZ90b2uOqBooCOJ1pr5MjuhuUUOATNLS8knHRB+u2u4K
+         EiXofb+1CzvPdoyfGMv5txTVTruMzSF+rPX/9gTRHdOodTt1pwivscJEbvSkWWFrqIXJ
+         wjHtXWIubw84ep9AMiCW5m3LoNOmSpJFmSTDVgwLwBy1fV+55X9Fj0mjXlDqybHhgo5j
+         j/7QNq1atbuIS78niFDvHb+2IOfgwHmkRhVL+W44i0peh8oUDPe9bXcs+mGBaJSgTw7M
+         BcJQ==
+X-Gm-Message-State: AOAM533F3D6rIWACzMtRKjcct3pXNoSUbMt9Nwcem4MjJpWc2SO3Hcxh
+        LjA+cy7IK2Xg6zeA/cD7B0M=
+X-Google-Smtp-Source: ABdhPJzok1orIEivGtZa4Drbbb5H+ooHUn+MU52a1sHSyGUAYRV1MwsFMFwtfkzWtn77HZnXC/7jYQ==
+X-Received: by 2002:a0c:8e47:: with SMTP id w7mr4983903qvb.55.1607547544798;
+        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:9bbd])
+        by smtp.gmail.com with ESMTPSA id f185sm1971959qkb.119.2020.12.09.12.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 9 Dec 2020 15:58:33 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+Message-ID: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
+References: <20201209205413.3391139-1-vipinsh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209205413.3391139-1-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Dec 2020 20:35:00 +0000
-Al Viro <viro@zeniv.linux.org.uk> wrote:
+Hello,
 
-> > And most of the d_revalidate() functions have:
-> > 
-> > 	if (flags & LOOKUP_RCU)
-> > 		return -ECHILD;  
-> 
-> Umm...  That depends upon the filesystem mix involved; said that, I'd rather
-> drop that "unlikely"...
+Rough take after skimming:
 
-Sure enough. I'll send a v2.
+* I don't have an overall objection. In terms of behavior, the only thing
+  which stood out was input rejection depending on the current usage. The
+  preferred way of handling that is rejecting future allocations rather than
+  failing configuration as that makes it impossible e.g. to lower limit and
+  drain existing usages from outside the container.
 
-Thanks,
+* However, the boilerplate to usefulness ratio doesn't look too good and I
+  wonder whether what we should do is adding a generic "misc" controller
+  which can host this sort of static hierarchical counting. I'll think more
+  on it.
 
--- Steve
+Thanks.
+
+-- 
+tejun
