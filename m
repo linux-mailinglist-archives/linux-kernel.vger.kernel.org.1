@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC062D47D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278602D47DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732494AbgLIRZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:25:03 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:53338 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732200AbgLIRYe (ORCPT
+        id S1732392AbgLIRYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:24:50 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:60296 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731346AbgLIRYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:24:34 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJwqh078310;
+        Wed, 9 Dec 2020 12:24:21 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJWlv111588;
         Wed, 9 Dec 2020 17:23:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=5Zx6gGYBv1twjEiZEeKE229v8R8lxWyd3YNzIzSTGe8=;
- b=o/Z8E/8SIokqQNm3FpLY5FJGw7p2FGzO0fuhkvfNKGHo5PNjeU02Z2D9khoYXnP7Kzo5
- L2djXwmomP8h0EDpLtm20KKHKSFy8qseWEc85i/QdHLca6SkmQV8yHf6jTL8BHKYlAWk
- BO942WWATQh6JUFVFXO/nbJwqJ65Kxd1VXk/SreNTXrvd1O88/gq2swMuywGxD/EIPeH
- bGLjOoaVxbo/at+OnCrQk+LeznE3bKeYofSTi2KeCz04LJ+UwCFjGXplwOoOWgK6rJ0Z
- b6HGwmSX/Ybl2xZDnOgH1MJvSwBHxGic4C23V8h4y2PIyI1IAQiVxf8SkerFXaKGzoV9 ag== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 3581mr1a3g-1
+ bh=VnN6soBlGi/0SCbEGBCIPTtcbq0lk8ftwSQHlFY9W2c=;
+ b=bdiS+b4cqUlD4wyfQqnFY5YvZBEbEoh/ZZGJ6+URhC8NQhdy+bg2hFbd8/VJ+ih+D1Qt
+ oDbydpYRZrTKIhgfrMl/XVE/mWsOM03iQ45AP0mcQ2WPhvS2keZ/XyL69of7Fg2j/rqp
+ YlD7KtUIEPNkhxX9d0ul0KeUpOtVGNWMoBSoh0juoUzWFP7tSQooq2Rb6ueuV/7xqK+E
+ bKnqy2qLzU4ZJe7KVlTZuaFpUQY8u9et3z0hodsV+560nJgV7Ba5xm8aVLVIua8BgmWK
+ necrH5Bs2Q+6m83Uuca2cPcARWI+o5fJ2BarwULvLZ9TivGIZuqk/4prfolcHtHhHcMF hw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35825m9ct1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
         Wed, 09 Dec 2020 17:23:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HKqhf099961;
-        Wed, 9 Dec 2020 17:23:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 358ksqdjms-1
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HKjkd142185;
+        Wed, 9 Dec 2020 17:23:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 358kyv0gr1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Wed, 09 Dec 2020 17:23:33 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9HNUEM017666;
-        Wed, 9 Dec 2020 17:23:30 GMT
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HNWs7022582;
+        Wed, 9 Dec 2020 17:23:32 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:23:29 -0800
+        with ESMTP ; Wed, 09 Dec 2020 09:23:32 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>
+To:     Nilesh Javali <njavali@marvell.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Colin King <colin.king@canonical.com>,
+        linux-scsi@vger.kernel.org, GR-QLogic-Storage-Upstream@marvell.com
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        clang-built-linux@googlegroups.com, Can Guo <cang@codeaurora.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-scsi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ufshcd: fix Wsometimes-uninitialized warning
-Date:   Wed,  9 Dec 2020 12:23:14 -0500
-Message-Id: <160753457755.14816.4979467058172336849.b4-ty@oracle.com>
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: qla4xxx: remove redundant assignment to variable rval
+Date:   Wed,  9 Dec 2020 12:23:16 -0500
+Message-Id: <160753457756.14816.15596316150027507404.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201203223137.1205933-1-arnd@kernel.org>
-References: <20201203223137.1205933-1-arnd@kernel.org>
+In-Reply-To: <20201204191810.1150995-1-colin.king@canonical.com>
+References: <20201204191810.1150995-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090122
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090122
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090122
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Dec 2020 23:31:26 +0100, Arnd Bergmann wrote:
+On Fri, 4 Dec 2020 19:18:10 +0000, Colin King wrote:
 
-> clang complains about a possible code path in which a variable is
-> used without an initialization:
-> 
-> drivers/scsi/ufs/ufshcd.c:7690:3: error: variable 'sdp' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
->                 BUG_ON(1);
->                 ^~~~~~~~~
-> include/asm-generic/bug.h:63:36: note: expanded from macro 'BUG_ON'
->  #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)
->                                    ^~~~~~~~~~~~~~~~~~~
-> 
-> [...]
+> The variable rval is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
 
 Applied to 5.11/scsi-queue, thanks!
 
-[1/1] ufshcd: fix Wsometimes-uninitialized warning
-      https://git.kernel.org/mkp/scsi/c/4c60244dc372
+[1/1] scsi: qla4xxx: remove redundant assignment to variable rval
+      https://git.kernel.org/mkp/scsi/c/3a5b9fa2cc5f
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
