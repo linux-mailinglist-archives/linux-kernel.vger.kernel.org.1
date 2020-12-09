@@ -2,211 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B202D3C0B
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F82E2D3BFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgLIHTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:19:03 -0500
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:24118 "EHLO
-        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725283AbgLIHTD (ORCPT
+        id S1728319AbgLIHKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:10:20 -0500
+Received: from smtprelay0129.hostedemail.com ([216.40.44.129]:35636 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725283AbgLIHKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:19:03 -0500
-X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 02:19:02 EST
-Received: from ironmsg03-tai.qualcomm.com ([10.249.140.8])
-  by alexa-out-tai-02.qualcomm.com with ESMTP; 09 Dec 2020 15:10:55 +0800
-X-QCInternal: smtphost
-Received: from cbsp-sh-gv.ap.qualcomm.com (HELO cbsp-sh-gv.qualcomm.com) ([10.231.249.68])
-  by ironmsg03-tai.qualcomm.com with ESMTP; 09 Dec 2020 15:10:26 +0800
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
-        id 5B353232E; Wed,  9 Dec 2020 15:10:25 +0800 (CST)
-From:   Ziqi Chen <ziqichen@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
-        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        ziqichen@codeaurora.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 1/1] scsi: ufs: Fix ufs power down/on specs violation
-Date:   Wed,  9 Dec 2020 15:09:28 +0800
-Message-Id: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 9 Dec 2020 02:10:20 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BEAAE182251A0;
+        Wed,  9 Dec 2020 07:09:35 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 64,4,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2332:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3653:3865:3866:3867:3868:3874:4321:5007:10004:10400:10848:11026:11473:11658:11914:12043:12296:12297:12555:12679:12760:13069:13255:13311:13357:13439:14181:14394:14659:14721:21080:21221:21433:21451:21627:21660:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: feast98_4a0d944273ed
+X-Filterd-Recvd-Size: 2268
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Dec 2020 07:09:35 +0000 (UTC)
+Message-ID: <993b72b2ef91a57c5e725b52971ce3fd31375061.camel@perches.com>
+Subject: [PATCH] checkpatch: Add printk_once and printk_ratelimit to prefer
+ pr_<level> warning
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 08 Dec 2020 23:09:34 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per specs, e.g, JESD220E chapter 7.2, while powering
-off/on the ufs device, RST_N signal and REF_CLK signal
-should be between VSS(Ground) and VCCQ/VCCQ2.
+Add the _once and _ratelimited variants to the test for
+printk(KERN_<LEVEL> that should prefer pr_<level>.
 
-Power down:
-1. Assert RST_N low
-2. Turn-off REF_CLK
-3. Turn-off VCC
-4. Turn-off VCCQ/VCCQ2.
-power on:
-1. Turn-on VCC
-2. Turn-on VCCQ/VCCQ2
-3. Turn-On REF_CLK
-4. Deassert RST_N high.
+Miscellanea:
 
-Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+o Add comment description for the conversions
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/scsi/ufs/ufs-qcom.c | 14 ++++++++++----
- drivers/scsi/ufs/ufshcd.c   | 19 +++++++++----------
- drivers/scsi/ufs/ufshcd.h   |  4 ++--
- 3 files changed, 21 insertions(+), 16 deletions(-)
+ scripts/checkpatch.pl | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 1e434cc..5ed3a63d 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -582,6 +582,9 @@ static int ufs_qcom_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		ufs_qcom_disable_lane_clks(host);
- 		phy_power_off(phy);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7b086d1cd6c2..52f467fd32f9 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4543,16 +4543,22 @@ sub process {
+ 			     "printk() should include KERN_<LEVEL> facility level\n" . $herecurr);
+ 		}
  
-+		if (hba->vops && hba->vops->device_reset)
-+			hba->vops->device_reset(hba, false);
-+
- 	} else if (!ufs_qcom_is_link_active(hba)) {
- 		ufs_qcom_disable_lane_clks(host);
- 	}
-@@ -1400,10 +1403,11 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
- /**
-  * ufs_qcom_device_reset() - toggle the (optional) device reset line
-  * @hba: per-adapter instance
-+ * @toggle: need pulling up or not
-  *
-  * Toggles the (optional) reset line to reset the attached device.
-  */
--static int ufs_qcom_device_reset(struct ufs_hba *hba)
-+static int ufs_qcom_device_reset(struct ufs_hba *hba, bool toggle)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+-		if ($line =~ /\bprintk\s*\(\s*KERN_([A-Z]+)/) {
+-			my $orig = $1;
++# prefer variants of (subsystem|netdev|dev|pr)_<level> to printk(KERN_<LEVEL>
++		if ($line =~ /\b(printk(_once|_ratelimited)?)\s*\(\s*KERN_([A-Z]+)/) {
++			my $printk = $1;
++			my $modifier = $2;
++			my $orig = $3;
+ 			my $level = lc($orig);
+ 			$level = "warn" if ($level eq "warning");
+ 			my $level2 = $level;
+ 			$level2 = "dbg" if ($level eq "debug");
++			$level .= $modifier;
++			$level2 .= $modifier;
+ 			WARN("PREFER_PR_LEVEL",
+-			     "Prefer [subsystem eg: netdev]_$level2([subsystem]dev, ... then dev_$level2(dev, ... then pr_$level(...  to printk(KERN_$orig ...\n" . $herecurr);
++			     "Prefer [subsystem eg: netdev]_$level2([subsystem]dev, ... then dev_$level2(dev, ... then pr_$level(...  to $printk(KERN_$orig ...\n" . $herecurr);
+ 		}
  
-@@ -1416,10 +1420,12 @@ static int ufs_qcom_device_reset(struct ufs_hba *hba)
- 	 * be on the safe side.
- 	 */
- 	gpiod_set_value_cansleep(host->device_reset, 1);
--	usleep_range(10, 15);
- 
--	gpiod_set_value_cansleep(host->device_reset, 0);
--	usleep_range(10, 15);
-+	if (toggle) {
-+		usleep_range(10, 15);
-+		gpiod_set_value_cansleep(host->device_reset, 0);
-+		usleep_range(10, 15);
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 92d433d..5ab1c02 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -8633,8 +8633,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	if (ret)
- 		goto set_dev_active;
- 
--	ufshcd_vreg_set_lpm(hba);
--
- disable_clks:
- 	/*
- 	 * Call vendor specific suspend callback. As these callbacks may access
-@@ -8664,6 +8662,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 
- 	/* Put the host controller in low power mode if possible */
- 	ufshcd_hba_vreg_set_lpm(hba);
-+	ufshcd_vreg_set_lpm(hba);
- 	goto out;
- 
- set_link_active:
-@@ -8729,18 +8728,18 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	old_link_state = hba->uic_link_state;
- 
- 	ufshcd_hba_vreg_set_hpm(hba);
-+	ret = ufshcd_vreg_set_hpm(hba);
-+	if (ret)
-+		goto out;
-+
- 	/* Make sure clocks are enabled before accessing controller */
- 	ret = ufshcd_setup_clocks(hba, true);
- 	if (ret)
--		goto out;
-+		goto disable_vreg;
- 
- 	/* enable the host irq as host controller would be active soon */
- 	ufshcd_enable_irq(hba);
- 
--	ret = ufshcd_vreg_set_hpm(hba);
--	if (ret)
--		goto disable_irq_and_vops_clks;
--
- 	/*
- 	 * Call vendor specific resume callback. As these callbacks may access
- 	 * vendor specific host controller register space call them when the
-@@ -8748,7 +8747,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	 */
- 	ret = ufshcd_vops_resume(hba, pm_op);
- 	if (ret)
--		goto disable_vreg;
-+		goto disable_irq_and_vops_clks;
- 
- 	/* For DeepSleep, the only supported option is to have the link off */
- 	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
-@@ -8815,8 +8814,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_link_state_transition(hba, old_link_state, 0);
- vendor_suspend:
- 	ufshcd_vops_suspend(hba, pm_op);
--disable_vreg:
--	ufshcd_vreg_set_lpm(hba);
- disable_irq_and_vops_clks:
- 	ufshcd_disable_irq(hba);
- 	if (hba->clk_scaling.is_allowed)
-@@ -8827,6 +8824,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		trace_ufshcd_clk_gating(dev_name(hba->dev),
- 					hba->clk_gating.state);
- 	}
-+disable_vreg:
-+	ufshcd_vreg_set_lpm(hba);
- out:
- 	hba->pm_op_in_progress = 0;
- 	if (ret)
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 61344c4..47c7dab6 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
- 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
- 	void	(*dbg_register_dump)(struct ufs_hba *hba);
- 	int	(*phy_initialization)(struct ufs_hba *);
--	int	(*device_reset)(struct ufs_hba *hba);
-+	int	(*device_reset)(struct ufs_hba *hba, bool);
- 	void	(*config_scaling_param)(struct ufs_hba *hba,
- 					struct devfreq_dev_profile *profile,
- 					void *data);
-@@ -1211,7 +1211,7 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
- static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
- {
- 	if (hba->vops && hba->vops->device_reset) {
--		int err = hba->vops->device_reset(hba);
-+		int err = hba->vops->device_reset(hba, true);
- 
- 		if (!err)
- 			ufshcd_set_ufs_dev_active(hba);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
++# prefer dev_<level> to dev_printk(KERN_<LEVEL>
+ 		if ($line =~ /\bdev_printk\s*\(\s*KERN_([A-Z]+)/) {
+ 			my $orig = $1;
+ 			my $level = lc($orig);
 
