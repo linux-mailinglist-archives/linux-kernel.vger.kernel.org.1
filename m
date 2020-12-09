@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50DA2D47E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457522D47D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732723AbgLIR0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:26:07 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:34692 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732429AbgLIRYx (ORCPT
+        id S1732611AbgLIRZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:25:08 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:60962 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732450AbgLIRYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:24:53 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJYaE058918;
-        Wed, 9 Dec 2020 17:23:57 GMT
+        Wed, 9 Dec 2020 12:24:55 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJjBu111648;
+        Wed, 9 Dec 2020 17:24:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=xpqsimqGwADwDKSd2iHXr8pwNvFxRUKVED8YK60U/lI=;
- b=KNNvksw4HS6pAMRWUc1CmCdPTOMZBrSWph4hTnehrgK+ZAblO9ZNgDfdwSGyQAvtGjRy
- hcsc4+PWQgyDQWrPVJj9m6gb562dNu9yfl4yP1+0KfHiPZSrbbYUaIhkytgLehclrHXz
- 3cKJiSalGLuuUh/tiNbgFdaqFDAAeN/KTo6QDnBEpHBAWl5kP8cLp78f5e9CXICL1Bmq
- NhJv/+AWA4krIPtupcQY44BqgRhEDIKNZefNac5ad0C9il220MyYEMCaPEiJMEU5cBVc
- IfSByAUjH7Ed5PJMccn1zX19lERzduD04uKNdd2B97Vi51xM4nHbnS30JNJNH+x3j+k7 Sg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 357yqc1fnj-1
+ bh=Krnm1gBj032vtaGUPm7ProEmQ8tj5X6aneGdqw5G3cc=;
+ b=n7M15kqn82ZJG8iDK3zj7Q1jQ89Z/bIBV2Ymtzp7PYGGQ0SrjGc1DzCsqR6NdNa0Zr6t
+ tWfChNHXG79lHtiNcMgDmQ2s9vY2tS4FFHH8rzM/FiIB9ZtJ6Z07+R/VYP256kae5CNV
+ 9fSKiVk217edJEvTIfgMc3s0aOyS1lWG1JjC+lr/zeUzQhR+SKdVsNs/zl1PwdwsWvbk
+ cFt5LjNsyj32Vc1h2vkw0XHG2a+VcMXU03t2jQ5BHwnkrT6BYShK0ivEQd2D3ADUmCCQ
+ apJ27b1eZ87kuzuQp7HPMUJOcxTgn908KaYEMTwO02YT//PhrKpjnJqXzOlnJRRupbsl Gw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35825m9cv6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 17:23:57 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HKrQd100131;
-        Wed, 9 Dec 2020 17:23:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 358ksqdk2u-1
+        Wed, 09 Dec 2020 17:24:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9HJlCx075705;
+        Wed, 9 Dec 2020 17:24:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m50wh3k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 17:23:57 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9HNtau022787;
-        Wed, 9 Dec 2020 17:23:55 GMT
+        Wed, 09 Dec 2020 17:24:00 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9HNwd6017969;
+        Wed, 9 Dec 2020 17:23:58 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 09:23:55 -0800
+        with ESMTP ; Wed, 09 Dec 2020 09:23:58 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com
+To:     Stanley Chu <stanley.chu@mediatek.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, linux-scsi@vger.kernel.org, jejb@linux.ibm.com
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: qedi: fix missing destroy_workqueue() on error in __qedi_probe
-Date:   Wed,  9 Dec 2020 12:23:19 -0500
-Message-Id: <160753457752.14816.4402851230023439146.b4-ty@oracle.com>
+        jiajie.hao@mediatek.com, beanhuo@micron.com, cc.chou@mediatek.com,
+        chun-hung.wu@mediatek.com, asutoshd@codeaurora.org,
+        chaotian.jing@mediatek.com, matthias.bgg@gmail.com,
+        alice.chao@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, andy.teng@mediatek.com,
+        bvanassche@acm.org, kuohong.wang@mediatek.com, cang@codeaurora.org,
+        linux-mediatek@lists.infradead.org, peter.wang@mediatek.com
+Subject: Re: [PATCH v1 0/4] scsi: ufs: Cleanup phy_initialization vop
+Date:   Wed,  9 Dec 2020 12:23:21 -0500
+Message-Id: <160753457754.14816.2032676444493914271.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109091518.55941-1-miaoqinglang@huawei.com>
-References: <20201109091518.55941-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201205120041.26869-1-stanley.chu@mediatek.com>
+References: <20201205120041.26869-1-stanley.chu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090122
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=959
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090122
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090122
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=979 clxscore=1015 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 17:15:18 +0800, Qinglang Miao wrote:
+On Sat, 5 Dec 2020 20:00:37 +0800, Stanley Chu wrote:
 
-> Add the missing destroy_workqueue() before return from
-> __qedi_probe in the error handling case when fails to
-> create workqueue qedi->offload_thread.
+> This series simply cleans up UFS vops and shall not change any functionality.
+> 
+> Stanley Chu (4):
+>   scsi: ufs: Remove unused setup_regulators variant function
+>   scsi: ufs: Introduce phy_initialization helper
+>   scsi: ufs-cdns: Use phy_initialization helper
+>   scsi: ufs-dwc: Use phy_initialization helper
+> 
+> [...]
 
 Applied to 5.11/scsi-queue, thanks!
 
-[1/1] scsi: qedi: fix missing destroy_workqueue() on error in __qedi_probe
-      https://git.kernel.org/mkp/scsi/c/62eebd5247c4
+[1/4] scsi: ufs: Remove unused setup_regulators variant function
+      https://git.kernel.org/mkp/scsi/c/ade921a891de
+[2/4] scsi: ufs: Introduce phy_initialization helper
+      https://git.kernel.org/mkp/scsi/c/92bcebe4b6d6
+[3/4] scsi: ufs-cdns: Use phy_initialization helper
+      https://git.kernel.org/mkp/scsi/c/885445736bc0
+[4/4] scsi: ufs-dwc: Use phy_initialization helper
+      https://git.kernel.org/mkp/scsi/c/ab98105484fc
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
