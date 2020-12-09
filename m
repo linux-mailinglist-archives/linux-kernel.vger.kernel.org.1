@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAB42D3DEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CA12D3DEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgLIIur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:50:47 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8733 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgLIIur (ORCPT
+        id S1728121AbgLIIwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:52:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56243 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726035AbgLIIwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:50:47 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CrW1r3B6Hzklr8;
-        Wed,  9 Dec 2020 16:49:20 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 9 Dec 2020 16:49:52 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>,
-        <syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com>
-Subject: [PATCH] f2fs: fix shift-out-of-bounds in sanity_check_raw_super()
-Date:   Wed, 9 Dec 2020 16:49:36 +0800
-Message-ID: <20201209084936.31711-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 9 Dec 2020 03:52:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607503845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LdLylCpNHPguVJcRn3o1EL6W44butEOXO57bu4FDAhM=;
+        b=YgT3ipJxPh0MU7DkyJF3eq8W7Ytuf5o4j3Qp+9O13tSZxdojtkdINqg3WEtke5S7tIeuql
+        zDk6XsGyJb95+NCJVfTEFmBMdoKygtAc93kzAIfnhSahs7hlA2cyytQ38Du8u/rvUE9VDn
+        UQcLCatbyNeQUiOdl3843XEH7bRaDg4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-uMFA1StQO_6Hp9sFhmU8gQ-1; Wed, 09 Dec 2020 03:50:41 -0500
+X-MC-Unique: uMFA1StQO_6Hp9sFhmU8gQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A20E11065F8E;
+        Wed,  9 Dec 2020 08:50:02 +0000 (UTC)
+Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6688A6F139;
+        Wed,  9 Dec 2020 08:49:55 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v7 05/15] mm/bootmem_info: Introduce
+ {free,prepare}_vmemmap_page()
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-6-songmuchun@bytedance.com>
+ <17abb7bb-de39-7580-b020-faec58032de9@redhat.com>
+ <CAMZfGtWepk0EXc_fCtS83gvhfKpMrXxP8k3oWwfhWKmPJ3jjwA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <096ee806-b371-c22b-9066-8891935fbd5e@redhat.com>
+Date:   Wed, 9 Dec 2020 09:49:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAMZfGtWepk0EXc_fCtS83gvhfKpMrXxP8k3oWwfhWKmPJ3jjwA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported a bug which could cause shift-out-of-bounds issue,
-fix it.
+On 09.12.20 08:36, Muchun Song wrote:
+> On Mon, Dec 7, 2020 at 8:39 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 30.11.20 16:18, Muchun Song wrote:
+>>> In the later patch, we can use the free_vmemmap_page() to free the
+>>> unused vmemmap pages and initialize a page for vmemmap page using
+>>> via prepare_vmemmap_page().
+>>>
+>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>> ---
+>>>  include/linux/bootmem_info.h | 24 ++++++++++++++++++++++++
+>>>  1 file changed, 24 insertions(+)
+>>>
+>>> diff --git a/include/linux/bootmem_info.h b/include/linux/bootmem_info.h
+>>> index 4ed6dee1adc9..239e3cc8f86c 100644
+>>> --- a/include/linux/bootmem_info.h
+>>> +++ b/include/linux/bootmem_info.h
+>>> @@ -3,6 +3,7 @@
+>>>  #define __LINUX_BOOTMEM_INFO_H
+>>>
+>>>  #include <linux/mmzone.h>
+>>> +#include <linux/mm.h>
+>>>
+>>>  /*
+>>>   * Types for free bootmem stored in page->lru.next. These have to be in
+>>> @@ -22,6 +23,29 @@ void __init register_page_bootmem_info_node(struct pglist_data *pgdat);
+>>>  void get_page_bootmem(unsigned long info, struct page *page,
+>>>                     unsigned long type);
+>>>  void put_page_bootmem(struct page *page);
+>>> +
+>>> +static inline void free_vmemmap_page(struct page *page)
+>>> +{
+>>> +     VM_WARN_ON(!PageReserved(page) || page_ref_count(page) != 2);
+>>> +
+>>> +     /* bootmem page has reserved flag in the reserve_bootmem_region */
+>>> +     if (PageReserved(page)) {
+>>> +             unsigned long magic = (unsigned long)page->freelist;
+>>> +
+>>> +             if (magic == SECTION_INFO || magic == MIX_SECTION_INFO)
+>>> +                     put_page_bootmem(page);
+>>> +             else
+>>> +                     WARN_ON(1);
+>>> +     }
+>>> +}
+>>> +
+>>> +static inline void prepare_vmemmap_page(struct page *page)
+>>> +{
+>>> +     unsigned long section_nr = pfn_to_section_nr(page_to_pfn(page));
+>>> +
+>>> +     get_page_bootmem(section_nr, page, SECTION_INFO);
+>>> +     mark_page_reserved(page);
+>>> +}
+>>
+>> Can you clarify in the description when exactly these functions are
+>> called and on which type of pages?
+>>
+>> Would indicating "bootmem" in the function names make it clearer what we
+>> are dealing with?
+>>
+>> E.g., any memory allocated via the memblock allocator and not via the
+>> buddy will be makred reserved already in the memmap. It's unclear to me
+>> why we need the mark_page_reserved() here - can you enlighten me? :)
+> 
+> Sorry for ignoring this question. Because the vmemmap pages are allocated
+> from the bootmem allocator which is marked as PG_reserved. For those bootmem
+> pages, we should call put_page_bootmem for free. You can see that we
+> clear the PG_reserved in the put_page_bootmem. In order to be consistent,
+> the prepare_vmemmap_page also marks the page as PG_reserved.
 
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- sanity_check_raw_super fs/f2fs/super.c:2812 [inline]
- read_raw_super_block fs/f2fs/super.c:3267 [inline]
- f2fs_fill_super.cold+0x16c9/0x16f6 fs/f2fs/super.c:3519
- mount_bdev+0x34d/0x410 fs/super.c:1366
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+I don't think that really makes sense.
 
-Reported-by: syzbot+ca9a785f8ac472085994@syzkaller.appspotmail.com
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/super.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+After put_page_bootmem() put the last reference, it clears PG_reserved
+and hands the page over to the buddy via free_reserved_page(). From that
+point on, further get_page_bootmem() would be completely wrong and
+dangerous.
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index bf96f5776f99..c0b2ea596b07 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2869,7 +2869,6 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
- 	block_t total_sections, blocks_per_seg;
- 	struct f2fs_super_block *raw_super = (struct f2fs_super_block *)
- 					(bh->b_data + F2FS_SUPER_OFFSET);
--	unsigned int blocksize;
- 	size_t crc_offset = 0;
- 	__u32 crc = 0;
- 
-@@ -2896,10 +2895,10 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
- 	}
- 
- 	/* Currently, support only 4KB block size */
--	blocksize = 1 << le32_to_cpu(raw_super->log_blocksize);
--	if (blocksize != F2FS_BLKSIZE) {
--		f2fs_info(sbi, "Invalid blocksize (%u), supports only 4KB",
--			  blocksize);
-+	if (le32_to_cpu(raw_super->log_blocksize) != F2FS_BLKSIZE_BITS) {
-+		f2fs_info(sbi, "Invalid log_blocksize (%u), supports only %u",
-+			  le32_to_cpu(raw_super->log_blocksize),
-+			  F2FS_BLKSIZE_BITS);
- 		return -EFSCORRUPTED;
- 	}
- 
+Both, put_page_bootmem() and get_page_bootmem() rely on the fact that
+they are dealing with memblock allcoations - marked via PG_reserved. If
+prepare_vmemmap_page() would be called on something that's *not* coming
+from the memblock allocator, it would be completely broken - or am I
+missing something?
+
+AFAIKT, there should rather be a BUG_ON(!PageReserved(page)) in
+prepare_vmemmap_page() - or proper handling to deal with !memblock
+allocations.
+
+
+And as I said, indicating "bootmem" as part of the function names might
+make it clearer that this is not for getting any vmemmap pages (esp.
+allocated when hotplugging memory).
+
 -- 
-2.29.2
+Thanks,
+
+David / dhildenb
 
