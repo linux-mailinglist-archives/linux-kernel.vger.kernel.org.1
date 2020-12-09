@@ -2,93 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FF12D3C28
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7352D3C2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbgLIHZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgLIHZf (ORCPT
+        id S1726161AbgLIH2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:28:48 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:50267 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLIH2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:25:35 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49263C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 23:24:55 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id 69so633183pgg.8
-        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 23:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hzo5HNua2os1vDZs/ckGMlH2TN4SzogYdEgJdyYhqtU=;
-        b=WULBjBtnKb51kdRBcJwGeibc/mgIfSyYIg5m7uc3bNVrkkmyw91cRagDPlK4+aHaTG
-         Nk1C9+CYZ0kdY0DeyllySk/PRQQ/vKWRKf2oKRV1HMUy3wedO8OrQsFGJL/qR8+Wt3OZ
-         kD/Zz3Vm+2qCmj+ajT1qtH7dN3ZJPVF3C6sY2XUny/mQlmDgrj7jGWFX4uHggs+o/IX6
-         x4e+oYc7zN6HAxOaq3dITflBHDPK9CdOp/3NvJluonRLEPaR0UFJD4DpM37uma19r6X4
-         CqgiLSclxeD75OZPI8Z42nHJnsJPIA3n/42mvh52F5Y6YIzgRfHAhnFsPs3m7d4npkKV
-         c1FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hzo5HNua2os1vDZs/ckGMlH2TN4SzogYdEgJdyYhqtU=;
-        b=STXXCkpf0m+rpdLy7FO9YT4Y/30yxuq6jwZr4ox4bMBxfrZI0RHdjUdK7kO1+Ni4HZ
-         FIPI4g/gqt7WV4AkxDZL2SpSD8UCptpyVJFbEwib/a+3gtPIUfd0Tf1Wc8UOQjsTy/Zs
-         EjDGi/5+/ciHir9Y8yfSibMdFsrcAo3nGk7PkJdQvz6yXZFYC6wd7BZwmI/zyCIqZOB4
-         4gD7vH0nKlHExuWlzq2B2ttLZiWDPEG8vu8YNWzNEjZsFFxw+PLt2z+R+riygtTzFKBh
-         XIVhE8hzGglM8A+cFKmJAicANQ1SJ6HaXutu9BsnIoecP6no5goEXlk8MRF/vCZXYhy/
-         2gOA==
-X-Gm-Message-State: AOAM531+Bl1KOkYXhLdaVKII0HMsgQcKeniOe21Hv6OBRIWyhMinDCgv
-        1XwOA+fFOZNgjVJcgI6P2nfSpQ==
-X-Google-Smtp-Source: ABdhPJxuGkrAHb8VakoRkGzavuxdQV+slnwhEoNNe2qVJnBW9LdrpM45WP5xTIjkYIhyxqY8/UOitA==
-X-Received: by 2002:a62:1615:0:b029:19d:c9f1:f450 with SMTP id 21-20020a6216150000b029019dc9f1f450mr1154637pfw.11.1607498694804;
-        Tue, 08 Dec 2020 23:24:54 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id w9sm1218969pfj.128.2020.12.08.23.24.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 23:24:53 -0800 (PST)
-Date:   Wed, 9 Dec 2020 12:54:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Tushar Khandelwal <Tushar.Khandelwal@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, Sudeep.Holla@arm.com,
-        morten_bp@live.dk, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Usama Arif <usama.arif@arm.com>
-Subject: Re: [PATCH V5 0/2] mailbox: Add mhuv2 mailbox controller's support
-Message-ID: <20201209072451.ulbheaafsk6ap56u@vireshk-i7>
-References: <cover.1605607138.git.viresh.kumar@linaro.org>
+        Wed, 9 Dec 2020 02:28:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607498907; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Za3/3s0IT9nTkiYYrm8GewkVHrUptsStzqDVs8Ae4Uc=;
+ b=bkJCa7qxAYmibAm/OmdpcHnK2AwLidGkJJUwEjzBy5jHgTHsNR9c8d8cQ9fLuWCuor4IUD8L
+ GWwl9fK+hSGq7dNSp7H9XN1zSRtLTeyYzfp+uYPNdQRCY5ft1OSQhwDcmTAd5UcpR2Lkzin3
+ nEW5CkXuIVcrmHgn2rKswHmJpUo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fd07c7cd8cf5d213ff60a42 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 07:27:56
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7B866C433CA; Wed,  9 Dec 2020 07:27:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1C9C4C433C6;
+        Wed,  9 Dec 2020 07:27:53 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605607138.git.viresh.kumar@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Dec 2020 15:27:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Ziqi Chen <ziqichen@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] scsi: ufs: Fix ufs power down/on specs violation
+In-Reply-To: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
+References: <1607497774-76579-1-git-send-email-ziqichen@codeaurora.org>
+Message-ID: <00c4aee20f54448e93792387b598730b@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-11-20, 15:32, Viresh Kumar wrote:
-> Hi Jassi,
+On 2020-12-09 15:09, Ziqi Chen wrote:
+> As per specs, e.g, JESD220E chapter 7.2, while powering
+> off/on the ufs device, RST_N signal and REF_CLK signal
+> should be between VSS(Ground) and VCCQ/VCCQ2.
 > 
-> Here is the updated version based on your suggestions.
+> Power down:
+> 1. Assert RST_N low
+> 2. Turn-off REF_CLK
+> 3. Turn-off VCC
+> 4. Turn-off VCCQ/VCCQ2.
+> power on:
+> 1. Turn-on VCC
+> 2. Turn-on VCCQ/VCCQ2
+> 3. Turn-On REF_CLK
+> 4. Deassert RST_N high.
 > 
-> I feel bad that I haven't implemented the single-word protocol as a
-> special case of multi-word one in the earlier attempt. Perhaps I was too
-> consumed by the terminology used by the ARM folks in the previous
-> version of the driver and the reference manual of the controller :)
+> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufs-qcom.c | 14 ++++++++++----
+>  drivers/scsi/ufs/ufshcd.c   | 19 +++++++++----------
+>  drivers/scsi/ufs/ufshcd.h   |  4 ++--
+>  3 files changed, 21 insertions(+), 16 deletions(-)
 > 
-> V1/V4->V5
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index 1e434cc..5ed3a63d 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -582,6 +582,9 @@ static int ufs_qcom_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		ufs_qcom_disable_lane_clks(host);
+>  		phy_power_off(phy);
+> 
+> +		if (hba->vops && hba->vops->device_reset)
+> +			hba->vops->device_reset(hba, false);
+> +
 
-Hi Jassi,
+Instead of doing the pull-down in ufshcd_vops_suspend(), can we do
+it in ufshcd_suspend()? Since it is a common problem for all soc
+vendors.
 
-I still don't see this here, hope it is going to get merged in the
-coming merge window.
+>  	} else if (!ufs_qcom_is_link_active(hba)) {
+>  		ufs_qcom_disable_lane_clks(host);
+>  	}
+> @@ -1400,10 +1403,11 @@ static void ufs_qcom_dump_dbg_regs(struct 
+> ufs_hba *hba)
+>  /**
+>   * ufs_qcom_device_reset() - toggle the (optional) device reset line
+>   * @hba: per-adapter instance
+> + * @toggle: need pulling up or not
+>   *
+>   * Toggles the (optional) reset line to reset the attached device.
+>   */
+> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool toggle)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> 
+> @@ -1416,10 +1420,12 @@ static int ufs_qcom_device_reset(struct ufs_hba 
+> *hba)
+>  	 * be on the safe side.
+>  	 */
+>  	gpiod_set_value_cansleep(host->device_reset, 1);
+> -	usleep_range(10, 15);
+> 
+> -	gpiod_set_value_cansleep(host->device_reset, 0);
+> -	usleep_range(10, 15);
+> +	if (toggle) {
+> +		usleep_range(10, 15);
+> +		gpiod_set_value_cansleep(host->device_reset, 0);
+> +		usleep_range(10, 15);
+> +	}
+> 
+>  	return 0;
+>  }
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 92d433d..5ab1c02 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8633,8 +8633,6 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	if (ret)
+>  		goto set_dev_active;
+> 
+> -	ufshcd_vreg_set_lpm(hba);
+> -
+>  disable_clks:
+>  	/*
+>  	 * Call vendor specific suspend callback. As these callbacks may 
+> access
+> @@ -8664,6 +8662,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+> 
+>  	/* Put the host controller in low power mode if possible */
+>  	ufshcd_hba_vreg_set_lpm(hba);
+> +	ufshcd_vreg_set_lpm(hba);
 
-https://git.linaro.org/landing-teams/working/fujitsu/integration.git/log/?h=mailbox-for-next
+Can you put ufshcd_vreg_set_lpm() before ufshcd_hba_vreg_set_lpm()?
 
-Please let me know if you have any other concerns. Thanks.
-
--- 
-viresh
+>  	goto out;
+> 
+>  set_link_active:
+> @@ -8729,18 +8728,18 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	old_link_state = hba->uic_link_state;
+> 
+>  	ufshcd_hba_vreg_set_hpm(hba);
+> +	ret = ufshcd_vreg_set_hpm(hba);
+> +	if (ret)
+> +		goto out;
+> +
+>  	/* Make sure clocks are enabled before accessing controller */
+>  	ret = ufshcd_setup_clocks(hba, true);
+>  	if (ret)
+> -		goto out;
+> +		goto disable_vreg;
+> 
+>  	/* enable the host irq as host controller would be active soon */
+>  	ufshcd_enable_irq(hba);
+> 
+> -	ret = ufshcd_vreg_set_hpm(hba);
+> -	if (ret)
+> -		goto disable_irq_and_vops_clks;
+> -
+>  	/*
+>  	 * Call vendor specific resume callback. As these callbacks may 
+> access
+>  	 * vendor specific host controller register space call them when the
+> @@ -8748,7 +8747,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	 */
+>  	ret = ufshcd_vops_resume(hba, pm_op);
+>  	if (ret)
+> -		goto disable_vreg;
+> +		goto disable_irq_and_vops_clks;
+> 
+>  	/* For DeepSleep, the only supported option is to have the link off 
+> */
+>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
+> !ufshcd_is_link_off(hba));
+> @@ -8815,8 +8814,6 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	ufshcd_link_state_transition(hba, old_link_state, 0);
+>  vendor_suspend:
+>  	ufshcd_vops_suspend(hba, pm_op);
+> -disable_vreg:
+> -	ufshcd_vreg_set_lpm(hba);
+>  disable_irq_and_vops_clks:
+>  	ufshcd_disable_irq(hba);
+>  	if (hba->clk_scaling.is_allowed)
+> @@ -8827,6 +8824,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>  					hba->clk_gating.state);
+>  	}
+> +disable_vreg:
+> +	ufshcd_vreg_set_lpm(hba);
+>  out:
+>  	hba->pm_op_in_progress = 0;
+>  	if (ret)
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 61344c4..47c7dab6 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -323,7 +323,7 @@ struct ufs_hba_variant_ops {
+>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+>  	int	(*phy_initialization)(struct ufs_hba *);
+> -	int	(*device_reset)(struct ufs_hba *hba);
+> +	int	(*device_reset)(struct ufs_hba *hba, bool);
+>  	void	(*config_scaling_param)(struct ufs_hba *hba,
+>  					struct devfreq_dev_profile *profile,
+>  					void *data);
+> @@ -1211,7 +1211,7 @@ static inline void
+> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+>  static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
+>  {
+>  	if (hba->vops && hba->vops->device_reset) {
+> -		int err = hba->vops->device_reset(hba);
+> +		int err = hba->vops->device_reset(hba, true);
+> 
+>  		if (!err)
+>  			ufshcd_set_ufs_dev_active(hba);
