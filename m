@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD62A2D4C2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 880982D4C2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730910AbgLIUry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        id S1731611AbgLIUsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:48:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgLIUrp (ORCPT
+        with ESMTP id S1728298AbgLIUsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:47:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F10C0613CF;
-        Wed,  9 Dec 2020 12:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=62AZlsv1U7MmdVe+7QYsPomj1JbAvEv3m2KxaRaeI1s=; b=hnZkNtmsN+Zz+Ytw6E4aGAbna1
-        50wtz8CxIexVZtnl+Am89O17KjRJbEM3ppv3yXxfAtzQ8LROIcox4JTDkfN+qe1NrO0I1pUwFq2KH
-        xE6JfRIN9CWWEF29Vo3IM/IvNSlv2Vfth/02i+Gvh/U4om04u3n4Z88dKRE6PMRLoK/06RDT3eR7K
-        u9/TMbM9mUOXR6YKj20a79N+iC6rMYv/7W79phklo/NrFwG1Y084O99Ty0D1qQLwDHPtrfr1b7nBn
-        08rVRIsZTHTUACtucWqy0mnP5uMSpBnUoFlCrcIG+8A6l9blLiv/zU2sbc8ptaTX+T3XhJ85D2Xpu
-        2qVgA+ng==;
-Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn6MX-0000N6-Q8; Wed, 09 Dec 2020 20:47:02 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        linux-c6x-dev@linux-c6x.org
-Subject: [PATCH] block: blk-iocost: fix build for ARCH with missing local64.h files
-Date:   Wed,  9 Dec 2020 12:46:57 -0800
-Message-Id: <20201209204657.6676-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 9 Dec 2020 15:48:45 -0500
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AAFC0613CF;
+        Wed,  9 Dec 2020 12:48:05 -0800 (PST)
+Received: by mail-vs1-xe2c.google.com with SMTP id j140so1663948vsd.4;
+        Wed, 09 Dec 2020 12:48:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5nSBCJhr29Kxl5oTL7FlzpzubY2bDnmJhKViwg1dvOg=;
+        b=p5+n8RZuqsRyt0qM5odRYvOo0n1FodAIENoIOfdh8NuAuNA0BxSm24F9lFOmNIpvLb
+         ge+FQsdKmGF/24Z8t8Gb+MAM8tblWdYejQNXHc5bYXoIZhve3i2Zpo35114Kq4Cy3PJo
+         E3C8qto4QXPy3OSARjL0faprcxbD56MNr5Um2vq+lqu+YlkZk0KRv+1GqJ1rxACiY/mK
+         CLhV8uJrA1bGITj2qf6/bNOPUXsG8oocJ2eF7l9TnfBQG7HU6cRvhS2xU/g9+J0j9PXX
+         Tl79pb5S4DV9Umielrj0aw+0M9poGagreG5fLi/Hu7w3+7p6Gknaddaoe+1V0ny+Xo3Y
+         C7rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5nSBCJhr29Kxl5oTL7FlzpzubY2bDnmJhKViwg1dvOg=;
+        b=erUyyLjnmOD+MPkerg0v59RarB320/cvZYg2pH5zkB+0KRdE6BXDSVvVaXJ/n1xHhA
+         Ex9wEGiPwA9kal3hvmLyJCqgTndIYVi1DKcwBRy4je2DypHHmTdQhAGDCZO8r+YclTzO
+         d+3EsC+nDqo7CGvQrmNOj2RWDQNr1qhkumNSDtXtDQTgXhIjTgpL6VXdinrUZ+aRo0jW
+         76wvvUcEsbnhcVkKCYc4KZ6zkiRKuBlxA2NN4qH31Rb5s4hvlxUMbo68IXCYAleNZ4P6
+         VfWhrpKWGAw4ZkSq9DR4SEAr+dplx5+MChbffRgxtTSIxAqjsHF8VlqsufpaJF096qZH
+         87TQ==
+X-Gm-Message-State: AOAM530omyiq40x22TAevSyNzZa8xcmEe9FTO23H5Kc5EL6AXzpifLTN
+        3Yf+vJub7Hf6WLFfhg+cRXOlbse9ccSEeB1hIi8=
+X-Google-Smtp-Source: ABdhPJziJaz1nQoeYjAjKSVaeB45UuPfiKm1uNziH2nMgomiy7IkIopvxOpZMUd2GhLzmYyGXepDfffnXONl1ARcQAg=
+X-Received: by 2002:a67:ad0f:: with SMTP id t15mr4236987vsl.24.1607546884653;
+ Wed, 09 Dec 2020 12:48:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
+ <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
+ <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
+ <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+ <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com> <CALjTZvYZEbgfLEzxQdafJT6CFz76prA4+YM2EGA8k5Dgn3gigw@mail.gmail.com>
+In-Reply-To: <CALjTZvYZEbgfLEzxQdafJT6CFz76prA4+YM2EGA8k5Dgn3gigw@mail.gmail.com>
+From:   Emmanuel Grumbach <egrumbach@gmail.com>
+Date:   Wed, 9 Dec 2020 22:47:53 +0200
+Message-ID: <CANUX_P1YWSudJfwyuFVg-qdBHwQvQJiZayZBMY8E4it0qwB5Hw@mail.gmail.com>
+Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Coelho, Luciano" <luciano.coelho@intel.com>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building block/blk-iocost.c on arch/x6x/ or arch/nios2/, the
-build fails due to missing the <asm/local64.h> file.
+On Wed, Dec 9, 2020 at 10:40 PM Rui Salvaterra <rsalvaterra@gmail.com> wrote:
+>
+> Hi, Emmanuel,
+>
+> On Wed, 9 Dec 2020 at 20:32, Emmanuel Grumbach <egrumbach@gmail.com> wrote:
+> >
+> > Rui, I looked at the register dump and looks like you're using AMT on
+> > your system?
+> > Can you confirm?
+>
+> AMT? You mean Intel Active Management? Heavens, no, not that I know
+> of! This is a personal laptop (Lenovo B51-80). (And I'd personally
+> kill the ME with fire, if I could.)
 
-Fix this by adding local64.h as a "generic-y" file in their respective
-Kbuild files, so that they will use a copy of <asm-generic/local64.h>
-instead (copied to arch/*/include/generated/local64.h by the
-build system).
+Yes, I mean that thing. No VPRO sticker on the laptop?
+Weird... So apparently I was wrong about the register value.
 
-c6x or nios2 build error:
-../block/blk-iocost.c:183:10: fatal error: asm/local64.h: No such file or directory
-  183 | #include <asm/local64.h>
-
-Fixes: 5e124f74325d ("blk-iocost: use local[64]_t for percpu stat")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-block@vger.kernel.org
-Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-Cc: Mark Salter <msalter@redhat.com>
-Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
-Cc: linux-c6x-dev@linux-c6x.org
----
- arch/c6x/include/asm/Kbuild   |    1 +
- arch/nios2/include/asm/Kbuild |    1 +
- 2 files changed, 2 insertions(+)
-
---- linux-next-20201208.orig/arch/c6x/include/asm/Kbuild
-+++ linux-next-20201208/arch/c6x/include/asm/Kbuild
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generic-y += extable.h
- generic-y += kvm_para.h
-+generic-y += local64.h
- generic-y += mcs_spinlock.h
- generic-y += user.h
---- linux-next-20201208.orig/arch/nios2/include/asm/Kbuild
-+++ linux-next-20201208/arch/nios2/include/asm/Kbuild
-@@ -2,6 +2,7 @@
- generic-y += cmpxchg.h
- generic-y += extable.h
- generic-y += kvm_para.h
-+generic-y += local64.h
- generic-y += mcs_spinlock.h
- generic-y += spinlock.h
- generic-y += user.h
+>
+> Thanks,
+> Rui
