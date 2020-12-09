@@ -2,138 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC782D3D2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07462D3D67
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgLIIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:15:39 -0500
-Received: from mail-eopbgr50063.outbound.protection.outlook.com ([40.107.5.63]:30526
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725765AbgLIIPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:15:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YOq0//IEyEQTuz+8MAPs15IPDVNFuYVo1p/61m46xpSoIqeVv9xomLGes66pg+uJbZBSgRJP5hb3uxDIoJg6C9PcbVmCQAt2LuL5lWBQNPfYA2y5qpO1XUzzFlTkcUI7nN8hDmCPCUlOLsuqUUwndojcym/0+nxAJfEx+1PICwFaYvI7rLbueLnxCInhiSi3L+5XbGGutgi84vewuOjKSPIY5CQizGR75+mATeDDn6gRXFT3UHXaADcEWA+bSTht/cyqx6OJyP02ti9/n+bwlp74gOy/YQZL3glqw+33WC+QDMFbb7r2c12EEzwTXH1y7/S/l5eA83OHVK8jri9p/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KjVzE9yY+s3OhY2/ta1zQi2oqeHQU8LSsa5TR34aPl0=;
- b=FK6L4D/qrYKfxX0rzh4+cs3EdtCsPF3UG2qKqxtIy01OTnnxsZEiQHsQ5SoSKkYfGYcuwIqOCMj85WrQL9m/qEPO6wETIoLqef+OZXoijHMgFOtM+KI9yffHFN3ovlRVlpfbkchsQw86U6xRFRL7uaT6zgAlOBl4lqzty+HHTLHxgg5cNuV3fw9jawCVHFmsc6O2gSUb0AS8LLhn+OQLLZY8oZKGQFXv5mYkEwPpz48fyqTBWR2Ud2QbXFSdsSoCda1Cz7V+F1UjZ5bZcT+V9ailYXdOdHo7ZfCnEVn3ErNqN7FAgRJ2yHqSYe0CCfAtbeZuxBUBuVH8yp1PKqqnwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KjVzE9yY+s3OhY2/ta1zQi2oqeHQU8LSsa5TR34aPl0=;
- b=DGTcDFgyvXr48FOgLl/curCns+oD0hMwkPm85cTuLd4mZywaZu9ZdmUZh+yS5Z+SdSZQLt02JJl/P5OAhT8Js9K88HPoO+MnTMRcG1iUWHlA0sF9y7ApuoPdR6c3vAnqmaXI6d7oJMMkyg1gqq6oqJPUF2RNf75XOTRi8AI5Thk=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7515.eurprd04.prod.outlook.com (2603:10a6:10:202::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Wed, 9 Dec
- 2020 08:14:11 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3632.024; Wed, 9 Dec 2020
- 08:14:11 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        van.freenix@gmail.com, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 3/3] tools/virtio: add barrier for aarch64
-Date:   Wed,  9 Dec 2020 16:42:05 +0800
-Message-Id: <20201209084205.24062-4-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201209084205.24062-1-peng.fan@oss.nxp.com>
-References: <20201209084205.24062-1-peng.fan@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR01CA0122.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::26) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1726774AbgLIIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:30:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43750 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725765AbgLIIaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 03:30:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607502520;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY8/pWIgcIz+C6jRI22Ls6KSQPYFbL8dVJN418r6j6I=;
+        b=MjpHsnYT85AizTEtTNlMCKnXGEbd3guX0uKx8J2b55ngGIThD5sp33pTAbtzkXzTrz9nNM
+        gxJusA9LtWAX+QLbSM7PzXiCq6tWrl6Rqm57skVawSs4D1oG8zZbkVJt0wds1/DK7mCZfN
+        ytvdDyxXtWAQ1nrPidLx+QAeXlORtRA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-TJ2t0tl3MpOZSRFZYSPcLA-1; Wed, 09 Dec 2020 03:28:38 -0500
+X-MC-Unique: TJ2t0tl3MpOZSRFZYSPcLA-1
+Received: by mail-wr1-f70.google.com with SMTP id v5so374011wrr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:28:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TY8/pWIgcIz+C6jRI22Ls6KSQPYFbL8dVJN418r6j6I=;
+        b=YXFQbQqX7pqa7izpY5Cqb6rsaiAqIpqWko4o5hQz2r8TL/qTF4MHBF9z8W4VncOCSo
+         XlbBmpDz0c+rE9tbrIf9GPoU+Dm7SMJi8ul4TS+oDrCjG3Ieg4519wB+5vs4U+eanq6j
+         g0AT7cknHtOsHvnJh/3H9wvwlGpIVdC+uo/Dxeyq0z8qlveAOKzTHTWLeV3h1dyOYxEY
+         IxBfViTh133CHfsz8IvpKhnGLhjNV6x5OPEbNTsq3PeNpqr5HdIbK6AWszrAe/ILsDQ0
+         2YLIq3clKoxY51dn5t6hXwOVXwlaVLkcxVRcFw3d8c+QDc8xCSr0T1agxcYrB6e14iOc
+         HzDQ==
+X-Gm-Message-State: AOAM530diegVz33K/BgI3z04Zm3YecWiHntuK1PivhPVfG0xjLpSFXn9
+        Se3lRdzVP+WinCvp0/UuX4+zXXmbMJLqZKtUluyylYLfPkWb1ZgU4ozREWb61EZ7a5D6+OvxsAO
+        L1DBWZLeX56PJhnoaqxYZQ2ct
+X-Received: by 2002:adf:ecd0:: with SMTP id s16mr1258056wro.415.1607502517428;
+        Wed, 09 Dec 2020 00:28:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxH6Do+31Svbm6gZcmCgYjugWGzqIMTR6tBXYz8WhylY3W/V+37vUvxCwZh+NfQ/MkOY6D7Mg==
+X-Received: by 2002:adf:ecd0:: with SMTP id s16mr1258052wro.415.1607502517272;
+        Wed, 09 Dec 2020 00:28:37 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id u6sm2188084wrm.90.2020.12.09.00.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 00:28:36 -0800 (PST)
+Date:   Wed, 9 Dec 2020 03:28:33 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Mathias Crombez <mathias.crombez@faurecia.com>
+Subject: Re: [PATCH RESEND v2] virtio-input: add multi-touch support
+Message-ID: <20201209030635-mutt-send-email-mst@kernel.org>
+References: <20201208210150.20001-1-vasyl.vavrychuk@opensynergy.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR01CA0122.apcprd01.prod.exchangelabs.com (2603:1096:4:40::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 08:14:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 59f36820-576d-48f4-4fbf-08d89c1a6914
-X-MS-TrafficTypeDiagnostic: DBBPR04MB7515:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB751533AEF22B4DC06B18D275C9CC0@DBBPR04MB7515.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MODZ9oR5XjYRSlWbJz99PiaqI+o/sUIJc8rAlFuBhctrCseeu4Y+443WYdGO0XGpXfhcOg9D8Fjv/T8WXfrsP9BPJfWC5Cf4qGBXoCneDodppvFgb+lIterP4hc2OkFw1xvjnaKiQA0s5E6mSVFDdaFLYR/8R5RH5OLFvQ10vAc0dhG/TUxxphpDzKLS1FNjVSCbz+A/3oVbS7WQvqXRCY5kSTaBwhqnA0YY2geRDHNGxah88QRbDI3lJKdCziFkle+eBdCWR7L5ywYjyd1F26ItankaS+f3eH0pn3WP7xtyzS6hzi2vHZBPEqK1YgKiRJPafOpRrYQP/HOND5rApAVWBuTgFadK6RYp4EvaweUtX/ien7eFtY470HWlxtjE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(66556008)(8676002)(66476007)(956004)(8936002)(4744005)(4326008)(1076003)(508600001)(66946007)(6506007)(6486002)(5660300002)(6512007)(86362001)(6666004)(16526019)(2906002)(2616005)(186003)(26005)(34490700003)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VIuFCR9RkAMnYFGnKhlwhDi1CfZ/3+xnbWect67FvbaERkdYOws5cAMJOSV/?=
- =?us-ascii?Q?QLBu6X84nvossT/ZNSdKeVYbeC7S9Q0L9m0WSRe0uCmGR43LKzA7B/1x3ouU?=
- =?us-ascii?Q?olZwqi3Cy+Maqa+Itvvvgx5qPcD9luoci1rl2VsVk8oDBLO6rvJce0L8emWw?=
- =?us-ascii?Q?NTJj70BwfzsDsxxPAx+KIFi7zfO3tOCTSpwEa88WzbMtm0iJ1d1oEFPFRoff?=
- =?us-ascii?Q?G8EzLd5SVmFn0PTI5ntEDcrgIpj8s677wiarj+j5Bn+FkTZTcxSlYg7MTyU3?=
- =?us-ascii?Q?t8eMKLog0LpL1iKpoJDes7G254HQ7PVk+LykndunzXPpPraNd6GZkFzFUbdL?=
- =?us-ascii?Q?r2uCH5rX5MWla1jzBIEhlo213sPHZwh9gG+2iYJ1O4s2zW8iIe+AkBOw5UdJ?=
- =?us-ascii?Q?Kz/RfLCOimHDDYWG3dXeaqXP0qK7XfSfRV/nrXJxz93dwsr+3+DW259BvSxE?=
- =?us-ascii?Q?8Uy8lIu1Kyb7GqrnJX+xbQgiNiuYWQdhGmjlClxUP0Xwqiqyw0NkBjTObGRv?=
- =?us-ascii?Q?ekpYgWHSvm3VITg4osKBgsVNpk/5FCR/XN9orGI5iee49bHx3jkOcSxmcxNW?=
- =?us-ascii?Q?LUKkUO2DL8FRVG4nyZ8iVv4fdHAoOOzLbUYgZHi6KDwoFtlQXlWuGkYEU9ao?=
- =?us-ascii?Q?6IX7/WiTtgFDMupmpX4kdca2AJe6nOMJbE3+PAT8ZkccMSE7uuApd19CICSA?=
- =?us-ascii?Q?IDhO/oKRyJIK+reELaaBV8OVK7p4G0TlB+R3IUWCFH2wx6Qul/Qp91UKniVn?=
- =?us-ascii?Q?vqipbqeJhx2x74HbprutTtdNE0awGZgxAwxOxN7sF06fCOhGBhMfaQD+ant8?=
- =?us-ascii?Q?BeOwwkD28uVko7LWvvfnz/CcSIefHcblULdE6eeccZxXDD8aX9K6sjp52tgR?=
- =?us-ascii?Q?uB1q6g6XtG/LLCF0I20x5eUH2gbSsX4v5vFfjxRKLRsKyGXHBCvKT2CMWgA7?=
- =?us-ascii?Q?1mqKyy1G5WiFXZtrey7sSd4vSf28bTC/oNjJZ/D8q4W14wf5wntDnSDk1GEn?=
- =?us-ascii?Q?Bfxd?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 08:14:11.8247
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59f36820-576d-48f4-4fbf-08d89c1a6914
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VI5Y40jKiSaBUI4Z8CHrTbzk/s/6Ji+bzuuep5dm3M1T930HBvMlD4vjsLnUVzfQAsCuv674tqhksh8B+Kvt/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7515
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208210150.20001-1-vasyl.vavrychuk@opensynergy.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Tue, Dec 08, 2020 at 11:01:50PM +0200, Vasyl Vavrychuk wrote:
+> From: Mathias Crombez <mathias.crombez@faurecia.com>
+> Cc: stable@vger.kernel.org
 
-Add barrier for aarch64 for cross compiling, and  most are from Linux Kernel.
+I don't believe this is appropriate for stable, looks like
+a new feature to me.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- tools/virtio/asm/barrier.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
 
-diff --git a/tools/virtio/asm/barrier.h b/tools/virtio/asm/barrier.h
-index 04d563fc9b95..468435ed64e6 100644
---- a/tools/virtio/asm/barrier.h
-+++ b/tools/virtio/asm/barrier.h
-@@ -16,6 +16,16 @@
- # define mb() abort()
- # define dma_rmb() abort()
- # define dma_wmb() abort()
-+#elif defined(__aarch64__)
-+#define dmb(opt) asm volatile("dmb " #opt : : : "memory")
-+#define virt_mb() __sync_synchronize()
-+#define virt_rmb() dmb(ishld)
-+#define virt_wmb() dmb(ishst)
-+#define virt_store_mb(var, value)  do { WRITE_ONCE(var, value); dmb(ish); } while (0)
-+/* Weak barriers should be used. If not - it's a bug */
-+# define mb() abort()
-+# define dma_rmb() abort()
-+# define dma_wmb() abort()
- #else
- #error Please fill in barrier macros
- #endif
--- 
-2.28.0
+> 
+> Without multi-touch slots allocated, ABS_MT_SLOT events will be lost by
+> input_handle_abs_event.
+> 
+> Signed-off-by: Mathias Crombez <mathias.crombez@faurecia.com>
+> Signed-off-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+> Tested-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
+> ---
+> v2: fix patch corrupted by corporate email server
+> 
+>  drivers/virtio/Kconfig        | 11 +++++++++++
+>  drivers/virtio/virtio_input.c |  8 ++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+> index 7b41130d3f35..2cfd5b01d96d 100644
+> --- a/drivers/virtio/Kconfig
+> +++ b/drivers/virtio/Kconfig
+> @@ -111,6 +111,17 @@ config VIRTIO_INPUT
+>  
+>  	 If unsure, say M.
+>  
+> +config VIRTIO_INPUT_MULTITOUCH_SLOTS
+> +	depends on VIRTIO_INPUT
+> +	int "Number of multitouch slots"
+> +	range 0 64
+> +	default 10
+> +	help
+> +	 Define the number of multitouch slots used. Default to 10.
+> +	 This parameter is unused if there is no multitouch capability.
+> +
+> +	 0 will disable the feature.
+> +
+
+Most people won't be using this config so the defaults matter. So why 10? 10 fingers?
+
+And where does 64 come from?
+
+
+>  config VIRTIO_MMIO
+>  	tristate "Platform bus driver for memory mapped virtio devices"
+>  	depends on HAS_IOMEM && HAS_DMA
+> diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+> index f1f6208edcf5..13f3d90e6c30 100644
+> --- a/drivers/virtio/virtio_input.c
+> +++ b/drivers/virtio/virtio_input.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <uapi/linux/virtio_ids.h>
+>  #include <uapi/linux/virtio_input.h>
+> +#include <linux/input/mt.h>
+>  
+>  struct virtio_input {
+>  	struct virtio_device       *vdev;
+> @@ -205,6 +206,7 @@ static int virtinput_probe(struct virtio_device *vdev)
+>  	unsigned long flags;
+>  	size_t size;
+>  	int abs, err;
+> +	bool is_mt = false;
+>  
+>  	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
+>  		return -ENODEV;
+> @@ -287,9 +289,15 @@ static int virtinput_probe(struct virtio_device *vdev)
+>  		for (abs = 0; abs < ABS_CNT; abs++) {
+>  			if (!test_bit(abs, vi->idev->absbit))
+>  				continue;
+> +			if (input_is_mt_value(abs))
+> +				is_mt = true;
+>  			virtinput_cfg_abs(vi, abs);
+>  		}
+>  	}
+> +	if (is_mt)
+> +		input_mt_init_slots(vi->idev,
+> +				    CONFIG_VIRTIO_INPUT_MULTITOUCH_SLOTS,
+> +				    INPUT_MT_DIRECT);
+
+
+Do we need the number in config space maybe? And maybe with a feature
+bit so host can find out whether guest supports MT?
+
+>  
+>  	virtio_device_ready(vdev);
+>  	vi->ready = true;
+> -- 
+> 2.23.0
 
