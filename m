@@ -2,102 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605DA2D4822
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AC92D481A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732858AbgLIRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:39:26 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2236 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732053AbgLIRjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:39:25 -0500
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrkkC2Gbfz67Mb9;
-        Thu, 10 Dec 2020 01:36:35 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 18:38:41 +0100
-Received: from [10.210.171.175] (10.210.171.175) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 9 Dec 2020 17:38:40 +0000
-Subject: Re: [PATCH v2 1/1] hisi_sas: Fix possible buffer overflows in
- prep_ssp_v3_hw
-To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201209124818.25122-1-ruc_zhangxiaohui@163.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <87979504-6540-6b38-88df-938390ae5d3c@huawei.com>
-Date:   Wed, 9 Dec 2020 17:38:05 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1732839AbgLIRjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:39:08 -0500
+Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:33217
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732788AbgLIRjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:39:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=amw11fC23C3jkIs20JTSgRr7mYXY341tyBsfoofloMe1OLmpRxbHGdQbuzMgT2QKVeEMwp4IVFyVgNchkfJI45UQ7unuIfK6wmJdEB9YhYPRlc/aBRZRL4VCU6Ugu6dznHHc6On4IgJLxYLcvc/8nY7a0DJg7wG+glx9N82CKmCVb8Xq9MFj3H7oArPEnecjc/YGKT79+/g+yIcH/mIwQojZzd1B2zH+Vm0lwJy7+6+4J3IfD83d04uzGB5lYCY1+qhtfi0KK+JTRyYg1Rtz8o3CjPlQCGKJJoPB+ZvU8Nz4rgiNeNWAz7VUHMHsuFUnTqkAH6wkE1vBdYAKN8KnbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pSsk4T1tRoIaOow7kKfn57FwE+1x+wOHA/C3XVFtsMs=;
+ b=GzSESL6ohgoAwyk3C+0eBmJN8lY7kLkSDNRxwkZOA5gFzN5axkdR4zLVLdMpowaCiJVf1STnyJLlDNdxxsCQBS76q1eZqZh0nxvkeJXx8nQV4wUzn33DHEgHaoRzFmt3j4kGNOjN5tPUEaDKpq3Qk7QGU6lC0rvhGogg663/InPbpskZBWOga5NZtnQmtwn6T5gQ1aT7rAF4FxP76t3JHs1RlkwlogoJjQrenNTGd3Gw8xQMeIH9Mog7fnQUcuDzxkukLuL/uCVCGqJE4hF09p/A7S9bhHN+YNNJQWM+rsORnqy3ybyhaKknp9Q24bKJD0bwjqlX94CiLi/TEoBo4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pSsk4T1tRoIaOow7kKfn57FwE+1x+wOHA/C3XVFtsMs=;
+ b=An25iJYYkxlEGbEOZJuaS5r2Q1NWwJhCQtxZIHwk42yE4Df17+CgRsLFCnWf722o5PWrdPbberZmx10dcRVxvqD2DHxZkzYehV/BO5CIshMMhfW9tslQKs7XrppxuGuwEiQIrETjybrdt4FLV6yeL2Dt4kEkuqcf/Xi7ZmMr7w8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=silabs.com;
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
+ by SA2PR11MB5084.namprd11.prod.outlook.com (2603:10b6:806:116::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Wed, 9 Dec
+ 2020 17:38:16 +0000
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::4f5:fbe5:44a7:cb8a]) by SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::4f5:fbe5:44a7:cb8a%5]) with mapi id 15.20.3541.031; Wed, 9 Dec 2020
+ 17:38:16 +0000
+From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
+To:     'Rob Herring' <robh+dt@kernel.org>,
+        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        =?ISO-8859-1?Q?=27J=F3zsef_Horv=E1th=27?= <info@ministro.hu>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, driverdev-devel@linuxdriverproject.org
+Cc:     Info <info@ministro.hu>
+Subject: Re: [PATCH] Staging: silabs si4455 serial driver
+Date:   Wed, 09 Dec 2020 18:38:08 +0100
+Message-ID: <2907305.Mh6RI2rZIc@pc-42>
+Organization: Silicon Labs
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Originating-IP: [2a01:e35:2435:66a0:1265:30ff:fe0b:858f]
+X-ClientProxiedBy: PR1PR01CA0009.eurprd01.prod.exchangelabs.com
+ (2603:10a6:102::22) To SN6PR11MB2718.namprd11.prod.outlook.com
+ (2603:10b6:805:63::18)
 MIME-Version: 1.0
-In-Reply-To: <20201209124818.25122-1-ruc_zhangxiaohui@163.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.175]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-42.localnet (2a01:e35:2435:66a0:1265:30ff:fe0b:858f) by PR1PR01CA0009.eurprd01.prod.exchangelabs.com (2603:10a6:102::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 17:38:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 170450c3-d60b-4d21-86c1-08d89c693537
+X-MS-TrafficTypeDiagnostic: SA2PR11MB5084:
+X-Microsoft-Antispam-PRVS: <SA2PR11MB508472C44E81EB5B8C47303793CC0@SA2PR11MB5084.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GrFIUVud5zHdD4It67k3GQC0o4XUI+I6nXY0lq6d43v38A/BzGAfVQe7+qbNCT50aMtzTSJyNc4qfeRprQUDnxoUFFB/BYtXjSOz3MK2/85oRjvV1sLY9r34sdj80j65XTbFKQOUrrUBBlg+Gg0lnBJDVB89PlOTeFy0Ee20JloJh8t1hx2huAoUCFU4s63sjCNI30OFCLbp0pZJHybL4DF3Mq+kj4wptVfEUiTcuoespRvyx05o4tRSwkLpgKFhMAB+aZECdnSgNrbQkIwjTcn4AZQ4gtXAQR3R2JQ7nVVNUpHAOQT7UNHU/adW86yr1ukljajS5Kq7pqp/SPWjhnWEchhEFHO3jsNyXOaYDpV0/2kc7ysT0HPxGID9XdfU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(376002)(36916002)(16526019)(86362001)(5660300002)(83380400001)(33716001)(6512007)(9686003)(2906002)(52116002)(6666004)(8676002)(186003)(66556008)(66476007)(4326008)(8936002)(6506007)(508600001)(6486002)(66946007)(66574015)(110136005)(39026012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?NNFKiF+qtmU4CZOvz0d/cMYjjJxEneGLb91c+f1JUceQcuNXgujTwdPzub?=
+ =?iso-8859-1?Q?59Nr0BarpYYpLyWxk/iGUq7q+JmQi52M/jwETYN0quqSlIg3xh3snLEhUN?=
+ =?iso-8859-1?Q?jRg/dBi40rsveP8F6gaZSerRsoGRCZeHYUb3QqvQ5q1MaNAALs7Rf9wBG7?=
+ =?iso-8859-1?Q?SC6NgxFPgdArUrejCegFCCe39Mp1g+ckK1CiTdyRJyoXeo5bLg1ML12oY+?=
+ =?iso-8859-1?Q?N7NqqJBUd6td/A2Xh4KT7u+e/FR270NzjabIY06dIG/2cgmHXNlT9tkccg?=
+ =?iso-8859-1?Q?Wdj9zyp2aVOfy2QKLfai+LQKV71lVTvtbEEHu8Vu0gA5nL5nRH28NRYtYr?=
+ =?iso-8859-1?Q?qDMrZA6Uhr/3LQv2Da20GPlPqQ3KIRyC0PPJlk5AdQKqUeu+Qt0PS4zdKM?=
+ =?iso-8859-1?Q?lrMd0jr1yGQlCfN9lFxH5ZNYm5eWGUHA9EKOI6q4hwFvOWuwrgVnKsnMvJ?=
+ =?iso-8859-1?Q?66bH6rrkJt+8GmtXvXfd2mfba6okYcQ25XZOZDrywL33kQufb/Yas2Vnra?=
+ =?iso-8859-1?Q?YPbb65u82ZLor++1iaReMegbDIEGSA+Z2Wt0/W0luhvy94xq0K8URYjNL4?=
+ =?iso-8859-1?Q?K4oVoAjXijFh7YS3bG8Ux8IWK1sFq/MK19bCHRkQdCok6XgfbSf0oTbaP3?=
+ =?iso-8859-1?Q?YvvMCLpnbFP0kUC11tc7AK/DXuYVwe4ZvfwjI5EqHBt25/5bvWKWVcp09V?=
+ =?iso-8859-1?Q?93m512cbsEs0OhxHEoEdm7q+LvXoJXDbfGddT9TVLqI+s7CohBxGijbPVy?=
+ =?iso-8859-1?Q?12KRF592eqlaojfUh8y3cD2m1Cymx0a7ax5OaL8UhgjRtbNT7LD5G0MNgF?=
+ =?iso-8859-1?Q?Av8CQS5fkIiBHOD5gZxPQ4FpzFqPqUDejN7EOwIXAZt+H/EktseyQjvxFa?=
+ =?iso-8859-1?Q?pbbmhygUOFnjRURVdpqcndd1I7aL4NSdSD4aSvWIiW2IAkXLYp77HOhxKO?=
+ =?iso-8859-1?Q?HC7B5gMWwB5+E2F4u/0DeNT9Cvl1qXLVgQ5u9P11BR9ZQWsNAI/JT6c4I3?=
+ =?iso-8859-1?Q?QY6bA6oruPlex+qcpPcmfyqF5TqIX378+5TIVyiwNYjBQP+jZeXlYXprkf?=
+ =?iso-8859-1?Q?i3Pu+BJSM3JYsSh+Bj232U15bgCemR1gkM/8Lu+om/DP?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 170450c3-d60b-4d21-86c1-08d89c693537
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 17:38:16.6695
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RNp73FMuFn+7SLGFnbhokVlREKdKOY3AQJ/aFU2AQtJHhztu/5DYt3C7V8SVv9bX/8zQhgwXfni/vqg4YUpHTQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 12:48, Xiaohui Zhang wrote:
-> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-> 
-> prep_ssp_v3_hw() calls memcpy() without checking the destination
-> size may trigger a buffer overflower.
-> 
-> buf_cmd should be a ssp_tmf_iu struct through the analysis of
+On Wednesday 9 December 2020 12:09:58 CET Info wrote:
+>=20
+> This is a serial port driver for
+> Silicon Labs Si4455 Sub-GHz transciver.
 
-hmmm... but you change the !tmf path.
+Hello J=F3zsef,
 
-> the command below:
-> buf_cmd = hisi_sas_cmd_hdr_addr_mem(slot) +
->          sizeof(struct ssp_frame_hdr);
-> 
-> Then buf_cmd + 12 should point to tag, so the length parameter
-> of memcpy() should not exceed sizeof(__be16)+sizeof(u8)*14):
-> struct ssp_tmf_iu {
->      u8     lun[8];
->      u16    _r_a;
->      u8     tmf;
->      u8     _r_b;
->      __be16 tag;
->      u8     _r_c[14];
-> } __attribute__ ((packed));
-> 
-> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+Thank you for taking care of support of Silabs products :)
+
+
+> Signed-off-by: J=F3zsef Horv=E1th <info@ministro.hu>
+
+I think you have to use your personal address to sign-off.
+
 > ---
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> index 7133ca859..d02831c17 100644
-> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> @@ -1267,7 +1267,9 @@ static void prep_ssp_v3_hw(struct hisi_hba *hisi_hba,
->   	memcpy(buf_cmd, &task->ssp_task.LUN, 8);
->   	if (!tmf) {
->   		buf_cmd[9] = ssp_task->task_attr | (ssp_task->task_prio << 3);
-> -		memcpy(buf_cmd + 12, scsi_cmnd->cmnd, scsi_cmnd->cmd_len);
-> +		memcpy(buf_cmd + 12, scsi_cmnd->cmnd,
-> +		       min_t(unsigned short, scsi_cmnd->cmd_len,
-> +			     sizeof(__be16) + sizeof(u8) * 14));
+>  .../bindings/staging/serial/silabs,si4455.txt |   39 +
+>  drivers/staging/Kconfig                       |    2 +
+>  drivers/staging/Makefile                      |    1 +
+>  drivers/staging/si4455/Kconfig                |    8 +
+>  drivers/staging/si4455/Makefile               |    2 +
+>  drivers/staging/si4455/TODO                   |    3 +
+>  drivers/staging/si4455/si4455.c               | 1465 +++++++++++++++++
+>  drivers/staging/si4455/si4455_api.h           |   56 +
+>  8 files changed, 1576 insertions(+)
+>  create mode 100644
+> Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
+>  create mode 100644 drivers/staging/si4455/Kconfig
+>  create mode 100644 drivers/staging/si4455/Makefile
+>  create mode 100644 drivers/staging/si4455/TODO
+>  create mode 100644 drivers/staging/si4455/si4455.c
+>  create mode 100644 drivers/staging/si4455/si4455_api.h
 
-Again, this is not the right thing to do, and I don't think that this 
-code needs fixing at all.
+Since you add a new directory, you should also update MAINTAINERS file
+(checkpatch didn't warn you about that?).
 
-There should be a contract already that the driver is not sent cdb len > 
-16, and this is sizeof(ssp_command_iu.cdb).
 
-And, if we were sent too much data, then we would/should error.
+> diff --git
+> a/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
+> b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
+> new file mode 100644
+> index 000000000000..abd659b7b952
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.txt
+> @@ -0,0 +1,39 @@
+> +* Silicon Labs Si4455 EASY-TO-USE, LOW-CURRENT OOK/(G)FSK SUB-GHZ
+> TRANSCEIVER
 
-Thanks,
-John
+AFAIK, Si4455 is a programmable product. So I think that this driver only
+work if the Si4455 use a specific firmware, isn't? In this case, you
+should mention it in the documentation.=20
+
+
+> +
+> +Required properties:
+> +- compatible: Should be one of the following:
+> +  - "silabs,si4455" for Silicon Labs Si4455-B1A or Si4455-C2A (driver
+> automatically detects the part info),
+> +  - "silabs,si4455b1a" for Silicon Labs Si4455-B1A,
+> +  - "silabs,si4455c2a" for Silicon Labs Si4455-C2A,
+> +- reg: SPI chip select number.
+> +- interrupts: Specifies the interrupt source of the parent interrupt
+> +  controller. The format of the interrupt specifier depends on the
+> +  parent interrupt controller.
+> +- clocks: phandle to the IC source clock (only external clock source
+> supported).
+> +- spi-max-frequency: maximum clock frequency on SPI port
+> +- shdn-gpios: gpio pin for SDN
+> +
+> +Example:
+> +
+> +/ {
+> +       clocks {
+> +                si4455_1_2_osc: si4455_1_2_osc {
+> +                        compatible =3D "fixed-clock";
+> +                        #clock-cells =3D <0>;
+> +                        clock-frequency  =3D <30000000>;
+> +                };
+> +       };
+> +};
+> +
+> +&spi0 {
+> +       si4455: si4455@0 {
+> +               compatible =3D "silabs,si4455";
+> +               reg =3D <0>;
+> +               clocks =3D <&si4455_1_2_osc>;
+
+It seems that the driver does not use this clock. So, is the clock
+attribute mandatory? What is the purpose of declaring a fixed-clock
+for this device?
+
+> +               interrupt-parent =3D <&gpio>;
+> +               interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
+> +                shdn-gpios =3D <&gpio 26 1>;
+> +                status =3D "okay";
+> +                spi-max-frequency =3D <3000000>;
+> +       };
+> +};
+
+[...]
+
+
+> diff --git a/drivers/staging/si4455/Kconfig b/drivers/staging/si4455/Kcon=
+fig
+> new file mode 100644
+> index 000000000000..666f726f2583
+> --- /dev/null
+> +++ b/drivers/staging/si4455/Kconfig
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +config SERIAL_SI4455
+> +       tristate "Si4455 support"
+> +       depends on SPI
+> +       select SERIAL_CORE
+> +       help
+> +         This driver is for Silicon Labs's Si4455 Sub-GHz transciver.
+> +         Say 'Y' here if you wish to use it as serial port.
+
+So, in fact, Si4455 is not a UART. I don't know how this kind of device
+should be presented to the userspace. Have you check if similar devices
+already exists in the kernel?
+
+I suggest to add linux-wpan@vger.kernel.org to the recipients of your
+patch.
+
+
+[...]
+> +static int si4455_get_part_info(struct uart_port *port,
+> +                               struct si4455_part_info *result)
+> +{
+> +       int ret;
+> +       u8 dataOut[] =3D { SI4455_CMD_ID_PART_INFO };
+> +       u8 dataIn[SI4455_CMD_REPLY_COUNT_PART_INFO];
+> +
+> +       ret =3D si4455_send_command_get_response(port,
+> +                                               sizeof(dataOut),
+> +                                               dataOut,
+> +                                               sizeof(dataIn),
+> +                                               dataIn);
+
+Why not:
+
+       ret =3D si4455_send_command_get_response(port,
+                                              sizeof(*result), result,
+                                              sizeof(dataIn), dataIn);
+
+> +       if (ret =3D=3D 0) {
+> +               result->CHIPREV =3D dataIn[0];
+> +               memcpy(&result->PART, &dataIn[1],sizeof(result->PART));
+> +               result->PBUILD =3D dataIn[3];
+> +               memcpy(&result->ID, &dataIn[4], sizeof(result->ID));
+> +               result->CUSTOMER =3D dataIn[6];
+> +               result->ROMID =3D dataIn[7];
+> +               result->BOND =3D dataIn[8];
+
+... it would avoid all these lines.
+
+> +       } else {
+> +               dev_err(port->dev,
+> +                       "%s: si4455_send_command_get_response error(%i)",
+> +                       __func__,
+> +                       ret);
+> +       }
+> +       return ret;
+> +}
+
+[...]
+
+--=20
+J=E9r=F4me Pouiller
+
+
