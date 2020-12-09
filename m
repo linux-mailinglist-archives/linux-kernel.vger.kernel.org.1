@@ -2,132 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EF22D4EB5
+	by mail.lfdr.de (Postfix) with ESMTP id 957E22D4EB6
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Dec 2020 00:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733006AbgLIXXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 18:23:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
+        id S1733213AbgLIXY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 18:24:57 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:47492 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLIXXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:23:51 -0500
-Date:   Wed, 9 Dec 2020 15:23:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607556190;
-        bh=FNkanjJRiKGUHvoOf8PjH4Glcl/rM8Sr+vJWnZnM2Fg=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kC4FMincGXAIuGjcw2vg52OYrjhASaFkyzOXsRBrhaJdTJT66PVkMuv2nu2Yp8ly1
-         Q9YR+F5unST9t6G3aED6/FvHgh0Kmel47VDVjb2nczzFdtmXyR8P+DutyqNUuBThbc
-         Hnkx9jnkwLCGh6qsqD4HGxBShJzfHoSdjqY/v/q7TrAtkxwG15emUkUxm+vGZkgC28
-         tvv2C0esuULdSJw/RgJ/M/j0SeqD6PPZ/qEirWuncC+c1QjW0kStX3yQzRpH/yEXY1
-         9/kyRHeux2lmkFLAQ19PROIKgRDJY/CuGsr4ukiEzU/Hg9r6xRyq7T7pwpMo04Tkuk
-         y7ChaDCe7CeqA==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        iamjoonsoo.kim@lge.com, andrii@kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 sl-b 3/5] mm: Make mem_dump_obj() handle vmalloc()
- memory
-Message-ID: <20201209232310.GI2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209011124.GA31164@paulmck-ThinkPad-P72>
- <20201209011303.32737-3-paulmck@kernel.org>
- <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
+        id S1725885AbgLIXY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:24:57 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kn8oZ-00B8Oc-0L; Thu, 10 Dec 2020 00:24:07 +0100
+Date:   Thu, 10 Dec 2020 00:24:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     ashkan.boldaji@digi.com, clang-built-linux@googlegroups.com,
+        davem@davemloft.net, devicetree@vger.kernel.org,
+        f.fainelli@gmail.com, gregkh@linuxfoundation.org,
+        kbuild-all@lists.01.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, marek.behun@nic.cz,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        vivien.didelot@gmail.com
+Subject: Re: [PATCH v11 3/4] net: dsa: mv88e6xxx: Change serdes lane
+ parameter type  from u8 type to int
+Message-ID: <20201209232406.GH2649111@lunn.ch>
+References: <cover.1607488953.git.pavana.sharma@digi.com>
+ <cc16a07f381973b0f4c987090bc307c8f854181d.1607488953.git.pavana.sharma@digi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c25ca09-ec43-df31-a5ba-476397637a53@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <cc16a07f381973b0f4c987090bc307c8f854181d.1607488953.git.pavana.sharma@digi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 06:51:20PM +0100, Vlastimil Babka wrote:
-> On 12/9/20 2:13 AM, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > This commit adds vmalloc() support to mem_dump_obj().  Note that the
-> > vmalloc_dump_obj() function combines the checking and dumping, in
-> > contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-> > The reason for the difference is that the checking in the vmalloc()
-> > case involves acquiring a global lock, and redundant acquisitions of
-> > global locks should be avoided, even on not-so-fast paths.
-> > 
-> > Note that this change causes on-stack variables to be reported as
-> > vmalloc() storage from kernel_clone() or similar, depending on the degree
-> > of inlining that your compiler does.  This is likely more helpful than
-> > the earlier "non-paged (local) memory".
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > Cc: <linux-mm@kvack.org>
-> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>On Wed, Dec 09, 2020 at 03:05:17PM +1000, Pavana Sharma wrote:
+> Returning 0 is no more an error case with MV88E6393 family
+> which has serdes lane numbers 0, 9 or 10.
+> So with this change .serdes_get_lane will return lane number
+> or -errno (-ENODEV or -EOPNOTSUPP).
 > 
-> ...
+> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
+
+I see here you did actually act on my comment. Thanks.
+
+But i also said:
+
+> Other than that:
 > 
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -3431,6 +3431,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> >  }
-> >  #endif	/* CONFIG_SMP */
-> >  
-> > +bool vmalloc_dump_obj(void *object)
-> > +{
-> > +	struct vm_struct *vm;
-> > +	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > +
-> > +	vm = find_vm_area(objp);
-> > +	if (!vm)
-> > +		return false;
-> > +	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-> 
-> Would it be useful to print the vm area boundaries too?
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Like this?
+Please add such tags to new versions of the patches. It then makes it
+easier for everybody to know the review state of the patches, which
+have been reviewed and deemed O.K, and which need more review.
 
-I also considered instead using vm->size, but that always seems to include
-an extra page, so a 4-page span is listed as having 20480 bytes and a
-one-page span is 8192 bytes.  This might be more accurate in some sense,
-but would be quite confusing to someone trying to compare this size with
-that requested in the vmalloc() call.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 33e0469c289c2f78e5f0d0c463c8ee3357d273c0
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Dec 9 15:15:27 2020 -0800
-
-    mm: Make mem_obj_dump() vmalloc() dumps include start and length
-    
-    This commit adds the starting address and number of pages to the vmalloc()
-    information dumped by way of vmalloc_dump_obj().
-    
-    Cc: Andrew Morton <akpm@linux-foundation.org>
-    Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-    Cc: <linux-mm@kvack.org>
-    Reported-by: Andrii Nakryiko <andrii@kernel.org>
-    Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 7421719..77b1100 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3439,7 +3439,8 @@ bool vmalloc_dump_obj(void *object)
- 	vm = find_vm_area(objp);
- 	if (!vm)
- 		return false;
--	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-+	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-+		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
- 	return true;
- }
- 
+     Thanks
+	Andrew
