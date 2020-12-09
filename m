@@ -2,373 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF2B2D394F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48E22D3940
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 04:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgLIDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 22:47:16 -0500
-Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21159 "EHLO
-        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLIDrP (ORCPT
+        id S1726209AbgLIDd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 22:33:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgLIDd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 22:47:15 -0500
-X-Greylist: delayed 1072 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Dec 2020 22:47:10 EST
-ARC-Seal: i=1; a=rsa-sha256; t=1607484481; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=ZQG1Qsy/6s4lU53ZK1Ff6tDH8+rJ068EewlBNq6aLXn0UBipz75VqxQ08Uf13KbOb81CSM0CogwEOxd8ecarouU8GKp8govLwO+4lRoR7b7jrkhnHja7VRKbl82W2lmO5PHBWBQXYzMg+fb+BhawG6PKXiIgLK75sin0mbLWNFk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1607484481; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=OtVqK//OjOfkBAETvN2ixJM6QLVvx7cdoS9JQgT0Pic=; 
-        b=ZRvD1kUPrxgSW8KqhCWDI05IYHQknNCyljr/M+dFmlNnamN8d2Y8NtH7J3go6yva82oo+KkhtbJ5rhCYDpHTDOst+YiraJeAECsrmMC4kTOHyUjpIaiCKXodOmllj2KSY6nDyLreo4FZO8nVU6FSUlvDogw9TrEqXyhz9EIBZzc=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        dkim=pass  header.i=shytyi.net;
-        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
-        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1607484481;
-        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
-        h=Date:From:To:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=OtVqK//OjOfkBAETvN2ixJM6QLVvx7cdoS9JQgT0Pic=;
-        b=dsU6HyGWUaPnNcZxrHKGSEKcqv8zJxjpzrGvKkCOG87Va5my0TJBCaC2VTgSadXv
-        dE6YX+b/J+MlROgsGgzwJPb9uTbuYV6gV+J+7LxNBB3CXGUTZzw30HoISQNc2gIQhjL
-        BgL253STAR0GkZQTkVBN5m52Uv40qxCd2XgttPMo=
-Received: from mail.zoho.eu by mx.zoho.eu
-        with SMTP id 160748447425739.12586476416982; Wed, 9 Dec 2020 04:27:54 +0100 (CET)
-Date:   Wed, 09 Dec 2020 04:27:54 +0100
-From:   Dmytro Shytyi <dmytro@shytyi.net>
-To:     "Jakub Kicinski" <kuba@kernel.org>,
-        "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <176458a838e.100a4c464143350.2864106687411861504@shytyi.net>
-In-Reply-To: <175e4f98e19.bcccf9b7450965.5991300381666674110@shytyi.net>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net>
-        <202011110944.7zNVZmvB-lkp@intel.com>
-        <175bd218cf4.103c639bc117278.4209371191555514829@shytyi.net>
-        <175bf515624.c67e02e8130655.7824060160954233592@shytyi.net>
-        <175c31c6260.10eef97f6180313.755036504412557273@shytyi.net>
-        <20201117124348.132862b1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <175e0b9826b.c3bb0aae425910.5834444036489233360@shytyi.net> <20201119104413.75ca9888@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net> <175e1fdb250.1207dca53446410.2492811916841931466@shytyi.net> <175e4f98e19.bcccf9b7450965.5991300381666674110@shytyi.net>
-Subject: [PATCH net-next V8] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
+        Tue, 8 Dec 2020 22:33:57 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F3C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 19:33:17 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id ce23so11668ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 19:33:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qiuT8EvTc+3FGSCQWBE7WNq9viwXOcS0VjwxrbSTTo8=;
+        b=bOPR9Y70bkACf0PWS89sm3EUxvMBa50oBlo/t2UMA9vsFziqjlbQdcdspZ0VWI5KSV
+         W7WXx3Q1P/w639n9xMQGMoIsaK1GlTEXufKD7N5W0nY65PCsiQCfQ6WXGM4a/yRpVGO6
+         HDRqzsErXKPTuLj2R5ssNGB9iz3jkdJG8lWKLxL07dywQctrYmtzw44QAy+5eF816D27
+         2ipU5asezRmX7uz7/Hq68c0BH8mPYcIeBBFqaZk38kLorwc9HNyjFxwB/cImUPG6suxp
+         BmVujwSXlVO5C6zWCrrmUQQHreNNiy8v6h/LTyQTjj8u94dxnjLi3V9zFUBXWyp/Qy6D
+         Lt3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qiuT8EvTc+3FGSCQWBE7WNq9viwXOcS0VjwxrbSTTo8=;
+        b=ER2inJaZlsT7ESSDZAYJ9qis0VoC6K/+iMgQzgrYtUDuMIBLI9zerHKiS+5pNokrIz
+         256V5QNqbZTNJLxt30ft5GQEQqmymaGqlts9P7Qd/Fs853jk0I2LPCVc30xiARG0Z12W
+         /9rK+jh15w/BGhYi/ygtkJAyHneWjlqN2I9QxXjVpn/cg34k5yxEg+NPx8CbR7v6DPw+
+         Jehh2ruefhbEjFu0iafT2B06rvoiF4xYQdyFOLM6HZ27JOUr2utDvV0/hu0BTWIaZW3s
+         m9mS6B8AvgiXlQcNEOwc95PNS7Ib4E3IJ6AOpcRsEN9zYkp3Y/SYFrbWQazkCHAp144r
+         4bdA==
+X-Gm-Message-State: AOAM531s5WbQYI3LDfA14OxKZyQBl6NMnGKb5jawdl/nIYAydqQeDotT
+        0gnTeIL42p/PgSNw5ZA6/zS1im5VjXTpp4hJdiCrDQ==
+X-Google-Smtp-Source: ABdhPJzcdNOFLkidvFyTC46AhVFJAlgCwph/VoUM1mbCA+THGRfuoMtHe+UZwXlsIgtTTWr+18KsrHPlueY+IFuQypc=
+X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr386829ejz.45.1607484795950;
+ Tue, 08 Dec 2020 19:33:15 -0800 (PST)
 MIME-Version: 1.0
+References: <20201209002418.1976362-1-ben.widawsky@intel.com>
+ <20201209002418.1976362-10-ben.widawsky@intel.com> <CAPcyv4ipGMsKegzWtd+W8wr4mG7X9DtVeQYvL24Eyu1fB3AN=A@mail.gmail.com>
+ <20201209021254.ne42jy6ovn2rk3cf@intel.com>
+In-Reply-To: <20201209021254.ne42jy6ovn2rk3cf@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 8 Dec 2020 19:33:13 -0800
+Message-ID: <CAPcyv4jJWYacUd_xCio29uAUPHzs7Ez9pCC1PpWF3iWHD+XAaw@mail.gmail.com>
+Subject: Re: [RFC PATCH 09/14] cxl/mem: Add basic IOCTL interface
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable SLAAC [Can be activated via sysctl]: 
-SLAAC with prefixes of arbitrary length in PIO (randomly
-generated hostID or stable privacy + privacy extensions).
-The main problem is that SLAAC RA or PD allocates a /64 by the Wireless
-carrier 4G, 5G to a mobile hotspot, however segmentation of the /64 via
-SLAAC is required so that downstream interfaces can be further subnetted.
-Example: uCPE device (4G + WI-FI enabled) receives /64 via Wireless, and
-assigns /72 to VNF-Firewall, /72 to WIFI, /72 to VNF-Router, /72 to
-Load-Balancer and /72 to wired connected devices.
-IETF document that defines problem statement:
-draft-mishra-v6ops-variable-slaac-problem-stmt
-IETF document that specifies variable slaac:
-draft-mishra-6man-variable-slaac
+On Tue, Dec 8, 2020 at 6:13 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 20-12-08 17:37:50, Dan Williams wrote:
+> > On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >
+> > > Add a straightforward IOCTL that provides a mechanism for userspace to
+> > > query the supported memory device commands.
+> > >
+> > > Memory device commands are specified in 8.2.9 of the CXL 2.0
+> > > specification. They are submitted through a mailbox mechanism specified
+> > > in 8.2.8.4.
+> > >
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > >
+> > > ---
+> > >
+> > > I did attempt to use the same struct for querying commands as well as
+> > > sending commands (upcoming patch). The number of unused fields between
+> > > the two made for a bad fit IMO.
+> > >
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > ---
+> > >  Documentation/cxl/memory-devices.rst |   9 +++
+> > >  drivers/cxl/mem.c                    |  89 +++++++++++++++++++++++
+> > >  include/uapi/linux/cxl_mem.h         | 102 +++++++++++++++++++++++++++
+> > >  3 files changed, 200 insertions(+)
+> > >  create mode 100644 include/uapi/linux/cxl_mem.h
+> > >
+> > > diff --git a/Documentation/cxl/memory-devices.rst b/Documentation/cxl/memory-devices.rst
+> > > index 5f723c25382b..ec54674b3822 100644
+> > > --- a/Documentation/cxl/memory-devices.rst
+> > > +++ b/Documentation/cxl/memory-devices.rst
+> > > @@ -32,6 +32,15 @@ CXL Memory Device
+> > >  .. kernel-doc:: drivers/cxl/mem.c
+> > >     :internal:
+> > >
+> > > +CXL IOCTL Interface
+> > > +-------------------
+> > > +
+> > > +.. kernel-doc:: include/uapi/linux/cxl_mem.h
+> > > +   :doc: UAPI
+> > > +
+> > > +.. kernel-doc:: include/uapi/linux/cxl_mem.h
+> > > +   :internal:
+> > > +
+> > >  External Interfaces
+> > >  ===================
+> > >
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index bb6ea58f6c7b..2c4aadcea0e4 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -7,6 +7,7 @@
+> > >  #include <linux/idr.h>
+> > >  #include <linux/pci.h>
+> > >  #include <linux/io.h>
+> > > +#include <uapi/linux/cxl_mem.h>
+> > >  #include "acpi.h"
+> > >  #include "pci.h"
+> > >  #include "cxl.h"
+> > > @@ -73,6 +74,49 @@ static DEFINE_IDR(cxl_mem_idr);
+> > >  /* protect cxl_mem_idr allocations */
+> > >  static DEFINE_MUTEX(cxl_memdev_lock);
+> > >
+> > > +/*
+> > > + * This table defines the supported mailboxes commands for the driver. The id is
+> > > + * ordinal and thus gaps in this table aren't allowed. This table is made up of
+> > > + * a UAPI structure. Non-negative values in the table will be validated against
+> > > + * the user's input. For example, if size_in is 0, and the user passed in 1, it
+> > > + * is an error.
+> > > + */
+> > > +#define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
+> > > +       {                                                                      \
+> > > +               { .id = CXL_MEM_COMMAND_ID_##_id,                              \
+> > > +                 .flags = CXL_MEM_COMMAND_FLAG_##_flags,                      \
+> > > +                 .size_in = sin,                                              \
+> > > +                 .size_out = sout,                                            \
+> > > +                 .name = _name },                                             \
+> > > +                       .enable = _enable, .opcode = op                        \
+> > > +       }
+> >
+> > Seems the ordinality requirement could be dropped if the definition was:
+> >
+> > #define CXL_CMD(_id, _flags, sin, sout, _name, _enable, op)                    \
+> >        [CXL_MEM_COMMAND_ID_##_id] = {
+> >                              \
+> >                { .id = CXL_MEM_COMMAND_ID_##_id,                              \
+> > ...
+> >
+> > Then command 0 and 42 could be defined out of order in the table.
+> > Especially if we need to config-disable or deprecate commands, I think
+> > it would be useful if this table was tolerant to being sparse.
+> >
+>
+> How sparse are we talking? The current form does support sparseness, but
+> obviously gets quite large if the ID numbering is similar to random
+> distribution.
 
-Signed-off-by: Dmytro Shytyi <dmytro@shytyi.net>
----
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index dda61d150a13..67ca3925463c 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -75,6 +75,7 @@ struct ipv6_devconf {
- 	__s32		disable_policy;
- 	__s32           ndisc_tclass;
- 	__s32		rpl_seg_enabled;
-+	__s32		variable_slaac;
- 
- 	struct ctl_table_header *sysctl_header;
- };
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 13e8751bf24a..f2af4f9fba2d 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -189,7 +189,8 @@ enum {
- 	DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN,
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
--	DEVCONF_MAX
-+	DEVCONF_MAX,
-+	DEVCONF_VARIABLE_SLAAC
- };
- 
- 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index eff2cacd5209..07afe4ce984e 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -236,6 +236,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.variable_slaac		= 0,
- };
- 
- static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
-@@ -291,6 +292,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
- 	.disable_policy		= 0,
- 	.rpl_seg_enabled	= 0,
-+	.variable_slaac		= 0,
- };
- 
- /* Check if link is ready: is it up and is a valid qdisc available */
-@@ -1340,9 +1342,15 @@ static int ipv6_create_tempaddr(struct inet6_ifaddr *ifp, bool block)
- 		goto out;
- 	}
- 	in6_ifa_hold(ifp);
--	memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
--	ipv6_gen_rnd_iid(&addr);
- 
-+	if (ifp->prefix_len == 64) {
-+		memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
-+		ipv6_gen_rnd_iid(&addr);
-+	} else if (ifp->prefix_len > 0 && ifp->prefix_len <= 128 &&
-+		   idev->cnf.variable_slaac) {
-+		get_random_bytes(addr.s6_addr, 16);
-+		ipv6_addr_prefix_copy(&addr, &ifp->addr, ifp->prefix_len);
-+	}
- 	age = (now - ifp->tstamp) / HZ;
- 
- 	regen_advance = idev->cnf.regen_max_retry *
-@@ -2569,6 +2577,37 @@ static bool is_addr_mode_generate_stable(struct inet6_dev *idev)
- 	       idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
- }
- 
-+static struct inet6_ifaddr *ipv6_cmp_rcvd_prsnt_prfxs(struct inet6_ifaddr *ifp,
-+						      struct inet6_dev *in6_dev,
-+						      struct net *net,
-+						      const struct prefix_info *pinfo)
-+{
-+	struct inet6_ifaddr *result_base = NULL;
-+	struct inet6_ifaddr *result = NULL;
-+	bool prfxs_equal;
-+
-+	result_base = result;
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
-+		if (!net_eq(dev_net(ifp->idev->dev), net))
-+			continue;
-+		prfxs_equal =
-+			ipv6_prefix_equal(&pinfo->prefix, &ifp->addr, pinfo->prefix_len);
-+		if (prfxs_equal && pinfo->prefix_len == ifp->prefix_len) {
-+			result = ifp;
-+			in6_ifa_hold(ifp);
-+			break;
-+		}
-+	}
-+	rcu_read_unlock();
-+	if (result_base != result)
-+		ifp = result;
-+	else
-+		ifp = NULL;
-+
-+	return ifp;
-+}
-+
- int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
- 				 const struct prefix_info *pinfo,
- 				 struct inet6_dev *in6_dev,
-@@ -2576,9 +2615,17 @@ int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
- 				 u32 addr_flags, bool sllao, bool tokenized,
- 				 __u32 valid_lft, u32 prefered_lft)
- {
--	struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+	struct inet6_ifaddr *ifp = NULL;
-+	int plen = pinfo->prefix_len;
- 	int create = 0;
- 
-+	if (plen > 0 && plen <= 128 && plen != 64 &&
-+	    in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
-+	    in6_dev->cnf.variable_slaac)
-+		ifp = ipv6_cmp_rcvd_prsnt_prfxs(ifp, in6_dev, net, pinfo);
-+	else
-+		ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+
- 	if (!ifp && valid_lft) {
- 		int max_addresses = in6_dev->cnf.max_addresses;
- 		struct ifa6_config cfg = {
-@@ -2657,6 +2704,90 @@ int addrconf_prefix_rcv_add_addr(struct net *net, struct net_device *dev,
- }
- EXPORT_SYMBOL_GPL(addrconf_prefix_rcv_add_addr);
- 
-+static bool ipv6_reserved_interfaceid(struct in6_addr address)
-+{
-+	if ((address.s6_addr32[2] | address.s6_addr32[3]) == 0)
-+		return true;
-+
-+	if (address.s6_addr32[2] == htonl(0x02005eff) &&
-+	    ((address.s6_addr32[3] & htonl(0xfe000000)) == htonl(0xfe000000)))
-+		return true;
-+
-+	if (address.s6_addr32[2] == htonl(0xfdffffff) &&
-+	    ((address.s6_addr32[3] & htonl(0xffffff80)) == htonl(0xffffff80)))
-+		return true;
-+
-+	return false;
-+}
-+
-+static int ipv6_gen_addr_var_plen(struct in6_addr *address,
-+				  u8 dad_count,
-+				  const struct inet6_dev *idev,
-+				  unsigned int rcvd_prfx_len,
-+				  bool stable_privacy_mode)
-+{
-+	static union {
-+		char __data[SHA1_BLOCK_SIZE];
-+		struct {
-+			struct in6_addr secret;
-+			__be32 prefix[2];
-+			unsigned char hwaddr[MAX_ADDR_LEN];
-+			u8 dad_count;
-+		} __packed;
-+	} data;
-+	static __u32 workspace[SHA1_WORKSPACE_WORDS];
-+	static __u32 digest[SHA1_DIGEST_WORDS];
-+	struct net *net = dev_net(idev->dev);
-+	static DEFINE_SPINLOCK(lock);
-+	struct in6_addr secret;
-+	struct in6_addr temp;
-+
-+	BUILD_BUG_ON(sizeof(data.__data) != sizeof(data));
-+
-+	if (stable_privacy_mode) {
-+		if (idev->cnf.stable_secret.initialized)
-+			secret = idev->cnf.stable_secret.secret;
-+		else if (net->ipv6.devconf_dflt->stable_secret.initialized)
-+			secret = net->ipv6.devconf_dflt->stable_secret.secret;
-+		else
-+			return -1;
-+	}
-+
-+retry:
-+	spin_lock_bh(&lock);
-+	if (stable_privacy_mode) {
-+		sha1_init(digest);
-+		memset(&data, 0, sizeof(data));
-+		memset(workspace, 0, sizeof(workspace));
-+		memcpy(data.hwaddr, idev->dev->perm_addr, idev->dev->addr_len);
-+		data.prefix[0] = address->s6_addr32[0];
-+		data.prefix[1] = address->s6_addr32[1];
-+		data.secret = secret;
-+		data.dad_count = dad_count;
-+
-+		sha1_transform(digest, data.__data, workspace);
-+
-+		temp.s6_addr32[0] = (__force __be32)digest[0];
-+		temp.s6_addr32[1] = (__force __be32)digest[1];
-+		temp.s6_addr32[2] = (__force __be32)digest[2];
-+		temp.s6_addr32[3] = (__force __be32)digest[3];
-+	} else {
-+		get_random_bytes(temp.s6_addr32, 16);
-+	}
-+
-+	spin_unlock_bh(&lock);
-+
-+	if (ipv6_reserved_interfaceid(temp)) {
-+		dad_count++;
-+		if (dad_count > dev_net(idev->dev)->ipv6.sysctl.idgen_retries)
-+			return -1;
-+		goto retry;
-+	}
-+	ipv6_addr_prefix_copy(&temp, address, rcvd_prfx_len);
-+	*address = temp;
-+	return 0;
-+}
-+
- void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
- {
- 	struct prefix_info *pinfo;
-@@ -2781,9 +2912,34 @@ void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
- 				dev_addr_generated = true;
- 			}
- 			goto ok;
-+		} else if (pinfo->prefix_len != 64 &&
-+			   pinfo->prefix_len > 0 && pinfo->prefix_len <= 128 &&
-+			   in6_dev->cnf.variable_slaac) {
-+			/* SLAAC with prefixes of arbitrary length (Variable SLAAC).
-+			 * draft-mishra-6man-variable-slaac
-+			 * draft-mishra-v6ops-variable-slaac-problem-stmt
-+			 */
-+			memcpy(&addr, &pinfo->prefix, 16);
-+			if (in6_dev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
-+				if (!ipv6_gen_addr_var_plen(&addr,
-+							    0,
-+							    in6_dev,
-+							    pinfo->prefix_len,
-+							    true)) {
-+					addr_flags |= IFA_F_STABLE_PRIVACY;
-+					goto ok;
-+				}
-+			} else if (!ipv6_gen_addr_var_plen(&addr,
-+							   0,
-+							   in6_dev,
-+							   pinfo->prefix_len,
-+							   false)) {
-+				goto ok;
-+			}
-+		} else {
-+			net_dbg_ratelimited("IPv6: Prefix with unexpected length %d\n",
-+					    pinfo->prefix_len);
- 		}
--		net_dbg_ratelimited("IPv6 addrconf: prefix with wrong length %d\n",
--				    pinfo->prefix_len);
- 		goto put;
- 
- ok:
-@@ -3186,22 +3342,6 @@ void addrconf_add_linklocal(struct inet6_dev *idev,
- }
- EXPORT_SYMBOL_GPL(addrconf_add_linklocal);
- 
--static bool ipv6_reserved_interfaceid(struct in6_addr address)
--{
--	if ((address.s6_addr32[2] | address.s6_addr32[3]) == 0)
--		return true;
--
--	if (address.s6_addr32[2] == htonl(0x02005eff) &&
--	    ((address.s6_addr32[3] & htonl(0xfe000000)) == htonl(0xfe000000)))
--		return true;
--
--	if (address.s6_addr32[2] == htonl(0xfdffffff) &&
--	    ((address.s6_addr32[3] & htonl(0xffffff80)) == htonl(0xffffff80)))
--		return true;
--
--	return false;
--}
--
- static int ipv6_generate_stable_address(struct in6_addr *address,
- 					u8 dad_count,
- 					const struct inet6_dev *idev)
-@@ -5517,6 +5657,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_DISABLE_POLICY] = cnf->disable_policy;
- 	array[DEVCONF_NDISC_TCLASS] = cnf->ndisc_tclass;
- 	array[DEVCONF_RPL_SEG_ENABLED] = cnf->rpl_seg_enabled;
-+	array[DEVCONF_VARIABLE_SLAAC] = cnf->variable_slaac;
- }
- 
- static inline size_t inet6_ifla6_size(void)
-@@ -6897,6 +7038,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname	= "variable_slaac",
-+		.data		= &ipv6_devconf.variable_slaac,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		/* sentinel */
- 	}
+"Sparse" may have been the wrong word to use. I was implying sparse
+enough that if I add command N+1 I don't need to be careful where I
+put it in mem_commands, but still be able to rely on lookups into
+mem_commands being indexed by the command-id.
+
+> I think if we do see this being more like random distribution, it can be
+> supported, but I think it adds a decent amount of complexity for what I see as
+> not much reward - unless you know of a fairly simple way to create this data
+> structure with full sparse ID support?
+
+I'm expecting the command distribution to be mostly uniform, it's more
+of the lookup property that I think would be useful especially for the
+dynamic case of walking mem_commands to update it relative to what the
+hardware supports or other metadata. Speaking of which I think @enable
+should be turned into @flags of which 'enable' is one, in case we want
+to define more flags in the future.
+
+>
+> > > +
+> > > +/**
+> > > + * struct cxl_mem_command - Driver representation of a memory device command
+> > > + * @info: Command information as it exists for the UAPI
+> > > + * @opcode: The actual bits used for the mailbox protocol
+> > > + * @enable: Whether the command is enabled. The driver may support a large set
+> > > + *         of commands that may not be enabled. The primary reason a command
+> > > + *         would not be enabled is for commands that are specified as optional
+> > > + *         and the hardware doesn't support the command.
+> > > + *
+> > > + * The cxl_mem_command is the driver's internal representation of commands that
+> > > + * are supported by the driver. Some of these commands may not be supported by
+> > > + * the hardware (!@enable). The driver will use @info to validate the fields
+> > > + * passed in by the user then submit the @opcode to the hardware.
+> > > + *
+> > > + * See struct cxl_command_info.
+> > > + */
+> > > +struct cxl_mem_command {
+> > > +       const struct cxl_command_info info;
+> > > +       const u16 opcode;
+> > > +       bool enable;
+> > > +};
+> > > +
+> > > +static struct cxl_mem_command mem_commands[] = {
+> > > +       CXL_CMD(INVALID, NONE, 0, 0, "Reserved", false, 0),
+> > > +};
+> > > +
+> > >  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> > >  {
+> > >         const int timeout = msecs_to_jiffies(2000);
+> > > @@ -268,8 +312,53 @@ static int cxl_mem_open(struct inode *inode, struct file *file)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int cxl_mem_count_commands(void)
+> > > +{
+> > > +       int i, n = 0;
+> > > +
+> > > +       for (i = 0; i < ARRAY_SIZE(mem_commands); i++) {
+> > > +               struct cxl_mem_command *c = &mem_commands[i];
+> > > +
+> > > +               if (c->enable)
+> > > +                       n++;
+> > > +       }
+> > > +
+> > > +       return n;
+> > > +}
+> > > +
+> > >  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > >  {
+> > > +       if (cmd == CXL_MEM_QUERY_COMMANDS) {
+> > > +               struct cxl_mem_query_commands __user *q = (void __user *)arg;
+> > > +               u32 n_commands;
+> > > +               int i, j;
+> > > +
+> > > +               if (get_user(n_commands, (u32 __user *)arg))
+> > > +                       return -EFAULT;
+> > > +
+> > > +               if (n_commands == 0)
+> > > +                       return put_user(cxl_mem_count_commands(),
+> > > +                                       (u32 __user *)arg);
+> > > +
+> > > +               for (i = 0, j = 0;
+> > > +                    i < ARRAY_SIZE(mem_commands) && j < n_commands; i++) {
+> > > +                       struct cxl_mem_command *c = &mem_commands[i];
+> > > +                       const struct cxl_command_info *info = &c->info;
+> > > +
+> > > +                       if (!c->enable)
+> > > +                               continue;
+> > > +
+> > > +                       if (copy_to_user(&q->commands[j], info, sizeof(*info)))
+> > > +                               return -EFAULT;
+> > > +
+> > > +                       if (copy_to_user(&q->commands[j].name, info->name,
+> > > +                                        strlen(info->name)))
+> > > +                               return -EFAULT;
+> >
+> > Not sure why this is needed, see comment below about @name in
+> > cxl_mem_query_commands.
+> >
+> > > +
+> > > +                       j++;
+> > > +               }
+> > > +       }
+> > > +
+> > >         return -ENOTTY;
+> > >  }
+> > >
+> > > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> > > new file mode 100644
+> > > index 000000000000..1d1e143f98ec
+> > > --- /dev/null
+> > > +++ b/include/uapi/linux/cxl_mem.h
+> > > @@ -0,0 +1,102 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > +/*
+> > > + * CXL IOCTLs for Memory Devices
+> > > + */
+> > > +
+> > > +#ifndef _UAPI_CXL_MEM_H_
+> > > +#define _UAPI_CXL_MEM_H_
+> > > +
+> > > +#if defined(__cplusplus)
+> > > +extern "C" {
+> > > +#endif
+> > > +
+> > > +/**
+> > > + * DOC: UAPI
+> > > + *
+> > > + * CXL memory devices expose UAPI to have a standard user interface.
+> > > + * Userspace can refer to these structure definitions and UAPI formats
+> > > + * to communicate to driver
+> > > + */
+> > > +
+> > > +#define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
+> > > +
+> > > +#define CXL_MEM_COMMAND_NAME_LENGTH 32
+> > > +
+> > > +/**
+> > > + * struct cxl_command_info - Command information returned from a query.
+> > > + * @id: ID number for the command.
+> > > + * @flags: Flags that specify command behavior.
+> > > + *
+> > > + *          - CXL_MEM_COMMAND_FLAG_TAINT: Using this command will taint the kernel.
+> > > + * @size_in: Expected input size, or -1 if variable length.
+> > > + * @size_out: Expected output size, or -1 if variable length.
+> > > + * @name: Name describing the command.
+> > > + *
+> > > + * Represents a single command that is supported by both the driver and the
+> > > + * hardware. The is returned as part of an array from the query ioctl. The
+> > > + * following would be a command named "foobar" that takes a variable length
+> > > + * input and returns 0 bytes of output.
+> > > + *
+> > > + *  - @id = 10
+> > > + *  - @name = foobar
+> > > + *  - @flags = 0
+> > > + *  - @size_in = -1
+> > > + *  - @size_out = 0
+> > > + *
+> > > + * See struct cxl_mem_query_commands.
+> > > + */
+> > > +struct cxl_command_info {
+> > > +       __u32 id;
+> > > +#define CXL_MEM_COMMAND_ID_INVALID 0
+> > > +
+> > > +       __u32 flags;
+> > > +#define CXL_MEM_COMMAND_FLAG_NONE 0
+> > > +#define CXL_MEM_COMMAND_FLAG_TAINT BIT(0)
+> > > +
+> > > +       __s32 size_in;
+> > > +       __s32 size_out;
+> > > +
+> > > +       char name[32];
+> >
+> > Why does the name for a command need to be shuffled back and forth
+> > over the ioctl interface. Can't this be handled by a static lookup
+> > table defined in the header?
+> >
+>
+> I was thinking of cases where the userspace application doesn't match the
+> current kernel's UAPI and giving the driver flexibility to return whatever.
+
+How / why would the application by looking at @name for UAPI compatibility?
+
+> OTTOMH, I also can't think of a way to do this if you want to do define the
+> table sparsely though. Do you have ideas for that?
+
+I don't think the name lookup would be sparse. i.e. it would be ok for
+mem_commands to not have an entry for everything in the name lookup
+table. As for defining the table it could use C preprocessor trick
+popularized by Steven Rostedt:
+
+#define CMDS                                                     \
+        C(CMD1, "command one"),     \
+        C(CMD2, "command two")     \
+#undef C
+#define C(a, b) a
+enum commands_enum { CMDS };
+#undef C
+#define C(a, b) { b }
+static struct {
+        const char *name;
+} commands[] = { CMDS };
+#undef C
+
+...then there's no way for the command ids to get out of sync with the names.
