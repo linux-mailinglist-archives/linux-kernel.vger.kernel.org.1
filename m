@@ -2,115 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E341C2D4285
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC962D428C
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731901AbgLIM6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 07:58:15 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:60480 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728441AbgLIM6P (ORCPT
+        id S1731928AbgLINBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:01:02 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:15934 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731818AbgLINBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 07:58:15 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 53227123AE9;
-        Wed,  9 Dec 2020 13:57:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607518652;
-        bh=ivF8UJQ0nui932gV7q+Vx2HM88wGiAXI70k+UaqYnrU=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date:From;
-        b=PPNKSqb6FpgDz2BmOzUXUni7OeVA4JZxo6uI514lRRGgY9Jd0R9cyxzjTMVLfTuiP
-         na3T0GbihpYNEENJtGKNT7UcTxqLOvtQwm7TKEuqX2ku8Nl53N/VjnyMB+1al4cKjq
-         sFY5/1SBcZAjpxPZKAYCNOvg4p0RfjQnuhlLK2tvcDXuxlGgq7k9GMjNfeJKkPUyrd
-         H/yGKlmAGySbNCYOgxk2IufcxZshRnVQtb+I3/R5LD1ze3QEkD4PEs0N0tn+Uw52ls
-         +WalycZJDmCpN4tKg0jFGVG7dfkJenVxMAOy1S03m4Jyasy4HVv7kiMltMh7zXoueN
-         rr30V18rJa0Zg==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RDXvmWuXYQHT; Wed,  9 Dec 2020 13:57:03 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 4C36B123AE6;
-        Wed,  9 Dec 2020 13:57:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607518623;
-        bh=ivF8UJQ0nui932gV7q+Vx2HM88wGiAXI70k+UaqYnrU=;
-        h=From:To:Cc:References:In-Reply-To:Subject:Date:From;
-        b=cfinZCwIbNmxAOze+m8ZQUZAsQy7wCGf5RfieLwS+iS5NS9/1AG7qaGXdAgGEJA/T
-         ykKpZMUyfIrLmfBytZmj+0LetGeaMVfuYW5y8eTthiihh43jq+JG0ShvQY1ys4rxfH
-         D0bRfwcQxHsnAINKYT6908aZGoD5KMisuzCfOKT7IPycHY2uui/qTFMVwS0lY+U1id
-         VUti51SE672XlwgPZ4sVXPktdJ+ZKBht8Np19l9uDor67FNHJR17VxRiWZYaO4aMsu
-         M4//6zd20e0zPHg0/uG1Niuduf7zHaflIyFFDDt70jEZg7gBh8mIuezzIS6fihsrs3
-         6LrPGdfqcdXQw==
-From:   "Info" <info@ministro.hu>
-To:     "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>
-Cc:     "'Rob Herring'" <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devel@driverdev.osuosl.org>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAAAJUqiRO33GQqGIHffCVyG/AQAAAAA=@ministro.hu> <X9C8zlCMvTev7ELE@kroah.com>
-In-Reply-To: <X9C8zlCMvTev7ELE@kroah.com>
-Subject: RE: ***UNCHECKED*** Re: [PATCH] Staging: silabs si4455 serial driver
-Date:   Wed, 9 Dec 2020 13:57:01 +0100
-Message-ID: <!&!AAAAAAAAAAAuAAAAAAAAAM7AkQxKEJRHh2BgMNSTrQkBAExvbAW64DNBoXXP8CRioZMAAAAzfOEAABAAAADw4WwGItHrQ5iFlvxJ/JFMAQAAAAA=@ministro.hu>
+        Wed, 9 Dec 2020 08:01:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607518837; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=nSQphrYg7w8tR3QtwtHPM2DKr3CV/Y5ctP15BpmQc6Q=; b=uSQ8ftrrvuhqdHvWkO7Nm7TkfttZBrn4QNftiPi3Z9TUeAANBfkwFSX4fek55iCzwa0t6bZi
+ dcAT4AEmextrKZD2gyfqX7s+b5nvpZ4OcszJllI1HDFuAJWSRmE73YHyge+rvJmZYcaPMtfq
+ ItHmrf74fYHYtLA5tjAU+zMNttA=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5fd0ca50d5b4c78a8f7c05a9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 13:00:00
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4433C433C6; Wed,  9 Dec 2020 13:00:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.89] (unknown [223.180.186.155])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43872C433C6;
+        Wed,  9 Dec 2020 12:59:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 43872C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [RESEND PATCH V6 1/2] i2c: i2c-qcom-geni: Store DMA mapping data
+ in geni_i2c_dev struct
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        vkaur@codeaurora.org, pyarlaga@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+References: <20201203103156.32595-1-rojay@codeaurora.org>
+ <20201203103156.32595-2-rojay@codeaurora.org>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <049c28e9-1211-377f-941d-ba169645dd24@codeaurora.org>
+Date:   Wed, 9 Dec 2020 18:29:10 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQJyKQPHehkkfqd9+nsH6keBxU1MfAGA7sq/qKvzxgA=
-Content-Language: hu
+In-Reply-To: <20201203103156.32595-2-rojay@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Dec 09, 2020 at 12:09:58PM +0100, Info wrote:
-> > This is a serial port driver for
-> > Silicon Labs Si4455 Sub-GHz transciver.
-> >=20
-> > Signed-off-by: J=C3=B3zsef Horv=C3=A1th <info@ministro.hu>
->
-> Note, your From: line does not match this line, so I can't take this.
->
-> But:
->
-> > ---
-> >  .../bindings/staging/serial/silabs,si4455.txt |   39 +
+Hi Roja,
 
-I'll fix this, sorry.
-
+On 12/3/2020 4:01 PM, Roja Rani Yarubandi wrote:
+> Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
+> data scope. For example during shutdown callback to unmap DMA mapping,
+> this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
+> and geni_se_rx_dma_unprep functions.
 >
-> staging drivers need to be self-contained, so this should be here.  It =
-needs to be reviewed by the DT maintainers when moving out of staging.
+> Add two helper functions geni_i2c_rx_msg_cleanup and
+> geni_i2c_tx_msg_cleanup to unwrap the things after rx/tx FIFO/DMA
+> transfers, so that the same can be used in geni_i2c_stop_xfer()
+> function during shutdown callback.
 >
-> > index 000000000000..aee5c7613b31
-> > --- /dev/null
-> > +++ b/drivers/staging/si4455/TODO
-> > @@ -0,0 +1,3 @@
-> > +TODO:
-> > +        - add variable packet length support
-> > +        - add firmware patching support in case of Si4455-C2A
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> ---
+> Changes in V5:
+>   - As per Stephen's comments separated this patch from shutdown
+>     callback patch, gi2c->cur = NULL is not removed from
+>     geni_i2c_abort_xfer(), and made a copy of gi2c->cur and passed
+>     to cleanup functions.
 >
-> Why are these a requirement to get it out of staging?  Why go into =
-staging at all?  Why not go into the 'real' part of the kernel directly?
-> What is keeping that from happening today?
+> Changes in V6:
+>   - Added spin_lock/unlock in geni_i2c_rx_msg_cleanup() and
+>     geni_i2c_tx_msg_cleanup() functions.
 >
-> These look like new features that you can add later, and shouldn't be =
-a requirement for acceptance into the normal part of the kernel for this =
-driver.  Why have you not tried doing that first?
-
-Yes, you are right. The TODO list is for me, and the driver can get out =
-of staging without these.
-The curent state of the driver is completly covers my requirements, but =
-I would complete these functions int he future.
-The main reason for not implementing the firmware patching feature is, =
-currently I have no Si4455-C2A in my development system.
-My product is based on Si4455-B1A, but I'm waiting for the Si4455-C2A =
-module.
-
-> thanks,
+>   drivers/i2c/busses/i2c-qcom-geni.c | 69 +++++++++++++++++++++++-------
+>   1 file changed, 53 insertions(+), 16 deletions(-)
 >
-> greg k-h
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index dce75b85253c..bfbc80f65006 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -86,6 +86,9 @@ struct geni_i2c_dev {
+>   	u32 clk_freq_out;
+>   	const struct geni_i2c_clk_fld *clk_fld;
+>   	int suspended;
+> +	void *dma_buf;
+> +	size_t xfer_len;
+> +	dma_addr_t dma_addr;
+>   };
+>   
+>   struct geni_i2c_err_log {
+> @@ -348,14 +351,49 @@ static void geni_i2c_tx_fsm_rst(struct geni_i2c_dev *gi2c)
+>   		dev_err(gi2c->se.dev, "Timeout resetting TX_FSM\n");
+>   }
+>   
+> +static void geni_i2c_rx_msg_cleanup(struct geni_i2c_dev *gi2c,
+> +				     struct i2c_msg *cur)
+> +{
+> +	struct geni_se *se = &gi2c->se;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&gi2c->lock, flags);
+> +	gi2c->cur_rd = 0;
+> +	if (gi2c->dma_buf) {
+> +		if (gi2c->err)
+> +			geni_i2c_rx_fsm_rst(gi2c);
 
+Which race we are trying to avoid here by holding spinlock?
 
-=C3=9Cdv=C3=B6zlettel / Best regards:
-J=C3=B3zsef Horv=C3=A1th
+We cannot call any sleeping API by holding spinlock, geni_i2c_rx_fsm_rst 
+calls *wait-for-completion*, which is a sleeping call.
+
+> +		geni_se_rx_dma_unprep(se, gi2c->dma_addr, gi2c->xfer_len);
+> +		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
+> +	}
+> +	spin_unlock_irqrestore(&gi2c->lock, flags);
+> +}
+> +
+> +static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
+> +				     struct i2c_msg *cur)
+> +{
+> +	struct geni_se *se = &gi2c->se;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&gi2c->lock, flags);
+> +	gi2c->cur_wr = 0;
+> +	if (gi2c->dma_buf) {
+> +		if (gi2c->err)
+> +			geni_i2c_tx_fsm_rst(gi2c);
+
+Same here
+
+Regards,
+
+Akash
+
+> +		geni_se_tx_dma_unprep(se, gi2c->dma_addr, gi2c->xfer_len);
+> +		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
+> +	}
+> +	spin_unlock_irqrestore(&gi2c->lock, flags);
+> +}
+> +
+>   static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   				u32 m_param)
+>   {
+> -	dma_addr_t rx_dma;
+> +	dma_addr_t rx_dma = 0;
+>   	unsigned long time_left;
+>   	void *dma_buf = NULL;
+>   	struct geni_se *se = &gi2c->se;
+>   	size_t len = msg->len;
+> +	struct i2c_msg *cur;
+>   
+>   	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+> @@ -372,19 +410,18 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>   		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>   		dma_buf = NULL;
+> +	} else {
+> +		gi2c->xfer_len = len;
+> +		gi2c->dma_addr = rx_dma;
+> +		gi2c->dma_buf = dma_buf;
+>   	}
+>   
+> +	cur = gi2c->cur;
+>   	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>   	if (!time_left)
+>   		geni_i2c_abort_xfer(gi2c);
+>   
+> -	gi2c->cur_rd = 0;
+> -	if (dma_buf) {
+> -		if (gi2c->err)
+> -			geni_i2c_rx_fsm_rst(gi2c);
+> -		geni_se_rx_dma_unprep(se, rx_dma, len);
+> -		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+> -	}
+> +	geni_i2c_rx_msg_cleanup(gi2c, cur);
+>   
+>   	return gi2c->err;
+>   }
+> @@ -392,11 +429,12 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   				u32 m_param)
+>   {
+> -	dma_addr_t tx_dma;
+> +	dma_addr_t tx_dma = 0;
+>   	unsigned long time_left;
+>   	void *dma_buf = NULL;
+>   	struct geni_se *se = &gi2c->se;
+>   	size_t len = msg->len;
+> +	struct i2c_msg *cur;
+>   
+>   	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+>   		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+> @@ -413,22 +451,21 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>   		geni_se_select_mode(se, GENI_SE_FIFO);
+>   		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+>   		dma_buf = NULL;
+> +	} else {
+> +		gi2c->xfer_len = len;
+> +		gi2c->dma_addr = tx_dma;
+> +		gi2c->dma_buf = dma_buf;
+>   	}
+>   
+>   	if (!dma_buf) /* Get FIFO IRQ */
+>   		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
+>   
+> +	cur = gi2c->cur;
+>   	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>   	if (!time_left)
+>   		geni_i2c_abort_xfer(gi2c);
+>   
+> -	gi2c->cur_wr = 0;
+> -	if (dma_buf) {
+> -		if (gi2c->err)
+> -			geni_i2c_tx_fsm_rst(gi2c);
+> -		geni_se_tx_dma_unprep(se, tx_dma, len);
+> -		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+> -	}
+> +	geni_i2c_tx_msg_cleanup(gi2c, cur);
+>   
+>   	return gi2c->err;
+>   }
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
