@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89822D3F3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDFF2D3F41
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbgLIJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:54:13 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:49681 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728504AbgLIJyN (ORCPT
+        id S1729536AbgLIJ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:56:49 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2229 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727273AbgLIJ4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:54:13 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kmw90-0003Nz-RI; Wed, 09 Dec 2020 10:52:22 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kmw8z-00068k-MN; Wed, 09 Dec 2020 10:52:21 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id CA71D240042;
-        Wed,  9 Dec 2020 10:52:19 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 54193240041;
-        Wed,  9 Dec 2020 10:52:19 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id BDAE020897;
-        Wed,  9 Dec 2020 10:52:18 +0100 (CET)
+        Wed, 9 Dec 2020 04:56:49 -0500
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CrXSS3MGBz67NqT;
+        Wed,  9 Dec 2020 17:54:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 10:56:05 +0100
+Received: from [10.210.171.175] (10.210.171.175) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 9 Dec 2020 09:56:05 +0000
+Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hch@lst.de>, <hare@suse.de>,
+        <ppvk@codeaurora.org>, <bvanassche@acm.org>,
+        <kashyap.desai@broadcom.com>
+References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
+ <20201202033134.GD494805@T590>
+ <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
+ <20201203005505.GB540033@T590>
+ <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
+ <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
+ <20201209010102.GA1217988@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <13327a68-6f86-96da-0c5f-5fa0be326d6f@huawei.com>
+Date:   Wed, 9 Dec 2020 09:55:30 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201209010102.GA1217988@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 09 Dec 2020 10:52:18 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: x25: Fix handling of Restart Request and
- Restart Confirmation
-Organization: TDT AG
-In-Reply-To: <20201209081604.464084-1-xie.he.0141@gmail.com>
-References: <20201209081604.464084-1-xie.he.0141@gmail.com>
-Message-ID: <7aed2f12bd42013e2d975280a3242136@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.15
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1607507542-0000CF01-3214C8AB/0/0
-X-purgate: clean
-X-purgate-type: clean
+X-Originating-IP: [10.210.171.175]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 09:16, Xie He wrote:
-> 1. When the x25 module gets loaded, layer 2 may already be running and
-> connected. In this case, although we are in X25_LINK_STATE_0, we still
-> need to handle the Restart Request received, rather than ignore it.
-
-Hmm... I've never loaded the X.25 module after the interface is UP, but
-in this case we really have to fix it.
-
+On 09/12/2020 01:01, Ming Lei wrote:
+> blk_mq_queue_tag_busy_iter() can be run on another request queue just
+> between one driver tag is allocated and updating the request map, so one
+> extra request reference still can be grabbed.
 > 
-> 2. When we are in X25_LINK_STATE_2, we have already sent a Restart 
-> Request
-> and is waiting for the Restart Confirmation with t20timer. t20timer 
-> will
-> restart itself repeatedly forever so it will always be there, as long 
-> as we
-> are in State 2. So we don't need to check x25_t20timer_pending again.
+> So looks only holding one queue's usage_counter doesn't help this issue, since
+> bt_for_each() always iterates on driver tags wide.
+> 
+>> But I didn't see such a guard for blk_mq_tagset_busy_iter().
+> IMO there isn't real difference between the two iteration.
 
-Yeah, you're right, we can actually leave that out.
+ok, I see. Let me try to recreate that one, which will prob again 
+require artificial delays added.
 
-Acked-by: Martin Schiller <ms@dev.tdt.de>
+Apart from this, my concern is that we come with for a solution, but 
+it's a complicated solution and may not be accepted as this issue is not 
+seen as a problem in practice.
+
+Thanks,
+John
