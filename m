@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B22D3968
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA522D396A
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 05:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgLIEEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 23:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgLIEEI (ORCPT
+        id S1726885AbgLIEGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 23:06:53 -0500
+Received: from relay5.mymailcheap.com ([159.100.248.207]:60348 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgLIEGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 23:04:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E127C0613CF;
-        Tue,  8 Dec 2020 20:03:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ptjl1vOkAECNNGD8FjP9CmBCmHgTzCuywcTzKIYkzYw=; b=gYUQXZT87oKHPRmAzCyz2v0+q2
-        Q6+nWIVVrwqJR4T7g2r38PdidVo/NscPGofu4tGqU0lFPRs61ECqei/fKI9cPhLCM2o7OeFfv1oRy
-        BSXvNTRUH7hxvUuQRtydYrk7P0KDK4puaetLnP/RgTTDl/AezCyTUpf6rg7D8BaL5gulYtO8JR5BU
-        eCgfNrCiQxriCWNJbp4ZySU9FXWHXCmA0thvvB/VbCds/U3u/FL0B057XyJVlBG8ZSLj2Gc9Yh82Z
-        icd0zYpjbNCe5CW0tpPj46TktpIECNya3xBKJvWNUrzZ5FNJhR2rDi7JUoMmn4nhE9ZsI0+mN3Srd
-        diIYI5WQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmqh6-0006FZ-Up; Wed, 09 Dec 2020 04:03:13 +0000
-Date:   Wed, 9 Dec 2020 04:03:12 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] mm/highmem: Lift memcpy_[to|from]_page to core
-Message-ID: <20201209040312.GN7338@casper.infradead.org>
-References: <CAPcyv4hkY-9V5Rq5s=BRku2AeWYtgs9DuVXnhdEkara2NiN9Tg@mail.gmail.com>
- <20201207234008.GE7338@casper.infradead.org>
- <CAPcyv4g+NvdFO-Coe36mGqmp5v3ZtRCGziEoxsxLKmj5vPx7kA@mail.gmail.com>
- <20201208213255.GO1563847@iweiny-DESK2.sc.intel.com>
- <20201208215028.GK7338@casper.infradead.org>
- <CAPcyv4irF7YoEjOZ1iOrPPJDsw_-j4kiaqz_6Gf=cz1y3RpdoQ@mail.gmail.com>
- <20201208223234.GL7338@casper.infradead.org>
- <20201208224555.GA605321@magnolia>
- <CAPcyv4jEmdfAz8foEUtDw4GEm2-+7J-4GULZ=6tCD+9K5CFzRw@mail.gmail.com>
- <20201209022250.GP1563847@iweiny-DESK2.sc.intel.com>
+        Tue, 8 Dec 2020 23:06:53 -0500
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id AA9D9260EB
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 04:06:00 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id B66B83F201;
+        Wed,  9 Dec 2020 04:04:28 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 9A0592A379;
+        Tue,  8 Dec 2020 23:04:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1607486668;
+        bh=R5zphAM3Icws23KniVf1A5AfdXoGkjeOwQsoMeQy5Fk=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=cP+E9HpfnhHfShCjfVrDuDksUs6qI+XzsQlFUxU2ZMaFOXz/1eW1+JQXPGIgv+nzv
+         hkqj1pMoJdNbhRmKfS5rdzr7simwDTVSi3T/HedXhDwyONZPWj3DUKQn74dSDS4gy1
+         915js2Njv9xdqLqPqd6p7akLHxEqr86iCh8RnYSw=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3Ob-LPZRFAIb; Tue,  8 Dec 2020 23:04:27 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Tue,  8 Dec 2020 23:04:27 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id EBC2541FA8;
+        Wed,  9 Dec 2020 04:04:23 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="eyIrrjLF";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [127.0.0.1] (unknown [103.135.251.64])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 1A10041F0C;
+        Wed,  9 Dec 2020 04:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1607486653;
+        bh=R5zphAM3Icws23KniVf1A5AfdXoGkjeOwQsoMeQy5Fk=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=eyIrrjLFpIVrPEObFdVCvvonmpyk+N0ryicqrGpAOk9f2IAIkRqAx3GgqXL19XCEN
+         D3h4KhNZB3qD3XCtjcmHlrhxh4FCiFBzUdB6bYV3616r+hqI6SiNlFVI9a201W9XVb
+         aq6bEvElRTrvTlVLDMuJofma/or1wG8rPMoXl47E=
+Date:   Wed, 09 Dec 2020 12:03:53 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Roman Kiryanov <rkir@google.com>,
+        =?UTF-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lingfeng Yang <lfy@google.com>, Rob Herring <robh@kernel.org>,
+        anup.patel@wdc.com, Alistair.Francis@wdc.com, qemu-riscv@nongnu.org
+Subject: Re: Re: [PATCH] drivers: rtc: retire RTC_DRV_GOLDFISH
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAOGAQepV2_uNhWmQUG7pypukDsA5E9Uobv-JrqcQrAtxsHttLg@mail.gmail.com>
+References: <20201113205233.827493-1-rkir@google.com> <20201113210730.GA1992396@bogus> <CAOGAQeq29S06+6M58qF0e4ivjzkZDg4+M7ffSK+FapbgmCBrLQ@mail.gmail.com> <CAL_Jsq+QjQxDh3_KDhgE_2A6DjA+gSyvknjrVfRFLMLz-p_M9A@mail.gmail.com> <CAOGAQepCsj63yZzJJHKCdHTenkWNLc_v=Ab6PgvS3hzqZMwH8A@mail.gmail.com> <CAOGAQepW3pbbjK9KpPZR1BwGY-CGF7V_pTY_9dw98XPgUKYFHg@mail.gmail.com> <X68aZ/Dgm7CObQmH@kroah.com> <tencent_3801BEAE39670E174105E007@qq.com> <X6+SKQS6QJr25kF0@kroah.com> <d1d47715-482c-f598-a958-499d9fde21e0@flygoat.com> <CAOGAQepV2_uNhWmQUG7pypukDsA5E9Uobv-JrqcQrAtxsHttLg@mail.gmail.com>
+Message-ID: <F272A750-0160-47F6-A9F3-26141361609D@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209022250.GP1563847@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: EBC2541FA8
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         FREEMAIL_TO(0.00)[google.com,lemote.com,gmail.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 06:22:50PM -0800, Ira Weiny wrote:
-> Right now we have a mixed bag.  zero_user() [and it's variants, circa 2008]
-> does a BUG_ON.[0]  While the other ones do nothing; clear_highpage(),
-> clear_user_highpage(), copy_user_highpage(), and copy_highpage().
 
-Erm, those functions operate on the entire PAGE_SIZE.  There's nothing
-for them to check.
 
-> While continuing to audit the code I don't see any users who would violating
-> the API with a simple conversion of the code.  The calls which I have worked on
-> [which is many at this point] all have checks in place which are well aware of
-> page boundaries.
+=E4=BA=8E 2020=E5=B9=B412=E6=9C=889=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=886=
+:28:11, Roman Kiryanov <rkir@google=2Ecom> =E5=86=99=E5=88=B0:
+>On Sat, Nov 14, 2020 at 1:48 AM Jiaxun Yang <jiaxun=2Eyang@flygoat=2Ecom>=
+ wrote:
+>> Thus I do think it shouldn't be retired as for now=2E If nobody comes i=
+n
+>> I'd also willing to maintain
+>
+>Hi Jiaxun and Hancai,
+>
+>I sent a patch to add you to MAINTAINERS for goldfish-rtc=2E Could you
+>please ack there?
 
-Oh good, then this BUG_ON won't trigger.
+Hi Roman,
 
-> Therefore, I tend to agree with Dan that if anything is to be done it should be
-> a WARN_ON() which is only going to throw an error that something has probably
-> been wrong all along and should be fixed but continue running as before.
+My patch modifying Maintainers had been accepted by rtc tree=2E
 
-Silent data corruption is for ever.  Are you absolutely sure nobody has
-done:
+Thanks=2E
 
-	page = alloc_pages(GFP_HIGHUSER_MOVABLE, 3);
-	memcpy_to_page(page, PAGE_SIZE * 2, p, PAGE_SIZE * 2);
+- Jiaxun
 
-because that will work fine if the pages come from ZONE_NORMAL and fail
-miserably if they came from ZONE_HIGHMEM.
-
-> FWIW I think this is a 'bad BUG_ON' use because we are "checking something that
-> we know we might be getting wrong".[1]  And because, "BUG() is only good for
-> something that never happens and that we really have no other option for".[2]
-
-BUG() is our only option here.  Both limiting how much we copy or
-copying the requested amount result in data corruption or leaking
-information to a process that isn't supposed to see it.
-
-What Linus is railing against is the developers who say "Oh, I don't
-know what to do here, I'll just BUG()".  That's not the case here.
-We've thought about it.  We've discussed it.  There's NO GOOD OPTION.
-
-Unless you want to do the moral equivalent of this:
-
-http://git.infradead.org/users/willy/pagecache.git/commitdiff/d2417516bd8b3dd1db096a9b040b0264d8052339
-
-I think that would look something like this ...
-
-void memcpy_to_page(struct page *page, size_t offset, const char *from,
-			size_t len)
-{
-	page += offset / PAGE_SIZE;
-	offset %= PAGE_SIZE;
-
-	while (len) {
-		char *to = kmap_atomic(page);
-		size_t bytes = min(len, PAGE_SIZE - offset);
-		memcpy(to + offset, from, len);
-		kunmap_atomic(to);
-		len -= bytes;
-		offset = 0;
-		page++;
-	}
-}
-
-Now 32-bit highmem will do the same thing as 64-bit for my example above,
-just more slowly.  Untested, obviously.
+>
+>Regards,
+>Roman=2E
