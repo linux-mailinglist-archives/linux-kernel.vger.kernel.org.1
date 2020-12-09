@@ -2,208 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1972D4179
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87692D4187
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbgLILyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S1731155AbgLIL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729260AbgLILyq (ORCPT
+        with ESMTP id S1730957AbgLIL6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:54:46 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E91C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 03:54:05 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id d8so1050094otq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 03:54:05 -0800 (PST)
+        Wed, 9 Dec 2020 06:58:00 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF3EC0613CF;
+        Wed,  9 Dec 2020 03:57:20 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id 91so1431379wrj.7;
+        Wed, 09 Dec 2020 03:57:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6K9mAP1Beqp+70UsfH1hWBqgYfQ6/jJCVxMp4Od9dXQ=;
-        b=WKdOiNEfE025+NhMJCC590FBPhDDL1gRy0WjSNyvkYadzIexHP3ThUxvECLe1OuNFR
-         gv8Stf1j5kWZLMbSVAWg3172rw0MOhLjpV6nkIjUZyiPnEz1MgvmkPV9P5VjzHgzLmis
-         yhDvxljzamNcH+ChzOkE0EUK1i16q+nl7nWgQ=
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YvDAWwj69k6a9eK0XoyY33zezqQ0SaM2Q0F8FhGihTQ=;
+        b=fjMj/t/qMSj77PTsV+gj/luqytnACm7XsGx5VFmY9BdWvHMpvbtoA4H7Di9P++Tclm
+         VHlyZz82WIG8UVGKbPgAsnV0BfdBOQBrg/l73o0kxBeki5C8JdrFudTVdbwti5fkc3h2
+         FemwdGxA4PyWz5hAyeVONdELLFHtVesQxnWvfQOOLTCatD5y4wAhvInWpmk79WcMqfN1
+         LHIbg1hJ+7/FAqluhe3eMmmrZTZfCMZKix2DnyWLAUxYztIIGKyE9g8bu87Pdg1pJYed
+         +PE0D4jw4hsN3bhG/huRDbzjUeCPTYfge/vEdWHlflmjN2uuAvPMnef2iR7wyN25OTlz
+         O3Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6K9mAP1Beqp+70UsfH1hWBqgYfQ6/jJCVxMp4Od9dXQ=;
-        b=e4G/aN3RgfWMkVFpz12nxv+H2e/dNxhyNPwNTELFicX+Lu+UxJCPnBQdZ289Uos7nw
-         JC2P8RRA2n/ZJHq+1mqGpSEZge7Q8ctu3qLvEWzZfVTTiuqvgb6VMWru3+wOhChpAtXK
-         NoA9hbd3JWjFIKuos6wpVPpVu6IrVTZTinzVTvBW/m2roW35BESWw85Od/UZlhN9bGxl
-         HxMO6yqePZ2cUfzlYTe0Blr/Vxb6ehoA2MydRNTnsYJKYKWHY9vcabd3QYK4CgDII/1w
-         Dhna9CHCr2CBA+NNr8yhqkQfMVAUbpwyrDjSU/7Z7LwakM4DXMrK0Y+Zv5M8s8pWp8hH
-         wF/A==
-X-Gm-Message-State: AOAM530h6n1CtN88mEiFlLBaZGVs1/CToOKT8ZYYXE5guZjmOFX6LDzw
-        s8G6hOvi11ju/PtF7m+YbMUQhxDcudjY4I0/Rci9UQ==
-X-Google-Smtp-Source: ABdhPJzeGRIzXNVOTiimF3+GkeRqnsYXqHCUbft7/hztuK4K5NeJSeu/FTxDfpAmy5OzxEeHBzG5Qex6uKs4bSeWuAc=
-X-Received: by 2002:a9d:470f:: with SMTP id a15mr1324186otf.303.1607514844917;
- Wed, 09 Dec 2020 03:54:04 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YvDAWwj69k6a9eK0XoyY33zezqQ0SaM2Q0F8FhGihTQ=;
+        b=QLZzrk3iZ2p85UcQJ2ATPqQYTFFVzMoLZmxQX8XVeeutd6hWD5vim7+nUefPj/6zsc
+         1M6hnt4Ayqz9kJVlTqnvP+A618wzE4IU6VoK/6nfexfEWhGAy6nIly4KrTjteRzu0J6n
+         fP9rIVhKGeUZX0ow9O6BPntc4/wP0NZYqTm41NMSqpGa3qsZMhHmwduShNgRwuv9hn5V
+         7x8ykUi8KdPmgn+uWi80aoNi7e8K3BqHa2cerL7SvDufzJUajDRtfN+Zna+m3DchekZO
+         uLD9QXPtpD3b13vjwE6OGawPR/vAvE1BtykPXZh//IavO7XSvfRFrcjKRWmSe+TgbcnH
+         wDPQ==
+X-Gm-Message-State: AOAM531iBGMyNHG8LI8WbiT0Kaxb4Ck0M/BLWM+QRGw31uCFf5/5kvF4
+        BgCXQSGYNJTzka0/INt5Kk4ahAQ5R1bnbQ==
+X-Google-Smtp-Source: ABdhPJwgsSEW+Npf6fxD8xIqm4oTqL4TwDAI47zzPB75XyyZz7S9plQCMuEmJZLhCigKD7UJtfMxvg==
+X-Received: by 2002:a5d:6682:: with SMTP id l2mr2286262wru.213.1607515038928;
+        Wed, 09 Dec 2020 03:57:18 -0800 (PST)
+Received: from [192.168.8.121] ([85.255.233.156])
+        by smtp.gmail.com with ESMTPSA id d8sm2812564wrp.44.2020.12.09.03.57.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 03:57:18 -0800 (PST)
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <cover.1607477897.git.asml.silence@gmail.com>
+ <20201209065040.GA27959@infradead.org>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [RFC 0/2] nocopy bvec for direct IO
+Message-ID: <8521bb81-ce0b-356f-ea75-bb069688715f@gmail.com>
+Date:   Wed, 9 Dec 2020 11:54:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <20201208203735.ukqrgjmlntbvxc7e@adolin> <20201209005408.GP401619@phenom.ffwll.local>
- <CACAkLuqvHw898DBYo3TgaTr5_6Mr=p=CXaBzFo_7P8N5geOZyw@mail.gmail.com>
-In-Reply-To: <CACAkLuqvHw898DBYo3TgaTr5_6Mr=p=CXaBzFo_7P8N5geOZyw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 9 Dec 2020 12:53:53 +0100
-Message-ID: <CAKMK7uEh1Z=H7HByVpp7WVM=AdURyRB0VtJpempLy4W3hMOH9g@mail.gmail.com>
-Subject: Re: [PATCH V2] drm/vkms: Add setup and testing information
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     Melissa Wen <melissa.srw@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201209065040.GA27959@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:33 PM Sumera Priyadarsini
-<sylphrenadin@gmail.com> wrote:
->
-> On Wed, Dec 9, 2020 at 6:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Dec 09, 2020 at 02:07:35AM +0530, Sumera Priyadarsini wrote:
-> > > Update the vkms documentation to contain steps to:
-> > >
-> > >  - setup the vkms driver
-> > >  - run tests using igt
-> > >
-> > > Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> > > ___
-> > > Changes in v2:
-> > >  - Change heading to title case (Daniel)
-> > >  - Add examples to run tests directly (Daniel)
-> > >  - Add examples to run subtests (Melissa)
-> > > ---
-> > >  Documentation/gpu/vkms.rst | 67 ++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 67 insertions(+)
-> > >
-> > > diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-> > > index 13bab1d93bb3..d6739fbbe503 100644
-> > > --- a/Documentation/gpu/vkms.rst
-> > > +++ b/Documentation/gpu/vkms.rst
-> > > @@ -7,6 +7,73 @@
-> > >  .. kernel-doc:: drivers/gpu/drm/vkms/vkms_drv.c
-> > >     :doc: vkms (Virtual Kernel Modesetting)
-> > >
-> > > +Setup
-> > > +=====
-> > > +
-> > > +The VKMS driver can be setup with the following steps:
-> > > +
-> > > +To check if VKMS is loaded, run::
-> > > +
-> > > +  lsmod | grep vkms
-> > > +
-> > > +This should list the VKMS driver. If no output is obtained, then
-> > > +you need to enable and/or load the VKMS driver.
-> > > +Ensure that the VKMS driver has been set as a loadable module in your
-> > > +kernel config file. Do::
-> > > +
-> > > +  make nconfig
-> > > +
-> > > +  Go to `Device Drivers> Graphics support`
-> > > +
-> > > +  Enable `Virtual KMS (EXPERIMENTAL)`
-> > > +
-> > > +Compile and build the kernel for the changes to get reflected.
-> > > +Now, to load the driver, use::
-> > > +
-> > > +  sudo modprobe vkms
-> > > +
-> > > +On running the lsmod command now, the VKMS driver will appear listed.
-> > > +You can also observe the driver being loaded in the dmesg logs.
-> > > +
-> > > +To disable the driver, use ::
-> > > +
-> > > +  sudo modprobe -r vkms
-> > > +
-> > > +Testing With IGT
-> > > +================
-> > > +
-> > > +The IGT GPU Tools is a test suite used specifically for debugging and
-> > > +development of the DRM drivers.
-> > > +The IGT Tools can be installed from
-> > > +`here <https://gitlab.freedesktop.org/drm/igt-gpu-tools>`_ .
-> > > +
-> > > +The tests need to be run without a compositor, so you need to switch to text
-> > > +only mode. You can do this by::
-> > > +
-> > > +  sudo systemctl isolate multi-user.target
-> > > +
-> > > +To return to graphical mode, do::
-> > > +
-> > > +  sudo systemctl isolate graphical.target
-> > > +
-> > > +Once you are in text only mode, you can run tests using the --device switch
-> > > +or IGT_DEVICE variable to specify the device filter for the driver we want
-> > > +to test::
-> > > +
-> > > +  sudo ./build/tests/<name of test> --device "sys:/sys/devices/platform/vkms"
-> > > +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/<name of test>
-> > > +
-> > > +For example, to test the functionality of the writeback library,
-> > > +we can run the kms_writeback test::
-> > > +
-> > > +  sudo ./build/tests/kms_writeback --device "sys:/sys/devices/platform/vkms"
-> > > +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_writeback
-> > > +
-> > > +You can also run subtests if you do not want to run the entire test::
-> > > +
-> > > +  sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "sys:/sys/devices/platform/vkms"
-> > > +  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_flip --run-subtest basic-plain-flip
-> >
-> > Does IGT_DEVICE also work with run-tests.sh? Aside from my curious
-> > question, patch looks good to me, thanks a lot.
->
-> Good catch, it does.
->
-> Melissa, IGT_FORCE_DRIVER also works. I think I was used test/kms_flip
-> earlier instead of
-> ./build/test/kms_flip hence the fluke.
->
-> Should I add these also to the docs, was wondering if it will get too
-> confusing....
+On 09/12/2020 06:50, Christoph Hellwig wrote:
+> On Wed, Dec 09, 2020 at 02:19:50AM +0000, Pavel Begunkov wrote:
+>> A benchmark got me 430KIOPS vs 540KIOPS, or +25% on bare metal. And perf
+>> shows that bio_iov_iter_get_pages() was taking ~20%. The test is pretty
+>> silly, but still imposing. I'll redo it closer to reality for next
+>> iteration, anyway need to double check some cases.
+> 
+> That is pretty impressive.  
 
-I think IGT_FORCE_DRIVER is deprecated, so better not to mention that.
-IGT_DEVICE and --device are the new thing. I think just adding a
-sentence that IGT_DEVICE also works with the run-tests scripts would
-be good perhaps.
--Daniel
+The difference will go down with BS=~1-2 pages, just need to to find a
+moment to test properly.
 
->
-> >
-> > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >
-> > > +
-> > >  TODO
-> > >  ====
-> > >
-> > > --
-> > > 2.25.1
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> But I only got this cover letter, not the
+> actual patches..
 
+Apologies, that goes for everyone as lost CCs in the patches.
 
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Pavel Begunkov
