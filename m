@@ -2,164 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1A32D38A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F1A2D38A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgLICQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S1726530AbgLICSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:18:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLICQu (ORCPT
+        with ESMTP id S1725796AbgLICSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:16:50 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42204C0613CF;
-        Tue,  8 Dec 2020 18:16:10 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id h20so715892qkk.4;
-        Tue, 08 Dec 2020 18:16:10 -0800 (PST)
+        Tue, 8 Dec 2020 21:18:34 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD4AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 18:17:53 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id 143so671026qke.10
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 18:17:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MLg5U6XWpc6kk7MWokhksWgofpSTcIn/Bucp2d9U9Js=;
-        b=dZEMQLgroBuHNVeNKEUWlE8AD2vwVb8V1+rz+MX3aLkgJLN3xu6p28jsN42rVMiMh5
-         Zegw3FE3DH10tXDJ3fSiXpPLACoae8IAQAGa/X56lElQE0DIASTETYoDC78O8dLE1Hfc
-         a4Ar49A4RSMD3PXY+3iaYfhLFPYNsmPFRK69hlf1qnQZHcUhv26PFmGubM3e5JoqLpym
-         PNop1L59L/f4a/f2qaPLyrBiwjSjMH1WdnSxXnLX2UzSCfEH2KwDrRF4DZflkQUV+bni
-         c5OGJoecBZYkSh91qRm1vhvgMUTM/yOxuEvUvT4xpFhZOFW3NcZvbcQ7IRbqtC2QxnhT
-         sf5w==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RchfEUxlIXCvXQN3+UYuWNoN8tixWT1ubeZpsHm4KC0=;
+        b=aHyykAcG+oJpZsoVUkvKq9j0qjaueWORS/JstpqCyeWkVeqvVNgOwnaNda8evE7cDT
+         EB1MJgCLVJBL549P5iDLL8MwA9qmKo5eyPBvRzfcflq/6BpCdrYM+oXQtNw6EhumHsA3
+         G5+RjQPPGHQ1xlH/8fyN5vYU668JIsQXJchAg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MLg5U6XWpc6kk7MWokhksWgofpSTcIn/Bucp2d9U9Js=;
-        b=NAyRdFFYH0fQ3ih0vkl6L0GlZFhc4UM+0wDxp3I7+nApb+gTgDePnfweROjGB3cJhE
-         hCIS/pFAsFAVmND6kYYvIrZRTKu+i2nvPm9zxFVWDO2FwK9Duw3fYshph+OsiHwaBEeG
-         uwKCkoKfPIa0ofUQDRCQJIsYYTaNVMwBZb2Wr2JNW6SGTmBYDq9hhyyA28GOpSXtOE6m
-         v2DQQMWnRNnmZpm7WcgjxUfV1ONOMZHozoRBQ4eU7QuxdSYMuXsvBK3Qx97vKU2AEYiA
-         ijgXpwdfnW/KoZhf/00apUVT2xzpQ6U9bF2Z38O8/Gr/iPOmTkv0HXoc2l6Ig97pAxG7
-         H11w==
-X-Gm-Message-State: AOAM531nLbOUwmBbS4RY8t7TCOvVy2tB8GHxQpbh92tNyDXly3/DvXBF
-        ExYmPFOETYZ7dJy5XCMePdY=
-X-Google-Smtp-Source: ABdhPJwiFf47VcklTlrvTas6qHdLrCO9cmCJ89By6JiOmLWm2n9/SO8RuLD9kS78ZvoEl9X0xaBI2Q==
-X-Received: by 2002:a05:620a:40d6:: with SMTP id g22mr364627qko.232.1607480169379;
-        Tue, 08 Dec 2020 18:16:09 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id z8sm160498qti.22.2020.12.08.18.16.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Dec 2020 18:16:08 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id D59E127C0054;
-        Tue,  8 Dec 2020 21:16:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 08 Dec 2020 21:16:06 -0500
-X-ME-Sender: <xms:ZjPQXzABVja8mlXVDtYiXd8Z4JZ-s3noEo2FpZwi-J_vv8e76wBCCw>
-    <xme:ZjPQX9yWFMG8wOXbsb9ezWeh0COL_xKn2qU6YFZHVqnW0bHSSXoOyJqyePiXu5n7U
-    m12gzeCrU_Xp6f3eA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejjedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
-    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudeijedrvddvtddrvd
-    druddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtd
-    eigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehf
-    ihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:ZjPQX5nQyFHXT5GvsKoptzlJ57dNHrL0PN1TcOUDSMh8zK-GcU8zPw>
-    <xmx:ZjPQX6FQ9Uc-tYquk4kcqrNAlLwAPV5vukB28dIRtFESGAWbLamAgA>
-    <xmx:ZjPQXxWa49R52XpgbfvELEC9xCTJPJyvmShzQ619e_Mb2ynOss4YNw>
-    <xmx:ZjPQX2Tu_ZTPI8C4utYd7D2HvnEKFINt2h6Kx-lBC7aX_qxmuQBgcg>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 76620240065;
-        Tue,  8 Dec 2020 21:16:06 -0500 (EST)
-Date:   Wed, 9 Dec 2020 10:14:49 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: One potential issue with concurrent execution of RCU callbacks...
-Message-ID: <20201209021449.GK3025@boqun-archlinux>
-References: <20201208145810.GA4875@paulmck-ThinkPad-P72>
- <20201208155457.GA3916@lothringen>
- <20201208171927.GS2657@paulmck-ThinkPad-P72>
- <20201208175230.GB3916@lothringen>
- <20201208182409.GT2657@paulmck-ThinkPad-P72>
- <20201208220438.GC3916@lothringen>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RchfEUxlIXCvXQN3+UYuWNoN8tixWT1ubeZpsHm4KC0=;
+        b=jVAbXJeiKj1OG4zP3ABPDGDHwvwJfe0B74il79NomMFaG/oU0mLYaiA6cuVjNsMaL3
+         GAlGRLbF1gaJkW29v3oRRQt89ZtzFj6qHCLLQ/HpIfU0Qi9ussB0uhD+vbYn8wGzGYhT
+         T4XHXLz2Zsr3dBn9DZpdDdty0NZ0Br65ZVLWa87eqLHYPtt1ctQfO9Sbk1HDlf9VPnm3
+         cAevIQHQSWpeVxGMLZAxcr5ZC73IidWrIDDf8lCdVypPfYngxXDPSHeYNl+GzXnWsURp
+         6lPyyGw2veOc1EIj8fD3CR9Wxbq7sc9P/DL3JWf3jfnzlNx8X+OFIEr5XBX01oD4hYUB
+         /fXw==
+X-Gm-Message-State: AOAM531OGRhnt8N6dPCJWKk/CSYkqh2jf4mbG0DjKrlbmDPulmVYDbzX
+        Ccd8CSI5J+tm+R/y5ukb4ove4uqvaXnIjDg4Vlo=
+X-Google-Smtp-Source: ABdhPJz5VfxoBA7BSnjZ4eLGjv3bDURJD0HjKPP58xDqbDJFGYMxaK4pEo4lCBNohZLLeaxSa5yV2CU0Q5gc9fj3TKo=
+X-Received: by 2002:a37:a085:: with SMTP id j127mr289877qke.273.1607480273131;
+ Tue, 08 Dec 2020 18:17:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208220438.GC3916@lothringen>
+References: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
+In-Reply-To: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 9 Dec 2020 02:17:40 +0000
+Message-ID: <CACPK8XePhJj8HzbLB4QgJQCjTuH_kPq=sWyOhdcGPmptqD6Aqw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
+ SNOOP driver
+To:     John Wang <wangzhiqiang.bj@bytedance.com>,
+        SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     xuxiaohan@bytedance.com,
+        =?UTF-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Patrick Venture <venture@google.com>,
+        Robert Lippert <rlippert@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benjamin Fair <benjaminfair@google.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frederic,
+On Tue, 8 Dec 2020 at 09:17, John Wang <wangzhiqiang.bj@bytedance.com> wrote:
+>
+> From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+>
+> If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC
+> SNOOP block will be enabled without heart beating of LCLK until
+> lpc-ctrl enables the LCLK. This issue causes improper handling on
+> host interrupts when the host sends interrupt in that time frame.
+> Then kernel eventually forcibly disables the interrupt with
+> dumping stack and printing a 'nobody cared this irq' message out.
+>
+> To prevent this issue, all LPC sub-nodes should enable LCLK
+> individually so this patch adds clock control logic into the LPC
+> SNOOP driver.
+>
+> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc
+> chardev")
+>
+> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+> Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+> Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
 
-On Tue, Dec 08, 2020 at 11:04:38PM +0100, Frederic Weisbecker wrote:
-> On Tue, Dec 08, 2020 at 10:24:09AM -0800, Paul E. McKenney wrote:
-> > > It reduces the code scope running with BH disabled.
-> > > Also narrowing down helps to understand what it actually protects.
-> > 
-> > I thought that you would call out unnecessarily delaying other softirq
-> > handlers.  ;-)
-> > 
-> > But if such delays are a problem (and they might well be), then to
-> > avoid them on non-rcu_nocb CPUs would instead/also require changing the
-> > early-exit checks to check for other pending softirqs to the existing
-> > checks involving time, need_resched, and idle.  At which point, entering and
-> > exiting BH-disabled again doesn't help, other than your point about the
-> > difference in BH-disabled scopes on rcu_nocb and non-rcu_nocb CPUs.
-> 
-> Wise observation!
-> 
-> > 
-> > Would it make sense to exit rcu_do_batch() if more than some amount
-> > of time had elapsed and there was some non-RCU softirq pending?
-> > 
-> > My guess is that the current tlimit checks in rcu_do_batch() make this
-> > unnecessary.
-> 
-> Right and nobody has complained about it so far.
-> 
-> But I should add a comment explaining the reason for the BH-disabled
-> section in my series.
-> 
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-Some background for the original question: I'm revisiting the wait
-context checking feature of lockdep (which can detect bugs like
-acquiring a spinlock_t lock inside a raw_spinlock_t), I've post my first
-version:
+Arnd, can you merge this for v5.11, or would you prefer me to do a pull request?
 
-	https://lore.kernel.org/lkml/20201208103112.2838119-1-boqun.feng@gmail.com/	
+The device tree patch from this series also needs to be added.
 
-, and will surely copy you in the next version ;-)
+Cheers,
 
-The reason I asked for the RCU callback context requirement is that we
-have the virtual lock (rcu_callback_map) that marks a RCU callback
-context, so if RCU callback contexts have special restrictions on the
-locking usage inside, we can use the wait context checking to do the
-check (like what I did in the patch #3 of the above series).
+Joel
 
-My current summary is that since in certain configs (use_softirq is true
-and nocb is disabled) RCU callbacks are executed in a softirq context,
-so the least requirement for any RCU callbacks is they need to obey the
-rules in softirq contexts. And yes, I'm aware that in some configs, RCU
-callbacks are not executed in a softirq context (sometimes, even the BH
-is not disabled), but we need to make all the callback work in the
-"worst" (or strictest) case (callbacks executing in softirq contexts).
-Currently, the effect of using wait context for rcu_callback_map in my
-patchset is that lockdep will complain if a RCU callback use a mutex or
-other sleepable locks, but using spinlock_t (even in PREEMPT_RT) won't
-cause lockdep to complain. Am I getting this correct?
-
-Regards,
-Boqun
-
-> Thanks.
-> 
-> > 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
+> ---
+> v2:
+>   reword: Add fixes line
+> ---
+>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 30 ++++++++++++++++++++++++---
+>  1 file changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> index 682ba0eb4eba..20acac6342ef 100644
+> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> @@ -11,6 +11,7 @@
+>   */
+>
+>  #include <linux/bitops.h>
+> +#include <linux/clk.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/fs.h>
+>  #include <linux/kfifo.h>
+> @@ -67,6 +68,7 @@ struct aspeed_lpc_snoop_channel {
+>  struct aspeed_lpc_snoop {
+>         struct regmap           *regmap;
+>         int                     irq;
+> +       struct clk              *clk;
+>         struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];
+>  };
+>
+> @@ -282,22 +284,42 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
+>                 return -ENODEV;
+>         }
+>
+> +       lpc_snoop->clk = devm_clk_get(dev, NULL);
+> +       if (IS_ERR(lpc_snoop->clk)) {
+> +               rc = PTR_ERR(lpc_snoop->clk);
+> +               if (rc != -EPROBE_DEFER)
+> +                       dev_err(dev, "couldn't get clock\n");
+> +               return rc;
+> +       }
+> +       rc = clk_prepare_enable(lpc_snoop->clk);
+> +       if (rc) {
+> +               dev_err(dev, "couldn't enable clock\n");
+> +               return rc;
+> +       }
+> +
+>         rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
+>         if (rc)
+> -               return rc;
+> +               goto err;
+>
+>         rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
+>         if (rc)
+> -               return rc;
+> +               goto err;
+>
+>         /* Configuration of 2nd snoop channel port is optional */
+>         if (of_property_read_u32_index(dev->of_node, "snoop-ports",
+>                                        1, &port) == 0) {
+>                 rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
+> -               if (rc)
+> +               if (rc) {
+>                         aspeed_lpc_disable_snoop(lpc_snoop, 0);
+> +                       goto err;
+> +               }
+>         }
+>
+> +       return 0;
+> +
+> +err:
+> +       clk_disable_unprepare(lpc_snoop->clk);
+> +
+>         return rc;
+>  }
+>
+> @@ -309,6 +331,8 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
+>         aspeed_lpc_disable_snoop(lpc_snoop, 0);
+>         aspeed_lpc_disable_snoop(lpc_snoop, 1);
+>
+> +       clk_disable_unprepare(lpc_snoop->clk);
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.25.1
+>
