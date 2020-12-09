@@ -2,95 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96902D3F55
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DFD2D3F57
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729548AbgLIJ6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbgLIJ6j (ORCPT
+        id S1729279AbgLIJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:59:08 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:47801 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbgLIJ7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:58:39 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98F4C0613CF;
-        Wed,  9 Dec 2020 01:57:58 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CrXXz6c7gz9sW9;
-        Wed,  9 Dec 2020 20:57:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607507876;
-        bh=7bTqQY2Bw5OuvnieZpKVgk+ANaIaWZn/UZwAIeXDG5Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d1fCGf0fma3oehetnw6MKc+c0xe8pL8r+iEDWB7VdPCsXjZH4q6+7YjkGImgyv7Zl
-         eFw97nr5uWDfcl4i2x5wmTrEj3LQnzfagsuDEDGya7+1aCDTS/2BG5yPbg+LTi3u42
-         Gp0z2zjbsmE9IZKB2TzrnNxwY4VBWSy98yajLQwBYHv8qgQM2rgxLMRDaNpwvOnhKI
-         xHZYTRU/N42NBSmYoLJsfVhBIfGDn+fE0xvmQKw6nhhItywDZylIVf/9yVb8B40a/s
-         hIJV4guLGubPf4kllb5N1QYMMP/smApjSPwB448BYa79wvru5Yj/8jgI3jE7nNlVxj
-         dfF0JqDjwRYIg==
-Date:   Wed, 9 Dec 2020 20:57:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pm tree
-Message-ID: <20201209205754.41ac2424@canb.auug.org.au>
+        Wed, 9 Dec 2020 04:59:03 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kmwEk-0007nz-Ds; Wed, 09 Dec 2020 09:58:18 +0000
+Date:   Wed, 9 Dec 2020 10:58:17 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+Message-ID: <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+References: <20201208215133.30575-1-steve@sk2.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GBWtwE=0wr3p2aPCNnpjwYP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201208215133.30575-1-steve@sk2.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GBWtwE=0wr3p2aPCNnpjwYP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 08, 2020 at 10:51:33PM +0100, Stephen Kitt wrote:
+> This documents close_range(2) based on information in
+> 278a5fbaed89dacd04e9d052f4594ffd0e0585de and
+> 60997c3d45d9a67daf01c56d805ae4fec37e0bd8.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
 
-Hi all,
+Hey Stephen,
 
-After merging the pm tree, today's linux-next build (htmldocs) failed
-like this:
+Thanks for working on this that's an early Christmas present as it gets
+an item off my todo list!
 
-Sphinx parallel build error:
-docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/ABI/testing=
-/sysfs-platform_profile.rst:1: (SEVERE/4) Missing matching underline for se=
-ction title overline.
+>  man2/close_range.2 | 112 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+>  create mode 100644 man2/close_range.2
+> 
+> diff --git a/man2/close_range.2 b/man2/close_range.2
+> new file mode 100644
+> index 000000000..62167d9b0
+> --- /dev/null
+> +++ b/man2/close_range.2
+> @@ -0,0 +1,112 @@
+> +.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
+> +.\"
+> +.\" %%%LICENSE_START(VERBATIM)
+> +.\" Permission is granted to make and distribute verbatim copies of this
+> +.\" manual provided the copyright notice and this permission notice are
+> +.\" preserved on all copies.
+> +.\"
+> +.\" Permission is granted to copy and distribute modified versions of this
+> +.\" manual under the conditions for verbatim copying, provided that the
+> +.\" entire resulting derived work is distributed under the terms of a
+> +.\" permission notice identical to this one.
+> +.\"
+> +.\" Since the Linux kernel and libraries are constantly changing, this
+> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+> +.\" responsibility for errors or omissions, or for damages resulting from
+> +.\" the use of the information contained herein.  The author(s) may not
+> +.\" have taken the same level of care in the production of this manual,
+> +.\" which is licensed free of charge, as they might when working
+> +.\" professionally.
+> +.\"
+> +.\" Formatted or processed versions of this manual, if unaccompanied by
+> +.\" the source, must acknowledge the copyright and authors of this work.
+> +.\" %%%LICENSE_END
+> +.\"
+> +.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
+> +.SH NAME
+> +close_range \- close all file descriptors in a given range
+> +.SH SYNOPSIS
+> +.nf
+> +.B #include <linux/close_range.h>
+> +.PP
+> +.BI "int close_range(int " first ", int " last ", unsigned int " flags );
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- Platform Profile Selection (e.g. :ref:`\/sys\/firmware\/acpi\/platform_pro=
-file <abi_sys_firmware_acpi_platform_profile>`)
+Note, the kernel prototype uses unsigned int as the type for file
+descriptor arguments. As does the close() syscall itself. Only glibc
+wrappers expose file descriptor types (at least in close variants) as
+int.
+Since this is a manpage about the syscall not the wrapper it might make
+sense to note the correct types.
 
-Caused by commit
+> +.fi
+> +.SH DESCRIPTION
+> +The
+> +.BR close_range ()
+> +system call closes all open file descriptors from
+> +.I first
+> +to
+> +.IR last
+> +(included).
+> +.PP
+> +Errors closing a given file descriptor are currently ignored.
+> +.PP
+> +.I flags
+> +can be set to
+> +.B CLOSE_RANGE_UNSHARE
+> +to unshare the range of file descriptors from any other processes,
+> +.I instead
+> +of closing them.
 
-  ff950bebd0e0 ("Documentation: Add documentation for new platform_profile =
-sysfs attribute")
+As Michael has noted, this needs to be reworded. A few things to note:
+- CLOSE_RANGE_UNSHARE will ensure that the calling process will have a
+  private file descriptor table. This ensures that other threads opening
+  files cannot inject new file descriptors into the caller's file
+  descriptor table to e.g. make the caller inherit unwanted file
+  descriptors.
+- CLOSE_RANGE_UNSHARE is conceptually equivalent to:
+  unshare(CLONE_FILES);
+  close_range(3, ~0U);
+- Whenever the requested range @last is greater than the current maximum
+  number of file descriptors allocated in the caller's file descriptor
+  table the kernel will only unshare a new file descriptor table for the
+  caller up to @first, i.e. the new file descriptor table will be 0 up
+  to and including @first not 0 up to and including @last. Which means
+  that the kernel will not have to do any costly filp_close() calls at
+  all. In essence, the close_range() operation is finished after the
+  in-kernel unshare call in such cases.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GBWtwE=0wr3p2aPCNnpjwYP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Qn6IACgkQAVBC80lX
-0Gx7iwf+IMrk4Pl2JS1ix6OdcSuPL46e8qgaoz3l4wkIB9oD3hhpZ5hIdjV0m4U3
-++t3dsjMWpWTjGkIr9Y1lpWPYC1MoDxjk0HkATiOQMcR591jsqNJ4y3vz7eNaKoI
-NYd1aIpPfzTEAEswp6sEfO6NepxMlyvwGaEe2or//J8wKU3V8AJYLbn6M/wlpvA5
-4OFoC6HZvtm+oDlGTeplu+E4ggSdrNQVEDDOkWk5nYyyxg7k3P+ckKC9yIuFnlrD
-ZqD6CcZ4wIhA9jRQCHujfXDw5tCCRNigKvUPwAoSRTVxYsmiSw2S+lPyAjb/TEDC
-vLgQn0aN2OOvNMzyZBdtJiFunH7/tw==
-=06jS
------END PGP SIGNATURE-----
-
---Sig_/GBWtwE=0wr3p2aPCNnpjwYP--
+Christian
