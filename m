@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971B92D471E
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D32D472B
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 17:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730407AbgLIQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 11:48:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:37504 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727156AbgLIQse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 11:48:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32E961FB;
-        Wed,  9 Dec 2020 08:47:48 -0800 (PST)
-Received: from [192.168.2.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBBB63F68F;
-        Wed,  9 Dec 2020 08:47:45 -0800 (PST)
-Subject: Re: [PATCH 1/3] x86/resctrl: Move setting task's active CPU in a mask
- into helpers
-To:     Reinette Chatre <reinette.chatre@intel.com>, fenghua.yu@intel.com
-Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, shakeelb@google.com,
-        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <cover.1607036601.git.reinette.chatre@intel.com>
- <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <a782d2f3-d2f6-795f-f4b1-9462205fd581@arm.com>
-Date:   Wed, 9 Dec 2020 16:47:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731114AbgLIQvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 11:51:53 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44984 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731919AbgLIQvo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:51:44 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9GnveJ006038;
+        Wed, 9 Dec 2020 16:49:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=aRzahDN3jrem43Dn7bs3wc1568IMmJINjeUBUe+Oeqg=;
+ b=np0QO0hOj3BMAFZtfgednlvJm2gcmb+elYDY6Cpw9zoYFbzRNf2Rf7CiX9GruqbfSC6O
+ bNDWHiPtNnTtSCB+WJdhLpbOSIssHY6Un+Ox7y+1zm231EAMoDwMXTvUXZuaV3Y+jx9z
+ pgegtWjc8qjnG4XV6IejkkAmUZVxnP/6TNEWrvcShTPfQpGCz34ic1sc2Tz36JvK6E2T
+ szl9FTs7rQHiMW8fbGWXIxVMq53dcXqXCz3d2hLqP/af2Jq+mTG/UxRFJyPG1CJmZrlr
+ 88dbnOffSbGN3k/sGMfzZdUm69LPypn6/gJwyGzb3p49kwVdkYf/6ELRdeh481ZTHTE5 lQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3581mr1424-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 16:49:57 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9Gjm9S157085;
+        Wed, 9 Dec 2020 16:47:53 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m50uye0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 16:47:53 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B9GlmPJ026437;
+        Wed, 9 Dec 2020 16:47:49 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Dec 2020 08:47:48 -0800
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        nicolas.palix@univ-grenoble-alpes.fr,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: Re: problem booting 5.10
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1sg8fq641.fsf@ca-mkp.ca.oracle.com>
+References: <alpine.DEB.2.22.394.2012081813310.2680@hadrien>
+        <CAHk-=wi=R7uAoaVK9ewDPdCYDn1i3i19uoOzXEW5Nn8UV-1_AA@mail.gmail.com>
+        <yq1sg8gunxy.fsf@ca-mkp.ca.oracle.com>
+        <CAHk-=whThuW=OckyeH0rkJ5vbbbpJzMdt3YiMEE7Y5JuU1EkUQ@mail.gmail.com>
+        <9106e994-bb4b-4148-1280-f08f71427420@huawei.com>
+        <CAHk-=wjsWB612YA0OSpVPkzePxQWyqcSGDaY1-x3R2AgjOCqSQ@mail.gmail.com>
+        <alpine.DEB.2.22.394.2012082339470.16458@hadrien>
+        <yq1sg8fud7y.fsf@ca-mkp.ca.oracle.com>
+        <4f3cd4d4-87d3-dc9a-027d-293cba469d5a@huawei.com>
+        <alpine.DEB.2.22.394.2012091644010.2691@hadrien>
+Date:   Wed, 09 Dec 2020 11:47:46 -0500
+In-Reply-To: <alpine.DEB.2.22.394.2012091644010.2691@hadrien> (Julia Lawall's
+        message of "Wed, 9 Dec 2020 16:44:29 +0100 (CET)")
 MIME-Version: 1.0
-In-Reply-To: <77973e75a10bf7ef9b33c664544667deee9e1a8e.1607036601.git.reinette.chatre@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=980
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=992
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette, Fenghua,
 
-On 03/12/2020 23:25, Reinette Chatre wrote:
-> From: Fenghua Yu <fenghua.yu@intel.com>
-> 
-> The code of setting the CPU on which a task is running in a CPU mask is
-> moved into a couple of helpers. The new helper task_on_cpu() will be
-> reused shortly.
+Julia,
 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 6f4ca4bea625..68db7d2dec8f 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -525,6 +525,38 @@ static void rdtgroup_remove(struct rdtgroup *rdtgrp)
+> 5.10-rc7 plus these three commits boots fine.
 
-> +#ifdef CONFIG_SMP
+Great! Thanks for confirming.
 
-(using IS_ENABLED(CONFIG_SMP) lets the compiler check all the code in one go, then
-dead-code-remove the stuff that will never happen... its also easier on the eye!)
-
-
-> +/* Get the CPU if the task is on it. */
-> +static bool task_on_cpu(struct task_struct *t, int *cpu)
-> +{
-> +	/*
-> +	 * This is safe on x86 w/o barriers as the ordering of writing to
-> +	 * task_cpu() and t->on_cpu is reverse to the reading here. The
-> +	 * detection is inaccurate as tasks might move or schedule before
-> +	 * the smp function call takes place. In such a case the function
-> +	 * call is pointless, but there is no other side effect.
-> +	 */
-
-> +	if (t->on_cpu) {
-
-kernel/sched/core.c calls out that there can be two tasks on one CPU with this set.
-(grep astute)
-I think that means this series will falsely match the old task for a CPU while the
-scheduler is running, and IPI it unnecessarily.
-
-task_curr() is the helper that knows not to do this.
-
-
-> +		*cpu = task_cpu(t);
-> +
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-
-
-Thanks,
-
-James
+-- 
+Martin K. Petersen	Oracle Linux Engineering
