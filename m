@@ -2,97 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7072D4BF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2DD2D4BF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388540AbgLIUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        id S2387661AbgLIUeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729056AbgLIUdN (ORCPT
+        with ESMTP id S1729563AbgLIUeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:33:13 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6740FC061794;
-        Wed,  9 Dec 2020 12:32:33 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id w18so1622398vsk.12;
-        Wed, 09 Dec 2020 12:32:33 -0800 (PST)
+        Wed, 9 Dec 2020 15:34:08 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5D4C061793
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 12:33:28 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id o4so2024032pgj.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 12:33:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zYNuf9TPPL2Gkke0FwSu03mIQpNY4jdeufGJOa9M/LI=;
-        b=GJRhejTNxoO780Y7N1nma/TzQy/hX/vBDRu51iQQsccHb2QeOVvzgIrDWAOa/IfsER
-         D3vRJL42+IEqviXVNPEhyOEBajYapv9u+UJRTyx6pqd8xv3DQaqhLNESFtspOwzVIRem
-         tAqDqheudP2DzgDis9g1hznOIdTkRU4UAMuhw1mPfB98fHqjttar/3gtq4p4hHQVo2db
-         8t3x00d60P9q47MkDnpmdTSH0i4F0qi0xRK8rELf/FuVHr6ZggPjqvfQu+bbV1/mrHxL
-         2FpAxY5eai25/2SkcEN8op9fTUHNOPqBDDe59CjUw6RpbuC+KQFfCBStx+eHbro4oHDM
-         TB4w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S+Qm1Txt09YzglGXS4N1LSBJ4tWItqAD7fi2vPq4Ppk=;
+        b=Fcyib7dQRAzrbHKqf1ilBMCQA3ASKgY3eBGvWNNpQ2PWuhwZP7jncRukeZDZK7gNRC
+         CLogErUqYuG/4O4ZooIPcL7abErRyDIy66cTt8GojzDTjrUiYFeHTKrO6aMD1WDI9JlW
+         5PE5pASI+ez65+RAMHh/Tokz7aQmiZlYZ5ysIHKy3/XkYWkj0/WO08Rkydyrp3RTHipD
+         VtZiMrn4tRVC1a/rn0KW6Hv8wmhIacpe+jJg3wcIR/v7gh+8dcLKfbVfibYEhsZFXS8n
+         Lb8j0m49jLCtbalkgpy44iXb1DNYGxD3ff5RSRGwQ1xYp83RXUJrSQOB8QADW1SpvgJ3
+         BaiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zYNuf9TPPL2Gkke0FwSu03mIQpNY4jdeufGJOa9M/LI=;
-        b=mmvhadvdfto+RSZteixd5IWN/hubHVRF1IxlfgCPxv+HiIRW8zreJKNTLzdves2Dfr
-         BN0sgPviHmYpaFkzrkY0Bq0C9YWl1ACU+eiXKaIW4H2GPhAPvoY5C1UsEXOWmhLZjQZX
-         dF0sQPFNZxFMd0aZtx8GSPLMmjsdM/twzMteay7SCp6ifbwy5DFPF9aCZGIeEIKMizIK
-         hHiJHP2qsqhQhuGf/O7hfe5fPOWTrzm8RLZgzTj799q71odA/0mQ2G1Lrv3xST8EPYDp
-         1Hfk/hnfYiwxQI34otjAVsRoMpAlsnOQdagLaXL6fccFlB34b3XfVKUY6ZLajg7l4T8t
-         /FkQ==
-X-Gm-Message-State: AOAM531X4L6uzDA1Mrplo6u9Jn+K+3HfMtYV3rELnOPcxwk2miO+rVqv
-        diIiuQG1LZsscLWW/G3Vcu4QwmZIoXz0hYs0vk4=
-X-Google-Smtp-Source: ABdhPJxd3g5bh8C+kelYGzPd2siGAo7ulmCoOYes8dKSNmtiOXwxZW/g3H/hF0X+SgL5M4MP1fPCspVaZxK4joTn0wc=
-X-Received: by 2002:a67:ad0f:: with SMTP id t15mr4175739vsl.24.1607545952601;
- Wed, 09 Dec 2020 12:32:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S+Qm1Txt09YzglGXS4N1LSBJ4tWItqAD7fi2vPq4Ppk=;
+        b=YRkAjZu+FpyeyK+EaZsp+VRctz2RDRcsH+dAoolCT08yH+sPA7/6rbcuhRvaot1S77
+         vYvfVO6bTThCeHNwZbP0odJ96t8D0yFAmaHcpogRd11v24zVLQcDWGkN+mZK4zRCPACQ
+         SXqGMN6ljJFMZoP2YJEUAaRRZ8sEpQ3lSwzu32RL0fIwMKWDjD3+optgxgOgMEsRSld8
+         jKMKpG2BmunTEXy7BKxglza/TicrKO73Fm084nzQNjoUdU2/HIM2zSP7R83SwEDtC9wK
+         2uqSZ77wVcOOPU0YZDO0XBQv2kXBI7syjGqiLg+WN/YvjBWlMeNKyN8HEMknqeP2mDJd
+         Itwg==
+X-Gm-Message-State: AOAM5300TbtTifC5QuJEQ7+C5jIjrJS/75Frmm81rppRahzOaVRRdn5D
+        mU9Nv4vradBqSH2JaNSZNxnLbw==
+X-Google-Smtp-Source: ABdhPJzMfIQyr8v+bNxTQhdSP69mFCO2iwcAVPwUBTpqrxRkjJvC63JtqzVhQ9O3ctQeQ4a/fh7VcQ==
+X-Received: by 2002:a65:68da:: with SMTP id k26mr3486564pgt.303.1607546007805;
+        Wed, 09 Dec 2020 12:33:27 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id u4sm3451748pgg.48.2020.12.09.12.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:33:26 -0800 (PST)
+Date:   Wed, 9 Dec 2020 12:33:22 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
+Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+Message-ID: <X9E0kl0+9zGSnIu/@google.com>
+References: <20201208213531.2626955-1-vipinsh@google.com>
 MIME-Version: 1.0
-References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
- <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
- <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com> <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-From:   Emmanuel Grumbach <egrumbach@gmail.com>
-Date:   Wed, 9 Dec 2020 22:32:20 +0200
-Message-ID: <CANUX_P1=yuPkK5BzJ99oniMiCgB0z98yNYUSw4_qk2Vg7ucoRQ@mail.gmail.com>
-Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
-        Rui Salvaterra <rsalvaterra@gmail.com>,
-        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208213531.2626955-1-vipinsh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 7:19 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 8 Dec 2020 23:17:48 +0000 Rui Salvaterra wrote:
-> > Hi, Luca,
-> >
-> > On Tue, 8 Dec 2020 at 16:27, Coelho, Luciano <luciano.coelho@intel.com> wrote:
-> > > On Tue, 2020-12-08 at 11:27 +0000, Rui Salvaterra wrote:
-> > > >
-> > > > [ 3174.003910] iwlwifi 0000:02:00.0: RF_KILL bit toggled to disable radio.
-> > > > [ 3174.003913] iwlwifi 0000:02:00.0: reporting RF_KILL (radio disabled)
-> > >
-> > > It looks like your machine is reporting RF-Kill to the WiFi device.
-> >
-> > Yes, that's an artifact of how I tested: I rebooted the router, the
-> > Wi-Fi interface disassociated and the dmesg was clean. However, after
-> > the router came up, the laptop didn't reconnect (and the connection
-> > had completely disappeared from nmtui). Afterwards, I did the rfkill
-> > cycle you see, and only then I got the register dump.
-> >
-> > > There seems to be some sort of race there that is causing us to still
-> > > try to communicate with the device (and thus you see the transaction
-> > > failed dump), but that will obviously fail when RF-Kill is enabled.
-> >
-> > I'm not sure about that, the card was already dead before the rfkill cycle.
->
-> Any luck figuring this out, Luca? If this is a 5.10 regression we need
-> to let Linus know tomorrow, so the time is ticking :(
+On Tue, Dec 08, 2020 at 01:35:29PM -0800, Vipin Sharma wrote:
+> Hello,
+> 
+> This patch adds a new cgroup controller, Encryption IDs, to track and
+> limit the usage of encryption IDs on a host.
+> 
+> AMD provides Secure Encrypted Virtualization (SEV) and SEV with
+> Encrypted State (SEV-ES) to encrypt the guest OS's memory using limited
+> number of Address Space Identifiers (ASIDs).
+> 
+> This limited number of ASIDs creates issues like SEV ASID starvation and
+> unoptimized scheduling in the cloud infrastucture.
+> 
+> In the RFC patch v1, I provided only SEV cgroup controller but based
+> on the feedback and discussion it became clear that this cgroup
+> controller can be extended to be used by Intel's Trusted Domain
+> Extension (TDX) and s390's protected virtualization Secure Execution IDs
+> (SEID)
+> 
+> This patch series provides a generic Encryption IDs controller with
+> tracking support of the SEV ASIDs.
+> 
+> Changes in v2:
+> - Changed cgroup name from sev to encryption_ids.
+> - Replaced SEV specific names in APIs and documentations with generic
+>   encryption IDs.
+> - Providing 3 cgroup files per encryption ID type. For example in SEV,
+>   - encryption_ids.sev.stat (only in the root cgroup directory).
+>   - encryption_ids.sev.max
+>   - encryption_ids.sev.current
+> 
+> Thanks
+> Vipin Sharma
+> 
+> [1] https://lore.kernel.org/lkml/20200922004024.3699923-1-vipinsh@google.com/#r
+> 
+> Vipin Sharma (2):
+>   cgroup: svm: Add Encryption ID controller
+>   cgroup: svm: Encryption IDs cgroup documentation.
+> 
+>  .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 +++++
+>  Documentation/admin-guide/cgroup-v2.rst       |  78 +++-
+>  arch/x86/kvm/svm/sev.c                        |  28 +-
+>  include/linux/cgroup_subsys.h                 |   4 +
+>  include/linux/encryption_ids_cgroup.h         |  70 +++
+>  include/linux/kvm_host.h                      |   4 +
+>  init/Kconfig                                  |  14 +
+>  kernel/cgroup/Makefile                        |   1 +
+>  kernel/cgroup/encryption_ids.c                | 430 ++++++++++++++++++
+>  9 files changed, 728 insertions(+), 9 deletions(-)
+>  create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+>  create mode 100644 include/linux/encryption_ids_cgroup.h
+>  create mode 100644 kernel/cgroup/encryption_ids.c
+> 
+> --
+> 2.29.2.576.ga3fc446d84-goog
+> 
 
-Rui, I looked at the register dump and looks like you're using AMT on
-your system?
-Can you confirm?
+Please ignore this version of patch series, I will send out v3 soon. v2
+has build failure when CONFIG_CGROUP is disabled.
