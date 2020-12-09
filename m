@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924382D4D87
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFC02D4DA6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 23:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388628AbgLIWY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 17:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S2388870AbgLIW1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 17:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388597AbgLIWYP (ORCPT
+        with ESMTP id S2388803AbgLIW0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 17:24:15 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B436C0613CF;
-        Wed,  9 Dec 2020 14:23:35 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0f48007ada6acf171b6be1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:4800:7ada:6acf:171b:6be1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 997B41EC04DF;
-        Wed,  9 Dec 2020 23:23:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1607552613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mgukwVob2EoCGhGApdrVTjzzZQvwndB4i7C7CK4WcWw=;
-        b=iuKl6wwX+ZujgjK6wflKCtJnNRq3w7Zrk138BG6cqquQsCi1QP0LprC9E8C1zAbw3MGXPh
-        gTuC5tmCDijjKs47J1W7MtB+Zvsi3HxtIjjklyYSeZPMwVXSMvWUA7WYFlAvNtR7dqE+Kq
-        ls8+eO1jh0QgXc8ERIsnX6sL/jy+IY8=
-Date:   Wed, 9 Dec 2020 23:23:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Xiaochen Shen <xiaochen.shen@intel.com>
-Cc:     linux-tip-commits@vger.kernel.org,
-        Xiaochen Shen <xiaochen.shen@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [tip: x86/cache] x86/resctrl: Fix incorrect local bandwidth when
- mba_sc is enabled
-Message-ID: <20201209222328.GA20710@zn.tnic>
-References: <1607063279-19437-1-git-send-email-xiaochen.shen@intel.com>
- <160754081861.3364.12382697409765236626.tip-bot2@tip-bot2>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160754081861.3364.12382697409765236626.tip-bot2@tip-bot2>
+        Wed, 9 Dec 2020 17:26:18 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3122C0613D6;
+        Wed,  9 Dec 2020 14:25:37 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id v29so2239068pgk.12;
+        Wed, 09 Dec 2020 14:25:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=8wQM6SGZhatAmTI9tOUrGWUVSmmno5n0WNRbEje9OEI=;
+        b=mknZQBlUBpIaNmmNfvrzMywLKXW4Mw/vpLFSF0lCvqdUXWAbNTm6tJpl1wSsvVVn1p
+         rfOHDGKYlBc3jpgydISN+WfsMekyHOepRVQuW4ZF2LqzlHoBZ3ypp52MJdrXtUa2gn+H
+         pGfyNBh2DI537zi05lWJXgZR4Ed6EGm29VuhvKL61xa3nkhPnIbG+BlqybWBiIPkHZsx
+         A39rfywAUbdFqRGkZ1S/nDWr0bpmBrC0PhPPoojGO8lTmq8BnFMICRei04QLHP5J3wgb
+         w+JK2dj44tukjDJs9x6PUsqZ+JvSs+XIVgif168fbGvwLUKzXoYXuMUDLt/qxs/dR5mG
+         tuAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8wQM6SGZhatAmTI9tOUrGWUVSmmno5n0WNRbEje9OEI=;
+        b=qXPLPF3PtrOK3VWt7E8l7aHotNgg1Gbw52YJ5KAK4F/5M6DP7713P+r8y/q54hQcM7
+         pS0+OGTyxyqVXdJVIoWVwPIYJ9qdSqNtdbghMk2lVRqxmyGUAD9DVzojGC75QHOPbGry
+         lqxuBn3sLfd31zI/wbwvXdgg4KQ3bvLADKcfjp54iUuiWRNYqNAusoUPDZGhdLNwxBIN
+         X5exRxcvVsRM/4fAiaqtm200yp9wXJdO6OutDX9ZOlQ6BsPVLrbiND/Q7K7g7GS28BWW
+         pIiBMh9VvAiYfV9klmBkDjGIxU+i3EkmZWlVaicOxEzLr1zdkiRuycGOUnEyN7ncEE/I
+         h2JQ==
+X-Gm-Message-State: AOAM530acbeWAyWUfh++lIvajnqPCQFSFpaWY1b0+otq9/PlIpiYIic2
+        /cML1Ns8Q+vdSQ5tY0ejieOkXI2j0d8=
+X-Google-Smtp-Source: ABdhPJznvhhpyWlDx7682efPuFdhMhmC1lWUmG5RBtjvgiP+xc32sqH+zpu3kYPVZPFGsaj+IL4HQQ==
+X-Received: by 2002:a63:1c21:: with SMTP id c33mr3854626pgc.161.1607552737093;
+        Wed, 09 Dec 2020 14:25:37 -0800 (PST)
+Received: from carrot.localdomain (i118-19-12-158.s42.a014.ap.plala.or.jp. [118.19.12.158])
+        by smtp.gmail.com with ESMTPSA id c66sm3902852pfa.0.2020.12.09.14.25.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Dec 2020 14:25:36 -0800 (PST)
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] fs/nilfs2: remove some unused macros to tame gcc
+Date:   Thu, 10 Dec 2020 07:25:33 +0900
+Message-Id: <1607552733-24292-1-git-send-email-konishi.ryusuke@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 07:06:58PM -0000, tip-bot2 for Xiaochen Shen wrote:
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index 622073f..93a33b7 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -320,7 +320,6 @@ static int __mon_event_count(u32 rmid, struct rmid_read *rr)
->  	}
->  
->  	chunks = mbm_overflow_count(m->prev_msr, tval, rr->r->mbm_width);
-> -	m->chunks += chunks;
->  	m->prev_msr = tval;
->  
->  	rr->val += get_corrected_mbm_count(rmid, m->chunks);
+From: Alex Shi <alex.shi@linux.alibaba.com>
 
+There some macros are unused and cause gcc warning. Remove them.
 
-Hmm, zapping this one. First, there's an unused variable warning:
+fs/nilfs2/segment.c:137:0: warning: macro "nilfs_cnt32_gt" is not used
+[-Wunused-macros]
+fs/nilfs2/segment.c:144:0: warning: macro "nilfs_cnt32_le" is not used
+[-Wunused-macros]
+fs/nilfs2/segment.c:143:0: warning: macro "nilfs_cnt32_lt" is not used
+[-Wunused-macros]
 
-https://lkml.kernel.org/r/202012100516.H7sTNehL-lkp@intel.com
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+---
+ fs/nilfs2/segment.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-and you should remove the chunks assignment too.
-
-And then it didn't apply cleanly:
-
-$ test-apply.sh /tmp/xiaochen.01 
-checking file arch/x86/kernel/cpu/resctrl/monitor.c
-Hunk #1 FAILED at 279.
-Hunk #2 succeeded at 514 (offset 64 lines).
-1 out of 2 hunks FAILED
-
-I wiggled it in but it ended up removing the wrong chunks inc line -
-not the one in mbm_bw_count() but in __mon_event_count() - which I just
-realized.
-
-So please redo this patch against:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=x86/cache
-
-Thx.
-
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index e3726aca28ed..cd4da9535aed 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -134,14 +134,9 @@ struct nilfs_sc_operations {
+ static void nilfs_segctor_do_immediate_flush(struct nilfs_sc_info *);
+ static void nilfs_dispose_list(struct the_nilfs *, struct list_head *, int);
+ 
+-#define nilfs_cnt32_gt(a, b)   \
+-	(typecheck(__u32, a) && typecheck(__u32, b) && \
+-	 ((__s32)(b) - (__s32)(a) < 0))
+ #define nilfs_cnt32_ge(a, b)   \
+ 	(typecheck(__u32, a) && typecheck(__u32, b) && \
+ 	 ((__s32)(a) - (__s32)(b) >= 0))
+-#define nilfs_cnt32_lt(a, b)  nilfs_cnt32_gt(b, a)
+-#define nilfs_cnt32_le(a, b)  nilfs_cnt32_ge(b, a)
+ 
+ static int nilfs_prepare_segment_lock(struct super_block *sb,
+ 				      struct nilfs_transaction_info *ti)
 -- 
-Regards/Gruss,
-    Boris.
+1.8.3.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
