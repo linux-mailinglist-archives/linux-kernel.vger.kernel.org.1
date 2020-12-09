@@ -2,292 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ABE2D3C83
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09292D3C90
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 08:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgLIHww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 02:52:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727953AbgLIHww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 02:52:52 -0500
-X-Gm-Message-State: AOAM532CyUJejyv/56a4eKV6r93lkUDiwhRTc4MhYB3LH+X7WeahVDMt
-        h8PKLIYOiCWCJOw2ia7uSPtis2mWcD0BWpH4bwk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607500293;
-        bh=OEQSYtYb9NVegyVw846n4Oj+FsIUHUrywKo9JP+Mzxk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sum/Mv9KTKsuXnyljn+CR2uqjs3V8AAGrxYc3UxzU6vr6fhlgw1vr1TyrYTW4cZpw
-         fesxqOqeu5BK0zYg+Jr+uSryZSZY0BAufyEXWeKSwy4pnnAEC+dlHaLBQKdaTs3bB4
-         AiWjIC3zRoqjsHOJDAFpLzowzZQJsqYXMiUCsCdOEc1UZIR09miqTy+pS4NndVwv+d
-         /dz1lphsikuxvwoZKakZEls5khqXPy2znmOpgzGUDV99kHZP+d5Wo3t9NV/g8dKV5S
-         fD7nq6ZspYmBHjqJNydTtypd1TfUKYscG0jt94l+cGjyGMwn8nnUpqP/cSxzGWS/0T
-         EGW5cD56jh7Jg==
-X-Google-Smtp-Source: ABdhPJxW0H5yIBMW0GtzKADzByU+brtAwQ+8wQSMZwDc6hliuCHMHu4QzBZWYSE5pcmAZ+nmWyAfPGd4XL5ysSRkLwg=
-X-Received: by 2002:aca:5ec2:: with SMTP id s185mr896367oib.33.1607500292653;
- Tue, 08 Dec 2020 23:51:32 -0800 (PST)
+        id S1727742AbgLIH7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 02:59:31 -0500
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:23364 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725942AbgLIH7a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 02:59:30 -0500
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B97vKFX029164;
+        Tue, 8 Dec 2020 23:58:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=hAn9QRiQLlv+e4+ZcGiTwPXpxp4i+wxQWgmSNb6Sbrk=;
+ b=OzO63BRsDXtkasFYw0nXlylC7rZqTxcbDHGnkm18Fv43k0jDovTY9mZUgkmIZucVez7T
+ 0IRmX2AGqqKKRKmEvtbZ+KUGIpeyPoClIXlEFWaLob+9Mr9W8/s7U+GFwDsTGbfqPyYn
+ PDF4yNlxY9Apys6JA0HEXv/r/kovHmbwmdGvEFDseZZBqbawguVKaken7dg3IRANzoW0
+ OAnbqQ++9K96n1SoFcfbp6qFq0qNouid1N1HMlnQWHDE11CWtDxLTkAYm8gHXQbuxMMQ
+ /hbxN60KCXaYoF/QA/ddrKj+YMkpy7pJjcOL3BfoDCjHZ7xwuav9ugp6/mcXq+Ow+zAv Iw== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 3587n2v16b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Dec 2020 23:58:24 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aJD72eGxNAivujY+I/Ra3LkCPgohdAFY1zHNbiguuS45q/YAHrPLMMJTZecyWbfnDlyfrHWujeqRbXzXXCTIXpHZv8oiczFwrEuiPXpg25HhfLOX0207vsONWIn9hjHkDIJjIJusKl/Ta+eaKpa3GbfZX3dzHno3hM0N3oUonDix2PbR6oWbswSsS963f2vaq54I2Rw+veN1tKrjnJQMsmTSutYVj0z9g8tdPMqEnwfv/b5SOJ/XpCbrdSfRQ+Zqzcf/HHTbh3ffW0f6v/XpFNZAMhovLMOIhi4jBCpZ9T3/0HdIlCYpGO/BAb93M5hIfY0IdmcqtNksKxnvyhIquA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hAn9QRiQLlv+e4+ZcGiTwPXpxp4i+wxQWgmSNb6Sbrk=;
+ b=J+ZV9mDeafh0Th5xblwl/w6my/5q4hNuqTHc1o2iTs/HYaM5eu+2s5Qdb58a30+DNwepUyRkJZelQ3lU3LzrVxhIpyoBl+v/frAZyz2hYy9PmOufZeHCoR+fJ4fULS1hSGT6iZWDe+q2AxgMje9D4V48GKTAibphIrhy+lNiyoXKUHjH0B6f/rup54wAs/4DoFBRdpGjdk5bdsFbLU81gFMN0kCpEo9G4BC69ovdLJZsZ8fk3C26KJL2qER5r74dEScPSwHb0OnmC9jKWX3M6CYDpwh9geN6Uew9KznRWtu5lLzBRVKP+qsOKeneOjiCb9GRZ+ZP7sGkBsihy0r5Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 158.140.1.147) smtp.rcpttodomain=bootlin.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hAn9QRiQLlv+e4+ZcGiTwPXpxp4i+wxQWgmSNb6Sbrk=;
+ b=POQ1ucaN35Wls/0zeM6t45H8qAz4+ZtbjZLoQFJKIxgp5J66QBk7TxFaWSqxyzUW1DGA+ltT9RxPfNhaNnz0AH26RAHbePBGuBHTP/SOWocZ9egfh8YpTzs3OW/Fv9F/8kctNEkr/LC7d5/VZ0hFAgHKXioxhQU2lzGaEvZAHTw=
+Received: from DM6PR02CA0145.namprd02.prod.outlook.com (2603:10b6:5:332::12)
+ by SN4PR0701MB3808.namprd07.prod.outlook.com (2603:10b6:803:46::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Wed, 9 Dec
+ 2020 07:58:20 +0000
+Received: from DM6NAM12FT043.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:332:cafe::29) by DM6PR02CA0145.outlook.office365.com
+ (2603:10b6:5:332::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend
+ Transport; Wed, 9 Dec 2020 07:58:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
+ smtp.mailfrom=cadence.com; bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ DM6NAM12FT043.mail.protection.outlook.com (10.13.179.162) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.10 via Frontend Transport; Wed, 9 Dec 2020 07:58:20 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 0B97wFQ8002826
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Tue, 8 Dec 2020 23:58:19 -0800
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3; Wed, 9 Dec 2020 08:58:15 +0100
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Wed, 9 Dec 2020 08:58:14 +0100
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 0B97wEhr024497;
+        Wed, 9 Dec 2020 08:58:14 +0100
+Received: (from jpawar@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 0B97wEt7024496;
+        Wed, 9 Dec 2020 08:58:14 +0100
+From:   Jayshri Pawar <jpawar@cadence.com>
+To:     <linux-spi@vger.kernel.org>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <dkangude@cadence.com>,
+        <mparab@cadence.com>, <sjakhade@cadence.com>, <jpawar@cadence.com>
+Subject: [PATCH 0/2] Driver for Cadence xSPI flash controller
+Date:   Wed, 9 Dec 2020 08:57:56 +0100
+Message-ID: <1607500678-23862-1-git-send-email-jpawar@cadence.com>
+X-Mailer: git-send-email 2.4.5
 MIME-Version: 1.0
-References: <20201204212847.13256-1-brijesh.singh@amd.com>
-In-Reply-To: <20201204212847.13256-1-brijesh.singh@amd.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 9 Dec 2020 08:51:21 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com>
-Message-ID: <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com>
-Subject: Re: [PATCH] KVM/SVM: add support for SEV attestation command
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e5f60e01-5101-4dfb-7792-08d89c1831f6
+X-MS-TrafficTypeDiagnostic: SN4PR0701MB3808:
+X-Microsoft-Antispam-PRVS: <SN4PR0701MB3808804A43FE56C812D95CD8C1CC0@SN4PR0701MB3808.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ppqlCTgOthnl6Fg4ObCizRJjtAuBSR6KoGPTyWC1/LMdlt9WbuMiBfom0Z1e5BgckC0PB3dVtQDT3BYLwRHC+lPyrd7NZxWcxR339YSN2Q7jN94PGJYoJvgsqrhcNxdL7q+1WJ77GsxBEderglzvsHYVh/d6AQcCO0/m+iuwTjCKely0f4KBPvw5lp4nqToSaVokQOXgHibmdRAG18z0QFpjkwtAEIeq2mXLjR5auUPNNz0jutRgJADY2OigthXaqnvM5patrjTG4Y41pEalF9gbHFySvcEvEnzMLxEwwSX5I29gZC5CIX7eKFe27TpybPEc0OGEOrYjMMQ34gOLrPrPU/SdD9cZF1jU4MdXt8TgRHrY0ygJh+R4NakWLK755gyhBRAVe93nWd7ejFpgoU73gBYLmhQm9eefAKoktQoIJF3rXOuBFVdqm6DjoJiI+bUyWkuxX5yRB74YK5XDyQ==
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(36092001)(46966005)(70206006)(86362001)(8676002)(508600001)(36906005)(70586007)(2906002)(54906003)(2616005)(36756003)(107886003)(34020700004)(82310400003)(26005)(4326008)(8936002)(6666004)(47076004)(7636003)(356005)(5660300002)(186003)(426003)(6916009)(336012)(42186006);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 07:58:20.3369
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5f60e01-5101-4dfb-7792-08d89c1831f6
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT043.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0701MB3808
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
+ clxscore=1015 phishscore=0 mlxlogscore=819 priorityscore=1501
+ suspectscore=1 impostorscore=0 malwarescore=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012090056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 at 22:30, Brijesh Singh <brijesh.singh@amd.com> wrote:
->
-> The SEV FW version >= 0.23 added a new command that can be used to query
-> the attestation report containing the SHA-256 digest of the guest memory
-> encrypted through the KVM_SEV_LAUNCH_UPDATE_{DATA, VMSA} commands and
-> sign the report with the Platform Endorsement Key (PEK).
->
-> See the SEV FW API spec section 6.8 for more details.
->
-> Note there already exist a command (KVM_SEV_LAUNCH_MEASURE) that can be
-> used to get the SHA-256 digest. The main difference between the
-> KVM_SEV_LAUNCH_MEASURE and KVM_SEV_ATTESTATION_REPORT is that the later
+Command processing
+Driver uses STIG work mode to communicate with flash memories.
+In this mode, controller sends low-level instructions to memory.
+Each instruction is 128-bit width. There is special instruction
+DataSequence which carries information about data phase.
+Driver uses Slave DMA interface to transfer data as only this
+interface can be used in STIG work mode.
 
-latter
+PHY initialization
+The initialization of PHY module in Cadence XSPI controller
+is done by driving external pin-strap signals to controller.
+Next, driver runs PHY training to find optimal value of
+read_dqs_delay parameter. Controller checks device discovery
+status and if it's completed and with no error PHY training
+passes.
 
-> can be called while the guest is running and the measurement value is
-> signed with PEK.
->
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: John Allen <john.allen@amd.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: linux-crypto@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> ---
->  .../virt/kvm/amd-memory-encryption.rst        | 21 ++++++
->  arch/x86/kvm/svm/sev.c                        | 71 +++++++++++++++++++
->  drivers/crypto/ccp/sev-dev.c                  |  1 +
->  include/linux/psp-sev.h                       | 17 +++++
->  include/uapi/linux/kvm.h                      |  8 +++
->  5 files changed, 118 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-> index 09a8f2a34e39..4c6685d0fddd 100644
-> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-> @@ -263,6 +263,27 @@ Returns: 0 on success, -negative on error
->                  __u32 trans_len;
->          };
->
-> +10. KVM_SEV_GET_ATTESATION_REPORT
+Jayshri Pawar (2):
+  Add support for Cadence XSPI controller
+  Add dt-bindings documentation for Cadence XSPI controller
 
-KVM_SEV_GET_ATTESTATION_REPORT
+ .../devicetree/bindings/spi/cdns,xspi.yaml         | 164 ++++
+ drivers/spi/Kconfig                                |  11 +
+ drivers/spi/Makefile                               |   1 +
+ drivers/spi/spi-cadence-xspi.c                     | 894 +++++++++++++++++++++
+ 4 files changed, 1070 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+ create mode 100644 drivers/spi/spi-cadence-xspi.c
 
-> +---------------------------------
-> +
-> +The KVM_SEV_GET_ATTESATION_REPORT command can be used by the hypervisor to query the attestation
+-- 
+2.7.4
 
-KVM_SEV_GET_ATTESTATION_REPORT
-
-> +report containing the SHA-256 digest of the guest memory and VMSA passed through the KVM_SEV_LAUNCH
-> +commands and signed with the PEK. The digest returned by the command should match the digest
-> +used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
-> +
-> +Parameters (in): struct kvm_sev_attestation
-> +
-> +Returns: 0 on success, -negative on error
-> +
-> +::
-> +
-> +        struct kvm_sev_attestation_report {
-> +                __u8 mnonce[16];        /* A random mnonce that will be placed in the report */
-> +
-> +                __u64 uaddr;            /* userspace address where the report should be copied */
-> +                __u32 len;
-> +        };
-> +
->  References
->  ==========
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 566f4d18185b..c4d3ee6be362 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -927,6 +927,74 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
->         return ret;
->  }
->
-> +static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +       void __user *report = (void __user *)(uintptr_t)argp->data;
-> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +       struct sev_data_attestation_report *data;
-> +       struct kvm_sev_attestation_report params;
-> +       void __user *p;
-> +       void *blob = NULL;
-> +       int ret;
-> +
-> +       if (!sev_guest(kvm))
-> +               return -ENOTTY;
-> +
-> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
-> +               return -EFAULT;
-> +
-> +       data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
-> +       if (!data)
-> +               return -ENOMEM;
-> +
-> +       /* User wants to query the blob length */
-> +       if (!params.len)
-> +               goto cmd;
-> +
-> +       p = (void __user *)(uintptr_t)params.uaddr;
-> +       if (p) {
-> +               if (params.len > SEV_FW_BLOB_MAX_SIZE) {
-> +                       ret = -EINVAL;
-> +                       goto e_free;
-> +               }
-> +
-> +               ret = -ENOMEM;
-> +               blob = kmalloc(params.len, GFP_KERNEL);
-> +               if (!blob)
-> +                       goto e_free;
-> +
-> +               data->address = __psp_pa(blob);
-> +               data->len = params.len;
-> +               memcpy(data->mnonce, params.mnonce, sizeof(params.mnonce));
-> +       }
-> +cmd:
-> +       data->handle = sev->handle;
-> +       ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, data, &argp->error);
-> +       /*
-> +        * If we query the session length, FW responded with expected data.
-> +        */
-> +       if (!params.len)
-> +               goto done;
-> +
-> +       if (ret)
-> +               goto e_free_blob;
-> +
-> +       if (blob) {
-> +               if (copy_to_user(p, blob, params.len))
-> +                       ret = -EFAULT;
-> +       }
-> +
-> +done:
-> +       params.len = data->len;
-> +       if (copy_to_user(report, &params, sizeof(params)))
-> +               ret = -EFAULT;
-> +e_free_blob:
-> +       kfree(blob);
-> +e_free:
-> +       kfree(data);
-> +       return ret;
-> +}
-> +
->  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->  {
->         struct kvm_sev_cmd sev_cmd;
-> @@ -971,6 +1039,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->         case KVM_SEV_LAUNCH_SECRET:
->                 r = sev_launch_secret(kvm, &sev_cmd);
->                 break;
-> +       case KVM_SEV_GET_ATTESTATION_REPORT:
-> +               r = sev_get_attestation_report(kvm, &sev_cmd);
-> +               break;
->         default:
->                 r = -EINVAL;
->                 goto out;
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index 476113e12489..cb9b4c4e371e 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -128,6 +128,7 @@ static int sev_cmd_buffer_len(int cmd)
->         case SEV_CMD_LAUNCH_UPDATE_SECRET:      return sizeof(struct sev_data_launch_secret);
->         case SEV_CMD_DOWNLOAD_FIRMWARE:         return sizeof(struct sev_data_download_firmware);
->         case SEV_CMD_GET_ID:                    return sizeof(struct sev_data_get_id);
-> +       case SEV_CMD_ATTESTATION_REPORT:        return sizeof(struct sev_data_attestation_report);
->         default:                                return 0;
->         }
->
-> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> index 49d155cd2dfe..b801ead1e2bb 100644
-> --- a/include/linux/psp-sev.h
-> +++ b/include/linux/psp-sev.h
-> @@ -66,6 +66,7 @@ enum sev_cmd {
->         SEV_CMD_LAUNCH_MEASURE          = 0x033,
->         SEV_CMD_LAUNCH_UPDATE_SECRET    = 0x034,
->         SEV_CMD_LAUNCH_FINISH           = 0x035,
-> +       SEV_CMD_ATTESTATION_REPORT      = 0x036,
->
->         /* Guest migration commands (outgoing) */
->         SEV_CMD_SEND_START              = 0x040,
-> @@ -483,6 +484,22 @@ struct sev_data_dbg {
->         u32 len;                                /* In */
->  } __packed;
->
-> +/**
-> + * struct sev_data_attestation_report - SEV_ATTESTATION_REPORT command parameters
-> + *
-> + * @handle: handle of the VM
-> + * @mnonce: a random nonce that will be included in the report.
-> + * @address: physical address where the report will be copied.
-> + * @len: length of the physical buffer.
-> + */
-> +struct sev_data_attestation_report {
-> +       u32 handle;                             /* In */
-> +       u32 reserved;
-> +       u64 address;                            /* In */
-> +       u8 mnonce[16];                          /* In */
-> +       u32 len;                                /* In/Out */
-> +} __packed;
-> +
->  #ifdef CONFIG_CRYPTO_DEV_SP_PSP
->
->  /**
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index ca41220b40b8..d3385f7f08a2 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1585,6 +1585,8 @@ enum sev_cmd_id {
->         KVM_SEV_DBG_ENCRYPT,
->         /* Guest certificates commands */
->         KVM_SEV_CERT_EXPORT,
-> +       /* Attestation report */
-> +       KVM_SEV_GET_ATTESTATION_REPORT,
->
->         KVM_SEV_NR_MAX,
->  };
-> @@ -1637,6 +1639,12 @@ struct kvm_sev_dbg {
->         __u32 len;
->  };
->
-> +struct kvm_sev_attestation_report {
-> +       __u8 mnonce[16];
-> +       __u64 uaddr;
-> +       __u32 len;
-> +};
-> +
->  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
->  #define KVM_DEV_ASSIGN_PCI_2_3         (1 << 1)
->  #define KVM_DEV_ASSIGN_MASK_INTX       (1 << 2)
-> --
-> 2.17.1
->
