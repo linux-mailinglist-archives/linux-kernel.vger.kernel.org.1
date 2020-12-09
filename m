@@ -2,206 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F792D478C
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3EA2D478E
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732422AbgLIRKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:10:11 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37968 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732362AbgLIRJj (ORCPT
+        id S1732601AbgLIRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:10:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729835AbgLIRKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:09:39 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H2ia2032827;
-        Wed, 9 Dec 2020 12:08:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=p7i09glt1PA34RRWozLvlg3Hs9Pfdi+IanmOpLaKeX8=;
- b=eqW5wFtgQwRnQ4FrgzVvNLhH++6zJAA8ld49g9kd4oCdkzzETv6f9AX/yKmWz2By6txJ
- cdfILaNQb6ZMRWf7gW2fywRo37QvaOfSibvMpEqG+pdwvMNgBIvpZiMzsLB+KxzLQpgm
- 7cTOEui88AGuYiCsW81b60DfZtEED3wk4W3y8AN7a51RtoMY4N0DEd5XVjBVDZTYoFWM
- 4bLizG8dGnp6yyyD5gfAbGND2pDqor2CQmBnPoHmvGf4cy0Otf4JDN6mHE6usjw/508Q
- bhWiJ9hzNa6vJ/m2eEKTSn/+KuQTI+Zme586bhwjzheYMrt+TM2xX80SPBXA6K1/loNB Uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35avffas81-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 12:08:39 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B9H2pwF033976;
-        Wed, 9 Dec 2020 12:08:38 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35avffas7t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 12:08:38 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B9H31ib026903;
-        Wed, 9 Dec 2020 17:08:37 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04dal.us.ibm.com with ESMTP id 3581u9sd7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Dec 2020 17:08:37 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B9H8bJH56688924
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Dec 2020 17:08:37 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F0F0A124053;
-        Wed,  9 Dec 2020 17:08:36 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44C84124054;
-        Wed,  9 Dec 2020 17:08:36 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.58.223])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Dec 2020 17:08:36 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 8A27D2E35BB; Wed,  9 Dec 2020 22:38:28 +0530 (IST)
-From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Subject: [PATCH v2 5/5] powerpc/cacheinfo: Print correct cache-sibling map/list for L2 cache
-Date:   Wed,  9 Dec 2020 22:38:20 +0530
-Message-Id: <1607533700-5546-6-git-send-email-ego@linux.vnet.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1607533700-5546-1-git-send-email-ego@linux.vnet.ibm.com>
-References: <1607533700-5546-1-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-09_14:2020-12-09,2020-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 suspectscore=0 impostorscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090116
+        Wed, 9 Dec 2020 12:10:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607533747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1qPoOFTvwR3YmRqPpDyUkhdJjDsVNxA196Sib8E6mcE=;
+        b=EkDKBCHEdc12GWXHr/Zo9FSCeHMTcwnFYFjQSy5dUFaSMhyWR8LRipUH+tGVFQutbo7AHL
+        hmwHjkdMGuMZ9kcYKKs/gM+hDdId/13NMBMexeQAJDNATT4lj0WEnBboPWEG7F1Yzw7CTC
+        J2AvRdrANg2TOEtxihiT9FWCIcOZMvI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-AfMT5IbOMk22RxQARQvoxg-1; Wed, 09 Dec 2020 12:09:03 -0500
+X-MC-Unique: AfMT5IbOMk22RxQARQvoxg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89FAB59;
+        Wed,  9 Dec 2020 17:09:02 +0000 (UTC)
+Received: from omen.home (ovpn-112-10.phx2.redhat.com [10.3.112.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E5FB10023AC;
+        Wed,  9 Dec 2020 17:09:02 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 10:09:01 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Colin Xu <Colin.Xu@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
+Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
+ by device:vendor
+Message-ID: <20201209100901.174a73db@omen.home>
+In-Reply-To: <29124528-f02a-008e-fab1-60f6b6e643b7@intel.com>
+References: <20201125021824.27411-1-colin.xu@intel.com>
+        <20201125085312.63510f9f@w520.home>
+        <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
+        <20201127083529.6c4a780c@x1.home>
+        <29124528-f02a-008e-fab1-60f6b6e643b7@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+On Wed, 9 Dec 2020 13:14:00 +0800
+Colin Xu <Colin.Xu@intel.com> wrote:
 
-On POWER platforms where only some groups of threads within a core
-share the L2-cache (indicated by the ibm,thread-groups device-tree
-property), we currently print the incorrect shared_cpu_map/list for
-L2-cache in the sysfs.
+> On 11/27/20 11:35 PM, Alex Williamson wrote:
+> > On Fri, 27 Nov 2020 11:53:39 +0800
+> > Colin Xu <Colin.Xu@intel.com> wrote:
+> >  
+> >> On 11/25/20 11:53 PM, Alex Williamson wrote:  
+> >>> On Wed, 25 Nov 2020 10:18:24 +0800
+> >>> Colin Xu <colin.xu@intel.com> wrote:
+> >>>     
+> >>>> Force specific device listed in params pm_restore_ids to follow
+> >>>> device state save/restore as needs_pm_restore.
+> >>>> Some device has NoSoftRst so will skip current state save/restore enabled
+> >>>> by needs_pm_restore. However once the device experienced power state
+> >>>> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
+> >>>> the guest driver won't get correct devie state although the configure
+> >>>> space doesn't change.  
+> >>> It sounds like you're describing a device that incorrectly exposes
+> >>> NoSoftRst when there is in fact some sort of internal reset that
+> >>> requires reprogramming config space.  What device requires this?  How
+> >>> is a user to know when this option is required?  It seems like this
+> >>> would be better handled via a quirk in PCI core that sets a device flag
+> >>> that the NoSoftRst value is incorrect for the specific affected
+> >>> devices.  Thanks,
+> >>>
+> >>> Alex  
+> >> Thanks for the feedback.
+> >>
+> >> The device found are: Comet Lake PCH Serial IO I2C Controller
+> >> [8086:06e8]
+> >> [8086:06e9]
+> >>
+> >> Yes you're right, there is no straight way for user to know the device.
+> >> The above device I found is during pass through them to VM. Although
+> >> adding such param may help in certain scenario, it still too
+> >> device-specific but not common in most cases.  
+> >
+> > The chipset i2c controller seems like a pretty suspicious device for
+> > Intel to advocate assigning to a VM.  Are you assigning this to satisfy
+> > the isolation issue that we often see where a device like a NIC is
+> > grouped together with platform management devices due to lack of
+> > multifunction ACS?  If that's the case, I would think it would make
+> > more sense to investigate from the perspective of whether there is
+> > actually DMA isolation between those integrated, multifunction devices
+> > and if so, implement ACS quirks to expose that isolation.  Thanks,
+> >
+> > Alex  
+> 
+> Hi Alex,
+> 
+> Sorry for late reply. E-mail incorrectly filtered so didn't see this one 
+> until manual search.
+> 
+> The mentioned two I2C controller are in same iommu group and there is NO 
+> other device in the same group. The I2C controller is integrated in PCH 
+> chipset and there are other devices integrated too, but in different 
+> group. When assigning them to a VM, both are assigned, and function 0 is 
+> set with multifunction=on. If iommu driver group no other device in the 
+> same group, could we assume there is no DMA isolation issue?
 
-This patch reports the correct shared_cpu_map/list on such platforms.
 
-Example:
-On a platform with "ibm,thread-groups" set to
-                 00000001 00000002 00000004 00000000
-                 00000002 00000004 00000006 00000001
-                 00000003 00000005 00000007 00000002
-                 00000002 00000004 00000000 00000002
-                 00000004 00000006 00000001 00000003
-                 00000005 00000007
+Yes, we should always have DMA isolation between IOMMU groups.  My
+concern is that I understand these i2c devices to generally provide
+access to system/chipset management features, therefore by assigning
+them to a VM you're granting that VM not only access to a single
+device, but potentially management features which can affect the host
+system.  This would generally not be advised for security reasons, so
+these configurations are usually only created due to IOMMU grouping
+restrictions.  It seems here that you're intentionally assigning these
+devices to a VM.  Why?  If this is a development exercise to support
+creation of drivers for these devices in a VM, great!  I'm just trying
+to figure out if Intel is endorsing this configuration for some
+generally useful purpose.  Thanks,
 
-This indicates that threads {0,2,4,6} in the core share the L2-cache
-and threads {1,3,5,7} in the core share the L2 cache.
-
-However, without the patch, the shared_cpu_map/list for L2 for CPUs 0,
-1 is reported in the sysfs as follows:
-
-/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_list:0-7
-/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_map:000000,000000ff
-
-/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_list:0-7
-/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_map:000000,000000ff
-
-With the patch, the shared_cpu_map/list for L2 cache for CPUs 0, 1 is
-correctly reported as follows:
-
-/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_list:0,2,4,6
-/sys/devices/system/cpu/cpu0/cache/index2/shared_cpu_map:000000,00000055
-
-/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_list:1,3,5,7
-/sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_map:000000,000000aa
-
-This patch adds #CONFIG_PPC64 checks for these cases to ensure that
-32-bit configs build correctly.
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
----
- arch/powerpc/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
-
-diff --git a/arch/powerpc/kernel/cacheinfo.c b/arch/powerpc/kernel/cacheinfo.c
-index 65ab9fc..cb87b68 100644
---- a/arch/powerpc/kernel/cacheinfo.c
-+++ b/arch/powerpc/kernel/cacheinfo.c
-@@ -641,6 +641,7 @@ static ssize_t level_show(struct kobject *k, struct kobj_attribute *attr, char *
- static struct kobj_attribute cache_level_attr =
- 	__ATTR(level, 0444, level_show, NULL);
+Alex
  
-+#ifdef CONFIG_PPC64
- static unsigned int index_dir_to_cpu(struct cache_index_dir *index)
- {
- 	struct kobject *index_dir_kobj = &index->kobj;
-@@ -650,16 +651,35 @@ static unsigned int index_dir_to_cpu(struct cache_index_dir *index)
- 
- 	return dev->id;
- }
-+#endif
- 
- /*
-  * On big-core systems, each core has two groups of CPUs each of which
-  * has its own L1-cache. The thread-siblings which share l1-cache with
-  * @cpu can be obtained via cpu_smallcore_mask().
-+ *
-+ * On some big-core systems, the L2 cache is shared only between some
-+ * groups of siblings. This is already parsed and encoded in
-+ * cpu_l2_cache_mask().
-+ *
-+ * TODO: cache_lookup_or_instantiate() needs to be made aware of the
-+ *       "ibm,thread-groups" property so that cache->shared_cpu_map
-+ *       reflects the correct siblings on platforms that have this
-+ *       device-tree property. This helper function is only a stop-gap
-+ *       solution so that we report the correct siblings to the
-+ *       userspace via sysfs.
-  */
--static const struct cpumask *get_big_core_shared_cpu_map(int cpu, struct cache *cache)
-+static const struct cpumask *get_shared_cpu_map(struct cache_index_dir *index, struct cache *cache)
- {
--	if (cache->level == 1)
--		return cpu_smallcore_mask(cpu);
-+#ifdef CONFIG_PPC64
-+	if (has_big_cores) {
-+		int cpu = index_dir_to_cpu(index);
-+		if (cache->level == 1)
-+			return cpu_smallcore_mask(cpu);
-+		if (cache->level == 2 && thread_group_shares_l2)
-+			return cpu_l2_cache_mask(cpu);
-+	}
-+#endif
- 
- 	return &cache->shared_cpu_map;
- }
-@@ -670,17 +690,11 @@ static const struct cpumask *get_big_core_shared_cpu_map(int cpu, struct cache *
- 	struct cache_index_dir *index;
- 	struct cache *cache;
- 	const struct cpumask *mask;
--	int cpu;
- 
- 	index = kobj_to_cache_index_dir(k);
- 	cache = index->cache;
- 
--	if (has_big_cores) {
--		cpu = index_dir_to_cpu(index);
--		mask = get_big_core_shared_cpu_map(cpu, cache);
--	} else {
--		mask  = &cache->shared_cpu_map;
--	}
-+	mask = get_shared_cpu_map(index, cache);
- 
- 	return cpumap_print_to_pagebuf(list, buf, mask);
- }
--- 
-1.9.4
+> >>>> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
+> >>>> Signed-off-by: Colin Xu <colin.xu@intel.com>
+> >>>> ---
+> >>>>    drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
+> >>>>    1 file changed, 65 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> >>>> index e6190173482c..50a4141c9e1d 100644
+> >>>> --- a/drivers/vfio/pci/vfio_pci.c
+> >>>> +++ b/drivers/vfio/pci/vfio_pci.c
+> >>>> @@ -34,6 +34,15 @@
+> >>>>    #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
+> >>>>    #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
+> >>>>    
+> >>>> +#define VFIO_MAX_PM_DEV 32
+> >>>> +struct vfio_pm_devs {
+> >>>> +	struct {
+> >>>> +		unsigned short  vendor;
+> >>>> +		unsigned short  device;
+> >>>> +	} ids[VFIO_MAX_PM_DEV];
+> >>>> +	u32 count;
+> >>>> +};
+> >>>> +
+> >>>>    static char ids[1024] __initdata;
+> >>>>    module_param_string(ids, ids, sizeof(ids), 0);
+> >>>>    MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
+> >>>> @@ -64,6 +73,10 @@ static bool disable_denylist;
+> >>>>    module_param(disable_denylist, bool, 0444);
+> >>>>    MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
+> >>>>    
+> >>>> +static char pm_restore_ids[1024] __initdata;
+> >>>> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
+> >>>> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
+> >>>> +
+> >>>>    static inline bool vfio_vga_disabled(void)
+> >>>>    {
+> >>>>    #ifdef CONFIG_VFIO_PCI_VGA
+> >>>> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
+> >>>>    	return false;
+> >>>>    }
+> >>>>    
+> >>>> +static struct vfio_pm_devs pm_devs = {0};
+> >>>> +static void __init vfio_pci_fill_pm_ids(void)
+> >>>> +{
+> >>>> +	char *p, *id;
+> >>>> +	int idx = 0;
+> >>>> +
+> >>>> +	/* no ids passed actually */
+> >>>> +	if (pm_restore_ids[0] == '\0')
+> >>>> +		return;
+> >>>> +
+> >>>> +	/* add ids specified in the module parameter */
+> >>>> +	p = pm_restore_ids;
+> >>>> +	while ((id = strsep(&p, ","))) {
+> >>>> +		unsigned int vendor, device = PCI_ANY_ID;
+> >>>> +		int fields;
+> >>>> +
+> >>>> +		if (!strlen(id))
+> >>>> +			continue;
+> >>>> +
+> >>>> +		fields = sscanf(id, "%x:%x", &vendor, &device);
+> >>>> +
+> >>>> +		if (fields != 2) {
+> >>>> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
+> >>>> +			continue;
+> >>>> +		}
+> >>>> +
+> >>>> +		if (idx < VFIO_MAX_PM_DEV) {
+> >>>> +			pm_devs.ids[idx].vendor = vendor;
+> >>>> +			pm_devs.ids[idx].device = device;
+> >>>> +			pm_devs.count++;
+> >>>> +			idx++;
+> >>>> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
+> >>>> +				vendor, device);
+> >>>> +		} else {
+> >>>> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
+> >>>> +				VFIO_MAX_PM_DEV, vendor, device);
+> >>>> +		}
+> >>>> +	}
+> >>>> +}
+> >>>> +
+> >>>>    static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+> >>>>    {
+> >>>>    	struct pci_dev *pdev = vdev->pdev;
+> >>>> -	u16 pmcsr;
+> >>>> +	u16 pmcsr, idx;
+> >>>>    
+> >>>>    	if (!pdev->pm_cap)
+> >>>>    		return;
+> >>>> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
+> >>>>    	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
+> >>>>    
+> >>>>    	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
+> >>>> +
+> >>>> +	for (idx = 0; idx < pm_devs.count; idx++) {
+> >>>> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
+> >>>> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
+> >>>> +			vdev->needs_pm_restore = true;
+> >>>> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
+> >>>> +				vdev->pdev->vendor, vdev->pdev->device);
+> >>>> +			break;
+> >>>> +		}
+> >>>> +	}
+> >>>>    }
+> >>>>    
+> >>>>    /*
+> >>>> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
+> >>>>    		goto out_driver;
+> >>>>    
+> >>>>    	vfio_pci_fill_ids();
+> >>>> +	vfio_pci_fill_pm_ids();
+> >>>>    
+> >>>>    	if (disable_denylist)
+> >>>>    		pr_warn("device denylist disabled.\n");  
+> 
 
