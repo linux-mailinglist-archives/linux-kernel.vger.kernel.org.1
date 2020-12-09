@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF4B2D479E
+	by mail.lfdr.de (Postfix) with ESMTP id 79BC42D479F
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 18:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732617AbgLIRNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 12:13:52 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50848 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732409AbgLIRNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:13:52 -0500
-Received: by mail-io1-f72.google.com with SMTP id l5so1715675ioj.17
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 09:13:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uTT0y5Nz9NOP7sMbpRnqT8y6zo7MZEhRe2Khd85knH4=;
-        b=Ag9wB/87tUGLf066qKYyxZEgBpCc+8IqCirHnmuSVU7Y230WMPh8W+pe2/sQj0GQSK
-         /lXPaA4TEUjkTzU/tPhABVXgsnVXoCViOK4RO/0XPsmHHj8m9twlkO6F49qLLiZxaADM
-         ZfZUXucCwFqqny92JsUq112vTRc9KDO2m0xbYQ6iUkjXFRzORuvPaoMPpOJa2tljJ4QU
-         jd2wi+SB15AXlC9XXWepBFIzRTTA97frSGnmjJABK29zJLlB4g2YcRGxXwKdNoYEhcDE
-         uAaNRwZZWpwG6eqhi9UZyqNUzPhBYtANtJcFyVeyTGNnA39692gW7L0C9kDXOU2kdZ8V
-         1Rkw==
-X-Gm-Message-State: AOAM533QX/jcv9U8lW/W7Hb1nXaGPkNFzIZ+LYPe3z1LsDJAGDFHcTgF
-        x0zs374Y8EJIVmqCsowF1liSku03q9YFVX8ItxbJSPruGzIP
-X-Google-Smtp-Source: ABdhPJxylq4V3p6fnj7Omw7lvfBWkiL4T32Vk2N22Tc0sZ0G8J6rUyk8fYNVjcopXH89x7dwIWASek+rTI/J9Cf5LLUEUsIddlt+
+        id S1732409AbgLIROI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 12:14:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732621AbgLIRN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:13:57 -0500
+Date:   Wed, 9 Dec 2020 09:13:15 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607533996;
+        bh=yx06fepjWrRwJsnGMb//hVPuQcpepHhze51LMVwFV1I=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ixcNaOLzH2DMiDXDGCa4CtxnjvQ8O82WY5+6MFhPSqIJ07648uXKpmh1hsdVQXUQw
+         MyBgcRHnh70t1PzLYoxFcMrwYI5sYIaMtzje1sT8Uxvd4xz2Xd8gQn62aMz7ijVBCl
+         vwp1J6Sz4+03vESaLFOXONZKEdATeNCM3vQYHfZTDO6eZBCI4qmUsCGRIspVKkCQ95
+         MLEym5YWMnQhJri8OC4WQyITjhD7cc00WXkmwsY7JTuwtJjiz1PQheb5Z6tGQv2GHy
+         6bor31wFJ3AEOxM2sETqjC4owE8uNWl8yVa6mokkfXaxJ7m2uOEG3mQ5jvETB9QBsd
+         pXRgPU05fsXsA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Coelho, Luciano" <luciano.coelho@intel.com>
+Cc:     Rui Salvaterra <rsalvaterra@gmail.com>,
+        "Goodstein, Mordechay" <mordechay.goodstein@intel.com>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] iwlwifi: card unusable after firmware crash
+Message-ID: <20201209091315.2c55e1c6@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
+References: <CALjTZvZZZVqnoV4YFTDHogVHv77=dKfcSSBGj1zC83zpUid9+g@mail.gmail.com>
+        <4eb99a1da6342999c4dca355533a0847d0e942a5.camel@intel.com>
+        <CALjTZvYwccfOVTTGNo1=oLnwXG2b9Vz1nVZuvLKFV94+3fQ6EQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:8790:: with SMTP id t16mr4403722jai.80.1607533991526;
- Wed, 09 Dec 2020 09:13:11 -0800 (PST)
-Date:   Wed, 09 Dec 2020 09:13:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008789b505b60b2c3d@google.com>
-Subject: linux-next build error (11)
-From:   syzbot <syzbot+79023dbd85f19ddbe8cc@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 8 Dec 2020 23:17:48 +0000 Rui Salvaterra wrote:
+> Hi, Luca,
+> 
+> On Tue, 8 Dec 2020 at 16:27, Coelho, Luciano <luciano.coelho@intel.com> wrote:
+> > On Tue, 2020-12-08 at 11:27 +0000, Rui Salvaterra wrote:  
+> > >
+> > > [ 3174.003910] iwlwifi 0000:02:00.0: RF_KILL bit toggled to disable radio.
+> > > [ 3174.003913] iwlwifi 0000:02:00.0: reporting RF_KILL (radio disabled)  
+> >
+> > It looks like your machine is reporting RF-Kill to the WiFi device.  
+> 
+> Yes, that's an artifact of how I tested: I rebooted the router, the
+> Wi-Fi interface disassociated and the dmesg was clean. However, after
+> the router came up, the laptop didn't reconnect (and the connection
+> had completely disappeared from nmtui). Afterwards, I did the rfkill
+> cycle you see, and only then I got the register dump.
+> 
+> > There seems to be some sort of race there that is causing us to still
+> > try to communicate with the device (and thus you see the transaction
+> > failed dump), but that will obviously fail when RF-Kill is enabled.  
+> 
+> I'm not sure about that, the card was already dead before the rfkill cycle.
 
-syzbot found the following issue on:
-
-HEAD commit:    2f1d5c77 Add linux-next specific files for 20201209
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13aa845b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fcc0aafc1380dee5
-dashboard link: https://syzkaller.appspot.com/bug?extid=79023dbd85f19ddbe8cc
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79023dbd85f19ddbe8cc@syzkaller.appspotmail.com
-
-failed to run ["make" "-j" "64" "ARCH=x86_64" "CC=/syzkaller/gcc/bin/gcc" "oldconfig"]: exit status 2
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Any luck figuring this out, Luca? If this is a 5.10 regression we need
+to let Linus know tomorrow, so the time is ticking :(
