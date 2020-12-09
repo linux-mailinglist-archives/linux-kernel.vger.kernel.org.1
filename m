@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D9E2D3EB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AB42D3EB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729115AbgLIJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:27:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728673AbgLIJ10 (ORCPT
+        id S1729249AbgLIJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:27:49 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9045 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgLIJ1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:27:26 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E078C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 01:26:46 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id w13so2159321lfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 01:26:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xe2wCqmHwjSift/w8mcBzC9aoqgbz0iOwJ272Obz4Ig=;
-        b=yOOA8yx8Z3df/9E32XvyNZOcUIYJ8EKGMnID8FSHOjfmmeiaGeFmf6AbYd3gGovEBi
-         8BKbmnsjR+CfgUGnc6OejaVNz6ozhjNml44uYmYyueo14SLkkH/7xV7YVnKcadtoX6bq
-         N2kSIcZotfIKXKl3dZWAFTxbafTySP9kABQDNy7WQeVOVF3DcmVxbFinhpXNtjlXe6gL
-         OBI1zX1ckwN/IDTyhu9FyyG/tkQPA+LfnS4s6klAy/C6za7kw8vGpFuNLhaFtrc6rVYC
-         nrDyq2eM2mzFJ+MoXKo2Bbqag8knS7ii4GrXylpOPMY6QslKFFz7a4fWPDG9kQJqVajG
-         xYCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xe2wCqmHwjSift/w8mcBzC9aoqgbz0iOwJ272Obz4Ig=;
-        b=NO3St8GPMVER1pbsPvGHzO5/QcZyI0GaPwA1vF+QXkuCRXoKMp6VKVI7aQhpOdOqhw
-         rIsL7wgw9tP6d+QjN3TzarJKtPEUOWyUpUDGMm229R7bOT546iIJcQA5gQgEu78SP9ev
-         H8otnV8998Llw7gYXdptpAIzXwlHqKnD6m3WARbBgzUc+F8EI79MAHsp8bxg9aSVDmmn
-         jNFHvHnKEbJf7ow/rt6kFxF/nV4qNscnNl73r7f8zM1+J/UPaC2j0q95ue8WpKQ1Rf/I
-         j0QNC95/KvWE07l+7xislt5LEBumRPaUHtPp6fyz1GjXACycRp7hdgBLSdlJEqPKl2lb
-         0B+Q==
-X-Gm-Message-State: AOAM530ErtV/bBxIULC3wDm8iQO1czoPwQXjZ53Hp/1CUtxkDORyvs+7
-        EeYra9wr2aPAEYlbVVr9TRrKT1yAAgXgr1/pykwb+w==
-X-Google-Smtp-Source: ABdhPJwsyBUDj5awP77/Zz+uFvy2DSd7akl3rgT4gaHhFibBb8b5YMsv7eGEHOrENbczoydN2FnYKH65lWm4GrDUzmI=
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr698273lfs.529.1607506004588;
- Wed, 09 Dec 2020 01:26:44 -0800 (PST)
+        Wed, 9 Dec 2020 04:27:48 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CrWrp525Gzhnlx;
+        Wed,  9 Dec 2020 17:26:34 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 17:26:58 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH net-next] net: marvell: octeontx2: simplify the otx2_ptp_adjfine()
+Date:   Wed, 9 Dec 2020 17:27:26 +0800
+Message-ID: <20201209092726.20576-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <X85UKveYKc3xLPVk@manjaro> <CAHp75Vcf-_yrUMOVLtydS+0tV4DE4gudsmqdmLLH1SSiXAK66A@mail.gmail.com>
-In-Reply-To: <CAHp75Vcf-_yrUMOVLtydS+0tV4DE4gudsmqdmLLH1SSiXAK66A@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 9 Dec 2020 10:26:33 +0100
-Message-ID: <CACRpkdaT7-2uFWGqj2JyE1CLHWQhG8kyjObBP=d6XOJ7nbc1Fg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: remove the blank line in pinctrl_register()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Zhaoyu Liu <zackary.liu.pro@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 7:20 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Dec 7, 2020 at 6:13 PM Zhaoyu Liu <zackary.liu.pro@gmail.com> wrote:
-> >
-> > Remove the blank line in pinctrl_register() to keep the code neat.
->
-> Probably you want to apply the same for other drivers at once?
->
->  % git grep -n -B1 -w ^} -- drivers/pinctrl/ | grep -C1 '[0-9]-$' | less
+Simplify the return expression.
 
-I agree with Andy, a patch should be "one technical step" so just sweep
-the entire subsystem if you wanna do this cosmetic.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
+index 7bcf5246350f..56390a664517 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ptp.c
+@@ -12,7 +12,6 @@ static int otx2_ptp_adjfine(struct ptp_clock_info *ptp_info, long scaled_ppm)
+ 	struct otx2_ptp *ptp = container_of(ptp_info, struct otx2_ptp,
+ 					    ptp_info);
+ 	struct ptp_req *req;
+-	int err;
+ 
+ 	if (!ptp->nic)
+ 		return -ENODEV;
+@@ -24,11 +23,7 @@ static int otx2_ptp_adjfine(struct ptp_clock_info *ptp_info, long scaled_ppm)
+ 	req->op = PTP_OP_ADJFINE;
+ 	req->scaled_ppm = scaled_ppm;
+ 
+-	err = otx2_sync_mbox_msg(&ptp->nic->mbox);
+-	if (err)
+-		return err;
+-
+-	return 0;
++	return otx2_sync_mbox_msg(&ptp->nic->mbox);
+ }
+ 
+ static u64 ptp_cc_read(const struct cyclecounter *cc)
+-- 
+2.22.0
+
