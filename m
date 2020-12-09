@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141102D4A64
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B081A2D4A5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 20:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387686AbgLITfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 14:35:19 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:11681 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbgLITfG (ORCPT
+        id S2387713AbgLITel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 14:34:41 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45685 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387707AbgLITeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 14:35:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607542325;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:From:
-        Subject:Sender;
-        bh=hBXvPQ4Ec+qpGD7kc0N2xFQQUJzkElcDdJ7p/ycRvDg=;
-        b=hXQjTlcxzo4FxmpPSjAM9TKA/AwUslSPWvK/0ANsjM9p5IqQO1rzm78e5YeQHjnXTy
-        4edy2pA7FotILrfuInBIDwYA4CYc3wlbufjEavnzEqecPNfU3Lmz2a+PspGJiGegXcRT
-        kOrEpjarHbNP8H0dTi9GKC3HyPnrcGBDRcIpL9do93M0JKgB6Irr8jeK4YqFw3LBatBD
-        ZhN1G2TiL6+x6VDjsE/LUqfhK4KZEi2bstbm5UUQqYXoye2xxtPHmdCe0/hi2ZjV5s3E
-        uDvEbZtb6WkHjrfI6ATz5OmxRCytoZa1uGgczLtA1tFa8TyQimQgKHech9eAFXwLU0lV
-        heAQ==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlafXAoNHQ=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.6.2 DYNA|AUTH)
-        with ESMTPSA id 908871wB9JVt8I5
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 9 Dec 2020 20:31:55 +0100 (CET)
-Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and gpio descriptors
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+        Wed, 9 Dec 2020 14:34:20 -0500
+Received: by mail-ot1-f68.google.com with SMTP id h18so2517649otq.12;
+        Wed, 09 Dec 2020 11:34:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Go79iHwz/ukwW6WA2j3dZqrE6DFHOcENDsFdA4ipHc=;
+        b=VgK2uSw4/2WBmtwDlG37MoLUO1VOo0HHDbMVfMBK61a5vpKnE53Wc+tMYCxrivXDfO
+         11Kmb3v4Y6OngcJO2b+11fboQ4HRcU+r1biwUEyRoQKSM2+NS1qLcNeOBvPsAWQhIxna
+         SwYXC58aVXNeZgTcauuObvW5oOelzO0x82d1kjAgqQ3pBqWx3PeuGGnLe+KxBXoXJg6j
+         EHSRwOGoG/YfCXUOsnGdKp6S60CrpAgEtBBJNLAfywGaT0sesksTu6uGE9GmPbr4DsHw
+         IpWaHC0z1gc8Wc2XM+uti8nve7n0WVG8shs/ZazICs9/vrjRC8cYv4zuOAlJijJZq0tM
+         Qnhw==
+X-Gm-Message-State: AOAM531ChLHlVoX/5JRL++sz32OmR6Yvgh0KedmWS12DrX0HaSreprFX
+        Y63cFBmd5OJYXQ0+W3cVcA==
+X-Google-Smtp-Source: ABdhPJw/pugBB4LC8J+MPZqY+axEkmCHb7x1Htf826oVqZJ22F6F72bnt41Nbiq9ZNkxo82HvsMbqw==
+X-Received: by 2002:a9d:4e84:: with SMTP id v4mr3196487otk.45.1607542418969;
+        Wed, 09 Dec 2020 11:33:38 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n3sm572339otj.46.2020.12.09.11.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 11:33:38 -0800 (PST)
+Received: (nullmailer pid 808345 invoked by uid 1000);
+        Wed, 09 Dec 2020 19:33:36 -0000
+Date:   Wed, 9 Dec 2020 13:33:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] dt-bindings: usb: Add new compatible string for AM64 SoC
+Message-ID: <20201209193336.GA807821@robh.at.kernel.org>
+References: <20201209165733.8204-1-a-govindraju@ti.com>
+ <20201209165733.8204-2-a-govindraju@ti.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAGngYiVL9M72hFRWnmT_8RRX9pUTSLsNuYz6mUo0Be4Vivk7Xw@mail.gmail.com>
-Date:   Wed, 9 Dec 2020 20:31:55 +0100
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Maxime Ripard <maxime@cerno.tech>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FCF3FDA7-7385-423F-9B30-836CBB446BF8@goldelico.com>
-References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com> <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com> <3FA1D050-3BD5-4A97-9D83-520CCF75D147@goldelico.com> <CAGngYiVL9M72hFRWnmT_8RRX9pUTSLsNuYz6mUo0Be4Vivk7Xw@mail.gmail.com>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-X-Mailer: Apple Mail (2.3124)
+Content-Disposition: inline
+In-Reply-To: <20201209165733.8204-2-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 09 Dec 2020 22:27:32 +0530, Aswath Govindraju wrote:
+> Add compatible string in j721e-usb binding file as similar USB subsystem
+> is present in AM64.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> Acked-by: Roger Quadros <rogerq@ti.com>
+> ---
+>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
 
-> Am 09.12.2020 um 20:04 schrieb Sven Van Asbroeck =
-<thesven73@gmail.com>:
->=20
-> On Wed, Dec 9, 2020 at 1:16 PM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>=20
->> This is also what made me wonder if that is really intended because =
-then
->> the whole discussion about the cs-gpio-flags and inversion and the =
-fixes
->> would not have been needed. The current code and fixes are all about
->> not ignoring the flags...
->=20
-> The inversion you witnessed was a bug caused by spi client drivers =
-that
 
-The inversion we witnessed came from:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-commit 6953c57ab172 "gpio: of: Handle SPI chipselect legacy bindings"
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml:16:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
-There, I read a verbal description of the table I want to formalize
-with this patch, because natural language is not as precise as the =
-language
-of logic.
+dtschema/dtc warnings/errors:
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 850, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning for the next token
+found character that cannot start any token
+  in "<unicode string>", line 16, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dts] Error 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dts'
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
+make: *** [Makefile:1364: dt_binding_check] Error 2
 
-This has nothing to do with driver code, which remained and remains =
-unchanged
-for long time.
 
->=20
->> Secondly, please imagine some reader of a device tree who finds
->>=20
->>       cs-gpios =3D <&gpio 7 ACTIVE_LOW>;
->>       spi-cs-high;
->=20
-> That reader looks at the rules, sees that:
-> - the ACTIVE_LOW is ignored,
-> - presence of spi-cs-high means active-high
-> and concludes this chip-select is active-high.
+See https://patchwork.ozlabs.org/patch/1413512
 
-This misses information what the reader should do to resolve the
-obviously missing beauty of the DT.
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
 
-a) remove spi-cs-high;
-b) change to ACTIVE_HIGH
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Both appear valid in first place. But one is preferred. This is
-again nowhere documented if you simplify the table.
+pip3 install dtschema --upgrade
 
+Please check and re-submit.
 
