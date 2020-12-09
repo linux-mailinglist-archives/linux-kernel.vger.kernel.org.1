@@ -2,151 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915962D44CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1492D44C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 15:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733136AbgLIOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 09:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733128AbgLIOuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:50:12 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2AAC061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 06:49:32 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id v8so1016913vso.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 06:49:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hShlS2uVS2d9bHdBgdptUW1uO7X52rcjvewYBmPnugc=;
-        b=mRoruZHNfu19Yb+tSUpKXXL5gKUvr9Kcaq62eYiEWOyget+j6YP8E8xTfViXpHGqUo
-         Hb51DKMPYauiMKeieF+0DZX4+XxROvI1IDZAdNg3XGYP03nBrjcDfdVRwQ8JljxTDgdG
-         TIUMRHcl//AV+RIzSlnEwOSbhB6zm5e8JpbV7pSbIkaDKjJ+pvhNWtsocdhmpD2twtns
-         b9zvfsqUMaBromdknPzrVWcGyQmUVoVkew3lUp4uJHlGTrSKp1oDElGK7HrJywOshYM/
-         nkgpow3D4/H69GyOF6PKuCH6wYg2/0kZ7eci6XoE2lVi6YbetkegR+xlpQAGGiHCVQdH
-         BlCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hShlS2uVS2d9bHdBgdptUW1uO7X52rcjvewYBmPnugc=;
-        b=I+QKtgIEkfqaVMjrKDbk9rKgGUZd93Obb9bgSO4WH9ydGsYNbmHaYRuhLgszTFEGCK
-         i29FLe8ops45zB0OBx81YB8L5rzDUEPYLjpLyaq6JvDZYBHM8XC6Epp82v91rr6E7lpF
-         ERivfyxBn53hEfAh9x6DxBW0KUekS5bz68LbFJQVurPspLdK51C9mNC1RzO2SxMIjEyI
-         EzQ4girJWkfL3j0qf6pzEAHb7Tn+PMdhAQgPysSHbz3Aujh46ZU3GRRyvuIFtpOMaP7T
-         e5MaWaRIuGY6QzV501n1s6lmvhRknKN3TMJ3UHOtKINnZledM/ypQ5tyWZxXmPlgHVfh
-         OnoA==
-X-Gm-Message-State: AOAM532YRStv8axVLljU0kTxsIoEVpQt66UE6aU/dKpMdYpKdyULLhed
-        dkRcok+PwwLDhxxN66IIxRIlGmqDdPchXw==
-X-Google-Smtp-Source: ABdhPJyohaOZpwarnp9fA348RcE+wtO0vnyi21/oVQe5C2gYj+ZcfepxySE6CfdIvYPLoPwSewuNRQ==
-X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr2144572vsg.48.1607525371567;
-        Wed, 09 Dec 2020 06:49:31 -0800 (PST)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id z10sm182980vsf.26.2020.12.09.06.49.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 06:49:30 -0800 (PST)
-Received: by mail-ua1-f41.google.com with SMTP id t15so567696ual.6
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 06:49:30 -0800 (PST)
-X-Received: by 2002:a9f:2356:: with SMTP id 80mr1862380uae.92.1607525369794;
- Wed, 09 Dec 2020 06:49:29 -0800 (PST)
+        id S1733126AbgLIOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 09:50:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733117AbgLIOuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 09:50:09 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5954233EA;
+        Wed,  9 Dec 2020 14:49:20 +0000 (UTC)
+Date:   Wed, 9 Dec 2020 09:49:19 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] ftrace/selftests: Add binary test to verify ring
+ buffer timestamps
+Message-ID: <20201209094919.31724179@gandalf.local.home>
+In-Reply-To: <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
+References: <20201201160656.7cc6a5e8@gandalf.local.home>
+        <20201208211411.e41849908381eb493adce0f5@kernel.org>
+        <20201208100024.42bbcd23@gandalf.local.home>
+        <20201209083954.5f7321a7551013aa95c0a459@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201209143707.13503-1-erez.geva.ext@siemens.com> <20201209143707.13503-2-erez.geva.ext@siemens.com>
-In-Reply-To: <20201209143707.13503-2-erez.geva.ext@siemens.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 9 Dec 2020 09:48:53 -0500
-X-Gmail-Original-Message-ID: <CA+FuTScWkYn0Ur+aSuz1cREbQJO0fB6powOm8PFxze4v8JwBaw@mail.gmail.com>
-Message-ID: <CA+FuTScWkYn0Ur+aSuz1cREbQJO0fB6powOm8PFxze4v8JwBaw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] Add TX sending hardware timestamp.
-To:     Erez Geva <erez.geva.ext@siemens.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Jon Rosen <jrosen@cisco.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mao Wenan <maowenan@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Or Cohen <orcohen@paloaltonetworks.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Xie He <xie.he.0141@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Ines Molzahn <ines.molzahn@siemens.com>,
-        Simon Sudler <simon.sudler@siemens.com>,
-        Andreas Meisinger <andreas.meisinger@siemens.com>,
-        Andreas Bucher <andreas.bucher@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andreas Zirkler <andreas.zirkler@siemens.com>,
-        Ermin Sakic <ermin.sakic@siemens.com>,
-        An Ninh Nguyen <anninh.nguyen@siemens.com>,
-        Michael Saenger <michael.saenger@siemens.com>,
-        Bernd Maehringer <bernd.maehringer@siemens.com>,
-        Gisela Greinert <gisela.greinert@siemens.com>,
-        Erez Geva <ErezGeva2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 9:37 AM Erez Geva <erez.geva.ext@siemens.com> wrote:
->
-> Configure and send TX sending hardware timestamp from
->  user space application to the socket layer,
->  to provide to the TC ETC Qdisc, and pass it to
->  the interface network driver.
->
->  - New flag for the SO_TXTIME socket option.
->  - New access auxiliary data header to pass the
->    TX sending hardware timestamp.
->  - Add the hardware timestamp to the socket cookie.
->  - Copy the TX sending hardware timestamp to the socket cookie.
->
-> Signed-off-by: Erez Geva <erez.geva.ext@siemens.com>
+On Wed, 9 Dec 2020 08:39:54 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Hardware offload of pacing is definitely useful.
+> > OK. I'll look at how to make this for both cases (embedded and not).
+> > Because, my current case is to copy the selftests to the machine and run
+> > them there. So my use case requires the build to happen at test time. But I
+> > can make it where it wont build if the binary already exists.  
+> 
+> For that case, what about just "make clean" before copy, then the binary
+> will be removed? 
 
-I don't think this needs a new separate h/w variant of SO_TXTIME.
+I just meant that the binary build should not depend on anything outside
+the directory. It should be able to be built if you just copy the
+ftracetest directory and run there.
 
-Indeed, we want pacing offload to work for existing applications.
+> 
+> >   
+> > > (currently I returns UNRESOLVED when the test target kmodule is not found)  
+> > 
+> > I used UNTESTED for a couple of reasons. I figured "UNRESOLVED" was for
+> > lack of kernel features or modules. But this is not a lack of the kernel,
+> > but a lack of user space. If something in user space is lacking (a tool,
+> > library, or binary), then I thought UNTESTED would be a better option. But
+> > if you have a strong opinion on it, I'll change it to UNRESOLVED, otherwise
+> > I'll keep UNTESTED.  
+> 
+> The idea of UNTESTED/UNRESOLVED (and UNSUPPORTED) came from POSIX standard,
+> it is expained in dejagnu's manual:
+> 
+> https://www.gnu.org/software/dejagnu/manual/A-POSIX-Conforming-Test-Framework.html
+> 
+> In this case, user can build the user space binary for the environment but
+> does't, so I think UNRESOLVED will fit to that case.
+> 
+> So strictly speaking, UNTESTED is just a placeholder which will be implemented
+> in the future. (hmm, it will be a good chance to write a document for it)
 
-It only requires that pacing qdiscs, both sch_etf and sch_fq,
-optionally skip queuing in their .enqueue callback and instead allow
-the skb to pass to the device driver as is, with skb->tstamp set. Only
-to devices that advertise support for h/w pacing offload.
+OK, I'll change it to UNRESOLVED. One reason I used UNTESTED, is that the
+build wont happen until libtracefs is packaged and released (or you
+download and build it yourself). And it's just getting ready now. So in
+essence, this is currently just a "placeholder" ;-)
+
+-- Steve
