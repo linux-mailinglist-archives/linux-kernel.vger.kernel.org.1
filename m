@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AE52D40BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72612D40C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 12:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730471AbgLILMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 06:12:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33800 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727806AbgLILMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 06:12:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607512274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=idMlQTYOnMdWg066O+TrOvZ3wrc3r/NV0fxwJgGhHRA=;
-        b=nQApMpz5aWNn5UDhJeBZH/0d17YWczfYbeEnihhv068beOj3pjv3dC1E6toUr3nOQ5QhfQ
-        oUn+yjRH4t2n4xVjHMsgpwjo5VbqLDFZhHOEazcOQXGnyl4kYVwZD7aiGZXkr7Eh9h1/Dg
-        4xSqnH44iD9wb0ckO/YjvDSa5B5LlTg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 78108B113;
-        Wed,  9 Dec 2020 11:11:14 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 12:11:13 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v4 2/2] printk: remove logbuf_lock writer-protection
- of ringbuffer
-Message-ID: <X9Cw0WK4kweSB1yi@alley>
-References: <20201209004453.17720-1-john.ogness@linutronix.de>
- <20201209004453.17720-3-john.ogness@linutronix.de>
+        id S1730525AbgLILOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 06:14:17 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:38621 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729887AbgLILOR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 06:14:17 -0500
+Received: from [192.168.1.155] ([77.2.91.93]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MLA6m-1kVyjB0KSg-00IGWK; Wed, 09 Dec 2020 12:11:39 +0100
+Subject: Re: [PATCH] drivers: usb: gadget: prefer pr_*() functions over raw
+ printk()
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, balbi@kernel.org, leoyang.li@nxp.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20201208144403.22097-1-info@metux.net>
+ <X8+howyVRiTR9gv/@pendragon.ideasonboard.com>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <9aaa06ad-0bd8-486d-b16b-66927d57cf96@metux.net>
+Date:   Wed, 9 Dec 2020 12:11:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209004453.17720-3-john.ogness@linutronix.de>
+In-Reply-To: <X8+howyVRiTR9gv/@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TS1+oAY6AdC0UtwhrAetL+tFGsmfL2VfyybwOSaT75VKnrTnQRP
+ +IsskL1kzQM9VxvORn/3q+2HI+37v7ZwZzAgdFcCtYyGKF2H12RAOoHm/AnxwZEfQfdTnAG
+ riDnR9h5WKx005G0EBL3tnCOrA3A2kDwZoFjNwOeV9e+JMvdFNOPusk61sFmC0Blv/Vh2PP
+ j1H0hZddMV8nXVQWrrzyw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RM211oNVR54=:1XiRZHVIi19YQnFsm7XyvZ
+ J8yJn8EPVUS+l4KRvyFYjOoysMsMTUUSmR5ly4TkYSj+HKFlWvFnACtU+qrg1mjdUGfg04CLB
+ vXaZgfvNFwFK7lEroaK2e0YkqQEIrWOv6vHQXfQXtwo0VdInG3xO279w3eyt/T4UQZTUciKpK
+ uCkQxlDMxYW8HrGoQqsNUip379n87iTHxVkuDsEnz0Q1x370MzRfUncMlfmDIbF/0jmFrEubV
+ GMzOnzXenmF97iQKeIwVX9b4haZmsVLtVXWoytsoEtuACmBn0J+XbqWOlT4i8lLDszXGmH+h1
+ 75P9mNi7z7FRFtGp38Pb+hkNFskuQrtfJM3KOn4w0fFcvpFLS3x5Eo+D8TqRTR4hmLIeNPuz7
+ t4lz6Lmk/RWJUE4JHACJUKzmb4ZibNft2dnWOOH3V6uhFP6KkIhPurHBQFa/q
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-12-09 01:50:53, John Ogness wrote:
-> Since the ringbuffer is lockless, there is no need for it to be
-> protected by @logbuf_lock. Remove @logbuf_lock writer-protection of
-> the ringbuffer. The reader-protection is not removed because some
-> some variables used by readers are using @logbuf_lock for
-> synchronization: @syslog_seq, @syslog_time, @syslog_partial,
-> @console_seq, struct kmsg_dumper.
-> 
-> For PRINTK_NMI_DIRECT_CONTEXT_MASK, @logbuf_lock usage is not removed
-> because it may be used for dumper synchronization.
-> 
-> Without @logbuf_lock synchronization of vprintk_store() it is no
-> longer possible to use the single static buffer for temporarily
-> sprint'ing the message. Instead, use vsnprintf() to determine the
-> length and perform the real vscnprintf() using the area reserved from
-> the ringbuffer. This leads to suboptimal packing of the message data,
-> but will result in less wasted storage than multiple per-cpu buffers
-> to support lockless temporary sprint'ing.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+On 08.12.20 16:54, Laurent Pinchart wrote:
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Hi,
 
-Best Regards,
-Petr
+>> diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+>> index 2b893bceea45..4834fafb3f70 100644
+>> --- a/drivers/usb/gadget/udc/atmel_usba_udc.c
+>> +++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+>> @@ -1573,7 +1573,7 @@ static void usba_control_irq(struct usba_udc *udc, struct usba_ep *ep)
+>>  		 * generate or receive a reply right away. */
+>>  		usba_ep_writel(ep, CLR_STA, USBA_RX_SETUP);
+>>  
+>> -		/* printk(KERN_DEBUG "setup: %d: %02x.%02x\n",
+>> +		/* pr_debug("setup: %d: %02x.%02x\n",
+>>  			ep->state, crq.crq.bRequestType,
+>>  			crq.crq.bRequest); */
+> 
+> I wonder if this shouldn't be dropped instead, commented-out code isn't
+> very useful.
+
+Indeed. Shall I send a separate patch for that ?
+
+> When a pointer to a struct device is available, dev_err() would be much
+> better. That's however out of scope for this patch, but it would be nice
+> to address it. This would become
+> 
+> 		dev_err(&pdev->dev, "Check IRQ setup!\n");
+> 
+
+You're right. I didn't check for that yet. I'll do it in a separate
+patch.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
