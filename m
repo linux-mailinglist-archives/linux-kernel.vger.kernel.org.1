@@ -2,177 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983F72D38DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ED72D38DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 03:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgLICgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 21:36:43 -0500
-Received: from mail-eopbgr1310077.outbound.protection.outlook.com ([40.107.131.77]:48832
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726352AbgLICgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:36:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fpw2SUStijrOs/aASmqb3N4bH42Fg9F9iWzJP8MKtTbQVzAIybfPHlijNs46CyPgXDA0RXZEMQPGnYWyvp2UuQiGXNK4FNbP+/nPipGCMHNqGXX+AHsXt+Kj1IeEZL2XT+1bLRZZRjenDsBDU6w234th3r6ljIGg1lvYmYIG8oniAhGaknRRdckaHQCt3SayjcA2tbctWneQGFLDy0XpfW3M76Z5thfuIkoaxc1z6Nw7WiZkOS5HN73S8Z6fHKsc1ma9r6f1ExUDghgwqAJx8Ixr2iagHAGVG/V0Iq7Ek52PTKevzQGBBXAWZ/wEtd8j7GgfwQDycYVEj2uCKJzBaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=koacWKx/N90K7oNTyjdtbKSjv4Du0iM/R/koPS01ELg=;
- b=g8L8T9kWOp3ls+/j6Jh+TyFvnlEFKQF2F4yGPfkVADh3wKopRRSpGV9J5JeHWEyOtb4zV9qCpdGYV43phQCzPU2xeT02OJeY/JIWVEPYNXOXGQXKIIS0BUIwEGPRnYW5uc+UsuhVVeacNhILHtb+BBg49bty7z//I9YG/YlBZR5Sr+wRJbGp9P57Uoy/Rnip2BbUnAbEYBV9B58wjX4PK3UGQCOqhWDdtyH60HtC8ecTMB4SWmhI34SSw1962wKtm5U4eJ6bbt7RivZSBiekGAtpT/LY6qhOyKc2z7oRZcH0wfEQDewhUQJVlG9hUYo/2O/t6eZWsL5/UZIeWamr9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=koacWKx/N90K7oNTyjdtbKSjv4Du0iM/R/koPS01ELg=;
- b=SO/32DPohl8j062FCXgPxbj0/q6UYG3Ri6FcH/OX182+7lKcVS21+bd92r40uuFAihH8iWHmTt6KbPoLdccz8N69DnSEvWrsfXlo0DHusPgut4Uk17lo5w9Nf1yMO9Ui2c4NpvoS+wNPvhuXTiq9LWQmzflOuWiFuy1HGwIRAQU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB3276.apcprd02.prod.outlook.com (2603:1096:4:45::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Wed, 9 Dec 2020 02:35:04 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::dcd:13c1:2191:feb7%7]) with mapi id 15.20.3654.012; Wed, 9 Dec 2020
- 02:35:04 +0000
-Subject: Re: [PATCH v3] erofs: avoiding using generic_block_bmap
-To:     linux-erofs@lists.ozlabs.org
-Cc:     guoweichao@oppo.com, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org
-References: <20201208131108.7607-1-huangjianan@oppo.com>
-From:   Huang Jianan <huangjianan@oppo.com>
-Message-ID: <c71fe6a9-06ba-3871-6e0b-104f58df1df7@oppo.com>
-Date:   Wed, 9 Dec 2020 10:34:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-In-Reply-To: <20201208131108.7607-1-huangjianan@oppo.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [58.252.5.72]
-X-ClientProxiedBy: HK0PR01CA0054.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::18) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S1726698AbgLIChw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 21:37:52 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44694 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgLIChw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:37:52 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92Yogx151683;
+        Wed, 9 Dec 2020 02:37:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=r/Lh49/O2EZr6JB2u3epTpgfpKC+u36DuUavw2fVJ5o=;
+ b=tCsmcjxQTQSWWdj1qCU7IxjVvC493QHkXcydTtpZSeVVoFWHI9DBzzmcJevuTyHVMTw/
+ sXKmXKnkGMGvXie54A6bqI0ZkCE7YxvSrY+iu4lJLo+beCtZnxr1rITpxYt0h7fQeDwM
+ z0quhxiAMhs0McYhPc0j5K0Gv37z6ZuuyJtzpXlk1ru43KCOGry9UCYHzrELrh9NFmjB
+ Frwsu3yeWR1t9ImQ/X7hJoYY/bBLxjW7egbp44r/igs+fxMKML01+iAz1cEEzdaFLcFS
+ KvpV7Pmef0ugGtz89FDHcmo0Ouy5iHgfinzYE0yyya4Y69MNcGMJR6SD/qHTagjEosy8 jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 3581mqwvy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Dec 2020 02:37:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92YnR3174630;
+        Wed, 9 Dec 2020 02:37:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 358kspf2ry-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Dec 2020 02:37:00 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B92aukJ022294;
+        Wed, 9 Dec 2020 02:36:57 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 18:36:56 -0800
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, cang@codeaurora.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        Randall Huang <huangrandall@google.com>,
+        Leo Liou <leoliou@google.com>
+Subject: Re: [PATCH v2] scsi: ufs: clear uac for RPMB after ufshcd resets
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1zh2nso1v.fsf@ca-mkp.ca.oracle.com>
+References: <20201201041402.3860525-1-jaegeuk@kernel.org>
+        <X8/1U8+Dd3UJjKA/@google.com>
+Date:   Tue, 08 Dec 2020 21:36:53 -0500
+In-Reply-To: <X8/1U8+Dd3UJjKA/@google.com> (Jaegeuk Kim's message of "Tue, 8
+        Dec 2020 13:51:15 -0800")
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.118.0.32] (58.252.5.72) by HK0PR01CA0054.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 02:35:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f14f2c60-99f1-445e-a10b-08d89beb0901
-X-MS-TrafficTypeDiagnostic: SG2PR02MB3276:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB3276BE0A348EE7B7E81CFC38C3CC0@SG2PR02MB3276.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:619;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1uN3yNn3TiRwTvxf34HRDTk+W1bl+ViNjXflaoN6J2AQfIx0TPIhUu5z6QsJa7j5HKu+HjG9IFtSFvI/H6ER+7AO9LyKaOae7Gg7XGhLE8Y4Phi1+gVVlQmf0QZ1uBPRkCiuVJy68QkS4t6X+rqJTpWE89oU/scXhnemaGx8GcsSzBpQhmtX+LbT+Pp1n52LIoxjEK7Sn0BndjcTg3tr36AoYUC5XvM8AUE+99GUpIAxuJH8Au/Z/5Sv5ubF8Rq95xZ0nXMqfuWdxi6gG6vh3caOOdBPQ2O5G06uwdJuc+HAFyWQg6Fn1WTMfhIBkUUP4fYaVMNpOIHvGfjSlZA1b+4rCAs8fshUuy6QO3u76Yi57bNza2yfrej2i7kTjY0/fRdINb+OBeKXESiqITmv3d+UiljTTpEXKPVTPYyGY45/GxrvJMi92AsErEp48V+kFuvf4TDZv+711JiJruT4kg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(508600001)(6916009)(26005)(36756003)(8936002)(8676002)(52116002)(2906002)(186003)(34490700003)(16526019)(31696002)(4326008)(6666004)(16576012)(66556008)(31686004)(5660300002)(66476007)(6486002)(83380400001)(86362001)(66946007)(956004)(2616005)(11606006)(41533002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?gb2312?B?amd5RzlrRjZaV1BOUk1Nc3ZIb0R5L0RyMmFHR0hQVGtsZGwxUTZ5eW1UanZt?=
- =?gb2312?B?RmdwY0lLSGppWjRaN3c2cWpWcjVDMEdpVThJVnN6Q085ZUJBWExJMVNhS1NK?=
- =?gb2312?B?ZHRqT29mNkNLc1pOR3MyaVhTU0hFaEZqMnFJSWJUT1A0RDQxbEk1K2ZpTXJ6?=
- =?gb2312?B?SEVYRHVpQWtoUjJ6MDlHRjFMRGQzOENYY21VYnA0bWtOemN2Tko4U2FzT3pV?=
- =?gb2312?B?TlFxbU5qSUNtSGVSeXBrQS9tVGZPYnZzUWx0d3V2aG5tU01lN29iQUZPMHBq?=
- =?gb2312?B?SSt6SmxTNVNiREZwR1kyaTE2Mkt6Q2RKUENtQzU4MGJFMnZKM1hBektld3JZ?=
- =?gb2312?B?aEx4bitOQkxFS0p5cmF0YStVM1Bkd2dqNVhIaGNobFJzdDBXWFoycmc2dFZv?=
- =?gb2312?B?WmVCbFVVekdNNFlzQkJ1Z21kQXU5a1VSbzFNN2svNHNGRVdQMlFtR0U5NlF1?=
- =?gb2312?B?MGhYQlY0SDZuWlNSNnNGeFlnWTRBV2Y3RURzRFdWK0RUMDd4c3dTSUNnZjR3?=
- =?gb2312?B?WDBweDNlalhnQnZHelZqTi9mdlNvcjNLMVZHK0JSeTNjOG16UEJhQWcwczAz?=
- =?gb2312?B?WlV0Y2YrY2g5c2FSR2xzYmR5UGNNd2J4eitaSEdoemdYS2N4SmZGQXA2NzNv?=
- =?gb2312?B?ZVI1bmJUL3BmcnRjdVI5cWR3bTBQd2w5NjNoa3JUV245YnBBM05LOS91MGFS?=
- =?gb2312?B?ZnUwTmNYeDYxTUs0VHgzRmdhcER5VGZ0QzU5T0NLUWFuTUIrSXN0bThNSWpV?=
- =?gb2312?B?aFQvN0x0TG80Tm5qc0JJWlFsVmR1VzBDYmFTVmxJWGN2VC90bURkV1JncmNV?=
- =?gb2312?B?WDBZQzFaTDJwMExxREErVE9zVXdWQmQwSmd0TGlLcjV5a2c2VkNyL3VOT0Qz?=
- =?gb2312?B?b3hObDFUUDMwTzk3NHVZU2czRzVBM2txT1YyUTBqM0YrSFF6YUhjTVZiQVZM?=
- =?gb2312?B?UzQ1V2JtNnRIcUl2SGs4ZWlGZE5Pellvbkhob1d4Wjk2SVlpdnMwR2MxWHdn?=
- =?gb2312?B?RUhhNVc5VUZhQ0Q2VitnOStIUEFNUlQ4RllVQVFjRFNmaHowQno2WE81VldB?=
- =?gb2312?B?VkE3cEFwNkxDYzFLUGZQcERBd3AxZng0eGg0dkd0MkdqMWh4NlV6eE9DK0NR?=
- =?gb2312?B?bmxxYmRza0tMN1B0MkJDaHBXQ0NPNFExRHJHWVlHaDRxNG12QTNOWVU1TTNH?=
- =?gb2312?B?dGoxQkxPYW9EN2hscDFXWnZGZmpGNFB0QjFtYXluMk9iaUh6cHZDK2U5RVIv?=
- =?gb2312?B?UWxzUUw1Wk5TcENBOENhdk9NQ0FmckEwa0sxeW1FOHV2cGNjZ2ptZHkyREo2?=
- =?gb2312?Q?ww5rIBuNw6QTs=3D?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 02:35:04.1088
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-Network-Message-Id: f14f2c60-99f1-445e-a10b-08d89beb0901
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0hlhG5yzr7Bh7ssLPbIUzyyZNfvlH3MQtuQbNdD0y/t6EYD1j/Q9BWBdCsQJnmoIzZHTPwbaF7gx4gn9jmhLQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB3276
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=841 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=871
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2020/12/8 21:11, Huang Jianan Ð´µÀ:
-> iblock indicates the number of i_blkbits-sized blocks rather than
-> sectors.
->
-> In addition, considering buffer_head limits mapped size to 32-bits,
-> should avoid using generic_block_bmap.
->
-> Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> ---
->   fs/erofs/data.c | 30 ++++++++++--------------------
->   1 file changed, 10 insertions(+), 20 deletions(-)
->
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index 347be146884c..399ffd857c50 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -312,36 +312,26 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
->   		submit_bio(bio);
->   }
->   
-> -static int erofs_get_block(struct inode *inode, sector_t iblock,
-> -			   struct buffer_head *bh, int create)
-> -{
-> -	struct erofs_map_blocks map = {
-> -		.m_la = iblock << 9,
-> -	};
-> -	int err;
-> -
-> -	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
-> -	if (err)
-> -		return err;
-> -
-> -	if (map.m_flags & EROFS_MAP_MAPPED)
-> -		bh->b_blocknr = erofs_blknr(map.m_pa);
-> -
-> -	return err;
-> -}
-> -
->   static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
->   {
->   	struct inode *inode = mapping->host;
-> +	struct erofs_map_blocks map = {
-> +		.m_la = blknr_to_addr(iblock),
+Jaegeuk,
 
-Sorry for my mistake, it should be:
+> If RPMB is not provisioned, we may see RPMB failure after UFS suspend/resume.
+> Inject request_sense to clear uac in ufshcd reset flow.
 
-.m_la = blknr_to_addr(block),
+Applied to 5.11/scsi-staging, thanks!
 
-> +	};
-> +	sector_t blknr = 0;
->   
->   	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
->   		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
->   
->   		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
-> -			return 0;
-> +			goto out;
->   	}
->   
-> -	return generic_block_bmap(mapping, block, erofs_get_block);
-> +	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-> +		blknr = erofs_blknr(map.m_pa);
-> +
-> +out:
-> +	return blknr;
->   }
->   
->   /* for uncompressed (aligned) files and raw access for other files */
+-- 
+Martin K. Petersen	Oracle Linux Engineering
