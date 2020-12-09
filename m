@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA72D48DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2968A2D4901
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732911AbgLISXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:23:13 -0500
-Received: from mga09.intel.com ([134.134.136.24]:50943 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731010AbgLISXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:23:12 -0500
-IronPort-SDR: 7at3vIrTFF+kRPfauPKVIm/rEZTAy0tYe8LpJp9+xcZ9Jk4bFXrjJWoLj6YmmyGopPaCfmETxI
- tdvv3xvY6Ubg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174269377"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="174269377"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 10:21:24 -0800
-IronPort-SDR: prqyeNZqGcbVk2UUGVs3f5otPajswSnH0Lzw0YM9JS9crpTSNEkwdFmcTa7qxHbqiFUqpJxT1g
- gEkHf1YhfxVg==
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; 
-   d="scan'208";a="408170410"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2020 10:21:22 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kn46a-00DCT9-Kt; Wed, 09 Dec 2020 20:22:24 +0200
-Date:   Wed, 9 Dec 2020 20:22:24 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Auger Eric <eric.auger@redhat.com>, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH v1 2/5] vfio: platform: Switch to use
- platform_get_mem_or_io_resource()
-Message-ID: <20201209182224.GU4077@smile.fi.intel.com>
-References: <20201027175806.20305-1-andriy.shevchenko@linux.intel.com>
- <20201027175806.20305-2-andriy.shevchenko@linux.intel.com>
- <fb0b02a0-d672-0ff8-be80-b95bdbb58e57@redhat.com>
- <20201203130719.GX4077@smile.fi.intel.com>
- <X9Djagfnvsr7V6Ey@kroah.com>
- <20201209164816.GS4077@smile.fi.intel.com>
- <X9EBGV/Tnuk/HzOH@kroah.com>
+        id S1733066AbgLIS2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:28:16 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9415 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733049AbgLIS17 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:27:59 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Crlr04j05z7By3;
+        Thu, 10 Dec 2020 02:26:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 02:27:03 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <robin.murphy@arm.com>,
+        <thunder.leizhen@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v4 0/3] iommu/iova: Solve longterm IOVA issue
+Date:   Thu, 10 Dec 2020 02:23:06 +0800
+Message-ID: <1607538189-237944-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X9EBGV/Tnuk/HzOH@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 05:53:45PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Dec 09, 2020 at 06:48:16PM +0200, Andy Shevchenko wrote:
-> > On Wed, Dec 09, 2020 at 03:47:06PM +0100, Greg Kroah-Hartman wrote:
-> > > On Thu, Dec 03, 2020 at 03:07:19PM +0200, Andy Shevchenko wrote:
-> > > > On Thu, Dec 03, 2020 at 01:54:38PM +0100, Auger Eric wrote:
+This series contains a patch to solve the longterm IOVA issue which
+leizhen originally tried to address at [0].
 
-...
+A sieved kernel log is at the following, showing periodic dumps of IOVA
+sizes, per CPU and per depot bin, per IOVA size granule:
+https://raw.githubusercontent.com/hisilicon/kernel-dev/topic-iommu-5.10-iova-debug-v3/aging_test
 
-> > > > Greg, do I need to do anything else with this series?
+Notice, for example, the following logs:
+[13175.355584] print_iova1 cpu_total=40135 depot_total=3866 total=44001
+[83483.457858] print_iova1 cpu_total=62532 depot_total=24476 total=87008
 
-> > > Have them taken by the vfio maintainers?  I'm not that person :)
+Where total IOVA rcache size has grown from 44K->87K over a long time.
 
-> > But it can't be done with a first patch that provides a new API.
-> > The rest seems under your realm, if I didn't miss anything.
-> > Btw, VFIO agreed on the change (as per given tags).
+Along with this patch, I included the following:
+- A smaller helper to clear all IOVAs for a domain
+- Change polarity of the IOVA magazine helpers
 
-> Ok, can you resend all of these, with the vfio tags added, so I know to
-> take them all?
+Differences to v3:
+- Drop Cong's patch, already accepted
+- Add tags
+- Rebased
 
-Sure. Will do soon.
+Differnces to v2:
+- Update commit message for patch 3/4
+
+Differences to v1:
+- Add IOVA clearing helper
+- Add patch to change polarity of mag helpers
+- Avoid logically-redundant extra variable in __iova_rcache_insert()
+
+[0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+[1] https://lore.kernel.org/linux-iommu/4b74d40a-22d1-af53-fcb6-5d70183705a8@huawei.com/
+
+John Garry (3):
+  iommu/iova: Add free_all_cpu_cached_iovas()
+  iommu/iova: Avoid double-negatives in magazine helpers
+  iommu/iova: Flush CPU rcache for when a depot fills
+
+ drivers/iommu/iova.c | 58 ++++++++++++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.26.2
 
