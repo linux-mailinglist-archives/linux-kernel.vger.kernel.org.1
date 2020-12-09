@@ -2,165 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07462D3D67
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EB32D3D68
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgLIIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:30:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43750 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725765AbgLIIaM (ORCPT
+        id S1727121AbgLIIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:30:53 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:32139 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbgLIIax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:30:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607502520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TY8/pWIgcIz+C6jRI22Ls6KSQPYFbL8dVJN418r6j6I=;
-        b=MjpHsnYT85AizTEtTNlMCKnXGEbd3guX0uKx8J2b55ngGIThD5sp33pTAbtzkXzTrz9nNM
-        gxJusA9LtWAX+QLbSM7PzXiCq6tWrl6Rqm57skVawSs4D1oG8zZbkVJt0wds1/DK7mCZfN
-        ytvdDyxXtWAQ1nrPidLx+QAeXlORtRA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-TJ2t0tl3MpOZSRFZYSPcLA-1; Wed, 09 Dec 2020 03:28:38 -0500
-X-MC-Unique: TJ2t0tl3MpOZSRFZYSPcLA-1
-Received: by mail-wr1-f70.google.com with SMTP id v5so374011wrr.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 00:28:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TY8/pWIgcIz+C6jRI22Ls6KSQPYFbL8dVJN418r6j6I=;
-        b=YXFQbQqX7pqa7izpY5Cqb6rsaiAqIpqWko4o5hQz2r8TL/qTF4MHBF9z8W4VncOCSo
-         XlbBmpDz0c+rE9tbrIf9GPoU+Dm7SMJi8ul4TS+oDrCjG3Ieg4519wB+5vs4U+eanq6j
-         g0AT7cknHtOsHvnJh/3H9wvwlGpIVdC+uo/Dxeyq0z8qlveAOKzTHTWLeV3h1dyOYxEY
-         IxBfViTh133CHfsz8IvpKhnGLhjNV6x5OPEbNTsq3PeNpqr5HdIbK6AWszrAe/ILsDQ0
-         2YLIq3clKoxY51dn5t6hXwOVXwlaVLkcxVRcFw3d8c+QDc8xCSr0T1agxcYrB6e14iOc
-         HzDQ==
-X-Gm-Message-State: AOAM530diegVz33K/BgI3z04Zm3YecWiHntuK1PivhPVfG0xjLpSFXn9
-        Se3lRdzVP+WinCvp0/UuX4+zXXmbMJLqZKtUluyylYLfPkWb1ZgU4ozREWb61EZ7a5D6+OvxsAO
-        L1DBWZLeX56PJhnoaqxYZQ2ct
-X-Received: by 2002:adf:ecd0:: with SMTP id s16mr1258056wro.415.1607502517428;
-        Wed, 09 Dec 2020 00:28:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxH6Do+31Svbm6gZcmCgYjugWGzqIMTR6tBXYz8WhylY3W/V+37vUvxCwZh+NfQ/MkOY6D7Mg==
-X-Received: by 2002:adf:ecd0:: with SMTP id s16mr1258052wro.415.1607502517272;
-        Wed, 09 Dec 2020 00:28:37 -0800 (PST)
-Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
-        by smtp.gmail.com with ESMTPSA id u6sm2188084wrm.90.2020.12.09.00.28.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 00:28:36 -0800 (PST)
-Date:   Wed, 9 Dec 2020 03:28:33 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Mathias Crombez <mathias.crombez@faurecia.com>
-Subject: Re: [PATCH RESEND v2] virtio-input: add multi-touch support
-Message-ID: <20201209030635-mutt-send-email-mst@kernel.org>
-References: <20201208210150.20001-1-vasyl.vavrychuk@opensynergy.com>
+        Wed, 9 Dec 2020 03:30:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607502629; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=US7I9Jxk2V33c8DwknWZ5ZyHOLeSlMGpz/OnKDqm8xs=;
+ b=lpGPR7Bc1eS3WobsFQrEig78AqOYKofHSKFZveJDOspk85sRxbMCcLxWDPsoKGZF38mwCIuX
+ TCZA6Znjh6m72kRhSWlJzQ1o3qrpZeszaUFegPdhjJN7l6VWDqYBX0bL8+i/v+rtwj/kDkbl
+ WbkkoUvPRE8Qymf+mHMO9PK+zx4=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fd08b02395c822bfe738e24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 09 Dec 2020 08:29:54
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E0A36C43465; Wed,  9 Dec 2020 08:29:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF386C433C6;
+        Wed,  9 Dec 2020 08:29:52 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208210150.20001-1-vasyl.vavrychuk@opensynergy.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Dec 2020 16:29:52 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] scsi: ufs: Clean up some lines from
+ ufshcd_hba_exit()
+In-Reply-To: <1607502147.3580.33.camel@mtkswgap22>
+References: <1607497100-27570-1-git-send-email-cang@codeaurora.org>
+ <1607497100-27570-3-git-send-email-cang@codeaurora.org>
+ <1607502147.3580.33.camel@mtkswgap22>
+Message-ID: <527089ac0a43d9095131103f7a274cf1@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 11:01:50PM +0200, Vasyl Vavrychuk wrote:
-> From: Mathias Crombez <mathias.crombez@faurecia.com>
-> Cc: stable@vger.kernel.org
+On 2020-12-09 16:22, Stanley Chu wrote:
+> Hi Can,
+> 
+> On Tue, 2020-12-08 at 22:58 -0800, Can Guo wrote:
+>> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling() and
+>> ufshcd_exit_clk_gating(), so no need to suspend clock scaling again in
+>> ufshcd_hba_exit().
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 12266bd..0a5b197 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -7765,6 +7765,7 @@ static void ufshcd_async_scan(void *data, 
+>> async_cookie_t cookie)
+>>  	if (ret) {
+>>  		pm_runtime_put_sync(hba->dev);
+>>  		ufshcd_exit_clk_scaling(hba);
+>> +		ufshcd_exit_clk_gating(hba);
+> 
+> How about moving above two lines to ufshcd_hba_exit()?
+> 
+> Otherwise looks good to me!
+> Reviewed-by: Stanley Chu <stanleyc.chu@mediatek.com>
 
-I don't believe this is appropriate for stable, looks like
-a new feature to me.
+You read my mind - I thought about that too, but in ufshcd_init(),
+they are separately called on different error out paths.
 
+11232 exit_gating:
+11233 	ufshcd_exit_clk_scaling(hba);
+11234 	ufshcd_exit_clk_gating(hba);
+11235 out_disable:
+11236 	hba->is_irq_enabled = false;
+11237 	ufshcd_hba_exit(hba);
+
+Thanks,
+
+Can Guo.
 
 > 
-> Without multi-touch slots allocated, ABS_MT_SLOT events will be lost by
-> input_handle_abs_event.
-> 
-> Signed-off-by: Mathias Crombez <mathias.crombez@faurecia.com>
-> Signed-off-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
-> Tested-by: Vasyl Vavrychuk <vasyl.vavrychuk@opensynergy.com>
-> ---
-> v2: fix patch corrupted by corporate email server
-> 
->  drivers/virtio/Kconfig        | 11 +++++++++++
->  drivers/virtio/virtio_input.c |  8 ++++++++
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-> index 7b41130d3f35..2cfd5b01d96d 100644
-> --- a/drivers/virtio/Kconfig
-> +++ b/drivers/virtio/Kconfig
-> @@ -111,6 +111,17 @@ config VIRTIO_INPUT
->  
->  	 If unsure, say M.
->  
-> +config VIRTIO_INPUT_MULTITOUCH_SLOTS
-> +	depends on VIRTIO_INPUT
-> +	int "Number of multitouch slots"
-> +	range 0 64
-> +	default 10
-> +	help
-> +	 Define the number of multitouch slots used. Default to 10.
-> +	 This parameter is unused if there is no multitouch capability.
-> +
-> +	 0 will disable the feature.
-> +
-
-Most people won't be using this config so the defaults matter. So why 10? 10 fingers?
-
-And where does 64 come from?
-
-
->  config VIRTIO_MMIO
->  	tristate "Platform bus driver for memory mapped virtio devices"
->  	depends on HAS_IOMEM && HAS_DMA
-> diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
-> index f1f6208edcf5..13f3d90e6c30 100644
-> --- a/drivers/virtio/virtio_input.c
-> +++ b/drivers/virtio/virtio_input.c
-> @@ -7,6 +7,7 @@
->  
->  #include <uapi/linux/virtio_ids.h>
->  #include <uapi/linux/virtio_input.h>
-> +#include <linux/input/mt.h>
->  
->  struct virtio_input {
->  	struct virtio_device       *vdev;
-> @@ -205,6 +206,7 @@ static int virtinput_probe(struct virtio_device *vdev)
->  	unsigned long flags;
->  	size_t size;
->  	int abs, err;
-> +	bool is_mt = false;
->  
->  	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
->  		return -ENODEV;
-> @@ -287,9 +289,15 @@ static int virtinput_probe(struct virtio_device *vdev)
->  		for (abs = 0; abs < ABS_CNT; abs++) {
->  			if (!test_bit(abs, vi->idev->absbit))
->  				continue;
-> +			if (input_is_mt_value(abs))
-> +				is_mt = true;
->  			virtinput_cfg_abs(vi, abs);
->  		}
->  	}
-> +	if (is_mt)
-> +		input_mt_init_slots(vi->idev,
-> +				    CONFIG_VIRTIO_INPUT_MULTITOUCH_SLOTS,
-> +				    INPUT_MT_DIRECT);
-
-
-Do we need the number in config space maybe? And maybe with a feature
-bit so host can find out whether guest supports MT?
-
->  
->  	virtio_device_ready(vdev);
->  	vi->ready = true;
-> -- 
-> 2.23.0
-
+>>  		ufshcd_hba_exit(hba);
+>>  	}
+>>  }
+>> @@ -8203,10 +8204,6 @@ static void ufshcd_hba_exit(struct ufs_hba 
+>> *hba)
+>>  	if (hba->is_powered) {
+>>  		ufshcd_variant_hba_exit(hba);
+>>  		ufshcd_setup_vreg(hba, false);
+>> -		ufshcd_suspend_clkscaling(hba);
+>> -		if (ufshcd_is_clkscaling_supported(hba))
+>> -			if (hba->devfreq)
+>> -				ufshcd_suspend_clkscaling(hba);
+>>  		ufshcd_setup_clocks(hba, false);
+>>  		ufshcd_setup_hba_vreg(hba, false);
+>>  		hba->is_powered = false;
