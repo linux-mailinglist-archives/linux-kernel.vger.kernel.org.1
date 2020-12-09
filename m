@@ -2,173 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751FA2D3F54
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9422D3FCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgLIJ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:58:55 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:16281 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729007AbgLIJ6z (ORCPT
+        id S1729767AbgLIKW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:22:26 -0500
+Received: from 19.mo4.mail-out.ovh.net ([87.98.179.66]:41452 "EHLO
+        19.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727800AbgLIKWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:58:55 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DA8FB240004;
-        Wed,  9 Dec 2020 09:58:09 +0000 (UTC)
-Date:   Wed, 9 Dec 2020 10:58:19 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     kholk11@gmail.com
-Cc:     mchehab@kernel.org, robh+dt@kernel.org,
-        marijn.suijten@somainline.org, konrad.dybcio@somainline.org,
-        martin.botka@somainline.org, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sakari.ailus@iki.fi,
-        andrey.konovalov@linaro.org,
-        angelogioacchino.delregno@somainline.org
-Subject: Re: [PATCH v3 1/2] media: i2c: Add driver for the Sony Exmor-RS
- IMX300 camera sensor
-Message-ID: <20201209095819.w6lfpga2gqvu2ujn@uno.localdomain>
-References: <20201127223047.2764643-1-kholk11@gmail.com>
- <20201127223047.2764643-2-kholk11@gmail.com>
+        Wed, 9 Dec 2020 05:22:25 -0500
+X-Greylist: delayed 1210 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 05:22:24 EST
+Received: from player698.ha.ovh.net (unknown [10.108.57.44])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id 81E6A25B0FA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 10:43:22 +0100 (CET)
+Received: from RCM-web5.webmail.mail.ovh.net (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player698.ha.ovh.net (Postfix) with ESMTPSA id 1D42F18F600CF;
+        Wed,  9 Dec 2020 09:43:17 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201127223047.2764643-2-kholk11@gmail.com>
+Date:   Wed, 09 Dec 2020 10:43:16 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+In-Reply-To: <20201209094039.ksqlt7g5mq7mp4mq@wittgenstein>
+References: <20201208215133.30575-1-steve@sk2.org>
+ <CAKgNAki3jRYmTzCMXgBzXTz9LEmmAfRE5VuMOhnDbVmiJU=asg@mail.gmail.com>
+ <20201209094039.ksqlt7g5mq7mp4mq@wittgenstein>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <9020961b9cb4ebc61d6a07f603a226aa@sk2.org>
+X-Sender: steve@sk2.org
+X-Originating-IP: 82.65.25.201
+X-Webmail-UserID: steve@sk2.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 11257310219080977789
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrudejkedgtdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepheeftedvhfevuedthedthfektdelleegtdevfeetveefhfekgedttdefgfetgfeunecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrheileekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Le 09/12/2020 10:40, Christian Brauner a écrit :
+> On Wed, Dec 09, 2020 at 09:50:38AM +0100, Michael Kerrisk (man-pages) 
+> wrote:
+>> > +.PP
+>> > +.I flags
+>> > +can be set to
+>> > +.B CLOSE_RANGE_UNSHARE
+>> > +to unshare the range of file descriptors from any other processes,
+>> > +.I instead
+>> > +of closing them.
+>> 
+>> Really "instead of closing them"? I had supposed that rather that this
+>> should be "before closing them". That's also how the kernel code reads
+>> to me, from a quick glance.
+> 
+> It's also mentioned in the commit message. Basically setting
+> CLOSE_RANGE_UNSHARE is equivalent to:
+> 
+> unshare(CLONE_FILES);
+> close_range(<start>, <end>);
 
-On Fri, Nov 27, 2020 at 11:30:46PM +0100, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> This is a custom multi-aspect 25MegaPixels sensor from Sony,
-> found in many Sony Xperia smartphones from various eras.
->
-> The camera assembly for this sensor usually (at least in Xperia
-> phones) has a lens that does not cover the entire sensor area,
-> which means that the real corners are blind and that, in many
-> lighting conditions, some more pixels in the corners are very
-> getting obscured (as no decent amount of light can get in)...
-> so, the maximum resolution that can produce a good image is:
-> - In 4:3 aspect ratio, 5520x4160 (23.0MP)
-> - In 16:9 aspect ratio, 5984x3392 (20.3MP).
->
-> This sensor supports high frame rates (>=60FPS) when in binning
-> mode and both RAW8 and RAW10 output modes.
-> In this version of the driver, support has been provided for the
-> following resolutions:
->     W x H     SZ   MAX_FPS  BINNING
-> - 5520x4160 23.0MP   23       No
-> - 5984x3392 20.3MP   26       No
-> - 2992x1696  3.8MP   60       Yes
-> - 1424x800   1.2MP   120      Yes
->
-> Note 1: The "standard" camera assy for IMX300 also contains an
-> actuator (to focus the image), but this driver only manages the
-> actual image sensor.
->
-> Note 2: The command tables for this sensor were reverse
-> engineered from a downstream "userspace driver" that has been
-> released in various versions on various Xperia smartphones.
-> Register layout seems to be only vaguely similar to IMX219,
-> which has a public datasheet from where some names for the
-> figured out registers were taken and added to the driver:
-> these names are probably not the right ones, but they surely
-> represent the intended thing.
->
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Yes, I got that mixed up, thanks for the clarification! I'll send a v2 
+addressing the review comments later today.
 
-Just a few drive-by comments, as I'm looking at selection targets for
-other imx sensors and I've noticed this one on the list
+Regards,
 
-> ---
->  drivers/media/i2c/Kconfig  |   13 +
->  drivers/media/i2c/Makefile |    1 +
->  drivers/media/i2c/imx300.c | 3081 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 3095 insertions(+)
->  create mode 100644 drivers/media/i2c/imx300.c
->
-
-[snip]
-
-> +/*
-> + * ** IMX300 native and active pixel array size **
-> + *
-> + * Being this a multi-aspect sensor, the following native W/H apply, but
-> + * beware: the module assembly usually has a (round) lens that is shadowing
-> + * or covering the corners of the (square) image sensor, so the maximum
-> + * output resolution must be lower than the maximum sensor resolution
-> + * otherwise we get something like a view from a porthole... :)
-> + *
-> + * For 4:3  aspect ratio, max is: 5984x4140 (25MP)
-> + * For 16:9 aspect ratio, max is: 5984x3392 (20.3MP)
-> + */
-
-These are the sizes
-
-> +#define IMX300_NATIVE_WIDTH		5980U
-> +#define IMX300_NATIVE_HEIGHT		4140U
-> +#define IMX300_PIXEL_ARRAY_LEFT		0U
-> +#define IMX300_PIXEL_ARRAY_TOP		0U
-> +#define IMX300_PIXEL_ARRAY_WIDTH	5520U
-> +#define IMX300_PIXEL_ARRAY_HEIGHT	4160U
-
-And here is how they are applied to selection targets
-
-> +	case V4L2_SEL_TGT_CROP: {
-> +		struct imx300 *imx300 = to_imx300(sd);
-> +
-> +		mutex_lock(&imx300->mutex);
-> +		sel->r = *__imx300_get_pad_crop(imx300, cfg, sel->pad,
-> +						sel->which);
-> +		mutex_unlock(&imx300->mutex);
-> +
-> +		return 0;
-> +	}
-> +
-> +	case V4L2_SEL_TGT_NATIVE_SIZE:
-> +		sel->r.top = 0;
-> +		sel->r.left = 0;
-> +		sel->r.width = IMX300_NATIVE_WIDTH;
-> +		sel->r.height = IMX300_NATIVE_HEIGHT;
-> +
-> +		return 0;
-> +
-> +	case V4L2_SEL_TGT_CROP_DEFAULT:
-> +		sel->r.top = IMX300_PIXEL_ARRAY_TOP;
-> +		sel->r.left = IMX300_PIXEL_ARRAY_LEFT;
-> +		sel->r.width = IMX300_PIXEL_ARRAY_WIDTH;
-> +		sel->r.height = IMX300_PIXEL_ARRAY_HEIGHT;
-> +
-> +		return 0;
-> +	}
-> +
-
-1) CROP_DEFAULT should be contained in NATIVE_SIZE (actually all
-targets are contained in NATIVE_SIZE, and are defined relatively to
-it). This means that IMX300_PIXEL_ARRAY_HEIGHT > IMX300_NATIVE_HEIGHT
-is probably wrong.
-
-2) You need to specify CROP_BOUNDS too. If the driver does not support
-reading optically black pixels using the selection API, it should be
-identical to CROP_DEFAULT (v4l2-compliance should report that, see
-https://git.linuxtv.org/media_tree.git/commit/?id=1ed36ecd1459b653cced8929bfb37dba94b64c5d
-
-3) CROP_DEFAULT (and BOUNDS) should report the sensor readable active
-area. You have one mode where the TGT_CROP rectangle width is bigger
-than the CROP_DEFAULT (and BOUNDS) rectangle width (5984 > 5520). I
-think 5984 should probably be made the CROP_DEFAULT (and BOUNDS) width
-then, as the 5984 mode's width implies the 464 pixels exceeding 5520
-are readable and valid for image capture.
-
-It's not easy to get these right with a datasheet sometimes, without
-one it quickly becomes a matter of guessing. But even if the values are
-computed as 'best effort' we should try to respect the relationships
-between the different selection targets.
-
-Thanks
-  j
+Stephen
