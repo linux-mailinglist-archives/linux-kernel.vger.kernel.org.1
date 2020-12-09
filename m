@@ -2,143 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77D02D3F88
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B30E2D3F8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 11:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbgLIKHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 05:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728613AbgLIKHR (ORCPT
+        id S1729726AbgLIKIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 05:08:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56543 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728631AbgLIKIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 05:07:17 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA37C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 02:06:35 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d14so15299qkc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 02:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+5z+13xz88XeLJl7OiuxcCFkjcYyny+A4YZW2csEjQM=;
-        b=MjKkDaOW537I+/uuMPqInrP1I/DggVkNKmpO+t1e6A8j/iSjwSLUYsN04jYCiFpi6U
-         YYcnAyjE0Ulu+KMvpw2Fm8Kkg6klKqXGDtIObVl2ZI53PIBwF8LZWYRD72DvyqsrSDCJ
-         3iQ1E4HGE1JKCijwoeCIgyVmS4jF4esV3YCYZydKy0VL20MUuziI0jr3El29UtqXCT9K
-         QSiczrOWplf4gJ9HMR6Wf1nc4tzW++ErrkQhvt1Lacmc3EQBOsGJReS4Ab9yX3ifuNm+
-         CuFCw3f8gJ1qkOI8pdGVS2VeZZIQ4CeqvO7pAuUXRWwzmwFHsUP/2Y2oe8gKeN1/TlZY
-         FSNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+5z+13xz88XeLJl7OiuxcCFkjcYyny+A4YZW2csEjQM=;
-        b=LxbBlapgbEa/IR+mnYCMNwi8i3nmRaIhKjkHBhkS3JChIu23PmsKp3yzaGdkd9OlJg
-         DLIwkW9KE/Ev8Bvq8zjLB3IrLz/oILX3VKRONi9rD0NARB1GWLK406djIJk4ZjqA2TT1
-         pLLy8YCyJYWwwpKo2WzFPX0znMxPL5lZmvc6Krcpo71QQXxEZVQtS5o8BgJmb8NhlceJ
-         brqou5HTx+7lJYCD0AnLOjrf/uO4r1+SZO8e5IN0eNenvr55DOyoUewOY4A4Gp5VBNn+
-         i0sEsnFaQ/FVZuHG47Ewt0OMjgw9r2foLE4ccz4QzOSCBO8SkHX/1yjH4VIDFNO5PNXu
-         rlpA==
-X-Gm-Message-State: AOAM531Z8HJCkbAYSfrt3ocXL+EultxDjCbawUJlbRxrn4rbiZxl0UhD
-        /nKJ7ZHZpluKMVF/UdB+AM2ZvM5YWHXZ90+1EMjPjQ==
-X-Google-Smtp-Source: ABdhPJwDtiXtssEsSHS7ho5SHRVT3wsN+Y9KHOW7grVgYWjsqi8MQhKLx/pVwz0yhAiCbCXJiaNYBhXUn1I3Mh63ZW8=
-X-Received: by 2002:a37:56c6:: with SMTP id k189mr1948333qkb.501.1607508394588;
- Wed, 09 Dec 2020 02:06:34 -0800 (PST)
+        Wed, 9 Dec 2020 05:08:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607508413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4m7vcxbiJttn8QYkTQIy6cn6rx9Zw5Muq0IpNVCW1eU=;
+        b=aewuL5p6AwUz2iP28V6V5OjjUwzUJHiHrcOrfmfJm4SKQ047Ui+nu+sY9mS3dZ3AYT4wS5
+        lH5PsaXDBUEVopWPxfQyACpVJMpXQ2fUo7WkUv4Xd3ffpi4wxMSpUl9uKdAGA5KPs4om5p
+        WGWfODAfWyNI3/0uNXKfUCqmZ3BzFI0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-KYNyJPTwP3ei1ybgJrgtcQ-1; Wed, 09 Dec 2020 05:06:49 -0500
+X-MC-Unique: KYNyJPTwP3ei1ybgJrgtcQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D5848030AF;
+        Wed,  9 Dec 2020 10:06:46 +0000 (UTC)
+Received: from [10.36.114.167] (ovpn-114-167.ams2.redhat.com [10.36.114.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA1BF5D9D3;
+        Wed,  9 Dec 2020 10:06:40 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v7 06/15] mm/hugetlb: Disable freeing
+ vmemmap if struct page size is not power of two
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201130151838.11208-1-songmuchun@bytedance.com>
+ <20201130151838.11208-7-songmuchun@bytedance.com>
+ <ba57ea7d-709b-bf36-d48a-cc72a26012cc@redhat.com>
+ <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4b8a9389-1704-4d8c-ec58-abd753814dd9@redhat.com>
+Date:   Wed, 9 Dec 2020 11:06:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201204210000.660293c6@canb.auug.org.au> <20201204211923.a88aa12dc06b61780282dd1b@linux-foundation.org>
- <CACT4Y+bYVC=r+bPF7MziOZpJCYqrUj7CFt47Z5PSWjohZLYm+w@mail.gmail.com>
- <CACT4Y+bPPSQ1OgZ1NmUckOO2=07RE3C=deW6BpF0cOR9wnJsoA@mail.gmail.com> <CANpmjNObNia7mFFJDz6ofG06QOTzad=iU=b_C=E97nV2hB-hng@mail.gmail.com>
-In-Reply-To: <CANpmjNObNia7mFFJDz6ofG06QOTzad=iU=b_C=E97nV2hB-hng@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 9 Dec 2020 11:06:22 +0100
-Message-ID: <CACT4Y+atOaQS==gJ0fDZhuh7A1d=wyd5eQ4on+hBbG5HtSQK4A@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the akpm tree
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Kees Cook <keescook@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMZfGtV5200NZXH9Z_Z9qXo5FCd9E6JOTXjQtzcF0xGi-gCuPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 1:52 PM Marco Elver <elver@google.com> wrote:
->
-> On Mon, 7 Dec 2020 at 13:38, 'Dmitry Vyukov' via kasan-dev
-> <kasan-dev@googlegroups.com> wrote:
-> > On Mon, Dec 7, 2020 at 1:08 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > > Hi all,
-> > > > >
-> > > > > After merging the akpm tree, today's linux-next build (powerpc
-> > > > > allyesconfig) produced warnings like this:
-> > > > >
-> > > > > kernel/kcov.c:296:14: warning: conflicting types for built-in function '__sanitizer_cov_trace_switch'; expected 'void(long unsigned int,  void *)' [-Wbuiltin-declaration-mismatch]
-> > > > >   296 | void notrace __sanitizer_cov_trace_switch(u64 val, u64 *cases)
-> > > > >       |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >
-> > > > Odd.  clang wants that signature, according to
-> > > > https://clang.llvm.org/docs/SanitizerCoverage.html.  But gcc seems to
-> > > > want a different signature.  Beats me - best I can do is to cc various
-> > > > likely culprits ;)
-> > > >
-> > > > Which gcc version?  Did you recently update gcc?
-> > > >
-> > > > > ld: warning: orphan section `.data..Lubsan_data177' from `arch/powerpc/oprofile/op_model_pa6t.o' being placed in section `.data..Lubsan_data177'
-> > > > >
-> > > > > (lots of these latter ones)
-> > > > >
-> > > > > I don't know what produced these, but it is in the akpm-current or
-> > > > > akpm trees.
-> > >
-> > > I can reproduce this in x86_64 build as well but only if I enable
-> > > UBSAN as well. There were some recent UBSAN changes by Kees, so maybe
-> > > that's what affected the warning.
-> > > Though, the warning itself looks legit and unrelated to UBSAN. In
-> > > fact, if the compiler expects long and we accept u64, it may be broken
-> > > on 32-bit arches...
-> >
-> > No, I think it works, the argument should be uint64.
-> >
-> > I think both gcc and clang signatures are correct and both want
-> > uint64_t. The question is just how uint64_t is defined :) The old
-> > printf joke that one can't write portable format specifier for
-> > uint64_t.
-> >
-> > What I know so far:
-> > clang 11 does not produce this warning even with obviously wrong
-> > signatures (e.g. short).
-> > I wasn't able to trigger it with gcc on 32-bits at all. KCOV is not
-> > supported on i386 and on arm I got no warnings even with obviously
-> > wrong signatures (e.g. short).
-> > Using "(unsigned long val, void *cases)" fixes the warning on x86_64.
-> >
-> > I am still puzzled why gcc considers this as a builtin because we
-> > don't enable -fsanitizer-coverage on this file. I am also puzzled how
-> > UBSAN affects things.
->
-> It might be some check-for-builtins check gone wrong if it enables any
-> one of the sanitizers. That would be confirmed if it works with
->
-> UBSAN_SANITIZE_kcov.o := n
+On 09.12.20 11:03, Muchun Song wrote:
+> On Wed, Dec 9, 2020 at 5:57 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 30.11.20 16:18, Muchun Song wrote:
+>>> We only can free the tail vmemmap pages of HugeTLB to the buddy allocator
+>>> when the size of struct page is a power of two.
+>>>
+>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>> ---
+>>>  mm/hugetlb_vmemmap.c | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>> index 51152e258f39..ad8fc61ea273 100644
+>>> --- a/mm/hugetlb_vmemmap.c
+>>> +++ b/mm/hugetlb_vmemmap.c
+>>> @@ -111,6 +111,11 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
+>>>       unsigned int nr_pages = pages_per_huge_page(h);
+>>>       unsigned int vmemmap_pages;
+>>>
+>>> +     if (!is_power_of_2(sizeof(struct page))) {
+>>> +             pr_info("disable freeing vmemmap pages for %s\n", h->name);
+>>
+>> I'd just drop that pr_info(). Users are able to observe that it's
+>> working (below), so they are able to identify that it's not working as well.
+> 
+> The below is just a pr_debug. Do you suggest converting it to pr_info?
 
-Yes, it "fixes" the warning.
-Initially I thought it's not a good solution because we want to detect
-UBSAN bugs in KCOV. But on second thought, if UBSAN detects a bug in
-KCOV, it may lead to infinite recursion. We already disable all other
-sanitizers on KCOV for this reason, so it's reasonable to disable
-UBSAN as well. And as a side effect it "resolves" the warning as well.
-I mailed:
-https://lore.kernel.org/lkml/20201209100152.2492072-1-dvyukov@google.com/T/#u
+Good question. I wonder if users really have to know in most cases.
+Maybe pr_debug() is good enough in environments where we want to debug
+why stuff is not working as expected.
 
-Thanks
+-- 
+Thanks,
 
-> > We could change the signature to long, but it feels wrong/dangerous
-> > because the variable should really be 64-bits (long is broken on
-> > 32-bits).
-> > Or we could introduce a typedef that is long on 64-bits and 'long
-> > long' on 32-bits.
+David / dhildenb
+
