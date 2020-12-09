@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0983B2D4328
+	by mail.lfdr.de (Postfix) with ESMTP id 810BC2D4329
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 14:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731944AbgLINYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 08:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgLINYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:24:40 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27714C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 05:24:00 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id v14so1468489wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 05:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=SL6msqiYJNjRfO6GSKcCWS1H/vFhMdg8DRvJwX7TWvI=;
-        b=bair6t1gQ0gVLR1zC0rKXgnoFeQOROlLEGFUf230op7Eo8hgh17TG5/9aBfCAI1qcD
-         0bf25IS4q1Ux2U7LHFB/ZPgmrvEbnIszhsm+gSd4/iX/uq9dtl9TYE7kwxoxTOaGUJi/
-         lFAHPLK4O4DL3ki+FDMxke9VxA9sMvkZVWLi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=SL6msqiYJNjRfO6GSKcCWS1H/vFhMdg8DRvJwX7TWvI=;
-        b=VeqTnQCIqEEc+CluddWk7TVsektU4vYXsGkR0YsbLcR71bI7Sic3Lq8iYKBNT/ljrW
-         AiLxNhqCkTRQDR9o2I7iHnfRLfUwE7KlMxbj3/LEH/6b/E4q+ihsR2ibcl5R//KcQKmS
-         bMd1f9AvO6BMDyxO2zZFFjLwDLBV8iOB79K6MjP+FBY1EzO3sNN8iVFFew9l3U9JjMUs
-         mo7MtBTbtKEIkeE/7rUANOQQLrXJGoJ+c+uyLXQZKXUO0BtE/OvvzOKw7iFacqPk7QBh
-         x4k5xeWI+V+F9hNRibGesfniCdyfJX6BJeC5bfBg0BFyol6nlBX838qPZRO0atkcxaYT
-         +u6Q==
-X-Gm-Message-State: AOAM532I4mpjPpzeNrXx/gMkCaht76MKcUGUBWB3ZyH4o2qX7HGRDOPa
-        PLOTFKi2Uq9ngVcB2hH5ZqicnA==
-X-Google-Smtp-Source: ABdhPJxUVYjsNq97or/ZsOXlsUivBgB/hGt9elBF4gRMMx4dzqrjNIBi0qpfudtlShJCov0cs6MUyA==
-X-Received: by 2002:a7b:ce17:: with SMTP id m23mr2795827wmc.117.1607520238887;
-        Wed, 09 Dec 2020 05:23:58 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id 65sm3405049wri.95.2020.12.09.05.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:23:58 -0800 (PST)
-Message-ID: <38abab69fb724ebb25715bd362b4d187ae37cdf2.camel@chromium.org>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-From:   Florent Revest <revest@chromium.org>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org,
-        Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 09 Dec 2020 14:23:57 +0100
-In-Reply-To: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-References: <20201208201533.1312057-1-revest@chromium.org>
-         <20201208201533.1312057-2-revest@chromium.org>
-         <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        id S1732209AbgLIN0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 08:26:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732188AbgLIN0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 08:26:02 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0167123101;
+        Wed,  9 Dec 2020 13:25:21 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kmzT4-00HOUv-VX; Wed, 09 Dec 2020 13:25:19 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 09 Dec 2020 13:25:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <haibo.xu@linaro.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v5 0/2] MTE support for KVM guest
+In-Reply-To: <20201209124443.GB13566@gaia>
+References: <c25c297e-e9b5-ab3f-e401-c21ddd4d2ad1@arm.com>
+ <CAJc+Z1H7akXwDtVvQLiGVVyZ0DfmsxyJQhE7Sno6aAO9GaafEA@mail.gmail.com>
+ <46fd98a2-ee39-0086-9159-b38c406935ab@arm.com>
+ <CAFEAcA_Q8RSB-zcS8+cEfvWz_0U5GLzmsf12m_7BFjX8h-1hrA@mail.gmail.com>
+ <b975422f-14fd-13b3-c8ca-e8b1a68c0837@arm.com>
+ <0d0eb6da6a11f76d10e532c157181985@kernel.org> <20201207163405.GD1526@gaia>
+ <874kkx5thq.wl-maz@kernel.org> <20201208172143.GB13960@gaia>
+ <7ff14490e253878d0735633b792e1ea9@kernel.org> <20201209124443.GB13566@gaia>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <ef14a5158fc65c00f6c3c842cfa83b2c@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, steven.price@arm.com, peter.maydell@linaro.org, haibo.xu@linaro.org, linux-kernel@vger.kernel.org, quintela@redhat.com, richard.henderson@linaro.org, qemu-devel@nongnu.org, dgilbert@redhat.com, tglx@linutronix.de, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, Dave.Martin@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-08 at 23:08 +0100, KP Singh wrote:
-> My understanding is you can simply always call sock_gen_cookie and
-> not have two protos.
+On 2020-12-09 12:44, Catalin Marinas wrote:
+> On Tue, Dec 08, 2020 at 06:21:12PM +0000, Marc Zyngier wrote:
+>> On 2020-12-08 17:21, Catalin Marinas wrote:
+>> > On Mon, Dec 07, 2020 at 07:03:13PM +0000, Marc Zyngier wrote:
+>> > > I wonder whether we will have to have something kernel side to
+>> > > dump/reload tags in a way that matches the patterns used by live
+>> > > migration.
+>> >
+>> > We have something related - ptrace dumps/resores the tags. Can the same
+>> > concept be expanded to a KVM ioctl?
+>> 
+>> Yes, although I wonder whether we should integrate this deeply into
+>> the dirty-log mechanism: it would be really interesting to dump the
+>> tags at the point where the page is flagged as clean from a dirty-log
+>> point of view. As the page is dirtied, discard the saved tags.
 > 
-> This will disable preemption in sleepable programs and not have any
-> effect in non-sleepable programs since preemption will already be
-> disabled.
+> From the VMM perspective, the tags can be treated just like additional
+> (meta)data in a page. We'd only need the tags when copying over. It can
+> race with the VM dirtying the page (writing tags would dirty it) but I
+> don't think the current migration code cares about this. If dirtied, it
+> copies it again.
+> 
+> The only downside I see is an extra syscall per page both on the origin
+> VMM and the destination one to dump/restore the tags. Is this a
+> performance issue?
 
-Sure, that works. I thought that providing two helper implems would
-slightly improve performances on non-sleepable programs but I can send
-a v4 with only one helper that calls sock_gen_cookie.
+I'm not sure. Migrating VMs already has a massive overhead, so an extra
+syscall per page isn't terrifying. But that's the point where I admit
+not knowing enough about what the VMM expects, nor whether that matches
+what happens on other architectures that deal with per-page metadata.
 
+Would this syscall operate on the guest address space? Or on the VMM's
+own mapping?
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
