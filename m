@@ -2,149 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D092D377E
+	by mail.lfdr.de (Postfix) with ESMTP id A22412D377F
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 01:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgLIATr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Dec 2020 19:19:47 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:34331 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgLIATq (ORCPT
+        id S1731060AbgLIAUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Dec 2020 19:20:06 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:42222 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgLIAUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Dec 2020 19:19:46 -0500
-Received: from static-50-53-41-238.bvtn.or.frontiernet.net ([50.53.41.238] helo=[192.168.192.153])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <john.johansen@canonical.com>)
-        id 1kmnC9-0000hA-Dl; Wed, 09 Dec 2020 00:19:01 +0000
-Subject: Re: [PATCH v1] apparmor: Remove duplicate macro list_entry_is_head()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-References: <20201208100639.88182-1-andriy.shevchenko@linux.intel.com>
-From:   John Johansen <john.johansen@canonical.com>
-Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
- azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
- NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
- L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
- YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
- UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
- dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
- OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
- OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
- V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
- MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
- NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
- ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
- d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
- S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
- d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
- WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
- ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
- SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
- bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
- WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
- NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
- NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
- cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
- ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
- QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
- dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
- OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
- NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
- cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
- bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
- V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
- TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
- QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
- OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
- SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
- VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
- QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
- CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
- RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
- T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
- N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
- TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
- L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
- Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
- ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
- dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
- a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
- V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
- aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
- SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
- SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
- SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
- M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
- cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
- TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
- aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
- RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
- Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
- a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
- RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
- VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
- U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
- Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
- ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
- WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
- Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
- Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
- enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
- WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
- NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
- MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
- RVkgQkxPQ0stLS0tLQo=
-Organization: Canonical
-Message-ID: <6c72b22b-4dca-8a77-4b56-f2314307e6d6@canonical.com>
-Date:   Tue, 8 Dec 2020 16:18:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 8 Dec 2020 19:20:06 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607473161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dB3FaQD65hJ9XsSWC9J+0ud8HQXWI4+epYGVfEmS9H0=;
+        b=V70Fs8VHpdHaRMIyCVrUXQNCNrkqfhkzcKfqEoh61XUC4Fhf2A4Sj0dhUK1/C4j94E5474
+        xG/0j3cA7DZdCD7xYUM2jnYkmAglgjMhapmWV+gOuuy/lCLUJR74vF/n/9Hfj2uHO9B7WE
+        LutmVb2TbnDAlLRB0nVwqjbIyMmFpZ7sDoZkWIlPZqh103jjf08rJtP8FQJovWVsR3OHBo
+        T5lZj1fXh/N2Xcin9QLaQI/DrNAgkk1U+yQauHmh/7vQZtRIWQln+xN63H8yKFJbJ7C5oK
+        q07sH7/c0D5td5s6x/ooL8xyF8z/18xGN7eq4kslBCRJWmSBfmkKjtmGGGSl2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607473161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dB3FaQD65hJ9XsSWC9J+0ud8HQXWI4+epYGVfEmS9H0=;
+        b=5fmzqM5m1ODVJj0sDIioZZSr2M26neNDSyzFEIz19X4vzeBrLp4aZzlcsVpgmTldL6XfGB
+        eMcT13Plnp+zdlDQ==
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list\:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+In-Reply-To: <301491B7-DEB6-41ED-B8FD-657B864696CF@amacapital.net>
+References: <87h7ow2j91.fsf@nanos.tec.linutronix.de> <301491B7-DEB6-41ED-B8FD-657B864696CF@amacapital.net>
+Date:   Wed, 09 Dec 2020 01:19:21 +0100
+Message-ID: <87v9db25me.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201208100639.88182-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/20 2:06 AM, Andy Shevchenko wrote:
-> Strangely I hadn't had noticed the existence of the list_entry_is_head() in
-> apparmor code when added the same one in the list.h. Luckily it's fully
-> identical and didn't break builds. In any case we don't need a duplicate
-> anymore, thus remove it from apparmor code.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Tue, Dec 08 2020 at 12:32, Andy Lutomirski wrote:
+>> On Dec 8, 2020, at 11:25 AM, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> One issue here is that guests might want to run their own NTP/PTP. One
+>> reason to do that is that some people prefer the leap second smearing
+>> NTP servers.=20
+>
+> I would hope that using this part would be optional on the guest=E2=80=99s
+> part. Guests should be able to use just the CLOCK_MONOTONIC_RAW part
+> or fancier stuff at their option.
+>
+> (Hmm, it would, in principle, be possible for a guest to use the
+> host=E2=80=99s TAI but still smear leap seconds. Even without virt, smear=
+ing
+> could be a per-timens option.)
 
-oh nice,
+No. Don't even think about it. Read the thread:
 
-I will pull into the apparmor tree
+  https://lore.kernel.org/r/20201030110229.43f0773b@jawa
 
-Acked-by: John Johansen <john.johansen@canonical.com>
+all the way through the end and then come up with a real proposal which
+solves all of the issues mentioned there.
 
-> ---
->  security/apparmor/apparmorfs.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/security/apparmor/apparmorfs.c b/security/apparmor/apparmorfs.c
-> index 5fd4a64e431f..f95c6bfa8b8e 100644
-> --- a/security/apparmor/apparmorfs.c
-> +++ b/security/apparmor/apparmorfs.c
-> @@ -2046,9 +2046,6 @@ int __aafs_ns_mkdir(struct aa_ns *ns, struct dentry *parent, const char *name,
->  	return error;
->  }
->  
-> -
-> -#define list_entry_is_head(pos, head, member) (&pos->member == (head))
-> -
->  /**
->   * __next_ns - find the next namespace to list
->   * @root: root namespace to stop search at (NOT NULL)
-> 
+I might be missing the obvious, but please before you make proposals
+about time keeping out of thin air, please do your homework. You would
+not ask these questions otherwise.
 
+If it would be that simple we wouldn't be discussing this in the first
+place.
+
+Sorry for being blunt, but this has been discussed to death already.
+
+It can be solved on the theory level, but it's not practical.
+
+You _cannot_ make leap second smearing or different notions of clock
+realtime an isolated problem. We have
+
+   CLOCK_MONOTONIC
+   CLOCK_BOOTTIME
+   CLOCK_REALTIME
+   CLOCK_TAI
+
+They share one fundamental property:
+
+     All frequency adjustments done by NTP/PTP/PPS or whatever affect
+     _ALL_ of them in the exactly same way.
+
+I.e. leap second smearing whether you like it or not is affecting all of
+them and there is nothing we can do about that. Why?
+
+ 1) Because it's wrong to begin with. It creates a seperate universe of
+    CLOCK_REALTIME and therefore of CLOCK_TAI because they are strictly
+    coupled by definition.
+
+ 2) It's user space ABI. adjtimex() can make the kernel do random
+    crap. So if you extend that to time namespaces (which is pretty much
+    the same as a guest time space) then you have to solve the following
+    problems:
+
+    A) The tick based gradual adjustment of adjtimex() to avoid time
+       jumping around have to be done for every time universe which has
+       different parameters than the host.
+
+       Arguably this can be solved by having a seqcount based magic hack
+       which forces the first time name space consumer into updating the
+       per time name space notion of time instead of doing it from the
+       host tick, but that requires to have fully synchronized nested
+       sequence counts and if you extend this to nested virt it creates
+       an exponential problem.
+
+    B) What to do about enforced time jumps on the host (settimeofday,
+       adjtimex)?=20
+
+    C) Once you have solved #1 and #2 explain how timers (nanosleep,
+       interval timers, ....) which are all user space ABI and have the
+       fundamental guarantee to not expire early can be handled in a sane
+       and scalable way.
+
+Once you have a coherent answer for all of the above I'm happy to step
+down and hand over. In that case I'm more than happy not to have to deal
+with the inevitable regression reports.
+
+>>> tglx etc, I think that doing this really really nicely might involve
+>>> promoting something like the current vDSO data structures to ABI -- a
+>>> straightforward-ish implementation would be for the KVM host to export
+>>> its vvar clock data to the guest and for the guest to use it, possibly
+>>> with an offset applied.  The offset could work a lot like timens works
+>>> today.
+>>=20
+>> Works nicely if the guest TSC is not scaled. But that means that on
+>> migration the raw TSC usage in the guest is borked because the new host
+>> might have a different TSC frequency.
+>>=20
+>> If you use TSC scaling then the conversion needs to take TSC scaling
+>> into account which needs some thought. And the guest would need to read
+>> the host conversion from 'vdso data' and the scaling from the next page
+>> (per guest) and then still has to support timens. Doable but adds extra
+>> overhead on every time read operation.
+>
+> Is the issue that scaling would result in a different guest vs host
+> frequency?  Perhaps we could limit each physical machine to exactly
+> two modes: unscaled (use TSC ticks, convert in software) and scaled to
+> nanoseconds (CLOCK_MONOTONIC_RAW is RDTSC + possible offset).  Then
+> the host could produce its data structures in exactly those two
+> formats and export them as appropriate.
+
+The latter - nanoseconds scaling - is the only reasonable solution but
+then _ALL_ involved hosts must agree on that.
+
+>> If you want to avoid that you are back to the point where you need to
+>> chase all guest data when the host NTP/PTP adjusts the host side.
+>> Chasing and updating all this stuff in the tick was the reason why I was
+>> fighting the idea of clock realtime in namespaces.
+>
+> I think that, if we can arrange for a small, bounded number of pages
+> generated by the host, then this problem isn=E2=80=99t so bad.
+
+Whishful thinking unless we have a very strict contract about
+
+ - scaling to 1 GHz, aka nanoseconds,
+ - all guest argree with the host defined management of clock
+   REALTIME and TAI
+
+> Hmm, leap second smearing is just a different linear mapping. I=E2=80=99m=
+ not
+> sure how leap second smearing should interact with timens, but it
+> seems to be that the host should be able to produce four data pages
+> (scaled vs unscaled and smeared vs unsmeared) and one per-guest/timens
+> offset page (where offset applies to MONOTONIC and MONOTONIC_RAW only)
+> and cover all bases.  Or do people actually want to offset their TAI
+> and/or REALTIME, and what would that even mean if the offset crosses a
+> leap second?
+>
+
+See above.
+
+And yes people want to run different time universes where TAI !=3D TAI.
+
+> (I haven=E2=80=99t though about the interaction of any of this with ART.)
+
+Obviously not:) And I'm pretty sure that nobody else did, but ART is the
+least of my worries so far.
+
+The current VM migration approach is: Get it done no matter what, we
+deal with the fallout later. Which means endless tinkering because you
+can't fix essential design fails after the fact.
+
+Thanks,
+
+        tglx
