@@ -2,132 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2DD2D4BF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CEC2D4C01
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 21:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387661AbgLIUeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 15:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729563AbgLIUeI (ORCPT
+        id S2387879AbgLIUhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 15:37:07 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:19459 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729345AbgLIUhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:34:08 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5D4C061793
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 12:33:28 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o4so2024032pgj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 12:33:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S+Qm1Txt09YzglGXS4N1LSBJ4tWItqAD7fi2vPq4Ppk=;
-        b=Fcyib7dQRAzrbHKqf1ilBMCQA3ASKgY3eBGvWNNpQ2PWuhwZP7jncRukeZDZK7gNRC
-         CLogErUqYuG/4O4ZooIPcL7abErRyDIy66cTt8GojzDTjrUiYFeHTKrO6aMD1WDI9JlW
-         5PE5pASI+ez65+RAMHh/Tokz7aQmiZlYZ5ysIHKy3/XkYWkj0/WO08Rkydyrp3RTHipD
-         VtZiMrn4tRVC1a/rn0KW6Hv8wmhIacpe+jJg3wcIR/v7gh+8dcLKfbVfibYEhsZFXS8n
-         Lb8j0m49jLCtbalkgpy44iXb1DNYGxD3ff5RSRGwQ1xYp83RXUJrSQOB8QADW1SpvgJ3
-         BaiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S+Qm1Txt09YzglGXS4N1LSBJ4tWItqAD7fi2vPq4Ppk=;
-        b=YRkAjZu+FpyeyK+EaZsp+VRctz2RDRcsH+dAoolCT08yH+sPA7/6rbcuhRvaot1S77
-         vYvfVO6bTThCeHNwZbP0odJ96t8D0yFAmaHcpogRd11v24zVLQcDWGkN+mZK4zRCPACQ
-         SXqGMN6ljJFMZoP2YJEUAaRRZ8sEpQ3lSwzu32RL0fIwMKWDjD3+optgxgOgMEsRSld8
-         jKMKpG2BmunTEXy7BKxglza/TicrKO73Fm084nzQNjoUdU2/HIM2zSP7R83SwEDtC9wK
-         2uqSZ77wVcOOPU0YZDO0XBQv2kXBI7syjGqiLg+WN/YvjBWlMeNKyN8HEMknqeP2mDJd
-         Itwg==
-X-Gm-Message-State: AOAM5300TbtTifC5QuJEQ7+C5jIjrJS/75Frmm81rppRahzOaVRRdn5D
-        mU9Nv4vradBqSH2JaNSZNxnLbw==
-X-Google-Smtp-Source: ABdhPJzMfIQyr8v+bNxTQhdSP69mFCO2iwcAVPwUBTpqrxRkjJvC63JtqzVhQ9O3ctQeQ4a/fh7VcQ==
-X-Received: by 2002:a65:68da:: with SMTP id k26mr3486564pgt.303.1607546007805;
-        Wed, 09 Dec 2020 12:33:27 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id u4sm3451748pgg.48.2020.12.09.12.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:33:26 -0800 (PST)
-Date:   Wed, 9 Dec 2020 12:33:22 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
-Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-Message-ID: <X9E0kl0+9zGSnIu/@google.com>
-References: <20201208213531.2626955-1-vipinsh@google.com>
+        Wed, 9 Dec 2020 15:37:06 -0500
+X-Greylist: delayed 114110 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Dec 2020 15:37:04 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607546052;
+        s=strato-dkim-0002; d=fossekall.de;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Subject:Sender;
+        bh=NW8oMEoZejP9UrMPWLz8vivLgh1kG3lHr/CL5F7qKGU=;
+        b=O0ZB2yySXnQ5EfKnaTpty+9h9soBE31QbSPI8csivHKVyNTaMsAe8gs4nipEusgG9l
+        GVqfu7OvDA4PAswKszFOIJbqrEu/Hr1sH4fcBoIwKP8YOobRjzZqKgu2ocS9+HfXhJci
+        ATiNlfxDiz74MNev7MoqvIVVSpMayfj4ftCSUJAVyAnRw1owbcdQPewlnC3//2ST7KzP
+        8umVu4WZA6d98RPUwktNmXOu+XOCzzZ/dBo2W2T67lDiUsAp1MPAhQJ4RZeBYCcJV6no
+        3wY5X3p0piOteXx1yEWWDb69c63pp37O8zZVlJjjFYP7Fl4e9KoYpx6Tenr/NTicknSt
+        vGhg==
+X-RZG-AUTH: ":O2kGeEG7b/pS1EzgE2y7nF0STYsSLflpbjNKxx7cGrBOdI6BL9pkS3QW19mO7I+/JwRspuzJFZuRzQ=="
+X-RZG-CLASS-ID: mo00
+Received: from aerfugl
+        by smtp.strato.de (RZmta 47.6.2 AUTH)
+        with ESMTPSA id e07b38wB9KY2Aqh
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 9 Dec 2020 21:34:02 +0100 (CET)
+Received: from koltrast.a98shuttle.de ([192.168.1.27] helo=a98shuttle.de)
+        by aerfugl with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <michael@fossekall.de>)
+        id 1kn69x-00077t-G0; Wed, 09 Dec 2020 21:34:01 +0100
+Date:   Wed, 9 Dec 2020 21:34:00 +0100
+From:   Michael Klein <michael@fossekall.de>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] power: reset: new driver regulator-poweroff
+Message-ID: <20201209203400.GA108307@a98shuttle.de>
+References: <20201128103958.q6glewhhch7vtczr@gilmour>
+ <20201207142756.17819-1-michael@fossekall.de>
+ <20201207142756.17819-2-michael@fossekall.de>
+ <20201208101052.ecq2hbixxi45h4mr@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201208213531.2626955-1-vipinsh@google.com>
+In-Reply-To: <20201208101052.ecq2hbixxi45h4mr@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:35:29PM -0800, Vipin Sharma wrote:
-> Hello,
-> 
-> This patch adds a new cgroup controller, Encryption IDs, to track and
-> limit the usage of encryption IDs on a host.
-> 
-> AMD provides Secure Encrypted Virtualization (SEV) and SEV with
-> Encrypted State (SEV-ES) to encrypt the guest OS's memory using limited
-> number of Address Space Identifiers (ASIDs).
-> 
-> This limited number of ASIDs creates issues like SEV ASID starvation and
-> unoptimized scheduling in the cloud infrastucture.
-> 
-> In the RFC patch v1, I provided only SEV cgroup controller but based
-> on the feedback and discussion it became clear that this cgroup
-> controller can be extended to be used by Intel's Trusted Domain
-> Extension (TDX) and s390's protected virtualization Secure Execution IDs
-> (SEID)
-> 
-> This patch series provides a generic Encryption IDs controller with
-> tracking support of the SEV ASIDs.
-> 
-> Changes in v2:
-> - Changed cgroup name from sev to encryption_ids.
-> - Replaced SEV specific names in APIs and documentations with generic
->   encryption IDs.
-> - Providing 3 cgroup files per encryption ID type. For example in SEV,
->   - encryption_ids.sev.stat (only in the root cgroup directory).
->   - encryption_ids.sev.max
->   - encryption_ids.sev.current
-> 
-> Thanks
-> Vipin Sharma
-> 
-> [1] https://lore.kernel.org/lkml/20200922004024.3699923-1-vipinsh@google.com/#r
-> 
-> Vipin Sharma (2):
->   cgroup: svm: Add Encryption ID controller
->   cgroup: svm: Encryption IDs cgroup documentation.
-> 
->  .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 +++++
->  Documentation/admin-guide/cgroup-v2.rst       |  78 +++-
->  arch/x86/kvm/svm/sev.c                        |  28 +-
->  include/linux/cgroup_subsys.h                 |   4 +
->  include/linux/encryption_ids_cgroup.h         |  70 +++
->  include/linux/kvm_host.h                      |   4 +
->  init/Kconfig                                  |  14 +
->  kernel/cgroup/Makefile                        |   1 +
->  kernel/cgroup/encryption_ids.c                | 430 ++++++++++++++++++
->  9 files changed, 728 insertions(+), 9 deletions(-)
->  create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
->  create mode 100644 include/linux/encryption_ids_cgroup.h
->  create mode 100644 kernel/cgroup/encryption_ids.c
-> 
-> --
-> 2.29.2.576.ga3fc446d84-goog
-> 
+On Tue, Dec 08, 2020 at 11:10:52AM +0100, Maxime Ripard wrote:
+>On Mon, Dec 07, 2020 at 03:27:54PM +0100, Michael Klein wrote:
+>> This driver registers a pm_power_off function to disable a set of
+>> regulators defined in the devicetree to turn off the board.
+>>
+>> Signed-off-by: Michael Klein <michael@fossekall.de>
+>> ---
+>>  drivers/power/reset/Kconfig              |   7 ++
+>>  drivers/power/reset/Makefile             |   1 +
+>>  drivers/power/reset/regulator-poweroff.c | 107 +++++++++++++++++++++++
+>>  3 files changed, 115 insertions(+)
+>>  create mode 100644 drivers/power/reset/regulator-poweroff.c
+>>
+>> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+>> index d55b3727e00e..ae6cb7b0bd4d 100644
+>> --- a/drivers/power/reset/Kconfig
+>> +++ b/drivers/power/reset/Kconfig
+>> @@ -177,6 +177,13 @@ config POWER_RESET_QNAP
+>>
+>>  	  Say Y if you have a QNAP NAS.
+>>
+>> +config POWER_RESET_REGULATOR
+>> +	bool "Regulator subsystem power-off driver"
+>> +	depends on OF && REGULATOR
+>> +	help
+>> +	  This driver supports turning off your board by disabling a set
+>> +	  of regulators defined in the devicetree.
+>> +
+>>  config POWER_RESET_RESTART
+>>  	bool "Restart power-off driver"
+>>  	help
+>> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+>> index c51eceba9ea3..9dc49d3a57ff 100644
+>> --- a/drivers/power/reset/Makefile
+>> +++ b/drivers/power/reset/Makefile
+>> @@ -19,6 +19,7 @@ obj-$(CONFIG_POWER_RESET_OCELOT_RESET) += ocelot-reset.o
+>>  obj-$(CONFIG_POWER_RESET_PIIX4_POWEROFF) += piix4-poweroff.o
+>>  obj-$(CONFIG_POWER_RESET_LTC2952) += ltc2952-poweroff.o
+>>  obj-$(CONFIG_POWER_RESET_QNAP) += qnap-poweroff.o
+>> +obj-$(CONFIG_POWER_RESET_REGULATOR) += regulator-poweroff.o
+>>  obj-$(CONFIG_POWER_RESET_RESTART) += restart-poweroff.o
+>>  obj-$(CONFIG_POWER_RESET_ST) += st-poweroff.o
+>>  obj-$(CONFIG_POWER_RESET_VERSATILE) += arm-versatile-reboot.o
+>> diff --git a/drivers/power/reset/regulator-poweroff.c b/drivers/power/reset/regulator-poweroff.c
+>> new file mode 100644
+>> index 000000000000..df2ca4fdcc49
+>> --- /dev/null
+>> +++ b/drivers/power/reset/regulator-poweroff.c
+>> @@ -0,0 +1,107 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Force-disables a regulator to power down a device
+>> + *
+>> + * Michael Klein <michael@fossekall.de>
+>> + *
+>> + * Copyright (C) 2020 Michael Klein
+>> + *
+>> + * Based on the gpio-poweroff driver.
+>> + */
+>> +#include <linux/delay.h>
+>> +#include <linux/init.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/regulator/consumer.h>
+>> +
+>> +#define DEFAULT_TIMEOUT_MS 3000
+>> +
+>> +/*
+>> + * Hold configuration here, cannot be more than one instance of the driver
+>> + * since pm_power_off itself is global.
+>> + */
+>> +static struct regulator **poweroff_regulators;
+>> +static u32 timeout = DEFAULT_TIMEOUT_MS;
+>> +
+>> +static void regulator_poweroff_do_poweroff(void)
+>> +{
+>> +	struct regulator **it;
+>> +
+>> +	if (poweroff_regulators)
+>> +		for (it = poweroff_regulators; *it; ++it)
+>> +			if (regulator_is_enabled(*it))
+>> +				regulator_force_disable(*it);
+>> +
+>> +	/* give it some time */
+>> +	mdelay(timeout);
+>> +
+>> +	WARN_ON(1);
+>> +}
+>> +
+>> +static int regulator_poweroff_probe(struct platform_device *pdev)
+>> +{
+>> +	int count;
+>> +	const char *name;
+>> +	struct regulator **it;
+>> +	struct property *prop;
+>> +	struct device_node *node = pdev->dev.of_node;
+>> +
+>> +	/* If a pm_power_off function has already been added, leave it alone */
+>> +	if (pm_power_off != NULL) {
+>> +		dev_err(&pdev->dev,
+>> +			"%s: pm_power_off function already registered\n",
+>> +		       __func__);
+>> +		return -EBUSY;
+>> +	}
+>> +
+>> +	count = of_property_count_strings(node, "regulator-names");
+>> +	if (count <= 0)
+>> +		return -ENOENT;
+>> +
+>> +	poweroff_regulators = devm_kcalloc(&pdev->dev, count + 1,
+>> +		sizeof(struct regulator *), GFP_KERNEL);
+>> +
+>> +	it = poweroff_regulators;
+>> +	of_property_for_each_string(node, "regulator-names", prop, name) {
+>> +		*it = devm_regulator_get(&pdev->dev, name);
+>> +		if (IS_ERR(*it))
+>> +			return PTR_ERR(*it);
+>> +		it++;
+>> +	}
+>> +
+>> +	of_property_read_u32(node, "timeout-ms", &timeout);
+>> +
+>> +	pm_power_off = &regulator_poweroff_do_poweroff;
+>> +	return 0;
+>> +}
+>> +
+>> +static int regulator_poweroff_remove(__maybe_unused struct platform_device *pdev)
+>> +{
+>> +	if (pm_power_off == &regulator_poweroff_do_poweroff)
+>> +		pm_power_off = NULL;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id of_regulator_poweroff_match[] = {
+>> +	{ .compatible = "regulator-poweroff", },
+>> +	{},
+>> +};
+>> +
+>> +static struct platform_driver regulator_poweroff_driver = {
+>> +	.probe = regulator_poweroff_probe,
+>> +	.remove = regulator_poweroff_remove,
+>> +	.driver = {
+>> +		.name = "poweroff-regulator",
+>> +		.of_match_table = of_regulator_poweroff_match,
+>> +	},
+>> +};
+>> +
+>> +module_platform_driver(regulator_poweroff_driver);
+>
+>Since this can't be compiled as a module, you can use
+>module_platform_driver_probe instead.
 
-Please ignore this version of patch series, I will send out v3 soon. v2
-has build failure when CONFIG_CGROUP is disabled.
+actually no, as platform_driver_probe() does not support deferred 
+probing and the regulator might not be available during 
+regulator_poweroff_probe() yet:
+
+# dmesg | grep poweroff
+[    0.788135] poweroff-regulator poweroff: probe deferral not supported
+
+-- 
+Michael
