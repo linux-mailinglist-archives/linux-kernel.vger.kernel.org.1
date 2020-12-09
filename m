@@ -2,141 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A272D3D2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA042D3D32
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 09:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgLIIQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 03:16:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S1726954AbgLIIR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 03:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgLIIQt (ORCPT
+        with ESMTP id S1725765AbgLIIRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 03:16:49 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58CC061793;
-        Wed,  9 Dec 2020 00:16:09 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w6so534291pfu.1;
-        Wed, 09 Dec 2020 00:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fixlBjRW2kL0YWNC9K96DmtICObU9iPBUY8f82+kwnQ=;
-        b=TrReyXGijHi4qX1gffQA287sRLgrEyWVqW6+UeQsOJNt69VPFiKTjwJAOuJHL+XdPF
-         6OxxV/MAPyLN23bwoYNL6A4JVCRlo2oWv4RVfYrT2Ug3EZMslV00XwXeN8xyp1pDcMdM
-         UIyb9GBUSZYgqAGwukI82h7pPhkfr0xRlAaQ1cYUqHR0Ap3+SfAE+1wmbc2b+Fbf3bQv
-         GqhbxUzwTPx1D6zA6vOZcn0U2CqIlQ0ZHIZnWyxa3TGqQVzBydDyAh+vgriWOCMHfmJT
-         qHnDOmaeOkpewzL6bVp7yB53160hOewXhV94eaFBkbDDI+sZACXo825ckKZYKAKhP590
-         Go4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fixlBjRW2kL0YWNC9K96DmtICObU9iPBUY8f82+kwnQ=;
-        b=Ah6EyqZp/4BMSJ0oy2hcPEvBSxd98X2BM1IJyD+C4iE2BGaBd1dFZmeSTPiPkXaLe7
-         H1b95cOrTbOpHzyzbkMKvGy0XGzxLYtdFBUNngEehYXjamcGDMQ+/hkn0KMQ0AmaA667
-         wRKpeskYP12EgmJOvTEzcv3N2XLICLvNENi66iZUQpAJop0+P32fpz7PUkkajakQui57
-         Oqx9kfWsvT6us8KekazOQOaEEwiCtSiW77kGGrj0nmakAeKo4IybRVOfpk1DKe1Tk5S7
-         EOHomaRQf3yVbdomZ6g7a1gEfYQdsEaSfJo2g9SCJGGJDkHRY4lxgjnjGvk9wDrQXtZH
-         OiSA==
-X-Gm-Message-State: AOAM531xf4JZWC2qaN0i7SZBneQF3U4oJ/fUnzsy8ZHtb8IWIIRoKotf
-        F0Uk5oDwIdlP2gvUMp2YLLOzxbgAE04=
-X-Google-Smtp-Source: ABdhPJxLaN0OtY1x/XUZLanliKgvcwNVRf4J3ol/EVWF75A/NBasJvrUvm7AGWl5/yvT8U2Ol1TXPQ==
-X-Received: by 2002:a63:e94f:: with SMTP id q15mr951518pgj.401.1607501769313;
-        Wed, 09 Dec 2020 00:16:09 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:ac46:48a7:8096:18f5])
-        by smtp.gmail.com with ESMTPSA id f21sm1389206pgk.18.2020.12.09.00.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 00:16:08 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net: x25: Fix handling of Restart Request and Restart Confirmation
-Date:   Wed,  9 Dec 2020 00:16:04 -0800
-Message-Id: <20201209081604.464084-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 9 Dec 2020 03:17:25 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B251C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Dec 2020 00:16:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7DbXicEP14682gFH5lbRgzIsZ1ZZPjA3ihyvb2YqmuY=; b=qWkGuRldOYs++JE0EgNIrR+fcB
+        LIWr7c4fS2+kEFIWlRNvsvnyJLQToQqAUjMsU00zXGtx8Cc+UXUCaqcbJNUfQANibRI5MQFYROwZY
+        S1Z6qAtleDO4qyyW1PtoMxa3qpeLPLXXb5stOEt29NFxcWVwsfwfQU8NLAZtn8bszr3G9y79VbQbC
+        kzIW5LXtSlses9e3AJVkpkTyn3hiPdplROmkSPLahscqYNdd6fDrull9FdeS0Aaw/+mSCF/xDWJrs
+        WKtBpwbiqpE00FCCtf6cMxLB0jk5P9oRtCzZzhiANRNQv4oBiBReyEoygDSpP+LrJvMcfLxOgWP7E
+        wDG7Rg5A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmueA-0000ob-7I; Wed, 09 Dec 2020 08:16:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7F4A830477A;
+        Wed,  9 Dec 2020 09:16:23 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6748F200F8CC1; Wed,  9 Dec 2020 09:16:23 +0100 (CET)
+Date:   Wed, 9 Dec 2020 09:16:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v2 2/3] printk: change @clear_seq to atomic64_t
+Message-ID: <20201209081623.GI2414@hirez.programming.kicks-ass.net>
+References: <20201201205341.3871-1-john.ogness@linutronix.de>
+ <20201201205341.3871-3-john.ogness@linutronix.de>
+ <X8n9a2DWUFE/giyB@alley>
+ <X8/jS9k/eMIL+Acw@jagdpanzerIV.localdomain>
+ <875z5c9bhn.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875z5c9bhn.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. When the x25 module gets loaded, layer 2 may already be running and
-connected. In this case, although we are in X25_LINK_STATE_0, we still
-need to handle the Restart Request received, rather than ignore it.
+On Tue, Dec 08, 2020 at 11:36:44PM +0106, John Ogness wrote:
+> For the state variable we chose atomic_long_t instead of atomic64_t for
+> this reason. atomic_long_t operations are available atomically on all
+> architectures.
 
-2. When we are in X25_LINK_STATE_2, we have already sent a Restart Request
-and is waiting for the Restart Confirmation with t20timer. t20timer will
-restart itself repeatedly forever so it will always be there, as long as we
-are in State 2. So we don't need to check x25_t20timer_pending again.
+Please put on your eye cancer gear and inspect the atomic implementation
+of PA-RISC, Sparc32, feh, I forgot who else.
 
-Fixes: d023b2b9ccc2 ("net/x25: fix restart request/confirm handling")
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- net/x25/x25_link.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
-
-diff --git a/net/x25/x25_link.c b/net/x25/x25_link.c
-index f92073f3cb11..57a81100c5da 100644
---- a/net/x25/x25_link.c
-+++ b/net/x25/x25_link.c
-@@ -58,11 +58,6 @@ static inline void x25_stop_t20timer(struct x25_neigh *nb)
- 	del_timer(&nb->t20timer);
- }
- 
--static inline int x25_t20timer_pending(struct x25_neigh *nb)
--{
--	return timer_pending(&nb->t20timer);
--}
--
- /*
-  *	This handles all restart and diagnostic frames.
-  */
-@@ -70,17 +65,20 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
- 		      unsigned short frametype)
- {
- 	struct sk_buff *skbn;
--	int confirm;
- 
- 	switch (frametype) {
- 	case X25_RESTART_REQUEST:
- 		switch (nb->state) {
-+		case X25_LINK_STATE_0:
-+			/* This can happen when the x25 module just gets loaded
-+			 * and doesn't know layer 2 has already connected
-+			 */
-+			nb->state = X25_LINK_STATE_3;
-+			x25_transmit_restart_confirmation(nb);
-+			break;
- 		case X25_LINK_STATE_2:
--			confirm = !x25_t20timer_pending(nb);
- 			x25_stop_t20timer(nb);
- 			nb->state = X25_LINK_STATE_3;
--			if (confirm)
--				x25_transmit_restart_confirmation(nb);
- 			break;
- 		case X25_LINK_STATE_3:
- 			/* clear existing virtual calls */
-@@ -94,13 +92,8 @@ void x25_link_control(struct sk_buff *skb, struct x25_neigh *nb,
- 	case X25_RESTART_CONFIRMATION:
- 		switch (nb->state) {
- 		case X25_LINK_STATE_2:
--			if (x25_t20timer_pending(nb)) {
--				x25_stop_t20timer(nb);
--				nb->state = X25_LINK_STATE_3;
--			} else {
--				x25_transmit_restart_request(nb);
--				x25_start_t20timer(nb);
--			}
-+			x25_stop_t20timer(nb);
-+			nb->state = X25_LINK_STATE_3;
- 			break;
- 		case X25_LINK_STATE_3:
- 			/* clear existing virtual calls */
--- 
-2.27.0
-
+Those SMP capable architectures are gifted with just one XCHG like
+atomic instruction :/ Anyway, as said in the other email, they also
+don't have NMIs so it mostly works.
