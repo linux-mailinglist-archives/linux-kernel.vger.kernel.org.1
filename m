@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9BA2D3B04
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80452D3B07
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 06:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgLIFky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 00:40:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S1727730AbgLIFme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 00:42:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727645AbgLIFkx (ORCPT
+        with ESMTP id S1727009AbgLIFmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 00:40:53 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECFCC0613CF;
-        Tue,  8 Dec 2020 21:40:13 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id a109so276156otc.1;
-        Tue, 08 Dec 2020 21:40:13 -0800 (PST)
+        Wed, 9 Dec 2020 00:42:33 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68725C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue,  8 Dec 2020 21:41:53 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id z9so217600qtn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 08 Dec 2020 21:41:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=z6JGKBHPAN6pNta50XqRFUPJ38/LJ/rWm+SV+OmNwnY=;
-        b=MneNY57C8ATW72aGVSjho5XUG1L7xqirqc1sTdP4RN33aq8KWb9nkxKhf0FEFIvRJi
-         OpJeMOhRRO2EFN6JgK1S4Oguxg7hJOLTTGm1uM43lVwjbla1/1XDqkQcjvtH18KTe7aM
-         4eDScKlxkhMVDylgFgyixbFXIIbKDePXe4y2cPnDVkt92EwOAv91dafSLMMcx8gvK1va
-         w3Kz6fP+azVEkGiTZgWbW23ubg0SyuwWN8SnAFGXNAFOKKh7/cgyTTwHzJtJuFux0OJV
-         FtNwBQudiCreJJbu8Gct62938yETQkvqeFzpn4zpuceE2kmCJJnl8yD+nbJmirsZ01zM
-         3m9w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i8ZJuoDJybHp2tzVONMGuofWcZ7p2pBjclZqoID/hEc=;
+        b=UOXSCoJxmnpVjuMvUpp9guycLEE9pkjcVxY9md2+onQ1/ecp1Hi+vcYRfU3bgQSiTH
+         FziOD9AYxPqW2NiWirjt0PlziMyMbmRpP+pbqFB99E5rYU777pTYACGKI0RpCF2c9BRo
+         NIJYT6J1DaJD+i1uxYNzqd5IK4o7lp3SjuAu41rH0pEihjr5k4oVSIyeZmSuI48S6a/4
+         lf7Eg9l27J5ARK9y0vhVPx5QvCOtxV4iNf6PO4ClZ10PXsQFpszITQcubScGmUNUUZZl
+         IlGCHvHktRn31X5o8iDr8mhWI0yZv9RpHMLkiGWr0vh8QMQ7JO5k+mYqw7z4f14+oXW7
+         vGUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=z6JGKBHPAN6pNta50XqRFUPJ38/LJ/rWm+SV+OmNwnY=;
-        b=M1LEveM1PCZ0Yfj//ur3kHeUiTpc8Uq3bccBXf7r/8yGOyXcyjVPf707Pby6pVi2uw
-         5lPf4FfSAvvebrKcXnlt7uS2P1cZboVg82s+ojTzwBqYtoL9cLnHEQ0nIegv8qHQ3yK5
-         7ckH0widgOF8yeKp9PSP+audqCANqPTUYB5fnFMCf+BBD8S4BBTQ3OuZ5bspohEVAihU
-         +SQ2aE9UUPfUSoya1MLKD+TBV3aG9JqP/R8vthxuGXdLVNWxWU/0GkPsffZVsd3hJPuq
-         /43LV+uCGHh4WLHmPv8zEJ99/G/A4WzgJj28P856me5MlPKmvTQ0sQd1NfVWkTRlU79f
-         UQmQ==
-X-Gm-Message-State: AOAM5338wkJbXQLHTgOc8K8ZX3f2iRhI0Gq7pA3S4bYTeTFXqAZ6qTtU
-        TW8obDz5QOM+07sWmHhbh+Y=
-X-Google-Smtp-Source: ABdhPJw4kCLKL2ZxUNf4vAOiVmBNAxbmCI1Uz9FvDsRVqKDNgWG2zd6jEqP7lqWFPOXE/J51mCvbpw==
-X-Received: by 2002:a05:6830:22eb:: with SMTP id t11mr487039otc.114.1607492413043;
-        Tue, 08 Dec 2020 21:40:13 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id z9sm174527otj.67.2020.12.08.21.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 21:40:12 -0800 (PST)
-Date:   Tue, 08 Dec 2020 21:40:03 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Message-ID: <5fd06333d11ff_50ce2082d@john-XPS-13-9370.notmuch>
-In-Reply-To: <X89G2kItO2o60+A6@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-5-jackmanb@google.com>
- <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
- <X89G2kItO2o60+A6@google.com>
-Subject: Re: [PATCH bpf-next v4 04/11] bpf: Rename BPF_XADD and prepare to
- encode other atomics in .imm
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i8ZJuoDJybHp2tzVONMGuofWcZ7p2pBjclZqoID/hEc=;
+        b=K+m+/2ul7/45b5mX3NiQFV/swJxVFcHvrDcNZkabGybV7rkkJp+o2M7oGRvpfVgXEV
+         T7t95WaoJRRQXRQDLB2j4diQgyAal/JRjwpEOFgyvtLkgr8tJDOLG9L8JuYeKiSvyN+B
+         CX5jmOffIXLOXKShTtIg+nID5RTZ8QGne/0R5sPgvYTEidbGs5HgUNLnF0mxnjufysbg
+         DFH+KpFYnNIwc+v9wA2YXqFg+KmzvMw6VEPilU8G2LDWB3g6pyHP6ojnjDBBilEVErW9
+         BYU1QvK0I88t3c56Yr6n5ETpZl9iD2gndn+UVSA5OlQcWuOVaGtpToUK761NsZO4aWJd
+         MJ4w==
+X-Gm-Message-State: AOAM533gZJSdG3pL5yScdlpmOYhL/s6QWu1MT20B1vtBL+mLr5H4nu1s
+        f8fYHuDDBhT1swH2iIRnao0=
+X-Google-Smtp-Source: ABdhPJzZUuf2XsInUB3Fx8zqDdvZHWKQUIW5Gw5sT1OV3zktLeXI8yB9W4KtQpq/Gp48DlAV7nptBw==
+X-Received: by 2002:ac8:4648:: with SMTP id f8mr1305258qto.5.1607492512637;
+        Tue, 08 Dec 2020 21:41:52 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id h9sm522190qkk.33.2020.12.08.21.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Dec 2020 21:41:52 -0800 (PST)
+Subject: Re: [SPECIFICATION RFC] The firmware and bootloader log specification
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Wim Vervoorn <wvervoorn@eltan.com>,
+        The development of GNU GRUB <grub-devel@gnu.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>
+Cc:     coreboot@coreboot.org, LKML <linux-kernel@vger.kernel.org>,
+        systemd-devel@lists.freedesktop.org,
+        trenchboot-devel@googlegroups.com,
+        U-Boot Mailing List <u-boot@lists.denx.de>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, alecb@umass.edu,
+        alexander.burmashev@oracle.com, allen.cryptic@gmail.com,
+        andrew.cooper3@citrix.com, ard.biesheuvel@linaro.org,
+        "btrotter@gmail.com" <btrotter@gmail.com>,
+        dpsmith@apertussolutions.com, eric.devolder@oracle.com,
+        eric.snowberg@oracle.com, hpa@zytor.com, hun@n-dimensional.de,
+        javierm@redhat.com, joao.m.martins@oracle.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        krystian.hebel@3mdeb.com, leif@nuviainc.com,
+        lukasz.hawrylko@intel.com, luto@amacapital.net,
+        michal.zygowski@3mdeb.com, Matthew Garrett <mjg59@google.com>,
+        mtottenh@akamai.com,
+        Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>,
+        piotr.krol@3mdeb.com, pjones@redhat.com, roger.pau@citrix.com,
+        ross.philipson@oracle.com, tyhicks@linux.microsoft.com,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+References: <20201113235242.k6fzlwmwm2xqhqsi@tomti.i.net-space.pl>
+ <CAODwPW9dxvMfXY=92pJNGazgYqcynAk72EkzOcmF7JZXhHTwSQ@mail.gmail.com>
+ <6c1e79be210549949c30253a6cfcafc1@Eltsrv03.Eltan.local>
+ <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <a173867b-49db-8147-de55-8d601f033036@gmail.com>
+Date:   Tue, 8 Dec 2020 23:41:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <9b614471-0395-88a5-1347-66417797e39d@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brendan Jackman wrote:
-> Hi John, thanks a lot for the reviews!
+On 12/4/20 7:23 AM, Paul Menzel wrote:
+> Dear Wim, dear Daniel,
 > 
-> On Mon, Dec 07, 2020 at 01:56:53PM -0800, John Fastabend wrote:
-> > Brendan Jackman wrote:
-> > > A subsequent patch will add additional atomic operations. These new
-> > > operations will use the same opcode field as the existing XADD, with
-> > > the immediate discriminating different operations.
-> > > 
-> > > In preparation, rename the instruction mode BPF_ATOMIC and start
-> > > calling the zero immediate BPF_ADD.
-> > > 
-> > > This is possible (doesn't break existing valid BPF progs) because the
-> > > immediate field is currently reserved MBZ and BPF_ADD is zero.
-> > > 
-> > > All uses are removed from the tree but the BPF_XADD definition is
-> > > kept around to avoid breaking builds for people including kernel
-> > > headers.
-> > > 
-> > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > ---
-
-[...]
-
-> > > +	case BPF_STX | BPF_ATOMIC | BPF_W:
-> > > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
-> > > +		if (insn->imm != BPF_ADD) {
-> > > +			pr_err("bpf-jit: not supported: atomic operation %02x ***\n",
-> > > +			       insn->imm);
-> > > +			return -EINVAL;
-> > > +		}
-> > 
-> > Can we standardize the error across jits and the error return code? It seems
-> > odd that we use pr_err, pr_info_once, pr_err_ratelimited and then return
-> > ENOTSUPP, EFAULT or EINVAL.
 > 
-> That would be a noble cause but I don't think it makes sense in this
-> patchset: they are already inconsistent, so here I've gone for intra-JIT
-> consistency over inter-JIT consistency.
+> First, thank you for including all parties in the discussion.
+> Am 04.12.20 um 13:52 schrieb Wim Vervoorn:
 > 
-> I think it would be more annoying, for example, if the s390 JIT returned
-> -EOPNOTSUPP for a bad atomic but -1 for other unsupported ops, than it
-> is already that the s390 JIT returns -1 where the MIPS returns -EINVAL.
+>> I agree with you. Using an existing standard is better than inventing
+>> a new one in this case. I think using the coreboot logging is a good
+>> idea as there is indeed a lot of support already available and it is
+>> lightweight and simple.
+> In my opinion coreboot’s format is lacking, that it does not record the timestamp, and the log level is not stored as metadata, but (in coreboot) only used to decide if to print the message or not.
+> 
+> I agree with you, that an existing standard should be used, and in my opinion it’s Linux message format. That is most widely supported, and existing tools could then also work with pre-Linux messages.
+> 
+> Sean Hudson from Mentor Graphics presented that idea at Embedded Linux Conference Europe 2016 [1]. No idea, if anything came out of that effort. (Unfortunately, I couldn’t find an email. Does somebody have contacts at Mentor to find out, how to reach him?)
 
-ok works for me thanks for the explanation.
+I forwarded this to Sean.
+
+-Frank
+
+> 
+> 
+> Kind regards,
+> 
+> Paul
+> 
+> 
+> [1]: http://events17.linuxfoundation.org/sites/events/files/slides/2016-10-12%20-%20ELCE%20-%20Shared%20Logging%20-%20Part%20Deux.pdf
+
