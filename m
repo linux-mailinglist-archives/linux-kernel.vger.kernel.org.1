@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7CD2D3E3A
+	by mail.lfdr.de (Postfix) with ESMTP id AD6E82D3E3B
 	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 10:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgLIJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 04:08:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgLIJIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 04:08:06 -0500
-X-Gm-Message-State: AOAM530ZsrA9/HV2DjgowpAhL63/YKhv1cpqkFMFoorvLErNIuzL0PMy
-        K9uG8docXIrYzLqGY0EfpKbcUvToPUL1fOaVtJ0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607504846;
-        bh=TwxFShO4SPchdzTy7qkGiE4yd1wyqCRwfixyq9lhU7U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NCiGOimI+QFWkGlUZtp54uaMVti9IldC3/6tybv4aAngGynp5QeKYtDn1Ea3viG6k
-         PHX9S56SX/HXW1fK8ZZPDRO9lfAqFCkkwCspMmK4HLO1QobtGZ5EyAk89vzjh5SjYW
-         Jq+5FoSKSVewsuicy5V8hjtOrYy9DBikIUbvEgJQw6qYx9sgVDRQUY/zCFp1d4TBua
-         +613pyJgYP/eaY+At6PuGkeuo87wBR32bvjtoW3pYFP29c05B7kjAHoci1oedOldtN
-         APm58L0Fsb+80x7Uy6lX7NzNPMFQwWi5WJ4Cm+uNh6KtiftBjCvyV8ZlzR0+ZlQj5o
-         EWaXpF140L0UA==
-X-Google-Smtp-Source: ABdhPJxKs07aufMIXKvOvasJWP2Wd8H56Ov3ybUuW6F/PQlQb2wWFCBMjJs8uH8yTwkOwJT1cWw+0emvCRgVQRHX1pw=
-X-Received: by 2002:aca:44d:: with SMTP id 74mr1079063oie.4.1607504845146;
- Wed, 09 Dec 2020 01:07:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201213707.541432-1-samitolvanen@google.com>
- <CAK8P3a1WEAo2SEgKUEs3SB7n7QeeHa0=cx_nO==rDK0jjDArow@mail.gmail.com>
- <CABCJKueCHo2RYfx_A21m+=d1gQLR9QsOOxCsHFeicCqyHkb-Kg@mail.gmail.com>
- <CAK8P3a1Xfpt7QLkvxjtXKcgzcWkS8g9bmxD687+rqjTafTzKrg@mail.gmail.com>
- <CAK8P3a3O65m6Us=YvCP3QA+0kqAeEqfi-DLOJa+JYmBqs8-JcA@mail.gmail.com> <CAFP8O3L35sj117VJeE3pUPE2H4++z2g48Gfd-8Ca=CUtP1LVWw@mail.gmail.com>
-In-Reply-To: <CAFP8O3L35sj117VJeE3pUPE2H4++z2g48Gfd-8Ca=CUtP1LVWw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 9 Dec 2020 10:07:08 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1aCiDta9_4-M6tstR+eX53ZaO65wdmoTXdZo2bBQmAWg@mail.gmail.com>
-Message-ID: <CAK8P3a1aCiDta9_4-M6tstR+eX53ZaO65wdmoTXdZo2bBQmAWg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/16] Add support for Clang LTO
-To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        id S1728848AbgLIJIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 04:08:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35786 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726044AbgLIJIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 04:08:13 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B9934lq036376;
+        Wed, 9 Dec 2020 04:07:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=uPZLZFucs64QrPM+4R1abkgq6sji18ilojIc6tWxqoE=;
+ b=DVkZknj/c0Hg6F1+Hx7X2BE1YnFeGUKXAGLiIjaejGwitzlMz8PNJGtHwKjmWMomd/hd
+ +fN11w9hdXzgjhqBetEjM914LUBPkDnE6q2y+9TzriBTeLkpL5yJDjf9XwyKA/UuwciA
+ KMr+RbXmYjmdkuGqAGGp/REsHtH5LPFlZqHZe8hEP0XRDIXRpq54YPCkaKKsoCLBCif2
+ mA/2dqZB0AtDhXPtQnjbhWgvQPIm55ZdjPhiVgKJ7w3jH+vKSt+ClKguV1kqi8hquC1h
+ 802z7DGc6ZDcuYZejOialXhNJeTsIFJSCePFXEWLZJM4sjMxaN7qg7NH+5/CcMXyVIqT Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35apm07tna-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 04:07:20 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0B993ODE038125;
+        Wed, 9 Dec 2020 04:07:19 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35apm07tmp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 04:07:19 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0B98xPj9028195;
+        Wed, 9 Dec 2020 09:07:18 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01wdc.us.ibm.com with ESMTP id 3581u9bmf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Dec 2020 09:07:18 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0B997H1p19792284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Dec 2020 09:07:17 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7044D136051;
+        Wed,  9 Dec 2020 09:07:17 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB88513605D;
+        Wed,  9 Dec 2020 09:07:16 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.199.49.37])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Dec 2020 09:07:16 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id C63D82E35A0; Wed,  9 Dec 2020 14:37:09 +0530 (IST)
+Date:   Wed, 9 Dec 2020 14:37:09 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] powerpc/cacheinfo: Print correct cache-sibling
+ map/list for L2 cache
+Message-ID: <20201209090709.GB13125@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <1607057327-29822-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607057327-29822-4-git-send-email-ego@linux.vnet.ibm.com>
+ <20201207131138.GJ528281@linux.vnet.ibm.com>
+ <20201208175647.GC14206@in.ibm.com>
+ <20201209083921.GL528281@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209083921.GL528281@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_07:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ malwarescore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
+ phishscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 6:23 AM 'F=C4=81ng-ru=C3=AC S=C3=B2ng' via Clang Bui=
-lt Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> On Tue, Dec 8, 2020 at 1:02 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Tue, Dec 8, 2020 at 9:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > Attaching the config for "ld.lld: error: Never resolved function from
-> > >   blockaddress (Producer: 'LLVM12.0.0' Reader: 'LLVM 12.0.0')"
-> >
-> > And here is a new one: "ld.lld: error: assignment to symbol
-> > init_pg_end does not converge"
->
-> This is interesting. I changed the symbol assignment to a separate
-> loop in https://reviews.llvm.org/D66279
-> Does raising the limit help? Sometimes the kernel linker script can be
-> rewritten to be more friendly to the linker...
+On Wed, Dec 09, 2020 at 02:09:21PM +0530, Srikar Dronamraju wrote:
+> * Gautham R Shenoy <ego@linux.vnet.ibm.com> [2020-12-08 23:26:47]:
+> 
+> > > The drawback of this is even if cpus 0,2,4,6 are released L1 cache will not
+> > > be released. Is this as expected?
+> > 
+> > cacheinfo populates the cache->shared_cpu_map on the basis of which
+> > CPUs share the common device-tree node for a particular cache.  There
+> > is one l1-cache object in the device-tree for a CPU node corresponding
+> > to a big-core. That the L1 is further split between the threads of the
+> > core is shown using ibm,thread-groups.
+> > 
+> 
+> Yes.
+> 
+> > The ideal thing would be to add a "group_leader" field to "struct
+> > cache" so that we can create separate cache objects , one per thread
+> > group. I will take a stab at this in the v2.
+> > 
+> 
+> I am not saying this needs to be done immediately. We could add a TODO and
+> get it done later. Your patch is not making it worse. Its just that there is
+> still something more left to be done.
 
-If that requires rebuilding lld, testing it is beyond what I can help with
-right now. Hopefully someone can reproduce it with my .config.
+Yeah, it needs to be fixed but it may not be a 5.11 target. For now I
+will fix this patch to take care of the build errors on !PPC64 !SMT
+configs. I will post a separate series for making cacheinfo.c aware of
+thread-groups at the time of construction of the cache-chain.
 
-       Arnd
+> 
+> -- 
+> Thanks and Regards
+> Srikar Dronamraju
