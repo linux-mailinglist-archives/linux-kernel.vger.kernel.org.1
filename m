@@ -2,57 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEEE2D48A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093CE2D48A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731866AbgLISK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:10:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727331AbgLISK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:10:27 -0500
-Subject: Re: [GIT PULL] IOMMU fix for 5.10 (-final)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607537386;
-        bh=MsyqIRUCM2LjhoRDi35EkFF1ESIf2BAfUJ8bcwdw2+U=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=XlNQliH1vSnOaxmolsvDJ5Abo1m6Ruw8YCydrMqOY/WXyo9TWZBildmBHCFtes0sL
-         LMmrVLZuUTxOZnIM0O02hLXkLCHpCYFBMu3HDRN25hXcwWYVgl1PbsgkcMC/3g+CgO
-         gZGzvQnQecnV6rp8oZ21sT9Mzo5OE5k/XTCmy2JGipR3YXcHn06XpusKQgtPk1FmDH
-         7MdsL/ClKNCaCUxAPfaAOBudE30DsxiNpcUHX7EQCZ9qlv3CRQrARIyq7GEiDZmhSk
-         IqA5gMpRwTXAWSzThReVMuoJsL8CvqL9geU7f8uXRO4lm2mw/kWSjq7zr5MZJm+03a
-         rQLPjZ6+O44Og==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201209141237.GA8092@willie-the-truck>
-References: <20201209141237.GA8092@willie-the-truck>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201209141237.GA8092@willie-the-truck>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
-X-PR-Tracked-Commit-Id: 4165bf015ba9454f45beaad621d16c516d5c5afe
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ca4bbdaf171604841f77648a2877e2e43db69b71
-Message-Id: <160753738624.9915.18144343532450407181.pr-tracker-bot@kernel.org>
-Date:   Wed, 09 Dec 2020 18:09:46 +0000
-To:     Will Deacon <will@kernel.org>
-Cc:     torvalds@linux-foundation.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, joro@8bytes.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
+        id S1728099AbgLISMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:12:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56252 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730294AbgLISMJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Dec 2020 13:12:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607537443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zLiEzxUOrVlfIOo73NK6FKaWkD2tUBdf1/nXnfx8j9s=;
+        b=i4rBFRGnM9xhOe8lH0pa4x6IBQ12rPg2LRKKYlZYY+aJVvjKt4AbwwClBOaV54nek6qih/
+        r+MAZYX2i+J64C4QE1Ep1F/vhmIzVPuofa3nI+kPmFvVlp82RluSjmvpLoOzv9ErAEu41y
+        m3rIKy4DfNIpUUg9PfyaBjLYSpXgWPU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-cO2GAVfHMe-F15i5VqDSjg-1; Wed, 09 Dec 2020 13:10:37 -0500
+X-MC-Unique: cO2GAVfHMe-F15i5VqDSjg-1
+Received: by mail-wr1-f72.google.com with SMTP id q18so946462wrc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Dec 2020 10:10:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zLiEzxUOrVlfIOo73NK6FKaWkD2tUBdf1/nXnfx8j9s=;
+        b=mvkh9GOwQBF3V3EL566Hb8uMbZPb9ImPOiRmDwKike/pZBAEpRarCT5gM8ZHQGdJ0A
+         OvHORHrquSl5N4uPVEPRw4wQijvqhGbPjyMZbgOHt12QSxeLbF2gq9jHToFsUfJEnCJn
+         RQ9CHgAYDtJ5LDrduWxNqTaAEh+Xxgqro6nwkg/AAAHtiUHZWzH6grm2GRBPvuE1CdHt
+         IKLa8OrH4FP1tZxUBiC5B4A8NlIujNaPTDogMmc5S9sNbZvgMvpOQ+hD4eAdd/wHOLuA
+         u35ude4n1hUnGtJesZ8Xd6uICkljQKjNBuAALJqPTYg8TjoHMJkZZnoJKj0CrNoV/s0G
+         ZGow==
+X-Gm-Message-State: AOAM531UkdhErLjGNlBd2Q+OkUcYZ4pUkYRSh1Waw6OHbJH/9f/P/g/s
+        J3xWataecEnA0NlcNM6pXcJi9dVUDYttZnXbRxlMvpPw3SrmWqkKVB0FQRTBX2D5EyMtVmgEYCG
+        g5w21V5qJy6kNkpxmQ4VUWGub
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr4044982wma.22.1607537436173;
+        Wed, 09 Dec 2020 10:10:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwxN4ULzKv8Qu7nicL3FiyRWTqG8WM2GpWoc0OyD0FCpgyN3fQBg1PwgDWXGgRrHm3Ww4iBdw==
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr4044963wma.22.1607537435993;
+        Wed, 09 Dec 2020 10:10:35 -0800 (PST)
+Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id h15sm4555168wru.4.2020.12.09.10.10.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 10:10:35 -0800 (PST)
+Date:   Wed, 9 Dec 2020 19:10:33 +0100
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Martin Zaharinov <micron10@gmail.com>
+Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org
+Subject: Re: Urgent: BUG: PPP ioctl Transport endpoint is not connected
+Message-ID: <20201209181033.GB21199@linux.home>
+References: <83C781EB-5D66-426E-A216-E1B846A3EC8A@gmail.com>
+ <20201209164013.GA21199@linux.home>
+ <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 9 Dec 2020 14:12:38 +0000:
+On Wed, Dec 09, 2020 at 06:57:44PM +0200, Martin Zaharinov wrote:
+> > On 9 Dec 2020, at 18:40, Guillaume Nault <gnault@redhat.com> wrote:
+> > On Wed, Dec 09, 2020 at 04:47:52PM +0200, Martin Zaharinov wrote:
+> >> Hi All
+> >> 
+> >> I have problem with latest kernel release 
+> >> And the problem is base on this late problem :
+> >> 
+> >> 
+> >> https://www.mail-archive.com/search?l=netdev@vger.kernel.org&q=subject:%22Re%5C%3A+ppp%5C%2Fpppoe%2C+still+panic+4.15.3+in+ppp_push%22&o=newest&f=1
+> >> 
+> >> I have same problem in kernel 5.6 > now I use kernel 5.9.13 and have same problem.
+> >> 
+> >> 
+> >> In kernel 5.9.13 now don’t have any crashes in dimes but in one moment accel service stop with defunct and in log have many of this line :
+> >> 
+> >> 
+> >> error: vlan608: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >> error: vlan617: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >> error: vlan679: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >> 
+> >> In one moment connected user bump double or triple and after that service defunct and need wait to drop all session to start .
+> >> 
+> >> I talk with accel-ppp team and they said this is kernel related problem and to back to kernel 4.14 there is not this problem.
+> >> 
+> >> Problem is come after kernel 4.15 > and not have solution to this moment.
+> > 
+> > I'm sorry, I don't understand.
+> > Do you mean that v4.14 worked fine (no crash, no ioctl() error)?
+> > Did the problem start appearing in v4.15? Or did v4.15 work and the
+> > problem appeared in v4.16?
+> 
+> In Telegram group I talk with Sergey and Dimka and told my the problem is come after changes from 4.14 to 4.15 
+> Sergey write this : "as I know, there was a similar issue in kernel 4.15 so maybe it is still not fixed"
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
+Ok, but what is your experience? Do you have a kernel version where
+accel-ppp reports no ioctl() error and doesn't crash the kernel?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ca4bbdaf171604841f77648a2877e2e43db69b71
+There wasn't a lot of changes between 4.14 and 4.15 for PPP.
+The only PPP patch I can see that might have been risky is commit
+0171c4183559 ("ppp: unlock all_ppp_mutex before registering device").
 
-Thank you!
+> I don’t have options to test with this old kernel 4.14.xxx i don’t have support for them.
+> 
+> 
+> > 
+> >> Please help to find the problem.
+> >> 
+> >> Last time in link I see is make changes in ppp_generic.c 
+> >> 
+> >> ppp_lock(ppp);
+> >>        spin_lock_bh(&pch->downl);
+> >>        if (!pch->chan) {
+> >>                /* Don't connect unregistered channels */
+> >>                spin_unlock_bh(&pch->downl);
+> >>                ppp_unlock(ppp);
+> >>                ret = -ENOTCONN;
+> >>                goto outl;
+> >>        }
+> >>        spin_unlock_bh(&pch->downl);
+> >> 
+> >> 
+> >> But this fix only to don’t display error and freeze system 
+> >> The problem is stay and is to big.
+> > 
+> > Do you use accel-ppp's unit-cache option? Does the problem go away if
+> > you stop using it?
+> > 
+> 
+> No I don’t use unit-cache , if I set unit-cache accel-ppp defunct same but user Is connect and disconnet more fast.
+> 
+> The problem is same with unit and without . 
+> Only after this patch I don’t see error in dimes but this is not solution.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Soryy, what's "in dimes"?
+Do you mean that reverting commit 77f840e3e5f0 ("ppp: prevent
+unregistered channels from connecting to PPP units") fixes your problem?
+
+> In network have customer what have power cut problem, when drop 600 user and back Is normal but in this moment kernel is locking and start to make this : 
+> sessions:
+>   starting: 4235
+>   active: 3882
+>   finishing: 378
+>  The problem is starting session is not real user normal user in this server is ~4k customers .
+
+What type of session is it? L2TP, PPPoE, PPTP?
+
+> I use pppd_compat .
+> 
+> Any idea ?
+> 
+> >> 
+> >> Please help to fix.
+> Martin
+> 
+
