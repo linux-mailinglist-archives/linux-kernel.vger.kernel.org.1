@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40CB2D493F
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 275442D4937
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Dec 2020 19:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733292AbgLISmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Dec 2020 13:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732961AbgLISjb (ORCPT
+        id S1733109AbgLISjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Dec 2020 13:39:48 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48386 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732979AbgLISjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Dec 2020 13:39:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84B6C061793;
-        Wed,  9 Dec 2020 10:38:50 -0800 (PST)
-Date:   Wed, 09 Dec 2020 18:38:48 -0000
+        Wed, 9 Dec 2020 13:39:33 -0500
+Date:   Wed, 09 Dec 2020 18:38:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607539128;
+        s=2020; t=1607539129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HCHLpzsf+qtSYP5Z/O54VFcXA3bDvoqQyI7mhQmeTKc=;
-        b=WF05ShpGIjiZJ+JI6srxt4K4E7W9Mu/tZEyFOt6mkyE33/b0I2SXS0Snu2kKZT51YYEnc1
-        8XlIknHzJCGxDngm9QJTXQYZdC9naNlD1psU3ARhWamaOqBNF0S4dTOO/1lgIzDBDE3YnB
-        477RXEA/zTcwNaECsOKHlVnrB2S+Z6hPMEknnsFKjOBKhifKuR7cia9Q7Ff+yTuWxRvb62
-        Bs0Cc0o/ANlGeaxDhLU4UNYVl1UkR5fV++ZsfNOmQkrnyocb4Yd3/QFmKrwWliKwJEIuqT
-        CQQqiEb71lzSnBbSd62fGJ+6Rk00zRaC/6ttF3SRv4C9/k/urtj6yzBXuckSxA==
+        bh=mAL2zMzkTh6hP3MISpcsyU2YzUhyhDailjudNGYtL/0=;
+        b=rWBsZ1k/V228JhVcgFOEux7nq8aMZAQleUQLxBYdiVTgleO7j4h29AWe2BaBTMWKOf7Vli
+        XRpvR/mJRP3FaeFu4FKUM2S4YroE4n2ES3XjXN8u7wb036LB0s42OhBVPICZix/+Sd8fTA
+        mmhG1RZq/7228nH8rbjY23scRDhW2vsccqpMv7nqZkOrkB5wUrwHBmUG7mIVeL0Qjc/03m
+        aXqZUOPVzuJR7kcq9SCSfPxakAyQi04NW3Jcbtxsar4Cj8i2FLwlApceT54iFuQ3u/NnZ3
+        HFxGaynzV0v+6yEbWojgJYS6qrPXwebQkSWMTR5BcBJftUbjSrEAsQCHxbPeOw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607539128;
+        s=2020e; t=1607539129;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HCHLpzsf+qtSYP5Z/O54VFcXA3bDvoqQyI7mhQmeTKc=;
-        b=2LUzseco1rMfLByyqmWGYHxtujJM9R92Ha7WkUxFUQqPi9w14fK3twWELdcMREZ64nkeqd
-        rv8OvpJ3Zlim+eBg==
-From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
+        bh=mAL2zMzkTh6hP3MISpcsyU2YzUhyhDailjudNGYtL/0=;
+        b=JmhyTd98QN7PZNdb24Q2lBmmMkBdGRfAw0UhvkuN+UNrfOdr0lWGugGVKuvGC8xoN9FToj
+        vnFXQQOANS8C84CQ==
+From:   "tip-bot2 for Eric W. Biederman" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rwsem: Pass the current atomic count to
- rwsem_down_read_slowpath()
-Cc:     Waiman Long <longman@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
+Subject: [tip: locking/core] rwsem: Implement down_read_killable_nested
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201121041416.12285-2-longman@redhat.com>
-References: <20201121041416.12285-2-longman@redhat.com>
+In-Reply-To: <87o8jabqh3.fsf@x220.int.ebiederm.org>
+References: <87o8jabqh3.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Message-ID: <160753912803.3364.4437531645113964830.tip-bot2@tip-bot2>
+Message-ID: <160753912926.3364.11774141440383901114.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,72 +58,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     c8fe8b0564388f41147326f31e4587171aacccd4
-Gitweb:        https://git.kernel.org/tip/c8fe8b0564388f41147326f31e4587171aacccd4
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Fri, 20 Nov 2020 23:14:12 -05:00
+Commit-ID:     0f9368b5bf6db0c04afc5454b1be79022a681615
+Gitweb:        https://git.kernel.org/tip/0f9368b5bf6db0c04afc5454b1be79022a681615
+Author:        Eric W. Biederman <ebiederm@xmission.com>
+AuthorDate:    Thu, 03 Dec 2020 14:10:32 -06:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 09 Dec 2020 17:08:47 +01:00
+CommitterDate: Wed, 09 Dec 2020 17:08:41 +01:00
 
-locking/rwsem: Pass the current atomic count to rwsem_down_read_slowpath()
+rwsem: Implement down_read_killable_nested
 
-The atomic count value right after reader count increment can be useful
-to determine the rwsem state at trylock time. So the count value is
-passed down to rwsem_down_read_slowpath() to be used when appropriate.
+In preparation for converting exec_update_mutex to a rwsem so that
+multiple readers can execute in parallel and not deadlock, add
+down_read_killable_nested.  This is needed so that kcmp_lock
+can be converted from working on a mutexes to working on rw_semaphores.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
-Link: https://lkml.kernel.org/r/20201121041416.12285-2-longman@redhat.com
+Link: https://lkml.kernel.org/r/87o8jabqh3.fsf@x220.int.ebiederm.org
 ---
- kernel/locking/rwsem.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ include/linux/rwsem.h  |  2 ++
+ kernel/locking/rwsem.c | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+)
 
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 25e3fde..13021b0 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -171,6 +171,7 @@ extern void downgrade_write(struct rw_semaphore *sem);
+  * See Documentation/locking/lockdep-design.rst for more details.)
+  */
+ extern void down_read_nested(struct rw_semaphore *sem, int subclass);
++extern int __must_check down_read_killable_nested(struct rw_semaphore *sem, int subclass);
+ extern void down_write_nested(struct rw_semaphore *sem, int subclass);
+ extern int down_write_killable_nested(struct rw_semaphore *sem, int subclass);
+ extern void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest_lock);
+@@ -191,6 +192,7 @@ extern void down_read_non_owner(struct rw_semaphore *sem);
+ extern void up_read_non_owner(struct rw_semaphore *sem);
+ #else
+ # define down_read_nested(sem, subclass)		down_read(sem)
++# define down_read_killable_nested(sem, subclass)	down_read_killable(sem)
+ # define down_write_nest_lock(sem, nest_lock)	down_write(sem)
+ # define down_write_nested(sem, subclass)	down_write(sem)
+ # define down_write_killable_nested(sem, subclass)	down_write_killable(sem)
 diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 67ae366..5768b90 100644
+index f11b9bd..54d11cb 100644
 --- a/kernel/locking/rwsem.c
 +++ b/kernel/locking/rwsem.c
-@@ -270,14 +270,14 @@ static inline void rwsem_set_nonspinnable(struct rw_semaphore *sem)
- 					  owner | RWSEM_NONSPINNABLE));
+@@ -1605,6 +1605,20 @@ void down_read_nested(struct rw_semaphore *sem, int subclass)
  }
+ EXPORT_SYMBOL(down_read_nested);
  
--static inline bool rwsem_read_trylock(struct rw_semaphore *sem)
-+static inline bool rwsem_read_trylock(struct rw_semaphore *sem, long *cntp)
- {
--	long cnt = atomic_long_add_return_acquire(RWSEM_READER_BIAS, &sem->count);
-+	*cntp = atomic_long_add_return_acquire(RWSEM_READER_BIAS, &sem->count);
- 
--	if (WARN_ON_ONCE(cnt < 0))
-+	if (WARN_ON_ONCE(*cntp < 0))
- 		rwsem_set_nonspinnable(sem);
- 
--	if (!(cnt & RWSEM_READ_FAILED_MASK)) {
-+	if (!(*cntp & RWSEM_READ_FAILED_MASK)) {
- 		rwsem_set_reader_owned(sem);
- 		return true;
- 	}
-@@ -1008,9 +1008,9 @@ rwsem_spin_on_owner(struct rw_semaphore *sem, unsigned long nonspinnable)
-  * Wait for the read lock to be granted
-  */
- static struct rw_semaphore __sched *
--rwsem_down_read_slowpath(struct rw_semaphore *sem, int state)
-+rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, int state)
- {
--	long count, adjustment = -RWSEM_READER_BIAS;
-+	long adjustment = -RWSEM_READER_BIAS;
- 	struct rwsem_waiter waiter;
- 	DEFINE_WAKE_Q(wake_q);
- 	bool wake = false;
-@@ -1356,8 +1356,10 @@ static struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem)
-  */
- static inline int __down_read_common(struct rw_semaphore *sem, int state)
- {
--	if (!rwsem_read_trylock(sem)) {
--		if (IS_ERR(rwsem_down_read_slowpath(sem, state)))
-+	long count;
++int down_read_killable_nested(struct rw_semaphore *sem, int subclass)
++{
++	might_sleep();
++	rwsem_acquire_read(&sem->dep_map, subclass, 0, _RET_IP_);
 +
-+	if (!rwsem_read_trylock(sem, &count)) {
-+		if (IS_ERR(rwsem_down_read_slowpath(sem, count, state)))
- 			return -EINTR;
- 		DEBUG_RWSEMS_WARN_ON(!is_rwsem_reader_owned(sem), sem);
- 	}
++	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_killable)) {
++		rwsem_release(&sem->dep_map, _RET_IP_);
++		return -EINTR;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(down_read_killable_nested);
++
+ void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest)
+ {
+ 	might_sleep();
